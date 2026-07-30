@@ -43,6 +43,43 @@ theorem exceptMapM_all_of_step
                 exact step input (by simp) output head
               · exact ih rest remainingStep tail candidate member
 
+/-- A successful exceptional traversal preserves any projection that each successful step preserves. -/
+theorem exceptMapM_map_eq_of_step
+    (action : α → Except ε β)
+    (inputProjection : α → γ) (outputProjection : β → γ)
+    (inputs : List α) (outputs : List β)
+    (step :
+      ∀ input ∈ inputs, ∀ output,
+        action input = .ok output →
+          outputProjection output = inputProjection input)
+    (mapped : inputs.mapM action = .ok outputs) :
+    outputs.map outputProjection = inputs.map inputProjection := by
+  induction inputs generalizing outputs with
+  | nil =>
+      change Except.ok [] = Except.ok outputs at mapped
+      cases mapped
+      rfl
+  | cons input remaining inductionHypothesis =>
+      simp only [List.mapM_cons] at mapped
+      cases head : action input with
+      | error error =>
+          simp [head, Bind.bind, Except.bind] at mapped
+      | ok output =>
+          cases tail : remaining.mapM action with
+          | error error =>
+              simp [head, tail, Bind.bind, Except.bind] at mapped
+          | ok rest =>
+              simp [head, tail, Bind.bind, Except.bind] at mapped
+              cases mapped
+              rw [List.map_cons, List.map_cons,
+                step input (by simp) output head]
+              apply congrArg (List.cons (inputProjection input))
+              apply inductionHypothesis rest
+              · intro candidate member result executed
+                exact step candidate
+                  (List.mem_cons_of_mem input member) result executed
+              · exact tail
+
 theorem firstForwardComputationDependency_none_tail
     (targetOf : Step → FieldId)
     (references : Step → FieldId → Bool)

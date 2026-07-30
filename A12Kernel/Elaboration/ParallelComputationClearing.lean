@@ -98,6 +98,7 @@ structure CheckedParallelNumericTargetRoute (model : FlatModel) where
   targetScope :
     (targetDeclaration.repeatableScope ==
       model.repeatableScopeForGroupPath groups.leftGroup.path) = true
+  targetScopeUnique : targetDeclaration.repeatableScope.Nodup
   sourceScope :
     (sourceDeclaration.repeatableScope ==
       model.repeatableScopeForGroupPath groups.rightGroup.path) = true
@@ -119,6 +120,7 @@ def WellFormed (route : CheckedParallelNumericTargetRoute model) : Prop :=
       route.sourceDeclaration.groupPath = true ∧
     (route.targetDeclaration.repeatableScope ==
       model.repeatableScopeForGroupPath route.groups.leftGroup.path) = true ∧
+    route.targetDeclaration.repeatableScope.Nodup ∧
     (route.sourceDeclaration.repeatableScope ==
       model.repeatableScopeForGroupPath route.groups.rightGroup.path) = true
 
@@ -270,6 +272,7 @@ structure CheckedParallelNumericClearingPlan (model : FlatModel) where
   targetScope :
     (targetDeclaration.repeatableScope ==
       model.repeatableScopeForGroupPath groups.leftGroup.path) = true
+  targetScopeUnique : targetDeclaration.repeatableScope.Nodup
   operandScope :
     (operandDeclaration.repeatableScope ==
       model.repeatableScopeForGroupPath groups.rightGroup.path) = true
@@ -292,6 +295,7 @@ def WellFormed (plan : CheckedParallelNumericClearingPlan model) : Prop :=
       plan.operandDeclaration.groupPath = true ∧
     (plan.targetDeclaration.repeatableScope ==
       model.repeatableScopeForGroupPath plan.groups.leftGroup.path) = true ∧
+    plan.targetDeclaration.repeatableScope.Nodup ∧
     (plan.operandDeclaration.repeatableScope ==
       model.repeatableScopeForGroupPath plan.groups.rightGroup.path) = true
 
@@ -314,6 +318,7 @@ def asTargetRoute
   targetGroup := plan.targetGroup
   sourceGroup := plan.operandGroup
   targetScope := plan.targetScope
+  targetScopeUnique := plan.targetScopeUnique
   sourceScope := plan.operandScope
 }
 
@@ -410,31 +415,37 @@ def checkParallelNumericTargetRoute (model : FlatModel)
                           (targetDeclaration.repeatableScope ==
                             model.repeatableScopeForGroupPath
                               groups.leftGroup.path) = true then
-                        if hSourceScope :
-                            (sourceDeclaration.repeatableScope ==
-                              model.repeatableScopeForGroupPath
-                                groups.rightGroup.path) = true then
-                          pure {
-                            declaringGroup
-                            sourceReference
-                            targetField
-                            targetDeclaration
-                            sourceDeclaration
-                            target
-                            targetPolicy
-                            groups
-                            targetResolved := hTarget
-                            sourceResolved := hSource
-                            targetNumber := hTargetNumber
-                            targetPolicyOwned := hPolicy
-                            targetGroup := hTargetGroup
-                            sourceGroup := hSourceGroup
-                            targetScope := hTargetScope
-                            sourceScope := hSourceScope
-                          }
+                        if hTargetScopeUnique :
+                            targetDeclaration.repeatableScope.Nodup then
+                          if hSourceScope :
+                              (sourceDeclaration.repeatableScope ==
+                                model.repeatableScopeForGroupPath
+                                  groups.rightGroup.path) = true then
+                            pure {
+                              declaringGroup
+                              sourceReference
+                              targetField
+                              targetDeclaration
+                              sourceDeclaration
+                              target
+                              targetPolicy
+                              groups
+                              targetResolved := hTarget
+                              sourceResolved := hSource
+                              targetNumber := hTargetNumber
+                              targetPolicyOwned := hPolicy
+                              targetGroup := hTargetGroup
+                              sourceGroup := hSourceGroup
+                              targetScope := hTargetScope
+                              targetScopeUnique := hTargetScopeUnique
+                              sourceScope := hSourceScope
+                            }
+                          else
+                            throw (.incoherentOperandScope
+                              sourceDeclaration.path)
                         else
-                          throw (.incoherentOperandScope
-                            sourceDeclaration.path)
+                          throw (.incoherentTargetScope
+                            targetDeclaration.path)
                       else
                         throw (.incoherentTargetScope
                           targetDeclaration.path)
@@ -475,6 +486,7 @@ def checkParallelNumericComputationClearingPlan (model : FlatModel)
         targetGroup := route.targetGroup
         operandGroup := route.sourceGroup
         targetScope := route.targetScope
+        targetScopeUnique := route.targetScopeUnique
         operandScope := route.sourceScope
       }
 

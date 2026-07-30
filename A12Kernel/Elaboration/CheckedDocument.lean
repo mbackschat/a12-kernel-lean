@@ -76,11 +76,20 @@ structure CheckedDocument (model : FlatModel) where
   source : DocumentData
   checkedCells : List CheckedCellPlacement
   modelWellFormed : model.validate.isOk = true
+  rowsNodup : source.instantiatedRows.Nodup
 
 private def firstDuplicateRow? : List RowAddr → Option RowAddr
   | [] => none
   | row :: rest =>
       if rest.contains row then some row else firstDuplicateRow? rest
+
+private theorem firstDuplicateRow_none_iff_nodup (rows : List RowAddr) :
+    firstDuplicateRow? rows = none ↔ rows.Nodup := by
+  induction rows with
+  | nil => simp [firstDuplicateRow?]
+  | cons row remaining inductionHypothesis =>
+      by_cases member : row ∈ remaining <;>
+        simp [firstDuplicateRow?, member, inductionHypothesis]
 
 private def firstDuplicateCell? : List ClassifiedCellInput → Option CellAddr
   | [] => none
@@ -122,11 +131,17 @@ private def predecessorRow? (row : RowAddr) : Option RowAddr :=
         path := row.path.dropLast ++ [coordinate - 1]
       }
 
+private structure CheckedRows (rows : List RowAddr) : Type where
+  nodup : rows.Nodup
+
 private def validateRows (model : FlatModel) (rows : List RowAddr) :
-    Except CheckedDocumentError Unit := do
-  match firstDuplicateRow? rows with
+    Except CheckedDocumentError (CheckedRows rows) := do
+  let checkedRows ← match duplicate : firstDuplicateRow? rows with
   | some row => throw (.duplicateRow row)
-  | none => pure ()
+  | none =>
+      pure {
+        nodup := firstDuplicateRow_none_iff_nodup rows |>.mp duplicate
+      }
   for row in rows do
     let group ← match model.repeatableGroupAtLevel? row.group with
       | some group => pure group
@@ -144,6 +159,7 @@ private def validateRows (model : FlatModel) (rows : List RowAddr) :
     | some predecessor =>
         if !rows.contains predecessor then throw (.nonprefixRow row predecessor)
     | none => pure ()
+  pure checkedRows
 
 private def requiredRows : List RepeatableLevel → List Nat → List Nat → List RowAddr
   | [], [], _ => []
@@ -237,7 +253,7 @@ private def checkPlacedCell
 def checkDocument (prepared : PreparedFlatStringContext model compilePattern)
     (locale : String) (source : DocumentData) :
     Except CheckedDocumentError (CheckedDocument model) := do
-  validateRows model source.instantiatedRows
+  let checkedRows ← validateRows model source.instantiatedRows
   match firstDuplicateCell? source.cells with
   | some address => throw (.duplicateCell address)
   | none => pure ()
@@ -247,6 +263,7 @@ def checkDocument (prepared : PreparedFlatStringContext model compilePattern)
     source
     checkedCells
     modelWellFormed := prepared.patterns.modelWellFormed
+    rowsNodup := checkedRows.nodup
   }
 
 namespace CheckedDocument

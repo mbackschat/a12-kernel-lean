@@ -56,4 +56,33 @@ theorem parallelNumericExecutableTargets_own_primary_target
           primary preliminary primaryCoverage primaryResult
           target primaryMember
 
+/-- Executable-target filtering preserves exact address uniqueness from primary coverage. -/
+theorem parallelNumericExecutableTargets_addresses_nodup
+    (primary : CheckedParallelNumericTargetRoute model)
+    (additional : List (CheckedParallelNumericTargetRoute model))
+    (preliminary : CheckedIndexPreliminary model)
+    (targets : List ParallelNumericTargetCoverage)
+    (executed :
+      CheckedIsolatedParallelNumericDirectRun.executableTargets
+        primary additional preliminary = .ok targets) :
+    (targets.map (·.address)).Nodup := by
+  unfold CheckedIsolatedParallelNumericDirectRun.executableTargets at executed
+  cases primaryResult : primary.targetCoverage preliminary with
+  | error error =>
+      simp [primaryResult, Except.mapError, Bind.bind, Except.bind]
+        at executed
+  | ok primaryCoverage =>
+      simp [primaryResult, Except.mapError, Bind.bind, Except.bind]
+        at executed
+      split at executed
+      · contradiction
+      · change Except.ok _ = Except.ok targets at executed
+        cases executed
+        exact
+          (List.filter_sublist.map
+            (fun target : ParallelNumericTargetCoverage =>
+              target.address)).nodup
+            (parallelNumericTargetRoute_coverage_addresses_nodup
+              primary preliminary primaryCoverage primaryResult)
+
 end A12Kernel

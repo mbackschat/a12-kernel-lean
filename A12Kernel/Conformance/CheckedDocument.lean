@@ -249,9 +249,13 @@ example : ((checked? classified).map fun checked =>
     | _ => false) = some true := by
   native_decide
 
-/- Duplicate physical cells and incoherent empty classification fail at construction. -/
+/- Duplicate physical rows/cells and incoherent empty classification fail at construction. -/
 example : (prepareFlatStringContext world builtinStringPatternCompiler model).toOption.map
     (fun prepared => (
+      (match checkDocument prepared "en_US"
+        { classified with instantiatedRows := [row1, row1] } with
+      | .error (.duplicateRow row) => row == row1
+      | _ => false),
       (match checkDocument prepared "en_US"
         { classified with cells := classified.cells ++ [{
             address := { field := 1, path := [] }
@@ -267,7 +271,7 @@ example : (prepareFlatStringContext world builtinStringPatternCompiler model).to
             raw := .parsed (.str "not empty") }
         ] } with
       | .error (.incoherentCell address) => address == { field := 2, path := [] }
-      | _ => false))) = some (true, true) := by
+      | _ => false))) = some (true, true, true) := by
   native_decide
 
 end A12Kernel.Conformance.CheckedDocument

@@ -50,6 +50,55 @@ theorem parallelNumericAlternativeTable_selected
     table.evaluate context = operation.evaluateSelected context := by
   simp [CheckedParallelNumericAlternativeTable.evaluate, selection]
 
+private theorem parallelNumericAlternativeTable_executeTargetWith_address
+    (table : CheckedParallelNumericAlternativeTable model)
+    (preliminary : CheckedIndexPreliminary model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (target : ParallelNumericTargetCoverage)
+    (outcome : ParallelNumericDirectOutcome)
+    (executed :
+      table.executeTargetWith preliminary read target = .ok outcome) :
+    outcome.address = target.address := by
+  unfold CheckedParallelNumericAlternativeTable.executeTargetWith at executed
+  cases keyResult :
+      table.first.operation.targetKeyFor preliminary
+        target.environment target.address with
+  | error error =>
+      simp [keyResult, Bind.bind, Except.bind] at executed
+  | ok key =>
+      cases cellsResult :
+          table.operandCellsWith preliminary read
+            target.environment key with
+      | error error =>
+          simp [keyResult, cellsResult, Bind.bind, Except.bind] at executed
+      | ok cells =>
+          rw [keyResult] at executed
+          simp only [Bind.bind, Except.bind] at executed
+          rw [cellsResult] at executed
+          let context : ScalarComputationContext := {
+            read := fun field =>
+              match cells.find? fun cell => cell.1 == field with
+              | some cell => cell.2
+              | none => malformedCheckedCell
+          }
+          change
+            (do
+              let result ← table.evaluate context
+              pure ({
+                address := target.address
+                outcome := result
+              } : ParallelNumericDirectOutcome)) =
+                .ok outcome at executed
+          cases evaluationResult : table.evaluate context with
+          | error error =>
+              rw [evaluationResult] at executed
+              contradiction
+          | ok result =>
+              rw [evaluationResult] at executed
+              change Except.ok _ = Except.ok outcome at executed
+              cases executed
+              rfl
+
 /-- Successful table execution emits exact addresses only for the table's checked target field. -/
 theorem parallelNumericAlternativeTable_executeWithRead_owns_target
     (table : CheckedParallelNumericAlternativeTable model)
@@ -91,46 +140,44 @@ theorem parallelNumericAlternativeTable_executeWithRead_owns_target
           outcome.address.field = table.targetField)
         (mapped := executed)
       intro target member outcome targetExecuted
-      unfold CheckedParallelNumericAlternativeTable.executeTargetWith
-        at targetExecuted
-      cases keyResult :
-          table.first.operation.targetKeyFor preliminary
-            target.environment target.address with
-      | error error =>
-          simp [keyResult, Bind.bind, Except.bind] at targetExecuted
-      | ok key =>
-          cases cellsResult :
-              table.operandCellsWith preliminary read
-                target.environment key with
-          | error error =>
-              simp [keyResult, cellsResult, Bind.bind, Except.bind]
-                at targetExecuted
-          | ok cells =>
-              rw [keyResult] at targetExecuted
-              simp only [Bind.bind, Except.bind] at targetExecuted
-              rw [cellsResult] at targetExecuted
-              let context : ScalarComputationContext := {
-                read := fun field =>
-                  match cells.find? fun cell => cell.1 == field with
-                  | some cell => cell.2
-                  | none => malformedCheckedCell
-              }
-              change
-                (do
-                  let result ← table.evaluate context
-                  pure ({
-                    address := target.address
-                    outcome := result
-                  } : ParallelNumericDirectOutcome)) =
-                    .ok outcome at targetExecuted
-              cases evaluationResult : table.evaluate context with
-              | error error =>
-                  rw [evaluationResult] at targetExecuted
-                  contradiction
-              | ok result =>
-                  rw [evaluationResult] at targetExecuted
-                  change Except.ok _ = Except.ok outcome at targetExecuted
-                  cases targetExecuted
-                  exact targetsOwned target member
+      rw [parallelNumericAlternativeTable_executeTargetWith_address
+        table preliminary read target outcome targetExecuted]
+      exact targetsOwned target member
+
+/-- Successful table execution emits each exact target address at most once. -/
+theorem parallelNumericAlternativeTable_executeWithRead_addresses_nodup
+    (table : CheckedParallelNumericAlternativeTable model)
+    (preliminary : CheckedIndexPreliminary model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (outcomes : List ParallelNumericDirectOutcome)
+    (executed :
+      table.executeWithRead preliminary read = .ok outcomes) :
+    (outcomes.map (·.address)).Nodup := by
+  unfold CheckedParallelNumericAlternativeTable.executeWithRead at executed
+  cases targetsResult :
+      CheckedIsolatedParallelNumericDirectRun.executableTargets
+        table.first.operation.route.asTargetRoute
+        (table.operandRoutes.drop 1) preliminary with
+  | error error =>
+      rw [targetsResult] at executed
+      contradiction
+  | ok targets =>
+      rw [targetsResult] at executed
+      change
+        targets.mapM (table.executeTargetWith preliminary read) =
+          .ok outcomes at executed
+      have projected := exceptMapM_map_eq_of_step
+        (table.executeTargetWith preliminary read)
+        (·.address) (·.address) targets outcomes
+        (by
+          intro target member outcome targetExecuted
+          exact
+            parallelNumericAlternativeTable_executeTargetWith_address
+              table preliminary read target outcome targetExecuted)
+        executed
+      rw [projected]
+      exact parallelNumericExecutableTargets_addresses_nodup
+        table.first.operation.route.asTargetRoute
+        (table.operandRoutes.drop 1) preliminary targets targetsResult
 
 end A12Kernel

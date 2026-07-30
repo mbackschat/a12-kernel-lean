@@ -137,6 +137,83 @@ theorem parallelNumericPlan_executeTables_owns_target_fields
           · simpa [CheckedParallelNumericPlan.executeTables,
               tableResult] using executed
 
+private theorem parallelNumericPlan_executeTables_addresses_nodup
+    (plan : CheckedParallelNumericPlan model)
+    (preliminary : CheckedIndexPreliminary model)
+    (tables : List (CheckedParallelNumericAlternativeTable model))
+    (state final : ParallelNumericRunState)
+    (tableTargetsNodup :
+      (tables.map (·.targetField)).Nodup)
+    (stateAddressesNodup :
+      (state.completed.map (·.address)).Nodup)
+    (stateDisjoint :
+      ∀ outcome ∈ state.completed,
+        outcome.address.field ∉ tables.map (·.targetField))
+    (executed :
+      plan.executeTables preliminary tables state = .ok final) :
+    (final.completed.map (·.address)).Nodup := by
+  induction tables generalizing state final with
+  | nil =>
+      change Except.ok state = Except.ok final at executed
+      cases executed
+      exact stateAddressesNodup
+  | cons table remaining inductionHypothesis =>
+      cases tableResult :
+          table.executeWithRead preliminary
+            (plan.readPolicy state preliminary.base) with
+      | error error =>
+          simp [CheckedParallelNumericPlan.executeTables,
+            tableResult] at executed
+      | ok outcomes =>
+          have outcomesNodup :=
+            parallelNumericAlternativeTable_executeWithRead_addresses_nodup
+              table preliminary
+              (plan.readPolicy state preliminary.base)
+              outcomes tableResult
+          have appendedNodup :
+              ((state.completed ++ outcomes).map (·.address)).Nodup := by
+            rw [List.map_append, List.nodup_append]
+            exact ⟨stateAddressesNodup, outcomesNodup, by
+              intro prior priorMember current currentMember equal
+              rcases List.mem_map.mp priorMember with
+                ⟨priorOutcome, priorOutcomeMember, rfl⟩
+              rcases List.mem_map.mp currentMember with
+                ⟨currentOutcome, currentOutcomeMember, rfl⟩
+              have priorFieldNotCurrent :
+                  priorOutcome.address.field ≠ table.targetField := by
+                intro fieldEqual
+                apply stateDisjoint priorOutcome priorOutcomeMember
+                exact List.mem_cons.mpr (Or.inl fieldEqual)
+              have currentOwned :=
+                parallelNumericAlternativeTable_executeWithRead_owns_target
+                  table preliminary
+                  (plan.readPolicy state preliminary.base)
+                  outcomes tableResult currentOutcome
+                  currentOutcomeMember
+              apply priorFieldNotCurrent
+              rw [← currentOwned]
+              exact congrArg CellAddr.field equal⟩
+          apply inductionHypothesis
+            { completed := state.completed ++ outcomes }
+            final
+          · exact (List.nodup_cons.mp tableTargetsNodup).2
+          · exact appendedNodup
+          · intro outcome member
+            rcases List.mem_append.mp member with
+              priorMember | currentMember
+            · intro targetMember
+              apply stateDisjoint outcome priorMember
+              exact List.mem_cons_of_mem table.targetField targetMember
+            · have currentOwned :=
+                parallelNumericAlternativeTable_executeWithRead_owns_target
+                  table preliminary
+                  (plan.readPolicy state preliminary.base)
+                  outcomes tableResult outcome currentMember
+              rw [currentOwned]
+              exact (List.nodup_cons.mp tableTargetsNodup).1
+          · simpa [CheckedParallelNumericPlan.executeTables,
+              tableResult] using executed
+
 /-- A successful finite run emits outcomes only for fields owned by its checked tables. -/
 theorem parallelNumericPlan_execute_owns_target_fields
     (plan : CheckedParallelNumericPlan model)
@@ -160,6 +237,29 @@ theorem parallelNumericPlan_execute_owns_target_fields
         change table.targetField ∈
           plan.tables.map (·.targetField)
         exact List.mem_map_of_mem member
+      · simp
+      · exact stateResult
+
+/-- A successful finite run emits each exact target address at most once. -/
+theorem parallelNumericPlan_execute_addresses_nodup
+    (plan : CheckedParallelNumericPlan model)
+    (preliminary : CheckedIndexPreliminary model)
+    (outcomes : List ParallelNumericDirectOutcome)
+    (executed : plan.execute preliminary = .ok outcomes) :
+    (outcomes.map (·.address)).Nodup := by
+  unfold CheckedParallelNumericPlan.execute at executed
+  cases stateResult :
+      plan.executeTables preliminary plan.tables {} with
+  | error error =>
+      rw [stateResult] at executed
+      contradiction
+  | ok final =>
+      rw [stateResult] at executed
+      cases executed
+      apply parallelNumericPlan_executeTables_addresses_nodup
+        plan preliminary plan.tables {} final
+      · exact checkedParallelNumericPlan_targetFields_nodup plan
+      · simp
       · simp
       · exact stateResult
 
