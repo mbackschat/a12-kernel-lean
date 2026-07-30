@@ -28,14 +28,14 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit and close the smallest source packet required for repeatable Number whole-document application: destination-model compatibility and missing repeatable-ancestor creation. Reuse the existing checked document, exact-address run result, and numeric application owner; do not merge source-relative classification, destination state, or later validation.
+Repeatable Number whole-document application is blocked on [`EXP-2026-07-30-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#exp-2026-07-30-02--source-classified-clear-against-an-absent-destination). The pinned source call graph predicts that a source-classified clear creates a present-empty cell and missing repeatable ancestors in a separate absent destination; the current Lean action transition predicts absence, while the maintained peer cases never combine those source and destination states. Do not choose a transition representation until the separate-destination result is measured.
 
 ## Immediate sequence
 
-1. Inventory the existing nonrepeatable numeric application, repeatable exact-address clearing/application fragment, rich repeatable run result, and every current source note or cross-project handoff before proposing a new transition type.
-2. Read the pinned kernel and a12-dmkits owners for application-time model compatibility, destination addressing, absent target rows, ancestor creation, source-relative changed/cleared classifications, and validation timing. Keep reachability separate and measured.
-3. Build one compact decision matrix with at least two realistic wrong accounts and run the highest-risk available discriminator through an unchanged source-owned route when one exists.
-4. Only when the source facts and separator close the representation choice, add the smallest red whole-document transition case and compose the existing owners. Otherwise record the exact blocking discriminator without inventing a destination rule.
+1. Hand off `EXP-2026-07-30-02` at its introducing revision and wait for the exact committed a12-dmkits disposition; do not run a parallel copied or modified harness.
+2. Review the returned revision against the exact source-filled-clear/absent-destination discriminator and its no-action, ERRORED, changed-VALUE, and present-target controls.
+3. Author the selected whole-document transition red-first. Reuse the checked document, exact-address run result, and numeric application owner; require the destination to carry the same model certificate instead of claiming that the kernel dynamically checks compatibility.
+4. If the measured clear creates the missing target, model cell and repeatable-ancestor creation at one shared checked address mechanism, including predecessor-row padding only if the returned observation establishes it. Keep source-relative classification, destination state, and later validation separate.
 
 ## Parked boundaries
 
