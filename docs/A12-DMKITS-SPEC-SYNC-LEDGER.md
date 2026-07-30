@@ -455,6 +455,28 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ## Experiment requests
 
+<a id="exp-2026-07-30-01"></a>
+<a id="exp-2026-07-30-01--field-owned-error-text-dollar-decoding-and-fixed-token-staging"></a>
+
+### EXP-2026-07-30-01 — field-owned error text needs its own dollar-decoding observation
+
+- **Status:** pending
+- **Kind:** experiment request
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `8cab6ece3a0b355e1a831792fa14b0b711548755`
+- **Kernel behavior:** 30.8.1
+- **Canonical question:** [`11-messages-and-custom.md` Part A](../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation)
+- **Why this blocks the Lean representation:** the rule-owned path is already measured and decodes `$$` to one literal `$`, but the field-owned source path is structurally different. `FieldErrortextChecker` checks an even dollar count and compares delimited parameters with locale-fixed words; the source call graph routes generated field-type and requiredness messages toward `FehlerHandler.transformFehlerText`, whose visible Java body performs fixed token replacement but no rule-style empty-parameter decoding. That composition is source-derived and not claimed as observed public behavior. Reusing the checked rule tokenizer would therefore assert an unmeasured result. A distinct field parser would assert the rival result. The answer changes the representation, so source fidelity alone is insufficient.
+- **Exact static matrix:** in an `en_US` model, measure a String field's own invalid-value error text with `$field$` and `$field.value$`, then the same position with `$Field$` and with the actual field name `$Code$`. Report accept/reject and the exact kernel diagnostic for every rejection. This separates the source candidates—lowercase locale-fixed words—from the stylized spelling currently used by the canonical prose and from rule-relative actual names.
+- **Literal-dollar discriminator:** declare `/Order/Code` with name `Code`, pattern `[A-Z]+`, and invalid-value text `Cost $$ $field$`; validate the invalid value `bad` under `en_US` and retain the exact rendered error text from both dynamic Groovy and generated Java. The shared rule-decoder account predicts `Cost $ Code`; the direct field-transform account predicts `Cost $$ Code`. A different output or model rejection is a negative result and must be reported rather than fitted to either account.
+- **Replacement-staging discriminator:** on the same field, use invalid-value text `Value [$field.value$]` and invalid stored text `$field$`. A one-pass field-value insertion predicts `Value [$field$]`; reparsing inserted bytes predicts `Value [Code]`. This is independent of the `$$` position and establishes whether a field-owned value can safely lower to opaque resolved text.
+- **Second producer control:** repeat the literal-dollar case through an ordinary required field's `requirednessConfig.errorMessage` with the field empty. Report the exact output or refusal on both kernel strategies. This determines whether type-format and requiredness producers actually converge at the same field transformer instead of inferring that from their call graph.
+- **Why existing coverage cannot answer it:** `FieldConstraintFormalDiffTest` locks field formal codes but reads no field-authored text. The maintained message differentials exercise rule-owned templates. `ModelLoader` does not retain field-type or requiredness error templates for the interpreter, and no unchanged a12-dmkits command emits this kernel-owned channel. `RuntimeLaws.errorTextOf` already exposes exact dynamic-Groovy and generated-Java text, so the natural upstream change is focused cases in the existing field-constraint and requiredness differential owners, not a new harness.
+- **Requested a12-dmkits work:** run and retain the matrix above against kernel 30.8.1, state any dynamic/static split, and reconcile a12-dmkits only where the measured field-owned behavior is already in its claimed interpreter or documentation scope. Do not generalize the result to rule-owned templates, German tokens, computation-target messages, or registered custom-field-validator messages. If the interpreter has no field-owned text route, record that limit rather than manufacturing parity.
+- **Compatibility:** decoding `$$` when the field route preserves it changes user-visible text; preserving it when the route decodes it does the converse. Accepting actual field names would merge two different authoring grammars. Reprocessing inserted bytes permits data to become template syntax. Each mistake is observable without changing validation truth or polarity.
+- **What this project will do with the result:** author the Lean red cases only after the static and runtime outcomes select the field-template contract. A measured shared decoder permits reuse of its exact lexical seam; a measured preserved pair requires a distinct lowering policy; one-pass value insertion permits an opacity law. A kernel-strategy split will follow the repository's dynamic-Groovy observation anchor and retain generated Java as a characterized divergence.
+- **Acceptance:** exact static dispositions and diagnostics for the four English spellings; exact dynamic-Groovy and generated-Java rendered text for the literal-dollar, token-looking-value, and requiredness cases; the exact a12-dmkits revision and per-surface disposition. A reasoned refusal is conclusive only if it names the missing authoring or observation route and leaves the entry `handed-off`.
+
 ### EXP-2026-07-25-01 — condition-line splitting above fifty terms is unreached by either corpus
 
 - **Status:** accepted

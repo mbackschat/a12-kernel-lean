@@ -22,20 +22,20 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit and admit the corresponding field-owned validation-message template form, where the authored tokens are the fixed words `Field` and `Field.value` rather than a rule-relative model path. Reuse the checked raw-template and one-pass rendering owners only where the new source packet proves the meanings identical.
+Audit and admit the corresponding field-owned validation-message template form, where source inspection identifies locale-fixed token candidates rather than a rule-relative model path. [`EXP-2026-07-30-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#exp-2026-07-30-01--field-owned-error-text-dollar-decoding-and-fixed-token-staging) now owns the representation-defining observation: whether the field route decodes `$$`, whether English accepts only lowercase `field`/`field.value`, and whether inserted value bytes remain opaque. Reuse the checked raw-template and one-pass rendering owners only where that observation proves the meanings identical.
 
 ## Immediate sequence
 
-1. Audit `FieldErrortextChecker`, its parser/creator route, generated storage, and runtime substitution across field basic/formal output. Establish whether fixed `Field` tokens share delimiter legality and exactly which declaration supplies their display inputs.
-2. Red-first, separate `$$`, `$Field$`, and `$Field.value$` from an arbitrary `$ActualName$`, malformed delimiters, and token-looking replacement bytes. Mark any unmeasured concrete spelling as unverified rather than inferring reachability from source.
-3. Reuse or minimally parameterize the current checked tokenizer and direct `MessageRenderPlan` lowering; do not add a field-specific renderer or merge rule-relative lookup with fixed-token binding.
-4. Prove output opacity and no semantic back-effect at the field formal-message boundary. Keep locale/provider invocation, wider rule paths, repeats/indices/categories/`BaseYear`, computation messages, and a shared message envelope excluded.
+1. Hand off and consume [`EXP-2026-07-30-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#exp-2026-07-30-01--field-owned-error-text-dollar-decoding-and-fixed-token-staging). Do not write the Lean red case before its exact static spellings and rendered outputs select the contract.
+2. Red-first, separate the measured literal-dollar, fixed-name, fixed-value, actual-name rejection, malformed delimiter, and token-looking replacement cases. Keep any unmeasured locale or producer explicit insufficiency.
+3. Reuse or minimally parameterize the current checked tokenizer and direct `MessageRenderPlan` lowering only for measured shared behavior. Do not merge rule-relative lookup with fixed-token binding or force field values through the rule path's empty-display default policy.
+4. Prove measured output opacity and no semantic back-effect at the field formal-message boundary. Keep unmeasured locale/provider invocation, wider rule paths, repeats/indices/categories/`BaseYear`, computation messages, and a shared message envelope excluded.
 
 ## Parked boundaries
 
 - Eager prepass invalidity needs no second snapshot because `CheckedDocument` already owns computation-phase checked cells. Its supplied messages enter the completed SG4 partition directly; no eager-prepass reconstruction or SG10 rendering belongs in that structural boundary.
 - Computation scheduling, state transition, and the computation-result pointer partition remain under [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition); message rendering remains under SG10; future operator-family admission and projections remain under their owning semantic gaps.
-- The a12-dmkits `$$` renderer correction is an isolated upstream implementation/test request against an already-correct canonical clause. Local field-template work must not wait for it or create a duplicate sync-ledger entry.
+- The a12-dmkits rule-template `$$` renderer correction is an isolated upstream implementation/test request against an already-correct canonical rule clause. It does not answer the field-owned question: that distinct source path is blocked on [`EXP-2026-07-30-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#exp-2026-07-30-01--field-owned-error-text-dollar-decoding-and-fixed-token-staging).
 - Public protocol expansion, semantic shipments, dependencies, SMT integration, and new evidence/process machinery require their existing explicit adoption or approval gates.
 
 ## Stop and resume
