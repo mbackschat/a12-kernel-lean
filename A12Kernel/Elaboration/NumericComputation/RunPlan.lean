@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.NumericComputation.Table
 
 /-! # Checked scalar Number computation run plans
 
-This capsule certifies supplied-order Number tables for the scalar executor only. It rejects every checked atom whose established scalar entry point would require repeatable context, then enforces unique targets and backward-only computed dependencies without constructing a graph.
+This capsule certifies supplied-order Number tables for the scalar executor only. The authored-table entry point consolidates repeated targets at their first position while preserving guarded-row order and exact full target-policy identity. It then rejects every checked atom whose established scalar entry point would require repeatable context and enforces unique targets plus backward-only computed dependencies without constructing a graph. The low-level unique-target certifier remains explicit.
 -/
 
 namespace A12Kernel
@@ -74,9 +74,65 @@ def firstForwardNumericDependency?
 inductive NumericComputationRunPlanError where
   | empty
   | repeatableContextRequired (target : FieldId)
+  | conflictingTargetPolicy (target : FieldId)
   | duplicateTarget (field : FieldId)
   | forwardDependency (consumer dependency : FieldId)
   deriving Repr, DecidableEq
+
+/-- Append every row from a later table for the same target and policy. The first table retains its checked operations and owns the consolidated target position. -/
+def CheckedNumericComputationTable.appendSameTarget
+    (left right : CheckedNumericComputationTable model)
+    (sameTarget : right.targetField = left.targetField)
+    (samePolicy : right.targetPolicy = left.targetPolicy) :
+    CheckedNumericComputationTable model :=
+  let atLeftTarget :
+      List (CheckedNumericComputationAlternative
+        model left.targetField right.targetPolicy) :=
+    sameTarget ▸ right.checkedAlternatives
+  let rightAlternatives :
+      List (CheckedNumericComputationAlternative
+        model left.targetField left.targetPolicy) :=
+    samePolicy ▸ atLeftTarget
+  {
+    left with
+    remaining := left.remaining ++ rightAlternatives
+  }
+
+/-- Insert one checked table into an encounter-ordered target grouping. Full target-policy equality is explicit because the checked operation compatibility seam proves only scale/signedness identity; ordinary authored lowering always supplies the model-derived policy. -/
+def insertNumericComputationTable
+    (incoming : CheckedNumericComputationTable model) :
+    List (CheckedNumericComputationTable model) →
+      Except NumericComputationRunPlanError
+        (List (CheckedNumericComputationTable model))
+  | [] => pure [incoming]
+  | current :: remaining =>
+      if hTarget : incoming.targetField = current.targetField then
+        if hPolicy : incoming.targetPolicy = current.targetPolicy then
+          pure (current.appendSameTarget incoming hTarget hPolicy :: remaining)
+        else
+          throw (.conflictingTargetPolicy current.targetField)
+      else
+        do
+          let updated ← insertNumericComputationTable incoming remaining
+          pure (current :: updated)
+
+/-- Left-to-right worker for same-target Number table consolidation. -/
+def flattenNumericComputationTablesFrom :
+    List (CheckedNumericComputationTable model) →
+      List (CheckedNumericComputationTable model) →
+        Except NumericComputationRunPlanError
+          (List (CheckedNumericComputationTable model))
+  | grouped, [] => pure grouped
+  | grouped, table :: remaining => do
+      let updated ← insertNumericComputationTable table grouped
+      flattenNumericComputationTablesFrom updated remaining
+
+/-- Consolidate repeated Number targets into their first occurrence while preserving table and row encounter order. -/
+def flattenNumericComputationTables
+    (tables : List (CheckedNumericComputationTable model)) :
+    Except NumericComputationRunPlanError
+      (List (CheckedNumericComputationTable model)) :=
+  flattenNumericComputationTablesFrom [] tables
 
 /-- A nonempty finite scalar Number run with unique targets and backward-only computed dependencies. -/
 structure CheckedNumericComputationRun (model : FlatModel) where
@@ -87,8 +143,8 @@ structure CheckedNumericComputationRun (model : FlatModel) where
     FieldId.firstDuplicate? (tables.map (·.targetField)) = none
   dependenciesOrdered : firstForwardNumericDependency? tables = none
 
-/-- Check scalar context, target uniqueness, and dependency order without changing supplied table order. -/
-def certifyNumericComputationRun
+/-- Check scalar context, target uniqueness, and dependency order for tables already consolidated to one table per target. -/
+def certifyUniqueNumericComputationRun
     (tables : List (CheckedNumericComputationTable model)) :
     Except NumericComputationRunPlanError
       (CheckedNumericComputationRun model) :=
@@ -114,5 +170,13 @@ def certifyNumericComputationRun
                   uniqueTargets := hDuplicate
                   dependenciesOrdered := hForward
                 }
+
+/-- Flatten authored same-target Number computations before applying the unique-target scalar dependency plan check. -/
+def certifyNumericComputationRun
+    (tables : List (CheckedNumericComputationTable model)) :
+    Except NumericComputationRunPlanError
+      (CheckedNumericComputationRun model) := do
+  let flattened ← flattenNumericComputationTables tables
+  certifyUniqueNumericComputationRun flattened
 
 end A12Kernel

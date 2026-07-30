@@ -57,15 +57,10 @@ private theorem checkedNumericComputationAlternative_excludes_target
 theorem checkedNumericComputationTable_excludes_target
     (table : CheckedNumericComputationTable model) :
     table.referencesField table.targetField = false := by
-  unfold CheckedNumericComputationTable.referencesField
-  unfold CheckedNumericComputationTable.selectableAlternatives
-  rw [List.any_cons,
-    checkedNumericComputationAlternative_excludes_target table.first]
-  simp only [Bool.false_or]
-  rw [List.any_eq_false]
-  intro selectable member
-  rcases List.mem_map.mp member with ⟨alternative, _, rfl⟩
-  simp [checkedNumericComputationAlternative_excludes_target alternative]
+  simp [CheckedNumericComputationTable.referencesField,
+    CheckedNumericComputationTable.selectableAlternatives,
+    CheckedNumericComputationTable.checkedAlternatives,
+    checkedNumericComputationAlternative_excludes_target]
 
 private theorem numericComputationRun_table_ready
     (run : CheckedNumericComputationRun model)

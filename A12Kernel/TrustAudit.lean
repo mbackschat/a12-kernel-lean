@@ -750,6 +750,9 @@ run_cmd do
 #print axioms A12Kernel.numericComputationTable_selected
 #print axioms A12Kernel.firstNonScalarNumericTable_eq_none_iff
 #print axioms A12Kernel.checkedNumericComputationRun_table_scalar
+#print axioms A12Kernel.appendSameNumericTarget_selectableAlternatives
+#print axioms A12Kernel.flattenNumericComputationTables_sameTarget_pair
+#print axioms A12Kernel.flattenNumericComputationTables_retainsFirstTargetPosition
 #print axioms A12Kernel.numericComputationRun_read_pending
 #print axioms A12Kernel.numericComputationRun_read_completed
 #print axioms A12Kernel.numericComputationRun_read_input

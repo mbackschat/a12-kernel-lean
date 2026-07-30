@@ -18,6 +18,16 @@ private def table? (target : FieldId)
   (certifyNumericComputationTable [
     { precondition := guard, operation }]).toOption
 
+private def tableWithPolicy? (target : FieldId)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom)
+    (policy : NumericTargetPolicy) :
+    Option (CheckedNumericComputationTable model) := do
+  let core ← (elaborateNumericComputationOperation
+    model ["Root"] target expression).toOption
+  let operation ← (core.attachTargetPolicy policy).toOption
+  (certifyNumericComputationTable [
+    { precondition := .fieldNotFilled laterId, operation }]).toOption
+
 private def completeTable?
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
     Option (CheckedNumericComputationTable model) := do
@@ -44,6 +54,14 @@ private def runError?
   | .error error => some error
   | .ok _ => none
 
+private def uniqueRunError?
+    (tables : List (Option (CheckedNumericComputationTable model))) :
+    Option NumericComputationRunPlanError := do
+  let checked ← collectTables? tables
+  match certifyUniqueNumericComputationRun checked with
+  | .error error => some error
+  | .ok _ => none
+
 private def runTargets?
     (tables : List (Option (CheckedNumericComputationTable model))) :
     Option (List FieldId) := do
@@ -58,6 +76,11 @@ private def literal (value : Rat) :
 private def divisionByZero :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .binary .divide (literal 1) (literal 0)
+
+private def zeroForbiddenPolicy : NumericTargetPolicy :=
+  { info := numberInfo
+    zeroAllowed := false
+    minLeMax := by decide }
 
 private def prepared :
     PreparedFlatStringContext model builtinStringPatternCompiler :=
@@ -217,10 +240,60 @@ example :
       some (.repeatableContextRequired targetId) := by
   native_decide
 
-/- Target uniqueness is structural and independent of operation contents. -/
+/- The low-level plan keeps structural target uniqueness, while the authored-table entry point consolidates repeated targets into the first target position. -/
 example :
-    runError? [table? sourceId (literal 1), table? sourceId (literal 2)] =
+    uniqueRunError? [
+      table? sourceId (literal 1),
+      table? sourceId (literal 2)] =
       some (.duplicateTarget sourceId) := by
+  native_decide
+
+/- Same-target consolidation fails closed when the low-level target-policy compatibility seam supplies conflicting full policies. Ordinary authored lowering derives one policy from the model and cannot reach this branch. -/
+example :
+    runError? [
+      table? sourceId (literal 1),
+      tableWithPolicy? sourceId (literal 2) zeroForbiddenPolicy] =
+        some (.conflictingTargetPolicy sourceId) := by
+  native_decide
+
+/- Same-target Number rows retain encounter order: a selected value ends the target scan, while a false guard alone falls through to the later authored table. -/
+example :
+    runOutcomes? [
+      table? sourceId (literal 1),
+      table? sourceId (literal 2)] =
+        some [
+          (sourceId, .accepted { unscaled := 1, scale := 0 })] ∧
+    runOutcomes? [
+      table? sourceId (literal 1) (.fieldFilled wrongId),
+      table? sourceId (literal 2)] =
+        some [
+          (sourceId, .accepted { unscaled := 2, scale := 0 })] := by
+  native_decide
+
+/- A selected domain-invalid Number row terminates the consolidated target scan; a later valid row cannot replace it. -/
+example :
+    runOutcomes? [
+      table? sourceId divisionByZero
+        (suppressExactScaleWarning := true),
+      table? sourceId (literal 2)] =
+        some [
+          (sourceId, .invalidNoValue .calculationValue)] := by
+  native_decide
+
+/- Consolidation keeps the first target position, so a consumer encountered between two producer tables runs only after their one flattened first-selected table. -/
+example :
+    runTargets? [
+      table? sourceId (literal 1) (.fieldFilled wrongId),
+      table? targetId (surfaceField ["Root"] "Source"),
+      table? sourceId (literal 2)] =
+        some [sourceId, targetId] ∧
+    runOutcomes? [
+      table? sourceId (literal 1) (.fieldFilled wrongId),
+      table? targetId (surfaceField ["Root"] "Source"),
+      table? sourceId (literal 2)] =
+        some [
+          (sourceId, .accepted { unscaled := 2, scale := 0 }),
+          (targetId, .accepted { unscaled := 2, scale := 0 })] := by
   native_decide
 
 /- A computed dependency must precede its consumer, whether the read occurs in the Numeric tree or a direct-presence guard. -/

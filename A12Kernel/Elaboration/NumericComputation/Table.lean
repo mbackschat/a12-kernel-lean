@@ -97,10 +97,16 @@ def certifyNumericComputationTable
 
 namespace CheckedNumericComputationTable
 
+/-- Retain every checked row in authored order for same-target assembly. -/
+def checkedAlternatives (table : CheckedNumericComputationTable model) :
+    List (CheckedNumericComputationAlternative
+      model table.targetField table.targetPolicy) :=
+  table.first :: table.remaining
+
 def selectableAlternatives (table : CheckedNumericComputationTable model) :
     List (ComputationAlternative
       (CheckedNumericTargetComputationOperation model)) :=
-  table.first.toSelectable :: table.remaining.map (·.toSelectable)
+  table.checkedAlternatives.map (·.toSelectable)
 
 /-- Select first through computation-phase scalar guards, then evaluate only that checked operation. Repeatable operands retain the existing explicit scalar-context fault. -/
 def evaluate (table : CheckedNumericComputationTable model)
