@@ -147,6 +147,7 @@ import A12Kernel.Elaboration.StringComputationRunRelation
 import A12Kernel.Elaboration.StringComputationRunResult
 import A12Kernel.Elaboration.StringComputationRunApplication
 import A12Kernel.Elaboration.AddressedFieldValueAsString
+import A12Kernel.Elaboration.AddressedFieldValueAsNumber
 import A12Kernel.Elaboration.NumberToStringComputationRun
 import A12Kernel.Elaboration.StringToNumberComputationRun
 import A12Kernel.Elaboration.ScalarComputationRun
