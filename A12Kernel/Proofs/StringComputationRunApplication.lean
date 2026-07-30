@@ -24,6 +24,15 @@ theorem stringComputationDestination_applyOutcome_same
   simp [StringComputationDestination.applyOutcome,
     stringComputationDestination_update_same]
 
+/-- A retained clear creates a present-empty destination target even when that target was absent. -/
+theorem stringComputationDestination_applyRetainedClear_same
+    (destination : StringComputationDestination)
+    (target : FieldId) :
+    destination.applyRetainedClear target target = .presentEmpty := by
+  rw [StringComputationDestination.applyRetainedClear,
+    stringComputationDestination_update_same]
+  cases destination target <;> rfl
+
 /-- Applying one target preserves every other destination projection. -/
 theorem stringComputationDestination_applyOutcome_other
     (destination : StringComputationDestination)
@@ -110,7 +119,7 @@ theorem stringComputationRun_error_applies
     StringTargetOutcome.hasComputedInstance,
     FieldId.firstDuplicate?]
 
-/-- A source-filled clean no-value applies the existing clearing transition against the destination without creating an absent target. -/
+/-- A source-filled clean no-value mints a retained clear action that creates or retains a present-empty destination target. -/
 theorem stringComputationRun_cleared_applies
     (input : CheckedDocument model) (residualMessages : List ResidualMessage)
     (target : FieldId) (destination : StringComputationDestination)
@@ -118,7 +127,7 @@ theorem stringComputationRun_cleared_applies
       (input.sourceStringTargetState target).storedValue.isSome = true) :
     (StringComputationRunView.fromOutcomes input residualMessages
       [(target, .noValue)]).applyTo destination =
-        .ok (destination.applyOutcome target .noValue) := by
+        .ok (destination.applyRetainedClear target) := by
   simp [StringComputationRunView.applyTo,
     StringComputationRunView.actionTargets,
     StringComputationRunView.fromOutcomes,

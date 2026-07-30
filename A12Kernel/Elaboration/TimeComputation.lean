@@ -175,6 +175,11 @@ def applyOutcome (destination : TimeComputationDestination)
   TemporalComputationDestination.update destination target
     (outcome.applyTo (destination target))
 
+/-- Apply one source-classified CLEARED action without reclassifying it against the destination. -/
+def applyRetainedClear (destination : TimeComputationDestination)
+    (target : FieldId) : TimeComputationDestination :=
+  TemporalComputationDestination.applyRetainedClear destination target
+
 end TimeComputationDestination
 
 namespace TimeComputationRunView
@@ -190,7 +195,9 @@ def applyTo (view : TimeComputationRunView ResidualMessage)
     Except TemporalValueComputationApplicationError
       TimeComputationDestination :=
   TemporalValueComputationRunView.applyTo view destination
-    TimeComputationDestination.applyOutcome .noValue .accepted
+    TimeComputationDestination.applyRetainedClear
+    (fun current target value =>
+      current.applyOutcome target (.accepted value))
 
 end TimeComputationRunView
 

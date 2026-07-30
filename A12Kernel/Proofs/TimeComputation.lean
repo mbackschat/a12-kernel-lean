@@ -75,6 +75,17 @@ theorem timeComputationRun_noErrorOccurred_iff
     (computed : TimeComputedInstance) :
     TimeComputationRunView.reportsChanged computed = true := rfl
 
+/-- A retained Time clear creates a present-empty destination target even when that target was absent. -/
+theorem timeComputationDestination_applyRetainedClear_same
+    (destination : TimeComputationDestination)
+    (target : FieldId) :
+    destination.applyRetainedClear target target = .presentEmpty := by
+  simp [TimeComputationDestination.applyRetainedClear,
+    TemporalComputationDestination.applyRetainedClear,
+    TemporalComputationDestination.update,
+    TemporalTargetState.applyRetainedClear]
+  cases destination target <;> rfl
+
 /-- Residual messages never change already-classified Time application actions. -/
 theorem timeComputationRun_residualMessages_doNotAffectApplication
     (input : CheckedDocument model)

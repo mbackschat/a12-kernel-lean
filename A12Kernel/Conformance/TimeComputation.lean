@@ -219,7 +219,7 @@ example :
           some ([1], true) := by
   native_decide
 
-/- Application writes changed text, clears a filled target in place, and ignores residual messages. -/
+/- Application writes changed text, applies a retained clear to filled or absent destinations, and ignores residual messages. -/
 example :
     (do
       let view ← view? oldSource (.accepted nextTime) [.malformed]
@@ -230,6 +230,10 @@ example :
         let view ← view? oldSource .noValue
         let applied ← view.applyTo
           (destinationWith (.presentValue nextTime)) |>.toOption
+        pure (applied 1)) = some .presentEmpty ∧
+      (do
+        let view ← view? oldSource .noValue
+        let applied ← view.applyTo (destinationWith .absent) |>.toOption
         pure (applied 1)) = some .presentEmpty := by
   native_decide
 

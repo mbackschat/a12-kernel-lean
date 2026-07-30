@@ -11,12 +11,13 @@ namespace A12Kernel
     destination.update target state target = state := by
   simp [AddressedNumericDestination.update]
 
-/-- One exact clear delegates to the existing one-target state transition. -/
+/-- One retained exact clear creates or retains a present-empty target. -/
 @[simp] theorem addressedNumericDestination_clearAt_same
     (destination : AddressedNumericDestination) (target : CellAddr) :
-    destination.clearAt target target =
-      (destination target).clearValue := by
-  simp [AddressedNumericDestination.clearAt]
+    destination.clearAt target target = .presentEmpty := by
+  rw [AddressedNumericDestination.clearAt,
+    addressedNumericDestination_update_same]
+  cases destination target <;> rfl
 
 /-- One exact clear preserves every other destination address. -/
 theorem addressedNumericDestination_clearAt_other
@@ -25,18 +26,6 @@ theorem addressedNumericDestination_clearAt_other
     destination.clearAt target other = destination other := by
   simp [AddressedNumericDestination.clearAt,
     AddressedNumericDestination.update, different]
-
-/-- Clearing cannot create a target cell at any address. -/
-theorem addressedNumericDestination_clearAt_preserves_absent
-    (destination : AddressedNumericDestination)
-    (target address : CellAddr)
-    (absent : destination address = .absent) :
-    destination.clearAt target address = .absent := by
-  by_cases same : address = target
-  · subst target
-    simp [absent, NumericTargetState.clearValue]
-  · rw [addressedNumericDestination_clearAt_other
-      destination target address same, absent]
 
 /-- Repeating the same exact clear has no further effect. -/
 theorem addressedNumericDestination_clearAt_idempotent
@@ -50,7 +39,7 @@ theorem addressedNumericDestination_clearAt_idempotent
     cases state : destination address <;>
       simp [AddressedNumericDestination.clearAt,
         AddressedNumericDestination.update,
-        NumericTargetState.clearValue, state]
+        NumericTargetState.applyRetainedClear, state]
   · simp [AddressedNumericDestination.clearAt,
       AddressedNumericDestination.update, same]
 
@@ -66,12 +55,10 @@ theorem addressedNumericDestination_clearAt_comm
     by_cases same : address = second
     · subst second
       cases destination address <;> rfl
-    · simp [addressedNumericDestination_clearAt_other,
-        same, NumericTargetState.clearValue]
+    · simp [addressedNumericDestination_clearAt_other, same]
   · by_cases atSecond : address = second
     · subst second
-      simp [addressedNumericDestination_clearAt_other,
-        atFirst, NumericTargetState.clearValue]
+      simp [addressedNumericDestination_clearAt_other, atFirst]
     · simp [addressedNumericDestination_clearAt_other,
         atFirst, atSecond]
 
@@ -114,30 +101,6 @@ theorem parallelNumericClearing_applyTo_other
         exact addressedNumericDestination_clearAt_other
           current target address different
   exact go view.cleared destination notCleared
-
-/-- Whole-view clearing cannot create an absent destination target. -/
-theorem parallelNumericClearing_applyTo_preserves_absent
-    (view : ParallelNumericClearingView)
-    (destination : AddressedNumericDestination) (address : CellAddr)
-    (absent : destination address = .absent) :
-    view.applyTo destination address = .absent := by
-  have go : ∀ (targets : List CellAddr)
-      (current : AddressedNumericDestination),
-      current address = .absent →
-      targets.foldl
-        (fun state target => state.clearAt target) current address =
-        .absent := by
-    intro targets
-    induction targets with
-    | nil =>
-        simp
-    | cons target remaining ih =>
-        intro current currentAbsent
-        simp only [List.foldl_cons]
-        apply ih
-        exact addressedNumericDestination_clearAt_preserves_absent
-          current target address currentAbsent
-  exact go view.cleared destination absent
 
 /-- Extensional clearing views have identical application behavior; list order is not observable. -/
 theorem parallelNumericClearing_applyTo_extensional

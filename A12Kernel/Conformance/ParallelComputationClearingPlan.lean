@@ -584,7 +584,7 @@ example :
       | .ok _ => false) = true := by
   native_decide
 
-/- Addressed clearing empties a present destination target in place, leaves an absent covered target absent, and preserves an unrelated address. -/
+/- A retained addressed clear empties a present destination target, creates an absent covered target as present-empty, and preserves an unrelated address. -/
 example :
     let operandInvalid :=
       (cleanIndexCells.filter fun input =>
@@ -596,7 +596,7 @@ example :
       (destination { field := 2, path := [1, 1] },
         destination { field := 2, path := [2, 1] },
         destination { field := 5, path := [1, 1] })) =
-      some (.presentEmpty, .absent,
+      some (.presentEmpty, .presentEmpty,
         .presentValue (.decimal { unscaled := 9, scale := 0 })) := by
   native_decide
 

@@ -58,6 +58,18 @@ theorem noAppliedStringValue_preserves_presence (outcome : StringTargetOutcome)
   rw [noAppliedStringValue_clears_exactly outcome prior noAppliedValue]
   cases prior <;> rfl
 
+/-- A retained CLEARED result action always creates or retains a present-empty destination target. -/
+theorem retainedStringClear_applies_presentEmpty
+    (prior : StringTargetState) :
+    prior.applyRetainedClear = .presentEmpty := by
+  cases prior <;> rfl
+
+/-- Direct no-value application is not a substitute for applying a source-classified CLEARED action to a separate absent destination. -/
+theorem directStringNoValue_doesNotImplement_retainedClear :
+    StringTargetOutcome.noValue.applyTo .absent ≠
+      StringTargetState.absent.applyRetainedClear := by
+  decide
+
 /-- The exact application state retains precisely the checked stored value exposed by the older value-only view. -/
 theorem exactStringApplication_storedValue (outcome : StringTargetOutcome)
     (prior : StringTargetState) :

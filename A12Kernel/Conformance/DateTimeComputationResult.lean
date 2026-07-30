@@ -103,7 +103,7 @@ example : (do
     pure (applied target.id)) = some (.presentValue nextValue) := by
   native_decide
 
-/- Changed success writes, while public clearing uses the existing one-target transition. -/
+/- Changed success writes, while a source-classified public clear creates a present-empty target when the destination target was absent. -/
 example :
     (do
       let view ← view? oldSource (.accepted nextValue)
@@ -113,6 +113,10 @@ example :
       let view ← view? oldSource .noValue
       let applied ← view.applyTo
         (destinationWith (.presentValue nextValue)) |>.toOption
+      pure (applied target.id)) = some .presentEmpty ∧
+    (do
+      let view ← view? oldSource .noValue
+      let applied ← view.applyTo (destinationWith .absent) |>.toOption
       pure (applied target.id)) = some .presentEmpty := by
   native_decide
 

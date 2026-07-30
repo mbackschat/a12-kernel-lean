@@ -72,7 +72,7 @@ Independently, every fired message carries a **message type**, **VALUE** or **OM
 
 - **`validateFull(document)`** validates the whole document.
 - **`validatePart(document, relevantSet)`** validates a *relevant subset* (e.g. one wizard page). It guarantees only one direction — it never reports an error that could only be fixed outside the subset — and may skip some checks for performance. A document that passes a partial validation can still fail a full one.
-- **Validation never computes first.** The typical form-engine flow is composed by the consumer: **compute → apply → validate**. Application is placement-sensitive: VALUE may create a target, CLEARED empties an existing filled cell in place, ERRORED empties only an existing target and never creates an absent one, and computed-nothing preserves absent versus present-empty. A Lean model should keep `compute`, `apply`, and `validate` as **separate total functions** over the document and compose them explicitly.
+- **Validation never computes first.** The typical form-engine flow is composed by the consumer: **compute → apply → validate**. Application is placement-sensitive and consumes actions already classified against the computation source: VALUE may create a target, retained CLEARED creates or retains a present-empty destination target, ERRORED empties only an existing target and never creates an absent one, and a source outcome that minted no action preserves destination absence. A Lean model should keep `compute`, `apply`, and `validate` as **separate total functions** over the document and compose them explicitly.
 
 ---
 

@@ -21,6 +21,17 @@ theorem dateTimeComputationDestination_applyOutcome_same
   simp [DateTimeComputationDestination.applyOutcome,
     dateTimeComputationDestination_update_same]
 
+/-- A retained clear creates a present-empty destination target even when that target was absent. -/
+theorem dateTimeComputationDestination_applyRetainedClear_same
+    (destination : DateTimeComputationDestination)
+    (target : FieldId) :
+    destination.applyRetainedClear target target = .presentEmpty := by
+  simp [DateTimeComputationDestination.applyRetainedClear,
+    TemporalComputationDestination.applyRetainedClear,
+    TemporalComputationDestination.update,
+    TemporalTargetState.applyRetainedClear]
+  cases destination target <;> rfl
+
 /-- One action preserves every other destination field. -/
 theorem dateTimeComputationDestination_applyOutcome_other
     (destination : DateTimeComputationDestination)
@@ -99,7 +110,7 @@ theorem dateTimeComputationRun_changed_applies
     DateTimeComputationRunView.sourceValueChanged, changed,
     FieldId.firstDuplicate?]
 
-/-- A source-filled quiet no-value applies the existing clearing transition. -/
+/-- A source-filled quiet no-value mints a retained clear action that creates or retains a present-empty destination target. -/
 theorem dateTimeComputationRun_cleared_applies
     (input : CheckedDocument model) (messages : List ResidualMessage)
     (target : FieldId) (destination : DateTimeComputationDestination)
@@ -107,7 +118,7 @@ theorem dateTimeComputationRun_cleared_applies
       (input.sourceDateTimeTargetState target).storedValue.isSome = true) :
     (DateTimeComputationRunView.fromOutcomes input messages
       [(target, .noValue)]).applyTo destination =
-        .ok (destination.applyOutcome target .noValue) := by
+        .ok (destination.applyRetainedClear target) := by
   simp [DateTimeComputationRunView.applyTo,
     TemporalValueComputationRunView.applyTo,
     TemporalValueComputationRunView.actionTargets,

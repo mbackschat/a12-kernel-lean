@@ -4,6 +4,26 @@ import A12Kernel.Elaboration.CheckedDocument
 
 namespace A12Kernel
 
+/-- One repeatable coordinate produces exactly its directly addressed row. -/
+theorem repeatableAncestorRowsFor_singleton
+    (level : RepeatableLevel) (coordinate : Nat) :
+    repeatableAncestorRowsFor [level] [coordinate] = [{
+      group := level
+      path := [coordinate]
+    }] := by
+  rfl
+
+/-- Nested repeatable coordinates accumulate the exact directly addressed path at each level. -/
+theorem repeatableAncestorRowsFor_pair
+    (outer inner : RepeatableLevel)
+    (outerCoordinate innerCoordinate : Nat) :
+    repeatableAncestorRowsFor [outer, inner]
+        [outerCoordinate, innerCoordinate] = [
+      { group := outer, path := [outerCoordinate] },
+      { group := inner, path := [outerCoordinate, innerCoordinate] }
+    ] := by
+  rfl
+
 private theorem env_bindingAt_cons_irrelevant
     (binding : RepeatableLevel × Nat) (environment : Env)
     (level : RepeatableLevel) (different : binding.1 ≠ level) :

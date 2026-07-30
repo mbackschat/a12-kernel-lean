@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.ParallelComputationClearing
 
 /-! # Repeatable Number clearing application
 
-This capsule applies an already-classified extensional clearing view to an explicitly supplied addressed destination. It clears present cells in place, never creates absent cells or document ancestors, and does not reclassify against the destination. -/
+This capsule applies an already-classified extensional clearing view to an explicitly supplied addressed destination. A retained clear creates a present-empty target even when the destination target was absent; checked ancestor creation belongs to whole-document application. The result is never reclassified against the destination. -/
 
 namespace A12Kernel
 
@@ -16,10 +16,10 @@ def update (destination : AddressedNumericDestination)
     AddressedNumericDestination :=
   fun address => if address == target then state else destination address
 
-/-- Clear one exact address through the existing one-target transition. -/
+/-- Apply one source-classified retained clear at an exact address. -/
 def clearAt (destination : AddressedNumericDestination)
     (target : CellAddr) : AddressedNumericDestination :=
-  destination.update target (destination target).clearValue
+  destination.update target (destination target).applyRetainedClear
 
 end AddressedNumericDestination
 

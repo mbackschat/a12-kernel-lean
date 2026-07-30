@@ -220,6 +220,7 @@ run_cmd do
 #print axioms A12Kernel.checkedTimeConstructionComputation_evaluate_value
 #print axioms A12Kernel.timeComputationRun_noErrorOccurred_iff
 #print axioms A12Kernel.timeComputationRun_reportsChanged
+#print axioms A12Kernel.timeComputationDestination_applyRetainedClear_same
 #print axioms A12Kernel.timeComputationRun_residualMessages_doNotAffectApplication
 #print axioms A12Kernel.partiallyKnownDateValue_resolve_full
 #print axioms A12Kernel.valueAsDate_evaluate_value
@@ -272,6 +273,7 @@ run_cmd do
 #print axioms A12Kernel.exactDateTimeApplication_storedValue
 #print axioms A12Kernel.dateTimeComputationDestination_update_same
 #print axioms A12Kernel.dateTimeComputationDestination_applyOutcome_same
+#print axioms A12Kernel.dateTimeComputationDestination_applyRetainedClear_same
 #print axioms A12Kernel.dateTimeComputationDestination_applyOutcome_other
 #print axioms A12Kernel.dateTimeComputationRun_applyTo_noActions
 #print axioms A12Kernel.dateTimeComputationRun_applyTo_duplicateTarget
@@ -301,6 +303,7 @@ run_cmd do
 #print axioms A12Kernel.fullDateComputationRun_fromOutcomes_permutation
 #print axioms A12Kernel.fullDateComputationDestination_update_same
 #print axioms A12Kernel.fullDateComputationDestination_applyOutcome_same
+#print axioms A12Kernel.fullDateComputationDestination_applyRetainedClear_same
 #print axioms A12Kernel.fullDateComputationDestination_applyOutcome_other
 #print axioms A12Kernel.fullDateComputationRun_applyTo_noActions
 #print axioms A12Kernel.fullDateComputationRun_applyTo_duplicateTarget
@@ -779,13 +782,18 @@ run_cmd do
 #print axioms A12Kernel.numericComputationRun_fromSourceOutcomesWithMessages_permutation
 #print axioms A12Kernel.numericComputationDestination_update_same
 #print axioms A12Kernel.numericComputationDestination_applyOutcome_same
+#print axioms A12Kernel.numericComputationDestination_applyRetainedClear_same
 #print axioms A12Kernel.numericComputationDestination_applyOutcome_other
 #print axioms A12Kernel.numericComputationRun_applyTo_noActions
+#print axioms A12Kernel.numericComputationRun_applyToChecked_noActions
+#print axioms A12Kernel.numericComputationRun_applyToChecked_singletonClear_state
 #print axioms A12Kernel.numericComputationRun_applyTo_duplicateTarget
 #print axioms A12Kernel.numericComputationRun_residualMessages_doNotAffectApplication
 #print axioms A12Kernel.acceptedNumericTarget_applies_exactly
 #print axioms A12Kernel.noAppliedNumericValue_clears_exactly
 #print axioms A12Kernel.noAppliedNumericValue_preserves_presence
+#print axioms A12Kernel.retainedNumericClear_applies_presentEmpty
+#print axioms A12Kernel.directNumericNoValue_doesNotImplement_retainedClear
 #print axioms A12Kernel.exactNumericApplication_sourceIdentity
 #print axioms A12Kernel.equal_numericDeltaPrior_doesNotImply_equalApplication
 #print axioms A12Kernel.equal_numericApplication_doesNotImply_equalDelta
@@ -1574,6 +1582,7 @@ run_cmd do
 #print axioms A12Kernel.stringComputationRun_fromOutcomes_permutation
 #print axioms A12Kernel.stringComputationDestination_update_same
 #print axioms A12Kernel.stringComputationDestination_applyOutcome_same
+#print axioms A12Kernel.stringComputationDestination_applyRetainedClear_same
 #print axioms A12Kernel.stringComputationDestination_applyOutcome_other
 #print axioms A12Kernel.stringComputationRun_applyTo_noActions
 #print axioms A12Kernel.stringComputationRun_applyTo_duplicateTarget
@@ -1588,6 +1597,8 @@ run_cmd do
 #print axioms A12Kernel.acceptedStringTarget_applies_exactly
 #print axioms A12Kernel.noAppliedStringValue_clears_exactly
 #print axioms A12Kernel.noAppliedStringValue_preserves_presence
+#print axioms A12Kernel.retainedStringClear_applies_presentEmpty
+#print axioms A12Kernel.directStringNoValue_doesNotImplement_retainedClear
 #print axioms A12Kernel.exactStringApplication_storedValue
 #print axioms A12Kernel.equal_noValue_delta_does_not_imply_equal_exact_application
 #print axioms A12Kernel.equal_exact_application_does_not_imply_equal_delta
@@ -1670,6 +1681,8 @@ run_cmd do
 #print axioms A12Kernel.exceptMapM_all_of_step
 #print axioms A12Kernel.exceptMapM_map_eq_of_step
 #print axioms A12Kernel.env_pathForScope_complete_nodup
+#print axioms A12Kernel.repeatableAncestorRowsFor_singleton
+#print axioms A12Kernel.repeatableAncestorRowsFor_pair
 #print axioms A12Kernel.checkedDocument_actualRowEnvironments_nodup
 #print axioms A12Kernel.checkedDocument_actualRowEnvironment_scope
 #print axioms A12Kernel.checkedParallelNumericTargetRoute_wellFormed
@@ -1688,12 +1701,10 @@ run_cmd do
 #print axioms A12Kernel.addressedNumericDestination_update_same
 #print axioms A12Kernel.addressedNumericDestination_clearAt_same
 #print axioms A12Kernel.addressedNumericDestination_clearAt_other
-#print axioms A12Kernel.addressedNumericDestination_clearAt_preserves_absent
 #print axioms A12Kernel.addressedNumericDestination_clearAt_idempotent
 #print axioms A12Kernel.addressedNumericDestination_clearAt_comm
 #print axioms A12Kernel.parallelNumericClearing_applyTo_singleton
 #print axioms A12Kernel.parallelNumericClearing_applyTo_other
-#print axioms A12Kernel.parallelNumericClearing_applyTo_preserves_absent
 #print axioms A12Kernel.parallelNumericClearing_applyTo_extensional
 #print axioms A12Kernel.checkedIsolatedParallelNumericDirectRun_wellFormed
 #print axioms A12Kernel.checkedIsolatedParallelNumericDirectRun_excludes_target

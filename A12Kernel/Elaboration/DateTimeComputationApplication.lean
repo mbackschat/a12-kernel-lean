@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.TemporalValueComputationApplication
 
 /-! # DateTime whole-result application
 
-This capsule applies an already-classified DateTime result to an explicitly supplied compatible destination. It consumes only clears and source-relative changes through the existing one-target transition, and never reclassifies against the destination. The bounded result domain has no target-error action.
+This capsule applies an already-classified DateTime result to an explicitly supplied compatible destination. It distinguishes source-classified retained clears from accepted outcomes and never reclassifies an action against the destination. The bounded result domain has no target-error action.
 -/
 
 namespace A12Kernel
@@ -25,6 +25,11 @@ def applyOutcome (destination : DateTimeComputationDestination)
     DateTimeComputationDestination :=
   destination.update target (outcome.applyTo (destination target))
 
+/-- Apply one source-classified CLEARED action without reclassifying it against the destination. -/
+def applyRetainedClear (destination : DateTimeComputationDestination)
+    (target : FieldId) : DateTimeComputationDestination :=
+  TemporalComputationDestination.applyRetainedClear destination target
+
 end DateTimeComputationDestination
 
 namespace DateTimeComputationRunView
@@ -44,7 +49,9 @@ def applyTo (view : DateTimeComputationRunView ResidualMessage)
     Except DateTimeComputationRunApplicationError
       DateTimeComputationDestination :=
   TemporalValueComputationRunView.applyTo view destination
-    DateTimeComputationDestination.applyOutcome .noValue .accepted
+    DateTimeComputationDestination.applyRetainedClear
+    (fun current target value =>
+      current.applyOutcome target (.accepted value))
 
 end DateTimeComputationRunView
 

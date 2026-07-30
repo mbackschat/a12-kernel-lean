@@ -21,6 +21,10 @@ def clearValue : StringTargetState → StringTargetState
   | .absent => .absent
   | .presentEmpty | .presentValue _ => .presentEmpty
 
+/-- Apply one retained CLEARED result action. Classification already happened against the source, so the destination target exists empty even when it was absent. -/
+def applyRetainedClear : StringTargetState → StringTargetState
+  | .absent | .presentEmpty | .presentValue _ => .presentEmpty
+
 /-- Project away placement while retaining the stored value, when one exists. -/
 def storedValue : StringTargetState → Option StoredString
   | .presentValue value => some value

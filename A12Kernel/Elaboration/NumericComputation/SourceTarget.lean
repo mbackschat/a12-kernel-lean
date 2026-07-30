@@ -17,15 +17,16 @@ inductive NumericSourceTargetError where
 
 namespace CheckedDocument
 
-private def numericTargetStateFromSource
+/-- Project exact Number placement state at an already-resolved address. This does not validate field kind or row topology; checked consumers use it only after their own model-owned address gate. -/
+def numericTargetPlacementStateAt
     (checked : CheckedDocument model) (address : CellAddr) :
-    Except NumericSourceTargetError NumericTargetState :=
+    NumericTargetState :=
   match checked.checkedCells.find? fun cell => cell.address == address with
-  | none => pure .absent
+  | none => .absent
   | some cell =>
       match cell.numericInput with
-      | some input => pure (.presentValue input.sourceIdentity)
-      | none => pure .presentEmpty
+      | some input => .presentValue input.sourceIdentity
+      | none => .presentEmpty
 
 /-- Project one exact model-legal Number target address without reparsing or duplicating the document. Missing row topology and typed provenance remain structural. -/
 def numericTargetStateAt (checked : CheckedDocument model)
@@ -37,7 +38,7 @@ def numericTargetStateAt (checked : CheckedDocument model)
   | .number _ => pure ()
   | _ => throw (.nonNumericTarget address.field)
   let _ ← checked.read address |>.mapError .document
-  checked.numericTargetStateFromSource address
+  pure (checked.numericTargetPlacementStateAt address)
 
 /-- Project one scalar Number target without reparsing or duplicating the document. -/
 def numericTargetState (checked : CheckedDocument model)
@@ -50,7 +51,7 @@ def numericTargetState (checked : CheckedDocument model)
   | _ => throw (.nonNumericTarget field)
   if !declaration.repeatableScope.isEmpty then
     throw (.repeatableTarget field)
-  checked.numericTargetStateFromSource { field, path := [] }
+  pure (checked.numericTargetPlacementStateAt { field, path := [] })
 
 end CheckedDocument
 

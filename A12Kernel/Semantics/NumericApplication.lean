@@ -21,6 +21,10 @@ def clearValue : NumericTargetState → NumericTargetState
   | .absent => .absent
   | .presentEmpty | .presentValue _ => .presentEmpty
 
+/-- Apply one retained CLEARED result action to a destination target. Classification already happened against the source, so the destination is present-empty even when it was absent. -/
+def applyRetainedClear : NumericTargetState → NumericTargetState
+  | .absent | .presentEmpty | .presentValue _ => .presentEmpty
+
 /-- Project away placement while retaining the exact source comparison identity, when present. -/
 def sourceIdentity : NumericTargetState → Option NumericSourceIdentity
   | .presentValue source => some source

@@ -98,7 +98,7 @@ example : (do
     pure (applied target.id)) = some (.presentValue nextDate) := by
   native_decide
 
-/- Changed success writes, while rejection and public clearing use the one-target clear transition. -/
+/- Changed success writes, rejection retains its guarded direct transition, and public clearing creates a present-empty target when the destination target was absent. -/
 example :
     (do
       let view ← view? oldSource (.accepted nextDate)
@@ -111,6 +111,10 @@ example :
     (do
       let view ← view? oldSource .noValue
       let applied ← view.applyTo (destinationWith (.presentValue nextDate)) |>.toOption
+      pure (applied target.id)) = some .presentEmpty ∧
+    (do
+      let view ← view? oldSource .noValue
+      let applied ← view.applyTo (destinationWith .absent) |>.toOption
       pure (applied target.id)) = some .presentEmpty := by
   native_decide
 

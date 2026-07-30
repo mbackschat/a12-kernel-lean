@@ -3,7 +3,7 @@ import A12Kernel.Semantics.StringApplication
 
 /-! # String-specific whole-run application
 
-This capsule applies an already-classified String result to an explicitly supplied compatible destination. The destination projects only the exact nonrepeatable String target states admitted by this fragment; it is not another checked document. Application folds cleared targets, errored attempts, and changed successes through the existing one-target transition and never reclassifies change against the destination.
+This capsule applies an already-classified String result to an explicitly supplied compatible destination. The destination projects only the exact nonrepeatable String target states admitted by this fragment; it is not another checked document. Application distinguishes source-classified retained clears from direct errored and accepted outcomes and never reclassifies an action against the destination.
 -/
 
 namespace A12Kernel
@@ -24,6 +24,11 @@ def applyOutcome (destination : StringComputationDestination)
     (target : FieldId) (outcome : StringTargetOutcome) :
     StringComputationDestination :=
   destination.update target (outcome.applyTo (destination target))
+
+/-- Apply one source-classified CLEARED action without reclassifying it against the destination. -/
+def applyRetainedClear (destination : StringComputationDestination)
+    (target : FieldId) : StringComputationDestination :=
+  destination.update target (destination target).applyRetainedClear
 
 end StringComputationDestination
 
@@ -47,7 +52,7 @@ def applyTo (view : StringComputationRunView ResidualMessage)
   | some duplicate => .error (.duplicateActionTarget duplicate)
   | none =>
       let afterCleared := view.cleared.foldl
-        (fun current target => current.applyOutcome target .noValue) destination
+        StringComputationDestination.applyRetainedClear destination
       let afterErrors := view.withErrors.foldl
         (fun current computed => current.applyOutcome computed.targetField
           (.errored computed.attempted computed.cause)) afterCleared

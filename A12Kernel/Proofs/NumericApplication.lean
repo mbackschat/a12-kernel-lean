@@ -65,6 +65,18 @@ theorem noAppliedNumericValue_preserves_presence
   rw [noAppliedNumericValue_clears_exactly outcome prior noAppliedValue]
   cases prior <;> rfl
 
+/-- A retained CLEARED result action always creates or retains a present-empty destination target. -/
+theorem retainedNumericClear_applies_presentEmpty
+    (prior : NumericTargetState) :
+    prior.applyRetainedClear = .presentEmpty := by
+  cases prior <;> rfl
+
+/-- Direct no-value application is not a substitute for applying a source-classified CLEARED action to a separate absent destination. -/
+theorem directNumericNoValue_doesNotImplement_retainedClear :
+    NumericTargetOutcome.noValue.applyTo .absent ≠
+      NumericTargetState.absent.applyRetainedClear := by
+  decide
+
 /-- Exact application retains precisely the classified source comparison identity and never stores a rejected attempt. -/
 theorem exactNumericApplication_sourceIdentity
     (outcome : NumericTargetOutcome) (prior : NumericTargetState) :

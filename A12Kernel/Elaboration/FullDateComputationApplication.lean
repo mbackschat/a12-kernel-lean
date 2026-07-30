@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.TemporalComputationResult
 
 /-! # Full-Date whole-result application
 
-This capsule applies an already-classified full-Date result to an explicitly supplied compatible destination. It consumes only clears, target errors, and source-relative changes through the existing one-target transition, and never reclassifies against the destination.
+This capsule applies an already-classified full-Date result to an explicitly supplied compatible destination. It distinguishes source-classified retained clears from direct target errors and accepted outcomes and never reclassifies an action against the destination.
 -/
 
 namespace A12Kernel
@@ -24,6 +24,11 @@ def applyOutcome (destination : FullDateComputationDestination)
     (target : FieldId) (outcome : FullDateTargetOutcome) :
     FullDateComputationDestination :=
   destination.update target (outcome.applyTo (destination target))
+
+/-- Apply one source-classified CLEARED action without reclassifying it against the destination. -/
+def applyRetainedClear (destination : FullDateComputationDestination)
+    (target : FieldId) : FullDateComputationDestination :=
+  TemporalComputationDestination.applyRetainedClear destination target
 
 end FullDateComputationDestination
 
@@ -49,7 +54,7 @@ def applyTo (view : FullDateComputationRunView ResidualMessage)
   | some duplicate => .error (.duplicateActionTarget duplicate)
   | none =>
       let afterCleared := view.cleared.foldl
-        (fun current target => current.applyOutcome target .noValue) destination
+        FullDateComputationDestination.applyRetainedClear destination
       let afterErrors := view.withErrors.foldl
         (fun current computed => current.applyOutcome computed.targetField
           (.errored computed.attempted computed.cause)) afterCleared

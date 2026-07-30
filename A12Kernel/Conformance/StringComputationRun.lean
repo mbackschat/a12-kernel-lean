@@ -450,7 +450,7 @@ example : (do
         some (.presentValue ⟨"OLD", by decide⟩) := by
   native_decide
 
-/- Changed success writes, while both target rejection and public clearing specialize the one-target clear transition. -/
+/- Changed success writes, target rejection retains its guarded direct transition, and a source-classified public clear creates a present-empty target when the destination target was absent. -/
 example :
     (do
       let view ← resultView? [FixtureTable.checked .producerValue]
@@ -469,7 +469,7 @@ example :
         [cell producer.id "OLD" (.parsed (.str "OLD"))]
       let applied ← (view.applyTo (destinationWith producer.id .absent)).toOption
       pure (applied producer.id)) =
-        some .absent := by
+        some .presentEmpty := by
   native_decide
 
 /- A malformed result cannot let private collection order choose between two writes to one target. -/

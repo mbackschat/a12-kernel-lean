@@ -18,24 +18,23 @@ def actionTargets
     List FieldId :=
   view.cleared ++ view.withChanges.map (·.targetField)
 
-/-- Apply clears before changed values through the caller's exact one-target transition. -/
+/-- Apply source-classified retained clears before changed values. The two callbacks are deliberately distinct: a retained clear is an action, not a direct no-value outcome re-evaluated against the destination. -/
 def applyTo
     (view : TemporalComputationRunView
       (TemporalComputedInstance kind) Error ResidualMessage)
     (destination : Destination)
-    (applyOutcome : Destination → FieldId → Outcome → Destination)
-    (noValue : Outcome)
-    (accepted : StoredTemporalText kind → Outcome) :
+    (applyRetainedClear : Destination → FieldId → Destination)
+    (applyAccepted :
+      Destination → FieldId → StoredTemporalText kind → Destination) :
     Except TemporalValueComputationApplicationError Destination :=
   match FieldId.firstDuplicate? (actionTargets view) with
   | some duplicate => .error (.duplicateActionTarget duplicate)
   | none =>
       let afterCleared := view.cleared.foldl
-        (fun current target => applyOutcome current target noValue) destination
+        applyRetainedClear destination
       .ok (view.withChanges.foldl
         (fun current computed =>
-          applyOutcome current computed.targetField
-            (accepted computed.value)) afterCleared)
+          applyAccepted current computed.targetField computed.value) afterCleared)
 
 end TemporalValueComputationRunView
 

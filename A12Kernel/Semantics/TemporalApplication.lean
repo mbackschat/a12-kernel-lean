@@ -51,6 +51,11 @@ def clearValue :
   | .absent => .absent
   | .presentEmpty | .presentValue _ => .presentEmpty
 
+/-- Apply one retained CLEARED result action. Classification already happened against the source, so the destination target exists empty even when it was absent. -/
+def applyRetainedClear :
+    TemporalTargetState Stored → TemporalTargetState Stored
+  | .absent | .presentEmpty | .presentValue _ => .presentEmpty
+
 /-- Return the exact stored temporal value when this state contains one. -/
 def storedValue : TemporalTargetState Stored → Option Stored
   | .presentValue value => some value
@@ -80,6 +85,12 @@ def update (destination : TemporalComputationDestination Stored)
     (target : FieldId) (state : TemporalTargetState Stored) :
     TemporalComputationDestination Stored :=
   fun field => if field == target then state else destination field
+
+/-- Apply one source-classified CLEARED action without reclassifying it against the destination. -/
+def applyRetainedClear
+    (destination : TemporalComputationDestination Stored)
+    (target : FieldId) : TemporalComputationDestination Stored :=
+  destination.update target (destination target).applyRetainedClear
 
 end TemporalComputationDestination
 

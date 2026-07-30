@@ -161,12 +161,18 @@ private def validateRows (model : FlatModel) (rows : List RowAddr) :
     | none => pure ()
   pure checkedRows
 
-private def requiredRows : List RepeatableLevel → List Nat → List Nat → List RowAddr
-  | [], [], _ => []
-  | level :: levels, coordinate :: coordinates, priorPath =>
-      let path := priorPath ++ [coordinate]
-      { group := level, path } :: requiredRows levels coordinates path
-  | _, _, _ => []
+/-- Derive the exact addressed repeatable ancestors for one scope and coordinate path. Depth and positivity are checked by the caller. The result contains only the directly addressed ancestry; predecessor padding is a separate application behavior. -/
+def repeatableAncestorRowsFor
+    (scope : List RepeatableLevel) (coordinates : List Nat) :
+    List RowAddr :=
+  go scope coordinates []
+where
+  go : List RepeatableLevel → List Nat → List Nat → List RowAddr
+    | [], [], _ => []
+    | level :: levels, coordinate :: remaining, priorPath =>
+        let path := priorPath ++ [coordinate]
+        { group := level, path } :: go levels remaining path
+    | _, _, _ => []
 
 private def validateCellAddress (model : FlatModel) (rows : List RowAddr)
     (address : CellAddr) : Except CheckedDocumentError FlatFieldDecl := do
@@ -176,7 +182,8 @@ private def validateCellAddress (model : FlatModel) (rows : List RowAddr)
     throw (.invalidCellDepth address declaration.repeatableScope.length)
   if address.path.any (· == 0) then
     throw (.zeroCellIndex address)
-  for row in requiredRows declaration.repeatableScope address.path [] do
+  for row in repeatableAncestorRowsFor
+      declaration.repeatableScope address.path do
     if !rows.contains row then throw (.missingRow row)
   pure declaration
 
