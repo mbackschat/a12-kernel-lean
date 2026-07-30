@@ -244,6 +244,8 @@ The detailed review chronology is recoverable from Git. These consolidated check
 | `416065669ad177900e99e1dbec6cb53f3277252e` | exact constructed/shifted-Date instant retention and comparison, dual-kernel/interpreter repeated-midnight matrix, measured day-shift milliseconds, and the February-clear unobservability mutation |
 | `2f97e4de6ff7f87c6d96b26b021763fda8a1f416` | positive Date-component constant runtime matrix plus BMP/supplementary UTF-16 boundary across both kernel strategies and JVM/Node |
 | `f29dc2ad8a74acce6a9f8222262fabf8178a2bbf` | maintained mixed constant/field admissions and exact positional range/width/empty rejection matrix completing `SPEC-2026-07-27-11` |
+| `b9ade32d300c2d10bb70ac7dc18daf7a6779a9ec` | five-arm starred group-list ordinary-iteration admission plus exact captured-outer-row selection across both kernel strategies and JVM/Node |
+| `8cab6ece3a0b355e1a831792fa14b0b711548755` | nonrepeatable-terminal-below-stars group-product composition and the interpreter environment-selection correction across both kernel strategies and JVM/Node |
 
 Additional exact checkpoints retained from the pre-consolidation drill map:
 

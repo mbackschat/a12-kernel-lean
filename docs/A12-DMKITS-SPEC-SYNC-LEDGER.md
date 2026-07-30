@@ -308,7 +308,7 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ### SPEC-2026-07-26-01 — starred group-list iteration guards are operator- and operand-sensitive
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic correction
 - **Local revision:** `8f652ebc96f21899ac43ae7f1784bed7b22e5698`
 - **a12-dmkits basis revision:** `45d24b73549124bf7da342a1ee19401408438fc6`
@@ -319,12 +319,12 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Add the rule to the canonical §9 account and extend the existing group-star or ordinary-iteration law family with star-only positive admission, mixed fixed/star positive rejection, star-only negative rejection, an independent iterating `And` guard admitting the negative list, the same shape under `Or` remaining rejected, and a legal bound-prefix runtime control that binds by named ancestry and reports at the exact outer row. Reuse the existing condition, iteration, and group-star owners; add no visitor port, evaluator, topology, or harness.
 - **Compatibility:** Treating every positive starred list as guarded admits a mixed list that can fire on an empty current row. Treating every starred list as negative rejects the legal all-iterating positive form. A tree-wide emptiness bit cannot express the `And`/`Or` asymmetry, and positional binding can select the wrong cross-subtree row even after static admission is correct.
 - **Acceptance:** Canonical peer prose states the leaf rule; maintained kernel and JVM/Node cases separate all five admission shapes plus exact bound-prefix runtime selection; the existing owners remain singular; and the handback supplies the exact reviewed revision and per-surface disposition.
-- **a12-dmkits handback checkpoint:** `5093cfb8a500a1093fce80520b64d7b1a02641d5`
-- **Disposition:** handed off; no upstream reconciliation had started at the reviewed checkpoint.
+- **a12-dmkits revision:** `b9ade32d300c2d10bb70ac7dc18daf7a6779a9ec`
+- **Disposition:** accepted — canonical prose and maintained real-kernel admission cases distinguish the star-only positive, mixed fixed/star positive, star-only negative, independently iterating `And`, and corresponding `Or` shapes. Dynamic-Groovy, static-Java, JVM, and Node runtime locks select the exact captured outer row through the existing named-ancestry and group-list owners. No production semantic change was needed; the small typed-rule kernel-law overloads route through the existing validator.
 
 ### SPEC-2026-07-26-02 — a nonrepeatable group below starred ancestors retains group-product semantics
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic correction
 - **Local revision:** `839b434861fcc391521c7d3526c3ae15cd5d0bc6`
 - **a12-dmkits basis revision:** `45d24b73549124bf7da342a1ee19401408438fc6`
@@ -335,8 +335,8 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Reuse the existing group-list operand, first-star environment selection, and `GroupPresenceState`; do not add a terminal selector, row-count special case, second topology, or new harness. Add one focused authoring/runtime family for a nonrepeatable terminal below at least one starred ancestor that separates ancestor-only emptiness, admitted scalar content, instantiated repeatable-descendant content, malformed-only unavailability, and a positive witness beside an unavailable peer. Confirm JVM and Node plus both kernel strategies where the current maintained route permits. Canonical prose should distinguish this composition from terminal-repeatable structural row count.
 - **Compatibility:** Counting every selected ancestor environment as filled over-reports empty nonrepeatable terminals. Treating the terminal as a fixed singleton loses row identity and can mix descendants from different ancestor environments. Collapsing malformed-only or addressing failure to empty makes `NoGroupFilled` fire incorrectly.
 - **Acceptance:** The peer retains one topology and one group-product owner, canonical prose states the terminal split, maintained cases separate the five accounts above, neighboring terminal-repeatable counts remain unchanged, and the handback supplies the exact reviewed revision plus per-surface disposition.
-- **a12-dmkits handback checkpoint:** `5093cfb8a500a1093fce80520b64d7b1a02641d5`
-- **Disposition:** handed off; no upstream reconciliation had started at the reviewed checkpoint.
+- **a12-dmkits revision:** `8cab6ece3a0b355e1a831792fa14b0b711548755`
+- **Disposition:** accepted — the interpreter now uses starred ancestors to select complete environments while the nonrepeatable terminal retains the existing descendant-content/error `GroupPresenceState` product. Dual-kernel and JVM/Node cases separate ancestor-only emptiness, admitted scalar content, repeatable-descendant content, malformed-only unavailability, and a positive witness beside an unavailable peer; the repeatable-terminal control remains structural. The fix reuses the checked row topology and terminal group-product owner through one narrow environment-provider seam, without a second topology, terminal representation, or row-count special case.
 
 ### SPEC-2026-07-26-03 — same-target computations flatten into one first-selected table
 
