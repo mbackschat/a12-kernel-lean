@@ -128,6 +128,21 @@ def targetEnvironments
     Except ActualRowEnvironmentError (List Env) :=
   input.actualRowEnvironments placement.targetDeclaration.repeatableScope
 
+/-- Evaluate one already-checked scalar atom against the exact source cell selected by this placement. -/
+def evaluateSourceAtom
+    (placement : CheckedAddressedNumericPlacement model)
+    (sourceCell : CheckedCell)
+    (atom : ResolvedNumericAtom FlatFieldDecl) :
+    Except NumericComputationFault NumericComputationResult :=
+  let context : ScalarComputationContext := {
+    read := fun field =>
+      if field == placement.sourceDeclaration.id then
+        sourceCell
+      else
+        malformedCheckedCell
+  }
+  context.readNumericComputationAtom atom
+
 /-- Execute one source-cell evaluator per physical target environment and retain the exact row key for result classification and application. -/
 def executeWith (placement : CheckedAddressedNumericPlacement model)
     (input : CheckedDocument model)

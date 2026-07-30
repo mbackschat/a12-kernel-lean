@@ -71,14 +71,7 @@ private def evaluateSource
     (operation : CheckedAddressedFieldValueAsNumber model)
     (sourceCell : CheckedCell) :
     Except NumericComputationFault NumericComputationResult :=
-  let context : ScalarComputationContext := {
-    read := fun field =>
-      if field == operation.placement.sourceDeclaration.id then
-        sourceCell
-      else
-        malformedCheckedCell
-  }
-  context.readNumericComputationAtom
+  operation.placement.evaluateSourceAtom sourceCell
     (.fieldValueAsNumber operation.source)
 
 /-- Execute the certified conversion through the shared addressed placement. -/
