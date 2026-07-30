@@ -1,13 +1,13 @@
 import A12Kernel.Proofs.AddressedNumericLeaf
-import A12Kernel.Elaboration.AddressedFieldValueAsNumber
+import A12Kernel.Elaboration.AddressedRangeAsNumber
 
-/-! # Same-scope repeatable `FieldValueAsNumber` certificate -/
+/-! # Same-scope repeatable `RangeAsNumber` certificate -/
 
 namespace A12Kernel
 
-/-- Every checked addressed conversion retains a certified selected textual projection and exact assignment scale on one sound shared placement. -/
-theorem checkedAddressedFieldValueAsNumber_sound
-    (operation : CheckedAddressedFieldValueAsNumber model) :
+/-- Every checked addressed range retains an evaluated String source, exact valid interval, and scale-0 Number target on one sound shared placement. -/
+theorem checkedAddressedRangeAsNumber_sound
+    (operation : CheckedAddressedRangeAsNumber model) :
     (model.validate.isOk = true ∧
       model.lookupUniqueId operation.placement.targetField =
         .ok operation.placement.targetDeclaration ∧
@@ -22,11 +22,11 @@ theorem checkedAddressedFieldValueAsNumber_sound
       operation.placement.targetDeclaration.repeatableScope ≠ [] ∧
       operation.placement.sourceDeclaration.repeatableScope =
         operation.placement.targetDeclaration.repeatableScope) ∧
-      operation.placement.sourceDeclaration.resolveFieldValueAsNumberSource
-          operation.projectionRef = .ok operation.source ∧
-      operation.source.scale =
-        operation.placement.targetPolicy.info.scale := by
+      operation.placement.sourceDeclaration.toStringValueField? =
+        some operation.source ∧
+      validStringRange operation.start operation.finish = true ∧
+      operation.placement.targetPolicy.info.scale = 0 := by
   exact ⟨checkedAddressedNumericPlacement_sound operation.placement,
-    operation.sourceCertified, operation.sameScale⟩
+    operation.sourceCertified, operation.rangeValid, operation.sameScale⟩
 
 end A12Kernel

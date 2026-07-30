@@ -160,7 +160,7 @@ example :
       | _ => false) = true ∧
     (match checkAddressedFieldValueAsNumber
         model ["Order", "Rows"] amount.id (.direct (parent "OuterCode")) with
-      | .error (.scopeMismatch targetPath sourcePath) =>
+      | .error (.placement (.scopeMismatch targetPath sourcePath)) =>
           targetPath == amount.path && sourcePath == outerCode.path
       | _ => false) = true := by
   native_decide
