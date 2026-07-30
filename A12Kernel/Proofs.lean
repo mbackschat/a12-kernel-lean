@@ -97,6 +97,7 @@ import A12Kernel.Proofs.CustomFieldElaboration
 import A12Kernel.Proofs.CustomFieldContext
 import A12Kernel.Proofs.CustomFieldEvaluation
 import A12Kernel.Proofs.ValidationRule
+import A12Kernel.Proofs.ValidationMessageAuthoring
 import A12Kernel.Proofs.Observation
 import A12Kernel.Proofs.ScalarText
 import A12Kernel.Proofs.TemporalValue

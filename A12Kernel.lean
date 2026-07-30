@@ -117,6 +117,7 @@ import A12Kernel.Elaboration.ParallelNumericDirectRunResult
 import A12Kernel.Elaboration.ParallelPresenceRule
 import A12Kernel.Elaboration.CheckedRequired
 import A12Kernel.Elaboration.ValidationRule
+import A12Kernel.Elaboration.ValidationMessageAuthoring
 import A12Kernel.Elaboration.GeneratedComputationValidation
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.ValidationContext

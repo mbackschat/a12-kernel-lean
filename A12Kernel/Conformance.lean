@@ -59,6 +59,7 @@ import A12Kernel.Conformance.CorrelationElaboration
 import A12Kernel.Conformance.FlatValidation
 import A12Kernel.Conformance.FlatPresenceContradiction
 import A12Kernel.Conformance.ValidationRule
+import A12Kernel.Conformance.ValidationMessageAuthoring
 import A12Kernel.Conformance.Correlation
 import A12Kernel.Conformance.Iteration
 import A12Kernel.Conformance.Observation
