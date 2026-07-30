@@ -40,6 +40,7 @@ structure CheckedAddressedNumericPlacement (model : FlatModel) where
   targetPolicyOwned :
     targetDeclaration.toNumericTargetPolicy? = some targetPolicy
   targetRepeatable : targetDeclaration.repeatableScope ≠ []
+  sourceNotTarget : sourceDeclaration.id ≠ targetField
   sameScope :
     sourceDeclaration.repeatableScope = targetDeclaration.repeatableScope
 
@@ -72,7 +73,7 @@ def checkAddressedNumericPlacement
                     declaringGroup sourceReference with
               | .error cause => .error (.source cause)
               | .ok sourceDeclaration =>
-                if sourceDeclaration.id == targetField then
+                if hSelf : sourceDeclaration.id == targetField then
                   .error (.targetSelfReference targetField)
                 else if hScope :
                     sourceDeclaration.repeatableScope =
@@ -94,6 +95,9 @@ def checkAddressedNumericPlacement
                     targetRepeatable := by
                       intro empty
                       simp [empty] at hRepeatable
+                    sourceNotTarget := by
+                      intro equal
+                      simp [equal] at hSelf
                     sameScope := hScope
                   }
                 else

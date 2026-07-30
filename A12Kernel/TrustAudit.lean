@@ -1595,6 +1595,12 @@ run_cmd do
 #print axioms A12Kernel.checkedAddressedNumericPlacement_sound
 #print axioms A12Kernel.checkedAddressedFieldValueAsNumber_sound
 #print axioms A12Kernel.checkedAddressedRangeAsNumber_sound
+#print axioms A12Kernel.CheckedAddressedNumericLeaf.operandField_ne_targetField
+#print axioms A12Kernel.CheckedAddressedNumericLeaf.matchingFingerprint_self
+#print axioms A12Kernel.CheckedAddressedNumericLeaf.matchingFingerprint_some_iff
+#print axioms A12Kernel.CheckedAddressedNumericLeaf.matchingFingerprint_preservesParameters
+#print axioms A12Kernel.CheckedAddressedNumericLeaf.identityTransform_execute
+#print axioms A12Kernel.CheckedAddressedNumericLeaf.identityTransform_executeResult
 
 #print axioms A12Kernel.stringTargetApplies_iff_applyTo
 #print axioms A12Kernel.stringTargetApplies_deterministic

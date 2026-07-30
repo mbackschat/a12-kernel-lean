@@ -18,11 +18,12 @@ theorem checkedAddressedNumericPlacement_sound
       placement.targetDeclaration.toNumericTargetPolicy? =
         some placement.targetPolicy ∧
       placement.targetDeclaration.repeatableScope ≠ [] ∧
+      placement.sourceDeclaration.id ≠ placement.targetField ∧
       placement.sourceDeclaration.repeatableScope =
         placement.targetDeclaration.repeatableScope := by
   exact ⟨placement.modelWellFormed, placement.targetOwned,
     placement.sourceResolved, placement.targetInDeclaringGroup,
     placement.targetPolicyOwned, placement.targetRepeatable,
-    placement.sameScope⟩
+    placement.sourceNotTarget, placement.sameScope⟩
 
 end A12Kernel

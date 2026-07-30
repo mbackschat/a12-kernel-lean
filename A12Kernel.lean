@@ -150,6 +150,7 @@ import A12Kernel.Elaboration.AddressedFieldValueAsString
 import A12Kernel.Elaboration.AddressedNumericLeaf
 import A12Kernel.Elaboration.AddressedFieldValueAsNumber
 import A12Kernel.Elaboration.AddressedRangeAsNumber
+import A12Kernel.Elaboration.AddressedNumericLeafConsumer
 import A12Kernel.Elaboration.NumberToStringComputationRun
 import A12Kernel.Elaboration.StringToNumberComputationRun
 import A12Kernel.Elaboration.ScalarComputationRun

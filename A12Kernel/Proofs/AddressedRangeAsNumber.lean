@@ -20,6 +20,8 @@ theorem checkedAddressedRangeAsNumber_sound
       operation.placement.targetDeclaration.toNumericTargetPolicy? =
         some operation.placement.targetPolicy ∧
       operation.placement.targetDeclaration.repeatableScope ≠ [] ∧
+      operation.placement.sourceDeclaration.id ≠
+        operation.placement.targetField ∧
       operation.placement.sourceDeclaration.repeatableScope =
         operation.placement.targetDeclaration.repeatableScope) ∧
       operation.placement.sourceDeclaration.toStringValueField? =
