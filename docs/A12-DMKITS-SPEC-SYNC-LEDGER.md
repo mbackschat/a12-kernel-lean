@@ -356,7 +356,7 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ### SPEC-2026-07-26-04 — computed-target dependency poison erases producer cause
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic correction
 - **Local revision:** `8e2e7a80d6c20ff9b701f71f7a3d7021ee1f737a`
 - **a12-dmkits basis revision:** `1106e2b5`
@@ -367,12 +367,12 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** State the cause-blind cascade rule in the canonical computation account and confirm that the existing `Poison`/overlay representation, JVM/Node interpreter laws, and kernel differentials do not preserve or reconstruct producer causes across a computed-target read. Add only the smallest representation-level or outcome-level lock needed to distinguish cause-blind poison from a provenance-carrying dependency; reuse the existing invalid-target and poison owners and add no message, trace, scheduler, or cause registry.
 - **Compatibility:** Preserving a source formal cause or mapping a target rejection to a synthetic declared-constraint cause exposes information the kernel discarded and can make two otherwise identical cascades observably different to an analyzer. Collapsing poison to clean empty is also wrong: dependents must still abort when they actually read the invalid target.
 - **Acceptance:** Canonical peer prose states cause erasure, the interpreter retains one cause-blind computed-target poison, focused laws or cases show that distinct invalid producer classes induce the same dependency observation while clean no-value remains distinct, and the handback supplies the exact reviewed revision plus per-surface disposition.
-- **a12-dmkits handback checkpoint:** `5093cfb8a500a1093fce80520b64d7b1a02641d5`
-- **Disposition:** handed off; no upstream reconciliation had started at the reviewed checkpoint.
+- **a12-dmkits revision:** `351bf9f28138783ef7ddc7d8c76db2ab4891a5d8`
+- **Disposition:** accepted — canonical computation prose now states that a computed-target dependency edge retains only invalid target identity and carries no attempted payload, exception subtype, source path/cause, or producer message. The interpreter's existing `poisoned` set remains exactly `(target path, repetition indices)`; `OverlayContext` consults only that membership, and the computation-boundary catch explicitly discards the immediate `PoisonedReadException.path` rather than transporting it. `ComputedDependencyCauseErasureDiffTest` gives dynamic-Groovy, generated-Java, and interpreter the same matrix: an ERRORED producer and an operand-poisoned producer both make a reached dependent CLEARED, while a clean no-selection producer remains empty-readable and yields downstream zero. `ComputedDependencyCauseErasureTest` retains the same outcome boundary on JVM and Node. No payload, message, trace, scheduler, or cause registry was added, and no runtime semantic correction was required.
 
 ### SPEC-2026-07-26-05 — Number result change detection uses source V2 object identity
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic correction
 - **Local revision:** `40231696485152967ef49a807f8e6ec3abff2d2c`
 - **a12-dmkits basis revision:** `0b4009ad251c3d63031d2efe804509f9f6c5ccf2`
@@ -383,8 +383,8 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Add the complete typed-source rule to the canonical computation account. Keep raw String-seeded Number placements always changed, and add a focused maintained result-projection seam or case for typed `BigDecimal` source values that separates equal coefficient-and-scale silence, `7` versus `7.00`, an equal-looking source String, and a negative-scale decimal with the same plain rendering. Reuse the existing computation-result projection; add no generic document or capture framework.
 - **Compatibility:** Reconstructing from internal text incorrectly drops changes for source Strings and negative-scale decimals. Comparing parsed amount incorrectly drops `7` versus `7.00`; comparing text alone cannot recover either V2 object class or negative scale.
 - **Acceptance:** Canonical peer prose states the V2 object-identity rule; maintained cases cover the four separators above through the narrowest existing result surface; raw-placement behavior remains unchanged; and the handback supplies the exact reviewed revision plus per-surface disposition.
-- **a12-dmkits handback checkpoint:** `5093cfb8a500a1093fce80520b64d7b1a02641d5`
-- **Disposition:** handed off; no upstream reconciliation had started at the reviewed checkpoint.
+- **a12-dmkits revision:** `7b2e9f7f6d874a16ed716ff0b85a4ee4504a43e4`
+- **Disposition:** accepted — canonical result prose now states that the changed subset compares source and computed V2 objects and that `BigDecimal` coefficient and scale are both identity. `NumberResultSourceIdentityLawsTest` exercises the narrow typed-`DocumentV2` seam on dynamic Groovy and generated Java: equal coefficient-and-scale is unchanged, differing scale is changed, an equal-looking source String is changed, and a negative-scale source decimal with the same amount/plain rendering is changed. The existing interpreter remains a report-all engine, while its kernel-comparison projection is now explicitly limited to the maintained V1/String placement profile where every Number result is changed; no interpreter behavior changed and no generic document or capture framework was added.
 
 ### SPEC-2026-07-25-01 — the `NotAll` fields-presence prepass is a size-selected route detail, not the observable contract
 
