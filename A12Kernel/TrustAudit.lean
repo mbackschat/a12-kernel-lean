@@ -1622,6 +1622,10 @@ run_cmd do
 #print axioms A12Kernel.scalarComputationRun_numberContext_world
 #print axioms A12Kernel.scalarComputationRun_evaluateStringStep
 #print axioms A12Kernel.scalarComputationRun_evaluateNumberStep
+#print axioms A12Kernel.scalarComputationOutcomePartitions_count
+#print axioms A12Kernel.scalarComputationOutcomePartitions_string_mem_iff
+#print axioms A12Kernel.scalarComputationOutcomePartitions_number_mem_iff
+#print axioms A12Kernel.scalarComputationRun_executeResult_routesFamilies
 #print axioms A12Kernel.stringStep_outcome_independent_of_prior
 #print axioms A12Kernel.notTrueStringPrecondition_evaluates_noValue
 #print axioms A12Kernel.holdingStringPrecondition_preserves_outcome

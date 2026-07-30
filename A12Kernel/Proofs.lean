@@ -135,6 +135,7 @@ import A12Kernel.Proofs.StringComputationRunApplication
 import A12Kernel.Proofs.NumberToStringComputationRun
 import A12Kernel.Proofs.StringToNumberComputationRun
 import A12Kernel.Proofs.ScalarComputationRun
+import A12Kernel.Proofs.ScalarComputationRunResult
 import A12Kernel.Proofs.StringApplication
 import A12Kernel.Proofs.Verdict
 import A12Kernel.Proofs.ValueList

@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ScalarComputationRun
+import A12Kernel.Elaboration.ScalarComputationRunResult
 
 /-! # Finite mixed scalar computation-run locks
 
@@ -88,6 +88,11 @@ private def firstStringValue :=
   (stringTable? firstStringId [(holding, .literal "7")]).get
     (by native_decide)
 
+private def emptyFirstString :=
+  (stringTable? firstStringId [
+    (.fieldFilled gateId, .literal "7")]).get
+      (by native_decide)
+
 private def invalidFirstString :=
   (stringTable? firstStringId [(holding, .literal "BAD")]).get
     (by native_decide)
@@ -166,6 +171,39 @@ private def numberStringNumber : List (CheckedScalarComputationStep model) :=
     .string firstStringFromNumber,
     .number secondNumberFromString]
 
+private structure ResultSummary where
+  stringWithoutErrors : List (FieldId × String)
+  stringWithChanges : List (FieldId × String)
+  stringErrors : List (FieldId × String × StringTargetError)
+  stringCleared : List FieldId
+  numberWithoutErrors : List (FieldId × StoredNumber)
+  numberWithChanges : List (FieldId × StoredNumber)
+  numberCleared : List FieldId
+  deriving Repr, DecidableEq
+
+private def resultSummary?
+    (steps : List (CheckedScalarComputationStep model))
+    (cells : List ClassifiedCellInput := []) :
+    Option ResultSummary := do
+  let run ← (certifyScalarComputationRun steps).toOption
+  let input ← checkedDocument cells
+  let view ← (run.executeResult world prepared.patterns input
+    (fun _ => ()) [] ([] : List Unit)).toOption
+  pure {
+    stringWithoutErrors := view.string.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    stringWithChanges := view.string.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    stringErrors := view.string.withErrors.map fun item =>
+      (item.targetField, item.attempted.text, item.cause)
+    stringCleared := view.string.cleared
+    numberWithoutErrors := view.number.withoutErrors.map fun item =>
+      (item.targetField, item.value)
+    numberWithChanges := view.number.withChanges.map fun item =>
+      (item.targetField, item.value)
+    numberCleared := view.number.cleared
+  }
+
 /- Both alternating orders consume completed typed values instead of stale target cells, while ordinary String and Number reads stay on the immutable document paths. -/
 example :
     outcomes? stringNumberString [
@@ -189,6 +227,87 @@ example :
         .string firstStringId (.accepted { text := "7", nonempty := by decide }),
         .number secondNumberId
           (.accepted { unscaled := 9, scale := 0 })] := by
+  native_decide
+
+/- Each family result owner independently classifies the same successful mixed run relative to the immutable source. -/
+example :
+    resultSummary? stringNumberString [
+      stringCell inputStringId "2",
+      numberCell inputNumberId 4,
+      stringCell firstStringId "8",
+      numberCell firstNumberId 80,
+      stringCell secondStringId "OLD"] =
+      some {
+        stringWithoutErrors :=
+          [(firstStringId, "7"), (secondStringId, "9/4")]
+        stringWithChanges :=
+          [(firstStringId, "7"), (secondStringId, "9/4")]
+        stringErrors := []
+        stringCleared := []
+        numberWithoutErrors :=
+          [(firstNumberId, { unscaled := 9, scale := 0 })]
+        numberWithChanges :=
+          [(firstNumberId, { unscaled := 9, scale := 0 })]
+        numberCleared := []
+      } ∧
+    resultSummary? numberStringNumber [
+      stringCell inputStringId "2",
+      numberCell firstNumberId 7,
+      stringCell firstStringId "7",
+      numberCell secondNumberId 9] =
+      some {
+        stringWithoutErrors := [(firstStringId, "7")]
+        stringWithChanges := []
+        stringErrors := []
+        stringCleared := []
+        numberWithoutErrors := [
+          (firstNumberId, { unscaled := 7, scale := 0 }),
+          (secondNumberId, { unscaled := 9, scale := 0 })]
+        numberWithChanges := []
+        numberCleared := []
+      } := by
+  native_decide
+
+/- Clean String no-selection clears only the stale String producer. Its reached Number conversion stores zero, and the final String stores that Number's canonical text. -/
+example :
+    resultSummary? [
+      .string emptyFirstString,
+      .number firstNumberFromStringOnly,
+      .string secondStringFromNumberOnly] [
+        stringCell firstStringId "8",
+        numberCell firstNumberId 80,
+        stringCell secondStringId "OLD"] =
+      some {
+        stringWithoutErrors := [(secondStringId, "0")]
+        stringWithChanges := [(secondStringId, "0")]
+        stringErrors := []
+        stringCleared := [firstStringId]
+        numberWithoutErrors :=
+          [(firstNumberId, { unscaled := 0, scale := 0 })]
+        numberWithChanges :=
+          [(firstNumberId, { unscaled := 0, scale := 0 })]
+        numberCleared := []
+      } := by
+  native_decide
+
+/- Payloadful String rejection stays in the String error channel; the two inherited-poison targets have no computed instances and clear their own stale source values. -/
+example :
+    resultSummary? [
+      .string invalidFirstString,
+      .number firstNumberFromStringOnly,
+      .string secondStringFromNumberOnly] [
+        stringCell firstStringId "8",
+        numberCell firstNumberId 80,
+        stringCell secondStringId "OLD"] =
+      some {
+        stringWithoutErrors := []
+        stringWithChanges := []
+        stringErrors := [(firstStringId, "BAD", .pattern)]
+        stringCleared := [secondStringId]
+        numberWithoutErrors := []
+        numberWithChanges := []
+        numberCleared := [firstNumberId]
+      } := by
   native_decide
 
 /- Reached invalidity crosses both family boundaries as cause-blind poison. An earlier selected Number row leaves the same later syntactic conversion unread, so the final String remains valid. -/
