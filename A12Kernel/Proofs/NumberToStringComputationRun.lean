@@ -50,7 +50,7 @@ theorem numberToStringRun_preservesFamilyOutcomes
     (outcomes : NumberToStringComputationOutcomes)
     (numberEvaluated :
       run.number.evaluateCompletion
-        (CheckedNumberToStringComputationRun.numberContext world input) =
+        (input.scalarComputationContext world) =
         .ok number)
     (stringEvaluated :
       run.string.evaluateCompletion patterns

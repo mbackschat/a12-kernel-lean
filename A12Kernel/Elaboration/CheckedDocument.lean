@@ -315,6 +315,11 @@ def flatContext (checked : CheckedDocument model) : FlatContext where
     | .ok cell => cell
     | .error _ => malformedCheckedCell
 
+/-- Project ordinary nonrepeatable computation reads under one explicit world. Heterogeneous computation runs share this immutable source boundary before adding their typed dependency overlay. -/
+def scalarComputationContext (checked : CheckedDocument model)
+    (world : World) : ScalarComputationContext :=
+  { read := checked.flatContext.read, world := some world }
+
 /-- The sole checked context for String computation. Ordinary leaves retain the exact checked document cell; Number leaves replace only their parsed payload with the already-selected formal-read text. Presence and formal poison are therefore unchanged for guards. -/
 def stringComputationContext (checked : CheckedDocument model) :
     StringComputationContext where

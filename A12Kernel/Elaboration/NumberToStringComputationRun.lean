@@ -105,11 +105,6 @@ inductive NumberToStringComputationRunFault where
 
 namespace CheckedNumberToStringComputationRun
 
-/-- Supply the shared world to the immutable document's scalar read policy without changing any cell. -/
-def numberContext (world : World) (input : CheckedDocument model) :
-    ScalarComputationContext :=
-  { read := input.flatContext.read, world := some world }
-
 /-- Overlay exactly the completed Number target on the String document context. -/
 def stringContext (run : CheckedNumberToStringComputationRun model)
     (input : CheckedDocument model)
@@ -126,7 +121,8 @@ def execute (run : CheckedNumberToStringComputationRun model)
     (input : CheckedDocument model) :
     Except NumberToStringComputationRunFault
       NumberToStringComputationOutcomes :=
-  match run.number.evaluateCompletion (numberContext world input) with
+  match run.number.evaluateCompletion
+      (input.scalarComputationContext world) with
   | .error cause => .error (.number cause)
   | .ok number =>
       match run.string.evaluateCompletion patterns
