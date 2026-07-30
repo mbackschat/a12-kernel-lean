@@ -8,17 +8,24 @@ This capsule projects a successful checked nonrepeatable String run against the 
 
 namespace A12Kernel
 
-/-- One successful non-clearing computed String instance. -/
-structure StringComputedInstance where
-  targetField : FieldId
+/-- One successful non-clearing computed String instance at an exact target key. -/
+structure StringComputedInstance (Target : Type := FieldId) where
+  targetField : Target
   value : StoredString
   deriving Repr, DecidableEq
 
 /-- One computed String instance whose attempted stored value failed target checking. -/
-structure StringComputedError where
-  targetField : FieldId
+structure StringComputedError (Target : Type := FieldId) where
+  targetField : Target
   attempted : StoredString
   cause : StringTargetError
+  deriving Repr, DecidableEq
+
+/-- One rich String outcome paired with the exact immutable source-target state needed for public source-relative classification. -/
+structure SourcedStringTargetOutcome (Target : Type := FieldId) where
+  targetField : Target
+  outcome : StringTargetOutcome
+  source : StringTargetState
   deriving Repr, DecidableEq
 
 namespace StringTargetOutcome
@@ -32,11 +39,11 @@ end StringTargetOutcome
 
 namespace CheckedDocument
 
-/-- Recover the exact source placement and stored text for one nonrepeatable String target. Target-policy validity is irrelevant to source-relative change and clearing classification. -/
-def sourceStringTargetState (input : CheckedDocument model)
-    (field : FieldId) : StringTargetState :=
+/-- Recover the exact source placement and stored text for one addressed String target. Target-policy validity is irrelevant to source-relative change and clearing classification. -/
+def sourceStringTargetStateAt (input : CheckedDocument model)
+    (address : CellAddr) : StringTargetState :=
   match input.source.cells.find? fun cell =>
-      cell.address == ({ field, path := [] } : CellAddr) with
+      cell.address == address with
   | none => .absent
   | some cell =>
       if empty : cell.stored = "" then
@@ -44,65 +51,86 @@ def sourceStringTargetState (input : CheckedDocument model)
       else
         .presentValue { text := cell.stored, nonempty := empty }
 
+/-- Nonrepeatable compatibility projection through the exact addressed owner. -/
+def sourceStringTargetState (input : CheckedDocument model)
+    (field : FieldId) : StringTargetState :=
+  input.sourceStringTargetStateAt { field, path := [] }
+
 end CheckedDocument
 
 /-- The String fragment of the immutable V2 result. The residual payload remains opaque so its later partition/message owner can be threaded without a second message representation. Lists represent extensional collections; their order is not public. -/
-structure StringComputationRunView (ResidualMessage : Type) where
+structure StringComputationRunView (ResidualMessage : Type)
+    (Target : Type := FieldId) where
   private mk ::
-  withoutErrors : List StringComputedInstance
-  withChanges : List StringComputedInstance
-  withErrors : List StringComputedError
-  cleared : List FieldId
+  withoutErrors : List (StringComputedInstance Target)
+  withChanges : List (StringComputedInstance Target)
+  withErrors : List (StringComputedError Target)
+  cleared : List Target
   formalErrorsInOperands : List ResidualMessage
   deriving Repr, DecidableEq
 
 namespace StringComputationRunView
 
 /-- Project the successful computed instance, retaining unchanged values. -/
-def successfulInstance? :
-    FieldId × StringTargetOutcome → Option StringComputedInstance
-  | (targetField, .accepted value) => some { targetField, value }
+def successfulInstance? {Target : Type} :
+    SourcedStringTargetOutcome Target → Option (StringComputedInstance Target)
+  | ⟨targetField, .accepted value, _⟩ => some { targetField, value }
   | _ => none
 
 /-- Project only payloadful target rejection. Inherited poison carries no computed-instance message. -/
-def computedError? :
-    FieldId × StringTargetOutcome → Option StringComputedError
-  | (targetField, .errored attempted cause) =>
+def computedError? {Target : Type} :
+    SourcedStringTargetOutcome Target → Option (StringComputedError Target)
+  | ⟨targetField, .errored attempted cause, _⟩ =>
       some { targetField, attempted, cause }
   | _ => none
 
 /-- Compare a successful String value with the immutable computation source, not a later application destination. -/
-def sourceValueChanged (input : CheckedDocument model)
-    (computed : StringComputedInstance) : Bool :=
-  (input.sourceStringTargetState computed.targetField).storedValue !=
-    some computed.value
+def changedInstance? {Target : Type}
+    (entry : SourcedStringTargetOutcome Target) :
+    Option (StringComputedInstance Target) := do
+  let computed ← successfulInstance? entry
+  if entry.source.storedValue = some computed.value then
+    none
+  else
+    some computed
 
 /-- A source-filled target is publicly cleared exactly when execution produced no computed-data instance. A target-rejected attempt therefore belongs only to `withErrors`, even though later application clears it. -/
-def shouldClear (input : CheckedDocument model)
-    (entry : FieldId × StringTargetOutcome) : Bool :=
-  !entry.2.hasComputedInstance &&
-    (input.sourceStringTargetState entry.1).storedValue.isSome
+def shouldClear {Target : Type}
+    (entry : SourcedStringTargetOutcome Target) : Bool :=
+  !entry.outcome.hasComputedInstance && entry.source.storedValue.isSome
+
+/-- Build the extensional String result after the caller has attached exact immutable source state to every outcome. -/
+def fromSourcedOutcomes {Target : Type}
+    (residualMessages : List ResidualMessage)
+    (entries : List (SourcedStringTargetOutcome Target)) :
+    StringComputationRunView ResidualMessage Target :=
+  {
+    withoutErrors := entries.filterMap successfulInstance?
+    withChanges := entries.filterMap changedInstance?
+    withErrors := entries.filterMap computedError?
+    cleared := (entries.filter shouldClear).map (·.targetField)
+    formalErrorsInOperands := residualMessages
+  }
 
 /-- Build the extensional String result from rich run outcomes. The separately supplied residual messages are retained unchanged; this function does not claim how pointer partitioning or eager formal checking constructs them. -/
 def fromOutcomes (input : CheckedDocument model)
     (residualMessages : List ResidualMessage)
     (outcomes : List (FieldId × StringTargetOutcome)) :
     StringComputationRunView ResidualMessage :=
-  let withoutErrors := outcomes.filterMap successfulInstance?
-  {
-    withoutErrors
-    withChanges := withoutErrors.filter (sourceValueChanged input)
-    withErrors := outcomes.filterMap computedError?
-    cleared := (outcomes.filter (shouldClear input)).map Prod.fst
-    formalErrorsInOperands := residualMessages
-  }
+  fromSourcedOutcomes residualMessages (outcomes.map fun entry => {
+    targetField := entry.1
+    outcome := entry.2
+    source := input.sourceStringTargetState entry.1
+  })
 
 /-- The V2 error predicate observes exactly the computed-instance and residual message channels. Changes and clearing are not errors. -/
-def noErrorOccurred (view : StringComputationRunView ResidualMessage) : Bool :=
+def noErrorOccurred {Target : Type}
+    (view : StringComputationRunView ResidualMessage Target) : Bool :=
   view.withErrors.isEmpty && view.formalErrorsInOperands.isEmpty
 
 /-- Order-independent equality of the five V2 collections. The private plan order remains an execution fact, not a public result-order guarantee. -/
-def ExtensionalEq (left right : StringComputationRunView ResidualMessage) : Prop :=
+def ExtensionalEq {Target : Type}
+    (left right : StringComputationRunView ResidualMessage Target) : Prop :=
   left.withoutErrors.Perm right.withoutErrors ∧
     left.withChanges.Perm right.withChanges ∧
     left.withErrors.Perm right.withErrors ∧

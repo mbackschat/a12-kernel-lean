@@ -3,22 +3,22 @@ import A12Kernel.Proofs.StringApplication
 
 /-! # String whole-run application laws
 
-These laws connect the fold to the exact one-target owner and lock source-relative classification against destination-relative recomputation.
+These laws connect the generic exact-target fold to the one-target String owner and lock source-relative classification against destination-relative recomputation.
 -/
 
 namespace A12Kernel
 
 /-- Updating one destination target yields exactly the supplied state there. -/
 theorem stringComputationDestination_update_same
-    (destination : StringComputationDestination)
-    (target : FieldId) (state : StringTargetState) :
+    [DecidableEq Target] (destination : StringComputationDestination Target)
+    (target : Target) (state : StringTargetState) :
     destination.update target state target = state := by
   simp [StringComputationDestination.update]
 
 /-- A one-target application delegates exactly to `StringTargetOutcome.applyTo`. -/
 theorem stringComputationDestination_applyOutcome_same
-    (destination : StringComputationDestination)
-    (target : FieldId) (outcome : StringTargetOutcome) :
+    [DecidableEq Target] (destination : StringComputationDestination Target)
+    (target : Target) (outcome : StringTargetOutcome) :
     destination.applyOutcome target outcome target =
       outcome.applyTo (destination target) := by
   simp [StringComputationDestination.applyOutcome,
@@ -26,8 +26,8 @@ theorem stringComputationDestination_applyOutcome_same
 
 /-- A retained clear creates a present-empty destination target even when that target was absent. -/
 theorem stringComputationDestination_applyRetainedClear_same
-    (destination : StringComputationDestination)
-    (target : FieldId) :
+    [DecidableEq Target] (destination : StringComputationDestination Target)
+    (target : Target) :
     destination.applyRetainedClear target target = .presentEmpty := by
   rw [StringComputationDestination.applyRetainedClear,
     stringComputationDestination_update_same]
@@ -35,116 +35,161 @@ theorem stringComputationDestination_applyRetainedClear_same
 
 /-- Applying one target preserves every other destination projection. -/
 theorem stringComputationDestination_applyOutcome_other
-    (destination : StringComputationDestination)
-    (target other : FieldId) (outcome : StringTargetOutcome)
+    [DecidableEq Target] (destination : StringComputationDestination Target)
+    (target other : Target) (outcome : StringTargetOutcome)
     (different : other ≠ target) :
     destination.applyOutcome target outcome other = destination other := by
   simp [StringComputationDestination.applyOutcome,
     StringComputationDestination.update, different]
 
-/-- A result with no changed, errored, or cleared action leaves the destination untouched even when `withoutErrors` or residual messages are nonempty. -/
+/-- A result with no changed, errored, or cleared action leaves the destination untouched even when successes or residual messages are nonempty. -/
 theorem stringComputationRun_applyTo_noActions
-    (view : StringComputationRunView ResidualMessage)
-    (destination : StringComputationDestination)
+    [DecidableEq Target]
+    (view : StringComputationRunView ResidualMessage Target)
+    (destination : StringComputationDestination Target)
     (noChanges : view.withChanges = [])
     (noErrors : view.withErrors = [])
     (noClears : view.cleared = []) :
     view.applyTo destination = .ok destination := by
   simp [StringComputationRunView.applyTo,
-    StringComputationRunView.actionTargets, noChanges, noErrors, noClears,
-    FieldId.firstDuplicate?]
+    StringComputationRunView.firstDuplicateActionTarget?,
+    StringComputationRunView.firstDuplicateStringTarget?,
+    StringComputationRunView.actionTargets, noChanges, noErrors, noClears]
 
 /-- Duplicate action targets fail before any destination state is selected or changed. -/
 theorem stringComputationRun_applyTo_duplicateTarget
-    (view : StringComputationRunView ResidualMessage)
-    (destination : StringComputationDestination) (field : FieldId)
-    (duplicate : FieldId.firstDuplicate? view.actionTargets = some field) :
+    [DecidableEq Target]
+    (view : StringComputationRunView ResidualMessage Target)
+    (destination : StringComputationDestination Target) (target : Target)
+    (duplicate : view.firstDuplicateActionTarget? = some target) :
     view.applyTo destination =
-      .error (.duplicateActionTarget field) := by
+      .error (.duplicateActionTarget target) := by
   simp [StringComputationRunView.applyTo, duplicate]
 
 /-- A source-unchanged success is not applied, even when the caller-supplied destination contains another value. -/
 theorem stringComputationRun_unchanged_notApplied
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage)
-    (target : FieldId) (value : StoredString)
-    (destination : StringComputationDestination)
-    (unchanged :
-      (input.sourceStringTargetState target).storedValue = some value) :
-    (StringComputationRunView.fromOutcomes input residualMessages
-      [(target, .accepted value)]).applyTo destination = .ok destination := by
-  simp [StringComputationRunView.applyTo,
-    StringComputationRunView.actionTargets,
-    StringComputationRunView.fromOutcomes,
+    [DecidableEq Target] (residualMessages : List ResidualMessage)
+    (target : Target) (value : StoredString)
+    (destination : StringComputationDestination Target) :
+    (StringComputationRunView.fromSourcedOutcomes residualMessages
+      [{
+        targetField := target
+        outcome := .accepted value
+        source := StringTargetState.presentValue value
+      }]).applyTo destination =
+      .ok destination := by
+  simp [StringComputationRunView.fromSourcedOutcomes,
+    StringComputationRunView.changedInstance?,
     StringComputationRunView.successfulInstance?,
     StringComputationRunView.computedError?,
     StringComputationRunView.shouldClear,
     StringTargetOutcome.hasComputedInstance,
-    StringComputationRunView.sourceValueChanged, unchanged,
-    FieldId.firstDuplicate?]
+    StringTargetState.storedValue,
+    StringComputationRunView.applyTo,
+    StringComputationRunView.firstDuplicateActionTarget?,
+    StringComputationRunView.firstDuplicateStringTarget?,
+    StringComputationRunView.actionTargets]
 
-/-- A source-changed success applies the existing accepted-value transition at its target. -/
+/-- A source-changed success applies the existing accepted-value transition at its exact target. -/
 theorem stringComputationRun_changed_applies
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage)
-    (target : FieldId) (value : StoredString)
-    (destination : StringComputationDestination)
-    (changed :
-      (input.sourceStringTargetState target).storedValue != some value) :
-    (StringComputationRunView.fromOutcomes input residualMessages
-      [(target, .accepted value)]).applyTo destination =
-        .ok (destination.applyOutcome target (.accepted value)) := by
-  simp [StringComputationRunView.applyTo,
-    StringComputationRunView.actionTargets,
-    StringComputationRunView.fromOutcomes,
-    StringComputationRunView.successfulInstance?,
-    StringComputationRunView.computedError?,
+    [DecidableEq Target] (residualMessages : List ResidualMessage)
+    (target : Target) (value : StoredString) (source : StringTargetState)
+    (destination : StringComputationDestination Target)
+    (changed : source.storedValue ≠ some value) :
+    (StringComputationRunView.fromSourcedOutcomes residualMessages
+      [{
+        targetField := target
+        outcome := .accepted value
+        source := source
+      }]).applyTo
+        destination =
+      .ok (destination.applyOutcome target (.accepted value)) := by
+  let entry : SourcedStringTargetOutcome Target := {
+    targetField := target
+    outcome := .accepted value
+    source := source
+  }
+  have changedEntry :
+      StringComputationRunView.changedInstance? entry =
+        some ({ targetField := target, value } :
+          StringComputedInstance Target) := by
+    simp [entry, StringComputationRunView.changedInstance?,
+      StringComputationRunView.successfulInstance?, changed]
+  have noError :
+      StringComputationRunView.computedError? entry = none := by
+    simp [entry, StringComputationRunView.computedError?]
+  change (StringComputationRunView.fromSourcedOutcomes
+    residualMessages [entry]).applyTo destination =
+      .ok (destination.applyOutcome target (.accepted value))
+  simp [StringComputationRunView.fromSourcedOutcomes,
+    changedEntry, noError,
     StringComputationRunView.shouldClear,
     StringTargetOutcome.hasComputedInstance,
-    StringComputationRunView.sourceValueChanged, changed,
-    FieldId.firstDuplicate?]
+    StringTargetState.storedValue,
+    StringComputationRunView.applyTo,
+    StringComputationRunView.firstDuplicateActionTarget?,
+    StringComputationRunView.firstDuplicateStringTarget?,
+    StringComputationRunView.actionTargets]
 
 /-- A payloadful target error applies the existing error transition and is not also consumed by the cleared collection. -/
 theorem stringComputationRun_error_applies
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage)
-    (target : FieldId) (attempted : StoredString) (cause : StringTargetError)
-    (destination : StringComputationDestination) :
-    (StringComputationRunView.fromOutcomes input residualMessages
-      [(target, .errored attempted cause)]).applyTo destination =
-        .ok (destination.applyOutcome target (.errored attempted cause)) := by
-  simp [StringComputationRunView.applyTo,
-    StringComputationRunView.actionTargets,
-    StringComputationRunView.fromOutcomes,
+    [DecidableEq Target] (residualMessages : List ResidualMessage)
+    (target : Target) (attempted : StoredString) (cause : StringTargetError)
+    (source : StringTargetState)
+    (destination : StringComputationDestination Target) :
+    (StringComputationRunView.fromSourcedOutcomes residualMessages
+      [{
+        targetField := target
+        outcome := .errored attempted cause
+        source := source
+      }]).applyTo destination =
+      .ok (destination.applyOutcome target (.errored attempted cause)) := by
+  simp [StringComputationRunView.fromSourcedOutcomes,
+    StringComputationRunView.changedInstance?,
     StringComputationRunView.successfulInstance?,
     StringComputationRunView.computedError?,
     StringComputationRunView.shouldClear,
     StringTargetOutcome.hasComputedInstance,
-    FieldId.firstDuplicate?]
+    StringComputationRunView.applyTo,
+    StringComputationRunView.firstDuplicateActionTarget?,
+    StringComputationRunView.firstDuplicateStringTarget?,
+    StringComputationRunView.actionTargets]
 
 /-- A source-filled clean no-value mints a retained clear action that creates or retains a present-empty destination target. -/
 theorem stringComputationRun_cleared_applies
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage)
-    (target : FieldId) (destination : StringComputationDestination)
-    (sourceFilled :
-      (input.sourceStringTargetState target).storedValue.isSome = true) :
-    (StringComputationRunView.fromOutcomes input residualMessages
-      [(target, .noValue)]).applyTo destination =
-        .ok (destination.applyRetainedClear target) := by
-  simp [StringComputationRunView.applyTo,
-    StringComputationRunView.actionTargets,
-    StringComputationRunView.fromOutcomes,
+    [DecidableEq Target] (residualMessages : List ResidualMessage)
+    (target : Target) (source : StringTargetState)
+    (destination : StringComputationDestination Target)
+    (sourceFilled : source.storedValue.isSome = true) :
+    (StringComputationRunView.fromSourcedOutcomes residualMessages
+      [{
+        targetField := target
+        outcome := .noValue
+        source := source
+      }]).applyTo
+        destination =
+      .ok (destination.applyRetainedClear target) := by
+  simp [StringComputationRunView.fromSourcedOutcomes,
+    StringComputationRunView.changedInstance?,
     StringComputationRunView.successfulInstance?,
     StringComputationRunView.computedError?,
     StringComputationRunView.shouldClear,
-    StringTargetOutcome.hasComputedInstance, sourceFilled,
-    FieldId.firstDuplicate?]
+    StringTargetOutcome.hasComputedInstance,
+    StringComputationRunView.applyTo,
+    StringComputationRunView.firstDuplicateActionTarget?,
+    StringComputationRunView.firstDuplicateStringTarget?,
+    StringComputationRunView.actionTargets, sourceFilled]
 
 /-- Residual messages affect the error predicate but never the already-classified application plan. -/
 theorem stringComputationRun_residualMessages_doNotAffectApplication
-    (input : CheckedDocument model)
+    [DecidableEq Target]
     (firstMessages secondMessages : List ResidualMessage)
-    (outcomes : List (FieldId × StringTargetOutcome))
-    (destination : StringComputationDestination) :
-    (StringComputationRunView.fromOutcomes input firstMessages outcomes).applyTo destination =
-      (StringComputationRunView.fromOutcomes input secondMessages outcomes).applyTo destination := by
+    (entries : List (SourcedStringTargetOutcome Target))
+    (destination : StringComputationDestination Target) :
+    (StringComputationRunView.fromSourcedOutcomes
+      firstMessages entries).applyTo destination =
+    (StringComputationRunView.fromSourcedOutcomes
+      secondMessages entries).applyTo destination := by
   rfl
 
 end A12Kernel

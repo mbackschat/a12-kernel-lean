@@ -8,51 +8,73 @@ This capsule applies an already-classified String result to an explicitly suppli
 
 namespace A12Kernel
 
-/-- The exact caller-supplied target-state projection needed by the nonrepeatable String fragment. -/
-abbrev StringComputationDestination := FieldId → StringTargetState
+/-- The exact caller-supplied target-state projection needed by one String result target-key domain. -/
+abbrev StringComputationDestination (Target : Type := FieldId) :=
+  Target → StringTargetState
 
 namespace StringComputationDestination
 
 /-- Replace one target state while preserving every other field projection. -/
-def update (destination : StringComputationDestination)
-    (target : FieldId) (state : StringTargetState) :
-    StringComputationDestination :=
-  fun field => if field == target then state else destination field
+def update {Target : Type} [DecidableEq Target]
+    (destination : StringComputationDestination Target)
+    (target : Target) (state : StringTargetState) :
+    StringComputationDestination Target :=
+  fun candidate => if candidate = target then state else destination candidate
 
 /-- Specialize the existing one-target transition at one field. -/
-def applyOutcome (destination : StringComputationDestination)
-    (target : FieldId) (outcome : StringTargetOutcome) :
-    StringComputationDestination :=
+def applyOutcome {Target : Type} [DecidableEq Target]
+    (destination : StringComputationDestination Target)
+    (target : Target) (outcome : StringTargetOutcome) :
+    StringComputationDestination Target :=
   destination.update target (outcome.applyTo (destination target))
 
 /-- Apply one source-classified CLEARED action without reclassifying it against the destination. -/
-def applyRetainedClear (destination : StringComputationDestination)
-    (target : FieldId) : StringComputationDestination :=
+def applyRetainedClear {Target : Type} [DecidableEq Target]
+    (destination : StringComputationDestination Target)
+    (target : Target) : StringComputationDestination Target :=
   destination.update target (destination target).applyRetainedClear
 
 end StringComputationDestination
 
 namespace StringComputationRunView
 
-inductive StringComputationRunApplicationError where
-  | duplicateActionTarget (field : FieldId)
+inductive StringComputationRunApplicationError
+    (Target : Type := FieldId) where
+  | duplicateActionTarget (target : Target)
   deriving Repr, DecidableEq
 
 /-- The targets consumed by application. Successful unchanged instances and residual messages are deliberately absent. -/
-def actionTargets (view : StringComputationRunView ResidualMessage) :
-    List FieldId :=
+def actionTargets {Target : Type}
+    (view : StringComputationRunView ResidualMessage Target) :
+    List Target :=
   view.cleared ++ view.withErrors.map (·.targetField) ++
     view.withChanges.map (·.targetField)
 
-/-- Apply the immutable V2 action collections in kernel order: public clears, errored instances, then source-relative changed successes. A malformed view with a repeated action target fails structurally rather than letting private list order choose a write. -/
-def applyTo (view : StringComputationRunView ResidualMessage)
-    (destination : StringComputationDestination) :
-    Except StringComputationRunApplicationError StringComputationDestination :=
-  match FieldId.firstDuplicate? view.actionTargets with
+/-- Locate the first repeated exact target key in encounter order. -/
+def firstDuplicateStringTarget? {Target : Type} [DecidableEq Target] :
+    List Target → Option Target
+  | [] => none
+  | target :: remaining =>
+      if target ∈ remaining then some target
+      else firstDuplicateStringTarget? remaining
+
+/-- Locate the first malformed repeated action target before destination application begins. -/
+def firstDuplicateActionTarget? {Target : Type} [DecidableEq Target]
+    (view : StringComputationRunView ResidualMessage Target) :
+    Option Target :=
+  firstDuplicateStringTarget? view.actionTargets
+
+/-- Apply retained clears, target errors, then source-relative changes. Repeated action targets fail structurally before application. -/
+def applyTo {Target : Type} [DecidableEq Target]
+    (view : StringComputationRunView ResidualMessage Target)
+    (destination : StringComputationDestination Target) :
+    Except (StringComputationRunApplicationError Target)
+      (StringComputationDestination Target) :=
+  match view.firstDuplicateActionTarget? with
   | some duplicate => .error (.duplicateActionTarget duplicate)
   | none =>
       let afterCleared := view.cleared.foldl
-        StringComputationDestination.applyRetainedClear destination
+        (fun current target => current.applyRetainedClear target) destination
       let afterErrors := view.withErrors.foldl
         (fun current computed => current.applyOutcome computed.targetField
           (.errored computed.attempted computed.cause)) afterCleared
