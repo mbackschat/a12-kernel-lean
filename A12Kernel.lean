@@ -151,6 +151,7 @@ import A12Kernel.Elaboration.AddressedNumericLeaf
 import A12Kernel.Elaboration.AddressedFieldValueAsNumber
 import A12Kernel.Elaboration.AddressedRangeAsNumber
 import A12Kernel.Elaboration.AddressedStringLength
+import A12Kernel.Elaboration.AddressedNumberField
 import A12Kernel.Elaboration.AddressedNumericLeafConsumer
 import A12Kernel.Elaboration.NumberToStringComputationRun
 import A12Kernel.Elaboration.StringToNumberComputationRun

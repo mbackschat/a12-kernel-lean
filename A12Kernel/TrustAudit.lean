@@ -1596,6 +1596,7 @@ run_cmd do
 #print axioms A12Kernel.checkedAddressedFieldValueAsNumber_sound
 #print axioms A12Kernel.checkedAddressedRangeAsNumber_sound
 #print axioms A12Kernel.checkedAddressedStringLength_sound
+#print axioms A12Kernel.checkedAddressedNumberField_sound
 #print axioms A12Kernel.CheckedAddressedNumericLeaf.operandField_ne_targetField
 #print axioms A12Kernel.CheckedAddressedNumericLeaf.matchingFingerprint_self
 #print axioms A12Kernel.CheckedAddressedNumericLeaf.matchingFingerprint_some_iff
