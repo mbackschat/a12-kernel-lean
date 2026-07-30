@@ -17,4 +17,35 @@ theorem checkedIsolatedParallelNumericDirectRun_wellFormed
     checked.operandScopesAvailable,
     checked.operationScaleOwned, checked.operationScaleAdmitted⟩
 
+/-- Executable-target filtering preserves the primary route's target field. -/
+theorem parallelNumericExecutableTargets_own_primary_target
+    (primary : CheckedParallelNumericTargetRoute model)
+    (additional : List (CheckedParallelNumericTargetRoute model))
+    (preliminary : CheckedIndexPreliminary model)
+    (targets : List ParallelNumericTargetCoverage)
+    (executed :
+      CheckedIsolatedParallelNumericDirectRun.executableTargets
+        primary additional preliminary = .ok targets) :
+    ∀ target ∈ targets,
+      target.address.field = primary.targetField := by
+  unfold CheckedIsolatedParallelNumericDirectRun.executableTargets at executed
+  cases primaryResult : primary.targetCoverage preliminary with
+  | error error =>
+      simp [primaryResult, Except.mapError, Bind.bind, Except.bind]
+        at executed
+  | ok primaryCoverage =>
+      simp [primaryResult, Except.mapError, Bind.bind, Except.bind]
+        at executed
+      split at executed
+      · contradiction
+      · change Except.ok _ = Except.ok targets at executed
+        cases executed
+        intro target member
+        have primaryMember :
+            target ∈ primaryCoverage :=
+          (List.mem_filter.mp member).1
+        exact parallelNumericTargetRoute_coverage_owns_target
+          primary preliminary primaryCoverage primaryResult
+          target primaryMember
+
 end A12Kernel

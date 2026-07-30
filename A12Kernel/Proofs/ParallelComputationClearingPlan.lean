@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.ParallelComputationClearing
 import A12Kernel.Proofs.CheckedIndexColumn
+import A12Kernel.Proofs.ComputationRunPlan
 
 /-! # Checked parallel-computation clearing-plan laws -/
 
@@ -54,6 +55,106 @@ theorem parallelNumericTargetRouteInvalidIndexMarks_noTargets
   unfold CheckedParallelNumericTargetRoute.invalidIndexMarks
   rw [empty]
   rfl
+
+/-- Every successful coverage entry retains the checked route's target field. -/
+theorem parallelNumericTargetRoute_coverageWithMarks_owns_target
+    (route : CheckedParallelNumericTargetRoute model)
+    (preliminary : CheckedIndexPreliminary model)
+    (targetMarks :
+      List (ParallelComputationMark (route.markPlanFor .target)))
+    (operandMarks :
+      List (ParallelComputationMark (route.markPlanFor .operand)))
+    (coverage : List ParallelNumericTargetCoverage)
+    (covered :
+      route.targetCoverageWithMarks preliminary targetMarks operandMarks =
+        .ok coverage) :
+    ∀ target ∈ coverage,
+      target.address.field = route.targetField := by
+  unfold CheckedParallelNumericTargetRoute.targetCoverageWithMarks at covered
+  cases environments :
+      route.targetEnvironments preliminary.base with
+  | error error =>
+      simp [environments, Except.mapError, Bind.bind,
+        Except.bind] at covered
+  | ok targetEnvironments =>
+      have mapped :
+          targetEnvironments.mapM (fun environment => do
+            let path ←
+              environment.pathForScope
+                  route.targetDeclaration.repeatableScope
+                |>.mapError
+                  ParallelNumericTargetCoverageError.targetEnvironment
+            let coveredByTarget ←
+              (route.markPlanFor .target).coversAny
+                  environment targetMarks
+                |>.mapError
+                  ParallelNumericTargetCoverageError.targetEnvironment
+            let coveredByOperand ←
+              (route.markPlanFor .operand).coversAny
+                  environment operandMarks
+                |>.mapError
+                  ParallelNumericTargetCoverageError.targetEnvironment
+            pure ({
+              environment
+              address := { field := route.targetField, path }
+              indexInvalid := coveredByTarget || coveredByOperand
+            } : ParallelNumericTargetCoverage)) = .ok coverage := by
+        simpa [environments, Except.mapError, Bind.bind,
+          Except.bind] using covered
+      apply exceptMapM_all_of_step (mapped := mapped)
+      intro environment _ target executed
+      cases path :
+          environment.pathForScope
+            route.targetDeclaration.repeatableScope with
+      | error error =>
+          simp [path, Except.mapError, Bind.bind, Except.bind]
+            at executed
+      | ok addressPath =>
+          cases targetCovered :
+              (route.markPlanFor .target).coversAny
+                environment targetMarks with
+          | error error =>
+              simp [path, targetCovered, Except.mapError,
+                Bind.bind, Except.bind] at executed
+          | ok coveredByTarget =>
+              cases operandCovered :
+                  (route.markPlanFor .operand).coversAny
+                    environment operandMarks with
+              | error error =>
+                  simp [path, targetCovered, operandCovered,
+                    Except.mapError, Bind.bind, Except.bind] at executed
+              | ok coveredByOperand =>
+                  simp [path, targetCovered, operandCovered,
+                    Except.mapError, Bind.bind, Pure.pure,
+                    Except.bind] at executed
+                  cases executed
+                  rfl
+
+/-- Deriving the marks internally cannot change the route-owned target field of successful coverage. -/
+theorem parallelNumericTargetRoute_coverage_owns_target
+    (route : CheckedParallelNumericTargetRoute model)
+    (preliminary : CheckedIndexPreliminary model)
+    (coverage : List ParallelNumericTargetCoverage)
+    (covered : route.targetCoverage preliminary = .ok coverage) :
+    ∀ target ∈ coverage,
+      target.address.field = route.targetField := by
+  unfold CheckedParallelNumericTargetRoute.targetCoverage at covered
+  cases targetMarksResult :
+      route.invalidIndexMarks preliminary .target with
+  | error error =>
+      simp [targetMarksResult, Except.mapError, Bind.bind, Except.bind]
+        at covered
+  | ok actualTargetMarks =>
+      cases operandMarksResult :
+          route.invalidIndexMarks preliminary .operand with
+      | error error =>
+          simp [targetMarksResult, operandMarksResult, Except.mapError,
+            Bind.bind, Except.bind] at covered
+      | ok actualOperandMarks =>
+          apply parallelNumericTargetRoute_coverageWithMarks_owns_target
+            route preliminary actualTargetMarks actualOperandMarks coverage
+          simpa [targetMarksResult, operandMarksResult, Except.mapError,
+            Bind.bind, Except.bind] using covered
 
 /-- With no existing target instance, no index column is consulted and no post-loop mark exists. -/
 theorem parallelNumericInvalidIndexMarks_noTargets

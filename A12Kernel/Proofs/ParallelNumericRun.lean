@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.ParallelNumericRun
 import A12Kernel.Proofs.ComputationRunPlan
 import A12Kernel.Proofs.FieldId
+import A12Kernel.Proofs.ParallelNumericAlternativeTable
 
 /-! # Checked parallel Number run-overlay laws -/
 
@@ -87,6 +88,80 @@ theorem parallelNumericPlan_executeTables_append
           simp only [CheckedParallelNumericPlan.executeTables, executed,
             List.cons_append] at first ⊢
           exact ih _ _ first
+
+/-- Appending successful table outcomes preserves ownership by the supplied plan target fields. -/
+theorem parallelNumericPlan_executeTables_owns_target_fields
+    (plan : CheckedParallelNumericPlan model)
+    (preliminary : CheckedIndexPreliminary model)
+    (tables : List (CheckedParallelNumericAlternativeTable model))
+    (state final : ParallelNumericRunState)
+    (tablesOwned :
+      ∀ table ∈ tables,
+        table.targetField ∈ plan.targetFields)
+    (stateOwned :
+      ∀ outcome ∈ state.completed,
+        outcome.address.field ∈ plan.targetFields)
+    (executed :
+      plan.executeTables preliminary tables state = .ok final) :
+    ∀ outcome ∈ final.completed,
+      outcome.address.field ∈ plan.targetFields := by
+  induction tables generalizing state final with
+  | nil =>
+      change Except.ok state = Except.ok final at executed
+      cases executed
+      exact stateOwned
+  | cons table remaining ih =>
+      cases tableResult :
+          table.executeWithRead preliminary
+            (plan.readPolicy state preliminary.base) with
+      | error error =>
+          simp [CheckedParallelNumericPlan.executeTables,
+            tableResult] at executed
+      | ok outcomes =>
+          apply ih
+            { completed := state.completed ++ outcomes }
+            final
+          · intro candidate member
+            exact tablesOwned candidate
+              (List.mem_cons_of_mem table member)
+          · intro outcome member
+            rcases List.mem_append.mp member with member | member
+            · exact stateOwned outcome member
+            · have tableField :=
+                parallelNumericAlternativeTable_executeWithRead_owns_target
+                  table preliminary
+                  (plan.readPolicy state preliminary.base)
+                  outcomes tableResult outcome member
+              rw [tableField]
+              exact tablesOwned table (by simp)
+          · simpa [CheckedParallelNumericPlan.executeTables,
+              tableResult] using executed
+
+/-- A successful finite run emits outcomes only for fields owned by its checked tables. -/
+theorem parallelNumericPlan_execute_owns_target_fields
+    (plan : CheckedParallelNumericPlan model)
+    (preliminary : CheckedIndexPreliminary model)
+    (outcomes : List ParallelNumericDirectOutcome)
+    (executed : plan.execute preliminary = .ok outcomes) :
+    ∀ outcome ∈ outcomes,
+      outcome.address.field ∈ plan.targetFields := by
+  unfold CheckedParallelNumericPlan.execute at executed
+  cases stateResult :
+      plan.executeTables preliminary plan.tables {} with
+  | error error =>
+      rw [stateResult] at executed
+      contradiction
+  | ok final =>
+      rw [stateResult] at executed
+      cases executed
+      apply parallelNumericPlan_executeTables_owns_target_fields
+        plan preliminary plan.tables {} final
+      · intro table member
+        change table.targetField ∈
+          plan.tables.map (·.targetField)
+        exact List.mem_map_of_mem member
+      · simp
+      · exact stateResult
 
 /-- Whole-run result construction delegates the successful addressed outcomes to the existing repeatable Number classifier. -/
 theorem parallelNumericPlan_executeResult_classifies

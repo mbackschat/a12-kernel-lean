@@ -148,7 +148,8 @@ def operandCellsWith
       targetEnvironment key
   pure nested.flatten
 
-private def executeTargetWith
+/-- Evaluate the selected table row at one already-certified target coverage entry. The supplied target owns the returned exact address. -/
+def executeTargetWith
     (table : CheckedParallelNumericAlternativeTable model)
     (preliminary : CheckedIndexPreliminary model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
