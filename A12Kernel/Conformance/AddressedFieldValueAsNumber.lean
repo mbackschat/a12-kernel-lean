@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.AddressedFieldValueAsNumber
 
 /-! # Addressed `FieldValueAsNumber` locks
 
-The matrix separates absent from present-empty String input, valid checked text, row-local formal poison, Number target rejection, and exact result addresses.
+The matrix separates String, stored Enumeration, and category projection; absent from present-empty input; valid checked values; row-local formal poison; Number target rejection; and exact result addresses.
 -/
 
 namespace A12Kernel.Conformance.AddressedFieldValueAsNumber
@@ -28,6 +28,34 @@ private def amount : FlatFieldDecl := {
   repeatableScope := [10]
 }
 
+private def band : FlatFieldDecl := {
+  id := 5
+  groupPath := ["Order", "Rows"]
+  name := "Band"
+  policy := { kind := .enumeration }
+  enumeration := some {
+    storedTokens := ["1", "2", "123"]
+    categories := [{
+      name := "Numeric"
+      tokens := [".5", "-1.25", "12.50"]
+    }]
+  }
+  repeatableScope := [10]
+}
+
+private def categoryAmount : FlatFieldDecl := {
+  id := 6
+  groupPath := ["Order", "Rows"]
+  name := "CategoryAmount"
+  policy := { kind := .number { scale := 2, signed := true } }
+  numericTargetConstraints := {
+    minFractionalDigits := 2
+    minimum := some (-99)
+    maximum := some 99
+  }
+  repeatableScope := [10]
+}
+
 private def outerCode : FlatFieldDecl := {
   code with
     id := 3
@@ -43,7 +71,7 @@ private def wrong : FlatFieldDecl := {
 }
 
 private def model : FlatModel := {
-  fields := [code, amount, outerCode, wrong]
+  fields := [code, amount, outerCode, wrong, band, categoryAmount]
   repeatableGroups := [{
     level := 10
     path := ["Order", "Rows"]
@@ -65,7 +93,18 @@ private def parent (field : String) : SurfaceFieldPath :=
 
 private def operation? : Option (CheckedAddressedFieldValueAsNumber model) :=
   (checkAddressedFieldValueAsNumber
-    model ["Order", "Rows"] amount.id (bare "Code")).toOption
+    model ["Order", "Rows"] amount.id (.direct (bare "Code"))).toOption
+
+private def storedEnumerationOperation? :
+    Option (CheckedAddressedFieldValueAsNumber model) :=
+  (checkAddressedFieldValueAsNumber
+    model ["Order", "Rows"] amount.id (.direct (bare "Band"))).toOption
+
+private def categoryOperation? :
+    Option (CheckedAddressedFieldValueAsNumber model) :=
+  (checkAddressedFieldValueAsNumber
+    model ["Order", "Rows"] categoryAmount.id
+      (.category (bare "Band") "Numeric")).toOption
 
 private def rows : List RowAddr :=
   [{ group := 10, path := [1] }, { group := 10, path := [2] }]
@@ -88,6 +127,14 @@ private def outcomes?
   let input ← checkedDocument cells
   (operation.execute input).toOption
 
+private def outcomesFor?
+    (operation : Option (CheckedAddressedFieldValueAsNumber model))
+    (cells : List ClassifiedCellInput) :
+    Option (List (SourcedNumericTargetOutcome CellAddr)) := do
+  let operation ← operation
+  let input ← checkedDocument cells
+  (operation.execute input).toOption
+
 private def result?
     (cells : List ClassifiedCellInput) :
     Option (NumericComputationRunView
@@ -102,18 +149,56 @@ private def addressAt (field : FieldId) (row : Nat) : CellAddr :=
 private def stored (unscaled : Int) : StoredNumber :=
   { unscaled, scale := 0 }
 
-/- The checked authoring route is exactly same-scope, repeatable, String-to-Number; wrong-kind and noniterating String sources fail closed. -/
+/- The checked authoring route admits same-scope repeatable String, stored Enumeration, and named category conversion; wrong-kind and noniterating String sources fail closed. -/
 example :
     operation?.isSome = true ∧
+    storedEnumerationOperation?.isSome = true ∧
+    categoryOperation?.isSome = true ∧
     (match checkAddressedFieldValueAsNumber
-        model ["Order", "Rows"] amount.id (bare "Wrong") with
+        model ["Order", "Rows"] amount.id (.direct (bare "Wrong")) with
       | .error (.sourceKindMismatch path .number) => path == wrong.path
       | _ => false) = true ∧
     (match checkAddressedFieldValueAsNumber
-        model ["Order", "Rows"] amount.id (parent "OuterCode") with
+        model ["Order", "Rows"] amount.id (.direct (parent "OuterCode")) with
       | .error (.scopeMismatch targetPath sourcePath) =>
           targetPath == amount.path && sourcePath == outerCode.path
       | _ => false) = true := by
+  native_decide
+
+/- Stored and category conversion retain distinct selected tokens: stored `1` becomes `1`, while category `Numeric` becomes `.5`. -/
+example :
+    (outcomesFor? storedEnumerationOperation? [
+      cell band.id [1] "1" (.parsed (.enum "1")),
+      cell band.id [2] "123" (.parsed (.enum "123"))
+    ]).map (·.map fun entry => (entry.targetField, entry.outcome)) =
+      some [
+        (addressAt amount.id 1, .accepted (stored 1)),
+        (addressAt amount.id 2, .rejected (stored 123) .aboveMaximum)
+      ] ∧
+    (outcomesFor? categoryOperation? [
+      cell band.id [1] "1" (.parsed (.enum "1")),
+      cell band.id [2] "2" (.parsed (.enum "2"))
+    ]).map (·.map fun entry => (entry.targetField, entry.outcome)) =
+      some [
+        (addressAt categoryAmount.id 1,
+          .accepted { unscaled := 50, scale := 2 }),
+        (addressAt categoryAmount.id 2,
+          .accepted { unscaled := -125, scale := 2 })
+      ] := by
+  native_decide
+
+/- An out-of-domain Enumeration token is formal poison before either projection and remains local to its exact row. -/
+example :
+    (outcomesFor? categoryOperation? [
+      cell band.id [1] "BOGUS" (.parsed (.enum "BOGUS")),
+      cell band.id [2] "123" (.parsed (.enum "123"))
+    ]).map (·.map fun entry => (entry.targetField, entry.outcome)) =
+      some [
+        (addressAt categoryAmount.id 1,
+          .inheritedPoison .declaredConstraint),
+        (addressAt categoryAmount.id 2,
+          .accepted { unscaled := 1250, scale := 2 })
+      ] := by
   native_decide
 
 /- Absent and present-empty checked String cells are distinct inputs but both convert to the real Number zero at their exact row addresses. -/

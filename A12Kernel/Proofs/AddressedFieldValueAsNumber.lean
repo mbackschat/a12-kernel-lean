@@ -4,22 +4,22 @@ import A12Kernel.Elaboration.AddressedFieldValueAsNumber
 
 namespace A12Kernel
 
-/-- Every checked addressed conversion retains the exact validated Number target, certified String conversion source, shared nonempty repeatable scope, and assignment scale used by execution. -/
+/-- Every checked addressed conversion retains the exact validated Number target, certified selected textual projection, shared nonempty repeatable scope, and assignment scale used by execution. -/
 theorem checkedAddressedFieldValueAsNumber_sound
     (operation : CheckedAddressedFieldValueAsNumber model) :
     model.validate.isOk = true ∧
       model.lookupUniqueId operation.targetField =
         .ok operation.targetDeclaration ∧
       model.resolveFieldDeclarationUnchecked
-          operation.declaringGroup operation.sourceReference =
+          operation.declaringGroup operation.sourceReference.reference =
         .ok operation.sourceDeclaration ∧
       operation.targetDeclaration.groupPath =
         operation.declaringGroup ∧
       operation.targetDeclaration.toNumericTargetPolicy? =
         some operation.targetPolicy ∧
       operation.sourceDeclaration.resolveFieldValueAsNumberSource
-          .stored = .ok operation.source ∧
-      (∃ field, operation.source.operand = .string field) ∧
+          operation.sourceReference.projectionRef =
+        .ok operation.source ∧
       operation.targetDeclaration.repeatableScope ≠ [] ∧
       operation.sourceDeclaration.repeatableScope =
         operation.targetDeclaration.repeatableScope ∧
@@ -27,7 +27,6 @@ theorem checkedAddressedFieldValueAsNumber_sound
   exact ⟨operation.modelWellFormed, operation.targetOwned,
     operation.sourceResolved, operation.targetInDeclaringGroup,
     operation.targetPolicyOwned, operation.sourceCertified,
-    operation.sourceString, operation.targetRepeatable,
-    operation.sameScope, operation.sameScale⟩
+    operation.targetRepeatable, operation.sameScope, operation.sameScale⟩
 
 end A12Kernel

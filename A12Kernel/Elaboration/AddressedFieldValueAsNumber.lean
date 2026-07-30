@@ -2,9 +2,9 @@ import A12Kernel.Elaboration.NumericComputation.RunApplication
 
 /-! # Same-scope repeatable `FieldValueAsNumber`
 
-This capsule admits one ordinary repeatable Number target whose sole expression is `FieldValueAsNumber` over a checked String declaration in the same repeatable scope. Execution enumerates physically instantiated target environments, reads the exact checked String cell, and delegates conversion, target checking, source-relative result classification, and retained-action application to their existing owners.
+This capsule admits one ordinary repeatable Number target whose sole expression is `FieldValueAsNumber` over a checked String, stored Enumeration, or Enumeration-category declaration in the same repeatable scope. Execution enumerates physically instantiated target environments, reads the exact checked source cell, and delegates conversion, target checking, source-relative result classification, and retained-action application to their existing owners.
 
-Enumeration/category conversion, other numeric expressions, guards, cascades, and scheduling remain separate.
+Other numeric expressions, guards, cascades, and scheduling remain separate.
 -/
 
 namespace A12Kernel
@@ -25,11 +25,11 @@ inductive AddressedFieldValueAsNumberElabError where
   | scaleMismatch (target source : Nat)
   deriving Repr, DecidableEq
 
-/-- One exact same-scope repeatable String-to-Number operation certified against a validated model. -/
+/-- One exact same-scope repeatable textual-to-Number operation certified against a validated model. -/
 structure CheckedAddressedFieldValueAsNumber (model : FlatModel) where
   private mk ::
   declaringGroup : GroupPath
-  sourceReference : SurfaceFieldPath
+  sourceReference : SurfaceTextFieldOperand
   targetField : FieldId
   targetDeclaration : FlatFieldDecl
   targetPolicy : NumericTargetPolicy
@@ -39,16 +39,16 @@ structure CheckedAddressedFieldValueAsNumber (model : FlatModel) where
   targetOwned :
     model.lookupUniqueId targetField = .ok targetDeclaration
   sourceResolved :
-    model.resolveFieldDeclarationUnchecked declaringGroup sourceReference =
+    model.resolveFieldDeclarationUnchecked declaringGroup
+        sourceReference.reference =
       .ok sourceDeclaration
   targetInDeclaringGroup :
     targetDeclaration.groupPath = declaringGroup
   targetPolicyOwned :
     targetDeclaration.toNumericTargetPolicy? = some targetPolicy
   sourceCertified :
-    sourceDeclaration.resolveFieldValueAsNumberSource .stored = .ok source
-  sourceString :
-    ∃ field, source.operand = .string field
+    sourceDeclaration.resolveFieldValueAsNumberSource
+        sourceReference.projectionRef = .ok source
   targetRepeatable : targetDeclaration.repeatableScope ≠ []
   sameScope :
     sourceDeclaration.repeatableScope = targetDeclaration.repeatableScope
@@ -57,7 +57,7 @@ structure CheckedAddressedFieldValueAsNumber (model : FlatModel) where
 /-- Validate the exact repeatable placement without widening the existing nonrepeatable numeric-expression elaborator. -/
 def checkAddressedFieldValueAsNumber
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (sourceReference : SurfaceFieldPath) :
+    (sourceReference : SurfaceTextFieldOperand) :
     Except AddressedFieldValueAsNumberElabError
       (CheckedAddressedFieldValueAsNumber model) :=
   match hModel : model.validate with
@@ -80,60 +80,54 @@ def checkAddressedFieldValueAsNumber
             else
               match hSourceResolved :
                   model.resolveFieldDeclarationUnchecked
-                    declaringGroup sourceReference with
+                    declaringGroup sourceReference.reference with
               | .error cause => .error (.source cause)
               | .ok sourceDeclaration =>
                 if sourceDeclaration.id == targetField then
                   .error (.targetSelfReference targetField)
                 else
                   match hSourceKind : sourceDeclaration.policy.kind with
-                  | .string =>
+                  | .string | .enumeration =>
                     match hSourceCertified :
                         sourceDeclaration.resolveFieldValueAsNumberSource
-                          .stored with
+                          sourceReference.projectionRef with
                     | .error _ =>
                         .error
                           (.sourceNotConvertible sourceDeclaration.path)
                     | .ok source =>
-                      match hSourceString : source.operand with
-                      | .enumeration _ =>
-                          .error
-                            (.sourceNotConvertible sourceDeclaration.path)
-                      | .string field =>
-                        if hScope :
-                            sourceDeclaration.repeatableScope =
-                              targetDeclaration.repeatableScope then
-                          if hScale :
-                              source.scale = targetPolicy.info.scale then
-                            .ok {
-                              declaringGroup
-                              sourceReference
-                              targetField
-                              targetDeclaration
-                              targetPolicy
-                              sourceDeclaration
-                              source
-                              modelWellFormed := by
-                                rw [hModel]
-                                rfl
-                              targetOwned := hTargetOwned
-                              sourceResolved := hSourceResolved
-                              targetInDeclaringGroup := hGroup
-                              targetPolicyOwned := hTargetPolicy
-                              sourceCertified := hSourceCertified
-                              sourceString := ⟨field, hSourceString⟩
-                              targetRepeatable := by
-                                intro empty
-                                simp [empty] at hRepeatable
-                              sameScope := hScope
-                              sameScale := hScale
-                            }
-                          else
-                            .error (.scaleMismatch
-                              targetPolicy.info.scale source.scale)
+                      if hScope :
+                          sourceDeclaration.repeatableScope =
+                            targetDeclaration.repeatableScope then
+                        if hScale :
+                            source.scale = targetPolicy.info.scale then
+                          .ok {
+                            declaringGroup
+                            sourceReference
+                            targetField
+                            targetDeclaration
+                            targetPolicy
+                            sourceDeclaration
+                            source
+                            modelWellFormed := by
+                              rw [hModel]
+                              rfl
+                            targetOwned := hTargetOwned
+                            sourceResolved := hSourceResolved
+                            targetInDeclaringGroup := hGroup
+                            targetPolicyOwned := hTargetPolicy
+                            sourceCertified := hSourceCertified
+                            targetRepeatable := by
+                              intro empty
+                              simp [empty] at hRepeatable
+                            sameScope := hScope
+                            sameScale := hScale
+                          }
                         else
-                          .error (.scopeMismatch
-                            targetDeclaration.path sourceDeclaration.path)
+                          .error (.scaleMismatch
+                            targetPolicy.info.scale source.scale)
+                      else
+                        .error (.scopeMismatch
+                          targetDeclaration.path sourceDeclaration.path)
                   | actual =>
                       .error (.sourceKindMismatch
                         sourceDeclaration.path actual.surfaceKind)
