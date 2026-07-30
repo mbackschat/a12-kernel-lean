@@ -1591,6 +1591,7 @@ run_cmd do
 #print axioms A12Kernel.stringComputationRun_error_applies
 #print axioms A12Kernel.stringComputationRun_cleared_applies
 #print axioms A12Kernel.stringComputationRun_residualMessages_doNotAffectApplication
+#print axioms A12Kernel.checkedAddressedFieldValueAsString_sound
 
 #print axioms A12Kernel.stringTargetApplies_iff_applyTo
 #print axioms A12Kernel.stringTargetApplies_deterministic

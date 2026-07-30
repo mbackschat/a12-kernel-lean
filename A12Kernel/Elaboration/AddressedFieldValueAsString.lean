@@ -1,0 +1,214 @@
+import A12Kernel.Elaboration.StringComputationRunApplication
+
+/-! # Same-scope repeatable `FieldValueAsString`
+
+This capsule admits one ordinary repeatable String target whose sole expression is `FieldValueAsString` over a Number declaration in the same repeatable scope. Execution enumerates physically instantiated target environments, reads the Number through the checked document's storage-regime-preserving text boundary, and retains the exact target address through result classification and application.
+
+Other String expressions, cross-scope reads, guards, cascades, and scheduling remain separate.
+-/
+
+namespace A12Kernel
+
+/-- Fail-closed errors for the bounded same-scope repeatable placement. These are library diagnostics, not claims about kernel diagnostic precedence. -/
+inductive AddressedFieldValueAsStringElabError where
+  | model (cause : ResolveError)
+  | target (cause : ResolveError)
+  | source (cause : ResolveError)
+  | targetOutsideDeclaringGroup (path declaringGroup : GroupPath)
+  | targetKindMismatch (path : List String) (actual : SurfaceScalarKind)
+  | rawStringTarget (path : List String)
+  | customStringTarget (path : List String)
+  | enumeratedStringTarget (path : List String)
+  | targetNotRepeatable (path : List String)
+  | sourceKindMismatch (path : List String) (actual : SurfaceScalarKind)
+  | scopeMismatch (target source : List String)
+  deriving Repr, DecidableEq
+
+/-- One exact same-scope repeatable Number-to-String operation certified against a validated model. -/
+structure CheckedAddressedFieldValueAsString (model : FlatModel) where
+  private mk ::
+  declaringGroup : GroupPath
+  sourceReference : SurfaceFieldPath
+  targetField : FieldId
+  targetDeclaration : FlatFieldDecl
+  sourceDeclaration : FlatFieldDecl
+  modelWellFormed : model.validate.isOk = true
+  targetOwned :
+    model.lookupUniqueId targetField = .ok targetDeclaration
+  sourceResolved :
+    model.resolveFieldDeclarationUnchecked declaringGroup sourceReference =
+      .ok sourceDeclaration
+  targetInDeclaringGroup :
+    targetDeclaration.groupPath = declaringGroup
+  targetString :
+    targetDeclaration.policy.kind = .string
+  targetEvaluated :
+    targetDeclaration.stringValueMode = .evaluated
+  targetOrdinary :
+    targetDeclaration.customType = none
+  targetNotEnumerated :
+    targetDeclaration.enumeration = none
+  sourceNumber :
+    ∃ info, sourceDeclaration.policy.kind = .number info
+  targetRepeatable : targetDeclaration.repeatableScope ≠ []
+  sameScope :
+    sourceDeclaration.repeatableScope = targetDeclaration.repeatableScope
+
+/-- Validate the exact repeatable placement without widening the existing nonrepeatable String-expression elaborator. -/
+def checkAddressedFieldValueAsString
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (sourceReference : SurfaceFieldPath) :
+    Except AddressedFieldValueAsStringElabError
+      (CheckedAddressedFieldValueAsString model) :=
+  match hModel : model.validate with
+  | .error cause => .error (.model cause)
+  | .ok () =>
+    match hTargetOwned : model.lookupUniqueId targetField with
+    | .error cause => .error (.target cause)
+    | .ok targetDeclaration =>
+      if hGroup : targetDeclaration.groupPath = declaringGroup then
+        match hKind : targetDeclaration.policy.kind with
+        | .string =>
+          match hMode : targetDeclaration.stringValueMode with
+          | .raw => .error (.rawStringTarget targetDeclaration.path)
+          | .evaluated =>
+            match hCustom : targetDeclaration.customType with
+            | some _ =>
+                .error (.customStringTarget targetDeclaration.path)
+            | none =>
+              match hEnumeration : targetDeclaration.enumeration with
+              | some _ =>
+                  .error (.enumeratedStringTarget targetDeclaration.path)
+              | none =>
+                if hRepeatable :
+                    targetDeclaration.repeatableScope.isEmpty then
+                  .error (.targetNotRepeatable targetDeclaration.path)
+                else
+                  match hSourceResolved :
+                      model.resolveFieldDeclarationUnchecked
+                        declaringGroup sourceReference with
+                  | .error cause => .error (.source cause)
+                  | .ok sourceDeclaration =>
+                    match hSourceKind :
+                        sourceDeclaration.policy.kind with
+                    | .number info =>
+                      if hScope :
+                          sourceDeclaration.repeatableScope =
+                            targetDeclaration.repeatableScope then
+                        .ok {
+                          declaringGroup
+                          sourceReference
+                          targetField
+                          targetDeclaration
+                          sourceDeclaration
+                          modelWellFormed := by
+                            rw [hModel]
+                            rfl
+                          targetOwned := hTargetOwned
+                          sourceResolved := hSourceResolved
+                          targetInDeclaringGroup := hGroup
+                          targetString := hKind
+                          targetEvaluated := hMode
+                          targetOrdinary := hCustom
+                          targetNotEnumerated := hEnumeration
+                          sourceNumber := ⟨info, hSourceKind⟩
+                          targetRepeatable := by
+                            intro empty
+                            simp [empty] at hRepeatable
+                          sameScope := hScope
+                        }
+                      else
+                        .error (.scopeMismatch
+                          targetDeclaration.path sourceDeclaration.path)
+                    | actual =>
+                        .error (.sourceKindMismatch
+                          sourceDeclaration.path actual.surfaceKind)
+        | actual =>
+            .error (.targetKindMismatch
+              targetDeclaration.path actual.surfaceKind)
+      else
+        .error (.targetOutsideDeclaringGroup
+          targetDeclaration.path declaringGroup)
+
+inductive AddressedFieldValueAsStringFault where
+  | targetRows (cause : ActualRowEnvironmentError)
+  | environment (cause : EnvBindingError)
+  | sourceRead (cause : CheckedDocumentError)
+  | evaluation (cause : StringComputationFault)
+  deriving Repr, DecidableEq
+
+namespace CheckedAddressedFieldValueAsString
+
+/-- The physically instantiated environments at the operation's exact target scope. -/
+def targetEnvironments
+    (operation : CheckedAddressedFieldValueAsString model)
+    (input : CheckedDocument model) :
+    Except ActualRowEnvironmentError (List Env) :=
+  input.actualRowEnvironments operation.targetDeclaration.repeatableScope
+
+private def stringCell (cell : CheckedCell String) : CheckedCell := {
+  rawPresent := cell.rawPresent
+  parsed := cell.parsed.map Value.str
+  findings := cell.findings
+}
+
+/-- Execute one addressed instance per physical target environment and retain the exact row key for later result classification and application. -/
+def execute (operation : CheckedAddressedFieldValueAsString model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    Except AddressedFieldValueAsStringFault
+      (List (SourcedStringTargetOutcome CellAddr)) := do
+  let matcher ← match patterns.targetMatcher? operation.targetField with
+    | some matcher => pure matcher
+    | none =>
+        throw (.evaluation
+          (.targetPatternUnavailable operation.targetField))
+  let environments ←
+    (operation.targetEnvironments input).mapError .targetRows
+  environments.mapM fun environment => do
+    let path ←
+      (environment.pathForScope
+        operation.targetDeclaration.repeatableScope).mapError .environment
+    let sourceAddress : CellAddr := {
+      field := operation.sourceDeclaration.id
+      path
+    }
+    let targetAddress : CellAddr := {
+      field := operation.targetField
+      path
+    }
+    let sourceCell ←
+      (input.readNumberFormalText sourceAddress).mapError .sourceRead
+    let context : StringComputationContext := {
+      read := fun field =>
+        if field == operation.sourceDeclaration.id then
+          stringCell sourceCell
+        else
+          malformedCheckedCell
+    }
+    let store ←
+      ((StringExpr.fieldValueAsString operation.sourceDeclaration.id).evaluate
+        context).mapError .evaluation
+    pure {
+      targetField := targetAddress
+      outcome :=
+        operation.targetDeclaration.stringPolicy.checkTargetWithPattern
+          matcher store
+      source := input.sourceStringTargetStateAt targetAddress
+    }
+
+/-- Classify the addressed rich outcomes against the immutable source document without collapsing their exact row keys. -/
+def executeResult
+    (operation : CheckedAddressedFieldValueAsString model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage) :
+    Except AddressedFieldValueAsStringFault
+      (StringComputationRunView ResidualMessage CellAddr) := do
+  let outcomes ← operation.execute patterns input
+  pure (StringComputationRunView.fromSourcedOutcomes
+    residualMessages outcomes)
+
+end CheckedAddressedFieldValueAsString
+
+end A12Kernel

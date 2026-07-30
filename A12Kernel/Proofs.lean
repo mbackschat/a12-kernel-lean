@@ -133,6 +133,7 @@ import A12Kernel.Proofs.StringComputationRun
 import A12Kernel.Proofs.StringComputationRunRelation
 import A12Kernel.Proofs.StringComputationRunResult
 import A12Kernel.Proofs.StringComputationRunApplication
+import A12Kernel.Proofs.AddressedFieldValueAsString
 import A12Kernel.Proofs.NumberToStringComputationRun
 import A12Kernel.Proofs.StringToNumberComputationRun
 import A12Kernel.Proofs.ScalarComputationRun
