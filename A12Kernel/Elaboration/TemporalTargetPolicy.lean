@@ -3,7 +3,7 @@ import A12Kernel.Semantics.TemporalTarget
 
 /-! # Checked temporal declaration policy
 
-This capsule resolves one nonrepeatable temporal declaration against a validated flat model and retains the complete declaration-owned format policy plus the model-owned time zone. Its first consumers render computed targets and certify stored partial-Date `ValueAsDate`; the bounded target refinements render Time in its exact whole-second format without zone resolution, concrete Date values in two exact formats, and DateTime in the kernel's standard whole-second format against one concrete model-zone profile. Parsing stored text, delta classification, and application remain separate.
+This capsule resolves one nonrepeatable temporal declaration against a validated flat model and retains the complete declaration-owned format policy plus the model-owned time zone. Its first consumers render computed targets and certify stored partial-Date `ValueAsDate`; the bounded target refinements render Time in its exact whole-second format without zone resolution, FULL Date values in two exact formats, and DateTime in the kernel's standard whole-second format against one concrete model-zone profile. Parsing stored text, delta classification, and application remain separate.
 -/
 
 namespace A12Kernel
@@ -121,16 +121,18 @@ def elaborateTimeTarget
 inductive FullDateTargetElabError where
   | targetPolicy (error : TemporalTargetElabError)
   | targetKind (target : FieldId) (actual : TemporalKind)
+  | partialPrecision (target : FieldId) (actual : TemporalPartialMode)
   | unsupportedFormat (target : FieldId) (source : String)
   | unsupportedZone (zoneId : String)
   deriving Repr, DecidableEq
 
-/-- One checked concrete-Date target with an executable format and concrete model-zone profile. Its declaration may also permit partially known stored inputs; computation itself supplies no unknown fragments. -/
+/-- One checked FULL Date target with an executable format and concrete model-zone profile. Partial precision is a stored-input capability rejected by computation authoring. -/
 structure CheckedFullDateTarget (model : FlatModel) where
   checked : CheckedTemporalTargetPolicy model
   format : FullDateTargetFormat
   profile : ModelZone.ConcreteProfile
   targetIsDate : checked.target.kind = .date
+  precisionFull : checked.policy.partialMode = .full
   formatMatches :
     FullDateTargetFormat.ofSource? checked.policy.format = some format
   profileMatches :
@@ -138,27 +140,32 @@ structure CheckedFullDateTarget (model : FlatModel) where
 
 namespace CheckedTemporalTargetPolicy
 
-/-- Refine a checked temporal target to the first executable concrete-Date subset. Partial modes remain admitted because every one accepts a fully known Date; wider kinds, formats, and zones are explicit refusals. -/
+/-- Refine a checked temporal target to the executable FULL Date subset. Partial precision, wider kinds, formats, and zones are explicit refusals. -/
 def toFullDateTarget
     (checked : CheckedTemporalTargetPolicy model) :
     Except FullDateTargetElabError (CheckedFullDateTarget model) := do
   if hDate : checked.target.kind = .date then
-    match hFormat :
-        FullDateTargetFormat.ofSource? checked.policy.format with
-    | none =>
-        throw (.unsupportedFormat checked.target.id checked.policy.format)
-    | some format =>
-        match hProfile :
-            ModelZone.ConcreteProfile.ofId? checked.timeZoneId with
-        | none => throw (.unsupportedZone checked.timeZoneId)
-        | some profile =>
-            pure {
-              checked
-              format
-              profile
-              targetIsDate := hDate
-              formatMatches := hFormat
-              profileMatches := hProfile }
+    match hPrecision : checked.policy.partialMode with
+    | .full =>
+        match hFormat :
+            FullDateTargetFormat.ofSource? checked.policy.format with
+        | none =>
+            throw (.unsupportedFormat checked.target.id checked.policy.format)
+        | some format =>
+            match hProfile :
+                ModelZone.ConcreteProfile.ofId? checked.timeZoneId with
+            | none => throw (.unsupportedZone checked.timeZoneId)
+            | some profile =>
+                pure {
+                  checked
+                  format
+                  profile
+                  targetIsDate := hDate
+                  precisionFull := hPrecision
+                  formatMatches := hFormat
+                  profileMatches := hProfile }
+    | mode =>
+        throw (.partialPrecision checked.target.id mode)
   else
     throw (.targetKind checked.target.id checked.target.kind)
 

@@ -65,7 +65,7 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ### SPEC-2026-07-29-02 — computed Time retains zone-free clock identity
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic extension
 - **Local revision:** `fcf7824a261df2b5a3d77b64ad51230100463331`
 - **a12-dmkits basis revision:** `ec853294e49af9b1eb90967077ac141e6caaa7a2`
@@ -76,8 +76,8 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Add this boundary to the canonical computation semantics and confirm the existing Time evaluator retains clock identity rather than a transport instant. Reuse the existing Time value, computation result, and target application owners; add only compact maintained separators for UTC/Berlin identical rendering, impossible/no-value, formal poison, changed/unchanged classification, and clearing/application. No new temporal representation or harness.
 - **Compatibility:** Treating the 1970 transport value as an exact instant makes Time zone-dependent; accepting a wider target format admits models rejected by authoring; converting impossible or non-relevant construction to an attempted `00:00:00` changes clearing and downstream reads.
 - **Acceptance:** Canonical peer prose and maintained existing-family cases state and separate exact `HH:mm:ss`, zone-free clock identity, no-value/poison, source-relative result classification, and exact application without adding a value type or harness; the handback supplies the exact reviewed revision and disposition.
-- **a12-dmkits handback checkpoint:** `5093cfb8a500a1093fce80520b64d7b1a02641d5`
-- **Disposition:** handed off; no upstream reconciliation had started at the reviewed checkpoint.
+- **a12-dmkits revision:** `0621f088c00eb157fbea2eaae265941f3e84e853`
+- **Disposition:** accepted — existing Time owners cover both full `Time(Hour, Minute, Second)` and `TimeFromDateTime` computation under UTC and Berlin. Dynamic Groovy, generated Java, the interpreter, JVM, and Node retain exact `10:30:45` through application; missing or impossible components clear a stale target and formal unavailability poisons it. Both kernel strategies additionally classify every clean computed Time as changed even when the source clock is identical, so applying that source-relative result overwrites a different destination clock. The exact cause of this classification remains deliberately unstated, and the interpreter's report-all API has no separate changed subset.
 
 <a id="spec-2026-07-29-01"></a>
 <a id="spec-2026-07-29-01--constructed-date-day-and-month-shifts-retain-distinct-overlap-instants"></a>
@@ -100,7 +100,7 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ### SPEC-2026-07-27-13 — `Date(...)` admits exact String patterns and a `yyyy` Year field
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic extension
 - **Local revision:** `57e512387eecf3cb16f907101a049a1f30d8f4f3`
 - **a12-dmkits basis revision:** `422dda2626cea8689935c87ea380a17bcd15cdfe`
@@ -111,12 +111,12 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Extend the existing Date-construction checker and evaluator owners, not the harness. Admit all five String positions with their exact widths, the six pattern forms parameterized by width, the existing extensible-enumeration alternative, and exact `yyyy` Date only at complete Year. Reuse the existing field-to-number and Date-construction mechanisms. Add compact maintained JVM/Node and both-kernel-route separators for mixed String/constant/extractor inputs, leading zeroes, empty, first formal failure, present out-of-range unreal input, regex-equivalent rejection, wrong width, the `yyyy` Year acceptance, and the same Date field rejected at Day, Month, Century, and Short-Year. Do not add another parser, Date AST, or harness.
 - **Compatibility:** Requiring Number fields rejects legal String and `yyyy` Date declarations. General regex equivalence, a wrong maximum length, arbitrary Date formats, or Date fields at another position widen authoring. Treating present out-of-range text as empty or clamping it changes validity polarity.
 - **Acceptance:** Canonical prose, peer authoring/runtime, and maintained static/differential cases agree on the complete String and Year-Date gates plus empty/formal/unreal behavior; the handback supplies the exact reviewed revision plus per-surface disposition.
-- **a12-dmkits handback revision:** `8529c7200d1b5cdcd1ef7ba4364e905d73d4270b`
-- **Disposition:** handed off with a partial measurement under `IG107`: exact `yyyy` complete-Year admission and the six-pattern String arm were confirmed, but implementation and runtime locks remain open. No typed extensible-enumeration witness is available in current modelkit; `DG27` records that declaration gap.
+- **a12-dmkits revisions:** declaration prerequisite `e75cc6a176f78c9b4b5704bb3a398d4297845644`; temporal component completion `40683600584bd62f741641fa727bdde025114aec`
+- **Disposition:** accepted — the serializable declaration matrix now admits exact-width pattern-backed String fields in every Date position and an exact-`yyyy` Date field only at complete Year. Static laws retain all six recognized pattern spellings, width and regex-equivalence rejections, and the Year-only Date gate; dynamic Groovy, generated Java, the interpreter, JVM, and Node retain leading-zero conversion plus real, unreal, empty, and formal outcomes. The client-SPI extensible-String arm has no DM-JSON property and is source-characterized rather than represented; a12-dmkits deleted `DG27` as a false modelkit gap instead of inventing a declaration.
 
 ### SPEC-2026-07-27-12 — `Date(...)` extractor components are matching first-class sources
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic extension
 - **Local revision:** `9425e5aa129754f3e7a4316b461cb37439723a54`
 - **a12-dmkits basis revision:** `422dda2626cea8689935c87ea380a17bcd15cdfe`
@@ -127,8 +127,8 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Extend the existing Date-construction authoring and evaluator owners, not the harness. Admit the three matching extractor positions over the peer's existing legal Date/DateTime source expressions, retain empty/formal propagation and component order, and keep both split-year positions rejected. Add compact maintained JVM/Node and both-kernel-route separators for a mixed Day-extractor/constant/Year-extractor construction, empty and formal sources, a mismatched token, a missing source component with and without Base Year, one legal non-field source, a rejected direct temporal literal, and both split-year rejections. Reuse the existing Date extractor and construction mechanisms; do not add another temporal AST.
 - **Compatibility:** Restricting extraction to direct fields rejects Kernel-legal nested sources. Accepting Quarter, a mismatched component, Time, or either split-year position widens authoring. Collapsing empty to fixed zero or formal unavailability to empty changes construction reason and validation polarity.
 - **Acceptance:** Canonical prose, peer authoring/runtime, and maintained static/differential cases agree on token position, Date/DateTime source admission, Base-Year supplementation, nonliteral source breadth, empty/formal behavior, mixed sources, and split-year rejection; the handback supplies the exact reviewed revision plus per-surface disposition.
-- **a12-dmkits handback revision:** `5093cfb8a500a1093fce80520b64d7b1a02641d5`
-- **Disposition:** handed off with the static extractor placement matrix measured and retained under `IG108`; implementation, JVM/Node evaluation, and runtime empty/formal separators remain open.
+- **a12-dmkits revision:** `ec9ece23abccf9fdf94e569afd9b9da57892c548`
+- **Disposition:** accepted — the existing Date-construction and temporal-extractor owners retain matching Day/Month/Year positions, nonliteral Date/DateTime sources, Base-Year supplementation, source-before-construction order, and both split-year rejections. Dynamic Groovy, generated Java, the interpreter, JVM, and Node lock mixed extractor construction, empty omission, formal unavailability, and the accepted dynamic source routes without introducing another temporal AST.
 
 ### SPEC-2026-07-27-11 — `Date(...)` component constants use position-specific width and range gates
 
@@ -148,7 +148,7 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ### SPEC-2026-07-27-10 — `Date(...)` component Number fields use exact positional declaration gates
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic extension
 - **Local revision:** `f4522444d716f9b8b965f9038c96228811907094`
 - **a12-dmkits basis revision:** `422dda2626cea8689935c87ea380a17bcd15cdfe`
@@ -159,12 +159,12 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Extend the existing Date-construction checker and fixtures, not the harness. Preserve current construction behavior and add compact static acceptance/rejection cases for every three-/four-field stored-width and exact/flexible-maximum branch, `maxIntegerDigits` as a false alternative, a fractional field, a signed field without a lower bound, and a signed field with minimum zero. Keep String/extractor component forms in their existing owners.
 - **Compatibility:** Treating every zero-scale Number field or every matching integer-digit cap as legal widens authoring. Requiring exact maxima 9999 or 99 for the flexible complete-Year/Century positions rejects Kernel-legal declarations; accepting a smaller complete-Year/Century maximum or a flexible Short-Year maximum widens authoring. Adding the two year parts or treating fixed zero as empty changes runtime results.
 - **Acceptance:** Canonical prose, peer authoring, and maintained static cases agree on every named three-/four-field Number declaration branch; the existing four-part runtime differential remains green without a duplicate evaluator; and the handback supplies the exact reviewed revision plus per-surface disposition.
-- **a12-dmkits handback revision:** `8529c7200d1b5cdcd1ef7ba4364e905d73d4270b`
-- **Disposition:** handed off with the effective-zero fractional, nonnegative-domain, and positional-maximum arms measured under `IG107`. The stored-length arm and `maxIntegerDigits` separator have no typed modelkit witness at this checkpoint; `DG26` records the missing declarations, so implementation and complete static locks remain open.
+- **a12-dmkits revisions:** Number text-bound prerequisite `e75cc6a176f78c9b4b5704bb3a398d4297845644`; temporal component completion `40683600584bd62f741641fa727bdde025114aec`
+- **Disposition:** accepted — modelkit and CLI now retain Number `minLength`, `maxLength`, and `maxIntegerDigits` as distinct declarations. The maintained static matrix covers every three- and four-part Date position through its stored-width or exact/flexible maximum branch, and separates `maxIntegerDigits`, fractional allowance, signed domains, and positional near misses. Existing four-part execution remains under the common Date-construction evaluator.
 
 ### SPEC-2026-07-27-08 — `Time(...)` component fields use exact positional declaration gates
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic extension
 - **Local revision:** `4d94f5c9f8b271c4a986f41d4e256a4c084b518a`
 - **a12-dmkits basis revision:** `024b27550364e9e317315aad58bd272a63d5c587`
@@ -175,12 +175,12 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Extend the existing Time-construction checker and evaluator owners, not the harness. Preserve the existing full-field differential and add static acceptance/rejection controls that separate maximum stored length from `maxIntegerDigits`, exact 23 versus 59 position bounds, fractional and signed-without-nonnegative-minimum Number declarations, the extensible-enumeration String arm, every recognized digit-only String pattern, wrong extractors, and one-to-three field prefixes. Add runtime String controls for leading-zero decimal conversion, empty-input incompleteness, and a two-digit but impossible hour remaining present/unreal.
 - **Compatibility:** Treating any two-integer-digit Number as fixed-width admits declarations the Kernel rejects. Requiring both length and exact maximum, accepting a merely smaller maximum, rejecting the extensible-enumeration String arm, or accepting arbitrary digit-shaped regexes changes static legality. A generic extractor erases the positional mismatch error.
 - **Acceptance:** Canonical prose and the peer checker/evaluator agree on every named declaration branch and prefix arity; maintained JVM/Node controls and both available kernel strategies retain the full three-field path plus the separating static cases; the handback supplies the exact reviewed revision and per-surface disposition.
-- **a12-dmkits handback revision:** `8529c7200d1b5cdcd1ef7ba4364e905d73d4270b`
-- **Disposition:** handed off with the effective-zero fractional, nonnegative-domain, exact positional-maximum, and six-pattern String arms measured under `IG107`. The stored-length and `maxIntegerDigits` branches lack the typed declarations recorded by `DG26`, and the extensible-enumeration arm lacks the `DG27` declaration; implementation and complete locks remain open.
+- **a12-dmkits revisions:** Number text-bound prerequisite `e75cc6a176f78c9b4b5704bb3a398d4297845644`; temporal component completion `40683600584bd62f741641fa727bdde025114aec`
+- **Disposition:** accepted — typed authoring and maintained static laws cover the Time positions through exact stored width or positional maximum, effective-zero fractional allowance, nonnegative domain, all six exact String patterns, and the `maxIntegerDigits` near miss. Dynamic Groovy, generated Java, the interpreter, JVM, and Node retain leading-zero String conversion, impossible clocks as present/unreal, mixed typed components, empty input, and formal unavailability. The source-characterized client-SPI extensible-String arm remains outside DM-JSON rather than becoming an invented modelkit declaration.
 
 ### SPEC-2026-07-27-09 — `Time(...)` extractor components admit nonliteral Time-bearing sources
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic extension
 - **Local revision:** `9662b9e940d4221e7905380f87bc5c5fcbbbd6b0`
 - **a12-dmkits basis revision:** `422dda2626cea8689935c87ea380a17bcd15cdfe`
@@ -191,12 +191,12 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Extend the existing Time-construction and temporal-expression owners, not the harness. Preserve the current direct extractor behavior and add the smallest static/runtime cases for a mixed Number/extractor prefix, Time and DateTime field sources, an empty extractor source that leaves the constructor incomplete, `HoursFromTime(AddHours(DateTimeField, 1))` across a model-zone transition, the dynamic `HoursFromTime(AddHours(Now, amount))` companion with a changing-world control, and a domain-invalid shift amount whose valueless DateTime projects to fixed zero rather than missing. Retain the rejected direct-literal and wrong-position controls.
 - **Compatibility:** Restricting extractor sources to fields rejects legal nested temporal expressions. Accepting a direct literal inside an extractor or a mismatched token widens static legality. Dropping the extractor's missing provenance incorrectly turns an empty source into a regular zero and can manufacture midnight; forwarding all temporal no-value as missing has the opposite error for a reached domain-invalid shift.
 - **Acceptance:** Canonical prose, typed authoring, conversion, and evaluation retain the source expression, exact positional token, source-before-extractor order, explicit dynamic-world dependency, and fixed-versus-missing zero distinction; maintained JVM/Node controls and both available kernel strategies separate all requested accounts, including the shifted transition, changing-world `Now`, and domain-invalid amount; existing direct temporal-component and Time-construction owners remain singular; the handback supplies the exact reviewed revision and per-surface disposition.
-- **a12-dmkits handback revision:** `5093cfb8a500a1093fce80520b64d7b1a02641d5`
-- **Disposition:** handed off with the static matching-token, nonliteral-source, direct-literal rejection, and four-part rejection matrix retained under `IG108`; typed implementation and runtime reason/order locks remain open.
+- **a12-dmkits revision:** `ec9ece23abccf9fdf94e569afd9b9da57892c548`
+- **Disposition:** accepted — temporal extractor provenance now survives nested evaluation. Static laws retain the matching Hour/Minute/Second tokens, nonliteral Time/DateTime source breadth, direct-literal refusal, and position mismatches. Dynamic Groovy, generated Java, the interpreter, JVM, and Node separate empty-source missing zero from reached valueless fixed zero, preserve formal unavailability and source-before-extractor order, and cover shifted transition plus changing-`Now` sources through the existing temporal owners.
 
 ### SPEC-2026-07-27-07 — `TimeFromDateTime` projects the model-zone wall clock
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic extension
 - **Local revision:** `9a526cdb3e2d31919cef12a2542d1265bf2165fe`
 - **a12-dmkits basis revision:** `38ee82962c3edb6ef8db493d32665e270de2e778`
@@ -207,8 +207,8 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Extend the existing temporal extraction and DateTime-construction owners, not the harness. State the complete-DateTime gate, valueless-reason preservation, wall-clock-only result, and outer Date-before-Time order. Retain the existing ordinary and overlap extraction differentials, add static rejection of one missing component, and add compact JVM/Node plus both-kernel-route controls for `DateTime(ValueAsDate(partial, LastDay), TimeFromDateTime(source))`, empty source, and Date-side formal short-circuit.
 - **Compatibility:** Accepting Date, Time, or partial DateTime sources changes static legality. Reusing the source exact instant makes a Time-only consumer depend on the discarded Date and DST occurrence. Re-resolving a retained ambiguous label may choose another instant, while evaluating the extraction before the outer Date changes which formal cause wins.
 - **Acceptance:** Canonical prose and the typed evaluator agree on admission, reason propagation, wall-clock projection, and outer order; maintained JVM/Node and both available kernel routes retain the ordinary, overlap, empty, static-rejection, and partial-Date composition separators; the handback supplies the exact reviewed revision and per-surface disposition.
-- **a12-dmkits handback revision:** `5093cfb8a500a1093fce80520b64d7b1a02641d5`
-- **Disposition:** handed off with the complete-DateTime static gate measured and retained under `IG108`; the model-zone runtime projection, valueless reasons, and outer evaluation-order locks remain open.
+- **a12-dmkits revision:** `ec9ece23abccf9fdf94e569afd9b9da57892c548`
+- **Disposition:** accepted — the existing extractor requires a complete DateTime source, retains valueless provenance, and projects the model-zone wall clock rather than the source Date or exact instant. Dynamic Groovy, generated Java, the interpreter, JVM, and Node lock ordinary and overlap projection, empty/formal outcomes, the rejected incomplete source, and `DateTime(ValueAsDate(...), TimeFromDateTime(...))` with Date-before-Time evaluation.
 
 ### SPEC-2026-07-27-06 — Time constants are exact locale-independent `HH:mm:ss`
 
@@ -228,7 +228,7 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ### SPEC-2026-07-27-05 — `Time(...)` defaults trailing components and retains no-value reasons
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic extension
 - **Local revision:** `f4f1aa7037c6eccae6102924f13cb2f1e11ffad0`
 - **a12-dmkits basis revision:** `52b10661f2d4ce21e0809442ce0c8867cf4bad7a`
@@ -239,8 +239,8 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Extend the existing Time-construction owner, not the harness: admit and render zero-, one-, and two-component prefixes with trailing zero defaults; retain incomplete versus present/unreal no-value; and preserve Date-before-Time evaluation in DateTime composition. Add compact JVM/Node and both-kernel-route separators for `Time()`, `Time("10")`, `Time("10","30")`, one empty checked field component, one fully present impossible runtime clock if reachable through the maintained fixture, and one Date-side formal failure that prevents the Time operand from deciding the result.
 - **Compatibility:** Requiring exactly three arguments rejects legal syntax. Treating omitted slots as missing makes `Time()` valueless instead of midnight. Collapsing a fully present impossible clock into not-given changes downstream reason and polarity behavior; evaluating Time first changes which formal failure wins.
 - **Acceptance:** Canonical prose and the shared evaluator state all four arities and both no-value reasons; maintained authoring/runtime cases cover the separators above on JVM, Node, and both available kernel strategies or document why the impossible-clock arm is statically unreachable; the handback supplies the exact reviewed revision and per-surface disposition.
-- **a12-dmkits handback revision:** `8529c7200d1b5cdcd1ef7ba4364e905d73d4270b`
-- **Disposition:** handed off and blocked under `IG105`: all four arities were measured kernel-legal, but the public `TimeConstruction(hour, minute, second)` type and three-argument evaluator erase the shorter prefixes. No implementation or acceptance lock landed.
+- **a12-dmkits revision:** `4f211673ad72fc29fd96c07b10ff0f391d90a41b`
+- **Disposition:** accepted — `TimeConstruction` now retains an immutable zero-to-three-component prefix and the public DSL, reader, renderer, parser, catalog, and evaluator preserve all four legal arities. Static, dual-kernel, interpreter, JVM, and Node locks retain fixed trailing zeroes, component order, the one-digit-hour acceptance, empty supplied components, and Date-before-Time composition. No second Time representation or harness was added.
 
 ### SPEC-2026-07-27-04 — Date-shift amounts use Java signed-32-bit narrowing
 
@@ -260,7 +260,7 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ### SPEC-2026-07-27-03 — partial-Date precision forms a suffix and unknown year is non-relevant
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic extension
 - **Local revision:** `cc58a58ee66c2f30462ac316a5a816d6e0d20e70`
 - **a12-dmkits basis revision:** `e3d6415e894365221c0b37c2880b5e215eba4946`
@@ -271,8 +271,8 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Extend the existing `DatePrecision`, formal-check, raw-value, and `ValueAsDate` owners to `MONTH_OPTIONAL` and `YEAR_OPTIONAL`; do not create a second partial-Date representation. Preserve unknown components until the operation selects a boundary, and keep the unknown-year non-relevant outcome distinct from empty, malformed, or a synthetic year. Add focused maintained JVM/Node and both-kernel-route cases rather than a new harness.
 - **Compatibility:** Treating each enum member as permitting only its named omission rejects legal less-partial values. Completing unknown year with the formal checker's temporary 2000 can make an enclosing comparison spuriously fire; collapsing it to ordinary emptiness loses the kernel's UNKNOWN result. Permitting `DD.00.YYYY` or `DD.MM.0000` accepts values the kernel rejects formally.
 - **Acceptance:** Canonical prose and model/runtime APIs name the complete suffix matrix; maintained cases separate month-first from month-last, known-year day omission under the wider modes, unknown-year UNKNOWN from both ordinary empty non-firing and year-2000 completion, and both illegal mixed omission shapes across JVM, Node, and both kernel strategies; the handback supplies the exact reviewed revision and per-surface disposition.
-- **a12-dmkits handback revision:** `8529c7200d1b5cdcd1ef7ba4364e905d73d4270b`
-- **Disposition:** handed off and blocked under `IG106`: kernel admission of `MONTH_OPTIONAL` and `YEAR_OPTIONAL` was measured, but `ModelLoader` still rejects both and the interpreter precision enum cannot represent them. No implementation or acceptance matrix landed.
+- **a12-dmkits revision:** `e6b1d1a8f154c68c80cdbc08148fa651db183735`
+- **Disposition:** accepted — the existing Date precision, loader, formal-check, raw-value, and `ValueAsDate` owners now cover the complete monotone suffix. Dynamic Groovy, generated Java, the interpreter, JVM, and Node separate both known-year month boundaries, narrower legal shapes under wider modes, unknown-year UNKNOWN from empty and year-2000 substitution, and both illegal omission orders. The obsolete loader refusal was removed rather than adding a second partial-Date representation.
 
 ### SPEC-2026-07-27-02 — `ValueAsDate` is admitted in explicit nested Date positions
 
@@ -292,7 +292,7 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ### SPEC-2026-07-27-01 — computed Dates remain concrete in partial-precision targets
 
-- **Status:** handed-off
+- **Status:** rejected
 - **Kind:** semantic correction
 - **Local revision:** `14ff51171b64a194938e19436a3c6a97b119e412`
 - **a12-dmkits basis revision:** `e3d6415e894365221c0b37c2880b5e215eba4946`
@@ -303,8 +303,8 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Add this rule to the canonical computation/Date account and reuse the existing Date target renderer and basic-check owner. Admit computed Date targets for all four Date precisions instead of either rejecting partial modes or converting a concrete result to an unknown-fragment value. Extend the existing computation/date target family with the same instant assigned to `FULL`, `DAY_OPTIONAL`, `MONTH_OPTIONAL`, and `YEAR_OPTIONAL` targets, plus a pre-1900 enabled control proving the additional check still rejects the exact rendered attempt. The current interpreter supports only `DAY_OPTIONAL`; reconcile the two wider modes at their existing model/loader/formal owner rather than adding a computation-only precision type.
 - **Compatibility:** Rejecting a partial-precision target blocks a kernel-legal computation. Replacing concrete fragments with zeroes stores a different value and changes downstream Date semantics. Skipping the later basic checks accepts a pre-1900 attempt that the kernel reports as an errored computed value.
 - **Acceptance:** Peer prose states the render-first concrete-result rule; maintained JVM, Node, and both available kernel-strategy cases cover all four precision modes plus the pre-1900 separator; the existing Date precision, renderer, formal-check, and computation owners remain singular; and the handback supplies the exact reviewed revision plus per-surface disposition.
-- **a12-dmkits handback checkpoint:** `5093cfb8a500a1093fce80520b64d7b1a02641d5`
-- **Disposition:** handed off; no upstream reconciliation had started at the reviewed checkpoint. `IG106` records the precision representation blocker shared with the wider target modes.
+- **a12-dmkits revision:** `456dca65dbd680b6ef33d20a66651f33d565b4d7`
+- **Disposition:** rejected with contrary kernel evidence. The entry's authorability premise was false: kernel 30.8.1 admits the `FULL` computation target but rejects `DAY_OPTIONAL`, `MONTH_OPTIONAL`, and `YEAR_OPTIONAL` targets with `MVK_INVALID_DATE_TYPE` because the generated implicit validation comparison reads the computed target; suppressing that error is rejected with `MVK_INVALID_SUPPRESSED_WARNING`. A separate maintained dual-kernel case retains the `FULL` target's exact `31.12.1899` attempt as ERRORED when the pre-1900 check is enabled and accepts `01.01.1900`. Local canonical prose and the checked target policy now reject every partial precision rather than manufacturing unknown fragments or claiming those targets are legal.
 
 ### SPEC-2026-07-26-01 — starred group-list iteration guards are operator- and operand-sensitive
 

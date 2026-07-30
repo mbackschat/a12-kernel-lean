@@ -194,11 +194,12 @@ example :
         .poison .malformed := by
   native_decide
 
-/- Unchanged success stays public but is not a change; changed success is in both projections. -/
+/- Kernel 30.8.1 reports every clean computed Time in the changed subset, including source-identical text. -/
 example :
     (view? oldSource (.accepted oldTime)).map
         (fun view => (view.withoutErrors, view.withChanges)) =
-      some ([{ targetField := 1, value := oldTime }], []) ∧
+      some ([{ targetField := 1, value := oldTime }],
+        [{ targetField := 1, value := oldTime }]) ∧
     (view? oldSource (.accepted nextTime)).map
         (fun view => (view.withoutErrors, view.withChanges)) =
       some ([{ targetField := 1, value := nextTime }],
@@ -230,6 +231,17 @@ example :
         let applied ← view.applyTo
           (destinationWith (.presentValue nextTime)) |>.toOption
         pure (applied 1)) = some .presentEmpty := by
+  native_decide
+
+/- Source-identical Time remains an application action and overwrites a different destination clock. -/
+example :
+    (do
+      let view ← view? oldSource (.accepted oldTime)
+      let applied ←
+        view.applyTo (destinationWith (.presentValue nextTime)) |>.toOption
+      pure (view.withChanges, applied 1)) =
+      some ([{ targetField := 1, value := oldTime }],
+        .presentValue oldTime) := by
   native_decide
 
 /- A duplicate clear/write target is rejected before destination state participates. -/

@@ -37,24 +37,11 @@ theorem fullDateTarget_evaluateCivil_beforeGregorianFloor
   simp [CheckedFullDateTarget.evaluateCivil, noAdditionalCheck,
     beforeFloor]
 
-/-- Computed-Date evaluation observes only the selected renderer, zone profile, and additional check. In particular, a target's partial-input mode cannot manufacture unknown fragments in the concrete result. -/
-theorem fullDateTarget_evaluate_ignoresPartialMode
-    (left : CheckedFullDateTarget leftModel)
-    (right : CheckedFullDateTarget rightModel)
-    (result : TemporalComputationResult)
-    (sameFormat : left.format = right.format)
-    (sameProfile : left.profile = right.profile)
-    (sameAdditionalCheck :
-      left.checked.policy.youngerThan1900Check =
-        right.checked.policy.youngerThan1900Check) :
-    left.evaluate result = right.evaluate result := by
-  cases result with
-  | noValue => rfl
-  | poison => rfl
-  | value instant =>
-      simp [CheckedFullDateTarget.evaluate, sameProfile,
-        CheckedFullDateTarget.evaluateCivil, sameFormat,
-        sameAdditionalCheck]
+/-- Every executable computed-Date target carries the FULL-precision authoring certificate. -/
+@[simp] theorem checkedFullDateTarget_precisionFull
+    (target : CheckedFullDateTarget model) :
+    target.checked.policy.partialMode = .full :=
+  target.precisionFull
 
 /-- DateTime rendering uses the local wall label selected from the exact input instant; no caller-supplied label or host zone can replace it. -/
 theorem dateTimeTarget_evaluate_value

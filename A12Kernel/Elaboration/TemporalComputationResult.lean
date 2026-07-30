@@ -169,11 +169,9 @@ def successfulInstance? :
   | (targetField, .accepted value) => some { targetField, value }
   | _ => none
 
-/-- Compare exact opaque stored text against the immutable source document. -/
-def sourceValueChanged (input : CheckedDocument model)
-    (computed : TimeComputedInstance) : Bool :=
-  (input.sourceTimeTargetState computed.targetField).storedValue !=
-    some computed.value
+/-- Kernel 30.8.1 reports every clean computed Time in the changed subset, including a clock text equal to the source. The causal implementation detail is deliberately not modeled. -/
+def reportsChanged (_computed : TimeComputedInstance) : Bool :=
+  true
 
 /-- A source-filled Time target is cleared exactly when no computed-data instance was produced. -/
 def shouldClear (input : CheckedDocument model)
@@ -187,7 +185,7 @@ def fromOutcomes (input : CheckedDocument model)
     (outcomes : List (FieldId × TimeTargetOutcome)) :
     TimeComputationRunView ResidualMessage :=
   TemporalComputationRunView.fromValueOutcomes
-    successfulInstance? (sourceValueChanged input) (shouldClear input)
+    successfulInstance? reportsChanged (shouldClear input)
     residualMessages outcomes
 
 /-- Time reports an error exactly when the supplied residual channel is nonempty. -/

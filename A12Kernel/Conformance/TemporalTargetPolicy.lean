@@ -173,25 +173,33 @@ example :
           nonempty := by decide }) := by
   native_decide
 
-/- A concrete computed Date renders identically for every target precision: partial modes permit unknown input fragments but do not manufacture them in a computed result. -/
+/- Computation admits only a FULL Date target. Partial precision is legal for stored inputs but rejected before target execution. -/
 example :
     let instant := utcInstant? 2024 4 7 0 0 0
-    [ .full, .dayOptional, .monthOptional, .yearOptional ].map
+    [ .dayOptional, .monthOptional, .yearOptional ].map
         (fun mode =>
-          evaluateAt? (fullDateModel "dd.MM.yyyy" "UTC" mode) instant) =
-      List.replicate 4 (some (.accepted {
-        text := "07.04.2024"
-        nonempty := by decide })) := by
+          fullDateElabError?
+            (fullDateModel "dd.MM.yyyy" "UTC" mode)) =
+      [ some (.partialPrecision 0 .dayOptional)
+      , some (.partialPrecision 0 .monthOptional)
+      , some (.partialPrecision 0 .yearOptional) ] ∧
+      evaluateAt? (fullDateModel "dd.MM.yyyy" "UTC") instant =
+        some (.accepted {
+          text := "07.04.2024"
+          nonempty := by decide }) := by
   native_decide
 
-/- Partial-mode admission precedes the ordinary basic checks, so the opt-in pre-1900 rejection remains exact rather than becoming an unknown-fragment result. -/
+/- Partial-target rejection precedes ordinary basic checks, while the FULL target retains the exact pre-1900 attempt. -/
 example :
     let instant := utcInstant? 1899 12 31 0 0 0
-    evaluateAt?
-        (fullDateModel "dd.MM.yyyy" "UTC" .yearOptional true) instant =
-      some (.errored {
-        text := "31.12.1899"
-        nonempty := by decide } .before1900) := by
+    fullDateElabError?
+        (fullDateModel "dd.MM.yyyy" "UTC" .yearOptional true) =
+        some (.partialPrecision 0 .yearOptional) ∧
+      evaluateAt?
+          (fullDateModel "dd.MM.yyyy" "UTC" .full true) instant =
+        some (.errored {
+          text := "31.12.1899"
+          nonempty := by decide } .before1900) := by
   native_decide
 
 /- Every remaining excluded static axis fails explicitly before target execution. -/

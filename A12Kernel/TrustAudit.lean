@@ -219,6 +219,7 @@ run_cmd do
 #print axioms A12Kernel.checkedTimeConstructionComputation_excludes_target
 #print axioms A12Kernel.checkedTimeConstructionComputation_evaluate_value
 #print axioms A12Kernel.timeComputationRun_noErrorOccurred_iff
+#print axioms A12Kernel.timeComputationRun_reportsChanged
 #print axioms A12Kernel.timeComputationRun_residualMessages_doNotAffectApplication
 #print axioms A12Kernel.partiallyKnownDateValue_resolve_full
 #print axioms A12Kernel.valueAsDate_evaluate_value
@@ -261,7 +262,7 @@ run_cmd do
 #print axioms A12Kernel.valueAsDateDayDifference_evaluate_nonRelevant_empty
 #print axioms A12Kernel.fullDateTarget_evaluate_pre1900
 #print axioms A12Kernel.fullDateTarget_evaluateCivil_beforeGregorianFloor
-#print axioms A12Kernel.fullDateTarget_evaluate_ignoresPartialMode
+#print axioms A12Kernel.checkedFullDateTarget_precisionFull
 #print axioms A12Kernel.dateTimeTarget_evaluate_value
 #print axioms A12Kernel.dateTimeComputation_transports_now
 #print axioms A12Kernel.dateTimeTargetApplies_iff_applyTo

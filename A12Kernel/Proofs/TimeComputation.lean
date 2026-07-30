@@ -70,6 +70,11 @@ theorem timeComputationRun_noErrorOccurred_iff
   simp [TimeComputationRunView.noErrorOccurred,
     TemporalComputationRunView.noErrorOccurred, noComputedErrors]
 
+/-- Every successful Time instance enters the kernel's source-relative changed subset, even when its stored clock text equals the source. -/
+@[simp] theorem timeComputationRun_reportsChanged
+    (computed : TimeComputedInstance) :
+    TimeComputationRunView.reportsChanged computed = true := rfl
+
 /-- Residual messages never change already-classified Time application actions. -/
 theorem timeComputationRun_residualMessages_doNotAffectApplication
     (input : CheckedDocument model)
