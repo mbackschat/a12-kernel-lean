@@ -130,40 +130,29 @@ namespace CheckedConstructedDateShift
 
 private inductive DifferenceOperand where
   | unavailable (cause : FormalCause)
-  | unknown
   | noValue (notGiven : Bool)
-  | fresh (parts : DateParts)
   | exact (instant : Instant) (parts : DateParts) (notGiven : Bool)
 
 namespace DifferenceOperand
 
-def ofConstruction : ConstructedDateObservation → DifferenceOperand
-  | .unavailable cause => .unavailable cause
-  | .resolved .unknown => .unknown
-  | .resolved .incomplete => .noValue true
-  | .resolved .unreal => .noValue false
-  | .resolved (.real parts) => .fresh parts
-
-def ofShift : ConstructedDateShiftResult → DifferenceOperand
+def ofValue : ConstructedDateValue → DifferenceOperand
   | .unavailable cause => .unavailable cause
   | .noValue notGiven => .noValue notGiven
   | .value instant parts notGiven => .exact instant parts notGiven
 
 def notGiven : DifferenceOperand → Bool
   | .noValue notGiven | .exact _ _ notGiven => notGiven
-  | .unavailable _ | .unknown | .fresh _ => false
+  | .unavailable _ => false
 
 def parts? : DifferenceOperand → Option DateParts
-  | .fresh parts | .exact _ parts _ => some parts
-  | .unavailable _ | .unknown | .noValue _ => none
+  | .exact _ parts _ => some parts
+  | .unavailable _ | .noValue _ => none
 
 def berlinResolved? : DifferenceOperand → Option (LocalDateTime × Instant)
-  | .fresh parts =>
-      CheckedConstructedDateDifference.resolveBerlin? parts
   | .exact instant _ _ =>
       (ModelZone.ConcreteProfile.europeBerlin.localDateTime? instant).map
         (·, instant)
-  | .unavailable _ | .unknown | .noValue _ => none
+  | .unavailable _ | .noValue _ => none
 
 end DifferenceOperand
 
@@ -197,36 +186,35 @@ private def differenceOperands?
   match first, second with
   | .unavailable cause, _ => some (.error cause)
   | _, .unavailable cause => some (.error cause)
-  | .unknown, _ | _, .unknown => some (.ok .unavailable)
   | .noValue _, _ | _, .noValue _ =>
       some (.ok (.value 0 (first.notGiven || second.notGiven)))
   | first, second =>
       (differenceValueOperands? profile unit first second).map fun amount =>
         .ok (.value amount (first.notGiven || second.notGiven))
 
-/-- Combine one exact checked shift result with one direct constructed-Date
-    observation in authored operand order. The shifted value's exact instant and
-    missing provenance remain observable to the difference. -/
+/-- Combine one exact checked shift with one exact direct constructed Date in
+    authored operand order. Both operands retain their selected instants and missing
+    provenance through the shared value boundary. -/
 def differenceWithConstruction?
     (profile : ModelZone.ConcreteProfile) (unit : DateShiftUnit)
     (position : ConstructedDateShiftDifferencePosition)
     (shiftResult : ConstructedDateShiftResult)
-    (construction : ConstructedDateObservation) :
+    (construction : ConstructedDateValue) :
     Option (Except FormalCause ConstructedDateNumericResult) :=
   match position with
   | .first =>
       differenceOperands? profile unit
-        (.ofShift shiftResult) (.ofConstruction construction)
+        (.ofValue shiftResult) (.ofValue construction)
   | .second =>
       differenceOperands? profile unit
-        (.ofConstruction construction) (.ofShift shiftResult)
+        (.ofValue construction) (.ofValue shiftResult)
 
 private def finishDifference
     (checked : CheckedConstructedDateShift model)
     (position : ConstructedDateShiftDifferencePosition)
     (unit : DateShiftUnit)
     (shiftResult : ConstructedDateShiftResult)
-    (construction : ConstructedDateObservation) :
+    (construction : ConstructedDateValue) :
     Except ConstructedDateShiftDifferenceFault
       (Except FormalCause ConstructedDateNumericResult) :=
   match differenceWithConstruction?
@@ -236,7 +224,8 @@ private def finishDifference
 
 /-- Evaluate one checked shift and one direct constructed Date in authored operand
     order. The shifted operand retains its exact instant and missing provenance; the
-    direct operand is resolved freshly under the same checked model profile. -/
+    direct operand retains the instant selected by its one fresh resolution under
+    the same checked model profile. -/
 def evaluateDifferenceWith
     (checked : CheckedConstructedDateShift model)
     (other : CheckedConstructedDateComponents model)
@@ -254,14 +243,14 @@ def evaluateDifferenceWith
       | .error error => .error (.shiftSource error)
       | .ok (.unavailable cause) => .ok (.error cause)
       | .ok shiftResult =>
-          match other.evaluate phase input world with
+          match other.evaluateValue phase input world with
           | .error error => .error (.constructedSource error)
           | .ok (.unavailable cause) => .ok (.error cause)
           | .ok otherResult =>
               checked.finishDifference position unit
                 shiftResult otherResult
   | .second =>
-      match other.evaluate phase input world with
+      match other.evaluateValue phase input world with
       | .error error => .error (.constructedSource error)
       | .ok (.unavailable cause) => .ok (.error cause)
       | .ok otherResult =>

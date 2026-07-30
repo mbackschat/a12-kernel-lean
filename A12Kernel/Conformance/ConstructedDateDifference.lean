@@ -170,8 +170,8 @@ private def shiftedDifferencePreservesNotGiven : Bool :=
       .utc .days .first
         (.value { epochMillis := 1704067200000 }
           { year := 2024, month := 1, day := 1 } true)
-        (.resolved (.real
-          { year := 2024, month := 1, day := 2 })) with
+        (.value { epochMillis := 1704153600000 }
+          { year := 2024, month := 1, day := 2 } false) with
   | some (.ok (.value 1 true)) => true
   | _ => false
 

@@ -277,26 +277,67 @@ private def berlinYearShiftSeparators? : Option Bool := do
           { year := 1916, month := 9, day := 29 } false) => true
     | _, _, _, _, _ => false)
 
-private def berlinFreshOverlapComparisons? :
-    Option (Bool × Bool × Bool) := do
-  let day ←
-    berlinShift? 1916 berlinBeforeOverlapSources .days 1
-  let month ←
-    berlinShift? 1916 berlinSeptemberFirstSources .months 1
-  let year ←
-    berlinShift? 1915 berlinOctoberFirstSources .years 1
-  let overlapLabel ← LocalDateTime.ofYmdHms? 1916 10 1 0 0 0
-  let fresh ←
-    ModelZone.ConcreteProfile.europeBerlin.resolveLocal? overlapLabel
-  match day, month, year with
-  | .ok (.value dayInstant _ false),
-      .ok (.value monthInstant _ false),
-      .ok (.value yearInstant _ false) =>
-      pure (dayInstant == fresh, monthInstant == fresh, yearInstant == fresh)
-  | _, _, _ => none
+private def literalSources (day month year : String) :
+    SurfaceConstructedDateComponents := {
+  day := .constant day
+  month := .constant month
+  year := .complete (.constant year)
+}
 
-/- Fresh construction selects the later repeated-midnight instant. Source-offset day mutation remains unequal to it, while sign-independent month and year mutation are equal. -/
-example : berlinFreshOverlapComparisons? = some (false, true, true) := by
+private def compareBerlinShiftWithFresh?
+    (source : SurfaceConstructedDateComponents)
+    (unit : DateShiftUnit) (amount : Rat)
+    (fresh : SurfaceConstructedDateComponents)
+    (op : TemporalComparisonOp) : Option Verdict := do
+  let checkedSource ←
+    (elaborateConstructedDateSources berlinModel source).toOption
+  let checkedFresh ←
+    (elaborateConstructedDateSources berlinModel fresh).toOption
+  let input ← documentFor? berlinModel
+  let shift : CheckedConstructedDateShift berlinModel := {
+    source := checkedSource
+    unit
+    amount := .literal amount
+  }
+  let shifted ←
+    (shift.evaluate .validation input none).toOption
+  let constructed ←
+    (checkedFresh.evaluateValue .validation input none).toOption
+  pure (op.evalInstant
+    shifted.comparisonOperand
+    constructed.comparisonOperand)
+
+private def berlinFreshComparisonMatrix? :
+    Option (List Verdict) := do
+  let overlap := literalSources "1" "10" "1916"
+  let day := literalSources "30" "9" "1916"
+  let month := literalSources "1" "9" "1916"
+  let year := literalSources "1" "10" "1915"
+  let ordinary := literalSources "2" "6" "1917"
+  let ordinaryDay := literalSources "1" "6" "1917"
+  let ordinaryMonth := literalSources "2" "5" "1917"
+  let ordinaryYear := literalSources "2" "6" "1916"
+  pure [
+    ← compareBerlinShiftWithFresh? day .days 1 overlap .equal,
+    ← compareBerlinShiftWithFresh? day .days 1 overlap .notEqual,
+    ← compareBerlinShiftWithFresh? day .days 1 overlap .before,
+    ← compareBerlinShiftWithFresh? month .months 1 overlap .equal,
+    ← compareBerlinShiftWithFresh? month .months 1 overlap .notEqual,
+    ← compareBerlinShiftWithFresh? month .months 1 overlap .before,
+    ← compareBerlinShiftWithFresh? year .years 1 overlap .equal,
+    ← compareBerlinShiftWithFresh? year .years 1 overlap .notEqual,
+    ← compareBerlinShiftWithFresh? ordinaryDay .days 1 ordinary .equal,
+    ← compareBerlinShiftWithFresh? ordinaryMonth .months 1 ordinary .equal,
+    ← compareBerlinShiftWithFresh? ordinaryYear .years 1 ordinary .equal]
+
+/- Direct comparison consumes the retained shift instant and fresh-construction instant through the shared exact-instant comparator. The repeated-midnight rows lock false/true/true plus their inverse controls; ordinary midnight remains equal for every field mutation. -/
+example :
+    berlinFreshComparisonMatrix? =
+      some [
+        .notFired, .fired .value, .fired .value,
+        .fired .value, .notFired, .notFired,
+        .fired .value, .notFired,
+        .fired .value, .fired .value, .fired .value] := by
   native_decide
 
 /- Changing only the explicit world across UTC midnight changes all three components. -/

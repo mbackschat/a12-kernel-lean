@@ -6,8 +6,9 @@ import A12Kernel.Semantics.BerlinLegacyCalendarArithmetic
 
 This capsule evaluates one checked constructed Date followed by one or two generated
 calendar shifts. Fresh Date construction resolves a wall label exactly once. A nested
-shift consumes the inner result's exact instant directly, so repeated-hour identity is
-never lost through label reconstruction.
+shift consumes the inner result's exact instant directly, and a Date comparison
+projects that same retained instant into the shared temporal comparison domain, so
+repeated-hour identity is never lost through label reconstruction.
 
 UTC/GMT retain the carried legacy-hybrid date identity. Pinned Berlin decodes each
 continuation source from its exact instant before applying the unit-specific field
@@ -17,12 +18,8 @@ model zones, and shift-to-difference composition remain outside.
 
 namespace A12Kernel
 
-/-- Reason-bearing checked shift result retaining both exact instant and local Date parts. -/
-inductive ConstructedDateShiftResult where
-  | noValue (notGiven : Bool)
-  | value (instant : Instant) (parts : DateParts) (notGiven : Bool)
-  | unavailable (cause : FormalCause)
-  deriving Repr, DecidableEq
+/-- Compatibility name for the shared exact constructed-Date value boundary. -/
+abbrev ConstructedDateShiftResult := ConstructedDateValue
 
 /-- Structural failure outside constructed-Date and numeric-operand reason semantics. -/
 inductive ConstructedDateShiftFault where
@@ -40,14 +37,6 @@ structure CheckedConstructedDateShift (model : FlatModel) where
   amount : CheckedTemporalShiftAmount model
 
 namespace CheckedConstructedDateShift
-
-/-- Whether the already-evaluated constructed source carries omission provenance into the shift helper. -/
-def sourceNotGiven : ConstructedDateObservation → Bool
-  | .resolved .incomplete => true
-  | .resolved (.real _) => false
-  | .resolved .unreal => false
-  | .resolved .unknown => false
-  | .unavailable _ => false
 
 private def shiftResolved? (unit : DateShiftUnit)
     (result : DateConstructionResult) (offset : Int) :
@@ -100,46 +89,6 @@ private def applyResolvedRealAmount
           | some (shifted, shiftedInstant) =>
               pure (.value shiftedInstant shifted.date.civil.parts notGiven)
 
-/-- Apply one real shift to a freshly constructed Date. Label resolution happens
-    exactly once here; recursive continuations use `applyResolvedRealAmount`
-    directly and therefore retain overlap identity. -/
-private def applyRealAmount (checked : CheckedConstructedDateShift model)
-    (parts : DateParts) (offset : Int) (notGiven : Bool) :
-    Except ConstructedDateShiftFault ConstructedDateShiftResult := do
-  let sourceInstant ←
-    match checked.source.profile with
-    | .utc =>
-        match DateParts.LegacyHybrid.midnightInstant? parts with
-        | some instant => pure instant
-        | none => throw (.landingUnavailable checked.unit parts offset)
-    | .europeBerlin =>
-        match LocalDateTime.ofYmdHms?
-            parts.year parts.month parts.day 0 0 0 with
-        | none => throw (.landingUnavailable checked.unit parts offset)
-        | some sourceLocal =>
-            match checked.source.profile.resolveLocal? sourceLocal with
-            | some instant => pure instant
-            | none => throw (.landingUnavailable checked.unit parts offset)
-  checked.applyResolvedRealAmount sourceInstant parts offset notGiven
-
-/-- Apply an already reached numeric amount without losing missing provenance or reinterpreting arithmetic domain failure as zero. -/
-def applyAmount (checked : CheckedConstructedDateShift model)
-    (source : ConstructedDateObservation) :
-    NumericArithmeticOutcome →
-      Except ConstructedDateShiftFault ConstructedDateShiftResult
-  | .notEvaluated => pure (.noValue (sourceNotGiven source))
-  | .value value fillability =>
-      let notGiven :=
-        sourceNotGiven source || fillability.canGrow || fillability.canShrink
-      match source with
-      | .unavailable cause => pure (.unavailable cause)
-      | .resolved (.real parts) =>
-          let offset := temporalShiftAmountToInt32 value
-          checked.applyRealAmount parts offset notGiven
-      | .resolved .incomplete => pure (.noValue notGiven)
-      | .resolved .unreal => pure (.noValue notGiven)
-      | .resolved .unknown => pure (.noValue notGiven)
-
 /-- Apply an outer amount to one already-evaluated shift result. Its exact instant
     is the next calendar source; it is never reconstructed from the carried date
     parts. -/
@@ -169,7 +118,7 @@ def evaluate (checked : CheckedConstructedDateShift model)
     (phase : Phase) (input : CheckedDocument model)
     (world : Option World) :
     Except ConstructedDateShiftFault ConstructedDateShiftResult :=
-  match checked.source.evaluate phase input world with
+  match checked.source.evaluateValue phase input world with
   | .error error => .error (.source error)
   | .ok (.unavailable cause) => .ok (.unavailable cause)
   | .ok source =>
@@ -177,7 +126,7 @@ def evaluate (checked : CheckedConstructedDateShift model)
       | .error error => .error (.amountDocument error)
       | .ok (.error (.formal cause)) => .ok (.unavailable cause)
       | .ok (.error unavailable) => .error (.amountUnavailable unavailable)
-      | .ok (.ok outcome) => checked.applyAmount source outcome
+      | .ok (.ok outcome) => checked.applyResultAmount source outcome
 
 /-- Evaluate one checked shift and feed its exact result directly into one further
     checked calendar mutation. This is the smallest generated nested-call boundary:
