@@ -30,21 +30,26 @@ theorem stringComputationRun_evaluateTable_target
     completion.targetField = table.targetField := by
   cases matcher : patterns.targetMatcher? table.targetField with
   | none =>
-      simp [CheckedStringComputationRun.evaluateTable, matcher] at evaluated
+      simp [CheckedStringComputationRun.evaluateTable,
+        CheckedStringComputationTable.evaluateCompletion, matcher] at evaluated
   | some targetMatcher =>
       cases outcome :
           table.evaluateOutcomeWithPattern targetMatcher
             (run.readPolicy state input) with
       | error fault =>
-          simp [CheckedStringComputationRun.evaluateTable, matcher, outcome] at evaluated
+          simp [CheckedStringComputationRun.evaluateTable,
+            CheckedStringComputationTable.evaluateCompletion,
+            matcher, outcome] at evaluated
       | ok result =>
           cases dependency : StringDependencyCell.ofOutcome result with
           | error fault =>
-              simp [CheckedStringComputationRun.evaluateTable, matcher, outcome,
-                dependency] at evaluated
+              simp [CheckedStringComputationRun.evaluateTable,
+                CheckedStringComputationTable.evaluateCompletion,
+                matcher, outcome, dependency] at evaluated
           | ok cell =>
-              simp [CheckedStringComputationRun.evaluateTable, matcher, outcome,
-                dependency] at evaluated
+              simp [CheckedStringComputationRun.evaluateTable,
+                CheckedStringComputationTable.evaluateCompletion,
+                matcher, outcome, dependency] at evaluated
               cases evaluated
               rfl
 

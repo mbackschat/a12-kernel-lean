@@ -44,13 +44,16 @@ theorem numericComputationRun_evaluateTable_target
   cases result :
       table.evaluate ((run.readPolicy state input).withWorld world) with
   | error fault =>
-      simp [CheckedNumericComputationRun.evaluateTable, result] at evaluated
+      simp [CheckedNumericComputationRun.evaluateTable,
+        CheckedNumericComputationTable.evaluateCompletion, result] at evaluated
   | ok checked =>
       cases checked with
       | unsupported fault =>
-          simp [CheckedNumericComputationRun.evaluateTable, result] at evaluated
+          simp [CheckedNumericComputationRun.evaluateTable,
+            CheckedNumericComputationTable.evaluateCompletion, result] at evaluated
       | supported outcome =>
-          simp [CheckedNumericComputationRun.evaluateTable, result] at evaluated
+          simp [CheckedNumericComputationRun.evaluateTable,
+            CheckedNumericComputationTable.evaluateCompletion, result] at evaluated
           cases evaluated
           rfl
 

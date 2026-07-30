@@ -38,6 +38,28 @@ inductive StringComputationRunFault where
   | dependency (target : FieldId) (fault : StringDependencyFault)
   deriving Repr, DecidableEq
 
+namespace CheckedStringComputationTable
+
+/-- Evaluate one checked String table against an explicit context and retain the dependency cell required by any later step. Homogeneous and heterogeneous runs share this atomic boundary. -/
+def evaluateCompletion (table : CheckedStringComputationTable model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (context : StringComputationContext) :
+    Except StringComputationRunFault StringComputationRunCompletion :=
+  match patterns.targetMatcher? table.targetField with
+  | none =>
+      .error (.evaluation table.targetField
+        (.targetPatternUnavailable table.targetField))
+  | some matcher =>
+      match table.evaluateOutcomeWithPattern matcher context with
+      | .error fault => .error (.evaluation table.targetField fault)
+      | .ok outcome =>
+          match StringDependencyCell.ofOutcome outcome with
+          | .error fault => .error (.dependency table.targetField fault)
+          | .ok dependencyCell =>
+              .ok { targetField := table.targetField, outcome, dependencyCell }
+
+end CheckedStringComputationTable
+
 namespace CheckedStringComputationRun
 
 def targetFields (run : CheckedStringComputationRun model) : List FieldId :=
@@ -61,18 +83,7 @@ def evaluateTable (run : CheckedStringComputationRun model)
     (input : CheckedDocument model) (state : StringComputationRunState)
     (table : CheckedStringComputationTable model) :
     Except StringComputationRunFault StringComputationRunCompletion :=
-  match patterns.targetMatcher? table.targetField with
-  | none =>
-      .error (.evaluation table.targetField
-        (.targetPatternUnavailable table.targetField))
-  | some matcher =>
-      match table.evaluateOutcomeWithPattern matcher (run.readPolicy state input) with
-      | .error fault => .error (.evaluation table.targetField fault)
-      | .ok outcome =>
-          match StringDependencyCell.ofOutcome outcome with
-          | .error fault => .error (.dependency table.targetField fault)
-          | .ok dependencyCell =>
-              .ok { targetField := table.targetField, outcome, dependencyCell }
+  table.evaluateCompletion patterns (run.readPolicy state input)
 
 /-- Execute an explicitly supplied suffix with the same checked run read policy. The public suffix form is the induction boundary for the run relation; `execute` is its only whole-plan entry point. -/
 def executeTables (run : CheckedStringComputationRun model)

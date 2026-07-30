@@ -38,6 +38,21 @@ inductive NumericComputationRunFault where
   | targetCheck (target : FieldId) (fault : NumericTargetCheckFault)
   deriving Repr, DecidableEq
 
+namespace CheckedNumericComputationTable
+
+/-- Evaluate one checked scalar Number table against an explicit context and retain its complete target outcome. Homogeneous and heterogeneous runs share this atomic boundary. -/
+def evaluateCompletion (table : CheckedNumericComputationTable model)
+    (context : ScalarComputationContext) :
+    Except NumericComputationRunFault NumericComputationRunCompletion :=
+  match table.evaluate context with
+  | .error fault => .error (.evaluation table.targetField fault)
+  | .ok (.unsupported fault) =>
+      .error (.targetCheck table.targetField fault)
+  | .ok (.supported outcome) =>
+      .ok { targetField := table.targetField, outcome }
+
+end CheckedNumericComputationTable
+
 namespace CheckedNumericComputationRun
 
 def targetFields (run : CheckedNumericComputationRun model) :
@@ -64,12 +79,7 @@ def evaluateTable (run : CheckedNumericComputationRun model)
     (state : NumericComputationRunState)
     (table : CheckedNumericComputationTable model) :
     Except NumericComputationRunFault NumericComputationRunCompletion :=
-  match table.evaluate ((run.readPolicy state input).withWorld world) with
-  | .error fault => .error (.evaluation table.targetField fault)
-  | .ok (.unsupported fault) =>
-      .error (.targetCheck table.targetField fault)
-  | .ok (.supported outcome) =>
-      .ok { targetField := table.targetField, outcome }
+  table.evaluateCompletion ((run.readPolicy state input).withWorld world)
 
 /-- Execute one supplied-order table suffix through the same immutable input and transient overlay. -/
 def executeTables (run : CheckedNumericComputationRun model)

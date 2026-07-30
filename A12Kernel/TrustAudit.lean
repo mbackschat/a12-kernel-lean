@@ -1598,6 +1598,12 @@ run_cmd do
 #print axioms A12Kernel.inheritedDependency_reads_computedDependencyPoison
 #print axioms A12Kernel.requiredDependencyPoison_is_rejected
 #print axioms A12Kernel.erroredDependency_does_not_expose_attempt
+#print axioms A12Kernel.acceptedNumericDependency_readsStoredText
+#print axioms A12Kernel.noValueNumericDependency_isEmpty
+#print axioms A12Kernel.invalidNumericDependency_isCauseBlind
+#print axioms A12Kernel.numberToStringRun_preservesFamilyOutcomes
+#print axioms A12Kernel.numericOutcomeOverlay_preservesOtherRead
+#print axioms A12Kernel.numericOutcomeOverlay_holdingHead_suffixIrrelevant
 #print axioms A12Kernel.stringStep_outcome_independent_of_prior
 #print axioms A12Kernel.notTrueStringPrecondition_evaluates_noValue
 #print axioms A12Kernel.holdingStringPrecondition_preserves_outcome
