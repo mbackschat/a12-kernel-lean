@@ -67,8 +67,8 @@ private def parseSegments :
           parseParameter parameter
       pure (textPart text ++ [parameterPart] ++ (← parseSegments rest))
 
-private def parseValidationMessageTemplate (source : String) :
-    Except ValidationMessageTemplateError (List ParsedValidationMessagePart) := do
+private def validateMessageTemplateSource (source : String) :
+    Except ValidationMessageTemplateError (List String) := do
   if source.isEmpty then throw .emptyTemplate
   match source.toList.find? isLineSeparator with
   | some _ => throw .lineSeparator
@@ -80,7 +80,11 @@ private def parseValidationMessageTemplate (source : String) :
   | some character => throw (.unsupportedCharacter character)
   | none => pure ()
   if source.toList.count '$' % 2 != 0 then throw .oddDollarCount
-  parseSegments (source.splitOn "$")
+  pure (source.splitOn "$")
+
+private def parseValidationMessageTemplate (source : String) :
+    Except ValidationMessageTemplateError (List ParsedValidationMessagePart) := do
+  parseSegments (← validateMessageTemplateSource source)
 
 private def bareMessageField (name : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field := name }
@@ -167,5 +171,77 @@ def CheckedValidationMessageTemplate.toRenderPlan
     (template : CheckedValidationMessageTemplate model condition)
     (inputs : ValidationMessageInputs) : MessageRenderPlan :=
   { parts := template.parts.map (·.toRenderPart inputs) }
+
+/-- One checked part of the measured en_US String-pattern field-message grammar. The fixed tokens refer to the owning field, never to a rule-relative path. -/
+inductive CheckedEnUsStringPatternMessagePart where
+  | text (value : String)
+  | fieldName
+  | fieldValue
+  deriving Repr, DecidableEq
+
+/-- A checked en_US String-pattern error-text template. Requiredness and every other field-message producer remain distinct and unsupported. -/
+structure CheckedEnUsStringPatternMessageTemplate where
+  source : String
+  parts : List CheckedEnUsStringPatternMessagePart
+  deriving Repr, DecidableEq
+
+private def stringPatternTextPart (value : String) :
+    List CheckedEnUsStringPatternMessagePart :=
+  if value.isEmpty then [] else [.text value]
+
+private def parseEnUsStringPatternParameter (parameter : String) :
+    Except ValidationMessageTemplateError CheckedEnUsStringPatternMessagePart :=
+  match parameter with
+  | "field" => .ok .fieldName
+  | "field.value" => .ok .fieldValue
+  | _ => .error (.invalidParameter parameter)
+
+private def parseEnUsStringPatternSegments :
+    List String →
+      Except ValidationMessageTemplateError
+        (List CheckedEnUsStringPatternMessagePart)
+  | [] => .ok []
+  | [text] => .ok (stringPatternTextPart text)
+  | text :: parameter :: rest => do
+      let parameterPart ← parseEnUsStringPatternParameter parameter
+      pure (stringPatternTextPart text ++ [parameterPart] ++
+        (← parseEnUsStringPatternSegments rest))
+
+/-- Check the bounded English String-pattern producer. Its empty dollar-pair parameter is invalid rather than a literal-dollar escape. -/
+def elaborateEnUsStringPatternMessageTemplate (source : String) :
+    Except ValidationMessageTemplateError
+      CheckedEnUsStringPatternMessageTemplate := do
+  let segments ← validateMessageTemplateSource source
+  pure { source, parts := ← parseEnUsStringPatternSegments segments }
+
+/-- Exact replacement bytes selected by the caller for the owning field. Provider invocation and empty-value fallback precede this boundary and remain outside the supported fragment. -/
+structure StringPatternMessageInputs where
+  fieldName : String
+  fieldValue : String
+  deriving Repr, DecidableEq
+
+def CheckedEnUsStringPatternMessagePart.toRenderPart
+    (inputs : StringPatternMessageInputs) :
+    CheckedEnUsStringPatternMessagePart → MessageRenderPart
+  | .text value => .text value
+  | .fieldName => .text inputs.fieldName
+  | .fieldValue => .text inputs.fieldValue
+
+def CheckedEnUsStringPatternMessageTemplate.toRenderPlan
+    (template : CheckedEnUsStringPatternMessageTemplate)
+    (inputs : StringPatternMessageInputs) : MessageRenderPlan :=
+  { parts := template.parts.map (·.toRenderPart inputs) }
+
+/-- The resolved text attached to an already-established String-pattern failure. Rendering cannot replace or reclassify the underlying formal error. -/
+structure RenderedStringPatternError where
+  error : StringFieldError
+  text : ResolvedMessageText
+  deriving Repr, DecidableEq
+
+def CheckedEnUsStringPatternMessageTemplate.renderError
+    (template : CheckedEnUsStringPatternMessageTemplate)
+    (inputs : StringPatternMessageInputs) : RenderedStringPatternError where
+  error := .pattern
+  text := (template.toRenderPlan inputs).render
 
 end A12Kernel

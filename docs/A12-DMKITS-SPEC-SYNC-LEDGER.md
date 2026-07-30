@@ -460,9 +460,9 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ### EXP-2026-07-30-01 — field-owned error text needs its own dollar-decoding observation
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** experiment request
-- **Local revision:** introducing commit
+- **Local revision:** `e56e9b657e4026e88b8f8d3c00fc6e1ab0d108e6`
 - **a12-dmkits basis revision:** `8cab6ece3a0b355e1a831792fa14b0b711548755`
 - **Kernel behavior:** 30.8.1
 - **Canonical question:** [`11-messages-and-custom.md` Part A](../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation)
@@ -476,6 +476,8 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Compatibility:** decoding `$$` when the field route preserves it changes user-visible text; preserving it when the route decodes it does the converse. Accepting actual field names would merge two different authoring grammars. Reprocessing inserted bytes permits data to become template syntax. Each mistake is observable without changing validation truth or polarity.
 - **What this project will do with the result:** author the Lean red cases only after the static and runtime outcomes select the field-template contract. A measured shared decoder permits reuse of its exact lexical seam; a measured preserved pair requires a distinct lowering policy; one-pass value insertion permits an opacity law. A kernel-strategy split will follow the repository's dynamic-Groovy observation anchor and retain generated Java as a characterized divergence.
 - **Acceptance:** exact static dispositions and diagnostics for the four English spellings; exact dynamic-Groovy and generated-Java rendered text for the literal-dollar, token-looking-value, and requiredness cases; the exact a12-dmkits revision and per-surface disposition. A reasoned refusal is conclusive only if it names the missing authoring or observation route and leaves the entry `handed-off`.
+- **a12-dmkits revision:** `ed0b0cd9f7110daa354c2404e7b9ca6df4f42fa3`
+- **Disposition:** accepted — the `en_US` String-pattern producer accepts only fixed lowercase `$field$` and `$field.value$`; `$Field$` and `$Code$` are rejected as `INVALID_PARAMETER`. `Cost $$ $field$` is rejected because the empty parameter is invalid, while `Value [$field.value$]` with stored text `$field$` renders exactly `Value [$field$]`, proving one-pass opaque insertion. Requiredness is a separate producer: the same literal-dollar shape is model-valid and renders `Cost $$ Code`, preserving the doubled pair. Dynamic Groovy and generated Java agree under one shared label-or-name provider profile. The interpreter retains neither field-owned template channel, recorded upstream as `IG109`, so no false parity was introduced.
 
 ### EXP-2026-07-25-01 — condition-line splitting above fifty terms is unreached by either corpus
 

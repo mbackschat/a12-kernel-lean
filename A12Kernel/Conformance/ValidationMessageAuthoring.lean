@@ -53,6 +53,21 @@ private def templateError? (template : String) :
   | .ok _ => none
   | .error error => some error
 
+private def stringPatternInputs : StringPatternMessageInputs where
+  fieldName := "Code"
+  fieldValue := "$field$"
+
+private def stringPatternRender? (template : String) : Option ResolvedMessageText := do
+  let checked ←
+    (elaborateEnUsStringPatternMessageTemplate template).toOption
+  pure (checked.renderError stringPatternInputs).text
+
+private def stringPatternTemplateError? (template : String) :
+    Option ValidationMessageTemplateError :=
+  match elaborateEnUsStringPatternMessageTemplate template with
+  | .ok _ => none
+  | .error error => some error
+
 example :
     render? "Cost $$ $Amount$ [$Amount.value$]" =
         some { text := "Cost $ Amount label [$Other$]" } ∧
@@ -78,6 +93,24 @@ example :
         some (.invalidParameter "Amount.nope") ∧
       templateError? "$For$" =
         some (.unsupportedQuotedName "For") := by
+  native_decide
+
+example :
+    stringPatternRender? "$field$" =
+        some { text := "Code" } ∧
+      stringPatternRender? "Value [$field.value$]" =
+        some { text := "Value [$field$]" } := by
+  native_decide
+
+example :
+    stringPatternTemplateError? "$Field$" =
+        some (.invalidParameter "Field") ∧
+      stringPatternTemplateError? "$Code$" =
+        some (.invalidParameter "Code") ∧
+      stringPatternTemplateError? "Cost $$ $field$" =
+        some (.invalidParameter "") ∧
+      stringPatternTemplateError? "$field" =
+        some .oddDollarCount := by
   native_decide
 
 end A12Kernel.Conformance.ValidationMessageAuthoring
