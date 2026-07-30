@@ -114,6 +114,8 @@ Temporal format admission deliberately has two strengths. A direct comparison re
 - a **stored** value below it is the formal error `datumFalsch` (suppressing referencing rules, [§3](02-logic-and-formal-errors.md)); a **computed** one is **ERRORED**; a date **range** floors its *start* the same way.
 - It is distinct from the *opt-in* "younger than 1900" additional check.
 
+`DateType.youngerThan1900Check` is a separate opt-in, declaration-owned basic-format check, independent of Date precision and the always-on Gregorian floor. When enabled, a concrete Date strictly before `1900-01-01` is the formal error `datumFalsch`; `1900-01-01` is valid. Ordinary partial-Date completion and reason preservation happen before this check, so an unknown-year value remains non-relevant rather than being reclassified as an ancient concrete date. The same declared gate classifies an admitted computed FULL-Date target as described in [§11](09-computations.md); partial Date computation targets remain statically rejected and do not create another runtime case.
+
 ⚠ The floor is **not** a runtime criterion for the `Date(...)` **construction**: `Invalid(Date("1", "1", "1500"))` does **not** fire (in 30.8.1). The floor gates *values*, not the constructor's reality test.
 
 Also: **a date value is stored and formal-checked in its field's declared `format`, not a canonical wire format** — the same calendar date is well-formed in one field and `datumFormatFalsch` in another. A consumer must read each field's `format` to parse its dates.
