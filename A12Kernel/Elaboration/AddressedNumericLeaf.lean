@@ -143,9 +143,9 @@ def evaluateSourceAtom
   }
   context.readNumericComputationAtom atom
 
-/-- Execute one path-indexed evaluator per physical target environment and retain the exact row key for result classification and application. This is the shared target half for one- and multi-source same-scope operations. -/
-def executeWithPath (placement : CheckedAddressedNumericPlacement model)
+private def executeWithPathUsing (placement : CheckedAddressedNumericPlacement model)
     (input : CheckedDocument model)
+    (checkTarget : NumericComputationResult → NumericTargetCheckResult)
     (evaluate : List Nat →
       Except AddressedNumericLeafFault NumericComputationResult) :
     Except AddressedNumericLeafFault
@@ -162,7 +162,7 @@ def executeWithPath (placement : CheckedAddressedNumericPlacement model)
     }
     let result ← evaluate path
     let outcome ←
-      match placement.targetPolicy.check result with
+      match checkTarget result with
       | .supported outcome => pure outcome
       | .unsupported cause => throw (.targetCheck cause)
     pure {
@@ -170,6 +170,26 @@ def executeWithPath (placement : CheckedAddressedNumericPlacement model)
       outcome
       source := input.numericTargetPlacementStateAt targetAddress
     }
+
+/-- Execute through the ordinary unsuppressed target checker. -/
+def executeWithPath (placement : CheckedAddressedNumericPlacement model)
+    (input : CheckedDocument model)
+    (evaluate : List Nat →
+      Except AddressedNumericLeafFault NumericComputationResult) :
+    Except AddressedNumericLeafFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  placement.executeWithPathUsing input placement.targetPolicy.check evaluate
+
+/-- Execute through this placement's own warning-suppressed target checker. -/
+def executeWithPathScaleWarningSuppressed
+    (placement : CheckedAddressedNumericPlacement model)
+    (input : CheckedDocument model)
+    (evaluate : List Nat →
+      Except AddressedNumericLeafFault NumericComputationResult) :
+    Except AddressedNumericLeafFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  placement.executeWithPathUsing input
+    placement.targetPolicy.checkWithScaleWarningSuppressed evaluate
 
 /-- Execute one source-cell evaluator through the shared path-indexed target owner. -/
 def executeWith (placement : CheckedAddressedNumericPlacement model)

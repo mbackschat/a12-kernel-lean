@@ -122,7 +122,21 @@ end CheckedAddressedNumberSource
 
 namespace CheckedAddressedNumberPair
 
-/-- Execute two direct Number sources in authored order through their shared exact target path. A left poison prevents the right source from being reached. -/
+private def evaluateAtPath
+    (pair : CheckedAddressedNumberPair model)
+    (input : CheckedDocument model)
+    (combine : NumericComputationResult → NumericComputationResult →
+      NumericComputationResult)
+    (path : List Nat) :
+    Except AddressedNumericLeafFault NumericComputationResult := do
+  let leftResult ← pair.left.evaluateAtPath input path
+  match leftResult with
+  | .poison cause => pure (.poison cause)
+  | .value _ | .domainFailure =>
+      let rightResult ← pair.right.evaluateAtPath input path
+      pure (combine leftResult rightResult)
+
+/-- Execute two direct Number sources in authored order through their shared exact target path and ordinary target checker. A left poison prevents the right source from being reached. -/
 def executeWith
     (pair : CheckedAddressedNumberPair model)
     (input : CheckedDocument model)
@@ -130,15 +144,29 @@ def executeWith
       NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  pair.left.placement.executeWithPath input fun path => do
-    let leftResult ← pair.left.evaluateAtPath input path
-    match leftResult with
-    | .poison cause => pure (.poison cause)
-    | .value _ | .domainFailure =>
-        let rightResult ← pair.right.evaluateAtPath input path
-        pure (combine leftResult rightResult)
+  pair.left.placement.executeWithPath input (pair.evaluateAtPath input combine)
 
-/-- Classify a shared two-source addressed execution against the immutable source document. -/
+/-- Execute two direct Number sources through the same target's warning-suppressed checker. -/
+def executeWithScaleWarningSuppressed
+    (pair : CheckedAddressedNumberPair model)
+    (input : CheckedDocument model)
+    (combine : NumericComputationResult → NumericComputationResult →
+      NumericComputationResult) :
+    Except AddressedNumericLeafFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  pair.left.placement.executeWithPathScaleWarningSuppressed input
+    (pair.evaluateAtPath input combine)
+
+private def resultFromOutcomes
+    (outcomes : List (SourcedNumericTargetOutcome CellAddr))
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload)) :
+    NumericComputationRunView
+      (ComputationFormalMessage Payload) CellAddr :=
+  NumericComputationRunView.fromSourceOutcomesWithMessages
+    ComputationErrorPointer.ofCellAddr payloadAt supplied outcomes
+
+/-- Classify a two-source addressed execution through the ordinary unsuppressed target checker. -/
 def executeResultWith
     (pair : CheckedAddressedNumberPair model)
     (input : CheckedDocument model)
@@ -148,10 +176,23 @@ def executeResultWith
     (supplied : List (ComputationFormalMessage Payload)) :
     Except AddressedNumericLeafFault
       (NumericComputationRunView
-        (ComputationFormalMessage Payload) CellAddr) := do
-  let outcomes ← pair.executeWith input combine
-  pure (NumericComputationRunView.fromSourceOutcomesWithMessages
-    ComputationErrorPointer.ofCellAddr payloadAt supplied outcomes)
+        (ComputationFormalMessage Payload) CellAddr) :=
+  (pair.executeWith input combine).map fun outcomes =>
+    resultFromOutcomes outcomes payloadAt supplied
+
+/-- Classify a warning-suppressed two-source execution against the immutable source document. -/
+def executeResultWithScaleWarningSuppressed
+    (pair : CheckedAddressedNumberPair model)
+    (input : CheckedDocument model)
+    (combine : NumericComputationResult → NumericComputationResult →
+      NumericComputationResult)
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload)) :
+    Except AddressedNumericLeafFault
+      (NumericComputationRunView
+        (ComputationFormalMessage Payload) CellAddr) :=
+  (pair.executeWithScaleWarningSuppressed input combine).map fun outcomes =>
+    resultFromOutcomes outcomes payloadAt supplied
 
 end CheckedAddressedNumberPair
 

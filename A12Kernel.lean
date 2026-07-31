@@ -156,6 +156,7 @@ import A12Kernel.Elaboration.AddressedNumberAbs
 import A12Kernel.Elaboration.AddressedNumberRound
 import A12Kernel.Elaboration.AddressedNumberExtremum
 import A12Kernel.Elaboration.AddressedNumberBinary
+import A12Kernel.Elaboration.AddressedNumberDivision
 import A12Kernel.Elaboration.AddressedNumericLeafConsumer
 import A12Kernel.Elaboration.NumberToStringComputationRun
 import A12Kernel.Elaboration.StringToNumberComputationRun
