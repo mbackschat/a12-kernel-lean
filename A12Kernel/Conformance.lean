@@ -117,7 +117,7 @@ import A12Kernel.Conformance.AddressedNumberExtremum
 import A12Kernel.Conformance.AddressedNumberBinary
 import A12Kernel.Conformance.AddressedNumberDivision
 import A12Kernel.Conformance.AddressedNumberPower
-import A12Kernel.Conformance.AddressedNumericLeafConsumer
+import A12Kernel.Conformance.AddressedNumericOperationConsumer
 import A12Kernel.Conformance.NumberToStringComputationRun
 import A12Kernel.Conformance.StringToNumberComputationRun
 import A12Kernel.Conformance.ScalarComputationRun

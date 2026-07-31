@@ -1,11 +1,11 @@
-import A12Kernel.Elaboration.AddressedNumericLeafConsumer
+import A12Kernel.Elaboration.AddressedNumericOperationConsumer
 
-/-! # Addressed numeric-leaf Analyze/Transform probe
+/-! # Addressed numeric-operation Analyze/Transform probe
 
-The bounded probe consumes checked same-scope repeatable conversion, direct Number, `Abs`, and Round operations. It recovers exact bounded read/write impact, compares transformation-sensitive fingerprints without claiming equivalence, and exercises exact identity as the sole admitted Transform.
+The bounded probe consumes checked same-scope repeatable conversion, direct Number, `Abs`, Round, and direct-field operand-list extrema. It recovers exact bounded read/write impact, compares transformation-sensitive fingerprints without claiming equivalence, and exercises exact identity as the sole admitted Transform.
 -/
 
-namespace A12Kernel.Conformance.AddressedNumericLeafConsumer
+namespace A12Kernel.Conformance.AddressedNumericOperationConsumer
 
 open A12Kernel
 
@@ -76,9 +76,20 @@ private def rounded1 : FlatFieldDecl := {
     policy := { kind := .number { scale := 1, signed := true } }
 }
 
+private def precise : FlatFieldDecl := {
+  amount with
+    id := 9
+    name := "Precise"
+    policy := { kind := .number { scale := 3, signed := true } }
+}
+
+private def extremumTarget : FlatFieldDecl := {
+  precise with id := 10, name := "ExtremumTarget"
+}
+
 private def model : FlatModel := {
   fields := [band, converted, code, selected, amount, sameScaleTarget,
-    rounded0, rounded1]
+    rounded0, rounded1, precise, extremumTarget]
   repeatableGroups := [{
     level := 10
     path := ["Order", "Rows"]
@@ -89,32 +100,32 @@ private def model : FlatModel := {
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
-private def storedLeaf? : Option (CheckedAddressedNumericLeaf model) := do
+private def storedLeaf? : Option (CheckedAddressedNumericOperation model) := do
   let operation ←
     (checkAddressedFieldValueAsNumber model ["Order", "Rows"]
       converted.id (.direct (bare "Band"))).toOption
   pure (.fieldValueAsNumber operation)
 
-private def categoryLeaf? : Option (CheckedAddressedNumericLeaf model) := do
+private def categoryLeaf? : Option (CheckedAddressedNumericOperation model) := do
   let operation ←
     (checkAddressedFieldValueAsNumber model ["Order", "Rows"]
       converted.id (.category (bare "Band") "Numeric")).toOption
   pure (.fieldValueAsNumber operation)
 
 private def rangeLeaf? (finish : Nat) :
-    Option (CheckedAddressedNumericLeaf model) := do
+    Option (CheckedAddressedNumericOperation model) := do
   let operation ←
     (checkAddressedRangeAsNumber model ["Order", "Rows"]
       selected.id (bare "Code") 2 finish).toOption
   pure (.rangeAsNumber operation)
 
-private def numberFieldLeaf? : Option (CheckedAddressedNumericLeaf model) := do
+private def numberFieldLeaf? : Option (CheckedAddressedNumericOperation model) := do
   let operation ←
     (checkAddressedNumberField model ["Order", "Rows"]
       sameScaleTarget.id (bare "Amount")).toOption
   pure (.numberField operation)
 
-private def absLeaf? : Option (CheckedAddressedNumericLeaf model) := do
+private def absLeaf? : Option (CheckedAddressedNumericOperation model) := do
   let operation ←
     (checkAddressedNumberAbs model ["Order", "Rows"]
       sameScaleTarget.id (bare "Amount")).toOption
@@ -122,43 +133,51 @@ private def absLeaf? : Option (CheckedAddressedNumericLeaf model) := do
 
 private def roundLeaf? (target : FlatFieldDecl)
     (mode : DecimalRoundingMode) (places : RoundingPlaces) :
-    Option (CheckedAddressedNumericLeaf model) := do
+    Option (CheckedAddressedNumericOperation model) := do
   let operation ←
     (checkAddressedNumberRound model ["Order", "Rows"]
       target.id (bare "Amount") mode places).toOption
   pure (.round operation)
+
+private def extremumLeaf? (op : NumericExtremumOp)
+    (target : FlatFieldDecl) (first : String) (rest : List String) :
+    Option (CheckedAddressedNumericOperation model) := do
+  let operation ←
+    (checkAddressedNumberExtremumList model ["Order", "Rows"]
+      target.id (bare first) (rest.map bare) op).toOption
+  pure (.extremum operation)
 
 private def places0 : RoundingPlaces := ⟨0, by decide⟩
 private def places1 : RoundingPlaces := ⟨1, by decide⟩
 
 private structure AnalysisSummary where
   targetField : FieldId
-  sourceField : FieldId
+  sourceFields : List FieldId
   scope : List RepeatableLevel
-  parameters : AddressedNumericLeafParameters
+  parameters : AddressedNumericOperationParameters
   deriving Repr, DecidableEq
 
 private def analyzed?
-    (leaf : Option (CheckedAddressedNumericLeaf model)) :
+    (leaf : Option (CheckedAddressedNumericOperation model)) :
     Option AnalysisSummary :=
   leaf.map fun checked =>
     let analysis := checked.analyze
     {
       targetField := analysis.targetField
-      sourceField := analysis.sourceField
+      sourceFields := analysis.sourceFields
       scope := analysis.scope
       parameters := analysis.parameters
     }
 
 private def fingerprintMatch?
-    (before after : Option (CheckedAddressedNumericLeaf model)) :
-    Option AddressedNumericLeafAnalysis := do
+    (before after : Option (CheckedAddressedNumericOperation model)) :
+    Option AddressedNumericOperationAnalysis := do
   let before ← before
   let after ← after
   before.matchingFingerprint? after
 
 private def targetPolicy?
-    (leaf : Option (CheckedAddressedNumericLeaf model)) :
+    (leaf : Option (CheckedAddressedNumericOperation model)) :
     Option NumericTargetPolicy :=
   leaf.map fun checked => checked.analyze.targetPolicy
 
@@ -178,21 +197,21 @@ example :
     analyzed? storedLeaf? =
       some {
         targetField := converted.id
-        sourceField := band.id
+        sourceFields := [band.id]
         scope := [10]
         parameters := .fieldValueAsNumber .stored 2
       } ∧
     analyzed? categoryLeaf? =
       some {
         targetField := converted.id
-        sourceField := band.id
+        sourceFields := [band.id]
         scope := [10]
         parameters := .fieldValueAsNumber (.category "Numeric") 2
       } ∧
     analyzed? (rangeLeaf? 4) =
       some {
         targetField := selected.id
-        sourceField := code.id
+        sourceFields := [code.id]
         scope := [10]
         parameters := .rangeAsNumber 2 4
       } := by
@@ -203,31 +222,64 @@ example :
     analyzed? numberFieldLeaf? =
       some {
         targetField := sameScaleTarget.id
-        sourceField := amount.id
+        sourceFields := [amount.id]
         scope := [10]
         parameters := .numberField 2
       } ∧
     analyzed? absLeaf? =
       some {
         targetField := sameScaleTarget.id
-        sourceField := amount.id
+        sourceFields := [amount.id]
         scope := [10]
         parameters := .abs 2
       } ∧
     analyzed? (roundLeaf? rounded0 .floor places0) =
       some {
         targetField := rounded0.id
-        sourceField := amount.id
+        sourceFields := [amount.id]
         scope := [10]
         parameters := .round .floor 0
       } ∧
     analyzed? (roundLeaf? rounded1 .ceiling places1) =
       some {
         targetField := rounded1.id
-        sourceField := amount.id
+        sourceFields := [amount.id]
         scope := [10]
         parameters := .round .ceiling 1
       } := by
+  native_decide
+
+/- Extrema expose their authored operation identity, complete ordered source list, and maximum result scale without expression reconstruction. -/
+example :
+    analyzed? (extremumLeaf? .minimum sameScaleTarget "Amount" []) =
+      some {
+        targetField := sameScaleTarget.id
+        sourceFields := [amount.id]
+        scope := [10]
+        parameters := .extremum .minimum 2
+      } ∧
+    analyzed? (extremumLeaf? .maximum extremumTarget "Selected"
+        ["Amount", "Precise"]) =
+      some {
+        targetField := extremumTarget.id
+        sourceFields := [selected.id, amount.id, precise.id]
+        scope := [10]
+        parameters := .extremum .maximum 3
+      } := by
+  native_decide
+
+/- Operation, source order, and list cardinality remain independently transformation-sensitive. -/
+example :
+    fingerprintMatch?
+      (extremumLeaf? .minimum sameScaleTarget "Amount" [])
+      (extremumLeaf? .maximum sameScaleTarget "Amount" []) = none ∧
+    fingerprintMatch?
+      (extremumLeaf? .minimum sameScaleTarget "Selected" ["Amount"])
+      (extremumLeaf? .minimum sameScaleTarget "Amount" ["Selected"]) = none ∧
+    fingerprintMatch?
+      (extremumLeaf? .minimum sameScaleTarget "Selected" ["Amount"])
+      (extremumLeaf? .minimum sameScaleTarget "Selected"
+        ["Amount", "Rounded1"]) = none := by
   native_decide
 
 /- The impact query distinguishes expression-operand reads, source-relative target-state reads, their complete union, and writes. -/
@@ -279,4 +331,4 @@ example :
     fingerprintMatch? storedLeaf? (rangeLeaf? 4) = none := by
   native_decide
 
-end A12Kernel.Conformance.AddressedNumericLeafConsumer
+end A12Kernel.Conformance.AddressedNumericOperationConsumer

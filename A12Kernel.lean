@@ -158,7 +158,7 @@ import A12Kernel.Elaboration.AddressedNumberExtremum
 import A12Kernel.Elaboration.AddressedNumberBinary
 import A12Kernel.Elaboration.AddressedNumberDivision
 import A12Kernel.Elaboration.AddressedNumberPower
-import A12Kernel.Elaboration.AddressedNumericLeafConsumer
+import A12Kernel.Elaboration.AddressedNumericOperationConsumer
 import A12Kernel.Elaboration.NumberToStringComputationRun
 import A12Kernel.Elaboration.StringToNumberComputationRun
 import A12Kernel.Elaboration.ScalarComputationRun

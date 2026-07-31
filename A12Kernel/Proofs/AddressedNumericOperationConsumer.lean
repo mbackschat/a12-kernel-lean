@@ -1,37 +1,49 @@
-import A12Kernel.Elaboration.AddressedNumericLeafConsumer
+import A12Kernel.Elaboration.AddressedNumericOperationConsumer
 
-/-! # Addressed numeric-leaf Analyze/Transform laws -/
+/-! # Addressed numeric-operation Analyze/Transform laws -/
 
 namespace A12Kernel
 
-namespace CheckedAddressedNumericLeaf
+namespace CheckedAddressedNumericOperation
 
-/-- A checked addressed numeric leaf never reports its written target as its read dependency. -/
+/-- A checked addressed numeric operation never reports its written target among its ordered operand dependencies. -/
 theorem operandField_ne_targetField
-    (leaf : CheckedAddressedNumericLeaf model) :
-    leaf.analyze.sourceField ≠ leaf.analyze.targetField := by
+    (leaf : CheckedAddressedNumericOperation model) :
+    ∀ field ∈ leaf.analyze.sourceFields,
+      field ≠ leaf.analyze.targetField := by
   cases leaf with
   | fieldValueAsNumber operation =>
-      exact operation.placement.sourceNotTarget
+      simpa [analyze] using operation.placement.sourceNotTarget
   | rangeAsNumber operation =>
-      exact operation.placement.sourceNotTarget
+      simpa [analyze] using operation.placement.sourceNotTarget
   | numberField operation =>
-      exact operation.placement.sourceNotTarget
+      simpa [analyze] using operation.placement.sourceNotTarget
   | abs operation =>
-      exact operation.numberSource.placement.sourceNotTarget
+      simpa [analyze] using operation.numberSource.placement.sourceNotTarget
   | round operation =>
-      exact operation.numberSource.placement.sourceNotTarget
+      simpa [analyze] using operation.numberSource.placement.sourceNotTarget
+  | extremum operation =>
+      intro field member
+      simp only [analyze, List.mem_cons, List.mem_map] at member
+      rcases member with first | ⟨source, sourceMember, rest⟩
+      · subst field
+        exact operation.first.placement.sourceNotTarget
+      · subst field
+        intro sourceIsTarget
+        apply source.placement.sourceNotTarget
+        exact sourceIsTarget.trans
+          (operation.restSameTarget source sourceMember)
 
 /-- Fingerprint comparison recognizes exact identity. -/
 theorem matchingFingerprint_self
-    (leaf : CheckedAddressedNumericLeaf model) :
+    (leaf : CheckedAddressedNumericOperation model) :
     leaf.matchingFingerprint? leaf = some leaf.analyze := by
   simp [matchingFingerprint?]
 
 /-- A reported fingerprint match is exactly equality of both bounded analyses; it makes no wider semantic-equivalence claim. -/
 theorem matchingFingerprint_some_iff
-    (before after : CheckedAddressedNumericLeaf model)
-    (view : AddressedNumericLeafAnalysis) :
+    (before after : CheckedAddressedNumericOperation model)
+    (view : AddressedNumericOperationAnalysis) :
     before.matchingFingerprint? after = some view ↔
       before.analyze = view ∧ after.analyze = view := by
   unfold matchingFingerprint?
@@ -53,8 +65,8 @@ theorem matchingFingerprint_some_iff
 
 /-- A fingerprint match preserves every represented parameter rather than only source and target identity. -/
 theorem matchingFingerprint_preservesParameters
-    (before after : CheckedAddressedNumericLeaf model)
-    (view : AddressedNumericLeafAnalysis)
+    (before after : CheckedAddressedNumericOperation model)
+    (view : AddressedNumericOperationAnalysis)
     (matched : before.matchingFingerprint? after = some view) :
     before.analyze.parameters = after.analyze.parameters := by
   have exactView :=
@@ -63,14 +75,14 @@ theorem matchingFingerprint_preservesParameters
 
 /-- The admitted identity Transform preserves every addressed rich outcome for every checked document. -/
 theorem identityTransform_execute
-    (leaf : CheckedAddressedNumericLeaf model)
+    (leaf : CheckedAddressedNumericOperation model)
     (input : CheckedDocument model) :
     leaf.identityTransform.execute input = leaf.execute input := by
   rfl
 
 /-- The admitted identity Transform likewise preserves the complete source-relative result view and message partition. -/
 theorem identityTransform_executeResult
-    (leaf : CheckedAddressedNumericLeaf model)
+    (leaf : CheckedAddressedNumericOperation model)
     (input : CheckedDocument model)
     (payloadAt : CellAddr → Payload)
     (supplied : List (ComputationFormalMessage Payload)) :
@@ -78,6 +90,6 @@ theorem identityTransform_executeResult
       leaf.executeResult input payloadAt supplied := by
   rfl
 
-end CheckedAddressedNumericLeaf
+end CheckedAddressedNumericOperation
 
 end A12Kernel

@@ -162,21 +162,26 @@ private def listB : FlatFieldDecl := {
   numericTargetConstraints := { maximum := some 10 }
 }
 private def listC : FlatFieldDecl := {
-  listNumber 13 "ListC" 1 with
+  listNumber 13 "ListC" 3 with
   numericTargetConstraints := { minimum := some (-9), maximum := some 8 }
 }
 private def listMinimum : FlatFieldDecl := {
-  listNumber 14 "ListMinimum" 2 with
+  listNumber 14 "ListMinimum" 3 with
   numericTargetConstraints := { minimum := some (-999 / 100) }
 }
 private def listMaximum : FlatFieldDecl := {
-  listNumber 15 "ListMaximum" 2 with
+  listNumber 15 "ListMaximum" 3 with
   numericTargetConstraints := { maximum := some (999 / 100) }
 }
-private def listWrongScale := listNumber 16 "ListWrongScale" 1
+private def listWrongScale := listNumber 16 "ListWrongScale" 2
+private def listSingleTarget : FlatFieldDecl := {
+  listNumber 17 "ListSingleTarget" 0 with
+  numericTargetConstraints := { maximum := some 10 }
+}
 
 private def listModel : FlatModel := {
-  fields := [listA, listB, listC, listMinimum, listMaximum, listWrongScale]
+  fields := [listA, listB, listC, listMinimum, listMaximum, listWrongScale,
+    listSingleTarget]
   repeatableGroups := [{
     level := 20
     path := ["Probe", "Rows"]
@@ -227,7 +232,7 @@ private def listOperation? (target : FlatFieldDecl)
     (op : NumericExtremumOp) :
     Option (CheckedAddressedNumberExtremum listModel) :=
   (checkAddressedNumberExtremumList listModel ["Probe", "Rows"] target.id
-    (bare "ListA") (bare "ListB") [(bare "ListC")] op).toOption
+    (bare "ListA") [(bare "ListB"), (bare "ListC")] op).toOption
 
 private def listOutcomes? (target : FlatFieldDecl) (op : NumericExtremumOp) :
     Option (List (CellAddr × NumericTargetOutcome)) := do
@@ -243,13 +248,25 @@ private def listResult? (extra : List ClassifiedCellInput) :
   let input ← listInput? extra
   (operation.executeResult input (fun _ => ()) []).toOption
 
+private def singleOperation? (op : NumericExtremumOp) :
+    Option (CheckedAddressedNumberExtremum listModel) :=
+  (checkAddressedNumberExtremumList listModel ["Probe", "Rows"]
+    listSingleTarget.id (bare "ListA") [] op).toOption
+
+private def singleOutcomes? (op : NumericExtremumOp) :
+    Option (List (CellAddr × NumericTargetOutcome)) := do
+  let operation ← singleOperation? op
+  let input ← listInput?
+  let outcomes ← (operation.execute input).toOption
+  pure (outcomes.map fun entry => (entry.targetField, entry.outcome))
+
 example :
     (listOperation? listMinimum .minimum).isSome = true ∧
     (listOperation? listMaximum .maximum).isSome = true ∧
     (match checkAddressedNumberExtremumList listModel ["Probe", "Rows"]
-        listWrongScale.id (bare "ListA") (bare "ListB") [(bare "ListC")]
+        listWrongScale.id (bare "ListA") [(bare "ListB"), (bare "ListC")]
         .minimum with
-      | .error (.scaleMismatch 1 2) => true
+      | .error (.scaleMismatch 2 3) => true
       | _ => false) = true := by
   native_decide
 
@@ -278,6 +295,28 @@ example : listOutcomes? listMaximum .maximum = some [
     (addr listMaximum.id 9, .accepted (stored 8 0)),
     (addr listMaximum.id 10, .accepted (stored 5 0))
   ] := by native_decide
+
+example :
+    (singleOperation? .minimum).isSome = true ∧
+    (singleOperation? .maximum).isSome = true := by
+  native_decide
+
+example :
+    singleOutcomes? .minimum = singleOutcomes? .maximum ∧
+    singleOutcomes? .minimum = some [
+      (addr listSingleTarget.id 1, .accepted (stored 3 0)),
+      (addr listSingleTarget.id 2, .accepted (stored 0 0)),
+      (addr listSingleTarget.id 3, .accepted (stored (-2) 0)),
+      (addr listSingleTarget.id 4, .accepted (stored 0 0)),
+      (addr listSingleTarget.id 5, .inheritedPoison .malformed),
+      (addr listSingleTarget.id 6, .accepted (stored 4 0)),
+      (addr listSingleTarget.id 7, .accepted (stored 4 0)),
+      (addr listSingleTarget.id 8,
+        .rejected (stored 12 0) .aboveMaximum),
+      (addr listSingleTarget.id 9, .accepted (stored 4 0)),
+      (addr listSingleTarget.id 10, .accepted (stored 4 0))
+    ] := by
+  native_decide
 
 example :
     (do
