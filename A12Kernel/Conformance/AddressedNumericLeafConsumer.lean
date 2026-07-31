@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.AddressedNumericLeafConsumer
 
 /-! # Addressed numeric-leaf Analyze/Transform probe
 
-The bounded probe consumes only checked same-scope repeatable `FieldValueAsNumber` and `RangeAsNumber` operations. It recovers exact bounded read/write impact, compares transformation-sensitive fingerprints without claiming equivalence, and exercises exact identity as the sole admitted Transform.
+The bounded probe consumes checked same-scope repeatable conversion, direct Number, `Abs`, and Round operations. It recovers exact bounded read/write impact, compares transformation-sensitive fingerprints without claiming equivalence, and exercises exact identity as the sole admitted Transform.
 -/
 
 namespace A12Kernel.Conformance.AddressedNumericLeafConsumer
@@ -50,8 +50,35 @@ private def selected : FlatFieldDecl := {
   repeatableScope := [10]
 }
 
+private def amount : FlatFieldDecl := {
+  id := 5
+  groupPath := ["Order", "Rows"]
+  name := "Amount"
+  policy := { kind := .number { scale := 2, signed := true } }
+  repeatableScope := [10]
+}
+
+private def sameScaleTarget : FlatFieldDecl := {
+  amount with id := 6, name := "SameScaleTarget"
+}
+
+private def rounded0 : FlatFieldDecl := {
+  amount with
+    id := 7
+    name := "Rounded0"
+    policy := { kind := .number { scale := 0, signed := true } }
+}
+
+private def rounded1 : FlatFieldDecl := {
+  amount with
+    id := 8
+    name := "Rounded1"
+    policy := { kind := .number { scale := 1, signed := true } }
+}
+
 private def model : FlatModel := {
-  fields := [band, converted, code, selected]
+  fields := [band, converted, code, selected, amount, sameScaleTarget,
+    rounded0, rounded1]
   repeatableGroups := [{
     level := 10
     path := ["Order", "Rows"]
@@ -80,6 +107,29 @@ private def rangeLeaf? (finish : Nat) :
     (checkAddressedRangeAsNumber model ["Order", "Rows"]
       selected.id (bare "Code") 2 finish).toOption
   pure (.rangeAsNumber operation)
+
+private def numberFieldLeaf? : Option (CheckedAddressedNumericLeaf model) := do
+  let operation ←
+    (checkAddressedNumberField model ["Order", "Rows"]
+      sameScaleTarget.id (bare "Amount")).toOption
+  pure (.numberField operation)
+
+private def absLeaf? : Option (CheckedAddressedNumericLeaf model) := do
+  let operation ←
+    (checkAddressedNumberAbs model ["Order", "Rows"]
+      sameScaleTarget.id (bare "Amount")).toOption
+  pure (.abs operation)
+
+private def roundLeaf? (target : FlatFieldDecl)
+    (mode : DecimalRoundingMode) (places : RoundingPlaces) :
+    Option (CheckedAddressedNumericLeaf model) := do
+  let operation ←
+    (checkAddressedNumberRound model ["Order", "Rows"]
+      target.id (bare "Amount") mode places).toOption
+  pure (.round operation)
+
+private def places0 : RoundingPlaces := ⟨0, by decide⟩
+private def places1 : RoundingPlaces := ⟨1, by decide⟩
 
 private structure AnalysisSummary where
   targetField : FieldId
@@ -148,6 +198,38 @@ example :
       } := by
   native_decide
 
+/- Analyze preserves direct, absolute-value, and rounding identity together with each operation's result scale. -/
+example :
+    analyzed? numberFieldLeaf? =
+      some {
+        targetField := sameScaleTarget.id
+        sourceField := amount.id
+        scope := [10]
+        parameters := .numberField 2
+      } ∧
+    analyzed? absLeaf? =
+      some {
+        targetField := sameScaleTarget.id
+        sourceField := amount.id
+        scope := [10]
+        parameters := .abs 2
+      } ∧
+    analyzed? (roundLeaf? rounded0 .floor places0) =
+      some {
+        targetField := rounded0.id
+        sourceField := amount.id
+        scope := [10]
+        parameters := .round .floor 0
+      } ∧
+    analyzed? (roundLeaf? rounded1 .ceiling places1) =
+      some {
+        targetField := rounded1.id
+        sourceField := amount.id
+        scope := [10]
+        parameters := .round .ceiling 1
+      } := by
+  native_decide
+
 /- The impact query distinguishes expression-operand reads, source-relative target-state reads, their complete union, and writes. -/
 example :
     (do
@@ -174,6 +256,13 @@ example :
         rangeReadsCode := true
         rangeWritesSelected := true
       } : ImpactSummary) := by
+  native_decide
+
+/- Equal source, target, scope, target policy, and result scale do not erase operation identity. -/
+example :
+    fingerprintMatch? numberFieldLeaf? absLeaf? = none ∧
+    fingerprintMatch? (roundLeaf? rounded0 .floor places0)
+      (roundLeaf? rounded0 .halfUp places0) = none := by
   native_decide
 
 /- The fingerprint retains the exact nondefault target policy instead of merely target identity. -/

@@ -15,6 +15,12 @@ theorem operandField_ne_targetField
       exact operation.placement.sourceNotTarget
   | rangeAsNumber operation =>
       exact operation.placement.sourceNotTarget
+  | numberField operation =>
+      exact operation.placement.sourceNotTarget
+  | abs operation =>
+      exact operation.numberSource.placement.sourceNotTarget
+  | round operation =>
+      exact operation.numberSource.placement.sourceNotTarget
 
 /-- Fingerprint comparison recognizes exact identity. -/
 theorem matchingFingerprint_self

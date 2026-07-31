@@ -1,25 +1,36 @@
 import A12Kernel.Elaboration.AddressedFieldValueAsNumber
 import A12Kernel.Elaboration.AddressedRangeAsNumber
+import A12Kernel.Elaboration.AddressedNumberAbs
+import A12Kernel.Elaboration.AddressedNumberRound
 
 /-! # Bounded addressed numeric-leaf Analyze/Transform view
 
-This internal consumer view covers only the two completed same-scope repeatable textual Number leaves. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
+This internal consumer view covers the completed same-scope repeatable textual conversions and direct-Number field, `Abs`, and Round operations. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
 -/
 
 namespace A12Kernel
 
-/-- The two checked addressed numeric leaves covered by the bounded consumer probe. -/
+/-- The checked addressed numeric operations covered by the bounded consumer probe. -/
 inductive CheckedAddressedNumericLeaf (model : FlatModel) where
   | fieldValueAsNumber
       (operation : CheckedAddressedFieldValueAsNumber model)
   | rangeAsNumber
       (operation : CheckedAddressedRangeAsNumber model)
+  | numberField
+      (operation : CheckedAddressedNumberField model)
+  | abs
+      (operation : CheckedAddressedNumberAbs model)
+  | round
+      (operation : CheckedAddressedNumberRound model)
 
-/-- The exact conversion parameters whose change can alter this family's observations. -/
+/-- The exact operation identity and parameters whose change can alter this family's observations. -/
 inductive AddressedNumericLeafParameters where
   | fieldValueAsNumber
       (projection : EnumerationProjectionRef) (scale : Nat)
   | rangeAsNumber (start finish : Nat)
+  | numberField (resultScale : Nat)
+  | abs (resultScale : Nat)
+  | round (mode : DecimalRoundingMode) (resultScale : Nat)
   deriving Repr, DecidableEq
 
 /-- The complete bounded Analyze fingerprint for one checked leaf in a fixed validated model. -/
@@ -50,6 +61,27 @@ def analyze :
       scope := operation.placement.targetDeclaration.repeatableScope
       targetPolicy := operation.placement.targetPolicy
       parameters := .rangeAsNumber operation.start operation.finish
+    }
+  | .numberField operation => {
+      targetField := operation.placement.targetField
+      sourceField := operation.placement.sourceDeclaration.id
+      scope := operation.placement.targetDeclaration.repeatableScope
+      targetPolicy := operation.placement.targetPolicy
+      parameters := .numberField operation.source.info.scale
+    }
+  | .abs operation => {
+      targetField := operation.numberSource.placement.targetField
+      sourceField := operation.numberSource.placement.sourceDeclaration.id
+      scope := operation.numberSource.placement.targetDeclaration.repeatableScope
+      targetPolicy := operation.numberSource.placement.targetPolicy
+      parameters := .abs operation.numberSource.source.info.scale
+    }
+  | .round operation => {
+      targetField := operation.numberSource.placement.targetField
+      sourceField := operation.numberSource.placement.sourceDeclaration.id
+      scope := operation.numberSource.placement.targetDeclaration.repeatableScope
+      targetPolicy := operation.numberSource.placement.targetPolicy
+      parameters := .round operation.mode operation.places.val
     }
 
 /-- Whether evaluation reads the named expression operand. Result classification has its distinct target-state read below. -/
@@ -86,6 +118,9 @@ def execute (leaf : CheckedAddressedNumericLeaf model)
   match leaf with
   | .fieldValueAsNumber operation => operation.execute input
   | .rangeAsNumber operation => operation.execute input
+  | .numberField operation => operation.execute input
+  | .abs operation => operation.execute input
+  | .round operation => operation.execute input
 
 /-- Project one checked family member through its existing rich result owner. -/
 def executeResult (leaf : CheckedAddressedNumericLeaf model)
@@ -99,6 +134,12 @@ def executeResult (leaf : CheckedAddressedNumericLeaf model)
   | .fieldValueAsNumber operation =>
       operation.executeResult input payloadAt supplied
   | .rangeAsNumber operation =>
+      operation.executeResult input payloadAt supplied
+  | .numberField operation =>
+      operation.executeResult input payloadAt supplied
+  | .abs operation =>
+      operation.executeResult input payloadAt supplied
+  | .round operation =>
       operation.executeResult input payloadAt supplied
 
 /-- The sole admitted Transform in this bounded probe: retain the exact checked leaf. -/
