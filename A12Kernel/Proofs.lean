@@ -144,6 +144,7 @@ import A12Kernel.Proofs.AddressedNumberRound
 import A12Kernel.Proofs.AddressedNumberExtremum
 import A12Kernel.Proofs.AddressedNumberBinary
 import A12Kernel.Proofs.AddressedNumberDivision
+import A12Kernel.Proofs.AddressedNumberPower
 import A12Kernel.Proofs.AddressedNumericLeafConsumer
 import A12Kernel.Proofs.NumberToStringComputationRun
 import A12Kernel.Proofs.StringToNumberComputationRun

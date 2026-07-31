@@ -1603,6 +1603,7 @@ run_cmd do
 #print axioms A12Kernel.checkedAddressedNumberExtremum_sound
 #print axioms A12Kernel.checkedAddressedNumberBinary_sound
 #print axioms A12Kernel.checkedAddressedNumberDivision_sound
+#print axioms A12Kernel.checkedAddressedNumberPower_sound
 #print axioms A12Kernel.CheckedAddressedNumericLeaf.operandField_ne_targetField
 #print axioms A12Kernel.CheckedAddressedNumericLeaf.matchingFingerprint_self
 #print axioms A12Kernel.CheckedAddressedNumericLeaf.matchingFingerprint_some_iff
