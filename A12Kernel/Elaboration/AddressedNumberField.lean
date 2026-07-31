@@ -122,7 +122,7 @@ end CheckedAddressedNumberSource
 
 namespace CheckedAddressedNumberPair
 
-private def evaluateAtPath
+def evaluateAtPathWith
     (pair : CheckedAddressedNumberPair model)
     (input : CheckedDocument model)
     (combine : NumericComputationResult → NumericComputationResult →
@@ -144,7 +144,8 @@ def executeWith
       NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  pair.left.placement.executeWithPath input (pair.evaluateAtPath input combine)
+  pair.left.placement.executeWithPath input
+    (pair.evaluateAtPathWith input combine)
 
 /-- Execute two direct Number sources through the same target's warning-suppressed checker. -/
 def executeWithScaleWarningSuppressed
@@ -155,7 +156,7 @@ def executeWithScaleWarningSuppressed
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
   pair.left.placement.executeWithPathScaleWarningSuppressed input
-    (pair.evaluateAtPath input combine)
+    (pair.evaluateAtPathWith input combine)
 
 private def resultFromOutcomes
     (outcomes : List (SourcedNumericTargetOutcome CellAddr))

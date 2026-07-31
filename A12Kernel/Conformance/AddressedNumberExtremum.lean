@@ -147,4 +147,156 @@ example :
         [addr maximum.id 7]) := by
   native_decide
 
+private def listNumber (id : FieldId) (name : String)
+    (scale : Nat) : FlatFieldDecl := {
+  id
+  groupPath := ["Probe", "Rows"]
+  name
+  policy := { kind := .number { scale, signed := true } }
+  repeatableScope := [20]
+}
+
+private def listA := listNumber 11 "ListA" 0
+private def listB : FlatFieldDecl := {
+  listNumber 12 "ListB" 2 with
+  numericTargetConstraints := { maximum := some 10 }
+}
+private def listC : FlatFieldDecl := {
+  listNumber 13 "ListC" 1 with
+  numericTargetConstraints := { minimum := some (-9), maximum := some 8 }
+}
+private def listMinimum : FlatFieldDecl := {
+  listNumber 14 "ListMinimum" 2 with
+  numericTargetConstraints := { minimum := some (-999 / 100) }
+}
+private def listMaximum : FlatFieldDecl := {
+  listNumber 15 "ListMaximum" 2 with
+  numericTargetConstraints := { maximum := some (999 / 100) }
+}
+private def listWrongScale := listNumber 16 "ListWrongScale" 1
+
+private def listModel : FlatModel := {
+  fields := [listA, listB, listC, listMinimum, listMaximum, listWrongScale]
+  repeatableGroups := [{
+    level := 20
+    path := ["Probe", "Rows"]
+    repeatability := some 10
+  }]
+}
+
+private def listPrepared :
+    PreparedFlatStringContext listModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler listModel).toOption.get (by native_decide)
+
+private def listInput? (extra : List ClassifiedCellInput := []) :
+    Option (CheckedDocument listModel) :=
+  (checkDocument listPrepared "en_US" {
+    instantiatedRows := (List.range 10).map fun i =>
+      { group := 20, path := [i + 1] }
+    cells := [
+      cell listA.id 1 "3" (.parsed (.num 3)),
+      decimalCell listB.id 1 "5.25" 525 2 (.parsed (.num (21 / 4))),
+      decimalCell listC.id 1 "4.5" 45 1 (.parsed (.num (9 / 2))),
+      decimalCell listB.id 2 "5.25" 525 2 (.parsed (.num (21 / 4))),
+      decimalCell listC.id 2 "4.5" 45 1 (.parsed (.num (9 / 2))),
+      cell listA.id 3 "-2" (.parsed (.num (-2))),
+      decimalCell listC.id 3 "-1.5" (-15) 1 (.parsed (.num (-3 / 2))),
+      cell listA.id 5 "bad-a" (.rejected .malformed),
+      cell listB.id 5 "12" (.rejected .declaredConstraint),
+      decimalCell listC.id 5 "7.0" 70 1 (.parsed (.num 7)),
+      cell listA.id 6 "4" (.parsed (.num 4)),
+      cell listB.id 6 "12" (.rejected .declaredConstraint),
+      cell listC.id 6 "bad-c" (.rejected .malformed),
+      cell listA.id 7 "4" (.parsed (.num 4)),
+      decimalCell listB.id 7 "5.00" 500 2 (.parsed (.num 5)),
+      decimalCell listC.id 7 "9.0" 90 1 (.rejected .declaredConstraint),
+      cell listA.id 8 "12" (.parsed (.num 12)),
+      decimalCell listB.id 8 "4.00" 400 2 (.parsed (.num 4)),
+      decimalCell listC.id 8 "6.0" 60 1 (.parsed (.num 6)),
+      cell listA.id 9 "4" (.parsed (.num 4)),
+      decimalCell listB.id 9 "5.00" 500 2 (.parsed (.num 5)),
+      decimalCell listC.id 9 "8.0" 80 1 (.parsed (.num 8)),
+      cell listA.id 10 "4" (.parsed (.num 4)),
+      decimalCell listB.id 10 "5.00" 500 2 (.parsed (.num 5)),
+      decimalCell listC.id 10 "-1.5" (-15) 1 (.parsed (.num (-3 / 2)))
+    ] ++ extra
+  }).toOption
+
+private def listOperation? (target : FlatFieldDecl)
+    (op : NumericExtremumOp) :
+    Option (CheckedAddressedNumberExtremum listModel) :=
+  (checkAddressedNumberExtremumList listModel ["Probe", "Rows"] target.id
+    (bare "ListA") (bare "ListB") [(bare "ListC")] op).toOption
+
+private def listOutcomes? (target : FlatFieldDecl) (op : NumericExtremumOp) :
+    Option (List (CellAddr × NumericTargetOutcome)) := do
+  let operation ← listOperation? target op
+  let input ← listInput?
+  let outcomes ← (operation.execute input).toOption
+  pure (outcomes.map fun entry => (entry.targetField, entry.outcome))
+
+private def listResult? (extra : List ClassifiedCellInput) :
+    Option (NumericComputationRunView
+      (ComputationFormalMessage Unit) CellAddr) := do
+  let operation ← listOperation? listMaximum .maximum
+  let input ← listInput? extra
+  (operation.executeResult input (fun _ => ()) []).toOption
+
+example :
+    (listOperation? listMinimum .minimum).isSome = true ∧
+    (listOperation? listMaximum .maximum).isSome = true ∧
+    (match checkAddressedNumberExtremumList listModel ["Probe", "Rows"]
+        listWrongScale.id (bare "ListA") (bare "ListB") [(bare "ListC")]
+        .minimum with
+      | .error (.scaleMismatch 1 2) => true
+      | _ => false) = true := by
+  native_decide
+
+example : listOutcomes? listMinimum .minimum = some [
+    (addr listMinimum.id 1, .accepted (stored 3 0)),
+    (addr listMinimum.id 2, .accepted (stored 0 0)),
+    (addr listMinimum.id 3, .accepted (stored (-2) 0)),
+    (addr listMinimum.id 4, .accepted (stored 0 0)),
+    (addr listMinimum.id 5, .inheritedPoison .malformed),
+    (addr listMinimum.id 6, .inheritedPoison .declaredConstraint),
+    (addr listMinimum.id 7, .inheritedPoison .declaredConstraint),
+    (addr listMinimum.id 8, .accepted (stored 4 0)),
+    (addr listMinimum.id 9, .accepted (stored 4 0)),
+    (addr listMinimum.id 10, .accepted (stored (-15) 1))
+  ] := by native_decide
+
+example : listOutcomes? listMaximum .maximum = some [
+    (addr listMaximum.id 1, .accepted (stored 525 2)),
+    (addr listMaximum.id 2, .accepted (stored 525 2)),
+    (addr listMaximum.id 3, .accepted (stored 0 0)),
+    (addr listMaximum.id 4, .accepted (stored 0 0)),
+    (addr listMaximum.id 5, .inheritedPoison .malformed),
+    (addr listMaximum.id 6, .inheritedPoison .declaredConstraint),
+    (addr listMaximum.id 7, .inheritedPoison .declaredConstraint),
+    (addr listMaximum.id 8, .rejected (stored 12 0) .aboveMaximum),
+    (addr listMaximum.id 9, .accepted (stored 8 0)),
+    (addr listMaximum.id 10, .accepted (stored 5 0))
+  ] := by native_decide
+
+example :
+    (do
+      let view ← listResult? [
+        decimalCell listMaximum.id 1 "5.25" 525 2 (.parsed (.num (21 / 4))),
+        decimalCell listMaximum.id 2 "1.00" 100 2 (.parsed (.num 1)),
+        decimalCell listMaximum.id 5 "7.00" 700 2 (.parsed (.num 7)),
+        decimalCell listMaximum.id 7 "7.00" 700 2 (.parsed (.num 7))
+      ]
+      pure (view.withChanges.map (·.targetField), view.cleared,
+        view.withErrors.map (·.targetField),
+        view.formalErrorsInOperands.map (·.pointer))) =
+      some (
+        [addr listMaximum.id 2, addr listMaximum.id 3,
+          addr listMaximum.id 4, addr listMaximum.id 9,
+          addr listMaximum.id 10],
+        [addr listMaximum.id 5, addr listMaximum.id 7],
+        [addr listMaximum.id 8],
+        []) := by
+  native_decide
+
 end A12Kernel.Conformance.AddressedNumberExtremum
