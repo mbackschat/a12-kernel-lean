@@ -5,6 +5,27 @@ import A12Kernel.Elaboration.AddressedNumberField
 
 namespace A12Kernel
 
+/-- Every shared addressed Number source retains one sound placement and exact Number-kind witness. -/
+theorem checkedAddressedNumberSource_sound
+    (source : CheckedAddressedNumberSource model) :
+    (model.validate.isOk = true ∧
+      model.lookupUniqueId source.placement.targetField =
+        .ok source.placement.targetDeclaration ∧
+      model.resolveFieldDeclarationUnchecked
+          source.placement.declaringGroup source.placement.sourceReference =
+        .ok source.placement.sourceDeclaration ∧
+      source.placement.targetDeclaration.groupPath =
+        source.placement.declaringGroup ∧
+      source.placement.targetDeclaration.toNumericTargetPolicy? =
+        some source.placement.targetPolicy ∧
+      source.placement.targetDeclaration.repeatableScope ≠ [] ∧
+      source.placement.sourceDeclaration.id ≠ source.placement.targetField ∧
+      source.placement.sourceDeclaration.repeatableScope =
+        source.placement.targetDeclaration.repeatableScope) ∧
+      source.placement.sourceDeclaration.toNumberField? = some source.source := by
+  exact ⟨checkedAddressedNumericPlacement_sound source.placement,
+    source.sourceCertified⟩
+
 /-- Every checked direct Number-field operation retains one sound placement, Number source, and exact source/target scale. -/
 theorem checkedAddressedNumberField_sound
     (operation : CheckedAddressedNumberField model) :
@@ -28,7 +49,8 @@ theorem checkedAddressedNumberField_sound
         some operation.source ∧
       operation.placement.targetPolicy.info.scale =
         operation.source.info.scale := by
-  exact ⟨checkedAddressedNumericPlacement_sound operation.placement,
-    operation.sourceCertified, operation.sameScale⟩
+  rcases checkedAddressedNumberSource_sound
+      operation.toCheckedAddressedNumberSource with ⟨placement, certified⟩
+  exact ⟨placement, certified, operation.sameScale⟩
 
 end A12Kernel

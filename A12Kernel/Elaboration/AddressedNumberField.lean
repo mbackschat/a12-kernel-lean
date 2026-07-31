@@ -4,6 +4,36 @@ import A12Kernel.Elaboration.AddressedNumericLeaf
 
 namespace A12Kernel
 
+/-- Fail-closed errors for one addressed direct Number source before any operation-specific result-scale check. -/
+inductive AddressedNumberSourceElabError where
+  | placement (cause : AddressedNumericPlacementElabError)
+  | sourceNotNumber (path : List String) (actual : SurfaceScalarKind)
+  deriving Repr, DecidableEq
+
+/-- One direct Number source certified on the shared same-scope repeatable placement. -/
+structure CheckedAddressedNumberSource (model : FlatModel) where
+  private mk ::
+  placement : CheckedAddressedNumericPlacement model
+  source : FlatNumberField
+  sourceCertified :
+    placement.sourceDeclaration.toNumberField? = some source
+
+/-- Validate the direct Number source once, before a computation wrapper applies its own result-scale contract. -/
+def checkAddressedNumberSource
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (sourceReference : SurfaceFieldPath) :
+    Except AddressedNumberSourceElabError
+      (CheckedAddressedNumberSource model) :=
+  match checkAddressedNumericPlacement model declaringGroup
+      targetField sourceReference with
+  | .error cause => .error (.placement cause)
+  | .ok placement =>
+    match hSource : placement.sourceDeclaration.toNumberField? with
+    | none =>
+        .error (.sourceNotNumber placement.sourceDeclaration.path
+          placement.sourceDeclaration.policy.kind.surfaceKind)
+    | some source => .ok { placement, source, sourceCertified := hSource }
+
 /-- Fail-closed errors specific to direct addressed Number assignment. -/
 inductive AddressedNumberFieldElabError where
   | placement (cause : AddressedNumericPlacementElabError)
@@ -11,13 +41,9 @@ inductive AddressedNumberFieldElabError where
   | scaleMismatch (target source : Nat)
   deriving Repr, DecidableEq
 
-/-- One direct Number source and Number target certified at the same nonempty repeatable scope and exact scale. -/
-structure CheckedAddressedNumberField (model : FlatModel) where
-  private mk ::
-  placement : CheckedAddressedNumericPlacement model
-  source : FlatNumberField
-  sourceCertified :
-    placement.sourceDeclaration.toNumberField? = some source
+/-- One direct Number assignment whose shared source certificate also matches the target scale exactly. -/
+structure CheckedAddressedNumberField (model : FlatModel)
+    extends CheckedAddressedNumberSource model where
   sameScale :
     placement.targetPolicy.info.scale = source.info.scale
 
@@ -27,20 +53,21 @@ def checkAddressedNumberField
     (sourceReference : SurfaceFieldPath) :
     Except AddressedNumberFieldElabError
       (CheckedAddressedNumberField model) :=
-  match checkAddressedNumericPlacement model declaringGroup
+  match checkAddressedNumberSource model declaringGroup
       targetField sourceReference with
-  | .error cause => .error (.placement cause)
-  | .ok placement =>
-    match hSource : placement.sourceDeclaration.toNumberField? with
-    | none =>
-        .error (.sourceNotNumber placement.sourceDeclaration.path
-          placement.sourceDeclaration.policy.kind.surfaceKind)
-    | some source =>
-      if hScale :
-          placement.targetPolicy.info.scale = source.info.scale then
-        .ok { placement, source, sourceCertified := hSource, sameScale := hScale }
-      else
-        .error (.scaleMismatch placement.targetPolicy.info.scale source.info.scale)
+  | .error (.placement cause) => .error (.placement cause)
+  | .error (.sourceNotNumber path actual) =>
+      .error (.sourceNotNumber path actual)
+  | .ok numberSource =>
+    if hScale : numberSource.placement.targetPolicy.info.scale =
+        numberSource.source.info.scale then
+      .ok {
+        toCheckedAddressedNumberSource := numberSource
+        sameScale := hScale
+      }
+    else
+      .error (.scaleMismatch numberSource.placement.targetPolicy.info.scale
+        numberSource.source.info.scale)
 
 abbrev AddressedNumberFieldFault := AddressedNumericLeafFault
 
