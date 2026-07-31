@@ -338,4 +338,93 @@ example :
         []) := by
   native_decide
 
+private def fieldOperand (name : String) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .field (bare name)
+
+private def literalOperand (value : Rat) (authoredScale : Int) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .literal { value, authoredScale }
+
+private def literalOperation? (target : FlatFieldDecl)
+    (op : NumericExtremumOp)
+    (first : SurfaceAddressedNumberExtremumOperand)
+    (rest : List SurfaceAddressedNumberExtremumOperand) :
+    Option (CheckedAddressedNumberExtremum listModel) :=
+  (checkAddressedNumberExtremumOperands listModel ["Probe", "Rows"]
+    target.id first rest op).toOption
+
+private def literalOutcomes?
+    (op : NumericExtremumOp)
+    (first : SurfaceAddressedNumberExtremumOperand)
+    (rest : List SurfaceAddressedNumberExtremumOperand) :
+    Option (List (CellAddr × NumericTargetOutcome)) := do
+  let operation ← literalOperation? listMaximum op first rest
+  let input ← listInput?
+  let outcomes ← (operation.execute input).toOption
+  pure (outcomes.map fun entry => (entry.targetField, entry.outcome))
+
+/- The addressed specialization admits one immediate literal anywhere beside at least one direct field, preserves its authored scale in the result-scale gate, and rejects a second literal before target checking. A literal-only call stays outside this bounded addressed capsule without claiming kernel rejection. -/
+example :
+    (literalOperation? listMaximum .minimum
+      (fieldOperand "ListA") [literalOperand (5 / 4) 3]).isSome = true ∧
+    (literalOperation? listMaximum .minimum
+      (literalOperand (5 / 4) 3) [fieldOperand "ListA"]).isSome = true ∧
+    (literalOperation? listMaximum .maximum
+      (fieldOperand "ListA")
+      [fieldOperand "ListB", literalOperand (-5 / 4) 3]).isSome = true ∧
+    (literalOperation? listMaximum .maximum
+      (fieldOperand "ListA")
+      [literalOperand (-5 / 4) 3, fieldOperand "ListB"]).isSome = true ∧
+    (match checkAddressedNumberExtremumOperands listModel ["Probe", "Rows"]
+        listWrongScale.id (fieldOperand "ListA")
+        [literalOperand (5 / 4) 3] .minimum with
+      | .error (.scaleMismatch 2 3) => true
+      | _ => false) = true ∧
+    (match checkAddressedNumberExtremumOperands listModel ["Probe", "Rows"]
+        listMaximum.id (fieldOperand "ListA")
+        [literalOperand (5 / 4) 3, literalOperand 2 0] .minimum with
+      | .error .tooManyLiterals => true
+      | _ => false) = true ∧
+    (match checkAddressedNumberExtremumOperands listModel ["Probe", "Rows"]
+        listMaximum.id (literalOperand (5 / 4) 3) [] .minimum with
+      | .error .noFieldSource => true
+      | _ => false) = true := by
+  native_decide
+
+/- Field/literal order is retained even though clean extrema commute. Empty Number still contributes zero, a negative literal remains a value, and a reached malformed field still poisons the call on either side of the literal. -/
+example :
+    literalOutcomes? .minimum
+      (fieldOperand "ListA") [literalOperand (5 / 4) 3] =
+      literalOutcomes? .minimum
+        (literalOperand (5 / 4) 3) [fieldOperand "ListA"] ∧
+    literalOutcomes? .minimum
+      (fieldOperand "ListA") [literalOperand (5 / 4) 3] = some [
+        (addr listMaximum.id 1, .accepted (stored 125 2)),
+        (addr listMaximum.id 2, .accepted (stored 0 0)),
+        (addr listMaximum.id 3, .accepted (stored (-2) 0)),
+        (addr listMaximum.id 4, .accepted (stored 0 0)),
+        (addr listMaximum.id 5, .inheritedPoison .malformed),
+        (addr listMaximum.id 6, .accepted (stored 125 2)),
+        (addr listMaximum.id 7, .accepted (stored 125 2)),
+        (addr listMaximum.id 8, .accepted (stored 125 2)),
+        (addr listMaximum.id 9, .accepted (stored 125 2)),
+        (addr listMaximum.id 10, .accepted (stored 125 2))
+      ] ∧
+    literalOutcomes? .maximum
+      (fieldOperand "ListA") [literalOperand (-5 / 4) 3] = some [
+        (addr listMaximum.id 1, .accepted (stored 3 0)),
+        (addr listMaximum.id 2, .accepted (stored 0 0)),
+        (addr listMaximum.id 3, .accepted (stored (-125) 2)),
+        (addr listMaximum.id 4, .accepted (stored 0 0)),
+        (addr listMaximum.id 5, .inheritedPoison .malformed),
+        (addr listMaximum.id 6, .accepted (stored 4 0)),
+        (addr listMaximum.id 7, .accepted (stored 4 0)),
+        (addr listMaximum.id 8,
+          .rejected (stored 12 0) .aboveMaximum),
+        (addr listMaximum.id 9, .accepted (stored 4 0)),
+        (addr listMaximum.id 10, .accepted (stored 4 0))
+      ] := by
+  native_decide
+
 end A12Kernel.Conformance.AddressedNumberExtremum

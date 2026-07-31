@@ -1601,6 +1601,7 @@ run_cmd do
 #print axioms A12Kernel.checkedAddressedNumberSource_sound
 #print axioms A12Kernel.checkedAddressedNumberRound_sound
 #print axioms A12Kernel.checkedAddressedNumberExtremum_sound
+#print axioms A12Kernel.checkedAddressedNumberExtremum_literalPosition
 #print axioms A12Kernel.checkedAddressedNumberBinary_sound
 #print axioms A12Kernel.checkedAddressedNumberDivision_sound
 #print axioms A12Kernel.checkedAddressedNumberPower_sound

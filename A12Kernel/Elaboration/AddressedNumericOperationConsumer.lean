@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.AddressedNumberExtremum
 
 /-! # Bounded addressed numeric-operation Analyze/Transform view
 
-This internal consumer view covers the completed same-scope repeatable textual conversions and direct-Number field, `Abs`, Round, and direct-Number operand-list extrema. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
+This internal consumer view covers the completed same-scope repeatable textual conversions and direct-Number field, `Abs`, Round, and bounded operand-list extrema over direct fields plus at most one immediate literal. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
 -/
 
 namespace A12Kernel
@@ -26,6 +26,12 @@ inductive CheckedAddressedNumericOperation (model : FlatModel) where
   | extremum
       (operation : CheckedAddressedNumberExtremum model)
 
+/-- One bounded operand identity retained for consumer-visible extrema order. -/
+inductive AddressedNumberExtremumOperandIdentity where
+  | field (field : FieldId)
+  | literal (decoded : DecodedNumericLiteral)
+  deriving Repr, DecidableEq
+
 /-- The exact operation identity and parameters whose change can alter this family's observations. -/
 inductive AddressedNumericOperationParameters where
   | fieldValueAsNumber
@@ -35,6 +41,7 @@ inductive AddressedNumericOperationParameters where
   | abs (resultScale : Nat)
   | round (mode : DecimalRoundingMode) (resultScale : Nat)
   | extremum (op : NumericExtremumOp) (resultScale : Nat)
+      (operands : List AddressedNumberExtremumOperandIdentity)
   deriving Repr, DecidableEq
 
 /-- The complete bounded Analyze fingerprint for one checked operation in a fixed validated model. -/
@@ -47,6 +54,12 @@ structure AddressedNumericOperationAnalysis where
   deriving Repr, DecidableEq
 
 namespace CheckedAddressedNumericOperation
+
+private def extremumOperandIdentity :
+    CheckedAddressedNumberExtremumOperand model →
+      AddressedNumberExtremumOperandIdentity
+  | .field source => .field source.placement.sourceDeclaration.id
+  | .literal decoded => .literal decoded
 
 /-- Analyze exact read/write identity, repeatable scope, target policy, and conversion parameters without reconstructing an expression. -/
 def analyze :
@@ -95,7 +108,9 @@ def analyze :
       scope := operation.first.placement.targetDeclaration.repeatableScope
       targetPolicy := operation.first.placement.targetPolicy
       parameters := .extremum operation.op
-        (addressedNumberExtremumResultScale operation.first operation.rest)
+        (addressedNumberExtremumOperandResultScale operation.first
+          operation.rest operation.literal)
+        (operation.orderedOperands.map extremumOperandIdentity)
     }
 
 /-- Whether evaluation reads the named expression operand. Result classification has its distinct target-state read below. -/

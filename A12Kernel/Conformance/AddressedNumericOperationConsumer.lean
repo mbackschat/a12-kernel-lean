@@ -147,6 +147,24 @@ private def extremumLeaf? (op : NumericExtremumOp)
       target.id (bare first) (rest.map bare) op).toOption
   pure (.extremum operation)
 
+private def extremumField (name : String) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .field (bare name)
+
+private def extremumLiteral (value : Rat) (authoredScale : Int) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .literal { value, authoredScale }
+
+private def literalExtremumLeaf? (op : NumericExtremumOp)
+    (target : FlatFieldDecl)
+    (first : SurfaceAddressedNumberExtremumOperand)
+    (rest : List SurfaceAddressedNumberExtremumOperand) :
+    Option (CheckedAddressedNumericOperation model) := do
+  let operation ←
+    (checkAddressedNumberExtremumOperands model ["Order", "Rows"]
+      target.id first rest op).toOption
+  pure (.extremum operation)
+
 private def places0 : RoundingPlaces := ⟨0, by decide⟩
 private def places1 : RoundingPlaces := ⟨1, by decide⟩
 
@@ -256,7 +274,7 @@ example :
         targetField := sameScaleTarget.id
         sourceFields := [amount.id]
         scope := [10]
-        parameters := .extremum .minimum 2
+        parameters := .extremum .minimum 2 [.field amount.id]
       } ∧
     analyzed? (extremumLeaf? .maximum extremumTarget "Selected"
         ["Amount", "Precise"]) =
@@ -265,6 +283,54 @@ example :
         sourceFields := [selected.id, amount.id, precise.id]
         scope := [10]
         parameters := .extremum .maximum 3
+          [.field selected.id, .field amount.id, .field precise.id]
+      } := by
+  native_decide
+
+/- Analyze retains one immediate literal's exact authored position, value, and syntax-derived scale while field dependencies remain field-only. -/
+example :
+    analyzed? (literalExtremumLeaf? .minimum extremumTarget
+      (extremumField "Selected") [extremumLiteral (5 / 4) 3]) =
+      some {
+        targetField := extremumTarget.id
+        sourceFields := [selected.id]
+        scope := [10]
+        parameters := .extremum .minimum 3
+          [.field selected.id,
+            .literal { value := 5 / 4, authoredScale := 3 }]
+      } ∧
+    analyzed? (literalExtremumLeaf? .minimum extremumTarget
+      (extremumLiteral (5 / 4) 3) [extremumField "Selected"]) =
+      some {
+        targetField := extremumTarget.id
+        sourceFields := [selected.id]
+        scope := [10]
+        parameters := .extremum .minimum 3
+          [.literal { value := 5 / 4, authoredScale := 3 },
+            .field selected.id]
+      } ∧
+    analyzed? (literalExtremumLeaf? .maximum extremumTarget
+      (extremumField "Selected")
+      [extremumField "Amount", extremumLiteral (-5 / 4) 3]) =
+      some {
+        targetField := extremumTarget.id
+        sourceFields := [selected.id, amount.id]
+        scope := [10]
+        parameters := .extremum .maximum 3
+          [.field selected.id, .field amount.id,
+            .literal { value := -5 / 4, authoredScale := 3 }]
+      } ∧
+    analyzed? (literalExtremumLeaf? .maximum extremumTarget
+      (extremumField "Selected")
+      [extremumLiteral (-5 / 4) 3, extremumField "Amount"]) =
+      some {
+        targetField := extremumTarget.id
+        sourceFields := [selected.id, amount.id]
+        scope := [10]
+        parameters := .extremum .maximum 3
+          [.field selected.id,
+            .literal { value := -5 / 4, authoredScale := 3 },
+            .field amount.id]
       } := by
   native_decide
 
@@ -280,6 +346,20 @@ example :
       (extremumLeaf? .minimum sameScaleTarget "Selected" ["Amount"])
       (extremumLeaf? .minimum sameScaleTarget "Selected"
         ["Amount", "Rounded1"]) = none := by
+  native_decide
+
+/- Literal order and authored scale remain transformation-sensitive even when the selected amount or derived target scale coincides. -/
+example :
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum extremumTarget
+        (extremumField "Selected") [extremumLiteral (5 / 4) 3])
+      (literalExtremumLeaf? .minimum extremumTarget
+        (extremumLiteral (5 / 4) 3) [extremumField "Selected"]) = none ∧
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum extremumTarget
+        (extremumField "Precise") [extremumLiteral (5 / 4) 2])
+      (literalExtremumLeaf? .minimum extremumTarget
+        (extremumField "Precise") [extremumLiteral (5 / 4) 3]) = none := by
   native_decide
 
 /- The impact query distinguishes expression-operand reads, source-relative target-state reads, their complete union, and writes. -/
