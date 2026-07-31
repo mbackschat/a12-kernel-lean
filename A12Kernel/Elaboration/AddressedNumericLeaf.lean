@@ -143,11 +143,11 @@ def evaluateSourceAtom
   }
   context.readNumericComputationAtom atom
 
-/-- Execute one source-cell evaluator per physical target environment and retain the exact row key for result classification and application. -/
-def executeWith (placement : CheckedAddressedNumericPlacement model)
+/-- Execute one path-indexed evaluator per physical target environment and retain the exact row key for result classification and application. This is the shared target half for one- and multi-source same-scope operations. -/
+def executeWithPath (placement : CheckedAddressedNumericPlacement model)
     (input : CheckedDocument model)
-    (evaluate : CheckedCell →
-      Except NumericComputationFault NumericComputationResult) :
+    (evaluate : List Nat →
+      Except AddressedNumericLeafFault NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) := do
   let environments ←
@@ -156,17 +156,11 @@ def executeWith (placement : CheckedAddressedNumericPlacement model)
     let path ←
       (environment.pathForScope
         placement.targetDeclaration.repeatableScope).mapError .environment
-    let sourceAddress : CellAddr := {
-      field := placement.sourceDeclaration.id
-      path
-    }
     let targetAddress : CellAddr := {
       field := placement.targetField
       path
     }
-    let sourceCell ←
-      (input.read sourceAddress).mapError .sourceRead
-    let result ← (evaluate sourceCell).mapError .evaluation
+    let result ← evaluate path
     let outcome ←
       match placement.targetPolicy.check result with
       | .supported outcome => pure outcome
@@ -176,6 +170,22 @@ def executeWith (placement : CheckedAddressedNumericPlacement model)
       outcome
       source := input.numericTargetPlacementStateAt targetAddress
     }
+
+/-- Execute one source-cell evaluator through the shared path-indexed target owner. -/
+def executeWith (placement : CheckedAddressedNumericPlacement model)
+    (input : CheckedDocument model)
+    (evaluate : CheckedCell →
+      Except NumericComputationFault NumericComputationResult) :
+    Except AddressedNumericLeafFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  placement.executeWithPath input fun path => do
+    let sourceAddress : CellAddr := {
+      field := placement.sourceDeclaration.id
+      path
+    }
+    let sourceCell ←
+      (input.read sourceAddress).mapError .sourceRead
+    (evaluate sourceCell).mapError .evaluation
 
 /-- Classify shared addressed outcomes against the immutable source document without collapsing their exact row keys. -/
 def executeResultWith
