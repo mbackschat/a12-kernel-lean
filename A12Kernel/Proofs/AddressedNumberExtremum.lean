@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.AddressedNumberExtremum
 
 namespace A12Kernel
 
-/-- Every checked extremum retains every ordered Number-kind witness behind its operand-local tag, one target, and the maximum field/literal operand scale as its exact target scale. -/
+/-- Every checked extremum retains every ordered Number-kind witness behind its operand-local tag, one target, and the maximum transformed-source/literal operand scale as its exact target scale. -/
 theorem checkedAddressedNumberExtremum_sound
     (operation : CheckedAddressedNumberExtremum model) :
     operation.first.numberSource.placement.sourceDeclaration.toNumberField? =

@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.AddressedNumericOperationConsumer
 
 /-! # Addressed numeric-operation Analyze/Transform probe
 
-The bounded probe consumes checked same-scope repeatable conversion, direct Number, `Abs`, Round, and field/literal/operand-local-`Abs` operand-list extrema. It recovers exact bounded read/write impact, compares transformation-sensitive fingerprints without claiming equivalence, and exercises exact identity as the sole admitted Transform.
+The bounded probe consumes checked same-scope repeatable conversion, direct Number, root `Abs`, root Round, and field/literal/operand-local-wrapper operand-list extrema. It recovers exact bounded read/write impact, compares transformation-sensitive fingerprints without claiming equivalence, and exercises exact identity as the sole admitted Transform.
 -/
 
 namespace A12Kernel.Conformance.AddressedNumericOperationConsumer
@@ -154,6 +154,11 @@ private def extremumField (name : String) :
 private def extremumAbs (name : String) :
     SurfaceAddressedNumberExtremumOperand :=
   .abs (bare name)
+
+private def extremumRound (name : String) (mode : DecimalRoundingMode)
+    (places : RoundingPlaces) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .round (bare name) mode places
 
 private def extremumLiteral (value : Rat) (authoredScale : Int) :
     SurfaceAddressedNumberExtremumOperand :=
@@ -354,6 +359,34 @@ example :
         (extremumAbs "Amount") [extremumField "Selected"])
       (literalExtremumLeaf? .minimum sameScaleTarget
         (extremumField "Amount") [extremumField "Selected"]) = none := by
+  native_decide
+
+/- Analyze retains operand-local rounding mode, places, position, and exact field dependency. Same-target controls separate both mode and places from otherwise coincident outer metadata. -/
+example :
+    analyzed? (literalExtremumLeaf? .minimum rounded1
+      (extremumRound "Amount" .floor places1)
+      [extremumField "Selected"]) =
+      some {
+        targetField := rounded1.id
+        sourceFields := [amount.id, selected.id]
+        scope := [10]
+        parameters := .extremum .minimum 1
+          [.round amount.id .floor 1, .field selected.id]
+      } ∧
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum rounded1
+        (extremumRound "Amount" .floor places1)
+        [extremumField "Selected"])
+      (literalExtremumLeaf? .minimum rounded1
+        (extremumRound "Amount" .ceiling places1)
+        [extremumField "Selected"]) = none ∧
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum rounded1
+        (extremumRound "Amount" .floor places0)
+        [extremumLiteral (5 / 4) 1])
+      (literalExtremumLeaf? .minimum rounded1
+        (extremumRound "Amount" .floor places1)
+        [extremumLiteral (5 / 4) 1]) = none := by
   native_decide
 
 /- Operation, source order, and list cardinality remain independently transformation-sensitive. -/

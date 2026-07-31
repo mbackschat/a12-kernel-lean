@@ -3,22 +3,25 @@ import A12Kernel.Elaboration.NumericExpression
 
 /-! # Same-scope repeatable bounded Number extrema
 
-This capsule retains a nonempty ordered list containing one or more checked Number sources, permits an operand-local absolute-value tag on those sources, and admits at most one immediate decoded literal. It delegates each local transformation and the authored-order fold to the existing scalar semantics, then reuses the shared exact-address target owner.
+This capsule retains a nonempty ordered list containing one or more checked Number sources, permits operand-local absolute-value or rounding tags on those sources, and admits at most one immediate decoded literal. It delegates each local transformation and the authored-order fold to the existing scalar semantics, then reuses the shared exact-address target owner.
 -/
 
 namespace A12Kernel
 
-/-- The bounded addressed surface admits direct Number fields, operand-local `Abs` over those fields, and one immediate decoded literal. Wider numeric operations remain with the scalar expression owner. -/
+/-- The bounded addressed surface admits direct Number fields, operand-local `Abs` or Round over those fields, and one immediate decoded literal. Wider numeric operations remain with the scalar expression owner. -/
 inductive SurfaceAddressedNumberExtremumOperand where
   | field (reference : SurfaceFieldPath)
   | abs (reference : SurfaceFieldPath)
+  | round (reference : SurfaceFieldPath) (mode : DecimalRoundingMode)
+      (places : RoundingPlaces)
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
 
-/-- The two bounded operations that can currently own a checked addressed Number source inside an extremum operand list. -/
+/-- The bounded direct and unary-wrapper operations that can currently own a checked addressed Number source inside an extremum operand list. -/
 inductive AddressedNumberExtremumFieldOperation where
   | direct
   | abs
+  | round (mode : DecimalRoundingMode) (places : RoundingPlaces)
   deriving Repr, DecidableEq
 
 /-- One certified Number source together with its operand-local transformation. This is deliberately not a target-owning addressed computation. -/
@@ -80,6 +83,9 @@ private def checkNumberOperand
   | .abs reference =>
       checkNumberSourceOperand model declaringGroup targetField position
         .abs reference
+  | .round reference mode places =>
+      checkNumberSourceOperand model declaringGroup targetField position
+        (.round mode places) reference
   | .literal decoded => pure (.literal decoded)
 
 private def checkNumberOperands
@@ -128,12 +134,18 @@ private def checkNumberOperands
               literalWithinSources := Nat.zero_le _
             }
 
+/-- The static result scale contributed by one field-backed operand after its local wrapper. -/
+def CheckedAddressedNumberExtremumFieldOperand.resultScale
+    (source : CheckedAddressedNumberExtremumFieldOperand model) : Nat :=
+  match source.operation with
+  | .direct | .abs => source.numberSource.source.info.scale
+  | .round _ places => places.val
+
 def addressedNumberExtremumResultScale
     (first : CheckedAddressedNumberExtremumFieldOperand model)
     (rest : List (CheckedAddressedNumberExtremumFieldOperand model)) : Nat :=
-  rest.foldl (fun scale source =>
-      max scale source.numberSource.source.info.scale)
-    first.numberSource.source.info.scale
+  rest.foldl (fun scale source => max scale source.resultScale)
+    first.resultScale
 
 /-- Include the one retained literal's syntax-derived signed scale. A field-backed source is always present with nonnegative scale, so negative literal scales cannot raise the resulting natural target scale. -/
 def addressedNumberExtremumOperandResultScale
@@ -223,6 +235,8 @@ abbrev AddressedNumberExtremumFault := AddressedNumericLeafFault
 inductive CheckedAddressedNumberExtremumOperand (model : FlatModel) where
   | field (source : CheckedAddressedNumberSource model)
   | abs (source : CheckedAddressedNumberSource model)
+  | round (source : CheckedAddressedNumberSource model)
+      (mode : DecimalRoundingMode) (places : RoundingPlaces)
   | literal (decoded : DecodedNumericLiteral)
 
 namespace CheckedAddressedNumberExtremum
@@ -234,6 +248,7 @@ private def asOperand
   match source.operation with
   | .direct => .field source.numberSource
   | .abs => .abs source.numberSource
+  | .round mode places => .round source.numberSource mode places
 
 private def insertLiteral :
     Nat → DecodedNumericLiteral →
@@ -274,6 +289,8 @@ private def evaluateOperandAtPath
   | .field source => source.evaluateAtPath input path
   | .abs source =>
       return (← source.evaluateAtPath input path).absolute
+  | .round source mode places =>
+      return (← source.evaluateAtPath input path).round mode places
   | .literal decoded => pure (.value decoded.value)
 
 private def evaluateRestAtPath (op : NumericExtremumOp)

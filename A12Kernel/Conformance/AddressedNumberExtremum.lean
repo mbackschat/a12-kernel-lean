@@ -182,10 +182,18 @@ private def listAbsTarget : FlatFieldDecl := {
   listNumber 18 "ListAbsTarget" 2 with
   numericTargetConstraints := { maximum := some (999 / 100) }
 }
+private def listRoundTarget : FlatFieldDecl := {
+  listNumber 19 "ListRoundTarget" 1 with
+  numericTargetConstraints := { maximum := some (99 / 10) }
+}
+private def listRoundSource : FlatFieldDecl := {
+  listNumber 20 "ListRoundSource" 2 with
+  numericTargetConstraints := { maximum := some 99 }
+}
 
 private def listModel : FlatModel := {
   fields := [listA, listB, listC, listMinimum, listMaximum, listWrongScale,
-    listSingleTarget, listAbsTarget]
+    listSingleTarget, listAbsTarget, listRoundTarget, listRoundSource]
   repeatableGroups := [{
     level := 20
     path := ["Probe", "Rows"]
@@ -354,6 +362,11 @@ private def absOperand (name : String) :
     SurfaceAddressedNumberExtremumOperand :=
   .abs (bare name)
 
+private def roundOperand (name : String) (mode : DecimalRoundingMode)
+    (places : RoundingPlaces) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .round (bare name) mode places
+
 private def literalOperation? (target : FlatFieldDecl)
     (op : NumericExtremumOp)
     (first : SurfaceAddressedNumberExtremumOperand)
@@ -508,6 +521,101 @@ example :
       (addr listAbsTarget.id 7, .accepted (stored (-8) 0)),
       (addr listAbsTarget.id 8, .inheritedPoison .malformed)
     ] := by
+  native_decide
+
+private def roundPlaces1 : RoundingPlaces := ⟨1, by decide⟩
+
+private def roundInput? : Option (CheckedDocument listModel) :=
+  (checkDocument listPrepared "en_US" {
+    instantiatedRows := (List.range 8).map fun i =>
+      { group := 20, path := [i + 1] }
+    cells := [
+      decimalCell listRoundSource.id 1 "-1.25" (-125) 2
+        (.parsed (.num (-5 / 4))),
+      cell listA.id 1 "7" (.parsed (.num 7)),
+      decimalCell listRoundSource.id 2 "1.25" 125 2
+        (.parsed (.num (5 / 4))),
+      cell listA.id 2 "7" (.parsed (.num 7)),
+      cell listA.id 3 "7" (.parsed (.num 7)),
+      cell listRoundSource.id 4 "bad-source" (.rejected .malformed),
+      cell listA.id 4 "-9" (.parsed (.num (-9))),
+      decimalCell listRoundSource.id 5 "12.34" 1234 2
+        (.parsed (.num (617 / 50))),
+      cell listA.id 5 "20" (.parsed (.num 20)),
+      decimalCell listRoundSource.id 6 "-5.25" (-525) 2
+        (.parsed (.num (-21 / 4))),
+      cell listA.id 6 "bad-a" (.rejected .malformed),
+      decimalCell listRoundSource.id 7 "-5.25" (-525) 2
+        (.parsed (.num (-21 / 4))),
+      cell listA.id 7 "-8" (.parsed (.num (-8))),
+      cell listRoundSource.id 8 "100" (.rejected .declaredConstraint),
+      cell listA.id 8 "bad-a" (.rejected .malformed)
+    ]
+  }).toOption
+
+private def roundOutcomes?
+    (first : SurfaceAddressedNumberExtremumOperand)
+    (rest : List SurfaceAddressedNumberExtremumOperand) :
+    Option (List (CellAddr × NumericTargetOutcome)) := do
+  let operation ← literalOperation? listRoundTarget .minimum first rest
+  let input ← roundInput?
+  let outcomes ← (operation.execute input).toOption
+  pure (outcomes.map fun entry => (entry.targetField, entry.outcome))
+
+/- Every scalar rounding mode is an operand-local tag with its authored places and outer derived scale. A literal sibling belongs to the outer extremum call. -/
+example :
+    (literalOperation? listRoundTarget .minimum
+      (roundOperand "ListRoundSource" .floor roundPlaces1)
+      [fieldOperand "ListA"]).isSome = true ∧
+    (literalOperation? listRoundTarget .minimum
+      (fieldOperand "ListA")
+      [roundOperand "ListRoundSource" .floor roundPlaces1]).isSome = true ∧
+    (literalOperation? listRoundTarget .minimum
+      (roundOperand "ListRoundSource" .ceiling roundPlaces1)
+      [fieldOperand "ListA"]).isSome = true ∧
+    (literalOperation? listRoundTarget .minimum
+      (roundOperand "ListRoundSource" .halfUp roundPlaces1)
+      [fieldOperand "ListA"]).isSome = true ∧
+    (literalOperation? listMaximum .minimum
+      (roundOperand "ListRoundSource" .floor roundPlaces1)
+      [fieldOperand "ListA", literalOperand (5 / 4) 3]).isSome = true ∧
+    (match checkAddressedNumberExtremumOperands listModel ["Probe", "Rows"]
+        listWrongScale.id
+        (roundOperand "ListRoundSource" .floor roundPlaces1)
+        [fieldOperand "ListA"] .minimum with
+      | .error (.scaleMismatch 2 1) => true
+      | _ => false) = true := by
+  native_decide
+
+/- Floor supplies the complete empty, poison, first-cause, target, and direct-field-winner matrix. Ceiling and half-up remain distinct on the signed tie rows. -/
+example :
+    roundOutcomes? (roundOperand "ListRoundSource" .floor roundPlaces1)
+      [fieldOperand "ListA"] = some [
+        (addr listRoundTarget.id 1, .accepted (stored (-13) 1)),
+        (addr listRoundTarget.id 2, .accepted (stored 12 1)),
+        (addr listRoundTarget.id 3, .accepted (stored 0 0)),
+        (addr listRoundTarget.id 4, .inheritedPoison .malformed),
+        (addr listRoundTarget.id 5,
+          .rejected (stored 123 1) .aboveMaximum),
+        (addr listRoundTarget.id 6, .inheritedPoison .malformed),
+        (addr listRoundTarget.id 7, .accepted (stored (-8) 0)),
+        (addr listRoundTarget.id 8,
+          .inheritedPoison .declaredConstraint)
+      ] ∧
+    (roundOutcomes? (roundOperand "ListRoundSource" .ceiling roundPlaces1)
+      [fieldOperand "ListA"]).map (·.take 2) = some [
+        (addr listRoundTarget.id 1, .accepted (stored (-12) 1)),
+        (addr listRoundTarget.id 2, .accepted (stored 13 1))
+      ] ∧
+    (roundOutcomes? (roundOperand "ListRoundSource" .halfUp roundPlaces1)
+      [fieldOperand "ListA"]).map (·.take 2) = some [
+        (addr listRoundTarget.id 1, .accepted (stored (-13) 1)),
+        (addr listRoundTarget.id 2, .accepted (stored 13 1))
+      ] ∧
+    (roundOutcomes? (fieldOperand "ListA")
+      [roundOperand "ListRoundSource" .floor roundPlaces1]).bind (·.getLast?) =
+        some (addr listRoundTarget.id 8,
+          .inheritedPoison .malformed) := by
   native_decide
 
 end A12Kernel.Conformance.AddressedNumberExtremum
