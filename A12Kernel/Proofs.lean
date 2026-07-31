@@ -142,6 +142,7 @@ import A12Kernel.Proofs.AddressedNumberField
 import A12Kernel.Proofs.AddressedNumberAbs
 import A12Kernel.Proofs.AddressedNumberRound
 import A12Kernel.Proofs.AddressedNumberExtremum
+import A12Kernel.Proofs.AddressedNumberBinary
 import A12Kernel.Proofs.AddressedNumericLeafConsumer
 import A12Kernel.Proofs.NumberToStringComputationRun
 import A12Kernel.Proofs.StringToNumberComputationRun

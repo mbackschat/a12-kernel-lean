@@ -34,6 +34,38 @@ def checkAddressedNumberSource
           placement.sourceDeclaration.policy.kind.surfaceKind)
     | some source => .ok { placement, source, sourceCertified := hSource }
 
+/-- Fail-closed errors shared by same-scope operations over two ordered direct Number sources. -/
+inductive AddressedNumberPairElabError where
+  | left (cause : AddressedNumberSourceElabError)
+  | right (cause : AddressedNumberSourceElabError)
+  | incoherentTarget (left right : FieldId)
+  deriving Repr, DecidableEq
+
+/-- Two ordered direct Number sources certified against one exact target placement. -/
+structure CheckedAddressedNumberPair (model : FlatModel) where
+  private mk ::
+  left : CheckedAddressedNumberSource model
+  right : CheckedAddressedNumberSource model
+  sameTarget : left.placement.targetField = right.placement.targetField
+
+/-- Validate two ordered direct Number sources once, before an operation-specific result-scale check. -/
+def checkAddressedNumberPair
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (leftReference rightReference : SurfaceFieldPath) :
+    Except AddressedNumberPairElabError
+      (CheckedAddressedNumberPair model) := do
+  let left ←
+    checkAddressedNumberSource model declaringGroup targetField leftReference
+      |>.mapError .left
+  let right ←
+    checkAddressedNumberSource model declaringGroup targetField rightReference
+      |>.mapError .right
+  if hTarget : left.placement.targetField = right.placement.targetField then
+    pure { left, right, sameTarget := hTarget }
+  else
+    throw (.incoherentTarget left.placement.targetField
+      right.placement.targetField)
+
 /-- Fail-closed errors specific to direct addressed Number assignment. -/
 inductive AddressedNumberFieldElabError where
   | placement (cause : AddressedNumericPlacementElabError)
@@ -70,6 +102,58 @@ def checkAddressedNumberField
         numberSource.source.info.scale)
 
 abbrev AddressedNumberFieldFault := AddressedNumericLeafFault
+
+namespace CheckedAddressedNumberSource
+
+/-- Read and evaluate this direct Number source at one already-certified target path. -/
+def evaluateAtPath
+    (source : CheckedAddressedNumberSource model)
+    (input : CheckedDocument model) (path : List Nat) :
+    Except AddressedNumericLeafFault NumericComputationResult := do
+  let address : CellAddr := {
+    field := source.placement.sourceDeclaration.id
+    path
+  }
+  let cell ← (input.read address).mapError .sourceRead
+  (source.placement.evaluateSourceAtom cell
+    (.field source.placement.sourceDeclaration)).mapError .evaluation
+
+end CheckedAddressedNumberSource
+
+namespace CheckedAddressedNumberPair
+
+/-- Execute two direct Number sources in authored order through their shared exact target path. A left poison prevents the right source from being reached. -/
+def executeWith
+    (pair : CheckedAddressedNumberPair model)
+    (input : CheckedDocument model)
+    (combine : NumericComputationResult → NumericComputationResult →
+      NumericComputationResult) :
+    Except AddressedNumericLeafFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  pair.left.placement.executeWithPath input fun path => do
+    let leftResult ← pair.left.evaluateAtPath input path
+    match leftResult with
+    | .poison cause => pure (.poison cause)
+    | .value _ | .domainFailure =>
+        let rightResult ← pair.right.evaluateAtPath input path
+        pure (combine leftResult rightResult)
+
+/-- Classify a shared two-source addressed execution against the immutable source document. -/
+def executeResultWith
+    (pair : CheckedAddressedNumberPair model)
+    (input : CheckedDocument model)
+    (combine : NumericComputationResult → NumericComputationResult →
+      NumericComputationResult)
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload)) :
+    Except AddressedNumericLeafFault
+      (NumericComputationRunView
+        (ComputationFormalMessage Payload) CellAddr) := do
+  let outcomes ← pair.executeWith input combine
+  pure (NumericComputationRunView.fromSourceOutcomesWithMessages
+    ComputationErrorPointer.ofCellAddr payloadAt supplied outcomes)
+
+end CheckedAddressedNumberPair
 
 namespace CheckedAddressedNumberField
 

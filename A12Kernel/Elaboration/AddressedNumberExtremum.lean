@@ -8,21 +8,17 @@ This capsule retains two ordered checked Number sources, delegates value selecti
 namespace A12Kernel
 
 inductive AddressedNumberExtremumElabError where
-  | left (cause : AddressedNumberSourceElabError)
-  | right (cause : AddressedNumberSourceElabError)
-  | incoherentTarget (left right : FieldId)
+  | pair (cause : AddressedNumberPairElabError)
   | scaleMismatch (target result : Nat)
   deriving Repr, DecidableEq
 
 structure CheckedAddressedNumberExtremum (model : FlatModel) where
   private mk ::
-  left : CheckedAddressedNumberSource model
-  right : CheckedAddressedNumberSource model
+  pair : CheckedAddressedNumberPair model
   op : NumericExtremumOp
-  sameTarget : left.placement.targetField = right.placement.targetField
   sameScale :
-    left.placement.targetPolicy.info.scale =
-      max left.source.info.scale right.source.info.scale
+    pair.left.placement.targetPolicy.info.scale =
+      max pair.left.source.info.scale pair.right.source.info.scale
 
 def checkAddressedNumberExtremum
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
@@ -30,55 +26,24 @@ def checkAddressedNumberExtremum
     (op : NumericExtremumOp) :
     Except AddressedNumberExtremumElabError
       (CheckedAddressedNumberExtremum model) := do
-  let left ←
-    checkAddressedNumberSource model declaringGroup targetField leftReference
-      |>.mapError .left
-  let right ←
-    checkAddressedNumberSource model declaringGroup targetField rightReference
-      |>.mapError .right
-  if hTarget : left.placement.targetField = right.placement.targetField then
-    let resultScale := max left.source.info.scale right.source.info.scale
-    if hScale : left.placement.targetPolicy.info.scale = resultScale then
-      pure { left, right, op, sameTarget := hTarget, sameScale := hScale }
-    else
-      throw (.scaleMismatch left.placement.targetPolicy.info.scale resultScale)
+  let pair ←
+    checkAddressedNumberPair model declaringGroup targetField
+      leftReference rightReference |>.mapError .pair
+  let resultScale := max pair.left.source.info.scale pair.right.source.info.scale
+  if hScale : pair.left.placement.targetPolicy.info.scale = resultScale then
+    pure { pair, op, sameScale := hScale }
   else
-    throw (.incoherentTarget left.placement.targetField
-      right.placement.targetField)
+    throw (.scaleMismatch pair.left.placement.targetPolicy.info.scale resultScale)
 
 abbrev AddressedNumberExtremumFault := AddressedNumericLeafFault
 
 namespace CheckedAddressedNumberExtremum
 
-private def evaluateSourceAtPath
-    (source : CheckedAddressedNumberSource model)
-    (input : CheckedDocument model) (path : List Nat) :
-    Except AddressedNumberExtremumFault NumericComputationResult := do
-  let address : CellAddr := {
-    field := source.placement.sourceDeclaration.id
-    path
-  }
-  let cell ← (input.read address).mapError .sourceRead
-  (source.placement.evaluateSourceAtom cell
-    (.field source.placement.sourceDeclaration)).mapError .evaluation
-
-private def evaluateAtPath
-    (operation : CheckedAddressedNumberExtremum model)
-    (input : CheckedDocument model) (path : List Nat) :
-    Except AddressedNumberExtremumFault NumericComputationResult := do
-  let leftResult ← evaluateSourceAtPath operation.left input path
-  match leftResult with
-  | .poison cause => pure (.poison cause)
-  | .value _ | .domainFailure =>
-      let rightResult ← evaluateSourceAtPath operation.right input path
-      pure (operation.op.selectComputationResult leftResult rightResult)
-
 def execute (operation : CheckedAddressedNumberExtremum model)
     (input : CheckedDocument model) :
     Except AddressedNumberExtremumFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  operation.left.placement.executeWithPath input
-    (operation.evaluateAtPath input)
+  operation.pair.executeWith input operation.op.selectComputationResult
 
 def executeResult
     (operation : CheckedAddressedNumberExtremum model)
@@ -88,9 +53,8 @@ def executeResult
     Except AddressedNumberExtremumFault
       (NumericComputationRunView
         (ComputationFormalMessage Payload) CellAddr) := do
-  let outcomes ← operation.execute input
-  pure (NumericComputationRunView.fromSourceOutcomesWithMessages
-    ComputationErrorPointer.ofCellAddr payloadAt supplied outcomes)
+  operation.pair.executeResultWith input operation.op.selectComputationResult
+    payloadAt supplied
 
 end CheckedAddressedNumberExtremum
 
