@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumberExtremum
 
-/-! # Same-scope repeatable direct-Number extrema locks -/
+/-! # Same-scope repeatable bounded Number extrema locks -/
 
 namespace A12Kernel.Conformance.AddressedNumberExtremum
 
@@ -178,10 +178,14 @@ private def listSingleTarget : FlatFieldDecl := {
   listNumber 17 "ListSingleTarget" 0 with
   numericTargetConstraints := { maximum := some 10 }
 }
+private def listAbsTarget : FlatFieldDecl := {
+  listNumber 18 "ListAbsTarget" 2 with
+  numericTargetConstraints := { maximum := some (999 / 100) }
+}
 
 private def listModel : FlatModel := {
   fields := [listA, listB, listC, listMinimum, listMaximum, listWrongScale,
-    listSingleTarget]
+    listSingleTarget, listAbsTarget]
   repeatableGroups := [{
     level := 20
     path := ["Probe", "Rows"]
@@ -346,6 +350,10 @@ private def literalOperand (value : Rat) (authoredScale : Int) :
     SurfaceAddressedNumberExtremumOperand :=
   .literal { value, authoredScale }
 
+private def absOperand (name : String) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .abs (bare name)
+
 private def literalOperation? (target : FlatFieldDecl)
     (op : NumericExtremumOp)
     (first : SurfaceAddressedNumberExtremumOperand)
@@ -364,7 +372,7 @@ private def literalOutcomes?
   let outcomes ← (operation.execute input).toOption
   pure (outcomes.map fun entry => (entry.targetField, entry.outcome))
 
-/- The addressed specialization admits one immediate literal anywhere beside at least one direct field, preserves its authored scale in the result-scale gate, and rejects a second literal before target checking. A literal-only call stays outside this bounded addressed capsule without claiming kernel rejection. -/
+/- The addressed specialization admits one immediate literal anywhere beside at least one field-backed source, preserves its authored scale in the result-scale gate, and rejects a second literal before target checking. A literal-only call stays outside this bounded addressed capsule without claiming kernel rejection. -/
 example :
     (literalOperation? listMaximum .minimum
       (fieldOperand "ListA") [literalOperand (5 / 4) 3]).isSome = true ∧
@@ -425,6 +433,81 @@ example :
         (addr listMaximum.id 9, .accepted (stored 4 0)),
         (addr listMaximum.id 10, .accepted (stored 4 0))
       ] := by
+  native_decide
+
+private def absInput? : Option (CheckedDocument listModel) :=
+  (checkDocument listPrepared "en_US" {
+    instantiatedRows := (List.range 8).map fun i =>
+      { group := 20, path := [i + 1] }
+    cells := [
+      decimalCell listB.id 1 "-5.25" (-525) 2 (.parsed (.num (-21 / 4))),
+      cell listA.id 1 "7" (.parsed (.num 7)),
+      decimalCell listB.id 2 "3.50" 350 2 (.parsed (.num (7 / 2))),
+      cell listA.id 2 "7" (.parsed (.num 7)),
+      cell listA.id 3 "7" (.parsed (.num 7)),
+      cell listB.id 4 "bad-b" (.rejected .malformed),
+      cell listA.id 4 "-9" (.parsed (.num (-9))),
+      decimalCell listB.id 5 "-12.34" (-1234) 2
+        (.parsed (.num (-617 / 50))),
+      cell listA.id 5 "20" (.parsed (.num 20)),
+      decimalCell listB.id 6 "-5.25" (-525) 2 (.parsed (.num (-21 / 4))),
+      cell listA.id 6 "bad-a" (.rejected .malformed),
+      decimalCell listB.id 7 "-5.25" (-525) 2 (.parsed (.num (-21 / 4))),
+      cell listA.id 7 "-8" (.parsed (.num (-8))),
+      cell listB.id 8 "12" (.rejected .declaredConstraint),
+      cell listA.id 8 "bad-a" (.rejected .malformed)
+    ]
+  }).toOption
+
+private def absOutcomes?
+    (first : SurfaceAddressedNumberExtremumOperand)
+    (rest : List SurfaceAddressedNumberExtremumOperand) :
+    Option (List (CellAddr × NumericTargetOutcome)) := do
+  let operation ← literalOperation? listAbsTarget .minimum first rest
+  let input ← absInput?
+  let outcomes ← (operation.execute input).toOption
+  pure (outcomes.map fun entry => (entry.targetField, entry.outcome))
+
+/- One operand-local `Abs` preserves its Number source's scale and exact list position. A sibling literal remains governed by the outer call's one-literal budget. -/
+example :
+    (literalOperation? listAbsTarget .minimum
+      (absOperand "ListB") [fieldOperand "ListA"]).isSome = true ∧
+    (literalOperation? listAbsTarget .minimum
+      (fieldOperand "ListA") [absOperand "ListB"]).isSome = true ∧
+    (literalOperation? listMaximum .minimum
+      (absOperand "ListB")
+      [fieldOperand "ListA", literalOperand (5 / 4) 3]).isSome = true ∧
+    (match checkAddressedNumberExtremumOperands listModel ["Probe", "Rows"]
+        listSingleTarget.id (absOperand "ListB")
+        [fieldOperand "ListA"] .minimum with
+      | .error (.scaleMismatch 0 2) => true
+      | _ => false) = true := by
+  native_decide
+
+/- Operand-local `Abs` maps only its own reached value before the authored-order extremum fold; empty remains zero, either reached field poison wins, the first of two poison causes is retained, and target policy still applies after selection. -/
+example :
+    absOutcomes? (absOperand "ListB") [fieldOperand "ListA"] = some [
+      (addr listAbsTarget.id 1, .accepted (stored 525 2)),
+      (addr listAbsTarget.id 2, .accepted (stored 35 1)),
+      (addr listAbsTarget.id 3, .accepted (stored 0 0)),
+      (addr listAbsTarget.id 4, .inheritedPoison .malformed),
+      (addr listAbsTarget.id 5,
+        .rejected (stored 1234 2) .aboveMaximum),
+      (addr listAbsTarget.id 6, .inheritedPoison .malformed),
+      (addr listAbsTarget.id 7, .accepted (stored (-8) 0)),
+      (addr listAbsTarget.id 8, .inheritedPoison .declaredConstraint)
+    ] ∧
+    absOutcomes? (fieldOperand "ListA") [absOperand "ListB"] = some [
+      (addr listAbsTarget.id 1, .accepted (stored 525 2)),
+      (addr listAbsTarget.id 2, .accepted (stored 35 1)),
+      (addr listAbsTarget.id 3, .accepted (stored 0 0)),
+      (addr listAbsTarget.id 4, .inheritedPoison .malformed),
+      (addr listAbsTarget.id 5,
+        .rejected (stored 1234 2) .aboveMaximum),
+      (addr listAbsTarget.id 6, .inheritedPoison .malformed),
+      (addr listAbsTarget.id 7, .accepted (stored (-8) 0)),
+      (addr listAbsTarget.id 8, .inheritedPoison .malformed)
+    ] := by
   native_decide
 
 end A12Kernel.Conformance.AddressedNumberExtremum

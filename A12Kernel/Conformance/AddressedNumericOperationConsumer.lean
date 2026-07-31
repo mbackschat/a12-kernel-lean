@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.AddressedNumericOperationConsumer
 
 /-! # Addressed numeric-operation Analyze/Transform probe
 
-The bounded probe consumes checked same-scope repeatable conversion, direct Number, `Abs`, Round, and direct-field operand-list extrema. It recovers exact bounded read/write impact, compares transformation-sensitive fingerprints without claiming equivalence, and exercises exact identity as the sole admitted Transform.
+The bounded probe consumes checked same-scope repeatable conversion, direct Number, `Abs`, Round, and field/literal/operand-local-`Abs` operand-list extrema. It recovers exact bounded read/write impact, compares transformation-sensitive fingerprints without claiming equivalence, and exercises exact identity as the sole admitted Transform.
 -/
 
 namespace A12Kernel.Conformance.AddressedNumericOperationConsumer
@@ -150,6 +150,10 @@ private def extremumLeaf? (op : NumericExtremumOp)
 private def extremumField (name : String) :
     SurfaceAddressedNumberExtremumOperand :=
   .field (bare name)
+
+private def extremumAbs (name : String) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .abs (bare name)
 
 private def extremumLiteral (value : Rat) (authoredScale : Int) :
     SurfaceAddressedNumberExtremumOperand :=
@@ -332,6 +336,24 @@ example :
             .literal { value := -5 / 4, authoredScale := 3 },
             .field amount.id]
       } := by
+  native_decide
+
+/- Analyze retains an operand-local `Abs` independently from a direct read of the same field, while dependencies remain exact fields in authored order. -/
+example :
+    analyzed? (literalExtremumLeaf? .minimum sameScaleTarget
+      (extremumAbs "Amount") [extremumField "Selected"]) =
+      some {
+        targetField := sameScaleTarget.id
+        sourceFields := [amount.id, selected.id]
+        scope := [10]
+        parameters := .extremum .minimum 2
+          [.abs amount.id, .field selected.id]
+      } ∧
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumAbs "Amount") [extremumField "Selected"])
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumField "Amount") [extremumField "Selected"]) = none := by
   native_decide
 
 /- Operation, source order, and list cardinality remain independently transformation-sensitive. -/

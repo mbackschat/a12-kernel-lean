@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.AddressedNumberExtremum
 
 /-! # Bounded addressed numeric-operation Analyze/Transform view
 
-This internal consumer view covers the completed same-scope repeatable textual conversions and direct-Number field, `Abs`, Round, and bounded operand-list extrema over direct fields plus at most one immediate literal. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
+This internal consumer view covers the completed same-scope repeatable textual conversions and direct-Number field, `Abs`, Round, and bounded operand-list extrema over direct fields, operand-local `Abs`, and at most one immediate literal. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
 -/
 
 namespace A12Kernel
@@ -29,6 +29,7 @@ inductive CheckedAddressedNumericOperation (model : FlatModel) where
 /-- One bounded operand identity retained for consumer-visible extrema order. -/
 inductive AddressedNumberExtremumOperandIdentity where
   | field (field : FieldId)
+  | abs (field : FieldId)
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
 
@@ -59,6 +60,7 @@ private def extremumOperandIdentity :
     CheckedAddressedNumberExtremumOperand model →
       AddressedNumberExtremumOperandIdentity
   | .field source => .field source.placement.sourceDeclaration.id
+  | .abs source => .abs source.placement.sourceDeclaration.id
   | .literal decoded => .literal decoded
 
 /-- Analyze exact read/write identity, repeatable scope, target policy, and conversion parameters without reconstructing an expression. -/
@@ -101,12 +103,14 @@ def analyze :
       parameters := .round operation.mode operation.places.val
     }
   | .extremum operation => {
-      targetField := operation.first.placement.targetField
-      sourceFields := operation.first.placement.sourceDeclaration.id ::
+      targetField := operation.first.numberSource.placement.targetField
+      sourceFields :=
+        operation.first.numberSource.placement.sourceDeclaration.id ::
         operation.rest.map (fun source =>
-          source.placement.sourceDeclaration.id)
-      scope := operation.first.placement.targetDeclaration.repeatableScope
-      targetPolicy := operation.first.placement.targetPolicy
+          source.numberSource.placement.sourceDeclaration.id)
+      scope :=
+        operation.first.numberSource.placement.targetDeclaration.repeatableScope
+      targetPolicy := operation.first.numberSource.placement.targetPolicy
       parameters := .extremum operation.op
         (addressedNumberExtremumOperandResultScale operation.first
           operation.rest operation.literal)

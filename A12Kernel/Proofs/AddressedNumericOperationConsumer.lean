@@ -27,10 +27,10 @@ theorem operandField_ne_targetField
       simp only [analyze, List.mem_cons, List.mem_map] at member
       rcases member with first | ⟨source, sourceMember, rest⟩
       · subst field
-        exact operation.first.placement.sourceNotTarget
+        exact operation.first.numberSource.placement.sourceNotTarget
       · subst field
         intro sourceIsTarget
-        apply source.placement.sourceNotTarget
+        apply source.numberSource.placement.sourceNotTarget
         exact sourceIsTarget.trans
           (operation.restSameTarget source sourceMember)
 

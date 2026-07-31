@@ -1,30 +1,30 @@
 import A12Kernel.Proofs.AddressedNumberField
 import A12Kernel.Elaboration.AddressedNumberExtremum
 
-/-! # Same-scope repeatable direct-Number extrema certificate -/
+/-! # Same-scope repeatable bounded Number extrema certificate -/
 
 namespace A12Kernel
 
-/-- Every checked extremum retains every ordered Number-kind witness, one target, and the maximum field/literal operand scale as its exact target scale. -/
+/-- Every checked extremum retains every ordered Number-kind witness behind its operand-local tag, one target, and the maximum field/literal operand scale as its exact target scale. -/
 theorem checkedAddressedNumberExtremum_sound
     (operation : CheckedAddressedNumberExtremum model) :
-    operation.first.placement.sourceDeclaration.toNumberField? =
-        some operation.first.source ∧
+    operation.first.numberSource.placement.sourceDeclaration.toNumberField? =
+        some operation.first.numberSource.source ∧
       (∀ source ∈ operation.rest,
-        source.placement.sourceDeclaration.toNumberField? =
-          some source.source) ∧
+        source.numberSource.placement.sourceDeclaration.toNumberField? =
+          some source.numberSource.source) ∧
       (∀ source ∈ operation.rest,
-        operation.first.placement.targetField =
-          source.placement.targetField) ∧
-      operation.first.placement.targetPolicy.info.scale =
+        operation.first.numberSource.placement.targetField =
+          source.numberSource.placement.targetField) ∧
+      operation.first.numberSource.placement.targetPolicy.info.scale =
         addressedNumberExtremumOperandResultScale operation.first
           operation.rest operation.literal := by
-  refine ⟨operation.first.sourceCertified, ?_, operation.restSameTarget,
-    operation.sameScale⟩
+  refine ⟨operation.first.numberSource.sourceCertified, ?_,
+    operation.restSameTarget, operation.sameScale⟩
   intro source _
-  exact source.sourceCertified
+  exact source.numberSource.sourceCertified
 
-/-- A retained literal insertion point is always within the complete direct-field list, so ordered reconstruction cannot skip a source or create an unowned placement. -/
+/-- A retained literal insertion point is always within the complete field-backed list, so ordered reconstruction cannot skip a source or create an unowned placement. -/
 theorem checkedAddressedNumberExtremum_literalPosition
     (operation : CheckedAddressedNumberExtremum model)
     (positioned : AddressedNumberExtremumLiteral)
