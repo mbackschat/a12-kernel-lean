@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.AddressedNumberExtremum
 
 /-! # Bounded addressed numeric-operation Analyze/Transform view
 
-This internal consumer view covers the completed same-scope repeatable textual conversions and direct-Number field, `Abs`, Round, and bounded operand-list extrema over direct fields, operand-local `Abs`/Round, and at most one immediate literal. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
+This internal consumer view covers the completed same-scope repeatable textual conversions and direct-Number field, `Abs`, Round, and bounded operand-list extrema over direct fields, operand-local `Abs`/Round/additive field pairs, and at most one immediate literal. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
 -/
 
 namespace A12Kernel
@@ -32,7 +32,8 @@ inductive AddressedNumberExtremumOperandIdentity where
   | abs (field : FieldId)
   | round (field : FieldId) (mode : DecimalRoundingMode)
       (places : Nat)
-  | addition (left right : FieldId)
+  | additive (operation : AddressedNumberExtremumAdditiveOperation)
+      (left right : FieldId)
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
 
@@ -66,8 +67,8 @@ private def extremumOperandIdentity :
   | .abs source => .abs source.placement.sourceDeclaration.id
   | .round source mode places =>
       .round source.placement.sourceDeclaration.id mode places.val
-  | .addition pair =>
-      .addition pair.left.placement.sourceDeclaration.id
+  | .additive operation pair =>
+      .additive operation pair.left.placement.sourceDeclaration.id
         pair.right.placement.sourceDeclaration.id
   | .literal decoded => .literal decoded
 

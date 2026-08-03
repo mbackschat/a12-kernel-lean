@@ -15,10 +15,10 @@ theorem sourceCertified
   cases operand with
   | unary _ source =>
       simp [sources, source.sourceCertified]
-  | addition pair =>
+  | additive _ pair =>
       simp [sources, pair.left.sourceCertified, pair.right.sourceCertified]
 
-/-- Both children of an addition operand and the sole child of a unary operand are certified against the operand's one outer target. -/
+/-- Both children of an additive operand and the sole child of a unary operand are certified against the operand's one outer target. -/
 theorem sourceTargetField
     (operand : CheckedAddressedNumberExtremumFieldOperand model) :
     ∀ source ∈ operand.sources,
@@ -26,7 +26,7 @@ theorem sourceTargetField
   cases operand with
   | unary _ source =>
       simp [sources, targetField, primarySource]
-  | addition pair =>
+  | additive _ pair =>
       simp [sources, targetField, primarySource, pair.sameTarget]
 
 /-- No dependency nested inside one bounded outer operand can name that operand's target. -/
@@ -43,23 +43,64 @@ theorem sourceField_ne_targetField
 
 end CheckedAddressedNumberExtremumFieldOperand
 
-/-- Addition contributes exactly the maximum scale of its two direct Number children. -/
-theorem checkedAddressedNumberExtremum_additionResultScale
+/-- Every bounded additive node contributes exactly the maximum scale of its two direct Number children. -/
+theorem checkedAddressedNumberExtremum_additiveResultScale
+    (operation : AddressedNumberExtremumAdditiveOperation)
     (pair : CheckedAddressedNumberPair model) :
-    CheckedAddressedNumberExtremumFieldOperand.resultScale (.addition pair) =
+    CheckedAddressedNumberExtremumFieldOperand.resultScale
+        (.additive operation pair) =
       max pair.left.source.info.scale pair.right.source.info.scale := by
   rfl
 
-/-- The outer addition operand delegates row-local ordered reads to the shared Number-pair evaluator and supplies only the existing scalar addition node. -/
+/-- Every bounded additive node delegates row-local ordered reads to the shared Number-pair evaluator and supplies only its existing scalar node. -/
+theorem checkedAddressedNumberExtremum_additiveEvaluation
+    (operation : AddressedNumberExtremumAdditiveOperation)
+    (pair : CheckedAddressedNumberPair model)
+    (input : CheckedDocument model) (path : List Nat) :
+    (CheckedAddressedNumberExtremumOperand.additive operation pair).evaluateAtPath
+        input path =
+      pair.evaluateAtPath input
+        (NumericComputationResult.combineReached fun left right =>
+          .value (operation.arithmetic.eval left right)) path := by
+  rfl
+
+/-- Addition is the additive scale law specialized to the addition tag. -/
+theorem checkedAddressedNumberExtremum_additionResultScale
+    (pair : CheckedAddressedNumberPair model) :
+    CheckedAddressedNumberExtremumFieldOperand.resultScale
+        (.additive .add pair) =
+      max pair.left.source.info.scale pair.right.source.info.scale := by
+  exact checkedAddressedNumberExtremum_additiveResultScale .add pair
+
+/-- Subtraction is the additive scale law specialized to the subtraction tag. -/
+theorem checkedAddressedNumberExtremum_subtractionResultScale
+    (pair : CheckedAddressedNumberPair model) :
+    CheckedAddressedNumberExtremumFieldOperand.resultScale
+        (.additive .subtract pair) =
+      max pair.left.source.info.scale pair.right.source.info.scale := by
+  exact checkedAddressedNumberExtremum_additiveResultScale .subtract pair
+
+/-- Addition is the shared ordered-pair delegation law specialized to the scalar addition node. -/
 theorem checkedAddressedNumberExtremum_additionEvaluation
     (pair : CheckedAddressedNumberPair model)
     (input : CheckedDocument model) (path : List Nat) :
-    (CheckedAddressedNumberExtremumOperand.addition pair).evaluateAtPath
+    (CheckedAddressedNumberExtremumOperand.additive .add pair).evaluateAtPath
         input path =
       pair.evaluateAtPath input
         (NumericComputationResult.combineReached fun left right =>
           .value (NumericArithmeticOp.add.eval left right)) path := by
-  rfl
+  exact checkedAddressedNumberExtremum_additiveEvaluation .add pair input path
+
+/-- Subtraction is the shared ordered-pair delegation law specialized to the scalar subtraction node. -/
+theorem checkedAddressedNumberExtremum_subtractionEvaluation
+    (pair : CheckedAddressedNumberPair model)
+    (input : CheckedDocument model) (path : List Nat) :
+    (CheckedAddressedNumberExtremumOperand.additive .subtract pair).evaluateAtPath
+        input path =
+      pair.evaluateAtPath input
+        (NumericComputationResult.combineReached fun left right =>
+          .value (NumericArithmeticOp.subtract.eval left right)) path := by
+  exact checkedAddressedNumberExtremum_additiveEvaluation .subtract pair input path
 
 /-- Every checked extremum retains every ordered Number-kind witness behind its operand-local tag, one target, and the maximum transformed-source/literal operand scale as its exact target scale. -/
 theorem checkedAddressedNumberExtremum_sound

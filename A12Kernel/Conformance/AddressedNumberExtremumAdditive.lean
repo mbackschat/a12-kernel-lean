@@ -1,8 +1,8 @@
 import A12Kernel.Elaboration.AddressedNumberExtremum
 
-/-! # Operand-local addition inside same-scope repeatable Number extrema -/
+/-! # Operand-local additive arithmetic inside same-scope repeatable Number extrema -/
 
-namespace A12Kernel.Conformance.AddressedNumberExtremumAddition
+namespace A12Kernel.Conformance.AddressedNumberExtremumAdditive
 
 open A12Kernel
 
@@ -46,6 +46,10 @@ private def bare (field : String) : SurfaceFieldPath :=
 private def addition (left right : String) :
     SurfaceAddressedNumberExtremumOperand :=
   .addition (bare left) (bare right)
+
+private def subtraction (left right : String) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .subtraction (bare left) (bare right)
 
 private def field (name : String) : SurfaceAddressedNumberExtremumOperand :=
   .field (bare name)
@@ -94,7 +98,7 @@ private def input? : Option (CheckedDocument model) :=
       cell left.id 7 "2" (.parsed (.num 2)),
       cell right.id 7 "12" (.rejected .declaredConstraint),
       cell direct.id 7 "-9" (.parsed (.num (-9))),
-      cell left.id 8 "7" (.parsed (.num 7)),
+      cell left.id 8 "20" (.parsed (.num 20)),
       cell right.id 8 "6" (.parsed (.num 6)),
       cell direct.id 8 "20" (.parsed (.num 20))
     ]
@@ -146,7 +150,7 @@ example : outcomes? (addition "A" "B") [field "C"] = some [
     (addr target.id 5, .accepted (stored 0 0)),
     (addr target.id 6, .inheritedPoison .malformed),
     (addr target.id 7, .inheritedPoison .declaredConstraint),
-    (addr target.id 8, .rejected (stored 13 0) .aboveMaximum)
+    (addr target.id 8, .rejected (stored 20 0) .aboveMaximum)
   ] := by
   native_decide
 
@@ -155,16 +159,50 @@ example : (maximumOutcomes? (addition "A" "B") [field "C"]
     >>= List.head?) = some (addr target.id 1, .accepted (stored 5 0)) := by
   native_decide
 
+/- A field-pair subtraction occupies the same bounded outer positions and derives the same maximum child scale, while preserving its distinct scalar identity and target exclusions. -/
+example :
+    (operation? target (subtraction "A" "B") [field "C"]).isSome = true ∧
+    (operation? target (field "C") [subtraction "A" "B"]).isSome = true ∧
+    (operation? target (subtraction "B" "A") [field "C"]).isSome = true ∧
+    (operation? preciseTarget (subtraction "A" "B")
+      [field "C", literal (5 / 4) 3]).isSome = true ∧
+    (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
+        wrongScale.id (subtraction "A" "B") [field "C"] .minimum with
+      | .error (.scaleMismatch 1 2) => true
+      | _ => false) = true ∧
+    (operation? target (subtraction "Target" "A") [field "C"]).isNone = true := by
+  native_decide
+
+/- Subtraction delegates the shared pair's empty-as-zero and inner first-poison rules before the outer minimum selects in authored order. -/
+example : outcomes? (subtraction "A" "B") [field "C"] = some [
+    (addr target.id 1, .accepted (stored 75 2)),
+    (addr target.id 2, .accepted (stored (-2) 0)),
+    (addr target.id 3, .accepted (stored (-2) 0)),
+    (addr target.id 4, .accepted (stored 2 0)),
+    (addr target.id 5, .accepted (stored 0 0)),
+    (addr target.id 6, .inheritedPoison .malformed),
+    (addr target.id 7, .inheritedPoison .declaredConstraint),
+    (addr target.id 8, .rejected (stored 14 0) .aboveMaximum)
+  ] := by
+  native_decide
+
+/- The same subtraction operand reaches the shared maximum fold; the direct field wins the first row and separates maximum from minimum. -/
+example : (maximumOutcomes? (subtraction "A" "B") [field "C"]
+    >>= List.head?) = some (addr target.id 1, .accepted (stored 5 0)) := by
+  native_decide
+
 private inductive OperandShape where
   | field (field : FieldId)
-  | addition (left right : FieldId)
+  | additive (operation : AddressedNumberExtremumAdditiveOperation)
+      (left right : FieldId)
   | other
   deriving Repr, DecidableEq
 
 private def operandShape : CheckedAddressedNumberExtremumOperand model →
     OperandShape
   | .field source => .field source.placement.sourceDeclaration.id
-  | .addition pair => .addition pair.left.placement.sourceDeclaration.id
+  | .additive operation pair =>
+      .additive operation pair.left.placement.sourceDeclaration.id
       pair.right.placement.sourceDeclaration.id
   | _ => .other
 
@@ -177,7 +215,19 @@ example :
       pure (outcomes[5]?.map (·.outcome),
         operation.orderedOperands.map operandShape)) =
       some (some (.inheritedPoison .declaredConstraint),
-        [.addition right.id left.id, .field direct.id]) := by
+        [.additive .add right.id left.id, .field direct.id]) := by
   native_decide
 
-end A12Kernel.Conformance.AddressedNumberExtremumAddition
+/- Subtraction retains its distinct tag and reversed inner order, so the same first-cause separator remains visible to execution and Analyze consumers. -/
+example :
+    (do
+      let operation ← operation? target (subtraction "B" "A") [field "C"]
+      let input ← input?
+      let outcomes ← (operation.execute input).toOption
+      pure (outcomes[5]?.map (·.outcome),
+        operation.orderedOperands.map operandShape)) =
+      some (some (.inheritedPoison .declaredConstraint),
+        [.additive .subtract right.id left.id, .field direct.id]) := by
+  native_decide
+
+end A12Kernel.Conformance.AddressedNumberExtremumAdditive

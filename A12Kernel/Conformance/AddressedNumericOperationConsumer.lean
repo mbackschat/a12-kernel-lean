@@ -164,6 +164,10 @@ private def extremumAddition (left right : String) :
     SurfaceAddressedNumberExtremumOperand :=
   .addition (bare left) (bare right)
 
+private def extremumSubtraction (left right : String) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .subtraction (bare left) (bare right)
+
 private def extremumLiteral (value : Rat) (authoredScale : Int) :
     SurfaceAddressedNumberExtremumOperand :=
   .literal { value, authoredScale }
@@ -408,7 +412,7 @@ example :
         sourceFields := [amount.id, selected.id, converted.id]
         scope := [10]
         parameters := .extremum .minimum 2
-          [.addition amount.id selected.id, .field converted.id]
+          [.additive .add amount.id selected.id, .field converted.id]
       } ∧
     fingerprintMatch?
       (literalExtremumLeaf? .minimum sameScaleTarget
@@ -442,7 +446,38 @@ example :
         sourceFields := [amount.id, selected.id, converted.id]
         scope := [10]
         parameters := .extremum .minimum 2
-          [.addition amount.id selected.id, .field converted.id]
+          [.additive .add amount.id selected.id, .field converted.id]
+      } := by
+  native_decide
+
+/- Analyze and identity Transform retain subtraction as distinct from addition while preserving both ordered dependencies, outer position, and derived scale. -/
+example :
+    analyzed? (literalExtremumLeaf? .minimum sameScaleTarget
+      (extremumSubtraction "Amount" "Selected")
+      [extremumField "Converted"]) =
+      some {
+        targetField := sameScaleTarget.id
+        sourceFields := [amount.id, selected.id, converted.id]
+        scope := [10]
+        parameters := .extremum .minimum 2
+          [.additive .subtract amount.id selected.id, .field converted.id]
+      } ∧
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumSubtraction "Amount" "Selected")
+        [extremumField "Converted"])
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumAddition "Amount" "Selected")
+        [extremumField "Converted"]) = none ∧
+    analyzed? (identityTransformed? (literalExtremumLeaf? .minimum
+      sameScaleTarget (extremumSubtraction "Amount" "Selected")
+      [extremumField "Converted"])) =
+      some {
+        targetField := sameScaleTarget.id
+        sourceFields := [amount.id, selected.id, converted.id]
+        scope := [10]
+        parameters := .extremum .minimum 2
+          [.additive .subtract amount.id selected.id, .field converted.id]
       } := by
   native_decide
 

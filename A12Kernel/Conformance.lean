@@ -115,7 +115,7 @@ import A12Kernel.Conformance.AddressedNumberField
 import A12Kernel.Conformance.AddressedNumberAbs
 import A12Kernel.Conformance.AddressedNumberRound
 import A12Kernel.Conformance.AddressedNumberExtremum
-import A12Kernel.Conformance.AddressedNumberExtremumAddition
+import A12Kernel.Conformance.AddressedNumberExtremumAdditive
 import A12Kernel.Conformance.AddressedNumberBinary
 import A12Kernel.Conformance.AddressedNumberDivision
 import A12Kernel.Conformance.AddressedNumberPower
