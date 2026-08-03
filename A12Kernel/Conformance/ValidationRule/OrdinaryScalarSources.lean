@@ -29,7 +29,7 @@ private def repeatableStringLengthData : DocumentData :=
 
 private def repeatableStringLengthSnapshot? :
     Option (Option (List RepeatableLevel) × Bool ×
-      List (Env × Verdict × Option CellAddr)) := do
+      List (Env × Verdict × Option MessagePointer)) := do
   let rule ← repeatableStringLengthRule?
   let outcomes ← evalOrdinaryRule? rule repeatableStringLengthData
   pure (
@@ -68,7 +68,10 @@ example :
         [(
           [(10, 1), (20, 1)],
           .fired .value,
-          some { field := innerToken.id, path := [1, 1] })])) = true ∧
+          some (MessagePointer.ofCellAddr {
+            field := innerToken.id
+            path := [1, 1]
+          }))])) = true ∧
       repeatableStringLengthStructuralFailure? =
         some (.environment (.missingBinding 10)) := by
   native_decide
@@ -88,7 +91,7 @@ private def repeatableFieldValueAsNumberData : DocumentData :=
 private def repeatableFieldValueAsNumberSnapshot?
     (source : SurfaceTextFieldOperand) (expected : Rat) (target : FieldId) :
     Option (Option (List RepeatableLevel) × Bool ×
-      List (Env × Verdict × Option CellAddr)) := do
+      List (Env × Verdict × Option MessagePointer)) := do
   let rule ← repeatableFieldValueAsNumberRule? source expected target
   let outcomes ← evalOrdinaryRule? rule repeatableFieldValueAsNumberData
   pure (
@@ -147,7 +150,10 @@ example :
         [(
           [(10, 1), (20, 1)],
           .fired .value,
-          some { field := innerNumericCode.id, path := [1, 1] })])) = true ∧
+          some (MessagePointer.ofCellAddr {
+            field := innerNumericCode.id
+            path := [1, 1]
+          }))])) = true ∧
     (repeatableFieldValueAsNumberSnapshot? repeatableNumericFactor 15
       innerNumericChoice.id ==
       some (
@@ -156,7 +162,10 @@ example :
         [(
           [(10, 1), (20, 1)],
           .fired .value,
-          some { field := innerNumericChoice.id, path := [1, 1] })])) = true ∧
+          some (MessagePointer.ofCellAddr {
+            field := innerNumericChoice.id
+            path := [1, 1]
+          }))])) = true ∧
     repeatableFieldValueAsNumberRejectedVerdict? = some .unknown ∧
     repeatableFieldValueAsNumberStructuralFailure? =
       some (.environment (.missingBinding 10)) := by
@@ -179,7 +188,7 @@ private def repeatableStringRangeData (raw : Option RawCell) : DocumentData :=
 private def repeatableStringRangeSnapshot?
     (op : NumericValidationOp) (expected : Rat) (raw : Option RawCell) :
     Option (Option (List RepeatableLevel) × Bool ×
-      List (Env × Verdict × Option CellAddr)) := do
+      List (Env × Verdict × Option MessagePointer)) := do
   let rule ← repeatableStringRangeRule? op expected
   let outcomes ← evalOrdinaryRule? rule (repeatableStringRangeData raw)
   pure (
@@ -220,7 +229,10 @@ example :
         [(
           [(10, 1), (20, 1)],
           .fired .value,
-          some { field := innerToken.id, path := [1, 1] })])) = true ∧
+          some (MessagePointer.ofCellAddr {
+            field := innerToken.id
+            path := [1, 1]
+          }))])) = true ∧
     (repeatableStringRangeSnapshot? (.ordinary .less) 100 none ==
       some (
         some [10, 20],
@@ -228,7 +240,10 @@ example :
         [(
           [(10, 1), (20, 1)],
           .fired .omission,
-          some { field := innerToken.id, path := [1, 1] })])) = true ∧
+          some (MessagePointer.ofCellAddr {
+            field := innerToken.id
+            path := [1, 1]
+          }))])) = true ∧
     (repeatableStringRangeSnapshot? (.ordinary .less) 100
       (some (.parsed (.str "ABCD"))) ==
       some (
@@ -237,7 +252,10 @@ example :
         [(
           [(10, 1), (20, 1)],
           .fired .value,
-          some { field := innerToken.id, path := [1, 1] })])) = true ∧
+          some (MessagePointer.ofCellAddr {
+            field := innerToken.id
+            path := [1, 1]
+          }))])) = true ∧
     repeatableStringRangeStructuralFailure? =
       some (.environment (.missingBinding 10)) := by
   native_decide
@@ -258,7 +276,7 @@ private def repeatableTemporalPartSnapshot?
     (op : NumericValidationOp) (expected : Rat)
     (stored : String) (raw : Option RawCell) :
     Option (Option (List RepeatableLevel) × Bool ×
-      List (Env × Verdict × Option CellAddr)) := do
+      List (Env × Verdict × Option MessagePointer)) := do
   let rule ← repeatableTemporalPartRule? fieldName part op expected field
   let outcomes ←
     evalOrdinaryRule? rule (repeatableTemporalPartData field stored raw)
@@ -319,9 +337,9 @@ private def repeatableTemporalConsumerSnapshot? :
     .date .quarter, addressed.address, addressed.stored, outcome.2.verdict)
 
 private def expectedRepeatableTemporalSnapshot
-    (verdict : Verdict) (address : Option CellAddr) :
+    (verdict : Verdict) (address : Option MessagePointer) :
     Option (Option (List RepeatableLevel) × Bool ×
-      List (Env × Verdict × Option CellAddr)) :=
+      List (Env × Verdict × Option MessagePointer)) :=
   some (some [10, 20], true, [
     ([(10, 1), (20, 1)], verdict, address)])
 
@@ -332,23 +350,35 @@ example :
       (some (.parsed (.temporal (.date { epochMillis := 0 }
         temporalDateParts .storedGregorian)))) ==
       expectedRepeatableTemporalSnapshot (.fired .value)
-        (some { field := innerDate.id, path := [1, 1] })) = true ∧
+        (some (MessagePointer.ofCellAddr {
+          field := innerDate.id
+          path := [1, 1]
+        }))) = true ∧
     (repeatableTemporalPartSnapshot? "InnerTime" innerTime.id
       (.time .second) (.ordinary .equal) 7 "05:21:07"
       (some (.parsed (.temporal (.time { epochMillis := 0 }
         temporalClock)))) ==
       expectedRepeatableTemporalSnapshot (.fired .value)
-        (some { field := innerTime.id, path := [1, 1] })) = true ∧
+        (some (MessagePointer.ofCellAddr {
+          field := innerTime.id
+          path := [1, 1]
+        }))) = true ∧
     (repeatableTemporalPartSnapshot? "InnerDateTime" innerDateTime.id
       (.date .quarter) (.ordinary .equal) 2 "2024-06-25T05:21:07"
       (some (.parsed (.temporal (.dateTime { epochMillis := 0 }
         temporalDateParts temporalClock .storedGregorian)))) ==
       expectedRepeatableTemporalSnapshot (.fired .value)
-        (some { field := innerDateTime.id, path := [1, 1] })) = true ∧
+        (some (MessagePointer.ofCellAddr {
+          field := innerDateTime.id
+          path := [1, 1]
+        }))) = true ∧
     (repeatableTemporalPartSnapshot? "InnerTime" innerTime.id
       (.time .hour) (.ordinary .less) 100 "" none ==
       expectedRepeatableTemporalSnapshot (.fired .omission)
-        (some { field := innerTime.id, path := [1, 1] })) = true ∧
+        (some (MessagePointer.ofCellAddr {
+          field := innerTime.id
+          path := [1, 1]
+        }))) = true ∧
     (repeatableTemporalPartSnapshot? "InnerDate" innerDate.id
       (.date .day) (.ordinary .equal) 25 "bad"
       (some (.rejected .malformed)) ==

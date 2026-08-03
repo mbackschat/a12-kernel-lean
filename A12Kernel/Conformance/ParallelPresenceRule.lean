@@ -144,7 +144,7 @@ private def evaluated? (errorField : FieldId) (source : DocumentData) :
 private def fired (field : FieldId) (path : List Nat) :
     FlatRuleOutcome :=
   .fired {
-    errorAddress := { field, path }
+    errorAddress := MessagePointer.ofCellAddr { field, path }
     errorCode := "PI"
     severity := .error
     messageType := .value
@@ -296,7 +296,7 @@ private def wrappedEvaluated? (errorField : FieldId)
 private def wrappedFired (field : FieldId) (path : List Nat) :
     FlatRuleOutcome :=
   .fired {
-    errorAddress := { field, path }
+    errorAddress := MessagePointer.ofCellAddr { field, path }
     errorCode := "WPI"
     severity := .error
     messageType := .value
@@ -469,7 +469,7 @@ private def rightFramedEvaluated? (source : DocumentData) :
 
 private def framedFired (path : List Nat) : FlatRuleOutcome :=
   .fired {
-    errorAddress := { field := 22, path }
+    errorAddress := MessagePointer.ofCellAddr { field := 22, path }
     errorCode := "FPI"
     severity := .error
     messageType := .value

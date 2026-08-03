@@ -339,7 +339,7 @@ private def aggregateOutcome : Option FlatRuleOutcome := do
 
 private def expectedMessage (severity : ValidationSeverity)
     (messageType : Polarity) : FlatRuleMessage :=
-  { errorAddress := { field := amount.id, path := [] }
+  { errorAddress := MessagePointer.ofCellAddr { field := amount.id, path := [] }
     severity
     messageType
     errorCode
@@ -416,7 +416,10 @@ example :
       (.compareNow .greater .left (path "EventDateTime"))
       eventDateTime.id (rawEventDateTime 100000) =
         some (.fired {
-          errorAddress := { field := eventDateTime.id, path := [] }
+          errorAddress := MessagePointer.ofCellAddr {
+            field := eventDateTime.id
+            path := []
+          }
           severity := .error
           messageType := .value
           errorCode
@@ -467,7 +470,10 @@ example :
           (.and amountNonnegative (.fieldFilled (path "Acknowledged")))
           acknowledged.id rawBothFilled =
         some (.fired {
-          errorAddress := { field := acknowledged.id, path := [] }
+          errorAddress := MessagePointer.ofCellAddr {
+            field := acknowledged.id
+            path := []
+          }
           severity := .error
           messageType := .value
           errorCode

@@ -78,6 +78,7 @@ import A12Kernel.Conformance.NumericRounding
 import A12Kernel.Conformance.NumericArithmetic
 import A12Kernel.Conformance.NumericFillability
 import A12Kernel.Conformance.NumericComputation
+import A12Kernel.Conformance.MessagePointer
 import A12Kernel.Conformance.ComputationMessage
 import A12Kernel.Conformance.NumericStoredNumber
 import A12Kernel.Conformance.NumericTarget

@@ -101,8 +101,8 @@ private def addr (field : FieldId) (row : Nat) : CellAddr :=
 private def stored (unscaled : Int) (scale : Nat) : StoredNumber :=
   { unscaled, scale }
 
-private def pointer (row : Nat) : ComputationErrorPointer :=
-  ComputationErrorPointer.ofCellAddr (addr result.id row)
+private def pointer (row : Nat) : MessagePointer :=
+  MessagePointer.ofCellAddr (addr result.id row)
 
 private def outcomes? : Option (List (CellAddr × NumericTargetOutcome)) := do
   let operation ← checked?

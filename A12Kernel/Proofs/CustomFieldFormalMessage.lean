@@ -7,7 +7,7 @@ namespace A12Kernel
 
 /-- Absence selects the caller's exact fallback without interpreting its bytes. -/
 theorem customFieldFormalMessage_absent_exact
-    (projectCode resolvedFieldLabel : String) (errorAddress : CellAddr)
+    (projectCode resolvedFieldLabel : String) (errorAddress : MessagePointer)
     (fallbackText : ResolvedMessageText) :
     RegisteredCustomRejection.toFormalMessage
         { projectCode, messageTemplate := none }
@@ -23,7 +23,7 @@ theorem customFieldFormalMessage_absent_exact
 /-- A supplied template wins over the fallback and has exactly the fixed-token renderer's result. -/
 theorem customFieldFormalMessage_supplied_exact
     (projectCode template resolvedFieldLabel : String)
-    (errorAddress : CellAddr) (fallbackText : ResolvedMessageText) :
+    (errorAddress : MessagePointer) (fallbackText : ResolvedMessageText) :
     RegisteredCustomRejection.toFormalMessage
         { projectCode, messageTemplate := some template }
         errorAddress resolvedFieldLabel fallbackText = {
@@ -40,7 +40,7 @@ theorem customFieldFormalMessage_supplied_exact
 
 /-- Address, project code, severity, and polarity never depend on message selection. -/
 theorem customFieldFormalMessage_metadata_exact
-    (rejection : RegisteredCustomRejection) (errorAddress : CellAddr)
+    (rejection : RegisteredCustomRejection) (errorAddress : MessagePointer)
     (resolvedFieldLabel : String) (fallbackText : ResolvedMessageText) :
     let message := rejection.toFormalMessage errorAddress resolvedFieldLabel fallbackText
     message.errorAddress = errorAddress ∧
@@ -75,7 +75,7 @@ theorem checkedCell_nonCustomCause_hasNoRegisteredRejection
 @[simp]
 theorem customFieldValidationOutput_nonrelevant
     (checked : CheckedCustomFieldType) (locale : String)
-    (raw : RawCell String) (errorAddress : CellAddr)
+    (raw : RawCell String) (errorAddress : MessagePointer)
     (resolvedFieldLabel : String) (fallbackText : ResolvedMessageText) :
     checked.checkRelevantWithMessage locale false raw errorAddress
       resolvedFieldLabel fallbackText = none := by
@@ -85,7 +85,7 @@ theorem customFieldValidationOutput_nonrelevant
 theorem customFieldValidationOutput_rejection_exact
     (checked : CheckedCustomFieldType) (locale value : String)
     (rejection : RegisteredCustomRejection)
-    (errorAddress : CellAddr) (resolvedFieldLabel : String)
+    (errorAddress : MessagePointer) (resolvedFieldLabel : String)
     (fallbackText : ResolvedMessageText)
     (nonempty : value.isEmpty = false)
     (rejected : checked.validator value
@@ -107,7 +107,7 @@ theorem customFieldValidationOutput_rejection_exact
 /-- Acceptance retains the exact value and has no custom formal message. -/
 theorem customFieldValidationOutput_acceptance_exact
     (checked : CheckedCustomFieldType) (locale value : String)
-    (errorAddress : CellAddr) (resolvedFieldLabel : String)
+    (errorAddress : MessagePointer) (resolvedFieldLabel : String)
     (fallbackText : ResolvedMessageText)
     (nonempty : value.isEmpty = false)
     (accepted : checked.validator value

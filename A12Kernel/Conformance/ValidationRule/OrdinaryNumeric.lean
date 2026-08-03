@@ -21,7 +21,7 @@ private def ordinaryNumericData (stored : String) (raw : Option RawCell) : Docum
         }] }
 
 private def evalOrdinaryNumeric? (stored : String) (raw : Option RawCell) :
-    Option (Verdict × Option CellAddr) :=
+    Option (Verdict × Option MessagePointer) :=
   ordinaryRepeatableNumericRule?.bind fun rule =>
     (evalOrdinaryRule? rule (ordinaryNumericData stored raw)).bind fun outcomes =>
       (outcomes.map (fun entry =>
@@ -31,13 +31,22 @@ private def evalOrdinaryNumeric? (stored : String) (raw : Option RawCell) :
 example :
     evalOrdinaryNumeric? "2" (some (.parsed (.num 2))) =
         some (.fired .value,
-          some { field := outerAmount.id, path := [1] }) ∧
+          some (MessagePointer.ofCellAddr {
+            field := outerAmount.id
+            path := [1]
+          })) ∧
       evalOrdinaryNumeric? "0" (some (.parsed (.num 0))) =
         some (.fired .value,
-          some { field := outerAmount.id, path := [1] }) ∧
+          some (MessagePointer.ofCellAddr {
+            field := outerAmount.id
+            path := [1]
+          })) ∧
       evalOrdinaryNumeric? "" none =
         some (.fired .omission,
-          some { field := outerAmount.id, path := [1] }) ∧
+          some (MessagePointer.ofCellAddr {
+            field := outerAmount.id
+            path := [1]
+          })) ∧
       evalOrdinaryNumeric? "bad" (some (.rejected .malformed)) =
         some (.unknown, none) := by
   native_decide
@@ -61,7 +70,10 @@ example :
       some [(
         [(10, 2), (20, 1)],
         .fired .value,
-        some { field := innerAmount.id, path := [2, 1] })] := by
+        some (MessagePointer.ofCellAddr {
+          field := innerAmount.id
+          path := [2, 1]
+        }))] := by
   native_decide
 
 /- One checked composite may read an ancestor and current-row Number through their declaration-owned scopes. Execute preserves the full target environment, while Transform/Explain recover both certified declarations from the same tree. -/
@@ -84,7 +96,10 @@ example :
         [(
           [(10, 1), (20, 1)],
           .fired .value,
-          some { field := innerAmount.id, path := [1, 1] })])) = true := by
+          some (MessagePointer.ofCellAddr {
+            field := innerAmount.id
+            path := [1, 1]
+          }))])) = true := by
   native_decide
 
 end A12Kernel.Conformance.ValidationRule.OrdinaryNumeric

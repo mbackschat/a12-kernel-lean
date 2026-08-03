@@ -6,8 +6,8 @@ namespace A12Kernel.Conformance.CustomFieldFormalMessage
 
 open A12Kernel
 
-private def address : CellAddr :=
-  { field := 7, path := [2, 4] }
+private def address : MessagePointer :=
+  MessagePointer.ofCellAddr { field := 7, path := [2, 4] }
 
 private def fallback : ResolvedMessageText :=
   { text := "The value is invalid." }

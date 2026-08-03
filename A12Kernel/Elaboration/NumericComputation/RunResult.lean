@@ -94,7 +94,7 @@ def fromPartitionedSourceOutcomes {Target : Type}
 
 /-- Derive the run's value-less Number-target messages without rendering their payload. -/
 def numericValuelessTargetErrors {Target Payload : Type}
-    (pointerAt : Target → ComputationErrorPointer)
+    (pointerAt : Target → MessagePointer)
     (payloadAt : Target → Payload)
     (entries : List (SourcedNumericTargetOutcome Target)) :
     List (ComputationFormalMessage Payload) :=
@@ -111,9 +111,9 @@ def numericValuelessTargetErrors {Target Payload : Type}
 
 /-- Exact pointers for outcomes that produced computed-data instances. -/
 def computedInstancePointers {Target : Type}
-    (pointerAt : Target → ComputationErrorPointer)
+    (pointerAt : Target → MessagePointer)
     (entries : List (SourcedNumericTargetOutcome Target)) :
-    List ComputationErrorPointer :=
+    List MessagePointer :=
   entries.filterMap fun entry =>
     if entry.outcome.hasComputedInstance then
       some (pointerAt entry.targetField)
@@ -122,7 +122,7 @@ def computedInstancePointers {Target : Type}
 
 /-- Build the faithful Number result from eager supplied messages plus run-derived value-less target errors. Exact computed-instance pointers absorb matching messages; every unmatched message remains residual. -/
 def fromSourceOutcomesWithMessages {Target Payload : Type}
-    (pointerAt : Target → ComputationErrorPointer)
+    (pointerAt : Target → MessagePointer)
     (payloadAt : Target → Payload)
     (supplied : List (ComputationFormalMessage Payload))
     (entries : List (SourcedNumericTargetOutcome Target)) :
@@ -156,7 +156,7 @@ def fromOutcomes (input : CheckedDocument model)
     let source ← input.numericTargetState targetField
     pure { targetField, outcome, source }
   pure (fromSourceOutcomesWithMessages
-    (fun field => ComputationErrorPointer.ofCellAddr { field, path := [] })
+    (fun field => MessagePointer.ofCellAddr { field, path := [] })
     payloadAt supplied entries)
 
 /-- The V2 error predicate observes exactly the computed-instance and residual-message channels. -/

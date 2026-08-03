@@ -21,7 +21,7 @@ theorem numericTargetOutcome_emitsValuelessTargetError_iff
 
 /-- A value-less Number target failure contributes the stable residual message and makes the public error predicate false even when no eager message was supplied. -/
 theorem numericComputationRun_invalidNoValue_residual
-    (pointerAt : Target → ComputationErrorPointer)
+    (pointerAt : Target → MessagePointer)
     (payloadAt : Target → Payload) (target : Target)
     (cause : NumericTargetInvalidity) (source : NumericTargetState) :
     let view := NumericComputationRunView.fromSourceOutcomesWithMessages
@@ -159,7 +159,7 @@ theorem numericComputationRun_fromPartitionedSourceOutcomes_permutation
 
 /-- Reordering supplied messages or source-classified outcomes cannot change the faithful extensional Number result. -/
 theorem numericComputationRun_fromSourceOutcomesWithMessages_permutation
-    (pointerAt : Target → ComputationErrorPointer)
+    (pointerAt : Target → MessagePointer)
     (payloadAt : Target → Payload)
     (firstMessages secondMessages : List (ComputationFormalMessage Payload))
     (firstEntries secondEntries : List (SourcedNumericTargetOutcome Target))

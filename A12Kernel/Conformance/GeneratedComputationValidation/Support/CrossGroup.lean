@@ -127,21 +127,21 @@ def crossGroupOrdinaryError : Option NumericValidationElabError :=
   | .error error => some error
 
 def crossGroupExpectedMessage : FlatRuleMessage :=
-  { errorAddress := { field := crossGroupTarget.id, path := [] }
+  { errorAddress := MessagePointer.ofCellAddr { field := crossGroupTarget.id, path := [] }
     errorCode := "computedCrossGroup"
     severity := .error
     messageType := .value
     text }
 
 def crossGroupDatePartExpectedMessage : FlatRuleMessage :=
-  { errorAddress := { field := crossGroupTarget.id, path := [] }
+  { errorAddress := MessagePointer.ofCellAddr { field := crossGroupTarget.id, path := [] }
     errorCode := "computedDatePart"
     severity := .error
     messageType := .value
     text }
 
 def crossGroupDayDifferenceExpectedMessage : FlatRuleMessage :=
-  { errorAddress := { field := crossGroupTarget.id, path := [] }
+  { errorAddress := MessagePointer.ofCellAddr { field := crossGroupTarget.id, path := [] }
     errorCode := "computedDayDifference"
     severity := .error
     messageType := .value
@@ -239,7 +239,7 @@ def crossGroupStringRangeOutcome (target : Rat)
 
 def crossGroupStringRangeExpectedMessage
     (messageType : Polarity) : FlatRuleMessage :=
-  { errorAddress := { field := crossGroupTarget.id, path := [] }
+  { errorAddress := MessagePointer.ofCellAddr { field := crossGroupTarget.id, path := [] }
     errorCode := "computedRange"
     severity := .error
     messageType
@@ -260,21 +260,21 @@ def crossGroupFieldValueAsNumberOutcome (target : Rat)
 
 def crossGroupFieldValueAsNumberExpectedMessage
     (messageType : Polarity) : FlatRuleMessage :=
-  { errorAddress := { field := crossGroupTarget.id, path := [] }
+  { errorAddress := MessagePointer.ofCellAddr { field := crossGroupTarget.id, path := [] }
     errorCode := "computedNumericChoice"
     severity := .error
     messageType
     text }
 
 def aggregateExpectedMessage : FlatRuleMessage :=
-  { errorAddress := { field := crossGroupTarget.id, path := [] }
+  { errorAddress := MessagePointer.ofCellAddr { field := crossGroupTarget.id, path := [] }
     errorCode := "computedAggregate"
     severity := .error
     messageType := .value
     text }
 
 def expressionTableExpectedMessage : FlatRuleMessage :=
-  { errorAddress := { field := crossGroupTarget.id, path := [] }
+  { errorAddress := MessagePointer.ofCellAddr { field := crossGroupTarget.id, path := [] }
     errorCode := "computedExpressionTable"
     severity := .error
     messageType := .value

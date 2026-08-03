@@ -8,7 +8,7 @@ open A12Kernel
 
 private def address : CellAddr := { field := 7, path := [1] }
 
-private def message (pointer : ComputationErrorPointer)
+private def message (pointer : MessagePointer)
     (payload : String) : ComputationFormalMessage String := {
   pointer
   errorCode := berechnungsWertFehler
@@ -18,18 +18,18 @@ private def message (pointer : ComputationErrorPointer)
 
 /- Exact addresses embed into the wider error-pointer domain, while wildcard and unknown coordinates never masquerade as concrete cells. -/
 example :
-    ComputationErrorPointer.toCellAddr?
-        (ComputationErrorPointer.ofCellAddr address) = some address ∧
-      ComputationErrorPointer.toCellAddr?
+    MessagePointer.toCellAddr?
+        (MessagePointer.ofCellAddr address) = some address ∧
+      MessagePointer.toCellAddr?
         { field := 7, coordinates := [.wildcard] } = none ∧
-      ComputationErrorPointer.toCellAddr?
+      MessagePointer.toCellAddr?
         { field := 7, coordinates := [.unknown] } = none := by
   native_decide
 
 /- Partition membership follows exact pointer identity only. Payload bytes are opaque, and an unknown coordinate does not match its concrete sibling. -/
 example :
-    let exact := ComputationErrorPointer.ofCellAddr address
-    let unknown : ComputationErrorPointer :=
+    let exact := MessagePointer.ofCellAddr address
+    let unknown : MessagePointer :=
       { field := 7, coordinates := [.unknown] }
     let partition := partitionComputationMessages [exact] [
       message unknown "$Field$ $$ $<fieldName>$",

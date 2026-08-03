@@ -2,27 +2,28 @@ import A12Kernel.Semantics.CustomCondition
 
 /-! # Resolved `CustomCondition` executable locks
 
-These cases exercise a successfully resolved, pure callback after ordinary rule and row gating has reached the leaf. The concrete payloads are test witnesses for four opaque semantic channels; they do not define the host document, relevance-set, formal-address, or partially-known pointer representations.
+These cases exercise a successfully resolved, pure callback after ordinary rule and row gating has reached the leaf. The concrete data, relevance, and formal-address payloads remain test witnesses, while the error channel uses the shared message-pointer representation.
 -/
 
 namespace A12Kernel.Conformance.CustomCondition
 
 open A12Kernel
 
-private inductive ErrorPointerShape where
-  | known
-  | partiallyKnown
-  deriving DecidableEq
-
 private abbrev Invocation :=
-  CustomConditionInvocation Bool (List Nat) (List Nat) ErrorPointerShape
+  CustomConditionInvocation Bool (List Nat) (List Nat)
+
+private def partiallyKnownPointer : MessagePointer :=
+  { field := 11, coordinates := [.unknown] }
+
+private def knownPointer : MessagePointer :=
+  MessagePointer.ofCellAddr { field := 11, path := [2] }
 
 private def invocation : Invocation :=
   {
     data := true
     relevance := .partialEntities [2, 4]
     formallyIncorrect := [7]
-    errorPointer := .partiallyKnown
+    errorPointer := partiallyKnownPointer
   }
 
 /- Callback truth is returned as VALUE, even with a nonempty formal-invalid payload. -/
@@ -67,12 +68,12 @@ example :
 /- A partially-known current error pointer is not collapsed to a known pointer. -/
 example :
     evalReachedCustomCondition
-        (fun input : Invocation => input.errorPointer == .partiallyKnown)
+        (fun input : Invocation => input.errorPointer == partiallyKnownPointer)
         invocation =
       .fired .value ∧
     evalReachedCustomCondition
-        (fun input : Invocation => input.errorPointer == .partiallyKnown)
-        { invocation with errorPointer := .known } =
+        (fun input : Invocation => input.errorPointer == partiallyKnownPointer)
+        { invocation with errorPointer := knownPointer } =
       .notFired := by
   native_decide
 

@@ -7,16 +7,16 @@ These laws characterize the pure successful-callback boundary. They prove exact 
 
 namespace A12Kernel
 
-universe u v w x
+universe u v w
 
 /-- The callback fires as VALUE exactly when the oracle returns true for the supplied invocation. Because the invocation is passed literally, none of its four opaque channels is interpreted or pre-gated here. -/
 theorem evalReachedCustomCondition_fired_value_iff
     (oracle :
       CustomConditionInvocation
-        DataView RelevantEntities FormalInvalidAddresses ErrorPointer → Bool)
+        DataView RelevantEntities FormalInvalidAddresses → Bool)
     (invocation :
       CustomConditionInvocation
-        DataView RelevantEntities FormalInvalidAddresses ErrorPointer) :
+        DataView RelevantEntities FormalInvalidAddresses) :
     evalReachedCustomCondition oracle invocation = .fired .value ↔
       oracle invocation = true := by
   simp [evalReachedCustomCondition]
@@ -25,10 +25,10 @@ theorem evalReachedCustomCondition_fired_value_iff
 theorem evalReachedCustomCondition_notFired_iff
     (oracle :
       CustomConditionInvocation
-        DataView RelevantEntities FormalInvalidAddresses ErrorPointer → Bool)
+        DataView RelevantEntities FormalInvalidAddresses → Bool)
     (invocation :
       CustomConditionInvocation
-        DataView RelevantEntities FormalInvalidAddresses ErrorPointer) :
+        DataView RelevantEntities FormalInvalidAddresses) :
     evalReachedCustomCondition oracle invocation = .notFired ↔
       oracle invocation = false := by
   simp [evalReachedCustomCondition]
@@ -37,10 +37,10 @@ theorem evalReachedCustomCondition_notFired_iff
 theorem evalReachedCustomCondition_ne_unknown
     (oracle :
       CustomConditionInvocation
-        DataView RelevantEntities FormalInvalidAddresses ErrorPointer → Bool)
+        DataView RelevantEntities FormalInvalidAddresses → Bool)
     (invocation :
       CustomConditionInvocation
-        DataView RelevantEntities FormalInvalidAddresses ErrorPointer) :
+        DataView RelevantEntities FormalInvalidAddresses) :
     evalReachedCustomCondition oracle invocation ≠ .unknown := by
   cases h : oracle invocation <;>
     simp [evalReachedCustomCondition, h]
@@ -49,10 +49,10 @@ theorem evalReachedCustomCondition_ne_unknown
 theorem evalReachedCustomCondition_ne_omission
     (oracle :
       CustomConditionInvocation
-        DataView RelevantEntities FormalInvalidAddresses ErrorPointer → Bool)
+        DataView RelevantEntities FormalInvalidAddresses → Bool)
     (invocation :
       CustomConditionInvocation
-        DataView RelevantEntities FormalInvalidAddresses ErrorPointer) :
+        DataView RelevantEntities FormalInvalidAddresses) :
     evalReachedCustomCondition oracle invocation ≠ .fired .omission := by
   cases h : oracle invocation <;>
     simp [evalReachedCustomCondition, h]
@@ -63,16 +63,16 @@ theorem customConditionCanFireOnEmpty_eq_true :
   rfl
 
 private def dataInvocation (data : Bool) :
-    CustomConditionInvocation Bool Unit Unit Unit :=
+    CustomConditionInvocation Bool Unit Unit :=
   {
     data
     relevance := .all
     formallyIncorrect := ()
-    errorPointer := ()
+    errorPointer := MessagePointer.ofCellAddr { field := 1, path := [] }
   }
 
 private def readsData
-    (invocation : CustomConditionInvocation Bool Unit Unit Unit) : Bool :=
+    (invocation : CustomConditionInvocation Bool Unit Unit) : Bool :=
   invocation.data
 
 /-- A pure callback may observe arbitrary data-view distinctions, so purity alone does not imply locality to declared rule references. -/
@@ -84,20 +84,20 @@ theorem customCondition_purity_does_not_imply_data_locality :
   decide
 
 private def formalInvocation (formallyIncorrect : Bool) :
-    CustomConditionInvocation Unit Unit Bool Unit :=
+    CustomConditionInvocation Unit Unit Bool :=
   {
     data := ()
     relevance := .all
     formallyIncorrect
-    errorPointer := ()
+    errorPointer := MessagePointer.ofCellAddr { field := 1, path := [] }
   }
 
 private def readsFormalInvalid
-    (invocation : CustomConditionInvocation Unit Unit Bool Unit) : Bool :=
+    (invocation : CustomConditionInvocation Unit Unit Bool) : Bool :=
   invocation.formallyIncorrect
 
 private def reversesFormalInvalid
-    (invocation : CustomConditionInvocation Unit Unit Bool Unit) : Bool :=
+    (invocation : CustomConditionInvocation Unit Unit Bool) : Bool :=
   !invocation.formallyIncorrect
 
 /-- Pure callbacks can react to the formal-invalid payload in either direction; no invalidity monotonicity follows without a separate oracle contract. -/

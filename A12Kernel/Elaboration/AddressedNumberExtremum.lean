@@ -330,7 +330,7 @@ def executeResult
         (ComputationFormalMessage Payload) CellAddr) := do
   let outcomes ← operation.execute input
   pure (NumericComputationRunView.fromSourceOutcomesWithMessages
-    ComputationErrorPointer.ofCellAddr payloadAt supplied outcomes)
+    MessagePointer.ofCellAddr payloadAt supplied outcomes)
 
 end CheckedAddressedNumberExtremum
 

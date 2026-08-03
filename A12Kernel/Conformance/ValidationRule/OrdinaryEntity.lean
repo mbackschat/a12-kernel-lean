@@ -28,7 +28,7 @@ private def outerInnerTokenValueCountData : DocumentData :=
 
 private def outerInnerTokenValueCountSnapshot? :
     Option (Option (List RepeatableLevel) × Bool ×
-      List (Env × Verdict × Option CellAddr)) := do
+      List (Env × Verdict × Option MessagePointer)) := do
   let rule ← outerWithInnerTokenValueCountRule?
   let outcomes ← evalOrdinaryRule? rule outerInnerTokenValueCountData
   pure (
@@ -59,7 +59,10 @@ example :
         [(
           [(10, 1)],
           .fired .value,
-          some { field := outerAmount.id, path := [1] })])) = true ∧
+          some (MessagePointer.ofCellAddr {
+            field := outerAmount.id
+            path := [1]
+          }))])) = true ∧
       tokenValueCountStructuralFailure? =
         some (.addressing (.missingBinding 10)) := by
   native_decide
@@ -89,7 +92,7 @@ private def plainStarProductData (withRightValues : Bool) : DocumentData :=
       else [] }
 
 private def plainStarProductVerdict? (withRightValues : Bool) :
-    Option (Verdict × Option CellAddr) := do
+    Option (Verdict × Option MessagePointer) := do
   let rule ← guardedPlainStarProductRule?
   let outcomes ← evalOrdinaryRule? rule (plainStarProductData withRightValues)
   let outcome ← outcomes.head?
@@ -116,7 +119,10 @@ private def plainStarProductStructuralFailure? :
 example :
     plainStarProductVerdict? true =
         some (.fired .value,
-          some { field := outerAmount.id, path := [1] }) ∧
+          some (MessagePointer.ofCellAddr {
+            field := outerAmount.id
+            path := [1]
+          })) ∧
     plainStarProductVerdict? false =
         some (.notFired, none) ∧
     plainStarProductStructuralFailure? =
@@ -165,7 +171,7 @@ private def boundStarGroupListData : DocumentData :=
 
 private def boundStarGroupListSnapshot?
     (operator : GroupFillQuantifier) :
-    Option (List (Env × Verdict × Option CellAddr)) := do
+    Option (List (Env × Verdict × Option MessagePointer)) := do
   let rule ← guardedBoundStarGroupListRule? operator
   let outcomes ← evalOrdinaryRule? rule boundStarGroupListData
   pure (outcomes.map fun entry =>
@@ -362,7 +368,10 @@ example :
       some [
         ([(10, 2), (20, 1)], .notFired),
         ([(10, 1), (20, 1)], .fired {
-          errorAddress := { field := innerAmount.id, path := [1, 1] }
+          errorAddress := MessagePointer.ofCellAddr {
+            field := innerAmount.id
+            path := [1, 1]
+          }
           errorCode := "ordinaryIteration"
           severity := .error
           messageType := .omission
@@ -437,13 +446,19 @@ example :
     (boundStarGroupListSnapshot? .atLeastOneGroupFilled ==
       some [
         ([(10, 2)], .fired .value,
-          some { field := outerAmount.id, path := [2] }),
+          some (MessagePointer.ofCellAddr {
+            field := outerAmount.id
+            path := [2]
+          })),
         ([(10, 1)], .unknown, none)]) = true ∧
     (boundStarGroupListSnapshot? .noGroupFilled ==
       some [
         ([(10, 2)], .unknown, none),
         ([(10, 1)], .fired .omission,
-          some { field := outerAmount.id, path := [1] })]) = true := by
+          some (MessagePointer.ofCellAddr {
+            field := outerAmount.id
+            path := [1]
+          }))]) = true := by
   native_decide
 
 /- A missing captured outer binding remains a structural group-star addressing failure outside semantic UNKNOWN. -/

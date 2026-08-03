@@ -165,7 +165,7 @@ private def resultFromOutcomes
     NumericComputationRunView
       (ComputationFormalMessage Payload) CellAddr :=
   NumericComputationRunView.fromSourceOutcomesWithMessages
-    ComputationErrorPointer.ofCellAddr payloadAt supplied outcomes
+    MessagePointer.ofCellAddr payloadAt supplied outcomes
 
 /-- Classify a two-source addressed execution through the ordinary unsuppressed target checker. -/
 def executeResultWith

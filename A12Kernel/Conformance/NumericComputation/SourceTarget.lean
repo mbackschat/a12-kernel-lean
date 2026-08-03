@@ -344,7 +344,7 @@ example :
       let view ← view? (sourceWith "7" (.parsed (.num 7))
         (some (.decimal { unscaled := 7, scale := 0 })))
         (.rejected { unscaled := 8, scale := 0 } .aboveMaximum) [{
-          pointer := ComputationErrorPointer.ofCellAddr { field := 1, path := [] }
+          pointer := MessagePointer.ofCellAddr { field := 1, path := [] }
           errorCode := "target-error"
           messageType := .value
           payload := true

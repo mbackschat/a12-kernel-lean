@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.CustomFieldMessage
+import A12Kernel.Semantics.MessagePointer
 
 /-! # A12Kernel.Semantics.CustomFieldFormalMessage — registered formal-error projection
 
@@ -9,7 +10,7 @@ namespace A12Kernel
 
 /-- The emitted message for one rejected registered custom field value. It remains distinct from authored rule messages even though both expose severity and polarity. -/
 structure CustomFieldFormalMessage where
-  errorAddress : CellAddr
+  errorAddress : MessagePointer
   errorCode : String
   severity : ValidationSeverity
   messageType : Polarity
@@ -37,7 +38,7 @@ namespace RegisteredCustomRejection
 
 /-- Project a rejection into one VALUE/ERROR formal message. A supplied template, including an empty one, wins over the already-localized fallback. -/
 def toFormalMessage (rejection : RegisteredCustomRejection)
-    (errorAddress : CellAddr) (resolvedFieldLabel : String)
+    (errorAddress : MessagePointer) (resolvedFieldLabel : String)
     (fallbackText : ResolvedMessageText) : CustomFieldFormalMessage where
   errorAddress
   errorCode := rejection.projectCode
@@ -52,7 +53,7 @@ namespace CheckedCustomFieldType
 /-- Check one relevant raw value once, retain that exact cell, and derive its optional registered custom formal message without resampling the validator. -/
 def checkRelevantWithMessage (checked : CheckedCustomFieldType)
     (locale : String) (relevant : Bool) (raw : RawCell String)
-    (errorAddress : CellAddr) (resolvedFieldLabel : String)
+    (errorAddress : MessagePointer) (resolvedFieldLabel : String)
     (fallbackText : ResolvedMessageText) : Option CustomFieldValidationOutput :=
   (checked.checkRelevantRaw locale relevant raw).map fun cell => {
     cell

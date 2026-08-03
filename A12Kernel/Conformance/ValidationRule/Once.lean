@@ -64,7 +64,7 @@ private def rejectedRootData : DocumentData :=
     cells := [classifiedCell baseAmount.id [] "bad" (.rejected .malformed)] }
 
 private def snapshot? (data : DocumentData) :
-    Option (OrdinaryRuleIterationPlan × Env × Verdict × Option CellAddr) := do
+    Option (OrdinaryRuleIterationPlan × Env × Verdict × Option MessagePointer) := do
   let rule ← onceRule?
   let prepared ←
     (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
@@ -99,7 +99,10 @@ example :
         .once [10],
         [(10, 1)],
         .fired .omission,
-        some { field := outerAmount.id, path := [1] }) := by
+        some (MessagePointer.ofCellAddr {
+          field := outerAmount.id
+          path := [1]
+        })) := by
   native_decide
 
 /- The same synthetic frame remains content-gated in full validation. Neither physical repeatable-row existence nor a rejected root cell substitutes for admitted root value-content, and constructing the address never inserts a row into the immutable document. -/
@@ -117,7 +120,10 @@ example :
     (partialSnapshot? rootRelevant ==
       some (
         .evaluated [(10, 1)] (.fired {
-          errorAddress := { field := outerAmount.id, path := [1] }
+          errorAddress := MessagePointer.ofCellAddr {
+            field := outerAmount.id
+            path := [1]
+          }
           errorCode := "once"
           severity := .error
           messageType := .omission

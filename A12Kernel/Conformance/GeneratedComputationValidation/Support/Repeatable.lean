@@ -156,7 +156,7 @@ def productAggregateAddressedOutcome
 
 def repeatableExpectedMessage
     (errorCode : String) (messageType : Polarity) : FlatRuleMessage :=
-  { errorAddress := { field := target.id, path := [] }
+  { errorAddress := MessagePointer.ofCellAddr { field := target.id, path := [] }
     errorCode
     severity := .error
     messageType
@@ -231,7 +231,7 @@ def generatedRowGroupOf (candidate : LiteralNumberComputation) :
   | .error _ => none
 
 def expectedMessage (messageType : Polarity) : FlatRuleMessage :=
-  { errorAddress := { field := target.id, path := [] }
+  { errorAddress := MessagePointer.ofCellAddr { field := target.id, path := [] }
     errorCode := "computedTarget"
     severity := .error
     messageType

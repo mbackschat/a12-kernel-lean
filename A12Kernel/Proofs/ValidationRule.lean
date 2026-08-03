@@ -67,7 +67,10 @@ theorem resolvedRule_emitAt_fired_exact (rule : ResolvedRule Condition)
     (errorPath : List Nat) (messageType : Polarity) :
     rule.emitAt errorPath (.fired messageType) =
       .fired {
-        errorAddress := { field := rule.errorField, path := errorPath }
+        errorAddress := MessagePointer.ofCellAddr {
+          field := rule.errorField
+          path := errorPath
+        }
         errorCode := rule.errorCode
         severity := rule.severity
         messageType
@@ -103,7 +106,10 @@ theorem flatRule_fired_message_exact (rule : ResolvedFlatRule)
     (fires : rule.condition.evalFull context hasContent = .fired messageType) :
     rule.evalFull context hasContent =
       .fired {
-        errorAddress := { field := rule.errorField, path := [] }
+        errorAddress := MessagePointer.ofCellAddr {
+          field := rule.errorField
+          path := []
+        }
         errorCode := rule.errorCode
         severity := rule.severity
         messageType
@@ -344,7 +350,10 @@ theorem checkedFlatRule_fired_message_exact
         .fired messageType) :
     rule.evalFull prepared locale raw hasContent =
       .fired {
-        errorAddress := { field := rule.errorField, path := [] }
+        errorAddress := MessagePointer.ofCellAddr {
+          field := rule.errorField
+          path := []
+        }
         errorCode := rule.errorCode
         severity := rule.severity
         messageType
@@ -371,7 +380,10 @@ theorem checkedValidationRule_fired_message_exact
         .fired messageType) :
     rule.evalFull prepared locale raw groups hasContent =
       .ok (.fired {
-        errorAddress := { field := rule.errorField, path := [] }
+        errorAddress := MessagePointer.ofCellAddr {
+          field := rule.errorField
+          path := []
+        }
         errorCode := rule.errorCode
         severity := rule.severity
         messageType

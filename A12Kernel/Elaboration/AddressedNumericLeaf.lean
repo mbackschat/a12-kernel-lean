@@ -220,7 +220,7 @@ def executeResultWith
         (ComputationFormalMessage Payload) CellAddr) := do
   let outcomes ← placement.executeWith input evaluate
   pure (NumericComputationRunView.fromSourceOutcomesWithMessages
-    ComputationErrorPointer.ofCellAddr payloadAt supplied outcomes)
+    MessagePointer.ofCellAddr payloadAt supplied outcomes)
 
 end CheckedAddressedNumericPlacement
 

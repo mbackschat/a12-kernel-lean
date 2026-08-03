@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.PartialValidation
+import A12Kernel.Semantics.MessagePointer
 
 /-! # One flat validation-rule emission boundary
 
@@ -99,7 +100,7 @@ abbrev ResolvedFlatRule := ResolvedRule FlatCondition
 
 /-- The message fields admitted by this flat capsule. Rule path, referenced fields, and fill-to-fix metadata remain outside. -/
 structure FlatRuleMessage where
-  errorAddress : CellAddr
+  errorAddress : MessagePointer
   errorCode : String
   severity : ValidationSeverity
   messageType : Polarity
@@ -151,7 +152,10 @@ def emitAt (rule : ResolvedRule Condition) (errorPath : List Nat)
   | .notFired => .notFired
   | .fired messageType =>
       .fired {
-        errorAddress := { field := rule.errorField, path := errorPath }
+        errorAddress := MessagePointer.ofCellAddr {
+          field := rule.errorField
+          path := errorPath
+        }
         errorCode := rule.errorCode
         severity := rule.severity
         messageType

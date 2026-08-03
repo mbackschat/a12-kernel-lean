@@ -46,6 +46,7 @@ import A12Kernel.Semantics.NumericInput
 import A12Kernel.Semantics.NumericApplication
 import A12Kernel.Semantics.NumericDependency
 import A12Kernel.Semantics.HeterogeneousComputationDependency
+import A12Kernel.Semantics.MessagePointer
 import A12Kernel.Semantics.ComputationMessage
 import A12Kernel.Semantics.ParallelComputationClearing
 import A12Kernel.Semantics.Condition

@@ -1,50 +1,15 @@
-import A12Kernel.Document
+import A12Kernel.Semantics.MessagePointer
 
-/-! # Computation-phase formal-message pointers
+/-! # Computation-phase formal-message partition
 
-The kernel partitions one computation message stream by exact pointer identity. This owner represents that wider pointer and the partition while keeping localized payload bytes opaque. It performs no template parsing, rendering, validation, or message production.
+The kernel partitions one computation message stream by exact shared message-pointer identity. This owner represents the computation payload and partition while keeping localized payload bytes opaque. It performs no template parsing, rendering, validation, or message production.
 -/
 
 namespace A12Kernel
 
-/-- One repetition coordinate in a possibly partial computation-error pointer. The tagged cases keep the kernel's wildcard and unknown sentinels distinct from concrete row numbers. -/
-inductive RepetitionCoordinate where
-  | concrete (index : Nat)
-  | wildcard
-  | unknown
-  deriving Repr, DecidableEq
-
-/-- A computation-error pointer. Equality compares the complete field and coordinate list; wildcard and unknown are values, not matching operators. -/
-structure ComputationErrorPointer where
-  field : FieldId
-  coordinates : List RepetitionCoordinate
-  deriving Repr, DecidableEq
-
-namespace ComputationErrorPointer
-
-/-- Embed one exact document address into the wider formal-message pointer domain. -/
-def ofCellAddr (address : CellAddr) : ComputationErrorPointer := {
-  field := address.field
-  coordinates := address.path.map .concrete
-}
-
-/-- Recover a concrete path only when every coordinate is concrete. -/
-def toConcretePath? : List RepetitionCoordinate → Option (List Nat)
-  | [] => some []
-  | .concrete index :: remaining =>
-      (toConcretePath? remaining).map (index :: ·)
-  | .wildcard :: _ | .unknown :: _ => none
-
-/-- Recover an exact document address only when every repetition coordinate is concrete. -/
-def toCellAddr? (pointer : ComputationErrorPointer) : Option CellAddr := do
-  let path ← toConcretePath? pointer.coordinates
-  pure { field := pointer.field, path }
-
-end ComputationErrorPointer
-
 /-- One already-rendered computation-phase formal message. Severity is always ERROR at this boundary; payload bytes remain parametric and uninspected. -/
 structure ComputationFormalMessage (Payload : Type) where
-  pointer : ComputationErrorPointer
+  pointer : MessagePointer
   errorCode : String
   messageType : Polarity
   payload : Payload
@@ -60,7 +25,7 @@ structure ComputationMessagePartition (Payload : Type) where
   deriving Repr, DecidableEq
 
 /-- Partition messages by exact membership in the computed-instance pointer set. Wildcard and unknown coordinates are compared structurally, never expanded. -/
-def partitionComputationMessages (computedInstances : List ComputationErrorPointer)
+def partitionComputationMessages (computedInstances : List MessagePointer)
     (messages : List (ComputationFormalMessage Payload)) :
     ComputationMessagePartition Payload := {
   atComputedInstances :=

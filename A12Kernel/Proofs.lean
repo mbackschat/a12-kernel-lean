@@ -67,6 +67,7 @@ import A12Kernel.Proofs.NumericComputationTable
 import A12Kernel.Proofs.NumericComputationRunPlan
 import A12Kernel.Proofs.NumericComputationRun
 import A12Kernel.Proofs.NumericComputationRunRelation
+import A12Kernel.Proofs.MessagePointer
 import A12Kernel.Proofs.ComputationMessage
 import A12Kernel.Proofs.FieldId
 import A12Kernel.Proofs.NumericComputationRunResult

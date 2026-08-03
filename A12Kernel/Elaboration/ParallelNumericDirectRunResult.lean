@@ -55,7 +55,7 @@ def classifyParallelNumericOutcomes
     }
   let classified :=
     NumericComputationRunView.fromSourceOutcomesWithMessages
-      ComputationErrorPointer.ofCellAddr payloadAt supplied entries
+      MessagePointer.ofCellAddr payloadAt supplied entries
   let indexClearings ← routes.mapM fun route =>
     route.clearedSourceTargets preliminary
       |>.mapError ParallelNumericDirectRunResultError.clearing
