@@ -116,7 +116,7 @@ The computation boundary follows the accepted decision recorded in the archived 
 
 String, scalar Number, and repeatable Number keep typed owners because their target keys, state, and result domains differ. The finite repeatable Number executor is the sole owner of that family’s multi-target path; narrower duplicate executors are retired rather than bridged. Cross-family scheduling remains an open semantic question, not a reason to introduce a universal Core IR.
 
-Computation formal messages have their own possibly-partial pointer domain. Exact computed-instance association is structural equality on the full pointer, not display text, prefix matching, or wildcard interpretation. Message payload rendering is separate and may depend on locale; partition membership does not.
+All runtime message channels share A12's `PartiallyKnownDocumentMultiPointer`, which remains distinct from exact document addresses. Exact computed-instance association is structural equality on that complete message pointer, not display text, prefix matching, or wildcard interpretation. Message payload rendering is separate and may depend on locale; partition membership does not. The current Lean implementation owns only the computation partition under a computation-specific name; SG10 owns generalizing that representation and routing validation and custom-condition channels through it without widening `CellAddr`.
 
 ### `World` and host callbacks are explicit boundaries
 

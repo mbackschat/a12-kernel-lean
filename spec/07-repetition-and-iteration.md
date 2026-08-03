@@ -49,7 +49,7 @@ FieldsNotCollectivelyFilled(Demand/Units, Capacity/Units)   -- iterated per shar
 **Mechanics (verified):**
 
 - The iteration value-set is the **union** of the joined groups' index values.
-- An **unmatched side reads "not specified"**, its pointer carrying the fixed sentinel repetition index **`-5`** (`IIdentifier.UNKNOWN`).
+- An **unmatched side reads "not specified"**, its message `PartiallyKnownDocumentMultiPointer` carrying the fixed sentinel repetition index **`-5`** (`IIdentifier.UNKNOWN`); that address has no exact-pointer counterpart ([§2.1](01-data-model.md#21-repetition-contexts-the-iteration-environment)).
 - An **invalid** index value (duplicated or empty) marks that group's index invalid for the parent, so references into it read three-valued **UNKNOWN** for unmatched values — which *suppresses* a negative operator like `FieldsNotCollectivelyFilled`.
 - Non-repeatable intermediate groups are **transparent** to the join; a repeatable **non-indexed frame** is legal above exactly one joined group.
 
@@ -153,7 +153,7 @@ A model-legal condition contains at most one `RepetitionNotUnique` leaf. A secon
 
 - [ ] Ordinary iteration scope = compatible iteration-bearing condition references, **not** rule placement or the error entity alone; the error field must be referenced and scope-compatible; an empty derived scope evaluates once, while an iterating scope with zero actual rows evaluates zero times.
 - [ ] Error field must be referenced by the condition and share its scope.
-- [ ] Parallel iteration = outer join over the **union** of shared-index values; unmatched side = sentinel `-5` "not specified"; invalid index ⇒ UNKNOWN ⇒ suppresses negatives.
+- [ ] Parallel iteration = outer join over the **union** of shared-index values; unmatched side = sentinel `-5` "not specified" in the distinct partially-known message-pointer type; invalid index ⇒ UNKNOWN ⇒ suppresses negatives.
 - [ ] `Having` keeps only known-true candidates before consuming their selected cells; false/unknown rows drop; `$` switches to the **complete captured outer environment**, and the resolved level selects its coordinate; same-group correlation includes self unless explicitly excluded; filter-content restrictions enforced.
 - [ ] Aggregates consume entity/model/repetition encounter order; `Having` runs before the target read; the first selected unavailable target stops the scan; Number `Sum` retains each missing contributor's declaration for polarity.
 - [ ] Star binding: fix levels **strictly above** the first star, re-open the starred level and below; same-group star spans all rows; cross-subtree binds only on shared ancestry. Tail completeness recurses per actual parent at every reopened finite level; unbounded reopened levels stay open; flattened leaf counts are insufficient.
