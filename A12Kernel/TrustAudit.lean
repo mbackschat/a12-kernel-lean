@@ -1600,6 +1600,11 @@ run_cmd do
 #print axioms A12Kernel.checkedAddressedNumberAbs_sound
 #print axioms A12Kernel.checkedAddressedNumberSource_sound
 #print axioms A12Kernel.checkedAddressedNumberRound_sound
+#print axioms A12Kernel.CheckedAddressedNumberExtremumFieldOperand.sourceCertified
+#print axioms A12Kernel.CheckedAddressedNumberExtremumFieldOperand.sourceTargetField
+#print axioms A12Kernel.CheckedAddressedNumberExtremumFieldOperand.sourceField_ne_targetField
+#print axioms A12Kernel.checkedAddressedNumberExtremum_additionResultScale
+#print axioms A12Kernel.checkedAddressedNumberExtremum_additionEvaluation
 #print axioms A12Kernel.checkedAddressedNumberExtremum_sound
 #print axioms A12Kernel.checkedAddressedNumberExtremum_literalPosition
 #print axioms A12Kernel.checkedAddressedNumberBinary_sound

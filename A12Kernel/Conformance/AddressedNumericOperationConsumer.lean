@@ -160,6 +160,10 @@ private def extremumRound (name : String) (mode : DecimalRoundingMode)
     SurfaceAddressedNumberExtremumOperand :=
   .round (bare name) mode places
 
+private def extremumAddition (left right : String) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .addition (bare left) (bare right)
+
 private def extremumLiteral (value : Rat) (authoredScale : Int) :
     SurfaceAddressedNumberExtremumOperand :=
   .literal { value, authoredScale }
@@ -202,6 +206,11 @@ private def fingerprintMatch?
   let before ← before
   let after ← after
   before.matchingFingerprint? after
+
+private def identityTransformed?
+    (leaf : Option (CheckedAddressedNumericOperation model)) :
+    Option (CheckedAddressedNumericOperation model) :=
+  leaf.map (·.identityTransform)
 
 private def targetPolicy?
     (leaf : Option (CheckedAddressedNumericOperation model)) :
@@ -387,6 +396,54 @@ example :
       (literalExtremumLeaf? .minimum rounded1
         (extremumRound "Amount" .floor places1)
         [extremumLiteral (5 / 4) 1]) = none := by
+  native_decide
+
+/- Analyze retains addition as one outer operand while flattening its two ordered dependencies. Inner order, outer position, and operation identity remain independently transformation-sensitive. -/
+example :
+    analyzed? (literalExtremumLeaf? .minimum sameScaleTarget
+      (extremumAddition "Amount" "Selected")
+      [extremumField "Converted"]) =
+      some {
+        targetField := sameScaleTarget.id
+        sourceFields := [amount.id, selected.id, converted.id]
+        scope := [10]
+        parameters := .extremum .minimum 2
+          [.addition amount.id selected.id, .field converted.id]
+      } ∧
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumAddition "Amount" "Selected")
+        [extremumField "Converted"])
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumAddition "Selected" "Amount")
+        [extremumField "Converted"]) = none ∧
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumAddition "Amount" "Selected")
+        [extremumField "Converted"])
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumField "Converted")
+        [extremumAddition "Amount" "Selected"]) = none ∧
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumAddition "Amount" "Selected")
+        [extremumField "Converted"])
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumField "Amount") [extremumField "Converted"]) = none := by
+  native_decide
+
+/- The sole admitted identity Transform preserves the complete nested addition fingerprint, including both inner reads, their order, outer position, and derived scale. -/
+example :
+    analyzed? (identityTransformed? (literalExtremumLeaf? .minimum
+      sameScaleTarget (extremumAddition "Amount" "Selected")
+      [extremumField "Converted"])) =
+      some {
+        targetField := sameScaleTarget.id
+        sourceFields := [amount.id, selected.id, converted.id]
+        scope := [10]
+        parameters := .extremum .minimum 2
+          [.addition amount.id selected.id, .field converted.id]
+      } := by
   native_decide
 
 /- Operation, source order, and list cardinality remain independently transformation-sensitive. -/

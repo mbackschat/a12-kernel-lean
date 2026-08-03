@@ -1,3 +1,4 @@
+import A12Kernel.Proofs.AddressedNumberExtremum
 import A12Kernel.Elaboration.AddressedNumericOperationConsumer
 
 /-! # Addressed numeric-operation Analyze/Transform laws -/
@@ -24,15 +25,13 @@ theorem operandField_ne_targetField
       simpa [analyze] using operation.numberSource.placement.sourceNotTarget
   | extremum operation =>
       intro field member
-      simp only [analyze, List.mem_cons, List.mem_map] at member
-      rcases member with first | ⟨source, sourceMember, rest⟩
-      · subst field
-        exact operation.first.numberSource.placement.sourceNotTarget
-      · subst field
-        intro sourceIsTarget
-        apply source.numberSource.placement.sourceNotTarget
+      simp only [analyze, List.mem_append, List.mem_flatMap] at member
+      rcases member with first | ⟨operand, operandMember, nestedMember⟩
+      · exact operation.first.sourceField_ne_targetField field first
+      · intro sourceIsTarget
+        apply operand.sourceField_ne_targetField field nestedMember
         exact sourceIsTarget.trans
-          (operation.restSameTarget source sourceMember)
+          (operation.restSameTarget operand operandMember)
 
 /-- Fingerprint comparison recognizes exact identity. -/
 theorem matchingFingerprint_self

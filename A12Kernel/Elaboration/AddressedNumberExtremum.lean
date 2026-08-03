@@ -14,6 +14,7 @@ inductive SurfaceAddressedNumberExtremumOperand where
   | abs (reference : SurfaceFieldPath)
   | round (reference : SurfaceFieldPath) (mode : DecimalRoundingMode)
       (places : RoundingPlaces)
+  | addition (left right : SurfaceFieldPath)
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
 
@@ -24,10 +25,35 @@ inductive AddressedNumberExtremumFieldOperation where
   | round (mode : DecimalRoundingMode) (places : RoundingPlaces)
   deriving Repr, DecidableEq
 
-/-- One certified Number source together with its operand-local transformation. This is deliberately not a target-owning addressed computation. -/
-structure CheckedAddressedNumberExtremumFieldOperand (model : FlatModel) where
-  operation : AddressedNumberExtremumFieldOperation
-  numberSource : CheckedAddressedNumberSource model
+/-- One field-backed extremum operand. Unary forms retain one checked source; addition retains the shared ordered pair certificate without embedding a target-owning binary computation. -/
+inductive CheckedAddressedNumberExtremumFieldOperand (model : FlatModel) where
+  | unary (operation : AddressedNumberExtremumFieldOperation)
+      (numberSource : CheckedAddressedNumberSource model)
+  | addition (pair : CheckedAddressedNumberPair model)
+
+namespace CheckedAddressedNumberExtremumFieldOperand
+
+/-- The source whose already-certified placement owns the outer operation's target iteration. -/
+def primarySource : CheckedAddressedNumberExtremumFieldOperand model →
+    CheckedAddressedNumberSource model
+  | .unary _ source => source
+  | .addition pair => pair.left
+
+/-- Every ordered field dependency contributed by this one outer operand. -/
+def sources : CheckedAddressedNumberExtremumFieldOperand model →
+    List (CheckedAddressedNumberSource model)
+  | .unary _ source => [source]
+  | .addition pair => [pair.left, pair.right]
+
+def targetField (operand : CheckedAddressedNumberExtremumFieldOperand model) :
+    FieldId :=
+  operand.primarySource.placement.targetField
+
+def sourceFields (operand : CheckedAddressedNumberExtremumFieldOperand model) :
+    List FieldId :=
+  operand.sources.map fun source => source.placement.sourceDeclaration.id
+
+end CheckedAddressedNumberExtremumFieldOperand
 
 /-- One literal's exact insertion point among the retained field-backed sources. With at most one literal, this is also its authored operand-list position. -/
 structure AddressedNumberExtremumLiteral where
@@ -45,6 +71,7 @@ private def literalPositionWithin
 
 inductive AddressedNumberExtremumElabError where
   | source (position : Nat) (cause : AddressedNumberSourceElabError)
+  | pair (position : Nat) (cause : AddressedNumberPairElabError)
   | tooManyLiterals
   | noFieldSource
   | incoherentTarget
@@ -70,7 +97,17 @@ private def checkNumberSourceOperand
   let numberSource ←
     checkAddressedNumberSource model declaringGroup targetField reference
       |>.mapError (.source position)
-  pure (.source { operation, numberSource })
+  pure (.source (.unary operation numberSource))
+
+private def checkNumberAdditionOperand
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (position : Nat) (left right : SurfaceFieldPath) :
+    Except AddressedNumberExtremumElabError
+      (CheckedAddressedNumberExtremumSurfaceOperand model) := do
+  let pair ←
+    checkAddressedNumberPair model declaringGroup targetField left right
+      |>.mapError (.pair position)
+  pure (.source (.addition pair))
 
 private def checkNumberOperand
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
@@ -86,6 +123,9 @@ private def checkNumberOperand
   | .round reference mode places =>
       checkNumberSourceOperand model declaringGroup targetField position
         (.round mode places) reference
+  | .addition left right =>
+      checkNumberAdditionOperand model declaringGroup targetField position
+        left right
   | .literal decoded => pure (.literal decoded)
 
 private def checkNumberOperands
@@ -137,9 +177,12 @@ private def checkNumberOperands
 /-- The static result scale contributed by one field-backed operand after its local wrapper. -/
 def CheckedAddressedNumberExtremumFieldOperand.resultScale
     (source : CheckedAddressedNumberExtremumFieldOperand model) : Nat :=
-  match source.operation with
-  | .direct | .abs => source.numberSource.source.info.scale
-  | .round _ places => places.val
+  match source with
+  | .unary .direct numberSource
+  | .unary .abs numberSource => numberSource.source.info.scale
+  | .unary (.round _ places) _ => places.val
+  | .addition pair =>
+      max pair.left.source.info.scale pair.right.source.info.scale
 
 def addressedNumberExtremumResultScale
     (first : CheckedAddressedNumberExtremumFieldOperand model)
@@ -165,11 +208,10 @@ structure CheckedAddressedNumberExtremum (model : FlatModel) where
   literalWithinSources : literalPositionWithin literal (rest.length + 1)
   restSameTarget :
     ∀ source ∈ rest,
-      first.numberSource.placement.targetField =
-        source.numberSource.placement.targetField
+      first.targetField = source.targetField
   op : NumericExtremumOp
   sameScale :
-    first.numberSource.placement.targetPolicy.info.scale =
+    first.primarySource.placement.targetPolicy.info.scale =
       addressedNumberExtremumOperandResultScale first rest literal
 
 /-- Validate the bounded ordered operand list, retaining at most one literal and requiring one field-backed source to own the exact addressed placement. -/
@@ -186,11 +228,10 @@ def checkAddressedNumberExtremumOperands
   | [] => throw .noFieldSource
   | first :: rest =>
     if hTargets : ∀ source ∈ rest,
-        first.numberSource.placement.targetField =
-          source.numberSource.placement.targetField then
+        first.targetField = source.targetField then
       let resultScale := addressedNumberExtremumOperandResultScale
         first rest scan.literal
-      if hScale : first.numberSource.placement.targetPolicy.info.scale =
+      if hScale : first.primarySource.placement.targetPolicy.info.scale =
           resultScale then
         have literalWithin :
             literalPositionWithin scan.literal (rest.length + 1) := by
@@ -205,7 +246,7 @@ def checkAddressedNumberExtremumOperands
           sameScale := hScale
         }
       else
-        throw (.scaleMismatch first.numberSource.placement.targetPolicy.info.scale
+        throw (.scaleMismatch first.primarySource.placement.targetPolicy.info.scale
           resultScale)
     else
       throw .incoherentTarget
@@ -237,6 +278,7 @@ inductive CheckedAddressedNumberExtremumOperand (model : FlatModel) where
   | abs (source : CheckedAddressedNumberSource model)
   | round (source : CheckedAddressedNumberSource model)
       (mode : DecimalRoundingMode) (places : RoundingPlaces)
+  | addition (pair : CheckedAddressedNumberPair model)
   | literal (decoded : DecodedNumericLiteral)
 
 namespace CheckedAddressedNumberExtremum
@@ -245,10 +287,12 @@ namespace CheckedAddressedNumberExtremum
 private def asOperand
     (source : CheckedAddressedNumberExtremumFieldOperand model) :
     CheckedAddressedNumberExtremumOperand model :=
-  match source.operation with
-  | .direct => .field source.numberSource
-  | .abs => .abs source.numberSource
-  | .round mode places => .round source.numberSource mode places
+  match source with
+  | .unary .direct numberSource => .field numberSource
+  | .unary .abs numberSource => .abs numberSource
+  | .unary (.round mode places) numberSource =>
+      .round numberSource mode places
+  | .addition pair => .addition pair
 
 private def insertLiteral :
     Nat → DecodedNumericLiteral →
@@ -281,7 +325,12 @@ def orderedOperands
   let operands := operation.firstAndRestOperands
   operands.1 :: operands.2
 
-private def evaluateOperandAtPath
+end CheckedAddressedNumberExtremum
+
+namespace CheckedAddressedNumberExtremumOperand
+
+/-- Evaluate one retained outer operand at an already-certified row. Addition delegates its ordered reads to the shared pair evaluator and only supplies the scalar addition node. -/
+def evaluateAtPath
     (operand : CheckedAddressedNumberExtremumOperand model)
     (input : CheckedDocument model) (path : List Nat) :
     Except AddressedNumberExtremumFault NumericComputationResult :=
@@ -291,7 +340,15 @@ private def evaluateOperandAtPath
       return (← source.evaluateAtPath input path).absolute
   | .round source mode places =>
       return (← source.evaluateAtPath input path).round mode places
+  | .addition pair =>
+      pair.evaluateAtPath input
+        (NumericComputationResult.combineReached fun left right =>
+          .value (NumericArithmeticOp.add.eval left right)) path
   | .literal decoded => pure (.value decoded.value)
+
+end CheckedAddressedNumberExtremumOperand
+
+namespace CheckedAddressedNumberExtremum
 
 private def evaluateRestAtPath (op : NumericExtremumOp)
     (input : CheckedDocument model) (path : List Nat) :
@@ -301,7 +358,7 @@ private def evaluateRestAtPath (op : NumericExtremumOp)
   | [], result => pure result
   | _, .poison cause => pure (.poison cause)
   | operand :: rest, result => do
-      let next ← evaluateOperandAtPath operand input path
+      let next ← operand.evaluateAtPath input path
       evaluateRestAtPath op input path rest
         (op.selectComputationResult result next)
 
@@ -310,14 +367,14 @@ private def evaluateAtPath
     (input : CheckedDocument model) (path : List Nat) :
     Except AddressedNumberExtremumFault NumericComputationResult := do
   let operands := operation.firstAndRestOperands
-  let initial ← evaluateOperandAtPath operands.1 input path
+  let initial ← operands.1.evaluateAtPath input path
   evaluateRestAtPath operation.op input path operands.2 initial
 
 def execute (operation : CheckedAddressedNumberExtremum model)
     (input : CheckedDocument model) :
     Except AddressedNumberExtremumFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  operation.first.numberSource.placement.executeWithPath input
+  operation.first.primarySource.placement.executeWithPath input
     (operation.evaluateAtPath input)
 
 def executeResult

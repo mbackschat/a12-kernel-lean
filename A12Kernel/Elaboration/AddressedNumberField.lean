@@ -122,7 +122,8 @@ end CheckedAddressedNumberSource
 
 namespace CheckedAddressedNumberPair
 
-private def evaluateAtPath
+/-- Evaluate both sources at one already-certified row in authored order. A left poison prevents the right source from being reached; the caller supplies the scalar operation over reached outcomes. -/
+def evaluateAtPath
     (pair : CheckedAddressedNumberPair model)
     (input : CheckedDocument model)
     (combine : NumericComputationResult → NumericComputationResult →

@@ -32,6 +32,7 @@ inductive AddressedNumberExtremumOperandIdentity where
   | abs (field : FieldId)
   | round (field : FieldId) (mode : DecimalRoundingMode)
       (places : Nat)
+  | addition (left right : FieldId)
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
 
@@ -65,6 +66,9 @@ private def extremumOperandIdentity :
   | .abs source => .abs source.placement.sourceDeclaration.id
   | .round source mode places =>
       .round source.placement.sourceDeclaration.id mode places.val
+  | .addition pair =>
+      .addition pair.left.placement.sourceDeclaration.id
+        pair.right.placement.sourceDeclaration.id
   | .literal decoded => .literal decoded
 
 /-- Analyze exact read/write identity, repeatable scope, target policy, and conversion parameters without reconstructing an expression. -/
@@ -107,14 +111,13 @@ def analyze :
       parameters := .round operation.mode operation.places.val
     }
   | .extremum operation => {
-      targetField := operation.first.numberSource.placement.targetField
+      targetField := operation.first.targetField
       sourceFields :=
-        operation.first.numberSource.placement.sourceDeclaration.id ::
-        operation.rest.map (fun source =>
-          source.numberSource.placement.sourceDeclaration.id)
+        operation.first.sourceFields ++
+          operation.rest.flatMap (·.sourceFields)
       scope :=
-        operation.first.numberSource.placement.targetDeclaration.repeatableScope
-      targetPolicy := operation.first.numberSource.placement.targetPolicy
+        operation.first.primarySource.placement.targetDeclaration.repeatableScope
+      targetPolicy := operation.first.primarySource.placement.targetPolicy
       parameters := .extremum operation.op
         (addressedNumberExtremumOperandResultScale operation.first
           operation.rest operation.literal)
