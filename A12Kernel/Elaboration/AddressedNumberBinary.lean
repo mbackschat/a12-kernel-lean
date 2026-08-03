@@ -7,17 +7,6 @@ This capsule retains two ordered checked Number sources, delegates each arithmet
 
 namespace A12Kernel
 
-namespace NumericArithmeticOp
-
-/-- Static result scale for one binary node over two direct Number fields. -/
-def directFieldResultScale (op : NumericArithmeticOp)
-    (left right : Nat) : Nat :=
-  match op with
-  | .add | .subtract => max left right
-  | .multiply => left + right
-
-end NumericArithmeticOp
-
 inductive AddressedNumberBinaryElabError where
   | pair (cause : AddressedNumberPairElabError)
   | scaleMismatch (target result : Nat)

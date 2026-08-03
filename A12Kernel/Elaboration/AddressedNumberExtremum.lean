@@ -3,12 +3,12 @@ import A12Kernel.Elaboration.NumericExpression
 
 /-! # Same-scope repeatable bounded Number extrema
 
-This capsule retains a nonempty ordered list containing one or more checked Number sources, permits operand-local absolute-value, rounding, or additive field-pair tags on those sources, and admits at most one immediate decoded literal. It delegates each local transformation and the authored-order fold to the existing scalar semantics, then reuses the shared exact-address target owner.
+This capsule retains a nonempty ordered list containing one or more checked Number sources, permits operand-local absolute-value, rounding, or arithmetic field-pair tags on those sources, and admits at most one immediate decoded literal. It delegates each local transformation and the authored-order fold to the existing scalar semantics, then reuses the shared exact-address target owner.
 -/
 
 namespace A12Kernel
 
-/-- The bounded addressed surface admits direct Number fields, operand-local `Abs`, Round, addition, or subtraction over those fields, and one immediate decoded literal. Wider numeric operations remain with the scalar expression owner. -/
+/-- The bounded addressed surface admits direct Number fields, operand-local `Abs`, Round, addition, subtraction, or multiplication over those fields, and one immediate decoded literal. Wider numeric operations remain with the scalar expression owner. -/
 inductive SurfaceAddressedNumberExtremumOperand where
   | field (reference : SurfaceFieldPath)
   | abs (reference : SurfaceFieldPath)
@@ -16,23 +16,9 @@ inductive SurfaceAddressedNumberExtremumOperand where
       (places : RoundingPlaces)
   | addition (left right : SurfaceFieldPath)
   | subtraction (left right : SurfaceFieldPath)
+  | multiplication (left right : SurfaceFieldPath)
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
-
-/-- The two field-pair arithmetic nodes admitted as bounded extremum operands. This excludes multiplication without exposing a recursive expression tree. -/
-inductive AddressedNumberExtremumAdditiveOperation where
-  | add
-  | subtract
-  deriving Repr, DecidableEq
-
-namespace AddressedNumberExtremumAdditiveOperation
-
-/-- Delegate the bounded tag to the existing scalar arithmetic node. -/
-def arithmetic : AddressedNumberExtremumAdditiveOperation → NumericArithmeticOp
-  | .add => .add
-  | .subtract => .subtract
-
-end AddressedNumberExtremumAdditiveOperation
 
 /-- The bounded direct and unary-wrapper operations that can currently own a checked addressed Number source inside an extremum operand list. -/
 inductive AddressedNumberExtremumFieldOperation where
@@ -41,11 +27,11 @@ inductive AddressedNumberExtremumFieldOperation where
   | round (mode : DecimalRoundingMode) (places : RoundingPlaces)
   deriving Repr, DecidableEq
 
-/-- One field-backed extremum operand. Unary forms retain one checked source; additive forms retain the shared ordered pair certificate without embedding a target-owning binary computation. -/
+/-- One field-backed extremum operand. Unary forms retain one checked source; pair forms retain the shared ordered pair certificate and its arithmetic node without embedding a target-owning binary computation. -/
 inductive CheckedAddressedNumberExtremumFieldOperand (model : FlatModel) where
   | unary (operation : AddressedNumberExtremumFieldOperation)
       (numberSource : CheckedAddressedNumberSource model)
-  | additive (operation : AddressedNumberExtremumAdditiveOperation)
+  | arithmetic (operation : NumericArithmeticOp)
       (pair : CheckedAddressedNumberPair model)
 
 namespace CheckedAddressedNumberExtremumFieldOperand
@@ -54,13 +40,13 @@ namespace CheckedAddressedNumberExtremumFieldOperand
 def primarySource : CheckedAddressedNumberExtremumFieldOperand model →
     CheckedAddressedNumberSource model
   | .unary _ source => source
-  | .additive _ pair => pair.left
+  | .arithmetic _ pair => pair.left
 
 /-- Every ordered field dependency contributed by this one outer operand. -/
 def sources : CheckedAddressedNumberExtremumFieldOperand model →
     List (CheckedAddressedNumberSource model)
   | .unary _ source => [source]
-  | .additive _ pair => [pair.left, pair.right]
+  | .arithmetic _ pair => [pair.left, pair.right]
 
 def targetField (operand : CheckedAddressedNumberExtremumFieldOperand model) :
     FieldId :=
@@ -116,16 +102,16 @@ private def checkNumberSourceOperand
       |>.mapError (.source position)
   pure (.source (.unary operation numberSource))
 
-private def checkNumberAdditiveOperand
+private def checkNumberPairOperand
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (position : Nat) (operation : AddressedNumberExtremumAdditiveOperation)
+    (position : Nat) (operation : NumericArithmeticOp)
     (left right : SurfaceFieldPath) :
     Except AddressedNumberExtremumElabError
       (CheckedAddressedNumberExtremumSurfaceOperand model) := do
   let pair ←
     checkAddressedNumberPair model declaringGroup targetField left right
       |>.mapError (.pair position)
-  pure (.source (.additive operation pair))
+  pure (.source (.arithmetic operation pair))
 
 private def checkNumberOperand
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
@@ -142,11 +128,14 @@ private def checkNumberOperand
       checkNumberSourceOperand model declaringGroup targetField position
         (.round mode places) reference
   | .addition left right =>
-      checkNumberAdditiveOperand model declaringGroup targetField position
+      checkNumberPairOperand model declaringGroup targetField position
         .add left right
   | .subtraction left right =>
-      checkNumberAdditiveOperand model declaringGroup targetField position
+      checkNumberPairOperand model declaringGroup targetField position
         .subtract left right
+  | .multiplication left right =>
+      checkNumberPairOperand model declaringGroup targetField position
+        .multiply left right
   | .literal decoded => pure (.literal decoded)
 
 private def checkNumberOperands
@@ -202,8 +191,9 @@ def CheckedAddressedNumberExtremumFieldOperand.resultScale
   | .unary .direct numberSource
   | .unary .abs numberSource => numberSource.source.info.scale
   | .unary (.round _ places) _ => places.val
-  | .additive _ pair =>
-      max pair.left.source.info.scale pair.right.source.info.scale
+  | .arithmetic operation pair =>
+      operation.directFieldResultScale pair.left.source.info.scale
+        pair.right.source.info.scale
 
 def addressedNumberExtremumResultScale
     (first : CheckedAddressedNumberExtremumFieldOperand model)
@@ -299,7 +289,7 @@ inductive CheckedAddressedNumberExtremumOperand (model : FlatModel) where
   | abs (source : CheckedAddressedNumberSource model)
   | round (source : CheckedAddressedNumberSource model)
       (mode : DecimalRoundingMode) (places : RoundingPlaces)
-  | additive (operation : AddressedNumberExtremumAdditiveOperation)
+  | arithmetic (operation : NumericArithmeticOp)
       (pair : CheckedAddressedNumberPair model)
   | literal (decoded : DecodedNumericLiteral)
 
@@ -314,7 +304,7 @@ private def asOperand
   | .unary .abs numberSource => .abs numberSource
   | .unary (.round mode places) numberSource =>
       .round numberSource mode places
-  | .additive operation pair => .additive operation pair
+  | .arithmetic operation pair => .arithmetic operation pair
 
 private def insertLiteral :
     Nat → DecodedNumericLiteral →
@@ -351,7 +341,7 @@ end CheckedAddressedNumberExtremum
 
 namespace CheckedAddressedNumberExtremumOperand
 
-/-- Evaluate one retained outer operand at an already-certified row. Additive nodes delegate ordered reads to the shared pair evaluator and supply only their existing scalar arithmetic node. -/
+/-- Evaluate one retained outer operand at an already-certified row. Pair nodes delegate ordered reads to the shared pair evaluator and supply only their existing scalar arithmetic node. -/
 def evaluateAtPath
     (operand : CheckedAddressedNumberExtremumOperand model)
     (input : CheckedDocument model) (path : List Nat) :
@@ -362,10 +352,10 @@ def evaluateAtPath
       return (← source.evaluateAtPath input path).absolute
   | .round source mode places =>
       return (← source.evaluateAtPath input path).round mode places
-  | .additive operation pair =>
+  | .arithmetic operation pair =>
       pair.evaluateAtPath input
         (NumericComputationResult.combineReached fun left right =>
-          .value (operation.arithmetic.eval left right)) path
+          .value (operation.eval left right)) path
   | .literal decoded => pure (.value decoded.value)
 
 end CheckedAddressedNumberExtremumOperand

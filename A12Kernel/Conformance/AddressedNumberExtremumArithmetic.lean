@@ -1,8 +1,8 @@
 import A12Kernel.Elaboration.AddressedNumberExtremum
 
-/-! # Operand-local additive arithmetic inside same-scope repeatable Number extrema -/
+/-! # Operand-local field-pair arithmetic inside same-scope repeatable Number extrema -/
 
-namespace A12Kernel.Conformance.AddressedNumberExtremumAdditive
+namespace A12Kernel.Conformance.AddressedNumberExtremumArithmetic
 
 open A12Kernel
 
@@ -26,9 +26,16 @@ private def target : FlatFieldDecl := {
 }
 private def preciseTarget := number 5 "PreciseTarget" 3
 private def wrongScale := number 6 "WrongScale" 1
+private def widePrecision := number 7 "WidePrecision" 4
+/- A summed-scale target with a maximum, so a product-driven target rejection stays observable. -/
+private def cappedPrecise : FlatFieldDecl := {
+  number 8 "CappedPrecise" 3 with
+  numericTargetConstraints := { maximum := some (9999 / 1000) }
+}
 
 private def model : FlatModel := {
-  fields := [left, right, direct, target, preciseTarget, wrongScale]
+  fields := [left, right, direct, target, preciseTarget, wrongScale,
+    widePrecision, cappedPrecise]
   repeatableGroups := [{
     level := 10
     path := ["Probe", "Rows"]
@@ -50,6 +57,10 @@ private def addition (left right : String) :
 private def subtraction (left right : String) :
     SurfaceAddressedNumberExtremumOperand :=
   .subtraction (bare left) (bare right)
+
+private def multiplication (left right : String) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .multiplication (bare left) (bare right)
 
 private def field (name : String) : SurfaceAddressedNumberExtremumOperand :=
   .field (bare name)
@@ -127,6 +138,18 @@ private def maximumOutcomes?
   let outcomes ← (operation.execute input).toOption
   pure (outcomes.map fun outcome => (outcome.targetField, outcome.outcome))
 
+/- A summed-scale product needs a target other than the shared scale-2 one, so this run names both its target and its extremum operation. -/
+private def outcomesInto? (targetField : FlatFieldDecl)
+    (op : NumericExtremumOp)
+    (first : SurfaceAddressedNumberExtremumOperand)
+    (rest : List SurfaceAddressedNumberExtremumOperand) :
+    Option (List (CellAddr × NumericTargetOutcome)) := do
+  let operation ← (checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
+    targetField.id first rest op).toOption
+  let input ← input?
+  let outcomes ← (operation.execute input).toOption
+  pure (outcomes.map fun outcome => (outcome.targetField, outcome.outcome))
+
 /- A field-pair addition is one bounded outer operand. Its result scale is the maximum inner source scale, while a literal sibling can raise the outer target scale. -/
 example :
     (operation? target (addition "A" "B") [field "C"]).isSome = true ∧
@@ -191,9 +214,56 @@ example : (maximumOutcomes? (subtraction "A" "B") [field "C"]
     >>= List.head?) = some (addr target.id 1, .accepted (stored 5 0)) := by
   native_decide
 
+/- Multiplication derives the SUM of its inner source scales, so it cannot ride the additive tag's maximum-scale contract. Its accepted target is scale 3 while the same operands under addition target scale 2. -/
+example :
+    (operation? preciseTarget (multiplication "A" "B") [field "C"]).isSome = true ∧
+    (operation? preciseTarget (field "C") [multiplication "A" "B"]).isSome = true ∧
+    (operation? preciseTarget (multiplication "B" "A") [field "C"]).isSome = true ∧
+    (operation? widePrecision (multiplication "A" "B")
+      [field "C", literal (5 / 4) 4]).isSome = true ∧
+    (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
+        target.id (multiplication "A" "B") [field "C"] .minimum with
+      | .error (.scaleMismatch 2 3) => true
+      | _ => false) = true ∧
+    (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
+        widePrecision.id (multiplication "A" "B") [field "C"] .minimum with
+      | .error (.scaleMismatch 4 3) => true
+      | _ => false) = true ∧
+    (operation? preciseTarget (multiplication "PreciseTarget" "A")
+      [field "C"]).isNone = true := by
+  native_decide
+
+/- Multiplication delegates the shared pair's empty-as-zero and inner first-poison rules before the outer minimum selects in authored order. -/
+example : outcomesInto? preciseTarget .minimum (multiplication "A" "B")
+    [field "C"] = some [
+    (addr preciseTarget.id 1, .accepted (stored 3375 3)),
+    (addr preciseTarget.id 2, .accepted (stored (-2) 0)),
+    (addr preciseTarget.id 3, .accepted (stored 0 0)),
+    (addr preciseTarget.id 4, .accepted (stored 0 0)),
+    (addr preciseTarget.id 5, .accepted (stored 0 0)),
+    (addr preciseTarget.id 6, .inheritedPoison .malformed),
+    (addr preciseTarget.id 7, .inheritedPoison .declaredConstraint),
+    (addr preciseTarget.id 8, .accepted (stored 20 0))
+  ] := by
+  native_decide
+
+/- Under the maximum fold the product itself wins rows 2 and 8, so an ordinary summed-scale target policy rejects the product rather than a direct field. -/
+example : outcomesInto? cappedPrecise .maximum (multiplication "A" "B")
+    [field "C"] = some [
+    (addr cappedPrecise.id 1, .accepted (stored 5 0)),
+    (addr cappedPrecise.id 2, .rejected (stored 20 0) .aboveMaximum),
+    (addr cappedPrecise.id 3, .accepted (stored 5 0)),
+    (addr cappedPrecise.id 4, .accepted (stored 5 0)),
+    (addr cappedPrecise.id 5, .accepted (stored 5 0)),
+    (addr cappedPrecise.id 6, .inheritedPoison .malformed),
+    (addr cappedPrecise.id 7, .inheritedPoison .declaredConstraint),
+    (addr cappedPrecise.id 8, .rejected (stored 120 0) .aboveMaximum)
+  ] := by
+  native_decide
+
 private inductive OperandShape where
   | field (field : FieldId)
-  | additive (operation : AddressedNumberExtremumAdditiveOperation)
+  | arithmetic (operation : NumericArithmeticOp)
       (left right : FieldId)
   | other
   deriving Repr, DecidableEq
@@ -201,8 +271,8 @@ private inductive OperandShape where
 private def operandShape : CheckedAddressedNumberExtremumOperand model →
     OperandShape
   | .field source => .field source.placement.sourceDeclaration.id
-  | .additive operation pair =>
-      .additive operation pair.left.placement.sourceDeclaration.id
+  | .arithmetic operation pair =>
+      .arithmetic operation pair.left.placement.sourceDeclaration.id
       pair.right.placement.sourceDeclaration.id
   | _ => .other
 
@@ -215,7 +285,7 @@ example :
       pure (outcomes[5]?.map (·.outcome),
         operation.orderedOperands.map operandShape)) =
       some (some (.inheritedPoison .declaredConstraint),
-        [.additive .add right.id left.id, .field direct.id]) := by
+        [.arithmetic .add right.id left.id, .field direct.id]) := by
   native_decide
 
 /- Subtraction retains its distinct tag and reversed inner order, so the same first-cause separator remains visible to execution and Analyze consumers. -/
@@ -227,7 +297,7 @@ example :
       pure (outcomes[5]?.map (·.outcome),
         operation.orderedOperands.map operandShape)) =
       some (some (.inheritedPoison .declaredConstraint),
-        [.additive .subtract right.id left.id, .field direct.id]) := by
+        [.arithmetic .subtract right.id left.id, .field direct.id]) := by
   native_decide
 
-end A12Kernel.Conformance.AddressedNumberExtremumAdditive
+end A12Kernel.Conformance.AddressedNumberExtremumArithmetic

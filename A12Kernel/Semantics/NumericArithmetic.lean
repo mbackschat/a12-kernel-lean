@@ -17,6 +17,17 @@ inductive NumericArithmeticOp where
   | multiply
   deriving Repr, DecidableEq
 
+namespace NumericArithmeticOp
+
+/-- Static result scale for one node over two direct Number fields: the additive nodes take the larger operand scale, while multiplication sums them. Shared by the target-owning binary computation and by an operand-local field pair inside operand-list extrema. -/
+def directFieldResultScale (op : NumericArithmeticOp)
+    (left right : Nat) : Nat :=
+  match op with
+  | .add | .subtract => max left right
+  | .multiply => left + right
+
+end NumericArithmeticOp
+
 /-- Numeric operand-list selectors. The source operation is nonempty and evaluates operands in authored order. -/
 inductive NumericExtremumOp where
   | minimum

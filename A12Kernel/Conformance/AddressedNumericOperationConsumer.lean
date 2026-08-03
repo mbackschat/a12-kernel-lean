@@ -168,6 +168,10 @@ private def extremumSubtraction (left right : String) :
     SurfaceAddressedNumberExtremumOperand :=
   .subtraction (bare left) (bare right)
 
+private def extremumMultiplication (left right : String) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .multiplication (bare left) (bare right)
+
 private def extremumLiteral (value : Rat) (authoredScale : Int) :
     SurfaceAddressedNumberExtremumOperand :=
   .literal { value, authoredScale }
@@ -412,7 +416,7 @@ example :
         sourceFields := [amount.id, selected.id, converted.id]
         scope := [10]
         parameters := .extremum .minimum 2
-          [.additive .add amount.id selected.id, .field converted.id]
+          [.arithmetic .add amount.id selected.id, .field converted.id]
       } ∧
     fingerprintMatch?
       (literalExtremumLeaf? .minimum sameScaleTarget
@@ -446,7 +450,7 @@ example :
         sourceFields := [amount.id, selected.id, converted.id]
         scope := [10]
         parameters := .extremum .minimum 2
-          [.additive .add amount.id selected.id, .field converted.id]
+          [.arithmetic .add amount.id selected.id, .field converted.id]
       } := by
   native_decide
 
@@ -460,7 +464,7 @@ example :
         sourceFields := [amount.id, selected.id, converted.id]
         scope := [10]
         parameters := .extremum .minimum 2
-          [.additive .subtract amount.id selected.id, .field converted.id]
+          [.arithmetic .subtract amount.id selected.id, .field converted.id]
       } ∧
     fingerprintMatch?
       (literalExtremumLeaf? .minimum sameScaleTarget
@@ -477,7 +481,52 @@ example :
         sourceFields := [amount.id, selected.id, converted.id]
         scope := [10]
         parameters := .extremum .minimum 2
-          [.additive .subtract amount.id selected.id, .field converted.id]
+          [.arithmetic .subtract amount.id selected.id, .field converted.id]
+      } := by
+  native_decide
+
+/- Multiplication is the separator that operation identity alone must carry: over a scale-2 and a scale-0 source it derives the same outer scale 2 as addition, so an account that kept only dependencies, order, and derived scale would conflate the two. Identity Transform preserves the product node exactly. -/
+example :
+    analyzed? (literalExtremumLeaf? .minimum sameScaleTarget
+      (extremumMultiplication "Amount" "Selected")
+      [extremumField "Converted"]) =
+      some {
+        targetField := sameScaleTarget.id
+        sourceFields := [amount.id, selected.id, converted.id]
+        scope := [10]
+        parameters := .extremum .minimum 2
+          [.arithmetic .multiply amount.id selected.id, .field converted.id]
+      } ∧
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumMultiplication "Amount" "Selected")
+        [extremumField "Converted"])
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumAddition "Amount" "Selected")
+        [extremumField "Converted"]) = none ∧
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumMultiplication "Amount" "Selected")
+        [extremumField "Converted"])
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumMultiplication "Selected" "Amount")
+        [extremumField "Converted"]) = none ∧
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumMultiplication "Amount" "Selected")
+        [extremumField "Converted"])
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumField "Converted")
+        [extremumMultiplication "Amount" "Selected"]) = none ∧
+    analyzed? (identityTransformed? (literalExtremumLeaf? .minimum
+      sameScaleTarget (extremumMultiplication "Amount" "Selected")
+      [extremumField "Converted"])) =
+      some {
+        targetField := sameScaleTarget.id
+        sourceFields := [amount.id, selected.id, converted.id]
+        scope := [10]
+        parameters := .extremum .minimum 2
+          [.arithmetic .multiply amount.id selected.id, .field converted.id]
       } := by
   native_decide
 
