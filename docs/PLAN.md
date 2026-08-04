@@ -48,7 +48,7 @@ After those, the thin lanes in priority order are SG4 computation scheduling and
 
 ## Immediate sequence
 
-1. Measure `FieldValuesNotUnique` authoring: the plain field-list form, the starred `FieldValuesNotUnique(G*/f)` form, its error-field placement, and whether an invalid key suppresses the predicate, then add red cases beside the existing uniqueness owners rather than creating a new family.
+1. **Measurement is complete and retained** in [`SOURCES.md`](SOURCES.md): admission of the plain two- and three-field list over differing Number scales, the starred single-field form, the mixed direct-plus-starred list, the single-operand and mixed-type rejections, plus typed cross-scale equality firing, empty skipping on one or both sides, and formal-invalid suppression. Implement directly from it — no further probe is needed for the Number overload. Follow the [`TokenDistinctCount.lean`](../A12Kernel/Elaboration/TokenDistinctCount.lean) pattern: a thin consumer over the existing checked Number entity list in [`NumberEntityList.lean`](../A12Kernel/Elaboration/NumberEntityList.lean), adding only the ≥2-operand admission and the pairwise-equality fold, with the String/stored-Enumeration and date-like overloads left as explicit insufficiency.
 2. Then measure `ValidType`/`InvalidType` against a registered custom field type, and reuse the existing custom-field and String owners.
 3. Only then open SG4 or SG10, each with its own audit packet and its own consumer hypothesis.
 
