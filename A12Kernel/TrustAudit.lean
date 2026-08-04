@@ -920,6 +920,10 @@ run_cmd do
 #print axioms A12Kernel.validationCondition_iterationLegality_singleton_guarded
 #print axioms A12Kernel.validationCondition_repeatablePresence_supported
 #print axioms A12Kernel.checkedValidationCondition_coherent
+#print axioms A12Kernel.concreteFieldPointer_exact
+#print axioms A12Kernel.starFieldPointer_notExact
+#print axioms A12Kernel.starFieldPointer_arity
+#print axioms A12Kernel.referencePointers_connective_blind
 #print axioms A12Kernel.FlatPresenceContradictionWitness.neverFires
 #print axioms A12Kernel.numericTolerance_acceptsScales
 #print axioms A12Kernel.numericValidation_scaleSuppression_accepts

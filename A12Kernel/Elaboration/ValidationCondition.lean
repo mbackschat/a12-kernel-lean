@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ValidationCondition.Assembly
+import A12Kernel.Elaboration.ValidationCondition.Reference
 
 /-! # Shared resolved validation conditions
 

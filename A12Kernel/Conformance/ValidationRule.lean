@@ -7,5 +7,6 @@ import A12Kernel.Conformance.ValidationRule.OrdinaryScalarSources
 import A12Kernel.Conformance.ValidationRule.OrdinaryTemporal
 import A12Kernel.Conformance.ValidationRule.OrdinaryEntity
 import A12Kernel.Conformance.ValidationRule.OrdinaryNumeric
+import A12Kernel.Conformance.ValidationRule.OrdinaryReference
 
 /-! Import-only compatibility umbrella for checked whole-rule conformance families. -/
