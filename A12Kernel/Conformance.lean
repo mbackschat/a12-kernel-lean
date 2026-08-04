@@ -145,6 +145,7 @@ import A12Kernel.Conformance.NumericAggregate
 import A12Kernel.Conformance.NumericAggregateElaboration
 import A12Kernel.Conformance.TokenDistinctCount
 import A12Kernel.Conformance.NumberValuesNotUnique
+import A12Kernel.Conformance.TokenValuesNotUnique
 import A12Kernel.Conformance.TokenValueCount
 import A12Kernel.Conformance.RepetitionNotUnique
 import A12Kernel.Conformance.RepetitionNotUniqueElaboration
