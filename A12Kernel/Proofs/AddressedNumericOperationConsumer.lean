@@ -24,14 +24,8 @@ theorem operandField_ne_targetField
   | round operation =>
       simpa [analyze] using operation.numberSource.placement.sourceNotTarget
   | extremum operation =>
-      intro field member
-      simp only [analyze, List.mem_append, List.mem_flatMap] at member
-      rcases member with first | ⟨operand, operandMember, nestedMember⟩
-      · exact operation.first.sourceField_ne_targetField field first
-      · intro sourceIsTarget
-        apply operand.sourceField_ne_targetField field nestedMember
-        exact sourceIsTarget.trans
-          (operation.restSameTarget operand operandMember)
+      simpa [analyze] using
+        checkedAddressedNumberExtremum_sourceField_ne_targetField operation
 
 /-- Fingerprint comparison recognizes exact identity. -/
 theorem matchingFingerprint_self

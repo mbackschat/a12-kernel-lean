@@ -297,7 +297,7 @@ example :
       [field "C"]).isSome = true := by
   native_decide
 
-/- The child's literal does not consume the outer list's one-literal budget, and that outer budget stays exactly one. A child of two literals fails closed: the kernel admits it, but no source in this fragment could then own the target placement. -/
+/- The child's literal does not consume the outer list's one-literal budget, and that outer budget stays exactly one. A child of two literals is admitted, since the target's own certificate owns iteration. -/
 example :
     (operation? preciseTarget (arith .multiply (fld "A") (lit (3 / 2) 1))
       [field "C", literal 2 0]).isSome = true ∧
@@ -305,11 +305,6 @@ example :
         preciseTarget.id (arith .multiply (fld "A") (lit (3 / 2) 1))
         [field "C", literal 2 0, literal 3 0] .minimum with
       | .error .tooManyLiterals => true
-      | _ => false) = true ∧
-    (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
-        target.id (arith .multiply (lit (3 / 2) 1) (lit 2 0))
-        [field "C"] .minimum with
-      | .error (.constantOnlyArithmetic 1) => true
       | _ => false) = true := by
   native_decide
 
@@ -357,6 +352,27 @@ example :
       [field "C"]).isNone = true := by
   native_decide
 
+/- A constant-only arithmetic child is admitted, and a list of only such operands needs no field reference at all. Its derived scale 1 stays capability-carrying, so it is padded up to declared scale 2 or 4 and still rejected at 0. -/
+example :
+    (operation? target (arith .multiply (lit (3 / 2) 1) (lit 2 0))
+      [field "C"]).isSome = true ∧
+    (operation? target (arith .multiply (lit (3 / 2) 1) (lit 2 0))
+      []).isSome = true ∧
+    (operation? widePrecision (arith .multiply (lit (3 / 2) 1) (lit 2 0))
+      []).isSome = true ∧
+    (operation? zeroScale (arith .multiply (lit (3 / 2) 1) (lit 2 0))
+      []).isNone = true ∧
+    (operation? target (arith .multiply (lit (3 / 2) 1) (lit 2 0))
+      [literal 3 0]).isSome = true := by
+  native_decide
+
+/- A fieldless list still computes once per instantiated row, including rows whose every cell is absent, because repetition comes from the computed target's own declaration rather than from a source reference. -/
+example : outcomesInto? target .minimum
+    (arith .multiply (lit (3 / 2) 1) (lit 2 0)) [] =
+    some ((List.range 8).map fun row =>
+      (addr target.id (row + 1), .accepted (stored 3 0))) := by
+  native_decide
+
 private inductive InnerShape where
   | field (field : FieldId)
   | literal (decoded : DecodedNumericLiteral)
@@ -378,6 +394,7 @@ private def innerShapes : CheckedAddressedNumberArithmeticChild model →
       (.field source.placement.sourceDeclaration.id, .literal decoded)
   | .literalField decoded source =>
       (.literal decoded, .field source.placement.sourceDeclaration.id)
+  | .literals left right => (.literal left, .literal right)
 
 private def operandShape : CheckedAddressedNumberExtremumOperand model →
     OperandShape

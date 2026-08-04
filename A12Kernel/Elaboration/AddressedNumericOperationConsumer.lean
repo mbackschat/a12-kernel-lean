@@ -77,6 +77,7 @@ private def arithmeticChildIdentity :
       (.field source.placement.sourceDeclaration.id, .literal decoded)
   | .literalField decoded source =>
       (.literal decoded, .field source.placement.sourceDeclaration.id)
+  | .literals left right => (.literal left, .literal right)
 
 private def extremumOperandIdentity :
     CheckedAddressedNumberExtremumOperand model →
@@ -130,16 +131,11 @@ def analyze :
       parameters := .round operation.mode operation.places.val
     }
   | .extremum operation => {
-      targetField := operation.first.targetField
-      sourceFields :=
-        operation.first.sourceFields ++
-          operation.rest.flatMap (·.sourceFields)
-      scope :=
-        operation.first.primarySource.placement.targetDeclaration.repeatableScope
-      targetPolicy := operation.first.primarySource.placement.targetPolicy
-      parameters := .extremum operation.op
-        (addressedNumberExtremumOperandScaleSummary operation.first
-          operation.rest operation.literal)
+      targetField := operation.target.targetField
+      sourceFields := operation.sourceFields
+      scope := operation.target.targetDeclaration.repeatableScope
+      targetPolicy := operation.target.targetPolicy
+      parameters := .extremum operation.op operation.scaleSummary
         (operation.orderedOperands.map extremumOperandIdentity)
     }
 

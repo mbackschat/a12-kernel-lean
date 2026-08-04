@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.AddressedNumberExtremum
 
 namespace A12Kernel
 
-/-- Every dependency an arithmetic child actually reads retains its direct Number witness, whichever inner position a literal occupies. -/
+/-- Every dependency an arithmetic child actually reads retains its direct Number witness, whichever inner positions its literals occupy. A constant-only child reads nothing, so the claim is vacuous there. -/
 theorem checkedAddressedNumberArithmeticChild_sourceCertified
     (child : CheckedAddressedNumberArithmeticChild model) :
     ∀ source ∈ child.sources,
@@ -18,78 +18,33 @@ theorem checkedAddressedNumberArithmeticChild_sourceCertified
       simp [CheckedAddressedNumberArithmeticChild.sources, source.sourceCertified]
   | literalField _ source =>
       simp [CheckedAddressedNumberArithmeticChild.sources, source.sourceCertified]
+  | literals _ _ => simp [CheckedAddressedNumberArithmeticChild.sources]
 
-/-- Every retained dependency is certified against the one primary source's target, so a literal side cannot introduce a second target. -/
-theorem checkedAddressedNumberArithmeticChild_sourceTargetField
-    (child : CheckedAddressedNumberArithmeticChild model) :
-    ∀ source ∈ child.sources,
-      source.placement.targetField =
-        child.primarySource.placement.targetField := by
-  cases child with
-  | fields pair =>
-      intro source member
-      simp only [CheckedAddressedNumberArithmeticChild.sources,
-        List.mem_cons, List.not_mem_nil, or_false] at member
-      rcases member with rfl | rfl
-      · rfl
-      · exact pair.sameTarget.symm
-  | fieldLiteral source _ =>
-      simp [CheckedAddressedNumberArithmeticChild.sources,
-        CheckedAddressedNumberArithmeticChild.primarySource]
-  | literalField _ source =>
-      simp [CheckedAddressedNumberArithmeticChild.sources,
-        CheckedAddressedNumberArithmeticChild.primarySource]
-
-namespace CheckedAddressedNumberExtremumFieldOperand
-
-/-- Every field dependency behind one bounded outer operand retains its direct Number witness. -/
-theorem sourceCertified
-    (operand : CheckedAddressedNumberExtremumFieldOperand model) :
+/-- Every dependency behind one retained operand keeps its direct Number witness. Literal and constant-only operands contribute none. -/
+theorem checkedAddressedNumberExtremumOperand_sourceCertified
+    (operand : CheckedAddressedNumberExtremumOperand model) :
     ∀ source ∈ operand.sources,
       source.placement.sourceDeclaration.toNumberField? = some source.source := by
   cases operand with
-  | unary _ source =>
-      simp [sources, source.sourceCertified]
+  | field source | abs source =>
+      simp [CheckedAddressedNumberExtremumOperand.sources, source.sourceCertified]
+  | round source _ _ =>
+      simp [CheckedAddressedNumberExtremumOperand.sources, source.sourceCertified]
   | arithmetic _ child =>
-      simpa [sources] using
+      simpa [CheckedAddressedNumberExtremumOperand.sources] using
         checkedAddressedNumberArithmeticChild_sourceCertified child
-
-/-- Both children of an arithmetic operand and the sole child of a unary operand are certified against the operand's one outer target. -/
-theorem sourceTargetField
-    (operand : CheckedAddressedNumberExtremumFieldOperand model) :
-    ∀ source ∈ operand.sources,
-      source.placement.targetField = operand.targetField := by
-  cases operand with
-  | unary _ source =>
-      simp [sources, targetField, primarySource]
-  | arithmetic _ child =>
-      simpa [sources, targetField, primarySource] using
-        checkedAddressedNumberArithmeticChild_sourceTargetField child
-
-/-- No dependency nested inside one bounded outer operand can name that operand's target. -/
-theorem sourceField_ne_targetField
-    (operand : CheckedAddressedNumberExtremumFieldOperand model) :
-    ∀ field ∈ operand.sourceFields, field ≠ operand.targetField := by
-  intro field member
-  simp only [sourceFields, List.mem_map] at member
-  rcases member with ⟨source, sourceMember, rfl⟩
-  intro sourceIsTarget
-  apply source.placement.sourceNotTarget
-  exact sourceIsTarget.trans
-    (operand.sourceTargetField source sourceMember).symm
-
-end CheckedAddressedNumberExtremumFieldOperand
+  | literal _ => simp [CheckedAddressedNumberExtremumOperand.sources]
 
 /-- Every bounded arithmetic node contributes exactly its child's shared scale summary. The operation, not the extremum, owns whether the scale is the maximum or the sum and whether multiplicative-constant capability survives. -/
 theorem checkedAddressedNumberExtremum_arithmeticScaleSummary
     (operation : NumericArithmeticOp)
     (child : CheckedAddressedNumberArithmeticChild model) :
-    CheckedAddressedNumberExtremumFieldOperand.scaleSummary
+    CheckedAddressedNumberExtremumOperand.scaleSummary
         (.arithmetic operation child) =
       child.scaleSummary operation := by
   rfl
 
-/-- Every bounded arithmetic node delegates row-local ordered reads to the shared Number-pair evaluator and supplies only its existing scalar node. -/
+/-- Every bounded arithmetic node delegates row-local ordered reads to its child and supplies only its existing scalar node. -/
 theorem checkedAddressedNumberExtremum_arithmeticEvaluation
     (operation : NumericArithmeticOp)
     (child : CheckedAddressedNumberArithmeticChild model)
@@ -99,69 +54,39 @@ theorem checkedAddressedNumberExtremum_arithmeticEvaluation
       child.evaluateAtPath operation input path := by
   rfl
 
-/-- Addition contributes the maximum child scale: the shared law specialized to the addition node. -/
+/-- Addition over two fields contributes the maximum child scale. -/
 theorem checkedAddressedNumberExtremum_additionScaleSummary
     (pair : CheckedAddressedNumberPair model) :
-    CheckedAddressedNumberExtremumFieldOperand.scaleSummary
+    CheckedAddressedNumberExtremumOperand.scaleSummary
         (.arithmetic .add (.fields pair)) =
       NumericScaleSummary.binary .add (.field pair.left.source.info.scale)
         (.field pair.right.source.info.scale) :=
   checkedAddressedNumberExtremum_arithmeticScaleSummary .add (.fields pair)
 
-/-- Subtraction contributes the maximum child scale: the shared law specialized to the subtraction node. -/
+/-- Subtraction over two fields contributes the maximum child scale. -/
 theorem checkedAddressedNumberExtremum_subtractionScaleSummary
     (pair : CheckedAddressedNumberPair model) :
-    CheckedAddressedNumberExtremumFieldOperand.scaleSummary
+    CheckedAddressedNumberExtremumOperand.scaleSummary
         (.arithmetic .subtract (.fields pair)) =
       NumericScaleSummary.binary .subtract (.field pair.left.source.info.scale)
         (.field pair.right.source.info.scale) :=
   checkedAddressedNumberExtremum_arithmeticScaleSummary .subtract (.fields pair)
 
-/-- Multiplication instead contributes the SUM of its child scales, which is why it cannot ride the additive nodes' maximum contract. -/
+/-- Multiplication over two fields instead SUMS their scales, and with no capable operand the product stays incapable of expansion. -/
 theorem checkedAddressedNumberExtremum_multiplicationScaleSummary
     (pair : CheckedAddressedNumberPair model) :
-    CheckedAddressedNumberExtremumFieldOperand.scaleSummary
+    CheckedAddressedNumberExtremumOperand.scaleSummary
         (.arithmetic .multiply (.fields pair)) =
       { scale := .exact (pair.left.source.info.scale +
           pair.right.source.info.scale), canExpandScale := false } :=
   checkedAddressedNumberExtremum_arithmeticScaleSummary .multiply (.fields pair)
 
-/-- Addition is the shared ordered-pair delegation law specialized to the scalar addition node. -/
-theorem checkedAddressedNumberExtremum_additionEvaluation
-    (pair : CheckedAddressedNumberPair model)
-    (input : CheckedDocument model) (path : List Nat) :
-    (CheckedAddressedNumberExtremumOperand.arithmetic .add (.fields pair)).evaluateAtPath
-        input path =
-      (CheckedAddressedNumberArithmeticChild.fields pair).evaluateAtPath
-        .add input path :=
-  checkedAddressedNumberExtremum_arithmeticEvaluation .add (.fields pair) input path
-
-/-- Subtraction is the shared ordered-pair delegation law specialized to the scalar subtraction node. -/
-theorem checkedAddressedNumberExtremum_subtractionEvaluation
-    (pair : CheckedAddressedNumberPair model)
-    (input : CheckedDocument model) (path : List Nat) :
-    (CheckedAddressedNumberExtremumOperand.arithmetic .subtract
-        (.fields pair)).evaluateAtPath input path =
-      (CheckedAddressedNumberArithmeticChild.fields pair).evaluateAtPath
-        .subtract input path :=
-  checkedAddressedNumberExtremum_arithmeticEvaluation .subtract (.fields pair) input path
-
-/-- Multiplication is the same delegation law specialized to the scalar multiplication node; only the derived scale above distinguishes it. -/
-theorem checkedAddressedNumberExtremum_multiplicationEvaluation
-    (pair : CheckedAddressedNumberPair model)
-    (input : CheckedDocument model) (path : List Nat) :
-    (CheckedAddressedNumberExtremumOperand.arithmetic .multiply
-        (.fields pair)).evaluateAtPath input path =
-      (CheckedAddressedNumberArithmeticChild.fields pair).evaluateAtPath
-        .multiply input path :=
-  checkedAddressedNumberExtremum_arithmeticEvaluation .multiply (.fields pair) input path
-
-/-- A child literal contributes its AUTHORED scale at its authored position, so the same value written with a trailing zero legally changes the target scale. -/
+/-- A child literal contributes its AUTHORED scale at its authored position, so the same value written with a trailing zero legally changes the admitted target scale. -/
 theorem checkedAddressedNumberExtremum_fieldLiteralScaleSummary
     (operation : NumericArithmeticOp)
     (source : CheckedAddressedNumberSource model)
     (decoded : DecodedNumericLiteral) :
-    CheckedAddressedNumberExtremumFieldOperand.scaleSummary
+    CheckedAddressedNumberExtremumOperand.scaleSummary
         (.arithmetic operation (.fieldLiteral source decoded)) =
       NumericScaleSummary.binary operation.scaleBinaryOp
         (.field source.source.info.scale)
@@ -169,12 +94,12 @@ theorem checkedAddressedNumberExtremum_fieldLiteralScaleSummary
   checkedAddressedNumberExtremum_arithmeticScaleSummary operation
     (.fieldLiteral source decoded)
 
-/-- The mirrored inner position keeps the operand scales in authored order. -/
+/-- The mirrored inner position keeps the operand summaries in authored order. -/
 theorem checkedAddressedNumberExtremum_literalFieldScaleSummary
     (operation : NumericArithmeticOp)
     (decoded : DecodedNumericLiteral)
     (source : CheckedAddressedNumberSource model) :
-    CheckedAddressedNumberExtremumFieldOperand.scaleSummary
+    CheckedAddressedNumberExtremumOperand.scaleSummary
         (.arithmetic operation (.literalField decoded source)) =
       NumericScaleSummary.binary operation.scaleBinaryOp
         (NumericScaleSummary.constant decoded.authoredScale)
@@ -182,45 +107,53 @@ theorem checkedAddressedNumberExtremum_literalFieldScaleSummary
   checkedAddressedNumberExtremum_arithmeticScaleSummary operation
     (.literalField decoded source)
 
-/-- A literal-bearing product adds the literal's authored signed scale to its field's scale and RETAINS multiplicative-constant capability, which is what lets the whole list be padded up to a larger declared target scale. -/
+/-- A literal-bearing product adds the literal's authored signed scale to its field's scale and RETAINS multiplicative-constant capability, which is what lets an all-capable list be padded up to a larger declared target scale. -/
 theorem checkedAddressedNumberExtremum_multiplicationLiteralScaleSummary
     (source : CheckedAddressedNumberSource model)
     (decoded : DecodedNumericLiteral) :
-    CheckedAddressedNumberExtremumFieldOperand.scaleSummary
+    CheckedAddressedNumberExtremumOperand.scaleSummary
         (.arithmetic .multiply (.fieldLiteral source decoded)) =
       { scale := .exact (source.source.info.scale + decoded.authoredScale)
         canExpandScale := true } :=
   checkedAddressedNumberExtremum_fieldLiteralScaleSummary .multiply source decoded
 
-/-- Every checked extremum retains every ordered Number-kind witness behind its operand-local tag, one target, and a declared target scale admitted by the shared comparison predicate over its derived summary. -/
+/-- A constant-only child reads no field and stays capability-carrying under every admitted operation, which is why a list built only from such operands is admitted at any declared scale at or above its derived one. -/
+theorem checkedAddressedNumberExtremum_constantOnlyCapable
+    (operation : NumericArithmeticOp)
+    (left right : DecodedNumericLiteral) :
+    (CheckedAddressedNumberExtremumOperand.scaleSummary (model := model)
+        (.arithmetic operation (.literals left right))).canExpandScale = true := by
+  cases operation <;> rfl
+
+/-- No field dependency anywhere in a checked call names that call's own written target. -/
+theorem checkedAddressedNumberExtremum_sourceField_ne_targetField
+    (operation : CheckedAddressedNumberExtremum model) :
+    ∀ field ∈ operation.sourceFields, field ≠ operation.target.targetField := by
+  intro field member
+  simp only [CheckedAddressedNumberExtremum.sourceFields,
+    CheckedAddressedNumberExtremum.orderedOperands, List.mem_flatMap,
+    CheckedAddressedNumberExtremumOperand.sourceFields, List.mem_map] at member
+  rcases member with ⟨operand, operandMember, source, sourceMember, rfl⟩
+  intro sourceIsTarget
+  apply source.placement.sourceNotTarget
+  have shared := operation.sourcesShareTarget source (by
+    simp only [List.mem_flatMap]
+    exact ⟨operand, operandMember, sourceMember⟩)
+  exact sourceIsTarget.trans shared.symm
+
+/-- Every checked extremum retains every ordered Number-kind witness, certifies every dependency against its one target, and declares a target scale admitted by the shared comparison predicate over its derived summary. -/
 theorem checkedAddressedNumberExtremum_sound
     (operation : CheckedAddressedNumberExtremum model) :
-    (∀ source ∈ operation.first.sources,
+    (∀ operand ∈ operation.orderedOperands, ∀ source ∈ operand.sources,
         source.placement.sourceDeclaration.toNumberField? = some source.source) ∧
-      (∀ operand ∈ operation.rest, ∀ source ∈ operand.sources,
-        source.placement.sourceDeclaration.toNumberField? = some source.source) ∧
-      (∀ operand ∈ operation.rest,
-        operation.first.targetField = operand.targetField) ∧
+      (∀ source ∈ operation.orderedOperands.flatMap
+          CheckedAddressedNumberExtremumOperand.sources,
+        source.placement.targetField = operation.target.targetField) ∧
       exactNumericScaleComparisonAllowedWithSuppression false
-        (NumericScaleSummary.field
-          operation.first.primarySource.placement.targetPolicy.info.scale)
-        (addressedNumberExtremumOperandScaleSummary operation.first
-          operation.rest operation.literal) = true := by
-  refine ⟨operation.first.sourceCertified, ?_, operation.restSameTarget,
-    operation.targetAdmitted⟩
+        (NumericScaleSummary.field operation.target.targetPolicy.info.scale)
+        operation.scaleSummary = true := by
+  refine ⟨?_, operation.sourcesShareTarget, operation.targetAdmitted⟩
   intro operand _
-  exact operand.sourceCertified
-
-/-- A retained literal insertion point is always within the complete field-backed list, so ordered reconstruction cannot skip a source or create an unowned placement. -/
-theorem checkedAddressedNumberExtremum_literalPosition
-    (operation : CheckedAddressedNumberExtremum model)
-    (positioned : AddressedNumberExtremumLiteral)
-    (retained : operation.literal = some positioned) :
-    positioned.position ≤ operation.rest.length + 1 := by
-  have within := operation.literalWithinSources
-  change (match operation.literal with
-    | none => True
-    | some literal => literal.position ≤ operation.rest.length + 1) at within
-  simpa [retained] using within
+  exact checkedAddressedNumberExtremumOperand_sourceCertified operand
 
 end A12Kernel

@@ -410,10 +410,9 @@ example :
         [literalOperand (5 / 4) 3, literalOperand 2 0] .minimum with
       | .error .tooManyLiterals => true
       | _ => false) = true ∧
-    (match checkAddressedNumberExtremumOperands listModel ["Probe", "Rows"]
-        listMaximum.id (literalOperand (5 / 4) 3) [] .minimum with
-      | .error .noFieldSource => true
-      | _ => false) = true := by
+    (checkAddressedNumberExtremumOperands listModel ["Probe", "Rows"]
+      listMaximum.id (literalOperand (5 / 4) 3) [] .minimum).toOption.isSome
+      = true := by
   native_decide
 
 /- Field/literal order is retained even though clean extrema commute. Empty Number still contributes zero, a negative literal remains a value, and a reached malformed field still poisons the call on either side of the literal. -/
