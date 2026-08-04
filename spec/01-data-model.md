@@ -127,7 +127,7 @@ A **computation rule** writes a value into a **computed field**. It has:
 Three cross-cutting facts (detailed in [§11](09-computations.md)):
 
 1. **Every computation also generates a validation rule** with one guarded mismatch clause per alternative. With mutually exclusive guards this checks the selected computed result; with overlapping guards a later holding mismatch can fire even though computation itself selected the first operation.
-2. The computed field's declared **scale must equal** the operation's derived scale, or the model is rejected (wrap in a rounding construct to match).
+2. The computed field's declared **scale is admitted by the same predicate as `==`/`!=`**: an equal derived scale always passes, a smaller derived scale passes only while the whole operation retains multiplicative-constant capability, and a larger or unknown derived scale is rejected absent suppression (wrap in a rounding construct to force a scale). Plain equality is the special case that holds once any non-capable field reference enters the operation.
 3. The computed field may appear **neither** in a precondition **nor** in an operation (guarding via its *containing group* is allowed).
 
 ---
