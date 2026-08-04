@@ -52,7 +52,7 @@ The thin lanes in priority order are SG4 computation scheduling and state transi
 ## Immediate sequence
 
 1. **The reference channel's next slice is the older non-model-indexed `numeric` leaf**, which can reuse the same declaration sieve the `flat` leaf now uses, since neither fragment carries a starred operand. It is a classification against the existing shared coordinate rule rather than new architecture. [`SG10`](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration) owns the remaining obligations and their triggers, including the unstarred group operand that is refused and has no witness in the reused model.
-2. The remaining unblocked uniqueness work is the date-like overloads under SG8; it is small and needs no new measurement route.
+2. The date-like uniqueness overloads are now source-settled and are the next semantic unit: kernel source compares every non-Number declared kind by its **stored XML text**, so they are the existing token domain over stored payload rather than a new `ValueListKind` or a calendar identity. The work is admitting temporal declarations into the token entity list and reading stored text instead of the normalized String; [`SG7`](SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion) owns the account and its explicit measurement gap.
 3. Opening SG4 requires its own audit packet and consumer hypothesis; it is the largest available semantic payoff and the thinnest lane.
 
 ## Parked boundaries
