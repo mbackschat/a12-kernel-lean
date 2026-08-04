@@ -76,14 +76,13 @@ theorem sourceField_ne_targetField
 
 end CheckedAddressedNumberExtremumFieldOperand
 
-/-- Every bounded arithmetic node contributes exactly the shared direct-field result scale of its operation over its two Number children. The operation, not the extremum, owns whether that is the maximum or the sum. -/
-theorem checkedAddressedNumberExtremum_arithmeticResultScale
+/-- Every bounded arithmetic node contributes exactly its child's shared scale summary. The operation, not the extremum, owns whether the scale is the maximum or the sum and whether multiplicative-constant capability survives. -/
+theorem checkedAddressedNumberExtremum_arithmeticScaleSummary
     (operation : NumericArithmeticOp)
     (child : CheckedAddressedNumberArithmeticChild model) :
-    CheckedAddressedNumberExtremumFieldOperand.resultScale
+    CheckedAddressedNumberExtremumFieldOperand.scaleSummary
         (.arithmetic operation child) =
-      operation.directFieldResultScale child.operandScales.1
-        child.operandScales.2 := by
+      child.scaleSummary operation := by
   rfl
 
 /-- Every bounded arithmetic node delegates row-local ordered reads to the shared Number-pair evaluator and supplies only its existing scalar node. -/
@@ -97,28 +96,31 @@ theorem checkedAddressedNumberExtremum_arithmeticEvaluation
   rfl
 
 /-- Addition contributes the maximum child scale: the shared law specialized to the addition node. -/
-theorem checkedAddressedNumberExtremum_additionResultScale
+theorem checkedAddressedNumberExtremum_additionScaleSummary
     (pair : CheckedAddressedNumberPair model) :
-    CheckedAddressedNumberExtremumFieldOperand.resultScale
+    CheckedAddressedNumberExtremumFieldOperand.scaleSummary
         (.arithmetic .add (.fields pair)) =
-      max pair.left.source.info.scale pair.right.source.info.scale :=
-  checkedAddressedNumberExtremum_arithmeticResultScale .add (.fields pair)
+      NumericScaleSummary.binary .add (.field pair.left.source.info.scale)
+        (.field pair.right.source.info.scale) :=
+  checkedAddressedNumberExtremum_arithmeticScaleSummary .add (.fields pair)
 
 /-- Subtraction contributes the maximum child scale: the shared law specialized to the subtraction node. -/
-theorem checkedAddressedNumberExtremum_subtractionResultScale
+theorem checkedAddressedNumberExtremum_subtractionScaleSummary
     (pair : CheckedAddressedNumberPair model) :
-    CheckedAddressedNumberExtremumFieldOperand.resultScale
+    CheckedAddressedNumberExtremumFieldOperand.scaleSummary
         (.arithmetic .subtract (.fields pair)) =
-      max pair.left.source.info.scale pair.right.source.info.scale :=
-  checkedAddressedNumberExtremum_arithmeticResultScale .subtract (.fields pair)
+      NumericScaleSummary.binary .subtract (.field pair.left.source.info.scale)
+        (.field pair.right.source.info.scale) :=
+  checkedAddressedNumberExtremum_arithmeticScaleSummary .subtract (.fields pair)
 
 /-- Multiplication instead contributes the SUM of its child scales, which is why it cannot ride the additive nodes' maximum contract. -/
-theorem checkedAddressedNumberExtremum_multiplicationResultScale
+theorem checkedAddressedNumberExtremum_multiplicationScaleSummary
     (pair : CheckedAddressedNumberPair model) :
-    CheckedAddressedNumberExtremumFieldOperand.resultScale
+    CheckedAddressedNumberExtremumFieldOperand.scaleSummary
         (.arithmetic .multiply (.fields pair)) =
-      pair.left.source.info.scale + pair.right.source.info.scale :=
-  checkedAddressedNumberExtremum_arithmeticResultScale .multiply (.fields pair)
+      { scale := .exact (pair.left.source.info.scale +
+          pair.right.source.info.scale), canExpandScale := false } :=
+  checkedAddressedNumberExtremum_arithmeticScaleSummary .multiply (.fields pair)
 
 /-- Addition is the shared ordered-pair delegation law specialized to the scalar addition node. -/
 theorem checkedAddressedNumberExtremum_additionEvaluation
@@ -151,39 +153,42 @@ theorem checkedAddressedNumberExtremum_multiplicationEvaluation
   checkedAddressedNumberExtremum_arithmeticEvaluation .multiply (.fields pair) input path
 
 /-- A child literal contributes its AUTHORED scale at its authored position, so the same value written with a trailing zero legally changes the target scale. -/
-theorem checkedAddressedNumberExtremum_fieldLiteralResultScale
+theorem checkedAddressedNumberExtremum_fieldLiteralScaleSummary
     (operation : NumericArithmeticOp)
     (source : CheckedAddressedNumberSource model)
     (decoded : DecodedNumericLiteral) :
-    CheckedAddressedNumberExtremumFieldOperand.resultScale
+    CheckedAddressedNumberExtremumFieldOperand.scaleSummary
         (.arithmetic operation (.fieldLiteral source decoded)) =
-      operation.directFieldResultScale source.source.info.scale
-        decoded.authoredScale.toNat :=
-  checkedAddressedNumberExtremum_arithmeticResultScale operation
+      NumericScaleSummary.binary operation.scaleBinaryOp
+        (.field source.source.info.scale)
+        (NumericScaleSummary.constant decoded.authoredScale) :=
+  checkedAddressedNumberExtremum_arithmeticScaleSummary operation
     (.fieldLiteral source decoded)
 
 /-- The mirrored inner position keeps the operand scales in authored order. -/
-theorem checkedAddressedNumberExtremum_literalFieldResultScale
+theorem checkedAddressedNumberExtremum_literalFieldScaleSummary
     (operation : NumericArithmeticOp)
     (decoded : DecodedNumericLiteral)
     (source : CheckedAddressedNumberSource model) :
-    CheckedAddressedNumberExtremumFieldOperand.resultScale
+    CheckedAddressedNumberExtremumFieldOperand.scaleSummary
         (.arithmetic operation (.literalField decoded source)) =
-      operation.directFieldResultScale decoded.authoredScale.toNat
-        source.source.info.scale :=
-  checkedAddressedNumberExtremum_arithmeticResultScale operation
+      NumericScaleSummary.binary operation.scaleBinaryOp
+        (NumericScaleSummary.constant decoded.authoredScale)
+        (.field source.source.info.scale) :=
+  checkedAddressedNumberExtremum_arithmeticScaleSummary operation
     (.literalField decoded source)
 
-/-- A literal-bearing product adds the literal's authored scale to its field's scale; this is the exact contract the real kernel gate measures. -/
-theorem checkedAddressedNumberExtremum_multiplicationLiteralResultScale
+/-- A literal-bearing product adds the literal's authored signed scale to its field's scale and RETAINS multiplicative-constant capability, which is what lets the whole list be padded up to a larger declared target scale. -/
+theorem checkedAddressedNumberExtremum_multiplicationLiteralScaleSummary
     (source : CheckedAddressedNumberSource model)
     (decoded : DecodedNumericLiteral) :
-    CheckedAddressedNumberExtremumFieldOperand.resultScale
+    CheckedAddressedNumberExtremumFieldOperand.scaleSummary
         (.arithmetic .multiply (.fieldLiteral source decoded)) =
-      source.source.info.scale + decoded.authoredScale.toNat :=
-  checkedAddressedNumberExtremum_fieldLiteralResultScale .multiply source decoded
+      { scale := .exact (source.source.info.scale + decoded.authoredScale)
+        canExpandScale := true } :=
+  checkedAddressedNumberExtremum_fieldLiteralScaleSummary .multiply source decoded
 
-/-- Every checked extremum retains every ordered Number-kind witness behind its operand-local tag, one target, and the maximum transformed-source/literal operand scale as its exact target scale. -/
+/-- Every checked extremum retains every ordered Number-kind witness behind its operand-local tag, one target, and a declared target scale admitted by the shared comparison predicate over its derived summary. -/
 theorem checkedAddressedNumberExtremum_sound
     (operation : CheckedAddressedNumberExtremum model) :
     (∀ source ∈ operation.first.sources,
@@ -192,11 +197,13 @@ theorem checkedAddressedNumberExtremum_sound
         source.placement.sourceDeclaration.toNumberField? = some source.source) ∧
       (∀ operand ∈ operation.rest,
         operation.first.targetField = operand.targetField) ∧
-      operation.first.primarySource.placement.targetPolicy.info.scale =
-        addressedNumberExtremumOperandResultScale operation.first
-          operation.rest operation.literal := by
+      exactNumericScaleComparisonAllowedWithSuppression false
+        (NumericScaleSummary.field
+          operation.first.primarySource.placement.targetPolicy.info.scale)
+        (addressedNumberExtremumOperandScaleSummary operation.first
+          operation.rest operation.literal) = true := by
   refine ⟨operation.first.sourceCertified, ?_, operation.restSameTarget,
-    operation.sameScale⟩
+    operation.targetAdmitted⟩
   intro operand _
   exact operand.sourceCertified
 

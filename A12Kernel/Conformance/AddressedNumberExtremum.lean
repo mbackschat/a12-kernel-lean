@@ -108,7 +108,8 @@ example :
     (operation? maximum .maximum).isSome = true ∧
     (match checkAddressedNumberExtremum model ["Probe", "Rows"]
         wrongScale.id (bare "A") (bare "B") .minimum with
-      | .error (.scaleMismatch 0 2) => true
+      | .error (.scaleMismatch 0 summary) =>
+          summary.scale == ScaleInfo.exact 2
       | _ => false) = true := by
   native_decide
 
@@ -278,7 +279,8 @@ example :
     (match checkAddressedNumberExtremumList listModel ["Probe", "Rows"]
         listWrongScale.id (bare "ListA") [(bare "ListB"), (bare "ListC")]
         .minimum with
-      | .error (.scaleMismatch 2 3) => true
+      | .error (.scaleMismatch 2 summary) =>
+          summary.scale == ScaleInfo.exact 3
       | _ => false) = true := by
   native_decide
 
@@ -400,7 +402,8 @@ example :
     (match checkAddressedNumberExtremumOperands listModel ["Probe", "Rows"]
         listWrongScale.id (fieldOperand "ListA")
         [literalOperand (5 / 4) 3] .minimum with
-      | .error (.scaleMismatch 2 3) => true
+      | .error (.scaleMismatch 2 summary) =>
+          summary.scale == ScaleInfo.exact 3
       | _ => false) = true ∧
     (match checkAddressedNumberExtremumOperands listModel ["Probe", "Rows"]
         listMaximum.id (fieldOperand "ListA")
@@ -493,7 +496,8 @@ example :
     (match checkAddressedNumberExtremumOperands listModel ["Probe", "Rows"]
         listSingleTarget.id (absOperand "ListB")
         [fieldOperand "ListA"] .minimum with
-      | .error (.scaleMismatch 0 2) => true
+      | .error (.scaleMismatch 0 summary) =>
+          summary.scale == ScaleInfo.exact 2
       | _ => false) = true := by
   native_decide
 
@@ -583,7 +587,8 @@ example :
         listWrongScale.id
         (roundOperand "ListRoundSource" .floor roundPlaces1)
         [fieldOperand "ListA"] .minimum with
-      | .error (.scaleMismatch 2 1) => true
+      | .error (.scaleMismatch 2 summary) =>
+          summary.scale == ScaleInfo.exact 1
       | _ => false) = true := by
   native_decide
 

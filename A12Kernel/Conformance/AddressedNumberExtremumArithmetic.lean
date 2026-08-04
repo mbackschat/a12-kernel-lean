@@ -33,9 +33,11 @@ private def cappedPrecise : FlatFieldDecl := {
   numericTargetConstraints := { maximum := some (9999 / 1000) }
 }
 
+private def zeroScale := number 9 "ZeroScale" 0
+
 private def model : FlatModel := {
   fields := [left, right, direct, target, preciseTarget, wrongScale,
-    widePrecision, cappedPrecise]
+    widePrecision, cappedPrecise, zeroScale]
   repeatableGroups := [{
     level := 10
     path := ["Probe", "Rows"]
@@ -171,7 +173,8 @@ example :
       [field "C", literal (5 / 4) 3]).isSome = true ∧
     (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
         wrongScale.id (addition "A" "B") [field "C"] .minimum with
-      | .error (.scaleMismatch 1 2) => true
+      | .error (.scaleMismatch 1 summary) =>
+          summary.scale == ScaleInfo.exact 2
       | _ => false) = true ∧
     (operation? target (addition "Target" "A") [field "C"]).isNone = true := by
   native_decide
@@ -203,7 +206,8 @@ example :
       [field "C", literal (5 / 4) 3]).isSome = true ∧
     (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
         wrongScale.id (subtraction "A" "B") [field "C"] .minimum with
-      | .error (.scaleMismatch 1 2) => true
+      | .error (.scaleMismatch 1 summary) =>
+          summary.scale == ScaleInfo.exact 2
       | _ => false) = true ∧
     (operation? target (subtraction "Target" "A") [field "C"]).isNone = true := by
   native_decide
@@ -235,11 +239,13 @@ example :
       [field "C", literal (5 / 4) 4]).isSome = true ∧
     (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
         target.id (multiplication "A" "B") [field "C"] .minimum with
-      | .error (.scaleMismatch 2 3) => true
+      | .error (.scaleMismatch 2 summary) =>
+          summary.scale == ScaleInfo.exact 3
       | _ => false) = true ∧
     (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
         widePrecision.id (multiplication "A" "B") [field "C"] .minimum with
-      | .error (.scaleMismatch 4 3) => true
+      | .error (.scaleMismatch 4 summary) =>
+          summary.scale == ScaleInfo.exact 3
       | _ => false) = true ∧
     (operation? preciseTarget (multiplication "PreciseTarget" "A")
       [field "C"]).isNone = true := by
@@ -284,13 +290,14 @@ example :
     (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
         preciseTarget.id (arith .multiply (fld "A") (lit (3 / 2) 2))
         [field "C"] .minimum with
-      | .error (.scaleMismatch 3 4) => true
+      | .error (.scaleMismatch 3 summary) =>
+          summary.scale == ScaleInfo.exact 4
       | _ => false) = true ∧
     (operation? target (arith .add (fld "A") (lit (3 / 2) 1))
       [field "C"]).isSome = true := by
   native_decide
 
-/- The child's literal does not consume the outer list's one-literal budget, and that outer budget stays exactly one. A child of two literals and a negative authored inner scale both fail closed: the kernel admits the constant-only child, but this Lean fragment does not model it. -/
+/- The child's literal does not consume the outer list's one-literal budget, and that outer budget stays exactly one. A child of two literals fails closed: the kernel admits it, but no source in this fragment could then own the target placement. -/
 example :
     (operation? preciseTarget (arith .multiply (fld "A") (lit (3 / 2) 1))
       [field "C", literal 2 0]).isSome = true ∧
@@ -303,11 +310,6 @@ example :
         target.id (arith .multiply (lit (3 / 2) 1) (lit 2 0))
         [field "C"] .minimum with
       | .error (.constantOnlyArithmetic 1) => true
-      | _ => false) = true ∧
-    (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
-        target.id (arith .multiply (fld "A") (lit (3 / 2) (-1)))
-        [field "C"] .minimum with
-      | .error (.negativeLiteralScale 1 (-1)) => true
       | _ => false) = true := by
   native_decide
 
@@ -333,6 +335,26 @@ example :
     (outcomesInto? target .minimum (arith .subtract (lit (3 / 2) 1) (fld "A"))
       [field "C"] >>= List.head?) =
       some (addr target.id 1, .accepted (stored (-75) 2)) := by
+  native_decide
+
+/- Target admission is the `==`/`!=` comparison predicate, not scale equality. An integer literal strips trailing zeros to a negative authored scale, so `[A] * 100` derives scale 0 while retaining multiplicative-constant capability through multiplication; that capable expression is admitted at its exact scale AND padded up to any larger declared scale. -/
+example :
+    (operation? zeroScale (arith .multiply (fld "A") (lit 100 (-2))) []).isSome = true ∧
+    (operation? target (arith .multiply (fld "A") (lit 100 (-2))) []).isSome = true ∧
+    (operation? widePrecision (arith .multiply (fld "A") (lit 100 (-2)))
+      []).isSome = true := by
+  native_decide
+
+/- Padding is directional and capability is lost to any non-capable operand: a capable larger derived scale is still rejected at a smaller target, and one bare field operand collapses the list back to exact equality. -/
+example :
+    (operation? zeroScale (arith .multiply (fld "A") (lit (3 / 2) 2))
+      []).isNone = true ∧
+    (operation? target (arith .multiply (fld "A") (lit 100 (-2)))
+      [field "C"]).isSome = true ∧
+    (operation? widePrecision (arith .multiply (fld "A") (lit 100 (-2)))
+      [field "C"]).isNone = true ∧
+    (operation? zeroScale (arith .multiply (fld "A") (lit 100 (-2)))
+      [field "C"]).isNone = true := by
   native_decide
 
 private inductive InnerShape where

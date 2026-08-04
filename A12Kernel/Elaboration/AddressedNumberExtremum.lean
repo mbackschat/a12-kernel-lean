@@ -25,6 +25,16 @@ inductive SurfaceAddressedNumberExtremumOperand where
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
 
+namespace NumericArithmeticOp
+
+/-- View one arithmetic node through the shared static scale algebra. -/
+def scaleBinaryOp : NumericArithmeticOp → NumericScaleBinaryOp
+  | .add => .add
+  | .subtract => .subtract
+  | .multiply => .multiply
+
+end NumericArithmeticOp
+
 /-- One retained arithmetic child of an extremum operand. Every admitted form keeps at least one certified Number source, whose placement owns the outer operand's target iteration; a constant-only child is authorable in the kernel but outside this fragment. -/
 inductive CheckedAddressedNumberArithmeticChild (model : FlatModel) where
   | fields (pair : CheckedAddressedNumberPair model)
@@ -49,14 +59,23 @@ def sources : CheckedAddressedNumberArithmeticChild model →
   | .fieldLiteral source _ => [source]
   | .literalField _ source => [source]
 
-/-- The two operand scales in authored order, fed to the operation's own derived-scale rule. A literal contributes its authored scale, so the same value written `1.5` or `1.50` changes the derived scale. -/
-def operandScales : CheckedAddressedNumberArithmeticChild model → Nat × Nat
+/-- The two operand summaries in authored order. A field contributes its declared nonnegative scale without multiplicative-constant capability; a literal contributes its authored signed scale — negative once an integer literal strips trailing zeros — together with that capability. -/
+def operandSummaries : CheckedAddressedNumberArithmeticChild model →
+    NumericScaleSummary × NumericScaleSummary
   | .fields pair =>
-      (pair.left.source.info.scale, pair.right.source.info.scale)
+      (.field pair.left.source.info.scale, .field pair.right.source.info.scale)
   | .fieldLiteral source decoded =>
-      (source.source.info.scale, decoded.authoredScale.toNat)
+      (.field source.source.info.scale,
+        NumericScaleSummary.constant decoded.authoredScale)
   | .literalField decoded source =>
-      (decoded.authoredScale.toNat, source.source.info.scale)
+      (NumericScaleSummary.constant decoded.authoredScale,
+        .field source.source.info.scale)
+
+/-- The child's derived summary through the shared scale algebra: the additive nodes take the maximum scale and require both operands to be capable, while multiplication adds scales and keeps capability from either operand. -/
+def scaleSummary (child : CheckedAddressedNumberArithmeticChild model)
+    (operation : NumericArithmeticOp) : NumericScaleSummary :=
+  let operands := child.operandSummaries
+  NumericScaleSummary.binary operation.scaleBinaryOp operands.1 operands.2
 
 end CheckedAddressedNumberArithmeticChild
 
@@ -116,11 +135,10 @@ inductive AddressedNumberExtremumElabError where
   | source (position : Nat) (cause : AddressedNumberSourceElabError)
   | pair (position : Nat) (cause : AddressedNumberPairElabError)
   | constantOnlyArithmetic (position : Nat)
-  | negativeLiteralScale (position : Nat) (authored : Int)
   | tooManyLiterals
   | noFieldSource
   | incoherentTarget
-  | scaleMismatch (target result : Nat)
+  | scaleMismatch (target : Nat) (result : NumericScaleSummary)
   deriving Repr, DecidableEq
 
 private structure CheckedAddressedNumberExtremumScan (model : FlatModel) where
@@ -144,13 +162,6 @@ private def checkNumberSourceOperand
       |>.mapError (.source position)
   pure (.source (.unary operation numberSource))
 
-/-- A child literal must carry a nonnegative authored scale: a negative one would lower a product's derived scale, and no current observation covers that shape. -/
-private def checkArithmeticLiteral (position : Nat)
-    (decoded : DecodedNumericLiteral) :
-    Except AddressedNumberExtremumElabError DecodedNumericLiteral :=
-  if 0 ≤ decoded.authoredScale then pure decoded
-  else throw (.negativeLiteralScale position decoded.authoredScale)
-
 private def checkNumberArithmeticOperand
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (position : Nat) (operation : NumericArithmeticOp) :
@@ -164,17 +175,15 @@ private def checkNumberArithmeticOperand
           |>.mapError (.pair position)
       pure (.source (.arithmetic operation (.fields pair)))
   | .field left, .literal decoded => do
-      let checkedLiteral ← checkArithmeticLiteral position decoded
       let source ←
         checkAddressedNumberSource model declaringGroup targetField left
           |>.mapError (.source position)
-      pure (.source (.arithmetic operation (.fieldLiteral source checkedLiteral)))
+      pure (.source (.arithmetic operation (.fieldLiteral source decoded)))
   | .literal decoded, .field right => do
-      let checkedLiteral ← checkArithmeticLiteral position decoded
       let source ←
         checkAddressedNumberSource model declaringGroup targetField right
           |>.mapError (.source position)
-      pure (.source (.arithmetic operation (.literalField checkedLiteral source)))
+      pure (.source (.arithmetic operation (.literalField decoded source)))
   | .literal _, .literal _ => throw (.constantOnlyArithmetic position)
 
 private def checkNumberOperand
@@ -242,32 +251,34 @@ private def checkNumberOperands
               literalWithinSources := Nat.zero_le _
             }
 
-/-- The static result scale contributed by one field-backed operand after its local wrapper. -/
-def CheckedAddressedNumberExtremumFieldOperand.resultScale
-    (source : CheckedAddressedNumberExtremumFieldOperand model) : Nat :=
+/-- The static scale summary contributed by one field-backed operand after its local wrapper. A direct or `Abs` source keeps its declared scale, explicit rounding replaces it with the authored places, and both remain incapable of trailing-zero expansion. -/
+def CheckedAddressedNumberExtremumFieldOperand.scaleSummary
+    (source : CheckedAddressedNumberExtremumFieldOperand model) :
+    NumericScaleSummary :=
   match source with
   | .unary .direct numberSource
-  | .unary .abs numberSource => numberSource.source.info.scale
-  | .unary (.round _ places) _ => places.val
-  | .arithmetic operation child =>
-      operation.directFieldResultScale child.operandScales.1
-        child.operandScales.2
+  | .unary .abs numberSource => .field numberSource.source.info.scale
+  | .unary (.round _ places) _ => .rounded places.val
+  | .arithmetic operation child => child.scaleSummary operation
 
-def addressedNumberExtremumResultScale
+def addressedNumberExtremumScaleSummary
     (first : CheckedAddressedNumberExtremumFieldOperand model)
-    (rest : List (CheckedAddressedNumberExtremumFieldOperand model)) : Nat :=
-  rest.foldl (fun scale source => max scale source.resultScale)
-    first.resultScale
+    (rest : List (CheckedAddressedNumberExtremumFieldOperand model)) :
+    NumericScaleSummary :=
+  rest.foldl (fun summary source => summary.union source.scaleSummary)
+    first.scaleSummary
 
-/-- Include the one retained literal's syntax-derived signed scale. A field-backed source is always present with nonnegative scale, so negative literal scales cannot raise the resulting natural target scale. -/
-def addressedNumberExtremumOperandResultScale
+/-- Fold the one retained outer literal into the list summary. The union takes the larger scale and keeps capability only when every operand carries it, so a single bare field or wrapper operand makes the whole list incapable. -/
+def addressedNumberExtremumOperandScaleSummary
     (first : CheckedAddressedNumberExtremumFieldOperand model)
     (rest : List (CheckedAddressedNumberExtremumFieldOperand model))
-    (literal : Option AddressedNumberExtremumLiteral) : Nat :=
-  let fieldScale := addressedNumberExtremumResultScale first rest
+    (literal : Option AddressedNumberExtremumLiteral) : NumericScaleSummary :=
+  let fields := addressedNumberExtremumScaleSummary first rest
   match literal with
-  | none => fieldScale
-  | some positioned => max fieldScale positioned.decoded.authoredScale.toNat
+  | none => fields
+  | some positioned =>
+      fields.union (NumericScaleSummary.constant
+        positioned.decoded.authoredScale)
 
 structure CheckedAddressedNumberExtremum (model : FlatModel) where
   private mk ::
@@ -279,9 +290,12 @@ structure CheckedAddressedNumberExtremum (model : FlatModel) where
     ∀ source ∈ rest,
       first.targetField = source.targetField
   op : NumericExtremumOp
-  sameScale :
-    first.primarySource.placement.targetPolicy.info.scale =
-      addressedNumberExtremumOperandResultScale first rest literal
+  /-- Target admission is the shared `==`/`!=` scale predicate, not equality: an equal derived scale passes, and a smaller derived scale passes only while the whole list retains multiplicative-constant capability. -/
+  targetAdmitted :
+    exactNumericScaleComparisonAllowedWithSuppression false
+        (NumericScaleSummary.field
+          first.primarySource.placement.targetPolicy.info.scale)
+        (addressedNumberExtremumOperandScaleSummary first rest literal) = true
 
 /-- Validate the bounded ordered operand list, retaining at most one literal and requiring one field-backed source to own the exact addressed placement. -/
 def checkAddressedNumberExtremumOperands
@@ -298,10 +312,12 @@ def checkAddressedNumberExtremumOperands
   | first :: rest =>
     if hTargets : ∀ source ∈ rest,
         first.targetField = source.targetField then
-      let resultScale := addressedNumberExtremumOperandResultScale
+      let summary := addressedNumberExtremumOperandScaleSummary
         first rest scan.literal
-      if hScale : first.primarySource.placement.targetPolicy.info.scale =
-          resultScale then
+      if hScale : exactNumericScaleComparisonAllowedWithSuppression false
+          (NumericScaleSummary.field
+            first.primarySource.placement.targetPolicy.info.scale)
+          summary = true then
         have literalWithin :
             literalPositionWithin scan.literal (rest.length + 1) := by
           simpa [hSources] using scan.literalWithinSources
@@ -312,11 +328,11 @@ def checkAddressedNumberExtremumOperands
           literalWithinSources := literalWithin
           restSameTarget := hTargets
           op
-          sameScale := hScale
+          targetAdmitted := hScale
         }
       else
-        throw (.scaleMismatch first.primarySource.placement.targetPolicy.info.scale
-          resultScale)
+        throw (.scaleMismatch
+          first.primarySource.placement.targetPolicy.info.scale summary)
     else
       throw .incoherentTarget
 

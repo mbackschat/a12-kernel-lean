@@ -72,6 +72,12 @@ theorem matchingFingerprint_preservesParameters
     (matchingFingerprint_some_iff before after view).mp matched
   rw [exactView.1, exactView.2]
 
+/-- The admitted identity Transform preserves the complete Analyze fingerprint universally, so no individual probe case needs to recheck it: target, sources, scope, target policy, and every operation parameter including the derived scale summary and ordered operand identities are retained. -/
+theorem identityTransform_analyze
+    (leaf : CheckedAddressedNumericOperation model) :
+    leaf.identityTransform.analyze = leaf.analyze := by
+  rfl
+
 /-- The admitted identity Transform preserves every addressed rich outcome for every checked document. -/
 theorem identityTransform_execute
     (leaf : CheckedAddressedNumericOperation model)

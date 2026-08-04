@@ -172,7 +172,7 @@ private def extremumMultiplication (left right : String) :
     SurfaceAddressedNumberExtremumOperand :=
   .arithmetic .multiply (.field (bare left)) (.field (bare right))
 
-/-- One product whose right operand is an immediate literal carrying its own authored scale. -/
+/-- One product whose right operand is an immediate literal carrying its own authored scale. Identity-Transform preservation is not rechecked per case: `identityTransform_analyze` owns it universally. -/
 private def extremumMultiplicationLiteral (left : String)
     (value : Rat) (authoredScale : Int) :
     SurfaceAddressedNumberExtremumOperand :=
@@ -220,11 +220,6 @@ private def fingerprintMatch?
   let before ← before
   let after ← after
   before.matchingFingerprint? after
-
-private def identityTransformed?
-    (leaf : Option (CheckedAddressedNumericOperation model)) :
-    Option (CheckedAddressedNumericOperation model) :=
-  leaf.map (·.identityTransform)
 
 private def targetPolicy?
     (leaf : Option (CheckedAddressedNumericOperation model)) :
@@ -306,7 +301,7 @@ example :
         targetField := sameScaleTarget.id
         sourceFields := [amount.id]
         scope := [10]
-        parameters := .extremum .minimum 2 [.field amount.id]
+        parameters := .extremum .minimum { scale := .exact 2, canExpandScale := false } [.field amount.id]
       } ∧
     analyzed? (extremumLeaf? .maximum extremumTarget "Selected"
         ["Amount", "Precise"]) =
@@ -314,7 +309,8 @@ example :
         targetField := extremumTarget.id
         sourceFields := [selected.id, amount.id, precise.id]
         scope := [10]
-        parameters := .extremum .maximum 3
+        parameters := .extremum .maximum
+          { scale := .exact 3, canExpandScale := false }
           [.field selected.id, .field amount.id, .field precise.id]
       } := by
   native_decide
@@ -327,7 +323,8 @@ example :
         targetField := extremumTarget.id
         sourceFields := [selected.id]
         scope := [10]
-        parameters := .extremum .minimum 3
+        parameters := .extremum .minimum
+          { scale := .exact 3, canExpandScale := false }
           [.field selected.id,
             .literal { value := 5 / 4, authoredScale := 3 }]
       } ∧
@@ -337,7 +334,8 @@ example :
         targetField := extremumTarget.id
         sourceFields := [selected.id]
         scope := [10]
-        parameters := .extremum .minimum 3
+        parameters := .extremum .minimum
+          { scale := .exact 3, canExpandScale := false }
           [.literal { value := 5 / 4, authoredScale := 3 },
             .field selected.id]
       } ∧
@@ -348,7 +346,8 @@ example :
         targetField := extremumTarget.id
         sourceFields := [selected.id, amount.id]
         scope := [10]
-        parameters := .extremum .maximum 3
+        parameters := .extremum .maximum
+          { scale := .exact 3, canExpandScale := false }
           [.field selected.id, .field amount.id,
             .literal { value := -5 / 4, authoredScale := 3 }]
       } ∧
@@ -359,7 +358,8 @@ example :
         targetField := extremumTarget.id
         sourceFields := [selected.id, amount.id]
         scope := [10]
-        parameters := .extremum .maximum 3
+        parameters := .extremum .maximum
+          { scale := .exact 3, canExpandScale := false }
           [.field selected.id,
             .literal { value := -5 / 4, authoredScale := 3 },
             .field amount.id]
@@ -374,7 +374,8 @@ example :
         targetField := sameScaleTarget.id
         sourceFields := [amount.id, selected.id]
         scope := [10]
-        parameters := .extremum .minimum 2
+        parameters := .extremum .minimum
+          { scale := .exact 2, canExpandScale := false }
           [.abs amount.id, .field selected.id]
       } ∧
     fingerprintMatch?
@@ -393,7 +394,8 @@ example :
         targetField := rounded1.id
         sourceFields := [amount.id, selected.id]
         scope := [10]
-        parameters := .extremum .minimum 1
+        parameters := .extremum .minimum
+          { scale := .exact 1, canExpandScale := false }
           [.round amount.id .floor 1, .field selected.id]
       } ∧
     fingerprintMatch?
@@ -421,7 +423,8 @@ example :
         targetField := sameScaleTarget.id
         sourceFields := [amount.id, selected.id, converted.id]
         scope := [10]
-        parameters := .extremum .minimum 2
+        parameters := .extremum .minimum
+          { scale := .exact 2, canExpandScale := false }
           [.arithmetic .add (.field amount.id) (.field selected.id), .field converted.id]
       } ∧
     fingerprintMatch?
@@ -437,27 +440,7 @@ example :
         [extremumField "Converted"])
       (literalExtremumLeaf? .minimum sameScaleTarget
         (extremumField "Converted")
-        [extremumAddition "Amount" "Selected"]) = none ∧
-    fingerprintMatch?
-      (literalExtremumLeaf? .minimum sameScaleTarget
-        (extremumAddition "Amount" "Selected")
-        [extremumField "Converted"])
-      (literalExtremumLeaf? .minimum sameScaleTarget
-        (extremumField "Amount") [extremumField "Converted"]) = none := by
-  native_decide
-
-/- The sole admitted identity Transform preserves the complete nested addition fingerprint, including both inner reads, their order, outer position, and derived scale. -/
-example :
-    analyzed? (identityTransformed? (literalExtremumLeaf? .minimum
-      sameScaleTarget (extremumAddition "Amount" "Selected")
-      [extremumField "Converted"])) =
-      some {
-        targetField := sameScaleTarget.id
-        sourceFields := [amount.id, selected.id, converted.id]
-        scope := [10]
-        parameters := .extremum .minimum 2
-          [.arithmetic .add (.field amount.id) (.field selected.id), .field converted.id]
-      } := by
+        [extremumAddition "Amount" "Selected"]) = none := by
   native_decide
 
 /- Analyze and identity Transform retain subtraction as distinct from addition while preserving both ordered dependencies, outer position, and derived scale. -/
@@ -469,7 +452,8 @@ example :
         targetField := sameScaleTarget.id
         sourceFields := [amount.id, selected.id, converted.id]
         scope := [10]
-        parameters := .extremum .minimum 2
+        parameters := .extremum .minimum
+          { scale := .exact 2, canExpandScale := false }
           [.arithmetic .subtract (.field amount.id) (.field selected.id), .field converted.id]
       } ∧
     fingerprintMatch?
@@ -478,17 +462,7 @@ example :
         [extremumField "Converted"])
       (literalExtremumLeaf? .minimum sameScaleTarget
         (extremumAddition "Amount" "Selected")
-        [extremumField "Converted"]) = none ∧
-    analyzed? (identityTransformed? (literalExtremumLeaf? .minimum
-      sameScaleTarget (extremumSubtraction "Amount" "Selected")
-      [extremumField "Converted"])) =
-      some {
-        targetField := sameScaleTarget.id
-        sourceFields := [amount.id, selected.id, converted.id]
-        scope := [10]
-        parameters := .extremum .minimum 2
-          [.arithmetic .subtract (.field amount.id) (.field selected.id), .field converted.id]
-      } := by
+        [extremumField "Converted"]) = none := by
   native_decide
 
 /- Multiplication is the separator that operation identity alone must carry: over a scale-2 and a scale-0 source it derives the same outer scale 2 as addition, so an account that kept only dependencies, order, and derived scale would conflate the two. Identity Transform preserves the product node exactly. -/
@@ -500,7 +474,8 @@ example :
         targetField := sameScaleTarget.id
         sourceFields := [amount.id, selected.id, converted.id]
         scope := [10]
-        parameters := .extremum .minimum 2
+        parameters := .extremum .minimum
+          { scale := .exact 2, canExpandScale := false }
           [.arithmetic .multiply (.field amount.id) (.field selected.id), .field converted.id]
       } ∧
     fingerprintMatch?
@@ -523,17 +498,7 @@ example :
         [extremumField "Converted"])
       (literalExtremumLeaf? .minimum sameScaleTarget
         (extremumField "Converted")
-        [extremumMultiplication "Amount" "Selected"]) = none ∧
-    analyzed? (identityTransformed? (literalExtremumLeaf? .minimum
-      sameScaleTarget (extremumMultiplication "Amount" "Selected")
-      [extremumField "Converted"])) =
-      some {
-        targetField := sameScaleTarget.id
-        sourceFields := [amount.id, selected.id, converted.id]
-        scope := [10]
-        parameters := .extremum .minimum 2
-          [.arithmetic .multiply (.field amount.id) (.field selected.id), .field converted.id]
-      } := by
+        [extremumMultiplication "Amount" "Selected"]) = none := by
   native_decide
 
 /- An inner literal is retained as an operand identity, not folded into the derived scale: two products differing only in the literal's authored scale keep distinct fingerprints even though their values agree, and moving the literal to the other inner position also stays distinct. -/
@@ -545,7 +510,8 @@ example :
         targetField := sameScaleTarget.id
         sourceFields := [amount.id, converted.id]
         scope := [10]
-        parameters := .extremum .minimum 2
+        parameters := .extremum .minimum
+          { scale := .exact 2, canExpandScale := false }
           [.arithmetic .multiply (.field amount.id)
             (.literal { value := 1, authoredScale := 0 }), .field converted.id]
       } ∧
@@ -555,18 +521,7 @@ example :
         [extremumField "Converted"])
       (literalExtremumLeaf? .minimum sameScaleTarget
         (extremumMultiplication "Amount" "Selected")
-        [extremumField "Converted"]) = none ∧
-    analyzed? (identityTransformed? (literalExtremumLeaf? .minimum
-      sameScaleTarget (extremumMultiplicationLiteral "Amount" 1 0)
-      [extremumField "Converted"])) =
-      some {
-        targetField := sameScaleTarget.id
-        sourceFields := [amount.id, converted.id]
-        scope := [10]
-        parameters := .extremum .minimum 2
-          [.arithmetic .multiply (.field amount.id)
-            (.literal { value := 1, authoredScale := 0 }), .field converted.id]
-      } := by
+        [extremumField "Converted"]) = none := by
   native_decide
 
 /- Operation, source order, and list cardinality remain independently transformation-sensitive. -/

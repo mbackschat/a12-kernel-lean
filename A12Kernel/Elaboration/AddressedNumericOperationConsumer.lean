@@ -51,7 +51,7 @@ inductive AddressedNumericOperationParameters where
   | numberField (resultScale : Nat)
   | abs (resultScale : Nat)
   | round (mode : DecimalRoundingMode) (resultScale : Nat)
-  | extremum (op : NumericExtremumOp) (resultScale : Nat)
+  | extremum (op : NumericExtremumOp) (result : NumericScaleSummary)
       (operands : List AddressedNumberExtremumOperandIdentity)
   deriving Repr, DecidableEq
 
@@ -138,7 +138,7 @@ def analyze :
         operation.first.primarySource.placement.targetDeclaration.repeatableScope
       targetPolicy := operation.first.primarySource.placement.targetPolicy
       parameters := .extremum operation.op
-        (addressedNumberExtremumOperandResultScale operation.first
+        (addressedNumberExtremumOperandScaleSummary operation.first
           operation.rest operation.literal)
         (operation.orderedOperands.map extremumOperandIdentity)
     }
