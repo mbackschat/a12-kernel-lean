@@ -52,14 +52,15 @@ def evaluateCheckedDocumentValuesNotUnique
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError Verdict := do
   match ← scanResolvedValueListOperands
-      (state := ResolvedValueListSide .token) (terminal := Verdict)
+      (state := List (ValueListCell .token × Bool)) (terminal := Verdict)
       (fun operand => do
         let resolved ← operand.resolveCheckedValidationOperand document outer
         pure (.inl (resolved.valueListSideAt .validation)))
       (fun _cause => Verdict.unknown)
-      (fun accumulated _ side => accumulated.append side)
-      checked.source.operands ResolvedValueListSide.empty with
-  | .inl side => pure (evalValuesNotUniqueVerdict side)
+      (fun accumulated operand side =>
+        accumulated ++ side.cells.map (·, operand.hasHaving))
+      checked.source.operands [] with
+  | .inl tagged => pure (evalValuesNotUniqueVerdict tagged)
   | .inr verdict => pure verdict
 
 end CheckedTokenValuesNotUniqueSource

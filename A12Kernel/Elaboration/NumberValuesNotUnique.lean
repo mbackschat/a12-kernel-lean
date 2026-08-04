@@ -25,7 +25,7 @@ def evaluateCheckedDocumentValuesNotUnique
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError Verdict := do
   match ← scanResolvedValueListOperands
-      (state := ResolvedValueListSide .number) (terminal := Verdict)
+      (state := List (ValueListCell .number × Bool)) (terminal := Verdict)
       (fun operand => do
         -- The shared resolver's early terminal is always an operand-level formal
         -- unavailability, which this predicate reports as UNKNOWN.
@@ -34,9 +34,10 @@ def evaluateCheckedDocumentValuesNotUnique
         | .inl side => pure (.inl side)
         | .inr _ => pure (.inr Verdict.unknown))
       (fun _cause => Verdict.unknown)
-      (fun accumulated _ side => accumulated.append side)
-      checked.operands ResolvedValueListSide.empty with
-  | .inl side => pure (evalValuesNotUniqueVerdict side)
+      (fun accumulated operand side =>
+        accumulated ++ side.cells.map (·, operand.hasHaving))
+      checked.operands [] with
+  | .inl tagged => pure (evalValuesNotUniqueVerdict tagged)
   | .inr verdict => pure verdict
 
 end CheckedNumberValuesNotUniqueSource

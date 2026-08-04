@@ -25,24 +25,41 @@ theorem evalValuesNotUnique_unknown_of_unavailable {kind : ValueListKind}
     to the polarity-bearing result, and it is the boundary that makes filter escalation a retyping
     of an existing firing rather than an independent source of one. -/
 theorem evalValuesNotUniqueVerdict_unknown_of_unavailable {kind : ValueListKind}
-    (side : ResolvedValueListSide kind)
-    (unavailable : side.cells.any ValueListCell.isUnknown = true) :
-    evalValuesNotUniqueVerdict side = .unknown := by
+    (tagged : List (ValueListCell kind × Bool))
+    (unavailable : (tagged.map (·.1)).any ValueListCell.isUnknown = true) :
+    evalValuesNotUniqueVerdict tagged = .unknown := by
   simp [evalValuesNotUniqueVerdict,
-    evalValuesNotUnique_unknown_of_unavailable side.cells unavailable]
+    evalValuesNotUnique_unknown_of_unavailable (tagged.map (·.1)) unavailable]
 
-/-- Firing polarity is decided by the reached filter alone: the omission type is available exactly
-    to a filtered duplicate, and the value type exactly to an unfiltered one. Nothing about the
-    selected cells beyond the duplicate itself can move it, which is what separates this operator
-    from its `hasMissingPotential`-escalating neighbours. -/
+/-- Firing polarity is decided by the positionally reached filter alone: the omission type is
+    available exactly to a duplicate the scan reached after a filtered present cell, and the value
+    type exactly to every other duplicate. Nothing about the selected cells beyond the duplicate
+    itself can move it, which is what separates this operator from its
+    `hasMissingPotential`-escalating neighbours. -/
 theorem evalValuesNotUniqueVerdict_polarity {kind : ValueListKind}
-    (side : ResolvedValueListSide kind) :
-    (evalValuesNotUniqueVerdict side = .fired .omission ↔
-      evalValuesNotUnique side.cells = .tru ∧ side.hasHaving = true) ∧
-    (evalValuesNotUniqueVerdict side = .fired .value ↔
-      evalValuesNotUnique side.cells = .tru ∧ side.hasHaving = false) := by
+    (tagged : List (ValueListCell kind × Bool)) :
+    (evalValuesNotUniqueVerdict tagged = .fired .omission ↔
+      evalValuesNotUnique (tagged.map (·.1)) = .tru ∧
+        valuesNotUniqueFilterReached [] false tagged = true) ∧
+    (evalValuesNotUniqueVerdict tagged = .fired .value ↔
+      evalValuesNotUnique (tagged.map (·.1)) = .tru ∧
+        valuesNotUniqueFilterReached [] false tagged = false) := by
   unfold evalValuesNotUniqueVerdict
-  cases evalValuesNotUnique side.cells <;> cases side.hasHaving <;> simp
+  cases evalValuesNotUnique (tagged.map (·.1)) <;>
+    cases valuesNotUniqueFilterReached [] false tagged <;> simp
+
+/-- An unfiltered list can never reach a filter, so a uniformly unfiltered firing is value-typed
+    whatever its cells are. Together with the case matrix this bounds the correction: the positional
+    and the older static account agree at both uniform ends and differ only where a filter follows
+    the duplicate. -/
+theorem valuesNotUniqueFilterReached_unfiltered {kind : ValueListKind}
+    (cells : List (ValueListCell kind))
+    (seen : List (ValueListAtom kind)) :
+    valuesNotUniqueFilterReached seen false (cells.map (·, false)) = false := by
+  induction cells generalizing seen with
+  | nil => rfl
+  | cons cell remaining inductionHypothesis =>
+      cases cell <;> simp [valuesNotUniqueFilterReached, inductionHypothesis]
 
 /-- Every authored all-empty Number aggregate identity is zero and both-directionally fillable. This is the kernel's conservative classification even when the selected field is unsigned. -/
 theorem numericExtremumAggregate_allEmpty

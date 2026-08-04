@@ -56,33 +56,52 @@ example :
 The polarity clause is kind-generic, so it is exhibited once here rather than restated for
 the token overload. -/
 
-private def filteredNumberSide (cells : List (ValueListCell .number)) :
-    ResolvedValueListSide .number :=
-  { numberSide cells with hasHaving := true }
+/-- Tag every cell of one authored operand with that operand's own filter state. -/
+private def tagged (filtered : Bool) (cells : List (ValueListCell .number)) :
+    List (ValueListCell .number × Bool) :=
+  cells.map (·, filtered)
 
 /- An unfiltered firing is value-typed, while a reached filter makes the same duplicate omission-typed even though both retained values are filled. -/
 example :
-    evalValuesNotUniqueVerdict (numberSide [.present 5, .present 5]) =
+    evalValuesNotUniqueVerdict (tagged false [.present 5, .present 5]) =
       .fired .value ∧
-    evalValuesNotUniqueVerdict (filteredNumberSide [.present 5, .present 5]) =
+    evalValuesNotUniqueVerdict (tagged true [.present 5, .present 5]) =
       .fired .omission := by
   native_decide
 
-/- Missing potential does not escalate an unfiltered firing: a skipped empty cell and an uninstantiated declared tail can each only add a later duplicate, never remove the present one. This is the nearest wrong account, because the value-list quantifiers beside this operator do escalate on exactly that potential. -/
+/- The filter flag is **positional**: a filtered operand authored after the duplicate-detecting cell
+   never retypes it, while one authored before does. The engine accumulates that flag while scanning
+   and answers at the duplicate, so a static "some operand is filtered" test is the nearest wrong
+   account and it is wrong on exactly this pair. -/
 example :
-    evalValuesNotUniqueVerdict (numberSide [.present 5, .present 5, .empty]) =
+    evalValuesNotUniqueVerdict
+        (tagged false [.present 5, .present 5] ++ tagged true [.present 9]) =
       .fired .value ∧
     evalValuesNotUniqueVerdict
-      { numberSide [.present 5, .present 5] with hasUninstantiatedTail := true } =
+        (tagged true [.present 9] ++ tagged false [.present 5, .present 5]) =
+      .fired .omission := by
+  native_decide
+
+/- Only a *present* cell moves the flag, because an empty cell is never collected: a filtered
+   operand contributing nothing but an empty leaves an earlier duplicate value-typed. -/
+example :
+    evalValuesNotUniqueVerdict
+        (tagged true [.empty] ++ tagged false [.present 5, .present 5]) =
+      .fired .value := by
+  native_decide
+
+/- Missing potential does not escalate an unfiltered firing: a skipped empty cell can only add a later duplicate, never remove the present one. This is the nearest wrong account, because the value-list quantifiers beside this operator do escalate on exactly that potential. -/
+example :
+    evalValuesNotUniqueVerdict (tagged false [.present 5, .present 5, .empty]) =
       .fired .value := by
   native_decide
 
 /- A filter escalates a firing rather than producing one, and it never converts suppression into a message. -/
 example :
-    evalValuesNotUniqueVerdict (filteredNumberSide [.present 5, .present 6]) =
+    evalValuesNotUniqueVerdict (tagged true [.present 5, .present 6]) =
       .notFired ∧
     evalValuesNotUniqueVerdict
-      (filteredNumberSide [.present 5, .unknown .malformed, .present 5]) =
+      (tagged true [.present 5, .unknown .malformed, .present 5]) =
       .unknown := by
   native_decide
 

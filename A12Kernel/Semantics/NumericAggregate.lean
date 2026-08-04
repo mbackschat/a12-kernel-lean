@@ -144,20 +144,46 @@ def evalValuesNotUnique {kind : ValueListKind}
   | .error _ => .unknown
   | .ok duplicate => if duplicate then .tru else .fls
 
-/-- Type one `FieldValuesNotUnique` firing. The predicate is value-polar on its own: a skipped
-    empty cell and an uninstantiated declared tail can each only *add* a later duplicate, so
-    neither offers a fill that clears the present one. A reached `Having` is different in kind
-    because it selects *which* values are compared, so filling a filter operand can remove a
-    currently duplicated value; the kernel therefore types a filtered firing as an omission even
-    when every retained value is filled. Escalation applies to a firing only: a filter neither
-    produces one nor overrides the shared present-scan's suppression.
+/-- Whether the ordered scan has already reached a filtered operand's present cell when the first
+    duplicate appears.
+
+    The filter flag is **positional, not static**: the engine accumulates it while scanning operands
+    in authored order and answers at the moment a duplicate is detected, so a filter authored *after*
+    the duplicate-detecting cell is never seen. Present cells alone move it, because an empty or
+    unavailable cell is not collected. -/
+def valuesNotUniqueFilterReached {kind : ValueListKind}
+    (seen : List (ValueListAtom kind)) (filterReached : Bool) :
+    List (ValueListCell kind × Bool) → Bool
+  | [] => false
+  | (.present value, filtered) :: remaining =>
+      let reached := filterReached || filtered
+      if seen.any fun candidate => ValueListAtom.equal candidate value then
+        reached
+      else
+        valuesNotUniqueFilterReached (insertDistinctValue seen value) reached remaining
+  | (.empty, _) :: remaining | (.unknown _, _) :: remaining =>
+      valuesNotUniqueFilterReached seen filterReached remaining
+
+/-- Type one `FieldValuesNotUnique` firing over the authored operand order, each cell tagged with
+    whether its own operand carries a filter.
+
+    The predicate is value-polar on its own: a skipped empty cell and an uninstantiated declared tail
+    can each only *add* a later duplicate, so neither offers a fill that clears the present one. A
+    reached `Having` is different in kind because it selects *which* values are compared, so filling a
+    filter operand can remove a currently duplicated value; the engine therefore types such a firing
+    as an omission even when every retained value is filled. Escalation applies to a firing only: a
+    filter neither produces one nor overrides the shared present-scan's suppression, and it retypes
+    only when the scan reached it first.
 
     This is deliberately **not** the `hasMissingPotential` escalation used by the value-list
-    quantifiers beside this operator. -/
+    quantifiers beside this operator, and deliberately not a static "some operand is filtered" test:
+    those two accounts agree on a single operand and on a uniformly filtered or uniformly unfiltered
+    list, and disagree exactly when a filter follows the duplicate. -/
 def evalValuesNotUniqueVerdict {kind : ValueListKind}
-    (side : ResolvedValueListSide kind) : Verdict :=
-  match evalValuesNotUnique side.cells with
-  | .tru => .fired (if side.hasHaving then .omission else .value)
+    (tagged : List (ValueListCell kind × Bool)) : Verdict :=
+  match evalValuesNotUnique (tagged.map (·.1)) with
+  | .tru =>
+      .fired (if valuesNotUniqueFilterReached [] false tagged then .omission else .value)
   | .fls => .notFired
   | .unknown => .unknown
 

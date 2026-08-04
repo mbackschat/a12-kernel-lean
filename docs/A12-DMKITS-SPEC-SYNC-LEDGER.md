@@ -597,6 +597,21 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ## Entries
 
+### SPEC-2026-08-05-01 — `FieldValuesNotUnique` filter escalation is positional, not static
+
+- **Status:** pending
+- **Kind:** semantic correction
+- **Local revision:** resolve with `git log -S 'SPEC-2026-08-05-01'`
+- **a12-dmkits basis revision:** `dd0bcadf33a5df081fa8ac32ac49ba439bc35d3d`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`10-validation-and-polarity.md`](../spec/10-validation-and-polarity.md) filter-escalation bullet
+- **Delta:** the operator's OMISSION escalation depends on **where** the filter sits relative to the duplicate, not on whether the operand list contains one anywhere. Pinned kernel runtime `RuntimeController.feldWerteNichtEindeutig` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66` walks the entity list in authored order, sets its filter flag only when it collects a *specified* value from an operand that has a filter, and returns at the moment a value is already in its set. A filter authored after the duplicate-detecting value is therefore never seen, and a filtered operand contributing only empty cells never sets the flag. The two accounts agree on a single operand and on a uniformly filtered or uniformly unfiltered list, which is why the existing single-starred-operand measurement could not separate them.
+- **Evidence and basis:** kernel source only. This is **not measured**: the local route reaches no kernel runtime, and `dd0bcadf`'s `FieldValuesNotUniqueDiffTest` exercises one starred operand with and without a filter, where both accounts predict the same polarity. The reading is nevertheless unambiguous rather than inferential — the flag is a local mutable accumulator and the duplicate check is a `return` inside the same loop.
+- **Separating acceptance cases:** with two direct Number fields holding the **same** value followed by a filtered starred operand, the message must be `VALUE_ERROR`; with the filtered starred operand authored **first** and contributing at least one present value, the same duplicate must be `OMISSION_ERROR`. A third case pins that a filtered operand contributing only empty cells leaves an earlier duplicate `VALUE_ERROR`. All three are authorable: the admission matrix accepted under [`SPEC-2026-08-04-02`](#spec-2026-08-04-02--fieldvaluesnotunique-requires-two-operands-and-one-declared-kind) admits a mixed direct-plus-starred list and a filtered starred slot.
+- **Expected a12-dmkits surfaces:** the interpreter's uniqueness evaluator, if it types the firing from a whole-list filter flag; `KERNEL-SEMANTICS.md` §9; and the three cases above added to `FieldValuesNotUniqueDiffTest` so the real kernel decides rather than either clean-room implementation.
+- **Compatibility:** a static whole-list flag over-reports OMISSION for a mixed list, which changes a user-visible message type and, for consumers that route by polarity, which field a fill suggestion points at. It never changes whether the rule fires.
+- **Local status:** corrected in the same change. The Lean evaluator now threads the flag through the authored operand order and captures it at the duplicate; two retained cases separate the positional from the static account, and the older static account fails exactly those two. A law bounds the correction by proving a uniformly unfiltered list can never reach a filter.
+
 ### SPEC-2026-07-19-01 — computation `And`/`Or` stop conditions
 
 - **Status:** accepted
