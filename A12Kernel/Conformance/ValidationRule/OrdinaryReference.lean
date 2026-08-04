@@ -107,6 +107,80 @@ example :
       { field := innerAmount.id, coordinates := [.concrete 2, .wildcard] }] := by
   native_decide
 
+/-! ## Starred group operands
+
+A starred group never yields a group pointer. It expands to its descendant fields, and the same one
+coordinate rule applies to each: concrete for the levels the rule's iteration scope bound, wildcard
+from the reopened level down. Both terminals are exercised because the two carry different scope
+lengths, and each chosen group has exactly one descendant field so the expected set stays exact.
+-/
+
+/-- `/Order/Sections/Notes*` — repeatable terminal, one descendant field at scope `[10, 30]`. -/
+private def notesGroupStar : SurfaceGroupListOperand :=
+  .starredGroup {
+    base := .absolute
+    groups := [
+      { name := "Order" },
+      { name := "Sections" },
+      { name := "Notes", starred := true }] }
+
+/-- `/Order/Sections*/Details` — nonrepeatable terminal below the outermost star, one descendant
+    field at scope `[10]`. -/
+private def detailsGroupStar : SurfaceGroupListOperand :=
+  .starredGroup {
+    base := .absolute
+    groups := [
+      { name := "Order" },
+      { name := "Sections", starred := true },
+      { name := "Details" }] }
+
+private def groupListCondition? (operator : GroupFillQuantifier)
+    (operands : List SurfaceGroupListOperand) :
+    Option (CheckedValidationCondition ordinaryIterationModel) :=
+  (CheckedValidationCondition.fromGroupList ordinaryIterationModel ["Order"]
+    operator operands).toOption
+
+example :
+    conditionReferences? (groupListCondition? .atLeastOneGroupFilled [notesGroupStar])
+      [(10, 2)] = some [
+      { field := siblingDate.id, coordinates := [.concrete 2, .wildcard] }] := by
+  native_decide
+
+/- A star at the outermost repeatable level leaves nothing concrete, and the nonrepeatable terminal
+   contributes no coordinate of its own. -/
+example :
+    conditionReferences? (groupListCondition? .atLeastOneGroupFilled [detailsGroupStar])
+      [] = some [{ field := sectionDetail.id, coordinates := [.wildcard] }] := by
+  native_decide
+
+/- A fixed field beside a starred group keeps its own concrete projection. `AllGroupsFilled` is not
+   available here: the accepted operator-sensitivity rule rejects a starred operand under it. -/
+example :
+    conditionReferences? (groupListCondition? .atLeastOneGroupFilled
+        [.field (ordinaryPath ["Order"] "BaseAmount"), notesGroupStar]) [(10, 2)] = some [
+      { field := baseAmount.id, coordinates := [] },
+      { field := siblingDate.id, coordinates := [.concrete 2, .wildcard] }] := by
+  native_decide
+
+/-- `/Order/Sections*` — the recursion witness. Its descendants span three deeper groups, two of
+    them repeatable, so direct-child expansion and recursive expansion disagree here. -/
+private def sectionsGroupStar : SurfaceGroupListOperand :=
+  .starredGroup {
+    base := .absolute
+    groups := [{ name := "Order" }, { name := "Sections", starred := true }] }
+
+/- Expansion is recursive, and each descendant's coordinate count comes from its **own** scope: a
+   field declared in the starred group carries one wildcard, one declared in a deeper repeatable
+   descendant carries two. The exact cardinality pins that nothing beyond the subtree joins. -/
+example :
+    (conditionReferences? (groupListCondition? .atLeastOneGroupFilled [sectionsGroupStar])
+      []).map (fun pointers =>
+        (pointers.contains { field := outerAmount.id, coordinates := [.wildcard] },
+          pointers.contains
+            { field := siblingDate.id, coordinates := [.wildcard, .wildcard] },
+          pointers.length)) = some (true, true, 14) := by
+  native_decide
+
 /-- A presence guard on the iterating row's own field: an ordinary leaf this fragment does not
     classify. -/
 private def outerPresenceGuard? :

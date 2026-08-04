@@ -921,6 +921,8 @@ run_cmd do
 #print axioms A12Kernel.validationCondition_repeatablePresence_supported
 #print axioms A12Kernel.checkedValidationCondition_coherent
 #print axioms A12Kernel.concreteFieldPointer_exact
+#print axioms A12Kernel.reopenedFieldPointer_notExact
+#print axioms A12Kernel.reopenedFieldPointer_arity
 #print axioms A12Kernel.starFieldPointer_notExact
 #print axioms A12Kernel.starFieldPointer_arity
 #print axioms A12Kernel.referencePointers_connective_blind

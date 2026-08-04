@@ -55,47 +55,63 @@ theorem concreteFieldPointer_exact (declaration : FlatFieldDecl) (environment : 
       subst projected
       exact ⟨rfl, by simp [messagePointer_toCellAddr_ofCellAddr]⟩
 
-/-- A starred reference never collapses to an exact address, because the certificate's own `firstStarWithin` obligation guarantees at least one reopened axis. A consumer that treats a reference as a cell address is therefore wrong on exactly the starred case. -/
+/-- A reopened reference never collapses to an exact address. The guarantee is the function's own admission guard rather than any caller's obligation: it only succeeds when the declaration's scope extends past the bound prefix, so at least one wildcard is always present. A consumer that treats a reference as a cell address is therefore wrong on exactly the reopened case. -/
+theorem reopenedFieldPointer_notExact (declaration : FlatFieldDecl)
+    (boundCount : Nat) (environment : Env) (pointer : MessagePointer)
+    (projected : reopenedFieldPointer declaration boundCount environment = .ok pointer) :
+    pointer.toCellAddr? = none := by
+  unfold reopenedFieldPointer at projected
+  split at projected
+  case isTrue => simp at projected
+  case isFalse reopened =>
+      cases resolved :
+          environment.pathForScope (declaration.repeatableScope.take boundCount) with
+      | error _ => simp [resolved] at projected
+      | ok bound =>
+          simp only [resolved, Except.ok.injEq] at projected
+          subst projected
+          obtain ⟨remaining, hRemaining⟩ :
+              ∃ remaining,
+                declaration.repeatableScope.length - boundCount = remaining + 1 :=
+            ⟨declaration.repeatableScope.length - boundCount - 1, by omega⟩
+          simp [MessagePointer.toCellAddr?, hRemaining, List.replicate_succ,
+            toConcretePath_concrete_append_wildcard]
+
+/-- A reopened pointer carries exactly one coordinate per repeatable level of its declaration: the bound prefix plus every reopened level. This is the arity `MessagePointer` promises, derived rather than assumed, and it holds for a starred group's deeper descendant as much as for the starred field itself. -/
+theorem reopenedFieldPointer_arity (declaration : FlatFieldDecl)
+    (boundCount : Nat) (environment : Env) (pointer : MessagePointer)
+    (projected : reopenedFieldPointer declaration boundCount environment = .ok pointer) :
+    pointer.coordinates.length = declaration.repeatableScope.length := by
+  unfold reopenedFieldPointer at projected
+  split at projected
+  case isTrue => simp at projected
+  case isFalse reopened =>
+      cases resolved :
+          environment.pathForScope (declaration.repeatableScope.take boundCount) with
+      | error _ => simp [resolved] at projected
+      | ok bound =>
+          simp only [resolved, Except.ok.injEq] at projected
+          subst projected
+          have boundLength := env_pathForScope_length environment
+            (declaration.repeatableScope.take boundCount) bound resolved
+          simp only [List.length_take] at boundLength
+          simp only [List.length_append, List.length_map,
+            List.length_replicate, boundLength]
+          omega
+
+/-- The starred-field law is a specialization: its certificate's `ancestryOwned` and `firstStarWithin` obligations are what make the shared admission guard succeed, so no separate proof is needed. -/
 theorem starFieldPointer_notExact (checked : CheckedStarFieldPath model)
     (environment : Env) (pointer : MessagePointer)
     (projected : starFieldPointer checked environment = .ok pointer) :
-    pointer.toCellAddr? = none := by
-  unfold starFieldPointer at projected
-  cases resolved : environment.pathForScope checked.bindingScope with
-  | error _ => simp [resolved] at projected
-  | ok bound =>
-      simp only [resolved, Except.ok.injEq] at projected
-      subst projected
-      obtain ⟨reopened, hReopened⟩ :
-          ∃ reopened,
-            checked.path.axes.length - checked.path.firstStar = reopened + 1 :=
-        ⟨checked.path.axes.length - checked.path.firstStar - 1, by
-          have := checked.firstStarWithin; omega⟩
-      simp [MessagePointer.toCellAddr?, hReopened, List.replicate_succ,
-        toConcretePath_concrete_append_wildcard]
+    pointer.toCellAddr? = none :=
+  reopenedFieldPointer_notExact _ _ _ _ projected
 
-/-- A starred pointer carries exactly one coordinate per repeatable level of its declaration: the bound prefix plus every reopened axis. This is the arity `MessagePointer` promises, derived from the checked path rather than assumed. -/
 theorem starFieldPointer_arity (checked : CheckedStarFieldPath model)
     (environment : Env) (pointer : MessagePointer)
     (projected : starFieldPointer checked environment = .ok pointer) :
     pointer.coordinates.length =
-      checked.declaration.repeatableScope.length := by
-  unfold starFieldPointer at projected
-  cases resolved : environment.pathForScope checked.bindingScope with
-  | error _ => simp [resolved] at projected
-  | ok bound =>
-      simp only [resolved, Except.ok.injEq] at projected
-      subst projected
-      have boundLength :=
-        env_pathForScope_length environment checked.bindingScope bound resolved
-      have ancestry := checked.ancestryOwned
-      have axesLength : checked.declaration.repeatableScope.length =
-          checked.path.axes.length := by
-        rw [← ancestry, List.length_map]
-      have := checked.firstStarWithin
-      simp [CheckedStarFieldPath.bindingScope] at boundLength
-      simp [boundLength, axesLength]
-      omega
+      checked.declaration.repeatableScope.length :=
+  reopenedFieldPointer_arity _ _ _ _ projected
 
 /-- The projection is blind to the connective, which is the precise sense in which it is structural: a reference is authored, not decisive, so an `Or` branch that never decided still contributes. -/
 theorem referencePointers_connective_blind (left right : ValidationCondition model)

@@ -16,8 +16,10 @@ namespace A12Kernel
 inductive ReferenceProjectionError where
   | unclassifiedLeaf
   | unclassifiedAtom
+  | unclassifiedOperand
   | filteredStarOperand
   | unresolvedField (field : FieldId)
+  | unreopenedReference (field : FieldId)
   | binding (error : EnvBindingError)
   deriving Repr, DecidableEq
 
@@ -28,15 +30,25 @@ def concreteFieldPointer (declaration : FlatFieldDecl) (environment : Env) :
   | .error error => .error (.binding error)
   | .ok path => .ok (MessagePointer.ofCellAddr { field := declaration.id, path })
 
-/-- A starred reference keeps its bound prefix concrete and wildcards the reopened level together with every axis below it. The counts come from the checked path's own axes and `firstStar`, so nothing here re-derives repeatable scope. -/
+/-- One reopened reference: the first `boundCount` levels of the field's **own** repeatable scope are concrete, and every level from there down is wildcard. Reading the concrete prefix out of that scope rather than out of the star's axes is what lets one rule serve a starred field and a starred group's deeper descendant alike, and it makes the coordinate positions structural instead of assuming that two level lists agree.
+
+    A reference with no reopened level is refused rather than silently projected as an exact address: that would be [`concreteFieldPointer`](A12Kernel.concreteFieldPointer)'s job, and reaching it here means the caller's star and its declaration disagree. -/
+def reopenedFieldPointer (declaration : FlatFieldDecl) (boundCount : Nat)
+    (environment : Env) : Except ReferenceProjectionError MessagePointer :=
+  if declaration.repeatableScope.length ≤ boundCount then
+    .error (.unreopenedReference declaration.id)
+  else
+    match environment.pathForScope (declaration.repeatableScope.take boundCount) with
+    | .error error => .error (.binding error)
+    | .ok bound => .ok {
+        field := declaration.id
+        coordinates := bound.map .concrete ++
+          List.replicate (declaration.repeatableScope.length - boundCount) .wildcard }
+
+/-- A starred field reference reopens from its own `firstStar`. The certificate's `ancestryOwned` and `firstStarWithin` obligations make its refusal branch unreachable. -/
 def starFieldPointer (checked : CheckedStarFieldPath model) (environment : Env) :
     Except ReferenceProjectionError MessagePointer :=
-  match environment.pathForScope checked.bindingScope with
-  | .error error => .error (.binding error)
-  | .ok bound => .ok {
-      field := checked.declaration.id
-      coordinates := bound.map .concrete ++
-        List.replicate (checked.path.axes.length - checked.path.firstStar) .wildcard }
+  reopenedFieldPointer checked.declaration checked.path.firstStar environment
 
 /-- A filtered star is refused rather than projected. Its own field pointer would be the plain starred one, but the measured account pins only that its `Having` operands *join* the set, not which coordinates they carry, and inventing them would make an incomplete set look complete. -/
 def CheckedNumberEntityOperand.referencePointer (environment : Env) :
@@ -77,12 +89,37 @@ private def expressionPointers (environment : Env) :
       pure ((← expressionPointers environment left) ++
         (← expressionPointers environment right))
 
+/-- A starred group contributes its **descendant fields**, never a pointer to the group. Expansion is recursive by construction: every declaration whose group path extends the starred one participates, however deep, and each reopens from the star's own `firstStar` against its own scope. A field declared below a deeper repeatable descendant therefore gains extra wildcards without the projection knowing that group exists.
+
+    Declaration order is retained for determinism only, on the same terms as the whole projection. -/
+def starredGroupPointers (model : FlatModel) (groupPath : GroupPath)
+    (boundCount : Nat) (environment : Env) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  (model.fields.filter fun declaration =>
+      groupPath.isPrefixOf declaration.groupPath).mapM
+    (reopenedFieldPointer · boundCount environment)
+
+/-- An unstarred group operand is refused. It has no field pointer of its own, and whether the kernel expands it the way it expands a starred group is unmeasured. -/
+def ResolvedGroupListOperand.referencePointers (environment : Env) :
+    ResolvedGroupListOperand model →
+      Except ReferenceProjectionError (List MessagePointer)
+  | .field declaration =>
+      (concreteFieldPointer declaration environment).map ([·])
+  | .starredGroup source =>
+      starredGroupPointers model source.group.path source.path.firstStar environment
+  | .starredGroupPresence source =>
+      starredGroupPointers model source.groupPath source.path.firstStar environment
+  | .group _ => .error .unclassifiedOperand
+
 def ValidationConditionLeaf.referencePointers (environment : Env) :
     ValidationConditionLeaf model →
       Except ReferenceProjectionError (List MessagePointer)
   | .orderedNumeric _ comparison => do
       pure ((← expressionPointers environment comparison.left) ++
         (← expressionPointers environment comparison.right))
+  | .groupList _ operands =>
+      (·.flatten) <$>
+        operands.mapM (ResolvedGroupListOperand.referencePointers environment)
   | _ => .error .unclassifiedLeaf
 
 private def treePointers (environment : Env) :
