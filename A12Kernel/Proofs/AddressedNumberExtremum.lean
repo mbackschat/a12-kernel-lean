@@ -27,8 +27,12 @@ theorem checkedAddressedNumberArithmeticChild_sourceTargetField
         child.primarySource.placement.targetField := by
   cases child with
   | fields pair =>
-      simp [CheckedAddressedNumberArithmeticChild.sources,
-        CheckedAddressedNumberArithmeticChild.primarySource, pair.sameTarget]
+      intro source member
+      simp only [CheckedAddressedNumberArithmeticChild.sources,
+        List.mem_cons, List.not_mem_nil, or_false] at member
+      rcases member with rfl | rfl
+      · rfl
+      · exact pair.sameTarget.symm
   | fieldLiteral source _ =>
       simp [CheckedAddressedNumberArithmeticChild.sources,
         CheckedAddressedNumberArithmeticChild.primarySource]

@@ -42,13 +42,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Select the next bounded operand shape for the same-scope repeatable extremum family. The two candidates are the constant-only arithmetic child, which needs the ordered operand list to retain a non-field-backed operand positionally without letting it own the target placement, and division- or power-valued operands, which additionally bring unknown derived scale and the warning-suppression branch into the operand list. Neither is started.
+Close the constant-only arithmetic child and the wider fieldless class in one extremum restructure, now that the root is split. `CheckedAddressedNumericTarget` owns the declaring group, target field, target declaration, complete target policy, repeatability, and both path-indexed executors; `CheckedAddressedNumericPlacement` keeps only the source reference, source declaration, self-reference exclusion, and same-scope fact and forwards every target fact, so all existing one-source owners are unchanged. What remains is the extremum certificate itself: replace the field-backed list plus one optional positioned literal with one ordered operand list whose invariants are at most one immediate literal and one shared target among the field-backed operands, and take the placement from the target certificate rather than from `first.primarySource`.
 
 ## Immediate sequence
 
-1. Choose between the two candidates above before writing Lean; they touch different mechanisms and the constant-only child is the smaller of the two.
-2. For the constant-only child, first measure whether a list of only constant-bearing operands is authorable at all when no operand references a field, since the outer target still needs a placement owner; for a division- or power-valued operand, first measure whether the unknown derived scale forces suppression on the enclosing extremum.
-3. Extend the bounded Analyze fingerprint and identity Transform with whichever shape lands, and leave nesting and broader expression-tree work outside the capsule.
+1. Restructure `CheckedAddressedNumberExtremum` around `target : CheckedAddressedNumericTarget model` plus one ordered `operands` list, deleting the literal-insertion and reconstruction machinery that the positional-option encoding needed.
+2. Add red cases from the retained measurements: `Min(1.5 * 2, [C])`, the fieldless `Min(1.5 * 2)` and `Min(1.5 * 2, 3)` admitted at declared scales 2 and 4 and rejected at 0, a fieldless list still computing once per instantiated row including an all-empty row, and the existing matrices staying green.
+3. Re-audit the affected proofs and the Analyze fingerprint, whose operand identity already covers literals but whose source-derived placement assumptions change.
 
 ## Parked boundaries
 

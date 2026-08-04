@@ -20,29 +20,117 @@ inductive AddressedNumericPlacementElabError where
   | scopeMismatch (target source : List String)
   deriving Repr, DecidableEq
 
-/-- The common checked placement of one Number target and one source declaration at the same nonempty repeatable scope. -/
-structure CheckedAddressedNumericPlacement (model : FlatModel) where
+/-- The checked target half of an addressed numeric operation: one repeatable Number computation target inside its declaring group, with its complete target policy. This is everything execution needs, so it is separate from any source declaration — a legal computation may reference no field at all. -/
+structure CheckedAddressedNumericTarget (model : FlatModel) where
   private mk ::
   declaringGroup : GroupPath
-  sourceReference : SurfaceFieldPath
   targetField : FieldId
   targetDeclaration : FlatFieldDecl
   targetPolicy : NumericTargetPolicy
-  sourceDeclaration : FlatFieldDecl
   modelWellFormed : model.validate.isOk = true
   targetOwned :
     model.lookupUniqueId targetField = .ok targetDeclaration
-  sourceResolved :
-    model.resolveFieldDeclarationUnchecked declaringGroup sourceReference =
-      .ok sourceDeclaration
   targetInDeclaringGroup :
     targetDeclaration.groupPath = declaringGroup
   targetPolicyOwned :
     targetDeclaration.toNumericTargetPolicy? = some targetPolicy
   targetRepeatable : targetDeclaration.repeatableScope ≠ []
-  sourceNotTarget : sourceDeclaration.id ≠ targetField
+
+/-- The common checked placement of one Number target and one source declaration at the same nonempty repeatable scope. -/
+structure CheckedAddressedNumericPlacement (model : FlatModel) where
+  private mk ::
+  target : CheckedAddressedNumericTarget model
+  sourceReference : SurfaceFieldPath
+  sourceDeclaration : FlatFieldDecl
+  sourceResolved :
+    model.resolveFieldDeclarationUnchecked target.declaringGroup
+        sourceReference =
+      .ok sourceDeclaration
+  sourceNotTarget : sourceDeclaration.id ≠ target.targetField
   sameScope :
-    sourceDeclaration.repeatableScope = targetDeclaration.repeatableScope
+    sourceDeclaration.repeatableScope =
+      target.targetDeclaration.repeatableScope
+
+namespace CheckedAddressedNumericPlacement
+
+/-- Every target fact of a placement is the fact of its target half. These forwarders keep the completed one-source owners unchanged by the split. -/
+@[simp] def declaringGroup (placement : CheckedAddressedNumericPlacement model) :
+    GroupPath := placement.target.declaringGroup
+
+@[simp] def targetField (placement : CheckedAddressedNumericPlacement model) :
+    FieldId := placement.target.targetField
+
+@[simp] def targetDeclaration (placement : CheckedAddressedNumericPlacement model) :
+    FlatFieldDecl := placement.target.targetDeclaration
+
+@[simp] def targetPolicy (placement : CheckedAddressedNumericPlacement model) :
+    NumericTargetPolicy := placement.target.targetPolicy
+
+theorem modelWellFormed (placement : CheckedAddressedNumericPlacement model) :
+    model.validate.isOk = true := placement.target.modelWellFormed
+
+theorem targetOwned (placement : CheckedAddressedNumericPlacement model) :
+    model.lookupUniqueId placement.targetField =
+      .ok placement.targetDeclaration := placement.target.targetOwned
+
+theorem targetInDeclaringGroup
+    (placement : CheckedAddressedNumericPlacement model) :
+    placement.targetDeclaration.groupPath = placement.declaringGroup :=
+  placement.target.targetInDeclaringGroup
+
+theorem targetPolicyOwned
+    (placement : CheckedAddressedNumericPlacement model) :
+    placement.targetDeclaration.toNumericTargetPolicy? =
+      some placement.targetPolicy := placement.target.targetPolicyOwned
+
+theorem targetRepeatable
+    (placement : CheckedAddressedNumericPlacement model) :
+    placement.targetDeclaration.repeatableScope ≠ [] :=
+  placement.target.targetRepeatable
+
+end CheckedAddressedNumericPlacement
+
+/-- Check only the target facts, which every addressed numeric operation needs whether or not it references a field. -/
+def checkAddressedNumericTarget
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId) :
+    Except AddressedNumericPlacementElabError
+      (CheckedAddressedNumericTarget model) :=
+  match hModel : model.validate with
+  | .error cause => .error (.model cause)
+  | .ok () =>
+    match hTargetOwned : model.lookupUniqueId targetField with
+    | .error cause => .error (.target cause)
+    | .ok targetDeclaration =>
+      if hGroup : targetDeclaration.groupPath = declaringGroup then
+        match hTargetKind : targetDeclaration.policy.kind with
+        | .number _ =>
+          match hTargetPolicy : targetDeclaration.toNumericTargetPolicy? with
+          | none => .error (.targetPolicyUnavailable targetDeclaration.path)
+          | some targetPolicy =>
+            if hRepeatable : targetDeclaration.repeatableScope.isEmpty then
+              .error (.targetNotRepeatable targetDeclaration.path)
+            else
+              .ok {
+                declaringGroup
+                targetField
+                targetDeclaration
+                targetPolicy
+                modelWellFormed := by
+                  rw [hModel]
+                  rfl
+                targetOwned := hTargetOwned
+                targetInDeclaringGroup := hGroup
+                targetPolicyOwned := hTargetPolicy
+                targetRepeatable := by
+                  intro empty
+                  simp [empty] at hRepeatable
+              }
+        | actual =>
+            .error (.targetKindMismatch
+              targetDeclaration.path actual.surfaceKind)
+      else
+        .error (.targetOutsideDeclaringGroup
+          targetDeclaration.path declaringGroup)
 
 /-- Check only the placement facts common to completed one-source addressed numeric leaves. -/
 def checkAddressedNumericPlacement
@@ -79,22 +167,24 @@ def checkAddressedNumericPlacement
                     sourceDeclaration.repeatableScope =
                       targetDeclaration.repeatableScope then
                   .ok {
-                    declaringGroup
+                    target := {
+                      declaringGroup
+                      targetField
+                      targetDeclaration
+                      targetPolicy
+                      modelWellFormed := by
+                        rw [hModel]
+                        rfl
+                      targetOwned := hTargetOwned
+                      targetInDeclaringGroup := hGroup
+                      targetPolicyOwned := hTargetPolicy
+                      targetRepeatable := by
+                        intro empty
+                        simp [empty] at hRepeatable
+                    }
                     sourceReference
-                    targetField
-                    targetDeclaration
-                    targetPolicy
                     sourceDeclaration
-                    modelWellFormed := by
-                      rw [hModel]
-                      rfl
-                    targetOwned := hTargetOwned
                     sourceResolved := hSourceResolved
-                    targetInDeclaringGroup := hGroup
-                    targetPolicyOwned := hTargetPolicy
-                    targetRepeatable := by
-                      intro empty
-                      simp [empty] at hRepeatable
                     sourceNotTarget := by
                       intro equal
                       simp [equal] at hSelf
@@ -119,14 +209,24 @@ inductive AddressedNumericLeafFault where
   | targetCheck (cause : NumericTargetCheckFault)
   deriving Repr, DecidableEq
 
+namespace CheckedAddressedNumericTarget
+
+/-- The physically instantiated environments at the operation's exact target scope. Repetition comes from the computed target's own declaration, so an operation that references no field still iterates. -/
+def targetEnvironments
+    (target : CheckedAddressedNumericTarget model)
+    (input : CheckedDocument model) :
+    Except ActualRowEnvironmentError (List Env) :=
+  input.actualRowEnvironments target.targetDeclaration.repeatableScope
+
+end CheckedAddressedNumericTarget
+
 namespace CheckedAddressedNumericPlacement
 
-/-- The physically instantiated environments at the operation's exact target scope. -/
 def targetEnvironments
     (placement : CheckedAddressedNumericPlacement model)
     (input : CheckedDocument model) :
     Except ActualRowEnvironmentError (List Env) :=
-  input.actualRowEnvironments placement.targetDeclaration.repeatableScope
+  placement.target.targetEnvironments input
 
 /-- Evaluate one already-checked scalar atom against the exact source cell selected by this placement. -/
 def evaluateSourceAtom
@@ -143,7 +243,11 @@ def evaluateSourceAtom
   }
   context.readNumericComputationAtom atom
 
-private def executeWithPathUsing (placement : CheckedAddressedNumericPlacement model)
+end CheckedAddressedNumericPlacement
+
+namespace CheckedAddressedNumericTarget
+
+private def executeWithPathUsing (placement : CheckedAddressedNumericTarget model)
     (input : CheckedDocument model)
     (checkTarget : NumericComputationResult → NumericTargetCheckResult)
     (evaluate : List Nat →
@@ -172,7 +276,7 @@ private def executeWithPathUsing (placement : CheckedAddressedNumericPlacement m
     }
 
 /-- Execute through the ordinary unsuppressed target checker. -/
-def executeWithPath (placement : CheckedAddressedNumericPlacement model)
+def executeWithPath (placement : CheckedAddressedNumericTarget model)
     (input : CheckedDocument model)
     (evaluate : List Nat →
       Except AddressedNumericLeafFault NumericComputationResult) :
@@ -182,7 +286,7 @@ def executeWithPath (placement : CheckedAddressedNumericPlacement model)
 
 /-- Execute through this placement's own warning-suppressed target checker. -/
 def executeWithPathScaleWarningSuppressed
-    (placement : CheckedAddressedNumericPlacement model)
+    (placement : CheckedAddressedNumericTarget model)
     (input : CheckedDocument model)
     (evaluate : List Nat →
       Except AddressedNumericLeafFault NumericComputationResult) :
@@ -190,6 +294,29 @@ def executeWithPathScaleWarningSuppressed
       (List (SourcedNumericTargetOutcome CellAddr)) :=
   placement.executeWithPathUsing input
     placement.targetPolicy.checkWithScaleWarningSuppressed evaluate
+
+end CheckedAddressedNumericTarget
+
+namespace CheckedAddressedNumericPlacement
+
+/-- Execute through the target half's ordinary unsuppressed checker. -/
+def executeWithPath (placement : CheckedAddressedNumericPlacement model)
+    (input : CheckedDocument model)
+    (evaluate : List Nat →
+      Except AddressedNumericLeafFault NumericComputationResult) :
+    Except AddressedNumericLeafFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  placement.target.executeWithPath input evaluate
+
+/-- Execute through the target half's own warning-suppressed checker. -/
+def executeWithPathScaleWarningSuppressed
+    (placement : CheckedAddressedNumericPlacement model)
+    (input : CheckedDocument model)
+    (evaluate : List Nat →
+      Except AddressedNumericLeafFault NumericComputationResult) :
+    Except AddressedNumericLeafFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  placement.target.executeWithPathScaleWarningSuppressed input evaluate
 
 /-- Execute one source-cell evaluator through the shared path-indexed target owner. -/
 def executeWith (placement : CheckedAddressedNumericPlacement model)
