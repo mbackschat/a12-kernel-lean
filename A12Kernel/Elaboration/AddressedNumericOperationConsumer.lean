@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.AddressedNumberExtremum
 
 /-! # Bounded addressed numeric-operation Analyze/Transform view
 
-This internal consumer view covers the completed same-scope repeatable textual conversions and direct-Number field, `Abs`, Round, and bounded operand-list extrema over direct fields, operand-local `Abs`/Round/arithmetic children over field-or-literal operands, and at most one immediate outer literal. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
+This internal consumer view covers the completed same-scope repeatable textual conversions and direct-Number field, `Abs`, Round, and bounded operand-list extrema over direct fields, operand-local `Abs`/Round/arithmetic children over field-or-literal operands, and at most one immediate outer literal. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, decides candidate target-scale legality from the fingerprint through the elaborator's own gate, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
 -/
 
 namespace A12Kernel
@@ -55,6 +55,20 @@ inductive AddressedNumericOperationParameters where
       (operands : List AddressedNumberExtremumOperandIdentity)
   deriving Repr, DecidableEq
 
+namespace AddressedNumericOperationParameters
+
+/-- The derived static scale summary this operation contributes. Only an operand list can retain multiplicative-constant capability; every other bounded form here is a fixed, non-expandable scale. -/
+def derivedScaleSummary :
+    AddressedNumericOperationParameters → NumericScaleSummary
+  | .fieldValueAsNumber _ scale => .field scale
+  | .rangeAsNumber _ _ => .field 0
+  | .numberField scale => .field scale
+  | .abs scale => .field scale
+  | .round _ scale => .rounded scale
+  | .extremum _ result _ => result
+
+end AddressedNumericOperationParameters
+
 /-- The complete bounded Analyze fingerprint for one checked operation in a fixed validated model. -/
 structure AddressedNumericOperationAnalysis where
   targetField : FieldId
@@ -63,6 +77,22 @@ structure AddressedNumericOperationAnalysis where
   targetPolicy : NumericTargetPolicy
   parameters : AddressedNumericOperationParameters
   deriving Repr, DecidableEq
+
+namespace AddressedNumericOperationAnalysis
+
+/-- Whether a candidate declared target scale is admissible for this analyzed operation, decided from the retained fingerprint alone through the same gate the elaborator applies. A retargeting consumer therefore needs no re-elaboration and cannot invent a second admission rule. -/
+def admitsTargetScale (analysis : AddressedNumericOperationAnalysis)
+    (scale : Nat) : Bool :=
+  exactNumericScaleComparisonAllowedWithSuppression false
+    (NumericScaleSummary.field scale)
+    analysis.parameters.derivedScaleSummary
+
+/-- Every declared target scale this operation could legally carry. The kernel bounds a Number field's fractional digits at 14, so the candidate range is exactly `0`–`14`. -/
+def admittedTargetScales (analysis : AddressedNumericOperationAnalysis) :
+    List Nat :=
+  (List.range 15).filter analysis.admitsTargetScale
+
+end AddressedNumericOperationAnalysis
 
 namespace CheckedAddressedNumericOperation
 

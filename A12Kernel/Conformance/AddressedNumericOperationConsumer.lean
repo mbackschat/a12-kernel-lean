@@ -195,6 +195,18 @@ private def literalExtremumLeaf? (op : NumericExtremumOp)
 private def places0 : RoundingPlaces := ⟨0, by decide⟩
 private def places1 : RoundingPlaces := ⟨1, by decide⟩
 
+/-- One constant-only product: an operand that reads no field, so a list of only these references nothing at all. -/
+private def extremumConstantProduct (left right : Rat)
+    (leftScale rightScale : Int) : SurfaceAddressedNumberExtremumOperand :=
+  .arithmetic .multiply
+    (.literal { value := left, authoredScale := leftScale })
+    (.literal { value := right, authoredScale := rightScale })
+
+private def admittedScales?
+    (leaf : Option (CheckedAddressedNumericOperation model)) :
+    Option (List Nat) :=
+  leaf.map fun checked => checked.analyze.admittedTargetScales
+
 private structure AnalysisSummary where
   targetField : FieldId
   sourceFields : List FieldId
@@ -522,6 +534,34 @@ example :
       (literalExtremumLeaf? .minimum sameScaleTarget
         (extremumMultiplication "Amount" "Selected")
         [extremumField "Converted"]) = none := by
+  native_decide
+
+/- Consumer probe: a fieldless list reports an empty read set, so a consumer ordering work by dependency must not treat it as depending on anything, while its write target and repeatable scope are unchanged. -/
+example :
+    analyzed? (literalExtremumLeaf? .minimum rounded1
+      (extremumConstantProduct (3 / 2) 2 1 0) []) =
+      some {
+        targetField := rounded1.id
+        sourceFields := []
+        scope := [10]
+        parameters := .extremum .minimum
+          { scale := .exact 1, canExpandScale := true }
+          [.arithmetic .multiply
+            (.literal { value := 3 / 2, authoredScale := 1 })
+            (.literal { value := 2, authoredScale := 0 })]
+      } ∧
+    ((literalExtremumLeaf? .minimum rounded1
+      (extremumConstantProduct (3 / 2) 2 1 0) []).map
+        (·.readsOperand amount.id)) = some false := by
+  native_decide
+
+/- Consumer probe, the decision the fingerprint must support: two operations with the SAME derived scale 1 admit different declared target scales, because only the constant-only one is capability-carrying. A retargeting consumer reading scale alone would get this wrong; reading the retained summary through the shared gate gets it right. -/
+example :
+    admittedScales? (literalExtremumLeaf? .minimum rounded1
+      (extremumConstantProduct (3 / 2) 2 1 0) []) =
+      some [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] ∧
+    admittedScales? (literalExtremumLeaf? .minimum rounded1
+      (extremumRound "Amount" .floor places1) []) = some [1] := by
   native_decide
 
 /- Operation, source order, and list cardinality remain independently transformation-sensitive. -/
