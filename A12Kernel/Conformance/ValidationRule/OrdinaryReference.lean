@@ -209,6 +209,26 @@ example :
       { field := innerAmount.id, coordinates := [.concrete 2, .wildcard] }] := by
   native_decide
 
+/-! ## Flat leaves
+
+The flat fragment carries no starred operand, so its own exhaustive `referencesField` can supply
+membership and every reference is concretely addressed by the rule's environment. -/
+
+private def flatCondition? (condition : SurfaceCondition) :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let checked ← (elaborate ordinaryIterationModel ["Order"] condition).toOption
+  (CheckedValidationCondition.fromFlat checked).toOption
+
+/- Both connective branches and both presence polarities contribute; nonrepeatable references carry
+   no coordinates. -/
+example :
+    conditionReferences?
+        (flatCondition? (.and (.fieldFilled (ordinaryPath ["Order"] "BaseAmount"))
+          (.fieldNotFilled (ordinaryPath ["Order"] "BaseToken")))) [] = some [
+      { field := baseAmount.id, coordinates := [] },
+      { field := baseToken.id, coordinates := [] }] := by
+  native_decide
+
 /- A leaf family this fragment does not classify still fails the whole rule's projection. Silence
    would be read as "this rule references nothing", which no rule can be. -/
 example :

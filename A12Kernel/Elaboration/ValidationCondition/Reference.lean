@@ -111,6 +111,11 @@ def ResolvedGroupListOperand.referencePointers (environment : Env) :
       starredGroupPointers model source.groupPath source.path.firstStar environment
   | .group _ => .error .unclassifiedOperand
 
+/-- Two membership strategies, chosen by whether a family can carry a starred operand.
+
+    A family that can must be traversed explicitly, so that each operand reaches the coordinate rule that fits it. A family that cannot may instead be *sieved* through its own `referencesField`: the flat fragment's predicate is exhaustive over every leaf constructor with no catch-all, so sieving the model's declarations through it inherits exactly that coverage and can neither miss a reference the predicate reports nor invent one. The same shortcut would be wrong for a starred family, because the predicate reports the starred field while its coordinates are not concrete.
+
+    A consequence is that the two strategies retain different orders — authored for traversal, declaration for sieving. That is admissible only because the result carries no ordering claim at all. -/
 def ValidationConditionLeaf.referencePointers (environment : Env) :
     ValidationConditionLeaf model →
       Except ReferenceProjectionError (List MessagePointer)
@@ -122,6 +127,10 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
         operands.mapM (ResolvedGroupListOperand.referencePointers environment)
   | .repeatableFieldPresence _ declaration =>
       (concreteFieldPointer declaration environment).map ([·])
+  | .flat condition =>
+      (model.fields.filter fun declaration =>
+          condition.referencesField declaration.id).mapM
+        (concreteFieldPointer · environment)
   | _ => .error .unclassifiedLeaf
 
 private def treePointers (environment : Env) :
