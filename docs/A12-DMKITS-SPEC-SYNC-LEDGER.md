@@ -597,6 +597,23 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ## Entries
 
+### SPEC-2026-08-05-02 — `FieldValuesNotUnique` admits DATE only among temporal kinds, and only at one shared format
+
+- **Status:** pending
+- **Kind:** semantic correction
+- **Local revision:** resolve with `git log -S 'SPEC-2026-08-05-02'`
+- **a12-dmkits basis revision:** `dd0bcadf33a5df081fa8ac32ac49ba439bc35d3d`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`07-repetition-and-iteration.md`](../spec/07-repetition-and-iteration.md) `FieldValuesNotUnique` bullet
+- **Extends:** [`SPEC-2026-08-04-02`](#spec-2026-08-04-02--fieldvaluesnotunique-requires-two-operands-and-one-declared-kind), which is accepted and stays accepted; this entry adds the operand-kind and format facts that one did not reach.
+- **Delta:** the operator's static gate is narrower than "one declared kind" alone. Pinned kernel parser `CheckFeldListenBedingungImpl` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66` composes four checks for this operator, and `CheckEntityListenUtils.checkOnlyStringEnumNumberOrDateWithSameFormat` admits String, Enumeration, and Number unconditionally, admits **DATE**, and refuses every other kind with `MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED`. So TIME, DATETIME, DATE_RANGE, BOOLEAN, and CUSTOM are **not** admitted, and "date-like" means DATE alone. The same predicate additionally requires that all DATE operands share one **identical declared format string**, reporting the same code otherwise. The shared field-list prologue also applies `checkNoCategories` and this operator applies `checkAllAreValueValidation`, so an Enumeration category projection and a non-value validation are both refused.
+- **Runtime consequence:** `RuntimeController.feldWerteNichtEindeutig` branches once on whether the *first* operand is a Number field and otherwise collects `feldWertIntern`, which returns `validationCache.getWertXML(id).getWert()` — the stored value text. A DATE operand is therefore compared as stored text in its declared format rather than as a normalized calendar identity. The same-format gate is what makes that indistinguishable from comparing decoded dates on every admitted list, so the two accounts cannot be separated by any legal model; the distinction matters only to an implementation choosing what to retain.
+- **Evidence and basis:** kernel source only, and **not measured**. No local route reaches this static gate for temporal operands.
+- **Separating acceptance cases:** two DATE fields with the *same* declared format accepted; two DATE fields differing only in declared format rejected `MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED`; two TIME fields and two DATETIME fields each rejected with the same code; and one control pinning that two Number fields of differing scale stay accepted, so the format constraint is not read as a general same-declaration rule.
+- **Expected a12-dmkits surfaces:** the operator catalog's `FieldValuesNotUnique` constraints and invalid examples, `KERNEL-SEMANTICS.md` §9, and `FieldValuesNotUniqueAdmissionLawsTest` extended with the four cases above.
+- **Compatibility:** an implementation admitting TIME or DATETIME accepts models the kernel rejects, and one admitting mixed DATE formats both over-admits and then has to invent an identity across formats. Neither error is observable through a runtime value; both surface as a missing authoring rejection.
+- **Local status:** the clause is corrected in the same change. The Lean overload is **not yet implemented** for DATE: the remaining work is a value-list atom domain for dates plus the same-format admission gate, and [`SG7`](SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion) owns that entry packet. Category and value-validation conformity of the existing String/Enumeration overload was verified rather than assumed: its checked operands are stored-projection only.
+
 ### SPEC-2026-08-05-01 — `FieldValuesNotUnique` filter escalation is positional, not static
 
 - **Status:** pending
