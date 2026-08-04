@@ -42,8 +42,7 @@ theorem evalValuesNotUniqueVerdict_polarity {kind : ValueListKind}
     (evalValuesNotUniqueVerdict side = .fired .value ↔
       evalValuesNotUnique side.cells = .tru ∧ side.hasHaving = false) := by
   unfold evalValuesNotUniqueVerdict
-  cases duplicate : evalValuesNotUnique side.cells <;>
-    cases filtered : side.hasHaving <;> simp [duplicate, filtered]
+  cases evalValuesNotUnique side.cells <;> cases side.hasHaving <;> simp
 
 /-- Every authored all-empty Number aggregate identity is zero and both-directionally fillable. This is the kernel's conservative classification even when the selected field is unsigned. -/
 theorem numericExtremumAggregate_allEmpty
