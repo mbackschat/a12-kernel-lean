@@ -42,14 +42,15 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-None selected. The same-scope repeatable extremum operand family is closed for direct fields, operand-local `Abs`/Round, arithmetic children over any field-or-literal operand pair, immediate literals, and fieldless lists, with target admission on the shared scale predicate.
+Close the two audited operator gaps, smallest first: the canonical `FieldValuesNotUnique` field-list predicate, whose clause is already canonized in [`spec/07`](../spec/07-repetition-and-iteration.md#) with no Lean owner, and then the custom-field-type `ValidType`/`InvalidType` predicates under SG7. Both are bounded validation-side capsules with an existing canonical clause, so neither needs a keystone packet; measure the authoring surface through the structured `dmtool` route before writing Lean.
 
-The next candidate for this family is a division- or power-valued operand, which is the first shape to bring an unknown derived scale and the warning-suppression branch into an operand list; measure first whether the enclosing extremum must itself declare the suppression. Nested extrema, aggregate operands, and wider expression trees remain under [`SG5`](SEMANTICS-GAPS.md#sg5--numeric-authoring-and-target-completion).
+After those, the thin lanes in priority order are SG4 computation scheduling and state transition — whose five open items are concrete and whose entry gate is already passed for String, scalar Number, and the conservative repeatable Number packet — and SG10 model-owned checked message-template authoring. Both are keystone-scale and want a fresh working context plus their audit packet.
 
 ## Immediate sequence
 
-1. Choose the next family rather than extending this one by reflex: the extremum operand list has absorbed four capsules in sequence, and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) shows unstarted breadth elsewhere.
-2. If continuing here, measure a division- or power-valued operand's suppression requirement before writing Lean, since an unknown derived scale changes the target-admission branch rather than only the operand set.
+1. Measure `FieldValuesNotUnique` authoring: the plain field-list form, the starred `FieldValuesNotUnique(G*/f)` form, its error-field placement, and whether an invalid key suppresses the predicate, then add red cases beside the existing uniqueness owners rather than creating a new family.
+2. Then measure `ValidType`/`InvalidType` against a registered custom field type, and reuse the existing custom-field and String owners.
+3. Only then open SG4 or SG10, each with its own audit packet and its own consumer hypothesis.
 
 ## Parked boundaries
 
