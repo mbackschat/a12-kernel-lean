@@ -198,6 +198,15 @@ lake exe checkCandidateConformance --candidate .lake/build/bin/a12-kernel-refere
 lake env lean A12Kernel/Core.lean   # elaborate a single module with imports available
 ```
 
+**Throwaway probes are piped, never written.** To check a constructor name, an operand's static legality, or one evaluation before committing to an expected value in a conformance case, stream the snippet in instead of creating a scratch file:
+
+```sh
+printf 'import A12Kernel.Semantics.NumericAggregate\nopen A12Kernel\n#eval repr (someQuery args)\n' \
+  | lake env lean /dev/stdin
+```
+
+Run it from the repository root so Lake resolves the package; a path outside the package loses the build search path. This leaves nothing to clean up, so it never creates an untracked project file and never needs a deletion. Use it before writing expected values rather than inferring a fixture's legality from a failing case: probe first, then write the case. `#eval` needs a `Repr` instance and aborts on a term that depends on `sorry`, so project a decidable view when the type has none.
+
 The canonical red/green workflow, executable-example conventions, proof/trust boundary, external replay method, and final gate are documented in [`docs/TESTING.md`](docs/TESTING.md). Follow it for every semantic capsule.
 
 ## Layout and dependency spine
