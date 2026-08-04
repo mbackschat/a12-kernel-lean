@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.AddressedNumberExtremum
 
 /-! # Bounded addressed numeric-operation Analyze/Transform view
 
-This internal consumer view covers the completed same-scope repeatable textual conversions and direct-Number field, `Abs`, Round, and bounded operand-list extrema over direct fields, operand-local `Abs`/Round/arithmetic field pairs, and at most one immediate literal. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
+This internal consumer view covers the completed same-scope repeatable textual conversions and direct-Number field, `Abs`, Round, and bounded operand-list extrema over direct fields, operand-local `Abs`/Round/arithmetic children over field-or-literal operands, and at most one immediate outer literal. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
 -/
 
 namespace A12Kernel
@@ -26,6 +26,12 @@ inductive CheckedAddressedNumericOperation (model : FlatModel) where
   | extremum
       (operation : CheckedAddressedNumberExtremum model)
 
+/-- One inner operand identity of an arithmetic child. A literal retains its exact value and authored scale, because that scale participates in the child's derived scale. -/
+inductive AddressedNumberArithmeticOperandIdentity where
+  | field (field : FieldId)
+  | literal (decoded : DecodedNumericLiteral)
+  deriving Repr, DecidableEq
+
 /-- One bounded operand identity retained for consumer-visible extrema order. -/
 inductive AddressedNumberExtremumOperandIdentity where
   | field (field : FieldId)
@@ -33,7 +39,7 @@ inductive AddressedNumberExtremumOperandIdentity where
   | round (field : FieldId) (mode : DecimalRoundingMode)
       (places : Nat)
   | arithmetic (operation : NumericArithmeticOp)
-      (left right : FieldId)
+      (left right : AddressedNumberArithmeticOperandIdentity)
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
 
@@ -60,6 +66,18 @@ structure AddressedNumericOperationAnalysis where
 
 namespace CheckedAddressedNumericOperation
 
+private def arithmeticChildIdentity :
+    CheckedAddressedNumberArithmeticChild model →
+      AddressedNumberArithmeticOperandIdentity ×
+        AddressedNumberArithmeticOperandIdentity
+  | .fields pair =>
+      (.field pair.left.placement.sourceDeclaration.id,
+        .field pair.right.placement.sourceDeclaration.id)
+  | .fieldLiteral source decoded =>
+      (.field source.placement.sourceDeclaration.id, .literal decoded)
+  | .literalField decoded source =>
+      (.literal decoded, .field source.placement.sourceDeclaration.id)
+
 private def extremumOperandIdentity :
     CheckedAddressedNumberExtremumOperand model →
       AddressedNumberExtremumOperandIdentity
@@ -67,9 +85,9 @@ private def extremumOperandIdentity :
   | .abs source => .abs source.placement.sourceDeclaration.id
   | .round source mode places =>
       .round source.placement.sourceDeclaration.id mode places.val
-  | .arithmetic operation pair =>
-      .arithmetic operation pair.left.placement.sourceDeclaration.id
-        pair.right.placement.sourceDeclaration.id
+  | .arithmetic operation child =>
+      let inner := arithmeticChildIdentity child
+      .arithmetic operation inner.1 inner.2
   | .literal decoded => .literal decoded
 
 /-- Analyze exact read/write identity, repeatable scope, target policy, and conversion parameters without reconstructing an expression. -/

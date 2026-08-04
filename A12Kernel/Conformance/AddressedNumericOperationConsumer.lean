@@ -162,15 +162,21 @@ private def extremumRound (name : String) (mode : DecimalRoundingMode)
 
 private def extremumAddition (left right : String) :
     SurfaceAddressedNumberExtremumOperand :=
-  .addition (bare left) (bare right)
+  .arithmetic .add (.field (bare left)) (.field (bare right))
 
 private def extremumSubtraction (left right : String) :
     SurfaceAddressedNumberExtremumOperand :=
-  .subtraction (bare left) (bare right)
+  .arithmetic .subtract (.field (bare left)) (.field (bare right))
 
 private def extremumMultiplication (left right : String) :
     SurfaceAddressedNumberExtremumOperand :=
-  .multiplication (bare left) (bare right)
+  .arithmetic .multiply (.field (bare left)) (.field (bare right))
+
+/-- One product whose right operand is an immediate literal carrying its own authored scale. -/
+private def extremumMultiplicationLiteral (left : String)
+    (value : Rat) (authoredScale : Int) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .arithmetic .multiply (.field (bare left)) (.literal { value, authoredScale })
 
 private def extremumLiteral (value : Rat) (authoredScale : Int) :
     SurfaceAddressedNumberExtremumOperand :=
@@ -416,7 +422,7 @@ example :
         sourceFields := [amount.id, selected.id, converted.id]
         scope := [10]
         parameters := .extremum .minimum 2
-          [.arithmetic .add amount.id selected.id, .field converted.id]
+          [.arithmetic .add (.field amount.id) (.field selected.id), .field converted.id]
       } ∧
     fingerprintMatch?
       (literalExtremumLeaf? .minimum sameScaleTarget
@@ -450,7 +456,7 @@ example :
         sourceFields := [amount.id, selected.id, converted.id]
         scope := [10]
         parameters := .extremum .minimum 2
-          [.arithmetic .add amount.id selected.id, .field converted.id]
+          [.arithmetic .add (.field amount.id) (.field selected.id), .field converted.id]
       } := by
   native_decide
 
@@ -464,7 +470,7 @@ example :
         sourceFields := [amount.id, selected.id, converted.id]
         scope := [10]
         parameters := .extremum .minimum 2
-          [.arithmetic .subtract amount.id selected.id, .field converted.id]
+          [.arithmetic .subtract (.field amount.id) (.field selected.id), .field converted.id]
       } ∧
     fingerprintMatch?
       (literalExtremumLeaf? .minimum sameScaleTarget
@@ -481,7 +487,7 @@ example :
         sourceFields := [amount.id, selected.id, converted.id]
         scope := [10]
         parameters := .extremum .minimum 2
-          [.arithmetic .subtract amount.id selected.id, .field converted.id]
+          [.arithmetic .subtract (.field amount.id) (.field selected.id), .field converted.id]
       } := by
   native_decide
 
@@ -495,7 +501,7 @@ example :
         sourceFields := [amount.id, selected.id, converted.id]
         scope := [10]
         parameters := .extremum .minimum 2
-          [.arithmetic .multiply amount.id selected.id, .field converted.id]
+          [.arithmetic .multiply (.field amount.id) (.field selected.id), .field converted.id]
       } ∧
     fingerprintMatch?
       (literalExtremumLeaf? .minimum sameScaleTarget
@@ -526,7 +532,40 @@ example :
         sourceFields := [amount.id, selected.id, converted.id]
         scope := [10]
         parameters := .extremum .minimum 2
-          [.arithmetic .multiply amount.id selected.id, .field converted.id]
+          [.arithmetic .multiply (.field amount.id) (.field selected.id), .field converted.id]
+      } := by
+  native_decide
+
+/- An inner literal is retained as an operand identity, not folded into the derived scale: two products differing only in the literal's authored scale keep distinct fingerprints even though their values agree, and moving the literal to the other inner position also stays distinct. -/
+example :
+    analyzed? (literalExtremumLeaf? .minimum sameScaleTarget
+      (extremumMultiplicationLiteral "Amount" 1 0)
+      [extremumField "Converted"]) =
+      some {
+        targetField := sameScaleTarget.id
+        sourceFields := [amount.id, converted.id]
+        scope := [10]
+        parameters := .extremum .minimum 2
+          [.arithmetic .multiply (.field amount.id)
+            (.literal { value := 1, authoredScale := 0 }), .field converted.id]
+      } ∧
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumMultiplicationLiteral "Amount" 1 0)
+        [extremumField "Converted"])
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (extremumMultiplication "Amount" "Selected")
+        [extremumField "Converted"]) = none ∧
+    analyzed? (identityTransformed? (literalExtremumLeaf? .minimum
+      sameScaleTarget (extremumMultiplicationLiteral "Amount" 1 0)
+      [extremumField "Converted"])) =
+      some {
+        targetField := sameScaleTarget.id
+        sourceFields := [amount.id, converted.id]
+        scope := [10]
+        parameters := .extremum .minimum 2
+          [.arithmetic .multiply (.field amount.id)
+            (.literal { value := 1, authoredScale := 0 }), .field converted.id]
       } := by
   native_decide
 

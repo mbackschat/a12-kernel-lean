@@ -50,17 +50,29 @@ private def prepared : PreparedFlatStringContext model builtinStringPatternCompi
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
+private def fld (name : String) : SurfaceAddressedNumberArithmeticOperand :=
+  .field (bare name)
+
+private def lit (value : Rat) (authoredScale : Int) :
+    SurfaceAddressedNumberArithmeticOperand :=
+  .literal { value, authoredScale }
+
+private def arith (op : NumericArithmeticOp)
+    (left right : SurfaceAddressedNumberArithmeticOperand) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .arithmetic op left right
+
 private def addition (left right : String) :
     SurfaceAddressedNumberExtremumOperand :=
-  .addition (bare left) (bare right)
+  arith .add (fld left) (fld right)
 
 private def subtraction (left right : String) :
     SurfaceAddressedNumberExtremumOperand :=
-  .subtraction (bare left) (bare right)
+  arith .subtract (fld left) (fld right)
 
 private def multiplication (left right : String) :
     SurfaceAddressedNumberExtremumOperand :=
-  .multiplication (bare left) (bare right)
+  arith .multiply (fld left) (fld right)
 
 private def field (name : String) : SurfaceAddressedNumberExtremumOperand :=
   .field (bare name)
@@ -261,19 +273,95 @@ example : outcomesInto? cappedPrecise .maximum (multiplication "A" "B")
   ] := by
   native_decide
 
+/- An immediate literal is admitted at either inner position of the arithmetic child, and the child's derived scale consumes the literal's AUTHORED scale through the same operation rule: `1.5` contributes scale 1 and `1.50` contributes scale 2, so the identical value changes the legal target. -/
+example :
+    (operation? preciseTarget (arith .multiply (fld "A") (lit (3 / 2) 1))
+      [field "C"]).isSome = true ∧
+    (operation? preciseTarget (arith .multiply (lit (3 / 2) 1) (fld "A"))
+      [field "C"]).isSome = true ∧
+    (operation? widePrecision (arith .multiply (fld "A") (lit (3 / 2) 2))
+      [field "C"]).isSome = true ∧
+    (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
+        preciseTarget.id (arith .multiply (fld "A") (lit (3 / 2) 2))
+        [field "C"] .minimum with
+      | .error (.scaleMismatch 3 4) => true
+      | _ => false) = true ∧
+    (operation? target (arith .add (fld "A") (lit (3 / 2) 1))
+      [field "C"]).isSome = true := by
+  native_decide
+
+/- The child's literal does not consume the outer list's one-literal budget, and that outer budget stays exactly one. A child of two literals and a negative authored inner scale both fail closed: the kernel admits the constant-only child, but this Lean fragment does not model it. -/
+example :
+    (operation? preciseTarget (arith .multiply (fld "A") (lit (3 / 2) 1))
+      [field "C", literal 2 0]).isSome = true ∧
+    (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
+        preciseTarget.id (arith .multiply (fld "A") (lit (3 / 2) 1))
+        [field "C", literal 2 0, literal 3 0] .minimum with
+      | .error .tooManyLiterals => true
+      | _ => false) = true ∧
+    (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
+        target.id (arith .multiply (lit (3 / 2) 1) (lit 2 0))
+        [field "C"] .minimum with
+      | .error (.constantOnlyArithmetic 1) => true
+      | _ => false) = true ∧
+    (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
+        target.id (arith .multiply (fld "A") (lit (3 / 2) (-1)))
+        [field "C"] .minimum with
+      | .error (.negativeLiteralScale 1 (-1)) => true
+      | _ => false) = true := by
+  native_decide
+
+/- The literal replaces the second field entirely, so row 7 — whose `B` is target-rejected — is now clean: a retained child reads only its own dependencies. Empty times a literal is still zero, and a malformed source still poisons. -/
+example : outcomesInto? preciseTarget .minimum
+    (arith .multiply (fld "A") (lit (3 / 2) 1)) [field "C"] = some [
+    (addr preciseTarget.id 1, .accepted (stored 3375 3)),
+    (addr preciseTarget.id 2, .accepted (stored (-2) 0)),
+    (addr preciseTarget.id 3, .accepted (stored 0 0)),
+    (addr preciseTarget.id 4, .accepted (stored 3 0)),
+    (addr preciseTarget.id 5, .accepted (stored 0 0)),
+    (addr preciseTarget.id 6, .inheritedPoison .malformed),
+    (addr preciseTarget.id 7, .accepted (stored (-9) 0)),
+    (addr preciseTarget.id 8, .accepted (stored 20 0))
+  ] := by
+  native_decide
+
+/- Multiplication cannot separate the inner positions by value, so subtraction is the witness that authored inner order is retained through execution, not merely through identity. -/
+example :
+    (outcomesInto? target .minimum (arith .subtract (fld "A") (lit (3 / 2) 1))
+      [field "C"] >>= List.head?) =
+      some (addr target.id 1, .accepted (stored 75 2)) ∧
+    (outcomesInto? target .minimum (arith .subtract (lit (3 / 2) 1) (fld "A"))
+      [field "C"] >>= List.head?) =
+      some (addr target.id 1, .accepted (stored (-75) 2)) := by
+  native_decide
+
+private inductive InnerShape where
+  | field (field : FieldId)
+  | literal (decoded : DecodedNumericLiteral)
+  deriving Repr, DecidableEq
+
 private inductive OperandShape where
   | field (field : FieldId)
   | arithmetic (operation : NumericArithmeticOp)
-      (left right : FieldId)
+      (left right : InnerShape)
   | other
   deriving Repr, DecidableEq
+
+private def innerShapes : CheckedAddressedNumberArithmeticChild model →
+    InnerShape × InnerShape
+  | .fields pair =>
+      (.field pair.left.placement.sourceDeclaration.id,
+        .field pair.right.placement.sourceDeclaration.id)
+  | .fieldLiteral source decoded =>
+      (.field source.placement.sourceDeclaration.id, .literal decoded)
+  | .literalField decoded source =>
+      (.literal decoded, .field source.placement.sourceDeclaration.id)
 
 private def operandShape : CheckedAddressedNumberExtremumOperand model →
     OperandShape
   | .field source => .field source.placement.sourceDeclaration.id
-  | .arithmetic operation pair =>
-      .arithmetic operation pair.left.placement.sourceDeclaration.id
-      pair.right.placement.sourceDeclaration.id
+  | .arithmetic operation child =>
+      .arithmetic operation (innerShapes child).1 (innerShapes child).2
   | _ => .other
 
 /- Reversing only the inner operands changes the first inherited cause when both sources are poisoned, while retaining the outer operand position exactly. -/
@@ -285,7 +373,7 @@ example :
       pure (outcomes[5]?.map (·.outcome),
         operation.orderedOperands.map operandShape)) =
       some (some (.inheritedPoison .declaredConstraint),
-        [.arithmetic .add right.id left.id, .field direct.id]) := by
+        [.arithmetic .add (.field right.id) (.field left.id), .field direct.id]) := by
   native_decide
 
 /- Subtraction retains its distinct tag and reversed inner order, so the same first-cause separator remains visible to execution and Analyze consumers. -/
@@ -297,7 +385,7 @@ example :
       pure (outcomes[5]?.map (·.outcome),
         operation.orderedOperands.map operandShape)) =
       some (some (.inheritedPoison .declaredConstraint),
-        [.arithmetic .subtract right.id left.id, .field direct.id]) := by
+        [.arithmetic .subtract (.field right.id) (.field left.id), .field direct.id]) := by
   native_decide
 
 end A12Kernel.Conformance.AddressedNumberExtremumArithmetic

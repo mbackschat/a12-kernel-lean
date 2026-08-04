@@ -3,22 +3,62 @@ import A12Kernel.Elaboration.NumericExpression
 
 /-! # Same-scope repeatable bounded Number extrema
 
-This capsule retains a nonempty ordered list containing one or more checked Number sources, permits operand-local absolute-value, rounding, or arithmetic field-pair tags on those sources, and admits at most one immediate decoded literal. It delegates each local transformation and the authored-order fold to the existing scalar semantics, then reuses the shared exact-address target owner.
+This capsule retains a nonempty ordered list containing one or more checked Number sources, permits operand-local absolute-value, rounding, or one arithmetic node over two field-or-literal operands, and admits at most one immediate decoded literal in the outer list. It delegates each local transformation and the authored-order fold to the existing scalar semantics, then reuses the shared exact-address target owner.
 -/
 
 namespace A12Kernel
 
-/-- The bounded addressed surface admits direct Number fields, operand-local `Abs`, Round, addition, subtraction, or multiplication over those fields, and one immediate decoded literal. Wider numeric operations remain with the scalar expression owner. -/
+/-- One inner operand of an operand-local arithmetic child: a direct Number field or an immediate decoded literal. -/
+inductive SurfaceAddressedNumberArithmeticOperand where
+  | field (reference : SurfaceFieldPath)
+  | literal (decoded : DecodedNumericLiteral)
+  deriving Repr, DecidableEq
+
+/-- The bounded addressed surface admits direct Number fields, operand-local `Abs`, Round, or one arithmetic node over two field-or-literal operands, and one immediate decoded literal in the outer list. Wider numeric operations remain with the scalar expression owner. -/
 inductive SurfaceAddressedNumberExtremumOperand where
   | field (reference : SurfaceFieldPath)
   | abs (reference : SurfaceFieldPath)
   | round (reference : SurfaceFieldPath) (mode : DecimalRoundingMode)
       (places : RoundingPlaces)
-  | addition (left right : SurfaceFieldPath)
-  | subtraction (left right : SurfaceFieldPath)
-  | multiplication (left right : SurfaceFieldPath)
+  | arithmetic (operation : NumericArithmeticOp)
+      (left right : SurfaceAddressedNumberArithmeticOperand)
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
+
+/-- One retained arithmetic child of an extremum operand. Every admitted form keeps at least one certified Number source, whose placement owns the outer operand's target iteration; a constant-only child is authorable in the kernel but outside this fragment. -/
+inductive CheckedAddressedNumberArithmeticChild (model : FlatModel) where
+  | fields (pair : CheckedAddressedNumberPair model)
+  | fieldLiteral (source : CheckedAddressedNumberSource model)
+      (decoded : DecodedNumericLiteral)
+  | literalField (decoded : DecodedNumericLiteral)
+      (source : CheckedAddressedNumberSource model)
+
+namespace CheckedAddressedNumberArithmeticChild
+
+/-- The source whose already-certified placement owns the outer operand's target iteration. -/
+def primarySource : CheckedAddressedNumberArithmeticChild model →
+    CheckedAddressedNumberSource model
+  | .fields pair => pair.left
+  | .fieldLiteral source _ => source
+  | .literalField _ source => source
+
+/-- Every ordered field dependency this child actually reads. A retained literal contributes none, so a literal in place of a field also removes that field's failure from the row. -/
+def sources : CheckedAddressedNumberArithmeticChild model →
+    List (CheckedAddressedNumberSource model)
+  | .fields pair => [pair.left, pair.right]
+  | .fieldLiteral source _ => [source]
+  | .literalField _ source => [source]
+
+/-- The two operand scales in authored order, fed to the operation's own derived-scale rule. A literal contributes its authored scale, so the same value written `1.5` or `1.50` changes the derived scale. -/
+def operandScales : CheckedAddressedNumberArithmeticChild model → Nat × Nat
+  | .fields pair =>
+      (pair.left.source.info.scale, pair.right.source.info.scale)
+  | .fieldLiteral source decoded =>
+      (source.source.info.scale, decoded.authoredScale.toNat)
+  | .literalField decoded source =>
+      (decoded.authoredScale.toNat, source.source.info.scale)
+
+end CheckedAddressedNumberArithmeticChild
 
 /-- The bounded direct and unary-wrapper operations that can currently own a checked addressed Number source inside an extremum operand list. -/
 inductive AddressedNumberExtremumFieldOperation where
@@ -27,12 +67,12 @@ inductive AddressedNumberExtremumFieldOperation where
   | round (mode : DecimalRoundingMode) (places : RoundingPlaces)
   deriving Repr, DecidableEq
 
-/-- One field-backed extremum operand. Unary forms retain one checked source; pair forms retain the shared ordered pair certificate and its arithmetic node without embedding a target-owning binary computation. -/
+/-- One field-backed extremum operand. Unary forms retain one checked source; arithmetic forms retain their child and its operation without embedding a target-owning binary computation. -/
 inductive CheckedAddressedNumberExtremumFieldOperand (model : FlatModel) where
   | unary (operation : AddressedNumberExtremumFieldOperation)
       (numberSource : CheckedAddressedNumberSource model)
   | arithmetic (operation : NumericArithmeticOp)
-      (pair : CheckedAddressedNumberPair model)
+      (child : CheckedAddressedNumberArithmeticChild model)
 
 namespace CheckedAddressedNumberExtremumFieldOperand
 
@@ -40,13 +80,13 @@ namespace CheckedAddressedNumberExtremumFieldOperand
 def primarySource : CheckedAddressedNumberExtremumFieldOperand model →
     CheckedAddressedNumberSource model
   | .unary _ source => source
-  | .arithmetic _ pair => pair.left
+  | .arithmetic _ child => child.primarySource
 
 /-- Every ordered field dependency contributed by this one outer operand. -/
 def sources : CheckedAddressedNumberExtremumFieldOperand model →
     List (CheckedAddressedNumberSource model)
   | .unary _ source => [source]
-  | .arithmetic _ pair => [pair.left, pair.right]
+  | .arithmetic _ child => child.sources
 
 def targetField (operand : CheckedAddressedNumberExtremumFieldOperand model) :
     FieldId :=
@@ -75,6 +115,8 @@ private def literalPositionWithin
 inductive AddressedNumberExtremumElabError where
   | source (position : Nat) (cause : AddressedNumberSourceElabError)
   | pair (position : Nat) (cause : AddressedNumberPairElabError)
+  | constantOnlyArithmetic (position : Nat)
+  | negativeLiteralScale (position : Nat) (authored : Int)
   | tooManyLiterals
   | noFieldSource
   | incoherentTarget
@@ -102,16 +144,38 @@ private def checkNumberSourceOperand
       |>.mapError (.source position)
   pure (.source (.unary operation numberSource))
 
-private def checkNumberPairOperand
+/-- A child literal must carry a nonnegative authored scale: a negative one would lower a product's derived scale, and no current observation covers that shape. -/
+private def checkArithmeticLiteral (position : Nat)
+    (decoded : DecodedNumericLiteral) :
+    Except AddressedNumberExtremumElabError DecodedNumericLiteral :=
+  if 0 ≤ decoded.authoredScale then pure decoded
+  else throw (.negativeLiteralScale position decoded.authoredScale)
+
+private def checkNumberArithmeticOperand
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (position : Nat) (operation : NumericArithmeticOp)
-    (left right : SurfaceFieldPath) :
-    Except AddressedNumberExtremumElabError
-      (CheckedAddressedNumberExtremumSurfaceOperand model) := do
-  let pair ←
-    checkAddressedNumberPair model declaringGroup targetField left right
-      |>.mapError (.pair position)
-  pure (.source (.arithmetic operation pair))
+    (position : Nat) (operation : NumericArithmeticOp) :
+    SurfaceAddressedNumberArithmeticOperand →
+      SurfaceAddressedNumberArithmeticOperand →
+      Except AddressedNumberExtremumElabError
+        (CheckedAddressedNumberExtremumSurfaceOperand model)
+  | .field left, .field right => do
+      let pair ←
+        checkAddressedNumberPair model declaringGroup targetField left right
+          |>.mapError (.pair position)
+      pure (.source (.arithmetic operation (.fields pair)))
+  | .field left, .literal decoded => do
+      let checkedLiteral ← checkArithmeticLiteral position decoded
+      let source ←
+        checkAddressedNumberSource model declaringGroup targetField left
+          |>.mapError (.source position)
+      pure (.source (.arithmetic operation (.fieldLiteral source checkedLiteral)))
+  | .literal decoded, .field right => do
+      let checkedLiteral ← checkArithmeticLiteral position decoded
+      let source ←
+        checkAddressedNumberSource model declaringGroup targetField right
+          |>.mapError (.source position)
+      pure (.source (.arithmetic operation (.literalField checkedLiteral source)))
+  | .literal _, .literal _ => throw (.constantOnlyArithmetic position)
 
 private def checkNumberOperand
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
@@ -127,15 +191,9 @@ private def checkNumberOperand
   | .round reference mode places =>
       checkNumberSourceOperand model declaringGroup targetField position
         (.round mode places) reference
-  | .addition left right =>
-      checkNumberPairOperand model declaringGroup targetField position
-        .add left right
-  | .subtraction left right =>
-      checkNumberPairOperand model declaringGroup targetField position
-        .subtract left right
-  | .multiplication left right =>
-      checkNumberPairOperand model declaringGroup targetField position
-        .multiply left right
+  | .arithmetic operation left right =>
+      checkNumberArithmeticOperand model declaringGroup targetField position
+        operation left right
   | .literal decoded => pure (.literal decoded)
 
 private def checkNumberOperands
@@ -191,9 +249,9 @@ def CheckedAddressedNumberExtremumFieldOperand.resultScale
   | .unary .direct numberSource
   | .unary .abs numberSource => numberSource.source.info.scale
   | .unary (.round _ places) _ => places.val
-  | .arithmetic operation pair =>
-      operation.directFieldResultScale pair.left.source.info.scale
-        pair.right.source.info.scale
+  | .arithmetic operation child =>
+      operation.directFieldResultScale child.operandScales.1
+        child.operandScales.2
 
 def addressedNumberExtremumResultScale
     (first : CheckedAddressedNumberExtremumFieldOperand model)
@@ -283,6 +341,24 @@ def checkAddressedNumberExtremum
 
 abbrev AddressedNumberExtremumFault := AddressedNumericLeafFault
 
+namespace CheckedAddressedNumberArithmeticChild
+
+/-- Evaluate one arithmetic child at an already-certified row. A field pair delegates both ordered reads to the shared pair evaluator; a literal side contributes its exact decoded value at its authored position without a row read, so poison and empty-as-zero come only from the retained source. -/
+def evaluateAtPath (child : CheckedAddressedNumberArithmeticChild model)
+    (operation : NumericArithmeticOp) (input : CheckedDocument model)
+    (path : List Nat) :
+    Except AddressedNumberExtremumFault NumericComputationResult :=
+  let combine := NumericComputationResult.combineReached fun left right =>
+    .value (operation.eval left right)
+  match child with
+  | .fields pair => pair.evaluateAtPath input combine path
+  | .fieldLiteral source decoded =>
+      return combine (← source.evaluateAtPath input path) (.value decoded.value)
+  | .literalField decoded source =>
+      return combine (.value decoded.value) (← source.evaluateAtPath input path)
+
+end CheckedAddressedNumberArithmeticChild
+
 /-- The exact bounded checked operand retained for authored-order execution and consumer identity. -/
 inductive CheckedAddressedNumberExtremumOperand (model : FlatModel) where
   | field (source : CheckedAddressedNumberSource model)
@@ -290,7 +366,7 @@ inductive CheckedAddressedNumberExtremumOperand (model : FlatModel) where
   | round (source : CheckedAddressedNumberSource model)
       (mode : DecimalRoundingMode) (places : RoundingPlaces)
   | arithmetic (operation : NumericArithmeticOp)
-      (pair : CheckedAddressedNumberPair model)
+      (child : CheckedAddressedNumberArithmeticChild model)
   | literal (decoded : DecodedNumericLiteral)
 
 namespace CheckedAddressedNumberExtremum
@@ -304,7 +380,7 @@ private def asOperand
   | .unary .abs numberSource => .abs numberSource
   | .unary (.round mode places) numberSource =>
       .round numberSource mode places
-  | .arithmetic operation pair => .arithmetic operation pair
+  | .arithmetic operation child => .arithmetic operation child
 
 private def insertLiteral :
     Nat → DecodedNumericLiteral →
@@ -352,10 +428,7 @@ def evaluateAtPath
       return (← source.evaluateAtPath input path).absolute
   | .round source mode places =>
       return (← source.evaluateAtPath input path).round mode places
-  | .arithmetic operation pair =>
-      pair.evaluateAtPath input
-        (NumericComputationResult.combineReached fun left right =>
-          .value (operation.eval left right)) path
+  | .arithmetic operation child => child.evaluateAtPath operation input path
   | .literal decoded => pure (.value decoded.value)
 
 end CheckedAddressedNumberExtremumOperand
