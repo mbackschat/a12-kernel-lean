@@ -120,6 +120,8 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
   | .groupList _ operands =>
       (·.flatten) <$>
         operands.mapM (ResolvedGroupListOperand.referencePointers environment)
+  | .repeatableFieldPresence _ declaration =>
+      (concreteFieldPointer declaration environment).map ([·])
   | _ => .error .unclassifiedLeaf
 
 private def treePointers (environment : Env) :

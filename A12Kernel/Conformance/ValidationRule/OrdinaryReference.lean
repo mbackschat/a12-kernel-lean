@@ -189,18 +189,31 @@ private def outerPresenceGuard? :
     ordinaryIterationModel ["Order", "Sections"] .filled
     (ordinaryPath ["Order", "Sections"] "OuterAmount")).toOption
 
-/- An unclassified leaf fails its own projection, and fails the whole rule's projection when it is
-   only one branch. Silence would be read as "this rule references nothing", which no rule can be. -/
-example : conditionReferenceError? outerPresenceGuard? [(10, 2)] = some .unclassifiedLeaf := by
+/- An ordinary non-starred repeatable presence reference is bound by the rule's iteration scope, so
+   it is concrete at the firing row. -/
+example :
+    conditionReferences? outerPresenceGuard? [(10, 2)] =
+      some [{ field := outerAmount.id, coordinates := [.concrete 2] }] := by
   native_decide
 
+/- The guard's reference merges with the guarded leaf's rather than appearing twice: this is the
+   standard iteration-guard rule shape, projected end to end. -/
 example :
-    conditionReferenceError?
+    conditionReferences?
         (do
           let guard ← outerPresenceGuard?
           let aggregate ← comparisonCondition? outerWithInnerAggregateComparison?
           (guard.and aggregate).toOption)
-        [(10, 2)] = some .unclassifiedLeaf := by
+        [(10, 2)] = some [
+      { field := outerAmount.id, coordinates := [.concrete 2] },
+      { field := innerAmount.id, coordinates := [.concrete 2, .wildcard] }] := by
+  native_decide
+
+/- A leaf family this fragment does not classify still fails the whole rule's projection. Silence
+   would be read as "this rule references nothing", which no rule can be. -/
+example :
+    conditionReferenceError? innerGroupFilledCondition? [(10, 2)] =
+      some .unclassifiedLeaf := by
   native_decide
 
 end A12Kernel.Conformance.ValidationRule.OrdinaryReference
