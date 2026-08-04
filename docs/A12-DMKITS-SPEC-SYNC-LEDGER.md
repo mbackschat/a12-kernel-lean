@@ -1688,7 +1688,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Status:** pending
 - **Kind:** semantic correction
 - **Local revision:** resolve with `git log -S 'SPEC-2026-08-04-01'`
-- **a12-dmkits basis revision:** `3a63d0d5` (prose audited; measured with an `installDist` launcher built from the working tree at 2026-08-03 23:06, after `59d48160` and before `96ac98b7`)
+- **a12-dmkits basis revision:** `5c0d5f0395a45d4e0199662de097ecc7fb97b843` (launcher self-reported `clean` at that revision; every verdict below reproduced there after `9d10e682` made the built-from revision citable)
 - **Kernel behavior:** 30.8.1
 - **Canonical clause:** [`09-computations.md` scale gate](../spec/09-computations.md) and [`01-data-model.md` computation rules](../spec/01-data-model.md)
 - **Delta:** A computation's declared target scale is admitted by the same predicate the `==`/`!=` gate uses, not by equality. Equal scales pass; a **smaller** derived scale also passes while the entire operation retains multiplicative-constant capability, because the capable side pads up to the declared scale; a **larger** derived scale is rejected; an unknown derived scale is rejected absent `MVK_INVALID_COMPARE_DEC_PLACES` suppression. Equality is the special case reached as soon as any non-capable field reference joins the operation.
