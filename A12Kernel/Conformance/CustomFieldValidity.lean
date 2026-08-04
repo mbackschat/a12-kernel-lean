@@ -1,6 +1,8 @@
 import A12Kernel.Semantics.CustomFieldValidity
 
-/-! # A12Kernel.Conformance.CustomFieldValidity — explicit registered validity locks -/
+/-! # A12Kernel.Conformance.CustomFieldValidity — explicit validity locks over a partial registry
+
+The separating axes are registration state × fill state × polarity, which is the matrix the kernel was measured on. -/
 
 namespace A12Kernel.Conformance.CustomFieldValidity
 
@@ -52,11 +54,51 @@ example : evaluate .invalid (.unknown .malformed) = some .unknown := by
 example : evaluate .invalid (.value "") = some .unknown := by
   native_decide
 
-/- Checked construction resolves the exact registered name and rejects absence. -/
+/- Checked construction resolves the exact registered name; a differently cased name is a
+   legal miss rather than an error. -/
+example :
+    (match elaborateCustomFieldValidity world "ProjectCode" with
+    | .ok { name := "ProjectCode", validator? := some _ } => true
+    | _ => false) = true := by
+  native_decide
+
 example :
     (match elaborateCustomFieldValidity world "projectcode" with
-    | .error (.missingValidator "projectcode") => true
+    | .ok { name := "projectcode", validator? := none } => true
     | _ => false) = true := by
+  native_decide
+
+/- The model check's only name requirement is nonemptiness. -/
+example :
+    (match elaborateCustomFieldValidity world "" with
+    | .error .emptyTypeName => true
+    | _ => false) = true := by
+  native_decide
+
+/-! ## Unsupplied validator
+
+The model check does not consult the host registry, so an unregistered name is admitted and
+its runtime behaviour is degenerate rather than rejected. -/
+
+private def evaluateUnsupplied (operation : CustomFieldValidityOp)
+    (observation : CellObservation String) : Option Verdict :=
+  match elaborateCustomFieldValidity world "NoSuchType" with
+  | .error _ => none
+  | .ok checked => some (checked.eval operation observation)
+
+/- Both polarities fire VALUE on the same filled value, so they are not complements here. -/
+example : evaluateUnsupplied .valid (.value "ok") = some (.fired .value) := by
+  native_decide
+
+example : evaluateUnsupplied .invalid (.value "ok") = some (.fired .value) := by
+  native_decide
+
+/- The value-specified gate decides before any registry contact, so an empty field is
+   registration-blind. -/
+example : evaluateUnsupplied .valid .empty = some .unknown := by
+  native_decide
+
+example : evaluateUnsupplied .invalid (.value "") = some .unknown := by
   native_decide
 
 /- The declared-field path still supplies present effective bounds through the same context type. -/

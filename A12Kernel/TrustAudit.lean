@@ -1491,11 +1491,15 @@ run_cmd do
 #print axioms A12Kernel.customFieldValidationOutput_rejection_exact
 #print axioms A12Kernel.customFieldValidationOutput_acceptance_exact
 #print axioms A12Kernel.explicitCustomFieldValidationContext_exact
-#print axioms A12Kernel.elaborateCustomFieldValidity_missing
-#print axioms A12Kernel.elaborateCustomFieldValidity_resolved
+#print axioms A12Kernel.elaborateCustomFieldValidity_emptyName
+#print axioms A12Kernel.elaborateCustomFieldValidity_admits
 #print axioms A12Kernel.customFieldValidity_empty_unknown
+#print axioms A12Kernel.customFieldValidity_valueEmpty_unknown
 #print axioms A12Kernel.customFieldValidity_unavailable_unknown
+#print axioms A12Kernel.customFieldValidity_unsupplied_fires_both
+#print axioms A12Kernel.customFieldValidity_never_omission
 #print axioms A12Kernel.customFieldValidity_present_complement
+#print axioms A12Kernel.customFieldValidity_complement_needs_validator
 #print axioms A12Kernel.customFieldValidity_rejection_fires_invalid
 #print axioms A12Kernel.prepareCustomDeclarations_empty
 #print axioms A12Kernel.prepareCustomDeclarations_ordinary
