@@ -51,4 +51,39 @@ example :
     evalValuesNotUnique (numberSide []).cells = .fls := by
   native_decide
 
+/-! ## Firing polarity
+
+The polarity clause is kind-generic, so it is exhibited once here rather than restated for
+the token overload. -/
+
+private def filteredNumberSide (cells : List (ValueListCell .number)) :
+    ResolvedValueListSide .number :=
+  { numberSide cells with hasHaving := true }
+
+/- An unfiltered firing is value-typed, while a reached filter makes the same duplicate omission-typed even though both retained values are filled. -/
+example :
+    evalValuesNotUniqueVerdict (numberSide [.present 5, .present 5]) =
+      .fired .value ∧
+    evalValuesNotUniqueVerdict (filteredNumberSide [.present 5, .present 5]) =
+      .fired .omission := by
+  native_decide
+
+/- Missing potential does not escalate an unfiltered firing: a skipped empty cell and an uninstantiated declared tail can each only add a later duplicate, never remove the present one. This is the nearest wrong account, because the value-list quantifiers beside this operator do escalate on exactly that potential. -/
+example :
+    evalValuesNotUniqueVerdict (numberSide [.present 5, .present 5, .empty]) =
+      .fired .value ∧
+    evalValuesNotUniqueVerdict
+      { numberSide [.present 5, .present 5] with hasUninstantiatedTail := true } =
+      .fired .value := by
+  native_decide
+
+/- A filter escalates a firing rather than producing one, and it never converts suppression into a message. -/
+example :
+    evalValuesNotUniqueVerdict (filteredNumberSide [.present 5, .present 6]) =
+      .notFired ∧
+    evalValuesNotUniqueVerdict
+      (filteredNumberSide [.present 5, .unknown .malformed, .present 5]) =
+      .unknown := by
+  native_decide
+
 end A12Kernel

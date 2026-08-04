@@ -46,20 +46,20 @@ def elaborateTokenValuesNotUniqueSource (model : FlatModel)
 
 namespace CheckedTokenValuesNotUniqueSource
 
-/-- Evaluate the uniqueness predicate from one immutable model-certified checked document. Slots resolve in authored order and the first formally unavailable reached cell stops the scan. -/
+/-- Evaluate the uniqueness predicate from one immutable model-certified checked document. Slots resolve in authored order and the first formally unavailable reached cell stops the scan. The result carries firing polarity because a reached filter retypes the message. -/
 def evaluateCheckedDocumentValuesNotUnique
     (checked : CheckedTokenValuesNotUniqueSource model)
     (document : CheckedDocument model) (outer : Env) :
-    Except CheckedAddressingError K := do
+    Except CheckedAddressingError Verdict := do
   match ← scanResolvedValueListOperands
-      (state := ResolvedValueListSide .token) (terminal := K)
+      (state := ResolvedValueListSide .token) (terminal := Verdict)
       (fun operand => do
         let resolved ← operand.resolveCheckedValidationOperand document outer
         pure (.inl (resolved.valueListSideAt .validation)))
-      (fun _cause => K.unknown)
+      (fun _cause => Verdict.unknown)
       (fun accumulated _ side => accumulated.append side)
       checked.source.operands ResolvedValueListSide.empty with
-  | .inl side => pure (evalValuesNotUnique side.cells)
+  | .inl side => pure (evalValuesNotUniqueVerdict side)
   | .inr verdict => pure verdict
 
 end CheckedTokenValuesNotUniqueSource

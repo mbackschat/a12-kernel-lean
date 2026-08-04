@@ -20,6 +20,31 @@ theorem evalValuesNotUnique_unknown_of_unavailable {kind : ValueListKind}
   simp only [evalValuesNotUnique, scanDistinctCells, scanned]
   rfl
 
+/-- A reached filter never converts suppression into a message: an unavailable reached cell owns
+    the typed result in both filter states. This is the specialization of the suppression law above
+    to the polarity-bearing result, and it is the boundary that makes filter escalation a retyping
+    of an existing firing rather than an independent source of one. -/
+theorem evalValuesNotUniqueVerdict_unknown_of_unavailable {kind : ValueListKind}
+    (side : ResolvedValueListSide kind)
+    (unavailable : side.cells.any ValueListCell.isUnknown = true) :
+    evalValuesNotUniqueVerdict side = .unknown := by
+  simp [evalValuesNotUniqueVerdict,
+    evalValuesNotUnique_unknown_of_unavailable side.cells unavailable]
+
+/-- Firing polarity is decided by the reached filter alone: the omission type is available exactly
+    to a filtered duplicate, and the value type exactly to an unfiltered one. Nothing about the
+    selected cells beyond the duplicate itself can move it, which is what separates this operator
+    from its `hasMissingPotential`-escalating neighbours. -/
+theorem evalValuesNotUniqueVerdict_polarity {kind : ValueListKind}
+    (side : ResolvedValueListSide kind) :
+    (evalValuesNotUniqueVerdict side = .fired .omission ↔
+      evalValuesNotUnique side.cells = .tru ∧ side.hasHaving = true) ∧
+    (evalValuesNotUniqueVerdict side = .fired .value ↔
+      evalValuesNotUnique side.cells = .tru ∧ side.hasHaving = false) := by
+  unfold evalValuesNotUniqueVerdict
+  cases duplicate : evalValuesNotUnique side.cells <;>
+    cases filtered : side.hasHaving <;> simp [duplicate, filtered]
+
 /-- Every authored all-empty Number aggregate identity is zero and both-directionally fillable. This is the kernel's conservative classification even when the selected field is unsigned. -/
 theorem numericExtremumAggregate_allEmpty
     (op : NumericExtremumOp)

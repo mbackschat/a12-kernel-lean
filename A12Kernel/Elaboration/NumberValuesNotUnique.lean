@@ -19,24 +19,24 @@ def elaborateNumberValuesNotUniqueSource := @elaborateNumberEntitySource
 
 namespace CheckedNumberValuesNotUniqueSource
 
-/-- Evaluate the uniqueness predicate from one immutable model-certified checked document. Slots resolve in authored order and the first formally unavailable reached cell stops the scan, so no later star topology or filter is sampled. -/
+/-- Evaluate the uniqueness predicate from one immutable model-certified checked document. Slots resolve in authored order and the first formally unavailable reached cell stops the scan, so no later star topology or filter is sampled. The result carries firing polarity because a reached filter retypes the message. -/
 def evaluateCheckedDocumentValuesNotUnique
     (checked : CheckedNumberEntitySource model)
     (document : CheckedDocument model) (outer : Env) :
-    Except CheckedAddressingError K := do
+    Except CheckedAddressingError Verdict := do
   match ← scanResolvedValueListOperands
-      (state := ResolvedValueListSide .number) (terminal := K)
+      (state := ResolvedValueListSide .number) (terminal := Verdict)
       (fun operand => do
         -- The shared resolver's early terminal is always an operand-level formal
         -- unavailability, which this predicate reports as UNKNOWN.
         match ← operand.resolvedCheckedDocumentValidationAggregateSide
             document outer with
         | .inl side => pure (.inl side)
-        | .inr _ => pure (.inr K.unknown))
-      (fun _cause => K.unknown)
+        | .inr _ => pure (.inr Verdict.unknown))
+      (fun _cause => Verdict.unknown)
       (fun accumulated _ side => accumulated.append side)
       checked.operands ResolvedValueListSide.empty with
-  | .inl side => pure (evalValuesNotUnique side.cells)
+  | .inl side => pure (evalValuesNotUniqueVerdict side)
   | .inr verdict => pure verdict
 
 end CheckedNumberValuesNotUniqueSource

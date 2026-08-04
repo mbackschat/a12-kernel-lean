@@ -144,6 +144,23 @@ def evalValuesNotUnique {kind : ValueListKind}
   | .error _ => .unknown
   | .ok duplicate => if duplicate then .tru else .fls
 
+/-- Type one `FieldValuesNotUnique` firing. The predicate is value-polar on its own: a skipped
+    empty cell and an uninstantiated declared tail can each only *add* a later duplicate, so
+    neither offers a fill that clears the present one. A reached `Having` is different in kind
+    because it selects *which* values are compared, so filling a filter operand can remove a
+    currently duplicated value; the kernel therefore types a filtered firing as an omission even
+    when every retained value is filled. Escalation applies to a firing only: a filter neither
+    produces one nor overrides the shared present-scan's suppression.
+
+    This is deliberately **not** the `hasMissingPotential` escalation used by the value-list
+    quantifiers beside this operator. -/
+def evalValuesNotUniqueVerdict {kind : ValueListKind}
+    (side : ResolvedValueListSide kind) : Verdict :=
+  match evalValuesNotUnique side.cells with
+  | .tru => .fired (if side.hasHaving then .omission else .value)
+  | .fls => .notFired
+  | .unknown => .unknown
+
 /-- Evaluate Number-valued `NumberOfDifferentValues` over one statically homogeneous comparable family. Only distinct filled values count. Missing cells or a declared tail can only increase the current count; a reached filter can also remove currently selected values and is therefore both-directionally fillable. -/
 def evalDistinctCountAggregate
     (side : ResolvedValueListSide kind) : NumericOperand :=
