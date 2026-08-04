@@ -17,9 +17,6 @@ abbrev NumberValuesNotUniqueElabError := NumberEntityElabError
 /-- Admit one `FieldValuesNotUnique` operand list through the shared Number entity-list contract. -/
 def elaborateNumberValuesNotUniqueSource := @elaborateNumberEntitySource
 
-private def emptySide : ResolvedValueListSide .number :=
-  { cells := [], hasUninstantiatedTail := false, hasHaving := false }
-
 namespace CheckedNumberValuesNotUniqueSource
 
 /-- Evaluate the uniqueness predicate from one immutable model-certified checked document. Slots resolve in authored order and the first formally unavailable reached cell stops the scan, so no later star topology or filter is sampled. -/
@@ -38,7 +35,7 @@ def evaluateCheckedDocumentValuesNotUnique
         | .inr _ => pure (.inr K.unknown))
       (fun _cause => K.unknown)
       (fun accumulated _ side => accumulated.append side)
-      checked.operands emptySide with
+      checked.operands ResolvedValueListSide.empty with
   | .inl side => pure (evalValuesNotUnique side.cells)
   | .inr verdict => pure verdict
 

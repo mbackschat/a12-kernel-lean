@@ -46,9 +46,6 @@ def elaborateTokenValuesNotUniqueSource (model : FlatModel)
 
 namespace CheckedTokenValuesNotUniqueSource
 
-private def emptySide : ResolvedValueListSide .token :=
-  { cells := [], hasUninstantiatedTail := false, hasHaving := false }
-
 /-- Evaluate the uniqueness predicate from one immutable model-certified checked document. Slots resolve in authored order and the first formally unavailable reached cell stops the scan. -/
 def evaluateCheckedDocumentValuesNotUnique
     (checked : CheckedTokenValuesNotUniqueSource model)
@@ -61,7 +58,7 @@ def evaluateCheckedDocumentValuesNotUnique
         pure (.inl (resolved.valueListSideAt .validation)))
       (fun _cause => K.unknown)
       (fun accumulated _ side => accumulated.append side)
-      checked.source.operands emptySide with
+      checked.source.operands ResolvedValueListSide.empty with
   | .inl side => pure (evalValuesNotUnique side.cells)
   | .inr verdict => pure verdict
 

@@ -38,6 +38,14 @@ structure ResolvedValueListSide (kind : ValueListKind) where
   hasHaving : Bool
   hasNonRelevant : Bool := false
 
+namespace ResolvedValueListSide
+
+/-- The neutral accumulator for an authored-order operand scan: no cells, no declared tail, no filter, and relevant. Every ordered consumer starts here, so the value is owned once rather than restated per consumer. -/
+def empty {kind : ValueListKind} : ResolvedValueListSide kind :=
+  { cells := [], hasUninstantiatedTail := false, hasHaving := false }
+
+end ResolvedValueListSide
+
 namespace ValueListCell
 
 def isEmpty : ValueListCell kind → Bool

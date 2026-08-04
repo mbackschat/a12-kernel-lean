@@ -33,9 +33,6 @@ end CheckedTokenEntitySource
 
 namespace CheckedTokenEntitySource
 
-private def emptySide : ResolvedValueListSide .token :=
-  { cells := [], hasUninstantiatedTail := false, hasHaving := false }
-
 /-- Evaluate full validation in authored slot order. Every wildcard occurrence resolves independently, and the first unavailable reached cell stops before later topology or reads. -/
 def evaluateDistinctValidation (checked : CheckedTokenEntitySource model)
     (document : Document) (outer : Env)
@@ -49,7 +46,7 @@ def evaluateDistinctValidation (checked : CheckedTokenEntitySource model)
           directRead starRead)))
       (fun cause => .unknown cause)
       (fun accumulated _ side => accumulated.append side)
-      checked.operands emptySide with
+      checked.operands ResolvedValueListSide.empty with
   | .inl side => pure (evalDistinctCountAggregate side)
   | .inr result => pure result
 
@@ -66,7 +63,7 @@ def evaluateCheckedDocumentDistinctValidation
         pure (.inl (resolved.valueListSideAt .validation)))
       (fun cause => .unknown cause)
       (fun accumulated _ side => accumulated.append side)
-      checked.operands emptySide with
+      checked.operands ResolvedValueListSide.empty with
   | .inl side => pure (evalDistinctCountAggregate side)
   | .inr result => pure result
 
@@ -86,7 +83,7 @@ def evaluatePartialDistinctValidation (checked : CheckedTokenEntitySource model)
           directRead starRead)
         (fun cause => .evaluated (.unknown cause))
         (fun accumulated _ side => accumulated.append side)
-        checked.operands emptySide with
+        checked.operands ResolvedValueListSide.empty with
     | .inl side => pure (.evaluated (evalDistinctCountAggregate side))
     | .inr result => pure result
 
