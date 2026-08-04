@@ -132,6 +132,18 @@ def scanDistinctCells {kind : ValueListKind}
     Except FormalCause (List (ValueListAtom kind)) :=
   ValueListCell.scanPresent insertDistinctValue cells []
 
+/-- Evaluate `FieldValuesNotUnique` over one already-resolved homogeneous comparable side. A duplicate exists exactly when the distinct present values are fewer than the present values, so this reuses the same membership boundary as the distinct count instead of a second equality rule: Number atoms compare through the ordinary scale-19 comparison, canonical tokens exactly. Empty cells are skipped by the shared present-scan, so two empties are not a duplicate, and the first formally unavailable reached cell makes the whole predicate UNKNOWN whether or not a duplicate was already seen. -/
+def evalValuesNotUnique {kind : ValueListKind}
+    (cells : List (ValueListCell kind)) : K :=
+  let scanned := do
+    let distinct ← scanDistinctCells cells
+    let present ←
+      ValueListCell.scanPresent (kind := kind) (fun count _ => count + 1) cells 0
+    pure (decide (distinct.length < present))
+  match scanned with
+  | .error _ => .unknown
+  | .ok duplicate => if duplicate then .tru else .fls
+
 /-- Evaluate Number-valued `NumberOfDifferentValues` over one statically homogeneous comparable family. Only distinct filled values count. Missing cells or a declared tail can only increase the current count; a reached filter can also remove currently selected values and is therefore both-directionally fillable. -/
 def evalDistinctCountAggregate
     (side : ResolvedValueListSide kind) : NumericOperand :=

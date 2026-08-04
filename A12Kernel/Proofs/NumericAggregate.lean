@@ -9,6 +9,17 @@ These laws characterize one already-expanded and already-filtered Number selecti
 
 namespace A12Kernel
 
+/-- `FieldValuesNotUnique` suppresses whenever a reached cell is formally unavailable, whatever duplicates were already seen. This is the clause's suppression sentence as a universal law, and it holds through the shared present-scan rather than a predicate-specific rule. -/
+theorem evalValuesNotUnique_unknown_of_unavailable {kind : ValueListKind}
+    (cells : List (ValueListCell kind))
+    (unavailable : cells.any ValueListCell.isUnknown = true) :
+    evalValuesNotUnique cells = .unknown := by
+  rcases (valueListCell_scanPresent_error_iff
+    (insertDistinctValue (kind := kind)) cells []).mpr unavailable with
+    ⟨cause, scanned⟩
+  simp only [evalValuesNotUnique, scanDistinctCells, scanned]
+  rfl
+
 /-- Every authored all-empty Number aggregate identity is zero and both-directionally fillable. This is the kernel's conservative classification even when the selected field is unsigned. -/
 theorem numericExtremumAggregate_allEmpty
     (op : NumericExtremumOp)
