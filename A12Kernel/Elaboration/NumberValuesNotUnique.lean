@@ -19,26 +19,18 @@ def elaborateNumberValuesNotUniqueSource := @elaborateNumberEntitySource
 
 namespace CheckedNumberValuesNotUniqueSource
 
-/-- Evaluate the uniqueness predicate from one immutable model-certified checked document. Slots resolve in authored order and the first formally unavailable reached cell stops the scan, so no later star topology or filter is sampled. The result carries firing polarity because a reached filter retypes the message. -/
+/-- Evaluate the uniqueness predicate from one immutable model-certified checked document. Slots resolve in authored order and every reached cell reaches the scan, because this operator skips a formally unavailable cell instead of suppressing on it. The result carries firing polarity because a reached filter retypes the message.
+
+Deliberately **not** `resolvedCheckedDocumentValidationAggregateSide`: that resolver converts the first unavailable cell into an operand-level unknown terminal, which is what the aggregates beside this operator need and what this one must not do. -/
 def evaluateCheckedDocumentValuesNotUnique
     (checked : CheckedNumberEntitySource model)
-    (document : CheckedDocument model) (outer : Env) :
-    Except CheckedAddressingError Verdict := do
-  match ← scanResolvedValueListOperands
-      (state := List (ValueListCell .number × Bool)) (terminal := Verdict)
-      (fun operand => do
-        -- The shared resolver's early terminal is always an operand-level formal
-        -- unavailability, which this predicate reports as UNKNOWN.
-        match ← operand.resolvedCheckedDocumentValidationAggregateSide
-            document outer with
-        | .inl side => pure (.inl side)
-        | .inr _ => pure (.inr Verdict.unknown))
-      (fun _cause => Verdict.unknown)
-      (fun accumulated operand side =>
-        accumulated ++ side.cells.map (·, operand.hasHaving))
-      checked.operands [] with
-  | .inl tagged => pure (evalValuesNotUniqueVerdict tagged)
-  | .inr verdict => pure verdict
+    (document : CheckedDocument model) (outer : Env) : Except CheckedAddressingError Verdict := do
+  let tagged ← collectTaggedValueListCells
+    (fun operand => do
+      let resolved ← operand.resolveCheckedValidationOperand document outer
+      pure (resolved.valueListSideAt .validation))
+    checked.operands
+  pure (evalValuesNotUniqueVerdict tagged)
 
 end CheckedNumberValuesNotUniqueSource
 

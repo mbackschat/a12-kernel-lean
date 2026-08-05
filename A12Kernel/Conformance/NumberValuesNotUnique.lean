@@ -116,4 +116,74 @@ example :
     evalValuesNotUniqueVerdict (tagged true [.present 5, .present 6]) = .notFired := by
   native_decide
 
+/-! ## The checked-document route
+
+The clause above is only worth its measurement if the operator's own consumer reaches it. These cases run the checked operand list over an immutable checked document so the skip is locked where a real rule observes it, not only at the pure verdict.
+-/
+
+private def numberField (id : FieldId) (name : String) : FlatFieldDecl :=
+  { id, groupPath := ["Form"], name,
+    policy := { kind := .number { scale := 0, signed := true } } }
+
+private def model : FlatModel :=
+  { fields := [numberField 1 "A", numberField 2 "B", numberField 3 "C"] }
+
+private def prepared :
+    PreparedFlatStringContext model builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption.get (by native_decide)
+
+private def bare (field : String) : SurfaceFieldPath :=
+  { base := .relative 0, groups := [], field }
+
+private def threeFields? : Option (CheckedNumberValuesNotUniqueSource model) :=
+  (elaborateNumberValuesNotUniqueSource model ["Form"]
+    { first := .field (bare "A")
+      rest := [.field (bare "B"), .field (bare "C")] }).toOption
+
+/-- One placed nonrepeatable cell whose stored text is its own classification. -/
+private def value (field : FieldId) (stored : String) (raw : RawCell) :
+    ClassifiedCellInput :=
+  { address := { field, path := [] }, stored, raw }
+
+private def filled (field : FieldId) (number : Rat) (stored : String) :
+    ClassifiedCellInput :=
+  value field stored (.parsed (.num number))
+
+/-- A present cell the declaration rejected, which is the shape the peer measured as an
+    unconvertible operand. -/
+private def unconvertible (field : FieldId) : ClassifiedCellInput :=
+  value field "bad" (.rejected .malformed)
+
+private def checkedVerdict? (cells : List ClassifiedCellInput) : Option Verdict := do
+  let source ← threeFields?
+  let document ←
+    (checkDocument prepared "en_US" { instantiatedRows := [], cells }).toOption
+  (CheckedNumberValuesNotUniqueSource.evaluateCheckedDocumentValuesNotUnique
+    source document []).toOption
+
+/- Through the checked document, an unconvertible cell is skipped on either side of the duplicate
+   exactly as the pure clause says. This is the route that carries the a12-dmkits `ddaf2e13`
+   correction into a rule: suppressing here would answer UNKNOWN and the rule would fail to fire one
+   the kernel fires. -/
+example :
+    checkedVerdict? [filled 1 5 "5", filled 2 5 "5", unconvertible 3] =
+      some (.fired .value) ∧
+    checkedVerdict? [unconvertible 1, filled 2 5 "5", filled 3 5 "5"] =
+      some (.fired .value) := by
+  native_decide
+
+/- Two equal unconvertible cells are still not a duplicate once neither enters the comparison, so
+   the checked route separates the skip from a fire-anyway account just as the pure clause does. -/
+example :
+    checkedVerdict? [unconvertible 1, unconvertible 2] = some .notFired := by
+  native_decide
+
+/- The ordinary cases stay unchanged through the same route, so the skip is not bought by losing
+   the firing itself. -/
+example :
+    checkedVerdict? [filled 1 5 "5", filled 2 5 "5"] = some (.fired .value) ∧
+    checkedVerdict? [filled 1 5 "5", filled 2 6 "6"] = some .notFired := by
+  native_decide
+
 end A12Kernel

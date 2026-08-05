@@ -153,6 +153,20 @@ def scanResolvedValueListOperands {operand state terminal error : Type}
               scanResolvedValueListOperands resolve onUnavailable append remaining
                 (append accumulated operand side)
 
+/-- Concatenate every authored operand's cells in authored order, tagging each cell with its own operand's filter state.
+
+This is the deliberate opposite of `scanResolvedValueListOperands` on one axis: it applies **no** availability gate, so a formally unavailable cell stays in the stream and the consuming operator decides for itself whether to skip it or go non-evaluable. Use it only for an operator whose kernel counterpart owns its own loop rather than the shared all-cells combiner, which returns its non-relevant value at the first such cell.
+
+Resolution is total rather than lazy. A consumer that answers at an earlier cell still resolves every later operand; that is unobservable because resolution is pure and a checked model precludes its structural failures. -/
+def collectTaggedValueListCells {operand error : Type} {kind : ValueListKind}
+    (resolve : operand → Except error (ResolvedValueListSide kind)) :
+    List operand → Except error (List (ValueListCell kind × Bool))
+  | [] => pure []
+  | operand :: remaining => do
+      let side ← resolve operand
+      let rest ← collectTaggedValueListCells resolve remaining
+      pure (side.cells.map (·, side.hasHaving) ++ rest)
+
 /-- Compatibility view for established single-operand partial routes. New ordered routes retain nonrelevance on each `ResolvedValueListSide`; this wrapper remains the pre-existing scalar/one-star API until those callers are widened. -/
 structure ResolvedValueListQuantifierSide (kind : ValueListKind) where
   side : ResolvedValueListSide kind
