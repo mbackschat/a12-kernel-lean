@@ -52,6 +52,22 @@ theorem evalValuesNotUniqueVerdict_never_unknown {kind : ValueListKind}
     evalValuesNotUniqueVerdict tagged ≠ .unknown :=
   scanValuesNotUnique_never_unknown tagged [] false
 
+/-- The same guarantee at the **consumer** boundary, for any resolver whatever. A checked route that
+    collects its operands without an availability gate and then answers with the uniqueness verdict
+    cannot return UNKNOWN, so a suppressing gate reintroduced anywhere on that path becomes a proof
+    failure rather than a silent regression. Every overload's route theorem specializes this. -/
+theorem collectTaggedValueListCells_valuesNotUnique_never_unknown
+    {operand error : Type} {kind : ValueListKind}
+    (resolve : operand → Except error (ResolvedValueListSide kind))
+    (operands : List operand) :
+    (collectTaggedValueListCells resolve operands >>= fun tagged =>
+      pure (evalValuesNotUniqueVerdict tagged)) ≠ .ok .unknown := by
+  cases hCollected : collectTaggedValueListCells resolve operands with
+  | error _ => simp [Functor.map, Except.map]
+  | ok tagged =>
+      simp only [bind, Except.bind, pure, Except.pure, ne_eq, Except.ok.injEq]
+      exact evalValuesNotUniqueVerdict_never_unknown tagged
+
 /-- A uniformly unfiltered list can never reach a filter, so its firing is value-typed whatever its
     cells are. -/
 theorem scanValuesNotUnique_unfiltered_never_omission {kind : ValueListKind}
