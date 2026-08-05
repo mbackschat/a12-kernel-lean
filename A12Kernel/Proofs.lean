@@ -172,6 +172,7 @@ import A12Kernel.Proofs.NumericStarElaboration
 import A12Kernel.Proofs.NumericAggregate
 import A12Kernel.Proofs.NumberEntityList
 import A12Kernel.Proofs.NumericAggregateElaboration
+import A12Kernel.Proofs.StaticDiagnostic
 import A12Kernel.Proofs.ValuesNotUnique
 import A12Kernel.Proofs.TokenDistinctCount
 import A12Kernel.Proofs.TokenValueCount

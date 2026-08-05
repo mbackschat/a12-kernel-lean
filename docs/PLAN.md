@@ -45,14 +45,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-None. `FieldValuesNotUnique` is now closed across all four of its comparability categories except the Custom half of the text category, which is blocked on the custom-field declaration path. The next unit is the sequence below rather than a continuation.
+**Kernel static-diagnostic identity, one operator family at a time.** This is a deliberate course correction, chosen 2026-08-05 after measuring that the goal's static-legality half was near zero: `spec/` names 34 of roughly 57 in-scope `MVK_` codes while Lean referenced six, all in comments. The first family is field-list operand admission, closed over three classes. The mechanism is a vocabulary of established classes plus a per-family projection that returns `none` where no class is established, so coverage stays countable and no unmeasured correspondence is asserted. Modelling only *that* a model is refused loses an observable, and it hid a real divergence: the elaborator refused at the first offending operand in authored order, where the Kernel's gate applies to the whole list and reports a different class. [`SG9`](SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion) owns the axis and its two open questions.
 
 The thin lanes in priority order are SG4 computation scheduling and state transition — whose five open items are concrete and whose entry gate is already passed for String, scalar Number, and the conservative repeatable Number packet — and SG10 model-owned checked message-template authoring. Both are keystone-scale and want a fresh working context plus their audit packet.
 
 ## Immediate sequence
 
-1. **The reference channel's next slice is the older non-model-indexed `numeric` leaf**, which can reuse the same declaration sieve the `flat` leaf now uses, since neither fragment carries a starred operand. It is a classification against the existing shared coordinate rule rather than new architecture. [`SG10`](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration) owns the remaining obligations and their triggers, including the unstarred group operand that is refused and has no witness in the reused model.
-2. Opening SG4 requires its own audit packet and consumer hypothesis; it is the largest available semantic payoff and the thinnest lane.
+1. **Extend diagnostic identity to the Number and token `FieldValuesNotUnique` overloads.** They share the Kernel's admission gates with the temporal one, so this is the second consumer that justifies lifting the comparability-category table from the temporal module to [`FieldEntityList`](../A12Kernel/Elaboration/FieldEntityList.lean). Their error types are the *shared* entity-list ones used by other operators too, so the blast radius is real and the slice should start by measuring which of those operators share which classes rather than by editing the shared type.
+2. **Then the next operator family with measured refusal rows**, chosen by what the peer's admission-law tiers already assert. Prefer a family whose codes are measured over one that would need a new probe.
+3. **The reference channel's older non-model-indexed `numeric` leaf** remains ready and small: it reuses the same declaration sieve the `flat` leaf now uses, since neither fragment carries a starred operand. [`SG10`](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration) owns its remaining obligations, including the unstarred group operand that is refused and has no witness in the reused model.
+4. Opening SG4 requires its own audit packet and consumer hypothesis; it remains the largest single semantic payoff and the thinnest lane, deferred rather than dropped.
 
 ## Parked boundaries
 

@@ -36,6 +36,48 @@ theorem temporalValuesNotUnique_route_never_unknown
       checked document outer ≠ .ok .unknown :=
   collectTaggedValueListCells_valuesNotUnique_never_unknown _ _
 
+/-- **The kind gate never reports the mixing class.** This is the local half of the measured pre-emption: a Boolean beside a String reports the kind code with the mixing code observed *absent*, so whatever the kind gate refuses, its diagnostic is never `varyingTypesNotAllowed`. The elaborator runs this scan over the whole operand list before certification, so no authored order can substitute the mixing class for the kind class. -/
+theorem firstKindGateRefusal_never_mixing
+    (operands : List (ResolvedFieldEntityOperand model))
+    (refusal : TemporalValuesNotUniqueElabError) :
+    firstKindGateRefusal? operands = some refusal →
+      refusal.diagnostic? ≠ some .varyingTypesNotAllowed := by
+  induction operands with
+  | nil => intro refused; simp [firstKindGateRefusal?] at refused
+  | cons head remaining inductionHypothesis =>
+      intro refused
+      simp only [firstKindGateRefusal?] at refused
+      by_cases refusedByKind :
+          head.declaration.policy.kind.surfaceKind.fieldListAdmission ==
+            FieldListOperandAdmission.refusedByKind
+      · rw [if_pos refusedByKind] at refused
+        simp only [Option.some.injEq] at refused
+        subst refused
+        simp [TemporalValuesNotUniqueElabError.diagnostic?]
+      · rw [if_neg refusedByKind] at refused
+        cases later : firstKindGateRefusal? remaining with
+        | some deeper =>
+            rw [later] at refused
+            simp only [Option.some.injEq] at refused
+            subst refused
+            exact inductionHypothesis later
+        | none =>
+            rw [later] at refused
+            by_cases unestablished :
+                head.declaration.policy.kind.surfaceKind.fieldListAdmission ==
+                  FieldListOperandAdmission.unestablished
+            · rw [if_pos unestablished] at refused
+              simp only [Option.some.injEq] at refused
+              subst refused
+              simp [TemporalValuesNotUniqueElabError.diagnostic?]
+            · rw [if_neg unestablished] at refused
+              simp at refused
+
+/-- Only BOOLEAN is refused outright in this representation. DATE_RANGE, the Kernel's other outright refusal, has no declaration form here, so the table's measured scope is exactly one kind rather than two. -/
+theorem fieldListAdmission_refusedByKind_iff (kind : SurfaceScalarKind) :
+    kind.fieldListAdmission = .refusedByKind ↔ kind = .boolean := by
+  cases kind <;> simp [SurfaceScalarKind.fieldListAdmission]
+
 /-- The certificate's format scan says what the temporal admission gate claims: **every** operand carries the list's one declared format. The elaborator stores the scan result, so this is what turns that stored fact into the gate a consumer can rely on. -/
 theorem temporalValuesNotUnique_oneDeclaredFormat
     (checked : CheckedTemporalValuesNotUniqueSource model) :

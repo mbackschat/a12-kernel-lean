@@ -38,6 +38,11 @@ def directFieldId? : ResolvedFieldEntityOperand model → Option FieldId
   | .field declaration => some declaration.id
   | .star _ | .starHaving _ _ => none
 
+/-- The model declaration this slot reads, whatever its addressing form. Kind-neutral, so a family's admission gate can classify every slot without repeating the star/direct split. -/
+def declaration : ResolvedFieldEntityOperand model → FlatFieldDecl
+  | .field declaration => declaration
+  | .star source | .starHaving source _ => source.declaration
+
 end ResolvedFieldEntityOperand
 
 /-- The source-shape failures shared by every homogeneous aggregate family. -/

@@ -597,6 +597,21 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ## Entries
 
+### SPEC-2026-08-05-04 — a field-list admission gate applies to the whole operand list, so authored position does not select the diagnostic class
+
+- **Status:** pending
+- **Kind:** semantic correction
+- **Local revision:** resolve with `git log -S 'SPEC-2026-08-05-04'`
+- **a12-dmkits basis revision:** `ddaf2e13`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`07-repetition-and-iteration.md`](../spec/07-repetition-and-iteration.md) `FieldValuesNotUnique` admission gates
+- **Delta:** `ddaf2e13` established that the kind gate pre-empts the mixing gate, measured with the pre-empted code asserted absent. The clause recorded the pre-emption but not its **scope**, and the natural implementation reading is wrong. Each gate applies to the entire operand list, so an inadmissible operand authored *after* a category-mismatched one still reports the kind code. An implementation that refuses at the first offending operand in authored order reports the mixing class instead, for a legal-model consumer to act on. This project had exactly that defect until the case below was written, which is the reason for the entry: the prose is true and still admits the wrong implementation.
+- **Evidence and basis:** the pre-emption itself is measured at `ddaf2e13` (Boolean beside String, mixing code absent). The **order-independence** is not: that measurement fixes one operand order, and no probe here reaches the Kernel. The generalization is source-shaped rather than observed, since a gate over an operand list is not positional, but it is stated as a generalization and should be confirmed before either project relies on it.
+- **Separating acceptance cases:** a three-operand temporal list of `Date`, `String`, `Boolean` in that order must report `MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED` with `MVK_VARYING_TYPES_NOT_ALLOWED` asserted **absent**; the same three operands reordered to `Date`, `Boolean`, `String` must report the same class. A presence-only assertion passes under both accounts and does not separate them, which is the same trap the `ddaf2e13` gate-order rows avoided. A negative result — the Kernel reporting the mixing class for the first ordering — would mean the gates are evaluated per operand in authored order, and this project's clause and elaborator would both be corrected instead.
+- **Expected a12-dmkits surfaces:** the admission-laws tier that already asserts gate order, extended with the reordered pair; and the interpreter's or catalog's admission check if it refuses at the first offending operand.
+- **Compatibility:** never changes whether a model is rejected, only which class is reported. That matters to an importer deciding repairability, to a refactoring tool preserving the class its transformation triggers, and to any Explain surface naming the failure.
+- **Local status:** [`spec/07`](../spec/07-repetition-and-iteration.md) states the whole-list scope with the fail-fast reading named as wrong. The elaborator applies the kind gate over the whole list before certification, one law proves the kind gate never reports the mixing class, and a retained case pins both operand orders; the pre-fix fail-fast implementation fails exactly that case.
+
 ### SPEC-2026-08-05-03 — the temporal `FieldValuesNotUnique` identity is stored text, and its agreement with decoded values is an assumption rather than a measured equivalence
 
 - **Status:** pending

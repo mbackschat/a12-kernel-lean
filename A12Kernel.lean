@@ -139,6 +139,7 @@ import A12Kernel.Elaboration.NumericAggregate
 import A12Kernel.Elaboration.TokenDistinctCount
 import A12Kernel.Elaboration.NumberValuesNotUnique
 import A12Kernel.Elaboration.TokenValuesNotUnique
+import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Elaboration.TemporalValuesNotUnique
 import A12Kernel.Elaboration.TokenValueCount
 import A12Kernel.Elaboration.FirstFilledValue

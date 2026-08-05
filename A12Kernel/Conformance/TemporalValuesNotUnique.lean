@@ -42,6 +42,11 @@ private def stringField (id : FieldId) (name : String) : FlatFieldDecl :=
   { id, groupPath := ["Form"], name, policy := { kind := .string },
     stringPolicy := { lineBreaksPermitted := true } }
 
+/-- A Boolean declaration, which the Kernel refuses by kind rather than by category. -/
+private def booleanField : FlatFieldDecl :=
+  { id := 10, groupPath := ["Form"], name := "Flag",
+    policy := { kind := .boolean } }
+
 /-- A temporal declaration carrying no declared format at all, which this operator needs and
     therefore refuses to default. -/
 private def formatlessField : FlatFieldDecl :=
@@ -58,7 +63,8 @@ private def model : FlatModel := {
     timeField 6 "Clock" "HH:mm:ss",
     stringField 7 "Code",
     stringField 8 "Alternate",
-    formatlessField]
+    formatlessField,
+    booleanField]
 }
 
 private def bare (field : String) : SurfaceFieldPath :=
@@ -74,6 +80,18 @@ private def error? (first second : String) :
   match elaborateTemporalValuesNotUniqueSource model ["Form"]
       { first := .field (bare first), rest := [.field (bare second)] } with
   | .error error => some error
+  | .ok _ => none
+
+private def diagnostic? (first second : String) :
+    Option KernelStaticDiagnostic :=
+  (error? first second).bind TemporalValuesNotUniqueElabError.diagnostic?
+
+private def tripleDiagnostic? (first second third : String) :
+    Option KernelStaticDiagnostic :=
+  match elaborateTemporalValuesNotUniqueSource model ["Form"]
+      { first := .field (bare first)
+        rest := [.field (bare second), .field (bare third)] } with
+  | .error error => error.diagnostic?
   | .ok _ => none
 
 /-! ## Admission keys on the format, not the kind -/
@@ -105,11 +123,11 @@ example :
       some (.mixedDeclaredFormats ["Form", "Clock"] "HH:mm:ss" "dd.MM.yyyy") := by
   native_decide
 
-/- A non-temporal operand is a different refusal from a format mismatch: it is the wrong
-   comparability category, and it is reported with the offending kind in either operand position. -/
+/- A non-temporal operand of an admissible kind is a category mismatch, reported with the offending
+   kind in either operand position, and it is a different refusal from a format mismatch. -/
 example :
-    error? "Start" "Code" = some (.nonTemporalOperand ["Form", "Code"] .string) ∧
-    error? "Code" "Start" = some (.nonTemporalOperand ["Form", "Code"] .string) := by
+    error? "Start" "Code" = some (.mixedCategories ["Form", "Code"] .string) ∧
+    error? "Code" "Start" = some (.mixedCategories ["Form", "Code"] .string) := by
   native_decide
 
 /- A temporal operand whose declaration carries no format fails closed rather than defaulting to
@@ -215,6 +233,49 @@ example :
     verdict? "Start" "End"
         [rejectedCell 1 "01.02.2020", rejectedCell 2 "01.02.2020"] =
       some .notFired := by
+  native_decide
+
+/-! ## Kernel diagnostic classes, and the gate order that selects them
+
+The Kernel runs two independent gates and **the kind gate runs first**. That order is observable
+because the pre-empted code is measured *absent*, not merely because one code appears.
+-/
+
+/- An inadmissible kind and a category mismatch are different Kernel classes, so they must not
+   collapse into one local refusal. -/
+example :
+    diagnostic? "Start" "Flag" =
+      some .onlyStringEnumNumberDateAllowed ∧
+    diagnostic? "Start" "Code" = some .varyingTypesNotAllowed := by
+  native_decide
+
+/- The temporal format rule reports the **kind** code rather than a format-specific one, both for two
+   temporal operands whose formats disagree and for a cross-temporal list. -/
+example :
+    diagnostic? "Start" "Other" =
+      some .onlyStringEnumNumberDateAllowed ∧
+    diagnostic? "Start" "Clock" =
+      some .onlyStringEnumNumberDateAllowed := by
+  native_decide
+
+/- Below the required arity, the class is the arity code. -/
+example :
+    (match elaborateTemporalValuesNotUniqueSource model ["Form"]
+        { first := .field (bare "Start"), rest := [] } with
+     | .error error => error.diagnostic?
+     | .ok _ => none) = some .paramSizeInvalidN := by
+  native_decide
+
+/- **Gate order.** With an inadmissible Boolean authored *after* a category-mismatched String, the
+   Kernel still reports the kind code and measures the mixing code absent. A fail-fast elaborator
+   walking operands in authored order reports the String's category mismatch instead, which is the
+   wrong class for a legal-model consumer to act on. Both orders must therefore answer with the kind
+   code. -/
+example :
+    tripleDiagnostic? "Start" "Code" "Flag" =
+      some .onlyStringEnumNumberDateAllowed ∧
+    tripleDiagnostic? "Start" "Flag" "Code" =
+      some .onlyStringEnumNumberDateAllowed := by
   native_decide
 
 end A12Kernel.Conformance.TemporalValuesNotUnique
