@@ -1035,6 +1035,8 @@ run_cmd do
 #print axioms A12Kernel.collectTaggedValueListCells_valuesNotUnique_never_unknown
 #print axioms A12Kernel.numberValuesNotUnique_route_never_unknown
 #print axioms A12Kernel.tokenValuesNotUnique_route_never_unknown
+#print axioms A12Kernel.temporalValuesNotUnique_route_never_unknown
+#print axioms A12Kernel.temporalValuesNotUnique_oneDeclaredFormat
 #print axioms A12Kernel.scanValuesNotUnique_unfiltered_never_omission
 #print axioms A12Kernel.scanValuesNotUnique_allFiltered_never_value
 #print axioms A12Kernel.numericExtremumAggregate_allEmpty
