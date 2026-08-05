@@ -1029,10 +1029,11 @@ run_cmd do
 #print axioms A12Kernel.valueListCell_scanPresent_error_iff
 #print axioms A12Kernel.valueListCell_scanPresent_allEmpty
 #print axioms A12Kernel.valueListCell_scanPresent_firstUnknown
-#print axioms A12Kernel.evalValuesNotUnique_unknown_of_unavailable
-#print axioms A12Kernel.evalValuesNotUniqueVerdict_unknown_of_unavailable
-#print axioms A12Kernel.evalValuesNotUniqueVerdict_polarity
-#print axioms A12Kernel.valuesNotUniqueFilterReached_unfiltered
+#print axioms A12Kernel.scanValuesNotUnique_unavailable_like_empty
+#print axioms A12Kernel.scanValuesNotUnique_never_unknown
+#print axioms A12Kernel.evalValuesNotUniqueVerdict_never_unknown
+#print axioms A12Kernel.scanValuesNotUnique_unfiltered_never_omission
+#print axioms A12Kernel.scanValuesNotUnique_allFiltered_never_value
 #print axioms A12Kernel.numericExtremumAggregate_allEmpty
 #print axioms A12Kernel.numericExtremumAggregate_singleton_fixed
 #print axioms A12Kernel.numericExtremumAggregate_singleton_tail

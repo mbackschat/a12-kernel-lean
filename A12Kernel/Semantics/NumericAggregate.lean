@@ -132,60 +132,49 @@ def scanDistinctCells {kind : ValueListKind}
     Except FormalCause (List (ValueListAtom kind)) :=
   ValueListCell.scanPresent insertDistinctValue cells []
 
-/-- Evaluate `FieldValuesNotUnique` over one already-resolved homogeneous comparable side. A duplicate exists exactly when the distinct present values are fewer than the present values, so this reuses the same membership boundary as the distinct count instead of a second equality rule: Number atoms compare through the ordinary scale-19 comparison, canonical tokens exactly. Empty cells are skipped by the shared present-scan, so two empties are not a duplicate, and the first formally unavailable reached cell makes the whole predicate UNKNOWN whether or not a duplicate was already seen. -/
-def evalValuesNotUnique {kind : ValueListKind}
-    (cells : List (ValueListCell kind)) : K :=
-  let scanned := do
-    let distinct ← scanDistinctCells cells
-    let present ←
-      ValueListCell.scanPresent (kind := kind) (fun count _ => count + 1) cells 0
-    pure (decide (distinct.length < present))
-  match scanned with
-  | .error _ => .unknown
-  | .ok duplicate => if duplicate then .tru else .fls
+/-- One ordered `FieldValuesNotUnique` scan over authored operand order, each cell tagged with
+    whether its own operand carries a filter. Truth and polarity are decided together because the
+    engine answers at the duplicate it finds, so the polarity depends on how far the scan got.
 
-/-- Whether the ordered scan has already reached a filtered operand's present cell when the first
-    duplicate appears.
+    **Only a compared value participates.** An empty cell is skipped, and a formally unavailable cell
+    is skipped *exactly like an empty*: it neither suppresses the predicate nor contributes a
+    comparable value. Two equal unavailable values are therefore not a duplicate, while a duplicate on
+    either side of one still fires. This is the measured behavior, not the general formal-error
+    suppression that referencing rules otherwise obey, and it is why this operator's own result
+    carries no UNKNOWN at all — relevance and addressing failures remain their owners' concern.
 
-    The filter flag is **positional, not static**: the engine accumulates it while scanning operands
-    in authored order and answers at the moment a duplicate is detected, so a filter authored *after*
-    the duplicate-detecting cell is never seen. Present cells alone move it, because an empty or
-    unavailable cell is not collected. -/
-def valuesNotUniqueFilterReached {kind : ValueListKind}
+    **The filter flag is positional, not static.** It moves only when a filtered operand yields a
+    compared value, and the scan answers at the first duplicate, so a filter authored *after* that
+    duplicate is never seen, and a filtered operand contributing nothing but empty or unavailable
+    cells never moves it. Mere specifiedness is not enough. A reached filter retypes a firing to
+    omission because it selects *which* values are compared, so filling a filter operand can remove a
+    currently duplicated value.
+
+    Two nearest wrong accounts: a static "some operand is filtered" test, which agrees on a single
+    operand and on uniformly filtered or unfiltered lists and disagrees exactly when a filter follows
+    the duplicate; and the `hasMissingPotential` escalation used by the value-list quantifiers beside
+    this operator, which no skipped empty or uninstantiated declared tail triggers here because either
+    can only *add* a later duplicate, never clear the present one.
+
+    Membership stays on the shared comparable primitives: Number atoms compare through the ordinary
+    scale-19 boundary, canonical tokens exactly. -/
+def scanValuesNotUnique {kind : ValueListKind}
     (seen : List (ValueListAtom kind)) (filterReached : Bool) :
-    List (ValueListCell kind × Bool) → Bool
-  | [] => false
+    List (ValueListCell kind × Bool) → Verdict
+  | [] => .notFired
   | (.present value, filtered) :: remaining =>
       let reached := filterReached || filtered
       if seen.any fun candidate => ValueListAtom.equal candidate value then
-        reached
+        .fired (if reached then .omission else .value)
       else
-        valuesNotUniqueFilterReached (insertDistinctValue seen value) reached remaining
+        scanValuesNotUnique (insertDistinctValue seen value) reached remaining
   | (.empty, _) :: remaining | (.unknown _, _) :: remaining =>
-      valuesNotUniqueFilterReached seen filterReached remaining
+      scanValuesNotUnique seen filterReached remaining
 
-/-- Type one `FieldValuesNotUnique` firing over the authored operand order, each cell tagged with
-    whether its own operand carries a filter.
-
-    The predicate is value-polar on its own: a skipped empty cell and an uninstantiated declared tail
-    can each only *add* a later duplicate, so neither offers a fill that clears the present one. A
-    reached `Having` is different in kind because it selects *which* values are compared, so filling a
-    filter operand can remove a currently duplicated value; the engine therefore types such a firing
-    as an omission even when every retained value is filled. Escalation applies to a firing only: a
-    filter neither produces one nor overrides the shared present-scan's suppression, and it retypes
-    only when the scan reached it first.
-
-    This is deliberately **not** the `hasMissingPotential` escalation used by the value-list
-    quantifiers beside this operator, and deliberately not a static "some operand is filtered" test:
-    those two accounts agree on a single operand and on a uniformly filtered or uniformly unfiltered
-    list, and disagree exactly when a filter follows the duplicate. -/
+/-- Evaluate one `FieldValuesNotUnique` operand list from the neutral scan state. -/
 def evalValuesNotUniqueVerdict {kind : ValueListKind}
     (tagged : List (ValueListCell kind × Bool)) : Verdict :=
-  match evalValuesNotUnique (tagged.map (·.1)) with
-  | .tru =>
-      .fired (if valuesNotUniqueFilterReached [] false tagged then .omission else .value)
-  | .fls => .notFired
-  | .unknown => .unknown
+  scanValuesNotUnique [] false tagged
 
 /-- Evaluate Number-valued `NumberOfDifferentValues` over one statically homogeneous comparable family. Only distinct filled values count. Missing cells or a declared tail can only increase the current count; a reached filter can also remove currently selected values and is therefore both-directionally fillable. -/
 def evalDistinctCountAggregate

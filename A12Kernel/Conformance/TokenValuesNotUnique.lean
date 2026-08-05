@@ -4,23 +4,27 @@ import A12Kernel.Elaboration.TokenValuesNotUnique
 
 namespace A12Kernel
 
-private def tokenSide (cells : List (ValueListCell .token)) :
-    ResolvedValueListSide .token :=
-  { cells, hasUninstantiatedTail := false, hasHaving := false }
+private def tokens (cells : List (ValueListCell .token)) :
+    List (ValueListCell .token × Bool) :=
+  cells.map (·, false)
 
 /- Canonical token identity is exact, so a duplicate must match byte for byte and case differences are two distinct values. -/
 example :
-    evalValuesNotUnique (tokenSide [.present "A", .present "A"]).cells = .tru ∧
-    evalValuesNotUnique (tokenSide [.present "A", .present "a"]).cells = .fls := by
+    evalValuesNotUniqueVerdict (tokens [.present "A", .present "A"]) =
+      .fired .value ∧
+    evalValuesNotUniqueVerdict (tokens [.present "A", .present "a"]) = .notFired := by
   native_decide
 
-/- The shared present-scan skips empties here exactly as it does for Number, and a reached formal unavailability suppresses. -/
+/- The ordered scan skips empties here exactly as it does for Number, and it skips a formally
+   unavailable cell the same way rather than suppressing: the duplicate around one still fires, while
+   two equal unavailable values are not a duplicate at all. -/
 example :
-    evalValuesNotUnique (tokenSide [.empty, .empty]).cells = .fls ∧
-    evalValuesNotUnique (tokenSide [.present "A", .empty]).cells = .fls ∧
-    evalValuesNotUnique
-      (tokenSide [.present "A", .unknown .malformed, .present "A"]).cells
-      = .unknown := by
+    evalValuesNotUniqueVerdict (tokens [.empty, .empty]) = .notFired ∧
+    evalValuesNotUniqueVerdict (tokens [.present "A", .empty]) = .notFired ∧
+    evalValuesNotUniqueVerdict
+      (tokens [.present "A", .unknown .malformed, .present "A"]) = .fired .value ∧
+    evalValuesNotUniqueVerdict
+      (tokens [.unknown .malformed, .unknown .malformed]) = .notFired := by
   native_decide
 
 private def stringField (id : FieldId) (name : String) : FlatFieldDecl :=
@@ -58,9 +62,9 @@ example :
 
 /- Stored Enumeration tokens fold through the same exact-identity membership as String, so the evaluation half needs no kind-specific rule. -/
 example :
-    evalValuesNotUnique (tokenSide [.present "A", .present "B", .present "A"]).cells
-      = .tru ∧
-    evalValuesNotUnique (tokenSide [.present "A", .present "B"]).cells = .fls := by
+    evalValuesNotUniqueVerdict (tokens [.present "A", .present "B", .present "A"]) =
+      .fired .value ∧
+    evalValuesNotUniqueVerdict (tokens [.present "A", .present "B"]) = .notFired := by
   native_decide
 
 end A12Kernel

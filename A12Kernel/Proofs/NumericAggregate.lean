@@ -9,57 +9,82 @@ These laws characterize one already-expanded and already-filtered Number selecti
 
 namespace A12Kernel
 
-/-- `FieldValuesNotUnique` suppresses whenever a reached cell is formally unavailable, whatever duplicates were already seen. This is the clause's suppression sentence as a universal law, and it holds through the shared present-scan rather than a predicate-specific rule. -/
-theorem evalValuesNotUnique_unknown_of_unavailable {kind : ValueListKind}
-    (cells : List (ValueListCell kind))
-    (unavailable : cells.any ValueListCell.isUnknown = true) :
-    evalValuesNotUnique cells = .unknown := by
-  rcases (valueListCell_scanPresent_error_iff
-    (insertDistinctValue (kind := kind)) cells []).mpr unavailable with
-    ⟨cause, scanned⟩
-  simp only [evalValuesNotUnique, scanDistinctCells, scanned]
+/-- A formally unavailable cell behaves **exactly** like an empty one: the ordered scan skips both
+    without consulting them. This is the definitional statement of the correction a12-dmkits
+    `ddaf2e13` measured, and it is what makes two equal unavailable values not a duplicate while a
+    duplicate on either side of one still fires. -/
+theorem scanValuesNotUnique_unavailable_like_empty {kind : ValueListKind}
+    (seen : List (ValueListAtom kind)) (filterReached : Bool)
+    (cause : FormalCause) (unavailableFiltered emptyFiltered : Bool)
+    (remaining : List (ValueListCell kind × Bool)) :
+    scanValuesNotUnique seen filterReached
+        ((.unknown cause, unavailableFiltered) :: remaining) =
+      scanValuesNotUnique seen filterReached ((.empty, emptyFiltered) :: remaining) :=
   rfl
 
-/-- A reached filter never converts suppression into a message: an unavailable reached cell owns
-    the typed result in both filter states. This is the specialization of the suppression law above
-    to the polarity-bearing result, and it is the boundary that makes filter escalation a retyping
-    of an existing firing rather than an independent source of one. -/
-theorem evalValuesNotUniqueVerdict_unknown_of_unavailable {kind : ValueListKind}
-    (tagged : List (ValueListCell kind × Bool))
-    (unavailable : (tagged.map (·.1)).any ValueListCell.isUnknown = true) :
-    evalValuesNotUniqueVerdict tagged = .unknown := by
-  simp [evalValuesNotUniqueVerdict,
-    evalValuesNotUnique_unknown_of_unavailable (tagged.map (·.1)) unavailable]
-
-/-- Firing polarity is decided by the positionally reached filter alone: the omission type is
-    available exactly to a duplicate the scan reached after a filtered present cell, and the value
-    type exactly to every other duplicate. Nothing about the selected cells beyond the duplicate
-    itself can move it, which is what separates this operator from its
-    `hasMissingPotential`-escalating neighbours. -/
-theorem evalValuesNotUniqueVerdict_polarity {kind : ValueListKind}
+/-- The operator's own result carries no UNKNOWN. Nothing it can read suppresses it, so a caller that
+    sees UNKNOWN from this family learned it from relevance or addressing, never from the comparison.
+    This replaces the former suppression law, which the same revision disproved. -/
+theorem scanValuesNotUnique_never_unknown {kind : ValueListKind}
     (tagged : List (ValueListCell kind × Bool)) :
-    (evalValuesNotUniqueVerdict tagged = .fired .omission ↔
-      evalValuesNotUnique (tagged.map (·.1)) = .tru ∧
-        valuesNotUniqueFilterReached [] false tagged = true) ∧
-    (evalValuesNotUniqueVerdict tagged = .fired .value ↔
-      evalValuesNotUnique (tagged.map (·.1)) = .tru ∧
-        valuesNotUniqueFilterReached [] false tagged = false) := by
-  unfold evalValuesNotUniqueVerdict
-  cases evalValuesNotUnique (tagged.map (·.1)) <;>
-    cases valuesNotUniqueFilterReached [] false tagged <;> simp
+    ∀ (seen : List (ValueListAtom kind)) (filterReached : Bool),
+      scanValuesNotUnique seen filterReached tagged ≠ .unknown := by
+  induction tagged with
+  | nil => intro seen filterReached; simp [scanValuesNotUnique]
+  | cons head remaining inductionHypothesis =>
+      intro seen filterReached
+      obtain ⟨cell, filtered⟩ := head
+      cases cell with
+      | present value =>
+          simp only [scanValuesNotUnique]
+          split
+          · simp
+          · exact inductionHypothesis _ _
+      | empty =>
+          simp only [scanValuesNotUnique]
+          exact inductionHypothesis _ _
+      | unknown cause =>
+          simp only [scanValuesNotUnique]
+          exact inductionHypothesis _ _
 
-/-- An unfiltered list can never reach a filter, so a uniformly unfiltered firing is value-typed
-    whatever its cells are. Together with the case matrix this bounds the correction: the positional
-    and the older static account agree at both uniform ends and differ only where a filter follows
-    the duplicate. -/
-theorem valuesNotUniqueFilterReached_unfiltered {kind : ValueListKind}
-    (cells : List (ValueListCell kind))
-    (seen : List (ValueListAtom kind)) :
-    valuesNotUniqueFilterReached seen false (cells.map (·, false)) = false := by
-  induction cells generalizing seen with
-  | nil => rfl
+theorem evalValuesNotUniqueVerdict_never_unknown {kind : ValueListKind}
+    (tagged : List (ValueListCell kind × Bool)) :
+    evalValuesNotUniqueVerdict tagged ≠ .unknown :=
+  scanValuesNotUnique_never_unknown tagged [] false
+
+/-- A uniformly unfiltered list can never reach a filter, so its firing is value-typed whatever its
+    cells are. -/
+theorem scanValuesNotUnique_unfiltered_never_omission {kind : ValueListKind}
+    (cells : List (ValueListCell kind)) :
+    ∀ (seen : List (ValueListAtom kind)),
+      scanValuesNotUnique seen false (cells.map (·, false)) ≠ .fired .omission := by
+  induction cells with
+  | nil => intro seen; simp [scanValuesNotUnique]
   | cons cell remaining inductionHypothesis =>
-      cases cell <;> simp [valuesNotUniqueFilterReached, inductionHypothesis]
+      intro seen
+      cases cell <;> simp only [List.map_cons, scanValuesNotUnique] <;>
+        try exact inductionHypothesis _
+      split
+      · simp
+      · exact inductionHypothesis _
+
+/-- A uniformly filtered list is the mirror end: every compared value marks the filter before the
+    duplicate check reads it, so its firing is omission-typed. Together with the law above this bounds
+    the positional correction — the positional and the older static account agree at both uniform ends
+    and differ only where a filter follows the duplicate. -/
+theorem scanValuesNotUnique_allFiltered_never_value {kind : ValueListKind}
+    (cells : List (ValueListCell kind)) :
+    ∀ (seen : List (ValueListAtom kind)) (filterReached : Bool),
+      scanValuesNotUnique seen filterReached (cells.map (·, true)) ≠ .fired .value := by
+  induction cells with
+  | nil => intro seen filterReached; simp [scanValuesNotUnique]
+  | cons cell remaining inductionHypothesis =>
+      intro seen filterReached
+      cases cell <;> simp only [List.map_cons, scanValuesNotUnique] <;>
+        try exact inductionHypothesis _ _
+      split
+      · simp
+      · exact inductionHypothesis _ _
 
 /-- Every authored all-empty Number aggregate identity is zero and both-directionally fillable. This is the kernel's conservative classification even when the selected field is unsigned. -/
 theorem numericExtremumAggregate_allEmpty

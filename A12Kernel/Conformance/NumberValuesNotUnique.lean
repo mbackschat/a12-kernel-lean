@@ -3,52 +3,68 @@ import A12Kernel.Elaboration.NumberValuesNotUnique
 /-! # `FieldValuesNotUnique` conformance locks over the Number overload
 
 The cross-scale half of the clause's typed equality is inherited rather than exhibited here: a declaration-owned reader has already produced one exact rational per present cell, so a scale-0 `5` and a scale-2 `5.00` arrive as the same atom and membership then uses the ordinary scale-19 comparison boundary.
+
+Every case is one **ordered** scan over authored operand order, each cell tagged with whether its own operand carries a filter. The two axes the matrix separates are what enters the comparison at all, and where a filter sits relative to the duplicate.
 -/
 
 namespace A12Kernel
 
-private def numberSide (cells : List (ValueListCell .number)) :
-    ResolvedValueListSide .number :=
-  { cells, hasUninstantiatedTail := false, hasHaving := false }
+/-- Tag every cell of one authored operand with that operand's own filter state. -/
+private def tagged (filtered : Bool) (cells : List (ValueListCell .number)) :
+    List (ValueListCell .number × Bool) :=
+  cells.map (·, filtered)
+
+/-! ## What enters the comparison -/
 
 /- Two equal present values fire the error condition; distinct values do not. -/
 example :
-    evalValuesNotUnique (numberSide [.present 5, .present 5]).cells = .tru ∧
-    evalValuesNotUnique (numberSide [.present 5, .present 6]).cells = .fls := by
+    evalValuesNotUniqueVerdict (tagged false [.present 5, .present 5]) =
+      .fired .value ∧
+    evalValuesNotUniqueVerdict (tagged false [.present 5, .present 6]) =
+      .notFired := by
   native_decide
 
 /- Empty cells are skipped rather than compared, so two empties are not a duplicate and one empty beside a value is not either. -/
 example :
-    evalValuesNotUnique (numberSide [.empty, .empty]).cells = .fls ∧
-    evalValuesNotUnique (numberSide [.present 5, .empty]).cells = .fls ∧
-    evalValuesNotUnique (numberSide [.empty, .present 5, .empty]).cells = .fls := by
+    evalValuesNotUniqueVerdict (tagged false [.empty, .empty]) = .notFired ∧
+    evalValuesNotUniqueVerdict (tagged false [.present 5, .empty]) = .notFired ∧
+    evalValuesNotUniqueVerdict (tagged false [.empty, .present 5, .empty]) =
+      .notFired := by
+  native_decide
+
+/- A formally unavailable cell is skipped **exactly like an empty** and does not suppress: a
+   duplicate on either side of it still fires. This is the correction a12-dmkits `ddaf2e13` measured
+   across dynamic Groovy, generated Java, and its interpreter on both Number and Date operands. -/
+example :
+    evalValuesNotUniqueVerdict
+        (tagged false [.present 5, .present 5, .unknown .malformed]) = .fired .value ∧
+    evalValuesNotUniqueVerdict
+        (tagged false [.unknown .malformed, .present 5, .present 5]) = .fired .value ∧
+    evalValuesNotUniqueVerdict
+        (tagged false [.present 5, .unknown .malformed, .present 5]) = .fired .value := by
+  native_decide
+
+/- Two **equal** unavailable values are what make this a skip rather than a fire-anyway: neither
+   enters the comparison, so there is no duplicate to find. A suppressing account and a skipping
+   account both answer "no message" here, which is why this row needs its firing siblings above to
+   separate them. -/
+example :
+    evalValuesNotUniqueVerdict
+        (tagged false [.unknown .malformed, .unknown .malformed]) = .notFired := by
   native_decide
 
 /- A duplicate among three operands still fires, and equality is by value rather than by position. -/
 example :
-    evalValuesNotUnique
-      (numberSide [.present 5, .present 6, .present 5]).cells = .tru ∧
-    evalValuesNotUnique
-      (numberSide [.present 5, .present 6, .present 7]).cells = .fls := by
-  native_decide
-
-/- A formally unavailable operand suppresses, and it does so whether or not a duplicate is present. The precedence over an already-seen duplicate is internal: the measured route only exercised suppression without a duplicate. -/
-example :
-    evalValuesNotUnique
-      (numberSide [.present 5, .unknown .malformed, .present 5]).cells
-      = .unknown ∧
-    evalValuesNotUnique
-      (numberSide [.present 5, .present 5, .unknown .declaredConstraint]).cells
-      = .unknown ∧
-    evalValuesNotUnique
-      (numberSide [.unknown .declaredConstraint, .present 5]).cells
-      = .unknown := by
+    evalValuesNotUniqueVerdict (tagged false [.present 5, .present 6, .present 5]) =
+      .fired .value ∧
+    evalValuesNotUniqueVerdict (tagged false [.present 5, .present 6, .present 7]) =
+      .notFired := by
   native_decide
 
 /- A single present value can never be a duplicate, and an empty list is vacuously unique. -/
 example :
-    evalValuesNotUnique (numberSide [.present 5]).cells = .fls ∧
-    evalValuesNotUnique (numberSide []).cells = .fls := by
+    evalValuesNotUniqueVerdict (tagged false [.present 5]) = .notFired ∧
+    evalValuesNotUniqueVerdict (tagged false []) = .notFired := by
   native_decide
 
 /-! ## Firing polarity
@@ -56,17 +72,12 @@ example :
 The polarity clause is kind-generic, so it is exhibited once here rather than restated for
 the token overload. -/
 
-/-- Tag every cell of one authored operand with that operand's own filter state. -/
-private def tagged (filtered : Bool) (cells : List (ValueListCell .number)) :
-    List (ValueListCell .number × Bool) :=
-  cells.map (·, filtered)
-
 /- An unfiltered firing is value-typed, while a reached filter makes the same duplicate omission-typed even though both retained values are filled. -/
 example :
-    evalValuesNotUniqueVerdict (tagged false [.present 5, .present 5]) =
-      .fired .value ∧
     evalValuesNotUniqueVerdict (tagged true [.present 5, .present 5]) =
-      .fired .omission := by
+      .fired .omission ∧
+    evalValuesNotUniqueVerdict (tagged false [.present 5, .present 5]) =
+      .fired .value := by
   native_decide
 
 /- The filter flag is **positional**: a filtered operand authored after the duplicate-detecting cell
@@ -82,11 +93,15 @@ example :
       .fired .omission := by
   native_decide
 
-/- Only a *present* cell moves the flag, because an empty cell is never collected: a filtered
-   operand contributing nothing but an empty leaves an earlier duplicate value-typed. -/
+/- Only a cell that was actually **compared** moves the flag. A filtered operand contributing
+   nothing but empties, or nothing but unavailable cells, leaves a later duplicate value-typed: mere
+   specifiedness is not enough, which is the wording a12-dmkits `ddaf2e13` separated. -/
 example :
     evalValuesNotUniqueVerdict
         (tagged true [.empty] ++ tagged false [.present 5, .present 5]) =
+      .fired .value ∧
+    evalValuesNotUniqueVerdict
+        (tagged true [.unknown .malformed] ++ tagged false [.present 5, .present 5]) =
       .fired .value := by
   native_decide
 
@@ -96,13 +111,9 @@ example :
       .fired .value := by
   native_decide
 
-/- A filter escalates a firing rather than producing one, and it never converts suppression into a message. -/
+/- A filter escalates a firing rather than producing one. -/
 example :
-    evalValuesNotUniqueVerdict (tagged true [.present 5, .present 6]) =
-      .notFired ∧
-    evalValuesNotUniqueVerdict
-      (tagged true [.present 5, .unknown .malformed, .present 5]) =
-      .unknown := by
+    evalValuesNotUniqueVerdict (tagged true [.present 5, .present 6]) = .notFired := by
   native_decide
 
 end A12Kernel
