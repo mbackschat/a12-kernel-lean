@@ -133,10 +133,13 @@ A cell has three states: **empty**, **filled**, and **not-check-relevant** (pres
 |---|---|---|
 | a comparison reading its value | per-kind substitution ([§2](03-empty-and-required.md)) | **UNKNOWN** — the branch cannot decide |
 | `FieldFilled` / `FieldNotFilled` / fill quantifiers | a definite FALSE / TRUE (counts as empty) | **UNKNOWN** — counted as *neither* filled nor empty (so `NoFieldFilled` does **not** fire over it) |
-| a value aggregate or count over a selection containing it | the empty cell is dropped or substituted | the **whole aggregate is non-evaluable** — the enclosing rule is suppressed |
+| a value aggregate or count over a selection containing it | the empty cell is dropped or substituted | the **whole aggregate is non-evaluable** — the enclosing rule is suppressed, at the *first* such cell in authored order |
+| `FieldValuesNotUnique` over a selection containing it | the empty cell is skipped | **skipped too** — the deliberate exception, see below |
 | a computation reading it | the per-kind compute behaviour ([§11](09-computations.md)) | the read **aborts the computing instance** — compute's *poison* ([§11](09-computations.md)) |
 
 The distinction *empty ≠ invalid* is the reason a two-state value domain cannot model the language: `NoFieldFilled` fires over empties but not over invalids; an aggregate substitutes/drops empties but goes non-evaluable on one invalid.
+
+**`FieldValuesNotUnique` is the one value predicate that skips instead.** An invalid operand is treated exactly like an empty one: a duplicate on either side of it still fires, and two *equal* invalid values do not duplicate because neither enters the comparison ([§9](07-repetition-and-iteration.md)). The split is not arbitrary and it is predictable from how an operator consumes the three-valued relevance gate. A not-check-relevant cell answers UNKNOWN to that gate, so an operator that acts only on a definite *specified* answer silently drops it, while an operator that must account for every selected cell propagates the UNKNOWN and becomes non-evaluable. The aggregate and count families do the latter and abandon the whole selection at the first such cell; this predicate does the former. Do not infer either behavior for a new operator from its family resemblance — read which gate it consumes, because the two accounts coincide on every selection whose only invalid cell would not have produced a duplicate anyway, and a case built on that shape cannot tell them apart.
 
 ### B.3 What puts a cell in the third state
 
