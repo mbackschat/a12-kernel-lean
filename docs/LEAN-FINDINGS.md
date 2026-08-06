@@ -1088,3 +1088,19 @@ Three checks, cheapest first, each of which would have caught one of the three:
 3. **Before writing "no route here reaches X", grep this project's own process documents for X.** The routing answer lives in `SOURCES.md`'s engine-routing rule and `TESTING.md`'s probe section, and "we cannot measure this" is the single claim most likely to be false and least likely to be challenged, because it closes an inquiry rather than opening one.
 
 The through-line with `LF75` and `LF84` is now explicit and worth stating once: this project keeps writing guards it then fails to consult. `LF75` was writing a guard and not applying it in the same commit. `LF84` was applying the outbound discharge table to nothing inbound. This is failing to consult guards that had been correct and sitting on disk for weeks. The mechanizable fraction is small; what generalizes is that **the cheapest defeater for a claim is almost always inside this repository**, so the first search should be local and only then upstream.
+
+## LF86 — refusing claims nothing, extending by parity claims something, and an owning gap's "do not widen" is not waived by a sibling arm
+
+A capsule implemented a group operand's descendant set as the whole subtree, matching what the validation arm already traverses, and documented the parity openly. The parity was real. The choice was still a defect, and a cold review classified it a blocker.
+
+The reasoning that produced it was: the two arms disagree on formal invalidity only, so giving them *different* descendant notions would be a second unmeasured claim. That inverts the cost. Refusing an unmeasured shape asserts nothing and stays correctable. Counting it asserts a value for a model plus cells that no observation covers, and does so through the very preflight that was supposed to be the explicit boundary. A negative existential is cheap to retract; a value is not.
+
+The owning gap said so in words: *do not widen the compute-side presence account past a fixed nonrepeatable operand whose descendants are direct fields without measuring the wider shape*, and it listed nested descendants among the shapes the observation does not cover. Three documents agreed. None was consulted at the moment the descendant filter was written.
+
+What generalizes:
+
+1. **When an owning gap forbids widening without measurement, consistency with a sibling mechanism is not an exemption.** The sibling's scope was measured *for the sibling*. Inheriting its shape inherits its scope claim too, and nobody measured that transfer.
+2. **Prefer the boundary that says nothing.** Between two accounts where one refuses and one answers, and no observation separates them, the refusal is not the conservative-but-lesser option — it is the only one that is not a claim.
+3. **A docstring that states a widening does not license it.** Naming the parity and adding "the retained observation covers direct fields only" read as disclosure, but disclosure of an undischarged claim is still the claim. Compare `LF84`: writing the guard is not consulting it.
+
+The through-line with `LF75`, `LF84`, and `LF85` holds again, one step further out. Those were failures to consult a guard about a claim's *discharge*. This is a failure to consult a guard about a claim's *scope*, made while documenting the exact sentence that should have triggered it.
