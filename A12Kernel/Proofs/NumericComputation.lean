@@ -37,6 +37,17 @@ theorem numericComputationEvaluationContext_aggregate_delegates
           NumericComputationFault.repeatableAddressing := by
   rfl
 
+/-- The addressed context resolves a fixed group count through its own scalar reader, so the
+group operand observes the scalar cells rather than an addressed row view. The count needs no
+document, outer environment, or star reader, and cannot silently acquire one here. -/
+theorem numericComputationEvaluationContext_filledGroupCount_delegates
+    (context : NumericComputationEvaluationContext)
+    (groups : List ResolvedGroupReference) :
+    context.readCheckedNumericComputationAtom
+        (model := model) (.numeric (.filledGroupCount groups)) =
+      context.scalar.readFilledGroupCount model groups := by
+  rfl
+
 /-- The full computation context retains the checked value-count source, authored constant, addressed readers, and structural-failure channel exactly. -/
 theorem numericComputationEvaluationContext_valueCount_delegates
     (context : NumericComputationEvaluationContext)

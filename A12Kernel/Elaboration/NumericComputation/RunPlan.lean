@@ -19,7 +19,9 @@ def supportsScalarEvaluation :
   | .booleanValueCount source => source.directFields?.isSome
   | .sumOfProducts _ => false
   | .numeric (.aggregate _ source) => source.directAggregateFields?.isSome
-  | .numeric (.filledGroupCount _) => false
+  | .numeric (.filledGroupCount groups) =>
+      groups.all fun reference =>
+        (reference.computationDescendants? model).isSome
   | .numeric _ => true
 
 end CheckedNumericComputationAtom

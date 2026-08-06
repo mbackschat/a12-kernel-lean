@@ -370,6 +370,10 @@ def CheckedNumericComputationAtom.toValidationAtom :
       match source.directAggregateFields? with
       | some direct => pure (.ordinary (.aggregate op direct))
       | none => pure (.aggregate op source)
+  -- Refused because narrowing is arm-crossing, not because the operator is unmodelled: the
+  -- same group operand over the same cells counts a formally invalid descendant in
+  -- computation and answers unavailable in validation, so reusing the atom here would
+  -- silently erase that inversion. Do not "fix" this by mapping it to a validation count.
   | .numeric (.filledGroupCount _) =>
       throw (.conditionAssembly .incoherentCore)
 

@@ -88,10 +88,28 @@ def readDateTimeDifferenceOperand (context : ScalarComputationContext) :
       | none => throw .worldRequired
   | _ => throw .unsupportedDateTimeDifferenceOperand
 
-/-- Share every non-aggregate computation atom branch while allowing the direct and addressed evaluators to supply their own aggregate projection. -/
+/-- Count one resolved fixed multi-group operand list in the computation arm. Each group is
+decided by its own descendant reads through this same context, so the count observes the same
+cells the surrounding computation observes; it deliberately interprets them differently, since
+a poisoned cell is present here while an ordinary numeric read of it poisons the result. A
+group outside the admitted scalar boundary refuses explicitly rather than counting as absent. -/
+def readFilledGroupCount (context : ScalarComputationContext) (model : FlatModel)
+    (groups : List ResolvedGroupReference) :
+    Except NumericComputationFault NumericComputationResult := do
+  let observed ← groups.mapM fun reference =>
+    match reference.computationDescendants? model with
+    | none => throw NumericComputationFault.unsupportedGroupCount
+    | some descendants =>
+        pure (descendants.map fun declaration =>
+          observeCell .computation (context.read declaration.id))
+  pure (.value (numberOfFilledGroupsForComputation observed))
+
+/-- Share every non-aggregate computation atom branch while allowing the direct and addressed evaluators to supply their own aggregate projection and group-count projection. Group presence is supplied rather than shared because only a model-carrying caller can enumerate a group's descendants. -/
 def readNumericComputationAtomWith
     (context : ScalarComputationContext)
     (readAggregate : NumericAggregateOp → Aggregate →
+      Except NumericComputationFault NumericComputationResult)
+    (readGroupCount : List ResolvedGroupReference →
       Except NumericComputationFault NumericComputationResult) :
     ResolvedNumericAtom FlatFieldDecl Aggregate →
       Except NumericComputationFault NumericComputationResult
@@ -137,15 +155,17 @@ def readNumericComputationAtomWith
       | .error _ => throw .unsupportedDateCalendar
       | .ok operand => pure operand.toComputationResult
   | .aggregate op source => readAggregate op source
-  | .filledGroupCount _ => throw .unsupportedGroupCount
+  | .filledGroupCount groups => readGroupCount groups
 
-/-- Preserve the direct-only resolved evaluator used by low-level proofs and callers. -/
+/-- Preserve the direct-only resolved evaluator used by low-level proofs and callers. It carries no model, so a group operand's descendants are unknowable here and the group count refuses. -/
 def readNumericComputationAtom (context : ScalarComputationContext) :
     NumericComputationAtom →
       Except NumericComputationFault NumericComputationResult :=
-  context.readNumericComputationAtomWith fun op source =>
-    pure ((source.evaluate op fun field =>
-      observeCell .computation (context.read field)).toComputationResult)
+  context.readNumericComputationAtomWith
+    (fun op source =>
+      pure ((source.evaluate op fun field =>
+        observeCell .computation (context.read field)).toComputationResult))
+    (fun _ => throw .unsupportedGroupCount)
 
 /-- Evaluate a checked computation atom without a repeatable document only when its entity-list payload narrows exactly to direct fields. A repeatable operand fails explicitly rather than silently observing an empty synthetic document. -/
 def readCheckedNumericComputationAtom (context : ScalarComputationContext) :
@@ -177,7 +197,8 @@ def readCheckedNumericComputationAtom (context : ScalarComputationContext) :
               pure ((direct.evaluate op fun field =>
                 observeCell .computation
                   (context.read field)).toComputationResult)
-          | none => throw .repeatableContextRequired) source
+          | none => throw .repeatableContextRequired)
+        (context.readFilledGroupCount model) source
 
 end ScalarComputationContext
 
@@ -217,7 +238,8 @@ def readCheckedNumericComputationAtom
         (fun op aggregate =>
           (aggregate.evaluateComputation op context.document context.outer
             context.scalar.read context.filterRead context.starRead).mapError
-              NumericComputationFault.repeatableAddressing) source
+              NumericComputationFault.repeatableAddressing)
+        (context.scalar.readFilledGroupCount model) source
 
 end NumericComputationEvaluationContext
 
@@ -301,6 +323,14 @@ def CheckedNumericComputationAtom.numericComputationFault? :
   | .valueCount _ _ => none
   | .tokenValueCount _ => none
   | .booleanValueCount _ => none
+  -- A group operand's boundary is model-structural, so it is decided here rather than left
+  -- to the reading branch, where a data-dependent poison could otherwise hide it.
+  | .numeric (.filledGroupCount groups) =>
+      if groups.all fun reference =>
+          (reference.computationDescendants? model).isSome then
+        none
+      else
+        some .unsupportedGroupCount
   | .numeric source =>
       NumericComputationAtom.numericComputationFault? source
   | .sumOfProducts _ => none

@@ -109,6 +109,33 @@ def fixedWellFormedBool (reference : ResolvedGroupReference)
 def overlaps (left right : ResolvedGroupReference) : Bool :=
   left.path.isPrefixOf right.path || right.path.isPrefixOf left.path
 
+/-- Enumerate the fields one fixed group contributes to a scalar computation-phase presence
+    read. Admits exactly the shape the retained computation-arm observation covers: a fixed
+    nonrepeatable group whose fields are its **direct** children.
+
+    `none` is the explicit boundary rather than an empty group, and every wider shape takes
+    it: the group is absent from the model, it is itself inside a repeatable scope, or it
+    owns any deeper descendant field. Nested descendants are deliberately refused rather
+    than counted through the subtree the validation arm uses, because no observation covers
+    them and a refusal claims nothing while a count would.
+
+    `origin` is deliberately not consulted, which is a narrowing relative to
+    `fixedWellFormedBool`: that predicate admits a `RuleGroup` reference bound to an
+    already-selected repeatable instance, and this scalar context has no such instance to
+    bind, so the repeatable-scope test refuses it. -/
+def computationDescendants? (reference : ResolvedGroupReference)
+    (model : FlatModel) : Option (List FlatFieldDecl) :=
+  if !model.hasGroupPath reference.path ||
+      !(model.repeatableScopeForGroupPath reference.path).isEmpty then
+    none
+  else if model.fields.any fun declaration =>
+      reference.path.isPrefixOf declaration.groupPath &&
+        declaration.groupPath != reference.path then
+    none
+  else
+    some (model.fields.filter fun declaration =>
+      declaration.groupPath == reference.path)
+
 end ResolvedGroupReference
 
 /-- Shared failures while resolving one group reference that must denote either a nonrepeatable ordinary group or the already-selected `RuleGroup` instance. -/
