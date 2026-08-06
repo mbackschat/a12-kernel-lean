@@ -153,14 +153,15 @@ def evaluateValidation (checked : CheckedNumericProductAggregate model)
     Except StarAddressingError NumericOperand :=
   checked.evaluateAt .validation document outer (checked.checkedRawCell read)
 
-/-- Partial validation requires wildcard or ancestor coverage for both fields before either declaration is read. -/
+/-- Partial validation gates this pair aggregate **per reached cell**, not by all-rows extent coverage. `SumOfProducts` reaches neither the Kernel's shared all-cells combiner nor that combiner's pre-loop whole-repetition survey, so it evaluates under concretely enumerated rows where `Sum`, `MaxValue`, `MinValue`, and `NumberOfDifferentValues` stay non-relevant; that per-operator split is measured, not inherited from the aggregate family. Both declarations must cover every reached row, so wildcarding one field alone remains insufficient. The subset case — some reached rows relevant and others not — is not separately measured, and it does not need to be: masking a non-relevant row as UNKNOWN suppresses the fold, which is the same verdict this branch reports, so both readings agree observationally. -/
 def evaluatePartial (checked : CheckedNumericProductAggregate model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) :
     Except StarAddressingError PartialValidationNumberAggregateResult := do
   let resolved ← checked.left.source.path.resolve document outer
-  if checked.left.source.allRowsRelevant scope &&
-      checked.right.source.allRowsRelevant scope then
+  if resolved.environments.all fun environment =>
+      checked.left.source.cellRelevant scope environment &&
+        checked.right.source.cellRelevant scope environment then
     pure (.evaluated (evalNumericProductAggregate
       (checked.selectedSideAt .validation resolved (checked.checkedRawCell read))))
   else

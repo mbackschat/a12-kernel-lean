@@ -93,7 +93,7 @@ example :
         zeros = some (.poison .declaredConstraint) := by
   native_decide
 
-/- Partial validation needs wildcard/ancestor extent coverage for both declarations; enumerating every current row or wildcarding only one field is insufficient. -/
+/- `SumOfProducts` is **not** an all-rows aggregate for partial relevance: it reaches neither the Kernel's shared combiner nor that combiner's pre-loop whole-repetition survey, so enumerating every concrete row evaluates it where `Sum`/`MaxValue`/`MinValue`/`NumberOfDifferentValues` stay UNKNOWN. Measured per operator against the Kernel at a12-dmkits `6fe8d501`/`12491e4f`, with a wildcard positive control proving a silent concrete row is a relevance decision rather than an operator that never fires. Covering only one of the two declarations remains insufficient, which is the case that separates per-cell relevance from no relevance gate at all. -/
 example :
     let left := cells3 (.parsed (.num 2)) (.parsed (.num 4)) (.parsed (.num 0))
     let right := cells3 (.parsed (.num 3)) (.parsed (.num 5)) (.parsed (.num 0))
@@ -109,7 +109,8 @@ example :
     let both := ValidationRelevanceScope.partialSet [
       productRelevance repeated.path [.concrete 1, .all, .concrete 1],
       productRelevance repeatedPrice.path [.concrete 1, .all, .concrete 1]]
-    productPartialOf [1, 2, 3] left right concreteAll = some .nonRelevant ∧
+    productPartialOf [1, 2, 3] left right concreteAll =
+        some (.evaluated (.value 26 .fixed)) ∧
       productPartialOf [1, 2, 3] left right leftOnly = some .nonRelevant ∧
       productPartialOf [1, 2, 3] left right both =
         some (.evaluated (.value 26 .fixed)) ∧
