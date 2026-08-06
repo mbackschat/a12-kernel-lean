@@ -467,7 +467,7 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ### EXP-2026-08-06-01 — a fixed multi-group filled count may be special-cased ahead of computation poison
 
-- **Status:** pending
+- **Status:** handed-off
 - **Kind:** experiment request
 - **Kernel behavior:** 30.8.1
 - **Local revision:** resolve with `git log -S 'EXP-2026-08-06-01'`
