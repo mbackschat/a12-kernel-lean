@@ -599,9 +599,9 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ### SPEC-2026-08-06-01 — value-aggregate suppression is an ordered first-cell early return, not a whole-selection property
 
-- **Status:** pending
+- **Status:** handed-off
 - **Kind:** semantic correction
-- **Local revision:** the `spec/` change is `972bede`, which omitted this entry; the entry's own introducing commit resolves with `git log -S 'SPEC-2026-08-06-01'`
+- **Local revision:** `92bcef1` introduces this entry; the `spec/` change itself is `972bede`, which omitted it
 - **a12-dmkits basis revision:** `99c81fdb7603ea9273da990c479194f1037e1d5c` — peer prose was read read-only at this revision. No probe was run and no peer test was executed, so this entry claims a documentation asymmetry in the peer, not a peer implementation defect.
 - **Kernel behavior:** 30.8.1
 - **Canonical clause:** [`02-logic-and-formal-errors.md` §B.2 third-state table and the following skip-versus-suppress paragraph](../spec/02-logic-and-formal-errors.md)
