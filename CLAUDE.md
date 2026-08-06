@@ -122,7 +122,7 @@ Three cheap checks, each of which would have prevented a recorded defect:
 
 1. **Drop it** — the unit does not need the claim. Preferred.
 2. **Record it as a gap** — the answer does not change any dependent work. Add it to its owning document or the ledger with the discriminator named, and continue.
-3. **Escalate it as a blocker** — the answer changes the representation, a proof statement, or dependent work. **Stop and ask the user.** Do not pick an account and proceed. State which account you would choose and why, so the user reviews a judgment instead of supplying one; recommending is not the same as proceeding, and a blocker raised as a bare list of accounts moves the analysis back to the user.
+3. **Escalate it as a blocker** — the answer changes the representation, a proof statement, or dependent work. **Stop and ask the user.** Do not pick an account and proceed. State which account you would choose and why, so the user reviews a judgment instead of supplying one; recommending is not the same as proceeding, and a blocker raised as a bare list of accounts moves the analysis back to the user. File it in the same change so the question outlives the session: an `EXP-` entry when a kernel observation would settle it, or [`docs/PLAN.md`](docs/PLAN.md)'s blocker list when an owner decision would, with `Blocked on:` set on the owning gap. A blocker that exists only in a reply is lost when the session ends.
 
 The gap/blocker test is exactly whether dependent work differs by the answer; when that is itself unclear, treat it as a blocker and ask. An unverified claim that reaches the user must be **visibly flagged in the response**, not buried in a qualifier, so the user can decide whether the measurement is worth its cost.
 

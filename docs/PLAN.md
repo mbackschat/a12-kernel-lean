@@ -56,6 +56,11 @@ The thin lanes in priority order are SG4 computation scheduling and state transi
 3. **The reference channel's older non-model-indexed `numeric` leaf** remains ready and small: it reuses the same declaration sieve the `flat` leaf now uses, since neither fragment carries a starred operand. [`SG10`](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration) owns its remaining obligations, including the unstarred group operand that is refused and has no witness in the reused model.
 4. Opening SG4 requires its own audit packet and consumer hypothesis; it remains the largest single semantic payoff and the thinnest lane, deferred rather than dropped.
 
+## Blockers
+
+- [`SG7`](SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion) starred-form firing locus. a12-dmkits' authoring skill states per-row iteration pointing at the offending row while its interpreter fires once at the declaration with no repetition coordinate; the current Lean consumer returns one verdict for the whole call, which matches the measurement and contradicts the prose. Resolving it decides whether the predicate's result domain is one verdict or a per-row verdict set, so it blocks committing that result type. Needs an owner decision, and no local route reaches kernel runtime.
+- [`SG13`](SEMANTICS-GAPS.md#sg13--group-list-and-group-count-completion) fixed-multi-group separator. The gap already specifies the probe shape and concludes that Lean retains the explicit `unsupportedGroupCount` boundary until that shape is measured upstream. Needs a kernel observation, and **no `EXP-` entry is filed**, so the request is not yet in the queue the user carries.
+
 ## Parked boundaries
 
 - Eager prepass invalidity needs no second snapshot because `CheckedDocument` already owns computation-phase checked cells. Its supplied messages enter the completed SG4 partition directly; no eager-prepass reconstruction or SG10 rendering belongs in that structural boundary.
