@@ -462,6 +462,25 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ## Experiment requests
 
+<a id="exp-2026-08-06-01"></a>
+<a id="exp-2026-08-06-01--a-fixed-multi-group-filled-count-may-be-special-cased-ahead-of-computation-poison"></a>
+
+### EXP-2026-08-06-01 — a fixed multi-group filled count may be special-cased ahead of computation poison
+
+- **Status:** pending
+- **Kind:** experiment request
+- **Kernel behavior:** 30.8.1
+- **Local revision:** resolve with `git log -S 'EXP-2026-08-06-01'`
+- **a12-dmkits basis revision:** `456dca65dbd680b6ef33d20a66651f33d565b4d7`, read read-only alongside kernel source at `cb66e51fa7ab90b650698f861bf670754e2e1e66`.
+- **The question, and it is only the computation half.** When one operand of a **fixed** multi-group `NumberOfFilledGroups(GroupA, GroupB)` is formally unavailable and that count is the **direct** expression of a seeded Number computed target, what does the target become: exact `VALUE|0`, `CLEARED`, or `ERRORED`?
+- **What is already measured, so please do not re-measure it.** The *validation* half is closed on both kernel strategies and in the interpreter: any erroneous operand group makes the plain multi-group count **unavailable** rather than counting the admitted subset, per [`KERNEL-FINDINGS`](../../a12-rulekit/docs/KERNEL-FINDINGS.md) §"group presence", locked by `GroupPresenceFormalInvalidDiffTest` and `GroupPresenceAdmissionDiffTest`. This entry does not question that and needs no further validation rows.
+- **Competing accounts.** The general three-state rule makes `ERRORED` the default prediction: a computation that reads a formally invalid cell aborts the computing instance, so an unavailable count should poison its target. Read-only source audit at the two revisions above instead yields **rival zero-versus-clear** readings, which would mean the count operator resolves an unavailable operand *before* the poison mechanism observes it. So the three candidates are not equally weighted — the entry exists because source suggests the operator may be special-cased ahead of the general rule, and that is the claim to confirm or refute. A result of `ERRORED` is the clean negative and is just as useful, because it retires the special case.
+- **The shape needed.** A seeded Number target computed **directly** from `NumberOfFilledGroups(GroupA, GroupB)` over two fixed non-repeatable groups, with one group carrying malformed-only content and the other clean. Required controls, because the three outcomes are otherwise confusable with an inert fixture: an **all-clean positive** control whose target takes the exact nonzero count, and an **all-clean zero** control whose target takes exact `0`. Without the zero control, `VALUE|0` cannot be distinguished from a count that simply computed correctly; without the positive control, `CLEARED` cannot be distinguished from a target the rule never reached. Observe on **both** kernel strategies, since a codegen-versus-dynamic split here would itself be the finding.
+- **Why existing coverage cannot reach it.** Structurally, not by luck. The maintained upstream source carries validation locks for this count and computation-*guard* locks for bare-group quantifiers, but no unchanged computation-probe command and no exact value-producing case for this shape, so no current lane observes the target's value at all. This may require authoring a probe shape rather than widening a corpus, which is the more expensive of the two requests this project considered filing and is why it is filed alone.
+- **What this project will do with the result.** The answer selects Lean's **result representation** for the fixed multi-group count, which is why this is a blocker rather than a gap. Lean currently retains an explicit `unsupportedGroupCount` boundary and models the shape not at all; it will not be given a representation on a guess. `ERRORED` folds it into the existing poison path with no new result domain. `VALUE|0` or `CLEARED` each require a distinct carrier, and choosing wrong would invalidate every law and retained case built on it.
+- **Acceptance:** either an observation of the target on both kernel strategies with both controls present, or a reasoned refusal recording that the shape is unreachable from a12-dmkits' authoring surface — in which case this project records the boundary as permanently uncalibrated rather than pending, and keeps `unsupportedGroupCount`. An inconclusive handback leaves this entry `handed-off`.
+- **Local status:** [`SG13`](SEMANTICS-GAPS.md#sg13--group-list-and-group-count-completion) owns the gap and the exact revision anchors; [`PLAN.md`](PLAN.md#blockers) lists it as a blocker.
+
 <a id="exp-2026-08-04-01"></a>
 <a id="exp-2026-08-04-01--an-unregistered-predefined-type-may-raise-rather-than-fire-both-polarities"></a>
 

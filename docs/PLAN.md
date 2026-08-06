@@ -23,8 +23,9 @@ The thin lanes in priority order are SG4 computation scheduling and state transi
 
 ## Blockers
 
-- [`SG7`](SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion) starred-form firing locus. a12-dmkits' authoring skill states per-row iteration pointing at the offending row while its interpreter fires once at the declaration with no repetition coordinate; the current Lean consumer returns one verdict for the whole call, which matches the measurement and contradicts the prose. Resolving it decides whether the predicate's result domain is one verdict or a per-row verdict set, so it blocks committing that result type. Needs an owner decision, and no local route reaches kernel runtime.
-- [`SG13`](SEMANTICS-GAPS.md#sg13--group-list-and-group-count-completion) fixed-multi-group separator. The gap already specifies the probe shape and concludes that Lean retains the explicit `unsupportedGroupCount` boundary until that shape is measured upstream. Needs a kernel observation, and **no `EXP-` entry is filed**, so the request is not yet in the queue the user carries.
+- [`SG13`](SEMANTICS-GAPS.md#sg13--group-list-and-group-count-completion) fixed-multi-group computation target. Lean retains the explicit `unsupportedGroupCount` boundary until the shape is measured upstream, because the answer selects a result representation. Filed as [`EXP-2026-08-06-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#exp-2026-08-06-01--a-fixed-multi-group-filled-count-may-be-special-cased-ahead-of-computation-poison) and **awaiting handoff to a12-dmkits**; it is the only entry in that queue.
+
+The former SG7 starred-form-firing-locus blocker is **withdrawn, not deferred**: its premise was that two a12-dmkits surfaces contradicted each other, and both halves of that reading were wrong. The locus is measured on both kernel strategies as one verdict at the first-row anchor, the peer's skill says the same, and Lean already matches. No owner decision is pending.
 
 ## Parked boundaries
 
