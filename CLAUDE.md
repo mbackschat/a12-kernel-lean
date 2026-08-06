@@ -195,6 +195,7 @@ lake exe checkCandidateConformance --self-test --suite reference/flat-validation
 lake exe checkCandidateConformance --candidate .lake/build/bin/a12-kernel-reference --suite reference/single-group-correlation-v2.conformance.json
 lake exe checkCandidateConformance --candidate .lake/build/bin/a12-kernel-reference --suite reference/flat-validation-empty-logic-v2.conformance.json
 ./scripts/check-lean-trust.sh       # reject proof/runtime escape hatches and audit theorem-root axioms
+./scripts/check-spec-sync.sh        # fail a spec/ change that carries no synchronization classification
 lake env lean A12Kernel/Core.lean   # elaborate a single module with imports available
 ```
 

@@ -9,7 +9,7 @@ Pay only for the narrowest rung that can answer the current question:
 1. **Red/green loop:** build the focused semantic-family Lake target, for example `lake build A12Kernel.Conformance.NumericValidation.Comparison`, not its import-only `A12Kernel.Conformance.NumericValidation` umbrella. This refreshes changed imported modules before checking the consumer; direct `lake env lean` elaboration may otherwise read an older built dependency. Stay on this rung while changing the capsule. If the smallest target is an umbrella or a legacy file containing unrelated families, extract the family being changed before extending it; focused compilation is part of the module-boundary acceptance criterion.
 2. **Integrated semantic check:** run `lake build` once after the focused modules are green. This checks the complete library, proof root, conformance root, and default executable targets.
 3. **Retained evidence:** run `lake test` once for a completed Tier 1 semantic capsule. Add a family-specific replay only when the capsule belongs to an active Tier 2 calibration batch.
-4. **Pre-commit trust and hygiene:** run `./scripts/check-lean-trust.sh`, `git diff --check`, and the scoped/full status checks once after the integrated diff is stable. A successful trust audit emits one summary line; a failure preserves the underlying Lean diagnostics.
+4. **Pre-commit trust and hygiene:** run `./scripts/check-lean-trust.sh`, `git diff --check`, `./scripts/check-spec-sync.sh`, and the full status check once after the integrated diff is stable. A successful trust audit emits one summary line; a failure preserves the underlying Lean diagnostics.
 5. **Public-process checks:** run `checkReferenceProcess`, `checkBoundedProcess`, and candidate self-tests only when the public process, shipment, or process machinery changed, or before a release.
 
 Do not restart at a more expensive rung after a documentation-only edit unless that document is itself consumed by the corresponding gate.
@@ -270,11 +270,13 @@ lake build
 lake test
 ./scripts/check-lean-trust.sh
 git diff --check
-git status --short -- spec/ docs/A12-DMKITS-SPEC-SYNC-LEDGER.md
+./scripts/check-spec-sync.sh
 git status --short
 ```
 
-If the scoped status lists a behavioral `spec/` change, classify its synchronization direction before committing. A locally originated delta that still needs a12-dmkits reconciliation must also list the synchronization ledger. An inbound correction already committed and reviewed in a12-dmkits must instead list [`SOURCES.md`](SOURCES.md) with the exact source revision and evidence routes and must not create an outbound ledger entry merely to echo the finding back to its origin. If an inbound result answers an existing pending or handed-off entry, update that same entry. Pure spelling, formatting, link, or navigation-only spec changes are exempt. A ledger-only status receipt may legitimately list only the ledger. Add only the focused replay or producer-bundle check owned by a Tier 2 calibration family. `lake test` already replays every retained non-public compact observation, while `checkReferenceProcess` owns the 25 public evidence associations and current shipment process integrity; do not invent another family-independent gate.
+Run `./scripts/check-spec-sync.sh` even when the change is documentation-only. It is git-only and cheap, so the expensive-rung exemption above never applies to it, and a behavioral `spec/` edit normally lands as a `docs(spec)` commit that skips every Lean rung. It replaces the former scoped status line: instead of printing the two paths for an author to compare, it fails when a `spec/*.md` change carries neither the synchronization ledger nor [`SOURCES.md`](SOURCES.md), and its message states the three classifications. Declare an exempt spelling, formatting, link, or navigation-only change with `A12_SPEC_CHANGE_IS_NONBEHAVIORAL=1`, which records the claim in the run rather than silencing the gate.
+
+When `check-spec-sync.sh` reports a behavioral `spec/` change, classify its synchronization direction before committing. A locally originated delta that still needs a12-dmkits reconciliation must also list the synchronization ledger. An inbound correction already committed and reviewed in a12-dmkits must instead list [`SOURCES.md`](SOURCES.md) with the exact source revision and evidence routes and must not create an outbound ledger entry merely to echo the finding back to its origin. If an inbound result answers an existing pending or handed-off entry, update that same entry. Pure spelling, formatting, link, or navigation-only spec changes are exempt. A ledger-only status receipt may legitimately list only the ledger. Add only the focused replay or producer-bundle check owned by a Tier 2 calibration family. `lake test` already replays every retained non-public compact observation, while `checkReferenceProcess` owns the 25 public evidence associations and current shipment process integrity; do not invent another family-independent gate.
 
 Run the complete Tier 3 gate only when the change affects a public process, independent-consumer shipment, qualification mechanism, packaging, or release—or before an actual release:
 
@@ -287,7 +289,7 @@ lake exe checkCandidateConformance --self-test --suite reference/single-group-co
 lake exe checkCandidateConformance --self-test --suite reference/flat-validation-empty-logic-v2.conformance.json
 ./scripts/check-lean-trust.sh
 git diff --check
-git status --short -- spec/ docs/A12-DMKITS-SPEC-SYNC-LEDGER.md
+./scripts/check-spec-sync.sh
 git status --short
 git -C ../a12-kernel status --short
 git -C ../a12-rulekit status --short
