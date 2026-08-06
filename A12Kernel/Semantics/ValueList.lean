@@ -155,7 +155,7 @@ def scanResolvedValueListOperands {operand state terminal error : Type}
 
 /-- Concatenate every authored operand's cells in authored order, tagging each cell with its own operand's filter state.
 
-This is the deliberate opposite of `scanResolvedValueListOperands` on one axis: it applies **no** availability gate, so a formally unavailable cell stays in the stream and the consuming operator decides for itself whether to skip it or go non-evaluable. Use it only for an operator whose kernel counterpart owns its own loop rather than the shared all-cells combiner, which returns its non-relevant value at the first such cell.
+This is the deliberate opposite of `scanResolvedValueListOperands` on one axis: it applies **no** availability gate, so a formally unavailable cell stays in the stream and the consuming operator decides for itself whether to skip it or go non-evaluable. Use it only for an operator whose kernel counterpart owns its own loop rather than the shared all-cells combiner, which yields its non-relevant value for such a cell wherever in the selection that cell sits. That combiner's gate is what this collector deliberately omits; **where** the combiner stops is a source-level reading with no runtime witness, so no clause may depend on it ([`spec/02`](../../spec/02-logic-and-formal-errors.md)).
 
 Resolution is total rather than lazy. A consumer that answers at an earlier cell still resolves every later operand; that is unobservable because resolution is pure and a checked model precludes its structural failures. -/
 def collectTaggedValueListCells {operand error : Type} {kind : ValueListKind}

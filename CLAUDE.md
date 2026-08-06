@@ -103,7 +103,7 @@ Keep those commits local: never run `git push`, create or update a remote branch
 
 ## ⚠️ HARD RULE — discharge a claim before stating it, or flag it and surface it
 
-A statement that later probing falsifies is worse than no statement: it enters `spec/`, ships to the peer, and costs a reconciliation round. **Every claim leaving this repository — in `spec/`, a ledger entry, a docstring, a finding, or a reply to the user — is either discharged by the method its claim class requires, or explicitly marked unverified.** Confidence, plausibility, and "the peer said so" are not discharge. Prior effort spent reasoning toward a claim is not discharge either.
+A statement that later probing falsifies is worse than no statement: it enters `spec/`, ships to the peer, and costs a reconciliation round. **Every claim leaving this repository — in `spec/`, a ledger entry, a docstring, a finding, or a reply to the user — is either discharged by the method its claim class requires, or explicitly marked unverified.** Confidence, plausibility, and "the peer said so" are not discharge. Prior effort spent reasoning toward a claim is not discharge either. **Marking a ledger entry `accepted` is a claim-leaving act**, not merely a reading: it writes the handback's account into `spec/` and into an immutable receipt in one step. Classify each claim a handback asserts and discharge it by its own class before accepting; a handback that supplies an *outcome* has not discharged a claim about a *mechanism* ([`LF84`](docs/LEAN-FINDINGS.md)).
 
 Classify the claim, then apply its method. Doing this costs seconds; every skipped instance so far has cost a round trip.
 
@@ -116,7 +116,7 @@ Classify the claim, then apply its method. Doing this costs seconds; every skipp
 
 Three cheap checks, each of which would have prevented a recorded defect:
 
-- **Before consuming an unreachability claim, grep this repository's own `spec/` for the gate it names.** An unreachability argument is a conjunction and falls to one defeater; the cheapest place to find one is the prose this project already owns. See [`LF75`](docs/LEAN-FINDINGS.md).
+- **Before consuming an unreachability *or exclusivity* claim, grep this repository's own `spec/` for the mechanism it excludes.** "Unrepresentable", "no legal model", "cannot be read off", and "only this mechanism produces that" are one class: a negative existential that falls to a single defeater, and the cheapest place to find one is the prose this project already owns. See [`LF75`](docs/LEAN-FINDINGS.md) and [`LF84`](docs/LEAN-FINDINGS.md).
 - **Never write "unauthorable", "unrepresentable", or "no legal model can express".** Write `authorable, witness X, measured at <rev>` or `no witness known as of <rev>`. The second claims nothing and so invites no correction; that phrasing difference is the whole ping-pong.
 - **Never let reachability gate a semantic clause.** State the total function unconditionally and keep authorability as a separate annotation allowed to be unknown. A reimplementer needs the function either way, and the coupling is what turns every reachability correction into a semantic rewrite.
 
