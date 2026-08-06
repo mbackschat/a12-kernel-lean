@@ -61,7 +61,7 @@ The complete provenance and claim boundary are owned by [`EVIDENCE.md`](EVIDENCE
 - A faulty capture is corrected only as an explicit provenance-bearing evidence correction.
 - Full probe models remain complete and readable while they are the active migration source. A reviewed compact migration may move them to an exact recovery revision only after preserving the claimed semantic inputs, observations, assurance limits, and triangulation disagreements.
 
-Run `lake test` to replay the 51 non-public cases: 24 validation, 22 root String, and five direct cascade. `checkReferenceProcess` owns the 25 public validation/correlation evidence associations as well as the current 0.3.0 manifest, fixtures, transport behavior, and V2 controls. Neither gate writes under `evidence/`.
+Run `lake test` to replay the non-public cases; [`EVIDENCE.md`](EVIDENCE.md) owns their exact counts and breakdown. `checkReferenceProcess` owns the public validation/correlation evidence associations as well as the current 0.3.0 manifest, fixtures, transport behavior, and V2 controls. Neither gate writes under `evidence/`.
 
 ### Current integrity gaps
 
