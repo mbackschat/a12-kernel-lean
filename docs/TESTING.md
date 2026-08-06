@@ -67,7 +67,7 @@ Every routine capsule always checks:
 - **Consumer decision:** the query predicted by the consumer hypothesis runs against the finished API, and the named unsafe account remains distinguishable.
 - **Evidence status:** the external status and claim limits are exact, and no internal proof, source reading, or peer agreement is labeled Kernel evidence.
 - **Document trigger and ownership:** every touched document was actually triggered under [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md), each detailed fact has one owner, displaced copies were deleted or replaced by a local consequence and link, and no stale exclusion or completed narrative remains in an open-only owner. An untriggered document touch is a closure defect even when its prose is accurate.
-- **Local consolidation and hygiene:** no new code smell or obsolete parallel mechanism remains, trust-root registration is complete, line and estate limits hold, sibling status is unchanged from the recorded baseline, and temporary artifacts are removed.
+- **Local consolidation and hygiene:** no obsolete parallel mechanism remains, the support-versus-theory estate ratio still holds, and sibling status is unchanged from the recorded baseline. Trust-root registration, per-file line limits, and leftover artifacts are already asserted by the tier gate and the source-hygiene guard, so do not re-check them here.
 
 Run these checks only when the unit triggers them:
 
@@ -81,8 +81,6 @@ Run these checks only when the unit triggers them:
 At a reusable capability milestone or an explicit risk trigger, run the complete list above—routine core and every conditional item—together with the [trigger-based cold review](#trigger-based-cold-review).
 
 Fix a same-capsule defect before committing. Record a genuinely open semantic obligation only in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md); route a durable formalization lesson to [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md), implemented/evidence state to [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), and immediate sequencing to [`PLAN.md`](PLAN.md). These are possible destinations, not a mandatory touch list: leave any owner whose facts did not change untouched. A routine assessment with no concrete finding creates no repository report. Infrastructure, protocol, dependency, shipment, or governance work found by the assessment remains a proposal subject to its existing approval rule.
-
-Every capsule or feature handoff must include a compact roundtrip verdict held in the working context: keep the current method, apply a named process adjustment to the next unit, or propose a separately approved infrastructure change. “No concrete repeated or material friction observed; keep the current method” is a complete verdict and requires no invented adjustment. Name an adjustment only for observed friction such as repeated source navigation for a fact an owner should carry, an unrelated gate rerun, a red case that cannot be written against the intended public API, duplicated document ownership, or one material semantic or architectural failure. Apply no-file workflow improvements immediately. Do not create metrics files, timing registries, or assessment reports merely to prove the routine occurred.
 
 If the assessment changes code, proofs, executable cases, or a gate-consumed artifact, rerun the affected focused check and every later applicable rung before commit. Documentation-only corrections do not restart unrelated semantic gates.
 
