@@ -64,6 +64,33 @@ example : GroupFillQuantifier.allGroupsFilled.evalValidation [admittedAndErroneo
 example : (observeCell .validation valid).asGroupListPresence = .filled := by native_decide
 example : (observeCell .validation empty).asGroupListPresence = .empty := by native_decide
 example : (observeCell .validation malformed).asGroupListPresence = .unavailable := by native_decide
+
+-- The computation arm reads the same cells and answers the malformed one differently: it is
+-- present there and unavailable above. The empty and admitted cells are classified alike, so
+-- formal invalidity is the only cell-level dimension the two arms disagree on.
+example : (observeCell .computation valid).presentForComputation = true := by native_decide
+example : (observeCell .computation empty).presentForComputation = false := by native_decide
+example : (observeCell .computation malformed).presentForComputation = true := by native_decide
+
+-- A required-and-empty cell is erroneous for validation yet absent for the computing
+-- instance, because computation does not read the validation-scoped required finding.
+example : (observeCell .validation (empty.withFinding .required)).asGroupListPresence =
+    .unavailable := by native_decide
+example : (observeCell .computation (empty.withFinding .required)).presentForComputation =
+    false := by native_decide
+
+-- One malformed-only descendant makes its group present for computation while the same
+-- group is neither filled nor empty for validation, and the count cannot answer unknown.
+example : groupPresentForComputation [observeCell .computation malformed] = true := by
+  native_decide
+example : groupPresentForComputation [observeCell .computation empty] = false := by
+  native_decide
+example :
+    numberOfFilledGroupsForComputation
+      [[observeCell .computation malformed], [observeCell .computation valid]] = 2 ∧
+      numberOfFilledGroupsForComputation
+        [[observeCell .computation empty], [observeCell .computation empty]] = 0 := by
+  native_decide
 example :
     (GroupFillQuantifier.allGroupsFilled.evalPresence [.filled, .filled],
       GroupFillQuantifier.noGroupFilled.evalPresence [.empty, .empty],

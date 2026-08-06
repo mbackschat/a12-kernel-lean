@@ -1,6 +1,6 @@
 import A12Kernel.Semantics.GroupPresence
 
-/-! # Laws for resolved validation group presence -/
+/-! # Laws for resolved group presence in both evaluation arms -/
 
 namespace A12Kernel
 
@@ -72,5 +72,71 @@ theorem erroneousHead_makesFilledGroupCountUnknown
 
 theorem relativeRequiredness_uses_positivePresence (state : GroupPresenceState) :
     state.activatesRelativeRequiredness = state.definitelyFilled := rfl
+
+/-- The measured divergence is directional, and this states that direction with no
+    hypothesis at all: whenever the validation arm admits a cell as group content, the
+    computation arm also counts it present. The converse fails, and that failure is the
+    whole content of the inversion — a formally invalid cell is counted here and rejected
+    there. Holds on the full domain, including the invalid cells the clean-agreement law
+    below says nothing about. -/
+theorem admitsGroupContent_le_presentForComputation (cell : CheckedCell)
+    (admits : cell.admitsGroupContent = true) :
+    (observeCell .computation cell).presentForComputation = true := by
+  -- A present parsed value rules out the only absent branch of the phase read, whatever
+  -- finding that read selects, so no case analysis on the findings themselves is needed.
+  cases hParsed : cell.parsed with
+  | none => simp [CheckedCell.admitsGroupContent, hParsed] at admits
+  | some value =>
+      simp only [observeCell, hParsed]
+      split <;> simp_all [CellObservation.presentForComputation]
+
+/-- On a cell carrying no finding the two arms' cell-level presence projections coincide.
+    Together with the monotonicity law above this confines the arms' disagreement to cells
+    that carry a finding. It says nothing about a cell that carries one, which is exactly
+    where the measurement lives. -/
+theorem presentForComputation_eq_admitsGroupContent_of_clean (cell : CheckedCell)
+    (clean : cell.findings.isEmpty = true) :
+    (observeCell .computation cell).presentForComputation =
+      cell.admitsGroupContent := by
+  cases cell with
+  | mk rawPresent parsed findings =>
+      cases findings with
+      | nil => cases parsed <;> rfl
+      | cons _ _ => simp at clean
+
+/-- The list-level form of the clean-region agreement, used to lift it to a whole group. -/
+theorem any_presentForComputation_eq_any_admitsGroupContent :
+    ∀ cells : List CheckedCell,
+      cells.all (fun cell => cell.findings.isEmpty) = true →
+      (cells.map (observeCell .computation)).any
+          CellObservation.presentForComputation =
+        cells.any CheckedCell.admitsGroupContent
+  | [], _ => rfl
+  | cell :: rest, clean => by
+      simp only [List.all_cons, Bool.and_eq_true] at clean
+      simp only [List.map_cons, List.any_cons,
+        presentForComputation_eq_admitsGroupContent_of_clean cell clean.1,
+        any_presentForComputation_eq_any_admitsGroupContent rest clean.2]
+
+/-- In the clean region the two arms' group-level presence projections agree: over
+    descendant cells that carry no finding, and with no repeatable row supplying content,
+    the computation arm's presence is exactly the validation arm's `content`.
+
+    Scope is deliberately narrow, and the hypotheses are the statement. This says nothing
+    about the validation state's `hasInstantiatedRow`, `structuralError`, `silentError`, or
+    `relevance` dimensions — the computation projection consumes none of them, and SG13
+    records all of them as uncovered by the retained observation. What it does establish,
+    with `admitsGroupContent_le_presentForComputation`, is that the arms' descendant-content
+    disagreement is confined to cells carrying a finding. -/
+theorem groupPresentForComputation_eq_content_of_clean
+    (input : ResolvedGroupPresenceInput)
+    (rows : input.hasInstantiatedRow = false)
+    (clean : input.descendantCells.all (fun cell => cell.findings.isEmpty) = true) :
+    groupPresentForComputation
+        (input.descendantCells.map (observeCell .computation)) =
+      input.derive.content := by
+  simp only [ResolvedGroupPresenceInput.derive, rows, Bool.false_or,
+    groupPresentForComputation]
+  exact any_presentForComputation_eq_any_admitsGroupContent input.descendantCells clean
 
 end A12Kernel

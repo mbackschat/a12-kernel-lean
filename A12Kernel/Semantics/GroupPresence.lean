@@ -1,12 +1,14 @@
 import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.ValidationFillQuantifier
 
-/-! # Resolved validation group presence
+/-! # Resolved group presence in both evaluation arms
 
 This capsule begins after model paths, concrete group instances, descendant scope, and
 partial-validation coverage have been resolved. It derives one group's validation-stage
 product state from checked descendant cells plus separately resolved repeat-row content
-and structural errors. It does not traverse `Document` or infer group relevance.
+and structural errors, and it owns the separate computation-arm presence projection that
+reads the same descendant cells with the opposite answer on formal invalidity. It does not
+traverse `Document` or infer group relevance.
 -/
 
 namespace A12Kernel
@@ -129,6 +131,21 @@ def asGroupListPresence : CellObservation → GroupListPresenceState
   | .value _ => .filled
   | .unknown _ | .poison _ => .unavailable
 
+/-- Computation-phase presence of one descendant cell. This is a coarsening of
+    `asGroupListPresence`, not its inverse: the two agree that a read value is present and
+    an absent read is absent, and differ only in that formal unavailability counts as
+    present here where validation keeps it in a third bucket. Only a cell the phase read
+    reports as absent is absent, which keeps the validation-scoped required finding out of
+    the computation count.
+
+    The `.unknown` branch is unreachable from `observeCell .computation`, which yields
+    `.poison` for a finding; it is answered the same way to keep the function total. -/
+def presentForComputation : CellObservation → Bool
+  | .empty => false
+  | .value _ => true
+  | .unknown _ => true
+  | .poison _ => true
+
 end CellObservation
 
 def GroupPresenceState.asGroupListPresence
@@ -194,8 +211,9 @@ def GroupFillQuantifier.evalValidation (operator : GroupFillQuantifier)
     (states : List GroupPresenceState) : ValidationFillOutcome :=
   operator.evalPresence (states.map GroupPresenceState.asGroupListPresence)
 
-/-- The plain multi-group numeric count is unavailable unless every operand group is
-    fully relevant and error-free; unlike group-list predicates it cannot skip unknowns. -/
+/-- The plain multi-group numeric count in the **validation** arm is unavailable unless every
+    operand group is fully relevant and error-free; unlike group-list predicates it cannot
+    skip unknowns. The computation arm has no such state and is counted separately below. -/
 inductive FilledGroupCount where
   | value (count : Nat)
   | unknown
@@ -204,5 +222,24 @@ inductive FilledGroupCount where
 def numberOfFilledGroups (states : List GroupPresenceState) : FilledGroupCount :=
   if states.any (fun state => state.erroneous || !(state.relevance == .fullyRelevant)) then .unknown
   else .value (states.countP fun state => state.content)
+
+/-- One group's computation-phase presence, decided by its own descendant reads rather than
+    by a separately supplied state, so it cannot disagree with the cells the computation
+    itself reads. -/
+def groupPresentForComputation (cells : List CellObservation) : Bool :=
+  cells.any CellObservation.presentForComputation
+
+/-- The plain multi-group numeric count in the computation arm. Deliberately **not** a
+    `FilledGroupCount`: unlike the validation projection above it cannot answer unknown,
+    because a formally invalid descendant makes its group count as filled instead of making
+    the count unavailable. Only a group with no compute-present descendant is skipped.
+
+    The two projections must stay separate rather than share a phase flag. This one consumes
+    descendant reads only; it does not consume the validation state's repeat-row, structural,
+    or relevance dimensions, none of which the retained observation covers. The proved
+    relation between the arms is confined to descendant content: see the monotonicity and
+    clean-agreement laws in the trusted proof root. -/
+def numberOfFilledGroupsForComputation (groups : List (List CellObservation)) : Nat :=
+  groups.countP groupPresentForComputation
 
 end A12Kernel
