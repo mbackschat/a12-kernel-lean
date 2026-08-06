@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-08-05:** `lake build` clean · trust audit **1843 theorem roots; 43516 declarations in 421 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-08-06:** `lake build` clean (728 jobs) · trust audit **1852 theorem roots; 43869 declarations in 425 modules** · `lake test` 51/51 · `check-spec-sync.sh` passed. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 ## Active semantic unit
 
