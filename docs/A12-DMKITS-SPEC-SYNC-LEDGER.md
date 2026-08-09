@@ -464,6 +464,23 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Acceptance:** the three conditions are measured on a scale-0 field in a repeatable group, and the outcome is recorded with its revision — including a refutation, which corrects this repository rather than the peer.
 - **Disposition (reviewed a12-dmkits `ee2f5d84`): confirmed in full, with the mechanism accepted.** `== 9223372036854775807` admitted, `== -9223372036854775807` **rejected**, `== -9223372036854773760` admitted — every predicted row measured through the kernel. The peer also measured the *intermediate* values, which is what settles the cause rather than the outcome: `parseDouble` returns ∓2^63 for **both** literals, so the parse step is symmetric and a binary64-granularity explanation predicts symmetric outcomes and is refuted; `Math.round` then returns `Long.MAX_VALUE` for one and an unchanged `Long.MIN_VALUE` for the other. Saturation on one side only is the mechanism, exactly as the clause states. They additionally measured `== 9223372036854775808` admitted, now in the clause. **The peer retracted its own earlier advice to state this asymmetry without invoking saturation**; that advice never reached `spec/`, so nothing had to be undone. `spec/07` is upgraded from derived to kernel-measured. **Nothing outbound.**
 
+<a id="spec-2026-08-09-01"></a>
+<a id="spec-2026-08-09-01--numberoffilledgroups-computation-admission-preserves-fixed-list-and-starred-mix-boundaries"></a>
+
+### SPEC-2026-08-09-01 — `NumberOfFilledGroups` computation admission preserves fixed-list and starred-mix boundaries
+
+- **Status:** pending
+- **Kind:** semantic correction and extension
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `cd41ea94b470a190f7d766ea6d7adf26b6ba74cf` (clean)
+- **Kernel behavior:** 30.8.1, measured through dmtool `0.12.1` computation dry-run and matching `rule check` controls
+- **Canonical clause:** [`02-logic-and-formal-errors.md` §A.4](../spec/02-logic-and-formal-errors.md#a4-fill-quantifiers-group-scopes-and-the-two-iteration-ranges)
+- **Delta:** Measured fixed computation lists of two and three distinct disjoint nonrepeatable groups are admitted; no larger list was measured. One fixed group reports `MVK_PARAMSIZE_INVALIDGN`; exact duplication reports `MVK_DUPLICATE_PARAM1`; ancestor/descendant overlap, including root beside a contained group, reports `MVK_DUPLICATE_PARAM2`; and a repeatable group without `*` reports `MVK_NO_WILDCARD`. A starred repeatable group is statically admitted both alone and beside a fixed group, so the starred form is not singleton-only. These are static admission facts and make no runtime claim for the starred computation form.
+- **Basis:** The exact-source route first reproduced the independently known whole-list `FieldValuesNotUnique` calibration, including both diagnostic orders and persisted structural read-back. On one dmtool-authored model, computation dry-run then admitted fixed lists of two and three groups, a nested fixed terminal beside a disjoint sibling, a sole repeatable star, and a mixed star/fixed pair. It separated the four named fixed-list failures and rejected the ordinary nonrepeatable root with `*` as `MVK_INVALID_WILDCARD`. The two-fixed computation persisted, read back as `NumberOfFilledGroups(Beta, Gamma)`, and survived whole-model checking with `KERNEL_CONFIRMED`; matching rule checks admitted the sole-star and mixed-star spellings. The sibling remained clean at the same revision before and after.
+- **Requested a12-dmkits reconciliation:** Correct the canonical computation-admission account and extend the smallest existing `NumberOfFilledGroups` static-law family with the admitted fixed pair/triple, sole-star and mixed-star rows plus the four diagnostic separators. Keep runtime behavior of starred computation explicitly outside this reconciliation unless independently measured. Reuse the existing authoring and consistency-oracle owners; add no harness or representation.
+- **Compatibility:** Requiring a sole starred operand rejects legal models. Admitting one unstarred fixed group, collapsing exact duplication into ancestor overlap, or treating a repeatable group as fixed changes the Kernel's observable diagnostic class. Static acceptance alone must not be used to invent repeatable computation runtime semantics.
+- **Acceptance:** Canonical peer prose and maintained existing-family static cases state and separate the accepted fixed and starred shapes plus all four exact diagnostics, retain the static/runtime boundary, and return the exact reviewed revision and disposition.
+
 ## Experiment requests
 
 <a id="exp-2026-08-06-01"></a>

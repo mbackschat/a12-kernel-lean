@@ -53,16 +53,6 @@ private def NumericValidationElabError.ofFixedGroupReferenceError :
   | .repeatableGroupRequiresAddress path =>
       .repeatableGroupCountRequiresStar path
 
-private def resolveFixedGroupCountOperands (model : FlatModel)
-    (rowGroup : GroupPath) :
-    List SurfaceGroupReference →
-      Except NumericValidationElabError (List ResolvedGroupReference)
-  | [] => pure []
-  | surface :: remaining => do
-      let resolved ← model.resolveFixedGroupReference rowGroup surface
-        |>.mapError NumericValidationElabError.ofFixedGroupReferenceError
-      pure (resolved :: (← resolveFixedGroupCountOperands model rowGroup remaining))
-
 private def resolveFieldValueAsNumberAtom
     (declaration : FlatFieldDecl) (projectionRef : EnumerationProjectionRef) :
     Except NumericValidationElabError NumericValidationAtom :=
@@ -176,7 +166,8 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
       model.ensureNumericAggregateRowGroup rowGroup checked.fields
       pure (.aggregate op checked.resolvedFields)
   | .filledGroupCount surfaces => do
-      let groups ← resolveFixedGroupCountOperands model rowGroup surfaces
+      let groups ← model.resolveFixedGroupReferences rowGroup surfaces
+        |>.mapError NumericValidationElabError.ofFixedGroupReferenceError
       if groups.length < 2 then
         throw .groupCountNeedsMultipleOperands
       match groups.find? ResolvedGroupReference.isRoot with

@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericComputation
+import A12Kernel.Elaboration.GeneratedComputationValidation
 
 /-! # Compute-arm fixed multi-group filled-count locks
 
@@ -8,9 +9,9 @@ computation counts it. Both arms here are derived from one shared per-group cell
 "the same cells" is structural rather than a hand-maintained pairing.
 
 The counted rows are measured at a12-dmkits `677e2eb7` under accepted `EXP-2026-08-06-01`.
-Static admission of the operand in a computation is a separate axis with no retained
-observation and remains closed; the cell-level projections themselves are locked in
-`Conformance/GroupPresence.lean`.
+Static admission and its exact short-arity, duplicate, overlap, and missing-star diagnostics
+are measured through the clean exact-source consistency route at `cd41ea94`; the cell-level
+projections themselves are locked in `Conformance/GroupPresence.lean`.
 -/
 
 namespace A12Kernel.Conformance.NumericComputation.GroupCount
@@ -20,6 +21,8 @@ open A12Kernel
 def detailsAmountId : FieldId := 0
 def preferencesChoiceId : FieldId := 1
 def nestedDetailId : FieldId := 2
+def computedTargetId : FieldId := 3
+def thirdGroupId : FieldId := 4
 
 def numberPolicy : FieldPolicy := { kind := .number { scale := 0, signed := true } }
 
@@ -36,12 +39,37 @@ def model : FlatModel :=
       numberIn detailsAmountId ["Root", "Details"] "Amount",
       numberIn preferencesChoiceId ["Root", "Preferences"] "Choice"] }
 
+def computationModel : FlatModel :=
+  { model with
+    fields := model.fields ++
+      [numberIn computedTargetId ["Root"] "Target"] }
+
+def withComputedTarget (source : FlatModel) : FlatModel :=
+  { source with
+    fields := source.fields ++
+      [numberIn computedTargetId ["Root"] "Target"] }
+
+def selfReferentialComputationModel : FlatModel :=
+  { model with
+    fields := model.fields ++
+      [numberIn computedTargetId ["Root", "Details"] "Target"] }
+
+def nestedSelfReferentialComputationModel : FlatModel :=
+  { model with
+    fields := model.fields ++
+      [numberIn computedTargetId ["Root", "Details", "Inner"] "Target"] }
+
 /-- `Details` additionally owns a deeper descendant field. Nested descendants are outside the
     measured shape, so this model is the refusal boundary rather than a wider count. -/
 def nestedDescendantModel : FlatModel :=
   { model with
     fields := model.fields ++
       [numberIn nestedDetailId ["Root", "Details", "Inner"] "Deep"] }
+
+def threeGroupModel : FlatModel :=
+  { model with
+    fields := model.fields ++
+      [numberIn thirdGroupId ["Root", "Other"] "OtherValue"] }
 
 /-- A group reached only through a repeatable declaration, with no direct field of its own. -/
 def repeatableGroupModel : FlatModel :=
@@ -99,6 +127,76 @@ def faultIn (target : FlatModel) (groups : List ResolvedGroupReference) (rows : 
 def countOf (rows : Rows) : Option NumericComputationResult :=
   countIn model [detailsGroup, preferencesGroup] rows
 
+def surfaceGroup (path : GroupPath) : SurfaceGroupReference :=
+  .path { base := .absolute, groups := path }
+
+def surfaceCount (groups : List GroupPath) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.filledGroupCount (groups.map surfaceGroup))
+
+def checkedCountResultOf (groups : List GroupPath) (rows : Rows) :
+    Option NumericComputationResult :=
+  match elaborateNumericComputationOperation computationModel ["Root"]
+      computedTargetId (surfaceCount groups) with
+  | .error _ => none
+  | .ok checked => checked.evaluate { read := rows.read } |>.toOption
+
+def checkedCountErrorIn (source : FlatModel) (groups : List GroupPath) :
+    Option NumericComputationElabError :=
+  match elaborateNumericComputationOperation (withComputedTarget source) ["Root"]
+      computedTargetId (surfaceCount groups) with
+  | .error error => some error
+  | .ok _ => none
+
+def checkedCountGroupsIn (source : FlatModel) (groups : List GroupPath) :
+    Option (List ResolvedGroupReference) :=
+  match elaborateNumericComputationOperation (withComputedTarget source) ["Root"]
+      computedTargetId (surfaceCount groups) with
+  | .error _ => none
+  | .ok checked =>
+      match checked.core.expression with
+      | .atom (.numeric (.filledGroupCount resolved)) => some resolved
+      | _ => none
+
+def checkedCountFaultIn (source : FlatModel) (groups : List GroupPath)
+    (rows : Rows) : Option NumericComputationFault :=
+  match elaborateNumericComputationOperation (withComputedTarget source) ["Root"]
+      computedTargetId (surfaceCount groups) with
+  | .error _ => none
+  | .ok checked =>
+      match checked.evaluate { read := rows.read } with
+      | .error fault => some fault
+      | .ok _ => none
+
+def generatedMismatchErrorOf (groups : List GroupPath) :
+    Option GeneratedComputationValidationError :=
+  match elaborateNumericComputationOperation computationModel ["Root"]
+      computedTargetId (surfaceCount groups) with
+  | .error _ => none
+  | .ok checked =>
+      match checked.generatedMismatchComparison none with
+      | .error error => some error
+      | .ok _ => none
+
+def checkedCountDiagnosticIn (source : FlatModel) (groups : List GroupPath) :
+    Option KernelStaticDiagnostic :=
+  (checkedCountErrorIn source groups).bind
+    NumericComputationElabError.groupCountDiagnostic?
+
+def selfReferentialCountError : Option NumericComputationElabError :=
+  match elaborateNumericComputationOperation selfReferentialComputationModel
+      ["Root", "Details"] computedTargetId
+      (surfaceCount [["Root", "Details"], ["Root", "Preferences"]]) with
+  | .error error => some error
+  | .ok _ => none
+
+def nestedSelfReferentialCountError : Option NumericComputationElabError :=
+  match elaborateNumericComputationOperation nestedSelfReferentialComputationModel
+      ["Root", "Details", "Inner"] computedTargetId
+      (surfaceCount [["Root", "Details"], ["Root", "Preferences"]]) with
+  | .error error => some error
+  | .ok _ => none
+
 /-- The validation arm over the very same two cells, with no repeatable row and full
     coverage, so formal invalidity is the only dimension left free. -/
 def validationCountOf (rows : Rows) : FilledGroupCount :=
@@ -118,6 +216,95 @@ def requiredBeside : Rows := { details := requiredEmpty, preferences := filled 7
    and filled, and the count is the ordinary exact `2`. The formally unavailable group counts
    as filled. -/
 example : countOf malformedBeside = some (.value 2) := by
+  native_decide
+
+/- The real-kernel static route admits the same fixed, distinct, disjoint two-group shape as
+   a Number computation, so the checked surface reaches the already measured compute-arm
+   evaluator instead of refusing it before resolution. -/
+example :
+    checkedCountResultOf
+      [["Root", "Details"], ["Root", "Preferences"]]
+      malformedBeside = some (.value 2) := by
+  native_decide
+
+/- Successful checking retains the exact authored reference order and origin even though the
+   resulting count is order-insensitive. -/
+example :
+    checkedCountGroupsIn model
+      [["Root", "Preferences"], ["Root", "Details"]] =
+      some [preferencesGroup, detailsGroup] := by
+  native_decide
+
+/- The ordinary computed-target self-reference gate reaches every field in a counted group
+   subtree instead of degrading the otherwise recognized computation into incoherent core. -/
+example : selfReferentialCountError = some (.targetSelfReference computedTargetId) := by
+  native_decide
+
+/- Reference traversal is subtree-based rather than direct-group equality. -/
+example :
+    nestedSelfReferentialCountError =
+      some (.targetSelfReference computedTargetId) := by
+  native_decide
+
+/- The checked surface preserves both explicit downstream boundaries: a statically admitted
+   operand with deeper descendants fails computation preflight, and arm-crossing generated
+   mismatch lowering remains unsupported. -/
+example :
+    checkedCountFaultIn nestedDescendantModel
+        [["Root", "Details"], ["Root", "Preferences"]]
+        malformedBeside = some .unsupportedGroupCount ∧
+      generatedMismatchErrorOf
+        [["Root", "Details"], ["Root", "Preferences"]] =
+        some (.conditionAssembly .incoherentCore) := by
+  native_decide
+
+/- The lower bound is not an exact-two rule, and static admission does not inherit the
+   runtime projection's direct-descendant boundary: a third disjoint group, a nested terminal
+   with its own direct field, and an operand that itself owns a deeper descendant all pass
+   consistency checking. The last shape still takes `unsupportedGroupCount` at evaluation. -/
+example :
+    checkedCountErrorIn threeGroupModel
+        [["Root", "Details"], ["Root", "Preferences"], ["Root", "Other"]] =
+        none ∧
+      checkedCountErrorIn nestedDescendantModel
+        [["Root", "Details", "Inner"], ["Root", "Preferences"]] = none ∧
+      checkedCountErrorIn nestedDescendantModel
+        [["Root", "Details"], ["Root", "Preferences"]] = none := by
+  native_decide
+
+/- Exact Kernel strings are part of the diagnostic identity, while a non-group computation
+   refusal remains deliberately unmapped. -/
+example :
+    KernelStaticDiagnostic.kernelCode .paramSizeInvalidGN =
+        "MVK_PARAMSIZE_INVALIDGN" ∧
+      KernelStaticDiagnostic.kernelCode .duplicateParam1 =
+        "MVK_DUPLICATE_PARAM1" ∧
+      KernelStaticDiagnostic.kernelCode .duplicateParam2 =
+        "MVK_DUPLICATE_PARAM2" ∧
+      KernelStaticDiagnostic.kernelCode .noWildcard = "MVK_NO_WILDCARD" ∧
+      NumericComputationElabError.groupCountDiagnostic?
+        (.targetNotNumber computedTargetId) = none := by
+  native_decide
+
+/- The kernel distinguishes fixed-count authoring failures by diagnostic identity: short
+   arity, exact duplication, ancestor overlap, and an unstarred repeatable group are four
+   separate classes. Root beside any descendant is the same overlap class, not a separate
+   root rejection. -/
+example :
+    checkedCountDiagnosticIn model [["Root", "Details"]] =
+        some .paramSizeInvalidGN ∧
+      checkedCountDiagnosticIn model
+        [["Root", "Details"], ["Root", "Details"]] =
+        some .duplicateParam1 ∧
+      checkedCountDiagnosticIn nestedDescendantModel
+        [["Root", "Details"], ["Root", "Details", "Inner"]] =
+        some .duplicateParam2 ∧
+      checkedCountDiagnosticIn model
+        [["Root"], ["Root", "Details"]] =
+        some .duplicateParam2 ∧
+      checkedCountDiagnosticIn repeatableGroupModel
+        [["Root", "Rows"]] =
+        some .noWildcard := by
   native_decide
 
 /- The all-clean positive control takes the same `2`, so the measured row cannot be read as a

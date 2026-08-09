@@ -243,12 +243,6 @@ def surfaceRepeatableTokenValueCount
 def surfaceBaseYear : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom .baseYear
 
-def surfaceFixedGroupCount :
-    AuthoredNumericExpr SurfaceNumericAtom :=
-  .atom (.filledGroupCount [
-    .path { base := .absolute, groups := ["Root", "Details"] },
-    .path { base := .absolute, groups := ["Root", "Preferences"] }])
-
 def surfaceBaseYearDatePart (source : BaseYearDateSource)
     (part : DateNumericPart) : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.baseYearDatePart source part)

@@ -270,13 +270,6 @@ example :
           (checkedNumber (.parsed (.num 6)))) = some (.value 10) := by
   native_decide
 
-/- A fixed group count is refused by the checked computation *surface*, which is a separate
-   axis from its evaluation: the compute-arm count itself is measured and closed in
-   `Conformance/NumericComputation/GroupCount.lean`, while the static admission rule for the
-   operand in a computation has no retained observation and stays closed here. -/
-example : checkedErrorOf surfaceFixedGroupCount = some .unsupportedExpression := by
-  native_decide
-
 /- Direct aggregate `Abs` runs after the shared fold, including negative totals, all-empty zero, and exact poison. A wrapper may also consume a checked operand-list extremum. -/
 example :
     let aggregate := surfaceAggregate .sum "Source" ["Later"]

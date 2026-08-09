@@ -5,6 +5,15 @@ import A12Kernel.Proofs.Observation
 
 namespace A12Kernel
 
+/-- Exact duplication is precisely the overlap case that reports `MVK_DUPLICATE_PARAM1`;
+    every proper ancestor overlap remains the distinct `MVK_DUPLICATE_PARAM2` class. -/
+theorem numericComputation_groupCount_duplicateParam1_iff
+    (left right : GroupPath) :
+    NumericComputationElabError.groupCountDiagnostic?
+        (.overlappingGroupCountOperands left right) =
+      some .duplicateParam1 ↔ left = right := by
+  simp [NumericComputationElabError.groupCountDiagnostic?]
+
 /-- A resolved computation aggregate atom consumes the same aggregate fold under computation-phase observation, then erases only validation fillability. -/
 theorem numericComputationAggregate_evaluatesThroughSharedFold
     (context : ScalarComputationContext) (op : NumericAggregateOp)

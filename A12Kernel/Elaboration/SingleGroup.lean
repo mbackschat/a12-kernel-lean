@@ -160,6 +160,18 @@ def FlatModel.resolveFixedGroupReference (model : FlatModel)
         throw (.repeatableGroupRequiresAddress resolved.path)
   | .ruleGroup => pure resolved
 
+/-- Resolve fixed group operands in authored order while leaving operator-specific arity,
+    root, duplicate, and overlap rules to the consumer. -/
+def FlatModel.resolveFixedGroupReferences (model : FlatModel)
+    (declaringGroup : GroupPath) :
+    List SurfaceGroupReference →
+      Except FixedGroupReferenceError (List ResolvedGroupReference)
+  | [] => pure []
+  | surface :: remaining => do
+      let resolved ← model.resolveFixedGroupReference declaringGroup surface
+      pure (resolved ::
+        (← model.resolveFixedGroupReferences declaringGroup remaining))
+
 namespace ResolvedGroupReferences
 
 /-- Find the first declaration-ordered duplicate or ancestor/descendant overlap. -/
