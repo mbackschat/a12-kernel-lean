@@ -8,7 +8,7 @@ import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects model-resolved numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation selects model-wide nonrepeatable admission for scalar sources and model-wide checked-computation admission for sources that retain repeatable certificates. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, exact-instant DateTime field/`Now` hour/minute/second differences, concrete-profile Date/DateTime day differences, and direct Number field-list aggregates share arithmetic. Dynamic `Now` is read only from the explicit evaluation `World`; checking retains the dependency without sampling it. The atom-parameterized comparison carrier lets generated validation retain checked direct/plain-star/filtered-star `FirstFilledValue`, entity-list aggregate, and row-paired `SumOfProducts` sources without adding another arithmetic tree or evaluator; ordinary addressed rules accept that same checked product source through the immutable checked document. Its bounded addressed context is full-validation-only; partial filter/relevance orchestration remains separate, and structural address failures remain outside semantic UNKNOWN. Operation-form rounding, absolute value, and Min/Max operand-list calls compose at ordinary arithmetic operand positions. Every Min/Max list member is a complete numeric operation, while each call independently permits at most one immediate or grouped literal. Rounding and absolute value still reject an immediate literal body. Structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
+This capsule connects model-resolved numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation selects model-wide nonrepeatable admission for scalar sources and model-wide checked-computation admission for sources that retain repeatable certificates. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, exact-instant DateTime field/`Now` hour/minute/second differences, concrete-profile Date/DateTime day differences, and direct Number field-list aggregates share arithmetic. Dynamic `Now` is read only from the explicit evaluation `World`; checking retains the dependency without sampling it. The atom-parameterized comparison carrier lets generated validation retain checked direct/plain-star/filtered-star `FirstFilledValue`, entity-list aggregate, and row-paired `SumOfProducts` sources without adding another arithmetic tree or evaluator; ordinary addressed rules accept that same checked product source through the immutable checked document. Its bounded addressed context also carries the call-local projection used by admitted partial leaves; filter and relevance orchestration remain rule-owned, and structural address failures remain outside semantic UNKNOWN. Operation-form rounding, absolute value, and Min/Max operand-list calls compose at ordinary arithmetic operand positions. Every Min/Max list member is a complete numeric operation, while each call independently permits at most one immediate or grouped literal. Rounding and absolute value still reject an immediate literal body. Structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
 
 The numeric, typed String/stored-Enumeration, and Boolean/Confirm value-count atoms retain their checked direct/plain-star/filtered-star sources, distinct static family certificates, and per-cell provenance; scalar validation accepts only direct subsets, while repeatable evaluation requires the bounded addressed context.
 -/
@@ -25,14 +25,18 @@ inductive NumericValidationUnavailable where
   | formal (cause : FormalCause)
   | groupState
   | nonRelevant
+  | silentlyUnavailable
   deriving Repr, DecidableEq
 
-/-- One exclusive backing input for addressed validation. Generated computation validation retains its established bounded document/read pair; whole-rule validation consumes the immutable model-certified checked document directly. The two forms cannot drift inside one context. -/
+/-- One exclusive backing input for addressed validation. Generated computation validation retains its established bounded document/read pair; whole-rule full validation consumes the immutable checked document; partial validation pairs that same document with its call-local availability-aware read. The forms cannot drift inside one context. -/
 inductive AddressedValidationInput (model : FlatModel) where
   | legacy (document : Document) (read : Env → FieldId → CheckedCell)
   | checked (document : CheckedDocument model)
+  | partialView (document : CheckedDocument model)
+      (read : Env → FieldId →
+        Except CheckedAddressingError (Option CheckedCell))
 
-/-- The bounded checked inputs needed when one full-validation numeric leaf retains a repeatable source. Partial validation has distinct filter/relevance orchestration and is intentionally unrepresentable here. This is an addressed leaf context, not a scheduler or result boundary. -/
+/-- The bounded checked inputs needed when one validation leaf retains a repeatable source. The backing-input variant selects full or call-local partial reads; filter and relevance orchestration remain outside. This is an addressed leaf context, not a scheduler or result boundary. -/
 structure AddressedValidationEvaluationContext (model : FlatModel) where
   scalar : ValidationEvaluationContext
   outer : Env
@@ -48,6 +52,19 @@ def readCell (context : AddressedValidationEvaluationContext model)
   | .legacy _ read => pure (read environment field)
   | .checked document =>
       (document.validationAddressedCell environment field).map (·.cell)
+  | .partialView _ read => do
+      match ← read environment field with
+      | some cell => pure cell
+      | none => throw (.partialUnavailable environment field)
+
+/-- Read one partial-validation cell without inventing a formal cause for call-local silent unavailability. Full contexts lift their ordinary addressed read into the available branch. -/
+def readPartialCell (context : AddressedValidationEvaluationContext model)
+    (environment : Env) (field : FieldId) :
+    Except CheckedAddressingError (Option CheckedCell) :=
+  match context.input with
+  | .partialView _ read => read environment field
+  | .legacy _ _ | .checked _ =>
+      (context.readCell environment field).map some
 
 end AddressedValidationEvaluationContext
 

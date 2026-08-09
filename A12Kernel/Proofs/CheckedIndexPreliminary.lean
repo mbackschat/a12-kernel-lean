@@ -109,6 +109,20 @@ theorem checkedPartialPreliminary_preserves_parsed
       result.mapError CheckedIndexPreliminaryError.document)
     (checkedIndexPreliminary_preserves_parsed view.index address notDefaulted)
 
+/-- At one relevant available address, the ordinary partial projection applies exactly the same index-then-required annotations as `annotateAuthoredCell` whenever its authored read starts from the same caller-supplied cell. -/
+theorem checkedPartialPreliminary_available_read_of_index_annotation
+    (view : CheckedPartialPreliminary model) (address : CellAddr)
+    (cell : CheckedCell)
+    (relevant : view.isAddressRelevant address = true)
+    (available : view.silentlyUnavailable.contains address = false)
+    (read : view.index.readAuthoredValidation address =
+      .ok (view.index.annotateCell address cell)) :
+    view.readAuthoredValidation address =
+      .ok (.checked (view.annotateAuthoredCell address cell)) := by
+  unfold CheckedPartialPreliminary.readAuthoredValidation
+  simp only [relevant, available, read, Except.mapError]
+  rfl
+
 /-- Silent default suppression is a distinct call-local read outcome, not a fabricated formal cause. -/
 theorem checkedPartialPreliminary_silent_read
     (view : CheckedPartialPreliminary model) (address : CellAddr)

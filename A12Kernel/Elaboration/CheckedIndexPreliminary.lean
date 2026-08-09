@@ -395,6 +395,12 @@ def annotateRequiredCell (view : CheckedPartialPreliminary model)
   | some (.fired .omission) => cell.withFinding .required
   | _ => cell
 
+/-- Apply both call-local generated channels to an already validated addressed cell. This preserves implicit nested-validation cells that have no physical base placement. -/
+def annotateAuthoredCell (view : CheckedPartialPreliminary model)
+    (address : CellAddr) (cell : CheckedCell) : CheckedCell :=
+  view.annotateRequiredCell address
+    (view.index.annotateCell address cell)
+
 def readAuthoredValidation (view : CheckedPartialPreliminary model)
     (address : CellAddr) :
     Except CheckedIndexPreliminaryError PartialValidationCellRead := do

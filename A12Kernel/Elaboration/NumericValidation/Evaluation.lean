@@ -171,31 +171,39 @@ def addressedDirectRelevant
     (_context : AddressedValidationEvaluationContext model) :
     FlatRelevance := fun _ => true
 
-/-- Resolve every repeatable field of one ordinary atom in authored encounter order, then reuse its scalar evaluator over the checked substitutions. -/
+/-- Resolve every addressed field of one ordinary atom in authored encounter order, then reuse its scalar evaluator over the checked substitutions. Full validation substitutes only repeatable fields; a partial view substitutes every referenced field so call-local generated findings cannot fall back to immutable scalar input. -/
 private def resolveAddressedOrdinary
     (source : NumericValidationAtom)
     (context : AddressedValidationEvaluationContext model) :
     Except CheckedAddressingError
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
-  let rec readRepeatable :
+  let rec readAddressed :
       List FieldId →
         Except CheckedAddressingError
-          (Option (List (FieldId × CheckedCell)))
-    | [] => pure (some [])
+          (Except NumericValidationUnavailable
+            (List (FieldId × CheckedCell)))
+    | [] => pure (.ok [])
     | field :: remaining =>
         match model.lookupUniqueId field with
-        | .error _ => pure none
+        | .error _ => pure (.error (.formal .malformed))
         | .ok declaration =>
-            if declaration.repeatableScope.isEmpty then
-              readRepeatable remaining
+            let needsAddressedRead :=
+              match context.input with
+              | .partialView _ _ => true
+              | .legacy _ _ | .checked _ =>
+                  !declaration.repeatableScope.isEmpty
+            if !needsAddressedRead then
+              readAddressed remaining
             else do
-              let addressed ← context.readCell context.outer field
-              match ← readRepeatable remaining with
-              | none => pure none
-              | some cells => pure (some ((field, addressed) :: cells))
-  match ← readRepeatable (addressedNumericValidationFieldIds source) with
-  | none => pure (.error (.formal .malformed))
-  | some addressed =>
+              match ← context.readPartialCell context.outer field with
+              | none => pure (.error .silentlyUnavailable)
+              | some addressed =>
+                  match ← readAddressed remaining with
+                  | .error unavailable => pure (.error unavailable)
+                  | .ok cells => pure (.ok ((field, addressed) :: cells))
+  match ← readAddressed (addressedNumericValidationFieldIds source) with
+  | .error unavailable => pure (.error unavailable)
+  | .ok addressed =>
       let fields : FlatContext := {
         read := fun requested =>
           match addressed.find? fun entry => entry.1 == requested with
@@ -221,7 +229,7 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
         | .legacy document read =>
             (source.evaluateValidationIn document context.outer
               .full context.scalar.fields read).mapError .addressing
-        | .checked document =>
+        | .checked document | .partialView document _ =>
             source.evaluateCheckedDocumentValidation
               document context.outer .full
       match result with
@@ -233,7 +241,7 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
         | .legacy document read =>
             (source.evaluateValueCountValidationIn expected document
               context.outer context.scalar.fields read).mapError .addressing
-        | .checked document =>
+        | .checked document | .partialView document _ =>
             source.evaluateCheckedDocumentValueCountValidation
               expected document context.outer
       pure result.toValidationArithmetic
@@ -244,7 +252,7 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
             (source.evaluateValidation document context.outer
               context.scalar.fields.read read).mapError .addressing
           pure result.toValidationArithmetic
-      | .checked document =>
+      | .checked document | .partialView document _ =>
           (source.evaluateCheckedDocumentValidation
             document context.outer).map NumericOperand.toValidationArithmetic
   | .booleanValueCount source =>
@@ -254,7 +262,7 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
             (source.evaluateValidation document context.outer
               context.scalar.fields.read read).mapError .addressing
           pure result.toValidationArithmetic
-      | .checked document =>
+      | .checked document | .partialView document _ =>
           (source.evaluateCheckedDocumentValidation
             document context.outer).map NumericOperand.toValidationArithmetic
   | .aggregate op source =>
@@ -262,7 +270,7 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
         | .legacy document read =>
             (source.evaluateValidationAggregateIn op document context.outer
               context.scalar.fields read).mapError .addressing
-        | .checked document =>
+        | .checked document | .partialView document _ =>
             source.evaluateCheckedDocumentValidationAggregate
               op document context.outer
       pure result.toValidationArithmetic
@@ -273,7 +281,7 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
             (source.evaluateAt .validation document context.outer read)
               |>.mapError .addressing
           pure result.toValidationArithmetic
-      | .checked document =>
+      | .checked document | .partialView document _ =>
           (source.evaluateCheckedDocumentAt
             .validation document context.outer).map
               NumericOperand.toValidationArithmetic
@@ -499,6 +507,13 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
       | .legacy _ _ =>
           throw (.checkedDocumentRequired [])
       | .checked document =>
+          match ← source.evaluateCheckedDocumentPartialAggregate
+              op document context.outer scope with
+          | .skippedHaving => pure (.error .groupState)
+          | .nonRelevant => pure (.error .nonRelevant)
+          | .evaluated operand =>
+              pure operand.toValidationArithmetic
+      | .partialView document _ =>
           match ← source.evaluateCheckedDocumentPartialAggregate
               op document context.outer scope with
           | .skippedHaving => pure (.error .groupState)

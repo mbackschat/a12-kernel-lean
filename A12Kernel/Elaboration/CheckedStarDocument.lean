@@ -19,6 +19,7 @@ inductive CheckedAddressingError where
   | rowEnvironment (cause : ActualRowEnvironmentError)
   | checkedDocumentRequired (path : GroupPath)
   | repetitionNotUniqueResult (row : Env)
+  | partialUnavailable (row : Env) (field : FieldId)
   deriving Repr, DecidableEq
 
 /-- Compatibility name for the original one-star projection API. -/

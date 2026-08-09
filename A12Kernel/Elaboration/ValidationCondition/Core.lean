@@ -331,12 +331,13 @@ def ResolvedGroupListOperand.evalAddressedTally
       let document := match context.input with
         | .legacy document _ => document
         | .checked checked => checked.source.toDocument
+        | .partialView checked _ => checked.source.toDocument
       let count ← (source.rowCount document context.outer).mapError .addressing
       pure (GroupListPresenceTally.filledOnly count)
   | .starredGroupPresence source =>
       match context.input with
       | .legacy _ _ => .error (.checkedDocumentRequired source.groupPath)
-      | .checked document => do
+      | .checked document | .partialView document _ => do
           let topology ←
             (source.resolvedTopology document.source.toDocument context.outer)
               |>.mapError .addressing
@@ -449,6 +450,39 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .repetitionNotUnique _ => true
   | _ => false
 
+private def evalFlatLeafAddressedPartial
+    (leaf : FlatConditionLeaf)
+    (context : AddressedValidationEvaluationContext model)
+    (isRelevant : FlatRelevance) :
+    Except CheckedAddressingError Verdict := do
+  let rec resolve :
+      List FlatFieldDecl →
+        Except CheckedAddressingError
+          (Option (List (FieldId × CheckedCell)))
+    | [] => pure (some [])
+    | declaration :: remaining =>
+        if leaf.referencesField declaration.id &&
+            isRelevant declaration.id then do
+          match ← context.readPartialCell context.outer declaration.id with
+          | none => pure none
+          | some cell => do
+              match ← resolve remaining with
+              | none => pure none
+              | some cells =>
+                  pure (some ((declaration.id, cell) :: cells))
+        else
+          resolve remaining
+  match ← resolve model.fields with
+  | none => pure .unknown
+  | some cells =>
+      let fields : FlatContext := {
+        context.scalar.fields with
+        read := fun field =>
+          match cells.find? fun entry => entry.1 == field with
+          | some entry => entry.2
+          | none => context.scalar.fields.read field }
+      pure (leaf.evalSelected fields isRelevant)
+
 /-- Evaluate one partial addressed leaf. The caller supplies the sole relevance-selected group-product query; `none` is structural unsupported information, not semantic UNKNOWN. A reached but nonrelevant supported source returns the family's exact UNKNOWN result. A missing RNU result means that partial relevance excluded the current composite key, while a mismatched result is a structural preparation error. -/
 def evalAddressedPartial?
     (context : AddressedValidationEvaluationContext model)
@@ -461,11 +495,13 @@ def evalAddressedPartial?
     ValidationConditionLeaf model →
       Option (Except CheckedAddressingError Verdict)
   | .flat condition =>
-      some (pure (condition.evalSelected context.scalar.fields isRelevant))
+      some (evalFlatLeafAddressedPartial condition context isRelevant)
   | .repeatableFieldPresence operator declaration =>
       some (if isRelevant declaration.id then
-        context.readCell context.outer declaration.id |>.map fun cell =>
-          operator.eval (observeCell .validation cell)
+        context.readPartialCell context.outer declaration.id |>.map fun cell? =>
+          match cell? with
+          | some cell => operator.eval (observeCell .validation cell)
+          | none => .unknown
       else
         pure .unknown)
   | .orderedNumeric _ comparison =>
@@ -498,7 +534,7 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
           let leaf : ValidationConditionLeaf model :=
             .groupPresence operator reference
           pure (leaf.evalSelected context.scalar context.directRelevant)
-      | .checked document => do
+      | .checked document | .partialView document _ => do
           let input ←
             (document.groupPresenceInput reference.path context.outer
               .fullyRelevant false).mapError .group

@@ -277,6 +277,20 @@ def supportsOrdinaryRepeatablePartial
   rule.condition.core.allLeaves
     ValidationConditionLeaf.supportsAddressedPartial
 
+/-- Resolve one partial-validation field through the validation-only row projection, then apply the relevance-scoped generated findings. `none` is call-local silent unavailability and therefore semantic UNKNOWN, not a fabricated formal cause. -/
+private def partialValidationAddressedCell?
+    (preliminary : CheckedPartialPreliminary model)
+    (environment : Env) (field : FieldId) :
+    Except CheckedAddressingError (Option CheckedCell) := do
+  let addressed ←
+    preliminary.index.base.validationAddressedCell environment field
+  if !preliminary.isAddressRelevant addressed.address ||
+      preliminary.silentlyUnavailable.contains addressed.address then
+    pure none
+  else
+    pure (some (preliminary.annotateAuthoredCell
+      addressed.address addressed.cell))
+
 /-- Evaluate an already-admitted partial instance at a derived target path. The caller owns filtering, relevance admission, and path construction; this helper owns leaf evaluation and message emission. -/
 private def evalOrdinaryPartialAdmittedAt
     (rule : CheckedResolvedValidationRule model)
@@ -293,7 +307,7 @@ private def evalOrdinaryPartialAdmittedAt
       groups := GroupPresenceContext.unavailable
     }
     outer := environment
-    input := .checked checked
+    input := .partialView checked (partialValidationAddressedCell? preliminary)
   }
   let isRelevant : FlatRelevance := fun field =>
     scope.coversField model field environment

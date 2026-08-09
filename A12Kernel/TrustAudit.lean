@@ -1805,6 +1805,7 @@ run_cmd do
 #print axioms A12Kernel.checkedParallelPresenceRule_cannotFireOnEmpty
 #print axioms A12Kernel.checkedParallelPresenceRule_errorDeclaration_id
 #print axioms A12Kernel.checkedPartialPreliminary_preserves_parsed
+#print axioms A12Kernel.checkedPartialPreliminary_available_read_of_index_annotation
 #print axioms A12Kernel.checkedPartialPreliminary_silent_read
 #print axioms A12Kernel.checkedPartialPreliminary_silent_is_relevant
 #print axioms A12Kernel.checkedPartialPreliminary_groupPresence_relevance
