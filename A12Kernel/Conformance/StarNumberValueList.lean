@@ -154,6 +154,13 @@ private def allConcreteAmountsAndNeedle : ValidationRelevanceScope :=
     entity amount.path [.concrete 1, .concrete 2, .concrete 2, .concrete 1],
     entity needle.path [.concrete 1, .concrete 1]]
 
+private def mixedAggregateIdentifiersAndNeedle : ValidationRelevanceScope :=
+  .partialSet [
+    entity amount.path [.concrete 1, .all, .all, .concrete 1],
+    entity ["Shop", "Sections"] [.concrete 1, .concrete 1],
+    entity ["Shop", "Sections"] [.concrete 1, .concrete 2],
+    entity needle.path [.concrete 1, .concrete 1]]
+
 /- Direct values-side nonrelevance uses the same classification: `AtLeastOne` can use another relevant member, while `No` and `NotAll` are poisoned. -/
 example :
     partialResultOf (authored .atLeastOne (restValues := ["Spare"]))
@@ -171,6 +178,14 @@ example :
         (directRead (.rejected .malformed) (.parsed (.num 9)))
         (constantStarRead (.parsed (.num 7))) =
       some (.evaluated .unknown) := by
+  native_decide
+
+/- A starred value-list keeps its existential extent gate. One covering field identifier suffices even when expanded group identifiers would make the aggregate gate incomplete. -/
+example :
+    partialResultOf (authored .no) fullRows mixedAggregateIdentifiersAndNeedle
+        (directRead (.parsed (.num 5)) .empty)
+        (constantStarRead (.parsed (.num 7))) =
+      some (.evaluated (.fired .value)) := by
   native_decide
 
 /- Concrete coverage of every instantiated Number row still leaves the star's extent unknown to `No`; fields-side `AtLeastOne` and `NotAll` retain their per-cell witnesses. -/

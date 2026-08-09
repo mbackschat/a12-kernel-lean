@@ -150,10 +150,11 @@ namespace CheckedStarNumberSource
 
 /-- Retain only relevant concrete cells for present-value search while recording whether wildcard/ancestor coverage establishes the star's complete extent. Relevance is applied before the declaration-owned reader. -/
 def selectedPartialValueListSide (checked : CheckedStarNumberSource model)
-    (resolved : ResolvedStarTopology) (scope : ValidationRelevanceScope)
+    (resolved : ResolvedStarTopology) (outer : Env)
+    (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) :
     ResolvedValueListQuantifierSide .number :=
-  checked.source.selectedPartialValueListSide resolved scope
+  checked.source.selectedPartialValueListSide resolved outer scope
     (checked.valueListCell read)
 
 /-- Resolve canonical nested topology once, then construct the partial quantifier side without reading masked cells. -/

@@ -22,18 +22,47 @@ theorem checkedStarFieldPath_bindingScope
 
 /-- Full validation always supplies complete all-rows relevance. -/
 @[simp] theorem checkedStarFieldPath_allRowsRelevant_full
-    (checked : CheckedStarFieldPath model) :
-    checked.allRowsRelevant .full = true := by
+    (checked : CheckedStarFieldPath model) (outer : Env) :
+    checked.allRowsRelevant .full outer = true := by
   rfl
 
-/-- Partial all-rows relevance requires one independently covering entity; a union of concrete non-covering entries is not upgraded to a wildcard. -/
+/-- Full validation always supplies the value-list extent's covering identifier. -/
+@[simp] theorem checkedStarFieldPath_valueListExtentRelevant_full
+    (checked : CheckedStarFieldPath model) (outer : Env) :
+    checked.valueListExtentRelevant .full outer = true := by
+  rfl
+
+/-- Partial all-rows relevance is universal over the normalized identifiers retained in the current iteration subtree. A broader wildcard removes identifiers that it encompasses before this gate. -/
 theorem checkedStarFieldPath_allRowsRelevant_partialSet_iff
-    (checked : CheckedStarFieldPath model) (entities : List RelevantEntityPattern) :
-    checked.allRowsRelevant (.partialSet entities) = true ↔
-      ∃ entity ∈ entities,
-        entity.coversAllRows model checked.declaration.path = true := by
+    (checked : CheckedStarFieldPath model) (entities : List RelevantEntityPattern)
+    (outer : Env) :
+    let retained := ValidationRelevanceScope.aggregateExtentPatterns entities model
+      checked.declaration.path checked.bindingScope outer
+    checked.allRowsRelevant (.partialSet entities) outer = true ↔
+      retained ≠ [] ∧ ∀ entity ∈ retained,
+        entity.wildcardsLevels model checked.reopenedScope = true := by
   simp [CheckedStarFieldPath.allRowsRelevant,
-    ValidationRelevanceScope.coversAllRows]
+    ValidationRelevanceScope.coversAggregateExtent]
+
+/-- Partial value-list extent relevance is existential: one covering identifier suffices even when concrete siblings are also selected. -/
+theorem checkedStarFieldPath_valueListExtentRelevant_partialSet_iff
+    (checked : CheckedStarFieldPath model) (entities : List RelevantEntityPattern)
+    (outer : Env) :
+    checked.valueListExtentRelevant (.partialSet entities) outer = true ↔
+      ∃ entity ∈ entities,
+        entity.coversValueListExtent model checked.declaration.path
+          checked.bindingScope checked.reopenedScope outer = true := by
+  simp [CheckedStarFieldPath.valueListExtentRelevant,
+    ValidationRelevanceScope.coversValueListExtent]
+
+/-- The compatibility boundary retained by unmeasured count consumers remains exactly existential over one target-or-ancestor identifier whose named repeatable prefixes are wildcarded. -/
+theorem checkedStarFieldPath_singleEntityExtentRelevant_partialSet_iff
+    (checked : CheckedStarFieldPath model) (entities : List RelevantEntityPattern) :
+    checked.singleEntityExtentRelevant (.partialSet entities) = true ↔
+      ∃ entity ∈ entities,
+        entity.coversSingleEntityExtent model checked.declaration.path = true := by
+  simp [CheckedStarFieldPath.singleEntityExtentRelevant,
+    ValidationRelevanceScope.coversSingleEntityExtent]
 
 /-- Full validation makes every concrete instance of a checked star relevant. -/
 @[simp] theorem checkedStarFieldPath_cellRelevant_full

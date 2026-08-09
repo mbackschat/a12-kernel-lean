@@ -111,9 +111,10 @@ def resolvedValueSide (checked : CheckedStarNumberSource model)
 
 /-- Apply the full/partial all-rows relevance gate to one already-resolved topology. A nonrelevant source is rejected before any selected target cell is classified; relevance leaves cells and hierarchical omitted-tail state unchanged. -/
 def selectedPartialAllRowsValueSide (checked : CheckedStarNumberSource model)
-    (resolved : ResolvedStarTopology) (scope : ValidationRelevanceScope)
+    (resolved : ResolvedStarTopology) (outer : Env)
+    (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) : AllRowsValidationStarNumberSide :=
-  if checked.source.allRowsRelevant scope then
+  if checked.source.allRowsRelevant scope outer then
     .relevant (resolved.toResolvedSide (checked.valueListCell read))
   else
     .nonRelevant
@@ -124,7 +125,7 @@ def resolvedPartialAllRowsValueSide (checked : CheckedStarNumberSource model)
     (read : Env → FieldId → RawCell) :
     Except StarAddressingError AllRowsValidationStarNumberSide := do
   let resolved ← checked.source.path.resolve document outer
-  pure (checked.selectedPartialAllRowsValueSide resolved scope read)
+  pure (checked.selectedPartialAllRowsValueSide resolved outer scope read)
 
 /-- Resolve general nested topology once, evaluate the validation `Having` over every candidate environment with the complete captured outer environment, then read only selected Number targets. -/
 def resolvedValidationHavingValueSide (checked : CheckedStarNumberSource model)

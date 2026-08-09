@@ -47,27 +47,29 @@ theorem checkedStarNumberValueList_havingFields_delegates
 /-- Partial star selection preserves canonical order and hierarchical tail state, filters before every target classification, and separately records whether wildcard/ancestor coverage establishes the star's complete extent. -/
 theorem checkedStarNumberValueList_partialFields_shape
     (source : CheckedStarNumberSource model) (resolved : ResolvedStarTopology)
-    (scope : ValidationRelevanceScope) (read : Env → FieldId → RawCell) :
+    (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → RawCell) :
     let relevant := resolved.environments.filter fun environment =>
       source.source.cellRelevant scope environment
-    (source.selectedPartialValueListSide resolved scope read).side.cells =
+    (source.selectedPartialValueListSide resolved outer scope read).side.cells =
         relevant.map (source.valueListCell read) ∧
-      (source.selectedPartialValueListSide resolved scope read).side.hasUninstantiatedTail =
+      (source.selectedPartialValueListSide resolved outer scope read).side.hasUninstantiatedTail =
         resolved.domain.hasOpenTail ∧
-      (source.selectedPartialValueListSide resolved scope read).hasNonRelevant =
-        !source.source.allRowsRelevant scope := by
+      (source.selectedPartialValueListSide resolved outer scope read).hasNonRelevant =
+        !source.source.valueListExtentRelevant scope outer := by
   exact ⟨rfl, rfl, rfl⟩
 
 /-- Masked topology cells are not read: two readers that classify every retained environment identically produce the same partial side. -/
 theorem checkedStarNumberValueList_partialFields_agreeOnRelevant
     (source : CheckedStarNumberSource model) (resolved : ResolvedStarTopology)
-    (scope : ValidationRelevanceScope) (left right : Env → FieldId → RawCell)
+    (outer : Env) (scope : ValidationRelevanceScope)
+    (left right : Env → FieldId → RawCell)
     (agree : ∀ environment,
       environment ∈ resolved.environments.filter (fun candidate =>
         source.source.cellRelevant scope candidate) →
       source.valueListCell left environment = source.valueListCell right environment) :
-    source.selectedPartialValueListSide resolved scope left =
-      source.selectedPartialValueListSide resolved scope right := by
+    source.selectedPartialValueListSide resolved outer scope left =
+      source.selectedPartialValueListSide resolved outer scope right := by
   have cellsEqual :
       (resolved.environments.filter fun candidate =>
           source.source.cellRelevant scope candidate).map

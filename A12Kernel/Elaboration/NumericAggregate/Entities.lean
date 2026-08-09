@@ -212,7 +212,37 @@ def resolvedCheckedDocumentPartialAggregateSide
       let resolved ←
         (source.source.path.resolve document.source.toDocument outer)
           |>.mapError .addressing
-      if source.source.allRowsRelevant scope then do
+      if source.source.allRowsRelevant scope outer then do
+        match ← resolvedCheckedDocumentSide document .validation source.field
+            resolved.environments resolved.domain.hasOpenTail false with
+        | .inl side => pure (.inl side)
+        | .inr result => pure (.inr (.evaluated result))
+      else
+        pure (.inr .nonRelevant)
+  | .starHaving _ => pure (.inr .skippedHaving)
+
+/-- Resolve one partial `NumberOfValueInFields` slot without importing the combiner family's newly measured universal gate. The one-covering-identifier star boundary is retained until this count operator is measured independently. -/
+def resolvedCheckedDocumentPartialValueCountSide
+    (checked : CheckedNumberEntityOperand model)
+    (document : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope) :
+    Except CheckedAddressingError
+      (Sum (ResolvedValueListSide .number)
+        PartialValidationNumberAggregateResult) :=
+  match checked with
+  | .field source =>
+      if scope.coversCell model source.declaration.path [] then do
+        match ← resolvedCheckedDocumentSide document .validation source.field
+            [[]] false false with
+        | .inl side => pure (.inl side)
+        | .inr result => pure (.inr (.evaluated result))
+      else
+        pure (.inr .nonRelevant)
+  | .star source => do
+      let resolved ←
+        (source.source.path.resolve document.source.toDocument outer)
+          |>.mapError .addressing
+      if source.source.singleEntityExtentRelevant scope then do
         match ← resolvedCheckedDocumentSide document .validation source.field
             resolved.environments resolved.domain.hasOpenTail false with
         | .inl side => pure (.inl side)
@@ -238,6 +268,27 @@ def resolvedPartialAggregateSide (checked : CheckedNumberEntityOperand model)
       match ← source.resolvedPartialAllRowsValueSide document outer scope starRead with
       | .nonRelevant => pure (.inr .nonRelevant)
       | .relevant side => pure (.inl side)
+  | .starHaving _ => pure (.inr .skippedHaving)
+
+/-- Resolve one raw-document partial `NumberOfValueInFields` slot through its retained one-covering-identifier boundary. This preserves the unmeasured count family while the four combiner aggregates use `resolvedPartialAggregateSide`. -/
+def resolvedPartialValueCountSide (checked : CheckedNumberEntityOperand model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (direct : FlatContext) (starRead : Env → FieldId → RawCell) :
+    Except StarAddressingError
+      (Sum (ResolvedValueListSide .number)
+        PartialValidationNumberAggregateResult) :=
+  match checked with
+  | .field source =>
+      if scope.coversCell model source.declaration.path [] then
+        pure (.inl (source.resolvedAggregateSide direct))
+      else
+        pure (.inr .nonRelevant)
+  | .star source => do
+      let resolved ← source.source.path.resolve document outer
+      if source.source.singleEntityExtentRelevant scope then
+        pure (.inl (resolved.toResolvedSide (source.valueListCell starRead)))
+      else
+        pure (.inr .nonRelevant)
   | .starHaving _ => pure (.inr .skippedHaving)
 
 end CheckedNumberEntityOperand
@@ -443,7 +494,7 @@ def evaluatePartialValueCount (checked : CheckedNumberEntitySource model)
     (starRead : Env → FieldId → RawCell) :
     Except StarAddressingError PartialValidationNumberAggregateResult :=
   checked.evaluatePartialValueCountWith expected fun operand =>
-    operand.resolvedPartialAggregateSide document outer scope
+    operand.resolvedPartialValueCountSide document outer scope
       (model.checkContext directRead) starRead
 
 /-- Evaluate partial numeric value count from the immutable checked document without changing per-cell filter provenance or partial gates. -/
@@ -453,7 +504,7 @@ def evaluateCheckedDocumentPartialValueCount
     (outer : Env) (scope : ValidationRelevanceScope) :
     Except CheckedAddressingError PartialValidationNumberAggregateResult :=
   checked.evaluatePartialValueCountWith expected fun operand =>
-    operand.resolvedCheckedDocumentPartialAggregateSide document outer scope
+    operand.resolvedCheckedDocumentPartialValueCountSide document outer scope
 
 end CheckedNumberEntitySource
 

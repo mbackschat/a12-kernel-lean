@@ -213,12 +213,13 @@ private inductive PartialSideSnapshot where
   | relevant (cells : List NumberCellSnapshot) (hasUninstantiatedTail : Bool)
   deriving Repr, DecidableEq
 
-private def partialCellsOf (scope : ValidationRelevanceScope) :=
-  match elaborateStarNumberSource model amount.groupPath (source) with
+private def partialCellsOf (scope : ValidationRelevanceScope)
+    (authoredSource : SurfaceStarFieldPath := source) (outer : Env := []) :=
+  match elaborateStarNumberSource model amount.groupPath authoredSource with
   | .error _ => none
   | .ok checked =>
       match checked.resolvedPartialAllRowsValueSide
-          (document standardRows) [] scope readAmount with
+          (document standardRows) outer scope readAmount with
       | .error _ => none
       | .ok AllRowsValidationStarNumberSide.nonRelevant =>
           some PartialSideSnapshot.nonRelevant
@@ -256,6 +257,17 @@ example :
         some (.relevant [.present 1, .empty, .present 3] true) := by
   native_decide
 
+/- The same gate is asked inside the current rule-iteration subtree. A concrete outer coordinate that agrees with the bound row is retained, while an identifier fixed to another outer row supplies no extent for this iteration. -/
+example :
+    partialCellsOf (.partialSet [relevance amount.path
+      [.concrete 1, .concrete 2, .all, .concrete 1]])
+      (source (outerStar := false)) [(10, 2)] =
+        some (.relevant [.present 3] true) ∧
+    partialCellsOf (.partialSet [relevance amount.path
+      [.concrete 1, .concrete 1, .all, .concrete 1]])
+      (source (outerStar := false)) [(10, 2)] = some .nonRelevant := by
+  native_decide
+
 /- A relevant formally unavailable head is also terminal, so a later nonrelevant cell cannot replace its exact cause. -/
 example :
     let malformedHead : Env → FieldId → RawCell := fun environment _ =>
@@ -275,6 +287,21 @@ example :
         some .nonRelevant ∧
     partialCellsOf (.partialSet [relevance amount.path
       [.concrete 1, .all, .concrete 1, .concrete 1]]) = some .nonRelevant := by
+  native_decide
+
+/- The aggregate extent gate is universal after group-to-field expansion and wildcard dominance: concrete group rows survive beside an unrelated field wildcard, while a concrete identifier for that same field is removed by the broader wildcard. -/
+example :
+    let fieldWildcard := relevance amount.path
+      [.concrete 1, .all, .all, .concrete 1]
+    let concreteGroups := [
+      relevance ["Shop", "Sections"] [.concrete 1, .concrete 1],
+      relevance ["Shop", "Sections"] [.concrete 1, .concrete 2]]
+    let concreteSameField := relevance amount.path
+      [.concrete 1, .concrete 1, .concrete 1, .concrete 1]
+    partialCellsOf (.partialSet (fieldWildcard :: concreteGroups)) =
+        some .nonRelevant ∧
+      partialCellsOf (.partialSet [fieldWildcard, concreteSameField]) =
+        some (.relevant [.present 1, .empty, .present 3] true) := by
   native_decide
 
 /- Relevance does not guess structural alignment or widen a sibling field into an ancestor. -/

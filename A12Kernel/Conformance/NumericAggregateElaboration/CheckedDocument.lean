@@ -303,6 +303,13 @@ example :
         indices := [.concrete 1, .concrete 1] },
       { path := repeated.path,
         indices := [.concrete 1, .all, .concrete 1] }]
+    let mixed := ValidationRelevanceScope.partialSet [
+      { path := unsignedA.path,
+        indices := [.concrete 1, .concrete 1] },
+      { path := repeated.path,
+        indices := [.concrete 1, .all, .concrete 1] },
+      { path := ["Form", "Rows"],
+        indices := [.concrete 1, .concrete 1] }]
     let unfilteredSlots := [
       { field := unsignedA.id, repeated := false, filtered := false,
         signed := false : NumberEntityConsumerSlot },
@@ -314,6 +321,10 @@ example :
     checkedDocumentPartialSnapshot false false relevant =
       some (unfilteredSlots, .result (.evaluated (.value 10 .fixed))) ∧
     checkedDocumentPartialSnapshot true false relevant =
+      some (unfilteredSlots, .result (.evaluated (.value 1 .fixed))) ∧
+    checkedDocumentPartialSnapshot false false mixed =
+      some (unfilteredSlots, .result .nonRelevant) ∧
+    checkedDocumentPartialSnapshot true false mixed =
       some (unfilteredSlots, .result (.evaluated (.value 1 .fixed))) ∧
     checkedDocumentPartialSnapshot false false (.partialSet []) =
       some (unfilteredSlots, .result .nonRelevant) ∧

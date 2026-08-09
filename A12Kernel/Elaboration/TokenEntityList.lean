@@ -474,7 +474,22 @@ def resolvedPartialValidationSide
     Except StarAddressingError
       (Sum (ResolvedValueListSide .token) Unit) := do
   let resolved ← checked.source.path.resolve document outer
-  if checked.source.allRowsRelevant scope then
+  if checked.source.allRowsRelevant scope outer then
+    pure (.inl (resolved.toResolvedSide
+      (checked.valueListCellAt .validation read)))
+  else
+    pure (.inr ())
+
+/-- Preserve the pre-existing one-covering-identifier boundary for the still-unmeasured token `NumberOfValueInFields` partial route. -/
+def resolvedPartialValueCountSide
+    (checked : CheckedTokenStarSource model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → CheckedCell)
+    (_unfiltered : checked.filter.isNone = true) :
+    Except StarAddressingError
+      (Sum (ResolvedValueListSide .token) Unit) := do
+  let resolved ← checked.source.path.resolve document outer
+  if checked.source.singleEntityExtentRelevant scope then
     pure (.inl (resolved.toResolvedSide
       (checked.valueListCellAt .validation read)))
   else
@@ -553,6 +568,29 @@ def resolvedPartialValidationSide
   | .star source =>
       if hUnfiltered : source.filter.isNone = true then do
         match ← source.resolvedPartialValidationSide document outer scope
+            starRead hUnfiltered with
+        | .inl side => pure (.inl side)
+        | .inr () => pure (.inr .nonRelevant)
+      else
+        pure (.inr .skippedHaving)
+
+/-- Resolve one partial token value-count slot without importing the measured combiner gate used by `resolvedPartialValidationSide`. -/
+def resolvedPartialValueCountSide
+    (checked : CheckedTokenEntityOperand model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (directRead : FieldId → CheckedCell)
+    (starRead : Env → FieldId → CheckedCell) :
+    Except StarAddressingError
+      (Sum (ResolvedValueListSide .token) PartialValidationAggregateResult) :=
+  match checked with
+  | .field source =>
+      if scope.coversCell model source.declaration.path [] then
+        pure (.inl (source.resolvedSideAt .validation directRead))
+      else
+        pure (.inr .nonRelevant)
+  | .star source =>
+      if hUnfiltered : source.filter.isNone = true then do
+        match ← source.resolvedPartialValueCountSide document outer scope
             starRead hUnfiltered with
         | .inl side => pure (.inl side)
         | .inr () => pure (.inr .nonRelevant)

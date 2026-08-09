@@ -571,7 +571,7 @@ def evaluateComputation (checked : CheckedTokenValueCountSource model)
       operand.resolvedValueCountComputationSide document outer directRead
         filterRead starRead
 
-/-- Partial validation skips any filtered rule before topology or reads; otherwise it requires the common direct/all-rows relevance gates and reuses the same count fold. -/
+/-- Partial validation skips any filtered rule before topology or reads; otherwise it retains this unmeasured count family's one-covering-identifier star boundary and reuses the same count fold. -/
 def evaluatePartialValidation
     (checked : CheckedTokenValueCountSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
@@ -584,7 +584,7 @@ def evaluatePartialValidation
     match ← scanResolvedValueListOperands
         (state := ResolvedValueCountSide .token)
         (terminal := PartialValidationAggregateResult)
-        (fun operand => operand.resolvedPartialValidationSide document outer
+        (fun operand => operand.resolvedPartialValueCountSide document outer
           scope directRead starRead)
         (fun cause => .evaluated (.unknown cause))
         (fun accumulated _ side => accumulated.appendResolved side)

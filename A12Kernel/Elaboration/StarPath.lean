@@ -79,22 +79,111 @@ private def cellPrefixMatches (model : FlatModel) (environment : Env) :
           currentMatches && cellPrefixMatches model environment path segments indices
   | _, _, _ => false
 
-private def repeatablePrefixesCovered (model : FlatModel) :
+private def repeatablePrefixesWildcarded (model : FlatModel) :
     GroupPath → List String → List RelevanceIndex → Bool
   | _, [], [] => true
   | pathPrefix, segment :: segments, index :: indices =>
       let path := pathPrefix ++ [segment]
-      let currentCovered :=
+      let wildcarded :=
         !model.repeatableGroups.any (fun group => group.path == path) ||
           index == .all
-      currentCovered && repeatablePrefixesCovered model path segments indices
+      wildcarded &&
+        repeatablePrefixesWildcarded model path segments indices
   | _, _, _ => false
 
-/-- Whether this one entity makes every row of the target field's starred ancestry relevant. The entity must be the target or an ancestor and must wildcard every repeatable level it names; group descent covers deeper levels. -/
-def coversAllRows (entity : RelevantEntityPattern) (model : FlatModel)
-    (targetPath : List String) : Bool :=
+/-- Whether one caller identifier is the target or an ancestor and wildcards every repeatable level it names. This structural predicate preserves the pre-existing boundary of still-unmeasured count consumers; it is neither the combiner aggregate gate nor the starred value-list gate. -/
+def coversSingleEntityExtent (entity : RelevantEntityPattern)
+    (model : FlatModel) (targetPath : List String) : Bool :=
   entity.path.isPrefixOf targetPath &&
-    repeatablePrefixesCovered model [] entity.path entity.indices
+    repeatablePrefixesWildcarded model [] entity.path entity.indices
+
+/-- Expand one target field's relevant identifier. An ancestor group contributes the target field while retaining its own coordinates and wildcarding every deeper segment. Malformed index arity never becomes coverage. -/
+def projectOntoField? (entity : RelevantEntityPattern)
+    (targetPath : List String) : Option RelevantEntityPattern :=
+  if entity.indices.length != entity.path.length ||
+      !entity.path.isPrefixOf targetPath then
+    none
+  else
+    some {
+      path := targetPath
+      indices := entity.indices ++
+        (targetPath.drop entity.path.length).map fun _ => .all
+    }
+
+private def indexVectorEncompasses :
+    List RelevanceIndex → List RelevanceIndex → Bool
+  | [], [] => true
+  | .all :: broad, _ :: narrow => indexVectorEncompasses broad narrow
+  | .concrete expected :: broad, .concrete actual :: narrow =>
+      expected == actual && indexVectorEncompasses broad narrow
+  | _, _ => false
+
+/-- Whether this normalized identifier is at least as broad as another identifier for the same field. -/
+def encompasses (broad narrow : RelevantEntityPattern) : Bool :=
+  broad.path == narrow.path &&
+    indexVectorEncompasses broad.indices narrow.indices
+
+private def matchesBoundSubtreeAt (entity : RelevantEntityPattern)
+    (model : FlatModel) (boundLevels : List RepeatableLevel)
+    (outer : Env) : GroupPath → List String → List RelevanceIndex → Bool
+  | _, [], [] => true
+  | pathPrefix, segment :: segments, index :: indices =>
+      let path := pathPrefix ++ [segment]
+      let matchesHere :=
+        match model.repeatableGroups.find? fun group => group.path == path with
+        | some group =>
+            if boundLevels.contains group.level then
+              match (outer.bindingAt group.level).toOption with
+              | some actual => index == .all || index == .concrete actual
+              | none => false
+            else
+              true
+        | none => true
+      matchesHere &&
+        matchesBoundSubtreeAt entity model boundLevels outer path segments indices
+  | _, _, _ => false
+
+/-- Whether one normalized target-field identifier can belong to the current rule-iteration subtree. Concrete disagreement at a level above the first star removes it; wildcard or exact agreement retains it. -/
+def matchesBoundSubtree (entity : RelevantEntityPattern)
+    (model : FlatModel) (boundLevels : List RepeatableLevel)
+    (outer : Env) : Bool :=
+  matchesBoundSubtreeAt entity model boundLevels outer []
+    entity.path entity.indices
+
+private def wildcardsLevelsAt (entity : RelevantEntityPattern)
+    (model : FlatModel) (levels : List RepeatableLevel) :
+    GroupPath → List String → List RelevanceIndex → Bool
+  | _, [], [] => true
+  | pathPrefix, segment :: segments, index :: indices =>
+      let path := pathPrefix ++ [segment]
+      let wildcardHere :=
+        match model.repeatableGroups.find? fun group => group.path == path with
+        | some group => !levels.contains group.level || index == .all
+        | none => true
+      wildcardHere && wildcardsLevelsAt entity model levels path segments indices
+  | _, _, _ => false
+
+/-- Whether one normalized target-field identifier wildcards every repeatable level reopened by the operand's first star. -/
+def wildcardsLevels (entity : RelevantEntityPattern)
+    (model : FlatModel) (levels : List RepeatableLevel) : Bool :=
+  wildcardsLevelsAt entity model levels [] entity.path entity.indices
+
+/-- Project one caller identifier onto the operand field and test the starred value-list's existential extent gate in the current iteration subtree. -/
+def coversValueListExtent (entity : RelevantEntityPattern)
+    (model : FlatModel) (targetPath : List String)
+    (boundLevels reopenedLevels : List RepeatableLevel) (outer : Env) : Bool :=
+  match entity.projectOntoField? targetPath with
+  | none => false
+  | some projected =>
+      projected.matchesBoundSubtree model boundLevels outer &&
+        projected.wildcardsLevels model reopenedLevels
+
+/-- Remove exact duplicates and every narrower target-field identifier encompassed by another retained wildcard identifier. -/
+def reduceWildcardDominance (entities : List RelevantEntityPattern) :
+    List RelevantEntityPattern :=
+  let unique := entities.eraseDups
+  unique.filter fun entity =>
+    !unique.any fun broader => broader != entity && broader.encompasses entity
 
 /-- Whether this one entity covers a concrete target instance. Exact fields and ancestor groups share the same prefix/index rule; wildcard indices match any concrete coordinate. -/
 def coversCell (entity : RelevantEntityPattern) (model : FlatModel)
@@ -142,12 +231,42 @@ def withGlobals (scope : ValidationRelevanceScope)
         (model.fields.filter (·.isGlobal)).map fun declaration =>
           RelevantEntityPattern.allInstances declaration.path)
 
-/-- All-rows aggregate relevance is an operator-level path fact. Enumerating every concrete row does not substitute for one wildcard-covering entity. -/
-def coversAllRows (scope : ValidationRelevanceScope) (model : FlatModel)
-    (targetPath : List String) : Bool :=
+/-- Preserve one covering-identifier boundary for count operators whose own partial extent law remains unmeasured. This predicate carries no correspondence claim for those operators. -/
+def coversSingleEntityExtent (scope : ValidationRelevanceScope)
+    (model : FlatModel) (targetPath : List String) : Bool :=
   match scope with
   | .full => true
-  | .partialSet entities => entities.any fun entity => entity.coversAllRows model targetPath
+  | .partialSet entities => entities.any fun entity =>
+      entity.coversSingleEntityExtent model targetPath
+
+/-- Prepare the all-rows aggregate's field-specific identifier set: expand ancestor groups, retain the current iteration subtree, then remove wildcard-dominated siblings. -/
+def aggregateExtentPatterns (entities : List RelevantEntityPattern)
+    (model : FlatModel) (targetPath : List String)
+    (boundLevels : List RepeatableLevel) (outer : Env) :
+    List RelevantEntityPattern :=
+  ((entities.filterMap fun entity => entity.projectOntoField? targetPath).filter
+    fun entity => entity.matchesBoundSubtree model boundLevels outer)
+    |> RelevantEntityPattern.reduceWildcardDominance
+
+/-- All-rows aggregate relevance is universal over the normalized retained identifiers. The set must be nonempty, and every identifier must wildcard every level reopened from the first star. -/
+def coversAggregateExtent (scope : ValidationRelevanceScope) (model : FlatModel)
+    (targetPath : List String) (boundLevels reopenedLevels : List RepeatableLevel)
+    (outer : Env) : Bool :=
+  match scope with
+  | .full => true
+  | .partialSet entities =>
+      let retained := aggregateExtentPatterns entities model targetPath boundLevels outer
+      !retained.isEmpty &&
+        retained.all fun entity => entity.wildcardsLevels model reopenedLevels
+
+/-- A starred value-list entry uses its separate existential covering-identifier gate. Concrete siblings do not cancel a qualifying wildcard. -/
+def coversValueListExtent (scope : ValidationRelevanceScope) (model : FlatModel)
+    (targetPath : List String) (boundLevels reopenedLevels : List RepeatableLevel)
+    (outer : Env) : Bool :=
+  match scope with
+  | .full => true
+  | .partialSet entities => entities.any fun entity =>
+      entity.coversValueListExtent model targetPath boundLevels reopenedLevels outer
 
 /-- Per-cell relevance retains concrete row identity and ancestor descent. Unlike all-rows relevance, different concrete entities may cover different reached cells. -/
 def coversCell (scope : ValidationRelevanceScope) (model : FlatModel)
@@ -212,11 +331,6 @@ structure CheckedStarPlan where
   firstStarWithin : path.firstStar < path.axes.length
   pathValid : path.validate.isOk = true
 
-/-- Whether this checked starred field is completely relevant for an all-rows validation consumer. This gate does not apply to order-aware `FirstFilledValue`. -/
-def CheckedStarFieldPath.allRowsRelevant (checked : CheckedStarFieldPath model)
-    (scope : ValidationRelevanceScope) : Bool :=
-  scope.coversAllRows model checked.declaration.path
-
 /-- Whether one topology-produced concrete field instance is relevant to this validation call. -/
 def CheckedStarFieldPath.cellRelevant (checked : CheckedStarFieldPath model)
     (scope : ValidationRelevanceScope) (environment : Env) : Bool :=
@@ -228,6 +342,28 @@ namespace CheckedStarFieldPath
 def bindingScope (checked : CheckedStarFieldPath model) :
     List RepeatableLevel :=
   (checked.path.axes.take checked.path.firstStar).map (·.level)
+
+/-- Repeatable levels reopened by this operand, beginning at its first star. -/
+def reopenedScope (checked : CheckedStarFieldPath model) :
+    List RepeatableLevel :=
+  (checked.path.axes.drop checked.path.firstStar).map (·.level)
+
+/-- Whether this checked starred field is completely relevant for an all-rows aggregate in the current rule-iteration row. -/
+def allRowsRelevant (checked : CheckedStarFieldPath model)
+    (scope : ValidationRelevanceScope) (outer : Env) : Bool :=
+  scope.coversAggregateExtent model checked.declaration.path
+    checked.bindingScope checked.reopenedScope outer
+
+/-- Whether this checked starred field has one covering wildcard identifier for a value-list extent in the current rule-iteration row. -/
+def valueListExtentRelevant (checked : CheckedStarFieldPath model)
+    (scope : ValidationRelevanceScope) (outer : Env) : Bool :=
+  scope.coversValueListExtent model checked.declaration.path
+    checked.bindingScope checked.reopenedScope outer
+
+/-- The pre-existing one-covering-identifier boundary retained only by count consumers whose partial extent law has not been measured. -/
+def singleEntityExtentRelevant (checked : CheckedStarFieldPath model)
+    (scope : ValidationRelevanceScope) : Bool :=
+  scope.coversSingleEntityExtent model checked.declaration.path
 
 /-- Whether one topology-produced leaf environment lies under any over-capacity repeatable ancestor. This structural check is independent of the terminal field kind. -/
 def environmentOverLimit (checked : CheckedStarFieldPath model)
@@ -270,7 +406,8 @@ def resolvedValueListSide (checked : CheckedStarFieldPath model)
 
 /-- Retain only relevant concrete cells before invoking the kind-specific classifier, while recording whether the star's complete extent is wildcard-covered. Concrete enumeration of every current row does not establish that future/absent rows are relevant. -/
 def selectedPartialValueListSide (checked : CheckedStarFieldPath model)
-    (resolved : ResolvedStarTopology) (scope : ValidationRelevanceScope)
+    (resolved : ResolvedStarTopology) (outer : Env)
+    (scope : ValidationRelevanceScope)
     (classify : Env → ValueListCell kind) :
     ResolvedValueListQuantifierSide kind :=
   let relevant := resolved.environments.filter fun environment =>
@@ -279,7 +416,7 @@ def selectedPartialValueListSide (checked : CheckedStarFieldPath model)
       cells := relevant.map classify
       hasUninstantiatedTail := resolved.domain.hasOpenTail
       hasHaving := false }
-    hasNonRelevant := !checked.allRowsRelevant scope }
+    hasNonRelevant := !checked.valueListExtentRelevant scope outer }
 
 /-- Resolve canonical topology once, then apply per-cell relevance before kind-specific classification. -/
 def resolvedPartialValueListSide (checked : CheckedStarFieldPath model)
@@ -287,7 +424,7 @@ def resolvedPartialValueListSide (checked : CheckedStarFieldPath model)
     (classify : Env → ValueListCell kind) :
     Except StarAddressingError (ResolvedValueListQuantifierSide kind) := do
   let resolved ← checked.path.resolve document outer
-  pure (checked.selectedPartialValueListSide resolved scope classify)
+  pure (checked.selectedPartialValueListSide resolved outer scope classify)
 
 end CheckedStarFieldPath
 

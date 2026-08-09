@@ -478,16 +478,23 @@ example :
         some (.unknown .declaredConstraint) := by
   native_decide
 
-/- Partial validation reuses the aggregate all-rows gate and skips a locally visible filter before any reads. -/
+/- Until its own extent gate is measured, partial `NumberOfValueInFields` retains the pre-existing one-covering-entity boundary rather than inheriting a correction established only for the four combiner aggregates. -/
 example :
     let plain := aggregateSource (.star aggregateStar) []
     let filtered := aggregateSource
       (.starHaving aggregateStar aggregateHaving) []
     let wildcard := ValidationRelevanceScope.partialSet [
       relevance repeated.path [.concrete 1, .all, .concrete 1]]
+    let mixed := ValidationRelevanceScope.partialSet [
+      relevance repeated.path [.concrete 1, .all, .concrete 1],
+      relevance ["Form", "Rows"] [.concrete 1, .concrete 1]]
     checkedPartialValueCountOf 5 plain [1, 2]
         (.parsed (.num 5)) (.parsed (.num 7)) .empty
         (raw .empty .empty .empty) wildcard =
+        some (.evaluated (.value 1 .growOnly)) ∧
+      checkedPartialValueCountOf 5 plain [1, 2]
+        (.parsed (.num 5)) (.parsed (.num 7)) .empty
+        (raw .empty .empty .empty) mixed =
         some (.evaluated (.value 1 .growOnly)) ∧
       checkedPartialValueCountOf 5 filtered [2]
         (.rejected .malformed) .empty .empty

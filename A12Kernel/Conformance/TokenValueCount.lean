@@ -485,7 +485,7 @@ example :
         some (.unknown .declaredConstraint) := by
   native_decide
 
-/- Partial evaluation requires wildcard/ancestor extent and skips a filtered rule before target reads. -/
+/- Until its own extent gate is measured, partial `NumberOfValueInFields` retains the pre-existing one-covering-entity boundary rather than inheriting a correction established only for the four combiner aggregates. -/
 example :
     let cells : RawCell × RawCell × RawCell :=
       ((.parsed (.str "A")), (.parsed (.str "B")), (.parsed (.str "A")))
@@ -495,9 +495,17 @@ example :
     let wildcard := ValidationRelevanceScope.partialSet [
       { path := repeatedString.path,
         indices := [.concrete 1, .all, .concrete 1] }]
+    let mixed := ValidationRelevanceScope.partialSet [
+      { path := repeatedString.path,
+        indices := [.concrete 1, .all, .concrete 1] },
+      { path := ["Form", "Rows"],
+        indices := [.concrete 1, .concrete 1] }]
     evaluatedPartialOf "A" (stringStar) [1, 2, 3] concrete
         cells emptyCells emptyCells = some .nonRelevant ∧
       evaluatedPartialOf "A" (stringStar) [1, 2, 3] wildcard
+        cells emptyCells emptyCells =
+          some (.evaluated (.value 2 .fixed)) ∧
+      evaluatedPartialOf "A" (stringStar) [1, 2, 3] mixed
         cells emptyCells emptyCells =
           some (.evaluated (.value 2 .fixed)) ∧
       evaluatedPartialOf "A" (stringStar (some selfFilter)) [2]

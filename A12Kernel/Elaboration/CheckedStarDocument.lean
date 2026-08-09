@@ -164,7 +164,7 @@ def resolveCheckedPartialValidationEntityOperandCore
     addressedCells
     hasUninstantiatedTail := topology.domain.hasOpenTail
     hasHaving := false
-    hasNonRelevant := !source.allRowsRelevant scope
+    hasNonRelevant := !source.valueListExtentRelevant scope outer
   }
 
 end CheckedStarFieldPath
