@@ -513,12 +513,13 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
           | .nonRelevant => pure (.error .nonRelevant)
           | .evaluated operand =>
               pure operand.toValidationArithmetic
-      | .partialView document _ =>
-          match ← source.evaluateCheckedDocumentPartialAggregate
-              op document context.outer scope with
-          | .skippedHaving => pure (.error .groupState)
-          | .nonRelevant => pure (.error .nonRelevant)
-          | .evaluated operand =>
+      | .partialView document read =>
+          match ← source.evaluatePartialViewAggregate
+              op document context.outer scope read with
+          | .silentlyUnavailable => pure (.error .silentlyUnavailable)
+          | .result .skippedHaving => pure (.error .groupState)
+          | .result .nonRelevant => pure (.error .nonRelevant)
+          | .result (.evaluated operand) =>
               pure operand.toValidationArithmetic
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
   | .booleanValueCount _ | .sumOfProducts _ =>

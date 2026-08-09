@@ -195,6 +195,12 @@ private def numericIndexAggregateCondition? :
       none
   (CheckedValidationCondition.fromOrderedNumeric checked).toOption
 
+private def numericIndexAggregateRule? :
+    Option (CheckedResolvedValidationRule numericIndexModel) := do
+  let condition ← numericIndexAggregateCondition?
+  (assembleResolvedValidationRule numericIndexModel condition numericIndex.id
+    "partialNumericIndexAggregate" .error { parts := [] }).toOption
+
 private def numericRequiredAggregateRule? :
     Option (CheckedResolvedValidationRule numericIndexModel) := do
   let flat ←
@@ -619,6 +625,18 @@ example :
         ([(20, 1)], some (.fired .value)),
         ([(20, 2)], none)
       ] := by
+  native_decide
+
+/- A partial all-rows aggregate consumes the same annotated index cells as a direct numeric atom. Raw duplicate values cannot leak through the immutable base document into a positive sum, while the distinct `1 + 2 > 2` control requires the complete selected row set. -/
+example :
+    partialNumericIndexAggregateVerdict? numericIndexAggregateRule?
+        duplicatedNumericIndexData
+        [RelevantEntityPattern.allInstances numericIndex.path] =
+      some .unknown ∧
+    partialNumericIndexAggregateVerdict? numericIndexAggregateRule?
+        distinctNumericIndexData
+        [RelevantEntityPattern.allInstances numericIndex.path] =
+      some (.fired .value) := by
   native_decide
 
 /- A generated absolute-required finding is visible to a flat leaf inside the same addressed partial once rule. -/
