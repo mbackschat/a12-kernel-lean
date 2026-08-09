@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission and fixed filled-group computation-admission families. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission, fixed filled-group computation-admission, and String pattern-comparison families. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -27,6 +27,10 @@ inductive KernelStaticDiagnostic where
   | duplicateParam2
   /-- A repeatable group was supplied without its required star address. -/
   | noWildcard
+  /-- A pattern source fails Java compilation or the Kernel's additional source gate. -/
+  | invalidPattern
+  /-- A pattern-comparison operand has the wrong scalar kind for its slot. -/
+  | invalidTypeForPatternComparison
   deriving Repr, DecidableEq
 
 namespace KernelStaticDiagnostic
@@ -40,11 +44,15 @@ def kernelCode : KernelStaticDiagnostic → String
   | .duplicateParam1 => "MVK_DUPLICATE_PARAM1"
   | .duplicateParam2 => "MVK_DUPLICATE_PARAM2"
   | .noWildcard => "MVK_NO_WILDCARD"
+  | .invalidPattern => "MVK_INVALID_PATTERN"
+  | .invalidTypeForPatternComparison =>
+      "MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON"
 
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
 def all : List KernelStaticDiagnostic :=
   [.onlyStringEnumNumberDateAllowed, .varyingTypesNotAllowed, .paramSizeInvalidN,
-    .paramSizeInvalidGN, .duplicateParam1, .duplicateParam2, .noWildcard]
+    .paramSizeInvalidGN, .duplicateParam1, .duplicateParam2, .noWildcard,
+    .invalidPattern, .invalidTypeForPatternComparison]
 
 end KernelStaticDiagnostic
 

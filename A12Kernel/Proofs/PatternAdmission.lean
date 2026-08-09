@@ -63,4 +63,26 @@ theorem admittedStringPattern_fired_is_value
   exact stringPattern_evalResolved_fired_is_value op admitted.wholeValueMatches
     operand polarity fired
 
+/-- Java rejection and the Kernel's additional source gate retain their local
+stage while projecting to the same measured external diagnostic class. -/
+@[simp]
+theorem stringPatternCondition_pattern_diagnostic
+    (error : PatternAdmissionError) :
+    StringPatternConditionElabError.diagnostic? (.pattern error) =
+      some .invalidPattern := by
+  cases error <;> rfl
+
+/-- Every non-String kind reaches the same local refusal constructor, and the
+complete represented kind matrix measures one external class for that locus. -/
+@[simp]
+theorem stringPatternCondition_fieldKind_diagnostic
+    (path : List String) (kind : SurfaceScalarKind)
+    (notString : kind ≠ .string) :
+    StringPatternConditionElabError.diagnostic? (.fieldKind path kind) =
+      some .invalidTypeForPatternComparison := by
+  cases kind with
+  | number | boolean | confirm | enumeration => rfl
+  | string => contradiction
+  | temporal temporalKind => cases temporalKind <;> rfl
+
 end A12Kernel

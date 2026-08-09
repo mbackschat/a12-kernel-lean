@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.Flat.Context
+import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.StringPattern
 
 /-! # A12Kernel.Elaboration.StringPattern — checked two-stage pattern admission
@@ -302,6 +303,27 @@ inductive StringPatternConditionElabError where
   | pattern (error : PatternAdmissionError)
   | incoherentCore
   deriving Repr, DecidableEq
+
+namespace StringPatternConditionElabError
+
+/-- Project only measured pattern-source failure and wrong-left-kind classes. The
+surface makes the right operand a String constant structurally; remaining local
+refusals stay unmapped instead of guessing an external identity. -/
+def diagnostic? : StringPatternConditionElabError → Option KernelStaticDiagnostic
+  | .fieldKind _ .string => none
+  | .fieldKind _ .number
+  | .fieldKind _ .boolean
+  | .fieldKind _ .confirm
+  | .fieldKind _ .enumeration
+  | .fieldKind _ (.temporal .date)
+  | .fieldKind _ (.temporal .time)
+  | .fieldKind _ (.temporal .dateTime) =>
+      some .invalidTypeForPatternComparison
+  | .pattern .javaSyntax
+  | .pattern .kernelRestriction => some .invalidPattern
+  | _ => none
+
+end StringPatternConditionElabError
 
 /-- Recheck that a field belongs to the validated model and is an ordinary nonrepeatable evaluated String. Its optional declared pattern is supplied separately by the model-complete prepared context. -/
 def FlatModel.admitsOrdinaryStringPatternField (model : FlatModel)

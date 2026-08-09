@@ -70,6 +70,11 @@ private def errorOf :
   | .ok _ => none
   | .error error => some error
 
+private def diagnosticOf :
+    Except StringPatternConditionElabError α → Option KernelStaticDiagnostic
+  | .ok _ => none
+  | .error error => StringPatternConditionElabError.diagnostic? error
+
 private def verdictOf (cell : RawCell) (hasContent : Bool) :
     Except StringPatternConditionElabError
       (CheckedStringPatternCondition model compilePattern) → Option Verdict
@@ -116,6 +121,29 @@ example :
     errorOf (elaborateStringPatternCondition compilePattern model ["Claim"]
       (condition "a++")) =
         some (.pattern .kernelRestriction) := by
+  native_decide
+
+/- Pattern-source stages share one exact Kernel class, the measured wrong-left-kind
+class stays distinct, and unmeasured local refusals remain explicitly unmapped. -/
+example :
+    diagnosticOf (elaborateStringPatternCondition compilePattern model ["Claim"]
+      (condition)) = none ∧
+    diagnosticOf (elaborateStringPatternCondition compilePattern model ["Claim"]
+      { op := .matched, field := fieldPath "Amount", source := "[A-Z]{3}" }) =
+        some .invalidTypeForPatternComparison ∧
+    diagnosticOf (elaborateStringPatternCondition compilePattern model ["Claim"]
+      { op := .violated, field := fieldPath "Amount", source := "[A-Z]{3}" }) =
+        some .invalidTypeForPatternComparison ∧
+    diagnosticOf (elaborateStringPatternCondition compilePattern model ["Claim"]
+      (condition "(")) = some .invalidPattern ∧
+    diagnosticOf (elaborateStringPatternCondition compilePattern model ["Claim"]
+      (condition "a++")) = some .invalidPattern ∧
+    let rawDecl := {
+      stringDeclaration with
+      stringValueMode := .raw
+      stringPolicy := { lineBreaksPermitted := true } }
+    diagnosticOf (elaborateStringPatternCondition compilePattern
+      { fields := [rawDecl] } ["Claim"] (condition)) = none := by
   native_decide
 
 /- Raw, registered-custom, and repeatable fields remain explicit separate-context boundaries; an ordinary declared-pattern field is now admitted for prepared evaluation. -/

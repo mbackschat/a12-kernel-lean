@@ -16,6 +16,8 @@ Empty behaviour (`== ""` never holds; `Length(empty) = 0`; patterns are not eval
 
 Condition-literal patterns (`PatternMatched` / `PatternViolated`) and declared STRING or predefined-type patterns have the same observed model-legality contract: the source must compile as a Java `Pattern` and then pass kernel admission. The source-visible `PatternUtils.isPatternValid` check contains the finite blacklist below, but that expression is not an exhaustive account of total admission. A direct typed/full-kernel model additionally rejects uppercase `\P{L}` with `MVK_INVALID_PATTERN` even though uppercase `P` is absent from the displayed expression. A condition-literal failure is rejected with `MVK_INVALID_PATTERN`; this clause does not infer the same outward diagnostic surface for every declared-pattern API or an undiscovered general grammar behind the additional exclusion.
 
+For either condition operator, the left slot must be a String field and the right slot must be a String constant. Every represented non-String field kind on the left, Number, Boolean, Confirm, Enumeration, Date, Time, and DateTime, is rejected with `MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON`; a Number constant on the right draws that same class, while a field in the right slot is rejected with `MVK_MISSING_CONST_IN_PATTERN_COMP`. These are isolated single-defect admission results and establish no precedence between simultaneous failures.
+
 ```text
 [?+}*]\+                 possessive quantifiers
 (?<...                   every such prefix, including lookbehind and named capture
@@ -132,7 +134,7 @@ Runtime equality follows the family's ordinary value boundary: normalized evalua
 ## Checklist for §7 + §8
 
 - [ ] String `Length` and min/max limits count UTF-16 code units after CRLF→LF evaluation ingestion; no length-bearing path counts code points or graphemes.
-- [ ] Condition and declared-field patterns share Java compilation plus kernel admission: the source-visible `PatternUtils` blacklist and the directly observed uppercase-`\P` exclusion; a condition-pattern failure draws `MVK_INVALID_PATTERN`; evaluation is anchored/whole-value Java-Pattern semantics under the Groovy-dynamic anchor; target-language divergences remain explicit; a fired pattern check is always **VALUE**.
+- [ ] Condition and declared-field patterns share Java compilation plus kernel admission: the source-visible `PatternUtils` blacklist and the directly observed uppercase-`\P` exclusion; a condition-pattern failure draws `MVK_INVALID_PATTERN`; condition operands retain the exact wrong-kind and missing-constant diagnostic classes; evaluation is anchored/whole-value Java-Pattern semantics under the Groovy-dynamic anchor; target-language divergences remain explicit; a fired pattern check is always **VALUE**.
 - [ ] Raw-type String values remain available to presence predicates but every value window is rejected; the sole strict whole-condition `Length` form is eliminated into metadata and never runs.
 - [ ] `supportedCharacters`: absent/empty list selects the BMP default, an empty entry is malformed, accepted entries are bounded and surrogate-free, configured combined entries match atomically with the exact overlap restriction, and every successful match advances.
 - [ ] A declared custom field type preserves raw optional bounds, supplies effective `1`/`999`, locale, and stored-value mode to one pure registered-validator observation per relevant concrete cell, and preserves a rejection's project code and optional field-aware message across all consumers.
