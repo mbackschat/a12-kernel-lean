@@ -249,7 +249,7 @@ theorem checkedValidationRule_partial_filtered_skips
   simp [CheckedResolvedValidationRule.evalPartial,
     FlatRuleFilterPresence.admits, filtered]
 
-/-- After global augmentation and the error-field gate, an admitted scalar partial rule delegates exactly once to the existing relevance-aware condition tree and sole message emitter. -/
+/-- After global augmentation and the iteration-bound error-field gate, an admitted scalar partial rule delegates exactly once to the existing exact-cell relevance-aware condition tree and sole message emitter. -/
 theorem checkedValidationRule_partial_evaluated
     (rule : CheckedResolvedValidationRule model)
     (prepared : PreparedFlatStringContext model compilePattern)
@@ -257,7 +257,8 @@ theorem checkedValidationRule_partial_evaluated
     (groups : GroupPresenceContext) (scope : ValidationRelevanceScope)
     (unfiltered : rule.hasHaving = false)
     (errorRelevant :
-      (scope.withGlobals model).coversField model rule.errorField [] = true)
+      (scope.withGlobals model).coversFieldAtBoundLevels model
+        rule.errorField rule.partialErrorBoundLevels [] = true)
     (scalar : rule.requiresAddressedValidation = false) :
     rule.evalPartial prepared locale raw groups scope =
       .ok (.evaluated (rule.core.emit
@@ -295,15 +296,15 @@ theorem checkedValidationRule_partial_repeatable_prepared
   simp [CheckedResolvedValidationRule.evalOrdinaryRepeatablePartial,
     unfiltered, prepared] <;> rfl
 
-/-- At the prepared one-row boundary, error-instance nonrelevance is a rule skip rather than semantic UNKNOWN and prevents every addressed read. -/
+/-- At the prepared one-row boundary, error-path nonrelevance at the iteration-bound levels is a rule skip rather than semantic UNKNOWN and prevents every addressed read. -/
 theorem checkedValidationRule_partial_repeatable_irrelevant_row_skips
     (rule : CheckedResolvedValidationRule model)
     (preliminary : CheckedPartialPreliminary model)
     (environment : Env)
     (supported : rule.supportsOrdinaryRepeatablePartial = true)
     (irrelevant :
-      preliminary.relevance.coversField
-        model rule.errorField environment = false) :
+      preliminary.relevance.coversFieldAtBoundLevels model rule.errorField
+        rule.partialErrorBoundLevels environment = false) :
     rule.evalOrdinaryRepeatablePartialAtPrepared preliminary environment =
       .ok (environment, .skipped) := by
   simp [CheckedResolvedValidationRule.evalOrdinaryRepeatablePartialAtPrepared,
@@ -320,7 +321,15 @@ theorem checkedValidationRule_partial_once_filtered_skips
   simp [CheckedResolvedValidationRule.evalOrdinaryOncePartial,
     filtered] <;> rfl
 
-/-- After a supported once environment is constructed, a nonrelevant pinned error instance skips before condition or target reads. -/
+/-- A once plan binds no error-field repetition level even though its message pointer retains the all-one error environment. -/
+theorem checkedValidationRule_partialErrorBoundLevels_once
+    (rule : CheckedResolvedValidationRule model)
+    (errorScope : List RepeatableLevel)
+    (once : rule.ordinaryIterationPlan = .once errorScope) :
+    rule.partialErrorBoundLevels = [] := by
+  simp [CheckedResolvedValidationRule.partialErrorBoundLevels, once]
+
+/-- After a supported once environment is constructed, an error path absent from the whole relevant set skips before condition or target reads. Concrete coordinates below the empty bound remain intentionally ignored. -/
 theorem checkedValidationRule_partial_once_irrelevant_skips
     (rule : CheckedResolvedValidationRule model)
     (preliminary : CheckedPartialPreliminary model)
@@ -329,13 +338,13 @@ theorem checkedValidationRule_partial_once_irrelevant_skips
     (supported : rule.supportsOrdinaryRepeatablePartial = true)
     (once : rule.ordinaryIterationPlan = .once errorScope)
     (irrelevant :
-      preliminary.relevance.coversField
-        model rule.errorField
+      preliminary.relevance.coversFieldAtBoundLevels model rule.errorField []
           (errorScope.map fun level => (level, 1)) = false) :
     rule.evalOrdinaryOncePartialPrepared preliminary =
       .ok .skipped := by
   simp [CheckedResolvedValidationRule.evalOrdinaryOncePartialPrepared,
     CheckedResolvedValidationRule.onceEnvironment,
+    CheckedResolvedValidationRule.partialErrorBoundLevels,
     unfiltered, supported, once, irrelevant] <;> rfl
 
 /-- Checked assembly preserves its explicit error field and metadata through message emission. -/

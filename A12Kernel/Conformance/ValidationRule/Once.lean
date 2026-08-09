@@ -83,6 +83,12 @@ private def errorRowOnly : ValidationRelevanceScope :=
     indices := [.concrete 1, .concrete 1, .concrete 1]
   }]
 
+private def otherErrorRowOnly : ValidationRelevanceScope :=
+  .partialSet [{
+    path := outerAmount.path
+    indices := [.concrete 1, .concrete 2, .concrete 1]
+  }]
+
 private def partialSnapshot? (scope : ValidationRelevanceScope) :
     Option PartialOnceRuleOutcome := do
   let rule ← onceRule?
@@ -115,7 +121,7 @@ example :
       some (.once [10], [(10, 1)], .notFired, none)) = true := by
   native_decide
 
-/- Partial admission bypasses full root-content gating for a relevant pinned error instance. Exact row relevance alone does not imply the all-rows extent needed by the star aggregate, so that admitted control evaluates UNKNOWN rather than becoming a rule skip. -/
+/- Partial admission bypasses full root-content gating when the error path is relevant below the zero levels bound by the once plan. Relevance at either concrete error row admits the row-1 pointer; neither concrete selector establishes the all-rows extent needed by the star aggregate, so both controls evaluate UNKNOWN rather than becoming rule skips. -/
 example :
     (partialSnapshot? rootRelevant ==
       some (
@@ -132,6 +138,8 @@ example :
     partialSnapshot? (.partialSet []) =
       some .skipped ∧
     partialSnapshot? errorRowOnly =
+      some (.evaluated [(10, 1)] .unknown) ∧
+    partialSnapshot? otherErrorRowOnly =
       some (.evaluated [(10, 1)] .unknown) := by
   native_decide
 

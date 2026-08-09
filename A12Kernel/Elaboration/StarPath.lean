@@ -283,6 +283,21 @@ def coversField (scope : ValidationRelevanceScope) (model : FlatModel)
   | .ok declaration => scope.coversCell model declaration.path environment
   | .error _ => false
 
+/-- Resolve the partial rule-run gate at exactly the repeatable levels bound by the rule's checked iteration plan. A relevant field or ancestor must still project onto the error path, coordinates at bound levels must match the current environment, and deeper coordinates are deliberately ignored because iteration did not choose them. This is distinct from exact per-cell relevance used by condition leaves. -/
+def coversFieldAtBoundLevels (scope : ValidationRelevanceScope)
+    (model : FlatModel) (field : FieldId)
+    (boundLevels : List RepeatableLevel) (environment : Env) : Bool :=
+  match model.lookupUniqueId field with
+  | .error _ => false
+  | .ok declaration =>
+      match scope with
+      | .full => true
+      | .partialSet entities => entities.any fun entity =>
+          match entity.projectOntoField? declaration.path with
+          | none => false
+          | some projected =>
+              projected.matchesBoundSubtree model boundLevels environment
+
 /-- Derive the kernel's three-level relevance for one concrete group instance. Any intersecting selection supplies partial visibility; definite absence additionally requires an ancestor group selection or complete coverage of every declared descendant, wildcarded across every deeper repeatable level. -/
 def groupRelevance (scope : ValidationRelevanceScope) (model : FlatModel)
     (groupPath : GroupPath) (environment : Env) : GroupRelevance :=
