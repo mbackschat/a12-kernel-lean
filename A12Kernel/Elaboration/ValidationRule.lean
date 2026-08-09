@@ -44,7 +44,7 @@ inductive OrdinaryRuleIterationPlan where
   | rows (scope : List RepeatableLevel)
   deriving Repr, DecidableEq
 
-/-- Partial execution distinguishes a whole-rule filtered skip from the ordered actual-row scan; each actual row then keeps error-instance skip separate from every evaluated verdict. -/
+/-- Partial execution distinguishes a whole-rule filtered skip from the ordered validation-row scan; each environment then keeps error-instance skip separate from every evaluated verdict. -/
 inductive PartialRepeatableRuleOutcome where
   | skipped
   | evaluated (rows : List (Env × PartialRuleOutcome))
@@ -253,7 +253,7 @@ private def ordinaryOnceRootHasContent
           placement.cell.admitsGroupContent
     | .error _ => false)
 
-/-- Construct the all-one environment of a checked once plan. Scalar and actual-row plans remain explicit structural mismatches. -/
+/-- Construct the all-one environment of a checked once plan. Scalar and row-iteration plans remain explicit structural mismatches. -/
 def onceEnvironment
     (rule : CheckedResolvedValidationRule model) :
     Except OrdinaryRepeatableRuleEvaluationError Env :=
@@ -320,7 +320,7 @@ private def repetitionNotUniqueResults
             |>.mapError .conditionAddressing
         pure scopedResults.flatten
 
-/-- Evaluate one actual ordinary row against an already-normalized partial preliminary view. A nonrelevant error instance skips before addressed reads; an admitted row maps only nonrelevant supported leaves to semantic UNKNOWN. -/
+/-- Evaluate one validation-produced ordinary environment against an already-normalized partial preliminary view. A nonrelevant error instance skips before addressed reads; an admitted row maps only nonrelevant supported leaves to semantic UNKNOWN. -/
 def evalOrdinaryRepeatablePartialAtPrepared
     (rule : CheckedResolvedValidationRule model)
     (preliminary : CheckedPartialPreliminary model)
@@ -340,7 +340,8 @@ def evalOrdinaryRepeatablePartialAtPrepared
       repetitionNotUniqueResults.find? fun result =>
         result.row == environment
     let errorCell ←
-      (checked.addressedCell environment rule.errorField).mapError .addressing
+      (checked.validationAddressedCell environment rule.errorField)
+        |>.mapError .addressing
     let outcome ←
       rule.evalOrdinaryPartialAdmittedAt preliminary
         environment errorCell.address.path result?
@@ -364,9 +365,11 @@ private def evalOrdinaryRepeatableAt
     (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult := none) :
     Except OrdinaryRepeatableRuleEvaluationError (Env × FlatRuleOutcome) := do
   let _ ← rule.ordinaryRepeatableFieldIds.mapM fun field =>
-    (checked.addressedCell environment field).mapError .addressing
+    (checked.validationAddressedCell environment field)
+      |>.mapError .addressing
   let errorCell ←
-    (checked.addressedCell environment rule.errorField).mapError .addressing
+    (checked.validationAddressedCell environment rule.errorField)
+      |>.mapError .addressing
   let base := checked.flatContext
   let context : AddressedValidationEvaluationContext model := {
     scalar := { fields := base, groups := GroupPresenceContext.unavailable }
@@ -380,7 +383,7 @@ private def evalOrdinaryRepeatableAt
   let outcome := rule.core.emitAt errorCell.address.path verdict
   pure (environment, outcome)
 
-/-- Execute a checked ordinary nonparallel repeatable rule over actual deepest-scope rows in immutable document order. Every repeated read and the error target resolve through `CheckedDocument.addressedCell`; no declared tail or phantom row becomes an environment. -/
+/-- Execute a checked ordinary nonparallel repeatable rule over the validation row domain. Concrete deepest rows retain immutable document order; a missing nested child contributes implicit row 1 below each existing parent, while an absent outermost scope remains empty. Every repeated read and the error target use the validation-only addressed view without materializing stored topology. -/
 def evalOrdinaryRepeatableFull
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model) :
@@ -392,7 +395,7 @@ def evalOrdinaryRepeatableFull
     | some scope => pure scope
     | none => throw .missingIterationScope
   let environments ←
-    checked.actualRowEnvironments scope
+    checked.validationRowEnvironments scope
       |>.mapError toOrdinaryRowEnvironmentError
   let repetitionNotUniqueResults ←
     rule.repetitionNotUniqueResults checked .full environments
@@ -471,7 +474,7 @@ def evalOrdinaryOncePartial
         |>.mapError .preliminary
     rule.evalOrdinaryOncePartialPrepared preliminary
 
-/-- Execute a checked partial ordinary rule over one normalized call-local preliminary view and the actual deepest-scope rows in immutable document order. Filtered rules skip before row construction. Relevance gates each actual error instance and never becomes document topology. -/
+/-- Execute a checked partial ordinary rule over one normalized call-local preliminary view and the validation row domain. Filtered rules skip before row construction. Relevance gates each concrete or implicit error instance and never becomes document topology. -/
 def evalOrdinaryRepeatablePartialPrepared
     (rule : CheckedResolvedValidationRule model)
     (preliminary : CheckedPartialPreliminary model) :
@@ -487,7 +490,7 @@ def evalOrdinaryRepeatablePartialPrepared
       | none => throw .missingIterationScope
     let checked := preliminary.index.base
     let environments ←
-      checked.actualRowEnvironments iterationScope
+      checked.validationRowEnvironments iterationScope
         |>.mapError toOrdinaryRowEnvironmentError
     let admittedEnvironments := environments.filter fun environment =>
       preliminary.relevance.coversField model rule.errorField environment
@@ -506,7 +509,7 @@ def evalOrdinaryRepeatablePartialPrepared
           repetitionNotUniqueResults.find? fun result =>
             result.row == environment
         let errorCell ←
-          (checked.addressedCell environment rule.errorField)
+          (checked.validationAddressedCell environment rule.errorField)
             |>.mapError .addressing
         let outcome ←
           rule.evalOrdinaryPartialAdmittedAt preliminary

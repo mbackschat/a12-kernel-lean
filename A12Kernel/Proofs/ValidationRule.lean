@@ -202,7 +202,7 @@ theorem checkedValidationRule_iterationScope_owned
       .ok rule.iterationScope :=
   rule.iterationScopeOwned
 
-/-- A mixed rule with no per-row reference scope and a repeatable error declaration has the distinct once plan; it cannot silently become scalar or actual-row iteration. -/
+/-- A mixed rule with no per-row reference scope and a repeatable error declaration has the distinct once plan; it cannot silently become scalar or validation-row iteration. -/
 theorem checkedValidationRule_once_plan_exact
     (rule : CheckedResolvedValidationRule model)
     (noScope : rule.iterationScope = none)

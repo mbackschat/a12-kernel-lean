@@ -51,7 +51,7 @@ example :
         some (.unknown, none) := by
   native_decide
 
-/- A nested direct Number keeps the complete outer/inner environment and emits at the exact two-level error address. -/
+/- A nested direct Number keeps the complete outer/inner environment and emits at the exact two-level error address. An existing outer row without a concrete child contributes implicit child row 1 to validation, where the absent Number enters the established empty-as-zero comparison. The relative concrete/implicit result order is the deterministic Lean account; upstream sorted observations lock the members and pointers, not emission order. -/
 example :
     (nestedRepeatableNumericRule?.bind fun rule =>
       (evalOrdinaryRule? rule {
@@ -73,7 +73,21 @@ example :
         some (MessagePointer.ofCellAddr {
           field := innerAmount.id
           path := [2, 1]
-        }))] := by
+        })),
+        (
+          [(10, 1), (20, 1)],
+          .fired .omission,
+          some (MessagePointer.ofCellAddr {
+            field := innerAmount.id
+            path := [1, 1]
+          }))] := by
+  native_decide
+
+/- Validation does not invent an outermost repeatable row merely because the nested rule has an all-one address. -/
+example :
+    (nestedRepeatableNumericRule?.bind fun rule =>
+      evalOrdinaryRule? rule { instantiatedRows := [], cells := [] }) =
+      some [] := by
   native_decide
 
 /- One checked composite may read an ancestor and current-row Number through their declaration-owned scopes. Execute preserves the full target environment, while Transform/Explain recover both certified declarations from the same tree. -/

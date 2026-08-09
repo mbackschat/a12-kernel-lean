@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CheckedRequired
+import A12Kernel.Elaboration.CheckedStarDocument
 
 /-! # A12Kernel.Conformance.CheckedDocument — immutable checked-document boundary -/
 
@@ -54,17 +55,27 @@ private def lineText : FlatFieldDecl :=
     policy := { kind := .string }
     repeatableScope := [10, 11] }
 
+private def nestedDetailText : FlatFieldDecl :=
+  { id := 6
+    groupPath := ["Order", "Items", "Lines", "Details"]
+    name := "Text"
+    policy := { kind := .string }
+    repeatableScope := [10, 11, 12] }
+
 private def model : FlatModel :=
-  { fields := [customCode, note, itemText, count, lineText]
+  { fields := [customCode, note, itemText, count, lineText, nestedDetailText]
     repeatableGroups := [
       { level := 10, path := ["Order", "Items"], repeatability := some 2 },
-      { level := 11, path := ["Order", "Items", "Lines"], repeatability := some 5 }
+      { level := 11, path := ["Order", "Items", "Lines"], repeatability := some 5 },
+      { level := 12, path := ["Order", "Items", "Lines", "Details"],
+        repeatability := some 5 }
     ] }
 
 private def row1 : RowAddr := { group := 10, path := [1] }
 private def row2 : RowAddr := { group := 10, path := [2] }
 private def row3 : RowAddr := { group := 10, path := [3] }
 private def line31 : RowAddr := { group := 11, path := [3, 1] }
+private def line21 : RowAddr := { group := 11, path := [2, 1] }
 
 private def classified : DocumentData :=
   { instantiatedRows := [row1]
@@ -138,6 +149,36 @@ example : ((checked? classified).map fun checked =>
     match checked.actualRowEnvironments [99] with
     | .error (.unknownLevel 99) => true
     | _ => false) = some true := by
+  native_decide
+
+/- The validation-only projection composes implicit child row 1 through a three-level scope. It leaves physical topology unchanged, and only the validation addressed view can read an exact projected absent leaf as clean empty. -/
+example : (((checked? {
+    instantiatedRows := [row2, row1, line21]
+    cells := []
+  }).bind fun checked => do
+    let validationRows ←
+      (checked.validationRowEnvironments [10, 11, 12]).toOption
+    let actualRows ←
+      (checked.actualRowEnvironments [10, 11, 12]).toOption
+    let implicit ←
+      (checked.validationAddressedCell
+        [(10, 2), (11, 1), (12, 1)] nestedDetailText.id).toOption
+    pure (validationRows, actualRows, checked.source.instantiatedRows,
+      observeCell .validation implicit.cell,
+      match checked.addressedCell
+          [(10, 2), (11, 1), (12, 1)] nestedDetailText.id with
+      | .error (.document (.missingRow row)) =>
+          row == { group := 12, path := [2, 1, 1] }
+      | _ => false,
+      match checked.validationAddressedCell
+          [(10, 1), (11, 2), (12, 1)] nestedDetailText.id with
+      | .error (.document (.missingRow row)) =>
+          row == { group := 11, path := [1, 2] }
+      | _ => false)) ==
+    some ([
+      [(10, 2), (11, 1), (12, 1)],
+      [(10, 1), (11, 1), (12, 1)]
+    ], [], [row2, row1, line21], .empty, true, true)) = true := by
   native_decide
 
 /- Prepared formal rejection is error without admitted group content. -/

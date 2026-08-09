@@ -295,6 +295,36 @@ def actualRowEnvironments (checked : CheckedDocument model)
           else
             throw (.incoherentRow row)
 
+private def environmentExtends (parent child : Env) : Bool :=
+  child.take parent.length == parent
+
+private def extendValidationRowEnvironments
+    (checked : CheckedDocument model)
+    (scopePrefix : List RepeatableLevel) (parents : List Env) :
+    List RepeatableLevel →
+      Except ActualRowEnvironmentError (List Env)
+  | [] => pure parents
+  | level :: remaining => do
+      let scope := scopePrefix ++ [level]
+      let actual ← checked.actualRowEnvironments scope
+      let implicit := (parents.filter fun parent =>
+        !actual.any (environmentExtends parent)).map fun parent =>
+          parent ++ [(level, 1)]
+      extendValidationRowEnvironments checked scope
+        (actual ++ implicit) remaining
+
+/-- Project the row domain used only by nested validation iteration. The outermost level remains concrete-only. At each deeper level, every existing parent without a concrete child contributes child coordinate 1, and that projection composes recursively. As a deterministic Lean-internal account, concrete deepest rows retain their physical encounter order and implicit descendants follow them in parent projection order; external observations establish row membership and pointers but not this relative emission order. -/
+def validationRowEnvironments (checked : CheckedDocument model)
+    (scope : List RepeatableLevel) :
+    Except ActualRowEnvironmentError (List Env) :=
+  match scope with
+  | [] => .error .missingScope
+  | [outer] => checked.actualRowEnvironments [outer]
+  | outer :: remaining => do
+      let actualOuter ← checked.actualRowEnvironments [outer]
+      extendValidationRowEnvironments checked [outer]
+        actualOuter remaining
+
 /-- Query one model-legal address. In-cap absence is a clean empty checked cell, over-limit ancestry is unavailable, and malformed addressing remains an explicit structural error. -/
 def read (checked : CheckedDocument model) (address : CellAddr) :
     Except CheckedDocumentError CheckedCell := do

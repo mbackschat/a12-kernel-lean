@@ -72,6 +72,8 @@ String evaluation uses decoded/evaluated text, while target policy retains decla
 
 Structural address failure is not semantic UNKNOWN. Checked address construction returns an explicit failure; phase observation later maps a valid checked cell to validation UNKNOWN, computation poison, clean empty, or a typed value as required by the consuming clause.
 
+Physical topology and validation iteration are distinct projections of that same checked input. The physical addressed read, stars, auto-checks, parallel identity, and computation see only stored rows. Ordinary validation keeps the outermost repeatable level physical, recursively contributes implicit child row 1 below an existing parent with no concrete child, and reads that exact projected address as clean absent input without inserting a row. `RepetitionNotUnique` shares the validation projection because it is a validation leaf; the projection never becomes stored group content.
+
 ### Observation and control flow are phase-specific
 
 <a id="numeric-polarity-carries-directions-not-one-substituted-bit"></a>

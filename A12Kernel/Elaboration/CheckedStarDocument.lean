@@ -16,6 +16,7 @@ inductive CheckedAddressingError where
   | field (field : FieldId) (cause : ResolveError)
   | environment (cause : EnvBindingError)
   | document (cause : CheckedDocumentError)
+  | rowEnvironment (cause : ActualRowEnvironmentError)
   | checkedDocumentRequired (path : GroupPath)
   | repetitionNotUniqueResult (row : Env)
   deriving Repr, DecidableEq
@@ -87,6 +88,41 @@ def addressedCell (checked : CheckedDocument model)
     stored := checked.source.toDocument.rawCells address
     cell
   }
+
+/-- Read a field in a validation-produced row environment. Concrete addresses use the immutable checked document unchanged. An exact implicit nested-validation environment supplies a clean absent cell without creating physical row or stored content; an arbitrary missing environment still fails structurally. -/
+def validationAddressedCell (checked : CheckedDocument model)
+    (environment : Env) (field : FieldId) :
+    Except CheckedAddressingError CheckedAddressedCell := do
+  let declaration ←
+    (model.lookupUniqueId field).mapError (.field field)
+  let path ←
+    (environment.pathForScope declaration.repeatableScope)
+      |>.mapError .environment
+  let address : CellAddr := { field, path }
+  if declaration.repeatableScope.isEmpty then
+    checked.addressedCell environment field
+  else
+    let validationRows ←
+      (checked.validationRowEnvironments declaration.repeatableScope)
+        |>.mapError .rowEnvironment
+    let projected := declaration.repeatableScope.zip path
+    let physical :=
+      (repeatableAncestorRowsFor declaration.repeatableScope path).all
+        checked.source.instantiatedRows.contains
+    if !validationRows.contains projected || physical then
+      checked.addressedCell environment field
+    else
+      let overLimit ← match model.addressOverLimit?
+          declaration.repeatableScope path with
+        | some overLimit => pure overLimit
+        | none => throw (.document
+            (.incoherentRepeatableScope declaration.repeatableScope))
+      pure {
+        environment
+        address
+        stored := none
+        cell := (checkAdmittedRawCell .empty).withOverRepetitionIf overLimit
+      }
 
 /-- Correlation reads from the same immutable checked input and preserve field/address failures separately from semantic UNKNOWN or computation poison. -/
 def resolvingCorrelationContext (checked : CheckedDocument model) :

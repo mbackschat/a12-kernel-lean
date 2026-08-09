@@ -302,6 +302,13 @@ private def nestedSource
   else
     { firstKey := nestedEffortPath, restKeys := [], scope }
 
+private def reversedNestedCompositeSource
+    (scope : SurfaceRepetitionNotUniqueScope := .default) :
+    SurfaceRepetitionNotUniqueSource :=
+  { firstKey := nestedEffortPath
+    restKeys := [nestedPhasePath]
+    scope }
+
 private def nestedFrom (groups : GroupPath) :
     SurfaceRepetitionNotUniqueScope :=
   .from (.path { base := .absolute, groups })
@@ -313,6 +320,16 @@ private def nestedRule?
   let condition ←
     (CheckedValidationCondition.fromRepetitionNotUnique
       nestedModel ["Project"] (nestedSource scope withPhase)).toOption
+  (assembleResolvedValidationRule nestedModel condition effort.id
+    "nestedRnu" .error { parts := [] }).toOption
+
+private def reversedNestedCompositeRule?
+    (scope : SurfaceRepetitionNotUniqueScope := .default) :
+    Option (CheckedResolvedValidationRule nestedModel) := do
+  let condition ←
+    (CheckedValidationCondition.fromRepetitionNotUnique
+      nestedModel ["Project"]
+      (reversedNestedCompositeSource scope)).toOption
   (assembleResolvedValidationRule nestedModel condition effort.id
     "nestedRnu" .error { parts := [] }).toOption
 
@@ -339,6 +356,17 @@ private def nestedData (withinFirstMilestone : Bool := false) :
       nestedCell effort.id [2, 1] (if withinFirstMilestone then "7" else "5")
         (if withinFirstMilestone then 7 else 5),
       nestedCell effort.id [1, 1] "5" 5
+    ] }
+
+private def implicitNestedData (samePhase : Bool := true) : DocumentData :=
+  { instantiatedRows := [
+      { group := 20, path := [2] },
+      { group := 20, path := [1] }
+    ]
+    cells := [
+      nestedCell phase.id [1] "1" 1,
+      nestedCell phase.id [2] (if samePhase then "1" else "2")
+        (if samePhase then 1 else 2)
     ] }
 
 private def nestedCheckedDocument? (data : DocumentData) :
@@ -543,6 +571,48 @@ example :
         ([(20, 2), (30, 1)], .notFired),
         ([(20, 1), (30, 1)], .notFired)
       ] := by
+  native_decide
+
+/- Mixed-depth composite keys use the deepest validation row domain independently of authored key order. Equal ancestor values plus optional-empty implicit descendants duplicate with OMISSION, including under an explicit ancestor `@From`; changing one ancestor value keeps both orders unique. -/
+example :
+    (nestedVerdicts? (nestedRule? (withPhase := true))
+        (implicitNestedData) ==
+      some [
+        ([(20, 2), (30, 1)], .fired .omission),
+        ([(20, 1), (30, 1)], .fired .omission)
+      ]) = true ∧
+    (nestedVerdicts? reversedNestedCompositeRule?
+        (implicitNestedData) ==
+      some [
+        ([(20, 2), (30, 1)], .fired .omission),
+        ([(20, 1), (30, 1)], .fired .omission)
+      ]) = true ∧
+    (nestedVerdicts?
+        (nestedRule?
+          (nestedFrom ["Project", "Milestones"]) true)
+        (implicitNestedData) ==
+      some [
+        ([(20, 2), (30, 1)], .fired .omission),
+        ([(20, 1), (30, 1)], .fired .omission)
+      ]) = true ∧
+    (nestedVerdicts?
+        (reversedNestedCompositeRule?
+          (nestedFrom ["Project", "Milestones"]))
+        (implicitNestedData) ==
+      some [
+        ([(20, 2), (30, 1)], .fired .omission),
+        ([(20, 1), (30, 1)], .fired .omission)
+      ]) = true ∧
+    [
+      nestedRule? (withPhase := true),
+      reversedNestedCompositeRule?,
+      nestedRule? (nestedFrom ["Project", "Milestones"]) true,
+      reversedNestedCompositeRule? (nestedFrom ["Project", "Milestones"])
+    ].all (fun candidate =>
+      nestedVerdicts? candidate (implicitNestedData false) == some [
+        ([(20, 2), (30, 1)], .notFired),
+        ([(20, 1), (30, 1)], .notFired)
+      ]) = true := by
   native_decide
 
 /- A narrow reference scope cannot be evaluated without its exact parent binding; the failure remains structural. -/

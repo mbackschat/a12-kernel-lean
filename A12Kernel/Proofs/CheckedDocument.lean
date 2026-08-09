@@ -282,4 +282,11 @@ theorem checkedDocument_actualRowEnvironment_scope
   (checkedDocument_actualRowEnvironment_properties
     checked scope environments resolved).2 environment member
 
+/-- The validation projection never invents an outermost row. A one-level validation scope is exactly the physical row projection. -/
+theorem checkedDocument_validationRowEnvironments_singleton
+    (checked : CheckedDocument model) (level : RepeatableLevel) :
+    checked.validationRowEnvironments [level] =
+      checked.actualRowEnvironments [level] := by
+  rfl
+
 end A12Kernel

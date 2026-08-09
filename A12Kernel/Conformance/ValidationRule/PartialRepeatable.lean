@@ -273,6 +273,17 @@ example :
       some (some []) := by
   native_decide
 
+/- Partial validation uses the same nested validation domain as full validation. A relevant inner Number below an existing outer row evaluates at implicit child row 1 and retains empty-as-zero omission polarity. -/
+example :
+    snapshot? nestedRepeatableNumericRule? {
+        instantiatedRows := [{ group := 10, path := [1] }]
+        cells := []
+      } (.partialSet [RelevantEntityPattern.allInstances innerAmount.path]) =
+      some (some [
+        ([(10, 1), (20, 1)], some (.fired .omission))
+      ]) := by
+  native_decide
+
 /- Complete nested environments use the same addressed presence semantics; depth does not create a second partial-rule execution mode. -/
 example :
     nestedBoundary? = some (true, none) := by

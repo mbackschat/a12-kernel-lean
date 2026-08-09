@@ -417,14 +417,15 @@ def resolvedRow (checked : CheckedRepetitionNotUniqueSource model)
   { row := environment
     key := checked.keys.map fun key => key.classify read environment }
 
-/-- Construct one key row from the immutable checked document, preserving any model, environment, or document addressing failure outside key UNKNOWN. -/
+/-- Construct one key row from the immutable checked document in a validation-produced environment, preserving any model, environment, or document addressing failure outside key UNKNOWN. -/
 def resolvedRowChecked
     (checked : CheckedRepetitionNotUniqueSource model)
     (document : CheckedDocument model) (environment : Env) :
     Except CheckedAddressingError ResolvedRepetitionKeyRow := do
   let key ← checked.keys.mapM fun key => do
     let keyEnvironment := key.environmentPrefix environment
-    let addressed ← document.addressedCell keyEnvironment key.fieldId
+    let addressed ←
+      document.validationAddressedCell keyEnvironment key.fieldId
     pure (key.classifyCheckedCell addressed.cell environment)
   pure { row := environment, key }
 
@@ -437,7 +438,7 @@ def resolvedRows (checked : CheckedRepetitionNotUniqueSource model)
   pure ((topology.environments.filter (checked.rowRelevant scope)).map
     (checked.resolvedRow read))
 
-/-- Resolve the selected scope against the immutable checked input, filter complete-key relevance before reads, and preserve every reached address failure structurally. -/
+/-- Resolve the selected scope against the immutable checked input. Concrete topology keeps its established canonical relation order; implicit validation descendants are appended from the validation-only domain. Complete-key relevance is filtered before reads, and every reached address failure remains structural. -/
 def resolvedRowsChecked
     (checked : CheckedRepetitionNotUniqueSource model)
     (document : CheckedDocument model) (outer : Env)
@@ -446,7 +447,18 @@ def resolvedRowsChecked
   let topology ←
     (checked.topology.path.resolve document.source.toDocument outer)
       |>.mapError .addressing
-  (topology.environments.filter (checked.rowRelevant scope)).mapM
+  let levels := checked.topology.path.axes.map (·.level)
+  let validationRows ←
+    (document.validationRowEnvironments levels)
+      |>.mapError .rowEnvironment
+  let bound ←
+    checked.topology.path.boundEnvironment outer
+      |>.mapError .addressing
+  let implicitRows := validationRows.filter fun environment =>
+    environment.take bound.length == bound &&
+      !topology.environments.contains environment
+  let environments := topology.environments ++ implicitRows
+  (environments.filter (checked.rowRelevant scope)).mapM
     (checked.resolvedRowChecked document)
 
 /-- Evaluate one selected checked scope through the established branch-independent RNU relation. -/
