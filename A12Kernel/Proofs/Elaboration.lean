@@ -60,6 +60,24 @@ theorem surfaceFieldPath_reifyQuotes_lower
             authoredPathName_reified_lower]
           rfl
 
+/-- A field-on-left `Length` condition retains the complete decoded literal, including authored scale rather than only its rational value. -/
+theorem surfaceLengthCompare_literal_injective
+    (op : SurfaceComparisonOp) (field : SurfaceFieldPath)
+    (left right : DecodedNumericLiteral) :
+    SurfaceCondition.lengthCompare op field left =
+        SurfaceCondition.lengthCompare op field right ↔
+      left = right := by
+  simp
+
+/-- The mirrored `Length` spelling retains the same complete decoded-literal identity. -/
+theorem surfaceLiteralCompareLength_literal_injective
+    (op : SurfaceComparisonOp) (field : SurfaceFieldPath)
+    (left right : DecodedNumericLiteral) :
+    SurfaceCondition.literalCompareLength left op field =
+        SurfaceCondition.literalCompareLength right op field ↔
+      left = right := by
+  simp
+
 /-- An exact selected-language keyword without the grammar's quote marker fails before name lookup. -/
 theorem authoredPathName_unquoted_reserved
     (profile : PathKeywordProfile) (name : String)

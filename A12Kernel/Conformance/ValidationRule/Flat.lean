@@ -211,7 +211,8 @@ private def preparedPatternLengthVerdict (pattern : String) : Option Verdict := 
   let prepared ←
     (prepareFlatStringContext preparedWorld preparedCompiler preparedModel).toOption
   let checked ← (elaborate preparedModel ["Order"]
-    (.lengthCompare .lessEqual (path "PatternCode") 3)).toOption
+    (.lengthCompare .lessEqual (path "PatternCode")
+      { value := 3, authoredScale := 0 })).toOption
   let rule ← (assembleResolvedFlatRule preparedModel checked preparedPattern.id
     "preparedPatternLength" .error { parts := [] }).toOption
   pure (rule.evalFull prepared "en_US" (preparedRaw pattern "accepted") true).verdict

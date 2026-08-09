@@ -7,6 +7,12 @@ Numeric authoring checks use a signed exact scale or unknown plus a separate cap
 
 namespace A12Kernel
 
+/-- One numeric token after decoding. `authoredScale` is syntax metadata and cannot be recovered from `value`; for example, `0` and `0.00` have the same value but scales 0 and 2. -/
+structure DecodedNumericLiteral where
+  value : Rat
+  authoredScale : Int
+  deriving Repr, DecidableEq
+
 namespace ScaleInfo
 
 def maxExact : ScaleInfo → ScaleInfo → ScaleInfo

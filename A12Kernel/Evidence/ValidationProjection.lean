@@ -183,12 +183,14 @@ private def stringRules : List OperatorRule := [
   {
     code := "STR_LEN_GE"
     pointer := "/Order[1]/ProductCode"
-    condition := .lengthCompare .greaterEqual (absolute "ProductCode") 0
+    condition := .lengthCompare .greaterEqual (absolute "ProductCode")
+      { value := 0, authoredScale := 0 }
   },
   {
     code := "STR_LEN_LT"
     pointer := "/Order[1]/ProductCode"
-    condition := .lengthCompare .less (absolute "ProductCode") 5
+    condition := .lengthCompare .less (absolute "ProductCode")
+      { value := 5, authoredScale := 0 }
   }]
 
 private def numberRules : List OperatorRule := [

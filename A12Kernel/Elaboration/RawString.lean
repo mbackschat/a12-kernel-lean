@@ -12,12 +12,12 @@ structure CheckedRawStringMaximumLength (model : FlatModel) where
   rowGroup : GroupPath
   authoredField : SurfaceFieldPath
   declaration : FlatFieldDecl
-  bound : Rat
+  bound : DecodedNumericLiteral
   modelWellFormed : model.validate.isOk = true
   resolved :
     model.resolveNonrepeatableFieldUnchecked rowGroup authoredField = .ok declaration
   rawString : declaration.isRawString = true
-  integralBound : bound.den = 1
+  integralBound : bound.value.den = 1
 
 namespace CheckedRawStringMaximumLength
 
@@ -25,7 +25,7 @@ def fieldId (checked : CheckedRawStringMaximumLength model) : FieldId :=
   checked.declaration.id
 
 def integerBound (checked : CheckedRawStringMaximumLength model) : Int :=
-  checked.bound.num
+  checked.bound.value.num
 
 end CheckedRawStringMaximumLength
 
@@ -58,14 +58,14 @@ end Except
 
 private def elaborateRawStringMaximumLength (model : FlatModel)
     (declaringGroup : GroupPath) (authoredField : SurfaceFieldPath)
-    (bound : Rat) (modelValid : model.validate = .ok ()) :
+    (bound : DecodedNumericLiteral) (modelValid : model.validate = .ok ()) :
     Except ElabError (Option (CheckedRawStringMaximumLength model)) :=
   match hResolved :
       model.resolveNonrepeatableFieldUnchecked declaringGroup authoredField with
   | .error error => .error (.resolve error)
   | .ok declaration =>
       if hRaw : declaration.isRawString = true then
-        if hIntegral : bound.den = 1 then
+        if hIntegral : bound.value.den = 1 then
           .ok (some {
             rowGroup := declaringGroup
             authoredField

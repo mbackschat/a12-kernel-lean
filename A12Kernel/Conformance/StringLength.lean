@@ -173,16 +173,40 @@ private def elaborationError? : Except ElabError α → Option ElabError
   | .ok _ => none
   | .error error => some error
 
+private def elaboratedCore? :
+    Except ElabError (CheckedFlatCondition model) → Option FlatCondition
+  | .ok checked => some checked.core
+  | .error _ => none
+
+private def lengthLiteral (value : Rat) (authoredScale : Int) :
+    DecodedNumericLiteral :=
+  { value, authoredScale }
+
+/- The flat Length surface retains syntax-derived scale even though ordering evaluation consumes only the exact value. -/
+example :
+    SurfaceCondition.lengthCompare .greater productCodePath
+      (lengthLiteral 5 0) !=
+    SurfaceCondition.lengthCompare .greater productCodePath
+      (lengthLiteral 5 1) := by
+  decide
+
+example :
+    elaboratedCore? (elaborate productCodeModel ["Order"]
+      (.lengthCompare .greater productCodePath (lengthLiteral 5 0))) =
+    elaboratedCore? (elaborate productCodeModel ["Order"]
+      (.lengthCompare .greater productCodePath (lengthLiteral 5 1))) := by
+  native_decide
+
 example : (elaborate productCodeModel ["Order"]
     (.compare .equal productCodePath (.string "ABC"))).isOk = true := by
   native_decide
 
 example : (elaborate productCodeModel ["Order"]
-    (.lengthCompare .less productCodePath 5)).isOk = true := by
+    (.lengthCompare .less productCodePath (lengthLiteral 5 0))).isOk = true := by
   native_decide
 
 example : (elaborate productCodeModel ["Order"]
-    (.lengthCompare .greaterEqual productCodePath 0)).isOk = true := by
+    (.lengthCompare .greaterEqual productCodePath (lengthLiteral 0 0))).isOk = true := by
   native_decide
 
 example : (elaborate productCodeModel ["Order"]
@@ -191,23 +215,23 @@ example : (elaborate productCodeModel ["Order"]
 
 example :
     (elaborate productCodeModel ["Order"]
-      (.lengthCompare .lessEqual productCodePath 3)).isOk = true ∧
+      (.lengthCompare .lessEqual productCodePath (lengthLiteral 3 0))).isOk = true ∧
       (elaborate productCodeModel ["Order"]
-        (.lengthCompare .greater productCodePath 2)).isOk = true := by
+        (.lengthCompare .greater productCodePath (lengthLiteral 2 0))).isOk = true := by
   native_decide
 
 /- Equality remains outside the scale-erasing flat surface; both exact operators need the authored literal scale. -/
 example :
     elaborationError? (elaborate productCodeModel ["Order"]
-        (.lengthCompare .equal productCodePath 3)) =
+        (.lengthCompare .equal productCodePath (lengthLiteral 3 0))) =
         some (.unsupportedOperator .equal) ∧
       elaborationError? (elaborate productCodeModel ["Order"]
-        (.lengthCompare .notEqual productCodePath 3)) =
+        (.lengthCompare .notEqual productCodePath (lengthLiteral 3 0))) =
         some (.unsupportedOperator .notEqual) := by
   native_decide
 
 example : elaborationError? (elaborate numberModel ["Order"]
-    (.lengthCompare .less quantityPath 5)) =
+    (.lengthCompare .less quantityPath (lengthLiteral 5 0))) =
     some (.lengthOperandKindMismatch ["Order", "Quantity"] .number) := by
   native_decide
 

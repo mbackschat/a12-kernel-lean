@@ -55,6 +55,10 @@ private def errorOf : Except ε α → Option ε
   | .ok _ => none
   | .error error => some error
 
+private def lengthLiteral (value : Rat) (authoredScale : Int) :
+    DecodedNumericLiteral :=
+  { value, authoredScale }
+
 private def coreOf (result : Except ElabError (CheckedFlatCondition model)) :
     Option FlatCondition :=
   match result with
@@ -87,37 +91,44 @@ example : model.admitsComparison
 
 /- Ordinary condition lowering cannot accidentally turn the exceptional shape into runtime code. -/
 example : errorOf (elaborate model ["Claim"]
-    (.lengthCompare .greater (directPath "IncidentNote") 5)) =
+    (.lengthCompare .greater (directPath "IncidentNote")
+      (lengthLiteral 5 0))) =
       some (.rawStringLength ["Claim", "IncidentNote"]) := by
   native_decide
 
 /- The exact whole-condition and mirrored forms become metadata and expose no runtime condition. -/
 example :
     (elaborateFlatRuleCondition model ["Claim"]
-      (.lengthCompare .greater (directPath "IncidentNote") 5)).toRawMaximum? =
+      (.lengthCompare .greater (directPath "IncidentNote")
+        (lengthLiteral 5 0))).toRawMaximum? =
         some (1, 5) ∧
     (elaborateFlatRuleCondition model ["Claim"]
-      (.literalCompareLength (-1) .less (directPath "IncidentNote"))).toRawMaximum? =
+      (.literalCompareLength (lengthLiteral (-1) 0) .less
+        (directPath "IncidentNote"))).toRawMaximum? =
         some (1, -1) := by
   native_decide
 
 example : coreOf (elaborate model ["Claim"]
-    (.literalCompareLength 5 .less (directPath "Other"))) =
+    (.literalCompareLength (lengthLiteral 5 0) .less
+      (directPath "Other"))) =
       some (.compare (.stringLength .greater { id := 2 } 5)) := by
   native_decide
 
 /- A non-strict or nested length use is not the exceptional whole-rule declaration. -/
 example :
     errorOf (elaborateFlatRuleCondition model ["Claim"]
-      (.lengthCompare .greaterEqual (directPath "IncidentNote") 5)) =
+      (.lengthCompare .greaterEqual (directPath "IncidentNote")
+        (lengthLiteral 5 0))) =
         some (.rawStringLength ["Claim", "IncidentNote"]) ∧
     errorOf (elaborateFlatRuleCondition model ["Claim"]
       (.and
-        (.lengthCompare .greater (directPath "IncidentNote") 5)
+        (.lengthCompare .greater (directPath "IncidentNote")
+          (lengthLiteral 5 0))
         (.fieldFilled (directPath "Other")))) =
         some (.rawStringLength ["Claim", "IncidentNote"]) ∧
     errorOf (elaborateFlatRuleCondition model ["Claim"]
-      (.lengthCompare .greater (directPath "IncidentNote") ((1 : Rat) / 2))) =
+      (.lengthCompare .greater (directPath "IncidentNote")
+        (lengthLiteral ((1 : Rat) / 2) 1))) =
         some (.rawStringLength ["Claim", "IncidentNote"]) := by
   native_decide
 

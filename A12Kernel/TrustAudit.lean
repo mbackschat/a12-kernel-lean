@@ -583,6 +583,8 @@ run_cmd do
 #print axioms A12Kernel.groupPath_matchingTurningPoint_is_transparent
 #print axioms A12Kernel.authoredPathName_reified_lower
 #print axioms A12Kernel.surfaceFieldPath_reifyQuotes_lower
+#print axioms A12Kernel.surfaceLengthCompare_literal_injective
+#print axioms A12Kernel.surfaceLiteralCompareLength_literal_injective
 #print axioms A12Kernel.authoredPathName_unquoted_reserved
 #print axioms A12Kernel.resolveAuthoredField_reified_delegates
 #print axioms A12Kernel.checkedFlatCondition_wellFormed

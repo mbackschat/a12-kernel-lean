@@ -8,12 +8,6 @@ The authored tree retains syntax-derived literal scale and grouping. Evaluation 
 
 namespace A12Kernel
 
-/-- One numeric token after decoding. `authoredScale` is syntax metadata and cannot be recovered from `value`; for example, `0` and `0.00` have the same value but scales 0 and 2. -/
-structure DecodedNumericLiteral where
-  value : Rat
-  authoredScale : Int
-  deriving Repr, DecidableEq
-
 /-- Parser-independent numeric syntax. `group` retains curly braces for authoring checks even though evaluation lowering later erases that wrapper. -/
 inductive AuthoredNumericExpr (Atom : Type) where
   | atom (atom : Atom)

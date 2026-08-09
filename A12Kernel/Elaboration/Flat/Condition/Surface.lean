@@ -573,7 +573,8 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
           | some lengthOp => pure lengthOp
           | none => throw (.unsupportedOperator op)
         match declaration.toStringValueField? with
-        | some field => pure (.compare (.stringLength lengthOp field expected))
+        | some field =>
+            pure (.compare (.stringLength lengthOp field expected.value))
         | none => throw (.lengthOperandKindMismatch declaration.path
             declaration.policy.kind.surfaceKind)
   | .literalCompareLength expected op reference => do
@@ -585,7 +586,8 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
           | some lengthOp => pure lengthOp
           | none => throw (.unsupportedOperator op)
         match declaration.toStringValueField? with
-        | some field => pure (.compare (.stringLength lengthOp field expected))
+        | some field =>
+            pure (.compare (.stringLength lengthOp field expected.value))
         | none => throw (.lengthOperandKindMismatch declaration.path
             declaration.policy.kind.surfaceKind)
   | .and left right => do

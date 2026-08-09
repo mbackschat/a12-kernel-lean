@@ -28,7 +28,7 @@ theorem rawString_toPresenceField (declaration : FlatFieldDecl)
 /-- The checked metadata boundary retains the parser's integral-constant restriction. -/
 theorem checkedRawStringMaximumLength_integral
     (metadata : CheckedRawStringMaximumLength model) :
-    metadata.bound.den = 1 :=
+    metadata.bound.value.den = 1 :=
   metadata.integralBound
 
 end A12Kernel
