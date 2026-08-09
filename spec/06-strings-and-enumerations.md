@@ -36,8 +36,11 @@ The String-only `noValueValidation` option declares a **raw type**. Its value re
 
 - comparisons, value lists, computation operands, coercions, and any other value operation are rejected with `MVK_INVALID_RAW_TYPE`;
 - message interpolation of the value is rejected;
-- `Length` is authorable only as the whole rule condition `Length(f) > c`, or the mirrored `c < Length(f)`, using strict GT/LT;
+- `Length` is authorable only as the whole rule condition `Length(f) > c`, or the mirrored `c < Length(f)`, using strict GT/LT and a constant written without a decimal point whose exact integer value lies in `-2147483648..2147483647`;
+- the same strict whole-rule shape with a decimal-point spelling, a fractional value, or an integer outside that interval is rejected with `MVK_INTERNAL_ERROR`;
 - every other `Length` shape, including computation preconditions, is rejected with `MVK_INVALID_LENGTH_OF_RAW_TYPE`.
+
+Shape admission precedes bound admission: an overlapping form such as `Length(f) >= 5.0` reports `MVK_INVALID_LENGTH_OF_RAW_TYPE`, not `MVK_INTERNAL_ERROR`.
 
 The one legal `Length` shape is **not a runtime rule**. Code generation eliminates it in both strategies and lifts `(field, c)` into the generated meta-model's maximum-length metadata, so it never fires for either filled or empty values. Presence semantics over the same cell remain ordinary: `FieldFilled`, quantifiers, and counts can observe whether content exists without reading its value.
 

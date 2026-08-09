@@ -498,6 +498,23 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Compatibility:** Treating CONFIRM as an admissible Boolean-like comparison domain accepts a model the Kernel rejects. Reporting `MVK_VARYING_TYPES_NOT_ALLOWED` instead loses the observable earlier gate and gives an incorrect repair.
 - **Acceptance:** The maintained canonical surfaces name BOOLEAN, CONFIRM, and DATE_RANGE as kind refusals, retain the whole-list pre-emption rule, lock at least one CONFIRM pair and one mixed CONFIRM case to the exact code, and return the reviewed revision and disposition.
 
+<a id="spec-2026-08-10-01"></a>
+<a id="spec-2026-08-10-01--raw-string-length-metadata-requires-a-decimal-point-free-signed-32-bit-bound"></a>
+
+### SPEC-2026-08-10-01 - raw-String `Length` metadata requires a decimal-point-free signed-32-bit bound
+
+- **Status:** pending
+- **Kind:** semantic correction and extension
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `cd41ea94b470a190f7d766ea6d7adf26b6ba74cf` (clean)
+- **Kernel behavior:** 30.8.1, measured through dmtool `0.12.1` `rule check`
+- **Canonical clause:** [`06-strings-and-enumerations.md` raw types](../spec/06-strings-and-enumerations.md#a1-raw-type-strings-novaluevalidation)
+- **Delta:** The strict whole-rule raw-String forms `Length(f) > c` and `c < Length(f)` are admitted only when `c` is written without a decimal point and its exact integer value lies between `-2147483648` and `2147483647`. The same shape with fractional `0.5`, integral-valued decimal spelling `5.0`, or a value one step outside either endpoint reports `MVK_INTERNAL_ERROR`. Nonstrict and Boolean-composed raw-length shapes report `MVK_INVALID_LENGTH_OF_RAW_TYPE`; shape admission precedes bound admission when both defects occur. This is a static admission boundary and makes no causal claim about the internal-error route.
+- **Basis:** A 13-case caller-tagged matrix on one dmtool-authored kernel-valid model covers accepted small bounds in both directions, an ordinary String control, nonstrict and nested raw controls, fractional and integral-valued decimal spellings in both directions, both signed-32-bit endpoints, and both one-step overflows. Every verdict is `KERNEL_CONFIRMED`. The accepted forward rule persisted to an isolated ignored output copy, read back structurally with the exact condition, and survived whole-model checking. The deterministic observation SHA-256 `38c9f0ed9d719e1262a8e216542fe82b7a1a9d627422076abb8592d617864841` reproduced byte-identically on a second clean capture. Two direct controls outside that artifact separately establish that `Length(raw) > 100` is admitted and `Length(raw) >= 5.0` reports `MVK_INVALID_LENGTH_OF_RAW_TYPE`. The sibling remained clean throughout.
+- **Requested a12-dmkits reconciliation:** Correct the canonical raw-type clause, the `Length` operator catalog, diagnostic guidance, and the smallest existing raw-type static-law family to name the decimal-point-free signed-32-bit bound. Retain accepted forward and mirrored controls, an accepted trailing-zero integer token, integral-valued decimal and fractional refusals in both directions, exact endpoint acceptances, one-step overflows, the nonstrict/nested class separator, a nonstrict decimal-bound precedence control, and an ordinary-String nonstrict positive control. Enrich only this recognized strict-shape `MVK_INTERNAL_ERROR` route rather than assigning one generic repair to every internal error. Reuse the existing catalog, diagnostic-enrichment, and raw-type law owners; add no harness or representation.
+- **Compatibility:** Treating every exact integral rational as admissible accepts `5.0`, while using an unbounded integer accepts overflow values. Treating either as the ordinary raw-length shape error loses the observed diagnostic identity and points an author to the wrong repair.
+- **Acceptance:** Canonical peer prose and maintained existing-family cases state and separate the exact admitted bound domain and both diagnostic classes, including an accepted trailing-zero integer, shape-before-bound overlap, and an ordinary-String nonstrict positive control; operator and diagnostic guidance leads an author to a decimal-point-free signed-32-bit constant without overgeneralizing `MVK_INTERNAL_ERROR`; the handback returns the exact reviewed revision and per-surface disposition.
+
 ## Experiment requests
 
 <a id="exp-2026-08-06-01"></a>
