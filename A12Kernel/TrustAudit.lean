@@ -1735,7 +1735,9 @@ run_cmd do
 #print axioms A12Kernel.parallelOuterScope_classify_rightFrame
 #print axioms A12Kernel.checkedIndexColumn_wellFormed
 #print axioms A12Kernel.checkedParallelIndexGroups_wellFormed
+#print axioms A12Kernel.checkedIndexColumn_duplicate_notSelectable
 #print axioms A12Kernel.checkedIndexColumn_duplicate_notSemantic
+#print axioms A12Kernel.checkedIndexColumn_duplicate_notParallel
 #print axioms A12Kernel.parallelIndexSide_cleanMissing
 #print axioms A12Kernel.parallelIndexSide_invalidMissing
 #print axioms A12Kernel.commonRepeatablePrefix_prefix_left

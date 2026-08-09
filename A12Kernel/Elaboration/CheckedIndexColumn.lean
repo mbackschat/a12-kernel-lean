@@ -3,7 +3,7 @@ import A12Kernel.Semantics.SemanticIndex
 
 /-! # Checked index columns and bounded parallel joins
 
-This family-owned boundary resolves one generated-preliminary index column without inventing another document or address model. It retains every ordered key occurrence, duplicate identity for semantic-index exclusion, and one column-unavailability cause. The parallel projection makes its deterministic reference selection separately. The checked parallel profile admits either one common outer repeatable scope or one non-indexed frame on exactly one side, across transparent nonrepeatable wrappers and exact non-Number stored keys; Number rendering order remains outside until its declaration/locale owner exists.
+This family-owned boundary resolves one generated-preliminary index column without inventing another document or address model. It retains every ordered key occurrence, duplicate identity for selection exclusion, and one column-unavailability cause. Semantic-index and parallel projections share only that admission relation while retaining their separate selection and missing-side policies. The checked parallel profile admits either one common outer repeatable scope or one non-indexed frame on exactly one side, across transparent nonrepeatable wrappers and exact non-Number stored keys; Number rendering order remains outside until its declaration/locale owner exists.
 -/
 
 namespace A12Kernel
@@ -161,10 +161,20 @@ def WellFormed (column : ResolvedCheckedIndexColumn model) : Prop :=
     model.repeatableGroups.contains column.group = true ∧
     column.group.indexField = some column.indexDeclaration.id
 
-/-- Semantic index admits exactly the keys that generated uniqueness did not classify as duplicates. Parallel iteration deliberately does not use this projection. -/
-def admitsSemanticKey (column : ResolvedCheckedIndexColumn model)
+/-- A key is selectable exactly when generated uniqueness did not classify it as duplicated. Every consumer keeps its own lookup and missing-side policy after this common admission relation. -/
+def admitsSelectableKey (column : ResolvedCheckedIndexColumn model)
     (key : SemanticIndexKey) : Bool :=
   !column.duplicateKeys.contains key
+
+/-- Semantic-index selection specializes the shared duplicate exclusion. -/
+def admitsSemanticKey (column : ResolvedCheckedIndexColumn model)
+    (key : SemanticIndexKey) : Bool :=
+  column.admitsSelectableKey key
+
+/-- Parallel selection specializes the same duplicate exclusion. -/
+def admitsParallelKey (column : ResolvedCheckedIndexColumn model)
+    (key : SemanticIndexKey) : Bool :=
+  column.admitsSelectableKey key
 
 end ResolvedCheckedIndexColumn
 
@@ -445,14 +455,20 @@ def resolveCheckedParallelFrameEnvironments
 private def entryFor?
     (column : ResolvedCheckedIndexColumn model) (key : SemanticIndexKey) :
     Option ResolvedCheckedIndexEntry :=
-  column.entries.foldl (fun selected entry =>
-    if entry.key == key then some entry else selected) none
+  if column.admitsParallelKey key then
+    column.entries.find? fun entry => entry.key == key
+  else
+    none
 
 private def textKeys
     (column : ResolvedCheckedIndexColumn model) : List String :=
-  column.entries.filterMap fun entry => match entry.key with
-    | .text token => some token
-    | .number _ => none
+  column.entries.filterMap fun entry =>
+    if column.admitsParallelKey entry.key then
+      match entry.key with
+      | .text token => some token
+      | .number _ => none
+    else
+      none
 
 private def parallelSide (column : ResolvedCheckedIndexColumn model)
     (key : SemanticIndexKey) : ResolvedParallelIndexSide := {

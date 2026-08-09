@@ -100,7 +100,7 @@ Repeatable execution uses complete named `Env` bindings and model-derived scopes
 
 Candidate enumeration comes from immutable document topology. Omitted declared capacity is represented separately from instantiated empty rows. Filters preserve their own encounter/relevance facts, and consumers choose whether omitted tails, filtered rows, or missing values affect their result.
 
-Semantic indices and parallel iteration share checked index-column facts but not a universal join engine. The checked column retains ordered normalized-key occurrences, duplicate-key information, and column unavailability. Each consumer owns its own legal projection: semantic-index reads, parallel validation, and computation clearing do not acquire one another’s runtime policy by reuse.
+Semantic indices and parallel iteration share checked index-column facts but not a universal join engine. The checked column retains ordered normalized-key occurrences, duplicate-key information, and column unavailability. Duplicate exclusion is the one shared admission relation: no duplicated key is selectable by either projection. After admission, each consumer owns its own lookup and missing-side policy, so semantic-index reads, parallel validation, and computation clearing do not acquire one another’s runtime policy by reuse.
 
 ### Whole-model computation execution keeps definition, activation, result, application, and validation separate
 

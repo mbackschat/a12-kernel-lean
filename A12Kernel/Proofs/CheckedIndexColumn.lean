@@ -82,11 +82,25 @@ theorem checkedParallelIndexGroups_wellFormed
     groups.outerScopePlanOwned, groups.commonIndexName,
     groups.commonIndexKind, groups.exactTextIndex⟩
 
+@[simp] theorem checkedIndexColumn_duplicate_notSelectable
+    (column : ResolvedCheckedIndexColumn model) (key : SemanticIndexKey)
+    (duplicate : column.duplicateKeys.contains key = true) :
+    column.admitsSelectableKey key = false := by
+  simp [ResolvedCheckedIndexColumn.admitsSelectableKey, duplicate]
+
 @[simp] theorem checkedIndexColumn_duplicate_notSemantic
     (column : ResolvedCheckedIndexColumn model) (key : SemanticIndexKey)
     (duplicate : column.duplicateKeys.contains key = true) :
     column.admitsSemanticKey key = false := by
-  simp [ResolvedCheckedIndexColumn.admitsSemanticKey, duplicate]
+  simp [ResolvedCheckedIndexColumn.admitsSemanticKey,
+    checkedIndexColumn_duplicate_notSelectable column key duplicate]
+
+@[simp] theorem checkedIndexColumn_duplicate_notParallel
+    (column : ResolvedCheckedIndexColumn model) (key : SemanticIndexKey)
+    (duplicate : column.duplicateKeys.contains key = true) :
+    column.admitsParallelKey key = false := by
+  simp [ResolvedCheckedIndexColumn.admitsParallelKey,
+    checkedIndexColumn_duplicate_notSelectable column key duplicate]
 
 @[simp] theorem parallelIndexSide_cleanMissing
     (group : RepeatableGroupDecl) :

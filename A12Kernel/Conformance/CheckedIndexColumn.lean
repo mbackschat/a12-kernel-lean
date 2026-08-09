@@ -140,7 +140,17 @@ private def duplicateSupplyData : DocumentData := {
         input
 }
 
-/- The deterministic Lean reference projection selects the last duplicate occurrence in document order, while semantic index excludes that same key and reports the invalid column on lookup. -/
+private def duplicateBothData : DocumentData := {
+  data with
+    cells := data.cells.map fun input =>
+      if input.address == { field := 1, path := [2] } ||
+          input.address == { field := 3, path := [2] } then
+        { input with stored := "Sales", raw := .parsed (.str "Sales") }
+      else
+        input
+}
+
+/- Duplicate participants remain in the checked carrier but are unavailable to both selectors. The clean far side still supplies the join key, so the duplicated side is unmatched and reads the column's exact cause. -/
 example : (
     ((joinFor duplicateSupplyData).bind fun (preliminary, join) => do
       let eng ← join.rows.find? fun row => row.key == .text "Eng"
@@ -152,8 +162,13 @@ example : (
       pure (column.entries.map (·.environment), sales.right.environment,
         salesSupply, engSupply,
         semantic.lookupValue .validation "Sales")) ==
-    some ([[(20, 1)], [(20, 2)]], some [(20, 2)], .value (.num 2),
+    some ([[(20, 1)], [(20, 2)]], none, .unknown .duplicateIndex,
       .unknown .duplicateIndex, .unknown .duplicateIndex)) = true := by
+  native_decide
+
+/- When both columns duplicate the same key, neither side contributes it to the union and no all-unmatched phantom join row is created. -/
+example : ((joinFor duplicateBothData).map fun (_, join) =>
+    join.rows.map (·.key)) = some [] := by
   native_decide
 
 /- A field owned by the other side is a structural error even when this side is unmatched. -/
