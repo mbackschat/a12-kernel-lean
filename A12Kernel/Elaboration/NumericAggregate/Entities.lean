@@ -79,6 +79,46 @@ private def resolvedCheckedDocumentSide
   | .inl cells => pure (.inl { cells, hasUninstantiatedTail, hasHaving })
   | .inr result => pure (.inr result)
 
+private inductive PartialViewNumberAggregateError where
+  | addressing (error : CheckedAddressingError)
+  | silentlyUnavailable
+
+private def resolvePartialViewNumberCells
+    (read : Env → FieldId →
+      Except CheckedAddressingError (Option CheckedCell))
+    (field : FieldId)
+    (classify : Env → CheckedCell → ValueListCell .number) :
+    List Env → List (ValueListCell .number) →
+      Except PartialViewNumberAggregateError
+        (Sum (List (ValueListCell .number))
+          PartialValidationNumberAggregateResult)
+  | [], reversed => pure (.inl reversed.reverse)
+  | environment :: remaining, reversed => do
+      match read environment field with
+      | .error error => throw (.addressing error)
+      | .ok none => throw .silentlyUnavailable
+      | .ok (some checked) =>
+          match classify environment checked with
+          | .unknown cause => pure (.inr (.evaluated (.unknown cause)))
+          | cell =>
+              resolvePartialViewNumberCells read field classify
+                remaining (cell :: reversed)
+
+private def resolvedPartialViewSide
+    (read : Env → FieldId →
+      Except CheckedAddressingError (Option CheckedCell))
+    (field : FieldId)
+    (classify : Env → CheckedCell → ValueListCell .number)
+    (environments : List Env) (hasUninstantiatedTail hasHaving : Bool) :
+    Except PartialViewNumberAggregateError
+      (Sum (ResolvedValueListSide .number)
+        PartialValidationNumberAggregateResult) := do
+  match ← resolvePartialViewNumberCells read field classify
+      environments [] with
+  | .inl cells =>
+      pure (.inl { cells, hasUninstantiatedTail, hasHaving })
+  | .inr result => pure (.inr result)
+
 /-- Resolve exactly one authored slot. Plain and filtered stars reuse the general checked topology and filter owners; direct fields reuse the checked flat Number reader. -/
 def resolvedAggregateSide (checked : CheckedNumberEntityOperand model)
     (document : Document) (outer : Env) (direct : FlatContext)
@@ -217,6 +257,39 @@ def resolvedCheckedDocumentPartialAggregateSide
             resolved.environments resolved.domain.hasOpenTail false with
         | .inl side => pure (.inl side)
         | .inr result => pure (.inr (.evaluated result))
+      else
+        pure (.inr .nonRelevant)
+  | .starHaving _ => pure (.inr .skippedHaving)
+
+/-- Resolve one unfiltered partial-validation slot through the caller's call-local checked-cell projection. Topology and all-rows relevance remain document-owned, while target classification observes preliminary index and required annotations instead of rereading the immutable base cells. -/
+private def resolvedPartialViewAggregateSide
+    (checked : CheckedNumberEntityOperand model)
+    (document : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope)
+    (read : Env → FieldId →
+      Except CheckedAddressingError (Option CheckedCell)) :
+    Except PartialViewNumberAggregateError
+      (Sum (ResolvedValueListSide .number)
+        PartialValidationNumberAggregateResult) :=
+  match checked with
+  | .field source =>
+      if scope.coversCell model source.declaration.path [] then
+        resolvedPartialViewSide read source.field.id
+          (fun _ cell =>
+            (observeCell .validation cell).asNumberValueListCell)
+          [[]] false false
+      else
+        pure (.inr .nonRelevant)
+  | .star source => do
+      let resolved ←
+        (source.source.path.resolve document.source.toDocument outer)
+          |>.mapError fun error =>
+            PartialViewNumberAggregateError.addressing (.addressing error)
+      if source.source.allRowsRelevant scope outer then
+        resolvedPartialViewSide read source.field.id
+          (fun environment cell =>
+            source.checkedValueListCell .validation cell environment)
+          resolved.environments resolved.domain.hasOpenTail false
       else
         pure (.inr .nonRelevant)
   | .starHaving _ => pure (.inr .skippedHaving)
@@ -400,6 +473,21 @@ def evaluateCheckedDocumentPartialAggregate
     Except CheckedAddressingError PartialValidationNumberAggregateResult :=
   checked.evaluatePartialAggregateWith op fun operand =>
     operand.resolvedCheckedDocumentPartialAggregateSide document outer scope
+
+/-- Evaluate partial aggregate accumulation through one call-local checked-cell projection while retaining the immutable document only for model-certified topology. -/
+def evaluatePartialViewAggregate
+    (checked : CheckedNumberEntitySource model)
+    (op : NumericAggregateOp) (document : CheckedDocument model)
+    (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId →
+      Except CheckedAddressingError (Option CheckedCell)) :
+    Except CheckedAddressingError
+      PartialValidationNumberAggregateViewResult :=
+  match checked.evaluatePartialAggregateWith op fun operand =>
+      operand.resolvedPartialViewAggregateSide document outer scope read with
+  | .ok result => .ok (.result result)
+  | .error (.addressing error) => .error error
+  | .error .silentlyUnavailable => .ok .silentlyUnavailable
 
 /-- Evaluate numeric `NumberOfValueInFields` without an addressed document exactly when every checked operand is direct. This scalar compatibility path never invents topology for a repeatable source. -/
 def evaluateDirectValueCountAt? (checked : CheckedNumberEntitySource model)

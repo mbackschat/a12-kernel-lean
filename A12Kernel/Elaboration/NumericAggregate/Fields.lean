@@ -23,6 +23,12 @@ inductive NumericAggregateElabError where
 abbrev PartialValidationNumberAggregateResult :=
   PartialValidationAggregateResult
 
+/-- Number-only result for the call-local partial-view aggregate route. Extent relevance and ordinary aggregate outcomes retain the shared carrier, while cause-free read unavailability remains separate without widening token or value-count APIs. -/
+inductive PartialValidationNumberAggregateViewResult where
+  | silentlyUnavailable
+  | result (result : PartialValidationNumberAggregateResult)
+  deriving Repr, DecidableEq
+
 /-- A parser-independent `SumOfProducts` pair. Its two operands are fields, not ordinary entity-list slots: filters, groups, and direct fields are unrepresentable here. -/
 structure SurfaceNumericProductAggregate where
   left : SurfaceStarFieldPath

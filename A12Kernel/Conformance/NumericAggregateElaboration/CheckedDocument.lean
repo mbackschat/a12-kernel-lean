@@ -168,6 +168,47 @@ def checkedDocumentPartialStructuralSnapshot
     | .ok result => .result result
     | .error cause => .error cause)
 
+def partialViewSilentAggregateSnapshot :
+    Option PartialValidationNumberAggregateViewResult := do
+  let prepared ←
+    (prepareFlatStringContext aggregateWorld builtinStringPatternCompiler
+      model).toOption
+  let document ←
+    (checkDocument prepared "en_US" checkedAggregateData).toOption
+  let source ← (elaborateNumberEntitySource model ["Form"]
+    (aggregateSource (.field (bare "UnsignedA"))
+      [.star aggregateStar])).toOption
+  (source.evaluatePartialViewAggregate
+    .sum document [] .full (fun _ _ => pure none)).toOption
+
+def partialViewFilledAggregateSnapshot :
+    Option PartialValidationNumberAggregateViewResult := do
+  let prepared ←
+    (prepareFlatStringContext aggregateWorld builtinStringPatternCompiler
+      model).toOption
+  let document ←
+    (checkDocument prepared "en_US" checkedAggregateData).toOption
+  let source ← (elaborateNumberEntitySource model ["Form"]
+    (aggregateSource (.field (bare "UnsignedA"))
+      [.star aggregateStar])).toOption
+  (source.evaluatePartialViewAggregate .sum document [] .full
+    (fun environment field =>
+      (document.validationAddressedCell environment field).map fun addressed =>
+        some addressed.cell)).toOption
+
+def partialViewStarNonRelevantSnapshot :
+    Option PartialValidationNumberAggregateViewResult := do
+  let prepared ←
+    (prepareFlatStringContext aggregateWorld builtinStringPatternCompiler
+      model).toOption
+  let document ←
+    (checkDocument prepared "en_US" checkedAggregateData).toOption
+  let source ← (elaborateNumberEntitySource model ["Form"]
+    (aggregateSource (.star aggregateStar) [])).toOption
+  (source.evaluatePartialViewAggregate .sum document [] (.partialSet [])
+    (fun environment field =>
+      .error (.partialUnavailable environment field))).toOption
+
 def checkedDocumentFilteredAggregateSnapshot
     (computation : Bool) : Option CheckedDocumentAggregateSnapshot := do
   let prepared ←
@@ -274,6 +315,24 @@ example :
       some (.result (.evaluated (.unknown .declaredConstraint))) ∧
     checkedDocumentPartialStructuralSnapshot false =
       some (.error (.addressing (.missingBinding 10))) := by
+  native_decide
+
+/- Once extent relevance admits the source, a cause-free unavailable projected read remains distinct from extent nonrelevance. -/
+example :
+    partialViewSilentAggregateSnapshot =
+      some .silentlyUnavailable := by
+  native_decide
+
+/- Available projected cells retain the established complete aggregate result inside the Number-only view carrier. -/
+example :
+    partialViewFilledAggregateSnapshot =
+      some (.result (.evaluated (.value 10 .fixed))) := by
+  native_decide
+
+/- A star whose extent is not covered returns nonrelevance after topology but before forcing the projected reader. -/
+example :
+    partialViewStarNonRelevantSnapshot =
+      some (.result .nonRelevant) := by
   native_decide
 
 /- The checked resolving context feeds both phase-specific filter traversals; empty filter cells compare as zero, so all repeated targets contribute and the reached filter keeps both-directional polarity. -/

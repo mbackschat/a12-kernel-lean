@@ -234,4 +234,18 @@ theorem checkedNumberEntitySource_checkedDocumentPartial_skipsHaving
       CheckedNumberEntitySource.evaluatePartialValueCountWith, hasHaving,
       pure, Except.pure]
 
+/-- The call-local partial-view route retains the same source-wide filter gate before topology, relevance, or any projected cell read. -/
+theorem checkedNumberEntitySource_partialView_skipsHaving
+    (checked : CheckedNumberEntitySource model) (op : NumericAggregateOp)
+    (document : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope)
+    (read : Env → FieldId →
+      Except CheckedAddressingError (Option CheckedCell))
+    (hasHaving : checked.hasHaving = true) :
+    checked.evaluatePartialViewAggregate op document outer scope read =
+      .ok (.result .skippedHaving) := by
+  simp [CheckedNumberEntitySource.evaluatePartialViewAggregate,
+    CheckedNumberEntitySource.evaluatePartialAggregateWith, hasHaving,
+    pure, Except.pure]
+
 end A12Kernel
