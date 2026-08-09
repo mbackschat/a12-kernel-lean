@@ -481,6 +481,23 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Compatibility:** Requiring a sole starred operand rejects legal models. Admitting one unstarred fixed group, collapsing exact duplication into ancestor overlap, or treating a repeatable group as fixed changes the Kernel's observable diagnostic class. Static acceptance alone must not be used to invent repeatable computation runtime semantics.
 - **Acceptance:** Canonical peer prose and maintained existing-family static cases state and separate the accepted fixed and starred shapes plus all four exact diagnostics, retain the static/runtime boundary, and return the exact reviewed revision and disposition.
 
+<a id="spec-2026-08-09-02"></a>
+<a id="spec-2026-08-09-02--fieldvaluesnotunique-refuses-confirm-at-the-whole-list-kind-gate"></a>
+
+### SPEC-2026-08-09-02 — `FieldValuesNotUnique` refuses CONFIRM at the whole-list kind gate
+
+- **Status:** pending
+- **Kind:** semantic correction
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `cd41ea94b470a190f7d766ea6d7adf26b6ba74cf` (clean)
+- **Kernel behavior:** 30.8.1, measured through dmtool `0.12.1` `rule check`
+- **Canonical clause:** [`07-repetition-and-iteration.md` `FieldValuesNotUnique`](../spec/07-repetition-and-iteration.md)
+- **Delta:** CONFIRM joins BOOLEAN and DATE_RANGE as an outright kind-gate refusal for `FieldValuesNotUnique`, reporting `MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED`. The previous canonical statement that only BOOLEAN and DATE_RANGE are refused is too narrow. This correction does not change the four admissible comparability categories or any runtime rule.
+- **Basis:** On one dmtool-authored, kernel-valid model, Number beside CONFIRM, String beside CONFIRM, and two distinct CONFIRM fields all report the same kind code. The same 24-case matrix independently reproduces Number, String, Enumeration, Date, and BOOLEAN controls; the category code for every admissible cross-category pair; direct-singleton arity, including BOOLEAN and CONFIRM singletons that prove arity precedes kind; and kind-code pre-emption over a category mismatch in both separating operand orders. Accepted Number and String rules persisted, read back with their exact conditions, and survived whole-model checking. Every verdict is `KERNEL_CONFIRMED`, and the sibling remained clean at the same revision.
+- **Requested a12-dmkits reconciliation:** Correct the canonical uniqueness semantics, operator catalog, diagnostics guidance, and smallest existing `FieldValuesNotUniqueAdmissionLawsTest` family to include CONFIRM in the outright kind refusal and retain the measured arity-before-kind separator. Reuse the current admission-law and catalog owners; add no harness or representation.
+- **Compatibility:** Treating CONFIRM as an admissible Boolean-like comparison domain accepts a model the Kernel rejects. Reporting `MVK_VARYING_TYPES_NOT_ALLOWED` instead loses the observable earlier gate and gives an incorrect repair.
+- **Acceptance:** The maintained canonical surfaces name BOOLEAN, CONFIRM, and DATE_RANGE as kind refusals, retain the whole-list pre-emption rule, lock at least one CONFIRM pair and one mixed CONFIRM case to the exact code, and return the reviewed revision and disposition.
+
 ## Experiment requests
 
 <a id="exp-2026-08-06-01"></a>

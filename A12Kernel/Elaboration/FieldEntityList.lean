@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.StarPath
 
 /-! # Shared checked field entity-list shape
 
-This boundary owns the kind-independent authoring shape shared by ordinary aggregate field lists. It resolves direct, plain-star, and filtered-star slots in authored order, rejects only repeated direct fields, and requires either multiple slots or one starred slot. Family-specific modules certify the resolved declarations and retain their own runtime semantics.
+This boundary owns the kind-independent authoring shape shared by ordinary aggregate field lists. It resolves direct, plain-star, and filtered-star slots in authored order, rejects only repeated direct fields, and requires either multiple slots or one starred slot. It also owns the shared `FieldValuesNotUnique` kind/category classification and whole-list scans, while family-specific modules choose a required category, certify the declarations, and retain their own runtime semantics.
 -/
 
 namespace A12Kernel
@@ -44,6 +44,61 @@ def declaration : ResolvedFieldEntityOperand model → FlatFieldDecl
   | .star source | .starHaving source _ => source.declaration
 
 end ResolvedFieldEntityOperand
+
+/-- One comparability category admitted by the Kernel's field-list operators. String and Enumeration remain distinct even though both use the token runtime domain. -/
+inductive FieldListComparabilityCategory where
+  | string | enumeration | number | temporal
+  deriving Repr, DecidableEq
+
+/-- The kind-only admission stage: one comparability category, or refusal before category comparison. -/
+inductive FieldListOperandAdmission where
+  | category (value : FieldListComparabilityCategory)
+  | refusedByKind
+  deriving Repr, DecidableEq
+
+/-- Classify every represented scalar kind for the shared `FieldValuesNotUnique` kind gate. BOOLEAN and CONFIRM are measured outright refusals; DATE_RANGE has no flat declaration form. -/
+def SurfaceScalarKind.fieldListAdmission :
+    SurfaceScalarKind → FieldListOperandAdmission
+  | .string => .category .string
+  | .enumeration => .category .enumeration
+  | .number => .category .number
+  | .temporal _ => .category .temporal
+  | .boolean | .confirm => .refusedByKind
+
+structure FieldListKindRefusal where
+  path : List String
+  actual : SurfaceScalarKind
+  deriving Repr, DecidableEq
+
+structure FieldListCategoryMismatch where
+  path : List String
+  actual : SurfaceScalarKind
+  deriving Repr, DecidableEq
+
+/-- Scan the complete operand list before category certification so a kind refusal preempts mixing in every authored order. -/
+def firstFieldListKindRefusal? :
+    List (ResolvedFieldEntityOperand model) → Option FieldListKindRefusal
+  | [] => none
+  | operand :: remaining =>
+      let declaration := operand.declaration
+      let actual := declaration.policy.kind.surfaceKind
+      match actual.fieldListAdmission with
+      | .refusedByKind => some { path := declaration.path, actual }
+      | .category _ => firstFieldListKindRefusal? remaining
+
+/-- After the complete kind scan succeeds, find the first operand outside `expected`. The `refusedByKind` arm keeps this helper total; checked entry points run the required kind scan first. -/
+def firstFieldListCategoryMismatch?
+    (expected : FieldListComparabilityCategory) :
+    List (ResolvedFieldEntityOperand model) → Option FieldListCategoryMismatch
+  | [] => none
+  | operand :: remaining =>
+      let declaration := operand.declaration
+      let actual := declaration.policy.kind.surfaceKind
+      match actual.fieldListAdmission with
+      | .refusedByKind => firstFieldListCategoryMismatch? expected remaining
+      | .category category =>
+          if category == expected then firstFieldListCategoryMismatch? expected remaining
+          else some { path := declaration.path, actual }
 
 /-- The source-shape failures shared by every homogeneous aggregate family. -/
 inductive FieldEntityShapeElabError where

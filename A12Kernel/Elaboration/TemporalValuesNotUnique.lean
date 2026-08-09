@@ -22,36 +22,11 @@ inductive TemporalValuesNotUniqueElabError where
   | inadmissibleKind (path : List String) (actual : SurfaceScalarKind)
   /-- An operand of an individually admissible kind drawn from another comparability category, which the Kernel's **second** gate reports. -/
   | mixedCategories (path : List String) (actual : SurfaceScalarKind)
-  /-- An operand this project refuses whose Kernel diagnostic class is not established. Kept distinct so an unestablished class is never reported as a measured one. -/
-  | unestablishedKind (path : List String) (actual : SurfaceScalarKind)
   /-- A temporal operand whose declaration carries no coherent declared format. The operator's gate and its compared identity both need the exact format, so an incomplete declaration fails closed rather than defaulting. -/
   | missingDeclaredFormat (path : List String)
   | mixedDeclaredFormats (path : List String) (found expected : String)
   | having (error : CorrelationElabError)
   deriving Repr, DecidableEq
-
-/-- How the Kernel's operand-kind gate classifies one declared kind for the field-list family. The comparability categories measured at a12-dmkits `ddaf2e13` are `{String, Custom}`, `{Enumeration}`, `{Number}`, and `{Date, Time, DateTime, DateFragment}`; only BOOLEAN and DATE_RANGE are refused outright, and DATE_RANGE has no representation here.
-
-This table is shared across the field-list operators in the Kernel. It lives here while the temporal overload is its only consumer; lift it to `FieldEntityList` rather than copying it when the Number or token overload adopts it. -/
-inductive FieldListOperandAdmission where
-  /-- Inside this operator's own comparability category. -/
-  | temporal
-  /-- Individually admissible, but a different comparability category. -/
-  | otherCategory
-  /-- Refused outright by the kind gate. -/
-  | refusedByKind
-  /-- Refused by this project with no established Kernel class. CONFIRM is unmeasured: the peer's table covers BOOLEAN, and CONFIRM is a separate Kernel kind that no probe has reached. -/
-  | unestablished
-  deriving Repr, DecidableEq
-
-def SurfaceScalarKind.fieldListAdmission :
-    SurfaceScalarKind → FieldListOperandAdmission
-  | .temporal _ => .temporal
-  -- A Custom declaration surfaces here as a String, and the Kernel puts Custom in the String
-  -- category, so either way it is a category mismatch beside a temporal operand.
-  | .string | .enumeration | .number => .otherCategory
-  | .boolean => .refusedByKind
-  | .confirm => .unestablished
 
 /-- One temporal declaration admitted by this operator, carrying the exact declared format its admission gate reads. -/
 structure CheckedTemporalUniquenessField where
@@ -79,10 +54,9 @@ def certifyTemporalUniquenessField (declaration : FlatFieldDecl) :
   | none =>
       let kind := declaration.policy.kind.surfaceKind
       match kind.fieldListAdmission with
-      | .temporal => .error (.missingDeclaredFormat declaration.path)
-      | .otherCategory => .error (.mixedCategories declaration.path kind)
+      | .category .temporal => .error (.missingDeclaredFormat declaration.path)
+      | .category _ => .error (.mixedCategories declaration.path kind)
       | .refusedByKind => .error (.inadmissibleKind declaration.path kind)
-      | .unestablished => .error (.unestablishedKind declaration.path kind)
 
 /-- One certified temporal slot. A filter belongs to its exact authored wildcard occurrence. -/
 inductive CheckedTemporalUniquenessOperand (model : FlatModel) where
@@ -176,24 +150,14 @@ private def certifyTemporalUniquenessOperands (model : FlatModel)
       pure ((← certifyTemporalUniquenessOperand model declaringGroup operand) ::
         (← certifyTemporalUniquenessOperands model declaringGroup remaining))
 
-/-- Report the first operand the Kernel's **kind** gate refuses, scanning the whole list. This runs before any category or format decision because the gate order is observable: a Boolean beside a String reports the kind code with the mixing code measured *absent*, so a fail-fast walk in authored order would report the wrong class whenever the inadmissible operand is authored later. An operand with no established class is reported only when no refused-by-kind operand exists, so the known class always wins. Public because the gate-order law has to speak about this scan. -/
+/-- Report the first operand the Kernel's **kind** gate refuses, scanning the whole list. This runs before any category or format decision because the gate order is observable: a Boolean or Confirm beside a String reports the kind code with the mixing code absent. Public because the gate-order law has to speak about this scan. -/
 def firstKindGateRefusal? :
     List (ResolvedFieldEntityOperand model) →
       Option TemporalValuesNotUniqueElabError
-  | [] => none
-  | operand :: remaining =>
-      let declaration := operand.declaration
-      let kind := declaration.policy.kind.surfaceKind
-      if kind.fieldListAdmission == .refusedByKind then
-        some (.inadmissibleKind declaration.path kind)
-      else
-        match firstKindGateRefusal? remaining with
-        | some later => some later
-        | none =>
-            if kind.fieldListAdmission == .unestablished then
-              some (.unestablishedKind declaration.path kind)
-            else
-              none
+  | operands =>
+      match firstFieldListKindRefusal? operands with
+      | some refusal => some (.inadmissibleKind refusal.path refusal.actual)
+      | none => none
 
 /-- Admit one temporal operand list in the Kernel's gate order: the shared entity shape, then the kind gate over every operand, then the single-declared-format rule that shares the kind gate's code, and only then the category-mixing gate that certification reports. -/
 def elaborateTemporalValuesNotUniqueSource (model : FlatModel)
@@ -224,7 +188,6 @@ def diagnostic? : TemporalValuesNotUniqueElabError → Option KernelStaticDiagno
   -- its code, which is why a cross-temporal list reports it rather than the mixing code.
   | .mixedDeclaredFormats _ _ _ => some .onlyStringEnumNumberDateAllowed
   | .mixedCategories _ _ => some .varyingTypesNotAllowed
-  | .unestablishedKind _ _ => none
   | .missingDeclaredFormat _ => none
   | .shape (.resolve _) | .shape (.starPath _) | .shape (.duplicateOperand _) => none
   | .having _ => none

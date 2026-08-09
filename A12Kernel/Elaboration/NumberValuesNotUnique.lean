@@ -1,10 +1,11 @@
 import A12Kernel.Elaboration.NumericAggregate.Entities
+import A12Kernel.Elaboration.StaticDiagnostic
 
 /-! # Checked Number `FieldValuesNotUnique`
 
-This consumer applies the common checked Number entity list to `FieldValuesNotUnique`. It owns only the uniqueness verdict; slot admission, authored order, repeated-direct-field rejection, the multiple-slots-or-one-star rule, and Number-valued certification stay in `NumberEntityList`, and the membership boundary stays with the shared distinct scan.
+This consumer applies the common checked Number entity list to `FieldValuesNotUnique`. It specializes the shared whole-list kind/category gate to Number before entering the existing Number certificate, projects the measured arity, kind, and mixing diagnostics, and owns the uniqueness verdict. Slot resolution, authored order, repeated-direct-field rejection, the multiple-slots-or-one-star rule, and Number-valued certification stay in the shared entity-list owners, while membership stays with the shared distinct scan.
 
-Real-kernel authoring admits the plain field list over two or three Number fields of differing declared scales, the starred single-field form, and a mixed direct-plus-starred list; it rejects a single direct operand and a list mixing Number with another kind. The String/stored-Enumeration and date-like overloads of the same operator are deliberately not admitted here.
+Real-kernel authoring admits the plain field list over two or three Number fields of differing declared scales, the starred single-field form, and a mixed direct-plus-starred list. A single direct operand reports `MVK_PARAMSIZE_INVALIDN`, another admissible category reports `MVK_VARYING_TYPES_NOT_ALLOWED`, and BOOLEAN or CONFIRM anywhere in the list reports the preempting `MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED`. The String/stored-Enumeration and date-like overloads remain separate checked consumers.
 -/
 
 namespace A12Kernel
@@ -12,10 +13,40 @@ namespace A12Kernel
 abbrev SurfaceNumberValuesNotUniqueOperand := SurfaceNumberEntityOperand
 abbrev SurfaceNumberValuesNotUniqueSource := SurfaceNumberEntitySource
 abbrev CheckedNumberValuesNotUniqueSource := CheckedNumberEntitySource
-abbrev NumberValuesNotUniqueElabError := NumberEntityElabError
 
-/-- Admit one `FieldValuesNotUnique` operand list through the shared Number entity-list contract. -/
-def elaborateNumberValuesNotUniqueSource := @elaborateNumberEntitySource
+inductive NumberValuesNotUniqueElabError where
+  | shape (error : FieldEntityShapeElabError)
+  | inadmissibleKind (path : List String) (actual : SurfaceScalarKind)
+  | mixedCategories (path : List String) (actual : SurfaceScalarKind)
+  | source (error : NumberEntityElabError)
+  deriving Repr, DecidableEq
+
+/-- Admit one Number `FieldValuesNotUnique` list in Kernel order: common shape, whole-list kind
+    refusal, Number-category homogeneity, then the existing Number certificate. -/
+def elaborateNumberValuesNotUniqueSource (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceNumberValuesNotUniqueSource) :
+    Except NumberValuesNotUniqueElabError
+      (CheckedNumberValuesNotUniqueSource model) := do
+  let shape ← elaborateFieldEntityShape model declaringGroup authored
+    |>.mapError .shape
+  match firstFieldListKindRefusal? shape.operands with
+  | some refusal => throw (.inadmissibleKind refusal.path refusal.actual)
+  | none => pure ()
+  match firstFieldListCategoryMismatch? .number shape.operands with
+  | some mismatch => throw (.mixedCategories mismatch.path mismatch.actual)
+  | none => pure ()
+  certifyNumberEntityShape model declaringGroup shape |>.mapError .source
+
+namespace NumberValuesNotUniqueElabError
+
+/-- Project only the three measured Number-overload refusal classes. -/
+def diagnostic? : NumberValuesNotUniqueElabError → Option KernelStaticDiagnostic
+  | .shape .tooFewFields => some .paramSizeInvalidN
+  | .inadmissibleKind _ _ => some .onlyStringEnumNumberDateAllowed
+  | .mixedCategories _ _ => some .varyingTypesNotAllowed
+  | _ => none
+
+end NumberValuesNotUniqueElabError
 
 namespace CheckedNumberValuesNotUniqueSource
 

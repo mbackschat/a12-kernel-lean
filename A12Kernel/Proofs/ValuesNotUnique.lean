@@ -36,47 +36,44 @@ theorem temporalValuesNotUnique_route_never_unknown
       checked document outer ≠ .ok .unknown :=
   collectTaggedValueListCells_valuesNotUnique_never_unknown _ _
 
-/-- **The kind gate never reports the mixing class.** This is the local half of the measured pre-emption: a Boolean beside a String reports the kind code with the mixing code observed *absent*, so whatever the kind gate refuses, its diagnostic is never `varyingTypesNotAllowed`. The elaborator runs this scan over the whole operand list before certification, so no authored order can substitute the mixing class for the kind class. -/
+/-- **The kind gate never reports the mixing class.** This is the local half of the measured pre-emption: a Boolean or Confirm beside another category reports the kind code with the mixing code absent, so whatever the kind gate refuses, its diagnostic is never `varyingTypesNotAllowed`. The elaborator runs this scan over the whole operand list before certification, so no authored order can substitute the mixing class for the kind class. -/
 theorem firstKindGateRefusal_never_mixing
     (operands : List (ResolvedFieldEntityOperand model))
     (refusal : TemporalValuesNotUniqueElabError) :
     firstKindGateRefusal? operands = some refusal →
       refusal.diagnostic? ≠ some .varyingTypesNotAllowed := by
-  induction operands with
-  | nil => intro refused; simp [firstKindGateRefusal?] at refused
-  | cons head remaining inductionHypothesis =>
-      intro refused
-      simp only [firstKindGateRefusal?] at refused
-      by_cases refusedByKind :
-          head.declaration.policy.kind.surfaceKind.fieldListAdmission ==
-            FieldListOperandAdmission.refusedByKind
-      · rw [if_pos refusedByKind] at refused
-        simp only [Option.some.injEq] at refused
-        subst refused
-        simp [TemporalValuesNotUniqueElabError.diagnostic?]
-      · rw [if_neg refusedByKind] at refused
-        cases later : firstKindGateRefusal? remaining with
-        | some deeper =>
-            rw [later] at refused
-            simp only [Option.some.injEq] at refused
-            subst refused
-            exact inductionHypothesis later
-        | none =>
-            rw [later] at refused
-            by_cases unestablished :
-                head.declaration.policy.kind.surfaceKind.fieldListAdmission ==
-                  FieldListOperandAdmission.unestablished
-            · rw [if_pos unestablished] at refused
-              simp only [Option.some.injEq] at refused
-              subst refused
-              simp [TemporalValuesNotUniqueElabError.diagnostic?]
-            · rw [if_neg unestablished] at refused
-              simp at refused
+  intro refused
+  rw [firstKindGateRefusal?] at refused
+  cases found : firstFieldListKindRefusal? operands with
+  | none =>
+      rw [found] at refused
+      contradiction
+  | some kindRefusal =>
+      rw [found] at refused
+      injection refused with refused
+      subst refusal
+      simp [TemporalValuesNotUniqueElabError.diagnostic?]
 
-/-- Only BOOLEAN is refused outright in this representation. DATE_RANGE, the Kernel's other outright refusal, has no declaration form here, so the table's measured scope is exactly one kind rather than two. -/
+/-- BOOLEAN and CONFIRM are the represented kinds refused outright. DATE_RANGE, the Kernel's
+    other measured outright refusal, has no declaration form here. -/
 theorem fieldListAdmission_refusedByKind_iff (kind : SurfaceScalarKind) :
-    kind.fieldListAdmission = .refusedByKind ↔ kind = .boolean := by
+    kind.fieldListAdmission = .refusedByKind ↔
+      kind = .boolean ∨ kind = .confirm := by
   cases kind <;> simp [SurfaceScalarKind.fieldListAdmission]
+
+/-- The whole-list scan misses no refused operand: it returns `none` exactly when every operand is
+    admitted to a comparability category. -/
+theorem firstFieldListKindRefusal_eq_none_iff
+    (operands : List (ResolvedFieldEntityOperand model)) :
+    firstFieldListKindRefusal? operands = none ↔
+      ∀ operand ∈ operands,
+        operand.declaration.policy.kind.surfaceKind.fieldListAdmission ≠ .refusedByKind := by
+  induction operands with
+  | nil => simp [firstFieldListKindRefusal?]
+  | cons operand remaining inductionHypothesis =>
+      cases admission : operand.declaration.policy.kind.surfaceKind.fieldListAdmission with
+      | refusedByKind => simp [firstFieldListKindRefusal?, admission]
+      | category _ => simp [firstFieldListKindRefusal?, admission, inductionHypothesis]
 
 /-- The certificate's format scan says what the temporal admission gate claims: **every** operand carries the list's one declared format. The elaborator stores the scan result, so this is what turns that stored fact into the gate a consumer can rely on. -/
 theorem temporalValuesNotUnique_oneDeclaredFormat

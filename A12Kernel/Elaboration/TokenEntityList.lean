@@ -277,15 +277,22 @@ def assembleTokenEntitySource
   else
     throw (.shape .tooFewFields)
 
+/-- Certify an already checked entity-list shape as String/ordinary stored-Enumeration without
+    resolving it again. A consumer may run its own whole-list gate before entering this boundary. -/
+def certifyTokenEntityShape (model : FlatModel)
+    (declaringGroup : GroupPath) (shape : CheckedFieldEntityShape model) :
+    Except TokenEntityElabError (CheckedTokenEntitySource model) := do
+  let first ← certifyTokenEntityOperand model declaringGroup shape.first
+  let rest ← certifyTokenEntityOperands model declaringGroup shape.rest
+  assembleTokenEntitySource shape.modelWellFormed first rest
+
 /-- Resolve duplicate/cardinality shape before certifying the complete list as String/ordinary stored-Enumeration. -/
 def elaborateTokenEntitySource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceTokenEntitySource) :
     Except TokenEntityElabError (CheckedTokenEntitySource model) := do
   let shape ← elaborateFieldEntityShape model declaringGroup authored
     |>.mapError .shape
-  let first ← certifyTokenEntityOperand model declaringGroup shape.first
-  let rest ← certifyTokenEntityOperands model declaringGroup shape.rest
-  assembleTokenEntitySource shape.modelWellFormed first rest
+  certifyTokenEntityShape model declaringGroup shape
 
 /-- A path-resolved projection-bearing token slot. Keeping this intermediate private preserves duplicate-before-certification diagnostics without exposing a second checked representation. -/
 private inductive ResolvedProjectedTokenEntityOperand

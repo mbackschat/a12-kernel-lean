@@ -1044,6 +1044,7 @@ run_cmd do
 #print axioms A12Kernel.kernelStaticDiagnostic_mem_all
 #print axioms A12Kernel.firstKindGateRefusal_never_mixing
 #print axioms A12Kernel.fieldListAdmission_refusedByKind_iff
+#print axioms A12Kernel.firstFieldListKindRefusal_eq_none_iff
 #print axioms A12Kernel.scanValuesNotUnique_unfiltered_never_omission
 #print axioms A12Kernel.scanValuesNotUnique_allFiltered_never_value
 #print axioms A12Kernel.numericExtremumAggregate_allEmpty

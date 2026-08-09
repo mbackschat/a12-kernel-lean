@@ -125,8 +125,19 @@ private def numberField (id : FieldId) (name : String) : FlatFieldDecl :=
   { id, groupPath := ["Form"], name,
     policy := { kind := .number { scale := 0, signed := true } } }
 
+private def stringField : FlatFieldDecl :=
+  { id := 4, groupPath := ["Form"], name := "Code", policy := { kind := .string },
+    stringPolicy := { lineBreaksPermitted := true } }
+
+private def booleanField : FlatFieldDecl :=
+  { id := 5, groupPath := ["Form"], name := "Flag", policy := { kind := .boolean } }
+
+private def confirmField : FlatFieldDecl :=
+  { id := 6, groupPath := ["Form"], name := "Consent", policy := { kind := .confirm } }
+
 private def model : FlatModel :=
-  { fields := [numberField 1 "A", numberField 2 "B", numberField 3 "C"] }
+  { fields := [numberField 1 "A", numberField 2 "B", numberField 3 "C",
+      stringField, booleanField, confirmField] }
 
 private def prepared :
     PreparedFlatStringContext model builtinStringPatternCompiler :=
@@ -140,6 +151,38 @@ private def threeFields? : Option (CheckedNumberValuesNotUniqueSource model) :=
   (elaborateNumberValuesNotUniqueSource model ["Form"]
     { first := .field (bare "A")
       rest := [.field (bare "B"), .field (bare "C")] }).toOption
+
+private def staticError? (first : String) (rest : List String) :
+    Option NumberValuesNotUniqueElabError :=
+  match elaborateNumberValuesNotUniqueSource model ["Form"]
+      { first := .field (bare first), rest := rest.map fun name => .field (bare name) } with
+  | .error error => some error
+  | .ok _ => none
+
+private def staticDiagnostic? (first : String) (rest : List String) :
+    Option KernelStaticDiagnostic :=
+  (staticError? first rest).bind NumberValuesNotUniqueElabError.diagnostic?
+
+/- The Number overload exposes the three measured static classes, and the whole-list kind gate
+   wins over category mixing in either authored order. CONFIRM follows BOOLEAN at the kind gate. -/
+example :
+    staticError? "A" ["B"] = none ∧
+      staticDiagnostic? "A" [] = some .paramSizeInvalidN ∧
+      staticDiagnostic? "Flag" [] = some .paramSizeInvalidN ∧
+      staticDiagnostic? "A" ["Code"] = some .varyingTypesNotAllowed ∧
+      staticDiagnostic? "A" ["Flag"] = some .onlyStringEnumNumberDateAllowed ∧
+      staticDiagnostic? "A" ["Consent"] = some .onlyStringEnumNumberDateAllowed ∧
+      staticDiagnostic? "A" ["Code", "Flag"] = some .onlyStringEnumNumberDateAllowed ∧
+      staticDiagnostic? "A" ["Flag", "Code"] = some .onlyStringEnumNumberDateAllowed := by
+  native_decide
+
+/- Local refusals retain path and kind for Analyze/Explain; unmeasured duplicate shape stays unprojected. -/
+example :
+    staticError? "A" ["Code"] = some (.mixedCategories ["Form", "Code"] .string) ∧
+      staticError? "A" ["Flag"] = some (.inadmissibleKind ["Form", "Flag"] .boolean) ∧
+      staticError? "A" ["Consent"] = some (.inadmissibleKind ["Form", "Consent"] .confirm) ∧
+      staticDiagnostic? "A" ["A"] = none := by
+  native_decide
 
 /-- One placed nonrepeatable cell whose stored text is its own classification. -/
 private def value (field : FieldId) (stored : String) (raw : RawCell) :

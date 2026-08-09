@@ -197,12 +197,12 @@ private def certifyNumberEntityOperands (model : FlatModel)
       pure ((← certifyNumberEntityOperand model declaringGroup operand) ::
         (← certifyNumberEntityOperands model declaringGroup remaining))
 
-/-- Validate one Number entity list in kernel order: resolve all references, reject repeated direct fields, require multiple fields or a wildcard, then certify the common Number kind. Wildcarded occurrences are not deduplicated in an ordinary document model. -/
-def elaborateNumberEntitySource (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceNumberEntitySource) :
+/-- Certify an already checked entity-list shape as Number-valued without resolving its authored
+    references a second time. Consumer-specific whole-list gates run between shape and kind
+    certification through this boundary. -/
+def certifyNumberEntityShape (model : FlatModel)
+    (declaringGroup : GroupPath) (shape : CheckedFieldEntityShape model) :
     Except NumberEntityElabError (CheckedNumberEntitySource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored
-    |>.mapError NumberEntityElabError.ofShape
   let first ← certifyNumberEntityOperand model declaringGroup shape.first
   let rest ← certifyNumberEntityOperands model declaringGroup shape.rest
   if hMultiplicity : (first.isStar || !rest.isEmpty) = true then
@@ -217,6 +217,14 @@ def elaborateNumberEntitySource (model : FlatModel)
         uniqueDirectOperands := hDuplicate }
   else
     throw .incoherentCore
+
+/-- Validate one Number entity list in kernel order: resolve all references, reject repeated direct fields, require multiple fields or a wildcard, then certify the common Number kind. Wildcarded occurrences are not deduplicated in an ordinary document model. -/
+def elaborateNumberEntitySource (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceNumberEntitySource) :
+    Except NumberEntityElabError (CheckedNumberEntitySource model) := do
+  let shape ← elaborateFieldEntityShape model declaringGroup authored
+    |>.mapError NumberEntityElabError.ofShape
+  certifyNumberEntityShape model declaringGroup shape
 
 /-- One authored Number operand resolved against the immutable checked input. The source retains declaration/filter metadata; the optional topology retains every canonical candidate environment, while `addressedCells` retains exactly the relevant or filter-selected cells that were read. -/
 structure ResolvedCheckedNumberEntityOperand (model : FlatModel) where
