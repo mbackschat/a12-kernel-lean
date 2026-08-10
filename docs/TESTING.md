@@ -23,6 +23,7 @@ Lean elaborates and caches one `.olean` per module, so semantic ownership and co
 The marked entries below are the exact machine-read reviewed-exception map. `review-threshold` may retain one cohesive 601–1,000-line file only with a nonempty reviewed rationale. `exceptional-ceiling` is restricted in the guard to the sole `TrustAudit.lean` registry; adding another path cannot authorize a second over-ceiling file. Remove an entry when its path disappears or its line count no longer needs that mode, because stale and duplicate entries fail the gate.
 
 <!-- lean-source-hygiene-exceptions:start -->
+<!-- lean-source-hygiene-exception: A12Kernel/Elaboration/NumericComputation/Core.lean | review-threshold | The complete numeric-computation resolver remains one cohesive owner because the bounded target-admission discriminator constructs the private checked atom tree and must replay the same private resolver to preserve earlier refusal order; extracting it would expose those construction internals without isolating a useful build target. -->
 <!-- lean-source-hygiene-exception: A12Kernel/TrustAudit.lean | exceptional-ceiling | The exhaustive theorem-root presentation and environment audit remain one Lean session to avoid repeated process startup and duplicate environment loading; this file contains only audit-driver setup and registry commands, never semantics or conformance fixtures. -->
 <!-- lean-source-hygiene-exceptions:end -->
 

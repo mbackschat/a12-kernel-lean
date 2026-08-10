@@ -7,10 +7,10 @@ namespace A12Kernel.Conformance.NumericComputation.Core
 open A12Kernel
 open A12Kernel.Conformance.NumericComputation.Support
 
-private def targetScaleDiagnosticOf
+private def targetDiagnosticOf
     (error? : Option NumericComputationElabError) :
     Option KernelStaticDiagnostic :=
-  error?.bind NumericComputationElabError.targetScaleDiagnostic?
+  error?.bind NumericComputationElabError.targetDiagnostic?
 
 /- Checked computation-operation authoring resolves the shared numeric tree and rejects a nested direct reference to its own target. -/
 example :
@@ -33,6 +33,110 @@ example :
             (surfaceField ["Root"] "Target"))
           (.literal { value := 2, authoredScale := 0 })) =
         some (.targetSelfReference targetId) := by
+  native_decide
+
+/- The measured direct-left forms reach scale comparison before the bounded
+target-reference refusal. The same-scale field form is a separate positive
+branch from the literal mismatch and suppression branches. -/
+example :
+    let targetField := surfaceField ["Root"] "Target"
+    let sourceField := surfaceField ["Root"] "Source"
+    let scaleOne : AuthoredNumericExpr SurfaceNumericAtom :=
+      .literal { value := 3 / 2, authoredScale := 1 }
+    let scaleZero : AuthoredNumericExpr SurfaceNumericAtom :=
+      .literal { value := 2, authoredScale := 0 }
+    let multiply := AuthoredNumericExpr.binary .multiply targetField scaleOne
+    let matchedMultiply :=
+      AuthoredNumericExpr.binary .multiply targetField scaleZero
+    let addLiteral := AuthoredNumericExpr.binary .add targetField scaleOne
+    let addField := AuthoredNumericExpr.binary .add targetField sourceField
+    checkedErrorOf multiply =
+        some (.operationScaleMismatch 0
+          (NumericScaleSummary.binary .multiply
+            (NumericScaleSummary.field 0)
+            (NumericScaleSummary.constant 1))) ∧
+      checkedErrorOf multiply (suppressExactScaleWarning := true) =
+        some (.targetSelfReferenceAfterScale targetId) ∧
+      checkedErrorOf matchedMultiply =
+        some (.targetSelfReferenceAfterScale targetId) ∧
+      checkedErrorOf addLiteral =
+        some (.operationScaleMismatch 0
+          (NumericScaleSummary.binary .add
+            (NumericScaleSummary.field 0)
+            (NumericScaleSummary.constant 1))) ∧
+      checkedErrorOf addLiteral (suppressExactScaleWarning := true) =
+        some (.targetSelfReferenceAfterScale targetId) ∧
+      checkedErrorOf addField =
+        some (.targetSelfReferenceAfterScale targetId) ∧
+      targetDiagnosticOf (checkedErrorOf multiply) =
+        some .invalidCompareDecimalPlaces ∧
+      targetDiagnosticOf
+          (checkedErrorOf multiply (suppressExactScaleWarning := true)) =
+        some .errorReferenceToCalculatedField ∧
+      targetDiagnosticOf (checkedErrorOf matchedMultiply) =
+        some .errorReferenceToCalculatedField ∧
+      targetDiagnosticOf (checkedErrorOf addLiteral) =
+        some .invalidCompareDecimalPlaces ∧
+      targetDiagnosticOf
+          (checkedErrorOf addLiteral (suppressExactScaleWarning := true)) =
+        some .errorReferenceToCalculatedField ∧
+      targetDiagnosticOf (checkedErrorOf addField) =
+        some .errorReferenceToCalculatedField := by
+  native_decide
+
+/- Unmeasured or invalid target-reading shapes retain the old immediate local
+refusal, including when a later operand would otherwise fail resolution. -/
+example :
+    let targetField := surfaceField ["Root"] "Target"
+    let sourceField := surfaceField ["Root"] "Source"
+    let wrongField := surfaceField ["Root"] "Wrong"
+    let scaleOne : AuthoredNumericExpr SurfaceNumericAtom :=
+      .literal { value := 3 / 2, authoredScale := 1 }
+    let targetThenWrong := AuthoredNumericExpr.binary .add targetField wrongField
+    let groupedTargetThenWrong :=
+      AuthoredNumericExpr.group (.binary .add targetField wrongField)
+    let targetThenRepeatable :=
+      AuthoredNumericExpr.binary .add targetField
+        (surfaceField ["Root", "Rows"] "Repeated")
+    let reverse := AuthoredNumericExpr.binary .add sourceField targetField
+    let subtract := AuthoredNumericExpr.binary .subtract targetField scaleOne
+    let sameTarget := AuthoredNumericExpr.binary .add targetField targetField
+    let twoDivisions :=
+      AuthoredNumericExpr.binary .multiply
+        (.binary .divide targetField
+          (.literal { value := 2, authoredScale := 0 }))
+        (.binary .divide (.literal { value := 3, authoredScale := 0 })
+          (.literal { value := 4, authoredScale := 0 }))
+    let stringLengthTarget : AuthoredNumericExpr SurfaceNumericAtom :=
+      .atom (.stringLength (surfacePath ["Root"] "Target"))
+    let scaleOneSource : FlatFieldDecl := {
+      numberDeclaration 30 "ScaleOneSource" with
+      policy := { kind := .number { scale := 1, signed := true } } }
+    let scaleOneModel : FlatModel := {
+      model with fields := scaleOneSource :: model.fields }
+    let targetThenWrongScale :=
+      AuthoredNumericExpr.binary .add targetField
+        (surfaceField ["Root"] "ScaleOneSource")
+    checkedErrorOf targetThenWrong = some (.targetSelfReference targetId) ∧
+      checkedErrorOf groupedTargetThenWrong = some (.targetSelfReference targetId) ∧
+      checkedErrorOf targetThenRepeatable = some (.targetSelfReference targetId) ∧
+      checkedErrorOf reverse = some (.targetSelfReference targetId) ∧
+      checkedErrorOf subtract = some (.targetSelfReference targetId) ∧
+      checkedErrorOf sameTarget = some (.targetSelfReference targetId) ∧
+      checkedErrorOf twoDivisions = some (.targetSelfReference targetId) ∧
+      checkedErrorOf stringLengthTarget = some (.targetSelfReference targetId) ∧
+      checkedErrorOfIn scaleOneModel targetThenWrongScale =
+        some (.targetSelfReference targetId) ∧
+      targetDiagnosticOf (checkedErrorOf targetThenWrong) = none ∧
+      targetDiagnosticOf (checkedErrorOf groupedTargetThenWrong) = none ∧
+      targetDiagnosticOf (checkedErrorOf targetThenRepeatable) = none ∧
+      targetDiagnosticOf (checkedErrorOf reverse) = none ∧
+      targetDiagnosticOf (checkedErrorOf subtract) = none ∧
+      targetDiagnosticOf (checkedErrorOf sameTarget) = none ∧
+      targetDiagnosticOf (checkedErrorOf twoDivisions) = none ∧
+      targetDiagnosticOf (checkedErrorOf stringLengthTarget) = none ∧
+      targetDiagnosticOf
+        (checkedErrorOfIn scaleOneModel targetThenWrongScale) = none := by
   native_decide
 
 /- Target policy is attached once: a different scale/signedness summary is rejected before evaluation. -/
@@ -136,23 +240,29 @@ example :
           { unscaled := 11, scale := 1 } .suppressedScaleMismatch)) := by
   native_decide
 
-/- Only a reached computed-target scale mismatch projects to the measured Kernel
-class. Suppression removes that refusal, while earlier self-reference and
-authoring failures remain explicitly unmapped. -/
+/- Every reached scale mismatch and the bounded after-scale target reference
+project to their measured Kernel classes. Earlier local self-reference and
+unrelated authoring failures remain explicitly unmapped. -/
 example :
     let scaleOne :=
       AuthoredNumericExpr.literal
         (Atom := SurfaceNumericAtom) { value := 11 / 10, authoredScale := 1 }
-    targetScaleDiagnosticOf (checkedErrorOf scaleOne) =
+    targetDiagnosticOf (checkedErrorOf scaleOne) =
         some .invalidCompareDecimalPlaces ∧
-      targetScaleDiagnosticOf
+      targetDiagnosticOf
         (checkedErrorOf scaleOne (suppressExactScaleWarning := true)) = none ∧
-      NumericComputationElabError.targetScaleDiagnostic?
+      NumericComputationElabError.targetDiagnostic?
+        (.targetSelfReferenceAfterScale targetId) =
+          some .errorReferenceToCalculatedField ∧
+      NumericComputationElabError.targetDiagnostic?
         (.targetSelfReference targetId) = none ∧
-      NumericComputationElabError.targetScaleDiagnostic?
+      NumericComputationElabError.targetDiagnostic?
         (.authoring .tooManyDivisions) = none ∧
+      NumericComputationElabError.targetDiagnostic? .unsupportedExpression = none ∧
       KernelStaticDiagnostic.kernelCode .invalidCompareDecimalPlaces =
-        "MVK_INVALID_COMPARE_DEC_PLACES" := by
+        "MVK_INVALID_COMPARE_DEC_PLACES" ∧
+      KernelStaticDiagnostic.kernelCode .errorReferenceToCalculatedField =
+        "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD" := by
   native_decide
 
 /- Suppression does not bypass the independent plain-authoring rejection. -/

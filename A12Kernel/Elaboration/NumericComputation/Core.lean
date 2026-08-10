@@ -9,6 +9,8 @@ import A12Kernel.Semantics.NumericTarget
 
 This capsule checks one parser-independent numeric operation with an ordinary nonrepeatable Number target against a validated model and then evaluates the resolved expression. Admission resolves scalar Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, exact-instant DateTime field/`Now` hour/minute/second differences, concrete-profile Date/DateTime day differences, checked direct/plain-star/filtered-star Number entity-list aggregates and `FirstFilledValue`, typed String/stored-Enumeration and Boolean/Confirm value counts, the distinct row-aligned `SumOfProducts` pair, and fixed distinct disjoint multi-group filled counts through one shared numeric tree. The direct aggregate surface maps into the checked entity-list payload, while the complete surface retains each specialized checked source and the product pair's proof-bearing common-row plan. Target self-reference traversal reaches selected entity-list fields, every `Having` reference, both product fields, and every counted group subtree; the Boolean/Confirm count cannot include its Number target by construction. Scale checking uses the selected declarations' union, integral count result, or product of pair scales. Each operand-list Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The primary checked target entry points construct the complete policy from the validated target declaration and attach it once, so evaluation cannot substitute caller-selected constraints; the lower-level attachment remains an explicit compatibility seam for already-resolved policies and still rejects scale/signedness drift. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Scalar computation evaluation remains available for direct-only sources, reads dynamic `Now` only from its explicit optional `World`, fails structurally when that input is absent, and rejects repeatable atoms explicitly. Addressed computation evaluation accepts the document, outer environment, and checked readers required by the existing entity-list and product traversals, maps structural addressing failure into the computation-fault domain, and otherwise preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. Generated validation narrows direct ordinary aggregates and every direct-only specialized source into its existing nonrepeatable atoms, while repeatable entity-list, token-count, product, and first-filled payloads retain their checked certificates through the full-only addressed validation context; fixed filled-group computation remains an explicit arm-crossing generated-validation boundary. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, application, delta projection, wider whole-rule repeatable generated validation, and scheduling remain outside this module.
 
+Only the measured direct-left Number shapes retain the target through scale summarization: multiplication by an immediate literal, and addition to an immediate literal or a different same-scale direct Number field. Those shapes reach the target-scale gate before self-reference. Every other target read keeps its pre-existing immediate local refusal, including when a later operand would otherwise fail resolution, and receives no projected Kernel class.
+
 Numeric and Boolean/Confirm `NumberOfValueInFields` remain distinct checked atoms so their different field-kind matrices and per-cell provenance survive arithmetic, target evaluation, and generated validation without a second expression tree or aggregate fold.
 -/
 
@@ -81,6 +83,7 @@ inductive NumericComputationElabError where
   | groupCountNeedsMultipleOperands
   | overlappingGroupCountOperands (left right : GroupPath)
   | targetSelfReference (field : FieldId)
+  | targetSelfReferenceAfterScale (field : FieldId)
   | authoring (result : NumericAuthoringCheck)
   | unsupportedExpression
   | operationScaleMismatch (targetScale : Nat) (operation : NumericScaleSummary)
@@ -100,11 +103,13 @@ def groupCountDiagnostic? :
   | .repeatableGroupCountRequiresStar _ => some .noWildcard
   | _ => none
 
-/-- Project only the measured computed Number target-scale rejection. Earlier
-self-reference and authoring failures remain unmapped. -/
-def targetScaleDiagnostic? :
+/-- Project the measured computed Number target-scale rejection and the target
+reference reached after that gate in the bounded direct-left shapes. Other
+computation failures remain unmapped. -/
+def targetDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic
   | .operationScaleMismatch _ _ => some .invalidCompareDecimalPlaces
+  | .targetSelfReferenceAfterScale _ => some .errorReferenceToCalculatedField
   | _ => none
 
 end NumericComputationElabError
@@ -511,6 +516,58 @@ private def FlatModel.resolveNumericComputationExpression
             else
               pure (.numeric (.filledGroupCount groups))
 
+/-- Resolve only the measured direct-left target-reference shapes. A malformed
+right operand yields `none`, so the ordinary resolver replays the expression and
+preserves its immediate target-first refusal. -/
+private def FlatModel.resolveDirectTargetAdmissionExpression?
+    (model : FlatModel) (declaringGroup : GroupPath)
+    (target : FlatNumberField)
+    (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
+    Except NumericComputationElabError
+      (Option (AuthoredNumericExpr (CheckedNumericComputationAtom model))) := do
+  let resolveTargetLeft (reference : SurfaceFieldPath) :
+      Except NumericComputationElabError (Option FlatFieldDecl) := do
+    let declaration ←
+      (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError
+        NumericComputationElabError.resolve
+    if declaration.id == target.id then pure (some declaration) else pure none
+  match expression with
+  | .binary .multiply
+      (.atom (.numeric (.field reference))) (.literal value) =>
+      match ← resolveTargetLeft reference with
+      | some declaration =>
+          pure (some (.binary .multiply
+            (.atom (.numeric (.field declaration))) (.literal value)))
+      | none => pure none
+  | .binary .add
+      (.atom (.numeric (.field reference))) (.literal value) =>
+      match ← resolveTargetLeft reference with
+      | some declaration =>
+          pure (some (.binary .add
+            (.atom (.numeric (.field declaration))) (.literal value)))
+      | none => pure none
+  | .binary .add
+      (.atom (.numeric (.field leftReference)))
+      (.atom (.numeric (.field rightReference))) =>
+      match ← resolveTargetLeft leftReference with
+      | none => pure none
+      | some leftDeclaration =>
+          match model.resolveNonrepeatableFieldUnchecked
+              declaringGroup rightReference with
+          | .error _ => pure none
+          | .ok rightDeclaration =>
+              match rightDeclaration.toNumberField? with
+              | some rightField =>
+                  if rightField.id != target.id &&
+                      rightField.info.scale == target.info.scale then
+                    pure (some (.binary .add
+                      (.atom (.numeric (.field leftDeclaration)))
+                      (.atom (.numeric (.field rightDeclaration)))))
+                  else
+                    pure none
+              | none => pure none
+  | _ => pure none
+
 /-- Resolve and check the complete numeric computation surface, including checked entity-list atoms and the distinct row-aligned `SumOfProducts` source, through the one shared numeric expression tree. -/
 def elaborateCompleteNumericComputationOperation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
@@ -524,8 +581,15 @@ def elaborateCompleteNumericComputationOperation
       if !GroupPath.isValid declaringGroup then
         throw (.resolve (.invalidRuleGroup declaringGroup))
       let target ← model.resolveNumericComputationTarget targetField
-      let resolved ← model.resolveNumericComputationExpression
-        declaringGroup targetField expression
+      let deferredTargetExpression? ←
+        model.resolveDirectTargetAdmissionExpression?
+          declaringGroup target expression
+      let defersTargetReference := deferredTargetExpression?.isSome
+      let resolved ← match deferredTargetExpression? with
+        | some resolved => pure resolved
+        | none =>
+            model.resolveNumericComputationExpression declaringGroup
+              targetField expression
       if !resolved.isAdmittedResolvedNumericOperation then
         throw .unsupportedExpression
       match resolved.numericOperationAuthoringCheck with
@@ -539,6 +603,8 @@ def elaborateCompleteNumericComputationOperation
           suppressExactScaleWarning
           (NumericScaleSummary.field target.info.scale) summary then
         throw (.operationScaleMismatch target.info.scale summary)
+      if defersTargetReference then
+        throw (.targetSelfReferenceAfterScale targetField)
       let core : NumericComputationOperation model := {
         target
         expression := resolved
