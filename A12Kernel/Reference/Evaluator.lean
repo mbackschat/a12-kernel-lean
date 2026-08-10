@@ -162,7 +162,8 @@ private def elaborationResult : ElabError → Except InternalFailure Diagnostic
       pure (.make .fieldKindMismatch "$.condition"
         (Json.mkObj [("operation", toJson "rawStringValue"),
           ("path", toJson path)]))
-  | .rawStringLength path =>
+  | .rawStringLength path
+  | .rawStringLengthBound path =>
       pure (.make .operator "$.condition"
         (Json.mkObj [("operator", toJson "rawStringLength"),
           ("path", toJson path)]))

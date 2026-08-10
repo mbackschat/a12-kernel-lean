@@ -404,6 +404,7 @@ inductive ElabError where
   | invalidTemporalLiteralComponents (path : List String)
   | rawStringValue (path : List String)
   | rawStringLength (path : List String)
+  | rawStringLengthBound (path : List String)
   | lengthOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | enumerationOperand (path : List String) (error : EnumerationOperandError)
   | textFieldOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)

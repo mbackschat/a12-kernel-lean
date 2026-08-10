@@ -25,10 +25,14 @@ theorem rawString_toPresenceField (declaration : FlatFieldDecl)
     (CheckedFlatRuleCondition.rawStringMaximumLength metadata).toRuntime? = none :=
   rfl
 
-/-- The checked metadata boundary retains the parser's integral-constant restriction. -/
-theorem checkedRawStringMaximumLength_integral
+/-- The checked metadata boundary retains the exact lexical and signed-32-bit admission domain. -/
+theorem checkedRawStringMaximumLength_admissible
     (metadata : CheckedRawStringMaximumLength model) :
-    metadata.bound.value.den = 1 :=
-  metadata.integralBound
+    metadata.bound.authoredScale ≤ 0 ∧
+      metadata.bound.value.den = 1 ∧
+      -2147483648 ≤ metadata.integerBound ∧
+      metadata.integerBound ≤ 2147483647 := by
+  exact ⟨metadata.decimalPointFree, metadata.integralBound,
+    metadata.minimumBound, metadata.maximumBound⟩
 
 end A12Kernel

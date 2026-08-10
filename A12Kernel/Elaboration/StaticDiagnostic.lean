@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission, fixed filled-group computation-admission, and String pattern-comparison families. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission, fixed filled-group computation-admission, String pattern-comparison, and raw-String length-admission families. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -31,6 +31,10 @@ inductive KernelStaticDiagnostic where
   | invalidPattern
   /-- A pattern-comparison operand has the wrong scalar kind for its slot. -/
   | invalidTypeForPatternComparison
+  /-- A recognized strict raw-String length declaration has a decimal spelling or lies outside the signed-32-bit bound domain. -/
+  | internalError
+  /-- A raw-String length use is not one of the two strict whole-rule shapes. -/
+  | invalidLengthOfRawType
   deriving Repr, DecidableEq
 
 namespace KernelStaticDiagnostic
@@ -47,12 +51,15 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidPattern => "MVK_INVALID_PATTERN"
   | .invalidTypeForPatternComparison =>
       "MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON"
+  | .internalError => "MVK_INTERNAL_ERROR"
+  | .invalidLengthOfRawType => "MVK_INVALID_LENGTH_OF_RAW_TYPE"
 
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
 def all : List KernelStaticDiagnostic :=
   [.onlyStringEnumNumberDateAllowed, .varyingTypesNotAllowed, .paramSizeInvalidN,
     .paramSizeInvalidGN, .duplicateParam1, .duplicateParam2, .noWildcard,
-    .invalidPattern, .invalidTypeForPatternComparison]
+    .invalidPattern, .invalidTypeForPatternComparison, .internalError,
+    .invalidLengthOfRawType]
 
 end KernelStaticDiagnostic
 

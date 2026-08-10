@@ -55,6 +55,11 @@ private def errorOf : Except ε α → Option ε
   | .ok _ => none
   | .error error => some error
 
+private def diagnosticOf :
+    Except ElabError α → Option KernelStaticDiagnostic
+  | .ok _ => none
+  | .error error => error.rawStringDiagnostic?
+
 private def lengthLiteral (value : Rat) (authoredScale : Int) :
     DecodedNumericLiteral :=
   { value, authoredScale }
@@ -108,13 +113,49 @@ example :
         some (1, -1) := by
   native_decide
 
+/- Admission follows the authored decimal shape and signed-32-bit domain, not only
+the exact rational value. An integer token may retain a negative scale after
+trailing-zero stripping. -/
+example :
+    (elaborateFlatRuleCondition model ["Claim"]
+      (.lengthCompare .greater (directPath "IncidentNote")
+        (lengthLiteral 100 (-2)))).toRawMaximum? =
+        some (1, 100) ∧
+    (elaborateFlatRuleCondition model ["Claim"]
+      (.lengthCompare .greater (directPath "IncidentNote")
+        (lengthLiteral (-2147483648) 0))).toRawMaximum? =
+        some (1, -2147483648) ∧
+    (elaborateFlatRuleCondition model ["Claim"]
+      (.literalCompareLength (lengthLiteral 2147483647 0) .less
+        (directPath "IncidentNote"))).toRawMaximum? =
+        some (1, 2147483647) := by
+  native_decide
+
+/- Decimal spellings, fractional values, and one-step overflows reach the bound
+gate in either strict orientation and retain its exact diagnostic class. -/
+example :
+    diagnosticOf (elaborateFlatRuleCondition model ["Claim"]
+      (.lengthCompare .greater (directPath "IncidentNote")
+        (lengthLiteral 5 1))) = some .internalError ∧
+    diagnosticOf (elaborateFlatRuleCondition model ["Claim"]
+      (.literalCompareLength (lengthLiteral ((1 : Rat) / 2) 1) .less
+        (directPath "IncidentNote"))) = some .internalError ∧
+    diagnosticOf (elaborateFlatRuleCondition model ["Claim"]
+      (.lengthCompare .greater (directPath "IncidentNote")
+        (lengthLiteral 2147483648 0))) = some .internalError ∧
+    diagnosticOf (elaborateFlatRuleCondition model ["Claim"]
+      (.literalCompareLength (lengthLiteral (-2147483649) 0) .less
+        (directPath "IncidentNote"))) = some .internalError := by
+  native_decide
+
 example : coreOf (elaborate model ["Claim"]
     (.literalCompareLength (lengthLiteral 5 0) .less
       (directPath "Other"))) =
       some (.compare (.stringLength .greater { id := 2 } 5)) := by
   native_decide
 
-/- A non-strict or nested length use is not the exceptional whole-rule declaration. -/
+/- A non-strict or nested length use is not the exceptional whole-rule declaration.
+Shape wins over an independently invalid decimal spelling. -/
 example :
     errorOf (elaborateFlatRuleCondition model ["Claim"]
       (.lengthCompare .greaterEqual (directPath "IncidentNote")
@@ -126,10 +167,26 @@ example :
           (lengthLiteral 5 0))
         (.fieldFilled (directPath "Other")))) =
         some (.rawStringLength ["Claim", "IncidentNote"]) ∧
-    errorOf (elaborateFlatRuleCondition model ["Claim"]
-      (.lengthCompare .greater (directPath "IncidentNote")
-        (lengthLiteral ((1 : Rat) / 2) 1))) =
-        some (.rawStringLength ["Claim", "IncidentNote"]) := by
+    diagnosticOf (elaborateFlatRuleCondition model ["Claim"]
+      (.lengthCompare .greaterEqual (directPath "IncidentNote")
+        (lengthLiteral 5 1))) = some .invalidLengthOfRawType := by
+  native_decide
+
+/- The same non-strict decimal-bound shape remains executable for an ordinary String. -/
+example : coreOf (elaborate model ["Claim"]
+    (.lengthCompare .greaterEqual (directPath "Other")
+      (lengthLiteral 5 1))) =
+      some (.compare (.stringLength .greaterEqual { id := 2 } 5)) := by
+  native_decide
+
+example :
+    KernelStaticDiagnostic.kernelCode .internalError = "MVK_INTERNAL_ERROR" ∧
+      KernelStaticDiagnostic.kernelCode .invalidLengthOfRawType =
+        "MVK_INVALID_LENGTH_OF_RAW_TYPE" ∧
+      ElabError.rawStringDiagnostic?
+        (.rawStringValue ["Claim", "IncidentNote"]) = none ∧
+      ElabError.rawStringDiagnostic?
+        (.lengthOperandKindMismatch ["Claim", "Other"] .number) = none := by
   native_decide
 
 /- Presence remains an ordinary stored-cell observation over the same raw declaration. -/
