@@ -526,7 +526,7 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ### SPEC-2026-08-10-02 - computed Number scale mismatch precedes direct target self-reference
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** semantic correction and extension, locally originated
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `93771ee24aeb135a88ce9662ee3d88f39e804f45` (clean)
@@ -537,13 +537,15 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Correct the canonical computation account and extend the existing `ComputedTargetScaleLawsTest` owner with those exact matched, mismatched, and mismatch-suppressed direct-left target-reference rows for multiplication and addition, asserting the complete code list for every rejection. Retain the unrelated mismatch and accepted computation controls. Reuse the existing computation authoring and kernel consistency routes; add no harness, representation, or diagnostic abstraction.
 - **Compatibility:** Reporting self-reference first loses the earlier observable scale gate and directs an author to the wrong first repair. Treating suppression as legalization wrongly admits a computation that still directly references its target. Generalizing the order beyond the measured direct-left arithmetic overlap would assert unmeasured behavior.
 - **Acceptance:** Canonical peer prose states the exact direct-left scale-before-self-reference boundary; the maintained existing-family cases separate both operations, all three target-reference rows, the unrelated mismatch, and the accepted control with complete code lists; another operand position, subtraction, wider or specialized expressions, invalid authoring, and precondition precedence remain outside the claim; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `22fa19e7229663ee23389be6fbbfed3f26c5fb46`
+- **Disposition:** accepted, and the peer reproduced rather than adopted every reported verdict. The canonical §11 computation clause states the order, and the existing `ComputedTargetScaleLawsTest` owner asserts the matched, mismatched, and mismatch-suppressed rows with complete code lists beside the unrelated-mismatch and accepted controls. The reviewed revision measures a **wider** denominator than this entry claimed: the order is independent of the operator (`+`, `-`, `*`), of operand position, and of whether the self-read sits in an operation or a precondition, and it holds ahead of the projected self-read class of [`SPEC-2026-08-10-03`](#spec-2026-08-10-03--enumeration-category-target-reads-have-a-distinct-static-diagnostic) too. The canonical local clause incorporates that inbound widening; *why* the kernel orders the two gates remains unmeasured.
 
 <a id="spec-2026-08-10-03"></a>
 <a id="spec-2026-08-10-03--enumeration-category-target-reads-have-a-distinct-static-diagnostic"></a>
 
 ### SPEC-2026-08-10-03 - Enumeration category target reads have a distinct static diagnostic
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** semantic correction and extension, locally originated
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `93771ee24aeb135a88ce9662ee3d88f39e804f45` (clean)
@@ -554,6 +556,8 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Correct the canonical computation semantics and the existing `MVK-LEDGER.md` row that currently marks this code erased because category decoration of the computed-field slot is said to be unrepresentable. Extend the smallest existing computation static-law owner with the ordinary target-category row, both two-category target positions, and both accepted controls, asserting each complete code list. Retain the explicit exclusions above. Reuse the current computation authoring and kernel consistency routes; add no harness or representation.
 - **Compatibility:** Collapsing a target-category read into the plain target-reference class loses an observable distinction and gives the wrong first repair. Treating the category access as accepted because the computed-field slot itself is plain admits models the Kernel rejects. Generalizing beyond the measured shapes asserts an unmeasured category boundary.
 - **Acceptance:** Canonical peer prose and diagnostic guidance state the distinct category-target class without calling it erased; maintained existing-family cases cover the ordinary target category, both target positions in a compatible two-category list, and both accepted controls with complete code lists; mixed, wider, incompatible, starred, filtered, semantic-index, precondition, repeatable, and scheduling shapes remain outside the claim; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `22fa19e7229663ee23389be6fbbfed3f26c5fb46`
+- **Disposition:** accepted, with the `MVK-LEDGER` row corrected from `erased` to `pre-checked` and the generalizable lesson recorded there: an unrepresentability argument is only as good as its identification of which shape the kernel actually checks, and that row named a neighbouring one. The new `ComputedTargetProjectedReadLawsTest` owner asserts every row with complete code lists beside same-model accepted controls. The reviewed revision **replaces the shape enumeration this entry requested with a mechanism**: the discriminator is the *reading mode* of the self-read, so the projected class also covers a semantic index and the index-**key** position, and it pre-empts the plain class within one operation, in either operand order, and across precondition/operation slots. Mixed projected-beside-plain pairs are therefore measured where this entry left them open. A projection confined to a `Having` filter is refused earlier for wildcard iteration and stays unobserved; incompatible categories and lists longer than two remain unmeasured.
 
 ## Experiment requests
 

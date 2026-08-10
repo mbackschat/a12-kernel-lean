@@ -16,7 +16,8 @@ The thin lanes in priority order are SG4 computation scheduling and state transi
 
 ## Immediate sequence
 
-1. **Close the adjacent Enumeration category denominator next.** Measure mixed category/direct pairs, compatible three-category lists, and incompatible target-category pairs beside accepted controls. Decide from that one finite matrix whether the new category-target class follows every compatible category occurrence or only the already measured all-category pair. Keep stars, `Having`, semantic indices, preconditions, repeatable computation, and scheduling outside that batch.
+1. **Consume the inbound reading-mode correction instead of measuring it.** That denominator question is answered by reviewed a12-dmkits `22fa19e7` under accepted [`SPEC-2026-08-10-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-10-03--enumeration-category-target-reads-have-a-distinct-static-diagnostic): the class follows the *reading mode* of the self-read, not the authored shape, so a projected read pre-empts a plain one within one operation and in either operand order. Replace the two shape-enumerated `FirstFilledValue` predicates with that fold, keeping the measured length bound. Compatible three-category lists, incompatible target-category pairs, semantic indices, stars, `Having`, preconditions, repeatable computation, and scheduling stay outside.
+2. **Widen the computed Number scale-before-self-reference deferral** to `+`, `-`, and `*` in either operand position under accepted [`SPEC-2026-08-10-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-10-02--computed-number-scale-mismatch-precedes-direct-target-self-reference). The precondition slot and wider expression shapes such as aggregates and group counts stay unrepresented.
 
 ## Blockers
 
