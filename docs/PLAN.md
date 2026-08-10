@@ -16,7 +16,7 @@ The thin lanes in priority order are SG4 computation scheduling and state transi
 
 ## Immediate sequence
 
-1. **Reconcile computed Number target-scale and self-reference precedence next.** The retained kernel separator says derived-scale mismatch precedes calculated-field self-reference, while the current elaborator resolves target references before computing the scale summary. Fix that semantic order at its owner before projecting the already measured reached self-reference route to `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD`; leave precondition self-reference, unsupported expression, and every unmeasured numeric refusal outside the projection.
+1. **Implement the measured computed Number target-scale and self-reference precedence next.** Preserve the old early target refusal for every unmeasured or invalid expression, admit only the exact direct-left measured forms through the scale gate, and project the reached self-reference route to `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD` without widening precondition, unsupported-expression, or other numeric refusals.
 
 ## Blockers
 

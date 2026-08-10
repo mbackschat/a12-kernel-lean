@@ -521,6 +521,23 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **a12-dmkits revision:** `93771ee24aeb135a88ce9662ee3d88f39e804f45`
 - **Disposition:** accepted — canonical semantics, focused raw-Length enrichment, catalog guidance, and the existing `NvvRawTypeLawsTest` owner cover both strict orientations, decimal and fractional spellings, signed-32-bit endpoints and one-step overflows, the accepted `100` token, nonstrict and nested shape refusals, shape-before-bound precedence, and the ordinary-String nonstrict positive control. The corrective remains scoped to the recognized strict raw-Length internal-error route.
 
+<a id="spec-2026-08-10-02"></a>
+<a id="spec-2026-08-10-02--computed-number-scale-mismatch-precedes-direct-target-self-reference"></a>
+
+### SPEC-2026-08-10-02 - computed Number scale mismatch precedes direct target self-reference
+
+- **Status:** pending
+- **Kind:** semantic correction and extension, locally originated
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `93771ee24aeb135a88ce9662ee3d88f39e804f45` (clean)
+- **Kernel behavior:** 30.8.1, measured through dmtool `0.13.0` computation dry-run
+- **Canonical clause:** [`09-computations.md` ground rules and checklist](../spec/09-computations.md)
+- **Delta:** For the otherwise authoring-valid direct Number forms `[target] * <immediate literal>`, `[target] + <immediate literal>`, and `[target] + [different same-scale Number field]`, the implicit target-scale comparison is observably earlier than the direct target-reference refusal. A scale-matched expression reports only `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD`; changing only the literal to create a derived-scale mismatch reports only `MVK_INVALID_COMPARE_DEC_PLACES`; suppressing that scale code exposes `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD` again. This establishes only the measured direct-left arithmetic overlap, not another operand position, subtraction, a wider expression shape, precondition precedence, or another computation family.
+- **Basis:** One dmtool-authored model carries scale-0 and scale-2 targets, scale-0 and scale-2 sources, and a scale-1 factor. An eight-row caller-tagged observation matrix covers `Target0 * 2`, `Target0 * 1.5`, `Target0 + Source0`, and `Target0 + 1.5`, including suppression on both mismatches, plus an unrelated mismatch and accepted unrelated control. Every rejected row records the complete singleton diagnostic list, every verdict is `KERNEL_CONFIRMED`, and suppression changes only the reported target-reference overlap. The accepted scale-matched multiplication was persisted, read back structurally as `[/Probe/Source0] * 2`, and survived whole-model checking. The sibling remained clean at the same revision before and after.
+- **Requested a12-dmkits reconciliation:** Correct the canonical computation account and extend the existing `ComputedTargetScaleLawsTest` owner with those exact matched, mismatched, and mismatch-suppressed direct-left target-reference rows for multiplication and addition, asserting the complete code list for every rejection. Retain the unrelated mismatch and accepted computation controls. Reuse the existing computation authoring and kernel consistency routes; add no harness, representation, or diagnostic abstraction.
+- **Compatibility:** Reporting self-reference first loses the earlier observable scale gate and directs an author to the wrong first repair. Treating suppression as legalization wrongly admits a computation that still directly references its target. Generalizing the order beyond the measured direct-left arithmetic overlap would assert unmeasured behavior.
+- **Acceptance:** Canonical peer prose states the exact direct-left scale-before-self-reference boundary; the maintained existing-family cases separate both operations, all three target-reference rows, the unrelated mismatch, and the accepted control with complete code lists; another operand position, subtraction, wider or specialized expressions, invalid authoring, and precondition precedence remain outside the claim; and the handback supplies the exact reviewed revision plus per-surface disposition.
+
 ## Experiment requests
 
 <a id="exp-2026-08-06-01"></a>
