@@ -19,7 +19,10 @@ private def enumField (id : FieldId) (path : List String)
   }
 
 private def targetDomain : EnumerationDeclaration :=
-  { storedTokens := ["A", "B"] }
+  {
+    storedTokens := ["A", "B"]
+    categories := [{ name := "Choice", tokens := ["A", "B"] }]
+  }
 
 private def compatibleDomain : EnumerationDeclaration :=
   { storedTokens := ["A", "B"] }
@@ -48,6 +51,7 @@ private def projectedDomain : EnumerationDeclaration :=
 
 private def target := enumField 0 ["Form", "Target"] targetDomain
 private def compatible := enumField 1 ["Form", "Compatible"] compatibleDomain
+private def compatible2 := enumField 9 ["Form", "Compatible2"] compatibleDomain
 private def wider := enumField 2 ["Form", "Wider"] widerDomain
 private def displayed := enumField 3 ["Form", "Displayed"] displayedDomain
 private def projected := enumField 4 ["Form", "Projected"] projectedDomain
@@ -81,7 +85,7 @@ private def filterRight : FlatFieldDecl :=
 
 private def model : FlatModel :=
   {
-    fields := [target, compatible, wider, displayed, projected, repeated,
+    fields := [target, compatible, compatible2, wider, displayed, projected, repeated,
       plainString, filterLeft, filterRight]
     repeatableGroups := [{
       level := 10
@@ -173,6 +177,11 @@ private def errorOf (authored : SurfaceEnumerationFirstFilledSource) :
   match elaborateEnumerationFirstFilledComputation model ["Form"] target.id authored with
   | .ok _ => none
   | .error error => some error
+
+private def targetDiagnosticOf (authored : SurfaceEnumerationFirstFilledSource) :
+    Option KernelStaticDiagnostic :=
+  (errorOf authored).bind
+    EnumerationFirstFilledComputationElabError.targetDiagnostic?
 
 private def outcomeOf (authored : SurfaceEnumerationFirstFilledSource)
     (rows : List RowIndex) (directContext : RawFlatContext)
@@ -280,7 +289,33 @@ example :
       errorOf (source (direct "PlainString") [direct "Compatible"]) =
         some (.directSource (.textFieldOperandKindMismatch plainString.path .string)) ∧
       errorOf (source (direct "Target") [direct "Compatible"]) =
-        some (.targetSelfReference target.id) := by
+        some (.targetSelfReferenceInDirectPair target.id) ∧
+      targetDiagnosticOf (source (direct "Target") [direct "Compatible"]) =
+        some .errorReferenceToCalculatedField := by
+  native_decide
+
+/- Only the measured target-first, two-direct-compatible-field list projects.
+Accepted lists and target references in another position or source shape stay
+distinct, while an incompatible overlap does not acquire an unmeasured
+precedence claim. -/
+example :
+    errorOf (source (direct "Compatible") [direct "Compatible2"]) = none ∧
+      targetDiagnosticOf
+        (source (direct "Compatible") [direct "Compatible2"]) = none ∧
+      errorOf (source (direct "Compatible") [direct "Target"]) =
+        some (.targetSelfReference target.id) ∧
+      targetDiagnosticOf
+        (source (direct "Compatible") [direct "Target"]) = none ∧
+      errorOf (source (category "Target" "Choice") [direct "Compatible"]) =
+        some (.targetSelfReference target.id) ∧
+      targetDiagnosticOf
+        (source (category "Target" "Choice") [direct "Compatible"]) = none ∧
+      errorOf (source (direct "Target") [categoryStar]) =
+        some (.targetSelfReference target.id) ∧
+      targetDiagnosticOf (source (direct "Target") [categoryStar]) = none ∧
+      errorOf (source (direct "Target") [direct "Wider"]) =
+        some (.targetSelfReference target.id) ∧
+      targetDiagnosticOf (source (direct "Target") [direct "Wider"]) = none := by
   native_decide
 
 end A12Kernel.Conformance.EnumerationFirstFilledComputation
