@@ -7,6 +7,11 @@ namespace A12Kernel.Conformance.NumericComputation.Core
 open A12Kernel
 open A12Kernel.Conformance.NumericComputation.Support
 
+private def targetScaleDiagnosticOf
+    (error? : Option NumericComputationElabError) :
+    Option KernelStaticDiagnostic :=
+  error?.bind NumericComputationElabError.targetScaleDiagnostic?
+
 /- Checked computation-operation authoring resolves the shared numeric tree and rejects a nested direct reference to its own target. -/
 example :
     checkedErrorOf
@@ -129,6 +134,25 @@ example :
       checkedTargetResultOf scaleOne true =
         some (.supported (.rejected
           { unscaled := 11, scale := 1 } .suppressedScaleMismatch)) := by
+  native_decide
+
+/- Only a reached computed-target scale mismatch projects to the measured Kernel
+class. Suppression removes that refusal, while earlier self-reference and
+authoring failures remain explicitly unmapped. -/
+example :
+    let scaleOne :=
+      AuthoredNumericExpr.literal
+        (Atom := SurfaceNumericAtom) { value := 11 / 10, authoredScale := 1 }
+    targetScaleDiagnosticOf (checkedErrorOf scaleOne) =
+        some .invalidCompareDecimalPlaces ∧
+      targetScaleDiagnosticOf
+        (checkedErrorOf scaleOne (suppressExactScaleWarning := true)) = none ∧
+      NumericComputationElabError.targetScaleDiagnostic?
+        (.targetSelfReference targetId) = none ∧
+      NumericComputationElabError.targetScaleDiagnostic?
+        (.authoring .tooManyDivisions) = none ∧
+      KernelStaticDiagnostic.kernelCode .invalidCompareDecimalPlaces =
+        "MVK_INVALID_COMPARE_DEC_PLACES" := by
   native_decide
 
 /- Suppression does not bypass the independent plain-authoring rejection. -/

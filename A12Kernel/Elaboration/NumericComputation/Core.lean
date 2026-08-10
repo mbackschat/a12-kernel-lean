@@ -100,6 +100,13 @@ def groupCountDiagnostic? :
   | .repeatableGroupCountRequiresStar _ => some .noWildcard
   | _ => none
 
+/-- Project only the measured computed Number target-scale rejection. Earlier
+self-reference and authoring failures remain unmapped. -/
+def targetScaleDiagnostic? :
+    NumericComputationElabError → Option KernelStaticDiagnostic
+  | .operationScaleMismatch _ _ => some .invalidCompareDecimalPlaces
+  | _ => none
+
 end NumericComputationElabError
 
 /-- One resolved numeric operation before target storage, retaining whether its result-scale warning was explicitly suppressed. -/
