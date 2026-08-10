@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.Flat.Model
+import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.TemporalTarget
 
 /-! # Checked temporal declaration policy
@@ -125,6 +126,19 @@ inductive FullDateTargetElabError where
   | unsupportedFormat (target : FieldId) (source : String)
   | unsupportedZone (zoneId : String)
   deriving Repr, DecidableEq
+
+namespace FullDateTargetElabError
+
+/-- Project only the measured partial computed-Date target rejection. Formats,
+zones, kinds, and policy-resolution failures remain unmapped. -/
+def partialTargetDiagnostic? :
+    FullDateTargetElabError → Option KernelStaticDiagnostic
+  | .partialPrecision _ .dayOptional => some .invalidDateType
+  | .partialPrecision _ .monthOptional => some .invalidDateType
+  | .partialPrecision _ .yearOptional => some .invalidDateType
+  | _ => none
+
+end FullDateTargetElabError
 
 /-- One checked FULL Date target with an executable format and concrete model-zone profile. Partial precision is a stored-input capability rejected by computation authoring. -/
 structure CheckedFullDateTarget (model : FlatModel) where

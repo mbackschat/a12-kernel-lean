@@ -116,6 +116,11 @@ private def fullDateElabError?
   | .ok _ => none
   | .error error => some error
 
+private def fullDateStaticDiagnostic?
+    (model : FlatModel) : Option KernelStaticDiagnostic :=
+  (fullDateElabError? model).bind
+    FullDateTargetElabError.partialTargetDiagnostic?
+
 private def dateTimeModel
     (format zoneId : String)
     (components : TemporalComponents := TemporalComponents.now) :
@@ -187,6 +192,32 @@ example :
         some (.accepted {
           text := "07.04.2024"
           nonempty := by decide }) := by
+  native_decide
+
+/- Every represented partial computed-Date target reaches the same measured class.
+FULL admission and unrelated target refusals do not manufacture that identity. -/
+example :
+    [ .dayOptional, .monthOptional, .yearOptional ].map
+        (fun mode => fullDateStaticDiagnostic?
+          (fullDateModel "dd.MM.yyyy" "UTC" mode)) =
+      [ some .invalidDateType
+      , some .invalidDateType
+      , some .invalidDateType ] ∧
+      fullDateStaticDiagnostic?
+        (fullDateModel "dd.MM.yyyy" "UTC") = none ∧
+      FullDateTargetElabError.partialTargetDiagnostic?
+          (.partialPrecision 0 .full) = none ∧
+      [ FullDateTargetElabError.partialTargetDiagnostic?
+          (.targetPolicy (.targetNotTemporal 0))
+      , FullDateTargetElabError.partialTargetDiagnostic?
+          (.targetKind 0 .dateTime)
+      , FullDateTargetElabError.partialTargetDiagnostic?
+          (.unsupportedFormat 0 "yyyy/M/d")
+      , FullDateTargetElabError.partialTargetDiagnostic?
+          (.unsupportedZone "Pacific/Apia") ] =
+        [none, none, none, none] ∧
+      KernelStaticDiagnostic.kernelCode .invalidDateType =
+        "MVK_INVALID_DATE_TYPE" := by
   native_decide
 
 /- Partial-target rejection precedes ordinary basic checks, while the FULL target retains the exact pre-1900 attempt. -/
