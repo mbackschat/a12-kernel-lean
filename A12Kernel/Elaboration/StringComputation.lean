@@ -1,9 +1,10 @@
 import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.StringComputation
 
 /-! # Checked String-computation expression lowering
 
-This capsule resolves parser-independent field paths in copy/Number-`FieldValueAsString`/literal/`RangeAsString`/concatenation expressions into the existing `StringExpr FieldId` runtime tree. It accepts only nonrepeatable declarations of the exact kind required by each leaf. `RangeAsString` preserves the kernel's static gate order: resolve the nonrepeatable field shape, check 1-based inclusive bounds, then certify the String value kind. The integrated ordinary-target entry point additionally retains the declaration-owned line-break/pattern/minimum/maximum policy and rejects direct target self-reference before evaluation. Alternatives, concrete syntax, repeatable reads, indexed coercion, raw/custom targets, and scheduling remain outside.
+This capsule resolves parser-independent field paths in copy/Number-`FieldValueAsString`/literal/`RangeAsString`/concatenation expressions into the existing `StringExpr FieldId` runtime tree. It accepts only nonrepeatable declarations of the exact kind required by each leaf. `RangeAsString` preserves the kernel's static gate order: resolve the nonrepeatable field shape, check 1-based inclusive bounds, then certify the String value kind. The integrated ordinary-target entry point additionally retains the declaration-owned line-break/pattern/minimum/maximum policy and rejects direct target self-reference before evaluation. Root direct-copy and `RangeAsString` target references retain separate refusal provenance for their measured exact Kernel projection; wider target reads remain locally rejected and externally unmapped. Alternatives, concrete syntax, repeatable reads, indexed coercion, raw/custom targets, and scheduling remain outside.
 -/
 
 namespace A12Kernel
@@ -18,8 +19,20 @@ inductive StringComputationElabError where
   | rawStringTarget (path : List String)
   | customStringTarget (path : List String)
   | targetSelfReference (field : FieldId)
+  | targetSelfReferenceAtRoot (field : FieldId)
   | incoherentCore
   deriving Repr, DecidableEq
+
+namespace StringComputationElabError
+
+/-- Project only the measured root direct-copy and `RangeAsString` target
+reference refusals to their exact Kernel diagnostic class. -/
+def targetDiagnostic? :
+    StringComputationElabError → Option KernelStaticDiagnostic
+  | .targetSelfReferenceAtRoot _ => some .errorReferenceToCalculatedField
+  | _ => none
+
+end StringComputationElabError
 
 /-- Admit one already-resolved nonrepeatable declaration as a String-value computation leaf. -/
 def admitStringComputationValueField
@@ -99,6 +112,13 @@ def referencesField (field : FieldId) : StringExpr FieldId → Bool
   | .literal _ => false
   | .range candidate _ _ => candidate == field
   | .concat left right => left.referencesField field || right.referencesField field
+
+/-- Whether the complete expression is one of the measured root target-read
+shapes rather than a wider expression that merely contains the target. -/
+private def isRootTargetReference (field : FieldId) : StringExpr FieldId → Bool
+  | .field candidate => candidate == field
+  | .range candidate _ _ => candidate == field
+  | _ => false
 
 end StringExpr
 
@@ -194,7 +214,10 @@ def elaborateStringComputationOperation
       let core ← elaborateStringExprCore model declaringGroup expression
       let checked ← certifyStringExpr model hModel core
       if hReference : checked.core.referencesField targetField = true then
-        throw (.targetSelfReference targetField)
+        if checked.core.isRootTargetReference targetField then
+          throw (.targetSelfReferenceAtRoot targetField)
+        else
+          throw (.targetSelfReference targetField)
       else
         if hTarget : model.admitsStringComputationTarget
             targetField declaration.stringPolicy = true then

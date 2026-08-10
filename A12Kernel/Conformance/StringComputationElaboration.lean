@@ -7,6 +7,11 @@ namespace A12Kernel.Conformance.StringComputationElaboration
 
 open A12Kernel
 
+private def targetDiagnosticOf
+    (error? : Option StringComputationElabError) :
+    Option KernelStaticDiagnostic :=
+  error?.bind StringComputationElabError.targetDiagnostic?
+
 private def source : FlatFieldDecl :=
   { id := 0, groupPath := ["Form"], name := "Source",
     policy := { kind := .string },
@@ -323,15 +328,42 @@ example :
       (cells (.parsed (.str "ABCDE")) .empty) = some (.accepted rangeResult) := by
   native_decide
 
-/- The integrated checked operation rejects self-reference instead of leaving it to runtime evaluation. -/
+/- The measured direct-copy and root-range target references project to their
+exact Kernel class, while an accepted other-field copy remains diagnostic-free. -/
 example :
-    operationErrorOf (elaborateStringComputationOperation model ["Form"] target.id
-      (.field (bare "Target"))) = some (.targetSelfReference target.id) := by
+    let direct := operationErrorOf
+      (elaborateStringComputationOperation model ["Form"] target.id
+        (.field (bare "Target")))
+    let range := operationErrorOf
+      (elaborateStringComputationOperation model ["Form"] target.id
+        (.range (bare "Target") 1 1))
+    let control := operationErrorOf
+      (elaborateStringComputationOperation model ["Form"] target.id
+        (.field (bare "Source")))
+    direct = some (.targetSelfReferenceAtRoot target.id) ∧
+      range = some (.targetSelfReferenceAtRoot target.id) ∧
+      control = none ∧
+      targetDiagnosticOf direct = some .errorReferenceToCalculatedField ∧
+      targetDiagnosticOf range = some .errorReferenceToCalculatedField ∧
+      targetDiagnosticOf control = none := by
   native_decide
 
+/- Wider and malformed target reads retain their local refusal without an exact
+Kernel projection because this matrix measured neither branch. -/
 example :
-    operationErrorOf (elaborateStringComputationOperation model ["Form"] target.id
-      (.range (bare "Target") 1 1)) = some (.targetSelfReference target.id) := by
+    let concatenated := operationErrorOf
+      (elaborateStringComputationOperation model ["Form"] target.id
+        (.concat (.field (bare "Target")) (.literal "X")))
+    let invalidRange := operationErrorOf
+      (elaborateStringComputationOperation model ["Form"] target.id
+        (.range (bare "Target") 0 1))
+    concatenated = some (.targetSelfReference target.id) ∧
+      invalidRange = some (.invalidRange 0 1) ∧
+      targetDiagnosticOf concatenated = none ∧
+      targetDiagnosticOf invalidRange = none ∧
+      StringComputationElabError.targetDiagnostic?
+        (.targetKindMismatch amount.path .number) = none ∧
+      StringComputationElabError.targetDiagnostic? .incoherentCore = none := by
   native_decide
 
 /- A non-String target is rejected at the target boundary even when the operation itself is a String literal. -/
