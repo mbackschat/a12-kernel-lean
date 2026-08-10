@@ -87,18 +87,21 @@ inductive EnumerationComputationElabError where
   | sourceIncompatible (sourcePath targetPath : List String)
   | targetSelfReference (field : FieldId)
   | targetSelfReferenceAtDirectField (field : FieldId)
+  | targetSelfReferenceAtCompatibleCategory (field : FieldId)
   | incoherentCore
   deriving Repr, DecidableEq
 
 namespace EnumerationComputationElabError
 
-/-- Project only the measured direct Enumeration target-reference refusal to
-its exact Kernel diagnostic class. Domain, display, kind, and resolution
-failures remain local until separately measured. -/
+/-- Project the measured direct and compatible-category Enumeration
+target-reference refusals to their distinct Kernel diagnostic classes. Domain,
+display, kind, and resolution failures remain local until separately measured. -/
 def targetDiagnostic? :
     EnumerationComputationElabError → Option KernelStaticDiagnostic
   | .targetSelfReferenceAtDirectField _ =>
       some .errorReferenceToCalculatedField
+  | .targetSelfReferenceAtCompatibleCategory _ =>
+      some .errorSemanticIndexOrCategoryForErrorField
   | _ => none
 
 end EnumerationComputationElabError
@@ -183,7 +186,10 @@ def elaborateEnumerationComputation
           | .stored =>
               throw (.targetSelfReferenceAtDirectField target.field)
           | .category _ =>
-              throw (.targetSelfReference target.field)
+              if source.allowedFor target.projection then
+                throw (.targetSelfReferenceAtCompatibleCategory target.field)
+              else
+                throw (.targetSelfReference target.field)
     else if hAllowed : source.allowedFor target.projection = true then
       pure {
         target

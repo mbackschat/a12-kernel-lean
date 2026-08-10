@@ -538,6 +538,23 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Compatibility:** Reporting self-reference first loses the earlier observable scale gate and directs an author to the wrong first repair. Treating suppression as legalization wrongly admits a computation that still directly references its target. Generalizing the order beyond the measured direct-left arithmetic overlap would assert unmeasured behavior.
 - **Acceptance:** Canonical peer prose states the exact direct-left scale-before-self-reference boundary; the maintained existing-family cases separate both operations, all three target-reference rows, the unrelated mismatch, and the accepted control with complete code lists; another operand position, subtraction, wider or specialized expressions, invalid authoring, and precondition precedence remain outside the claim; and the handback supplies the exact reviewed revision plus per-surface disposition.
 
+<a id="spec-2026-08-10-03"></a>
+<a id="spec-2026-08-10-03--enumeration-category-target-reads-have-a-distinct-static-diagnostic"></a>
+
+### SPEC-2026-08-10-03 - Enumeration category target reads have a distinct static diagnostic
+
+- **Status:** pending
+- **Kind:** semantic correction and extension, locally originated
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `93771ee24aeb135a88ce9662ee3d88f39e804f45` (clean)
+- **Kernel behavior:** 30.8.1, measured through dmtool `0.13.0` computation dry-run
+- **Canonical clause:** [`09-computations.md` ground rules and checklist](../spec/09-computations.md)
+- **Delta:** A compatible Enumeration computation source that reads its calculated field through a category projection is rejected with the singleton `MVK_ERROR_SEMANTIC_INDEX_OR_CATEGORY_FOR_ERRORFIELD`, not the plain direct-read class `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD`. The measured shapes are the ordinary source `[/Probe/Target -> Choice]` and either target position in a compatible two-category `FirstFilledValue`. This does not establish mixed category/direct lists, category lists longer than two, incompatible categories, stars, `Having`, semantic-index reads, preconditions, repeatable computation, or scheduling precedence.
+- **Basis:** One caller-tagged five-row batch on a dmtool-authored model with three closed `A`/`B` Enumeration fields and identical `Choice` categories covers the ordinary target-category source, both target positions in a two-category `FirstFilledValue`, an accepted ordinary different-field category source, and an accepted two-category different-field list. Every rejected child is `KERNEL_CONFIRMED` with the complete singleton code, both controls are accepted, and the retained observation artifact has SHA-256 `02ffb70e71d5357e69ff1598522a0c34fca8eb11ad43e29ae2cb4fb1cd6c4783`. The `FirstFilledValue` control persisted, read back exactly with both category projections, and survived whole-model checking. The ordinary category control also persisted and the model remained valid, but dmtool converted read-back dropped `-> Choice`; its dry-run acceptance remains usable while no exact round-trip claim is made. The sibling remained clean at the same revision before and after.
+- **Requested a12-dmkits reconciliation:** Correct the canonical computation semantics and the existing `MVK-LEDGER.md` row that currently marks this code erased because category decoration of the computed-field slot is said to be unrepresentable. Extend the smallest existing computation static-law owner with the ordinary target-category row, both two-category target positions, and both accepted controls, asserting each complete code list. Retain the explicit exclusions above. Reuse the current computation authoring and kernel consistency routes; add no harness or representation.
+- **Compatibility:** Collapsing a target-category read into the plain target-reference class loses an observable distinction and gives the wrong first repair. Treating the category access as accepted because the computed-field slot itself is plain admits models the Kernel rejects. Generalizing beyond the measured shapes asserts an unmeasured category boundary.
+- **Acceptance:** Canonical peer prose and diagnostic guidance state the distinct category-target class without calling it erased; maintained existing-family cases cover the ordinary target category, both target positions in a compatible two-category list, and both accepted controls with complete code lists; mixed, wider, incompatible, starred, filtered, semantic-index, precondition, repeatable, and scheduling shapes remain outside the claim; and the handback supplies the exact reviewed revision plus per-surface disposition.
+
 ## Experiment requests
 
 <a id="exp-2026-08-06-01"></a>

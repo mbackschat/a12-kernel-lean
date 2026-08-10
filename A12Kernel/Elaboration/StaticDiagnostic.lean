@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, computed-Date partial-target, String pattern-comparison, and raw-String length-admission families. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, and raw-String length-admission families. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -39,6 +39,8 @@ inductive KernelStaticDiagnostic where
   | invalidCompareDecimalPlaces
   /-- A computation directly references its own calculated field. -/
   | errorReferenceToCalculatedField
+  /-- An established Enumeration computation shape reads the calculated field through a compatible category projection. -/
+  | errorSemanticIndexOrCategoryForErrorField
   /-- A Date computation targets a declaration with partial rather than FULL precision. -/
   | invalidDateType
   deriving Repr, DecidableEq
@@ -62,6 +64,8 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidCompareDecimalPlaces => "MVK_INVALID_COMPARE_DEC_PLACES"
   | .errorReferenceToCalculatedField =>
       "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+  | .errorSemanticIndexOrCategoryForErrorField =>
+      "MVK_ERROR_SEMANTIC_INDEX_OR_CATEGORY_FOR_ERRORFIELD"
   | .invalidDateType => "MVK_INVALID_DATE_TYPE"
 
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
@@ -70,7 +74,8 @@ def all : List KernelStaticDiagnostic :=
     .paramSizeInvalidGN, .duplicateParam1, .duplicateParam2, .noWildcard,
     .invalidPattern, .invalidTypeForPatternComparison, .internalError,
     .invalidLengthOfRawType, .invalidCompareDecimalPlaces,
-    .errorReferenceToCalculatedField, .invalidDateType]
+    .errorReferenceToCalculatedField,
+    .errorSemanticIndexOrCategoryForErrorField, .invalidDateType]
 
 end KernelStaticDiagnostic
 

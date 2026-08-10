@@ -21,11 +21,17 @@ private def enumField (id : FieldId) (path : List String)
 private def targetDomain : EnumerationDeclaration :=
   {
     storedTokens := ["A", "B"]
-    categories := [{ name := "Choice", tokens := ["A", "B"] }]
+    categories := [
+      { name := "Choice", tokens := ["A", "B"] },
+      { name := "Foreign", tokens := ["X", "Y"] }
+    ]
   }
 
 private def compatibleDomain : EnumerationDeclaration :=
-  { storedTokens := ["A", "B"] }
+  {
+    storedTokens := ["A", "B"]
+    categories := [{ name := "Choice", tokens := ["A", "B"] }]
+  }
 
 private def widerDomain : EnumerationDeclaration :=
   { storedTokens := ["A", "C"] }
@@ -331,13 +337,45 @@ example :
         [direct "Compatible2", direct "Compatible3"]) = none := by
   native_decide
 
-/- Category, star, incompatible, and wider-than-measured target lists retain
-their local refusal without an exact external class. -/
+/- The measured compatible two-category pairs project their distinct Kernel
+class in both target positions, while their different-field control remains
+accepted. -/
+example :
+    errorOf (source (category "Target" "Choice")
+        [category "Compatible" "Choice"]) =
+        some (.targetSelfReferenceInCategoryPair target.id) ∧
+      targetDiagnosticOf (source (category "Target" "Choice")
+        [category "Compatible" "Choice"]) =
+          some .errorSemanticIndexOrCategoryForErrorField ∧
+      errorOf (source (category "Compatible" "Choice")
+        [category "Target" "Choice"]) =
+          some (.targetSelfReferenceInCategoryPair target.id) ∧
+      targetDiagnosticOf (source (category "Compatible" "Choice")
+        [category "Target" "Choice"]) =
+          some .errorSemanticIndexOrCategoryForErrorField ∧
+      errorOf (source (category "Compatible" "Choice")
+        [category "Compatible2" "Choice"]) = none ∧
+      targetDiagnosticOf (source (category "Compatible" "Choice")
+        [category "Compatible2" "Choice"]) = none := by
+  native_decide
+
+/- Mixed, three-category, incompatible-category, star, and wider stored-direct
+target lists retain their local refusal without an exact external class. -/
 example :
     errorOf (source (category "Target" "Choice") [direct "Compatible"]) =
         some (.targetSelfReference target.id) ∧
       targetDiagnosticOf
         (source (category "Target" "Choice") [direct "Compatible"]) = none ∧
+      errorOf (source (category "Target" "Choice")
+        [category "Compatible" "Choice", category "Compatible2" "Choice"]) =
+          some (.targetSelfReference target.id) ∧
+      targetDiagnosticOf (source (category "Target" "Choice")
+        [category "Compatible" "Choice", category "Compatible2" "Choice"]) = none ∧
+      errorOf (source (category "Target" "Foreign")
+        [category "Compatible" "Choice"]) =
+          some (.targetSelfReference target.id) ∧
+      targetDiagnosticOf (source (category "Target" "Foreign")
+        [category "Compatible" "Choice"]) = none ∧
       errorOf (source (direct "Target") [categoryStar]) =
         some (.targetSelfReference target.id) ∧
       targetDiagnosticOf (source (direct "Target") [categoryStar]) = none ∧

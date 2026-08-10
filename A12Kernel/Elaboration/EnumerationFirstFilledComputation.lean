@@ -6,7 +6,7 @@ import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Checked Enumeration-target `FirstFilledValue`
 
-This capsule adds the aggregate source admitted by the ordinary closed-Enumeration target gate. The common field-list shape owns cardinality and direct-duplicate precedence; exact stored/category projections own domain and display compatibility; the shared first-filled scan owns value, empty, and target-poison behavior; and the computation-phase `Having` traversal preserves filter poison plus the runtime iterator's one-kept-candidate lookahead. Measured compatible stored-direct lists of two or three fields project the exact Kernel self-reference class in every target position. Categories, stars, filters, incompatible overlaps, and wider lists retain the local refusal without an external class.
+This capsule adds the aggregate source admitted by the ordinary closed-Enumeration target gate. The common field-list shape owns cardinality and direct-duplicate precedence; exact stored/category projections own domain and display compatibility; the shared first-filled scan owns value, empty, and target-poison behavior; and the computation-phase `Having` traversal preserves filter poison plus the runtime iterator's one-kept-candidate lookahead. Measured compatible stored-direct lists of two or three fields project the ordinary Kernel self-reference class in every target position, while compatible two-category pairs project the distinct category-target class in either position. Mixed, wider, incompatible, starred, and filtered shapes retain the local refusal without an external class.
 -/
 
 namespace A12Kernel
@@ -86,6 +86,13 @@ private def isStoredDirect : CheckedEnumerationFirstFilledOperand model → Bool
       | .category _ => false
   | .star _ => false
 
+private def isCategory : CheckedEnumerationFirstFilledOperand model → Bool
+  | .field _ source _ _ =>
+      match source.projectionRef with
+      | .stored => false
+      | .category _ => true
+  | .star _ => false
+
 def allowedFor (operand : CheckedEnumerationFirstFilledOperand model)
     (target : CheckedEnumerationProjection) : Bool :=
   operand.projection.compatibleWithTarget target
@@ -130,6 +137,16 @@ private def isMeasuredBoundedDirectTargetList
     operands.all (fun operand => operand.isStoredDirect) &&
     source.referencesField targetField && source.allowedFor target
 
+/-- The exact externally measured category-target denominator: a compatible
+two-category list, with the target in either position. -/
+private def isMeasuredCategoryTargetPair
+    (source : CheckedEnumerationFirstFilledSource model)
+    (targetField : FieldId) (target : CheckedEnumerationProjection) : Bool :=
+  let operands := source.operands
+  operands.length == 2 &&
+    operands.all (fun operand => operand.isCategory) &&
+    source.referencesField targetField && source.allowedFor target
+
 end CheckedEnumerationFirstFilledSource
 
 inductive EnumerationFirstFilledComputationElabError where
@@ -140,18 +157,22 @@ inductive EnumerationFirstFilledComputationElabError where
   | sourceIncompatible (sourcePath targetPath : List String)
   | targetSelfReference (field : FieldId)
   | targetSelfReferenceInBoundedDirectList (field : FieldId)
+  | targetSelfReferenceInCategoryPair (field : FieldId)
   | incoherentCore
   deriving Repr, DecidableEq
 
 namespace EnumerationFirstFilledComputationElabError
 
-/-- Project only the measured compatible stored-direct lists of length two or
-three to their exact Kernel diagnostic class. Wider shapes stay local. -/
+/-- Project the measured compatible stored-direct lists of length two or three
+and compatible two-category lists to their distinct Kernel diagnostic classes.
+Wider and mixed shapes stay local. -/
 def targetDiagnostic? :
     EnumerationFirstFilledComputationElabError →
       Option KernelStaticDiagnostic
   | .targetSelfReferenceInBoundedDirectList _ =>
       some .errorReferenceToCalculatedField
+  | .targetSelfReferenceInCategoryPair _ =>
+      some .errorSemanticIndexOrCategoryForErrorField
   | _ => none
 
 end EnumerationFirstFilledComputationElabError
@@ -257,6 +278,8 @@ def elaborateEnumerationFirstFilledComputation
   if hReference : source.referencesField target.field = true then
     if source.isMeasuredBoundedDirectTargetList target.field target.projection then
       throw (.targetSelfReferenceInBoundedDirectList target.field)
+    else if source.isMeasuredCategoryTargetPair target.field target.projection then
+      throw (.targetSelfReferenceInCategoryPair target.field)
     else
       throw (.targetSelfReference target.field)
   else if hAllowed : source.allowedFor target.projection = true then

@@ -19,7 +19,10 @@ private def enumField (id : FieldId) (name : String)
 private def targetDomain : EnumerationDeclaration :=
   {
     storedTokens := ["A", "B"]
-    categories := [{ name := "Choice", tokens := ["A", "B"] }]
+    categories := [
+      { name := "Choice", tokens := ["A", "B"] },
+      { name := "Foreign", tokens := ["X", "Y"] }
+    ]
   }
 
 private def directDomain : EnumerationDeclaration :=
@@ -128,9 +131,9 @@ example :
         some .errorReferenceToCalculatedField := by
   native_decide
 
-/- The exact projection is limited to direct target self-reference. Accepted
-different-field reads and unrelated Enumeration refusals do not acquire a
-plausible-looking Kernel class. -/
+/- The compatible target-category projection carries its distinct measured
+Kernel class. An incompatible category and unrelated Enumeration refusals stay
+local. -/
 example :
     targetDiagnosticOf (.field (.direct (bare "Direct"))) = none ∧
       targetDiagnosticOf (.literal "C") = none ∧
@@ -138,8 +141,15 @@ example :
       targetDiagnosticOf (.field (.direct (bare "Displayed"))) = none ∧
       targetDiagnosticOf (.field (.direct (bare "PlainString"))) = none ∧
       errorOf (.field (.category (bare "Target") "Choice")) =
+        some (.targetSelfReferenceAtCompatibleCategory target.id) ∧
+      targetDiagnosticOf (.field (.category (bare "Target") "Choice")) =
+        some .errorSemanticIndexOrCategoryForErrorField ∧
+      errorOf (.field (.category (bare "Target") "Foreign")) =
         some (.targetSelfReference target.id) ∧
-      targetDiagnosticOf (.field (.category (bare "Target") "Choice")) = none := by
+      targetDiagnosticOf (.field (.category (bare "Target") "Foreign")) = none ∧
+      KernelStaticDiagnostic.kernelCode
+        .errorSemanticIndexOrCategoryForErrorField =
+          "MVK_ERROR_SEMANTIC_INDEX_OR_CATEGORY_FOR_ERRORFIELD" := by
   native_decide
 
 /- An ordinary String field cannot enter the Enumeration-producing source surface merely because both store text. -/
