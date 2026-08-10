@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-08-10:** `lake build` clean (729 jobs) · trust audit **1872 theorem roots; 44381 declarations in 425 modules** · `lake test` 51/51 · `check-spec-sync.sh` passed. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-08-10:** `lake build` clean (730 jobs) · trust audit **1872 theorem roots; 44381 declarations in 425 modules** · `lake test` 51/51 · `check-spec-sync.sh` passed. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 ## Active semantic unit
 
@@ -16,7 +16,7 @@ The thin lanes in priority order are SG4 computation scheduling and state transi
 
 ## Immediate sequence
 
-1. **Run one bounded Translate/Explain consumer probe over the closed Number and String diagnostic surface.** Exercise the shared self-reference capability through the existing Lean decision surface: translate measured refusals to the exact Kernel code, explain uncovered refusals as locally rejected but externally unmapped, and keep scale suppression distinct from successful admission. Feed any representation defect back into the semantic owner; add no harness or protocol. Select the next semantic capsule from the probe result and the open gap owners rather than precommitting to another operator.
+1. **Measure and project ordinary Enumeration computation self-reference next.** Reuse the existing closed-Enumeration target/source elaborator and shared `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD` class. First obtain a clean exact-source direct-target row plus an accepted different-field control through the existing dmtool observation route. Project only the measured source shape; leave literal/domain/display/source-kind failures unmapped and do not widen into repeatable computation or scheduling.
 
 ## Blockers
 
