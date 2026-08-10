@@ -16,15 +16,12 @@ The thin lanes in priority order are SG4 computation scheduling and state transi
 
 ## Immediate sequence
 
-1. **Review the owner handback before resuming implementation.** Inspect the exact committed a12-dmkits revision read-only, verify the fixes requested in `A12-DMTOOL-FEEDBACK-2026-08-10-CONSOLIDATED.md`, and discharge each pending ledger entry against its own acceptance condition before changing its status.
-2. **Close raw-String `Length` static parity next.** Red/green the decimal-point-free signed-32-bit bound, trailing-zero admission, shape-before-bound precedence, exact Kernel diagnostic projection, and retained metadata against the already measured finite matrix.
-3. **Then select the next operator family with measured refusal rows.** Prefer a family whose codes are already measured over one that needs a new probe, and keep its projection local unless a second completed consumer proves the gate is shared.
+1. **Close raw-String `Length` static parity next.** Red/green the decimal-point-free signed-32-bit bound, trailing-zero admission, shape-before-bound precedence, exact Kernel diagnostic projection, and retained metadata against the already measured finite matrix.
+2. **Then select the next operator family with measured refusal rows.** Prefer a family whose codes are already measured over one that needs a new probe, and keep its projection local unless a second completed consumer proves the gate is shared.
 
 ## Blockers
 
-**No intrinsic semantic blocker.** Work is paused at the owner's request until an exact committed a12-dmkits handback addresses the consolidated dmtool feedback and pending synchronization entries. Do not resume dmtool evidence collection or the raw-String Lean capsule before reviewing that revision.
-
-The outbound ledger queue contains pending [`SPEC-2026-08-09-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-09-01--numberoffilledgroups-computation-admission-preserves-fixed-list-and-starred-mix-boundaries), [`SPEC-2026-08-09-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-09-02--fieldvaluesnotunique-refuses-confirm-at-the-whole-list-kind-gate), and [`SPEC-2026-08-10-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-10-01--raw-string-length-metadata-requires-a-decimal-point-free-signed-32-bit-bound). Before filing another `EXP-`, apply the route inventory in [the ledger's kinds of entry](A12-DMKITS-SPEC-SYNC-LEDGER.md#kinds-of-entry): static legality is measurable locally through the kernel consistency oracle and is never an `EXP-`; only kernel runtime questions cross the boundary.
+**No intrinsic semantic blocker.** The exact clean a12-dmkits handback `93771ee24aeb135a88ce9662ee3d88f39e804f45` was reviewed at dmtool `0.13.0`; focused kernel-law and CLI regression gates passed, the consolidated instrument fixes are present, and [`SPEC-2026-08-09-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-09-01--numberoffilledgroups-computation-admission-preserves-fixed-list-and-starred-mix-boundaries), [`SPEC-2026-08-09-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-09-02--fieldvaluesnotunique-refuses-confirm-at-the-whole-list-kind-gate), and [`SPEC-2026-08-10-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-10-01--raw-string-length-metadata-requires-a-decimal-point-free-signed-32-bit-bound) are accepted. Before filing another `EXP-`, apply the route inventory in [the ledger's kinds of entry](A12-DMKITS-SPEC-SYNC-LEDGER.md#kinds-of-entry): static legality is measurable locally through the kernel consistency oracle and is never an `EXP-`; only kernel runtime questions cross the boundary.
 
 ## Parked boundaries
 

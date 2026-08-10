@@ -469,9 +469,9 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ### SPEC-2026-08-09-01 — `NumberOfFilledGroups` computation admission preserves fixed-list and starred-mix boundaries
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** semantic correction and extension
-- **Local revision:** introducing commit
+- **Local revision:** `b6c402f1ae71373294d296f55ab4d89d6f571003`
 - **a12-dmkits basis revision:** `cd41ea94b470a190f7d766ea6d7adf26b6ba74cf` (clean)
 - **Kernel behavior:** 30.8.1, measured through dmtool `0.12.1` computation dry-run and matching `rule check` controls
 - **Canonical clause:** [`02-logic-and-formal-errors.md` §A.4](../spec/02-logic-and-formal-errors.md#a4-fill-quantifiers-group-scopes-and-the-two-iteration-ranges)
@@ -480,15 +480,17 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Correct the canonical computation-admission account and extend the smallest existing `NumberOfFilledGroups` static-law family with the admitted fixed pair/triple, sole-star and mixed-star rows plus the four diagnostic separators. Keep runtime behavior of starred computation explicitly outside this reconciliation unless independently measured. Reuse the existing authoring and consistency-oracle owners; add no harness or representation.
 - **Compatibility:** Requiring a sole starred operand rejects legal models. Admitting one unstarred fixed group, collapsing exact duplication into ancestor overlap, or treating a repeatable group as fixed changes the Kernel's observable diagnostic class. Static acceptance alone must not be used to invent repeatable computation runtime semantics.
 - **Acceptance:** Canonical peer prose and maintained existing-family static cases state and separate the accepted fixed and starred shapes plus all four exact diagnostics, retain the static/runtime boundary, and return the exact reviewed revision and disposition.
+- **a12-dmkits revision:** `93771ee24aeb135a88ce9662ee3d88f39e804f45`
+- **Disposition:** accepted — canonical semantics, catalog guidance, kernel claim probes, and the existing `RootGroupCountLawsTest` owner cover fixed pairs and triples, a sole repeatable star, a mixed starred/fixed list, and the exact singleton, duplicate, overlap, and missing-wildcard diagnostics. Repeatable and nonrepeatable root controls remain distinct, mixed-star rendering preserves the wildcard, and starred computation runtime remains explicitly outside the accepted claim.
 
 <a id="spec-2026-08-09-02"></a>
 <a id="spec-2026-08-09-02--fieldvaluesnotunique-refuses-confirm-at-the-whole-list-kind-gate"></a>
 
 ### SPEC-2026-08-09-02 — `FieldValuesNotUnique` refuses CONFIRM at the whole-list kind gate
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** semantic correction
-- **Local revision:** introducing commit
+- **Local revision:** `bfa3743dbf55424f73fa3c28236429deda27a0b1`
 - **a12-dmkits basis revision:** `cd41ea94b470a190f7d766ea6d7adf26b6ba74cf` (clean)
 - **Kernel behavior:** 30.8.1, measured through dmtool `0.12.1` `rule check`
 - **Canonical clause:** [`07-repetition-and-iteration.md` `FieldValuesNotUnique`](../spec/07-repetition-and-iteration.md)
@@ -497,15 +499,17 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Correct the canonical uniqueness semantics, operator catalog, diagnostics guidance, and smallest existing `FieldValuesNotUniqueAdmissionLawsTest` family to include CONFIRM in the outright kind refusal and retain the measured arity-before-kind separator. Reuse the current admission-law and catalog owners; add no harness or representation.
 - **Compatibility:** Treating CONFIRM as an admissible Boolean-like comparison domain accepts a model the Kernel rejects. Reporting `MVK_VARYING_TYPES_NOT_ALLOWED` instead loses the observable earlier gate and gives an incorrect repair.
 - **Acceptance:** The maintained canonical surfaces name BOOLEAN, CONFIRM, and DATE_RANGE as kind refusals, retain the whole-list pre-emption rule, lock at least one CONFIRM pair and one mixed CONFIRM case to the exact code, and return the reviewed revision and disposition.
+- **a12-dmkits revision:** `93771ee24aeb135a88ce9662ee3d88f39e804f45`
+- **Disposition:** accepted — canonical semantics and the operator catalog name CONFIRM beside BOOLEAN and DATE_RANGE. The existing admission-law owner locks a CONFIRM pair, a mixed CONFIRM list in both relevant operand orders, and direct-singleton arity before kind, all at the exact diagnostic classes without changing the runtime account.
 
 <a id="spec-2026-08-10-01"></a>
 <a id="spec-2026-08-10-01--raw-string-length-metadata-requires-a-decimal-point-free-signed-32-bit-bound"></a>
 
 ### SPEC-2026-08-10-01 - raw-String `Length` metadata requires a decimal-point-free signed-32-bit bound
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** semantic correction and extension
-- **Local revision:** introducing commit
+- **Local revision:** `ba9a32c785b958412c53eb6037a5f7e174c47910`
 - **a12-dmkits basis revision:** `cd41ea94b470a190f7d766ea6d7adf26b6ba74cf` (clean)
 - **Kernel behavior:** 30.8.1, measured through dmtool `0.12.1` `rule check`
 - **Canonical clause:** [`06-strings-and-enumerations.md` raw types](../spec/06-strings-and-enumerations.md#a1-raw-type-strings-novaluevalidation)
@@ -514,6 +518,8 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Correct the canonical raw-type clause, the `Length` operator catalog, diagnostic guidance, and the smallest existing raw-type static-law family to name the decimal-point-free signed-32-bit bound. Retain accepted forward and mirrored controls, an accepted trailing-zero integer token, integral-valued decimal and fractional refusals in both directions, exact endpoint acceptances, one-step overflows, the nonstrict/nested class separator, a nonstrict decimal-bound precedence control, and an ordinary-String nonstrict positive control. Enrich only this recognized strict-shape `MVK_INTERNAL_ERROR` route rather than assigning one generic repair to every internal error. Reuse the existing catalog, diagnostic-enrichment, and raw-type law owners; add no harness or representation.
 - **Compatibility:** Treating every exact integral rational as admissible accepts `5.0`, while using an unbounded integer accepts overflow values. Treating either as the ordinary raw-length shape error loses the observed diagnostic identity and points an author to the wrong repair.
 - **Acceptance:** Canonical peer prose and maintained existing-family cases state and separate the exact admitted bound domain and both diagnostic classes, including an accepted trailing-zero integer, shape-before-bound overlap, and an ordinary-String nonstrict positive control; operator and diagnostic guidance leads an author to a decimal-point-free signed-32-bit constant without overgeneralizing `MVK_INTERNAL_ERROR`; the handback returns the exact reviewed revision and per-surface disposition.
+- **a12-dmkits revision:** `93771ee24aeb135a88ce9662ee3d88f39e804f45`
+- **Disposition:** accepted — canonical semantics, focused raw-Length enrichment, catalog guidance, and the existing `NvvRawTypeLawsTest` owner cover both strict orientations, decimal and fractional spellings, signed-32-bit endpoints and one-step overflows, the accepted `100` token, nonstrict and nested shape refusals, shape-before-bound precedence, and the ordinary-String nonstrict positive control. The corrective remains scoped to the recognized strict raw-Length internal-error route.
 
 ## Experiment requests
 
