@@ -52,6 +52,7 @@ private def projectedDomain : EnumerationDeclaration :=
 private def target := enumField 0 ["Form", "Target"] targetDomain
 private def compatible := enumField 1 ["Form", "Compatible"] compatibleDomain
 private def compatible2 := enumField 9 ["Form", "Compatible2"] compatibleDomain
+private def compatible3 := enumField 11 ["Form", "Compatible3"] compatibleDomain
 private def wider := enumField 2 ["Form", "Wider"] widerDomain
 private def displayed := enumField 3 ["Form", "Displayed"] displayedDomain
 private def projected := enumField 4 ["Form", "Projected"] projectedDomain
@@ -85,7 +86,8 @@ private def filterRight : FlatFieldDecl :=
 
 private def model : FlatModel :=
   {
-    fields := [target, compatible, compatible2, wider, displayed, projected, repeated,
+    fields := [target, compatible, compatible2, compatible3, wider, displayed,
+      projected, repeated,
       plainString, filterLeft, filterRight]
     repeatableGroups := [{
       level := 10
@@ -289,24 +291,50 @@ example :
       errorOf (source (direct "PlainString") [direct "Compatible"]) =
         some (.directSource (.textFieldOperandKindMismatch plainString.path .string)) ∧
       errorOf (source (direct "Target") [direct "Compatible"]) =
-        some (.targetSelfReferenceInDirectPair target.id) ∧
+        some (.targetSelfReferenceInBoundedDirectList target.id) ∧
       targetDiagnosticOf (source (direct "Target") [direct "Compatible"]) =
         some .errorReferenceToCalculatedField := by
   native_decide
 
-/- Only the measured target-first, two-direct-compatible-field list projects.
-Accepted lists and target references in another position or source shape stay
-distinct, while an incompatible overlap does not acquire an unmeasured
-precedence claim. -/
+/- The complete measured two/three-field direct-list denominator projects in
+every target position and accepts its different-field controls. -/
 example :
     errorOf (source (direct "Compatible") [direct "Compatible2"]) = none ∧
       targetDiagnosticOf
         (source (direct "Compatible") [direct "Compatible2"]) = none ∧
       errorOf (source (direct "Compatible") [direct "Target"]) =
-        some (.targetSelfReference target.id) ∧
+        some (.targetSelfReferenceInBoundedDirectList target.id) ∧
       targetDiagnosticOf
-        (source (direct "Compatible") [direct "Target"]) = none ∧
-      errorOf (source (category "Target" "Choice") [direct "Compatible"]) =
+        (source (direct "Compatible") [direct "Target"]) =
+          some .errorReferenceToCalculatedField ∧
+      errorOf (source (direct "Target")
+        [direct "Compatible", direct "Compatible2"]) =
+          some (.targetSelfReferenceInBoundedDirectList target.id) ∧
+      targetDiagnosticOf (source (direct "Target")
+        [direct "Compatible", direct "Compatible2"]) =
+          some .errorReferenceToCalculatedField ∧
+      errorOf (source (direct "Compatible")
+        [direct "Target", direct "Compatible2"]) =
+          some (.targetSelfReferenceInBoundedDirectList target.id) ∧
+      targetDiagnosticOf (source (direct "Compatible")
+        [direct "Target", direct "Compatible2"]) =
+          some .errorReferenceToCalculatedField ∧
+      errorOf (source (direct "Compatible")
+        [direct "Compatible2", direct "Target"]) =
+          some (.targetSelfReferenceInBoundedDirectList target.id) ∧
+      targetDiagnosticOf (source (direct "Compatible")
+        [direct "Compatible2", direct "Target"]) =
+          some .errorReferenceToCalculatedField ∧
+      errorOf (source (direct "Compatible")
+        [direct "Compatible2", direct "Compatible3"]) = none ∧
+      targetDiagnosticOf (source (direct "Compatible")
+        [direct "Compatible2", direct "Compatible3"]) = none := by
+  native_decide
+
+/- Category, star, incompatible, and wider-than-measured target lists retain
+their local refusal without an exact external class. -/
+example :
+    errorOf (source (category "Target" "Choice") [direct "Compatible"]) =
         some (.targetSelfReference target.id) ∧
       targetDiagnosticOf
         (source (category "Target" "Choice") [direct "Compatible"]) = none ∧
@@ -315,7 +343,13 @@ example :
       targetDiagnosticOf (source (direct "Target") [categoryStar]) = none ∧
       errorOf (source (direct "Target") [direct "Wider"]) =
         some (.targetSelfReference target.id) ∧
-      targetDiagnosticOf (source (direct "Target") [direct "Wider"]) = none := by
+      targetDiagnosticOf (source (direct "Target") [direct "Wider"]) = none ∧
+      errorOf (source (direct "Target")
+        [direct "Compatible", direct "Compatible2", direct "Compatible3"]) =
+          some (.targetSelfReference target.id) ∧
+      targetDiagnosticOf (source (direct "Target")
+        [direct "Compatible", direct "Compatible2", direct "Compatible3"]) =
+          none := by
   native_decide
 
 end A12Kernel.Conformance.EnumerationFirstFilledComputation
