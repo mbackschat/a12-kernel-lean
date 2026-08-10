@@ -17,7 +17,10 @@ private def enumField (id : FieldId) (name : String)
   }
 
 private def targetDomain : EnumerationDeclaration :=
-  { storedTokens := ["A", "B"] }
+  {
+    storedTokens := ["A", "B"]
+    categories := [{ name := "Choice", tokens := ["A", "B"] }]
+  }
 
 private def directDomain : EnumerationDeclaration :=
   { storedTokens := ["A", "B"] }
@@ -72,6 +75,10 @@ private def errorOf (source : SurfaceEnumerationComputationSource) :
   | .ok _ => none
   | .error error => some error
 
+private def targetDiagnosticOf (source : SurfaceEnumerationComputationSource) :
+    Option KernelStaticDiagnostic :=
+  (errorOf source).bind EnumerationComputationElabError.targetDiagnostic?
+
 private def outcomeOf (source : SurfaceEnumerationComputationSource)
     (raw : RawFlatContext) : Option StringTargetOutcome := do
   let checked ←
@@ -116,7 +123,23 @@ example :
 /- Direct target self-reference is rejected before compatibility can make it look harmless. -/
 example :
     errorOf (.field (.direct (bare "Target"))) =
-      some (.targetSelfReference target.id) := by
+        some (.targetSelfReferenceAtDirectField target.id) ∧
+      targetDiagnosticOf (.field (.direct (bare "Target"))) =
+        some .errorReferenceToCalculatedField := by
+  native_decide
+
+/- The exact projection is limited to direct target self-reference. Accepted
+different-field reads and unrelated Enumeration refusals do not acquire a
+plausible-looking Kernel class. -/
+example :
+    targetDiagnosticOf (.field (.direct (bare "Direct"))) = none ∧
+      targetDiagnosticOf (.literal "C") = none ∧
+      targetDiagnosticOf (.field (.direct (bare "Wider"))) = none ∧
+      targetDiagnosticOf (.field (.direct (bare "Displayed"))) = none ∧
+      targetDiagnosticOf (.field (.direct (bare "PlainString"))) = none ∧
+      errorOf (.field (.category (bare "Target") "Choice")) =
+        some (.targetSelfReference target.id) ∧
+      targetDiagnosticOf (.field (.category (bare "Target") "Choice")) = none := by
   native_decide
 
 /- An ordinary String field cannot enter the Enumeration-producing source surface merely because both store text. -/

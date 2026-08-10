@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.Flat.Context
+import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.FirstFilledValue
 import A12Kernel.Semantics.StringComputation
 
@@ -85,8 +86,22 @@ inductive EnumerationComputationElabError where
   | literalOutsideTarget (targetPath : List String) (literal : String)
   | sourceIncompatible (sourcePath targetPath : List String)
   | targetSelfReference (field : FieldId)
+  | targetSelfReferenceAtDirectField (field : FieldId)
   | incoherentCore
   deriving Repr, DecidableEq
+
+namespace EnumerationComputationElabError
+
+/-- Project only the measured direct Enumeration target-reference refusal to
+its exact Kernel diagnostic class. Domain, display, kind, and resolution
+failures remain local until separately measured. -/
+def targetDiagnostic? :
+    EnumerationComputationElabError → Option KernelStaticDiagnostic
+  | .targetSelfReferenceAtDirectField _ =>
+      some .errorReferenceToCalculatedField
+  | _ => none
+
+end EnumerationComputationElabError
 
 /-- The exact ordinary closed-Enumeration target shared by every checked source form. -/
 structure CheckedEnumerationComputationTarget (model : FlatModel) where
@@ -161,7 +176,14 @@ def elaborateEnumerationComputation
           | some checked =>
               pure (.field path operand checked hSourceOwned)
     if hReference : source.referencesField target.field = true then
-      throw (.targetSelfReference target.field)
+      match source with
+      | .literal _ => throw .incoherentCore
+      | .field _ operand _ _ =>
+          match operand.projectionRef with
+          | .stored =>
+              throw (.targetSelfReferenceAtDirectField target.field)
+          | .category _ =>
+              throw (.targetSelfReference target.field)
     else if hAllowed : source.allowedFor target.projection = true then
       pure {
         target
