@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, and raw-String length-admission families. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, and group-list quantifier admission families. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -19,14 +19,22 @@ inductive KernelStaticDiagnostic where
   | varyingTypesNotAllowed
   /-- An operand list below the operator's required arity. -/
   | paramSizeInvalidN
-  /-- A fixed filled-group count has fewer than two operands. -/
+  /-- A fixed filled-group count carries a single **unstarred** operand. Measured on both a repeatable and a nonrepeatable single operand and in both path forms; a single starred operand is admitted, so this is not simply an operand-count gate. -/
   | paramSizeInvalidGN
+  /-- A group-list quantifier that requires at least two operands received one. Shared by `AllGroupsFilled`, `NotAllGroupsFilled`, and `GroupsNotCollectivelyFilled`; the two singleton-admitting quantifiers never reach it. -/
+  | paramSizeInvalid2
   /-- The exact same group operand occurs more than once. -/
   | duplicateParam1
   /-- Two group operands overlap by ancestor and descendant. -/
   | duplicateParam2
-  /-- A repeatable group was supplied without its required star address. -/
+  /-- A repeatable group was supplied as a quantifier operand without its required star address. -/
   | noWildcard
+  /-- A starred group operand appeared under a quantifier that forbids one. Distinct from the scalar-presence wildcard class below, which the same star draws through a different carrier. -/
+  | noWildcardsGAllowed
+  /-- Scalar `GroupFilled` received a starred group, where the group must stay whole. -/
+  | noWildcardsAllowed
+  /-- A group path names no group in the model. Retained because it separates an unknown operand from every overlap class. -/
+  | invalidEntity
   /-- A pattern source fails Java compilation or the Kernel's additional source gate. -/
   | invalidPattern
   /-- A pattern-comparison operand has the wrong scalar kind for its slot. -/
@@ -55,7 +63,11 @@ def kernelCode : KernelStaticDiagnostic → String
   | .paramSizeInvalidGN => "MVK_PARAMSIZE_INVALIDGN"
   | .duplicateParam1 => "MVK_DUPLICATE_PARAM1"
   | .duplicateParam2 => "MVK_DUPLICATE_PARAM2"
+  | .paramSizeInvalid2 => "MVK_PARAMSIZE_INVALID2"
   | .noWildcard => "MVK_NO_WILDCARD"
+  | .noWildcardsGAllowed => "MVK_NO_WILDCARDS_G_ALLOWED"
+  | .noWildcardsAllowed => "MVK_NO_WILDCARDS_ALLOWED"
+  | .invalidEntity => "MVK_INVALID_ENTITY"
   | .invalidPattern => "MVK_INVALID_PATTERN"
   | .invalidTypeForPatternComparison =>
       "MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON"
@@ -71,7 +83,8 @@ def kernelCode : KernelStaticDiagnostic → String
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
 def all : List KernelStaticDiagnostic :=
   [.onlyStringEnumNumberDateAllowed, .varyingTypesNotAllowed, .paramSizeInvalidN,
-    .paramSizeInvalidGN, .duplicateParam1, .duplicateParam2, .noWildcard,
+    .paramSizeInvalidGN, .paramSizeInvalid2, .duplicateParam1, .duplicateParam2,
+    .noWildcard, .noWildcardsGAllowed, .noWildcardsAllowed, .invalidEntity,
     .invalidPattern, .invalidTypeForPatternComparison, .internalError,
     .invalidLengthOfRawType, .invalidCompareDecimalPlaces,
     .errorReferenceToCalculatedField,
