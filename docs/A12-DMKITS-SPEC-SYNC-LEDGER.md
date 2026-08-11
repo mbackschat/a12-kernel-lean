@@ -576,6 +576,23 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Compatibility:** Leaving the axis at same-scale field operands makes an authoring surface report the self-reference first for a shape the Kernel answers with the scale gate, which directs an author to the wrong first repair. Generalizing past `+`, `-`, `*` and the two operand kinds would assert unmeasured behavior.
 - **Acceptance:** The canonical peer clause names the operand-kind axis without the same-scale qualifier; the maintained existing-family case separates the differing-scale row from its suppressed counterpart with complete code lists; wider expression shapes, other families, and any causal account remain outside the claim; and the handback supplies the exact reviewed revision plus per-surface disposition.
 
+<a id="spec-2026-08-11-02"></a>
+<a id="spec-2026-08-11-02--the-scale-before-self-reference-order-is-measured-on-six-cells-not-on-the-operator-position-kind-cross-product"></a>
+
+### SPEC-2026-08-11-02 - the scale-before-self-reference order is measured on six cells, not on the operator/position/kind cross-product
+
+- **Status:** pending
+- **Kind:** provenance narrowing, locally originated
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `4ba31a496faed41107ec95e4207cfc6256872053` (clean)
+- **Kernel behavior:** 30.8.1; no behavior claim changes, only the scope claimed as measured
+- **Canonical clause:** [`09-computations.md` scale gate](09-computations.md)
+- **Delta:** Both projects summarized the scale-before-self-reference order as holding for `+`, `-`, and `*` "in both operand positions" against a literal or a field operand. Enumerating the owning rows shows a narrower denominator. `ComputedTargetScaleLawsTest` measures the target on the **left** against a literal for all three operators, the target on the **right** against a literal for `*` only, and a field operand only for `+` with the target on the left (matched scale at `22fa19e7`, differing scale added by [`SPEC-2026-08-11-01`](#spec-2026-08-11-01)). `+` and `-` with the target on the right, and every field operand at `-`, at `*`, or at target-right, have no row. The order almost certainly is a property of the gate pair rather than of the authored shape, and both implementations apply it uniformly — but that uniformity is an inference from six cells, and this entry only stops it being reported as measurement.
+- **Basis:** Row-by-row enumeration of `ComputedTargetScaleLawsTest` at `22fa19e7`/`4ba31a49` against the summary sentences that cite it, in this repository's `spec/09-computations.md`, `docs/IMPLEMENTATION-MAP.md`, and `docs/SOURCES.md`, and in the peer's `KERNEL-FINDINGS.md` `KF181` lock parenthetical. No new observation; the discriminator is the test source itself.
+- **Requested a12-dmkits reconciliation:** Narrow `KF181`'s lock parenthetical from "for `*`, `+`, `-` in both operand positions" to the cells its own test asserts, or add the missing rows to `ComputedTargetScaleLawsTest` and keep the parenthetical. Either resolution is correct; measuring the four missing operator/position cells is the more valuable one, because the same summary is what this project consumed. Reuse the existing owner; add no harness.
+- **Compatibility:** No behavioral change on either side. The cost of leaving it is that the next consumer of either summary inherits a measured-sounding claim over shapes nobody ran, which is the failure mode [`LF84`](LEAN-FINDINGS.md) already records for a different clause.
+- **Acceptance:** The peer's lock text and this project's three summaries agree with the rows that exist at the reviewed revision, whichever way the gap is closed; and the handback supplies the exact reviewed revision plus per-surface disposition.
+
 ## Experiment requests
 
 <a id="exp-2026-08-06-01"></a>
