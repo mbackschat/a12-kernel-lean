@@ -121,7 +121,11 @@ example :
       checkedErrorOf reverseAddField =
         some (.targetSelfReferenceAfterScale targetId) ∧
       targetDiagnosticOf (checkedErrorOfIn scaleOneModel widerScaleField) =
-        some .invalidCompareDecimalPlaces := by
+        some .invalidCompareDecimalPlaces ∧
+      targetDiagnosticOf
+          (checkedErrorOfIn scaleOneModel widerScaleField
+            (suppressExactScaleWarning := true)) =
+        some .errorReferenceToCalculatedField := by
   native_decide
 
 /- Unmeasured or invalid target-reading shapes retain the old immediate local

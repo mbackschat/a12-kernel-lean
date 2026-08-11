@@ -446,10 +446,12 @@ def checkedResultOfIn
 
 def checkedErrorOfIn
     (sourceModel : FlatModel)
-    (expression : AuthoredNumericExpr SurfaceNumericAtom) :
+    (expression : AuthoredNumericExpr SurfaceNumericAtom)
+    (suppressExactScaleWarning : Bool := false) :
     Option NumericComputationElabError :=
   match elaborateNumericComputationOperation
-      sourceModel ["Root"] targetId expression with
+      sourceModel ["Root"] targetId expression
+      suppressExactScaleWarning with
   | .ok _ => none
   | .error error => some error
 
