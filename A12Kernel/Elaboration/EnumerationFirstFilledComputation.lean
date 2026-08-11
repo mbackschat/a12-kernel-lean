@@ -147,12 +147,12 @@ were measured at length two and three, while a list carrying a projection was
 measured at length two only. A star never contributes a mode, and an
 incompatible source stays outside the denominator entirely.
 
-The externally measured two-entry rows pair a projected self-read with another
-projected read, or with a plain read of the same computed field. A pair whose
-plain entry names a *different* field follows the same fold rather than a
-separate row, because the class is decided by the reads of the computed field
-alone; that is the discriminator the external measurement established, not an
-extrapolation from list shape. -/
+Every two-entry pairing this fold classifies is externally measured, including
+the one whose plain entry names a *different* field: such a read is inert for
+this class, so the pair reports the projected class in either operand order.
+That row exists because the composition it replaced, that an other-field read
+contributes nothing and therefore only the projected self-read decides, reads as
+settled without having been measured. -/
 private def measuredTargetReadMode?
     (source : CheckedEnumerationFirstFilledSource model)
     (targetField : FieldId) (target : CheckedEnumerationProjection) :
