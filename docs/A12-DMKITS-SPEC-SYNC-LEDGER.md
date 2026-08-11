@@ -568,7 +568,7 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 ### SPEC-2026-08-11-01 - the computed Number scale gate precedes self-reference for a differing-scale field operand too
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** semantic extension, locally originated
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `4ba31a496faed41107ec95e4207cfc6256872053` (clean)
@@ -579,13 +579,15 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Requested a12-dmkits reconciliation:** Extend the existing `ComputedTargetScaleLawsTest` owner with the differing-scale field-operand row and its suppressed counterpart, asserting the complete emitted code list, and widen `KF181`'s operand-kind axis from "an immediate literal or a same-scale field" to include the differing-scale field. Retain the unrelated-mismatch and accepted controls already there. Reuse the existing owner; add no harness or representation.
 - **Compatibility:** Leaving the axis at same-scale field operands makes an authoring surface report the self-reference first for a shape the Kernel answers with the scale gate, which directs an author to the wrong first repair. Generalizing past `+`, `-`, `*` and the two operand kinds would assert unmeasured behavior.
 - **Acceptance:** The canonical peer clause names the operand-kind axis without the same-scale qualifier; the maintained existing-family case separates the differing-scale row from its suppressed counterpart with complete code lists; wider expression shapes, other families, and any causal account remain outside the claim; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `8094f6643ef3ad01d40dd6d3675356196374e104`
+- **Disposition:** accepted, confirmed, and **absorbed rather than added as a row**. The differing-scale field operand reports the scale gate, and suppressing it exposes the self-reference exactly as this entry predicted. The peer did not add the requested single row: this cell is one of the twenty-four the same revision now measures under [`SPEC-2026-08-11-02`](#spec-2026-08-11-02), so the axis this entry asked to widen is closed by that grid instead. `KF181` states it.
 
 <a id="spec-2026-08-11-02"></a>
 <a id="spec-2026-08-11-02--the-scale-before-self-reference-order-is-measured-on-six-cells-not-on-the-operator-position-kind-cross-product"></a>
 
 ### SPEC-2026-08-11-02 - the scale-before-self-reference order is measured on six cells, not on the operator/position/kind cross-product
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** provenance narrowing, locally originated
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `4ba31a496faed41107ec95e4207cfc6256872053` (clean)
@@ -596,6 +598,8 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Requested a12-dmkits reconciliation:** Narrow `KF181`'s lock parenthetical from "for `*`, `+`, `-` in both operand positions" to the cells its own test asserts, or add the missing rows to `ComputedTargetScaleLawsTest` and keep the parenthetical. Either resolution is correct; measuring the four missing operator/position cells is the more valuable one, because the same summary is what this project consumed. Reuse the existing owner; add no harness.
 - **Compatibility:** No behavioral change on either side. The cost of leaving it is that the next consumer of either summary inherits a measured-sounding claim over shapes nobody ran, which is the failure mode [`LF84`](LEAN-FINDINGS.md) already records for a different clause.
 - **Acceptance:** The peer's lock text and this project's three summaries agree with the rows that exist at the reviewed revision, whichever way the gap is closed; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `8094f6643ef3ad01d40dd6d3675356196374e104`
+- **Disposition:** accepted, and **closed the stronger of the two ways this entry offered.** The reading of the old denominator was exact, and rather than narrowing the lock text the peer measured the missing cells: `theOrderHoldsAcrossEveryOperatorPositionAndOperandKind` now asserts all twenty-four operator × position × operand-kind cells plus twelve suppression rows, each expectation derived from the canonical scale rule *before* the kernel is asked, which is what makes the grid a measurement rather than a fitted table. `KF181` states the grid. The summaries this entry flagged may therefore state the operator/position/kind claim as measured; the inference from six cells is retired.
 
 ## Experiment requests
 
@@ -604,7 +608,7 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 ### EXP-2026-08-11-01 — does the `referenced` channel expand an unstarred group operand
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** experiment request
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `4ea0bf3a1c2071d3c6198e8e8b402561e1f6962f` — the committed tip. Its working tree carried unrelated in-progress peer work when this entry was written, which is why the basis is the commit rather than the tree.
@@ -624,6 +628,8 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Compatibility:** expanding when the kernel contributes nothing would report references a consumer can act on that the engine never named; contributing nothing when it expands would hand an Explain or Govern consumer an incomplete set that reads as complete. Both are observable without changing firing, truth, or polarity.
 - **What this project will do with the result:** expansion selects the existing shared coordinate rule for all three operands and removes the sievability gate's reason for refusing the count, replacing three refusals with one measured relation, authored red-first. No contribution keeps all three refused and upgrades their status from unmeasured to measured, which is worth as much because it retires the question. A group pointer is a representation decision rather than a classification one, since `MessagePointer` carries one field identity and is shared by four channels; it would be escalated rather than absorbed.
 - **Acceptance:** the exact complete `referenced` set for each of the three positions and two controls on both kernel strategies; a statement of which account was refuted; the supplementary coordinate cell only if expansion is observed; and the exact a12-dmkits revision plus per-surface disposition. A reasoned refusal is conclusive only if it names why the existing reference owner cannot author or observe an unstarred group operand, and the entry then remains `handed-off`.
+- **a12-dmkits revision:** `8094f6643ef3ad01d40dd6d3675356196374e104`
+- **Disposition:** accepted — **recursive expansion with concrete coordinates, the same relation in all three positions.** Three of the four accounts are refuted: direct-child expansion would have dropped the deeper `Billing[1]/Contact[1]/Email`, no-contribution is refuted because `City` and `Contact/Email` are neither the error field nor named in the condition, and no group pointer appears. The supplementary coordinate cell was answered because expansion was observed: a starred expansion still wildcards (`Items[0]/Quantity`) while an unstarred one is concrete, so the two forms differ in coordinates alone. `KF183` and the new `UnstarredGroupReferenceDiffTest` own it; the interpreter already agreed on every row, so no peer production change was needed. **One control was not authorable as requested and the peer said so rather than substituting a weaker one:** the kernel refuses a rule whose error field the condition never references (`MVK_ERROR_FIELD_NOT_REFERENCED`), so every control names the error field as an operand, and the refutation of no-contribution rests on the two fields that are neither. Consequence here: `groupPresence`, the ordinary `.group` operand, and the fixed group count are all classified, and the sievability gate that had refused the count is deleted rather than kept — a measurement retired it. Two limits are recorded in [`SOURCES.md`](SOURCES.md) rather than absorbed: the measured model is nonrepeatable throughout, so an unbound deeper repeatable descendant still fails closed here, and the kernel's per-part `[1]` coordinates on non-repeatable parts remain outside this project's normalized pointer.
 
 <a id="exp-2026-08-06-01"></a>
 <a id="exp-2026-08-06-01--a-fixed-multi-group-filled-count-may-be-special-cased-ahead-of-computation-poison"></a>

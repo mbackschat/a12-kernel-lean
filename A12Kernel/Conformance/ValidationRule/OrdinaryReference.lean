@@ -229,11 +229,13 @@ example :
       { field := baseToken.id, coordinates := [] }] := by
   native_decide
 
-/- A leaf family this fragment does not classify still fails the whole rule's projection. Silence
-   would be read as "this rule references nothing", which no rule can be. -/
+/- A group presence operand over a *repeatable* group is classified, but its subtree fields need a
+   level the rule does not bind. That is the measured relation's boundary rather than a gap in it:
+   the kernel account is measured on a nonrepeatable model, so whether such a descendant wildcards or
+   pins to repetition 1 has no witness, and the projection fails closed at the exact level. -/
 example :
     conditionReferenceError? innerGroupFilledCondition? [(10, 2)] =
-      some .unclassifiedLeaf := by
+      some (.binding (.missingBinding 20)) := by
   native_decide
 
 /-! ## Scalar atoms inside the addressed numeric leaf
@@ -365,12 +367,13 @@ example :
 
 /-! ### Shapes the shared iteration model cannot express
 
-Two of them. `ordinaryIterationModel` cannot author a fixed group count, because every group there
-is either the model root or inside a repeatable scope while a count needs at least two non-root
-operands of which at most one may be the `RuleGroup` keyword; and it declares no Boolean field, so
-the Boolean value count has no operand. This fixture supplies both, so that the one atom the sieve
-must **not** adopt and the one classified source with no shared fixture are each exercised rather
-than excluded in prose. -/
+`ordinaryIterationModel` cannot author a fixed group count, because every group there is either the
+model root or inside a repeatable scope while a count needs at least two non-root operands of which
+at most one may be the `RuleGroup` keyword; it declares no Boolean field, so the Boolean value count
+has no operand; and it has no nonrepeatable group at all, so no unstarred group operand can be
+exercised. This fixture supplies all three. Its group shape deliberately mirrors the measured kernel
+model: one fixed group holding two fields plus a **deeper** nonrepeatable descendant group, and a
+disjoint second fixed group. -/
 
 private def fixedAmount : FlatFieldDecl :=
   { id := 60
@@ -396,8 +399,22 @@ private def rowFlag : FlatFieldDecl :=
     policy := { kind := .boolean }
     repeatableScope := [50] }
 
+/-- The recursion witness: declared one nonrepeatable group deeper than the counted one, so
+    direct-child expansion and recursive expansion disagree on this field alone. -/
+private def deepAmount : FlatFieldDecl :=
+  { id := 63
+    groupPath := ["Count", "Fixed", "Deep"]
+    name := "DeepAmount"
+    policy := { kind := .number { scale := 0, signed := true } } }
+
+private def otherAmount : FlatFieldDecl :=
+  { id := 64
+    groupPath := ["Count", "Other"]
+    name := "OtherAmount"
+    policy := { kind := .number { scale := 0, signed := true } } }
+
 private def countModel : FlatModel :=
-  { fields := [fixedAmount, rowAmount, rowFlag]
+  { fields := [fixedAmount, rowAmount, rowFlag, deepAmount, otherAmount]
     repeatableGroups := [
       { level := 50, path := ["Count", "Rows"], repeatability := some 2 }] }
 
@@ -409,21 +426,87 @@ private def ruleGroupCountSurface : SurfaceNumericComparison :=
       .path { base := .absolute, groups := ["Count", "Fixed"] }])
     right := .literal { value := 0, authoredScale := 0 } }
 
-private def countReferenceError? (environment : Env) :
-    Option ReferenceProjectionError := do
+private def countReferences? (environment : Env) :
+    Option (List MessagePointer) := do
   let checked ←
     (elaborateNumericComparison countModel ["Count", "Rows"]
       ruleGroupCountSurface).toOption
   let condition ← (CheckedValidationCondition.fromNumeric checked).toOption
+  (condition.core.referencePointers environment).toOption
+
+/- Each counted subtree contributes every field below it, and the shared coordinate rule still reads
+   each reference's own scope: the repeatable `RuleGroup` subtree is concrete at the firing row while
+   the fixed co-operand's fields carry no coordinate. `DeepAmount` is the recursion witness. -/
+example :
+    countReferences? [(50, 2)] = some [
+      { field := fixedAmount.id, coordinates := [] },
+      { field := rowAmount.id, coordinates := [.concrete 2] },
+      { field := rowFlag.id, coordinates := [.concrete 2] },
+      { field := deepAmount.id, coordinates := [] }] := by
+  native_decide
+
+/-! ### Unstarred group operands
+
+Measured recursive expansion with **concrete** coordinates, identical in the presence, entity-list,
+and count positions. The starred form's wildcarding is the contrast, and both are retained. -/
+
+private def groupPresenceReferences? (groups : GroupPath) (rowGroup : GroupPath)
+    (environment : Env) : Option (List MessagePointer) := do
+  let condition ← (CheckedValidationCondition.fromGroupPresence countModel rowGroup
+    (.path { base := .absolute, groups }) .filled).toOption
+  (condition.core.referencePointers environment).toOption
+
+/- The single-operand presence position expands recursively and never yields a group pointer. -/
+example :
+    groupPresenceReferences? ["Count", "Fixed"] ["Count"] [] = some [
+      { field := fixedAmount.id, coordinates := [] },
+      { field := deepAmount.id, coordinates := [] }] := by
+  native_decide
+
+private def fixedGroupListReferences? (environment : Env) :
+    Option (List MessagePointer) := do
+  let condition ← (CheckedValidationCondition.fromGroupList countModel ["Count"]
+    .atLeastOneGroupFilled [
+      .group (.path { base := .absolute, groups := ["Count", "Fixed"] }),
+      .group (.path { base := .absolute, groups := ["Count", "Other"] })]).toOption
+  (condition.core.referencePointers environment).toOption
+
+/- The entity-list position adds the disjoint operand's subtree and nothing else. -/
+example :
+    fixedGroupListReferences? [] = some [
+      { field := fixedAmount.id, coordinates := [] },
+      { field := deepAmount.id, coordinates := [] },
+      { field := otherAmount.id, coordinates := [] }] := by
+  native_decide
+
+/-- `RepetitionNotUnique` is the one leaf family still outside the fragment, so it carries the
+    refusal guard that a classified `groupPresence` no longer can. -/
+private def countRepetitionNotUniqueError? (environment : Env) :
+    Option ReferenceProjectionError := do
+  let condition ← (CheckedValidationCondition.fromRepetitionNotUnique countModel
+    ["Count"] {
+      firstKey := {
+        base := .absolute
+        groups := ["Count", "Rows"]
+        field := "RowAmount" }
+      restKeys := [] }).toOption
   match condition.core.referencePointers environment with
   | .error error => some error
   | .ok _ => none
 
-/- This case is itself the witness that the shape passes checked admission, and its membership
-   predicate does report both subtrees, so a leaf-wide sieve would have answered here. It refuses
-   instead: the subtree expansion of a *fixed* group is specified for no channel, and answering
-   would assert it. -/
-example : countReferenceError? [(50, 2)] = some .unclassifiedAtom := by
+/- An unclassified leaf still fails the whole rule's projection. Silence would be read as "this rule
+   references nothing", which no rule can be. -/
+example : countRepetitionNotUniqueError? [] = some .unclassifiedLeaf := by
+  native_decide
+
+/- A nonrepeatable group *inside* a repeatable scope is concrete at the firing row, which is the
+   measured account's discriminator against wildcarding an unstarred operand. -/
+example :
+    conditionReferences?
+        ((CheckedValidationCondition.fromGroupPresence ordinaryIterationModel ["Order"]
+          (.path { base := .absolute, groups := ["Order", "Sections", "Details"] })
+          .filled).toOption) [(10, 2)] =
+      some [{ field := sectionDetail.id, coordinates := [.concrete 2] }] := by
   native_decide
 
 /-- `NumberOfTrueValues(/Count/Rows*/RowFlag) > 0`, iterating the model root. -/

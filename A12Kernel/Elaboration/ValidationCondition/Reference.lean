@@ -61,17 +61,16 @@ def sievedFieldPointers (model : FlatModel)
     Except ReferenceProjectionError (List MessagePointer) :=
   (model.fields.filter references).mapM (concreteFieldPointer · environment)
 
-/-- Whether one scalar numeric atom's share of a leaf's membership predicate may be sieved.
+/-- An unstarred group operand contributes the fields of its **whole subtree**, recursively and never a pointer to the group, and each at its concrete instance.
 
-    Sieving reuses a family's whole `referencesField`, so it adopts the scope claim of *every* arm at once. Ten atoms name resolved fields or fixed Number field lists directly, and adopting those is adopting field identity. The fixed group count is different in kind: its operands are group references, and its arm of the predicate reports **every field in the counted subtree** — a meaning established for the static error-field reference gate, not for this pointer channel. Whether the Kernel expands a *fixed* group into descendant field pointers is unmeasured; [`spec/01`](../../../spec/01-data-model.md) specifies that expansion only for a *starred* group, and the same open question already refuses the group-list leaf's unstarred group operand. So it is refused here too, on the same terms rather than by parity with the starred arm.
+    Both halves are measured on a nonrepeatable model: the deeper descendant group's field joins the set, which refutes direct-child expansion, and the coordinates are concrete, which is the one place this differs from a starred group's wildcards. The relation is identical in the presence, entity-list, and count positions, so all three share this function rather than each restating it.
 
-    Written as an exhaustive match so that a new atom constructor must choose rather than default into the sieve. -/
-def NumericValidationAtom.sievableReference : NumericValidationAtom → Bool
-  | .field _ | .baseYear _ | .baseYearDatePart _ _ _ | .temporalFieldPart _ _
-  | .stringLength _ | .stringRange _ _ _ | .fieldValueAsNumber _
-  | .dateDifference _ _ _ | .dateTimeDifference _ _ _ | .dayDifference _ _ _
-  | .aggregate _ _ => true
-  | .filledGroupCount _ => false
+    What remains unmeasured is narrower than it looks: the measured model is nonrepeatable throughout, so a subtree field below a repeatable level *deeper* than the rule's own scope has no witness. [`concreteFieldPointer`](A12Kernel.concreteFieldPointer) fails closed at that exact level rather than guessing between a wildcard and a pinned first repetition. -/
+def fixedGroupPointers (model : FlatModel) (reference : ResolvedGroupReference)
+    (environment : Env) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  sievedFieldPointers model
+    (fun declaration => reference.path.isPrefixOf declaration.groupPath) environment
 
 /-- A filtered star is refused rather than projected. Its own field pointer would be the plain starred one, but the measured account pins only that its `Having` operands *join* the set, not which coordinates they carry, and inventing them would make an incomplete set look complete. -/
 def CheckedNumberEntityOperand.referencePointer (environment : Env) :
@@ -133,12 +132,9 @@ def OrderedNumericValidationAtom.referencePointers (environment : Env) :
     OrderedNumericValidationAtom model →
       Except ReferenceProjectionError (List MessagePointer)
   | .ordinary source =>
-      if NumericValidationAtom.sievableReference source then
-        sievedFieldPointers model
-          (fun declaration => source.referencesField model declaration.id)
-          environment
-      else
-        .error .unclassifiedAtom
+      sievedFieldPointers model
+        (fun declaration => source.referencesField model declaration.id)
+        environment
   | .firstFilled source | .valueCount _ source | .aggregate _ source =>
       source.referencePointers environment
   | .tokenValueCount source => source.referencePointers environment
@@ -167,7 +163,7 @@ def starredGroupPointers (model : FlatModel) (groupPath : GroupPath)
       groupPath.isPrefixOf declaration.groupPath).mapM
     (reopenedFieldPointer · boundCount environment)
 
-/-- An unstarred group operand is refused. It has no field pointer of its own, and whether the kernel expands it the way it expands a starred group is unmeasured. -/
+/-- Both group operand forms expand to descendant fields and neither yields a group pointer; they differ only in coordinates, which is exactly the starred-versus-unstarred split. -/
 def ResolvedGroupListOperand.referencePointers (environment : Env) :
     ResolvedGroupListOperand model →
       Except ReferenceProjectionError (List MessagePointer)
@@ -177,7 +173,7 @@ def ResolvedGroupListOperand.referencePointers (environment : Env) :
       starredGroupPointers model source.group.path source.path.firstStar environment
   | .starredGroupPresence source =>
       starredGroupPointers model source.groupPath source.path.firstStar environment
-  | .group _ => .error .unclassifiedOperand
+  | .group reference => fixedGroupPointers model reference environment
 
 /-- Two membership strategies, chosen by whether a family can carry a starred operand.
 
@@ -201,13 +197,10 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
       sievedFieldPointers model
         (fun declaration => condition.referencesField declaration.id) environment
   | .numeric _ comparison =>
-      if comparison.left.allAtoms NumericValidationAtom.sievableReference &&
-          comparison.right.allAtoms NumericValidationAtom.sievableReference then
-        sievedFieldPointers model
-          (fun declaration => comparison.referencesField model declaration.id)
-          environment
-      else
-        .error .unclassifiedAtom
+      sievedFieldPointers model
+        (fun declaration => comparison.referencesField model declaration.id)
+        environment
+  | .groupPresence _ reference => fixedGroupPointers model reference environment
   | _ => .error .unclassifiedLeaf
 
 private def treePointers (environment : Env) :
