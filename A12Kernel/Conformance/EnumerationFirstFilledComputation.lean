@@ -297,7 +297,7 @@ example :
       errorOf (source (direct "PlainString") [direct "Compatible"]) =
         some (.directSource (.textFieldOperandKindMismatch plainString.path .string)) ∧
       errorOf (source (direct "Target") [direct "Compatible"]) =
-        some (.targetSelfReferenceInBoundedDirectList target.id) ∧
+        some (.targetSelfReferenceAtPlainRead target.id) ∧
       targetDiagnosticOf (source (direct "Target") [direct "Compatible"]) =
         some .errorReferenceToCalculatedField := by
   native_decide
@@ -309,25 +309,25 @@ example :
       targetDiagnosticOf
         (source (direct "Compatible") [direct "Compatible2"]) = none ∧
       errorOf (source (direct "Compatible") [direct "Target"]) =
-        some (.targetSelfReferenceInBoundedDirectList target.id) ∧
+        some (.targetSelfReferenceAtPlainRead target.id) ∧
       targetDiagnosticOf
         (source (direct "Compatible") [direct "Target"]) =
           some .errorReferenceToCalculatedField ∧
       errorOf (source (direct "Target")
         [direct "Compatible", direct "Compatible2"]) =
-          some (.targetSelfReferenceInBoundedDirectList target.id) ∧
+          some (.targetSelfReferenceAtPlainRead target.id) ∧
       targetDiagnosticOf (source (direct "Target")
         [direct "Compatible", direct "Compatible2"]) =
           some .errorReferenceToCalculatedField ∧
       errorOf (source (direct "Compatible")
         [direct "Target", direct "Compatible2"]) =
-          some (.targetSelfReferenceInBoundedDirectList target.id) ∧
+          some (.targetSelfReferenceAtPlainRead target.id) ∧
       targetDiagnosticOf (source (direct "Compatible")
         [direct "Target", direct "Compatible2"]) =
           some .errorReferenceToCalculatedField ∧
       errorOf (source (direct "Compatible")
         [direct "Compatible2", direct "Target"]) =
-          some (.targetSelfReferenceInBoundedDirectList target.id) ∧
+          some (.targetSelfReferenceAtPlainRead target.id) ∧
       targetDiagnosticOf (source (direct "Compatible")
         [direct "Compatible2", direct "Target"]) =
           some .errorReferenceToCalculatedField ∧
@@ -343,13 +343,13 @@ accepted. -/
 example :
     errorOf (source (category "Target" "Choice")
         [category "Compatible" "Choice"]) =
-        some (.targetSelfReferenceInCategoryPair target.id) ∧
+        some (.targetSelfReferenceAtProjectedRead target.id) ∧
       targetDiagnosticOf (source (category "Target" "Choice")
         [category "Compatible" "Choice"]) =
           some .errorSemanticIndexOrCategoryForErrorField ∧
       errorOf (source (category "Compatible" "Choice")
         [category "Target" "Choice"]) =
-          some (.targetSelfReferenceInCategoryPair target.id) ∧
+          some (.targetSelfReferenceAtProjectedRead target.id) ∧
       targetDiagnosticOf (source (category "Compatible" "Choice")
         [category "Target" "Choice"]) =
           some .errorSemanticIndexOrCategoryForErrorField ∧
@@ -359,14 +359,29 @@ example :
         [category "Compatible2" "Choice"]) = none := by
   native_decide
 
-/- Mixed, three-category, incompatible-category, star, and wider stored-direct
-target lists retain their local refusal without an exact external class. -/
+/- A projected self-read pre-empts the plain class in a mixed pair, in either
+operand order: the class follows how the computed field is read, not the shape of
+the list around it. The incompatible mixed pair separates that fold from the
+compatibility gate it still rides on. -/
 example :
     errorOf (source (category "Target" "Choice") [direct "Compatible"]) =
+        some (.targetSelfReferenceAtProjectedRead target.id) ∧
+      targetDiagnosticOf (source (category "Target" "Choice") [direct "Compatible"]) =
+        some .errorSemanticIndexOrCategoryForErrorField ∧
+      errorOf (source (direct "Compatible") [category "Target" "Choice"]) =
+        some (.targetSelfReferenceAtProjectedRead target.id) ∧
+      targetDiagnosticOf (source (direct "Compatible") [category "Target" "Choice"]) =
+        some .errorSemanticIndexOrCategoryForErrorField ∧
+      errorOf (source (category "Target" "Foreign") [direct "Compatible"]) =
         some (.targetSelfReference target.id) ∧
-      targetDiagnosticOf
-        (source (category "Target" "Choice") [direct "Compatible"]) = none ∧
-      errorOf (source (category "Target" "Choice")
+      targetDiagnosticOf (source (category "Target" "Foreign") [direct "Compatible"]) =
+        none := by
+  native_decide
+
+/- Three-category, incompatible-category, star, and wider stored-direct target
+lists retain their local refusal without an exact external class. -/
+example :
+    errorOf (source (category "Target" "Choice")
         [category "Compatible" "Choice", category "Compatible2" "Choice"]) =
           some (.targetSelfReference target.id) ∧
       targetDiagnosticOf (source (category "Target" "Choice")

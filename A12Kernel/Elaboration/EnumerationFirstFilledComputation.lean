@@ -104,6 +104,16 @@ def firstDuplicateDirectEnumerationFirstFilledField? :
   | operands =>
       firstDuplicateDirectField? (fun operand => operand.directFieldId?) operands
 
+/-- How a computation reads its own computed field. The Kernel classifies a
+target self-read by this **reading mode** rather than by the authored shape
+around it, and a projected read pre-empts a plain one wherever both occur. -/
+inductive EnumerationTargetReadMode where
+  /-- Every occurrence of the target reads its stored value directly. -/
+  | plain
+  /-- Some occurrence of the target reads it through a category projection. -/
+  | projected
+  deriving Repr, DecidableEq
+
 /-- The checked source retains the common aggregate shape plus compatibility and target-reference certificates. -/
 structure CheckedEnumerationFirstFilledSource (model : FlatModel) where
   first : CheckedEnumerationFirstFilledOperand model
@@ -127,25 +137,43 @@ def allowedFor (source : CheckedEnumerationFirstFilledSource model)
     (target : CheckedEnumerationProjection) : Bool :=
   source.operands.all (fun operand => operand.allowedFor target)
 
-/-- The exact externally measured self-reference denominator: compatible
-stored-direct lists of length two or three, with the target in any position. -/
-private def isMeasuredBoundedDirectTargetList
-    (source : CheckedEnumerationFirstFilledSource model)
-    (targetField : FieldId) (target : CheckedEnumerationProjection) : Bool :=
-  let operands := source.operands
-  (operands.length == 2 || operands.length == 3) &&
-    operands.all (fun operand => operand.isStoredDirect) &&
-    source.referencesField targetField && source.allowedFor target
+/-- Fold the reading mode over the operands that actually name the computed
+field, then keep only the externally measured denominator around it.
 
-/-- The exact externally measured category-target denominator: a compatible
-two-category list, with the target in either position. -/
-private def isMeasuredCategoryTargetPair
+The class is decided by *how* the target is read, so one category occurrence
+selects the projected mode however the rest of the list reads. The surrounding
+bound is the measured one and differs per mode: compatible stored-direct lists
+were measured at length two and three, while a list carrying a projection was
+measured at length two only. A star never contributes a mode, and an
+incompatible source stays outside the denominator entirely.
+
+The externally measured two-entry rows pair a projected self-read with another
+projected read, or with a plain read of the same computed field. A pair whose
+plain entry names a *different* field follows the same fold rather than a
+separate row, because the class is decided by the reads of the computed field
+alone; that is the discriminator the external measurement established, not an
+extrapolation from list shape. -/
+private def measuredTargetReadMode?
     (source : CheckedEnumerationFirstFilledSource model)
-    (targetField : FieldId) (target : CheckedEnumerationProjection) : Bool :=
+    (targetField : FieldId) (target : CheckedEnumerationProjection) :
+    Option EnumerationTargetReadMode :=
   let operands := source.operands
-  operands.length == 2 &&
-    operands.all (fun operand => operand.isCategory) &&
-    source.referencesField targetField && source.allowedFor target
+  let selfReads := operands.filter fun operand => operand.referencesField targetField
+  if !source.allowedFor target then
+    none
+  else if selfReads.any (fun operand => operand.isCategory) then
+    if operands.length == 2 && operands.all (fun operand => !operand.isStar) then
+      some .projected
+    else
+      none
+  else if selfReads.any (fun operand => operand.isStoredDirect) then
+    if (operands.length == 2 || operands.length == 3) &&
+        operands.all (fun operand => operand.isStoredDirect) then
+      some .plain
+    else
+      none
+  else
+    none
 
 end CheckedEnumerationFirstFilledSource
 
@@ -156,22 +184,21 @@ inductive EnumerationFirstFilledComputationElabError where
   | starSource (error : StarEnumerationValueListElabError)
   | sourceIncompatible (sourcePath targetPath : List String)
   | targetSelfReference (field : FieldId)
-  | targetSelfReferenceInBoundedDirectList (field : FieldId)
-  | targetSelfReferenceInCategoryPair (field : FieldId)
+  | targetSelfReferenceAtPlainRead (field : FieldId)
+  | targetSelfReferenceAtProjectedRead (field : FieldId)
   | incoherentCore
   deriving Repr, DecidableEq
 
 namespace EnumerationFirstFilledComputationElabError
 
-/-- Project the measured compatible stored-direct lists of length two or three
-and compatible two-category lists to their distinct Kernel diagnostic classes.
-Wider and mixed shapes stay local. -/
+/-- Project the two measured self-read modes to their distinct Kernel diagnostic
+classes. A self-reference outside the measured denominator stays local. -/
 def targetDiagnostic? :
     EnumerationFirstFilledComputationElabError →
       Option KernelStaticDiagnostic
-  | .targetSelfReferenceInBoundedDirectList _ =>
+  | .targetSelfReferenceAtPlainRead _ =>
       some .errorReferenceToCalculatedField
-  | .targetSelfReferenceInCategoryPair _ =>
+  | .targetSelfReferenceAtProjectedRead _ =>
       some .errorSemanticIndexOrCategoryForErrorField
   | _ => none
 
@@ -276,12 +303,10 @@ def elaborateEnumerationFirstFilledComputation
     |>.mapError .target
   let source ← elaborateEnumerationFirstFilledSource model declaringGroup authored
   if hReference : source.referencesField target.field = true then
-    if source.isMeasuredBoundedDirectTargetList target.field target.projection then
-      throw (.targetSelfReferenceInBoundedDirectList target.field)
-    else if source.isMeasuredCategoryTargetPair target.field target.projection then
-      throw (.targetSelfReferenceInCategoryPair target.field)
-    else
-      throw (.targetSelfReference target.field)
+    match source.measuredTargetReadMode? target.field target.projection with
+    | some .plain => throw (.targetSelfReferenceAtPlainRead target.field)
+    | some .projected => throw (.targetSelfReferenceAtProjectedRead target.field)
+    | none => throw (.targetSelfReference target.field)
   else if hAllowed : source.allowedFor target.projection = true then
     pure {
       target
