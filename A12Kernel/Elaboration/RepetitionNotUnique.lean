@@ -51,6 +51,18 @@ inductive RepetitionNotUniqueElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
+namespace RepetitionNotUniqueElabError
+
+/-- Project the measured `RepetitionNotUnique` key-admission classes. The two ways a key can sit outside the iterated repeatable group — a second key in a different group, and a sole key whose group is not repeatable — draw **one** Kernel class, so both local errors project there. An unresolvable key path draws the shared unknown-entity class; every other refusal, including the unsupported-kind and raw-String arms whose classes no row covers, returns `none`. -/
+def diagnostic? : RepetitionNotUniqueElabError → Option KernelStaticDiagnostic
+  | .duplicateKeyField _ => some .duplicateParam1
+  | .keyPathMismatch _ _ | .missingReferenceGroup _ =>
+      some .repeatableGroupMissing
+  | .resolve (.invalidEntity _) => some .invalidEntity
+  | _ => none
+
+end RepetitionNotUniqueElabError
+
 /-- One ordinary String key certified against the same star plan used by every component. Prepared custom Strings require SG1's checked-document overlay and are not admitted by this raw-cell route. -/
 structure CheckedRepetitionStringKey (model : FlatModel) where
   source : CheckedStarFieldPath model

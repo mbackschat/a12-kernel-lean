@@ -21,6 +21,16 @@ inductive FlatRuleAssemblyError where
   | negativeConditionInIteration (level : RepeatableLevel)
   deriving Repr, DecidableEq
 
+namespace FlatRuleAssemblyError
+
+/-- Project the one measured whole-rule gate. The error field's presence in its own condition is a Kernel-checked rule property, and it is measured as its own class: an operand list that names a sibling key rather than the error field draws it, while naming the error field among the keys is admitted. Every other assembly refusal returns `none`. -/
+def diagnostic? : FlatRuleAssemblyError → Option KernelStaticDiagnostic
+  | .errorFieldNotReferenced _ =>
+      some KernelStaticDiagnostic.errorFieldNotReferenced
+  | _ => none
+
+end FlatRuleAssemblyError
+
 /-- A checked mixed rule cannot be evaluated from a scalar context when its condition retains an addressed source. This is missing execution context, not a semantic validation result. -/
 inductive ValidationEvaluationError where
   | addressedContextRequired

@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, and group-list quantifier admission families. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, group-list quantifier admission, `RepetitionNotUnique` key admission, and the whole-rule error-field reference gate. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -33,8 +33,12 @@ inductive KernelStaticDiagnostic where
   | noWildcardsGAllowed
   /-- Scalar `GroupFilled` received a starred group, where the group must stay whole. -/
   | noWildcardsAllowed
-  /-- A group path names no group in the model. Retained because it separates an unknown operand from every overlap class. -/
+  /-- A group path names no group in the model, or a key path names no field. Retained because it separates an unknown operand from every overlap class. -/
   | invalidEntity
+  /-- A `RepetitionNotUnique` key does not sit in the repeatable group the operator iterates: either it is in a different group than the first key, or the sole key's group is not repeatable at all. Both draw this one class. -/
+  | repeatableGroupMissing
+  /-- The rule's error field is named nowhere in its condition. A whole-rule gate rather than an operand gate, so it is projected at rule assembly. -/
+  | errorFieldNotReferenced
   /-- A pattern source fails Java compilation or the Kernel's additional source gate. -/
   | invalidPattern
   /-- A pattern-comparison operand has the wrong scalar kind for its slot. -/
@@ -68,6 +72,8 @@ def kernelCode : KernelStaticDiagnostic → String
   | .noWildcardsGAllowed => "MVK_NO_WILDCARDS_G_ALLOWED"
   | .noWildcardsAllowed => "MVK_NO_WILDCARDS_ALLOWED"
   | .invalidEntity => "MVK_INVALID_ENTITY"
+  | .repeatableGroupMissing => "MVK_REPEATABLE_GROUP_MISSING"
+  | .errorFieldNotReferenced => "MVK_ERROR_FIELD_NOT_REFERENCED"
   | .invalidPattern => "MVK_INVALID_PATTERN"
   | .invalidTypeForPatternComparison =>
       "MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON"
@@ -85,6 +91,7 @@ def all : List KernelStaticDiagnostic :=
   [.onlyStringEnumNumberDateAllowed, .varyingTypesNotAllowed, .paramSizeInvalidN,
     .paramSizeInvalidGN, .paramSizeInvalid2, .duplicateParam1, .duplicateParam2,
     .noWildcard, .noWildcardsGAllowed, .noWildcardsAllowed, .invalidEntity,
+    .repeatableGroupMissing, .errorFieldNotReferenced,
     .invalidPattern, .invalidTypeForPatternComparison, .internalError,
     .invalidLengthOfRawType, .invalidCompareDecimalPlaces,
     .errorReferenceToCalculatedField,
