@@ -272,20 +272,58 @@ example :
         coordinates := [.concrete 2, .concrete 1] }] := by
   native_decide
 
-private def tokenValueCountCondition? :
+/-! ### The leaf's own checked sources
+
+Each retains its own operand type rather than the Number entity operand, and two of the three carry
+their filter as an `Option` field instead of a distinct constructor — so the filtered-star refusal
+has to be made again per family, not inherited. -/
+
+private def tokenValueCountCondition?
+    (source? : Option (CheckedTokenValueCountSource ordinaryIterationModel)) :
     Option (CheckedValidationCondition ordinaryIterationModel) := do
-  let source ← plainStarTokenValueCountSource?
+  let source ← source?
   let comparison ← checkedOuterEntityComparison? {
     op := .ordinary .greater
     left := .atom (.tokenValueCount source)
     right := .literal { value := 2, authoredScale := 0 } }
   (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
 
-/- Classifying the delegated scalar atoms must not classify the leaf's own checked sources. A token
-   value count keeps its distinct source type and stays refused until its own slice. -/
+/- A projection-bearing token operand references its **declaring** field: `MessagePointer` has no
+   projection slot, and the channel reports field instances. -/
 example :
-    conditionReferenceError? tokenValueCountCondition? [(10, 2)] =
-      some .unclassifiedAtom := by
+    conditionReferences? (tokenValueCountCondition? plainStarTokenValueCountSource?)
+      [(10, 2)] =
+      some [{ field := innerToken.id, coordinates := [.concrete 2, .wildcard] }] := by
+  native_decide
+
+/- A direct operand beside a starred one keeps the split assignment inside this family too. -/
+example :
+    conditionReferences? (tokenValueCountCondition? mixedTokenValueCountSource?)
+      [(10, 2)] = some [
+      { field := baseToken.id, coordinates := [] },
+      { field := innerToken.id, coordinates := [.concrete 2, .wildcard] }] := by
+  native_decide
+
+private def filteredTokenValueCountSource? :
+    Option (CheckedTokenValueCountSource ordinaryIterationModel) :=
+  (elaborateTokenValueCountSource ordinaryIterationModel ["Order", "Sections"] "A" {
+    first := .starHaving deeperInnerTokenStar .stored innerAmountSelfHaving
+    rest := [] }).toOption
+
+/- The optional-filter representation must not let a filtered star through where the Number entity
+   operand's distinct constructor is refused. Both refuse. -/
+example :
+    conditionReferenceError? (tokenValueCountCondition? filteredTokenValueCountSource?)
+      [(10, 2)] = some .filteredStarOperand := by
+  native_decide
+
+/- A row-paired product references both starred value fields. Its certificate forces one shared
+   path, so the two pointers differ only in field identity. -/
+example :
+    conditionReferences? (plainStarProductCondition? (.ordinary .greater) 5)
+      [(10, 2)] = some [
+      { field := innerAmount.id, coordinates := [.concrete 2, .wildcard] },
+      { field := innerPrice.id, coordinates := [.concrete 2, .wildcard] }] := by
   native_decide
 
 /-! ## Non-model-indexed numeric leaves
@@ -325,12 +363,14 @@ example :
       some [{ field := baseAmount.id, coordinates := [] }] := by
   native_decide
 
-/-! ### The refused fixed group count
+/-! ### Shapes the shared iteration model cannot express
 
-`ordinaryIterationModel` cannot author a fixed group count at all: every group there is either the
-model root or inside a repeatable scope, and a count needs at least two non-root operands of which
-at most one may be the `RuleGroup` keyword. This fixture supplies the missing shape so that the one
-atom the sieve must **not** adopt is exercised rather than merely excluded in prose. -/
+Two of them. `ordinaryIterationModel` cannot author a fixed group count, because every group there
+is either the model root or inside a repeatable scope while a count needs at least two non-root
+operands of which at most one may be the `RuleGroup` keyword; and it declares no Boolean field, so
+the Boolean value count has no operand. This fixture supplies both, so that the one atom the sieve
+must **not** adopt and the one classified source with no shared fixture are each exercised rather
+than excluded in prose. -/
 
 private def fixedAmount : FlatFieldDecl :=
   { id := 60
@@ -349,8 +389,15 @@ private def rowAmount : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := true } }
     repeatableScope := [50] }
 
+private def rowFlag : FlatFieldDecl :=
+  { id := 62
+    groupPath := ["Count", "Rows"]
+    name := "RowFlag"
+    policy := { kind := .boolean }
+    repeatableScope := [50] }
+
 private def countModel : FlatModel :=
-  { fields := [fixedAmount, rowAmount]
+  { fields := [fixedAmount, rowAmount, rowFlag]
     repeatableGroups := [
       { level := 50, path := ["Count", "Rows"], repeatability := some 2 }] }
 
@@ -377,6 +424,37 @@ private def countReferenceError? (environment : Env) :
    instead: the subtree expansion of a *fixed* group is specified for no channel, and answering
    would assert it. -/
 example : countReferenceError? [(50, 2)] = some .unclassifiedAtom := by
+  native_decide
+
+/-- `NumberOfTrueValues(/Count/Rows*/RowFlag) > 0`, iterating the model root. -/
+private def booleanCountReferences? (environment : Env) :
+    Option (List MessagePointer) := do
+  let source ← (elaborateBooleanValueCountSource countModel ["Count"] true {
+    first := .star {
+      base := .absolute
+      groups := [{ name := "Count" }, { name := "Rows", starred := true }]
+      field := "RowFlag" }
+    rest := [] }).toOption
+  let core : OrderedNumericComparison countModel := {
+    op := .ordinary .greater
+    left := .atom (.booleanValueCount source)
+    right := .literal { value := 0, authoredScale := 0 } }
+  if hCore : core.wellFormedInBool ["Count"] .sameGroupAddressed = true then do
+    let condition ← (CheckedValidationCondition.fromOrderedNumeric {
+      rowGroup := ["Count"]
+      operandScope := .sameGroupAddressed
+      core
+      modelWellFormed := by native_decide
+      wellFormed := hCore }).toOption
+    (condition.core.referencePointers environment).toOption
+  else
+    none
+
+/- The Boolean companion's fixed canonical-token projection is as invisible to a reference as the
+   token projection is: only the declaring field instance is reported. -/
+example :
+    booleanCountReferences? [] =
+      some [{ field := rowFlag.id, coordinates := [.wildcard] }] := by
   native_decide
 
 end A12Kernel.Conformance.ValidationRule.OrdinaryReference

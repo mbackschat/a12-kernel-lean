@@ -87,7 +87,48 @@ def CheckedNumberEntitySource.referencePointers
     Except ReferenceProjectionError (List MessagePointer) :=
   source.operands.mapM (CheckedNumberEntityOperand.referencePointer environment)
 
-/-- The classified atom fragment. Entity-list aggregates share one operand projection, and every delegated scalar atom is sieved on the same terms as the scalar leaf — including its refusal of the fixed group count. Under addressed admission a delegated declaration may be repeatable but is bound by the rule's own iteration scope, so it projects concretely; nothing here reopens a level. The leaf's own checked value-count and row-product sources fail closed. -/
+/-- A projection-bearing token operand references its **declaring** field. The stored-versus-category choice is not part of a reference: `MessagePointer` has no projection slot, and the channel reports field instances.
+
+    The filter lives in an `Option` field rather than its own constructor here, so the filtered-star refusal has to be made explicitly instead of falling out of the match. It is the same refusal, for the same unwitnessed-coordinates reason. -/
+def CheckedTokenEntityOperand.referencePointer (environment : Env) :
+    CheckedTokenEntityOperand model →
+      Except ReferenceProjectionError MessagePointer
+  | .field source => concreteFieldPointer source.declaration environment
+  | .star source =>
+      if source.filter.isSome then .error .filteredStarOperand
+      else starFieldPointer source.source environment
+
+def CheckedTokenValueCountSource.referencePointers
+    (checked : CheckedTokenValueCountSource model) (environment : Env) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  checked.source.operands.mapM
+    (CheckedTokenEntityOperand.referencePointer environment)
+
+/-- The Boolean/Confirm companion carries the identical operand shape, including the optional filter, so it makes the identical decision. Its fixed canonical-token projection is invisible here for the same reason the token projection is. -/
+def CheckedBooleanValueCountOperand.referencePointer (environment : Env) :
+    CheckedBooleanValueCountOperand model expected →
+      Except ReferenceProjectionError MessagePointer
+  | .field source => concreteFieldPointer source.declaration environment
+  | .star source =>
+      if source.filter.isSome then .error .filteredStarOperand
+      else starFieldPointer source.source environment
+
+def CheckedBooleanValueCountSource.referencePointers
+    (checked : CheckedBooleanValueCountSource model) (environment : Env) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  checked.operands.mapM
+    (CheckedBooleanValueCountOperand.referencePointer environment)
+
+/-- A row-paired product references both starred value fields and carries no filter at all. Its certificate forces one shared star path, so the two pointers differ only in field identity — which is why this needs no pairing notion of its own. -/
+def CheckedNumericProductAggregate.referencePointers
+    (checked : CheckedNumericProductAggregate model) (environment : Env) :
+    Except ReferenceProjectionError (List MessagePointer) := do
+  pure [← starFieldPointer checked.left.source environment,
+    ← starFieldPointer checked.right.source environment]
+
+/-- The complete ordered atom family. Every constructor is classified, so the only refusals reaching a caller from here are the sievability gate's fixed group count and a filtered star; there is no catch-all, and a new atom must state its own projection.
+
+    Number entity lists share one operand projection; each token-family source keeps its own, because their operand types are distinct and their filter is an optional field rather than a constructor. Every delegated scalar atom is sieved on the same terms as the scalar leaf, including its refusal of the fixed group count. Under addressed admission a delegated declaration may be repeatable but is bound by the rule's own iteration scope, so it projects concretely; nothing in the delegated arm reopens a level. -/
 def OrderedNumericValidationAtom.referencePointers (environment : Env) :
     OrderedNumericValidationAtom model →
       Except ReferenceProjectionError (List MessagePointer)
@@ -100,7 +141,9 @@ def OrderedNumericValidationAtom.referencePointers (environment : Env) :
         .error .unclassifiedAtom
   | .firstFilled source | .valueCount _ source | .aggregate _ source =>
       source.referencePointers environment
-  | _ => .error .unclassifiedAtom
+  | .tokenValueCount source => source.referencePointers environment
+  | .booleanValueCount source => source.referencePointers environment
+  | .sumOfProducts source => source.referencePointers environment
 
 /-- Traverse one authored operand expression left to right. Literals reference nothing; a failing atom fails the whole projection. -/
 private def expressionPointers (environment : Env) :

@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-08-11:** `lake build` clean (730 jobs) · trust audit **1875 theorem roots; 44545 declarations in 425 modules** · `lake test` 51/51 · `check-spec-sync.sh` passed. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-08-11:** `lake build` clean (730 jobs) · trust audit **1875 theorem roots; 44551 declarations in 425 modules** · `lake test` 51/51 · `check-spec-sync.sh` passed. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 ## Active semantic unit
 
@@ -22,7 +22,9 @@ The thin lanes in priority order are SG4 computation scheduling and state transi
 
 3. **The `orderedNumeric` leaf's delegated scalar atoms landed on the same mechanism**, which is what the root fix was for: the sievability gate transferred without a second special case, so the fixed-count refusal holds there too and the id-lookup arm it replaced — along with its unreachable unresolvable-field error class — is gone. Every membership route now starts from a model declaration.
 
-4. **The designated next slice is the `orderedNumeric` leaf's own checked sources**, `.tokenValueCount`, `.booleanValueCount`, and `.sumOfProducts`, which are the last refusals inside a family whose other atoms all project. They are not a sieve case: each retains its own checked source with operand structure, so the question is whether their operands reduce to the existing entity-operand projection or need their own traversal, and the token source's stored/category projection modes must not become a second addressing notion. SG10's entry gate still requires one source packet and separator matrix before any *message-family* work; the reference channel is already inside its audited boundary. The precondition slot of both self-read classes, semantic-index sources, compatible three-category lists, and incompatible target-category pairs stay unrepresented and are recorded under their owning gaps rather than driving the next capsule.
+4. **The `orderedNumeric` leaf's own checked sources landed, and that closes the reference channel to its measurable boundary.** The leaf is now classified for every atom constructor with no catch-all. **This lane now has no unblocked next unit**, and the remaining items must not be forced open: `groupPresence` and the fixed group count wait on the *same* missing witness as the unstarred group operand, namely whether the Kernel expands a fixed group into descendant field pointers; the filtered-star operand waits on a coordinate witness or a checked-filter scope audit; RNU's cross-repetition coordinates are parked with their owner; and both `FlatRuleMessage`'s reference field and `fillToFix` with the pointer-shape exclusion wait on one named shipment consumer. Reopen at the trigger each item names.
+
+5. **SG10's remaining half is model-owned checked message-template authoring, and its entry gate is unpaid**: one source packet and separator matrix for a selected message family. It is keystone-scale and wants a fresh working context, so do not begin it at the tail of an unrelated one. The precondition slot of both self-read classes, semantic-index sources, compatible three-category lists, and incompatible target-category pairs stay unrepresented and are recorded under their owning gaps rather than driving the next capsule.
 
 ## Blockers
 
