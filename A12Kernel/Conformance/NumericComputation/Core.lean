@@ -148,7 +148,25 @@ example :
           (.literal { value := 4, authoredScale := 0 }))
     let stringLengthTarget : AuthoredNumericExpr SurfaceNumericAtom :=
       .atom (.stringLength (surfacePath ["Root"] "Target"))
-    checkedErrorOf targetThenWrong = some (.targetSelfReference targetId) ∧
+    -- Each of these varies exactly one axis away from a shape that does
+    -- project, so neither exclusion can be widened silently: the division is
+    -- top-level rather than nested under a multiply, and the grouped multiply
+    -- differs from the projecting `[Target] * 2` only by its grouping.
+    let topLevelDivision :=
+      AuthoredNumericExpr.binary .divide targetField
+        (.literal { value := 2, authoredScale := 0 })
+    let groupedTargetTimesLiteral :=
+      AuthoredNumericExpr.group (.binary .multiply targetField
+        (.literal { value := 2, authoredScale := 0 }))
+    checkedErrorOf topLevelDivision = some (.targetSelfReference targetId) ∧
+      targetDiagnosticOf (checkedErrorOf topLevelDivision) = none ∧
+      checkedErrorOf groupedTargetTimesLiteral =
+        some (.targetSelfReference targetId) ∧
+      targetDiagnosticOf (checkedErrorOf groupedTargetTimesLiteral) = none ∧
+      checkedErrorOf (.binary .multiply targetField
+          (.literal { value := 2, authoredScale := 0 })) =
+        some (.targetSelfReferenceAfterScale targetId) ∧
+      checkedErrorOf targetThenWrong = some (.targetSelfReference targetId) ∧
       checkedErrorOf groupedTargetThenWrong = some (.targetSelfReference targetId) ∧
       checkedErrorOf targetThenRepeatable = some (.targetSelfReference targetId) ∧
       checkedErrorOf sameTarget = some (.targetSelfReference targetId) ∧
