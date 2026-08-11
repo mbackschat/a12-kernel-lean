@@ -130,7 +130,7 @@ private def certifyTemporalUniquenessOperand (model : FlatModel)
     (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
       Except TemporalValuesNotUniqueElabError
         (CheckedTemporalUniquenessOperand model)
-  | .field declaration =>
+  | .field declaration _ =>
       do pure (.field (← certifyTemporalUniquenessField declaration))
   | .star source =>
       do pure (.star source (← certifyTemporalUniquenessField source.declaration)

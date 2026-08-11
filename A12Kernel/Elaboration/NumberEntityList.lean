@@ -169,7 +169,7 @@ private def certifyStarNumber (source : CheckedStarFieldPath model) :
 private def certifyNumberEntityOperand (model : FlatModel)
     (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
       Except NumberEntityElabError (CheckedNumberEntityOperand model)
-  | .field declaration =>
+  | .field declaration _ =>
       match hField : declaration.toNumberField? with
       | none => throw (.fieldKindMismatch declaration.path declaration.policy.kind.surfaceKind)
       | some field =>

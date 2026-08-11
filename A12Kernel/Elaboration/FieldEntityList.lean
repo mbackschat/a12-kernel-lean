@@ -8,9 +8,15 @@ This boundary owns the kind-independent authoring shape shared by ordinary aggre
 
 namespace A12Kernel
 
+/-- How one direct slot reads its field. Most families can read a field only one way and leave every slot `.stored`; an Enumeration list may read one field both plainly and through a category projection. The Kernel counts those two reads as distinct operands rather than a repeated one, so this discriminator is part of operand identity and must survive path resolution. -/
+inductive FieldEntityReadForm where
+  | stored
+  | projected (category : String)
+  deriving Repr, DecidableEq
+
 /-- One parser-independent field entity-list slot. A filter belongs to its exact authored wildcard occurrence. -/
 inductive SurfaceFieldEntityOperand where
-  | field (path : SurfaceFieldPath)
+  | field (path : SurfaceFieldPath) (form : FieldEntityReadForm := .stored)
   | star (path : SurfaceStarFieldPath)
   | starHaving (path : SurfaceStarFieldPath) (having : SurfaceCorrelatedHaving)
   deriving Repr, DecidableEq
@@ -23,7 +29,7 @@ structure SurfaceFieldEntitySource where
 
 /-- One kind-neutral resolved slot. Family-specific certification occurs only after the complete list has passed duplicate and cardinality checks. -/
 inductive ResolvedFieldEntityOperand (model : FlatModel) where
-  | field (declaration : FlatFieldDecl)
+  | field (declaration : FlatFieldDecl) (form : FieldEntityReadForm)
   | star (source : CheckedStarFieldPath model)
   | starHaving (source : CheckedStarFieldPath model)
       (having : SurfaceCorrelatedHaving)
@@ -31,16 +37,22 @@ inductive ResolvedFieldEntityOperand (model : FlatModel) where
 namespace ResolvedFieldEntityOperand
 
 def isStar : ResolvedFieldEntityOperand model → Bool
-  | .field _ => false
+  | .field .. => false
   | .star _ | .starHaving _ _ => true
 
 def directFieldId? : ResolvedFieldEntityOperand model → Option FieldId
-  | .field declaration => some declaration.id
+  | .field declaration _ => some declaration.id
+  | .star _ | .starHaving _ _ => none
+
+/-- The identity the repeated-operand gate compares. A star addresses a row set rather than one slot and never participates. -/
+def operandIdentity? : ResolvedFieldEntityOperand model →
+    Option (FieldId × FieldEntityReadForm)
+  | .field declaration form => some (declaration.id, form)
   | .star _ | .starHaving _ _ => none
 
 /-- The model declaration this slot reads, whatever its addressing form. Kind-neutral, so a family's admission gate can classify every slot without repeating the star/direct split. -/
 def declaration : ResolvedFieldEntityOperand model → FlatFieldDecl
-  | .field declaration => declaration
+  | .field declaration _ => declaration
   | .star source | .starHaving source _ => source.declaration
 
 end ResolvedFieldEntityOperand
@@ -120,10 +132,19 @@ def firstDuplicateDirectField? (directFieldId? : α → Option FieldId) :
           else
             firstDuplicateDirectField? directFieldId? remaining
 
+/-- Report the first repeated direct operand, comparing complete operand identity but naming the offending field. Two reads of one field in different forms are two operands, so only a repeat of the same field in the same form is reported. -/
 def firstDuplicateResolvedDirectField? :
     List (ResolvedFieldEntityOperand model) → Option FieldId
-  | operands => firstDuplicateDirectField?
-      (fun operand => operand.directFieldId?) operands
+  | [] => none
+  | operand :: remaining =>
+      match operand.operandIdentity? with
+      | none => firstDuplicateResolvedDirectField? remaining
+      | some identity =>
+          if remaining.any fun candidate =>
+              candidate.operandIdentity? == some identity then
+            some identity.1
+          else
+            firstDuplicateResolvedDirectField? remaining
 
 /-- A resolved, model-owned entity-list shape before homogeneous family certification. -/
 structure CheckedFieldEntityShape (model : FlatModel) where
@@ -145,10 +166,10 @@ end CheckedFieldEntityShape
 private def resolveFieldEntityOperand (model : FlatModel)
     (declaringGroup : GroupPath) : SurfaceFieldEntityOperand →
       Except FieldEntityShapeElabError (ResolvedFieldEntityOperand model)
-  | .field path => do
+  | .field path form => do
       let declaration ← model.resolveNonrepeatableFieldUnchecked declaringGroup path
         |>.mapError .resolve
-      pure (.field declaration)
+      pure (.field declaration form)
   | .star path => do
       pure (.star (← elaborateStarFieldPath model declaringGroup path
         |>.mapError .starPath))

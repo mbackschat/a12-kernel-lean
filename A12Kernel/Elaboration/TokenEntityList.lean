@@ -242,7 +242,7 @@ def certifyStarTokenOperand (declaringGroup : GroupPath)
 private def certifyTokenEntityOperand (model : FlatModel)
     (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
       Except TokenEntityElabError (CheckedTokenEntityOperand model)
-  | .field declaration =>
+  | .field declaration _ =>
       do pure (.field (← certifyDirectTokenOperand model declaration))
   | .star source =>
       do pure (.star (← certifyStarTokenOperand declaringGroup source none))

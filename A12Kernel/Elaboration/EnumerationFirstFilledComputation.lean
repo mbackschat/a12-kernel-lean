@@ -6,7 +6,9 @@ import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Checked Enumeration-target `FirstFilledValue`
 
-This capsule adds the aggregate source admitted by the ordinary closed-Enumeration target gate. The common field-list shape owns cardinality and direct-duplicate precedence; exact stored/category projections own domain and display compatibility; the shared first-filled scan owns value, empty, and target-poison behavior; and the computation-phase `Having` traversal preserves filter poison plus the runtime iterator's one-kept-candidate lookahead. Measured compatible stored-direct lists of two or three fields project the ordinary Kernel self-reference class in every target position, while compatible two-category pairs project the distinct category-target class in either position. Mixed, wider, incompatible, starred, and filtered shapes retain the local refusal without an external class.
+This capsule adds the aggregate source admitted by the ordinary closed-Enumeration target gate. The common field-list shape owns cardinality and repeated-operand precedence; exact stored/category projections own domain and display compatibility; the shared first-filled scan owns value, empty, and target-poison behavior; and the computation-phase `Having` traversal preserves filter poison plus the runtime iterator's one-kept-candidate lookahead.
+
+A self-read is classified by its **reading mode** rather than by the authored shape around it. Measured compatible stored-direct lists of two or three fields project the ordinary Kernel self-reference class in every target position; a compatible two-entry list carrying a category projection of the target projects the distinct category-target class in either operand order, whatever the other entry reads — another projection, a plain read of a different field, or a plain read of the same field. Wider, incompatible, starred, and filtered shapes retain the local refusal without an external class.
 -/
 
 namespace A12Kernel
@@ -27,9 +29,11 @@ structure SurfaceEnumerationFirstFilledSource where
 
 namespace SurfaceEnumerationFirstFilledOperand
 
+/-- Lower one slot to the shared entity-list surface, retaining the reading form so the shared repeated-operand gate keeps a stored read and a category projection of one field apart. -/
 def toFieldEntityOperand : SurfaceEnumerationFirstFilledOperand →
     SurfaceFieldEntityOperand
-  | .field (.direct path) | .field (.category path _) => .field path
+  | .field (.direct path) => .field path .stored
+  | .field (.category path category) => .field path (.projected category)
   | .star path _ none => .star path
   | .star path _ (some having) => .starHaving path having
 
@@ -58,6 +62,12 @@ namespace CheckedEnumerationFirstFilledOperand
 def directFieldId? : CheckedEnumerationFirstFilledOperand model →
     Option FieldId
   | .field _ operand _ _ => some operand.field.id
+  | .star _ => none
+
+/-- The identity this family's repeated-operand rule compares. It matches the shared gate's identity: a stored read and a category projection of one field are two operands, so only a same-form repeat is a duplicate. -/
+def operandIdentity? : CheckedEnumerationFirstFilledOperand model →
+    Option (FieldId × EnumerationProjectionRef)
+  | .field _ operand _ _ => some (operand.field.id, operand.projectionRef)
   | .star _ => none
 
 def isStar : CheckedEnumerationFirstFilledOperand model → Bool
@@ -101,13 +111,21 @@ end CheckedEnumerationFirstFilledOperand
 
 def firstDuplicateDirectEnumerationFirstFilledField? :
     List (CheckedEnumerationFirstFilledOperand model) → Option FieldId
-  | operands =>
-      firstDuplicateDirectField? (fun operand => operand.directFieldId?) operands
+  | [] => none
+  | operand :: remaining =>
+      match operand.operandIdentity? with
+      | none => firstDuplicateDirectEnumerationFirstFilledField? remaining
+      | some identity =>
+          if remaining.any fun candidate =>
+              candidate.operandIdentity? == some identity then
+            some identity.1
+          else
+            firstDuplicateDirectEnumerationFirstFilledField? remaining
 
 /-- How a computation reads its own computed field. The Kernel classifies a
 target self-read by this **reading mode** rather than by the authored shape
 around it, and a projected read pre-empts a plain one wherever both occur. -/
-inductive EnumerationTargetReadMode where
+private inductive EnumerationTargetReadMode where
   /-- Every occurrence of the target reads its stored value directly. -/
   | plain
   /-- Some occurrence of the target reads it through a category projection. -/
@@ -236,11 +254,11 @@ private def certifyEnumerationFirstFilledOperand
     ResolvedFieldEntityOperand model → SurfaceEnumerationFirstFilledOperand →
       Except EnumerationFirstFilledComputationElabError
         (CheckedEnumerationFirstFilledOperand model)
-  | .field declaration, .field authored =>
-      let projectionRef := match authored with
-        | .direct _ => .stored
-        | .category _ category => .category category
-      certifyDirectEnumerationFirstFilledOperand model declaration projectionRef
+  | .field declaration form, .field _ =>
+      certifyDirectEnumerationFirstFilledOperand model declaration
+        (match form with
+          | .stored => .stored
+          | .projected category => .category category)
   | .star source, .star _ projectionRef _ =>
       do pure (.star (← certifyStarEnumerationSource declaringGroup source
         projectionRef none |>.mapError .starSource))

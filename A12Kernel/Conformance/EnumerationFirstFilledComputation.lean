@@ -378,8 +378,32 @@ example :
         none := by
   native_decide
 
+/- The measured pre-emption row reads one field twice, plainly and through its
+own category. Two reading forms of one field are distinct operands rather than a
+repeated one, so the pair reaches the reading-mode fold in either operand order.
+Repeating one field in the *same* form stays a shape refusal, which is what keeps
+this from reading as a blanket removal of the repeated-operand gate. -/
+example :
+    errorOf (source (direct "Target") [category "Target" "Choice"]) =
+        some (.targetSelfReferenceAtProjectedRead target.id) ∧
+      targetDiagnosticOf (source (direct "Target") [category "Target" "Choice"]) =
+        some .errorSemanticIndexOrCategoryForErrorField ∧
+      errorOf (source (category "Target" "Choice") [direct "Target"]) =
+        some (.targetSelfReferenceAtProjectedRead target.id) ∧
+      targetDiagnosticOf (source (category "Target" "Choice") [direct "Target"]) =
+        some .errorSemanticIndexOrCategoryForErrorField ∧
+      errorOf (source (direct "Target") [direct "Target"]) =
+        some (.shape (.duplicateOperand target.id)) ∧
+      errorOf (source (category "Target" "Choice") [category "Target" "Choice"]) =
+        some (.shape (.duplicateOperand target.id)) := by
+  native_decide
+
 /- Three-category, incompatible-category, star, and wider stored-direct target
-lists retain their local refusal without an exact external class. -/
+lists retain their local refusal without an exact external class. Each mode's
+own bound is separated here: a star beside a projected self-read leaves the
+projected mode, and a compatible other-field category read beside a plain
+self-read leaves the plain mode, so neither bound can be widened to an
+unmeasured shape without a retained case turning red. -/
 example :
     errorOf (source (category "Target" "Choice")
         [category "Compatible" "Choice", category "Compatible2" "Choice"]) =
@@ -394,6 +418,14 @@ example :
       errorOf (source (direct "Target") [categoryStar]) =
         some (.targetSelfReference target.id) ∧
       targetDiagnosticOf (source (direct "Target") [categoryStar]) = none ∧
+      errorOf (source (category "Target" "Choice") [categoryStar]) =
+        some (.targetSelfReference target.id) ∧
+      targetDiagnosticOf (source (category "Target" "Choice") [categoryStar]) =
+        none ∧
+      errorOf (source (direct "Target") [category "Compatible" "Choice"]) =
+        some (.targetSelfReference target.id) ∧
+      targetDiagnosticOf (source (direct "Target")
+        [category "Compatible" "Choice"]) = none ∧
       errorOf (source (direct "Target") [direct "Wider"]) =
         some (.targetSelfReference target.id) ∧
       targetDiagnosticOf (source (direct "Target") [direct "Wider"]) = none ∧
