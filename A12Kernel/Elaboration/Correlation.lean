@@ -59,6 +59,18 @@ inductive CorrelationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
+namespace CorrelationElabError
+
+/-- Project the one measured filter class the checked surface can reach. A filter with no inner-origin reference is exactly the Kernel's "the wildcard has nothing to iterate" refusal, measured on the matching number-operand shape rather than transferred from a differently typed row.
+
+    The family's other measured classes are **structurally unrepresentable** here, which is the honest reason they project nothing: `SurfaceCorrelatedHaving` admits only number comparisons, repetition comparisons, and conjunction, so a `CustomCondition`, a nested filter, a semantic index, and `RepetitionNotUnique` cannot be authored into a filter at all, and its references carry no star. -/
+def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
+  | .missingInner => some KernelStaticDiagnostic.noIterationForWildcard
+  | _ => none
+
+end CorrelationElabError
+
+
 private def SurfaceComparisonOp.toCorrelation? : SurfaceComparisonOp →
     Option CorrelationComparisonOp
   | .equal => some .equal
