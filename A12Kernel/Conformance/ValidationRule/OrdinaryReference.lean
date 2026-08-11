@@ -236,6 +236,58 @@ example :
       some .unclassifiedLeaf := by
   native_decide
 
+/-! ## Scalar atoms inside the addressed numeric leaf
+
+The model-indexed leaf delegates every scalar atom unchanged, so the same sievability test applies
+to it — but under addressed admission a delegated declaration may be **repeatable**, bound by the
+rule's own iteration scope rather than nonrepeatable. These are the first classified numeric
+references that carry a coordinate at all. -/
+
+/- One UTF-16 `Length` atom over a doubly nested declaration: both levels are fixed by the rule's
+   scope, so both coordinates are concrete and neither is wildcard. -/
+example :
+    conditionReferences? (repeatableStringLengthCondition? (.ordinary .equal) 3)
+      [(10, 2), (20, 1)] =
+      some [{ field := innerToken.id, coordinates := [.concrete 2, .concrete 1] }] := by
+  native_decide
+
+/- A two-field atom contributes both operands. Their authored order is reversed here, so this also
+   pins that sieved membership retains declaration order and claims nothing about position. -/
+example :
+    conditionReferences?
+        (repeatableDateDifferenceCondition? .months "InnerEarlierDate" "InnerDate"
+          (.ordinary .equal) 1) [(10, 2), (20, 1)] = some [
+      { field := innerDate.id, coordinates := [.concrete 2, .concrete 1] },
+      { field := innerEarlierDate.id, coordinates := [.concrete 2, .concrete 1] }] := by
+  native_decide
+
+/- A category-projected conversion references the **declaring** field, not a projection-specific
+   identity: the atom's own predicate supplies membership, so no second addressing notion appears. -/
+example :
+    conditionReferences?
+        (repeatableFieldValueAsNumberCondition? repeatableNumericFactor
+          (.ordinary .equal) 15) [(10, 2), (20, 1)] =
+      some [{
+        field := innerNumericChoice.id
+        coordinates := [.concrete 2, .concrete 1] }] := by
+  native_decide
+
+private def tokenValueCountCondition? :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let source ← plainStarTokenValueCountSource?
+  let comparison ← checkedOuterEntityComparison? {
+    op := .ordinary .greater
+    left := .atom (.tokenValueCount source)
+    right := .literal { value := 2, authoredScale := 0 } }
+  (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
+
+/- Classifying the delegated scalar atoms must not classify the leaf's own checked sources. A token
+   value count keeps its distinct source type and stays refused until its own slice. -/
+example :
+    conditionReferenceError? tokenValueCountCondition? [(10, 2)] =
+      some .unclassifiedAtom := by
+  native_decide
+
 /-! ## Non-model-indexed numeric leaves
 
 The scalar numeric fragment carries no starred operand either — every field-bearing atom holds a
