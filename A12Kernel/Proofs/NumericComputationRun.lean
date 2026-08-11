@@ -57,6 +57,82 @@ theorem numericComputationRun_evaluateTable_target
           cases evaluated
           rfl
 
+/-- Atomic evaluation attributes either structural fault to the checked table it evaluated. This is the failure-path counterpart of `numericComputationRun_evaluateTable_target`; together they fix the retained target on both arms of the atomic boundary. -/
+theorem numericComputationRun_evaluateTable_faultTarget
+    (run : CheckedNumericComputationRun model)
+    (world : World) (input : CheckedDocument model)
+    (state : NumericComputationRunState)
+    (table : CheckedNumericComputationTable model)
+    (fault : NumericComputationRunFault)
+    (evaluated :
+      run.evaluateTable world input state table = .error fault) :
+    fault.target = table.targetField := by
+  cases result :
+      table.evaluate ((run.readPolicy state input).withWorld world) with
+  | error cause =>
+      simp [CheckedNumericComputationRun.evaluateTable,
+        CheckedNumericComputationTable.evaluateCompletion, result] at evaluated
+      cases evaluated
+      rfl
+  | ok checked =>
+      cases checked with
+      | unsupported cause =>
+          simp [CheckedNumericComputationRun.evaluateTable,
+            CheckedNumericComputationTable.evaluateCompletion, result] at evaluated
+          cases evaluated
+          rfl
+      | supported outcome =>
+          simp [CheckedNumericComputationRun.evaluateTable,
+            CheckedNumericComputationTable.evaluateCompletion, result] at evaluated
+
+/-- A failing suffix attributes its fault to one of the tables it was given, never to an unrelated field. -/
+private theorem numericComputationRun_executeTables_faultTarget
+    (run : CheckedNumericComputationRun model)
+    (world : World) (input : CheckedDocument model)
+    (tables : List (CheckedNumericComputationTable model))
+    (state : NumericComputationRunState)
+    (fault : NumericComputationRunFault)
+    (executed :
+      run.executeTables world input tables state = .error fault) :
+    fault.target ∈ tables.map (·.targetField) := by
+  induction tables generalizing state with
+  | nil =>
+      simp only [CheckedNumericComputationRun.executeTables] at executed
+      cases executed
+  | cons table remaining inductionHypothesis =>
+      cases evaluation :
+          run.evaluateTable world input state table with
+      | error cause =>
+          simp [CheckedNumericComputationRun.executeTables, evaluation] at executed
+          cases executed
+          have target :=
+            numericComputationRun_evaluateTable_faultTarget
+              run world input state table fault evaluation
+          simp [target]
+      | ok completion =>
+          have remainingFault := inductionHypothesis
+            (state := { completed := state.completed ++ [completion] }) (by
+              simpa [CheckedNumericComputationRun.executeTables, evaluation]
+                using executed)
+          simp [remainingFault]
+
+/-- The public failing run attributes its fault to one of its own checked targets. The exact failing table is pinned by the atomic law above; this is the envelope a consumer can rely on without reconstructing the schedule. -/
+theorem numericComputationRun_execute_faultTarget
+    (run : CheckedNumericComputationRun model)
+    (world : World) (input : CheckedDocument model)
+    (fault : NumericComputationRunFault)
+    (executed : run.execute world input = .error fault) :
+    fault.target ∈ run.targetFields := by
+  cases result : run.executeTables world input run.tables {} with
+  | error cause =>
+      simp [CheckedNumericComputationRun.execute, result] at executed
+      cases executed
+      simpa [CheckedNumericComputationRun.targetFields] using
+        numericComputationRun_executeTables_faultTarget
+          run world input run.tables {} fault result
+  | ok state =>
+      simp [CheckedNumericComputationRun.execute, result] at executed
+
 /-- Successful suffix execution appends completion targets in exactly the supplied table order. -/
 private theorem numericComputationRun_executeTables_targetOrder
     (run : CheckedNumericComputationRun model)

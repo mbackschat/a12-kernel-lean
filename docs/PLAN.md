@@ -16,7 +16,7 @@ The thin lanes in priority order are SG4 computation scheduling and state transi
 
 ## Immediate sequence
 
-1. **Open the SG4 computation scheduling and state-transition lane with a fresh working context** and its audit packet. Both inbound mechanism corrections from a12-dmkits `22fa19e7` are landed, so the next unit is a keystone rather than another diagnostic-family widening. The precondition slot of both self-read classes, semantic-index sources, compatible three-category lists, and incompatible target-category pairs stay unrepresented and are recorded under their owning gaps rather than driving the next capsule.
+1. **Continue the SG4 computation scheduling and state-transition lane.** Its first unit landed: the Number run fault's target label is proved on both constructors and separated by a retained later-table case. The next SG4 items are route attribution for addressed index clearing and the applied-document/later-validation boundary, both of which want their own audit packet. The precondition slot of both self-read classes, semantic-index sources, compatible three-category lists, and incompatible target-category pairs stay unrepresented and are recorded under their owning gaps rather than driving the next capsule.
 
 ## Blockers
 

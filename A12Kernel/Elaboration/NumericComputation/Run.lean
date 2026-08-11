@@ -38,6 +38,14 @@ inductive NumericComputationRunFault where
   | targetCheck (target : FieldId) (fault : NumericTargetCheckFault)
   deriving Repr, DecidableEq
 
+namespace NumericComputationRunFault
+
+/-- The computation a structural fault is attributed to: the target of the table that failed, not the run's first target. A consumer explaining a failed run reads the failing computation off this label alone. -/
+def target : NumericComputationRunFault → FieldId
+  | .evaluation target _ | .targetCheck target _ => target
+
+end NumericComputationRunFault
+
 namespace CheckedNumericComputationTable
 
 /-- Evaluate one checked scalar Number table against an explicit context and retain its complete target outcome. Homogeneous and heterogeneous runs share this atomic boundary. -/

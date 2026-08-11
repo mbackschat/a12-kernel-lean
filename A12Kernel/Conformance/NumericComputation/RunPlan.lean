@@ -96,6 +96,12 @@ private def inputCell (field : FieldId) (stored : String) (amount : Rat) :
     ClassifiedCellInput :=
   { address := { field, path := [] }, stored, raw := .parsed (.num amount) }
 
+/-- A stored Date cell whose calendar provenance selects whether a month/year difference can decode it at all. -/
+private def dateInput (basis : DateCalendarBasis) : ClassifiedCellInput :=
+  { address := { field := dateId, path := [] }
+    stored := "2020-02-29"
+    raw := .parsed (dateValue 2020 2 29 basis) }
+
 private def dateTimeInput (epochMillis : Int) : ClassifiedCellInput :=
   { address := { field := dateTimeId, path := [] }
     stored := "2024-06-25T05:21:07"
@@ -114,6 +120,17 @@ private def runOutcomes?
   let run ← (certifyNumericComputationRun checked).toOption
   let input ← checkedDocument cells
   (run.execute executionWorld input).toOption
+
+private def runFault?
+    (tables : List (Option (CheckedNumericComputationTable model)))
+    (cells : List ClassifiedCellInput := []) :
+    Option NumericComputationRunFault := do
+  let checked ← collectTables? tables
+  let run ← (certifyNumericComputationRun checked).toOption
+  let input ← checkedDocument cells
+  match run.execute executionWorld input with
+  | .error fault => some fault
+  | .ok _ => none
 
 private def runOutcomesAt?
     (nowMillis : Int)
@@ -405,6 +422,31 @@ example :
       (by native_decide) (sourceEnabled afterTarget) sourceSecond
       (by simpa [sourceSecond] using
         completionAt_ok afterTarget independentSourceTable (by native_decide))
+  native_decide
+
+/- A structural run fault names the computation that failed rather than the run.
+The faulting table is second in supplied order, so its retained label separates
+the failing table's own target from the run's first target; reversing the order
+keeps that same label, which separates table identity from position in the other
+direction. The Gregorian rows are the positive control: the identical plan over a
+decodable calendar payload runs to completion, so neither fault row is a fixture
+that merely fails to compute. -/
+example :
+    let months := surfaceDateDifference .months
+      (.baseYear .direct) (surfaceDateOperand "Date")
+    let producer := table? sourceId (literal 2) (.fieldNotFilled wrongId)
+    let faulting := table? laterId months (.fieldNotFilled wrongId)
+    runFault? [producer, faulting] [dateInput .legacyHybrid] =
+        some (.evaluation laterId .unsupportedDateCalendar) ∧
+      (runFault? [producer, faulting] [dateInput .legacyHybrid]).map
+          NumericComputationRunFault.target = some laterId ∧
+      runFault? [faulting, producer] [dateInput .legacyHybrid] =
+        some (.evaluation laterId .unsupportedDateCalendar) ∧
+      runFault? [producer, faulting] [dateInput .storedGregorian] = none ∧
+      runOutcomes? [producer, faulting] [dateInput .storedGregorian] =
+        some [
+          (sourceId, .accepted { unscaled := 2, scale := 0 }),
+          (laterId, .accepted { unscaled := 1, scale := 0 })] := by
   native_decide
 
 end A12Kernel.Conformance.NumericComputation.RunPlan
