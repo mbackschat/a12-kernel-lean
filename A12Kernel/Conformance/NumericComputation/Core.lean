@@ -35,7 +35,7 @@ example :
         some (.targetSelfReference targetId) := by
   native_decide
 
-/- The measured direct-left forms reach scale comparison before the bounded
+/- The measured arithmetic forms reach scale comparison before the bounded
 target-reference refusal. The same-scale field form is a separate positive
 branch from the literal mismatch and suppression branches. -/
 example :
@@ -84,22 +84,57 @@ example :
         some .errorReferenceToCalculatedField := by
   native_decide
 
+/- The gate order does not depend on the operator or on which side reads the
+target: subtraction, a right-positioned target, and a differently scaled field
+operand all reach the scale comparison first. Suppressing that code re-exposes
+the reference underneath it, which is what makes this an order and not a
+coincidence. -/
+example :
+    let targetField := surfaceField ["Root"] "Target"
+    let sourceField := surfaceField ["Root"] "Source"
+    let scaleOne : AuthoredNumericExpr SurfaceNumericAtom :=
+      .literal { value := 3 / 2, authoredScale := 1 }
+    let subtractLiteral :=
+      AuthoredNumericExpr.binary .subtract targetField scaleOne
+    let reverseMultiply :=
+      AuthoredNumericExpr.binary .multiply scaleOne targetField
+    let reverseAddField :=
+      AuthoredNumericExpr.binary .add sourceField targetField
+    let scaleOneSource : FlatFieldDecl := {
+      numberDeclaration 30 "ScaleOneSource" with
+      policy := { kind := .number { scale := 1, signed := true } } }
+    let scaleOneModel : FlatModel := {
+      model with fields := scaleOneSource :: model.fields }
+    let widerScaleField :=
+      AuthoredNumericExpr.binary .add targetField
+        (surfaceField ["Root"] "ScaleOneSource")
+    targetDiagnosticOf (checkedErrorOf subtractLiteral) =
+        some .invalidCompareDecimalPlaces ∧
+      targetDiagnosticOf
+          (checkedErrorOf subtractLiteral (suppressExactScaleWarning := true)) =
+        some .errorReferenceToCalculatedField ∧
+      targetDiagnosticOf (checkedErrorOf reverseMultiply) =
+        some .invalidCompareDecimalPlaces ∧
+      targetDiagnosticOf
+          (checkedErrorOf reverseMultiply (suppressExactScaleWarning := true)) =
+        some .errorReferenceToCalculatedField ∧
+      checkedErrorOf reverseAddField =
+        some (.targetSelfReferenceAfterScale targetId) ∧
+      targetDiagnosticOf (checkedErrorOfIn scaleOneModel widerScaleField) =
+        some .invalidCompareDecimalPlaces := by
+  native_decide
+
 /- Unmeasured or invalid target-reading shapes retain the old immediate local
 refusal, including when a later operand would otherwise fail resolution. -/
 example :
     let targetField := surfaceField ["Root"] "Target"
-    let sourceField := surfaceField ["Root"] "Source"
     let wrongField := surfaceField ["Root"] "Wrong"
-    let scaleOne : AuthoredNumericExpr SurfaceNumericAtom :=
-      .literal { value := 3 / 2, authoredScale := 1 }
     let targetThenWrong := AuthoredNumericExpr.binary .add targetField wrongField
     let groupedTargetThenWrong :=
       AuthoredNumericExpr.group (.binary .add targetField wrongField)
     let targetThenRepeatable :=
       AuthoredNumericExpr.binary .add targetField
         (surfaceField ["Root", "Rows"] "Repeated")
-    let reverse := AuthoredNumericExpr.binary .add sourceField targetField
-    let subtract := AuthoredNumericExpr.binary .subtract targetField scaleOne
     let sameTarget := AuthoredNumericExpr.binary .add targetField targetField
     let twoDivisions :=
       AuthoredNumericExpr.binary .multiply
@@ -109,34 +144,18 @@ example :
           (.literal { value := 4, authoredScale := 0 }))
     let stringLengthTarget : AuthoredNumericExpr SurfaceNumericAtom :=
       .atom (.stringLength (surfacePath ["Root"] "Target"))
-    let scaleOneSource : FlatFieldDecl := {
-      numberDeclaration 30 "ScaleOneSource" with
-      policy := { kind := .number { scale := 1, signed := true } } }
-    let scaleOneModel : FlatModel := {
-      model with fields := scaleOneSource :: model.fields }
-    let targetThenWrongScale :=
-      AuthoredNumericExpr.binary .add targetField
-        (surfaceField ["Root"] "ScaleOneSource")
     checkedErrorOf targetThenWrong = some (.targetSelfReference targetId) ∧
       checkedErrorOf groupedTargetThenWrong = some (.targetSelfReference targetId) ∧
       checkedErrorOf targetThenRepeatable = some (.targetSelfReference targetId) ∧
-      checkedErrorOf reverse = some (.targetSelfReference targetId) ∧
-      checkedErrorOf subtract = some (.targetSelfReference targetId) ∧
       checkedErrorOf sameTarget = some (.targetSelfReference targetId) ∧
       checkedErrorOf twoDivisions = some (.targetSelfReference targetId) ∧
       checkedErrorOf stringLengthTarget = some (.targetSelfReference targetId) ∧
-      checkedErrorOfIn scaleOneModel targetThenWrongScale =
-        some (.targetSelfReference targetId) ∧
       targetDiagnosticOf (checkedErrorOf targetThenWrong) = none ∧
       targetDiagnosticOf (checkedErrorOf groupedTargetThenWrong) = none ∧
       targetDiagnosticOf (checkedErrorOf targetThenRepeatable) = none ∧
-      targetDiagnosticOf (checkedErrorOf reverse) = none ∧
-      targetDiagnosticOf (checkedErrorOf subtract) = none ∧
       targetDiagnosticOf (checkedErrorOf sameTarget) = none ∧
       targetDiagnosticOf (checkedErrorOf twoDivisions) = none ∧
-      targetDiagnosticOf (checkedErrorOf stringLengthTarget) = none ∧
-      targetDiagnosticOf
-        (checkedErrorOfIn scaleOneModel targetThenWrongScale) = none := by
+      targetDiagnosticOf (checkedErrorOf stringLengthTarget) = none := by
   native_decide
 
 /- Target policy is attached once: a different scale/signedness summary is rejected before evaluation. -/

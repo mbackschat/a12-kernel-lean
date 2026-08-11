@@ -89,10 +89,7 @@ example :
 refusals. Their missing external code is distinct from an accepted operation. -/
 example :
     let numberTarget := surfaceField ["Root"] "Target"
-    let scaleOne : AuthoredNumericExpr SurfaceNumericAtom :=
-      .literal { value := 3 / 2, authoredScale := 1 }
-    let uncoveredNumber :=
-      AuthoredNumericExpr.binary .subtract numberTarget scaleOne
+    let uncoveredNumber := AuthoredNumericExpr.abs numberTarget
     let uncoveredString : StringExpr SurfaceFieldPath :=
       .concat (.field (bare "StringTarget")) (.literal "X")
     let acceptedString : StringExpr SurfaceFieldPath := .field (bare "Wrong")

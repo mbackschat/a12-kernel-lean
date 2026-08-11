@@ -516,57 +516,54 @@ private def FlatModel.resolveNumericComputationExpression
             else
               pure (.numeric (.filledGroupCount groups))
 
-/-- Resolve only the measured direct-left target-reference shapes. A malformed
-right operand yields `none`, so the ordinary resolver replays the expression and
-preserves its immediate target-first refusal. -/
+/-- Resolve the measured arithmetic shapes whose target reference is deferred
+until after the scale comparison.
+
+The Kernel decides the implicit target-scale comparison **before** the
+target-reference refusal, and that order is independent of the operator, of
+which side reads the target, and of whether the other operand is an immediate
+literal or a different Number field. The deferral therefore covers that whole
+measured surface rather than an enumerated list of authored shapes.
+
+Everything outside it keeps the immediate target-first refusal: division, a
+wrapped or nested read, an aggregate or group count, a repeatable or non-Number
+operand, and an operation reading the target on *both* sides, whose order is
+unmeasured. A malformed operand yields `none` as well, so the ordinary resolver
+replays the expression and reports its own error. -/
 private def FlatModel.resolveDirectTargetAdmissionExpression?
     (model : FlatModel) (declaringGroup : GroupPath)
     (target : FlatNumberField)
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
-    Except NumericComputationElabError
-      (Option (AuthoredNumericExpr (CheckedNumericComputationAtom model))) := do
-  let resolveTargetLeft (reference : SurfaceFieldPath) :
-      Except NumericComputationElabError (Option FlatFieldDecl) := do
-    let declaration ←
-      (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError
-        NumericComputationElabError.resolve
-    if declaration.id == target.id then pure (some declaration) else pure none
+    Option (AuthoredNumericExpr (CheckedNumericComputationAtom model)) :=
+  let resolveOperand
+      (operand : AuthoredNumericExpr SurfaceNumericComputationAtom) :
+      Option (AuthoredNumericExpr (CheckedNumericComputationAtom model) × Bool) :=
+    match operand with
+    | .literal value => some (.literal value, false)
+    | .atom (.numeric (.field reference)) =>
+        match model.resolveNonrepeatableFieldUnchecked declaringGroup reference with
+        | .error _ => none
+        | .ok declaration =>
+            match declaration.toNumberField? with
+            | none => none
+            | some field =>
+                some (.atom (.numeric (.field declaration)), field.id == target.id)
+    | _ => none
   match expression with
-  | .binary .multiply
-      (.atom (.numeric (.field reference))) (.literal value) =>
-      match ← resolveTargetLeft reference with
-      | some declaration =>
-          pure (some (.binary .multiply
-            (.atom (.numeric (.field declaration))) (.literal value)))
-      | none => pure none
-  | .binary .add
-      (.atom (.numeric (.field reference))) (.literal value) =>
-      match ← resolveTargetLeft reference with
-      | some declaration =>
-          pure (some (.binary .add
-            (.atom (.numeric (.field declaration))) (.literal value)))
-      | none => pure none
-  | .binary .add
-      (.atom (.numeric (.field leftReference)))
-      (.atom (.numeric (.field rightReference))) =>
-      match ← resolveTargetLeft leftReference with
-      | none => pure none
-      | some leftDeclaration =>
-          match model.resolveNonrepeatableFieldUnchecked
-              declaringGroup rightReference with
-          | .error _ => pure none
-          | .ok rightDeclaration =>
-              match rightDeclaration.toNumberField? with
-              | some rightField =>
-                  if rightField.id != target.id &&
-                      rightField.info.scale == target.info.scale then
-                    pure (some (.binary .add
-                      (.atom (.numeric (.field leftDeclaration)))
-                      (.atom (.numeric (.field rightDeclaration)))))
-                  else
-                    pure none
-              | none => pure none
-  | _ => pure none
+  | .binary op left right =>
+      match op with
+      | .divide => none
+      | _ =>
+          match resolveOperand left, resolveOperand right with
+          | some (resolvedLeft, leftReadsTarget),
+            some (resolvedRight, rightReadsTarget) =>
+              -- Exactly one side reads the target: a both-sides read is unmeasured.
+              if leftReadsTarget != rightReadsTarget then
+                some (.binary op resolvedLeft resolvedRight)
+              else
+                none
+          | _, _ => none
+  | _ => none
 
 /-- Resolve and check the complete numeric computation surface, including checked entity-list atoms and the distinct row-aligned `SumOfProducts` source, through the one shared numeric expression tree. -/
 def elaborateCompleteNumericComputationOperation
@@ -581,7 +578,7 @@ def elaborateCompleteNumericComputationOperation
       if !GroupPath.isValid declaringGroup then
         throw (.resolve (.invalidRuleGroup declaringGroup))
       let target ← model.resolveNumericComputationTarget targetField
-      let deferredTargetExpression? ←
+      let deferredTargetExpression? :=
         model.resolveDirectTargetAdmissionExpression?
           declaringGroup target expression
       let defersTargetReference := deferredTargetExpression?.isSome
