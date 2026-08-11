@@ -111,9 +111,33 @@ def ResolvedGroupListOperand.referencePointers (environment : Env) :
       starredGroupPointers model source.groupPath source.path.firstStar environment
   | .group _ => .error .unclassifiedOperand
 
+/-- Membership by *sieving* the model's declarations through a family's own reference predicate, rather than by traversing its operands.
+
+    This is sound exactly when the family cannot carry a starred operand and its predicate is exhaustive over the family's constructors with no catch-all: the sieve then inherits precisely that predicate's coverage and can neither miss a reference it reports nor invent one. The same shortcut would be wrong for a starred family, because the predicate reports the starred field while its coordinates are not concrete.
+
+    Every pointer it emits therefore comes from [`concreteFieldPointer`](A12Kernel.concreteFieldPointer) and is an exact instance address; `sievedFieldPointers_exact` proves that. A reference the firing environment does not bind — a subtree field below a repeatable level deeper than the rule's own scope — fails the whole projection at that exact level instead of being dropped or wildcarded. -/
+def sievedFieldPointers (model : FlatModel)
+    (references : FlatFieldDecl → Bool) (environment : Env) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  (model.fields.filter references).mapM (concreteFieldPointer · environment)
+
+/-- Whether one scalar numeric atom's share of the leaf's membership predicate may be sieved.
+
+    Sieving reuses a family's whole `referencesField`, so it adopts the scope claim of *every* arm at once. Ten atoms name resolved fields or fixed Number field lists directly, and adopting those is adopting field identity. The fixed group count is different in kind: its operands are group references, and its arm of the predicate reports **every field in the counted subtree** — a meaning established for the static error-field reference gate, not for this pointer channel. Whether the Kernel expands a *fixed* group into descendant field pointers is unmeasured; [`spec/01`](../../../spec/01-data-model.md) specifies that expansion only for a *starred* group, and the same open question already refuses the group-list leaf's unstarred group operand. So it is refused here too, on the same terms rather than by parity with the starred arm.
+
+    Written as an exhaustive match so that a new atom constructor must choose rather than default into the sieve. -/
+def NumericValidationAtom.sievableReference : NumericValidationAtom → Bool
+  | .field _ | .baseYear _ | .baseYearDatePart _ _ _ | .temporalFieldPart _ _
+  | .stringLength _ | .stringRange _ _ _ | .fieldValueAsNumber _
+  | .dateDifference _ _ _ | .dateTimeDifference _ _ _ | .dayDifference _ _ _
+  | .aggregate _ _ => true
+  | .filledGroupCount _ => false
+
 /-- Two membership strategies, chosen by whether a family can carry a starred operand.
 
-    A family that can must be traversed explicitly, so that each operand reaches the coordinate rule that fits it. A family that cannot may instead be *sieved* through its own `referencesField`: the flat fragment's predicate is exhaustive over every leaf constructor with no catch-all, so sieving the model's declarations through it inherits exactly that coverage and can neither miss a reference the predicate reports nor invent one. The same shortcut would be wrong for a starred family, because the predicate reports the starred field while its coordinates are not concrete.
+    A family that can must be traversed explicitly, so that each operand reaches the coordinate rule that fits it. A family that cannot is sieved instead, on the terms [`sievedFieldPointers`](A12Kernel.sievedFieldPointers) states. Both sieved families qualify structurally: the flat fragment's leaves and the scalar numeric fragment's atoms each hold resolved single-field declarations, fixed Number field lists, or fixed group references whose resolution rejects both the starred `RuleGroup` and a repeatable ordinary path, and each family's `referencesField` covers every constructor with no catch-all.
+
+    Star-freedom licenses the *coordinate* rule but not every arm's *membership* meaning, so the numeric leaf is sieved only once every atom passes [`NumericValidationAtom.sievableReference`](A12Kernel.NumericValidationAtom.sievableReference). A single refused atom refuses the whole leaf, because a sieve cannot report part of a predicate.
 
     A consequence is that the two strategies retain different orders — authored for traversal, declaration for sieving. That is admissible only because the result carries no ordering claim at all. -/
 def ValidationConditionLeaf.referencePointers (environment : Env) :
@@ -128,9 +152,16 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
   | .repeatableFieldPresence _ declaration =>
       (concreteFieldPointer declaration environment).map ([·])
   | .flat condition =>
-      (model.fields.filter fun declaration =>
-          condition.referencesField declaration.id).mapM
-        (concreteFieldPointer · environment)
+      sievedFieldPointers model
+        (fun declaration => condition.referencesField declaration.id) environment
+  | .numeric _ comparison =>
+      if comparison.left.allAtoms NumericValidationAtom.sievableReference &&
+          comparison.right.allAtoms NumericValidationAtom.sievableReference then
+        sievedFieldPointers model
+          (fun declaration => comparison.referencesField model declaration.id)
+          environment
+      else
+        .error .unclassifiedAtom
   | _ => .error .unclassifiedLeaf
 
 private def treePointers (environment : Env) :

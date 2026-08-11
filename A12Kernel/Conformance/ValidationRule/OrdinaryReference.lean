@@ -236,4 +236,95 @@ example :
       some .unclassifiedLeaf := by
   native_decide
 
+/-! ## Non-model-indexed numeric leaves
+
+The scalar numeric fragment carries no starred operand either — every field-bearing atom holds a
+resolved single-field declaration, a fixed Number field list, or a fixed group reference whose
+resolution rejects both the starred `RuleGroup` and a repeatable ordinary path — so it is sieved
+through its own exhaustive `referencesField` on the same terms as the flat fragment. -/
+
+private def numericCondition? (surface : SurfaceNumericComparison) :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let checked ←
+    (elaborateNumericComparison ordinaryIterationModel ["Order"] surface).toOption
+  (CheckedValidationCondition.fromNumeric checked).toOption
+
+/- Both comparison sides contribute and two different atom kinds reach the same membership
+   predicate. The retained order is **declaration** order, which the authored order reverses here:
+   sieving cannot preserve authored position, and the projection claims none. -/
+example :
+    conditionReferences?
+        (numericCondition? {
+          op := .ordinary .greater
+          left := .atom (.stringLength (ordinaryPath ["Order"] "BaseToken"))
+          right := .atom (.field (ordinaryPath ["Order"] "BaseAmount")) }) [] = some [
+      { field := baseAmount.id, coordinates := [] },
+      { field := baseToken.id, coordinates := [] }] := by
+  native_decide
+
+/- A context-free atom neither contributes a reference nor refuses the projection. `BaseYear` reads
+   no cell, so the sieve must report exactly the one field atom beside it. -/
+example :
+    conditionReferences?
+        (numericCondition? {
+          op := .ordinary .greater
+          left := .atom (.field (ordinaryPath ["Order"] "BaseAmount"))
+          right := .atom (.baseYear) }) [] =
+      some [{ field := baseAmount.id, coordinates := [] }] := by
+  native_decide
+
+/-! ### The refused fixed group count
+
+`ordinaryIterationModel` cannot author a fixed group count at all: every group there is either the
+model root or inside a repeatable scope, and a count needs at least two non-root operands of which
+at most one may be the `RuleGroup` keyword. This fixture supplies the missing shape so that the one
+atom the sieve must **not** adopt is exercised rather than merely excluded in prose. -/
+
+private def fixedAmount : FlatFieldDecl :=
+  { id := 60
+    groupPath := ["Count", "Fixed"]
+    name := "FixedAmount"
+    policy := { kind := .number { scale := 0, signed := true } } }
+
+/-- Declared inside a repeatable group, which is what makes the refusal load-bearing: `RuleGroup` is
+    the one count operand that may bind a *repeatable* instance, so adopting the count's arm of the
+    predicate would have projected a concrete coordinate for a subtree expansion no measurement
+    covers. -/
+private def rowAmount : FlatFieldDecl :=
+  { id := 61
+    groupPath := ["Count", "Rows"]
+    name := "RowAmount"
+    policy := { kind := .number { scale := 0, signed := true } }
+    repeatableScope := [50] }
+
+private def countModel : FlatModel :=
+  { fields := [fixedAmount, rowAmount]
+    repeatableGroups := [
+      { level := 50, path := ["Count", "Rows"], repeatability := some 2 }] }
+
+/-- `NumberOfFilledGroups(RuleGroup, /Count/Fixed) > 0` at the repeatable `/Count/Rows`. -/
+private def ruleGroupCountSurface : SurfaceNumericComparison :=
+  { op := .ordinary .greater
+    left := .atom (.filledGroupCount [
+      .ruleGroup false,
+      .path { base := .absolute, groups := ["Count", "Fixed"] }])
+    right := .literal { value := 0, authoredScale := 0 } }
+
+private def countReferenceError? (environment : Env) :
+    Option ReferenceProjectionError := do
+  let checked ←
+    (elaborateNumericComparison countModel ["Count", "Rows"]
+      ruleGroupCountSurface).toOption
+  let condition ← (CheckedValidationCondition.fromNumeric checked).toOption
+  match condition.core.referencePointers environment with
+  | .error error => some error
+  | .ok _ => none
+
+/- This case is itself the witness that the shape passes checked admission, and its membership
+   predicate does report both subtrees, so a leaf-wide sieve would have answered here. It refuses
+   instead: the subtree expansion of a *fixed* group is specified for no channel, and answering
+   would assert it. -/
+example : countReferenceError? [(50, 2)] = some .unclassifiedAtom := by
+  native_decide
+
 end A12Kernel.Conformance.ValidationRule.OrdinaryReference

@@ -113,6 +113,44 @@ theorem starFieldPointer_arity (checked : CheckedStarFieldPath model)
       checked.declaration.repeatableScope.length :=
   reopenedFieldPointer_arity _ _ _ _ projected
 
+private theorem mapM_concreteFieldPointer_exact (environment : Env) :
+    ∀ (declarations : List FlatFieldDecl) (pointers : List MessagePointer),
+      declarations.mapM (concreteFieldPointer · environment) = .ok pointers →
+        ∀ pointer ∈ pointers, pointer.toCellAddr?.isSome = true := by
+  intro declarations
+  induction declarations with
+  | nil =>
+      intro pointers projected
+      change Except.ok [] = Except.ok pointers at projected
+      cases projected
+      simp
+  | cons declaration remaining inductionHypothesis =>
+      intro pointers projected
+      simp only [List.mapM_cons] at projected
+      cases head : concreteFieldPointer declaration environment with
+      | error _ => simp [head, Bind.bind, Except.bind] at projected
+      | ok pointer =>
+          cases tail : remaining.mapM (concreteFieldPointer · environment) with
+          | error _ => simp [head, tail, Bind.bind, Except.bind] at projected
+          | ok rest =>
+              simp only [head, tail, Bind.bind, Except.bind, pure, Except.pure,
+                Except.ok.injEq] at projected
+              subst projected
+              intro candidate member
+              rcases List.mem_cons.mp member with equal | member
+              · rw [equal]
+                exact (concreteFieldPointer_exact declaration environment pointer
+                  head).2
+              · exact inductionHypothesis rest tail candidate member
+
+/-- Every pointer a sieved family emits recovers an exact document address. This is the counterpart of [`reopenedFieldPointer_notExact`](A12Kernel.reopenedFieldPointer_notExact): the two membership strategies differ in pointer *shape*, so a consumer reads the shape off the family's strategy rather than inspecting each pointer, and a sieved family can never smuggle in a wildcard. -/
+theorem sievedFieldPointers_exact (model : FlatModel)
+    (references : FlatFieldDecl → Bool) (environment : Env)
+    (pointers : List MessagePointer)
+    (projected : sievedFieldPointers model references environment = .ok pointers) :
+    ∀ pointer ∈ pointers, pointer.toCellAddr?.isSome = true :=
+  mapM_concreteFieldPointer_exact environment _ _ projected
+
 /-- The projection is blind to the connective, which is the precise sense in which it is structural: a reference is authored, not decisive, so an `Or` branch that never decided still contributes. -/
 theorem referencePointers_connective_blind (left right : ValidationCondition model)
     (environment : Env) :
