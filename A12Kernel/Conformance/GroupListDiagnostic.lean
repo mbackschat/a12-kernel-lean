@@ -95,4 +95,54 @@ example :
       some .invalidEntity := by
   native_decide
 
+
+/-! ## The filled-count carrier
+
+The same operand relation, a different multiplicity class, and one shape the quantifiers do not
+have: a single starred operand is admitted where a single unstarred one is not. -/
+
+private def countDiagnostic? (groups : List GroupPath)
+    (rowGroup : GroupPath := ["Probe"]) : Option KernelStaticDiagnostic :=
+  let surface : SurfaceNumericComparison :=
+    { op := .ordinary .greater
+      left := .atom (.filledGroupCount
+        (groups.map fun path => .path { base := .absolute, groups := path }))
+      right := .literal { value := 0, authoredScale := 0 } }
+  match elaborateNumericComparison probeModel rowGroup surface with
+  | .ok _ => none
+  | .error error => error.groupCountDiagnostic?
+
+/- The count's multiplicity class is its own, and it fires on a single unstarred operand rather than
+   on an operand count: a single **starred** operand is admitted, which is why this is not the
+   quantifiers' arity class. -/
+example : countDiagnostic? [["Probe", "A"]] = some .paramSizeInvalidGN := by
+  native_decide
+
+/- A repeatable operand beside another takes the star class, not the multiplicity class. -/
+example :
+    countDiagnostic? [["Probe", "A"], ["Probe", "Rows"]] = some .noWildcard := by
+  native_decide
+
+/- The operand relation is the same one the quantifiers use, split the same way. -/
+example :
+    countDiagnostic? [["Probe", "A"], ["Probe", "A"]] = some .duplicateParam1 := by
+  native_decide
+
+example :
+    countDiagnostic? [["Probe", "A"], ["Probe", "A", "Deep"]] =
+      some .duplicateParam2 := by
+  native_decide
+
+example :
+    countDiagnostic? [["Probe"], ["Probe", "B"]] = some .duplicateParam2 := by
+  native_decide
+
+example :
+    countDiagnostic? [["Probe", "A"], ["Probe", "Nope"]] = some .invalidEntity := by
+  native_decide
+
+/- Two disjoint fixed operands are the accepted control. -/
+example : countDiagnostic? [["Probe", "A"], ["Probe", "B"]] = none := by
+  native_decide
+
 end A12Kernel.Conformance.GroupListDiagnostic

@@ -120,6 +120,21 @@ inductive NumericValidationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
+namespace NumericValidationElabError
+
+/-- Project the measured filled-group-count admission classes. The count's own multiplicity class fires for a single **unstarred** operand — measured for a repeatable and a nonrepeatable one and in both path forms, while a single starred operand is admitted — and a repeatable operand beside another takes the star class instead. Exact duplicate and ancestor overlap are two Kernel classes carried by one local error, so the split is read off its retained paths, and a root operand beside another takes the ancestor class because a root is an ancestor of everything. Every other refusal returns `none`. -/
+def groupCountDiagnostic? :
+    NumericValidationElabError → Option KernelStaticDiagnostic
+  | .groupCountNeedsMultipleOperands => some .paramSizeInvalidGN
+  | .repeatableGroupCountRequiresStar _ => some .noWildcard
+  | .overlappingGroupCountOperands left right =>
+      some (if left == right then .duplicateParam1 else .duplicateParam2)
+  | .rootGroupInGroupCount _ => some .duplicateParam2
+  | .unknownGroupInCount _ => some .invalidEntity
+  | _ => none
+
+end NumericValidationElabError
+
 /-- Static field-admission policy for one resolved numeric comparison. Ordinary rules keep their exact rule group; generated computation validation either retains the legacy nonrepeatable scope or carries a model-certified repeatable computation source. -/
 inductive NumericOperandScope where
   | sameGroup
