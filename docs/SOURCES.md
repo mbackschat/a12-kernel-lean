@@ -322,7 +322,7 @@ An a12-dmkits interpreter agreement is triangulation. A maintained adapter test 
 
 ## Inbound provenance checkpoints
 
-The detailed review chronology is recoverable from Git. These consolidated checkpoints retain exact reviewed routes without an outbound feedback loop. Historical identifiers `27afb555aae29d3acd4ed04e3aea4772ae85505a` and `45d24b73549124bf7da342a1ee19401408438fc6` no longer resolve at reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`; they remain receipt history rather than current drill routes. The [ledger receipt-continuity note](A12-DMKITS-SPEC-SYNC-LEDGER.md#receipt-continuity) owns the complete measured list and avoids inferring replacement mappings.
+The detailed review chronology is recoverable from Git. These consolidated checkpoints retain exact reviewed routes without an outbound feedback loop. **Every a12-dmkits revision cited here from before 2026-08-10 is receipt history, not a working drill route**, because it no longer resolves in the available checkout while its content is present at HEAD under a different hash. Drill to the named maintained owner instead of the revision, and say which you used. The [ledger receipt-continuity note](A12-DMKITS-SPEC-SYNC-LEDGER.md#receipt-continuity) owns the measurement, the boundary, and the reason no replacement mapping is inferred.
 
 | Reviewed a12-dmkits revision | Inbound scope |
 |---|---|
