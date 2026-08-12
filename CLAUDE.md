@@ -79,7 +79,7 @@ Because this project's source ships no kernel code, it is licensed **MIT** (see 
 
 ## ⚠️ HARD RULE — no machine-specific data in committed files
 
-No absolute home paths, usernames, hostnames, emails, or credentials in source, docs, or commit messages. Reference the sibling repos by **relative path** (`../a12-kernel/`, `../a12-rulekit/`); this project assumes they are checked out as adjacent directories under a shared parent, as the rest of the A12 OSS family does. That assumption fails inside a Git worktree, where every sibling path resolves to nothing while all Lean gates still pass; [`docs/SOURCES.md`](docs/SOURCES.md#resolving-the-sibling-checkouts) owns the placement-independent derivation to use before probing.
+No absolute home paths, usernames, hostnames, emails, or credentials in source, docs, or commit messages. Reference the sibling repos by **relative path** (`../a12-kernel/`, `../a12-rulekit/`); this project assumes they are checked out as adjacent directories under a shared parent, as the rest of the A12 OSS family does.
 
 ## ⚠️ HARD RULE — dependency changes require user approval
 

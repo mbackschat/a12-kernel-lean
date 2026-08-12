@@ -9,17 +9,6 @@ Authority order is **[`../../a12-kernel`](../../a12-kernel) → project-owned [`
 
 All kernel source routes below target kernel **30.8.1**, inspected at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`. Read source to learn behavior; never link, call, ship, or transcribe it.
 
-### Resolving the sibling checkouts
-
-Every route here names a sibling by relative path, which assumes this repository sits beside `a12-kernel/` and `a12-rulekit/` under a shared parent. A Git worktree breaks that assumption silently: `lake build`, `lake test`, and the trust audit all pass from a worktree while every sibling path resolves to nothing, so a measurement session would probe an absent oracle rather than fail. Derive the parent from the *main* checkout instead of from the working directory. This is correct from a worktree and from the main checkout alike, needs no configuration, and keeps no machine-specific path in a committed file:
-
-```sh
-siblings="$(cd "$(git rev-parse --path-format=absolute --git-common-dir)/../.." && pwd)"
-ls "$siblings/a12-rulekit" "$siblings/a12-kernel"    # confirm both before probing
-```
-
-`--git-common-dir` names the main repository's `.git` from inside any linked worktree, which is what makes the derivation placement-independent. Prefer a worktree for theory and proof work, and run a probe session from the main checkout or from a worktree placed beside it. The relative paths throughout this file remain the canonical way to *name* a sibling; they are identity, not a guarantee that the working directory can reach it.
-
 ## Query contract
 
 Start from the relevant [`spec/` clause](../spec/SEMANTICS-MAP.md), then:
