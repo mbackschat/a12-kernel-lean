@@ -114,7 +114,9 @@ Classify the claim, then apply its method. Doing this costs seconds; every skipp
 | **reachability / scope** — no legal model expresses this; this gate constrains that | "unauthorable"; "the 15-digit bound gates literals" | **measurement only.** Reading never discharges it. Absent a measurement, do not state it |
 | **provenance** — the peer or a source established this | "measured at `<rev>`" | confirm that revision measured *this* case, not an adjacent one that merely shares an outcome |
 
-Three cheap checks, each of which would have prevented a recorded defect:
+Four cheap checks, each of which would have prevented a recorded defect:
+
+- **Never write a 40-character revision you did not read.** Extending a short form into a plausible full SHA produces a citation that resolves nowhere while reading exactly like a measurement receipt. Cite the short form you actually saw, or read the full one off the repository. This is not the rewrite hazard the [receipt-continuity note](docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#receipt-continuity) tracks: that one is external and unavoidable, this one is self-inflicted and free to block.
 
 - **Before consuming an unreachability *or exclusivity* claim, grep this repository's own `spec/` for the mechanism it excludes.** "Unrepresentable", "no legal model", "cannot be read off", and "only this mechanism produces that" are one class: a negative existential that falls to a single defeater, and the cheapest place to find one is the prose this project already owns. See [`LF75`](docs/LEAN-FINDINGS.md) and [`LF84`](docs/LEAN-FINDINGS.md).
 - **Never write "unauthorable", "unrepresentable", or "no legal model can express".** Write `authorable, witness X, measured at <rev>` or `no witness known as of <rev>`. The second claims nothing and so invites no correction; that phrasing difference is the whole ping-pong.
