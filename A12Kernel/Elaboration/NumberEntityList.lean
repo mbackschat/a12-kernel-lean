@@ -235,6 +235,30 @@ inductive NumberEntityElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
+namespace NumberEntityElabError
+
+/-- The expansion-kind gate is **each operator's own question about the expansion's values**, which is why this projection is keyed by the operator where every gate the shared checker owns is not. One group whose subtree contains a String draws three different classes here, and reading one carrier's class off a sibling is precisely the inference the Kernel refutes.
+
+    Shape refusals delegate to the shared checker, because the star, arity, and duplicate gates do not vary by carrier.
+
+    The **explicit** field list carries the class only under the extrema, where the equivalent written-out list is measured to draw the same unsortable code. No row places `Sum`'s or the distinct count's class on the explicit form, so it stays unprojected there rather than inheriting the group's. -/
+def aggregateDiagnostic? (op : NumericAggregateOp) :
+    NumberEntityElabError → Option KernelStaticDiagnostic
+  | .shape error => error.diagnostic?
+  | .groupExpansionNotNumber _ =>
+      match op with
+      | .sum => some .noNumber
+      | .minimum | .maximum => some .notSortable
+      | .distinctCount => some .stringEnumAndNonStringEnum
+  | .fieldKindMismatch _ _ =>
+      match op with
+      | .minimum | .maximum => some .notSortable
+      | .sum | .distinctCount => none
+  | .star _ | .groupExpansionEmpty _ | .groupExpansionMixedSign _
+  | .incoherentCore => none
+
+end NumberEntityElabError
+
 private def certifyStarNumber (source : CheckedStarFieldPath model) :
     Except NumberEntityElabError (CheckedStarNumberSource model) :=
   match hField : source.declaration.toNumberField? with

@@ -312,4 +312,58 @@ example :
       field ["Probe", "B", "Sub"] "SubVal"] = some [4, 5] := by
   native_decide
 
+/-! ## The expansion-kind gate is the operator's own question, so one input draws three classes
+
+This is the half that does **not** generalize. The star, arity, and duplicate gates above are the
+shared checker's and report the same class through every carrier; the kind gate asks what *this*
+operator does with the expansion's values, so a single group whose subtree contains a String is
+`MVK_NO_NUMBER` to `Sum`, `MVK_NOT_SORTABLE` to the extrema, and
+`MVK_STRING_ENUM_AND_NON_STRING_ENUM` to `NumberOfDifferentValues`. Reading one carrier's class off
+a sibling is exactly the inference these rows exist to block. -/
+
+private def aggregateDiagnostic? (op : NumericAggregateOp)
+    (operands : List SurfaceFieldEntityOperand) :
+    Option KernelStaticDiagnostic :=
+  match operands with
+  | [] => none
+  | first :: rest =>
+      match elaborateNumberEntitySource probeModel ["Probe"] { first, rest } with
+      | .ok _ => none
+      | .error error => error.aggregateDiagnostic? op
+
+example :
+    aggregateDiagnostic? .sum [group ["Probe", "A"]] = some .noNumber := by
+  native_decide
+
+example :
+    aggregateDiagnostic? .maximum [group ["Probe", "A"]] = some .notSortable := by
+  native_decide
+
+example :
+    aggregateDiagnostic? .minimum [group ["Probe", "A"]] = some .notSortable := by
+  native_decide
+
+example :
+    aggregateDiagnostic? .distinctCount [group ["Probe", "A"]] =
+      some .stringEnumAndNonStringEnum := by
+  native_decide
+
+/- The pure-Number group is admitted under every one of them, which keeps the rows above pinned to
+   the expansion's kinds rather than to groupness. -/
+example : aggregateDiagnostic? .sum [group ["Probe", "B"]] = none := by native_decide
+
+/- The **explicit** list separates what does and does not carry across operand forms. Under the
+   extrema the written-out list draws the same unsortable class as the group, which places that gate
+   on the operand's kind; under `Sum` no row places a class on the explicit form, so it stays
+   unprojected rather than inheriting the group's. -/
+example :
+    aggregateDiagnostic? .maximum [field ["Probe", "A"] "AVal",
+      field ["Probe", "A", "Deep"] "DeepText"] = some .notSortable := by
+  native_decide
+
+example :
+    aggregateDiagnostic? .sum [field ["Probe", "A"] "AVal",
+      field ["Probe", "A", "Deep"] "DeepText"] = none := by
+  native_decide
+
 end A12Kernel.Conformance.FieldEntityGroupOperand
