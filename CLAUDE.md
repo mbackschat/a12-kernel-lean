@@ -95,6 +95,14 @@ Never perform redundant work. Before implementing or proposing a capability, ins
 
 Deliver what was asked, at the scope intended. Make routine judgment calls yourself and check in only when different readings of the request would lead to materially different work. If the request seems mistaken or a better approach exists, say so in a sentence and continue with the task as asked rather than quietly narrowing, widening, or transforming it. Finish the whole task, and stop short of actions clearly beyond what it implies.
 
+## ⚠️ HARD RULE — never stop for context, session length, or accumulated effort
+
+Context window, elapsed session length, number of units already landed, and "this feels like a natural boundary" are **never** reasons to stop, defer a ready unit, narrow a scope, or hand back. Auto-compaction owns the context window; running long is the expected mode, not a risk to manage. Stop only for a real blocker: an unresolved discriminator that changes the representation, a missing measurement no available route can obtain, a dirty sibling that gates a probe, an approval gate under one of the rules above, or an explicit user instruction.
+
+Degrading care under a long run is a reason to **re-apply the procedure, not to quit**. The discharge table above is mechanical and costs seconds; if claims start slipping, run it on every claim rather than treating the slippage as a stop condition. A quality worry stated as a reason to stop is still a stop for session length wearing better clothes, and it hands the user an unfinished plan plus a request to start over.
+
+"Start it in a fresh context" in [`docs/PLAN.md`](docs/PLAN.md) and the keystone notes is a **sequencing** instruction, not a stop condition. It means do not tack a wide representation change onto the tail of an *unrelated* unit, where the recorded cost is commit `c822d5c`; it never means end the session. A unit's own direct successor, with the touched surface already warm, is the best rather than the worst place to continue.
+
 ## ⚠️ HARD RULE — never push without an explicit current request
 
 Commit each completed coherent unit of work before reporting completion unless the user explicitly says not to commit. Do not leave verified work uncommitted merely to propose a commit message.
