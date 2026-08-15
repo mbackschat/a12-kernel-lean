@@ -71,19 +71,35 @@ def fixedGroupPointers (model : FlatModel) (reference : ResolvedGroupReference)
     Except ReferenceProjectionError (List MessagePointer) :=
   (model.groupSubtreeFields reference.path).mapM (concreteFieldPointer · environment)
 
-/-- A filtered star is refused rather than projected. Its own field pointer would be the plain starred one, but the measured account pins only that its `Having` operands *join* the set, not which coordinates they carry, and inventing them would make an incomplete set look complete. -/
-def CheckedNumberEntityOperand.referencePointer (environment : Env) :
-    CheckedNumberEntityOperand model →
-      Except ReferenceProjectionError MessagePointer
-  | .field source => concreteFieldPointer source.declaration environment
-  | .star source => starFieldPointer source.source environment
-  | .starHaving _ => .error .filteredStarOperand
+/-- A starred group contributes its **descendant fields**, never a pointer to the group. Expansion is recursive by construction: every declaration whose group path extends the starred one participates, however deep, and each reopens from the star's own `firstStar` against its own scope. A field declared below a deeper repeatable descendant therefore gains extra wildcards without the projection knowing that group exists.
 
-/-- Every authored slot contributes, in authored order, whether or not a runtime scan would reach it. -/
+    Declaration order is retained for determinism only, on the same terms as the whole projection. -/
+def starredGroupPointers (model : FlatModel) (groupPath : GroupPath)
+    (boundCount : Nat) (environment : Env) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  (model.groupSubtreeFields groupPath).mapM
+    (reopenedFieldPointer · boundCount environment)
+
+/-- A filtered star is refused rather than projected. Its own field pointer would be the plain starred one, but the measured account pins only that its `Having` operands *join* the set, not which coordinates they carry, and inventing them would make an incomplete set look complete. -/
+def CheckedNumberEntityOperand.referencePointers (environment : Env) :
+    CheckedNumberEntityOperand model →
+      Except ReferenceProjectionError (List MessagePointer)
+  | .field source => (concreteFieldPointer source.declaration environment).map ([·])
+  | .star source => (starFieldPointer source.source environment).map ([·])
+  | .starHaving _ => .error .filteredStarOperand
+  | .group slot =>
+      match slot.source with
+      | .fixed reference => fixedGroupPointers model reference environment
+      | .starred source =>
+          starredGroupPointers model source.group.path source.path.firstStar
+            environment
+
+/-- Every authored slot contributes, in authored order, whether or not a runtime scan would reach it. A slot contributes **one** pointer or, for a group, its whole expansion, which is why this flattens rather than pairing one pointer per slot. -/
 def CheckedNumberEntitySource.referencePointers
     (source : CheckedNumberEntitySource model) (environment : Env) :
     Except ReferenceProjectionError (List MessagePointer) :=
-  source.operands.mapM (CheckedNumberEntityOperand.referencePointer environment)
+  (·.flatten) <$>
+    source.operands.mapM (CheckedNumberEntityOperand.referencePointers environment)
 
 /-- A projection-bearing token operand references its **declaring** field. The stored-versus-category choice is not part of a reference: `MessagePointer` has no projection slot, and the channel reports field instances.
 
@@ -151,15 +167,6 @@ private def expressionPointers (environment : Env) :
   | .binary _ left right | .power left right | .extremum _ left right => do
       pure ((← expressionPointers environment left) ++
         (← expressionPointers environment right))
-
-/-- A starred group contributes its **descendant fields**, never a pointer to the group. Expansion is recursive by construction: every declaration whose group path extends the starred one participates, however deep, and each reopens from the star's own `firstStar` against its own scope. A field declared below a deeper repeatable descendant therefore gains extra wildcards without the projection knowing that group exists.
-
-    Declaration order is retained for determinism only, on the same terms as the whole projection. -/
-def starredGroupPointers (model : FlatModel) (groupPath : GroupPath)
-    (boundCount : Nat) (environment : Env) :
-    Except ReferenceProjectionError (List MessagePointer) :=
-  (model.groupSubtreeFields groupPath).mapM
-    (reopenedFieldPointer · boundCount environment)
 
 /-- Both group operand forms expand to descendant fields and neither yields a group pointer; they differ only in coordinates, which is exactly the starred-versus-unstarred split. -/
 def ResolvedGroupListOperand.referencePointers (environment : Env) :

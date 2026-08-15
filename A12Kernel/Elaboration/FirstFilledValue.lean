@@ -136,6 +136,7 @@ private def scanCheckedFirstFilledNumberOperandWith
       pure (source.source.scanPartialValidationFirstFilledStateWith scope
         (classifyStar source.source) selected
         (state.enterSelection selected.isEmpty resolved.domain.hasOpenTail true))
+  | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
 private def scanCheckedFirstFilledNumberOperandsWith
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
@@ -214,6 +215,7 @@ private def scanComputationFirstFilledNumberOperand
           resolved.environments resolved.domain.hasOpenTail state with
       | .inl next => pure (.inl next)
       | .inr result => pure (.inr result.asNumber)
+  | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
 private def scanComputationFirstFilledNumberOperands
     (document : Document) (outer : Env) (direct : FlatContext)
@@ -278,6 +280,8 @@ private def scanCheckedDocumentValidationOperand
             source.source.field)
         selected (state.enterSelection selected.isEmpty
           resolved.domain.hasOpenTail true)
+  | .group slot =>
+      .error (.addressing (.unsupportedGroupOperand slot.groupPath))
 
 private def scanCheckedDocumentValidationOperands
     (document : CheckedDocument model) (outer : Env)
@@ -338,6 +342,8 @@ private def scanCheckedDocumentComputationOperand
           resolved.environments resolved.domain.hasOpenTail state with
       | .inl next => pure (.inl next)
       | .inr result => pure (.inr result.asNumber)
+  | .group slot =>
+      .error (.addressing (.unsupportedGroupOperand slot.groupPath))
 
 private def scanCheckedDocumentComputationOperands
     (document : CheckedDocument model) (outer : Env) :

@@ -138,12 +138,10 @@ def overlaps (left right : ResolvedGroupListOperand model) : Bool :=
 def iterationScope :
     ResolvedGroupListOperand model → Option (List RepeatableLevel)
   | .starredGroup source =>
-      let scope :=
-        (source.path.axes.take source.path.firstStar).map (·.level)
+      let scope := source.path.bindingScope
       if scope.isEmpty then none else some scope
   | .starredGroupPresence source =>
-      let scope :=
-        (source.path.axes.take source.path.firstStar).map (·.level)
+      let scope := source.path.bindingScope
       if scope.isEmpty then none else some scope
   | .field _ | .group _ => none
 

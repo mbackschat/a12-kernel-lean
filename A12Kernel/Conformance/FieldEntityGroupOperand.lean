@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumberValuesNotUnique
+import A12Kernel.Elaboration.ValidationCondition.Reference
 
 /-! # A12Kernel.Conformance.FieldEntityGroupOperand — the shared entity list's group slot
 
@@ -12,8 +13,11 @@ different models. The group form is admitted where the expansion is rejected for
 repeatable level's missing star, so a consumer that normalizes one into the other emits a model the
 Kernel refuses.
 
-Carrier certification of an admitted group operand is not yet represented, so it reports `none`
-rather than a class. That is the honest unrepresented state and not a measured admission.
+The Number family then **retains** the admitted slot rather than lowering it into expanded field
+slots, because the wildcard gate above is exactly what makes those two forms different models.
+Evaluation over the expansion is a later capsule and is refused rather than answered empty; the
+op-keyed refusal classes are a later capsule too, so a refusal here reports `none` rather than a
+plausible-looking name.
 -/
 
 namespace A12Kernel.Conformance.FieldEntityGroupOperand
@@ -36,7 +40,7 @@ private def probeModel : FlatModel :=
       { id := 4, groupPath := ["Probe", "B"], name := "BVal",
         policy := { kind := .number unsigned } },
       { id := 5, groupPath := ["Probe", "B", "Sub"], name := "SubVal",
-        policy := { kind := .number unsigned } },
+        policy := { kind := .number { scale := 2, signed := false } } },
       { id := 6, groupPath := ["Probe", "Rows"], name := "RowVal",
         policy := { kind := .number unsigned }, repeatableScope := [10] },
       { id := 7, groupPath := ["Probe", "Rows", "Fees"], name := "FeeVal",
@@ -180,6 +184,132 @@ example : diagnostic? [group ["Probe", "A"]] = some .varyingTypesNotAllowed := b
   native_decide
 
 example : diagnostic? [group ["Probe", "A", "Deep"]] = some .varyingTypesNotAllowed := by
+  native_decide
+
+/-! ## The checked list retains the authored slot rather than its expansion
+
+A Translate or rule-refactoring consumer has to re-render the operand that was written, and the
+written-out expansion is not a legal substitute for it, so lowering the slot would be unsound and
+not merely lossy. These read the finished checked list: one authored slot, its authored path, and
+its star bit — never two expanded field slots. -/
+
+private def checkedSlots (operands : List SurfaceFieldEntityOperand) :
+    Option (List (Option (GroupPath × Bool))) :=
+  match operands with
+  | [] => none
+  | first :: rest =>
+      match elaborateNumberValuesNotUniqueSource probeModel ["Probe"]
+          { first, rest } with
+      | .error _ => none
+      | .ok checked =>
+          some (checked.operands.map fun operand =>
+            operand.groupSlot?.map fun group => (group.groupPath, group.isStarred))
+
+example :
+    checkedSlots [group ["Probe", "B"]] = some [some (["Probe", "B"], false)] := by
+  native_decide
+
+example :
+    checkedSlots [starredGroup [{ name := "Probe" }, { name := "Rows", starred := true }]] =
+      some [some (["Probe", "Rows"], true)] := by
+  native_decide
+
+/- A field slot beside a group stays a field slot, so the two forms remain distinguishable in the
+   checked list and a consumer never has to guess which one was authored. -/
+example :
+    checkedSlots [group ["Probe", "B"],
+      field ["Probe", "A", "Deep"] "DeepVal"] =
+      some [some (["Probe", "B"], false), none] := by
+  native_decide
+
+/-! ## Derived facts read the recursive expansion
+
+`Probe/B` declares scale 0 directly and scale 2 only inside a nested subgroup, so the list's derived
+scale separates the recursive extent from a direct-child one a second time — at the value domain
+rather than at the kind gate. -/
+
+private def scaleOf (operands : List SurfaceFieldEntityOperand) :
+    Option NumericScaleSummary :=
+  match operands with
+  | [] => none
+  | first :: rest =>
+      match elaborateNumberValuesNotUniqueSource probeModel ["Probe"]
+          { first, rest } with
+      | .error _ => none
+      | .ok checked => some checked.scaleSummary
+
+example : scaleOf [group ["Probe", "B"]] = some (NumericScaleSummary.field 2) := by
+  native_decide
+
+/-! ## The aggregate path certifies the expansion itself
+
+`FieldValuesNotUnique` runs the shared category scan before certification, but the aggregates do
+not, so their group slot is where the expansion's Number-valuedness is actually established. -/
+
+private def aggregateAdmits (operands : List SurfaceFieldEntityOperand) : Bool :=
+  match operands with
+  | [] => false
+  | first :: rest =>
+      (elaborateNumberEntitySource probeModel ["Probe"] { first, rest }).toOption.isSome
+
+example : aggregateAdmits [group ["Probe", "B"]] = true := by native_decide
+
+example : aggregateAdmits [group ["Probe", "A"]] = false := by native_decide
+
+/-! ## Runtime over the expansion is refused, not answered empty
+
+An empty stream would read as "the group contributed no values", which is a wrong answer rather
+than a missing one. The refusal is the honest boundary until the runtime capsule lands. -/
+
+private def emptyDocument : Document :=
+  { instantiatedRows := [], rawCells := fun _ => none }
+
+private def sumEvaluates (operands : List SurfaceFieldEntityOperand) : Bool :=
+  match operands with
+  | [] => false
+  | first :: rest =>
+      match elaborateNumberEntitySource probeModel ["Probe"] { first, rest } with
+      | .error _ => false
+      | .ok checked =>
+          (checked.evaluateAggregate .sum emptyDocument [] { read := fun _ => .empty }
+            (fun _ _ => malformedCheckedCell) (fun _ _ => .empty)).toOption.isSome
+
+/- The control matters as much as the case: an ordinary two-field list over the same model does
+   evaluate, so the group's refusal is the group slot's and not a broken fixture. -/
+example :
+    sumEvaluates [field ["Probe", "B"] "BVal",
+      field ["Probe", "A"] "AVal"] = true := by
+  native_decide
+
+example : sumEvaluates [group ["Probe", "B"]] = false := by native_decide
+
+/-! ## The message reference channel publishes the expansion, never the group
+
+Measured at a12-dmkits `8094f664`: recursive expansion, no pointer to the group itself, concrete
+coordinates for the unstarred form. The slot reaches it through the same subtree query the checker
+used, so the fields a consumer reads off the slot and the fields the channel publishes cannot
+disagree. A nested subgroup's field is in the set, which is again the recursive-versus-direct-child
+separator. -/
+
+private def referencedFields (operands : List SurfaceFieldEntityOperand) :
+    Option (List FieldId) :=
+  match operands with
+  | [] => none
+  | first :: rest =>
+      match elaborateNumberValuesNotUniqueSource probeModel ["Probe"]
+          { first, rest } with
+      | .error _ => none
+      | .ok checked =>
+          (checked.referencePointers []).toOption.map fun pointers =>
+            pointers.map (·.field)
+
+example : referencedFields [group ["Probe", "B"]] = some [4, 5] := by native_decide
+
+/- The same list authored as its two explicit fields publishes the same set, which is what makes the
+   authored form recoverable only from the retained slot and not from this channel. -/
+example :
+    referencedFields [field ["Probe", "B"] "BVal",
+      field ["Probe", "B", "Sub"] "SubVal"] = some [4, 5] := by
   native_decide
 
 end A12Kernel.Conformance.FieldEntityGroupOperand

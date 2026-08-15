@@ -18,7 +18,7 @@ theorem checkedStarFieldPath_bindingScope
     checked.bindingScope =
       checked.declaration.repeatableScope.take checked.path.firstStar := by
   rw [← checked.ancestryOwned]
-  simp [CheckedStarFieldPath.bindingScope]
+  simp [CheckedStarFieldPath.bindingScope, StarPath.bindingScope]
 
 /-- Full validation always supplies complete all-rows relevance. -/
 @[simp] theorem checkedStarFieldPath_allRowsRelevant_full

@@ -289,6 +289,7 @@ private inductive OperandShape where
   | direct
   | star
   | filteredStar
+  | group
   deriving Repr, DecidableEq
 
 private def operandShape :
@@ -296,12 +297,16 @@ private def operandShape :
   | .field _ => .direct
   | .star _ => .star
   | .starHaving _ => .filteredStar
+  | .group _ => .group
 
 private def operandField :
     CheckedNumberEntityOperand model → FieldId
   | .field source => source.field.id
   | .star source => source.field.id
   | .starHaving source => source.source.field.id
+  -- A group slot names a scope rather than one field; this view exists for the direct/star
+  -- shapes it was built for and reports the expansion's first field for the group form.
+  | .group source => source.first.id
 
 private structure OperandView where
   shape : OperandShape

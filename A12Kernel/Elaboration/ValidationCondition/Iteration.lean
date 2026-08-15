@@ -181,6 +181,9 @@ private def numberEntityOperandReferenceScope? :
   | .field _ => some []
   | .star checked => checkedStarBindingScope checked.source
   | .starHaving checked => checkedStarBindingScope checked.source.source
+  | .group slot =>
+      let scope := slot.source.bindingScope
+      if scope.isEmpty then some [] else some scope
 
 private def numberEntityReferenceScopes?
     (source : CheckedNumberEntitySource model) :

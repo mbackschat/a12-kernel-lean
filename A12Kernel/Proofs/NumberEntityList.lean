@@ -17,11 +17,34 @@ theorem checkedDocument_numberValueListCellAt_delegates
   rw [resolved]
   rfl
 
-/-- Every checked Number entity list has either a starred first slot or at least one trailing slot. -/
+/-- Every checked Number entity list has either an already-many first slot or at least one trailing slot. A group slot is already-many by itself, so this is deliberately weaker than requiring a star. -/
 theorem checkedNumberEntitySource_requiredMultiplicity
     (checked : CheckedNumberEntitySource model) :
-    (checked.first.isStar || !checked.rest.isEmpty) = true :=
+    (checked.first.isAlreadyMany || !checked.rest.isEmpty) = true :=
   checked.requiredMultiplicity
+
+/-- A retained group slot omits no descendant: every declaration anywhere in the group's recursive
+    subtree is present in the slot's certified expansion. This is what lets a consumer read the
+    slot's `fields` instead of re-walking the model, and it is the same extent the message reference
+    channel publishes, because both go through `FlatModel.groupSubtreeFields`.
+
+    The nearest false generalization is that the expansion is the group's **direct** children; a
+    retained case refutes it on a field declared two levels down. -/
+theorem checkedNumberEntityGroup_expansion_complete
+    (group : CheckedNumberEntityGroup model) (declaration : FlatFieldDecl)
+    (member : declaration ∈ model.groupSubtreeFields group.groupPath) :
+    ∃ field, declaration.toNumberField? = some field ∧ field ∈ group.fields := by
+  have admitted : declaration.toNumberField?.isSome = true :=
+    List.all_eq_true.mp group.expansionAllNumber declaration member
+  match hField : declaration.toNumberField? with
+  | none => rw [hField] at admitted; simp at admitted
+  | some field =>
+      refine ⟨field, rfl, ?_⟩
+      have selected : field ∈ (model.groupSubtreeFields group.source.groupPath).filterMap
+          FlatFieldDecl.toNumberField? :=
+        List.mem_filterMap.mpr ⟨declaration, member, hField⟩
+      rw [group.expansionOwned] at selected
+      simpa [CheckedNumberEntityGroup.fields] using selected
 
 /-- Every checked Number entity list excludes repeated direct non-wildcard fields. -/
 theorem checkedNumberEntitySource_uniqueDirectOperands

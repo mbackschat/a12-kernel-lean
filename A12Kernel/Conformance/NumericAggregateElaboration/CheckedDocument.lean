@@ -266,6 +266,9 @@ def numberEntityConsumerSlots
     | .starHaving operand =>
         { field := operand.source.field.id, repeated := true, filtered := true,
           signed := operand.source.field.info.signed }
+    | .group operand =>
+        { field := operand.first.id, repeated := operand.isStarred, filtered := false,
+          signed := operand.declarationSigned }
 
 def checkedDocumentPartialSnapshot
     (valueCount filtered : Bool) (scope : ValidationRelevanceScope) :

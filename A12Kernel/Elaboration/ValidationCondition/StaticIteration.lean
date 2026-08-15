@@ -116,6 +116,11 @@ private def checkedNumberOperandIterationScope :
       mergeIterationScopes
         (checkedStarBindingScope source.source.source)
         (← checkedHavingOuterIterationScope source.filter)
+  | .group slot =>
+      -- A fixed group sits outside every repeatable scope and binds nothing; a starred group
+      -- binds exactly the levels above its own star, on the same rule a starred field follows.
+      let scope := slot.source.bindingScope
+      pure (if scope.isEmpty then none else some scope)
 
 private def checkedTokenOperandIterationScope :
     CheckedTokenEntityOperand model →

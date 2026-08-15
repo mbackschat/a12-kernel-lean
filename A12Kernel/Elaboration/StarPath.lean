@@ -356,12 +356,12 @@ namespace CheckedStarFieldPath
 /-- Repeatable levels strictly above the first star remain fixed by the surrounding rule environment. The starred level and every deeper axis stay operand-local. -/
 def bindingScope (checked : CheckedStarFieldPath model) :
     List RepeatableLevel :=
-  (checked.path.axes.take checked.path.firstStar).map (·.level)
+  checked.path.bindingScope
 
 /-- Repeatable levels reopened by this operand, beginning at its first star. -/
 def reopenedScope (checked : CheckedStarFieldPath model) :
     List RepeatableLevel :=
-  (checked.path.axes.drop checked.path.firstStar).map (·.level)
+  checked.path.reopenedScope
 
 /-- Whether this checked starred field is completely relevant for an all-rows aggregate in the current rule-iteration row. -/
 def allRowsRelevant (checked : CheckedStarFieldPath model)

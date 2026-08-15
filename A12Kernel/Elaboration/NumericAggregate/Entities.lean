@@ -130,6 +130,7 @@ def resolvedAggregateSide (checked : CheckedNumberEntityOperand model)
   | .star source => source.resolvedValueSide document outer starRead
   | .starHaving source =>
       source.resolvedValueSide document outer filterRead starRead
+  | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
 /-- Resolve one full-validation aggregate slot from a caller-prepared checked view. Direct and repeated cells therefore share one validation phase without resampling declaration checks. -/
 def resolvedValidationAggregateSideIn
@@ -148,6 +149,7 @@ def resolvedValidationAggregateSideIn
       source.source.source.resolvedValidationHavingValueListSide
         document outer source.having read
         (source.source.checkedValueListCellAt .validation read)
+  | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
 /-- Resolve one aggregate slot at computation phase. Filtered stars use the runtime iterator's one-kept-successor lookahead and stop at the first reached filter or target poison; plain stars and direct fields preserve the same checked-cell classification without validation's unknown-as-drop projection. -/
 def resolvedComputationAggregateSide
@@ -180,6 +182,7 @@ def resolvedComputationAggregateSide
             hasHaving := true })
       | .terminated cause | .poison cause =>
           pure (.inr (.unknown cause))
+  | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
 /-- Resolve one validation aggregate slot from the immutable checked document. Validation filters evaluate every candidate before the first target classification; target reads then stop at the first formal cause. -/
 def resolvedCheckedDocumentValidationAggregateSide
@@ -230,6 +233,8 @@ def resolvedCheckedDocumentComputationAggregateSide
             hasHaving := true })
       | .terminated cause | .poison cause =>
           pure (.inr (.unknown cause))
+  | .group slot =>
+      .error (.addressing (.unsupportedGroupOperand slot.groupPath))
 
 /-- Resolve one unfiltered partial-validation slot from the checked document. Direct nonrelevance precedes its cell query; star topology precedes the established all-rows gate; a local filter remains a rule-level skip. -/
 def resolvedCheckedDocumentPartialAggregateSide
@@ -260,6 +265,8 @@ def resolvedCheckedDocumentPartialAggregateSide
       else
         pure (.inr .nonRelevant)
   | .starHaving _ => pure (.inr .skippedHaving)
+  | .group slot =>
+      .error (.addressing (.unsupportedGroupOperand slot.groupPath))
 
 /-- Resolve one unfiltered partial-validation slot through the caller's call-local checked-cell projection. Topology and all-rows relevance remain document-owned, while target classification observes preliminary index and required annotations instead of rereading the immutable base cells. -/
 private def resolvedPartialViewAggregateSide
@@ -293,6 +300,8 @@ private def resolvedPartialViewAggregateSide
       else
         pure (.inr .nonRelevant)
   | .starHaving _ => pure (.inr .skippedHaving)
+  | .group slot =>
+      .error (.addressing (.addressing (.unsupportedGroupOperand slot.groupPath)))
 
 /-- Resolve one partial `NumberOfValueInFields` slot without importing the combiner family's newly measured universal gate. The one-covering-identifier star boundary is retained until this count operator is measured independently. -/
 def resolvedCheckedDocumentPartialValueCountSide
@@ -323,6 +332,8 @@ def resolvedCheckedDocumentPartialValueCountSide
       else
         pure (.inr .nonRelevant)
   | .starHaving _ => pure (.inr .skippedHaving)
+  | .group slot =>
+      .error (.addressing (.unsupportedGroupOperand slot.groupPath))
 
 /-- Resolve one partial-validation aggregate slot. Direct fields require their concrete cell; ordinary stars require complete wildcard/ancestor coverage and retain the established topology-produced side unchanged. Filtered slots return the rule-level skip marker without evaluating their filter. -/
 def resolvedPartialAggregateSide (checked : CheckedNumberEntityOperand model)
@@ -342,6 +353,7 @@ def resolvedPartialAggregateSide (checked : CheckedNumberEntityOperand model)
       | .nonRelevant => pure (.inr .nonRelevant)
       | .relevant side => pure (.inl side)
   | .starHaving _ => pure (.inr .skippedHaving)
+  | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
 /-- Resolve one raw-document partial `NumberOfValueInFields` slot through its retained one-covering-identifier boundary. This preserves the unmeasured count family while the four combiner aggregates use `resolvedPartialAggregateSide`. -/
 def resolvedPartialValueCountSide (checked : CheckedNumberEntityOperand model)
@@ -363,6 +375,7 @@ def resolvedPartialValueCountSide (checked : CheckedNumberEntityOperand model)
       else
         pure (.inr .nonRelevant)
   | .starHaving _ => pure (.inr .skippedHaving)
+  | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
 end CheckedNumberEntityOperand
 

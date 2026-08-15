@@ -58,9 +58,21 @@ inductive StarAddressingError where
   | invalidRowDepth (level : RepeatableLevel) (path : List Nat) (expected : Nat)
   | orphanRow (level : RepeatableLevel) (path : List Nat) (parentLevel : RepeatableLevel)
   | nonprefixRows (level : RepeatableLevel) (parent actual : List Nat)
+  /-- A group-scope operand has no addressing plan in this theory yet. It exists so that such an operand can never be *answered* — an empty stream would read as "the group contributed no values", which is a wrong result rather than a missing one. This is a representation boundary and not a Kernel refusal. -/
+  | unsupportedGroupOperand (group : List String)
   deriving Repr, DecidableEq
 
 namespace StarPath
+
+/-- Repeatable levels strictly above the first star, which stay fixed by the surrounding rule environment. The starred level and every deeper axis are operand-local.
+
+    This splits a plan the same way whatever the plan addresses, so a starred field path and a starred group path answer it identically rather than each restating the arithmetic. -/
+def bindingScope (path : StarPath) : List RepeatableLevel :=
+  (path.axes.take path.firstStar).map (·.level)
+
+/-- Repeatable levels this plan reopens, beginning at its first star. -/
+def reopenedScope (path : StarPath) : List RepeatableLevel :=
+  (path.axes.drop path.firstStar).map (·.level)
 
 private def invalidRepeatability? : List StarAxis → Option RepeatableLevel
   | [] => none
