@@ -230,9 +230,12 @@ example :
   native_decide
 
 /- A group presence operand over a *repeatable* group is classified, but its subtree fields need a
-   level the rule does not bind. That is the measured relation's boundary rather than a gap in it:
-   the kernel account is measured on a nonrepeatable model, so whether such a descendant wildcards or
-   pins to repetition 1 has no witness, and the projection fails closed at the exact level. -/
+   level the rule does not bind, and the projection fails closed at that exact level. This is the
+   arm the wildcard rule below does **not** reach, and the distinction is the operand's own level:
+   every measured row has a nonrepeatable operand, so the wildcarding begins strictly inside its
+   subtree. Whether a *repeatable* operand's own level wildcards instead of binding has no witness,
+   so the depth stays at the whole scope of the authored path and this shape keeps failing closed
+   rather than gaining an invented coordinate. -/
 example :
     conditionReferenceError? innerGroupFilledCondition? [(10, 2)] =
       some (.binding (.missingBinding 20)) := by
@@ -413,10 +416,29 @@ private def otherAmount : FlatFieldDecl :=
     name := "OtherAmount"
     policy := { kind := .number { scale := 0, signed := true } } }
 
+/-- The coordinate witness: a **nonrepeatable** group operand holding one direct field and a
+    *repeatable* subgroup. Nothing in a condition over it is starred, so whatever coordinate its
+    nested field carries is a property of the model's repeatability alone. This is the shape the
+    kernel measurement uses, and the only one that separates the two coordinate accounts. -/
+private def nestAmount : FlatFieldDecl :=
+  { id := 65
+    groupPath := ["Count", "Nest"]
+    name := "NestAmount"
+    policy := { kind := .number { scale := 0, signed := true } } }
+
+private def runAmount : FlatFieldDecl :=
+  { id := 66
+    groupPath := ["Count", "Nest", "Runs"]
+    name := "RunAmount"
+    policy := { kind := .number { scale := 0, signed := true } }
+    repeatableScope := [51] }
+
 private def countModel : FlatModel :=
-  { fields := [fixedAmount, rowAmount, rowFlag, deepAmount, otherAmount]
+  { fields := [fixedAmount, rowAmount, rowFlag, deepAmount, otherAmount,
+      nestAmount, runAmount]
     repeatableGroups := [
-      { level := 50, path := ["Count", "Rows"], repeatability := some 2 }] }
+      { level := 50, path := ["Count", "Rows"], repeatability := some 2 },
+      { level := 51, path := ["Count", "Nest", "Runs"], repeatability := some 2 }] }
 
 /-- `NumberOfFilledGroups(RuleGroup, /Count/Fixed) > 0` at the repeatable `/Count/Rows`. -/
 private def ruleGroupCountSurface : SurfaceNumericComparison :=
@@ -447,8 +469,17 @@ example :
 
 /-! ### Unstarred group operands
 
-Measured recursive expansion with **concrete** coordinates, identical in the presence, entity-list,
-and count positions. The starred form's wildcarding is the contrast, and both are retained. -/
+Measured recursive expansion, identical in the presence, entity-list, and count positions. One depth
+rule serves both repetition shapes: repeatable levels **above** the operand stay concrete at the
+firing row, every level at or below it is **wildcarded**. An unstarred operand's own level is
+non-repeatable by the wildcard gate, so what the two forms actually differ in is where that boundary
+falls, not whether one wildcards at all.
+
+The `/Count/Nest` rows are the separating ones — a nonrepeatable operand whose subtree crosses a
+repeatable level. Measured at a12-dmkits `bffe9cca`, where `/Shipment/Carrier` reaches
+`/Shipment[1]/Carrier[1]/Handoffs[0]/Site` beside `/Shipment[1]/Carrier[1]/Name`: one wildcard, one
+bare. Before that row this projection failed closed at the crossed level rather than choosing between
+a wildcard and a pin. -/
 
 private def groupPresenceReferences? (groups : GroupPath) (rowGroup : GroupPath)
     (environment : Env) : Option (List MessagePointer) := do
@@ -463,6 +494,15 @@ example :
       { field := deepAmount.id, coordinates := [] }] := by
   native_decide
 
+/- The separating row: the direct field carries no coordinate while the field below the repeatable
+   subgroup carries a wildcard, from one operand and one projection. The empty environment is the
+   point — a concrete account would have to read a level the rule does not bind. -/
+example :
+    groupPresenceReferences? ["Count", "Nest"] ["Count"] [] = some [
+      { field := nestAmount.id, coordinates := [] },
+      { field := runAmount.id, coordinates := [.wildcard] }] := by
+  native_decide
+
 private def fixedGroupListReferences? (environment : Env) :
     Option (List MessagePointer) := do
   let condition ← (CheckedValidationCondition.fromGroupList countModel ["Count"]
@@ -471,11 +511,29 @@ private def fixedGroupListReferences? (environment : Env) :
       .group (.path { base := .absolute, groups := ["Count", "Other"] })]).toOption
   (condition.core.referencePointers environment).toOption
 
+private def nestedGroupListReferences? (environment : Env) :
+    Option (List MessagePointer) := do
+  let condition ← (CheckedValidationCondition.fromGroupList countModel ["Count"]
+    .atLeastOneGroupFilled [
+      .group (.path { base := .absolute, groups := ["Count", "Nest"] }),
+      .group (.path { base := .absolute, groups := ["Count", "Other"] })]).toOption
+  (condition.core.referencePointers environment).toOption
+
 /- The entity-list position adds the disjoint operand's subtree and nothing else. -/
 example :
     fixedGroupListReferences? [] = some [
       { field := fixedAmount.id, coordinates := [] },
       { field := deepAmount.id, coordinates := [] },
+      { field := otherAmount.id, coordinates := [] }] := by
+  native_decide
+
+/- The same depth rule in the entity-list position, which is what "identical in all three positions"
+   has to mean if it means anything: swapping the disjoint operand for the nested one changes the
+   coordinate and nothing else. -/
+example :
+    nestedGroupListReferences? [] = some [
+      { field := nestAmount.id, coordinates := [] },
+      { field := runAmount.id, coordinates := [.wildcard] },
       { field := otherAmount.id, coordinates := [] }] := by
   native_decide
 

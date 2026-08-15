@@ -61,24 +61,36 @@ def sievedFieldPointers (model : FlatModel)
     Except ReferenceProjectionError (List MessagePointer) :=
   (model.fields.filter references).mapM (concreteFieldPointer · environment)
 
-/-- An unstarred group operand contributes the fields of its **whole subtree**, recursively and never a pointer to the group, and each at its concrete instance. The extent itself is [`FlatModel.groupSubtreeFields`](A12Kernel.FlatModel.groupSubtreeFields), shared with the entity list's group slot so that one site cannot disagree with another about how far a group reaches.
+/-- A group operand contributes the fields of its **whole subtree**, recursively and never a pointer to the group. The extent itself is [`FlatModel.groupSubtreeFields`](A12Kernel.FlatModel.groupSubtreeFields), shared with the entity list's group slot so that one site cannot disagree with another about how far a group reaches.
 
-    Both halves are measured on a nonrepeatable model: the deeper descendant group's field joins the set, which refutes direct-child expansion, and the coordinates are concrete, which is the one place this differs from a starred group's wildcards. The relation is identical in the presence, entity-list, and count positions, so all three share this function rather than each restating it.
+    **One depth rule serves both repetition shapes**, which is why they share this function rather than each owning a projection: repeatable levels **above** `boundCount` stay concrete at the firing row, and every repeatable level at or below it is **wildcarded**. The starred form supplies its star's own `firstStar`; the unstarred form supplies its authored path's own repeatable scope, and `fixedGroupPointers` below states why that is the whole scope rather than the levels strictly above it. Measured at a12-dmkits `bffe9cca`: an unstarred `/Shipment/Carrier` reaches `/Shipment[1]/Carrier[1]/Handoffs[0]/Site`, wildcarding the nested repeatable level while the message's own anchor stays concrete throughout. The two channels are different addresses of the same firing.
 
-    What remains unmeasured is narrower than it looks: the measured model is nonrepeatable throughout, so a subtree field below a repeatable level *deeper* than the rule's own scope has no witness. [`concreteFieldPointer`](A12Kernel.concreteFieldPointer) fails closed at that exact level rather than guessing between a wildcard and a pinned first repetition. -/
+    A member with **nothing** reopened below `boundCount` is the ordinary case here rather than the disagreement [`reopenedFieldPointer`](A12Kernel.reopenedFieldPointer) refuses — a group's direct non-repeatable field has no level to wildcard, and the same measured set carries it as `/Shipment[1]/Carrier[1]/Name` with no coordinates at all. It is projected concretely, which is the same answer the depth rule gives with an empty wildcard suffix.
+
+    Declaration order is retained for determinism only, on the same terms as the whole projection. -/
+def groupExpansionPointers (model : FlatModel) (groupPath : GroupPath)
+    (boundCount : Nat) (environment : Env) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  (model.groupSubtreeFields groupPath).mapM fun declaration =>
+    if declaration.repeatableScope.length ≤ boundCount then
+      concreteFieldPointer declaration environment
+    else
+      reopenedFieldPointer declaration boundCount environment
+
+/-- An unstarred group operand's expansion. The subtree-reaching half is measured on a nonrepeatable model, where the deeper descendant group's field joins the set and refutes direct-child expansion; the coordinate half is measured at `bffe9cca`. The relation is identical in the presence, entity-list, and count positions.
+
+    The depth is the **whole** repeatable scope of the authored path, its own level included, rather than the levels strictly above it. On every measured row those agree, because the wildcard gate keeps an unstarred entity-list operand's own group nonrepeatable and the wildcarding therefore begins strictly inside the subtree. They diverge only for a *repeatable* operand, which the presence carrier accepts unstarred and which no row covers; taking the whole scope leaves that shape failing closed at the unbound level instead of inventing a coordinate for it. -/
 def fixedGroupPointers (model : FlatModel) (reference : ResolvedGroupReference)
     (environment : Env) :
     Except ReferenceProjectionError (List MessagePointer) :=
-  (model.groupSubtreeFields reference.path).mapM (concreteFieldPointer · environment)
+  groupExpansionPointers model reference.path
+    (model.repeatableScopeForGroupPath reference.path).length environment
 
-/-- A starred group contributes its **descendant fields**, never a pointer to the group. Expansion is recursive by construction: every declaration whose group path extends the starred one participates, however deep, and each reopens from the star's own `firstStar` against its own scope. A field declared below a deeper repeatable descendant therefore gains extra wildcards without the projection knowing that group exists.
-
-    Declaration order is retained for determinism only, on the same terms as the whole projection. -/
+/-- A starred group contributes its **descendant fields**, never a pointer to the group, reopening from the star's own `firstStar`. -/
 def starredGroupPointers (model : FlatModel) (groupPath : GroupPath)
     (boundCount : Nat) (environment : Env) :
     Except ReferenceProjectionError (List MessagePointer) :=
-  (model.groupSubtreeFields groupPath).mapM
-    (reopenedFieldPointer · boundCount environment)
+  groupExpansionPointers model groupPath boundCount environment
 
 /-- One authored group slot's whole expansion, in whichever repetition shape it was authored. Every carrier that retains a group slot projects through this one function, so no two can disagree about how far a group reaches or which coordinates its fields carry. -/
 def CheckedEntityGroupSource.referencePointers

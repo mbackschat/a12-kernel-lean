@@ -318,18 +318,28 @@ example : firstFilledResolves (group ["Form", "Bag"]) = false := by native_decid
 /-! ## The message reference channel publishes the expansion, never the group
 
 The token operand reaches the same shared group projection the Number carrier uses, so the two
-carriers cannot disagree about how far a group reaches. `Mixed` is nonrepeatable throughout, which
-keeps this row on the measured concrete-coordinate account rather than on the fail-closed arm that
-guards an unwitnessed nested repetition. -/
+carriers cannot disagree about how far a group reaches. Coordinates follow one depth rule, measured
+at a12-dmkits `bffe9cca` on this very carrier: the direct field carries none and the field below the
+repeatable subgroup carries a **wildcard**, from an empty environment that a concrete account could
+not have satisfied. -/
 
-private def referencedFields (groups : GroupPath) : Option (List FieldId) :=
+private def referenced (groups : GroupPath) : Option (List MessagePointer) :=
   match elaborateTokenEntitySource probeModel ["Form"]
       { first := group groups, rest := [] } with
   | .error _ => none
-  | .ok checked =>
-      (checked.first.referencePointers []).toOption.map fun pointers =>
-        pointers.map (·.field)
+  | .ok checked => (checked.first.referencePointers []).toOption
 
-example : referencedFields ["Form", "Mixed"] = some [3, 4] := by native_decide
+example :
+    referenced ["Form", "Bag"] = some [
+      { field := 1, coordinates := [] },
+      { field := 2, coordinates := [.wildcard] }] := by
+  native_decide
+
+/- The nonrepeatable control on the same model: no level to wildcard, so no coordinate at all. -/
+example :
+    referenced ["Form", "Mixed"] = some [
+      { field := 3, coordinates := [] },
+      { field := 4, coordinates := [] }] := by
+  native_decide
 
 end A12Kernel.Conformance.TokenEntityGroupOperand
