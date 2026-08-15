@@ -15,9 +15,10 @@ Kernel refuses.
 
 The Number family then **retains** the admitted slot rather than lowering it into expanded field
 slots, because the wildcard gate above is exactly what makes those two forms different models.
-Evaluation over the expansion is a later capsule and is refused rather than answered empty; the
-op-keyed refusal classes are a later capsule too, so a refusal here reports `none` rather than a
-plausible-looking name.
+`FieldValuesNotUnique` then compares the slot's whole `(row × field)` extent, enumerated from the
+model's repeatability rather than from any star plan. The value aggregates still refuse evaluation
+rather than answering an empty stream, because they read a per-operand signedness this slot cannot
+supply.
 -/
 
 namespace A12Kernel.Conformance.FieldEntityGroupOperand
@@ -364,6 +365,79 @@ example :
 example :
     aggregateDiagnostic? .sum [field ["Probe", "A"] "AVal",
       field ["Probe", "A", "Deep"] "DeepText"] = none := by
+  native_decide
+
+/-! ## `FieldValuesNotUnique` compares the group's whole `(row × field)` extent
+
+The compared set is **neither per-row nor per-field**: a duplicate lying within one row across two
+fields fires exactly as one across two rows does. The recursion needs no authored `*`, because the
+iteration comes from the *model's* repeatability rather than from the star, and the set is bounded
+by the **operand**, not by the rule's own row.
+
+`spec/07` marks that scope rule as an observed contract rather than a derived one, and warns that an
+implementation reusing its star machinery — or reading the extent off the rule's iterating group or
+binding depth — gets it wrong. So these fixtures put the discriminating duplicate where a wrong
+derivation would miss it: at **row 2** of a repeatable subgroup, never row 1. -/
+
+private def rowsModel : FlatModel :=
+  { fields := [
+      { id := 1, groupPath := ["Form", "Box"], name := "Direct",
+        policy := { kind := .number unsigned } },
+      { id := 2, groupPath := ["Form", "Box", "Lines"], name := "Left",
+        policy := { kind := .number unsigned }, repeatableScope := [20] },
+      { id := 3, groupPath := ["Form", "Box", "Lines"], name := "Right",
+        policy := { kind := .number unsigned }, repeatableScope := [20] }]
+    repeatableGroups := [{ level := 20, path := ["Form", "Box", "Lines"] }] }
+
+private def rowsPrepared :
+    PreparedFlatStringContext rowsModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler rowsModel).toOption.get (by native_decide)
+
+private def cell (field : FieldId) (row : List Nat) (value : Nat) :
+    ClassifiedCellInput :=
+  { address := { field, path := row }, stored := toString value,
+    raw := .parsed (.num value) }
+
+/-- Two instantiated rows of the nested repeatable subgroup, plus the nonrepeatable direct field. -/
+private def boxVerdict? (cells : List ClassifiedCellInput) : Option Verdict := do
+  let source ←
+    (elaborateNumberValuesNotUniqueSource rowsModel ["Form"]
+      { first := .group (.path { base := .absolute, groups := ["Form", "Box"] }),
+        rest := [] }).toOption
+  let document ←
+    (checkDocument rowsPrepared "en_US"
+      { instantiatedRows := [{ group := 20, path := [1] }, { group := 20, path := [2] }],
+        cells }).toOption
+  (CheckedNumberValuesNotUniqueSource.evaluateCheckedDocumentValuesNotUnique
+    source document []).toOption
+
+/- All distinct across both rows and the direct field: silent. This control is what makes every
+   firing below attributable to its own duplicate. -/
+example :
+    boxVerdict? [cell 1 [] 1, cell 2 [1] 2, cell 3 [1] 3, cell 2 [2] 4, cell 3 [2] 5] =
+      some .notFired := by
+  native_decide
+
+/- A duplicate **within one row, across two fields** — the pairing a per-row-then-per-field
+   traversal that compares each field separately would miss. It is in row 2, not row 1. -/
+example :
+    boxVerdict? [cell 1 [] 1, cell 2 [1] 2, cell 3 [1] 3, cell 2 [2] 4, cell 3 [2] 4] =
+      some (.fired .value) := by
+  native_decide
+
+/- A duplicate **across two rows of the nested subgroup**, in one field. Neither row is row 1 for
+   both halves, so a first-row-pinned extent misses it. -/
+example :
+    boxVerdict? [cell 1 [] 1, cell 2 [1] 2, cell 3 [1] 3, cell 2 [2] 2, cell 3 [2] 5] =
+      some (.fired .value) := by
+  native_decide
+
+/- A duplicate between the **nonrepeatable direct field and a nested row**, which is the pair that
+   fails if the direct child and the nested rows are collected into separate sets. -/
+example :
+    boxVerdict? [cell 1 [] 9, cell 2 [1] 2, cell 3 [1] 3, cell 2 [2] 4, cell 3 [2] 9] =
+      some (.fired .value) := by
   native_decide
 
 end A12Kernel.Conformance.FieldEntityGroupOperand

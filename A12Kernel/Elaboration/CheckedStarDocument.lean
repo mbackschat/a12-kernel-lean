@@ -145,6 +145,32 @@ def resolveCheckedDirectEntityOperandCore
     hasNonRelevant := false
   }
 
+/-- The `(row × field)` extent a group-scope operand reaches: every declaration in the group's subtree, at every instantiated row of that declaration's own repeatable scope.
+
+    **The enumeration comes from the model's repeatability and never from a star plan**, which is why this takes declarations and a document and nothing else. `spec/07` marks the scope rule as an observed contract rather than a derived one and warns that an implementation reusing its star machinery, or reading the extent off the rule's own iterating group or binding depth, gets it wrong. There is deliberately no environment argument: the compared set is bounded by the operand, so a rule authored on a repeatable group whose operand names an ancestor still reaches that ancestor's whole extent.
+
+    Cells are emitted field-major. That order is not a Kernel claim and is currently unobservable: the one carrier reading this extent compares a **set**, and a filter cannot attach to a group operand, so every cell is unfiltered and no polarity depends on position.
+
+    `hasUninstantiatedTail` is `false` because only instantiated rows are enumerated. That is likewise unobservable here — the uniqueness scan never reads it — and the aggregate families that *do* read it still refuse a group slot, which is what keeps this from becoming an unmeasured fillability claim. -/
+def resolveCheckedGroupEntityOperandCore
+    (checked : CheckedDocument model) (declarations : List FlatFieldDecl) :
+    Except CheckedAddressingError ResolvedCheckedEntityOperandCore := do
+  let perDeclaration ← declarations.mapM fun declaration => do
+    let environments ←
+      if declaration.repeatableScope.isEmpty then
+        pure [([] : Env)]
+      else
+        (checked.actualRowEnvironments declaration.repeatableScope).mapError
+          CheckedAddressingError.rowEnvironment
+    environments.mapM (checked.addressedCell · declaration.id)
+  pure {
+    topology := none
+    addressedCells := perDeclaration.flatten
+    hasUninstantiatedTail := false
+    hasHaving := false
+    hasNonRelevant := false
+  }
+
 end CheckedDocument
 
 namespace CheckedStarFieldPath

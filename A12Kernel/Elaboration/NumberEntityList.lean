@@ -410,8 +410,10 @@ def resolveCheckedValidationOperand
         filtered.source.source.resolveCheckedValidationEntityOperandCore
           document outer (some filtered.having)
       pure { source, core }
-  | .group slot =>
-      .error (.addressing (.unsupportedGroupOperand slot.groupPath))
+  | .group slot => do
+      let core ← document.resolveCheckedGroupEntityOperandCore
+        (model.groupSubtreeFields slot.groupPath)
+      pure { source, core }
 
 /-- Resolve one unfiltered partial-validation operand. Direct masking precedes its read; a star retains canonical topology, reads only relevant concrete cells, and records incomplete extent on that exact authored operand. -/
 def resolveCheckedPartialValidationOperand
