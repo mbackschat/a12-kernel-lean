@@ -14,8 +14,7 @@ example :
       .available {
         family := .string
         fields := [
-          { field := 6
-            projection := none
+          { sources := [(6, none)]
             topology := some [
               [(10, 1), (20, 1)],
               [(10, 1), (20, 2)],
@@ -27,8 +26,7 @@ example :
               ({ field := 6, path := [2, 1] }, some "N21")]
             projected := [
               .present "N11", .present "N12", .present "N21"] },
-          { field := 4
-            projection := none
+          { sources := [(4, none)]
             topology := some [[(10, 1)], [(10, 2)]]
             openTail := false
             addressed := [
@@ -36,14 +34,12 @@ example :
               ({ field := 4, path := [2] }, some "SECOND")]
             projected := [.present "A\nB", .present "SECOND"] }]
         values := [
-          { field := 2
-            projection := none
+          { sources := [(2, none)]
             topology := none
             openTail := false
             addressed := [({ field := 2, path := [] }, some "MATCH")]
             projected := [.present "MATCH"] },
-          { field := 3
-            projection := none
+          { sources := [(3, none)]
             topology := none
             openTail := false
             addressed := [({ field := 3, path := [] }, some "SPARE")]

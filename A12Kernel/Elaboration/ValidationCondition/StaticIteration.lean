@@ -133,6 +133,11 @@ private def checkedTokenOperandIterationScope :
           mergeIterationScopes
             (checkedStarBindingScope source.source)
             (← checkedHavingOuterIterationScope filter)
+  | .group slot =>
+      -- Same rule as the Number carrier's group slot above, and for the same reason: the scope is
+      -- read off the authored reference, not off the expansion.
+      let scope := slot.source.bindingScope
+      pure (if scope.isEmpty then none else some scope)
 
 private def checkedNumberSourceIterationScope
     (source : CheckedNumberEntitySource model) :

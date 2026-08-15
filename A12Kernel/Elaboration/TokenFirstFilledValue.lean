@@ -55,6 +55,12 @@ private def scanCheckedFirstFilledTokenOperand
     CheckedTokenEntityOperand model →
       Except StarAddressingError
         (FirstFilledScanState ⊕ PartialValidationFirstFilledTokenResult)
+  | .group source =>
+      -- Two independent gaps, either of which alone forbids a value here: this raw-`Document`
+      -- route cannot enumerate the group's instantiated rows, and `spec/07` pins encounter order
+      -- across a group only as "a filled direct field precedes the nested rows", which orders
+      -- neither two direct fields nor two nested subgroups.
+      .error (.unsupportedGroupOperand source.groupPath)
   | .field source =>
       if scope.coversCell model source.declaration.path [] then
         match state.step (source.valueListCellAt .validation directRead) with

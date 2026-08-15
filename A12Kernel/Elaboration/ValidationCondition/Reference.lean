@@ -80,6 +80,16 @@ def starredGroupPointers (model : FlatModel) (groupPath : GroupPath)
   (model.groupSubtreeFields groupPath).mapM
     (reopenedFieldPointer · boundCount environment)
 
+/-- One authored group slot's whole expansion, in whichever repetition shape it was authored. Every carrier that retains a group slot projects through this one function, so no two can disagree about how far a group reaches or which coordinates its fields carry. -/
+def CheckedEntityGroupSource.referencePointers
+    (source : CheckedEntityGroupSource model) (environment : Env) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  match source with
+  | .fixed reference => fixedGroupPointers model reference environment
+  | .starred terminal =>
+      starredGroupPointers model terminal.group.path terminal.path.firstStar
+        environment
+
 /-- A filtered star is refused rather than projected. Its own field pointer would be the plain starred one, but the measured account pins only that its `Having` operands *join* the set, not which coordinates they carry, and inventing them would make an incomplete set look complete. -/
 def CheckedNumberEntityOperand.referencePointers (environment : Env) :
     CheckedNumberEntityOperand model →
@@ -87,12 +97,7 @@ def CheckedNumberEntityOperand.referencePointers (environment : Env) :
   | .field source => (concreteFieldPointer source.declaration environment).map ([·])
   | .star source => (starFieldPointer source.source environment).map ([·])
   | .starHaving _ => .error .filteredStarOperand
-  | .group slot =>
-      match slot.source with
-      | .fixed reference => fixedGroupPointers model reference environment
-      | .starred source =>
-          starredGroupPointers model source.group.path source.path.firstStar
-            environment
+  | .group slot => slot.source.referencePointers environment
 
 /-- Every authored slot contributes, in authored order, whether or not a runtime scan would reach it. A slot contributes **one** pointer or, for a group, its whole expansion, which is why this flattens rather than pairing one pointer per slot. -/
 def CheckedNumberEntitySource.referencePointers
@@ -103,20 +108,24 @@ def CheckedNumberEntitySource.referencePointers
 
 /-- A projection-bearing token operand references its **declaring** field. The stored-versus-category choice is not part of a reference: `MessagePointer` has no projection slot, and the channel reports field instances.
 
-    The filter lives in an `Option` field rather than its own constructor here, so the filtered-star refusal has to be made explicitly instead of falling out of the match. It is the same refusal, for the same unwitnessed-coordinates reason. -/
-def CheckedTokenEntityOperand.referencePointer (environment : Env) :
+    The filter lives in an `Option` field rather than its own constructor here, so the filtered-star refusal has to be made explicitly instead of falling out of the match. It is the same refusal, for the same unwitnessed-coordinates reason.
+
+    A group slot contributes its whole recursive expansion through the shared projection, which is why this is list-valued where a field-denoting slot contributes exactly one pointer. -/
+def CheckedTokenEntityOperand.referencePointers (environment : Env) :
     CheckedTokenEntityOperand model →
-      Except ReferenceProjectionError MessagePointer
-  | .field source => concreteFieldPointer source.declaration environment
+      Except ReferenceProjectionError (List MessagePointer)
+  | .field source =>
+      (concreteFieldPointer source.declaration environment).map ([·])
   | .star source =>
       if source.filter.isSome then .error .filteredStarOperand
-      else starFieldPointer source.source environment
+      else (starFieldPointer source.source environment).map ([·])
+  | .group slot => slot.source.referencePointers environment
 
 def CheckedTokenValueCountSource.referencePointers
     (checked : CheckedTokenValueCountSource model) (environment : Env) :
     Except ReferenceProjectionError (List MessagePointer) :=
-  checked.source.operands.mapM
-    (CheckedTokenEntityOperand.referencePointer environment)
+  (·.flatten) <$> checked.source.operands.mapM
+    (CheckedTokenEntityOperand.referencePointers environment)
 
 /-- The Boolean/Confirm companion carries the identical operand shape, including the optional filter, so it makes the identical decision. Its fixed canonical-token projection is invisible here for the same reason the token projection is. -/
 def CheckedBooleanValueCountOperand.referencePointer (environment : Env) :

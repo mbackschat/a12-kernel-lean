@@ -27,7 +27,7 @@ theorem checkedFieldEntityShape_requiredMultiplicity
 /-- Every checked token distinct-count source retains the common cardinality invariant after family certification. -/
 theorem checkedTokenDistinctSource_requiredMultiplicity
     (checked : CheckedTokenDistinctSource model) :
-    (checked.first.isStar || !checked.rest.isEmpty) = true :=
+    (checked.first.isAlreadyMany || !checked.rest.isEmpty) = true :=
   checked.requiredMultiplicity
 
 /-- Repeated direct references are impossible at the checked token boundary. -/

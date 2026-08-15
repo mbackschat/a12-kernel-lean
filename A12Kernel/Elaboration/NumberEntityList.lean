@@ -38,35 +38,13 @@ structure CheckedNumberEntityField (model : FlatModel) where
   admitted : model.admitsField (.number field) = true
   fieldOwned : declaration.toNumberField? = some field
 
-/-- The two repetition shapes an authored group-scope slot can take. Both retain the **authored** reference: the wildcard gate reads the authored path, so a group operand and its written-out expansion are two different models and lowering one into the other can emit a model the Kernel refuses. -/
-inductive CheckedNumberEntityGroupSource (model : FlatModel) where
-  | fixed (reference : ResolvedGroupReference)
-  | starred (source : CheckedStarredGroupSource model)
-
-namespace CheckedNumberEntityGroupSource
-
-def groupPath : CheckedNumberEntityGroupSource model → GroupPath
-  | .fixed reference => reference.path
-  | .starred source => source.group.path
-
-def isStarred : CheckedNumberEntityGroupSource model → Bool
-  | .fixed _ => false
-  | .starred _ => true
-
-/-- Repeatable levels the surrounding rule environment must already bind. A fixed group is outside every repeatable scope, so it binds nothing; a starred group binds only the levels above its own star. -/
-def bindingScope : CheckedNumberEntityGroupSource model → List RepeatableLevel
-  | .fixed _ => []
-  | .starred source => source.path.bindingScope
-
-end CheckedNumberEntityGroupSource
-
 /-- One authored group-scope slot certified as Number-valued.
 
     `expansionOwned` and `expansionAllNumber` together are the certificate: the retained list **is** the group's recursive subtree in declaration order, nonempty by its shape, and no declaration in that subtree was dropped along the way. The second obligation is what makes the first a completeness claim rather than a filter — without it a subtree of Strings would certify as an empty selection. A consumer may therefore read the expansion off this slot without re-walking the model, while the authored reference stays available for re-rendering.
 
     `uniformSigned` is a **representation** obligation rather than a Kernel gate. Directional missingness reads each empty cell's own declaration, but the aggregate scan applies one signedness per authored operand, so a slot spanning declarations that disagree has no correct operand-level answer. Refusing that shape keeps the accessor sound; it claims nothing about what the Kernel admits, and widening it belongs with the runtime capsule that makes signedness per-cell. -/
 structure CheckedNumberEntityGroup (model : FlatModel) where
-  source : CheckedNumberEntityGroupSource model
+  source : CheckedEntityGroupSource model
   first : FlatNumberField
   rest : List FlatNumberField
   expansionOwned :
@@ -267,7 +245,7 @@ private def certifyStarNumber (source : CheckedStarFieldPath model) :
 
 /-- Certify one authored group slot by expanding it once through the shared subtree query. The three refusals are distinct and all deliberately unprojected: `MVK_NO_NUMBER` and its siblings are each operator's own class, and this boundary has no operator. -/
 private def certifyNumberEntityGroup (model : FlatModel)
-    (source : CheckedNumberEntityGroupSource model) :
+    (source : CheckedEntityGroupSource model) :
     Except NumberEntityElabError (CheckedNumberEntityOperand model) :=
   if hAll : (model.groupSubtreeFields source.groupPath).all
       (fun declaration => declaration.toNumberField?.isSome) = true then

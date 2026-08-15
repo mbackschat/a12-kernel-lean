@@ -90,7 +90,7 @@ theorem checkedTokenStar_nonRelevantFirstFilledHeadBeforeRead
 /-- Checked token first-filled authoring retains the common multiplicity invariant. -/
 theorem checkedFirstFilledTokenSource_requiredMultiplicity
     (checked : CheckedFirstFilledTokenSource model) :
-    (checked.first.isStar || !checked.rest.isEmpty) = true :=
+    (checked.first.isAlreadyMany || !checked.rest.isEmpty) = true :=
   checked.requiredMultiplicity
 
 /-- Checked token first-filled authoring contains no repeated direct field reference. -/

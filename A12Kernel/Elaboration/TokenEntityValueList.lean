@@ -12,31 +12,32 @@ inductive TokenEntityValueListFamily where
   | enumeration
   deriving Repr, DecidableEq
 
+def FlatTextFieldOperand.valueListFamily :
+    FlatTextFieldOperand → TokenEntityValueListFamily
+  | .string _ => .string
+  | .enumeration _ => .enumeration
+
 namespace CheckedTokenEntityOperand
 
-def valueListFamily :
-    CheckedTokenEntityOperand model → TokenEntityValueListFamily
-  | .field source =>
-      match source.operand with
-      | .string _ => .string
-      | .enumeration _ => .enumeration
-  | .star source =>
-      match source.operand with
-      | .string _ => .string
-      | .enumeration _ => .enumeration
+/-- Every base family this slot reads through. A group declares no family of its own, so it contributes one entry per expanded declaration and the whole-list fold below decides homogeneity across slots and inside a group alike. -/
+def valueListFamilies (checked : CheckedTokenEntityOperand model) :
+    List TokenEntityValueListFamily :=
+  checked.tokenOperands.map FlatTextFieldOperand.valueListFamily
 
 end CheckedTokenEntityOperand
 
 namespace CheckedTokenEntitySource
 
-/-- A field-valued token-list side is homogeneous at the kernel base-family boundary. Different Enumeration declarations and stored/category projections remain compatible members of the Enumeration family. -/
+/-- A field-valued token-list side is homogeneous at the kernel base-family boundary. Different Enumeration declarations and stored/category projections remain compatible members of the Enumeration family.
+
+    `none` for an empty list is unreachable through the checked constructors — a certified group expansion is nonempty and every other slot contributes exactly one entry — and stays the conservative answer rather than a fabricated family. -/
 def valueListFamily? (checked : CheckedTokenEntitySource model) :
     Option TokenEntityValueListFamily :=
-  let family := checked.first.valueListFamily
-  if checked.rest.all (fun operand => operand.valueListFamily == family) then
-    some family
-  else
-    none
+  match checked.operands.flatMap CheckedTokenEntityOperand.valueListFamilies with
+  | [] => none
+  | family :: rest =>
+      if rest.all (fun candidate => candidate == family) then some family
+      else none
 
 end CheckedTokenEntitySource
 

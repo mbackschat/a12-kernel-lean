@@ -387,20 +387,24 @@ abbrev SurfaceTokenValueCountOperand :=
 abbrev SurfaceTokenValueCountSource :=
   SurfaceProjectedTokenEntitySource
 
-namespace CheckedTokenField
-
-/-- String accepts every decoded literal; Enumeration requires membership in its exact selected stored/category domain. -/
-def allowsValueCountLiteral (checked : CheckedTokenField model)
-    (expected : String) : Bool :=
-  match checked.operand with
+/-- String accepts every decoded literal; Enumeration requires membership in its exact selected stored/category domain. The gate reads one declaration beside the operand resolved from it, which is what lets a direct slot, a starred slot, and one member of a group expansion share it. -/
+def FlatFieldDecl.allowsTokenValueCountLiteral (declaration : FlatFieldDecl)
+    (operand : FlatTextFieldOperand) (expected : String) : Bool :=
+  match operand with
   | .string _ => true
   | .enumeration source =>
-      match checked.declaration.enumeration with
-      | some declaration =>
+      match declaration.enumeration with
+      | some enumeration =>
           match source.projection with
-          | .stored => declaration.storedTokens.contains expected
+          | .stored => enumeration.storedTokens.contains expected
           | .category mapping => mapping.categoryTokens.contains expected
       | none => false
+
+namespace CheckedTokenField
+
+def allowsValueCountLiteral (checked : CheckedTokenField model)
+    (expected : String) : Bool :=
+  checked.declaration.allowsTokenValueCountLiteral checked.operand expected
 
 end CheckedTokenField
 
@@ -409,15 +413,8 @@ namespace CheckedTokenStarSource
 /-- Starred token operands retain the same declaration-owned literal gate as direct operands. -/
 def allowsValueCountLiteral (checked : CheckedTokenStarSource model)
     (expected : String) : Bool :=
-  match checked.operand with
-  | .string _ => true
-  | .enumeration source =>
-      match checked.source.declaration.enumeration with
-      | some declaration =>
-          match source.projection with
-          | .stored => declaration.storedTokens.contains expected
-          | .category mapping => mapping.categoryTokens.contains expected
-      | none => false
+  checked.source.declaration.allowsTokenValueCountLiteral checked.operand
+    expected
 
 end CheckedTokenStarSource
 
@@ -426,17 +423,22 @@ namespace CheckedTokenEntityOperand
 def path : CheckedTokenEntityOperand model → List String
   | .field source => source.declaration.path
   | .star source => source.source.declaration.path
+  | .group source => source.groupPath
 
+/-- A group slot admits the literal only when **every** expanded declaration does, which is the same all-slots rule the whole list already applies one level up. No retained observation covers a group operand on this operator, so the uniform reading is the representation's choice rather than a measured Kernel gate. -/
 def allowsValueCountLiteral (checked : CheckedTokenEntityOperand model)
     (expected : String) : Bool :=
   match checked with
   | .field source => source.allowsValueCountLiteral expected
   | .star source => source.allowsValueCountLiteral expected
+  | .group source =>
+      source.slots.all fun slot =>
+        slot.declaration.allowsTokenValueCountLiteral slot.operand expected
 
 def directField? : CheckedTokenEntityOperand model →
     Option (CheckedTokenField model)
   | .field source => some source
-  | .star _ => none
+  | .star _ | .group _ => none
 
 end CheckedTokenEntityOperand
 
@@ -496,7 +498,9 @@ def elaborateTokenValueCountSource (model : FlatModel)
 
 namespace CheckedTokenEntityOperand
 
-/-- Resolve one token slot at computation phase. Filtered stars reuse the shared one-kept-successor traversal and retain per-slot filter provenance for the value-count fold. -/
+/-- Resolve one token slot at computation phase. Filtered stars reuse the shared one-kept-successor traversal and retain per-slot filter provenance for the value-count fold.
+
+    A group slot refuses: this route reads through caller-supplied functions over a raw `Document`, which cannot answer which rows of the group's subtree exist, and computation over a group extent has no retained observation behind it either. -/
 def resolvedValueCountComputationSide
     (checked : CheckedTokenEntityOperand model)
     (document : Document) (outer : Env)
@@ -505,6 +509,7 @@ def resolvedValueCountComputationSide
     Except StarAddressingError
       (Sum (ResolvedValueListSide .token) NumericOperand) :=
   match checked with
+  | .group source => .error (.unsupportedGroupOperand source.groupPath)
   | .field source =>
       pure (.inl (source.resolvedSideAt .computation directRead))
   | .star source => do

@@ -330,23 +330,18 @@ private def projectedToken : ValueListCell .token → ProjectedToken
 
 /-- Source-preserving view of one resolved operand for the bounded consumer probe. -/
 structure OperandView where
-  field : FieldId
-  projection : Option EnumerationProjectionRef
+  /-- Every declaration this slot reads through, with its exact stored/category selection. A field-denoting slot contributes one entry; a group contributes its whole expansion, which is the distinction a consumer needs to re-render or re-target the authored operand. -/
+  sources : List (FieldId × Option EnumerationProjectionRef)
   topology : Option (List Env)
   openTail : Bool
   addressed : List (CellAddr × Option String)
   projected : List ProjectedToken
   deriving Repr, DecidableEq
 
-private def sourceField :
-    CheckedTokenEntityOperand model → FieldId
-  | .field source => source.operand.field.id
-  | .star source => source.operand.field.id
-
 private def operandView
     (resolved : ResolvedCheckedTokenEntityOperand model) : OperandView :=
-  { field := sourceField resolved.source
-    projection := resolved.source.projectionRef?
+  { sources := resolved.source.tokenOperands.map fun operand =>
+      (operand.field.id, operand.projectionRef?)
     topology := resolved.topology.map (·.environments)
     openTail := resolved.hasUninstantiatedTail
     addressed := resolved.addressedCells.map fun cell =>
@@ -608,8 +603,7 @@ example :
       .available {
         family := .enumeration
         fields := [
-          { field := 11
-            projection := some (.category "Band")
+          { sources := [(11, some (.category "Band"))]
             topology := some [
               [(10, 1), (20, 1)],
               [(10, 1), (20, 2)],
@@ -620,8 +614,7 @@ example :
               ({ field := 11, path := [1, 2] }, some "B"),
               ({ field := 11, path := [2, 1] }, some "A")]
             projected := [.present "X", .present "X", .present "X"] },
-          { field := 9
-            projection := some (.category "Tier")
+          { sources := [(9, some (.category "Tier"))]
             topology := some [[(10, 1)], [(10, 2)]]
             openTail := false
             addressed := [
@@ -629,14 +622,12 @@ example :
               ({ field := 9, path := [2] }, some "B")]
             projected := [.present "X", .present "Y"] }]
         values := [
-          { field := 8
-            projection := some (.category "Band")
+          { sources := [(8, some (.category "Band"))]
             topology := none
             openTail := false
             addressed := [({ field := 8, path := [] }, some "B")]
             projected := [.present "X"] },
-          { field := 8
-            projection := some .stored
+          { sources := [(8, some .stored)]
             topology := none
             openTail := false
             addressed := [({ field := 8, path := [] }, some "B")]

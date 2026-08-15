@@ -18,20 +18,31 @@ inductive TokenValuesNotUniqueElabError where
 
 namespace CheckedTokenEntityOperand
 
-/-- The operand's declared surface kind. Only the uniqueness predicate constrains this; the distinct count deliberately admits a comparable mix, so this stays local to that consumer's need. -/
-def declaredKind : CheckedTokenEntityOperand model → SurfaceScalarKind
-  | .field source => source.declaration.policy.kind.surfaceKind
-  | .star source => source.source.declaration.policy.kind.surfaceKind
+/-- Every declared surface kind the slot reads through. Only the uniqueness predicate constrains this; the distinct count deliberately admits a comparable mix, so this stays local to that consumer's need.
+
+    A group contributes one kind per expanded declaration rather than a single answer it does not have, which is what lets the homogeneity obligation below reach **inside** a group instead of only between slots. -/
+def declaredKinds : CheckedTokenEntityOperand model → List SurfaceScalarKind
+  | .field source => [source.declaration.policy.kind.surfaceKind]
+  | .star source => [source.source.declaration.policy.kind.surfaceKind]
+  | .group source => source.declaredKinds
 
 end CheckedTokenEntityOperand
 
-/-- One checked token `FieldValuesNotUnique` operand list, certified to carry a single declared kind. -/
+namespace CheckedTokenEntitySource
+
+/-- Every declared surface kind the whole list reads through, in authored slot order. -/
+def declaredKinds (checked : CheckedTokenEntitySource model) :
+    List SurfaceScalarKind :=
+  checked.operands.flatMap CheckedTokenEntityOperand.declaredKinds
+
+end CheckedTokenEntitySource
+
+/-- One checked token `FieldValuesNotUnique` operand list, certified to carry a single declared kind across every declaration it reads, group expansions included. -/
 structure CheckedTokenValuesNotUniqueSource (model : FlatModel) where
   private mk ::
   source : CheckedTokenEntitySource model
   oneDeclaredKind :
-    ∀ operand ∈ source.rest,
-      operand.declaredKind = source.first.declaredKind
+    ∀ kind ∈ source.declaredKinds, some kind = source.declaredKinds.head?
 
 /-- Admit one token operand list in Kernel order: common shape, whole-list kind refusal, one String
     or Enumeration category, then the existing token certificate. -/
@@ -56,8 +67,8 @@ def elaborateTokenValuesNotUniqueSource (model : FlatModel)
           | some mismatch => throw (.mixedCategories mismatch.path mismatch.actual)
           | none => pure ()
   let source ← certifyTokenEntityShape model declaringGroup shape |>.mapError .source
-  if hKinds : ∀ operand ∈ source.rest,
-      operand.declaredKind = source.first.declaredKind then
+  if hKinds : ∀ kind ∈ source.declaredKinds,
+      some kind = source.declaredKinds.head? then
     pure { source, oneDeclaredKind := hKinds }
   else
     throw (.source .incoherentCore)

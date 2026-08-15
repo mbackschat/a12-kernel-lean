@@ -1,10 +1,10 @@
-import A12Kernel.Elaboration.CheckedStarDocument
-import A12Kernel.Elaboration.FieldEntityList
-import A12Kernel.Semantics.EnumerationValueList
+import A12Kernel.Elaboration.TokenEntityGroup
 
 /-! # Checked String/Enumeration entity lists
 
 This boundary certifies the shared field entity-list shape as the Kernel's String/Enumeration token family. The common stored-only surface remains shared by distinct count and first-filled consumers, while the checked field/star representation can retain an exact category projection for a consumer whose syntax admits one. Caller-supplied checked cells let a prepared custom String participate without resampling its validator. Individual consumers retain their own authoring, evaluation, relevance, empty-result, and phase-projection rules.
+
+A group-scope slot is retained by [`TokenEntityGroup`](TokenEntityGroup.lean) and enters here as a fourth operand shape. It is the reason the operand-level projection queries below are **list**-valued: a group reaches many declarations, and a token cell's meaning depends on the declaration that stored it, so an accessor returning one operand for a whole slot would encode a hidden one-declaration assumption.
 -/
 
 namespace A12Kernel
@@ -31,14 +31,11 @@ structure SurfaceProjectedTokenEntitySource where
   rest : List SurfaceProjectedTokenEntityOperand
   deriving Repr, DecidableEq
 
-/-- Resolve the exact stored/category token projection selected by a token-family consumer. String supports only the stored/default selection. -/
-def FlatFieldDecl.toTokenFieldComparison? (declaration : FlatFieldDecl)
-    (projectionRef : EnumerationProjectionRef) :
-    Option (FlatTextFieldOperand × DirectComparableField) :=
-  match projectionRef with
-  | .stored => declaration.toTextFieldComparison?
-  | .category _ =>
-      declaration.toEnumerationTextFieldComparison? projectionRef
+/-- The exact stored/category selection carried by one checked token operand. String has no Enumeration projection, so this is a property of the operand rather than of the slot that authored it. -/
+def FlatTextFieldOperand.projectionRef? :
+    FlatTextFieldOperand → Option EnumerationProjectionRef
+  | .string _ => none
+  | .enumeration operand => some operand.projectionRef
 
 /-- One direct nonrepeatable String or stored/category Enumeration declaration. -/
 structure CheckedTokenField (model : FlatModel) where
@@ -62,10 +59,11 @@ structure CheckedTokenStarSource (model : FlatModel) where
   declaringGroup : GroupPath
   filter : Option (CheckedStarHaving model source declaringGroup)
 
-/-- One checked token-family slot retains either its direct owner or its general starred owner. -/
+/-- One checked token-family slot retains its direct owner, its general starred owner, or the certified expansion of an authored group scope. -/
 inductive CheckedTokenEntityOperand (model : FlatModel) where
   | field (source : CheckedTokenField model)
   | star (source : CheckedTokenStarSource model)
+  | group (source : CheckedTokenEntityGroup model)
 
 namespace CheckedTokenEntityOperand
 
@@ -79,34 +77,35 @@ def directReference? : CheckedTokenEntityOperand model →
   | .field source =>
       some {
         field := source.operand.field.id
-        projection := match source.operand with
-          | .string _ => none
-          | .enumeration operand => some operand.projectionRef }
-  | .star _ => none
+        projection := source.operand.projectionRef? }
+  | .star _ | .group _ => none
 
-def isStar : CheckedTokenEntityOperand model → Bool
+/-- Whether one authored slot satisfies the multiple-operand requirement by itself. A star denotes a row set and a group denotes a field scope, so both are already-many; this is deliberately weaker than "is a star". -/
+def isAlreadyMany : CheckedTokenEntityOperand model → Bool
   | .field _ => false
-  | .star _ => true
+  | .star _ | .group _ => true
 
 def hasHaving : CheckedTokenEntityOperand model → Bool
-  | .field _ => false
+  | .field _ | .group _ => false
   | .star source => source.filter.isSome
 
-def tokenOperand : CheckedTokenEntityOperand model → FlatTextFieldOperand
-  | .field source => source.operand
-  | .star source => source.operand
+/-- The retained group slot, for a consumer that must re-render or analyse the authored operand. -/
+def groupSlot? :
+    CheckedTokenEntityOperand model → Option (CheckedTokenEntityGroup model)
+  | .group source => some source
+  | .field _ | .star _ => none
 
-/-- The exact stored/category selection retained by an Enumeration slot; String has no Enumeration projection. -/
-def projectionRef? :
-    CheckedTokenEntityOperand model → Option EnumerationProjectionRef
-  | .field source =>
-      match source.operand with
-      | .string _ => none
-      | .enumeration operand => some operand.projectionRef
-  | .star source =>
-      match source.operand with
-      | .string _ => none
-      | .enumeration operand => some operand.projectionRef
+/-- Every checked String/Enumeration operand this slot reads through. A field-denoting slot carries exactly one; a group carries its whole certified expansion, because a group declares no operand of its own and two Enumeration declarations under it resolve different projections. -/
+def tokenOperands :
+    CheckedTokenEntityOperand model → List FlatTextFieldOperand
+  | .field source => [source.operand]
+  | .star source => [source.operand]
+  | .group source => source.slots.map (·.operand)
+
+/-- The stored/category selection of each operand the slot reads through, in the same order. -/
+def projectionRefs (checked : CheckedTokenEntityOperand model) :
+    List (Option EnumerationProjectionRef) :=
+  checked.tokenOperands.map FlatTextFieldOperand.projectionRef?
 
 def referencesField (checked : CheckedTokenEntityOperand model)
     (field : FieldId) : Bool :=
@@ -117,6 +116,7 @@ def referencesField (checked : CheckedTokenEntityOperand model)
         match source.filter with
         | none => false
         | some having => having.condition.referencesField field
+  | .group source => source.referencesField field
 
 end CheckedTokenEntityOperand
 
@@ -146,7 +146,7 @@ structure CheckedTokenEntitySource (model : FlatModel) where
   first : CheckedTokenEntityOperand model
   rest : List (CheckedTokenEntityOperand model)
   modelWellFormed : model.validate.isOk = true
-  requiredMultiplicity : (first.isStar || !rest.isEmpty) = true
+  requiredMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true
   uniqueDirectOperands :
     firstDuplicateDirectTokenField? (first :: rest) = none
 
@@ -171,8 +171,8 @@ inductive TokenEntityElabError where
   | rawStringValue (path : List String)
   | enumerationOperand (path : List String) (error : EnumerationOperandError)
   | having (error : CorrelationElabError)
-  /-- The shared checker admitted a group-scope slot that this family does not yet retain. Deliberately carries no diagnostic class: the Kernel admits the operand here, so a refusal states only that the representation is missing. -/
-  | groupOperandNotRepresented (path : List String)
+  /-- A group-scope slot the token family cannot certify. Its two arms are representation limits rather than Kernel gates, and the consumer that runs the shared whole-list kind and category scans first classifies a mixed subtree there instead. -/
+  | group (error : TokenEntityGroupError)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -250,9 +250,12 @@ private def certifyTokenEntityOperand (model : FlatModel)
       do pure (.star (← certifyStarTokenOperand declaringGroup source none))
   | .starHaving source having =>
       do pure (.star (← certifyStarTokenOperand declaringGroup source (some having)))
-  | .group reference => throw (.groupOperandNotRepresented reference.path)
+  | .group reference =>
+      do pure (.group (← certifyTokenEntityGroup model (.fixed reference)
+        |>.mapError .group))
   | .starredGroup source =>
-      throw (.groupOperandNotRepresented source.group.path)
+      do pure (.group (← certifyTokenEntityGroup model (.starred source)
+        |>.mapError .group))
 
 private def certifyTokenEntityOperands (model : FlatModel)
     (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →
@@ -269,7 +272,7 @@ def assembleTokenEntitySource
     (first : CheckedTokenEntityOperand model)
     (rest : List (CheckedTokenEntityOperand model)) :
     Except TokenEntityElabError (CheckedTokenEntitySource model) :=
-  if hMultiplicity : (first.isStar || !rest.isEmpty) = true then
+  if hMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true then
     match hDuplicate :
         firstDuplicateDirectTokenField? (first :: rest) with
     | some field => throw (.shape (.duplicateOperand field))
@@ -396,41 +399,55 @@ def elaborateProjectedTokenEntitySource (model : FlatModel)
           else
             throw (.shape .tooFewFields)
 
-/-- One authored String/stored-or-category Enumeration operand resolved against the immutable checked input. The typed source retains the exact projection certificate, while the shared core retains topology, selected addresses/payload, hierarchical extent, filter provenance, and positional relevance. -/
+/-- One authored String/stored-or-category Enumeration operand resolved against the immutable checked input.
+
+    `projectedCells` pairs every reached cell with the operand that must read it. A field-denoting slot repeats its one operand; a group carries the declaration that stored each cell, because an Enumeration cell is classified through its own declaration's resolved projection and the first expanded declaration's would silently misread a sibling that declares a different enumeration. The constructor is private so the pairing can only come from the two resolvers below, each of which builds it in the same walk that produced the cell. -/
 structure ResolvedCheckedTokenEntityOperand (model : FlatModel) where
   private mk ::
   source : CheckedTokenEntityOperand model
-  core : ResolvedCheckedEntityOperandCore
+  projectedCells : List (FlatTextFieldOperand × CheckedAddressedCell)
+  topology : Option ResolvedStarTopology
+  hasUninstantiatedTail : Bool
+  hasHaving : Bool
+  hasNonRelevant : Bool
 
 namespace ResolvedCheckedTokenEntityOperand
 
-def topology (resolved : ResolvedCheckedTokenEntityOperand model) :
-    Option ResolvedStarTopology :=
-  resolved.core.topology
+/-- Pair every cell of a field-denoting slot's shared core with that slot's one operand. -/
+private def ofCore (source : CheckedTokenEntityOperand model)
+    (operand : FlatTextFieldOperand)
+    (core : ResolvedCheckedEntityOperandCore) :
+    ResolvedCheckedTokenEntityOperand model :=
+  { source
+    projectedCells := core.addressedCells.map fun cell => (operand, cell)
+    topology := core.topology
+    hasUninstantiatedTail := core.hasUninstantiatedTail
+    hasHaving := core.hasHaving
+    hasNonRelevant := core.hasNonRelevant }
+
+/-- A group slot reaches only instantiated rows through the model's own repeatability, so it has no star topology, no filter, and no omitted tail. -/
+private def ofGroupCells (source : CheckedTokenEntityOperand model)
+    (cells : List (FlatTextFieldOperand × CheckedAddressedCell)) :
+    ResolvedCheckedTokenEntityOperand model :=
+  { source
+    projectedCells := cells
+    topology := none
+    hasUninstantiatedTail := false
+    hasHaving := false
+    hasNonRelevant := false }
 
 def addressedCells (resolved : ResolvedCheckedTokenEntityOperand model) :
     List CheckedAddressedCell :=
-  resolved.core.addressedCells
+  resolved.projectedCells.map Prod.snd
 
-def hasUninstantiatedTail
-    (resolved : ResolvedCheckedTokenEntityOperand model) : Bool :=
-  resolved.core.hasUninstantiatedTail
-
-def hasHaving (resolved : ResolvedCheckedTokenEntityOperand model) : Bool :=
-  resolved.core.hasHaving
-
-def hasNonRelevant
-    (resolved : ResolvedCheckedTokenEntityOperand model) : Bool :=
-  resolved.core.hasNonRelevant
-
-/-- Apply the exact declaration-owned String or Enumeration/category projection to the shared addressed cells. -/
+/-- Apply each cell's own declaration-owned String or Enumeration/category projection. -/
 def valueListSideAt (resolved : ResolvedCheckedTokenEntityOperand model)
     (phase : Phase) : ResolvedValueListSide .token :=
-  { cells := resolved.core.addressedCells.map fun addressed =>
-      resolved.source.tokenOperand.checkedValueListCellAt phase addressed.cell
-    hasUninstantiatedTail := resolved.core.hasUninstantiatedTail
-    hasHaving := resolved.core.hasHaving
-    hasNonRelevant := resolved.core.hasNonRelevant }
+  { cells := resolved.projectedCells.map fun (operand, addressed) =>
+      operand.checkedValueListCellAt phase addressed.cell
+    hasUninstantiatedTail := resolved.hasUninstantiatedTail
+    hasHaving := resolved.hasHaving
+    hasNonRelevant := resolved.hasNonRelevant }
 
 end ResolvedCheckedTokenEntityOperand
 
@@ -511,7 +528,7 @@ end CheckedTokenStarSource
 
 namespace CheckedTokenEntityOperand
 
-/-- Resolve one full-validation token operand through the sole checked topology, filter, and addressed-cell owners while retaining its exact String/Enumeration projection certificate. -/
+/-- Resolve one full-validation token operand through the sole checked topology, filter, and addressed-cell owners while retaining its exact String/Enumeration projection certificate. A group slot reads its whole `(row × field)` extent from the model's repeatability through the same shared walk. -/
 def resolveCheckedValidationOperand
     (source : CheckedTokenEntityOperand model)
     (document : CheckedDocument model) (outer : Env) :
@@ -521,15 +538,19 @@ def resolveCheckedValidationOperand
   | .field direct => do
       let core ←
         document.resolveCheckedDirectEntityOperandCore direct.operand.field.id
-      pure { source, core }
+      pure (.ofCore source direct.operand core)
   | .star starSource => do
       let having := starSource.filter.map fun filter => filter.condition
       let core ←
         starSource.source.resolveCheckedValidationEntityOperandCore
           document outer having
-      pure { source, core }
+      pure (.ofCore source starSource.operand core)
+  | .group slot => do
+      pure (.ofGroupCells source (← slot.resolveCheckedValidationCells document))
 
-/-- Resolve one partial-validation token operand without collapsing nonrelevance into a semantic cell. Filtered rules remain suppressed by the owning whole-source gate. -/
+/-- Resolve one partial-validation token operand without collapsing nonrelevance into a semantic cell. Filtered rules remain suppressed by the owning whole-source gate.
+
+    A group slot refuses here rather than resolving. Partial validation masks by relevance scope, and no retained observation says whether a group operand's extent is masked per expanded declaration, per reached row, or not at all; refusing keeps the unmeasured choice out of the representation. -/
 def resolveCheckedPartialValidationOperand
     (source : CheckedTokenEntityOperand model)
     (document : CheckedDocument model) (outer : Env)
@@ -541,19 +562,23 @@ def resolveCheckedPartialValidationOperand
       if scope.coversCell model direct.declaration.path [] then do
         let core ←
           document.resolveCheckedDirectEntityOperandCore direct.operand.field.id
-        pure { source, core }
+        pure (.ofCore source direct.operand core)
       else
-        pure { source, core := .nonRelevant }
+        pure (.ofCore source direct.operand .nonRelevant)
   | .star starSource =>
       match starSource.filter with
-      | some _ => pure { source, core := .skippedHaving }
+      | some _ => pure (.ofCore source starSource.operand .skippedHaving)
       | none => do
           let core ←
             starSource.source.resolveCheckedPartialValidationEntityOperandCore
               document outer scope
-          pure { source, core }
+          pure (.ofCore source starSource.operand core)
+  | .group slot =>
+      .error (.addressing (.unsupportedGroupOperand slot.groupPath))
 
-/-- Resolve one direct or starred token slot for full validation through the shared declaration-owned classifier. -/
+/-- Resolve one direct or starred token slot for full validation through the shared declaration-owned classifier.
+
+    The three raw-`Document` routes below all refuse a group slot. Its extent is enumerated from the **model's** repeatability against instantiated rows, which only the immutable checked document can answer; the caller-supplied read functions here cannot say which rows exist. `resolveCheckedValidationOperand` above is the route that serves a group. -/
 def resolvedValidationSide (checked : CheckedTokenEntityOperand model)
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
@@ -562,6 +587,7 @@ def resolvedValidationSide (checked : CheckedTokenEntityOperand model)
   match checked with
   | .field source => pure (source.resolvedSideAt .validation directRead)
   | .star source => source.resolvedValidationSide document outer starRead
+  | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
 /-- Resolve one unfiltered token slot under partial-validation relevance, preserving rule-level skip/nonrelevance outside the cell domain. -/
 def resolvedPartialValidationSide
@@ -585,6 +611,7 @@ def resolvedPartialValidationSide
         | .inr () => pure (.inr .nonRelevant)
       else
         pure (.inr .skippedHaving)
+  | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
 /-- Resolve one partial token value-count slot without importing the measured combiner gate used by `resolvedPartialValidationSide`. -/
 def resolvedPartialValueCountSide
@@ -608,6 +635,7 @@ def resolvedPartialValueCountSide
         | .inr () => pure (.inr .nonRelevant)
       else
         pure (.inr .skippedHaving)
+  | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
 end CheckedTokenEntityOperand
 

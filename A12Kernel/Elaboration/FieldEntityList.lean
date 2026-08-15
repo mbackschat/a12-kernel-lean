@@ -109,6 +109,28 @@ def overlaps (left right : ResolvedFieldEntityOperand model) : Bool :=
 
 end ResolvedFieldEntityOperand
 
+/-- The two repetition shapes an authored group-scope slot can take, shared by every carrier that retains one. Both retain the **authored** reference: the wildcard gate reads the authored path, so a group operand and its written-out expansion are two different models and lowering one into the other can emit a model the Kernel refuses. -/
+inductive CheckedEntityGroupSource (model : FlatModel) where
+  | fixed (reference : ResolvedGroupReference)
+  | starred (source : CheckedStarredGroupSource model)
+
+namespace CheckedEntityGroupSource
+
+def groupPath : CheckedEntityGroupSource model → GroupPath
+  | .fixed reference => reference.path
+  | .starred source => source.group.path
+
+def isStarred : CheckedEntityGroupSource model → Bool
+  | .fixed _ => false
+  | .starred _ => true
+
+/-- Repeatable levels the surrounding rule environment must already bind. A fixed group is outside every repeatable scope, so it binds nothing; a starred group binds only the levels above its own star. -/
+def bindingScope : CheckedEntityGroupSource model → List RepeatableLevel
+  | .fixed _ => []
+  | .starred source => source.path.bindingScope
+
+end CheckedEntityGroupSource
+
 /-- One comparability category admitted by the Kernel's field-list operators. String and Enumeration remain distinct even though both use the token runtime domain. -/
 inductive FieldListComparabilityCategory where
   | string | enumeration | number | temporal

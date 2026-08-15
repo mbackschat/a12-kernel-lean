@@ -145,6 +145,25 @@ def resolveCheckedDirectEntityOperandCore
     hasNonRelevant := false
   }
 
+/-- Walk a group operand's `(row × field)` extent, keeping each reached cell beside the payload its owning declaration carries.
+
+    The pairing is the point. A carrier whose cell *meaning* depends on the declaration that stored the cell cannot recover it from a flat cell list: the token family's Enumeration slot reads through that declaration's own resolved projection, so two Enumeration declarations in one subtree classify the same stored text differently. Handing the payload back from the walk that produced the cell keeps that association structural instead of reconstructing it by field-identifier lookup, which would need a total fallback for a cell that cannot occur.
+
+    `()` is the honest payload for a carrier whose projection is declaration-independent; `resolveCheckedGroupEntityOperandCore` below is exactly that instance. -/
+def resolveCheckedGroupEntityOperandPairs
+    (checked : CheckedDocument model) (slots : List (FlatFieldDecl × α)) :
+    Except CheckedAddressingError (List (α × CheckedAddressedCell)) := do
+  let perDeclaration ← slots.mapM fun (declaration, payload) => do
+    let environments ←
+      if declaration.repeatableScope.isEmpty then
+        pure [([] : Env)]
+      else
+        (checked.actualRowEnvironments declaration.repeatableScope).mapError
+          CheckedAddressingError.rowEnvironment
+    let cells ← environments.mapM (checked.addressedCell · declaration.id)
+    pure (cells.map fun cell => (payload, cell))
+  pure perDeclaration.flatten
+
 /-- The `(row × field)` extent a group-scope operand reaches: every declaration in the group's subtree, at every instantiated row of that declaration's own repeatable scope.
 
     **The enumeration comes from the model's repeatability and never from a star plan**, which is why this takes declarations and a document and nothing else. `spec/07` marks the scope rule as an observed contract rather than a derived one and warns that an implementation reusing its star machinery, or reading the extent off the rule's own iterating group or binding depth, gets it wrong. There is deliberately no environment argument: the compared set is bounded by the operand, so a rule authored on a repeatable group whose operand names an ancestor still reaches that ancestor's whole extent.
@@ -155,17 +174,11 @@ def resolveCheckedDirectEntityOperandCore
 def resolveCheckedGroupEntityOperandCore
     (checked : CheckedDocument model) (declarations : List FlatFieldDecl) :
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore := do
-  let perDeclaration ← declarations.mapM fun declaration => do
-    let environments ←
-      if declaration.repeatableScope.isEmpty then
-        pure [([] : Env)]
-      else
-        (checked.actualRowEnvironments declaration.repeatableScope).mapError
-          CheckedAddressingError.rowEnvironment
-    environments.mapM (checked.addressedCell · declaration.id)
+  let paired ← checked.resolveCheckedGroupEntityOperandPairs
+    (declarations.map fun declaration => (declaration, ()))
   pure {
     topology := none
-    addressedCells := perDeclaration.flatten
+    addressedCells := paired.map Prod.snd
     hasUninstantiatedTail := false
     hasHaving := false
     hasNonRelevant := false

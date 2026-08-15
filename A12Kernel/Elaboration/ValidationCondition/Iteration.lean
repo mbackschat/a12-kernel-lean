@@ -195,6 +195,9 @@ private def tokenEntityOperandReferenceScope? :
       Option (List RepeatableLevel)
   | .field _ => some []
   | .star checked => checkedStarBindingScope checked.source
+  | .group slot =>
+      let scope := slot.source.bindingScope
+      if scope.isEmpty then some [] else some scope
 
 private def tokenEntityReferenceScopes?
     (source : CheckedTokenEntitySource model) :
