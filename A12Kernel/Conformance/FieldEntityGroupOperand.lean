@@ -15,10 +15,10 @@ Kernel refuses.
 
 The Number family then **retains** the admitted slot rather than lowering it into expanded field
 slots, because the wildcard gate above is exactly what makes those two forms different models.
-`FieldValuesNotUnique` then compares the slot's whole `(row × field)` extent, enumerated from the
-model's repeatability rather than from any star plan. The value aggregates still refuse evaluation
-rather than answering an empty stream, because they read a per-operand signedness this slot cannot
-supply.
+Under **full validation** the uniqueness carrier and all four value aggregates then read the slot's
+whole `(row × field)` extent, enumerated from the model's repeatability rather than from any star
+plan, through one resolver none of them can bypass. Computation, partial validation, and the legacy
+raw-document routes have no measured row and refuse rather than answering an empty stream.
 -/
 
 namespace A12Kernel.Conformance.FieldEntityGroupOperand
@@ -439,5 +439,53 @@ example :
     boxVerdict? [cell 1 [] 9, cell 2 [1] 2, cell 3 [1] 3, cell 2 [2] 4, cell 3 [2] 9] =
       some (.fired .value) := by
   native_decide
+
+/-! ## The value aggregates read the same extent under full validation
+
+They reach it through the same resolver, so no separate arm makes them work and none could make
+them silently disagree. `Sum` is the sharpest lock: the extent is the direct field plus both fields
+of both rows, `5 + 3 + 4 + 3 + 4`, and each wrong account lands on its own number — a
+direct-child-only expansion answers 5, an extent that drops the nonrepeatable direct field answers
+14, and a first-row-pinned one answers 11.
+
+Computation and partial validation over a group extent are **not** covered by any measured row, so
+they refuse, and the last two cases hold that boundary where prose alone would drift. -/
+
+private def boxCells : List ClassifiedCellInput :=
+  [cell 1 [] 5, cell 2 [1] 3, cell 2 [2] 4, cell 3 [1] 3, cell 3 [2] 4]
+
+private def boxSource : Option (CheckedNumberEntitySource rowsModel) :=
+  (elaborateNumberEntitySource rowsModel ["Form"]
+    { first := .group (.path { base := .absolute, groups := ["Form", "Box"] }),
+      rest := [] }).toOption
+
+private def boxDocument : Option (CheckedDocument rowsModel) :=
+  (checkDocument rowsPrepared "en_US"
+    { instantiatedRows := [{ group := 20, path := [1] }, { group := 20, path := [2] }],
+      cells := boxCells }).toOption
+
+private def boxAggregate? (op : NumericAggregateOp) : Option NumericOperand := do
+  let source ← boxSource
+  let document ← boxDocument
+  (source.evaluateCheckedDocumentValidationAggregate op document []).toOption
+
+example : boxAggregate? .sum = some (.value 19 { canGrow := false, canShrink := false }) := by
+  native_decide
+
+example : boxAggregate? .maximum = some (.value 5 { canGrow := false, canShrink := false }) := by
+  native_decide
+
+/- Three distinct values across five cells, which is the set reading again rather than a count. -/
+example :
+    boxAggregate? .distinctCount = some (.value 3 { canGrow := false, canShrink := false }) := by
+  native_decide
+
+private def boxComputationRefused : Bool :=
+  match boxSource, boxDocument with
+  | some source, some document =>
+      (source.evaluateCheckedDocumentComputationAggregate .sum document []).toOption.isNone
+  | _, _ => true
+
+example : boxComputationRefused = true := by native_decide
 
 end A12Kernel.Conformance.FieldEntityGroupOperand
