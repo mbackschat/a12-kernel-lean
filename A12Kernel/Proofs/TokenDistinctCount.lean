@@ -18,10 +18,10 @@ theorem tokenDistinctCount_equal_pair (value : String) :
     ResolvedValueListSide.hasEmpty, ValueListCell.isEmpty,
     ValueListAtom.equal]
 
-/-- Every checked generic entity-list shape has either a starred first slot or a trailing slot. -/
+/-- Every checked generic entity-list shape has either an already-many first slot or a trailing slot. A group slot is already-many by itself, so this is weaker than requiring a star. -/
 theorem checkedFieldEntityShape_requiredMultiplicity
     (checked : CheckedFieldEntityShape model) :
-    (checked.first.isStar || !checked.rest.isEmpty) = true :=
+    (checked.first.isAlreadyMany || !checked.rest.isEmpty) = true :=
   checked.requiredMultiplicity
 
 /-- Every checked token distinct-count source retains the common cardinality invariant after family certification. -/

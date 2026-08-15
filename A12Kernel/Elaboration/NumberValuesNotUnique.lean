@@ -39,12 +39,12 @@ def elaborateNumberValuesNotUniqueSource (model : FlatModel)
 
 namespace NumberValuesNotUniqueElabError
 
-/-- Project only the three measured Number-overload refusal classes. -/
+/-- Project this overload's own two kind classes, and delegate every shape refusal to the shared checker's projection: the star, arity, and duplicate gates are that checker's and do not vary by carrier. -/
 def diagnostic? : NumberValuesNotUniqueElabError → Option KernelStaticDiagnostic
-  | .shape .tooFewFields => some .paramSizeInvalidN
+  | .shape error => error.diagnostic?
   | .inadmissibleKind _ _ => some .onlyStringEnumNumberDateAllowed
   | .mixedCategories _ _ => some .varyingTypesNotAllowed
-  | _ => none
+  | .source _ => none
 
 end NumberValuesNotUniqueElabError
 

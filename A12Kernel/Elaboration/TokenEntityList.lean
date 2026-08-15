@@ -171,6 +171,8 @@ inductive TokenEntityElabError where
   | rawStringValue (path : List String)
   | enumerationOperand (path : List String) (error : EnumerationOperandError)
   | having (error : CorrelationElabError)
+  /-- The shared checker admitted a group-scope slot that this family does not yet retain. Deliberately carries no diagnostic class: the Kernel admits the operand here, so a refusal states only that the representation is missing. -/
+  | groupOperandNotRepresented (path : List String)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -248,6 +250,9 @@ private def certifyTokenEntityOperand (model : FlatModel)
       do pure (.star (← certifyStarTokenOperand declaringGroup source none))
   | .starHaving source having =>
       do pure (.star (← certifyStarTokenOperand declaringGroup source (some having)))
+  | .group reference => throw (.groupOperandNotRepresented reference.path)
+  | .starredGroup source =>
+      throw (.groupOperandNotRepresented source.group.path)
 
 private def certifyTokenEntityOperands (model : FlatModel)
     (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →

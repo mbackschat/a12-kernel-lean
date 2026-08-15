@@ -61,7 +61,7 @@ def sievedFieldPointers (model : FlatModel)
     Except ReferenceProjectionError (List MessagePointer) :=
   (model.fields.filter references).mapM (concreteFieldPointer · environment)
 
-/-- An unstarred group operand contributes the fields of its **whole subtree**, recursively and never a pointer to the group, and each at its concrete instance.
+/-- An unstarred group operand contributes the fields of its **whole subtree**, recursively and never a pointer to the group, and each at its concrete instance. The extent itself is [`FlatModel.groupSubtreeFields`](A12Kernel.FlatModel.groupSubtreeFields), shared with the entity list's group slot so that one site cannot disagree with another about how far a group reaches.
 
     Both halves are measured on a nonrepeatable model: the deeper descendant group's field joins the set, which refutes direct-child expansion, and the coordinates are concrete, which is the one place this differs from a starred group's wildcards. The relation is identical in the presence, entity-list, and count positions, so all three share this function rather than each restating it.
 
@@ -69,8 +69,7 @@ def sievedFieldPointers (model : FlatModel)
 def fixedGroupPointers (model : FlatModel) (reference : ResolvedGroupReference)
     (environment : Env) :
     Except ReferenceProjectionError (List MessagePointer) :=
-  sievedFieldPointers model
-    (fun declaration => reference.path.isPrefixOf declaration.groupPath) environment
+  (model.groupSubtreeFields reference.path).mapM (concreteFieldPointer · environment)
 
 /-- A filtered star is refused rather than projected. Its own field pointer would be the plain starred one, but the measured account pins only that its `Having` operands *join* the set, not which coordinates they carry, and inventing them would make an incomplete set look complete. -/
 def CheckedNumberEntityOperand.referencePointer (environment : Env) :
@@ -159,8 +158,7 @@ private def expressionPointers (environment : Env) :
 def starredGroupPointers (model : FlatModel) (groupPath : GroupPath)
     (boundCount : Nat) (environment : Env) :
     Except ReferenceProjectionError (List MessagePointer) :=
-  (model.fields.filter fun declaration =>
-      groupPath.isPrefixOf declaration.groupPath).mapM
+  (model.groupSubtreeFields groupPath).mapM
     (reopenedFieldPointer · boundCount environment)
 
 /-- Both group operand forms expand to descendant fields and neither yields a group pointer; they differ only in coordinates, which is exactly the starred-versus-unstarred split. -/

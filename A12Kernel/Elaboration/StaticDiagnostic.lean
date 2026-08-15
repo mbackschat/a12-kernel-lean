@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, group-list quantifier admission, `RepetitionNotUnique` key admission, and the whole-rule error-field reference gate. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, group-list quantifier admission, `RepetitionNotUnique` key admission, and the whole-rule error-field reference gate. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -23,12 +23,14 @@ inductive KernelStaticDiagnostic where
   | paramSizeInvalidGN
   /-- A group-list quantifier that requires at least two operands received one. Shared by `AllGroupsFilled`, `NotAllGroupsFilled`, and `GroupsNotCollectivelyFilled`; the two singleton-admitting quantifiers never reach it. -/
   | paramSizeInvalid2
-  /-- The exact same group operand occurs more than once. -/
+  /-- The **direct**-duplicate arm: the exact same non-wildcarded operand occurs more than once, whether that is a repeated group under the quantifiers or a repeated field in an entity list. A wildcarded reference is skipped, so a repeated star is two independent occurrences. -/
   | duplicateParam1
-  /-- Two group operands overlap by ancestor and descendant. -/
+  /-- The **indirect** arm: two operands overlap by ancestor and descendant. It fires between two wildcarded references where the direct arm does not, and between a group and a field below it. -/
   | duplicateParam2
-  /-- A repeatable group was supplied as a quantifier operand without its required star address. -/
+  /-- A repeatable group was supplied as an operand without its required star address. Measured on the group-list quantifiers and, on conditions character-identical apart from the `*`, on the shared entity list. -/
   | noWildcard
+  /-- A star was written on a **nonrepeatable** group operand, which has no level to reopen. The opposite arm of the class above, and a separate class rather than a shared wildcard refusal. -/
+  | invalidWildcard
   /-- A starred group operand appeared under a quantifier that forbids one. Distinct from the scalar-presence wildcard class below, which the same star draws through a different carrier. -/
   | noWildcardsGAllowed
   /-- Scalar `GroupFilled` received a starred group, where the group must stay whole. -/
@@ -69,6 +71,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .duplicateParam2 => "MVK_DUPLICATE_PARAM2"
   | .paramSizeInvalid2 => "MVK_PARAMSIZE_INVALID2"
   | .noWildcard => "MVK_NO_WILDCARD"
+  | .invalidWildcard => "MVK_INVALID_WILDCARD"
   | .noWildcardsGAllowed => "MVK_NO_WILDCARDS_G_ALLOWED"
   | .noWildcardsAllowed => "MVK_NO_WILDCARDS_ALLOWED"
   | .invalidEntity => "MVK_INVALID_ENTITY"
@@ -90,7 +93,8 @@ def kernelCode : KernelStaticDiagnostic → String
 def all : List KernelStaticDiagnostic :=
   [.onlyStringEnumNumberDateAllowed, .varyingTypesNotAllowed, .paramSizeInvalidN,
     .paramSizeInvalidGN, .paramSizeInvalid2, .duplicateParam1, .duplicateParam2,
-    .noWildcard, .noWildcardsGAllowed, .noWildcardsAllowed, .invalidEntity,
+    .noWildcard, .invalidWildcard, .noWildcardsGAllowed, .noWildcardsAllowed,
+    .invalidEntity,
     .repeatableGroupMissing, .errorFieldNotReferenced,
     .invalidPattern, .invalidTypeForPatternComparison, .internalError,
     .invalidLengthOfRawType, .invalidCompareDecimalPlaces,

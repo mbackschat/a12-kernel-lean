@@ -145,20 +145,13 @@ def directAggregateFields?
 end CheckedNumberEntitySource
 
 inductive NumberEntityElabError where
-  | resolve (error : ResolveError)
+  | shape (error : FieldEntityShapeElabError)
   | fieldKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | star (error : StarNumberElabError)
-  | tooFewFields
-  | duplicateOperand (field : FieldId)
+  /-- The shared checker admitted a group-scope slot that this family does not yet retain. Deliberately carries no diagnostic class: the Kernel admits the operand here, so a refusal states only that the representation is missing. -/
+  | groupOperandNotRepresented (path : List String)
   | incoherentCore
   deriving Repr, DecidableEq
-
-private def NumberEntityElabError.ofShape : FieldEntityShapeElabError →
-    NumberEntityElabError
-  | .resolve error => .resolve error
-  | .starPath error => .star (.path error)
-  | .tooFewFields => .tooFewFields
-  | .duplicateOperand field => .duplicateOperand field
 
 private def certifyStarNumber (source : CheckedStarFieldPath model) :
     Except NumberEntityElabError (CheckedStarNumberSource model) :=
@@ -188,6 +181,9 @@ private def certifyNumberEntityOperand (model : FlatModel)
       let filter ← elaborateStarHavingCore model declaringGroup numberSource.source having
         |>.mapError fun error => .star (.having error)
       pure (.starHaving { source := numberSource, declaringGroup, filter })
+  | .group reference => throw (.groupOperandNotRepresented reference.path)
+  | .starredGroup source =>
+      throw (.groupOperandNotRepresented source.group.path)
 
 private def certifyNumberEntityOperands (model : FlatModel)
     (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →
@@ -223,7 +219,7 @@ def elaborateNumberEntitySource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceNumberEntitySource) :
     Except NumberEntityElabError (CheckedNumberEntitySource model) := do
   let shape ← elaborateFieldEntityShape model declaringGroup authored
-    |>.mapError NumberEntityElabError.ofShape
+    |>.mapError NumberEntityElabError.shape
   certifyNumberEntityShape model declaringGroup shape
 
 /-- One authored Number operand resolved against the immutable checked input. The source retains declaration/filter metadata; the optional topology retains every canonical candidate environment, while `addressedCells` retains exactly the relevant or filter-selected cells that were read. -/

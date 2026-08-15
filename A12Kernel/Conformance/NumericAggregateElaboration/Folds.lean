@@ -286,7 +286,7 @@ example :
       checkedAggregateErrorOf
         (aggregateSource (.field (bare "UnsignedA")) [
           .star aggregateStar, .field (bare "UnsignedA")]) =
-        some (.duplicateOperand unsignedA.id) := by
+        some (.shape (.duplicateOperand unsignedA.id)) := by
   native_decide
 
 /- Every authored wildcard occurrence is expanded and consumed again; a reached filter retains its conservative polarity. -/

@@ -26,6 +26,8 @@ inductive TemporalValuesNotUniqueElabError where
   | missingDeclaredFormat (path : List String)
   | mixedDeclaredFormats (path : List String) (found expected : String)
   | having (error : CorrelationElabError)
+  /-- The shared checker admitted a group-scope slot that this family does not yet retain. Deliberately carries no diagnostic class: the Kernel admits the operand here, so a refusal states only that the representation is missing. -/
+  | groupOperandNotRepresented (path : List String)
   deriving Repr, DecidableEq
 
 /-- One temporal declaration admitted by this operator, carrying the exact declared format its admission gate reads. -/
@@ -140,6 +142,9 @@ private def certifyTemporalUniquenessOperand (model : FlatModel)
       let filter ← elaborateStarHavingCore model declaringGroup source having
         |>.mapError .having
       pure (.star source field (some filter.condition))
+  | .group reference => throw (.groupOperandNotRepresented reference.path)
+  | .starredGroup source =>
+      throw (.groupOperandNotRepresented source.group.path)
 
 private def certifyTemporalUniquenessOperands (model : FlatModel)
     (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →
@@ -180,16 +185,16 @@ namespace TemporalValuesNotUniqueElabError
 
 /-- The Kernel diagnostic class this refusal corresponds to, or `none` where this project refuses a shape whose Kernel class it has not established.
 
-`none` is deliberate rather than a placeholder: `missingDeclaredFormat` is this project's own insufficiency for a declaration the Kernel rejects earlier at model level with an unmeasured code, a duplicated operand has no measured class, and a filter failure belongs to the correlation surface. Mapping any of them to a plausible-looking name would assert an unmeasured correspondence. -/
+`none` is deliberate rather than a placeholder: `missingDeclaredFormat` is this project's own insufficiency for a declaration the Kernel rejects earlier at model level with an unmeasured code, a group-scope slot is admitted by the Kernel and merely unrepresented here, and a filter failure belongs to the correlation surface. Mapping any of them to a plausible-looking name would assert an unmeasured correspondence. Every shape refusal delegates to the shared checker's own projection, because the star, arity, and duplicate gates do not vary by carrier. -/
 def diagnostic? : TemporalValuesNotUniqueElabError → Option KernelStaticDiagnostic
-  | .shape .tooFewFields => some .paramSizeInvalidN
+  | .shape error => error.diagnostic?
   | .inadmissibleKind _ _ => some .onlyStringEnumNumberDateAllowed
   -- The temporal format rule lives inside the same Kernel predicate as the kind gate and reports
   -- its code, which is why a cross-temporal list reports it rather than the mixing code.
   | .mixedDeclaredFormats _ _ _ => some .onlyStringEnumNumberDateAllowed
   | .mixedCategories _ _ => some .varyingTypesNotAllowed
   | .missingDeclaredFormat _ => none
-  | .shape (.resolve _) | .shape (.starPath _) | .shape (.duplicateOperand _) => none
+  | .groupOperandNotRepresented _ => none
   | .having _ => none
 
 end TemporalValuesNotUniqueElabError

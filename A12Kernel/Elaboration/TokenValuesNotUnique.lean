@@ -44,15 +44,17 @@ def elaborateTokenValuesNotUniqueSource (model : FlatModel)
   match firstFieldListKindRefusal? shape.operands with
   | some refusal => throw (.inadmissibleKind refusal.path refusal.actual)
   | none => pure ()
-  let expected ←
-    match shape.first.declaration.policy.kind.surfaceKind.fieldListAdmission with
-    | .category category => pure category
-    | .refusedByKind =>
-        throw (.inadmissibleKind shape.first.declaration.path
-          shape.first.declaration.policy.kind.surfaceKind)
-  match firstFieldListCategoryMismatch? expected shape.operands with
-  | some mismatch => throw (.mixedCategories mismatch.path mismatch.actual)
+  match firstFieldListDeclaration? shape.operands with
   | none => pure ()
+  | some declaration =>
+      match declaration.policy.kind.surfaceKind.fieldListAdmission with
+      | .refusedByKind =>
+          throw (.inadmissibleKind declaration.path
+            declaration.policy.kind.surfaceKind)
+      | .category expected =>
+          match firstFieldListCategoryMismatch? expected shape.operands with
+          | some mismatch => throw (.mixedCategories mismatch.path mismatch.actual)
+          | none => pure ()
   let source ← certifyTokenEntityShape model declaringGroup shape |>.mapError .source
   if hKinds : ∀ operand ∈ source.rest,
       operand.declaredKind = source.first.declaredKind then
@@ -62,9 +64,9 @@ def elaborateTokenValuesNotUniqueSource (model : FlatModel)
 
 namespace TokenValuesNotUniqueElabError
 
-/-- Project only the three measured token-overload refusal classes. -/
+/-- Project this overload's own two kind classes, and delegate every shape refusal to the shared checker's projection: the star, arity, and duplicate gates are that checker's and do not vary by carrier. -/
 def diagnostic? : TokenValuesNotUniqueElabError → Option KernelStaticDiagnostic
-  | .source (.shape .tooFewFields) => some .paramSizeInvalidN
+  | .source (.shape error) => error.diagnostic?
   | .inadmissibleKind _ _ => some .onlyStringEnumNumberDateAllowed
   | .mixedCategories _ _ => some .varyingTypesNotAllowed
   | _ => none

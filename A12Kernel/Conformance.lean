@@ -130,6 +130,7 @@ import A12Kernel.Conformance.StringApplication
 import A12Kernel.Conformance.ValueList
 import A12Kernel.Conformance.FirstFilledValue
 import A12Kernel.Conformance.FirstFilledValueElaboration
+import A12Kernel.Conformance.FieldEntityGroupOperand
 import A12Kernel.Conformance.TokenFirstFilledValue
 import A12Kernel.Conformance.StarCompleteness
 import A12Kernel.Conformance.StarAddressing

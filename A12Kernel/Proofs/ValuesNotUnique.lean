@@ -61,19 +61,83 @@ theorem fieldListAdmission_refusedByKind_iff (kind : SurfaceScalarKind) :
       kind = .boolean ∨ kind = .confirm := by
   cases kind <;> simp [SurfaceScalarKind.fieldListAdmission]
 
-/-- The whole-list scan misses no refused operand: it returns `none` exactly when every operand is
-    admitted to a comparability category. -/
+/-- An admitted entity list has pairwise non-overlapping slots: the indirect duplicate arm's scan
+    returns `none` exactly when no slot is a strict ancestor or descendant of another. A consumer
+    reasoning about what a rule reaches may therefore treat the authored slots as independent
+    scopes instead of intersecting their extents.
+
+    The nearest stronger claim is false, and deliberately: this is **not** pairwise distinctness.
+    The same starred group written twice is admitted and does not overlap itself, because the
+    relation ruled out here is strict ancestry rather than equality. -/
+theorem firstResolvedOperandOverlap_eq_none_iff
+    (operands : List (ResolvedFieldEntityOperand model)) :
+    firstResolvedOperandOverlap? operands = none ↔
+      operands.Pairwise (fun left right => left.overlaps right = false) := by
+  induction operands with
+  | nil => simp [firstResolvedOperandOverlap?]
+  | cons operand remaining inductionHypothesis =>
+      cases found : remaining.find? (operand.overlaps ·) with
+      | some overlapping =>
+          simp only [firstResolvedOperandOverlap?, found]
+          constructor
+          · intro impossible; simp at impossible
+          · intro pairwise
+            have disjoint := (List.pairwise_cons.mp pairwise).1 overlapping
+              (List.mem_of_find?_eq_some found)
+            rw [List.find?_some found] at disjoint
+            simp at disjoint
+      | none =>
+          simp only [firstResolvedOperandOverlap?, found]
+          rw [inductionHypothesis, List.pairwise_cons]
+          constructor
+          · intro tail
+            exact ⟨fun candidate member => by
+              simpa using List.find?_eq_none.mp found candidate member, tail⟩
+          · intro both; exact both.2
+
+/-- One slot's own scan misses no refused declaration in its expansion. -/
+theorem firstExpandedKindRefusal_eq_none_iff (declarations : List FlatFieldDecl) :
+    firstExpandedKindRefusal? declarations = none ↔
+      ∀ declaration ∈ declarations,
+        declaration.policy.kind.surfaceKind.fieldListAdmission ≠ .refusedByKind := by
+  induction declarations with
+  | nil => simp [firstExpandedKindRefusal?]
+  | cons declaration remaining inductionHypothesis =>
+      cases admission : declaration.policy.kind.surfaceKind.fieldListAdmission with
+      | refusedByKind => simp [firstExpandedKindRefusal?, admission]
+      | category _ => simp [firstExpandedKindRefusal?, admission, inductionHypothesis]
+
+/-- The whole-list scan misses no refused declaration: it returns `none` exactly when every
+    declaration reached through **every** slot's expansion is admitted to a comparability category.
+
+    The quantifier ranges over the expansion rather than over the slots, which is the whole content
+    of the group-operand rule: a group contributes its recursive subtree, so a refused kind two
+    levels below the authored path is still caught here. -/
 theorem firstFieldListKindRefusal_eq_none_iff
     (operands : List (ResolvedFieldEntityOperand model)) :
     firstFieldListKindRefusal? operands = none ↔
-      ∀ operand ∈ operands,
-        operand.declaration.policy.kind.surfaceKind.fieldListAdmission ≠ .refusedByKind := by
+      ∀ operand ∈ operands, ∀ declaration ∈ operand.expansionDeclarations,
+        declaration.policy.kind.surfaceKind.fieldListAdmission ≠ .refusedByKind := by
   induction operands with
   | nil => simp [firstFieldListKindRefusal?]
   | cons operand remaining inductionHypothesis =>
-      cases admission : operand.declaration.policy.kind.surfaceKind.fieldListAdmission with
-      | refusedByKind => simp [firstFieldListKindRefusal?, admission]
-      | category _ => simp [firstFieldListKindRefusal?, admission, inductionHypothesis]
+      have expandedIff := firstExpandedKindRefusal_eq_none_iff
+        (declarations := operand.expansionDeclarations)
+      cases refusal : firstExpandedKindRefusal? operand.expansionDeclarations with
+      | some found =>
+          simp only [firstFieldListKindRefusal?, refusal]
+          constructor
+          · intro impossible; simp at impossible
+          · intro all
+            have scanned : firstExpandedKindRefusal? operand.expansionDeclarations = none :=
+              expandedIff.mpr (all operand (by simp))
+            rw [refusal] at scanned
+            simp at scanned
+      | none =>
+          simp only [firstFieldListKindRefusal?, refusal]
+          rw [inductionHypothesis]
+          simp only [List.forall_mem_cons]
+          exact ⟨fun tail => ⟨expandedIff.mp refusal, tail⟩, fun both => both.2⟩
 
 /-- The certificate's format scan says what the temporal admission gate claims: **every** operand carries the list's one declared format. The elaborator stores the scan result, so this is what turns that stored fact into the gate a consumer can rely on. -/
 theorem temporalValuesNotUnique_oneDeclaredFormat

@@ -94,12 +94,12 @@ example :
       staticDiagnostic? "Code" ["Flag", "Amount"] = some .onlyStringEnumNumberDateAllowed := by
   native_decide
 
-/- Static refusals retain their exact offending path and kind, and duplicate identity stays
-   unmapped because this capsule established no Kernel diagnostic for it. -/
+/- Static refusals retain their exact offending path and kind, and a repeated direct operand takes
+   the shared checker's own direct-duplicate class rather than this overload's vocabulary. -/
 example :
     staticError? "Code" ["Priority"] = some (.mixedCategories ["Form", "Priority"] .enumeration) ∧
       staticError? "Code" ["Flag"] = some (.inadmissibleKind ["Form", "Flag"] .boolean) ∧
-      staticDiagnostic? "Code" ["Code"] = none := by
+      staticDiagnostic? "Code" ["Code"] = some .duplicateParam1 := by
   native_decide
 
 /- Stored Enumeration tokens fold through the same exact-identity membership as String, so the evaluation half needs no kind-specific rule. -/

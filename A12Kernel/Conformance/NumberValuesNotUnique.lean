@@ -176,12 +176,14 @@ example :
       staticDiagnostic? "A" ["Flag", "Code"] = some .onlyStringEnumNumberDateAllowed := by
   native_decide
 
-/- Local refusals retain path and kind for Analyze/Explain; unmeasured duplicate shape stays unprojected. -/
+/- Local refusals retain path and kind for Analyze/Explain. The repeated direct operand takes the
+   shared checker's own direct-duplicate class rather than this overload's vocabulary, which is what
+   makes that gate carrier-independent. -/
 example :
     staticError? "A" ["Code"] = some (.mixedCategories ["Form", "Code"] .string) ∧
       staticError? "A" ["Flag"] = some (.inadmissibleKind ["Form", "Flag"] .boolean) ∧
       staticError? "A" ["Consent"] = some (.inadmissibleKind ["Form", "Consent"] .confirm) ∧
-      staticDiagnostic? "A" ["A"] = none := by
+      staticDiagnostic? "A" ["A"] = some .duplicateParam1 := by
   native_decide
 
 /-- One placed nonrepeatable cell whose stored text is its own classification. -/

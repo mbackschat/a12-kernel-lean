@@ -313,18 +313,18 @@ example :
     errorOf (source (.star (star "Primary")) []) = none ∧
       errorOf (source
         (.starHaving (star "Primary") (falseHaving "Primary")) []) = none ∧
-      errorOf (source (.field (bare "Fallback")) []) = some .tooFewFields ∧
-      errorOf (source (.field (bare "Note")) []) = some .tooFewFields ∧
+      errorOf (source (.field (bare "Fallback")) []) = some (.shape .tooFewFields) ∧
+      errorOf (source (.field (bare "Note")) []) = some (.shape .tooFewFields) ∧
       errorOf (source (.field (bare "Fallback")) [.field (bare "Fallback")]) =
-        some (.duplicateOperand fallback.id) ∧
+        some (.shape (.duplicateOperand fallback.id)) ∧
       errorOf (source (.field (bare "Fallback")) [
         .field (bare "Fallback"), .field (bare "Missing")]) =
-        some (.resolve (.invalidEntity (bare "Missing"))) ∧
+        some (.shape (.resolve (.invalidEntity (bare "Missing")))) ∧
       errorOf (source (.field (bare "Note")) [.field (bare "Note")]) =
-        some (.duplicateOperand note.id) ∧
+        some (.shape (.duplicateOperand note.id)) ∧
       errorOf (source (.field (bare "Fallback")) [
         .star (star "Primary"), .field (bare "Fallback")]) =
-        some (.duplicateOperand fallback.id) ∧
+        some (.shape (.duplicateOperand fallback.id)) ∧
       errorOf (source (.star (star "Primary")) [.star (star "Primary")]) = none ∧
       errorOf (source (.star (star "Primary")) [
         .starHaving (star "Primary") (falseHaving "Primary")]) = none ∧

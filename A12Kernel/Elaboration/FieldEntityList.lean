@@ -1,9 +1,16 @@
 import A12Kernel.Elaboration.Correlation
+import A12Kernel.Elaboration.SingleGroup
+import A12Kernel.Elaboration.StarGroup
 import A12Kernel.Elaboration.StarPath
+import A12Kernel.Elaboration.StaticDiagnostic
 
 /-! # Shared checked field entity-list shape
 
-This boundary owns the kind-independent authoring shape shared by ordinary aggregate field lists. It resolves direct, plain-star, and filtered-star slots in authored order, rejects only repeated direct fields, and requires either multiple slots or one starred slot. It also owns the shared `FieldValuesNotUnique` kind/category classification and whole-list scans, while family-specific modules choose a required category, certify the declarations, and retain their own runtime semantics.
+This boundary owns the kind-independent authoring shape shared by ordinary aggregate field lists. It resolves direct, plain-star, filtered-star, and group-scope slots in authored order, applies the star, arity, and both duplicate gates, and requires either multiple slots or one already-many slot. It also owns the shared `FieldValuesNotUnique` kind/category classification and whole-list scans, while family-specific modules choose a required category, certify the declarations, and retain their own runtime semantics.
+
+A group-scope operand makes the three gates visibly read three different things, which is why they are stated separately here rather than folded into one predicate. **Arity** reads the authored slots, so one group slot is already-many where its single expanded field authored alone is not. The **wildcard** gate reads the authored path and checks the operand at its own level only, which is what makes a group operand and its own written-out expansion two different models rather than two spellings of one. The **kind and category** scans read the group's recursive expansion, because a group declares no kind of its own.
+
+Slot resolution admits the shape; a family's own certification decides whether that operator accepts a group at all, and no verdict there transfers between carriers.
 -/
 
 namespace A12Kernel
@@ -14,11 +21,13 @@ inductive FieldEntityReadForm where
   | projected (category : String)
   deriving Repr, DecidableEq
 
-/-- One parser-independent field entity-list slot. A filter belongs to its exact authored wildcard occurrence. -/
+/-- One parser-independent field entity-list slot. A filter belongs to its exact authored wildcard occurrence, and a group slot retains its authored path rather than its expansion, because the wildcard gate reads the path that was written. -/
 inductive SurfaceFieldEntityOperand where
   | field (path : SurfaceFieldPath) (form : FieldEntityReadForm := .stored)
   | star (path : SurfaceStarFieldPath)
   | starHaving (path : SurfaceStarFieldPath) (having : SurfaceCorrelatedHaving)
+  | group (reference : SurfaceGroupReference)
+  | starredGroup (reference : SurfaceStarGroupPath)
   deriving Repr, DecidableEq
 
 /-- A nonempty authored field entity list. Checked construction separately enforces that a sole operand is starred. -/
@@ -27,33 +36,76 @@ structure SurfaceFieldEntitySource where
   rest : List SurfaceFieldEntityOperand
   deriving Repr, DecidableEq
 
-/-- One kind-neutral resolved slot. Family-specific certification occurs only after the complete list has passed duplicate and cardinality checks. -/
+/-- One kind-neutral resolved slot. Family-specific certification occurs only after the complete list has passed the star, duplicate, and cardinality gates.
+
+    A starred group retains the terminal-repeatable source only. A star above a nonrepeatable terminal is a third repetition shape that no retained observation covers on this carrier, so resolution refuses it without naming a class. -/
 inductive ResolvedFieldEntityOperand (model : FlatModel) where
   | field (declaration : FlatFieldDecl) (form : FieldEntityReadForm)
   | star (source : CheckedStarFieldPath model)
   | starHaving (source : CheckedStarFieldPath model)
       (having : SurfaceCorrelatedHaving)
+  | group (reference : ResolvedGroupReference)
+  | starredGroup (source : CheckedStarredGroupSource model)
 
 namespace ResolvedFieldEntityOperand
 
-def isStar : ResolvedFieldEntityOperand model → Bool
+/-- Whether one authored slot already satisfies the multiple-operand requirement by itself. A star denotes a row set and a group denotes a field scope, so both are already-many; this is exactly why one group slot is admitted where its single expanded field authored alone reports `MVK_PARAMSIZE_INVALIDN`. -/
+def isAlreadyMany : ResolvedFieldEntityOperand model → Bool
   | .field .. => false
-  | .star _ | .starHaving _ _ => true
+  | .star _ | .starHaving _ _ | .group _ | .starredGroup _ => true
 
 def directFieldId? : ResolvedFieldEntityOperand model → Option FieldId
   | .field declaration _ => some declaration.id
-  | .star _ | .starHaving _ _ => none
+  | .star _ | .starHaving _ _ | .group _ | .starredGroup _ => none
 
-/-- The identity the repeated-operand gate compares. A star addresses a row set rather than one slot and never participates. -/
+/-- The identity the repeated-operand gate compares. A star addresses a row set rather than one slot and never participates, and a group is compared by the indirect arm instead. -/
 def operandIdentity? : ResolvedFieldEntityOperand model →
     Option (FieldId × FieldEntityReadForm)
   | .field declaration form => some (declaration.id, form)
-  | .star _ | .starHaving _ _ => none
+  | .star _ | .starHaving _ _ | .group _ | .starredGroup _ => none
 
-/-- The model declaration this slot reads, whatever its addressing form. Kind-neutral, so a family's admission gate can classify every slot without repeating the star/direct split. -/
-def declaration : ResolvedFieldEntityOperand model → FlatFieldDecl
-  | .field declaration _ => declaration
-  | .star source | .starHaving source _ => source.declaration
+/-- The group subtree a slot denotes, or `none` for a slot that denotes one field. Only the indirect duplicate arm and the expansion consult it. -/
+def subtreePath? : ResolvedFieldEntityOperand model → Option GroupPath
+  | .field .. | .star _ | .starHaving _ _ => none
+  | .group reference => some reference.path
+  | .starredGroup source => some source.group.path
+
+/-- The declarations this slot contributes to the kind and category gates. A field-denoting slot contributes its own declaration whatever its addressing form; a group contributes its recursive subtree, because a group declares no kind that could be classified instead. -/
+def expansionDeclarations : ResolvedFieldEntityOperand model →
+    List FlatFieldDecl
+  | .field declaration _ => [declaration]
+  | .star source | .starHaving source _ => [source.declaration]
+  | .group reference => model.groupSubtreeFields reference.path
+  | .starredGroup source => model.groupSubtreeFields source.group.path
+
+/-- The authored path each slot occupies for the indirect duplicate arm. -/
+def entityPath : ResolvedFieldEntityOperand model → List String
+  | .field declaration _ => declaration.path
+  | .star source | .starHaving source _ => source.declaration.path
+  | .group reference => reference.path
+  | .starredGroup source => source.group.path
+
+/-- The **indirect** duplicate arm. Two group operands overlap only by strict ancestry, so the same starred group written twice stays two independent authored occurrences while a starred group beside its own starred descendant is rejected. A group also overlaps any field-denoting slot inside it.
+
+    Two field-denoting slots never reach this arm: a field path cannot be an ancestor of another, and their repetition belongs to the direct arm above, which skips wildcarded references. -/
+def overlaps (left right : ResolvedFieldEntityOperand model) : Bool :=
+  match left.subtreePath?, right.subtreePath? with
+  | some leftPath, some rightPath =>
+      leftPath != rightPath &&
+        (leftPath.isPrefixOf rightPath || rightPath.isPrefixOf leftPath)
+  | some leftPath, none =>
+      match right with
+      | .field declaration _ => leftPath.isPrefixOf declaration.groupPath
+      | .star source | .starHaving source _ =>
+          leftPath.isPrefixOf source.declaration.groupPath
+      | .group _ | .starredGroup _ => false
+  | none, some rightPath =>
+      match left with
+      | .field declaration _ => rightPath.isPrefixOf declaration.groupPath
+      | .star source | .starHaving source _ =>
+          rightPath.isPrefixOf source.declaration.groupPath
+      | .group _ | .starredGroup _ => false
+  | none, none => false
 
 end ResolvedFieldEntityOperand
 
@@ -87,38 +139,86 @@ structure FieldListCategoryMismatch where
   actual : SurfaceScalarKind
   deriving Repr, DecidableEq
 
-/-- Scan the complete operand list before category certification so a kind refusal preempts mixing in every authored order. -/
+/-- Scan one slot's expansion for the first outright-refused kind. Public because the whole-list law is proved through it. -/
+def firstExpandedKindRefusal? :
+    List FlatFieldDecl → Option FieldListKindRefusal
+  | [] => none
+  | declaration :: remaining =>
+      let actual := declaration.policy.kind.surfaceKind
+      match actual.fieldListAdmission with
+      | .refusedByKind => some { path := declaration.path, actual }
+      | .category _ => firstExpandedKindRefusal? remaining
+
+/-- Scan one slot's expansion for the first declaration outside `expected`. -/
+def firstExpandedCategoryMismatch?
+    (expected : FieldListComparabilityCategory) :
+    List FlatFieldDecl → Option FieldListCategoryMismatch
+  | [] => none
+  | declaration :: remaining =>
+      let actual := declaration.policy.kind.surfaceKind
+      match actual.fieldListAdmission with
+      | .refusedByKind => firstExpandedCategoryMismatch? expected remaining
+      | .category category =>
+          if category == expected then
+            firstExpandedCategoryMismatch? expected remaining
+          else some { path := declaration.path, actual }
+
+/-- The first expanded declaration of the whole list, whose comparability category the rest must match. A family that derives its expected category from the list itself reads it here rather than from the first *slot*, because a group slot carries no declaration of its own.
+
+    `none` means no slot expanded to any declaration at all — a fieldless repeatable group is resolvable. The category gate then has nothing to compare and the caller's certification decides. -/
+def firstFieldListDeclaration? :
+    List (ResolvedFieldEntityOperand model) → Option FlatFieldDecl
+  | [] => none
+  | operand :: remaining =>
+      match operand.expansionDeclarations with
+      | [] => firstFieldListDeclaration? remaining
+      | declaration :: _ => some declaration
+
+/-- Scan the complete operand list before category certification so a kind refusal preempts mixing in every authored order.
+
+    Every slot is scanned through its expansion, so a group is classified by the fields it reaches rather than by a declaration it does not have. The recursion matters: a group whose direct children are all admissible still reports the refusal a nested subgroup's field carries. -/
 def firstFieldListKindRefusal? :
     List (ResolvedFieldEntityOperand model) → Option FieldListKindRefusal
   | [] => none
   | operand :: remaining =>
-      let declaration := operand.declaration
-      let actual := declaration.policy.kind.surfaceKind
-      match actual.fieldListAdmission with
-      | .refusedByKind => some { path := declaration.path, actual }
-      | .category _ => firstFieldListKindRefusal? remaining
+      match firstExpandedKindRefusal? operand.expansionDeclarations with
+      | some refusal => some refusal
+      | none => firstFieldListKindRefusal? remaining
 
-/-- After the complete kind scan succeeds, find the first operand outside `expected`. The `refusedByKind` arm keeps this helper total; checked entry points run the required kind scan first. -/
+/-- After the complete kind scan succeeds, find the first expanded declaration outside `expected`. The `refusedByKind` arm keeps this helper total; checked entry points run the required kind scan first. -/
 def firstFieldListCategoryMismatch?
     (expected : FieldListComparabilityCategory) :
     List (ResolvedFieldEntityOperand model) → Option FieldListCategoryMismatch
   | [] => none
   | operand :: remaining =>
-      let declaration := operand.declaration
-      let actual := declaration.policy.kind.surfaceKind
-      match actual.fieldListAdmission with
-      | .refusedByKind => firstFieldListCategoryMismatch? expected remaining
-      | .category category =>
-          if category == expected then firstFieldListCategoryMismatch? expected remaining
-          else some { path := declaration.path, actual }
+      match firstExpandedCategoryMismatch? expected operand.expansionDeclarations with
+      | some mismatch => some mismatch
+      | none => firstFieldListCategoryMismatch? expected remaining
 
 /-- The source-shape failures shared by every homogeneous aggregate family. -/
 inductive FieldEntityShapeElabError where
   | resolve (error : ResolveError)
   | starPath (error : StarPathElabError)
+  | groupReference (error : FixedGroupReferenceError)
+  | starredGroup (error : StarredGroupElabError)
+  /-- A star reaches a nonrepeatable terminal group. Retained as its own case, and deliberately unprojected: the two measured star rows are a repeatable group without its star and a star on a nonrepeatable group, and neither is this shape. -/
+  | nonrepeatableStarTerminal (path : GroupPath)
   | tooFewFields
   | duplicateOperand (field : FieldId)
+  | overlappingOperands (ancestor descendant : List String)
   deriving Repr, DecidableEq
+
+/-- The gates this shared checker owns, projected once. Every carrier in the family routes through the same resolution, so these classes do not vary by carrier even where a row measured only one.
+
+    Deliberately absent is the star planner's own `iterationBelowWildcard`, which refuses a repeatable level below a star written as an explicit field path. That refusal is what separates a group operand from its written-out expansion, but its Kernel class is measured on a field-fill quantifier rather than here, so this projection names none. -/
+def FieldEntityShapeElabError.diagnostic? :
+    FieldEntityShapeElabError → Option KernelStaticDiagnostic
+  | .tooFewFields => some .paramSizeInvalidN
+  | .duplicateOperand _ => some .duplicateParam1
+  | .overlappingOperands _ _ => some .duplicateParam2
+  | .groupReference (.repeatableGroupRequiresAddress _) => some .noWildcard
+  | .starredGroup (.path (.wildcardOnNonrepeatable _)) => some .invalidWildcard
+  | _ => none
 
 def firstDuplicateDirectField? (directFieldId? : α → Option FieldId) :
     List α → Option FieldId
@@ -146,14 +246,25 @@ def firstDuplicateResolvedDirectField? :
           else
             firstDuplicateResolvedDirectField? remaining
 
+/-- Report the first authored ancestor/descendant pair, naming both paths in authored order. -/
+def firstResolvedOperandOverlap? :
+    List (ResolvedFieldEntityOperand model) →
+      Option (List String × List String)
+  | [] => none
+  | operand :: remaining =>
+      match remaining.find? (operand.overlaps ·) with
+      | some overlapping => some (operand.entityPath, overlapping.entityPath)
+      | none => firstResolvedOperandOverlap? remaining
+
 /-- A resolved, model-owned entity-list shape before homogeneous family certification. -/
 structure CheckedFieldEntityShape (model : FlatModel) where
   first : ResolvedFieldEntityOperand model
   rest : List (ResolvedFieldEntityOperand model)
   modelWellFormed : model.validate.isOk = true
-  requiredMultiplicity : (first.isStar || !rest.isEmpty) = true
+  requiredMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true
   uniqueDirectOperands :
     firstDuplicateResolvedDirectField? (first :: rest) = none
+  disjointOperands : firstResolvedOperandOverlap? (first :: rest) = none
 
 namespace CheckedFieldEntityShape
 
@@ -178,6 +289,15 @@ private def resolveFieldEntityOperand (model : FlatModel)
         (← elaborateStarFieldPath model declaringGroup path
           |>.mapError .starPath)
         having)
+  | .group reference => do
+      pure (.group (← model.resolveFixedGroupReference declaringGroup reference
+        |>.mapError .groupReference))
+  | .starredGroup reference => do
+      match ← elaborateStarredGroupOperandSource model declaringGroup reference
+          |>.mapError .starredGroup with
+      | .terminalRepeatable source => pure (.starredGroup source)
+      | .terminalPresence source =>
+          throw (.nonrepeatableStarTerminal source.groupPath)
 
 private def resolveFieldEntityOperands (model : FlatModel)
     (declaringGroup : GroupPath) : List SurfaceFieldEntityOperand →
@@ -188,7 +308,9 @@ private def resolveFieldEntityOperands (model : FlatModel)
       pure ((← resolveFieldEntityOperand model declaringGroup operand) ::
         (← resolveFieldEntityOperands model declaringGroup remaining))
 
-/-- Validate the common entity-list shape in kernel order: model, path resolution, repeated direct fields, then the multiple-fields-or-star cardinality gate. -/
+/-- Validate the common entity-list shape: model, path resolution and its star gate, repeated direct operands, ancestor/descendant overlap, then the multiple-slots-or-one-already-many cardinality gate.
+
+    Path resolution precedes the whole-list gates and the kind scan follows them, both measured. The **relative order of the two duplicate arms and the cardinality gate is a local choice**: no retained row authors a list that trips two of them at once, so a consumer may rely on which classes exist here but not on which one an ambiguous list reports. -/
 def elaborateFieldEntityShape (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
@@ -200,14 +322,19 @@ def elaborateFieldEntityShape (model : FlatModel)
       match hDuplicate : firstDuplicateResolvedDirectField? (first :: rest) with
       | some field => throw (.duplicateOperand field)
       | none =>
-          if hMultiplicity : first.isStar || !rest.isEmpty then
-            pure {
-              first
-              rest
-              modelWellFormed := by rw [hModel]; rfl
-              requiredMultiplicity := hMultiplicity
-              uniqueDirectOperands := hDuplicate }
-          else
-            throw .tooFewFields
+          match hOverlap : firstResolvedOperandOverlap? (first :: rest) with
+          | some (ancestor, descendant) =>
+              throw (.overlappingOperands ancestor descendant)
+          | none =>
+              if hMultiplicity : first.isAlreadyMany || !rest.isEmpty then
+                pure {
+                  first
+                  rest
+                  modelWellFormed := by rw [hModel]; rfl
+                  requiredMultiplicity := hMultiplicity
+                  uniqueDirectOperands := hDuplicate
+                  disjointOperands := hOverlap }
+              else
+                throw .tooFewFields
 
 end A12Kernel

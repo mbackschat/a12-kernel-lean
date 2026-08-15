@@ -18,6 +18,8 @@ inductive BooleanValueCountElabError where
   | fieldKindMismatch (path : List String) (expected : Bool)
       (actual : SurfaceScalarKind)
   | having (error : CorrelationElabError)
+  /-- The shared checker admitted a group-scope slot that this family does not yet retain. Deliberately carries no diagnostic class: this carrier's own group verdict is unmeasured, so a refusal states only that the representation is missing. -/
+  | groupOperandNotRepresented (path : List String)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -136,6 +138,9 @@ private def certifyBooleanValueCountOperand (model : FlatModel)
       else
         throw (.fieldKindMismatch source.declaration.path expected
           source.declaration.policy.kind.surfaceKind)
+  | .group reference => throw (.groupOperandNotRepresented reference.path)
+  | .starredGroup source =>
+      throw (.groupOperandNotRepresented source.group.path)
 
 private def certifyBooleanValueCountOperands (model : FlatModel)
     (declaringGroup : GroupPath) (expected : Bool) :

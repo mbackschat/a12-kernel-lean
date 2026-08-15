@@ -320,6 +320,13 @@ def FlatModel.hasGroupPath (model : FlatModel) (path : GroupPath) : Bool :=
     ((model.fields.any fun declaration => path.isPrefixOf declaration.groupPath) ||
       model.repeatableGroups.any fun group => group.path == path)
 
+/-- Every field declared anywhere in a group's subtree, in declaration order. A group declares no kind, value, or instance of its own, so this recursive extent is the whole of what a group-scope operand contributes, and a deeper descendant group's field belongs to it exactly like a direct child's.
+
+    Every group expansion in the theory routes through this one query rather than re-deriving the walk at each operand site, so no site can disagree with a sibling about how far a group reaches. -/
+def FlatModel.groupSubtreeFields (model : FlatModel) (path : GroupPath) :
+    List FlatFieldDecl :=
+  model.fields.filter fun declaration => path.isPrefixOf declaration.groupPath
+
 private def FlatModel.lookupPath? (model : FlatModel) (path : List String) :
     Except ResolveError (Option FlatFieldDecl) :=
   match model.fields.filter (fun declaration => declaration.path == path) with
