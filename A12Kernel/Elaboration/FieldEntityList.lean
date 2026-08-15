@@ -129,6 +129,16 @@ def bindingScope : CheckedEntityGroupSource model → List RepeatableLevel
   | .fixed _ => []
   | .starred source => source.path.bindingScope
 
+/-- **The operand's own depth**: how many of a reached declaration's repeatable levels stay fixed by the surrounding environment. Every level from here down is free, whatever the rule iterates.
+
+    One quantity serves both of the operand's channels — the `(row × field)` extent it compares and the `referenced` set it publishes — and that is the point rather than a convenience. The two disagreeing about one operand's own extent is the cheapest available signal that one of them is wrong, and it is how a12-dmkits found the same defect in its own evaluator at `c1eb1614`, having fixed only the reference channel one commit earlier.
+
+    A starred group supplies its star's own `firstStar`. A fixed group supplies the whole repeatable scope of its authored path; its own level is nonrepeatable under the wildcard gate, so that is the levels above it. -/
+def boundLevelCount : CheckedEntityGroupSource model → Nat
+  | .fixed reference =>
+      (model.repeatableScopeForGroupPath reference.path).length
+  | .starred source => source.path.firstStar
+
 end CheckedEntityGroupSource
 
 /-- One comparability category admitted by the Kernel's field-list operators. String and Enumeration remain distinct even though both use the token runtime domain. -/

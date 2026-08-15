@@ -111,12 +111,13 @@ def certifyTokenEntityGroup (model : FlatModel)
 
 namespace CheckedTokenEntityGroup
 
-/-- Read the slot's whole `(row × field)` extent, pairing each reached cell with the operand of the declaration that stored it. The shared group walk owns the extent; this owns only the projection each cell must be read through. -/
+/-- Read the slot's whole `(row × field)` extent, pairing each reached cell with the operand of the declaration that stored it. The shared group walk owns the extent and its depth; this owns only the projection each cell must be read through. -/
 def resolveCheckedValidationCells (group : CheckedTokenEntityGroup model)
-    (document : CheckedDocument model) :
+    (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError
       (List (FlatTextFieldOperand × CheckedAddressedCell)) :=
-  document.resolveCheckedGroupEntityOperandPairs
+  document.resolveCheckedGroupEntityOperandPairs outer
+    group.source.boundLevelCount
     (group.slots.map fun slot => (slot.declaration, slot.operand))
 
 end CheckedTokenEntityGroup

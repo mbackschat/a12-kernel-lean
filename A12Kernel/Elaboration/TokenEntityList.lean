@@ -546,7 +546,8 @@ def resolveCheckedValidationOperand
           document outer having
       pure (.ofCore source starSource.operand core)
   | .group slot => do
-      pure (.ofGroupCells source (← slot.resolveCheckedValidationCells document))
+      pure (.ofGroupCells source
+        (← slot.resolveCheckedValidationCells document outer))
 
 /-- Resolve one partial-validation token operand without collapsing nonrelevance into a semantic cell. Filtered rules remain suppressed by the owning whole-source gate.
 

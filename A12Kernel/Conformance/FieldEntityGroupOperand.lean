@@ -488,4 +488,82 @@ private def boxComputationRefused : Bool :=
 
 example : boxComputationRefused = true := by native_decide
 
+/-! ## The extent's depth is the operand's own, in both directions
+
+`spec/07` states one half — a rule authored deep whose operand names an ancestor still compares that
+ancestor's whole extent — and warns that reading the depth off the rule's binding gets it wrong. The
+other half is that reading no depth at all is *also* wrong, and it is the half a resolver that simply
+ignores the environment fails silently.
+
+`Outer` is repeatable and `Inner` is repeatable below it, so a star on `Inner` alone leaves a
+repeatable level **above** the operand. That level stays bound by the rule's row: a duplicate lying
+only *across* `Outer` rows is not in the operand's extent at all, while one inside the bound row's
+`Inner` rows is. Nothing else in the family separates those two accounts, because every other fixture
+has no repeatable level above the operand for the environment to fix. -/
+
+private def stackedModel : FlatModel :=
+  { fields := [
+      { id := 1, groupPath := ["Form", "Outer"], name := "Marker",
+        policy := { kind := .number unsigned }, repeatableScope := [10] },
+      { id := 2, groupPath := ["Form", "Outer", "Inner"], name := "Code",
+        policy := { kind := .number unsigned }, repeatableScope := [10, 20] }]
+    repeatableGroups := [
+      { level := 10, path := ["Form", "Outer"] },
+      { level := 20, path := ["Form", "Outer", "Inner"] }] }
+
+private def stackedPrepared :
+    PreparedFlatStringContext stackedModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler stackedModel).toOption.get (by native_decide)
+
+/-- Two `Outer` rows, each with two `Inner` rows. -/
+private def stackedRows : List RowAddr :=
+  [{ group := 10, path := [1] }, { group := 10, path := [2] },
+    { group := 20, path := [1, 1] }, { group := 20, path := [1, 2] },
+    { group := 20, path := [2, 1] }, { group := 20, path := [2, 2] }]
+
+private def stackedCell (field : FieldId) (row : List Nat) (value : Nat) :
+    ClassifiedCellInput :=
+  { address := { field, path := row }, stored := toString value,
+    raw := .parsed (.num value) }
+
+/-- `FieldValuesNotUnique(/Form/Outer/Inner*)`, evaluated from one bound `Outer` row. -/
+private def innerStarVerdict? (outer : Env) (cells : List ClassifiedCellInput) :
+    Option Verdict := do
+  let source ←
+    (elaborateNumberValuesNotUniqueSource stackedModel ["Form", "Outer"]
+      { first := starredGroup [{ name := "Form" }, { name := "Outer" },
+          { name := "Inner", starred := true }]
+        rest := [] }).toOption
+  let document ←
+    (checkDocument stackedPrepared "en_US"
+      { instantiatedRows := stackedRows, cells }).toOption
+  (CheckedNumberValuesNotUniqueSource.evaluateCheckedDocumentValuesNotUnique
+    source document outer).toOption
+
+/-- The only equal pair spans the two `Outer` rows; every value inside a single row is distinct. -/
+private def crossOuterDuplicate : List ClassifiedCellInput :=
+  [stackedCell 1 [1] 1, stackedCell 1 [2] 2,
+    stackedCell 2 [1, 1] 7, stackedCell 2 [1, 2] 8,
+    stackedCell 2 [2, 1] 7, stackedCell 2 [2, 2] 9]
+
+/- Bound to `Outer[1]`, the operand reaches `7, 8` and cannot fire. A resolver that enumerated the
+   whole model's repeatability would reach all four cells and report the cross-row `7`. -/
+example : innerStarVerdict? [(10, 1)] crossOuterDuplicate = some .notFired := by
+  native_decide
+
+/- The same from `Outer[2]`, so the silence above is the binding rather than an artifact of row 1. -/
+example : innerStarVerdict? [(10, 2)] crossOuterDuplicate = some .notFired := by
+  native_decide
+
+/- The positive control on the same fixture and the same environment: a duplicate **inside** the
+   bound row's `Inner` rows does fire, so the levels at and below the star stay free. Without it the
+   two rows above would be satisfied by a resolver that reached nothing at all. -/
+example :
+    innerStarVerdict? [(10, 1)]
+      [stackedCell 1 [1] 1, stackedCell 1 [2] 2,
+        stackedCell 2 [1, 1] 7, stackedCell 2 [1, 2] 7,
+        stackedCell 2 [2, 1] 5, stackedCell 2 [2, 2] 9] = some (.fired .value) := by
+  native_decide
+
 end A12Kernel.Conformance.FieldEntityGroupOperand

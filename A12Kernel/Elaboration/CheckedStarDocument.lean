@@ -149,32 +149,41 @@ def resolveCheckedDirectEntityOperandCore
 
     The pairing is the point. A carrier whose cell *meaning* depends on the declaration that stored the cell cannot recover it from a flat cell list: the token family's Enumeration slot reads through that declaration's own resolved projection, so two Enumeration declarations in one subtree classify the same stored text differently. Handing the payload back from the walk that produced the cell keeps that association structural instead of reconstructing it by field-identifier lookup, which would need a total fallback for a cell that cannot occur.
 
-    `()` is the honest payload for a carrier whose projection is declaration-independent; `resolveCheckedGroupEntityOperandCore` below is exactly that instance. -/
+    `()` is the honest payload for a carrier whose projection is declaration-independent; `resolveCheckedGroupEntityOperandCore` below is exactly that instance.
+
+    `boundCount` is the **operand's own depth**, not the rule's. Levels above it stay fixed at `outer`'s bindings; every level from there down is enumerated whatever the rule iterates. Both halves are load-bearing and each fails differently: reading the depth off the rule would pin an operand that names an ancestor of the rule's group to the rule's row, and ignoring `outer` altogether would let a starred operand under a *bound* repeatable ancestor compare rows the star never reopened. -/
 def resolveCheckedGroupEntityOperandPairs
-    (checked : CheckedDocument model) (slots : List (FlatFieldDecl × α)) :
+    (checked : CheckedDocument model) (outer : Env) (boundCount : Nat)
+    (slots : List (FlatFieldDecl × α)) :
     Except CheckedAddressingError (List (α × CheckedAddressedCell)) := do
   let perDeclaration ← slots.mapM fun (declaration, payload) => do
+    let bound := declaration.repeatableScope.take boundCount
+    let boundPath ← (outer.pathForScope bound).mapError .environment
     let environments ←
       if declaration.repeatableScope.isEmpty then
         pure [([] : Env)]
-      else
-        (checked.actualRowEnvironments declaration.repeatableScope).mapError
-          CheckedAddressingError.rowEnvironment
+      else do
+        let reached ←
+          (checked.actualRowEnvironments declaration.repeatableScope).mapError
+            CheckedAddressingError.rowEnvironment
+        pure (reached.filter fun environment =>
+          environment.take bound.length == bound.zip boundPath)
     let cells ← environments.mapM (checked.addressedCell · declaration.id)
     pure (cells.map fun cell => (payload, cell))
   pure perDeclaration.flatten
 
-/-- The `(row × field)` extent a group-scope operand reaches: every declaration in the group's subtree, at every instantiated row of that declaration's own repeatable scope.
+/-- The `(row × field)` extent a group-scope operand reaches: every declaration in the group's subtree, at every instantiated row of that declaration's repeatable scope **below the operand's own depth**.
 
-    **The enumeration comes from the model's repeatability and never from a star plan**, which is why this takes declarations and a document and nothing else. `spec/07` marks the scope rule as an observed contract rather than a derived one and warns that an implementation reusing its star machinery, or reading the extent off the rule's own iterating group or binding depth, gets it wrong. There is deliberately no environment argument: the compared set is bounded by the operand, so a rule authored on a repeatable group whose operand names an ancestor still reaches that ancestor's whole extent.
+    **The enumeration comes from the model's repeatability and never from a star plan.** `spec/07` marks the scope rule as an observed contract rather than a derived one and warns that an implementation reusing its star machinery, or reading the extent off the rule's own iterating group or binding depth, gets it wrong. The environment is consulted only to fix the levels *above* the operand, never to choose the depth: a rule authored on a repeatable group whose operand names an ancestor still reaches that ancestor's whole extent.
 
     Cells are emitted field-major. That order is not a Kernel claim and is currently unobservable: the one carrier reading this extent compares a **set**, and a filter cannot attach to a group operand, so every cell is unfiltered and no polarity depends on position.
 
     `hasUninstantiatedTail` is `false` because only instantiated rows are enumerated. That is likewise unobservable here — the uniqueness scan never reads it — and the aggregate families that *do* read it still refuse a group slot, which is what keeps this from becoming an unmeasured fillability claim. -/
 def resolveCheckedGroupEntityOperandCore
-    (checked : CheckedDocument model) (declarations : List FlatFieldDecl) :
+    (checked : CheckedDocument model) (outer : Env) (boundCount : Nat)
+    (declarations : List FlatFieldDecl) :
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore := do
-  let paired ← checked.resolveCheckedGroupEntityOperandPairs
+  let paired ← checked.resolveCheckedGroupEntityOperandPairs outer boundCount
     (declarations.map fun declaration => (declaration, ()))
   pure {
     topology := none
