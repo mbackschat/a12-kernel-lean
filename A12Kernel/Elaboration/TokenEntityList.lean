@@ -256,6 +256,9 @@ private def certifyTokenEntityOperand (model : FlatModel)
   | .starredGroup source =>
       do pure (.group (← certifyTokenEntityGroup model (.starred source)
         |>.mapError .group))
+  | .starredGroupPresence source =>
+      do pure (.group (← certifyTokenEntityGroup model (.starredPresence source)
+        |>.mapError .group))
 
 private def certifyTokenEntityOperands (model : FlatModel)
     (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →

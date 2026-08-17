@@ -58,8 +58,17 @@ private def probeModel : FlatModel :=
       { id := 13, groupPath := ["Form", "Contact"], name := "Email",
         policy := { kind := .string } },
       { id := 14, groupPath := ["Form", "Contact"], name := "Phone",
-        policy := { kind := .string } }]
-    repeatableGroups := [{ level := 20, path := ["Form", "Bag", "Lines"] }] }
+        policy := { kind := .string } },
+      { id := 15, groupPath := ["Form", "Outer", "Fixed"], name := "First",
+        policy := { kind := .string }, repeatableScope := [30] },
+      { id := 16, groupPath := ["Form", "Outer", "Fixed"], name := "Second",
+        policy := { kind := .string }, repeatableScope := [30] },
+      { id := 17, groupPath := ["Form", "Outer", "Inner"], name := "Value",
+        policy := { kind := .string }, repeatableScope := [30, 31] }]
+    repeatableGroups := [
+      { level := 20, path := ["Form", "Bag", "Lines"] },
+      { level := 30, path := ["Form", "Outer"] },
+      { level := 31, path := ["Form", "Outer", "Inner"] }] }
 
 private def prepared :
     PreparedFlatStringContext probeModel builtinStringPatternCompiler :=
@@ -75,6 +84,14 @@ private def field (name : String) : SurfaceFieldEntityOperand :=
 private def fieldAt (groups : GroupPath) (name : String) :
     SurfaceFieldEntityOperand :=
   .field { base := .absolute, groups, field := name }
+
+private def starredGroup (groups : List SurfaceStarGroupSegment) :
+    SurfaceFieldEntityOperand :=
+  .starredGroup { base := .absolute, groups }
+
+private def starFieldAt (groups : List SurfaceStarGroupSegment) (name : String) :
+    SurfaceFieldEntityOperand :=
+  .star { base := .absolute, groups, field := name }
 
 private def rows : List RowAddr :=
   [{ group := 20, path := [1] }, { group := 20, path := [2] }]
@@ -196,6 +213,20 @@ example :
         some .rejectedUnmapped := by
   native_decide
 
+/- A nonrepeatable terminal group below an earlier star is admitted, while leaving a repeatable
+   level bare below that star reports the measured shared wildcard class. -/
+example :
+    firstFilledDiagnosticDecision [starredGroup [
+      { name := "Form" }, { name := "Outer", starred := true },
+      { name := "Fixed" }]] = some .admitted ∧
+    firstFilledDiagnosticDecision [starFieldAt [
+      { name := "Form" }, { name := "Outer", starred := true },
+      { name := "Inner" }] "Value"] = some (.mapped .noWildcard) ∧
+    firstFilledDiagnosticDecision [starFieldAt [
+      { name := "Form" }, { name := "Outer", starred := true },
+      { name := "Inner", starred := true }] "Value"] = some .admitted := by
+  native_decide
+
 /-! ## The checked list retains the authored slot and its recursive expansion
 
 A group is one authored slot, never two expanded field slots, and the expansion it carries reaches
@@ -221,6 +252,13 @@ example :
 example :
     checkedSlots [group ["Form", "Mixed"], field "Loose"] =
       some [some (["Form", "Mixed"], false, [3, 4]), none] := by
+  native_decide
+
+example :
+    checkedSlots [starredGroup [
+      { name := "Form" }, { name := "Outer", starred := true },
+      { name := "Fixed" }]] =
+        some [some (["Form", "Outer", "Fixed"], true, [15, 16])] := by
   native_decide
 
 /-! ## Each cell is read through the declaration that stored it
@@ -406,11 +444,15 @@ at a12-dmkits `bffe9cca` on this very carrier: the direct field carries none and
 repeatable subgroup carries a **wildcard**, from an empty environment that a concrete account could
 not have satisfied. -/
 
-private def referenced (groups : GroupPath) : Option (List MessagePointer) :=
+private def referencedOperand
+    (operand : SurfaceFieldEntityOperand) : Option (List MessagePointer) :=
   match elaborateTokenEntitySource probeModel ["Form"]
-      { first := group groups, rest := [] } with
+      { first := operand, rest := [] } with
   | .error _ => none
   | .ok checked => (checked.first.referencePointers []).toOption
+
+private def referenced (groups : GroupPath) : Option (List MessagePointer) :=
+  referencedOperand (group groups)
 
 example :
     referenced ["Form", "Bag"] = some [
@@ -423,6 +465,15 @@ example :
     referenced ["Form", "Mixed"] = some [
       { field := 3, coordinates := [] },
       { field := 4, coordinates := [] }] := by
+  native_decide
+
+/- A fixed terminal below an earlier star reopens that star for every expanded field. -/
+example :
+    referencedOperand (starredGroup [
+      { name := "Form" }, { name := "Outer", starred := true },
+      { name := "Fixed" }]) = some [
+        { field := 15, coordinates := [.wildcard] },
+        { field := 16, coordinates := [.wildcard] }] := by
   native_decide
 
 end A12Kernel.Conformance.TokenEntityGroupOperand

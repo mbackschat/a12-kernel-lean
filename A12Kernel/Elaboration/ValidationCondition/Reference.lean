@@ -101,6 +101,8 @@ def CheckedEntityGroupSource.referencePointers
   | .starred terminal =>
       starredGroupPointers model terminal.group.path terminal.path.firstStar
         environment
+  | .starredPresence terminal =>
+      starredGroupPointers model terminal.groupPath terminal.path.firstStar environment
 
 /-- A filtered star is refused rather than projected. Its own field pointer would be the plain starred one, but the measured account pins only that its `Having` operands *join* the set, not which coordinates they carry, and inventing them would make an incomplete set look complete. -/
 def CheckedNumberEntityOperand.referencePointers (environment : Env) :

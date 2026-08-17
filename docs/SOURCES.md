@@ -191,6 +191,10 @@ a12-dmkits `7df9f5570a1b7f7b4e5bfa5118a6c3521c8db320` then closes the message re
 - `limit`: static admission only; no runtime account follows.
 - `limit`: `False` over a Boolean/Confirm group is not measured.
 - `limit`: the `FirstFilledValue` matrix establishes only the exact fixed-group and equivalent two-direct-stored-field carriers above; raw or custom String policies, reverse order, starred or filtered carriers, wider kind combinations, and wider widths are not projected from it.
+- `claim`: `FirstFilledValue(Outer*/FixedNested)` is admitted when `FixedNested` is a nonrepeatable terminal group below the starred repeatable `Outer`; the equivalent two-field expansion is admitted too.
+- `claim`: `FirstFilledValue(Outer*/Inner/Value)` reports only `MVK_NO_WILDCARD` when repeatable `Inner` remains unstarred below `Outer*`; `Outer*/Inner*/Value` is admitted.
+- `integrity`: the four caller-tagged wildcard observations and rule checks are identified by SHA-256 `d9ef470f1b20a35f4ef9e56dc09455242323d95591da97c205b600d56a360aab` and `795330d630dfc908d5d4faddfdd5e91a8cedbd53a4f2cf1147dbde066da8a139`; the persisted model bytes hash to `f66ce63c80706c25114fc8dff2dfd399e2b487abba27a8a1e32c322fc622636d`, without extending the structured observation claims.
+- `limit`: these wildcard rows establish static admission and diagnostic identity for the exact `FirstFilledValue` paths only; no runtime result follows.
 - `sync`: these confirmations match existing clauses and create no outbound semantic correction.
 
 <a id="src-group-carrier-admission-sweep"></a>

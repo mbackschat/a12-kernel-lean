@@ -46,29 +46,34 @@ inductive ResolvedFieldEntityOperand (model : FlatModel) where
       (having : SurfaceCorrelatedHaving)
   | group (reference : ResolvedGroupReference)
   | starredGroup (source : CheckedStarredGroupSource model)
+  | starredGroupPresence (source : CheckedStarredGroupPresenceSource model)
 
 namespace ResolvedFieldEntityOperand
 
 /-- Whether one authored slot already satisfies the multiple-operand requirement by itself. A star denotes a row set and a group denotes a field scope, so both are already-many; this is exactly why one group slot is admitted where its single expanded field authored alone reports `MVK_PARAMSIZE_INVALIDN`. -/
 def isAlreadyMany : ResolvedFieldEntityOperand model → Bool
   | .field .. => false
-  | .star _ | .starHaving _ _ | .group _ | .starredGroup _ => true
+  | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
+      .starredGroupPresence _ => true
 
 def directFieldId? : ResolvedFieldEntityOperand model → Option FieldId
   | .field declaration _ => some declaration.id
-  | .star _ | .starHaving _ _ | .group _ | .starredGroup _ => none
+  | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
+      .starredGroupPresence _ => none
 
 /-- The identity the repeated-operand gate compares. A star addresses a row set rather than one slot and never participates, and a group is compared by the indirect arm instead. -/
 def operandIdentity? : ResolvedFieldEntityOperand model →
     Option (FieldId × FieldEntityReadForm)
   | .field declaration form => some (declaration.id, form)
-  | .star _ | .starHaving _ _ | .group _ | .starredGroup _ => none
+  | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
+      .starredGroupPresence _ => none
 
 /-- The group subtree a slot denotes, or `none` for a slot that denotes one field. Only the indirect duplicate arm and the expansion consult it. -/
 def subtreePath? : ResolvedFieldEntityOperand model → Option GroupPath
   | .field .. | .star _ | .starHaving _ _ => none
   | .group reference => some reference.path
   | .starredGroup source => some source.group.path
+  | .starredGroupPresence source => some source.groupPath
 
 /-- The declarations this slot contributes to the kind and category gates. A field-denoting slot contributes its own declaration whatever its addressing form; a group contributes its recursive subtree, because a group declares no kind that could be classified instead. -/
 def expansionDeclarations : ResolvedFieldEntityOperand model →
@@ -77,6 +82,7 @@ def expansionDeclarations : ResolvedFieldEntityOperand model →
   | .star source | .starHaving source _ => [source.declaration]
   | .group reference => model.groupSubtreeFields reference.path
   | .starredGroup source => model.groupSubtreeFields source.group.path
+  | .starredGroupPresence source => model.groupSubtreeFields source.groupPath
 
 /-- The authored path each slot occupies for the indirect duplicate arm. -/
 def entityPath : ResolvedFieldEntityOperand model → List String
@@ -84,6 +90,7 @@ def entityPath : ResolvedFieldEntityOperand model → List String
   | .star source | .starHaving source _ => source.declaration.path
   | .group reference => reference.path
   | .starredGroup source => source.group.path
+  | .starredGroupPresence source => source.groupPath
 
 /-- The **indirect** duplicate arm. Two group operands overlap only by strict ancestry, so the same starred group written twice stays two independent authored occurrences while a starred group beside its own starred descendant is rejected. A group also overlaps any field-denoting slot inside it.
 
@@ -98,46 +105,50 @@ def overlaps (left right : ResolvedFieldEntityOperand model) : Bool :=
       | .field declaration _ => leftPath.isPrefixOf declaration.groupPath
       | .star source | .starHaving source _ =>
           leftPath.isPrefixOf source.declaration.groupPath
-      | .group _ | .starredGroup _ => false
+      | .group _ | .starredGroup _ | .starredGroupPresence _ => false
   | none, some rightPath =>
       match left with
       | .field declaration _ => rightPath.isPrefixOf declaration.groupPath
       | .star source | .starHaving source _ =>
           rightPath.isPrefixOf source.declaration.groupPath
-      | .group _ | .starredGroup _ => false
+      | .group _ | .starredGroup _ | .starredGroupPresence _ => false
   | none, none => false
 
 end ResolvedFieldEntityOperand
 
-/-- The two repetition shapes an authored group-scope slot can take, shared by every carrier that retains one. Both retain the **authored** reference: the wildcard gate reads the authored path, so a group operand and its written-out expansion are two different models and lowering one into the other can emit a model the Kernel refuses. -/
+/-- The fixed and starred shapes an authored group-scope slot can take, shared by every carrier that retains one. A starred path preserves whether its terminal group is repeatable or ordinary. Every shape retains the **authored** reference: the wildcard gate reads the authored path, so a group operand and its written-out expansion are two different models and lowering one into the other can emit a model the Kernel refuses. -/
 inductive CheckedEntityGroupSource (model : FlatModel) where
   | fixed (reference : ResolvedGroupReference)
   | starred (source : CheckedStarredGroupSource model)
+  | starredPresence (source : CheckedStarredGroupPresenceSource model)
 
 namespace CheckedEntityGroupSource
 
 def groupPath : CheckedEntityGroupSource model → GroupPath
   | .fixed reference => reference.path
   | .starred source => source.group.path
+  | .starredPresence source => source.groupPath
 
 def isStarred : CheckedEntityGroupSource model → Bool
   | .fixed _ => false
-  | .starred _ => true
+  | .starred _ | .starredPresence _ => true
 
-/-- Repeatable levels the surrounding rule environment must already bind. A fixed group is outside every repeatable scope, so it binds nothing; a starred group binds only the levels above its own star. -/
+/-- Repeatable levels the surrounding rule environment must already bind. A fixed group reopens no level here; either starred terminal shape binds only the levels above its first star. -/
 def bindingScope : CheckedEntityGroupSource model → List RepeatableLevel
   | .fixed _ => []
   | .starred source => source.path.bindingScope
+  | .starredPresence source => source.path.bindingScope
 
 /-- **The operand's own depth**: how many of a reached declaration's repeatable levels stay fixed by the surrounding environment. Every level from here down is free, whatever the rule iterates.
 
     One quantity serves both of the operand's channels — the `(row × field)` extent it compares and the `referenced` set it publishes — and that is the point rather than a convenience. The two disagreeing about one operand's own extent is the cheapest available signal that one of them is wrong, and it is how a12-dmkits found the same defect in its own evaluator at `c1eb1614`, having fixed only the reference channel one commit earlier.
 
-    A starred group supplies its star's own `firstStar`. A fixed group supplies the whole repeatable scope of its authored path; its own level is nonrepeatable under the wildcard gate, so that is the levels above it. -/
+    Either starred terminal shape supplies its star plan's `firstStar`. A fixed group supplies the whole repeatable scope of its authored path; its own level is nonrepeatable under the wildcard gate, so that is the levels above it. -/
 def boundLevelCount : CheckedEntityGroupSource model → Nat
   | .fixed reference =>
       (model.repeatableScopeForGroupPath reference.path).length
   | .starred source => source.path.firstStar
+  | .starredPresence source => source.path.firstStar
 
 end CheckedEntityGroupSource
 
@@ -233,16 +244,12 @@ inductive FieldEntityShapeElabError where
   | starPath (error : StarPathElabError)
   | groupReference (error : FixedGroupReferenceError)
   | starredGroup (error : StarredGroupElabError)
-  /-- A star reaches a nonrepeatable terminal group. Retained as its own case, and deliberately unprojected: the two measured star rows are a repeatable group without its star and a star on a nonrepeatable group, and neither is this shape. -/
-  | nonrepeatableStarTerminal (path : GroupPath)
   | tooFewFields
   | duplicateOperand (field : FieldId)
   | overlappingOperands (ancestor descendant : List String)
   deriving Repr, DecidableEq
 
-/-- The gates this shared checker owns, projected once. Every carrier in the family routes through the same resolution, so these classes do not vary by carrier even where a row measured only one.
-
-    Deliberately absent is the star planner's own `iterationBelowWildcard`, which refuses a repeatable level below a star written as an explicit field path. That refusal is what separates a group operand from its written-out expansion, but its Kernel class is measured on a field-fill quantifier rather than here, so this projection names none. -/
+/-- The gates this shared checker owns, projected once. Every carrier in the family routes through the same resolution, so these classes do not vary by carrier even where a row measured only one. -/
 def FieldEntityShapeElabError.diagnostic? :
     FieldEntityShapeElabError → Option KernelStaticDiagnostic
   | .tooFewFields => some .paramSizeInvalidN
@@ -250,6 +257,7 @@ def FieldEntityShapeElabError.diagnostic? :
   | .overlappingOperands _ _ => some .duplicateParam2
   | .groupReference (.repeatableGroupRequiresAddress _) => some .noWildcard
   | .starredGroup (.path (.wildcardOnNonrepeatable _)) => some .invalidWildcard
+  | .starPath (.iterationBelowWildcard _) => some .noWildcard
   | _ => none
 
 def firstDuplicateDirectField? (directFieldId? : α → Option FieldId) :
@@ -328,8 +336,7 @@ private def resolveFieldEntityOperand (model : FlatModel)
       match ← elaborateStarredGroupOperandSource model declaringGroup reference
           |>.mapError .starredGroup with
       | .terminalRepeatable source => pure (.starredGroup source)
-      | .terminalPresence source =>
-          throw (.nonrepeatableStarTerminal source.groupPath)
+      | .terminalPresence source => pure (.starredGroupPresence source)
 
 private def resolveFieldEntityOperands (model : FlatModel)
     (declaringGroup : GroupPath) : List SurfaceFieldEntityOperand →

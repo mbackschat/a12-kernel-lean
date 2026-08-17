@@ -31,7 +31,7 @@ inductive KernelStaticDiagnostic where
   | duplicateParam1
   /-- The **indirect** arm: two operands overlap by ancestor and descendant. It fires between two wildcarded references where the direct arm does not, and between a group and a field below it. -/
   | duplicateParam2
-  /-- A repeatable group was supplied as an operand without its required star address. Measured on the group-list quantifiers and, on conditions character-identical apart from the `*`, on the shared entity list. -/
+  /-- A repeatable group was reached without its required star address, either as an unstarred group operand or below an earlier star. Measured on the group-list quantifiers and, on conditions character-identical apart from the missing `*`, on the shared entity list. -/
   | noWildcard
   /-- A star was written on a **nonrepeatable** group operand, which has no level to reopen. The opposite arm of the class above, and a separate class rather than a shared wildcard refusal. -/
   | invalidWildcard

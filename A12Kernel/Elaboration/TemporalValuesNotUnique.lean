@@ -243,6 +243,8 @@ private def certifyTemporalUniquenessOperand (model : FlatModel)
       certifyTemporalUniquenessGroup model (.fixed reference)
   | .starredGroup source =>
       certifyTemporalUniquenessGroup model (.starred source)
+  | .starredGroupPresence source =>
+      certifyTemporalUniquenessGroup model (.starredPresence source)
 
 private def certifyTemporalUniquenessOperands (model : FlatModel)
     (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →

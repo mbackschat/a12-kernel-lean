@@ -70,7 +70,11 @@ private def probeModel : FlatModel :=
       { id := 15, groupPath := ["Probe", "Inspections"], name := "ClosedOn",
         policy := { kind := .temporal .date TemporalComponents.fullDate },
         temporalTargetPolicy := some { format := "dd.MM.yyyy" },
-        repeatableScope := [12] }]
+        repeatableScope := [12] },
+      { id := 16, groupPath := ["Probe", "Rows", "Fixed"], name := "First",
+        policy := { kind := .number unsigned }, repeatableScope := [10] },
+      { id := 17, groupPath := ["Probe", "Rows", "Fixed"], name := "Second",
+        policy := { kind := .number unsigned }, repeatableScope := [10] }]
     repeatableGroups := [
       { level := 10, path := ["Probe", "Rows"] },
       { level := 11, path := ["Probe", "Rows", "Fees"] },
@@ -169,6 +173,25 @@ example :
     shapeAdmitted [starField [{ name := "Probe" }, { name := "Rows", starred := true }] "RowVal",
       starField [{ name := "Probe" }, { name := "Rows", starred := true },
         { name := "Fees", starred := true }] "FeeVal"] = true := by
+  native_decide
+
+/- A star may reach a nonrepeatable terminal group without another star. The group form and its
+   explicit two-field expansion are both admitted by the measured shared-carrier boundary. -/
+example :
+    shapeAdmitted [starredGroup [{ name := "Probe" },
+      { name := "Rows", starred := true }, { name := "Fixed" }]] = true ∧
+    shapeAdmitted [
+      starField [{ name := "Probe" }, { name := "Rows", starred := true },
+        { name := "Fixed" }] "First",
+      starField [{ name := "Probe" }, { name := "Rows", starred := true },
+        { name := "Fixed" }] "Second"] = true := by
+  native_decide
+
+/- An unstarred repeatable level below the first star is the distinct refusal measured as
+   `MVK_NO_WILDCARD`; starring that same level is the admitted control above. -/
+example :
+    diagnostic? [starField [{ name := "Probe" }, { name := "Rows", starred := true },
+      { name := "Fees" }] "FeeVal"] = some .noWildcard := by
   native_decide
 
 /-! ## The indirect arm fires between operands, the direct arm does not see them

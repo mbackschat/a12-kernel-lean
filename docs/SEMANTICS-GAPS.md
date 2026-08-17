@@ -53,10 +53,9 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 #### Group static-diagnostic residuals
 
 - `state`: open
-- `missing`: determine the class, if any, for a star above a nonrepeatable terminal group and for the entity-list `iterationBelowWildcard` refusal.
 - `missing`: determine the unstarred equal-group result and the precedence of the cardinality and two duplicate arms when one model reaches several gates.
 - `missing`: expose a local authoring site before projecting `MVK_NO_GROUPS_ALLOWED`; the operators known to emit it do not use the shared entity-list surface.
-- `baseline`: [shared entity-list group admission](IMPLEMENTATION-MAP.md#cap-shared-entity-list-group-admission) projects the exact fixed-group and equivalent direct-stored-field `FirstFilledValue` pairs in their measured order and declaration policies plus the previously measured shared and operator-specific classes; every unmeasured carrier stays unmapped.
+- `baseline`: [shared entity-list group admission](IMPLEMENTATION-MAP.md#cap-shared-entity-list-group-admission) admits a nonrepeatable terminal below an earlier star, projects the below-star repeatable refusal, and retains the exact fixed-group and equivalent direct-stored-field `FirstFilledValue` pairs plus the previously measured shared and operator-specific classes; every unmeasured carrier stays unmapped.
 - `evidence-needed`: pair each proposed class with a same-carrier counterfactual that isolates the named gate.
 - `discriminator`: one multi-fault list separates gate precedence; authored group and written-out expansion controls separate an entity-list class from a carrier-specific or path-normalization inference.
 - `consumer`: Translate and Explain must retain unmapped refusals instead of borrowing a plausible sibling class.

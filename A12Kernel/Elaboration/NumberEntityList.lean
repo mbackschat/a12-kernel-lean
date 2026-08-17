@@ -291,6 +291,8 @@ private def certifyNumberEntityOperand (model : FlatModel)
       pure (.starHaving { source := numberSource, declaringGroup, filter })
   | .group reference => certifyNumberEntityGroup model (.fixed reference)
   | .starredGroup source => certifyNumberEntityGroup model (.starred source)
+  | .starredGroupPresence source =>
+      certifyNumberEntityGroup model (.starredPresence source)
 
 private def certifyNumberEntityOperands (model : FlatModel)
     (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →

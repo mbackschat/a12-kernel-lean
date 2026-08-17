@@ -270,6 +270,22 @@ def evalValueCountAggregate (expected : ValueListAtom kind)
           state.hasEmpty || side.hasUninstantiatedTail || side.hasHaving
         canShrink := state.hasMatchingFilteredValue }
 
+/-- Resolve authored value-count operands in order, stop at the first unavailable cell or terminal result, and otherwise evaluate the accumulated count side. -/
+def evalResolvedValueCountOperands
+    (expected : ValueListAtom kind) (operands : List operand)
+    (resolve : operand →
+      Except error
+        (Sum (ResolvedValueListSide kind) NumericOperand)) :
+    Except error NumericOperand := do
+  match ← scanResolvedValueListOperands
+      (state := ResolvedValueCountSide kind) (terminal := NumericOperand)
+      resolve
+      (fun cause => .unknown cause)
+      (fun accumulated _ side => accumulated.appendResolved side)
+      operands .empty with
+  | .inl side => pure (evalValueCountAggregate expected side)
+  | .inr result => pure result
+
 /-- One row-aligned pair consumed by `SumOfProducts`. Empty cells remain explicit so each declaration can supply its own numeric missing direction before multiplication. -/
 structure ResolvedNumericProductRow where
   left : ValueListCell .number
