@@ -58,6 +58,12 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `source`: [group-carrier admission sweep](SOURCES.md#src-group-carrier-admission-sweep).
 - `discriminator`: the measured Date-group refusal is paired with an admitted String-group control, separating expansion type-checking from unconditional group admission.
 - `consumer`: Translate and Explain require the exact operator-specific class while preserving unrelated refusals as unmapped.
+- `route-state`: verified against the current code and recent path history.
+- `red-locus`: [`FieldEntityGroupOperand.lean`](../A12Kernel/Conformance/FieldEntityGroupOperand.lean) owns shared group-diagnostic conformance and is the first red-case locus.
+- `green-locus`: [`TokenEntityValueList.lean`](../A12Kernel/Elaboration/TokenEntityValueList.lean) owns the operator-specific elaboration that needs the projection.
+- `supporting-locus`: [`StaticDiagnostic.lean`](../A12Kernel/Elaboration/StaticDiagnostic.lean) owns the exact diagnostic vocabulary that needs the distinct code.
+- `supporting-locus`: [`Proofs/StaticDiagnostic.lean`](../A12Kernel/Proofs/StaticDiagnostic.lean) owns enumeration completeness and code uniqueness.
+- `route-limit`: [`TokenEntityGroup.lean`](../A12Kernel/Elaboration/TokenEntityGroup.lean) remains outside the established route unless the red case proves that the current refusal loses a cause the primary locus cannot retain.
 
 <a id="gap-sg5-group-static-diagnostic-residuals"></a>
 #### Group static-diagnostic residuals

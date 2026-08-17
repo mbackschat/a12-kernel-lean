@@ -14,7 +14,7 @@ Before editing documentation, classify each changed fact:
 | Reusable source or measurement checkpoint, revision, route, and source-level claim limit | [`SOURCES.md`](SOURCES.md) |
 | Implemented fragment, proof/non-law state, and external-evidence status | [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) |
 | Retained observation, artifact identity, projection, replay, and empirical claim limit | [`EVIDENCE.md`](EVIDENCE.md) |
-| Open semantic obligation, prerequisite, discriminator, or reopening trigger | [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) |
+| Open semantic obligation, prerequisite, discriminator, verified change route, route limit, or reopening trigger | [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) |
 | Selected action, oracle, stop condition, handoff baseline, blocker, and resume command | [`PLAN.md`](PLAN.md) |
 | Stable representation, semantic ownership, dependency direction, composition invariant, or accepted/rejected encoding decision | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | Durable non-obvious formalization or research lesson | [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) |
@@ -52,7 +52,7 @@ The capsule closure assessment in [`TESTING.md`](TESTING.md#same-context-capsule
 - Change [`ARCHITECTURE.md`](ARCHITECTURE.md) only for a representation or semantic-ownership boundary, dependency direction, composition invariant, or adopted/rejected encoding alternative. A new module or a wider implemented family is not by itself architecture.
 - Change [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) when executable, proof, non-law, protocol, or evidence support changes.
 - Change [`SOURCES.md`](SOURCES.md) only when a reusable provenance checkpoint, authoritative source locus, or drill route changes. Capsule-specific source narratives and review chronology stay in working context and Git history.
-- Change [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) only when the open set, prerequisite, discriminator, consumer consequence, evidence need, or reopening trigger changes. Delete a completed entry; never append a shipped-status narrative.
+- Change [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) only when the open set, prerequisite, discriminator, consumer consequence, evidence need, verified change route, route limit, or reopening trigger changes. Delete a completed entry; never append a shipped-status narrative.
 - Change [`PLAN.md`](PLAN.md) only for current resumption state. Completed-unit narratives, broad backlog, and durable findings do not belong there.
 - Change [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) only for a durable non-obvious lesson or a visible correction to an existing finding.
 - Change [`EVIDENCE.md`](EVIDENCE.md) only for retained observations, provenance, projections, replay, or claim limits.
@@ -64,12 +64,12 @@ Reading a source, running a gate, or completing work is not by itself a document
 
 | Event | Required owners | Conditional owners | Owners normally untouched |
 |---|---|---|---|
-| Select existing open work | `PLAN.md` | None | Implementation map, gaps, sources, spec |
+| Select existing open work | `PLAN.md` | Gap if its route is missing or stale | Implementation map, sources, spec |
 | Add or refine an open discriminator | `SEMANTICS-GAPS.md` | `PLAN.md` only if selection or blocker changes | Implementation map, sources, spec |
 | Confirm existing behavior externally | `SOURCES.md` | Implementation map if assurance changes; gap if the open set changes; plan if selection changes | Spec |
 | Retain or change a replayed observation | `EVIDENCE.md` | Implementation map if calibration changes; gap if the open set changes; plan if selection changes | Sources, spec |
 | Correct behavior | `spec/` plus the applicable synchronization owner | Sources for inbound provenance; implementation map, gap, or plan only when their facts change | Unrelated owners |
-| Implement without new external evidence | Implementation map | Gap if an obligation closes; plan if selection changes | Sources, spec |
+| Implement without new external evidence | Implementation map | Gap if an obligation closes or its route changes; plan if selection changes | Sources, spec |
 | Refresh a verified baseline | `PLAN.md` | None | Every other owner |
 
 This table is a trigger contract, not a document-count quota. A unit that genuinely changes several distinct facts changes each canonical owner, but every edit remains record-local.
@@ -113,7 +113,29 @@ Detailed capability, gap, plan, and provenance records use keyed bullets instead
 
 The 500-character threshold is an agent-efficiency guard, not a readability target. Review an over-limit line for multiple claims and choose the representation that makes retrieval and mutation cheapest. Prefer a semantic split; an indivisible claim may stay on one line or use a structured continuation when that is more efficient for agents.
 
-Implementation records answer what exists, primary owner, executable/proof/external assurance, and live remainder. Gap records contain only open obligations, prerequisites, discriminators, consumer consequences, evidence needs, blockers, and reopening triggers. `PLAN.md` is a compact resumption packet, and source records own exact revisions, routes, claims, and claim limits without reverse consumer inventories.
+### Verified implementation routes
+
+An open gap may own a verified implementation route for that obligation. The implementation map remains the sole owner of implemented boundaries and stable code ownership. `PLAN.md` remains the sole owner of selection and immediate resumption state and links to the gap instead of copying route fields.
+
+A route block uses the closed state `verified | discovery-required` and these exact cardinalities:
+
+| Key | Cardinality | Owned navigation fact |
+|---|---:|---|
+| `route-state` | exactly one when the block is present | Whether current code and history establish the route |
+| `red-locus` | exactly one for `verified`, absent otherwise | Existing conformance or proof file for the first failing guard |
+| `green-locus` | exactly one for `verified`, absent otherwise | Narrowest current source file owning the primary change |
+| `supporting-locus` | zero to two for `verified`, absent otherwise | Existing files required by a known vocabulary, proof, or assembly consequence |
+| `route-limit` | zero or one for `verified`, absent for `discovery-required` | Concrete boundary excluding a plausible wider change until the red case proves it necessary |
+
+Every locus is a regular relative Markdown link to an existing file plus one short local role. Routes name files rather than line numbers or private symbols. They are current navigation facts, not semantic or architectural claims: they neither promise a complete diagnosis nor confine the final diff, and they do not replace the required pre-edit inventory of current definitions, tests, proofs, history, and overlapping work.
+
+A gap may receive a verified route when current code and history establish it; otherwise use only `route-state: discovery-required` or omit the block until selection. Before semantic edits begin, a selected gap must have a verified route. When it does not, `PLAN.md` selects read-only route discovery instead of implementation, and no speculative locus may accompany `discovery-required`.
+
+Update only the affected gap when a linked file moves, its stated role changes, or a red result changes the entry route or establishes a supporting locus. Update the implementation map separately only when the stable implemented mechanism changes. Delete the route with its completed gap; Git owns route history. If more than two supporting loci seem necessary before the red case, the route is not understood well enough to mark `verified`.
+
+The same-context capsule closure assessment checks three routing invariants when the selected gap carries a route block: `route-state` was `verified` before semantic edits, every locus resolves and still has its stated role, and neither Plan nor the implementation map duplicates the route. An already-triggered cold review checks the same finite invariants; this contract adds no executable gate, registry, schema, parser, generator, linter, or dependency.
+
+Implementation records answer what exists, primary owner, executable/proof/external assurance, and live remainder. Gap records contain only open obligations, prerequisites, discriminators, consumer consequences, evidence needs, blockers, verified change routes, route limits, and reopening triggers. `PLAN.md` is a compact resumption packet, and source records own exact revisions, source drill routes, claims, and claim limits without reverse consumer inventories.
 
 Query converted records directly:
 
@@ -122,7 +144,8 @@ rg -n '^<a id="cap-' docs/IMPLEMENTATION-MAP.md
 rg -n '^<a id="gap-' docs/SEMANTICS-GAPS.md
 rg -n '^<a id="src-' docs/SOURCES.md
 rg -n '^- `state`:|^- `blocked-on`:|^- `reopen-when`:' docs/SEMANTICS-GAPS.md
+rg -n '^- `route-state`:|^- `(red|green|supporting)-locus`:|^- `route-limit`:' docs/SEMANTICS-GAPS.md
 rg -n '^- `assurance`:|^- `remains`:' docs/IMPLEMENTATION-MAP.md
 ```
 
-This contract is adopted through the SG5 group-operand slice. Existing unconverted sections remain valid, and this adoption creates no repository-wide migration backlog or standing cleanup campaign. Converting another existing section requires a separate user decision.
+The bounded-record contract is adopted through the SG5 group-operand slice. Implementation routing is initially adopted only for the selected Date-group diagnostic gap; another gap receives routing fields only when selected or when its route changes for an independent reason. Existing unconverted sections remain valid, and neither adoption creates a repository-wide migration backlog or standing cleanup campaign. Converting another existing section requires a separate user decision.
