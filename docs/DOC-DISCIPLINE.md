@@ -11,20 +11,22 @@ Before editing documentation, classify each changed fact:
 | Fact | Sole owner |
 |---|---|
 | Kernel behavior and static legality | the relevant project-owned [`spec/`](../spec/) clause |
-| Reusable provenance and source-navigation route | [`SOURCES.md`](SOURCES.md) |
+| Reusable source or measurement checkpoint, revision, route, and source-level claim limit | [`SOURCES.md`](SOURCES.md) |
 | Implemented fragment, proof/non-law state, and external-evidence status | [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) |
-| Retained observation inventory and claim boundary | [`EVIDENCE.md`](EVIDENCE.md) |
+| Retained observation, artifact identity, projection, replay, and empirical claim limit | [`EVIDENCE.md`](EVIDENCE.md) |
 | Open semantic obligation, prerequisite, discriminator, or reopening trigger | [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) |
-| Immediate active unit, queue, blocker, and resume command | [`PLAN.md`](PLAN.md) |
+| Selected action, oracle, stop condition, handoff baseline, blocker, and resume command | [`PLAN.md`](PLAN.md) |
 | Stable representation, semantic ownership, dependency direction, composition invariant, or accepted/rejected encoding decision | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | Durable non-obvious formalization or research lesson | [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) |
 | Cross-project semantic reconciliation state | [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) |
 | Test method and executable gate contract | [`TESTING.md`](TESTING.md) |
 | Public process, artifact, consumer, product, or release contract | the exact owner named in [`README.md`](README.md#canonical-ownership-registry) |
 
-The update trigger is also an exclusion rule. If a document's owned responsibility did not change, leave it untouched. A routine semantic capsule normally updates the implementation map, shrinks or changes the selected gap only when its open set changed, and advances the plan; it does not automatically update architecture, sources, findings, README, or public contracts.
+The update trigger is also an exclusion rule. If a document's owned responsibility did not change, leave it untouched. A routine semantic capsule normally updates the implementation map and changes a gap or the plan only when their owned current facts changed; it does not automatically update architecture, sources, findings, README, or public contracts.
 
 Adding a fact to its owner requires deleting or replacing any displaced detailed copy in the same change. Correcting a stale sentence is always in scope, but the correction should point to the owner instead of creating another maintained account. “Prefer links” means consequence plus link, not a shorter duplicate inventory.
+
+Links point from a record that needs a fact to the record that owns it. Canonical records do not maintain reverse consumer inventories. Bidirectional navigation is allowed only when both records own distinct current facts, such as a gap linking to its implemented baseline while that capability links to its open remainder.
 
 ## Normative semantics and implementation guidance
 
@@ -58,6 +60,20 @@ The capsule closure assessment in [`TESTING.md`](TESTING.md#same-context-capsule
 - Change a public process, artifact, consumer, product, release, or formalization document only when the responsibility assigned to it by [`README.md`](README.md#canonical-ownership-registry) changes.
 - Change the top-level [`README.md`](../README.md) only for a user-visible purpose, qualitative status, quick-start, or navigation change. Change this registry when a document is added, removed, renamed, or its audience/lifecycle/ownership changes.
 
+Reading a source, running a gate, or completing work is not by itself a documentation trigger. A partially closed gap is split when necessary and its closed obligation is deleted. A completed gap is deleted completely.
+
+| Event | Required owners | Conditional owners | Owners normally untouched |
+|---|---|---|---|
+| Select existing open work | `PLAN.md` | None | Implementation map, gaps, sources, spec |
+| Add or refine an open discriminator | `SEMANTICS-GAPS.md` | `PLAN.md` only if selection or blocker changes | Implementation map, sources, spec |
+| Confirm existing behavior externally | `SOURCES.md` | Implementation map if assurance changes; gap if the open set changes; plan if selection changes | Spec |
+| Retain or change a replayed observation | `EVIDENCE.md` | Implementation map if calibration changes; gap if the open set changes; plan if selection changes | Sources, spec |
+| Correct behavior | `spec/` plus the applicable synchronization owner | Sources for inbound provenance; implementation map, gap, or plan only when their facts change | Unrelated owners |
+| Implement without new external evidence | Implementation map | Gap if an obligation closes; plan if selection changes | Sources, spec |
+| Refresh a verified baseline | `PLAN.md` | None | Every other owner |
+
+This table is a trigger contract, not a document-count quota. A unit that genuinely changes several distinct facts changes each canonical owner, but every edit remains record-local.
+
 ## Intentional historical records
 
 [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) and [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) are the only append-preserving live records. Findings retain stable IDs and visible corrections. Reconciliation entries retain stable IDs and terminal dispositions. Neither may absorb routine status, source-review narrative, or a second copy of the spec.
@@ -81,4 +97,32 @@ Query contracts and stable headings improve navigation; they do not justify accu
 
 ## Markdown and links
 
-Write one Markdown paragraph per line and do not hard-wrap prose. Reference Markdown files with regular relative links. Prefer stable semantic, finding, mechanism, and public-contract anchors over copied prose.
+For human-facing Markdown, write natural paragraphs and do not wrap them at a cosmetic fixed column. For agent-facing operational owners, rendered readability and paragraph shape are irrelevant: choose physical lines solely for bounded retrieval, precise mutation, and unambiguous diffs. Reference Markdown files with regular relative links and prefer stable semantic, finding, mechanism, and public-contract anchors over copied prose.
+
+### Bounded detailed records
+
+Detailed capability, gap, plan, and provenance records use keyed bullets instead of wide table rows or omnibus prose. Compact summary tables remain allowed when every cell is a short status or link and owns no detailed prose.
+
+- Every repeatable detailed record has one stable explicit anchor and one searchable local identifier. Its descriptive heading must not generate the same anchor.
+- Singleton records such as the active plan use one fixed explicit anchor with a distinct heading slug.
+- Record identifiers use the local prefixes `cap-`, `gap-`, and `src-`; they are anchors, not entries in a global registry.
+- Every bullet carries one semantic claim. Keys are short, lower-case, and backtick-delimited; a key may repeat for independent claims of the same class.
+- A claim line has a soft ceiling of 500 characters. Split by semantic claim, never by visual width.
+- One record must be understandable in a window of at most 80 lines including its heading.
+- Links target the narrowest stable owner or record anchor. Record text states current truth only; Git owns chronology unless an intentional historical owner applies.
+
+The 500-character threshold is an agent-efficiency guard, not a readability target. Review an over-limit line for multiple claims and choose the representation that makes retrieval and mutation cheapest. Prefer a semantic split; an indivisible claim may stay on one line or use a structured continuation when that is more efficient for agents.
+
+Implementation records answer what exists, primary owner, executable/proof/external assurance, and live remainder. Gap records contain only open obligations, prerequisites, discriminators, consumer consequences, evidence needs, blockers, and reopening triggers. `PLAN.md` is a compact resumption packet, and source records own exact revisions, routes, claims, and claim limits without reverse consumer inventories.
+
+Query converted records directly:
+
+```sh
+rg -n '^<a id="cap-' docs/IMPLEMENTATION-MAP.md
+rg -n '^<a id="gap-' docs/SEMANTICS-GAPS.md
+rg -n '^<a id="src-' docs/SOURCES.md
+rg -n '^- `state`:|^- `blocked-on`:|^- `reopen-when`:' docs/SEMANTICS-GAPS.md
+rg -n '^- `assurance`:|^- `remains`:' docs/IMPLEMENTATION-MAP.md
+```
+
+This contract is adopted through the SG5 group-operand slice. Existing unconverted sections remain valid, and this adoption creates no repository-wide migration backlog or standing cleanup campaign. Converting another existing section requires a separate user decision.
