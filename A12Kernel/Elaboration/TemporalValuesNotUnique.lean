@@ -26,8 +26,9 @@ inductive TemporalValuesNotUniqueElabError where
   | missingDeclaredFormat (path : List String)
   | mixedDeclaredFormats (path : List String) (found expected : String)
   | having (error : CorrelationElabError)
-  /-- The shared checker admitted a group-scope slot that this family does not yet retain. Deliberately carries no diagnostic class: the Kernel admits the operand here, so a refusal states only that the representation is missing. -/
-  | groupOperandNotRepresented (path : List String)
+  /-- A group slot whose recursive subtree declares no field. Unmeasured, so refused without a diagnostic class. -/
+  | groupExpansionEmpty (path : List String)
+  | incoherentCore
   deriving Repr, DecidableEq
 
 /-- One temporal declaration admitted by this operator, carrying the exact declared format its admission gate reads. -/
@@ -60,28 +61,90 @@ def certifyTemporalUniquenessField (declaration : FlatFieldDecl) :
       | .category _ => .error (.mixedCategories declaration.path kind)
       | .refusedByKind => .error (.inadmissibleKind declaration.path kind)
 
+/-- The option-valued form used to certify a complete group expansion without dropping a
+    declaration. The detailed certifier above still owns which refusal a missing value reports. -/
+def FlatFieldDecl.toTemporalUniquenessField?
+    (declaration : FlatFieldDecl) : Option CheckedTemporalUniquenessField :=
+  match hPolicy : declaration.toTemporalTargetPolicy? with
+  | some policy => some { declaration, policy, policyOwned := hPolicy }
+  | none => none
+
+/-- Find the first temporal field whose declared format differs from `expected`. -/
+def firstMismatchedTemporalFieldFormat? (expected : String) :
+    List CheckedTemporalUniquenessField → Option (List String × String)
+  | [] => none
+  | field :: remaining =>
+      if field.format == expected then
+        firstMismatchedTemporalFieldFormat? expected remaining
+      else
+        some (field.path, field.format)
+
+/-- One authored group slot certified as a nonempty, recursively complete temporal expansion with
+    one declared format. The authored group reference stays intact; `first` and `rest` are its
+    declaration-level certificate, not replacement authored operands. -/
+structure CheckedTemporalUniquenessGroup (model : FlatModel) where
+  source : CheckedEntityGroupSource model
+  first : CheckedTemporalUniquenessField
+  rest : List CheckedTemporalUniquenessField
+  expansionOwned :
+    (model.groupSubtreeFields source.groupPath).filterMap
+      FlatFieldDecl.toTemporalUniquenessField? = first :: rest
+  expansionAllTemporal :
+    (model.groupSubtreeFields source.groupPath).all
+      (fun declaration => declaration.toTemporalUniquenessField?.isSome) = true
+  oneDeclaredFormat :
+    firstMismatchedTemporalFieldFormat? first.format rest = none
+
+namespace CheckedTemporalUniquenessGroup
+
+def groupPath (group : CheckedTemporalUniquenessGroup model) : GroupPath :=
+  group.source.groupPath
+
+def isStarred (group : CheckedTemporalUniquenessGroup model) : Bool :=
+  group.source.isStarred
+
+def fields (group : CheckedTemporalUniquenessGroup model) :
+    List CheckedTemporalUniquenessField :=
+  group.first :: group.rest
+
+def declarations (group : CheckedTemporalUniquenessGroup model) :
+    List FlatFieldDecl :=
+  group.fields.map (·.declaration)
+
+def format (group : CheckedTemporalUniquenessGroup model) : String :=
+  group.first.format
+
+end CheckedTemporalUniquenessGroup
+
 /-- One certified temporal slot. A filter belongs to its exact authored wildcard occurrence. -/
 inductive CheckedTemporalUniquenessOperand (model : FlatModel) where
   | field (source : CheckedTemporalUniquenessField)
   | star (path : CheckedStarFieldPath model)
       (source : CheckedTemporalUniquenessField)
       (filter : Option CorrelatedHaving)
+  | group (source : CheckedTemporalUniquenessGroup model)
 
 namespace CheckedTemporalUniquenessOperand
 
-def source : CheckedTemporalUniquenessOperand model →
-    CheckedTemporalUniquenessField
-  | .field source | .star _ source _ => source
-
 def format (operand : CheckedTemporalUniquenessOperand model) : String :=
-  operand.source.format
+  match operand with
+  | .field source | .star _ source _ => source.format
+  | .group source => source.format
 
 def path (operand : CheckedTemporalUniquenessOperand model) : List String :=
-  operand.source.path
+  match operand with
+  | .field source | .star _ source _ => source.path
+  | .group source => source.groupPath
+
+def groupSlot? : CheckedTemporalUniquenessOperand model →
+    Option (CheckedTemporalUniquenessGroup model)
+  | .group source => some source
+  | .field _ | .star _ _ _ => none
 
 def hasHaving : CheckedTemporalUniquenessOperand model → Bool
   | .field _ | .star _ _ none => false
   | .star _ _ (some _) => true
+  | .group _ => false
 
 /-- Resolve one slot against the immutable checked document through the shared kind-neutral entity core, which owns topology, addressing, filter selection, and omitted-tail extent. -/
 def resolveValidationCore (operand : CheckedTemporalUniquenessOperand model)
@@ -92,6 +155,8 @@ def resolveValidationCore (operand : CheckedTemporalUniquenessOperand model)
       document.resolveCheckedDirectEntityOperandCore source.declaration.id
   | .star path _ filter =>
       path.resolveCheckedValidationEntityOperandCore document outer filter
+  | .group source =>
+      .error (.addressing (.unsupportedGroupOperand source.groupPath))
 
 end CheckedTemporalUniquenessOperand
 
@@ -128,6 +193,38 @@ def format (checked : CheckedTemporalValuesNotUniqueSource model) : String :=
 
 end CheckedTemporalValuesNotUniqueSource
 
+private def certifyTemporalUniquenessGroup (model : FlatModel)
+    (source : CheckedEntityGroupSource model) :
+    Except TemporalValuesNotUniqueElabError
+      (CheckedTemporalUniquenessOperand model) :=
+  let declarations := model.groupSubtreeFields source.groupPath
+  if hAll : declarations.all
+      (fun declaration => declaration.toTemporalUniquenessField?.isSome) = true then
+    match hExpansion : declarations.filterMap
+        FlatFieldDecl.toTemporalUniquenessField? with
+    | [] => throw (.groupExpansionEmpty source.groupPath)
+    | first :: rest =>
+        match hFormats :
+            firstMismatchedTemporalFieldFormat? first.format rest with
+        | some (path, found) =>
+            throw (.mixedDeclaredFormats path found first.format)
+        | none =>
+            pure (.group {
+              source
+              first
+              rest
+              expansionOwned := hExpansion
+              expansionAllTemporal := hAll
+              oneDeclaredFormat := hFormats })
+  else
+    match declarations.find? fun declaration =>
+        declaration.toTemporalUniquenessField?.isNone with
+    | some declaration =>
+        match certifyTemporalUniquenessField declaration with
+        | .error error => throw error
+        | .ok _ => throw .incoherentCore
+    | none => throw .incoherentCore
+
 private def certifyTemporalUniquenessOperand (model : FlatModel)
     (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
       Except TemporalValuesNotUniqueElabError
@@ -142,9 +239,10 @@ private def certifyTemporalUniquenessOperand (model : FlatModel)
       let filter ← elaborateStarHavingCore model declaringGroup source having
         |>.mapError .having
       pure (.star source field (some filter.condition))
-  | .group reference => throw (.groupOperandNotRepresented reference.path)
+  | .group reference =>
+      certifyTemporalUniquenessGroup model (.fixed reference)
   | .starredGroup source =>
-      throw (.groupOperandNotRepresented source.group.path)
+      certifyTemporalUniquenessGroup model (.starred source)
 
 private def certifyTemporalUniquenessOperands (model : FlatModel)
     (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →
@@ -185,7 +283,7 @@ namespace TemporalValuesNotUniqueElabError
 
 /-- The Kernel diagnostic class this refusal corresponds to, or `none` where this project refuses a shape whose Kernel class it has not established.
 
-`none` is deliberate rather than a placeholder: `missingDeclaredFormat` is this project's own insufficiency for a declaration the Kernel rejects earlier at model level with an unmeasured code, a group-scope slot is admitted by the Kernel and merely unrepresented here, and a filter failure belongs to the correlation surface. Mapping any of them to a plausible-looking name would assert an unmeasured correspondence. Every shape refusal delegates to the shared checker's own projection, because the star, arity, and duplicate gates do not vary by carrier. -/
+`none` is deliberate rather than a placeholder: `missingDeclaredFormat` is this project's own insufficiency for a declaration the Kernel rejects earlier at model level with an unmeasured code, an empty group expansion is unmeasured, and a filter failure belongs to the correlation surface. Mapping any of them to a plausible-looking name would assert an unmeasured correspondence. Every shape refusal delegates to the shared checker's own projection, because the star, arity, and duplicate gates do not vary by carrier. -/
 def diagnostic? : TemporalValuesNotUniqueElabError → Option KernelStaticDiagnostic
   | .shape error => error.diagnostic?
   | .inadmissibleKind _ _ => some .onlyStringEnumNumberDateAllowed
@@ -194,8 +292,7 @@ def diagnostic? : TemporalValuesNotUniqueElabError → Option KernelStaticDiagno
   | .mixedDeclaredFormats _ _ _ => some .onlyStringEnumNumberDateAllowed
   | .mixedCategories _ _ => some .varyingTypesNotAllowed
   | .missingDeclaredFormat _ => none
-  | .groupOperandNotRepresented _ => none
-  | .having _ => none
+  | .groupExpansionEmpty _ | .having _ | .incoherentCore => none
 
 end TemporalValuesNotUniqueElabError
 

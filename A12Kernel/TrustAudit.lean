@@ -1044,6 +1044,7 @@ run_cmd do
 #print axioms A12Kernel.numberValuesNotUnique_route_never_unknown
 #print axioms A12Kernel.tokenValuesNotUnique_route_never_unknown
 #print axioms A12Kernel.temporalValuesNotUnique_route_never_unknown
+#print axioms A12Kernel.checkedTemporalUniquenessGroup_expansion_complete
 #print axioms A12Kernel.temporalValuesNotUnique_oneDeclaredFormat
 #print axioms A12Kernel.kernelStaticDiagnostic_kernelCode_nodup
 #print axioms A12Kernel.kernelStaticDiagnostic_mem_all

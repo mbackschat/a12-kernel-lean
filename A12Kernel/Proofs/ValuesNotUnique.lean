@@ -36,6 +36,28 @@ theorem temporalValuesNotUnique_route_never_unknown
       checked document outer ≠ .ok .unknown :=
   collectTaggedValueListCells_valuesNotUnique_never_unknown _ _
 
+/-- A retained temporal group omits no descendant: every declaration in its recursive subtree is
+    present in the certified expansion with its exact declared temporal policy. -/
+theorem checkedTemporalUniquenessGroup_expansion_complete
+    (group : CheckedTemporalUniquenessGroup model)
+    (declaration : FlatFieldDecl)
+    (member : declaration ∈ model.groupSubtreeFields group.groupPath) :
+    ∃ field,
+      declaration.toTemporalUniquenessField? = some field ∧
+      field ∈ group.fields := by
+  have admitted : declaration.toTemporalUniquenessField?.isSome = true :=
+    List.all_eq_true.mp group.expansionAllTemporal declaration member
+  match hField : declaration.toTemporalUniquenessField? with
+  | none => rw [hField] at admitted; simp at admitted
+  | some field =>
+      refine ⟨field, rfl, ?_⟩
+      have retained : field ∈
+          (model.groupSubtreeFields group.source.groupPath).filterMap
+            FlatFieldDecl.toTemporalUniquenessField? :=
+        List.mem_filterMap.mpr ⟨declaration, member, hField⟩
+      rw [group.expansionOwned] at retained
+      simpa [CheckedTemporalUniquenessGroup.fields] using retained
+
 /-- **The kind gate never reports the mixing class.** This is the local half of the measured pre-emption: a Boolean or Confirm beside another category reports the kind code with the mixing code absent, so whatever the kind gate refuses, its diagnostic is never `varyingTypesNotAllowed`. The elaborator runs this scan over the whole operand list before certification, so no authored order can substitute the mixing class for the kind class. -/
 theorem firstKindGateRefusal_never_mixing
     (operands : List (ResolvedFieldEntityOperand model))
