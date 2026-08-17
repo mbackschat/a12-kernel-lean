@@ -55,11 +55,11 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `state`: open
 - `missing`: expose a local authoring site before projecting `MVK_NO_GROUPS_ALLOWED`; the operators known to emit it do not use the shared entity-list surface.
 - `baseline`: [shared entity-list group admission](IMPLEMENTATION-MAP.md#cap-shared-entity-list-group-admission) now owns fixed-group equality after direct-field identity and before strict overlap, keeps repeated starred groups occurrence-preserving, and retains cardinality as a structurally separate singleton-direct branch; every unmeasured carrier stays unmapped.
-- `evidence-needed`: identify an existing operator-owned authoring surface and pair the group refusal with a same-carrier admitted or differently rejected operand shape.
+- `evidence-needed`: once a group-bearing operator owner exists, pair the group refusal with a same-carrier admitted or differently rejected operand shape.
 - `discriminator`: a group beside a starred field on the same operator separates a group-specific refusal from a wildcard refusal where the surface can author both.
 - `consumer`: Translate and Explain must retain unmapped refusals instead of borrowing a plausible sibling class.
-- `reopen-when`: route discovery finds a local carrier owner that can preserve the group operand through its own refusal.
-- `route-state`: discovery-required.
+- `reopen-when`: ordinary semantic work gives one measured carrier an operator-owned group-bearing surface, or the user explicitly approves widening an existing direct/specialized operand representation for this diagnostic.
+- `route-state`: parked-no-local-owner; the current `Min`/`Max`, conversion, overlap, and custom-validity elaborators expose direct or specialized operands and cannot preserve the measured group refusal without representation work.
 
 <a id="gap-sg5-unstarred-repeatable-group-presence-reference"></a>
 #### Unstarred repeatable group-presence reference
