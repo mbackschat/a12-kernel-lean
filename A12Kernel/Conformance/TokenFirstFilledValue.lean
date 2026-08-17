@@ -81,9 +81,23 @@ private def repeatedNumber : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } }
     repeatableScope := [10] }
 
+private def rawString : FlatFieldDecl :=
+  { id := 6
+    groupPath := ["Form"]
+    name := "Raw"
+    policy := { kind := .string }
+    stringValueMode := .raw
+    stringPolicy := { lineBreaksPermitted := true } }
+
+private def rawGroupString : FlatFieldDecl :=
+  { rawString with id := 7, groupPath := ["Form", "RawMixed"] }
+
+private def rawGroupNumber : FlatFieldDecl :=
+  { directNumber with id := 8, groupPath := ["Form", "RawMixed"] }
+
 private def model : FlatModel :=
   { fields := [directString, directEnumeration, directNumber, repeatedString,
-      repeatedNumber]
+      repeatedNumber, rawString, rawGroupString, rawGroupNumber]
     repeatableGroups := [{
       level := 10, path := ["Form", "Rows"], repeatability := some 3 }] }
 
@@ -102,6 +116,9 @@ private def source (first : SurfaceFirstFilledTokenOperand)
     (rest : List SurfaceFirstFilledTokenOperand) :
     SurfaceFirstFilledTokenSource :=
   { first, rest }
+
+private def fixedGroup (groups : GroupPath) : SurfaceFirstFilledTokenSource :=
+  source (.group (.path { base := .absolute, groups })) []
 
 private def directMixed : SurfaceFirstFilledTokenSource :=
   source (.field (directPath "Code")) [.field (directPath "Priority")]
@@ -161,6 +178,12 @@ private def checkedErrorOf (authored : SurfaceFirstFilledTokenSource) :
   match elaborateFirstFilledTokenSource model ["Form"] authored with
   | .ok _ => none
   | .error error => some error
+
+private def diagnosticOf (authored : SurfaceFirstFilledTokenSource) :
+    Option KernelStaticDiagnostic :=
+  match elaborateFirstFilledTokenSource model ["Form"] authored with
+  | .ok _ => none
+  | .error error => error.diagnostic?
 
 private def evaluatedOf (authored : SurfaceFirstFilledTokenSource)
     (rows : List RowIndex) (scope : ValidationRelevanceScope)
@@ -228,16 +251,45 @@ example : evaluatedOf (stringStar) [1] (.partialSet []) .empty .empty
       some .nonRelevant := by
   native_decide
 
-/- Shared entity-list shape rejects a singleton direct field and duplicate direct references; token certification rejects Number. -/
+/- Shared entity-list shape rejects a singleton direct field and duplicate direct references; only
+   the measured direct String/Number order receives `FirstFilledValue`'s heterogeneous-list refusal. -/
 example :
     checkedErrorOf (source (.field (directPath "Code")) []) =
-        some (.shape .tooFewFields) ∧
+        some (.source (.shape .tooFewFields)) ∧
       checkedErrorOf (source (.field (directPath "Code"))
         [.field (directPath "Code")]) =
-        some (.shape (.duplicateOperand directString.id)) ∧
-      checkedErrorOf (source (.field (directPath "Amount"))
-        [.field (directPath "Code")]) =
-        some (.fieldKindMismatch directNumber.path .number) := by
+        some (.source (.shape (.duplicateOperand directString.id))) ∧
+      checkedErrorOf (source (.field (directPath "Code"))
+        [.field (directPath "Amount")]) =
+        some (.stringNumberPair directString.path directNumber.path) := by
+  native_decide
+
+/- The measured direct-field projection does not transfer to the reverse order or to starred
+   carriers merely because their flattened declaration kinds are the same. -/
+example :
+    checkedErrorOf (source (.field (directPath "Amount"))
+      [.field (directPath "Code")]) =
+        some (.source (.fieldKindMismatch directNumber.path .number)) ∧
+    diagnosticOf (source (.field (directPath "Amount"))
+      [.field (directPath "Code")]) = none ∧
+    checkedErrorOf (source (.star (starPath "Label"))
+      [.star (starPath "Guard")]) =
+        some (.source (.fieldKindMismatch repeatedNumber.path .number)) ∧
+    diagnosticOf (source (.star (starPath "Label"))
+      [.star (starPath "Guard")]) = none := by
+  native_decide
+
+/- A raw String shares the String surface kind but has no readable stored-token value, so neither
+   the direct pair nor the equivalent fixed-group carrier borrows the ordinary String diagnostic. -/
+example :
+    checkedErrorOf (source (.field (directPath "Raw"))
+      [.field (directPath "Amount")]) =
+        some (.source (.rawStringValue rawString.path)) ∧
+    diagnosticOf (source (.field (directPath "Raw"))
+      [.field (directPath "Amount")]) = none ∧
+    checkedErrorOf (fixedGroup ["Form", "RawMixed"]) =
+        some (.source (.group (.expansionNotToken ["Form", "RawMixed"]))) ∧
+    diagnosticOf (fixedGroup ["Form", "RawMixed"]) = none := by
   native_decide
 
 end A12Kernel

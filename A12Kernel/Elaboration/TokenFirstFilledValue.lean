@@ -3,7 +3,7 @@ import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Checked String/Enumeration `FirstFilledValue`
 
-This consumer applies the common checked String/ordinary stored-Enumeration entity list to `FirstFilledValue`. It owns lazy authored-order scanning, relevance, filter selection, and token-family empty-result semantics; token admission and declaration-owned classification stay in `TokenEntityList`.
+This consumer applies the common checked String/ordinary stored-Enumeration entity list to `FirstFilledValue`. It owns the operator-specific measured two-declaration kind discriminator, lazy authored-order scanning, relevance, filter selection, and token-family empty-result semantics; common token admission and declaration-owned classification stay in `TokenEntityList`.
 -/
 
 namespace A12Kernel
@@ -14,12 +14,68 @@ abbrev CheckedFirstFilledTokenField := CheckedTokenField
 abbrev CheckedFirstFilledTokenStarSource := CheckedTokenStarSource
 abbrev CheckedFirstFilledTokenOperand := CheckedTokenEntityOperand
 abbrev CheckedFirstFilledTokenSource := CheckedTokenEntitySource
-abbrev FirstFilledTokenElabError := TokenEntityElabError
+
+/-- Operator-specific static refusals stay outside the shared token carrier. The two measured arms
+    intentionally retain only the exact two-declaration matrix established for group operands and
+    their explicit expansions; every wider kind or declaration-policy combination remains an
+    unmapped source refusal. -/
+inductive FirstFilledTokenElabError where
+  | source (error : TokenEntityElabError)
+  | confirmPair (first second : List String)
+  | stringNumberPair (stringPath numberPath : List String)
+  deriving Repr, DecidableEq
 
 def firstDuplicateDirectFirstFilledTokenField? :=
   @firstDuplicateDirectTokenField?
 
-def elaborateFirstFilledTokenSource := elaborateTokenEntitySource
+private def firstFilledMeasuredDeclarationError? :
+    List FlatFieldDecl → Option FirstFilledTokenElabError
+  | [first, second] =>
+      match first.policy.kind.surfaceKind, second.policy.kind.surfaceKind with
+      | .confirm, .confirm => some (.confirmPair first.path second.path)
+      | .string, .number =>
+          if first.toStoredTokenSlot?.isSome && first.customType.isNone then
+            some (.stringNumberPair first.path second.path)
+          else
+            none
+      | _, _ => none
+  | _ => none
+
+/-- Retain the exact measured carriers and declaration policies: one fixed group or two direct
+    stored fields, with the String/Number arm requiring an ordinary evaluated String. Starred,
+    filtered, projected, raw/custom String, reversed, and wider sources stay unmapped. -/
+private def firstFilledMeasuredKindError? (model : FlatModel) :
+    List (ResolvedFieldEntityOperand model) → Option FirstFilledTokenElabError
+  | [.group reference] =>
+      firstFilledMeasuredDeclarationError?
+        (model.groupSubtreeFields reference.path)
+  | [.field first .stored, .field second .stored] =>
+      firstFilledMeasuredDeclarationError? [first, second]
+  | _ => none
+
+/-- Resolve the common entity-list shape first, then project only the measured `FirstFilledValue`
+    kind pair before token certification would collapse both cases into a local kind mismatch. -/
+def elaborateFirstFilledTokenSource (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceFirstFilledTokenSource) :
+    Except FirstFilledTokenElabError (CheckedFirstFilledTokenSource model) := do
+  let shape ← elaborateFieldEntityShape model declaringGroup authored
+    |>.mapError fun error => .source (.shape error)
+  match firstFilledMeasuredKindError? model shape.operands with
+  | some error => throw error
+  | none =>
+      certifyTokenEntityShape model declaringGroup shape |>.mapError .source
+
+namespace FirstFilledTokenElabError
+
+/-- Project the exact measured pair and the shared shape classes. Every other token refusal remains
+    unmapped rather than borrowing a diagnostic from another field-list operator. -/
+def diagnostic? : FirstFilledTokenElabError → Option KernelStaticDiagnostic
+  | .source (.shape error) => error.diagnostic?
+  | .confirmPair _ _ => some .noBoolyAllowed
+  | .stringNumberPair _ _ => some .varyingTypesNotAllowed
+  | .source _ => none
+
+end FirstFilledTokenElabError
 
 /-- Partial validation keeps a reached nonrelevant token cell distinct from formal unavailability, exhaustion, and a selected token. -/
 inductive PartialValidationFirstFilledTokenResult where

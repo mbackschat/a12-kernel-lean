@@ -26,7 +26,8 @@ open A12Kernel
     subgroup. `Mixed` is the projection fixture, deliberately Enumeration-**first** so that a
     first-slot-wins projection misreads the String rather than the other way round. `Bad` and `Num`
     place their offending kind only below a nested subgroup, so a direct-child expansion would miss
-    both. -/
+    both. `Boolies`, `Num`, and `Contact` form the homogeneous-wrong-kind, heterogeneous, and admitted
+    control matrix for `FirstFilledValue`. -/
 private def probeModel : FlatModel :=
   { fields := [
       { id := 1, groupPath := ["Form", "Bag"], name := "Tag",
@@ -49,6 +50,14 @@ private def probeModel : FlatModel :=
       { id := 9, groupPath := ["Form"], name := "Loose",
         policy := { kind := .string } },
       { id := 10, groupPath := ["Form"], name := "Other",
+        policy := { kind := .string } },
+      { id := 11, groupPath := ["Form", "Boolies"], name := "Accepted",
+        policy := { kind := .confirm } },
+      { id := 12, groupPath := ["Form", "Boolies"], name := "Reviewed",
+        policy := { kind := .confirm } },
+      { id := 13, groupPath := ["Form", "Contact"], name := "Email",
+        policy := { kind := .string } },
+      { id := 14, groupPath := ["Form", "Contact"], name := "Phone",
         policy := { kind := .string } }]
     repeatableGroups := [{ level := 20, path := ["Form", "Bag", "Lines"] }] }
 
@@ -62,6 +71,10 @@ private def group (groups : GroupPath) : SurfaceFieldEntityOperand :=
 
 private def field (name : String) : SurfaceFieldEntityOperand :=
   .field { base := .absolute, groups := ["Form"], field := name }
+
+private def fieldAt (groups : GroupPath) (name : String) :
+    SurfaceFieldEntityOperand :=
+  .field { base := .absolute, groups, field := name }
 
 private def rows : List RowAddr :=
   [{ group := 20, path := [1] }, { group := 20, path := [2] }]
@@ -111,6 +124,76 @@ example :
    the homogeneity obligation lives on `FieldValuesNotUnique` alone. -/
 example :
     diagnostic? [group ["Form", "Mixed"]] = some .varyingTypesNotAllowed := by
+  native_decide
+
+/-! ## `FirstFilledValue` separates a homogeneous wrong kind from heterogeneous mixing
+
+The real-kernel matrix at a12-dmkits `57ddd442` measures each group beside its exact explicit
+expansion. A homogeneous Confirm expansion reports `MVK_NO_BOOLY_ALLOWED`; an ordinary evaluated
+String/Number expansion reports `MVK_VARYING_TYPES_NOT_ALLOWED`; the homogeneous String control is
+admitted. -/
+
+private inductive FirstFilledDiagnosticDecision where
+  | admitted
+  | mapped (diagnostic : KernelStaticDiagnostic)
+  | rejectedUnmapped
+  deriving Repr, DecidableEq
+
+private def firstFilledDiagnosticDecision
+    (operands : List SurfaceFieldEntityOperand) :
+    Option FirstFilledDiagnosticDecision :=
+  match operands with
+  | [] => none
+  | first :: rest =>
+      match elaborateFirstFilledTokenSource probeModel ["Form"] { first, rest } with
+      | .ok _ => some .admitted
+      | .error error =>
+          match error.diagnostic? with
+          | some diagnostic => some (.mapped diagnostic)
+          | none => some .rejectedUnmapped
+
+example :
+    firstFilledDiagnosticDecision [group ["Form", "Boolies"]] =
+      some (.mapped .noBoolyAllowed) := by
+  native_decide
+
+example :
+    firstFilledDiagnosticDecision [fieldAt ["Form", "Boolies"] "Accepted",
+      fieldAt ["Form", "Boolies"] "Reviewed"] =
+        some (.mapped .noBoolyAllowed) := by
+  native_decide
+
+example :
+    firstFilledDiagnosticDecision [group ["Form", "Num"]] =
+      some (.mapped .varyingTypesNotAllowed) := by
+  native_decide
+
+example :
+    firstFilledDiagnosticDecision [fieldAt ["Form", "Num"] "Label",
+      fieldAt ["Form", "Num", "Deep"] "Count"] =
+        some (.mapped .varyingTypesNotAllowed) := by
+  native_decide
+
+example :
+    firstFilledDiagnosticDecision [group ["Form", "Contact"]] =
+      some .admitted := by
+  native_decide
+
+example :
+    firstFilledDiagnosticDecision [fieldAt ["Form", "Contact"] "Email",
+      fieldAt ["Form", "Contact"] "Phone"] = some .admitted := by
+  native_decide
+
+/- The shared duplicate gate precedes the measured kind projection, while an unmeasured
+   Confirm/String combination remains a rejected but deliberately unmapped source. -/
+example :
+    firstFilledDiagnosticDecision [
+      fieldAt ["Form", "Boolies"] "Accepted",
+      fieldAt ["Form", "Boolies"] "Accepted"] =
+        some (.mapped .duplicateParam1) ∧
+    firstFilledDiagnosticDecision [
+      fieldAt ["Form", "Boolies"] "Accepted", field "Loose"] =
+        some .rejectedUnmapped := by
   native_decide
 
 /-! ## The checked list retains the authored slot and its recursive expansion

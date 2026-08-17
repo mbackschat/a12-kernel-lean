@@ -185,10 +185,13 @@ a12-dmkits `7df9f5570a1b7f7b4e5bfa5118a6c3521c8db320` then closes the message re
 - `control`: the equivalent explicit two-Date-field list is admitted in the same six-row matrix.
 - `claim`: `NumberOfValueInFields` admits `True` and `False` over a Boolean group and `True` over a Boolean/Confirm group.
 - `control`: the equivalent explicit two-Boolean-field list is admitted in the same matrix.
-- `integrity`: the model was created and read back through structured verbs, `model check` remained `KERNEL_CONFIRMED`, and the sibling worktree stayed clean.
+- `claim`: `FirstFilledValue` over a homogeneous two-Confirm fixed group reports only `MVK_NO_BOOLY_ALLOWED`, while a fixed group expanding in ordinary-evaluated-String-then-Number declaration order reports only `MVK_VARYING_TYPES_NOT_ALLOWED`.
+- `control`: each fixed group agrees with its explicit two-direct-stored-field expansion in the same order, and both the homogeneous String group and its expansion are admitted.
+- `integrity`: the six caller-tagged `FirstFilledValue` observations and rule checks are retained by SHA-256 `2101c57eabac26b38a8c682446acb7de7f967e2adc48182a2f3cf8bd0c52c126` and `f069e60136bf999da56bd6c71fe6bfa6ac826516415b45f3081040953e4727f6`; the persisted model bytes hash to `b11599b1ec2ba33ba4255c5e4166e53a9d0bb3baac95de17bd5b3d615c2a6fd2`, without extending the structured observation claims.
 - `limit`: static admission only; no runtime account follows.
 - `limit`: `False` over a Boolean/Confirm group is not measured.
-- `sync`: both confirmations match existing clauses and create no outbound semantic correction.
+- `limit`: the `FirstFilledValue` matrix establishes only the exact fixed-group and equivalent two-direct-stored-field carriers above; raw or custom String policies, reverse order, starred or filtered carriers, wider kind combinations, and wider widths are not projected from it.
+- `sync`: these confirmations match existing clauses and create no outbound semantic correction.
 
 <a id="src-group-carrier-admission-sweep"></a>
 #### Group-carrier admission sweep
@@ -199,7 +202,7 @@ a12-dmkits `7df9f5570a1b7f7b4e5bfa5118a6c3521c8db320` then closes the message re
 - `claim`: group-operand admission is per operator, not per family; two measured pairs disagree within one family.
 - `claim`: a Date group against a String value list reports `MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED`, while a String-group control is admitted; this separates expansion type-checking from unconditional group admission.
 - `claim`: `MoreThanOneFieldFilled` admits a single-field group while rejecting that field alone with `MVK_PARAMSIZE_INVALIDN`, separating slot arity from expansion cardinality.
-- `claim`: `FirstFilledValue` admits a group operand in both repetition shapes; its expansion-kind diagnostic remains open.
+- `claim`: `FirstFilledValue` admits a group operand in both repetition shapes; the later [group-carrier static admission](#src-group-carrier-static-admission) checkpoint owns its bounded expansion-kind diagnostics.
 - `claim`: `Min` distinguishes a starred field's `MVK_NO_WILDCARDS_ALLOWED` from a group's `MVK_NO_GROUPS_ALLOWED`.
 - `limit`: a starred group alone cannot separate `Min`'s group and wildcard gates because both accounts report the group class.
 

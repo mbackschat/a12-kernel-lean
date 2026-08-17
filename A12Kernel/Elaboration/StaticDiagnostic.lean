@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, the plural String-literal value list's Date-group refusal, and the Number aggregates' op-keyed expansion-kind classes, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, group-list quantifier admission, `RepetitionNotUnique` key admission, and the whole-rule error-field reference gate. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, and the Number aggregates' op-keyed expansion-kind classes, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, group-list quantifier admission, `RepetitionNotUnique` key admission, and the whole-rule error-field reference gate. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -19,6 +19,8 @@ inductive KernelStaticDiagnostic where
   | onlyStringEnumNumberAllowed
   /-- Operands drawn from two different comparability categories, each individually admissible. -/
   | varyingTypesNotAllowed
+  /-- `FirstFilledValue` received the measured homogeneous two-Confirm operand expansion. -/
+  | noBoolyAllowed
   /-- An operand list below the operator's required arity. -/
   | paramSizeInvalidN
   /-- A fixed filled-group count carries a single **unstarred** operand. Measured on both a repeatable and a nonrepeatable single operand and in both path forms; a single starred operand is admitted, so this is not simply an operand-count gate. -/
@@ -74,6 +76,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .onlyStringEnumNumberDateAllowed => "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED"
   | .onlyStringEnumNumberAllowed => "MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED"
   | .varyingTypesNotAllowed => "MVK_VARYING_TYPES_NOT_ALLOWED"
+  | .noBoolyAllowed => "MVK_NO_BOOLY_ALLOWED"
   | .paramSizeInvalidN => "MVK_PARAMSIZE_INVALIDN"
   | .paramSizeInvalidGN => "MVK_PARAMSIZE_INVALIDGN"
   | .duplicateParam1 => "MVK_DUPLICATE_PARAM1"
@@ -104,7 +107,7 @@ def kernelCode : KernelStaticDiagnostic → String
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
 def all : List KernelStaticDiagnostic :=
   [.onlyStringEnumNumberDateAllowed, .onlyStringEnumNumberAllowed,
-    .varyingTypesNotAllowed, .paramSizeInvalidN,
+    .varyingTypesNotAllowed, .noBoolyAllowed, .paramSizeInvalidN,
     .paramSizeInvalidGN, .paramSizeInvalid2, .duplicateParam1, .duplicateParam2,
     .noWildcard, .invalidWildcard, .noWildcardsGAllowed, .noWildcardsAllowed,
     .invalidEntity,
