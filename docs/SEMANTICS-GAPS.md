@@ -76,6 +76,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 #### Number and token group runtime
 
 - `state`: open
+- `missing`: establish starred-group token `FirstFilledValue` row order and declared-tail polarity before deciding whether checked full validation can admit that fragment.
 - `missing`: execute retained Number and token group operands through computation, partial validation, and legacy raw-`Document` routes.
 - `missing`: make Number directional missingness per cell before admitting a group whose declarations disagree on signedness.
 - `missing`: decide `NumberOfValueInFields` literal admission over a group independently of the current all-expanded-declarations local choice.
@@ -86,6 +87,11 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `consumer`: Execute needs exact operand-bounded extent and fillability; Analyze needs encounter order and the distinction between authored slots and reached cells.
 - `reopen-when`: a coherent group-runtime batch is selected.
 - `review`: re-examine whether `StarAddressingError.unsupportedGroupOperand` still belongs in a Semantics error type when a second runtime route consumes it.
+- `route-state`: verified
+- `red-locus`: [`TokenEntityGroupOperand.lean`](../A12Kernel/Conformance/TokenEntityGroupOperand.lean) owns the current starred-group refusal and the first measured runtime separator.
+- `green-locus`: [`TokenFirstFilledValue.lean`](../A12Kernel/Elaboration/TokenFirstFilledValue.lean) owns the checked full-validation specialization and fail-closed wider fragments.
+- `supporting-locus`: [`CheckedStarDocument.lean`](../A12Kernel/Elaboration/CheckedStarDocument.lean) owns the declaration-major checked group resolver and canonical per-declaration row walk.
+- `route-limit`: do not widen computation, partial validation, raw-`Document`, mixed-list, or unmeasured repeatability shapes until a red case establishes their exact result domain.
 
 <a id="gap-sg5-temporal-group-runtime"></a>
 #### Temporal group runtime
