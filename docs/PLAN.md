@@ -4,16 +4,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Verified semantic baseline, 2026-08-17:** fixed, wholly nonrepeatable token-group `FirstFilledValue` preserves model declaration order and prefix-sensitive validation polarity through the shared checked resolver and generic evaluator; its complete Tier 1 gate and cold-review convergence passed at `b5f8bb0`. Re-run the required tier commands in [`TESTING.md`](TESTING.md#tier-gates) before the next semantic edit.
+**Verified semantic baseline, 2026-08-18:** inbound static-admission corrections are reconciled at `bfa600284dbe639c10bd894553783db546b89479`: shared entity-list duplicates follow authored encounter order, group-list/count root classes are mapped after overlap, and three RNU missing-repeatable shapes collapse. Error-field-locus binding and the unexplained split between parallel RNU diagnostics remain explicit SG9 gaps. The complete Tier 1 gate and a frozen A–L cold review passed; a12-dmkits remained clean at `086030e200e8f0d5d13a9eb6638424ad7dc8373a`.
 
 <a id="active-unit"></a>
 ## Selected work
 
-- `gap`: [SG5 Number and token group runtime](SEMANTICS-GAPS.md#gap-sg5-number-token-group-runtime).
-- `objective`: measure starred-group token `FirstFilledValue` row encounter order and declared-but-uninstantiated-tail polarity through the accepted kernel runtime probe before widening the fixed nonrepeatable full-validation owner.
-- `oracle`: the source-shipped [`kernelProbe` route](SOURCES.md#engine-routing-rule--pick-the-layer-by-the-question-not-by-habit), using a dmtool-authored self-contained model and exact documents in an ignored output workspace.
-- `next`: construct one bounded matrix that separates declaration-major from row-major traversal, includes later-row reachability controls, and varies declared capacity independently of instantiated rows; verify both kernel strategies agree before adding any red Lean case.
-- `stop`: stop if dmtool cannot author declared capacity independently, the existing probe cannot expose selection or polarity, either sibling baseline changes, or the answer requires a new runtime route, schema, or operand representation.
+- `state`: paused by owner after the outbound handoffs below are delivered.
+- `gap`: none selected while paused.
+- `objective`: no active implementation unit.
+- `next`: consume the reviewed a12-dmkits handback for pending [`SPEC-2026-08-17-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-17-02) and [`SPEC-2026-08-17-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-17-03); separately consume any fix returned for the macOS Bash 3.2 empty-array failure in `scripts/rehearse-interpreter-release.sh`. If neither handback exists when work resumes, select the next semantic capsule from the live gaps.
+- `stop`: do not begin another semantic capsule or consumer probe while paused.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: the existing bounded diagnostic consumer already covers Translate/Explain for the group static classes. Run one Execute probe only after a reusable group-runtime family closes; this selected calibration itself triggers neither another consumer probe nor SMT.
-- `resume`: `sed -n '35,125p' ../a12-rulekit/docs/KERNEL-PROBE-SPEC.md`
+- `consumer-probe-trigger`: the existing bounded diagnostic consumer covers Translate/Explain for the mapped static classes. Run an interpreter/Execute probe only after a reusable runtime family closes, and run an SMT/Verify probe only after a stable proof-bearing relation needs transport; neither is triggered now.
+- `resume`: `rg -n -A 18 '^### SPEC-2026-08-17-0[23]' docs/A12-DMKITS-SPEC-SYNC-LEDGER.md`
