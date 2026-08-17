@@ -158,6 +158,15 @@ private def shapeAdmitted (operands : List SurfaceFieldEntityOperand) : Bool :=
   | first :: rest =>
       (elaborateFieldEntityShape probeModel ["Probe"] { first, rest }).toOption.isSome
 
+private def shapeError? (operands : List SurfaceFieldEntityOperand) :
+    Option FieldEntityShapeElabError :=
+  match operands with
+  | [] => none
+  | first :: rest =>
+      match elaborateFieldEntityShape probeModel ["Probe"] { first, rest } with
+      | .ok _ => none
+      | .error error => some error
+
 example :
     shapeAdmitted [starredGroup [{ name := "Probe" },
       { name := "Rows", starred := true }]] = true := by
@@ -199,6 +208,26 @@ example :
 Ancestor/descendant overlap is rejected across a group and a field below it and between two starred
 groups, while the same starred group twice stays two independent authored occurrences. Both overlap
 fixtures are pure Number, so a missing overlap gate would report `none` rather than a kind class. -/
+
+example :
+    diagnostic? [group ["Probe", "B"], group ["Probe", "B"]] =
+      some .duplicateParam1 := by
+  native_decide
+
+/- Fixed-group identity is checked after direct-field identity and before strict overlap. These
+   retain the owning witness rather than relying only on the shared diagnostic projection. -/
+example :
+    shapeError? [group ["Probe", "B"], group ["Probe", "B"],
+      field ["Probe", "B", "Sub"] "SubVal"] =
+      some (.duplicateGroupOperand ["Probe", "B"]) := by
+  native_decide
+
+example :
+    shapeError? [group ["Probe", "B"],
+      field ["Probe", "B", "Sub"] "SubVal",
+      field ["Probe", "B", "Sub"] "SubVal",
+      group ["Probe", "B"]] = some (.duplicateOperand 5) := by
+  native_decide
 
 example :
     diagnostic? [group ["Probe", "B"], field ["Probe", "B", "Sub"] "SubVal"] =

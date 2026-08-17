@@ -197,6 +197,19 @@ a12-dmkits `7df9f5570a1b7f7b4e5bfa5118a6c3521c8db320` then closes the message re
 - `limit`: these wildcard rows establish static admission and diagnostic identity for the exact `FirstFilledValue` paths only; no runtime result follows.
 - `sync`: these confirmations match existing clauses and create no outbound semantic correction.
 
+<a id="src-group-carrier-duplicate-precedence"></a>
+#### Group-carrier duplicate precedence
+
+- `revision`: a12-dmkits `57ddd442f2f609b645c0030280662bc96d8ac49c`.
+- `route`: source-shipped dmtool 0.13.0 structured `rule check` through the real-kernel consistency oracle.
+- `kernel`: 30.8.1 built and runtime.
+- `claim`: one fixed group is admitted, while the same fixed group authored twice reports only `MVK_DUPLICATE_PARAM1`; the same starred repeatable group authored twice is admitted.
+- `claim`: one direct field reports only `MVK_PARAMSIZE_INVALIDN`, two equal direct fields report only `MVK_DUPLICATE_PARAM1`, and a fixed group beside its descendant field reports only `MVK_DUPLICATE_PARAM2`.
+- `claim`: a repeated fixed group pre-empts a simultaneous group/descendant overlap with `MVK_DUPLICATE_PARAM1`; on the exact list containing repeated direct and fixed-group operands plus overlap, direct structured `rule check` reports the same code and names `Fixed/First`, isolating the direct-field duplicate as the winning repair locus.
+- `integrity`: the eight caller-tagged observations and rule checks are identified by SHA-256 `36f037ae24bfb01d542563f243c1f343e97fcadd5bb8984824f2981bd8a2a152` and `bea84e4282023d0b565d2926697dfc7709a150c42b23bf32e1386d32e5899cbf`; the direct mixed-fault diagnostic was captured twice byte-identically at SHA-256 `2595923d0a74a73f2b10336dbc0e4cef27f4b3d2d6afe57a58846e04e2a51b82`; the persisted model bytes hash to `f66ce63c80706c25114fc8dff2dfd399e2b487abba27a8a1e32c322fc622636d`, without extending the structured observation claims.
+- `limit`: static admission and emitted diagnostic identity only; no runtime result, message projection, or behavior outside the exact `FirstFilledValue` carrier follows.
+- `sync`: the fixed-group duplicate arm and measured mixed-fault order extend the canonical entity-list account and require outbound reconciliation.
+
 <a id="src-group-carrier-admission-sweep"></a>
 #### Group-carrier admission sweep
 

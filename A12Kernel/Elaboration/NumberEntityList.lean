@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.CheckedStarDocument
 
 /-! # Shared checked Number entity lists
 
-This boundary owns the common authoring contract for Number-valued entity lists consumed by `FirstFilledValue`, `Sum`, `MinValue`, `MaxValue`, and Number-valued `NumberOfDifferentValues`. It resolves every direct, plain-star, and filtered-star slot in authored order, rejects only repeated direct fields, requires either multiple slots or one starred slot, and certifies every declaration as Number-valued. Runtime consumers retain their own scan semantics.
+This boundary owns the common authoring contract for Number-valued entity lists consumed by `FirstFilledValue`, `Sum`, `MinValue`, `MaxValue`, and Number-valued `NumberOfDifferentValues`. It resolves every direct, plain-star, filtered-star, and group slot in authored order; inherits direct-field duplication, fixed-group duplication, and strict-overlap rejection from the shared shape; requires either multiple slots or one already-many slot; and certifies every expanded declaration as Number-valued. Runtime consumers retain their own scan semantics.
 -/
 
 namespace A12Kernel
@@ -323,7 +323,7 @@ def certifyNumberEntityShape (model : FlatModel)
   else
     throw .incoherentCore
 
-/-- Validate one Number entity list in kernel order: resolve all references, reject repeated direct fields, require multiple fields or a wildcard, then certify the common Number kind. Wildcarded occurrences are not deduplicated in an ordinary document model. -/
+/-- Validate one Number entity list in kernel order: resolve all references, apply the shared duplicate and overlap gates, require multiple slots or one already-many slot, then certify the common Number kind. Wildcarded occurrences are not deduplicated in an ordinary document model. -/
 def elaborateNumberEntitySource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceNumberEntitySource) :
     Except NumberEntityElabError (CheckedNumberEntitySource model) := do

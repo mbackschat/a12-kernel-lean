@@ -77,6 +77,23 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 **The producer side now discloses its rewrites, which is what this project asked for.** The 2026-08-12 handbacks name the rebase, list the branch SHAs that no longer exist as reachable objects and must not be cited, and give revisions read off `main` as the last step before sending. Every revision they cite resolved from `main` when checked here on 2026-08-12: `06b84701`, `b99e43e1`, `4b244b84`, `73bc4a04`, and `ae567007`. A handback dated 2026-08-12 or later is therefore discharged against its own cited revision, while an earlier one still needs the maintained-owner route above. The reverse error is now on record too: `2bffcb10` was reported dead from here and resolves fine, which the 2026-08-10 boundary already predicted for it, so a reachability measurement taken against a stale checkout is itself a claim with a date on it.
 
+<a id="spec-2026-08-17-01"></a>
+<a id="spec-2026-08-17-01--fixed-group-duplication-precedes-ancestor-overlap-while-starred-groups-remain-occurrences"></a>
+
+### SPEC-2026-08-17-01 - fixed-group duplication precedes ancestor overlap while starred groups remain occurrences
+
+- **Status:** pending
+- **Kind:** semantic extension, locally originated and locally measured
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `57ddd442f2f609b645c0030280662bc96d8ac49c` (clean, before and after)
+- **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool 0.13.0 `rule check`; every row `KERNEL_CONFIRMED`
+- **Canonical clause:** [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the-correlation-and-aggregation)
+- **Delta:** Repeating the same fixed group in a shared entity-list reports `MVK_DUPLICATE_PARAM1`, while repeating the same starred group is admitted as two authored occurrences. In a list with simultaneous faults, a repeated direct field pre-empts fixed-group duplication and ancestor overlap; without a direct-field repeat, fixed-group duplication pre-empts ancestor overlap. A singleton direct field separately reports `MVK_PARAMSIZE_INVALIDN`; cardinality cannot compete with a pair fault on this typed list surface.
+- **Basis:** Eight caller-tagged `FirstFilledValue` rule checks cover one fixed group, repeated fixed and starred groups, one direct field, repeated direct fields, fixed group beside its descendant, and both mixed-fault orders. The complete observation and request artifacts have SHA-256 `36f037ae24bfb01d542563f243c1f343e97fcadd5bb8984824f2981bd8a2a152` and `bea84e4282023d0b565d2926697dfc7709a150c42b23bf32e1386d32e5899cbf`; a direct structured replay of the final mixed-fault row names `Fixed/First` in the Kernel diagnostic and reproduced byte-identically at SHA-256 `2595923d0a74a73f2b10336dbc0e4cef27f4b3d2d6afe57a58846e04e2a51b82`; the persisted model bytes hash to `f66ce63c80706c25114fc8dff2dfd399e2b487abba27a8a1e32c322fc622636d`. This is static admission evidence only.
+- **Requested a12-dmkits reconciliation:** Correct the canonical entity-list duplicate account and extend the smallest existing admission-law owner with fixed/starred equality, direct-field precedence, fixed-group-before-overlap, strict-overlap, and singleton-cardinality separators. Reuse existing authoring and consistency-oracle owners; add no harness or representation.
+- **Compatibility:** Deduplicating starred group slots changes legal authored streams. Admitting equal fixed groups or reporting only overlap loses the Kernel's observable first repair. Checking fixed-group identity before direct-field identity loses the named direct-field witness in a mixed-fault list.
+- **Acceptance:** Canonical peer prose and maintained existing-family cases state and separate every measured branch with complete diagnostic-code lists, preserve the static-only scope, and return the exact reviewed revision plus per-surface disposition.
+
 <a id="spec-2026-07-29-02"></a>
 <a id="spec-2026-07-29-02--computed-time-retains-zone-free-clock-identity"></a>
 

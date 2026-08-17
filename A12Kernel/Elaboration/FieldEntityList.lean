@@ -61,11 +61,17 @@ def directFieldId? : ResolvedFieldEntityOperand model → Option FieldId
   | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
       .starredGroupPresence _ => none
 
-/-- The identity the repeated-operand gate compares. A star addresses a row set rather than one slot and never participates, and a group is compared by the indirect arm instead. -/
+/-- The direct-field identity gate compares this value. A star addresses a row set rather than one slot and never participates; fixed-group equality and group-path overlap have their own checks. -/
 def operandIdentity? : ResolvedFieldEntityOperand model →
     Option (FieldId × FieldEntityReadForm)
   | .field declaration form => some (declaration.id, form)
   | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
+      .starredGroupPresence _ => none
+
+/-- The identity compared by the fixed-group duplicate arm. Starred group slots are occurrence-preserving and therefore do not participate. -/
+def fixedGroupPath? : ResolvedFieldEntityOperand model → Option GroupPath
+  | .group reference => some reference.path
+  | .field .. | .star _ | .starHaving _ _ | .starredGroup _ |
       .starredGroupPresence _ => none
 
 /-- The group subtree a slot denotes, or `none` for a slot that denotes one field. Only the indirect duplicate arm and the expansion consult it. -/
@@ -246,6 +252,7 @@ inductive FieldEntityShapeElabError where
   | starredGroup (error : StarredGroupElabError)
   | tooFewFields
   | duplicateOperand (field : FieldId)
+  | duplicateGroupOperand (path : GroupPath)
   | overlappingOperands (ancestor descendant : List String)
   deriving Repr, DecidableEq
 
@@ -254,37 +261,40 @@ def FieldEntityShapeElabError.diagnostic? :
     FieldEntityShapeElabError → Option KernelStaticDiagnostic
   | .tooFewFields => some .paramSizeInvalidN
   | .duplicateOperand _ => some .duplicateParam1
+  | .duplicateGroupOperand _ => some .duplicateParam1
   | .overlappingOperands _ _ => some .duplicateParam2
   | .groupReference (.repeatableGroupRequiresAddress _) => some .noWildcard
   | .starredGroup (.path (.wildcardOnNonrepeatable _)) => some .invalidWildcard
   | .starPath (.iterationBelowWildcard _) => some .noWildcard
   | _ => none
 
-def firstDuplicateDirectField? (directFieldId? : α → Option FieldId) :
-    List α → Option FieldId
+def firstDuplicateOptionalIdentity? [BEq β] (identity? : α → Option β) :
+    List α → Option β
   | [] => none
   | operand :: remaining =>
-      match directFieldId? operand with
-      | none => firstDuplicateDirectField? directFieldId? remaining
-      | some field =>
-          if remaining.any fun candidate => directFieldId? candidate == some field then
-            some field
+      match identity? operand with
+      | none => firstDuplicateOptionalIdentity? identity? remaining
+      | some identity =>
+          if remaining.any fun candidate => identity? candidate == some identity then
+            some identity
           else
-            firstDuplicateDirectField? directFieldId? remaining
+            firstDuplicateOptionalIdentity? identity? remaining
+
+def firstDuplicateDirectField? (directFieldId? : α → Option FieldId) :
+    List α → Option FieldId :=
+  firstDuplicateOptionalIdentity? directFieldId?
 
 /-- Report the first repeated direct operand, comparing complete operand identity but naming the offending field. Two reads of one field in different forms are two operands, so only a repeat of the same field in the same form is reported. -/
 def firstDuplicateResolvedDirectField? :
-    List (ResolvedFieldEntityOperand model) → Option FieldId
-  | [] => none
-  | operand :: remaining =>
-      match operand.operandIdentity? with
-      | none => firstDuplicateResolvedDirectField? remaining
-      | some identity =>
-          if remaining.any fun candidate =>
-              candidate.operandIdentity? == some identity then
-            some identity.1
-          else
-            firstDuplicateResolvedDirectField? remaining
+    List (ResolvedFieldEntityOperand model) → Option FieldId :=
+  fun operands =>
+    (firstDuplicateOptionalIdentity?
+      ResolvedFieldEntityOperand.operandIdentity? operands).map Prod.fst
+
+/-- Report the first repeated fixed group path. Starred group operands intentionally remain distinct authored occurrences even when their paths are equal. -/
+def firstDuplicateResolvedFixedGroupPath? :
+    List (ResolvedFieldEntityOperand model) → Option GroupPath :=
+  firstDuplicateOptionalIdentity? ResolvedFieldEntityOperand.fixedGroupPath?
 
 /-- Report the first authored ancestor/descendant pair, naming both paths in authored order. -/
 def firstResolvedOperandOverlap? :
@@ -304,6 +314,8 @@ structure CheckedFieldEntityShape (model : FlatModel) where
   requiredMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true
   uniqueDirectOperands :
     firstDuplicateResolvedDirectField? (first :: rest) = none
+  uniqueFixedGroupOperands :
+    firstDuplicateResolvedFixedGroupPath? (first :: rest) = none
   disjointOperands : firstResolvedOperandOverlap? (first :: rest) = none
 
 namespace CheckedFieldEntityShape
@@ -347,9 +359,9 @@ private def resolveFieldEntityOperands (model : FlatModel)
       pure ((← resolveFieldEntityOperand model declaringGroup operand) ::
         (← resolveFieldEntityOperands model declaringGroup remaining))
 
-/-- Validate the common entity-list shape: model, path resolution and its star gate, repeated direct operands, ancestor/descendant overlap, then the multiple-slots-or-one-already-many cardinality gate.
+/-- Validate the common entity-list shape: model, path resolution and its star gate, repeated direct operands, repeated fixed-group operands, ancestor/descendant overlap, then the multiple-slots-or-one-already-many cardinality gate.
 
-    Path resolution precedes the whole-list gates and the kind scan follows them, both measured. The **relative order of the two duplicate arms and the cardinality gate is a local choice**: no retained row authors a list that trips two of them at once, so a consumer may rely on which classes exist here but not on which one an ambiguous list reports. -/
+    Path resolution precedes the whole-list gates and the kind scan follows them. The duplicate order is measured: direct-field identity precedes fixed-group identity, which precedes strict ancestor overlap. Cardinality is structurally separate on this typed surface: its singleton direct-field input cannot also contain a repeated or overlapping pair. -/
 def elaborateFieldEntityShape (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
@@ -361,19 +373,23 @@ def elaborateFieldEntityShape (model : FlatModel)
       match hDuplicate : firstDuplicateResolvedDirectField? (first :: rest) with
       | some field => throw (.duplicateOperand field)
       | none =>
-          match hOverlap : firstResolvedOperandOverlap? (first :: rest) with
-          | some (ancestor, descendant) =>
-              throw (.overlappingOperands ancestor descendant)
+          match hGroupDuplicate : firstDuplicateResolvedFixedGroupPath? (first :: rest) with
+          | some path => throw (.duplicateGroupOperand path)
           | none =>
-              if hMultiplicity : first.isAlreadyMany || !rest.isEmpty then
-                pure {
-                  first
-                  rest
-                  modelWellFormed := by rw [hModel]; rfl
-                  requiredMultiplicity := hMultiplicity
-                  uniqueDirectOperands := hDuplicate
-                  disjointOperands := hOverlap }
-              else
-                throw .tooFewFields
+              match hOverlap : firstResolvedOperandOverlap? (first :: rest) with
+              | some (ancestor, descendant) =>
+                  throw (.overlappingOperands ancestor descendant)
+              | none =>
+                  if hMultiplicity : first.isAlreadyMany || !rest.isEmpty then
+                    pure {
+                      first
+                      rest
+                      modelWellFormed := by rw [hModel]; rfl
+                      requiredMultiplicity := hMultiplicity
+                      uniqueDirectOperands := hDuplicate
+                      uniqueFixedGroupOperands := hGroupDuplicate
+                      disjointOperands := hOverlap }
+                  else
+                    throw .tooFewFields
 
 end A12Kernel

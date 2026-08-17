@@ -141,7 +141,7 @@ def firstDuplicateDirectTokenField? :
       | some duplicate => some duplicate.field
       | none => none
 
-/-- A checked homogeneous token-family list. Wildcard occurrences remain independent; only repeated direct references are excluded. -/
+/-- A checked homogeneous token-family list. Wildcard occurrences remain independent; the shared shape has already excluded repeated direct references, repeated fixed groups, and strict overlap. -/
 structure CheckedTokenEntitySource (model : FlatModel) where
   first : CheckedTokenEntityOperand model
   rest : List (CheckedTokenEntityOperand model)
