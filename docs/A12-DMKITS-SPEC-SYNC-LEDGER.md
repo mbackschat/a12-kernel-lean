@@ -77,6 +77,24 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 **The producer side now discloses its rewrites, which is what this project asked for.** The 2026-08-12 handbacks name the rebase, list the branch SHAs that no longer exist as reachable objects and must not be cited, and give revisions read off `main` as the last step before sending. Every revision they cite resolved from `main` when checked here on 2026-08-12: `06b84701`, `b99e43e1`, `4b244b84`, `73bc4a04`, and `ae567007`. A handback dated 2026-08-12 or later is therefore discharged against its own cited revision, while an earlier one still needs the maintained-owner route above. The reverse error is now on record too: `2bffcb10` was reported dead from here and resolves fine, which the 2026-08-10 boundary already predicted for it, so a reachability measurement taken against a stale checkout is itself a claim with a date on it.
 
+<a id="spec-2026-08-17-03"></a>
+<a id="spec-2026-08-17-03--starred-group-firstfilledvalue-is-declaration-major-across-rows"></a>
+
+### SPEC-2026-08-17-03 - starred-group `FirstFilledValue` is declaration-major across rows
+
+- **Status:** pending
+- **Kind:** semantic extension, locally originated and locally measured
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `57ddd442f2f609b645c0030280662bc96d8ac49c` (clean before and after)
+- **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool 0.13.0 plus `:adapter:kernelProbe`; dynamic Groovy and static Java agree
+- **Canonical clause:** [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the-correlation-and-aggregation)
+- **Delta:** A terminal single-level starred-group `FirstFilledValue` scans declaration-major across rows. Every instantiated row of an earlier declaration precedes every row of a later declaration. A reached no-row group star before one direct fallback marks the selected fallback not-given; a value selected immediately from the group remains VALUE despite later rows or uninstantiated capacity.
+- **Basis:** Six rows separate the account. The cross-row document has `Rows[1].Second = second` and `Rows[2].First = first`, selecting `first` with OMISSION; second-only and later-first-only prove both later axes reachable; first-row-first is VALUE; no rows and one empty row before the fallback are both OMISSION.
+- **Integrity:** Request SHA-256 is `8da7f4ebfa04c6df58dbdeb5e5db9157f6f96bf20a2be942e6848da45e7a2eea`; two unchanged runs produced byte-identical artifacts at SHA-256 `67f5a549b80601ab022de127b2fe7b69a606f6ad717f0bcc4edee7fbc6202a8f`.
+- **Requested a12-dmkits reconciliation:** Extend the maintained `FirstFilledValueGroupOperandDiffTest` with the declaration-major cross-row separator and independent reachability controls, and extend the existing no-row fallback family with the starred-group form. Reuse the current typed group operand, interpreter scan, and differential owners; add no second evaluator, artifact schema, or probe route.
+- **Compatibility:** A row-major traversal selects `second` in the cross-row document. Treating a no-row group star as a neutral empty slot changes the fallback from OMISSION to VALUE. Treating later rows or declared capacity as a prefix changes the immediate first-row control from VALUE to OMISSION.
+- **Acceptance:** Both kernel strategies and the JVM/Node interpreter retain all six selected-token and VALUE/OMISSION outcomes under maintained tests; canonical peer prose names declaration-major group traversal; the handback supplies the exact reviewed revision and per-surface disposition without a parallel scan or probe route.
+
 <a id="spec-2026-08-17-02"></a>
 <a id="spec-2026-08-17-02--fixed-group-firstfilledvalue-uses-model-declaration-order"></a>
 

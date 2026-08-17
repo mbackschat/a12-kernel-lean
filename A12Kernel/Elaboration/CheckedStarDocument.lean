@@ -176,7 +176,7 @@ def resolveCheckedGroupEntityOperandPairs
 
     **The enumeration comes from the model's repeatability and never from a star plan.** `spec/07` marks the scope rule as an observed contract rather than a derived one and warns that an implementation reusing its star machinery, or reading the extent off the rule's own iterating group or binding depth, gets it wrong. The environment is consulted only to fix the levels *above* the operand, never to choose the depth: a rule authored on a repeatable group whose operand names an ancestor still reaches that ancestor's whole extent.
 
-    Cells are emitted declaration-major in stable model declaration order, with each declaration's canonical row order inside it. Fixed-group token `FirstFilledValue` observes the declaration-order half; set-valued consumers remain insensitive to it. A filter cannot attach to a group operand, so every cell is unfiltered.
+    Cells are emitted declaration-major in stable model declaration order, with each declaration's canonical row order inside it. Fixed-group token `FirstFilledValue` observes declaration order; its terminal single-level starred-group fragment observes that every row of one declaration precedes every row of the next. Set-valued consumers remain insensitive to the order. A filter cannot attach to a group operand, so every cell is unfiltered.
 
     `hasUninstantiatedTail` is `false` because only instantiated rows are enumerated. That is likewise unobservable here — the uniqueness scan never reads it — and the aggregate families that *do* read it still refuse a group slot, which is what keeps this from becoming an unmeasured fillability claim. -/
 def resolveCheckedGroupEntityOperandCore

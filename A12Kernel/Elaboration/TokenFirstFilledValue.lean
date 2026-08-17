@@ -150,27 +150,65 @@ private def scanCheckedFirstFilledTokenOperands
 
 namespace CheckedTokenEntitySource
 
-/-- Evaluate the measured full-validation fragment in which one fixed, wholly nonrepeatable group
-    is the complete `FirstFilledValue` operand list. The immutable checked document supplies the
-    group's recursive field extent, each cell keeps its declaration-owned token projection, and the
-    shared first-filled evaluator consumes that extent in model declaration order. `none` keeps
-    every wider source outside this fragment, including a starred group, a repeatable declaration,
-    or another authored operand, without confusing refusal with the evaluated `.noValue` result. -/
-def evaluateCheckedFixedGroupFirstFilledValidation?
+private inductive GroupFirstFilledRuntimeShape where
+  | fixedNonrepeatable
+  | directSingleStar
+
+private def groupFirstFilledRuntimeShape?
+    (group : CheckedTokenEntityGroup model) : Option GroupFirstFilledRuntimeShape :=
+  match group.source with
+  | .fixed _ =>
+      if group.slots.all (fun slot => slot.declaration.repeatableScope.isEmpty) then
+        some .fixedNonrepeatable
+      else
+        none
+  | .starred _ =>
+      let scope := model.repeatableScopeForGroupPath group.groupPath
+      if scope.length == 1 && group.slots.all (fun slot =>
+          slot.declaration.groupPath == group.groupPath &&
+            slot.declaration.repeatableScope == scope) then
+        some .directSingleStar
+      else
+        none
+  | .starredPresence _ => none
+
+private def resolveCheckedFirstFilledValidationSide
+    (source : CheckedTokenEntityOperand model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError (ResolvedValueListSide .token) := do
+  pure ((← source.resolveCheckedValidationOperand document outer)
+    |>.valueListSideAt .validation)
+
+/-- Evaluate the measured full-validation group fragments through the immutable checked document.
+    One fixed wholly nonrepeatable group and one direct single-level group star are complete operand
+    lists; the measured group-star form may additionally precede one nonrepeatable direct fallback.
+    Every reached cell keeps its declaration-owned token projection, and the shared first-filled
+    evaluator consumes resolved operands in authored order and group cells declaration-major.
+    `none` keeps every wider source outside without confusing refusal with `.noValue`. -/
+def evaluateCheckedGroupFirstFilledValidation?
     (checked : CheckedTokenEntitySource model)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (Option FirstFilledTokenResult) :=
   match checked.first, checked.rest with
   | .group group, [] =>
-      if group.isStarred ||
-          !group.slots.all (fun slot => slot.declaration.repeatableScope.isEmpty) then
-        pure none
-      else do
-        let resolved ←
-          (CheckedTokenEntityOperand.group group).resolveCheckedValidationOperand
-            document outer
-        pure (some (evalFirstFilledToken
-          (resolved.valueListSideAt .validation)))
+      match groupFirstFilledRuntimeShape? group with
+      | none => pure none
+      | some _ => do
+          let side ←
+            resolveCheckedFirstFilledValidationSide
+              (.group group) document outer
+          pure (some (evalFirstFilledToken side))
+  | .group group, [.field fallback] =>
+      match groupFirstFilledRuntimeShape? group with
+      | some .directSingleStar => do
+          let first ←
+            resolveCheckedFirstFilledValidationSide
+              (.group group) document outer
+          let second ←
+            resolveCheckedFirstFilledValidationSide
+              (.field fallback) document outer
+          pure (some (evalFirstFilledTokenOperands { first, rest := [second] }))
+      | some .fixedNonrepeatable | none => pure none
   | _, _ => pure none
 
 /-- Evaluate checked direct and independently resolved star slots in authored order. Later topology, filters, relevance, and target reads remain unobserved after a terminal prefix. -/

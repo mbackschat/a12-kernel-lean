@@ -76,13 +76,12 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 #### Number and token group runtime
 
 - `state`: open
-- `missing`: establish starred-group token `FirstFilledValue` row order and declared-tail polarity before deciding whether checked full validation can admit that fragment.
 - `missing`: execute retained Number and token group operands through computation, partial validation, and legacy raw-`Document` routes.
 - `missing`: make Number directional missingness per cell before admitting a group whose declarations disagree on signedness.
 - `missing`: decide `NumberOfValueInFields` literal admission over a group independently of the current all-expanded-declarations local choice.
 - `prerequisite`: legacy raw-`Document` readers must expose instantiated-row topology before they can enumerate the operand-bounded group extent.
 - `baseline`: [Number group aggregates](IMPLEMENTATION-MAP.md#cap-number-group-aggregates) and [token group expansion](IMPLEMENTATION-MAP.md#cap-token-group-expansion) own full-validation execution.
-- `evidence-needed`: measure each refused route and a declared but uninstantiated tail without inferring row existence from authored patterns.
+- `evidence-needed`: measure each refused route and isolate any declared-tail effect from the independently measured no-row and instantiated-empty prefixes before representing omitted capacity.
 - `discriminator`: vary rule depth, operand depth, instantiated rows, and signedness independently while keeping the recursive declaration expansion fixed.
 - `consumer`: Execute needs exact operand-bounded extent and fillability; Analyze needs encounter order and the distinction between authored slots and reached cells.
 - `reopen-when`: a coherent group-runtime batch is selected.
@@ -91,7 +90,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `red-locus`: [`TokenEntityGroupOperand.lean`](../A12Kernel/Conformance/TokenEntityGroupOperand.lean) owns the current starred-group refusal and the first measured runtime separator.
 - `green-locus`: [`TokenFirstFilledValue.lean`](../A12Kernel/Elaboration/TokenFirstFilledValue.lean) owns the checked full-validation specialization and fail-closed wider fragments.
 - `supporting-locus`: [`CheckedStarDocument.lean`](../A12Kernel/Elaboration/CheckedStarDocument.lean) owns the declaration-major checked group resolver and canonical per-declaration row walk.
-- `route-limit`: do not widen computation, partial validation, raw-`Document`, mixed-list, or unmeasured repeatability shapes until a red case establishes their exact result domain.
+- `route-limit`: the measured terminal single-level direct-declaration star and its one direct fallback do not authorize computation, partial validation, raw-`Document`, nested-star, outer-bound, or other mixed-list shapes.
 
 <a id="gap-sg5-temporal-group-runtime"></a>
 #### Temporal group runtime

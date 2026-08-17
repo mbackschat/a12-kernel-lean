@@ -323,8 +323,8 @@ These stable names help when a query crosses numbered clauses. Their capability 
 - `boundary`: full validation resolves the operand-bounded `(row × field)` extent from model repeatability, binding only levels above the operand from the outer environment.
 - `boundary`: `FieldValuesNotUnique`, `Sum`, extrema, and distinct count share that resolver; expansion-kind diagnostics remain keyed by operator.
 - `limit`: non-Number, empty, and mixed-signedness expansions fail locally without inventing a Kernel class.
-- `boundary`: the resolver emits cells declaration-major in stable model declaration order, with each declaration's canonical row order inside it; fixed-group token `FirstFilledValue` now observes the declaration-order half.
-- `limit`: Kernel correspondence for that order is established only for two direct declarations and two fixed nested subgroup declarations; starred groups and repeatable row order remain open.
+- `boundary`: the resolver emits cells declaration-major in stable model declaration order, with each declaration's canonical row order inside it.
+- `limit`: Kernel correspondence for that order remains open on Number consumers; [token group expansion](#cap-token-group-expansion) owns the separately calibrated fixed and direct-single-star `FirstFilledValue` fragments.
 - `limit`: only instantiated rows are enumerated and `hasUninstantiatedTail` is false; correspondence for a declared but uninstantiated tail is open.
 - `owner`: [`NumberEntityList.lean`](../A12Kernel/Elaboration/NumberEntityList.lean) and [`CheckedStarDocument.lean`](../A12Kernel/Elaboration/CheckedStarDocument.lean).
 - `case`: [group extent and admission cases](../A12Kernel/Conformance/FieldEntityGroupOperand.lean).
@@ -340,15 +340,16 @@ These stable names help when a query crosses numbered clauses. Their capability 
 - `boundary`: the token carrier retains the authored group and a certified recursive expansion, pairing every reached cell with the declaration and operand that read it.
 - `boundary`: a group authors no read form, so every member is read stored and homogeneity applies across the entire expansion rather than only between authored slots.
 - `boundary`: full-validation `FieldValuesNotUnique` and token aggregate routes consume the shared operand-bounded extent.
-- `boundary`: full-validation token `FirstFilledValue` over exactly one fixed, wholly nonrepeatable group consumes the same recursive extent through the shared stop-at-first evaluator, preserving selected token and empty-prefix missingness while ignoring an empty suffix after selection.
+- `boundary`: full-validation token `FirstFilledValue` consumes the shared checked extent for exactly one fixed wholly nonrepeatable group, or for one terminal single-level starred group whose expansion contains only direct token declarations; the measured starred form may precede one nonrepeatable direct fallback.
+- `boundary`: group cells remain declaration-major with canonical row order inside each declaration; the shared stop-at-first evaluator preserves selected token and reached-empty-prefix missingness, including a no-row group star before the direct fallback, while ignoring every suffix after selection.
 - `extent`: [Number group aggregates](#cap-number-group-aggregates) owns the shared resolver's ordering and uninstantiated-tail limits.
 - `limit`: `NumberOfValueInFields` currently admits a group literal only when every expanded declaration admits it; this is a local representation choice, not a Kernel claim.
-- `limit`: starred groups, any group expansion containing a repeatable declaration, a group mixed with other operands, computation, partial validation, and legacy raw-document routes remain explicitly unsupported by this first-filled path.
+- `limit`: fixed groups containing repeatable descendants, multi-level or nonterminal starred groups, starred groups with nested declarations, mixed lists other than the one measured direct fallback, computation, partial validation, and legacy raw-document routes remain explicitly unsupported by this first-filled path.
 - `owner`: [`TokenEntityGroup.lean`](../A12Kernel/Elaboration/TokenEntityGroup.lean), [`TokenEntityValueList.lean`](../A12Kernel/Elaboration/TokenEntityValueList.lean), and [`TokenFirstFilledValue.lean`](../A12Kernel/Elaboration/TokenFirstFilledValue.lean).
 - `case`: [token group cases](../A12Kernel/Conformance/TokenEntityGroupOperand.lean).
-- `proof`: [`checkedTokenEntityGroup_expansion_complete`](../A12Kernel/Proofs/TokenEntityValueList.lean) and [`checkedTokenEntityGroup_projections_stored`](../A12Kernel/Proofs/TokenEntityValueList.lean).
-- `assurance`: E/P closed for retention, per-cell projection, full-validation extent, and the bounded fixed-group first-filled specialization through existing generic laws; L partial, including the exact direct/nested declaration-order matrix; C none; X none; Q none.
-- `source`: [group-operand admission](SOURCES.md#src-field-values-not-unique-group-admission), [group runtime differential](SOURCES.md#src-field-values-not-unique-group-runtime), and [fixed-group first-filled order](SOURCES.md#src-group-first-filled-runtime-order).
+- `proof`: [`checkedTokenEntityGroup_expansion_complete`](../A12Kernel/Proofs/TokenEntityValueList.lean), [`checkedTokenEntityGroup_projections_stored`](../A12Kernel/Proofs/TokenEntityValueList.lean), and the generic [token first-filled scan and projection laws](../A12Kernel/Proofs/TokenFirstFilledValue.lean).
+- `assurance`: E/P closed for retention, per-cell projection, full-validation extent, and the bounded fixed and direct-single-star first-filled specializations through existing generic laws; L partial for the maintained unstarred nested-row and direct-before-nested matrix; local Kernel checkpoints additionally cover fixed declaration pairs, starred declaration-major row traversal, and group-star no-row fallback polarity; C none; X none; Q none.
+- `source`: [group-operand admission](SOURCES.md#src-field-values-not-unique-group-admission), [group runtime differential](SOURCES.md#src-field-values-not-unique-group-runtime), [fixed-group first-filled order](SOURCES.md#src-group-first-filled-runtime-order), and [starred-group first-filled order](SOURCES.md#src-star-group-first-filled-runtime-order).
 - `remains`: [Number and token group runtime](SEMANTICS-GAPS.md#gap-sg5-number-token-group-runtime).
 
 <a id="cap-temporal-group-uniqueness"></a>

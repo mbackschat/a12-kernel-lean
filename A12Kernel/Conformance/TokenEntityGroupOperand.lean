@@ -72,11 +72,16 @@ private def probeModel : FlatModel :=
       { id := 20, groupPath := ["Form", "Encounter", "ZetaNested"], name := "Value",
         policy := { kind := .string } },
       { id := 21, groupPath := ["Form", "Encounter", "AlphaNested"], name := "Value",
-        policy := { kind := .string } }]
+        policy := { kind := .string } },
+      { id := 22, groupPath := ["Form", "StarRows"], name := "First",
+        policy := { kind := .string }, repeatableScope := [40] },
+      { id := 23, groupPath := ["Form", "StarRows"], name := "Second",
+        policy := { kind := .string }, repeatableScope := [40] }]
     repeatableGroups := [
       { level := 20, path := ["Form", "Bag", "Lines"] },
       { level := 30, path := ["Form", "Outer"] },
-      { level := 31, path := ["Form", "Outer", "Inner"] }] }
+      { level := 31, path := ["Form", "Outer", "Inner"] },
+      { level := 40, path := ["Form", "StarRows"], repeatability := some 3 }] }
 
 private def prepared :
     PreparedFlatStringContext probeModel builtinStringPatternCompiler :=
@@ -452,21 +457,22 @@ direct-both case stays VALUE despite the empty nested suffix; the other three ca
 prefix as validation missingness.
 -/
 
-private def fixedGroupFirstFilledDecision
+private def groupFirstFilledDecision
     (operand : SurfaceFieldEntityOperand) (cells : List ClassifiedCellInput)
     (declaringGroup : GroupPath := ["Form"])
-    (rest : List SurfaceFieldEntityOperand := []) :
+    (rest : List SurfaceFieldEntityOperand := [])
+    (instantiatedRows : List RowAddr := []) :
     Option (Option FirstFilledTokenResult) := do
   let source ←
     (elaborateFirstFilledTokenSource probeModel declaringGroup
       { first := operand, rest }).toOption
   let document ←
-    (checkDocument prepared "en_US" { instantiatedRows := [], cells }).toOption
-  (source.evaluateCheckedFixedGroupFirstFilledValidation? document []).toOption
+    (checkDocument prepared "en_US" { instantiatedRows, cells }).toOption
+  (source.evaluateCheckedGroupFirstFilledValidation? document []).toOption
 
 private def encounterFirstFilled? (cells : List ClassifiedCellInput) :
     Option FirstFilledTokenResult :=
-  match fixedGroupFirstFilledDecision (group ["Form", "Encounter"]) cells with
+  match groupFirstFilledDecision (group ["Form", "Encounter"]) cells with
   | some result => result
   | none => none
 
@@ -493,28 +499,106 @@ example :
 /- An evaluated empty fixed nonrepeatable group remains distinct from unsupported starred,
    repeatable, and wider-list fragments. -/
 example :
-    fixedGroupFirstFilledDecision (group ["Form", "Encounter"]) [] =
+    groupFirstFilledDecision (group ["Form", "Encounter"]) [] =
       some (some .noValue) := by
   native_decide
 
 example :
-    fixedGroupFirstFilledDecision (starredGroup [
+    groupFirstFilledDecision (starredGroup [
       { name := "Form" }, { name := "Outer", starred := true },
       { name := "Fixed" }]) [] = some none := by
   native_decide
 
 example :
-    fixedGroupFirstFilledDecision (.group (.ruleGroup false)) []
+    groupFirstFilledDecision (starredGroup [
+      { name := "Form" }, { name := "Outer", starred := true }]) [] =
+      some none := by
+  native_decide
+
+example :
+    groupFirstFilledDecision (starredGroup [
+      { name := "Form" }, { name := "Outer", starred := true },
+      { name := "Inner", starred := true }]) [] = some none := by
+  native_decide
+
+example :
+    groupFirstFilledDecision (.group (.ruleGroup false)) []
       (declaringGroup := ["Form", "Outer"]) = some none := by
   native_decide
 
 example :
-    fixedGroupFirstFilledDecision (group ["Form", "Bag"]) [] = some none := by
+    groupFirstFilledDecision (group ["Form", "Bag"]) [] = some none := by
   native_decide
 
 example :
-    fixedGroupFirstFilledDecision (group ["Form", "Encounter"]) []
+    groupFirstFilledDecision (group ["Form", "Encounter"]) []
       (rest := [field "Other"]) = some none := by
+  native_decide
+
+/-! ## A terminal single-level group star keeps declaration-major row traversal
+
+The six-row kernel matrix at clean a12-dmkits `57ddd442` adds the missing separator to the existing
+group-operand differentials. With `Second` filled in row 1 and `First` filled in row 2,
+declaration-major traversal selects `First`; a row-major traversal would select `Second`. The
+controls reach the later row and later declaration independently, retain empty-prefix polarity,
+and distinguish a no-row group-star prefix from an immediate selected value.
+-/
+
+private def starRows : SurfaceFieldEntityOperand :=
+  starredGroup [{ name := "Form" }, { name := "StarRows", starred := true }]
+
+private def starRowsFirstFilledDecision
+    (cells : List ClassifiedCellInput)
+    (instantiatedRows : List RowAddr)
+    (withFallback : Bool := false) : Option (Option FirstFilledTokenResult) :=
+  groupFirstFilledDecision starRows cells
+    (rest := if withFallback then [field "Other"] else [])
+    (instantiatedRows := instantiatedRows)
+
+private def starRow (index : Nat) : RowAddr :=
+  { group := 40, path := [index] }
+
+example :
+    starRowsFirstFilledDecision [] [] = some (some .noValue) := by
+  native_decide
+
+example :
+    groupFirstFilledDecision starRows []
+      (rest := [field "Other", field "Loose"]) = some none := by
+  native_decide
+
+example :
+    starRowsFirstFilledDecision
+      [str 23 [1] "second", str 22 [2] "first"]
+      [starRow 1, starRow 2] = some (some (.value "first" true)) := by
+  native_decide
+
+example :
+    starRowsFirstFilledDecision
+      [str 23 [1] "second"] [starRow 1, starRow 2] =
+      some (some (.value "second" true)) := by
+  native_decide
+
+example :
+    starRowsFirstFilledDecision
+      [str 22 [2] "first"] [starRow 1, starRow 2] =
+      some (some (.value "first" true)) := by
+  native_decide
+
+example :
+    starRowsFirstFilledDecision
+      [str 22 [1] "first", str 23 [2] "second"]
+      [starRow 1, starRow 2] = some (some (.value "first" false)) := by
+  native_decide
+
+example :
+    starRowsFirstFilledDecision [str 10 [] "fallback"] [] true =
+      some (some (.value "fallback" true)) := by
+  native_decide
+
+example :
+    starRowsFirstFilledDecision [str 10 [] "fallback"] [starRow 1] true =
+      some (some (.value "fallback" true)) := by
   native_decide
 
 /-! ## The message reference channel publishes the expansion, never the group
