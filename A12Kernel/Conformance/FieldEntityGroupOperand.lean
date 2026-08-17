@@ -97,15 +97,19 @@ private def starField (segments : List SurfaceStarGroupSegment) (name : String) 
 
 /-- Every case reads one carrier that routes through the shared checker, so a class reported here
     is the shared gate's and not this operator's own. -/
-private def diagnostic? (operands : List SurfaceFieldEntityOperand) :
+private def diagnosticAt? (rowGroup : GroupPath) (operands : List SurfaceFieldEntityOperand) :
     Option KernelStaticDiagnostic :=
   match operands with
   | [] => none
   | first :: rest =>
-      match elaborateNumberValuesNotUniqueSource probeModel ["Probe"]
+      match elaborateNumberValuesNotUniqueSource probeModel rowGroup
           { first, rest } with
       | .ok _ => none
       | .error error => error.diagnostic?
+
+private def diagnostic? (operands : List SurfaceFieldEntityOperand) :
+    Option KernelStaticDiagnostic :=
+  diagnosticAt? ["Probe"] operands
 
 /-! ## Arity reads the authored slots
 
@@ -123,6 +127,11 @@ Both arms, on operands character-identical apart from the `*`. A repeatable grou
 a nonrepeatable group must not, and the two refusals are distinct classes rather than one. -/
 
 example : diagnostic? [group ["Probe", "Rows"]] = some .noWildcard := by
+  native_decide
+
+/- Group-list error-locus binding does not widen this entity-list carrier in that same row. -/
+example : diagnosticAt? ["Probe", "Rows"] [group ["Probe", "Rows"]] =
+      some .noWildcard := by
   native_decide
 
 example :
@@ -214,8 +223,8 @@ example :
       some .duplicateParam1 := by
   native_decide
 
-/- Fixed-group identity is checked after direct-field identity and before strict overlap. These
-   retain the owning witness rather than relying only on the shared diagnostic projection. -/
+/- Exact identity is checked in authored encounter order before strict overlap. These retain the
+   owning witness rather than relying only on the shared diagnostic projection. -/
 example :
     shapeError? [group ["Probe", "B"], group ["Probe", "B"],
       field ["Probe", "B", "Sub"] "SubVal"] =
@@ -227,6 +236,13 @@ example :
       field ["Probe", "B", "Sub"] "SubVal",
       field ["Probe", "B", "Sub"] "SubVal",
       group ["Probe", "B"]] = some (.duplicateOperand 5) := by
+  native_decide
+
+example :
+    shapeError? [group ["Probe", "B"], group ["Probe", "B"],
+      field ["Probe", "B", "Sub"] "SubVal",
+      field ["Probe", "B", "Sub"] "SubVal"] =
+      some (.duplicateGroupOperand ["Probe", "B"]) := by
   native_decide
 
 example :

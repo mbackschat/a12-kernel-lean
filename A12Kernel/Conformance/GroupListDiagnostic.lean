@@ -3,8 +3,9 @@ import A12Kernel.Elaboration.ValidationCondition
 /-! # A12Kernel.Conformance.GroupListDiagnostic — group-list admission diagnostic identity
 
 The separating axis is that the shared account's *rule* list and the Kernel's *class* partition do
-not line up. Three measured facts do the separating: there is no root-group class at all, the two
-duplicate classes are distinct, and one star draws different classes through different carriers.
+not line up. Three measured facts do the separating: the root-group classes are distinct from
+overlap, the two duplicate classes are distinct, and one star draws different classes through
+different carriers.
 
 The fixture mirrors the measured kernel model rather than reusing a shared one, because the
 distinctions need shapes a general iteration model does not carry: a **nonrepeatable** nested pair
@@ -27,7 +28,9 @@ private def probeModel : FlatModel :=
       { id := 3, groupPath := ["Probe", "B"], name := "BVal",
         policy := { kind := .number unsigned } },
       { id := 4, groupPath := ["Probe", "Rows"], name := "RowVal",
-        policy := { kind := .number unsigned }, repeatableScope := [10] }]
+        policy := { kind := .number unsigned }, repeatableScope := [10] },
+      { id := 5, groupPath := ["Other"], name := "OtherVal",
+        policy := { kind := .number unsigned } }]
     repeatableGroups := [{ level := 10, path := ["Probe", "Rows"] }] }
 
 private def group (groups : GroupPath) : SurfaceGroupListOperand :=
@@ -45,6 +48,9 @@ private def diagnostic? (operator : GroupFillQuantifier)
   | .ok _ => none
   | .error error => error.groupListDiagnostic?
 
+private def diagnosticCode? (operator : GroupFillQuantifier) (operands : List SurfaceGroupListOperand) : Option String :=
+  (diagnostic? operator operands).map KernelStaticDiagnostic.kernelCode
+
 /- The exact same operand twice and an ancestor/descendant pair are **two** Kernel classes, and one
    local error carries both — the split is read off the paths it retains, not from a second
    constructor. Both operands are nonrepeatable here, so the star gate cannot pre-empt either. -/
@@ -59,12 +65,19 @@ example :
       some .duplicateParam2 := by
   native_decide
 
-/- A root operand beside another takes that same ancestor class. It has none of its own, because a
-   root is an ancestor of every group, and inventing one would send an author looking for a rule the
-   Kernel does not have. -/
+/- A root beside its own descendant is still the overlap class because that gate pre-empts the
+   root-family gate. -/
 example :
     diagnostic? .allGroupsFilled [group ["Probe"], group ["Probe", "B"]] =
       some .duplicateParam2 := by
+  native_decide
+
+/- The second root separates the two root-family classes from overlap. -/
+example :
+    diagnosticCode? .allGroupsFilled [group ["Other"], group ["Probe", "B"]] = some "MVK_ROOT_GROUP_REFERENCED" ∧
+    diagnosticCode? .atLeastOneGroupFilled [group ["Other"], group ["Probe", "B"]] = some "MVK_ROOT_GROUP_WITH_OTHER_PARAMETERS" ∧
+    diagnosticCode? .allGroupsFilled [group ["Other"]] = some "MVK_ROOT_GROUP_REFERENCED" ∧
+    diagnosticCode? .atLeastOneGroupFilled [group ["Other"]] = none := by
   native_decide
 
 /- A singleton under a quantifier that requires two operands, beside the singleton-admitting
@@ -112,9 +125,8 @@ private def countDiagnostic? (groups : List GroupPath)
   | .ok _ => none
   | .error error => error.groupCountDiagnostic?
 
-/- The count's multiplicity class is its own, and it fires on a single unstarred operand rather than
-   on an operand count: a single **starred** operand is admitted, which is why this is not the
-   quantifiers' arity class. -/
+/- A single fixed unstarred operand takes the count's own multiplicity class. A starred operand is
+   admitted, while error-locus binding for an unstarred repeatable remains a rule-owned gap. -/
 example : countDiagnostic? [["Probe", "A"]] = some .paramSizeInvalidGN := by
   native_decide
 
@@ -135,6 +147,12 @@ example :
 
 example :
     countDiagnostic? [["Probe"], ["Probe", "B"]] = some .duplicateParam2 := by
+  native_decide
+
+example :
+    (countDiagnostic? [["Other"], ["Probe", "B"]]).map
+        KernelStaticDiagnostic.kernelCode =
+      some "MVK_ROOT_GROUP_WITH_OTHER_PARAMETERS" := by
   native_decide
 
 example :

@@ -41,6 +41,7 @@ inductive RepetitionNotUniqueElabError where
   | scope (error : SingleGroupElabError)
   | duplicateKeyField (field : FieldId)
   | keyPathMismatch (expected actual : GroupPath)
+  | unsupportedParallelRepeatableKeyPaths (left right : GroupPath)
   | unsupportedKeyKind (path : List String) (actual : SurfaceScalarKind)
   | rawStringValue (path : List String)
   | customStringRequiresPreparedChecking (path : List String)
@@ -53,7 +54,7 @@ inductive RepetitionNotUniqueElabError where
 
 namespace RepetitionNotUniqueElabError
 
-/-- Project the measured `RepetitionNotUnique` key-admission classes. The two ways a key can sit outside the iterated repeatable group — a second key in a different group, and a sole key whose group is not repeatable — draw **one** Kernel class, so both local errors project there. An unresolvable key path draws the shared unknown-entity class; every other refusal, including the unsupported-kind and raw-String arms whose classes no row covers, returns `none`. -/
+/-- Project the measured `RepetitionNotUnique` key-admission classes. Three shapes draw one Kernel class: a second key in a nonrepeatable group, a sole key whose group is not repeatable, and a rule already placed at the repeated group. The first two have distinct local errors; the third reaches the missing-reference-group arm in either absolute or relative spelling. Parallel repeatable paths remain unmapped because the two observed fixtures differ without an established discriminator. Every other unmeasured refusal returns `none`. -/
 def diagnostic? : RepetitionNotUniqueElabError → Option KernelStaticDiagnostic
   | .duplicateKeyField _ => some .duplicateParam1
   | .keyPathMismatch _ _ | .missingReferenceGroup _ =>
@@ -173,16 +174,26 @@ private def resolveRepetitionKeyDeclarations (model : FlatModel)
       pure (declaration ::
         (← resolveRepetitionKeyDeclarations model declaringGroup remaining))
 
-private def deepestKeyDeclaration (current : FlatFieldDecl) :
+private def FlatModel.terminalRepeatableGroupFor?
+    (model : FlatModel) (declaration : FlatFieldDecl) :
+    Option RepeatableGroupDecl :=
+  declaration.repeatableScope.getLast?.bind model.repeatableGroupAtLevel?
+
+private def deepestKeyDeclaration (model : FlatModel) (current : FlatFieldDecl) :
     List FlatFieldDecl → Except RepetitionNotUniqueElabError FlatFieldDecl
   | [] => pure current
   | declaration :: remaining =>
       if current.groupPath.isPrefixOf declaration.groupPath then
-        deepestKeyDeclaration declaration remaining
+        deepestKeyDeclaration model declaration remaining
       else if declaration.groupPath.isPrefixOf current.groupPath then
-        deepestKeyDeclaration current remaining
-      else
-        throw (.keyPathMismatch current.groupPath declaration.groupPath)
+        deepestKeyDeclaration model current remaining
+      else match model.terminalRepeatableGroupFor? current,
+          model.terminalRepeatableGroupFor? declaration with
+        | some _, some _ =>
+            throw (.unsupportedParallelRepeatableKeyPaths
+              current.groupPath declaration.groupPath)
+        | _, _ =>
+            throw (.keyPathMismatch current.groupPath declaration.groupPath)
 
 private def FlatModel.defaultRepetitionReferenceGroup?
     (model : FlatModel) (declaringGroup keyGroup : GroupPath) :
@@ -329,7 +340,8 @@ def elaborateRepetitionNotUniqueSource (model : FlatModel)
       | some field => throw (.duplicateKeyField field)
       | none => do
           let declarations := firstDeclaration :: restDeclarations
-          let terminalDeclaration ← deepestKeyDeclaration firstDeclaration restDeclarations
+          let terminalDeclaration ←
+            deepestKeyDeclaration model firstDeclaration restDeclarations
           let referenceGroup ← resolveRepetitionReferenceGroup model declaringGroup
             terminalDeclaration.groupPath terminalDeclaration.path declarations authored.scope
           let topology ← elaborateRepetitionKeyPlan model referenceGroup.path terminalDeclaration

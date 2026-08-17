@@ -170,13 +170,13 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
         |>.mapError NumericValidationElabError.ofFixedGroupReferenceError
       if groups.length < 2 then
         throw .groupCountNeedsMultipleOperands
-      match groups.find? ResolvedGroupReference.isRoot with
-      | some root => throw (.rootGroupInGroupCount root.path)
-      | none => pure ()
       match ResolvedGroupReferences.firstOverlap? groups with
       | some (left, right) =>
           throw (.overlappingGroupCountOperands left right)
-      | none => pure (.filledGroupCount groups)
+      | none =>
+          match groups.find? ResolvedGroupReference.isRoot with
+          | some root => throw (.rootGroupInGroupCount root.path)
+          | none => pure (.filledGroupCount groups)
 
 private def resolveAddressedNumericDeclaration (model : FlatModel)
     (rowGroup : GroupPath) (reference : SurfaceFieldPath) :

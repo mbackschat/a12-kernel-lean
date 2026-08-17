@@ -42,14 +42,14 @@ namespace ValidationConditionAssemblyError
 
 /-- Project the measured group-list quantifier admission classes. Every other refusal returns `none`, which keeps the uncovered surface countable.
 
-    The exact-duplicate and ancestor-overlap classes are **two** Kernel classes, and one local error covers both — but it retains both paths, so the split is read off the retained data rather than needing a second constructor. A root operand beside another takes the ancestor class and has no class of its own, because a root is an ancestor of every group; the two root-specific local errors project there for that reason rather than by convention. -/
+    The exact-duplicate and ancestor-overlap classes are **two** Kernel classes, and one local error covers both, retaining both paths so the split is read off the data. Root-family classes are distinct and are reached only after strict overlap has had the chance to pre-empt them. -/
 def groupListDiagnostic? :
     ValidationConditionAssemblyError → Option KernelStaticDiagnostic
   | .groupListNeedsMultipleOperands => some .paramSizeInvalid2
   | .overlappingGroupListOperands left right =>
       some (if left == right then .duplicateParam1 else .duplicateParam2)
-  | .rootGroupInGroupList _ | .rootGroupRequiresSoleOperand _ =>
-      some .duplicateParam2
+  | .rootGroupInGroupList _ => some .rootGroupReferenced
+  | .rootGroupRequiresSoleOperand _ => some .rootGroupWithOtherParameters
   | .starredGroupNotAllowed _ => some .noWildcardsGAllowed
   | .repeatableGroupRequiresAddress _ => some .noWildcard
   | .unknownGroup _ => some .invalidEntity

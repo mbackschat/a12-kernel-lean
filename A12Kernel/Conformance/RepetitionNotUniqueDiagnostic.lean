@@ -3,9 +3,9 @@ import A12Kernel.Elaboration.ValidationRule
 /-! # A12Kernel.Conformance.RepetitionNotUniqueDiagnostic — RNU key-admission diagnostic identity
 
 `RepetitionNotUnique` reuses two classes the group-list families already own and adds one of its own,
-and the separating fact is the **collapse**: the two structurally different ways a key can sit outside
-the iterated repeatable group — a second key in a different group, and a sole key whose group is not
-repeatable — draw one Kernel class, so the local error type is finer than the observable.
+and the separating fact is the **collapse**: three structurally different shapes draw one Kernel
+class — a second key in a nonrepeatable group, a sole key whose group is not repeatable, and the rule
+already placed at that repeated group. The local error type is finer than the observable.
 
 The whole-rule error-field reference gate is measured here too, because it is the gate that decides
 whether an RNU rule is authorable at all and it is not an operand gate.
@@ -25,19 +25,34 @@ private def probeModel : FlatModel :=
         policy := { kind := .string }, repeatableScope := [10] },
       { id := 4, groupPath := ["Probe", "Rows"], name := "RowNum",
         policy := { kind := .number { scale := 0, signed := false } },
-        repeatableScope := [10] }]
-    repeatableGroups := [{ level := 10, path := ["Probe", "Rows"] }] }
+        repeatableScope := [10] },
+      { id := 5, groupPath := ["Probe", "Coupons"], name := "CouponVal",
+        policy := { kind := .string }, repeatableScope := [11] }]
+    repeatableGroups := [
+      { level := 10, path := ["Probe", "Rows"] },
+      { level := 11, path := ["Probe", "Coupons"] }] }
 
 private def key (groups : List String) (field : String) : SurfaceFieldPath :=
   { base := .absolute, groups, field }
 
-private def diagnostic? (first : SurfaceFieldPath)
-    (rest : List SurfaceFieldPath := []) : Option KernelStaticDiagnostic :=
-  match CheckedValidationCondition.fromRepetitionNotUnique probeModel ["Probe"]
+private def relativeKey (field : String) : SurfaceFieldPath := { base := .relative 0, groups := [], field }
+
+private def diagnosticAt (rowGroup : GroupPath) (first : SurfaceFieldPath) (rest : List SurfaceFieldPath := []) : Option KernelStaticDiagnostic :=
+  match CheckedValidationCondition.fromRepetitionNotUnique probeModel rowGroup
       { firstKey := first, restKeys := rest } with
   | .ok _ => none
   | .error (.repetitionNotUnique error) => error.diagnostic?
   | .error _ => none
+
+private def refusesParallelAt (rowGroup : GroupPath) (first : SurfaceFieldPath) (rest : List SurfaceFieldPath := []) : Bool :=
+  match CheckedValidationCondition.fromRepetitionNotUnique probeModel rowGroup
+      { firstKey := first, restKeys := rest } with
+  | .error (.repetitionNotUnique
+      (.unsupportedParallelRepeatableKeyPaths _ _)) => true
+  | .ok _ | .error _ => false
+
+private def diagnostic? (first : SurfaceFieldPath) (rest : List SurfaceFieldPath := []) : Option KernelStaticDiagnostic :=
+  diagnosticAt ["Probe"] first rest
 
 /- One key repeated draws the exact-duplicate class, the same one a repeated group-list operand
    draws — the operand relation is shared across families rather than restated per operator. -/
@@ -78,6 +93,25 @@ example :
   native_decide
 
 example : diagnostic? (key ["Probe", "Rows"] "RowNum") = none := by
+  native_decide
+
+/- At the repeated rule group, both path spellings draw the third missing-repeatable shape. -/
+example :
+    diagnosticAt ["Probe", "Rows"] (key ["Probe", "Rows"] "RowVal") =
+      some .repeatableGroupMissing ∧
+    diagnosticAt ["Probe", "Rows"] (relativeKey "RowVal") =
+      some .repeatableGroupMissing := by
+  native_decide
+
+/- The exact upstream index-free parallel fixture reports `MVK_NO_WILDCARD`, but the indexed
+   fixture differs without an established discriminator, so the generic projector refuses. -/
+example :
+    refusesParallelAt ["Probe"] (key ["Probe", "Rows"] "RowVal")
+        [key ["Probe", "Coupons"] "CouponVal"] = true ∧
+    refusesParallelAt ["Probe", "Rows"] (key ["Probe", "Rows"] "RowVal")
+        [key ["Probe", "Coupons"] "CouponVal"] = true ∧
+    diagnostic? (key ["Probe", "Rows"] "RowVal")
+        [key ["Probe", "Coupons"] "CouponVal"] = none := by
   native_decide
 
 /-! ## The whole-rule error-field reference gate

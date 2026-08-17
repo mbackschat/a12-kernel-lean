@@ -410,7 +410,7 @@ example :
     errorOf (authored (restKeys := [keyPath])) =
         some (.duplicateKeyField effort.id) ∧
     errorOf (authored (restKeys := [reviewPath])) =
-        some (.keyPathMismatch effort.groupPath reviewScore.groupPath) ∧
+        some (.unsupportedParallelRepeatableKeyPaths effort.groupPath reviewScore.groupPath) ∧
     unsupportedError =
         some (.unsupportedKeyKind flag.path .boolean) ∧
     customTextError =

@@ -84,7 +84,7 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 - **Status:** pending
 - **Kind:** semantic extension, locally originated and locally measured
-- **Local revision:** introducing commit
+- **Local revision:** `ac924d381b6a55fff74d6b26fb3de5802887893f`
 - **a12-dmkits basis revision:** `57ddd442f2f609b645c0030280662bc96d8ac49c` (clean before and after)
 - **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool 0.13.0 plus `:adapter:kernelProbe`; dynamic Groovy and static Java agree
 - **Canonical clause:** [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the-correlation-and-aggregation)
@@ -102,7 +102,7 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 - **Status:** pending
 - **Kind:** semantic extension, locally originated and locally measured
-- **Local revision:** introducing commit
+- **Local revision:** `b5f8bb0ec5f9e75cd0066ae1253d7c869a609310`
 - **a12-dmkits basis revision:** `57ddd442f2f609b645c0030280662bc96d8ac49c` (clean before and after)
 - **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool 0.13.0 plus `:adapter:kernelProbe`; dynamic Groovy and static Java agree
 - **Canonical clause:** [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the-correlation-and-aggregation)
@@ -117,9 +117,9 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 ### SPEC-2026-08-17-01 - fixed-group duplication precedes ancestor overlap while starred groups remain occurrences
 
-- **Status:** pending
+- **Status:** rejected
 - **Kind:** semantic extension, locally originated and locally measured
-- **Local revision:** introducing commit
+- **Local revision:** `f118816061cdd2ead26678d627d52997efcfa4dc`
 - **a12-dmkits basis revision:** `57ddd442f2f609b645c0030280662bc96d8ac49c` (clean, before and after)
 - **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool 0.13.0 `rule check`; every row `KERNEL_CONFIRMED`
 - **Canonical clause:** [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the-correlation-and-aggregation)
@@ -128,6 +128,9 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Requested a12-dmkits reconciliation:** Correct the canonical entity-list duplicate account and extend the smallest existing admission-law owner with fixed/starred equality, direct-field precedence, fixed-group-before-overlap, strict-overlap, and singleton-cardinality separators. Reuse existing authoring and consistency-oracle owners; add no harness or representation.
 - **Compatibility:** Deduplicating starred group slots changes legal authored streams. Admitting equal fixed groups or reporting only overlap loses the Kernel's observable first repair. Checking fixed-group identity before direct-field identity loses the named direct-field witness in a mixed-fault list.
 - **Acceptance:** Canonical peer prose and maintained existing-family cases state and separate every measured branch with complete diagnostic-code lists, preserve the static-only scope, and return the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `2d384c59f18cf9a1019e1e8273f2d8e900f741e0`
+- **Local correction:** introducing commit
+- **Disposition:** rejected in mechanism, with the individual rows retained. The original all-fault row could not separate field-class priority from encounter order. The maintained reverse discriminator names the fixed group when its second occurrence arrives first, so all exact non-wildcard identities share one authored-order scan before strict overlap. Canonical prose, Lean elaboration, and both witness orders now carry that account.
 
 <a id="spec-2026-07-29-02"></a>
 <a id="spec-2026-07-29-02--computed-time-retains-zone-free-clock-identity"></a>
@@ -622,9 +625,9 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 ### SPEC-2026-08-11-04 - `RepetitionNotUnique` key admission collapses two out-of-group shapes into one class
 
-- **Status:** pending
+- **Status:** rejected
 - **Kind:** semantic extension, locally originated and locally measured
-- **Local revision:** introducing commit
+- **Local revision:** `fd01d4e1db2098586794dea5febfa81fed2e5fa3`
 - **a12-dmkits basis revision:** `8094f6643ef3ad01d40dd6d3675356196374e104`; the launcher was resolved and `--version`-verified against a clean worktree at that revision and `HEAD` never moved, while the peer's tree was dirty with test-source and documentation edits during these rows
 - **Kernel behavior:** 30.8.1 built and runtime, through unchanged source-shipped `dmtool` 0.13.0 `rule check`; every row `KERNEL_CONFIRMED`
 - **Canonical clause:** [`07-repetition-and-iteration.md` RNU section](../spec/07-repetition-and-iteration.md)
@@ -633,15 +636,18 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Requested a12-dmkits reconciliation:** Record the RNU key-admission classes in the shared account, with the collapse stated explicitly so neither project projects the two out-of-group shapes apart. A maintained admission-tier case per class is the natural owner; add no harness.
 - **Compatibility:** Splitting the collapsed class would report a distinction the engine does not make, and an authoring surface that reported a key-specific unknown-entity class would send an author looking for the wrong repair.
 - **Acceptance:** the shared account names the same classes per shape, states the collapse, and keeps the Number key admitted; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `2d384c59f18cf9a1019e1e8273f2d8e900f741e0`
+- **Local correction:** introducing commit
+- **Disposition:** rejected as incomplete and partly contrary. The maintained matrix adds both rule-at-repeatable spellings to the `MVK_REPEATABLE_GROUP_MISSING` collapse. Its index-free parallel-repeatable case gives `MVK_NO_WILDCARD`; Lean records that exact observation but leaves parallel paths unmapped because the indexed case's different class does not establish a discriminator.
 
 <a id="spec-2026-08-11-03"></a>
 <a id="spec-2026-08-11-03--group-list-admission-diagnostics-have-no-root-group-class-and-split-exact-duplicate-from-ancestor-overlap"></a>
 
 ### SPEC-2026-08-11-03 - group-list admission diagnostics have no root-group class, and split exact duplicate from ancestor overlap
 
-- **Status:** pending
+- **Status:** rejected
 - **Kind:** semantic extension, locally originated and locally measured
-- **Local revision:** introducing commit
+- **Local revision:** `46d1276b935417fb163ed96f8fc91a4bbf604216`
 - **a12-dmkits basis revision:** `8094f6643ef3ad01d40dd6d3675356196374e104` (clean, before and after)
 - **Kernel behavior:** 30.8.1 built and runtime, measured through unchanged source-shipped `dmtool` 0.13.0 `rule check`, the real-kernel consistency oracle; every row `KERNEL_CONFIRMED`
 - **Canonical clause:** [`02-logic-and-formal-errors.md` group-list quantifiers](../spec/02-logic-and-formal-errors.md)
@@ -651,6 +657,9 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Requested a12-dmkits reconciliation:** Record the per-carrier diagnostic identities in the shared account, and correct the skill's group-aggregate section, which states that `NumberOfFilledGroups(Lines)` without its star is "rejected `MVK_NO_WILDCARD`". Measured, that shape draws `MVK_PARAMSIZE_INVALIDGN` in both the absolute and relative path forms; `MVK_NO_WILDCARD` is what an *unstarred repeatable group operand of a quantifier* draws. A maintained admission-tier case per class, asserting the complete emitted code list beside the accepted controls, is the natural owner; add no harness.
 - **Compatibility:** An authoring surface that reports one duplicate class cannot tell an author whether to delete a repeated operand or to widen a nested pair, and one wildcard class cannot tell them whether to add a star, remove one, or change operator. Inventing a root-group class would send an author looking for a rule the kernel does not have.
 - **Acceptance:** the shared account names the same classes this entry measures, per carrier; the skill's `NumberOfFilledGroups` sentence names the measured class; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `2d384c59f18cf9a1019e1e8273f2d8e900f741e0`
+- **Local correction:** introducing commit
+- **Disposition:** rejected by the maintained second-root and error-locus controls. A second root separates both root classes from earlier overlap. An unstarred repeatable operand gives `MVK_NO_WILDCARD` outside its error-field row; inside, it reaches operator-specific admission, multiplicity, or negative-iteration gates. Lean maps the root classes; error-locus binding remains open at the rule owner that first sees the error field.
 
 <a id="spec-2026-08-11-01"></a>
 <a id="spec-2026-08-11-01--the-computed-number-scale-gate-precedes-self-reference-for-a-differing-scale-field-operand-too"></a>

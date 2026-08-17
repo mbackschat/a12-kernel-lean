@@ -23,7 +23,7 @@ inductive KernelStaticDiagnostic where
   | noBoolyAllowed
   /-- An operand list below the operator's required arity. -/
   | paramSizeInvalidN
-  /-- A fixed filled-group count carries a single **unstarred** operand. Measured on both a repeatable and a nonrepeatable single operand and in both path forms; a single starred operand is admitted, so this is not simply an operand-count gate. -/
+  /-- A filled-group count carries one fixed unstarred operand, including a repeatable operand whose level is bound by the error-field row. The same repeatable operand outside that row draws `noWildcard`; a single starred operand is admitted, so this is not simply an operand-count gate. -/
   | paramSizeInvalidGN
   /-- A group-list quantifier that requires at least two operands received one. Shared by `AllGroupsFilled`, `NotAllGroupsFilled`, and `GroupsNotCollectivelyFilled`; the two singleton-admitting quantifiers never reach it. -/
   | paramSizeInvalid2
@@ -41,7 +41,11 @@ inductive KernelStaticDiagnostic where
   | noWildcardsAllowed
   /-- A group path names no group in the model, or a key path names no field. Retained because it separates an unknown operand from every overlap class. -/
   | invalidEntity
-  /-- A `RepetitionNotUnique` key does not sit in the repeatable group the operator iterates: either it is in a different group than the first key, or the sole key's group is not repeatable at all. Both draw this one class. -/
+  /-- A root group appears under a group-list operator that forbids every root operand. -/
+  | rootGroupReferenced
+  /-- A root group appears beside another operand under a carrier that admits it only as a singleton. -/
+  | rootGroupWithOtherParameters
+  /-- `RepetitionNotUnique` cannot select the repeated group: a second key lies in a nonrepeatable group, the sole key has no repeated group, or the rule is already placed at that repeated group. These shapes draw one class. -/
   | repeatableGroupMissing
   /-- The rule's error field is named nowhere in its condition. A whole-rule gate rather than an operand gate, so it is projected at rule assembly. -/
   | errorFieldNotReferenced
@@ -87,6 +91,9 @@ def kernelCode : KernelStaticDiagnostic → String
   | .noWildcardsGAllowed => "MVK_NO_WILDCARDS_G_ALLOWED"
   | .noWildcardsAllowed => "MVK_NO_WILDCARDS_ALLOWED"
   | .invalidEntity => "MVK_INVALID_ENTITY"
+  | .rootGroupReferenced => "MVK_ROOT_GROUP_REFERENCED"
+  | .rootGroupWithOtherParameters =>
+      "MVK_ROOT_GROUP_WITH_OTHER_PARAMETERS"
   | .repeatableGroupMissing => "MVK_REPEATABLE_GROUP_MISSING"
   | .errorFieldNotReferenced => "MVK_ERROR_FIELD_NOT_REFERENCED"
   | .invalidPattern => "MVK_INVALID_PATTERN"
@@ -110,7 +117,7 @@ def all : List KernelStaticDiagnostic :=
     .varyingTypesNotAllowed, .noBoolyAllowed, .paramSizeInvalidN,
     .paramSizeInvalidGN, .paramSizeInvalid2, .duplicateParam1, .duplicateParam2,
     .noWildcard, .invalidWildcard, .noWildcardsGAllowed, .noWildcardsAllowed,
-    .invalidEntity,
+    .invalidEntity, .rootGroupReferenced, .rootGroupWithOtherParameters,
     .repeatableGroupMissing, .errorFieldNotReferenced,
     .invalidPattern, .invalidTypeForPatternComparison, .internalError,
     .invalidLengthOfRawType, .noNumber, .notSortable,
