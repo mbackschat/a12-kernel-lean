@@ -162,6 +162,9 @@ private def checkedBooleanValueCountOperandIterationScope :
           mergeIterationScopes
             (checkedStarBindingScope source.source)
             (← checkedHavingOuterIterationScope filter)
+  | .group slot =>
+      let scope := slot.source.bindingScope
+      pure (if scope.isEmpty then none else some scope)
 
 private def checkedBooleanValueCountSourceIterationScope
     (source : CheckedBooleanValueCountSource model) :

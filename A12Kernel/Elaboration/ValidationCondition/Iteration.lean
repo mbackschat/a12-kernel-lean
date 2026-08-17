@@ -209,6 +209,9 @@ private def booleanValueCountOperandReferenceScope? :
       Option (List RepeatableLevel)
   | .field _ => some []
   | .star source => checkedStarBindingScope source.source
+  | .group slot =>
+      let scope := slot.source.bindingScope
+      if scope.isEmpty then some [] else some scope
 
 private def booleanValueCountReferenceScopes?
     (source : CheckedBooleanValueCountSource model) :

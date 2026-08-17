@@ -139,20 +139,24 @@ def CheckedTokenValueCountSource.referencePointers
   (·.flatten) <$> checked.source.operands.mapM
     (CheckedTokenEntityOperand.referencePointers environment)
 
-/-- The Boolean/Confirm companion carries the identical operand shape, including the optional filter, so it makes the identical decision. Its fixed canonical-token projection is invisible here for the same reason the token projection is. -/
-def CheckedBooleanValueCountOperand.referencePointer (environment : Env) :
+/-- The Boolean/Confirm companion carries the identical operand shape, including the optional
+    filter and group slot, so it makes the identical decision. Its fixed canonical-token
+    projection is invisible here for the same reason the token projection is. -/
+def CheckedBooleanValueCountOperand.referencePointers (environment : Env) :
     CheckedBooleanValueCountOperand model expected →
-      Except ReferenceProjectionError MessagePointer
-  | .field source => concreteFieldPointer source.declaration environment
+      Except ReferenceProjectionError (List MessagePointer)
+  | .field source =>
+      (concreteFieldPointer source.declaration environment).map ([·])
   | .star source =>
       if source.filter.isSome then .error .filteredStarOperand
-      else starFieldPointer source.source environment
+      else (starFieldPointer source.source environment).map ([·])
+  | .group source => source.source.referencePointers environment
 
 def CheckedBooleanValueCountSource.referencePointers
     (checked : CheckedBooleanValueCountSource model) (environment : Env) :
     Except ReferenceProjectionError (List MessagePointer) :=
-  checked.operands.mapM
-    (CheckedBooleanValueCountOperand.referencePointer environment)
+  (·.flatten) <$> checked.operands.mapM
+    (CheckedBooleanValueCountOperand.referencePointers environment)
 
 /-- A row-paired product references both starred value fields and carries no filter at all. Its certificate forces one shared star path, so the two pointers differ only in field identity — which is why this needs no pairing notion of its own. -/
 def CheckedNumericProductAggregate.referencePointers

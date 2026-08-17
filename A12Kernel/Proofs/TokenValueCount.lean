@@ -50,21 +50,71 @@ theorem checkedTokenValueCount_partialHaving_skips
   simp [CheckedTokenValueCountSource.evaluatePartialValidation, filtered]
   rfl
 
-/-- Every operand admitted by a checked `False` count owns a Boolean declaration; Confirm is admitted only by `True`. -/
+/-- A retained Boolean/Confirm group omits no descendant: every declaration in the recursive
+    subtree is present in its certified expansion. -/
+theorem checkedBooleanValueCountGroup_expansion_complete
+    (group : CheckedBooleanValueCountGroup model expected)
+    (declaration : FlatFieldDecl)
+    (member : declaration ∈ model.groupSubtreeFields group.groupPath) :
+    ∃ selected,
+      declaration.toBooleanValueCountField? expected = some selected ∧
+      selected ∈ group.fields := by
+  have admitted :
+      (declaration.toBooleanValueCountField? expected).isSome = true :=
+    List.all_eq_true.mp group.expansionAllAllowed declaration member
+  match hField : declaration.toBooleanValueCountField? expected with
+  | none => rw [hField] at admitted; simp at admitted
+  | some selected =>
+      refine ⟨selected, rfl, ?_⟩
+      have retained : selected ∈
+          (model.groupSubtreeFields group.source.groupPath).filterMap
+            (FlatFieldDecl.toBooleanValueCountField? expected) :=
+        List.mem_filterMap.mpr ⟨declaration, member, hField⟩
+      rw [group.expansionOwned] at retained
+      simpa [CheckedBooleanValueCountGroup.fields] using retained
+
+/-- Every declaration retained by an operand admitted under `False` is Boolean; Confirm is
+    admitted only by `True`. This is list-valued because a group slot owns its whole expansion. -/
 theorem checkedBooleanValueCount_false_fields_boolean
     (operand : CheckedBooleanValueCountOperand model false) :
-    operand.declaration.policy.kind = .boolean := by
+    ∀ declaration ∈ operand.declarations,
+      declaration.policy.kind = .boolean := by
   cases operand with
   | field source =>
+      intro declaration member
+      simp only [CheckedBooleanValueCountOperand.declarations,
+        List.mem_singleton] at member
+      subst declaration
       have allowed := source.kindAllowed
       cases kind : source.declaration.policy.kind <;>
         simp [booleanValueCountKindAllowed, kind] at allowed
-      simpa [CheckedBooleanValueCountOperand.declaration] using kind
+      rfl
   | star source =>
+      intro declaration member
+      simp only [CheckedBooleanValueCountOperand.declarations,
+        List.mem_singleton] at member
+      subst declaration
       have allowed := source.kindAllowed
       cases kind : source.source.declaration.policy.kind <;>
         simp [booleanValueCountKindAllowed, kind] at allowed
-      simpa [CheckedBooleanValueCountOperand.declaration] using kind
+      rfl
+  | group source =>
+      intro declaration member
+      have retained : declaration ∈
+          (model.groupSubtreeFields source.source.groupPath).filterMap
+            (FlatFieldDecl.toBooleanValueCountField? false) := by
+        rw [source.expansionOwned]
+        simpa [CheckedBooleanValueCountOperand.declarations,
+          CheckedBooleanValueCountGroup.fields] using member
+      obtain ⟨original, _, selected⟩ := List.mem_filterMap.mp retained
+      unfold FlatFieldDecl.toBooleanValueCountField? at selected
+      split at selected
+      case isTrue allowed =>
+        cases selected
+        cases kind : declaration.policy.kind <;>
+          simp [booleanValueCountKindAllowed, kind] at allowed
+        rfl
+      case isFalse => simp at selected
 
 /-- Boolean/Confirm value count retains the fixed integral result scale of the shared tally. -/
 theorem checkedBooleanValueCount_scaleSummary

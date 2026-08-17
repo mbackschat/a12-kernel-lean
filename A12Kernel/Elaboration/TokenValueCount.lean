@@ -9,7 +9,7 @@ The Boolean/Confirm companion reuses that same fold only after its distinct stat
 
 namespace A12Kernel
 
-/-- A Boolean/Confirm value count uses the common direct/star field-list shape before applying its distinct kind gate. -/
+/-- A Boolean/Confirm value count uses the common direct/star/group field-list shape before applying its distinct kind gate. -/
 abbrev SurfaceBooleanValueCountSource := SurfaceFieldEntitySource
 
 /-- Static failures specific to the Boolean/Confirm value-count family. -/
@@ -18,8 +18,8 @@ inductive BooleanValueCountElabError where
   | fieldKindMismatch (path : List String) (expected : Bool)
       (actual : SurfaceScalarKind)
   | having (error : CorrelationElabError)
-  /-- The shared checker admitted a group-scope slot that this family does not yet retain. Deliberately carries no diagnostic class: this carrier's own group verdict is unmeasured, so a refusal states only that the representation is missing. -/
-  | groupOperandNotRepresented (path : List String)
+  /-- A group slot whose recursive subtree declares no field. Unmeasured, so refused without a diagnostic class. -/
+  | groupExpansionEmpty (path : List String)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -28,6 +28,15 @@ def booleanValueCountKindAllowed (expected : Bool) : FieldKind → Bool
   | .boolean => true
   | .confirm => expected
   | _ => false
+
+/-- Select one declaration admitted by the Boolean/Confirm constant-specific gate. Returning the
+    declaration itself lets a group certify that its retained expansion omitted nothing. -/
+def FlatFieldDecl.toBooleanValueCountField? (expected : Bool)
+    (declaration : FlatFieldDecl) : Option FlatFieldDecl :=
+  if booleanValueCountKindAllowed expected declaration.policy.kind then
+    some declaration
+  else
+    none
 
 /-- One checked direct Boolean/Confirm operand. -/
 structure CheckedBooleanValueCountField (model : FlatModel)
@@ -47,46 +56,89 @@ structure CheckedBooleanValueCountStarSource (model : FlatModel)
   kindAllowed :
     booleanValueCountKindAllowed expected source.declaration.policy.kind = true
 
+/-- One authored group slot certified as a nonempty recursive expansion whose every declaration is
+    admitted by the Boolean constant's kind gate. The authored reference remains the operand;
+    `first` and `rest` are the declaration-level certificate used by runtime and consumers. -/
+structure CheckedBooleanValueCountGroup (model : FlatModel)
+    (expected : Bool) where
+  source : CheckedEntityGroupSource model
+  first : FlatFieldDecl
+  rest : List FlatFieldDecl
+  expansionOwned :
+    (model.groupSubtreeFields source.groupPath).filterMap
+      (FlatFieldDecl.toBooleanValueCountField? expected) = first :: rest
+  expansionAllAllowed :
+    (model.groupSubtreeFields source.groupPath).all
+      (fun declaration =>
+        (declaration.toBooleanValueCountField? expected).isSome) = true
+
+namespace CheckedBooleanValueCountGroup
+
+def groupPath (group : CheckedBooleanValueCountGroup model expected) : GroupPath :=
+  group.source.groupPath
+
+def isStarred (group : CheckedBooleanValueCountGroup model expected) : Bool :=
+  group.source.isStarred
+
+def fields (group : CheckedBooleanValueCountGroup model expected) :
+    List FlatFieldDecl :=
+  group.first :: group.rest
+
+def referencesField (group : CheckedBooleanValueCountGroup model expected)
+    (field : FieldId) : Bool :=
+  group.fields.any (·.id == field)
+
+end CheckedBooleanValueCountGroup
+
 /-- One checked Boolean/Confirm entity-list operand. -/
 inductive CheckedBooleanValueCountOperand (model : FlatModel)
     (expected : Bool) where
   | field (source : CheckedBooleanValueCountField model expected)
   | star (source : CheckedBooleanValueCountStarSource model expected)
+  | group (source : CheckedBooleanValueCountGroup model expected)
 
 namespace CheckedBooleanValueCountOperand
 
-def declaration :
-    CheckedBooleanValueCountOperand model expected → FlatFieldDecl
-  | .field source => source.declaration
-  | .star source => source.source.declaration
+def declarations :
+    CheckedBooleanValueCountOperand model expected → List FlatFieldDecl
+  | .field source => [source.declaration]
+  | .star source => [source.source.declaration]
+  | .group source => source.fields
 
 def directField? :
     CheckedBooleanValueCountOperand model expected → Option FlatFieldDecl
   | .field source => some source.declaration
-  | .star _ => none
+  | .star _ | .group _ => none
 
 def directFieldId? :
     CheckedBooleanValueCountOperand model expected → Option FieldId
   | .field source => some source.declaration.id
-  | .star _ => none
+  | .star _ | .group _ => none
 
-def isStar : CheckedBooleanValueCountOperand model expected → Bool
+def isAlreadyMany : CheckedBooleanValueCountOperand model expected → Bool
   | .field _ => false
-  | .star _ => true
+  | .star _ | .group _ => true
+
+def groupSlot? : CheckedBooleanValueCountOperand model expected →
+    Option (CheckedBooleanValueCountGroup model expected)
+  | .group source => some source
+  | .field _ | .star _ => none
 
 def hasHaving : CheckedBooleanValueCountOperand model expected → Bool
   | .field _ => false
   | .star source => source.filter.isSome
+  | .group _ => false
 
 def referencesField (checked :
     CheckedBooleanValueCountOperand model expected) (field : FieldId) : Bool :=
-  checked.declaration.id == field ||
-    match checked with
-    | .field _ => false
-    | .star source =>
+  match checked with
+  | .field source => source.declaration.id == field
+  | .star source =>
+      source.source.declaration.id == field ||
         match source.filter with
         | none => false
         | some having => having.condition.referencesField field
+  | .group source => source.referencesField field
 
 end CheckedBooleanValueCountOperand
 
@@ -94,6 +146,33 @@ def firstDuplicateDirectBooleanValueCountField? :
     List (CheckedBooleanValueCountOperand model expected) → Option FieldId
   | operands => firstDuplicateDirectField?
       (fun operand => operand.directFieldId?) operands
+
+private def certifyBooleanValueCountGroup (model : FlatModel)
+    (expected : Bool) (source : CheckedEntityGroupSource model) :
+    Except BooleanValueCountElabError
+      (CheckedBooleanValueCountOperand model expected) :=
+  let declarations := model.groupSubtreeFields source.groupPath
+  match declarations.find? fun declaration =>
+      !booleanValueCountKindAllowed expected declaration.policy.kind with
+  | some declaration =>
+      throw (.fieldKindMismatch declaration.path expected
+        declaration.policy.kind.surfaceKind)
+  | none =>
+      if hAll : declarations.all
+          (fun declaration =>
+            (declaration.toBooleanValueCountField? expected).isSome) = true then
+        match hExpansion : declarations.filterMap
+            (FlatFieldDecl.toBooleanValueCountField? expected) with
+        | [] => throw (.groupExpansionEmpty source.groupPath)
+        | first :: rest =>
+            pure (.group {
+              source
+              first
+              rest
+              expansionOwned := hExpansion
+              expansionAllAllowed := hAll })
+      else
+        throw .incoherentCore
 
 private def certifyBooleanValueCountOperand (model : FlatModel)
     (declaringGroup : GroupPath) (expected : Bool) :
@@ -138,9 +217,10 @@ private def certifyBooleanValueCountOperand (model : FlatModel)
       else
         throw (.fieldKindMismatch source.declaration.path expected
           source.declaration.policy.kind.surfaceKind)
-  | .group reference => throw (.groupOperandNotRepresented reference.path)
+  | .group reference =>
+      certifyBooleanValueCountGroup model expected (.fixed reference)
   | .starredGroup source =>
-      throw (.groupOperandNotRepresented source.group.path)
+      certifyBooleanValueCountGroup model expected (.starred source)
 
 private def certifyBooleanValueCountOperands (model : FlatModel)
     (declaringGroup : GroupPath) (expected : Bool) :
@@ -152,13 +232,13 @@ private def certifyBooleanValueCountOperands (model : FlatModel)
       pure ((← certifyBooleanValueCountOperand model declaringGroup expected operand) ::
         (← certifyBooleanValueCountOperands model declaringGroup expected remaining))
 
-/-- A model-owned Boolean/Confirm `NumberOfValueInFields` source retaining direct/star order and optional per-star filters. -/
+/-- A model-owned Boolean/Confirm `NumberOfValueInFields` source retaining direct/star/group order and optional per-star filters. -/
 structure CheckedBooleanValueCountSource (model : FlatModel) where
   expected : Bool
   first : CheckedBooleanValueCountOperand model expected
   rest : List (CheckedBooleanValueCountOperand model expected)
   modelWellFormed : model.validate.isOk = true
-  requiredMultiplicity : (first.isStar || !rest.isEmpty) = true
+  requiredMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true
   uniqueDirectOperands :
     firstDuplicateDirectBooleanValueCountField? (first :: rest) = none
 
@@ -177,7 +257,7 @@ def hasHaving (checked : CheckedBooleanValueCountSource model) : Bool :=
 
 end CheckedBooleanValueCountSource
 
-/-- Resolve the common direct/star entity-list shape and certify its constant-specific Boolean/Confirm family. -/
+/-- Resolve the common direct/star/group entity-list shape and certify its constant-specific Boolean/Confirm family. -/
 def elaborateBooleanValueCountSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : Bool)
     (authored : SurfaceBooleanValueCountSource) :
@@ -189,7 +269,7 @@ def elaborateBooleanValueCountSource (model : FlatModel)
     certifyBooleanValueCountOperand model declaringGroup expected shape.first
   let rest ←
     certifyBooleanValueCountOperands model declaringGroup expected shape.rest
-  if hMultiplicity : (first.isStar || !rest.isEmpty) = true then
+  if hMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true then
     match hDuplicate :
         firstDuplicateDirectBooleanValueCountField? (first :: rest) with
     | some _ => throw .incoherentCore
@@ -289,6 +369,8 @@ def resolvedValidationSide
       source.source.resolvedOptionalValidationHavingValueListSide
         document outer source.filter starRead
         (starCellAt source .validation starRead)
+  | .group source =>
+      .error (.unsupportedGroupOperand source.groupPath)
 
 /-- Resolve one Boolean/Confirm slot at computation phase. Filtered stars preserve one-kept-successor selection and stop on the first reached filter or value poison. -/
 def resolvedComputationSide
@@ -322,6 +404,8 @@ def resolvedComputationSide
                 hasHaving := true })
           | .terminated cause | .poison cause =>
               pure (.inr (.unknown cause))
+  | .group source =>
+      .error (.unsupportedGroupOperand source.groupPath)
 
 /-- Resolve one Boolean/Confirm slot from the immutable checked document and project its addressed cells only after topology and filter selection succeed. -/
 def resolvedCheckedValidationSide
@@ -334,6 +418,8 @@ def resolvedCheckedValidationSide
     | .star source =>
         source.source.resolveCheckedValidationEntityOperandCore document outer
           (source.filter.map (·.condition))
+    | .group source =>
+        .error (.addressing (.unsupportedGroupOperand source.groupPath))
   pure {
     cells := core.addressedCells.map fun addressed =>
       booleanValueCountCellAt .validation addressed.cell
