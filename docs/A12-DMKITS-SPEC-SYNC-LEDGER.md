@@ -77,6 +77,23 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 **The producer side now discloses its rewrites, which is what this project asked for.** The 2026-08-12 handbacks name the rebase, list the branch SHAs that no longer exist as reachable objects and must not be cited, and give revisions read off `main` as the last step before sending. Every revision they cite resolved from `main` when checked here on 2026-08-12: `06b84701`, `b99e43e1`, `4b244b84`, `73bc4a04`, and `ae567007`. A handback dated 2026-08-12 or later is therefore discharged against its own cited revision, while an earlier one still needs the maintained-owner route above. The reverse error is now on record too: `2bffcb10` was reported dead from here and resolves fine, which the 2026-08-10 boundary already predicted for it, so a reachability measurement taken against a stale checkout is itself a claim with a date on it.
 
+<a id="spec-2026-08-17-02"></a>
+<a id="spec-2026-08-17-02--fixed-group-firstfilledvalue-uses-model-declaration-order"></a>
+
+### SPEC-2026-08-17-02 - fixed-group `FirstFilledValue` uses model declaration order
+
+- **Status:** pending
+- **Kind:** semantic extension, locally originated and locally measured
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `57ddd442f2f609b645c0030280662bc96d8ac49c` (clean before and after)
+- **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool 0.13.0 plus `:adapter:kernelProbe`; dynamic Groovy and static Java agree
+- **Canonical clause:** [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the-correlation-and-aggregation)
+- **Delta:** A fixed-group `FirstFilledValue` scans the recursive expansion in stable model declaration order. The earlier of two direct declarations and the earlier of two fixed nested subgroup declarations wins even when the later path sorts first; an empty earlier declaration marks a later selected token not-given, while empty declarations after the selected token do not change VALUE to OMISSION.
+- **Basis:** One four-row request compares `ZetaDirect` before `AlphaDirect` and `ZetaNested/Value` before `AlphaNested/Value`. Both-filled rows select `Zeta`; second-only controls select `Alpha`; the direct both-filled row is VALUE and the three rows with an empty direct prefix are OMISSION. The request is SHA-256 `adefc3b59a79f38eb9aaa5bacb91c12ac74bf8c6a317785db4f3ea36d74fbbd3`, and two unchanged probe runs produced byte-identical artifacts at SHA-256 `a9c702f51df0801319ef01ce27e434b9b98b16228c9c711cf700be2f621f1a49`.
+- **Requested a12-dmkits reconciliation:** State declaration order for the fixed-group first-filled expansion in the canonical repetition account and add the four separating rows to the smallest existing group-runtime or `FirstFilledValue` kernel law family. Reuse the existing group expansion and runtime-probe owners; add no new evaluator, schema, or harness.
+- **Compatibility:** Lexically sorting field paths selects `Alpha` in both both-filled rows. Treating a nested subgroup as an unordered scope loses the same distinction. Dropping empty-prefix provenance changes OMISSION to VALUE on the three fallback/nested rows; deriving polarity from the whole expansion changes the direct-both row from VALUE to OMISSION.
+- **Acceptance:** Canonical peer prose names stable model declaration order; maintained kernel cases retain the two both-filled separators and both second-only controls, including VALUE/OMISSION; the handback supplies the exact reviewed revision and per-surface disposition without adding a parallel expansion or probe route.
+
 <a id="spec-2026-08-17-01"></a>
 <a id="spec-2026-08-17-01--fixed-group-duplication-precedes-ancestor-overlap-while-starred-groups-remain-occurrences"></a>
 

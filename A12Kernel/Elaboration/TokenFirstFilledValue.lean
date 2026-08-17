@@ -112,10 +112,8 @@ private def scanCheckedFirstFilledTokenOperand
       Except StarAddressingError
         (FirstFilledScanState ⊕ PartialValidationFirstFilledTokenResult)
   | .group source =>
-      -- Two independent gaps, either of which alone forbids a value here: this raw-`Document`
-      -- route cannot enumerate the group's instantiated rows, and `spec/07` pins encounter order
-      -- across a group only as "a filled direct field precedes the nested rows", which orders
-      -- neither two direct fields nor two nested subgroups.
+      -- This legacy raw-`Document` route cannot enumerate the group's instantiated rows. The
+      -- checked-document specialization below owns the measured fixed-group fragment.
       .error (.unsupportedGroupOperand source.groupPath)
   | .field source =>
       if scope.coversCell model source.declaration.path [] then
@@ -151,6 +149,29 @@ private def scanCheckedFirstFilledTokenOperands
       | .inr result => pure result
 
 namespace CheckedTokenEntitySource
+
+/-- Evaluate the measured full-validation fragment in which one fixed, wholly nonrepeatable group
+    is the complete `FirstFilledValue` operand list. The immutable checked document supplies the
+    group's recursive field extent, each cell keeps its declaration-owned token projection, and the
+    shared first-filled evaluator consumes that extent in model declaration order. `none` keeps
+    every wider source outside this fragment, including a starred group, a repeatable declaration,
+    or another authored operand, without confusing refusal with the evaluated `.noValue` result. -/
+def evaluateCheckedFixedGroupFirstFilledValidation?
+    (checked : CheckedTokenEntitySource model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError (Option FirstFilledTokenResult) :=
+  match checked.first, checked.rest with
+  | .group group, [] =>
+      if group.isStarred ||
+          !group.slots.all (fun slot => slot.declaration.repeatableScope.isEmpty) then
+        pure none
+      else do
+        let resolved ←
+          (CheckedTokenEntityOperand.group group).resolveCheckedValidationOperand
+            document outer
+        pure (some (evalFirstFilledToken
+          (resolved.valueListSideAt .validation)))
+  | _, _ => pure none
 
 /-- Evaluate checked direct and independently resolved star slots in authored order. Later topology, filters, relevance, and target reads remain unobserved after a terminal prefix. -/
 def evaluatePartialFirstFilledValidation

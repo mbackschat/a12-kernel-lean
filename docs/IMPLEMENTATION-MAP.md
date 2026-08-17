@@ -323,7 +323,8 @@ These stable names help when a query crosses numbered clauses. Their capability 
 - `boundary`: full validation resolves the operand-bounded `(row × field)` extent from model repeatability, binding only levels above the operand from the outer environment.
 - `boundary`: `FieldValuesNotUnique`, `Sum`, extrema, and distinct count share that resolver; expansion-kind diagnostics remain keyed by operator.
 - `limit`: non-Number, empty, and mixed-signedness expansions fail locally without inventing a Kernel class.
-- `limit`: the resolver emits cells field-major, but current set-valued carriers and the filter-free group surface cannot observe that order, so no Kernel order claim follows.
+- `boundary`: the resolver emits cells declaration-major in stable model declaration order, with each declaration's canonical row order inside it; fixed-group token `FirstFilledValue` now observes the declaration-order half.
+- `limit`: Kernel correspondence for that order is established only for two direct declarations and two fixed nested subgroup declarations; starred groups and repeatable row order remain open.
 - `limit`: only instantiated rows are enumerated and `hasUninstantiatedTail` is false; correspondence for a declared but uninstantiated tail is open.
 - `owner`: [`NumberEntityList.lean`](../A12Kernel/Elaboration/NumberEntityList.lean) and [`CheckedStarDocument.lean`](../A12Kernel/Elaboration/CheckedStarDocument.lean).
 - `case`: [group extent and admission cases](../A12Kernel/Conformance/FieldEntityGroupOperand.lean).
@@ -339,13 +340,15 @@ These stable names help when a query crosses numbered clauses. Their capability 
 - `boundary`: the token carrier retains the authored group and a certified recursive expansion, pairing every reached cell with the declaration and operand that read it.
 - `boundary`: a group authors no read form, so every member is read stored and homogeneity applies across the entire expansion rather than only between authored slots.
 - `boundary`: full-validation `FieldValuesNotUnique` and token aggregate routes consume the shared operand-bounded extent.
+- `boundary`: full-validation token `FirstFilledValue` over exactly one fixed, wholly nonrepeatable group consumes the same recursive extent through the shared stop-at-first evaluator, preserving selected token and empty-prefix missingness while ignoring an empty suffix after selection.
 - `extent`: [Number group aggregates](#cap-number-group-aggregates) owns the shared resolver's ordering and uninstantiated-tail limits.
 - `limit`: `NumberOfValueInFields` currently admits a group literal only when every expanded declaration admits it; this is a local representation choice, not a Kernel claim.
-- `owner`: [`TokenEntityGroup.lean`](../A12Kernel/Elaboration/TokenEntityGroup.lean) and [`TokenEntityValueList.lean`](../A12Kernel/Elaboration/TokenEntityValueList.lean).
+- `limit`: starred groups, any group expansion containing a repeatable declaration, a group mixed with other operands, computation, partial validation, and legacy raw-document routes remain explicitly unsupported by this first-filled path.
+- `owner`: [`TokenEntityGroup.lean`](../A12Kernel/Elaboration/TokenEntityGroup.lean), [`TokenEntityValueList.lean`](../A12Kernel/Elaboration/TokenEntityValueList.lean), and [`TokenFirstFilledValue.lean`](../A12Kernel/Elaboration/TokenFirstFilledValue.lean).
 - `case`: [token group cases](../A12Kernel/Conformance/TokenEntityGroupOperand.lean).
 - `proof`: [`checkedTokenEntityGroup_expansion_complete`](../A12Kernel/Proofs/TokenEntityValueList.lean) and [`checkedTokenEntityGroup_projections_stored`](../A12Kernel/Proofs/TokenEntityValueList.lean).
-- `assurance`: E/P closed for retention, per-cell projection, and full-validation extent; L partial; C none; X none; Q none.
-- `source`: [group-operand admission](SOURCES.md#src-field-values-not-unique-group-admission) and [group runtime differential](SOURCES.md#src-field-values-not-unique-group-runtime).
+- `assurance`: E/P closed for retention, per-cell projection, full-validation extent, and the bounded fixed-group first-filled specialization through existing generic laws; L partial, including the exact direct/nested declaration-order matrix; C none; X none; Q none.
+- `source`: [group-operand admission](SOURCES.md#src-field-values-not-unique-group-admission), [group runtime differential](SOURCES.md#src-field-values-not-unique-group-runtime), and [fixed-group first-filled order](SOURCES.md#src-group-first-filled-runtime-order).
 - `remains`: [Number and token group runtime](SEMANTICS-GAPS.md#gap-sg5-number-token-group-runtime).
 
 <a id="cap-temporal-group-uniqueness"></a>

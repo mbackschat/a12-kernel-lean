@@ -78,7 +78,6 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `state`: open
 - `missing`: execute retained Number and token group operands through computation, partial validation, and legacy raw-`Document` routes.
 - `missing`: make Number directional missingness per cell before admitting a group whose declarations disagree on signedness.
-- `missing`: establish `FirstFilledValue` encounter order between two direct fields and between two nested subgroups; current evidence orders only one filled direct field before nested rows.
 - `missing`: decide `NumberOfValueInFields` literal admission over a group independently of the current all-expanded-declarations local choice.
 - `prerequisite`: legacy raw-`Document` readers must expose instantiated-row topology before they can enumerate the operand-bounded group extent.
 - `baseline`: [Number group aggregates](IMPLEMENTATION-MAP.md#cap-number-group-aggregates) and [token group expansion](IMPLEMENTATION-MAP.md#cap-token-group-expansion) own full-validation execution.

@@ -64,7 +64,15 @@ private def probeModel : FlatModel :=
       { id := 16, groupPath := ["Form", "Outer", "Fixed"], name := "Second",
         policy := { kind := .string }, repeatableScope := [30] },
       { id := 17, groupPath := ["Form", "Outer", "Inner"], name := "Value",
-        policy := { kind := .string }, repeatableScope := [30, 31] }]
+        policy := { kind := .string }, repeatableScope := [30, 31] },
+      { id := 18, groupPath := ["Form", "Encounter"], name := "ZetaDirect",
+        policy := { kind := .string } },
+      { id := 19, groupPath := ["Form", "Encounter"], name := "AlphaDirect",
+        policy := { kind := .string } },
+      { id := 20, groupPath := ["Form", "Encounter", "ZetaNested"], name := "Value",
+        policy := { kind := .string } },
+      { id := 21, groupPath := ["Form", "Encounter", "AlphaNested"], name := "Value",
+        policy := { kind := .string } }]
     repeatableGroups := [
       { level := 20, path := ["Form", "Bag", "Lines"] },
       { level := 30, path := ["Form", "Outer"] },
@@ -418,10 +426,9 @@ example :
     rawRoutesResolve (group ["Form", "Bag"]) = [false, false, false, false] := by
   native_decide
 
-/- `FirstFilledValue` refuses for a **second, independent** reason that outlives the raw route:
-   `spec/07` pins encounter order across a group only as "a filled direct field precedes the nested
-   rows", which orders neither two direct fields nor two nested subgroups. Even a checked-document
-   route would have nothing to implement. -/
+/- `FirstFilledValue` still refuses on this legacy raw-`Document` route because the route cannot
+   enumerate a group's instantiated rows. The checked-document route below owns the now-measured
+   fixed-group fragment without inventing topology here. -/
 private def firstFilledResolves (operand : SurfaceFieldEntityOperand) : Bool :=
   match elaborateFirstFilledTokenSource probeModel ["Form"]
       { first := operand, rest := [field "Other"] } with
@@ -435,6 +442,80 @@ private def firstFilledResolves (operand : SurfaceFieldEntityOperand) : Bool :=
 example : firstFilledResolves (field "Loose") = true := by native_decide
 
 example : firstFilledResolves (group ["Form", "Bag"]) = false := by native_decide
+
+/-! ## Fixed-group `FirstFilledValue` follows declaration encounter order
+
+The real-kernel matrix at clean a12-dmkits `57ddd442` distinguishes declaration order from lexical
+path order twice: `ZetaDirect` precedes `AlphaDirect`, and `ZetaNested/Value` precedes
+`AlphaNested/Value`. Each second-only control proves the scan can reach the later declaration. The
+direct-both case stays VALUE despite the empty nested suffix; the other three cases retain an empty
+prefix as validation missingness.
+-/
+
+private def fixedGroupFirstFilledDecision
+    (operand : SurfaceFieldEntityOperand) (cells : List ClassifiedCellInput)
+    (declaringGroup : GroupPath := ["Form"])
+    (rest : List SurfaceFieldEntityOperand := []) :
+    Option (Option FirstFilledTokenResult) := do
+  let source ←
+    (elaborateFirstFilledTokenSource probeModel declaringGroup
+      { first := operand, rest }).toOption
+  let document ←
+    (checkDocument prepared "en_US" { instantiatedRows := [], cells }).toOption
+  (source.evaluateCheckedFixedGroupFirstFilledValidation? document []).toOption
+
+private def encounterFirstFilled? (cells : List ClassifiedCellInput) :
+    Option FirstFilledTokenResult :=
+  match fixedGroupFirstFilledDecision (group ["Form", "Encounter"]) cells with
+  | some result => result
+  | none => none
+
+example :
+    encounterFirstFilled? [str 18 [] "zeta", str 19 [] "alpha"] =
+      some (.value "zeta" false) := by
+  native_decide
+
+example :
+    encounterFirstFilled? [str 19 [] "alpha"] =
+      some (.value "alpha" true) := by
+  native_decide
+
+example :
+    encounterFirstFilled? [str 20 [] "zeta", str 21 [] "alpha"] =
+      some (.value "zeta" true) := by
+  native_decide
+
+example :
+    encounterFirstFilled? [str 21 [] "alpha"] =
+      some (.value "alpha" true) := by
+  native_decide
+
+/- An evaluated empty fixed nonrepeatable group remains distinct from unsupported starred,
+   repeatable, and wider-list fragments. -/
+example :
+    fixedGroupFirstFilledDecision (group ["Form", "Encounter"]) [] =
+      some (some .noValue) := by
+  native_decide
+
+example :
+    fixedGroupFirstFilledDecision (starredGroup [
+      { name := "Form" }, { name := "Outer", starred := true },
+      { name := "Fixed" }]) [] = some none := by
+  native_decide
+
+example :
+    fixedGroupFirstFilledDecision (.group (.ruleGroup false)) []
+      (declaringGroup := ["Form", "Outer"]) = some none := by
+  native_decide
+
+example :
+    fixedGroupFirstFilledDecision (group ["Form", "Bag"]) [] = some none := by
+  native_decide
+
+example :
+    fixedGroupFirstFilledDecision (group ["Form", "Encounter"]) []
+      (rest := [field "Other"]) = some none := by
+  native_decide
 
 /-! ## The message reference channel publishes the expansion, never the group
 
