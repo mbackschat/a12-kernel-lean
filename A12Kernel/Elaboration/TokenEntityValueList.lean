@@ -55,6 +55,15 @@ structure SurfaceProjectedTokenEntityValueListSource where
   values : SurfaceProjectedTokenEntitySource
   deriving Repr, DecidableEq
 
+/-- A parser-independent plural token-entity fields side against decoded String literals. This
+    capsule retains the measured String-family form; Enumeration literal-domain admission remains
+    with its existing dedicated owners. -/
+structure SurfaceTokenEntityStringLiteralValueListSource where
+  quantifier : ValueListQuantifier
+  fields : SurfaceTokenEntitySource
+  values : List String
+  deriving Repr, DecidableEq
+
 /-- A checked two-sided String or Enumeration value list. Both sides share one base family, and exact direct-reference uniqueness spans the complete authored operation. -/
 structure CheckedTokenEntityValueListSource (model : FlatModel) where
   quantifier : ValueListQuantifier
@@ -67,12 +76,97 @@ structure CheckedTokenEntityValueListSource (model : FlatModel) where
     firstDuplicateDirectTokenField?
       (fields.operands ++ values.operands) = none
 
+/-- The measured plural String-literal form after the complete fields side has been resolved,
+    certified as one String family, and retained without lowering a group operand into fields. -/
+structure CheckedTokenEntityStringLiteralValueListSource (model : FlatModel) where
+  quantifier : ValueListQuantifier
+  fields : CheckedTokenEntitySource model
+  fieldsFamily : fields.valueListFamily? = some .string
+  firstValue : String
+  restValues : List String
+
 inductive TokenEntityValueListElabError where
   | fields (error : TokenEntityElabError)
   | values (error : TokenEntityElabError)
   | mixedFamily
   | duplicateOperand (field : FieldId)
   deriving Repr, DecidableEq
+
+inductive TokenEntityStringLiteralValueListElabError where
+  | shape (error : FieldEntityShapeElabError)
+  | fields (error : TokenEntityElabError)
+  | dateGroupAgainstStringValues (path : GroupPath)
+  | unsupportedFieldsFamily (found : Option TokenEntityValueListFamily)
+  | emptyValues
+  deriving Repr, DecidableEq
+
+private def FlatFieldDecl.isDate (declaration : FlatFieldDecl) : Bool :=
+  match declaration.policy.kind with
+  | .temporal .date _ => true
+  | _ => false
+
+/-- The exact measured discriminator is a homogeneous Date group. A direct Date field, a group
+    merely containing a Date, and every other group certification failure stay outside it. -/
+private def ResolvedFieldEntityOperand.homogeneousDateGroupPath? :
+    ResolvedFieldEntityOperand model → Option GroupPath
+  | operand =>
+      match operand.subtreePath? with
+      | none => none
+      | some path =>
+          let declarations := operand.expansionDeclarations
+          if !declarations.isEmpty && declarations.all FlatFieldDecl.isDate then
+            some path
+          else
+            none
+
+private def firstHomogeneousDateGroupPath? :
+    List (ResolvedFieldEntityOperand model) → Option GroupPath
+  | [] => none
+  | operand :: remaining =>
+      match operand.homogeneousDateGroupPath? with
+      | some path => some path
+      | none => firstHomogeneousDateGroupPath? remaining
+
+/-- Check the measured plural String-literal form in operator order. The Date-group class is
+    projected before token certification erases the rejected expansion's kind; no shared group
+    error is reclassified. -/
+def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
+    (declaringGroup : GroupPath)
+    (authored : SurfaceTokenEntityStringLiteralValueListSource) :
+    Except TokenEntityStringLiteralValueListElabError
+      (CheckedTokenEntityStringLiteralValueListSource model) := do
+  let shape ← elaborateFieldEntityShape model declaringGroup authored.fields
+    |>.mapError .shape
+  let (firstValue, restValues) ←
+    match authored.values with
+    | [] => throw .emptyValues
+    | firstValue :: restValues => pure (firstValue, restValues)
+  match firstHomogeneousDateGroupPath? shape.operands with
+  | some path => throw (.dateGroupAgainstStringValues path)
+  | none => pure ()
+  let fields ← certifyTokenEntityShape model declaringGroup shape
+    |>.mapError .fields
+  match hFamily : fields.valueListFamily? with
+  | some .string =>
+      pure {
+        quantifier := authored.quantifier
+        fields
+        fieldsFamily := hFamily
+        firstValue
+        restValues }
+  | found => throw (.unsupportedFieldsFamily found)
+
+namespace TokenEntityStringLiteralValueListElabError
+
+/-- Project only the established operator-specific Date-group class. Shape failures keep the
+    shared checker's established classes; every other local refusal remains unmapped. -/
+def diagnostic? : TokenEntityStringLiteralValueListElabError →
+    Option KernelStaticDiagnostic
+  | .shape error => error.diagnostic?
+  | .dateGroupAgainstStringValues _ => some .onlyStringEnumNumberAllowed
+  | .fields _ | .unsupportedFieldsFamily _ | .emptyValues => none
+
+end TokenEntityStringLiteralValueListElabError
 
 /-- Join two already-checked token sides without reconstructing declarations or erasing Enumeration projection identity. -/
 def assembleTokenEntityValueListSource

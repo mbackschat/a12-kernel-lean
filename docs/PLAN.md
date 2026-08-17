@@ -4,15 +4,15 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last semantic full gate, 2026-08-17:** the applicable full gate passed for `a91a2f8`. Re-run the required tier commands in [`TESTING.md`](TESTING.md#tier-gates) before semantic work.
+**Verified semantic baseline, 2026-08-17:** the Date-group diagnostic capsule passed its complete Tier 1 gate in this slice; the last exact committed full-gate baseline remains `a91a2f8`. Re-run the required tier commands in [`TESTING.md`](TESTING.md#tier-gates) before the next semantic edit.
 
 <a id="active-unit"></a>
 ## Selected work
 
-- `gap`: [SG5 Date-group String-value-list diagnostic](SEMANTICS-GAPS.md#gap-sg5-date-group-string-value-list-diagnostic).
-- `objective`: project the measured operator-specific class without widening any other group refusal.
-- `oracle`: [group-carrier admission sweep](SOURCES.md#src-group-carrier-admission-sweep).
-- `next`: add the red conformance case at the shared entity-list group diagnostic boundary.
-- `stop`: stop if the local refusal cannot distinguish the measured Date-group wrong-kind case from heterogeneous mixing.
+- `gap`: [SG5 group static-diagnostic residuals](SEMANTICS-GAPS.md#gap-sg5-group-static-diagnostic-residuals).
+- `objective`: establish a verified implementation and evidence route for the first coherent homogeneous-wrong-kind versus heterogeneous-group diagnostic pair before semantic edits.
+- `oracle`: the gap's same-carrier counterfactual requirement; no unmeasured diagnostic outcome is assumed.
+- `next`: inspect the current a12-dmkits and `dmtool` authoring surfaces for a route that can express and kernel-check both members of one separating pair.
+- `stop`: if no existing route exposes both cases, record the bounded upstream request and leave every diagnostic unmapped.
 - `blocked-on`: none.
-- `resume`: `lake build A12Kernel.Conformance.FieldEntityGroupOperand`
+- `resume`: `rg -n 'FirstFilledValue|MVK_NO_BOOLY_ALLOWED|group operand' ../a12-rulekit/src ../a12-rulekit/skill/SKILL.md`

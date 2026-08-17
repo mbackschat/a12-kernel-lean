@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumberValuesNotUnique
+import A12Kernel.Elaboration.TokenEntityValueList
 import A12Kernel.Elaboration.ValidationCondition.Reference
 
 /-! # A12Kernel.Conformance.FieldEntityGroupOperand — the shared entity list's group slot
@@ -27,9 +28,10 @@ open A12Kernel
 
 private def unsigned : NumField := { scale := 0, signed := false }
 
-/-- Two nonrepeatable subtrees and one stacked repeatable pair. `Probe/A` carries a String only
-    below a **nested** subgroup, so a direct-child expansion and the recursive one disagree on it;
-    `Probe/B` is the pure-Number control that isolates every other gate from the kind scan. -/
+/-- Number, String, Date, and mixed nonrepeatable subtrees plus one stacked repeatable pair.
+    `Probe/A` carries a String only below a **nested** subgroup, so a direct-child expansion and the
+    recursive one disagree on it; `Probe/B` is the pure-Number control that isolates every other
+    gate from the kind scan. -/
 private def probeModel : FlatModel :=
   { fields := [
       { id := 1, groupPath := ["Probe", "A"], name := "AVal",
@@ -45,10 +47,34 @@ private def probeModel : FlatModel :=
       { id := 6, groupPath := ["Probe", "Rows"], name := "RowVal",
         policy := { kind := .number unsigned }, repeatableScope := [10] },
       { id := 7, groupPath := ["Probe", "Rows", "Fees"], name := "FeeVal",
-        policy := { kind := .number unsigned }, repeatableScope := [10, 11] }]
+        policy := { kind := .number unsigned }, repeatableScope := [10, 11] },
+      { id := 8, groupPath := ["Probe", "Milestones"], name := "ReportedOn",
+        policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "dd.MM.yyyy" } },
+      { id := 9, groupPath := ["Probe", "Milestones"], name := "SettledOn",
+        policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "dd.MM.yyyy" } },
+      { id := 10, groupPath := ["Probe", "Contact"], name := "Email",
+        policy := { kind := .string } },
+      { id := 11, groupPath := ["Probe", "Contact"], name := "Phone",
+        policy := { kind := .string } },
+      { id := 12, groupPath := ["Probe", "Mixed"], name := "Text",
+        policy := { kind := .string } },
+      { id := 13, groupPath := ["Probe", "Mixed"], name := "Date",
+        policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "dd.MM.yyyy" } },
+      { id := 14, groupPath := ["Probe", "Inspections"], name := "VisitedOn",
+        policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "dd.MM.yyyy" },
+        repeatableScope := [12] },
+      { id := 15, groupPath := ["Probe", "Inspections"], name := "ClosedOn",
+        policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "dd.MM.yyyy" },
+        repeatableScope := [12] }]
     repeatableGroups := [
       { level := 10, path := ["Probe", "Rows"] },
-      { level := 11, path := ["Probe", "Rows", "Fees"] }] }
+      { level := 11, path := ["Probe", "Rows", "Fees"] },
+      { level := 12, path := ["Probe", "Inspections"] }] }
 
 private def group (groups : GroupPath) : SurfaceFieldEntityOperand :=
   .group (.path { base := .absolute, groups })
@@ -185,6 +211,75 @@ example : diagnostic? [group ["Probe", "A"]] = some .varyingTypesNotAllowed := b
   native_decide
 
 example : diagnostic? [group ["Probe", "A", "Deep"]] = some .varyingTypesNotAllowed := by
+  native_decide
+
+/-! ## The value-list kind class is operator-specific
+
+The measured Date group and admitted String group differ only in their recursive expansion kind.
+The two local non-laws prevent projecting the measured class from every group certification
+failure or from any expansion that merely contains a Date. -/
+
+private inductive StringLiteralListAdmission where
+  | admitted
+  | refused (diagnostic : Option KernelStaticDiagnostic)
+  deriving Repr, DecidableEq
+
+private def stringLiteralListSurface (first : SurfaceFieldEntityOperand) :
+    SurfaceTokenEntityStringLiteralValueListSource :=
+  { quantifier := .atLeastOne
+    fields := { first, rest := [] }
+    values := ["x", "y"] }
+
+private def stringLiteralListAdmission (first : SurfaceFieldEntityOperand) :
+    StringLiteralListAdmission :=
+  match elaborateTokenEntityStringLiteralValueListSource probeModel ["Probe"]
+      (stringLiteralListSurface first) with
+  | .ok _ => .admitted
+  | .error error => .refused error.diagnostic?
+
+/- Measured by the real-kernel group-carrier admission sweep at a12-dmkits `e233548e`. -/
+example :
+    stringLiteralListAdmission (group ["Probe", "Milestones"]) =
+      .refused (some .onlyStringEnumNumberAllowed) := by
+  native_decide
+
+/- The paired real-kernel control from the same sweep. -/
+example :
+    stringLiteralListAdmission (group ["Probe", "Contact"]) = .admitted := by
+  native_decide
+
+/- Translate/Explain retains the exact authored group slot, quantifier, and decoded literal list. -/
+private def translatedStringLiteralList? :
+    Option (ValueListQuantifier × GroupPath × Bool × List String) := do
+  let checked ←
+    (elaborateTokenEntityStringLiteralValueListSource probeModel ["Probe"]
+      (stringLiteralListSurface (group ["Probe", "Contact"]))).toOption
+  let checkedGroup ← checked.fields.first.groupSlot?
+  pure (checked.quantifier, checkedGroup.groupPath, checkedGroup.isStarred,
+    checked.firstValue :: checked.restValues)
+
+example :
+    translatedStringLiteralList? =
+      some (.atLeastOne, ["Probe", "Contact"], false, ["x", "y"]) := by
+  native_decide
+
+/- The same recursive kind mechanism also reaches the legal starred repetition shape. This is an
+   internally checked specialization; external evidence for this exact diagnostic row is pending. -/
+example :
+    stringLiteralListAdmission
+        (starredGroup [{ name := "Probe" },
+          { name := "Inspections", starred := true }]) =
+      .refused (some .onlyStringEnumNumberAllowed) := by
+  native_decide
+
+/- No retained row assigns the Date class to a Number-group refusal on this literal surface. -/
+example :
+    stringLiteralListAdmission (group ["Probe", "B"]) = .refused none := by
+  native_decide
+
+/- A heterogeneous group is not the measured homogeneous Date-group discriminator. -/
+example :
+    stringLiteralListAdmission (group ["Probe", "Mixed"]) = .refused none := by
   native_decide
 
 /-! ## The checked list retains the authored slot rather than its expansion

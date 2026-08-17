@@ -305,11 +305,12 @@ These stable names help when a query crosses numbered clauses. Their capability 
 - `state`: implemented for the represented group slot and measured gates.
 - `boundary`: the shared checker resolves an authored group in both repetition shapes, satisfies arity from the slot, and reads kind and category from one recursive declaration expansion.
 - `boundary`: star and indirect ancestor/descendant refusals are shared; expansion-kind diagnostics remain operator-specific and unmapped when no class is established.
-- `owner`: [`FieldEntityList.lean`](../A12Kernel/Elaboration/FieldEntityList.lean) and [`FlatModel.groupSubtreeFields`](../A12Kernel/Elaboration/Flat/Model.lean).
+- `boundary`: the plural String-literal value-list form projects `MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED` only for a homogeneous Date-group expansion; its String-group control is retained, while Number and heterogeneous group refusals stay unmapped.
+- `owner`: [`FieldEntityList.lean`](../A12Kernel/Elaboration/FieldEntityList.lean), [`TokenEntityValueList.lean`](../A12Kernel/Elaboration/TokenEntityValueList.lean), [`StaticDiagnostic.lean`](../A12Kernel/Elaboration/StaticDiagnostic.lean), and [`FlatModel.groupSubtreeFields`](../A12Kernel/Elaboration/Flat/Model.lean).
 - `case`: [shared group admission cases](../A12Kernel/Conformance/FieldEntityGroupOperand.lean).
-- `assurance`: E closed for the represented admission boundary; P partial through the family completeness certificates; L partial; C none; X none; Q none.
+- `assurance`: E closed for the represented admission boundary and diagnostic matrix; P partial through the family completeness certificates plus diagnostic enumeration and code uniqueness; L locks the nonrepeatable Date/String pair, while the starred Date specialization remains `external evidence pending`; C none; X none; Q none.
 - `source`: [entity-list group gates](SOURCES.md#src-entity-list-group-gates) and [group-carrier admission sweep](SOURCES.md#src-group-carrier-admission-sweep).
-- `remains`: [group static-diagnostic residuals](SEMANTICS-GAPS.md#gap-sg5-group-static-diagnostic-residuals) and [Date-group projection](SEMANTICS-GAPS.md#gap-sg5-date-group-string-value-list-diagnostic).
+- `remains`: [group static-diagnostic residuals](SEMANTICS-GAPS.md#gap-sg5-group-static-diagnostic-residuals).
 
 <a id="cap-number-group-aggregates"></a>
 #### Number group aggregates
