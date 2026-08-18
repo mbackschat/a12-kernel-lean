@@ -1,9 +1,9 @@
 import A12Kernel.Semantics.DateRangeOverlap
 import A12Kernel.Semantics.ScalarEquality
 
-/-! # Resolved DateRange construction equality
+/-! # DateRange construction equality
 
-This capsule compares filled, already-resolved full-Date constructions with one another or with one stored DateRange while retaining the mixed pair's authored positions. It owns only exact equality and inequality. Empty and formally unavailable input, checked field/path authoring, endpoint format admission and fragment completion, raw parsing, computation targets and rendering, overlap arguments, and bound extraction remain separate.
+This capsule owns equality and inequality for classified exact `DateRangeValue` operands plus the narrower calendar-level seam for filled resolved full-Date constructions against another construction or one stored range. Checked reads, construction-time label resolution, endpoint format admission and fragment completion, raw parsing, computation targets and rendering, overlap arguments, and bound extraction remain separate.
 -/
 
 namespace A12Kernel
@@ -23,6 +23,15 @@ def resolved (construction : ResolvedDateRangeConstruction) :
 
 end ResolvedDateRangeConstruction
 
+namespace DateRangeValue
+
+/-- Exact equality of both ordered endpoint instants. Decoded labels and calendar provenance remain available to consumers but do not replace the runtime identity compared by DateRange equality. -/
+def sameEndpointInstants (left right : DateRangeValue) : Bool :=
+  left.start.instant == right.start.instant &&
+    left.finish.instant == right.finish.instant
+
+end DateRangeValue
+
 /-- Authored side occupied by the construction in the bounded comparison pair. -/
 inductive DateRangeConstructionPosition where
   | left
@@ -30,6 +39,11 @@ inductive DateRangeConstructionPosition where
   deriving Repr, DecidableEq
 
 namespace EqualityOp
+
+/-- Evaluate two classified DateRange values by exact ordered endpoint instants. Empty and formal classification remain owned by the caller-supplied operands. -/
+def evalDateRangeValues (op : EqualityOp)
+    (left right : SimpleComparisonOperand DateRangeValue) : Verdict :=
+  op.evalSymmetric DateRangeValue.sameEndpointInstants left right
 
 /-- Compare two filled resolved DateRanges by exact ordered endpoint equality or inequality. -/
 def evalResolvedDateRanges (op : EqualityOp)

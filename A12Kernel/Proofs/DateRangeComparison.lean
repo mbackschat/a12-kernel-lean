@@ -1,9 +1,22 @@
-import A12Kernel.Semantics.DateRangeComparison
+import A12Kernel.Elaboration.DateRangeConstructionComparison
 import A12Kernel.Proofs.ScalarEquality
 
-/-! # Resolved DateRange construction-equality laws -/
+/-! # Resolved and checked DateRange construction-equality laws -/
 
 namespace A12Kernel
+
+namespace EqualityOp
+
+/-- Exchanging two classified exact DateRange values preserves equality or inequality verdict and polarity. -/
+theorem evalDateRangeValues_comm (op : EqualityOp)
+    (left right : SimpleComparisonOperand DateRangeValue) :
+    op.evalDateRangeValues left right =
+      op.evalDateRangeValues right left := by
+  exact op.evalSymmetric_swapped DateRangeValue.sameEndpointInstants
+    (fun _ _ => by simp [DateRangeValue.sameEndpointInstants, Bool.beq_comm])
+    left right
+
+end EqualityOp
 
 /-- A resolved construction matches a stored range exactly when both ordered endpoint pairs agree. -/
 theorem dateRangeConstruction_matches_iff

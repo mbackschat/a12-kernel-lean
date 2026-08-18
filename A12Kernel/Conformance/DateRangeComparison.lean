@@ -1,6 +1,6 @@
-import A12Kernel.Semantics.DateRangeComparison
+import A12Kernel.Elaboration.DateRangeConstructionComparison
 
-/-! # Resolved DateRange construction-equality locks -/
+/-! # Resolved and checked DateRange construction-equality locks -/
 
 namespace A12Kernel.Conformance.DateRangeComparison
 
@@ -25,6 +25,80 @@ private def storedSame : ResolvedDateRange :=
 
 private def storedChangedFinish : ResolvedDateRange :=
   { start := june1, finish := june29 }
+
+private def fullDate := TemporalComponents.fullDate
+
+private def dateField (id : FieldId) (name : String) : FlatFieldDecl := {
+  id
+  groupPath := ["Order"]
+  name
+  policy := { kind := .temporal .date fullDate }
+  temporalTargetPolicy := some {
+    format := "yyyy-MM-dd"
+    partialMode := .full } }
+
+private def leftStart := dateField 1 "LeftStart"
+private def leftFinish := dateField 2 "LeftFinish"
+private def rightStart := dateField 3 "RightStart"
+private def rightFinish := dateField 4 "RightFinish"
+
+private def checkedModel : FlatModel := {
+  fields := [leftStart, leftFinish, rightStart, rightFinish]
+  timeZoneId := "Europe/Berlin" }
+
+private def dateValue (epochMillis : Int)
+    (year : Int) (month day : Nat) : DateValue := {
+  instant := { epochMillis }
+  parts := { year, month, day }
+  basis := .storedGregorian }
+
+private def dateRaw (value : DateValue) : RawCell :=
+  .parsed (.temporal (.date value))
+
+private def storedForRaw : RawCell → String
+  | .parsed (.temporal (.date value)) =>
+      match value.toFullDate? with
+      | some date => FullDateTargetFormat.yearMonthDayDashes.renderText date
+      | none => "invalid-date"
+  | .rejected _ => "bad"
+  | .empty | .presentEmpty => ""
+  | .parsed _ => "wrong-kind"
+
+private def inputCell (field : FlatFieldDecl)
+    (raw : RawCell) : ClassifiedCellInput := {
+  address := { field := field.id, path := [] }
+  stored := storedForRaw raw
+  raw }
+
+private def checkedInput?
+    (leftStartRaw leftFinishRaw rightStartRaw rightFinishRaw : RawCell) :
+    Option (CheckedDocument checkedModel) := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler checkedModel).toOption
+  checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := [
+      inputCell leftStart leftStartRaw,
+      inputCell leftFinish leftFinishRaw,
+      inputCell rightStart rightStartRaw,
+      inputCell rightFinish rightFinishRaw
+    ] } |>.toOption
+
+private def checkedOperation? (op : EqualityOp) :=
+  (elaborateDateRangeConstructionComparison checkedModel
+    leftStart.id leftFinish.id rightStart.id rightFinish.id op).toOption
+
+private def checkedResult? (op : EqualityOp)
+    (leftStartRaw leftFinishRaw rightStartRaw rightFinishRaw : RawCell) :
+    Option DateRangeConstructionComparisonResult := do
+  let input ← checkedInput?
+    leftStartRaw leftFinishRaw rightStartRaw rightFinishRaw
+  let operation ← checkedOperation? op
+  (operation.evaluate input).toOption
+
+private def startValue := dateValue 1717192800000 2024 6 1
+private def finishValue := dateValue 1719698400000 2024 6 30
+private def changedFinishValue := dateValue 1719612000000 2024 6 29
 
 /- Construction-versus-field equality and inequality are exact complements on the maintained full-Date source pair. -/
 example :
@@ -60,6 +134,92 @@ example :
         constructed constructedChangedFinish = .notFired ∧
       EqualityOp.notEqual.evalDateRangeConstructions
         constructedChangedFinish constructed = .fired .value := by
+  native_decide
+
+/- The checked route certifies all four declarations, reads one immutable document, and retains every exact endpoint beside the equality verdict. -/
+example : ((checkedResult? .equal
+    (dateRaw { startValue with basis := .legacyHybrid }) (dateRaw finishValue)
+    (dateRaw startValue) (dateRaw finishValue)).map fun result =>
+      (result.left.start, result.left.finish,
+        result.right.start, result.right.finish, result.verdict)) =
+    some (.value startValue, .value finishValue,
+      .value startValue, .value finishValue, .fired .value) := by
+  native_decide
+
+/- Changing only the second construction's finish separates whole-range equality and inequality through checked execution. -/
+example :
+    (checkedResult? .equal
+      (dateRaw startValue) (dateRaw finishValue)
+      (dateRaw startValue) (dateRaw changedFinishValue)).map (·.verdict) =
+        some .notFired ∧
+    (checkedResult? .notEqual
+      (dateRaw startValue) (dateRaw finishValue)
+      (dateRaw startValue) (dateRaw changedFinishValue)).map (·.verdict) =
+        some (Verdict.fired .value) := by
+  native_decide
+
+/- Construction re-resolves a source label under the checked declaration profile instead of retaining a distinct incoming source instant. -/
+example :
+  let alteredStart := { startValue with instant := { epochMillis := 1001 } }
+  EqualityOp.equal.evalDateRangeValues
+      (.value { start := startValue, finish := finishValue } true)
+      (.value { start := alteredStart, finish := finishValue } true) = .notFired ∧
+    ((checkedResult? .equal
+      (dateRaw startValue) (dateRaw finishValue)
+      (dateRaw alteredStart) (dateRaw finishValue)).map fun result =>
+        (result.right.start, result.verdict)) =
+        some (.value startValue, .fired .value) := by
+  native_decide
+
+/- Any empty endpoint remains visible and suppresses the comparison instead of constructing a partial range. -/
+example : ((checkedResult? .equal
+    (dateRaw startValue) .presentEmpty
+    (dateRaw startValue) (dateRaw finishValue)).map fun result =>
+      (result.left.finish, result.verdict)) =
+    some (.empty, .notFired) := by
+  native_decide
+
+/- Formal unavailability dominates emptiness within one construction, and the full observation remains available to Explain. -/
+example : ((checkedResult? .equal
+    .presentEmpty (.rejected .malformed)
+    (dateRaw startValue) (dateRaw finishValue)).map fun result =>
+      (result.left.start, result.left.finish, result.verdict)) =
+    some (.empty, .unknown .malformed, .unknown) := by
+  native_decide
+
+/- The checked operation retains computation poison and projects it to validation UNKNOWN even when the same construction also has an empty endpoint. -/
+example : (checkedOperation? .equal).map (fun operation =>
+    let left : DateRangeConstructionObservation := {
+      start := .empty
+      finish := .poison .computedDependency }
+    let right : DateRangeConstructionObservation := {
+      start := .value startValue
+      finish := .value finishValue }
+    let result := operation.evaluateObserved left right
+    (result.left.finish, result.verdict)) =
+      some (.poison .computedDependency, .unknown) := by
+  native_decide
+
+/- Failure while certifying the final endpoint remains attributed to that authored position. -/
+example : (match elaborateDateRangeConstructionComparison checkedModel
+    leftStart.id leftFinish.id rightStart.id 99 .equal with
+  | .ok _ => none
+  | .error error => some error) =
+    some (.rightFinish
+      (.targetPolicy (.resolve (.unknownFieldId 99)))) := by
+  native_decide
+
+/- A typed Date with unreal decoded parts is a structural endpoint fault, not empty or formal unavailability. -/
+example :
+  let unreal := dateValue 0 2024 2 30
+  (do
+    let input ← checkedInput? (dateRaw unreal) (dateRaw finishValue)
+      (dateRaw startValue) (dateRaw finishValue)
+    let operation ← checkedOperation? .equal
+    pure (match operation.evaluate input with
+      | .ok _ => none
+      | .error error => some error)) =
+      some (some (.endpointDateUnavailable leftStart.id unreal)) := by
   native_decide
 
 end A12Kernel.Conformance.DateRangeComparison

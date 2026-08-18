@@ -105,6 +105,7 @@ run_cmd do
 #print axioms A12Kernel.anyPairDateRangesOverlap_singleton
 #print axioms A12Kernel.anyPairDateRangesOverlap_pair
 #print axioms A12Kernel.anyPairDateRangesOverlap_duplicate_iff
+#print axioms A12Kernel.EqualityOp.evalDateRangeValues_comm
 #print axioms A12Kernel.dateRangeConstruction_matches_iff
 #print axioms A12Kernel.dateRangeConstructions_match_iff
 #print axioms A12Kernel.EqualityOp.evalResolvedDateRanges_comm
