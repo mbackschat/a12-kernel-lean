@@ -127,6 +127,14 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `claim`: an instantiated row with no source value clears a target seeded with `false`, while the same source filled with `true` produces `true`; all three engines agree.
 - `limit`: the case does not establish a filled `false`, formal poison, multiple or mixed operands, group operands, `Having`, nested repetition, partial validation, validation comparisons, target application topology, or the other result kinds exercised beside Boolean.
 
+<a id="src-first-filled-custom-computation"></a>
+#### Direct one-star Custom `FirstFilledValue` computation
+
+- `revision`: the maintained runtime case was introduced at a12-dmkits `feba4552110858b07966660bf7080441d3b90d00` and inspected unchanged at clean HEAD `89aa03957034de620562eb23a095d878f6547dca`.
+- `route`: [`FirstFilledValueAdditionalKindDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/FirstFilledValueAdditionalKindDiffTest.kt) executes dynamic Groovy, generated Java, and the interpreter over one nonrepeatable Custom target and one direct single-level starred Custom source whose declarations share `ReviewCode`.
+- `claim`: an instantiated row with no source value clears a target seeded with `SEED`, while the same source filled with `A7` produces `A7`; the supplied validator accepts the filled value and all three engines agree.
+- `limit`: the case does not establish validator rejection, differing Custom types, ordinary String mixing, multiple or group operands, `Having`, nested repetition, partial validation, validation comparisons, target application topology, or other result kinds.
+
 <a id="src-current-repetition-root-condition"></a>
 #### Nonrepeatable-root `CurrentRepetition` condition
 

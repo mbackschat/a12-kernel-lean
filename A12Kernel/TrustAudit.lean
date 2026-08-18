@@ -1958,4 +1958,6 @@ run_cmd do
 #print axioms A12Kernel.checkedBooleanValueCount_scaleSummary
 #print axioms A12Kernel.firstFilledBoolean_exhausted_noValue
 #print axioms A12Kernel.firstFilledBoolean_false_is_value
+#print axioms A12Kernel.customFirstFilledCellAt_value
+#print axioms A12Kernel.customFirstFilledCellAt_registeredRejection
 #print axioms A12Kernel.booleanValueCount_confirm_empty

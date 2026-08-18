@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CheckedStarDocument
+import A12Kernel.Elaboration.FirstFilledStarSource
 import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Direct one-star Boolean `FirstFilledValue` computation -/
@@ -15,16 +16,6 @@ inductive BooleanFirstFilledComputationElabError where
   | sourceShape (path : List String)
   deriving Repr, DecidableEq
 
-/-- Whether a checked star is exactly one reopened repeatable group and its field is declared directly in that group. -/
-def booleanFirstFilledDirectSingleStar (model : FlatModel)
-    (source : CheckedStarFieldPath model) : Bool :=
-  match source.path.axes, source.declaration.repeatableScope with
-  | [axis], [level] =>
-      source.path.firstStar == 0 && axis.level == level &&
-        model.repeatableGroups.any fun group =>
-          group.level == level && group.path == source.declaration.groupPath
-  | _, _ => false
-
 /-- One fixed Boolean target and one direct single-level starred Boolean source certified against the same model. -/
 structure CheckedBooleanFirstFilledComputation (model : FlatModel) where
   private mk ::
@@ -35,8 +26,7 @@ structure CheckedBooleanFirstFilledComputation (model : FlatModel) where
   targetFixed : target.repeatableScope = []
   targetOwnedByGroup : target.groupPath = targetGroup
   sourceBoolean : source.declaration.policy.kind = .boolean
-  sourceDirectSingleStar :
-    booleanFirstFilledDirectSingleStar model source = true
+  sourceDirectSingleStar : source.isDirectSingleStar = true
 
 /-- Check the exact externally measured Boolean computation shape. Wider `entitySpec`, nested repetition, validation use, and target application remain outside this boundary. -/
 def checkBooleanFirstFilledComputation
@@ -51,7 +41,7 @@ def checkBooleanFirstFilledComputation
     if hFixed : target.repeatableScope = [] then
       if hTargetKind : target.policy.kind = .boolean then
         if hSourceKind : source.declaration.policy.kind = .boolean then
-          if hShape : booleanFirstFilledDirectSingleStar model source = true then
+          if hShape : source.isDirectSingleStar = true then
             pure {
               target
               source

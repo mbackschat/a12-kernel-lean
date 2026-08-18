@@ -1,0 +1,95 @@
+import A12Kernel.Elaboration.CheckedStarDocument
+import A12Kernel.Elaboration.FirstFilledStarSource
+import A12Kernel.Semantics.FirstFilledValue
+
+/-! # Direct one-star Custom `FirstFilledValue` computation -/
+
+namespace A12Kernel
+
+inductive CustomFirstFilledComputationElabError where
+  | target (cause : ResolveError)
+  | targetGroup (actual expected : GroupPath)
+  | targetRepeatable (path : List String)
+  | targetNotCustom (path : List String)
+  | source (cause : StarPathElabError)
+  | sourceCustomTypeMismatch (path : List String)
+      (expected : CustomFieldTypeDeclaration)
+      (actual : Option CustomFieldTypeDeclaration)
+  | sourceShape (path : List String)
+  deriving Repr, DecidableEq
+
+/-- One fixed Custom target and one direct single-level starred source carrying the same Custom declaration. -/
+structure CheckedCustomFirstFilledComputation (model : FlatModel) where
+  private mk ::
+  target : FlatFieldDecl
+  source : CheckedStarFieldPath model
+  customType : CustomFieldTypeDeclaration
+  targetGroup : GroupPath
+  targetCustom : target.customType = some customType
+  targetFixed : target.repeatableScope = []
+  targetOwnedByGroup : target.groupPath = targetGroup
+  sourceCustom : source.declaration.customType = some customType
+  sourceDirectSingleStar : source.isDirectSingleStar = true
+
+/-- Check the exact externally measured Custom computation shape. The validated model already guarantees that every Custom declaration is an evaluated String field. -/
+def checkCustomFirstFilledComputation
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (authored : SurfaceStarFieldPath) :
+    Except CustomFirstFilledComputationElabError
+      (CheckedCustomFirstFilledComputation model) := do
+  let source ← elaborateStarFieldPath model declaringGroup authored
+    |>.mapError .source
+  let target ← model.lookupUniqueId targetField |>.mapError .target
+  if hGroup : target.groupPath = declaringGroup then
+    if hFixed : target.repeatableScope = [] then
+      match hTarget : target.customType with
+      | none => throw (.targetNotCustom target.path)
+      | some customType =>
+        if hSource : source.declaration.customType = some customType then
+          if hShape : source.isDirectSingleStar = true then
+            pure {
+              target
+              source
+              customType
+              targetGroup := declaringGroup
+              targetCustom := hTarget
+              targetFixed := hFixed
+              targetOwnedByGroup := hGroup
+              sourceCustom := hSource
+              sourceDirectSingleStar := hShape
+            }
+          else
+            throw (.sourceShape source.declaration.path)
+        else
+          throw (.sourceCustomTypeMismatch source.declaration.path customType
+            source.declaration.customType)
+    else
+      throw (.targetRepeatable target.path)
+  else
+    throw (.targetGroup target.groupPath declaringGroup)
+
+/-- Classify one already prepared Custom source cell for computation-phase first-filled selection. -/
+def customFirstFilledCellAt (cell : CheckedCell) : ValueListCell .token :=
+  match observeCell .computation cell with
+  | .empty => .empty
+  | .value (.str value) => .present value
+  | .value _ => .unknown .malformed
+  | .unknown cause | .poison cause => .unknown cause
+
+namespace CheckedCustomFirstFilledComputation
+
+/-- Execute the checked source over immutable rows without resampling its registered validator. -/
+def execute (operation : CheckedCustomFirstFilledComputation model)
+    (input : CheckedDocument model) :
+    Except CheckedStarDocumentError TokenComputationResult := do
+  let resolved ← operation.source.resolveCheckedField input []
+  let side : ResolvedValueListSide .token := {
+    cells := resolved.cells.map fun cell => customFirstFilledCellAt cell.cell
+    hasUninstantiatedTail := resolved.topology.domain.hasOpenTail
+    hasHaving := false
+  }
+  pure (evalFirstFilledToken side).asComputationResult
+
+end CheckedCustomFirstFilledComputation
+
+end A12Kernel
