@@ -5,7 +5,7 @@ import A12Kernel.Semantics.DateRangeComparison
 
 /-! # Checked DateRange construction comparison
 
-This capsule certifies two nonrepeatable Date endpoints per `DateRange` construction, including the first exact `yyyy` DateFragment profile, composes two component-compatible constructions or one full-Date construction with a canonical direct stored DateRange, and reads each checked operand through one immutable document in authored order. Construction labels are completed by endpoint position and re-resolved under their declaration's model-zone profile before the exact observations delegate to the shared equality seam. Wider DateFragment formats, Base-Year component matching, fragment construction-versus-stored execution, semantic-index endpoints, repeatable placement, computation, rendering, overlap, and bound extraction remain separate.
+This capsule certifies two nonrepeatable Date endpoints per `DateRange` construction, including the exact `yyyy` and `yyyy-MM` DateFragment profiles, composes two component-compatible constructions or one full-Date construction with a canonical direct stored DateRange, and reads each checked operand through one immutable document in authored order. Construction labels are completed by endpoint position and re-resolved under their declaration's model-zone profile before the exact observations delegate to the shared equality seam. Base-Year-dependent DateFragment formats, fragment construction-versus-stored execution, semantic-index endpoints, repeatable placement, computation, rendering, overlap, and bound extraction remain separate.
 -/
 
 namespace A12Kernel
@@ -13,27 +13,35 @@ namespace A12Kernel
 inductive DateRangeEndpointFormat where
   | full (format : FullDateTargetFormat)
   | yearFragment
+  | yearMonthFragment
   deriving Repr, DecidableEq
 
 namespace DateRangeEndpointFormat
 
-/-- Recognize only the already-closed full-Date profiles and the Kernel-confirmed `yyyy` DateFragment profile. -/
+/-- Recognize only the already-closed full-Date, `yyyy`, and `yyyy-MM` profiles. -/
 def ofPolicy? (policy : TemporalTargetPolicy) : Option DateRangeEndpointFormat :=
   match policy.partialMode with
   | .full => FullDateTargetFormat.ofSource? policy.format |>.map .full
-  | .yearOptional => if policy.format == "yyyy" then some .yearFragment else none
+  | .yearOptional =>
+      if policy.format == "yyyy" then
+        some .yearFragment
+      else if policy.format == "yyyy-MM" then
+        some .yearMonthFragment
+      else
+        none
   | .dayOptional | .monthOptional => none
 
 /-- Exact component-set compatibility for the bounded endpoint profiles. Lexical spelling does not distinguish the two complete full-Date formats. -/
 def sameComponents : DateRangeEndpointFormat → DateRangeEndpointFormat → Bool
   | .full _, .full _ => true
   | .yearFragment, .yearFragment => true
+  | .yearMonthFragment, .yearMonthFragment => true
   | _, _ => false
 
 /-- Whether the endpoint belongs to the complete Date profile retained by mixed execution. -/
 def isFull : DateRangeEndpointFormat → Bool
   | .full _ => true
-  | .yearFragment => false
+  | .yearFragment | .yearMonthFragment => false
 
 /-- Complete one decoded endpoint label by its authored range position. -/
 def complete? (format : DateRangeEndpointFormat) (bound : DateRangeBound)
@@ -42,6 +50,10 @@ def complete? (format : DateRangeEndpointFormat) (bound : DateRangeBound)
   | .full _, _ => FullDate.ofYmd? parts.year parts.month parts.day
   | .yearFragment, .start => (OmittedMonthDate.ofYear? parts.year).map (·.first)
   | .yearFragment, .finish => (OmittedMonthDate.ofYear? parts.year).map (·.last)
+  | .yearMonthFragment, .start =>
+      (OmittedDayDate.ofYearMonth? parts.year parts.month).map (·.first)
+  | .yearMonthFragment, .finish =>
+      (OmittedDayDate.ofYearMonth? parts.year parts.month).map (·.last)
 
 end DateRangeEndpointFormat
 

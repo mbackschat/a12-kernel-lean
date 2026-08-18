@@ -62,6 +62,21 @@ private def leftYearStart := yearFragmentField 6 "LeftYearStart"
 private def leftYearFinish := yearFragmentField 7 "LeftYearFinish"
 private def rightYearStart := yearFragmentField 8 "RightYearStart"
 private def rightYearFinish := yearFragmentField 9 "RightYearFinish"
+private def yearMonthFragmentField (id : FieldId)
+    (name : String) : FlatFieldDecl := {
+  yearFragmentField id name with
+    temporalTargetPolicy := some {
+      format := "yyyy-MM"
+      partialMode := .yearOptional } }
+private def leftMonthStart := yearMonthFragmentField 13 "LeftMonthStart"
+private def leftMonthFinish := yearMonthFragmentField 14 "LeftMonthFinish"
+private def rightMonthStart := yearMonthFragmentField 15 "RightMonthStart"
+private def rightMonthFinish := yearMonthFragmentField 16 "RightMonthFinish"
+private def wrongModeMonthFragment : FlatFieldDecl := {
+  yearMonthFragmentField 17 "WrongModeMonthFragment" with
+    temporalTargetPolicy := some {
+      format := "yyyy-MM"
+      partialMode := .dayOptional } }
 private def monthFragment : FlatFieldDecl := {
   yearFragmentField 10 "MonthFragment" with
     temporalTargetPolicy := some {
@@ -78,7 +93,8 @@ private def storedRange : FlatFieldDecl := {
 private def checkedModel : FlatModel := {
   fields := [leftStart, leftFinish, rightStart, rightFinish, storedRange,
     leftYearStart, leftYearFinish, rightYearStart, rightYearFinish,
-    monthFragment, dottedStart, dottedFinish]
+    leftMonthStart, leftMonthFinish, rightMonthStart, rightMonthFinish,
+    wrongModeMonthFragment, monthFragment, dottedStart, dottedFinish]
   timeZoneId := "Europe/Berlin" }
 
 private def dateValue (epochMillis : Int)
@@ -153,17 +169,27 @@ private def checkedMixedResult? (position : DateRangeConstructionPosition)
   let operation ← checkedMixedOperation? position op
   (operation.evaluate input).toOption
 
-private def checkedYearFragmentResult? (op : EqualityOp)
+private def checkedFragmentResult?
+    (leftStartField leftFinishField rightStartField rightFinishField : FlatFieldDecl)
+    (op : EqualityOp)
     (leftStartRaw leftFinishRaw rightStartRaw rightFinishRaw : RawCell) :
     Option DateRangeConstructionComparisonResult := do
   let input ← checkedInputFrom [
-    inputCell leftYearStart leftStartRaw,
-    inputCell leftYearFinish leftFinishRaw,
-    inputCell rightYearStart rightStartRaw,
-    inputCell rightYearFinish rightFinishRaw]
+    inputCell leftStartField leftStartRaw,
+    inputCell leftFinishField leftFinishRaw,
+    inputCell rightStartField rightStartRaw,
+    inputCell rightFinishField rightFinishRaw]
   let operation ← (elaborateDateRangeConstructionComparison checkedModel
-    leftYearStart.id leftYearFinish.id rightYearStart.id rightYearFinish.id op).toOption
+    leftStartField.id leftFinishField.id rightStartField.id rightFinishField.id op).toOption
   (operation.evaluate input).toOption
+
+private def checkedYearFragmentResult? :=
+  checkedFragmentResult?
+    leftYearStart leftYearFinish rightYearStart rightYearFinish
+
+private def checkedYearMonthFragmentResult? :=
+  checkedFragmentResult?
+    leftMonthStart leftMonthFinish rightMonthStart rightMonthFinish
 
 private def startValue := dateValue 1717192800000 2024 6 1
 private def changedStartValue := dateValue 1717279200000 2024 6 2
@@ -179,6 +205,11 @@ private def storedChangedValue : DateRangeValue := {
 private def yearValue (year : Int) : DateValue := {
   instant := { epochMillis := 0 }
   parts := { year, month := 1, day := 1 }
+  basis := .storedGregorian }
+
+private def yearMonthValue (year : Int) (month : Nat) : DateValue := {
+  instant := { epochMillis := 0 }
+  parts := { year, month, day := 1 }
   basis := .storedGregorian }
 
 private def berlinDateValue? (year : Int) (month day : Nat) : Option DateValue := do
@@ -292,6 +323,27 @@ example : ((checkedYearFragmentResult? .equal
       .fired .value) := by
   native_decide
 
+/- Exact `yyyy-MM` endpoints complete the start to day 1 and the finish to the leap-aware month end before comparison. -/
+example :
+    ((checkedYearMonthFragmentResult? .equal
+      (dateRaw (yearMonthValue 2024 2)) (dateRaw (yearMonthValue 2024 2))
+      (dateRaw (yearMonthValue 2024 2)) (dateRaw (yearMonthValue 2024 2))).map fun result =>
+        (result.left.start, result.left.finish,
+          result.right.start, result.right.finish, result.verdict)) =
+      some (.value ((berlinDateValue? 2024 2 1).get (by native_decide)),
+        .value ((berlinDateValue? 2024 2 29).get (by native_decide)),
+        .value ((berlinDateValue? 2024 2 1).get (by native_decide)),
+        .value ((berlinDateValue? 2024 2 29).get (by native_decide)),
+        .fired .value) ∧
+    ((checkedYearMonthFragmentResult? .equal
+      (dateRaw (yearMonthValue 2023 2)) (dateRaw (yearMonthValue 2023 2))
+      (dateRaw (yearMonthValue 2023 2)) (dateRaw (yearMonthValue 2023 2))).map fun result =>
+        (result.left.finish, result.right.finish, result.verdict)) =
+      some (.value ((berlinDateValue? 2023 2 28).get (by native_decide)),
+        .value ((berlinDateValue? 2023 2 28).get (by native_decide)),
+        .fired .value) := by
+  native_decide
+
 /- The bounded extension remains component-exact and does not silently admit the unimplemented fragment formats. -/
 example :
     (match elaborateDateRangeConstruction checkedModel
@@ -299,8 +351,16 @@ example :
       | .error (.componentMismatch .yearFragment (.full _)) => true
       | _ => false) = true ∧
     (match elaborateDateRangeConstruction checkedModel
+        leftYearStart.id leftMonthFinish.id with
+      | .error (.componentMismatch .yearFragment .yearMonthFragment) => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstruction checkedModel
         monthFragment.id monthFragment.id with
       | .error (.start (.unsupportedPolicy _ .yearOptional "MM")) => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstruction checkedModel
+        wrongModeMonthFragment.id wrongModeMonthFragment.id with
+      | .error (.start (.unsupportedPolicy _ .dayOptional "yyyy-MM")) => true
       | _ => false) = true := by
   native_decide
 
@@ -313,6 +373,10 @@ example :
     (match elaborateDateRangeConstructionComparison checkedModel
         leftStart.id leftFinish.id rightYearStart.id rightYearFinish.id .equal with
       | .error (.componentMismatch (.full _) .yearFragment) => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstructionComparison checkedModel
+        leftYearStart.id leftYearFinish.id rightMonthStart.id rightMonthFinish.id .equal with
+      | .error (.componentMismatch .yearFragment .yearMonthFragment) => true
       | _ => false) = true := by
   native_decide
 
@@ -333,6 +397,11 @@ example :
     (match elaborateDateRangeConstructionStoredComparison checkedModel
         leftYearStart.id leftYearFinish.id storedRange.id .right .equal with
       | .error (.unsupportedConstructionProfile .yearFragment .yearFragment) => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstructionStoredComparison checkedModel
+        leftMonthStart.id leftMonthFinish.id storedRange.id .left .equal with
+      | .error (.unsupportedConstructionProfile
+          .yearMonthFragment .yearMonthFragment) => true
       | _ => false) = true := by
   native_decide
 

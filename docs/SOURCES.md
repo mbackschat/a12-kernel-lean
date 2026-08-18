@@ -155,6 +155,23 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: this checkpoint establishes exact direct nonrepeatable `yyyy` endpoints, pair and stored equality outcomes, a finish-only negative, and one cross-component static refusal. Other fragments, Base-Year supplementation, exact endpoint instants, empty/formal rows, indices, repeatable placement, targets, and rendering remain unmeasured.
 - `sync`: §6 already owns endpoint-position completion; §8 now owns cross-DateRange component compatibility under pending [`SPEC-2026-08-19-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-01--date-range-equality-requires-matching-component-sets-across-both-operands). The interpreter divergence is an implementation defect, not another semantic correction.
 
+<a id="src-date-range-year-month-fragment-construction"></a>
+#### Year-month-fragment DateRange construction
+
+- `revision`: source-shipped dmtool `0.13.0` and the independent interpreter were inspected at clean a12-dmkits `89aa03957034de620562eb23a095d878f6547dca`; both Kernel strategies used built/runtime kernel `30.8.1` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`.
+- `runtime-probe`: one dmtool-authored, structurally checked model declares four direct nonrepeatable `yyyy-MM` DateFragment endpoints, one `yyyy-MM`/`/` stored DateRange, one full-Date probe range, construction-pair equality, construction-versus-stored equality, and stored-range overlap.
+- `runtime-claim`: for `2024-02`, both Kernel strategies fire pair equality, stored equality, and overlap with `2024-02-29`; they fire the two equality rules but not overlap with `2024-03-01`.
+- `runtime-claim`: for `2023-02`, both Kernel strategies fire pair equality, stored equality, and overlap with `2023-02-28`; they fire the two equality rules but not overlap with `2023-03-01`.
+- `runtime-identity`: two unchanged runs are byte-identical; artifact SHA-256 `b6fb09cfa6471c935c33108a3c49353430e1a9e522a04bbb7ca6c4274dbe0daa`; request `c73ed7ab87db715c508b38c393d1aa909b7d3b09a920a97b4fb2f20d07b6201c`; model `a3f40222b428bb2a3f0c25ffe9eee2bca172308faa58f3f9ee6c236e9c162df6`.
+- `runtime-identity`: leap-last-day document SHA-256 `b041779727633518d34db157e40c999b8999d95e45b800c9d5cf1525cce37140`; leap-after `e8bc375a7919868af41dc8513d304b091a26e2033b38617e2f7f0130ce6503b6`.
+- `runtime-identity`: nonleap-last-day document SHA-256 `38663932113ff4dd4f664bfbb5b8fc16b65d98a43851a968e8bcc884cb615b26`; nonleap-after `61bd1e5c4ae0631b1df32b05e865994a1f32921a8de5e9c3e71497bcf11f95e6`.
+- `separation`: pair equality establishes that the construction is executable; construction-versus-stored equality connects its ordered endpoints to the stored carrier; the last-day and next-day overlap rows distinguish leap-aware latest-day completion from a fixed or next-month finish.
+- `divergence`: a12-dmkits' interpreter matches pair equality and both overlap polarities but omits construction-versus-stored equality in all four rows, extending the same observable defect class as the `yyyy` checkpoint.
+- `source`: kernel [`RuntimeController.constructDateRange`](../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_30_8/internal/core/RuntimeController.java) routes typed endpoints through position-aware range completion; a12-dmkits [`ExprEval`](../../a12-rulekit/interpreter/src/commonMain/kotlin/io/github/mbackschat/a12/dm/interpreter/eval/ExprEval.kt) constructs from ordinary evaluated temporal texts.
+- `diagnosis-limit`: source inspection suggests missing position-aware completion in the interpreter's mixed comparison route, but the retained observation establishes only the divergent outcome until an upstream isolating test discharges the cause.
+- `limit`: this checkpoint establishes calendar labels, not exact endpoint instants. Static admission, empty/formal rows, Base-Year-dependent fragments, indices, repeatable placement, computation targets, and rendering remain unmeasured.
+- `sync`: §6 and §8 already own endpoint-position completion and cross-DateRange component compatibility. The interpreter divergence is an implementation defect, not another semantic correction.
+
 <a id="src-date-range-bound-extraction"></a>
 #### Stored DateRange bound extraction
 
