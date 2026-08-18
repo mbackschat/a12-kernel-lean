@@ -119,6 +119,14 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `claim`: a construction from filled full-Date fields `2024-06-01` and `2024-06-30` equals a stored `01.06.2024-30.06.2024` range and does not equal a stored range whose finish alone is `2024-06-29`; the maintained pair authors construction-left equality and stored-left inequality, and all three engines agree.
 - `limit`: the case does not establish empty or formally unavailable input, construction-versus-construction, DateFragment or format admission, raw parsing, computation targets or rendering, repeatable placement, overlap arguments, or bound extraction.
 
+<a id="src-first-filled-boolean-computation"></a>
+#### Direct one-star Boolean `FirstFilledValue` computation
+
+- `revision`: the maintained runtime case was introduced at a12-dmkits `feba4552110858b07966660bf7080441d3b90d00` and inspected unchanged at clean HEAD `89aa03957034de620562eb23a095d878f6547dca`.
+- `route`: [`FirstFilledValueAdditionalKindDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/FirstFilledValueAdditionalKindDiffTest.kt) executes dynamic Groovy, generated Java, and the interpreter over one nonrepeatable Boolean target and one direct single-level starred Boolean source.
+- `claim`: an instantiated row with no source value clears a target seeded with `false`, while the same source filled with `true` produces `true`; all three engines agree.
+- `limit`: the case does not establish a filled `false`, formal poison, multiple or mixed operands, group operands, `Having`, nested repetition, partial validation, validation comparisons, target application topology, or the other result kinds exercised beside Boolean.
+
 <a id="src-current-repetition-root-condition"></a>
 #### Nonrepeatable-root `CurrentRepetition` condition
 

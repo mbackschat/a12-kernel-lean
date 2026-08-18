@@ -1956,4 +1956,6 @@ run_cmd do
 #print axioms A12Kernel.checkedBooleanValueCountGroup_expansion_complete
 #print axioms A12Kernel.checkedBooleanValueCount_false_fields_boolean
 #print axioms A12Kernel.checkedBooleanValueCount_scaleSummary
+#print axioms A12Kernel.firstFilledBoolean_exhausted_noValue
+#print axioms A12Kernel.firstFilledBoolean_false_is_value
 #print axioms A12Kernel.booleanValueCount_confirm_empty

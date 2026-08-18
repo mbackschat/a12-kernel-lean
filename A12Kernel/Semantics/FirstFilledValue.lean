@@ -5,7 +5,7 @@ import A12Kernel.Semantics.ValueList
 
 /-! # Resolved `FirstFilledValue`
 
-This capsule scans one or more resolved homogeneous field-list operands in authored order after expansion and `Having` filtering. It stops at the first present value or first unavailable cell and enters each operand's filter only when that slot is reached. A reached selection with no concrete cell is observed as a not-given prefix before a later operand; the combiner's separate omitted-tail flag still affects only its all-exhausted identity. Number and exact-token families share this ordered mechanism but retain different all-exhausted results and phase projections.
+This capsule scans one or more resolved homogeneous field-list operands in authored order after expansion and `Having` filtering. It stops at the first present value or first unavailable cell and enters each operand's filter only when that slot is reached. A reached selection with no concrete cell is observed as a not-given prefix before a later operand; the combiner's separate omitted-tail flag still affects only its all-exhausted identity. Number and exact-token families share this ordered mechanism; the bounded Boolean computation specializes it through a typed canonical-token adapter rather than widening every generic value-list operator to Boolean.
 -/
 
 namespace A12Kernel
@@ -21,6 +21,20 @@ inductive FirstFilledTokenResult where
   | value (token : String) (notGiven : Bool)
   | noValue
   | unavailable (cause : FormalCause)
+  deriving Repr, DecidableEq
+
+/-- Computation consumes a selected Boolean, clears on exhaustion, and poisons on reached formal invalidity. -/
+inductive FirstFilledBooleanComputationResult where
+  | value (value : Bool)
+  | noValue
+  | poison (cause : FormalCause)
+  deriving Repr, DecidableEq
+
+/-- One typed Boolean cell before the private canonical-token scan adapter. -/
+inductive FirstFilledBooleanCell where
+  | present (value : Bool)
+  | empty
+  | unknown (cause : FormalCause)
   deriving Repr, DecidableEq
 
 /-- Computation projection shared by exact-token result families without assigning String or Enumeration target semantics. -/
@@ -203,6 +217,27 @@ def evalFirstFilledTokenOperands
 def evalFirstFilledToken
     (side : ResolvedValueListSide .token) : FirstFilledTokenResult :=
   evalFirstFilledTokenOperands { first := side, rest := [] }
+
+/-- Select the first usable Boolean from one resolved unfiltered operand. The typed adapter reuses the exact-token scan without exposing Boolean through unrelated generic value-list operators. -/
+def evalFirstFilledBoolean
+    (cells : List FirstFilledBooleanCell) :
+    FirstFilledBooleanComputationResult :=
+  let tokenCell : FirstFilledBooleanCell → ValueListCell .token
+    | .present true => .present "true"
+    | .present false => .present "false"
+    | .empty => .empty
+    | .unknown cause => .unknown cause
+  let tokenSide : ResolvedValueListSide .token := {
+    cells := cells.map tokenCell
+    hasUninstantiatedTail := false
+    hasHaving := false
+  }
+  match evalFirstFilledToken tokenSide with
+  | .value "true" _ => .value true
+  | .value "false" _ => .value false
+  | .value _ _ => .poison .malformed
+  | .noValue => .noValue
+  | .unavailable cause => .poison cause
 
 namespace FirstFilledNumberResult
 
