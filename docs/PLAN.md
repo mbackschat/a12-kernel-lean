@@ -11,8 +11,8 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 ## Selected work
 
 - `state`: read-only route discovery required.
-- `gap`: [SG6 remaining temporal `FirstFilledValue` policies](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion), after closing both bounded full-Date and DateRange declaration pairs.
-- `next`: determine whether any remaining authorable temporal declaration can receive a computed `FirstFilledValue` result without widening the checked value representation; reject time-only DateTime and partial or optional-check routes unless exact target admission and runtime semantics support them.
+- `gap`: [SG6 DateRange raw ingestion and formal propagation](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion), beyond the closed direct `FirstFilledValue` declaration policies.
+- `next`: determine whether the existing checked-document route can parse stored DateRange text under both exact declaration pairs while preserving empty, malformed, and endpoint-resolution distinctions; verify the source and red/green owners before semantic edits.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: satisfied for the exact fixed four-carrier profile; the second full-Date and DateRange policies add no new consumer distinction beyond the already-probed declaration-owned rendering decision. Trigger again only after a reusable wider family closes or another defined milestone/risk boundary is reached.
-- `resume`: `rg -n 'dateTimeIso|monthFragment|youngerThan1900Check|TemporalFirstFilledStarCarrier' A12Kernel docs/SOURCES.md ../a12-rulekit/src/test`
+- `consumer-probe-trigger`: satisfied for the direct temporal `FirstFilledValue` family; the wider DateFragment policies add no new consumer distinction beyond exact declaration matching and checked-token selection. Trigger again only after a reusable wider family closes or another defined milestone/risk boundary is reached.
+- `resume`: `rg -n 'DateRange|RawCell|parse.*Range|formalCheck' A12Kernel/Elaboration A12Kernel/Semantics A12Kernel/Conformance docs/SOURCES.md ../a12-rulekit/interpreter`

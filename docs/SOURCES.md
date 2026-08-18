@@ -126,7 +126,12 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `route`: [`FirstFilledValueAdditionalKindDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/FirstFilledValueAdditionalKindDiffTest.kt) executes dynamic Groovy, generated Java, and the interpreter over three fixed targets, each fed by one direct single-level starred source: Boolean, Custom sharing `ReviewCode`, and DateFragment sharing `MM`.
 - `claim`: an instantiated row with no source value clears targets seeded with `false`, `SEED`, and `01`; all three engines agree for every carrier.
 - `claim`: filled Boolean `true`, Custom `A7`, and DateFragment `06` sources produce `true`, `A7`, and `06`; the supplied Custom validator accepts `A7`, and all three engines agree.
-- `limit`: the matrix does not establish Boolean `false`, any formal rejection or poison, Custom type mismatch, a DateFragment format other than `MM`, or whether the DateFragment output is copied or rendered.
+- `policy-admission-revision`: clean a12-dmkits `89aa03957034de620562eb23a095d878f6547dca`, source-prepared dmtool `0.13.0`, and built/runtime Kernel `30.8.1`.
+- `policy-admission-route`: guarded structured `computation add --dry-run` checks over one fresh model, followed by one persisted `yyyy` control, exact structural read-back, and a whole-model Kernel check.
+- `policy-admission-claim`: matching direct one-star DateFragment computations are Kernel-confirmed for the four project-owned formats `MM`, `yyyy`, `yyyy-MM`, and `MM-dd`.
+- `control`: a `yyyy` target fed by an `MM` source is Kernel-confirmed rejected with `MVK_INVALID_COMPARE_TO_DATE`; the persisted `yyyy` control reads back exactly as `FirstFilledValue(Rows*/Year)` and the model remains valid.
+- `limit`: only the maintained `MM` matrix establishes runtime clear/value outcomes. The static policy matrix does not establish another format's runtime, formal rejection or poison, or whether output is copied or rendered.
+- `limit`: the runtime matrix does not establish Boolean `false` or Custom type mismatch.
 - `limit`: the matrix does not establish multiple, mixed, group, or filtered operands, nested repetition, partial validation, validation comparisons, target application topology, or result kinds outside its three carriers.
 
 <a id="src-first-filled-kind-computations"></a>

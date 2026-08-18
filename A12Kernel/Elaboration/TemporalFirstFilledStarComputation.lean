@@ -5,9 +5,12 @@ import A12Kernel.Elaboration.FirstFilledStarSource
 
 namespace A12Kernel
 
-/-- Exact date-bearing and scalar temporal computation carriers completed through the shared direct-star shape. Wider formats and additional policies remain excluded. -/
+/-- Exact date-bearing and scalar temporal computation carriers completed through the shared direct-star shape. Additional policies remain excluded. -/
 inductive TemporalFirstFilledStarCarrier where
   | monthFragment
+  | yearFragment
+  | yearMonthFragment
+  | monthDayFragment
   | fullDateIso
   | fullDateDotted
   | timeHms
@@ -25,15 +28,24 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
       if components != TemporalComponents.fullDate ||
           policy.youngerThan1900Check then
         none
-      else if policy.format == "MM" &&
-          policy.partialMode == .yearOptional then
-        some .monthFragment
-      else if policy.format == "yyyy-MM-dd" &&
-          policy.partialMode == .full then
-        some .fullDateIso
-      else if policy.format == "dd.MM.yyyy" &&
-          policy.partialMode == .full then
-        some .fullDateDotted
+      else if policy.partialMode == .yearOptional then
+        if policy.format == "MM" then
+          some .monthFragment
+        else if policy.format == "yyyy" then
+          some .yearFragment
+        else if policy.format == "yyyy-MM" then
+          some .yearMonthFragment
+        else if policy.format == "MM-dd" then
+          some .monthDayFragment
+        else
+          none
+      else if policy.partialMode == .full then
+        if policy.format == "yyyy-MM-dd" then
+          some .fullDateIso
+        else if policy.format == "dd.MM.yyyy" then
+          some .fullDateDotted
+        else
+          none
       else
         none
   | .temporal .time components, some policy, _ =>
