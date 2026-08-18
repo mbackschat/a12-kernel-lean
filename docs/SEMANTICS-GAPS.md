@@ -125,6 +125,22 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - Open reviewed domain: [temporal comparison and aggregates](IMPLEMENTATION-MAP.md#cap-temporal-comparison-and-aggregates) closes filled full-Date construction-versus-stored DateRange equality, while the [checked DateRange declaration](IMPLEMENTATION-MAP.md#cap-date-range-checked-declaration) closes both exact stored-input policies, exact formal causes, model-zone endpoint identity, policy/presence, and ordinary-document admission.
 - Remaining DateRange work: fragment and additional format/separator ingestion, other legal zones, construction-versus-construction, checked comparison/overlap/bound operand assembly, computation targets beyond the two exact direct policies, wider operands, and repeatable operator use.
 
+<a id="gap-sg6-checked-date-range-bound"></a>
+#### Checked DateRange bound extraction
+
+- `state`: open
+- `missing`: project the selected start or finish `DateValue` from one canonically checked nonrepeatable DateRange field without reparsing its stored text or collapsing phase-specific unavailability.
+- `baseline`: [universal temporal value identity](IMPLEMENTATION-MAP.md#6--dates-and-time) owns the exact endpoint payloads, and [checked DateRange declaration and admission](IMPLEMENTATION-MAP.md#cap-date-range-checked-declaration) owns both canonical stored-input policies and the single immutable document read.
+- `evidence`: [stored DateRange bound extraction](SOURCES.md#src-date-range-bound-extraction) distinguishes the two endpoints and pins the direct field route.
+- `discriminator`: choose endpoints whose local parts, exact instants, and calendar basis can differ; separately retain empty, validation-unknown, and computation-poison so a rendered-label reconstruction or `Option Date` projection cannot satisfy the matrix.
+- `consumer`: Execute and Explain must select one exact endpoint from the checked field and report explicit empty or formal-unavailability state without renewed parsing or source archaeology.
+- `reopen-when`: comparison, computation-target, repeatable, BaseYear, fragment-range, constructed-range, or nested-expression consumers are selected.
+- `route-state`: verified
+- `red-locus`: [`DateRangeInput.lean`](../A12Kernel/Conformance/DateRangeInput.lean) already owns a canonical checked range plus exact phase controls suitable for the first failing endpoint query.
+- `green-locus`: [`Core.lean`](../A12Kernel/Core.lean) owns `DateRangeValue` and both exact `DateValue` endpoints that the projection must specialize.
+- `supporting-locus`: [`CheckedDocument.lean`](../A12Kernel/Elaboration/CheckedDocument.lean) owns the sole model-certified nonrepeatable read and must remain the only document route.
+- `route-limit`: admit only direct nonrepeatable DateRange fields under the two canonically supported full-Date policies; do not add another document, general expression tree, BaseYear branch, fragment completion, or repeatable addressing.
+
 - Most dangerous discriminator: equal Berlin wall labels can denote different instants, and another `World` can change `Now`. Wall-label-only identity, early clock resolution, or elapsed-duration substitution is unsound.
 - Consumer hypothesis: Execute, Transform, and Explain must retain instant, source format, decoded components, calendar/profile, world dependency, and target rendering policy. An unsupported zone/profile is explicit insufficiency.
 - Forbidden shortcut: do not reuse a day-only operand for sub-day expressions, create a parallel temporal AST, re-resolve an instant, invent target rendering, substitute proleptic dates for an unsupported profile, or equate calendar steps with elapsed duration.

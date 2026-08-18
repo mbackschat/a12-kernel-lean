@@ -132,6 +132,15 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `claim`: a construction from filled full-Date fields `2024-06-01` and `2024-06-30` equals a stored `01.06.2024-30.06.2024` range and does not equal a stored range whose finish alone is `2024-06-29`; the maintained pair authors construction-left equality and stored-left inequality, and all three engines agree.
 - `limit`: the case does not establish empty or formally unavailable input, construction-versus-construction, DateFragment or format admission, raw parsing, computation targets or rendering, repeatable placement, overlap arguments, or bound extraction.
 
+<a id="src-date-range-bound-extraction"></a>
+#### Stored DateRange bound extraction
+
+- `revision`: the maintained differential was inspected at clean a12-dmkits HEAD `89aa03957034de620562eb23a095d878f6547dca`; [`DateRangeDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/DateRangeDiffTest.kt) has blob `810f78faac032907a2e91b9c346ef00288f19613`.
+- `route`: the maintained differential executes dynamic Kernel and the independent interpreter over a nonrepeatable `dd.MM.yyyy`/`-` DateRange field.
+- `claim`: `StartOfDateRange` exposes year `2021` and month `6` from `01.06.2021-30.06.2021`, while `EndOfDateRange` exposes day `30`; strict and equality controls distinguish the selected values, and both engines agree.
+- `route`: kernel 30.8.1 revision `cb66e51fa7ab90b650698f861bf670754e2e1e66` [`CheckDatumBereichOpImpl`](../../a12-kernel/kernel-tool/kernel-core-parser/src/main/java/com/mgmtp/a12/kernel/core/parser/internal/check/datum/CheckDatumBereichOpImpl.java) admits a non-wildcard, non-category DateRange field, [`CodeGenCreator`](../../a12-kernel/kernel-tool/kernel-core-codegen-condition/src/main/java/com/mgmtp/a12/kernel/core/codegen/internal/generator/conversion/CodeGenCreator.java) lowers that field without another range representation, and [`RuntimeController`](../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_30_8/internal/core/RuntimeController.java) selects its stored start or finish and propagates the range's no-value and relevance flags.
+- `limit`: the retained differential observes decoded date components, not exact instant or calendar-basis identity, and does not cover empty or formal unavailability, the ISO/slash policy, repeatable fields, fragment ranges, BaseYear, constructed ranges, computation targets, or nested consumers. Those identities and phase distinctions remain internal claims when Lean projects the already-canonical checked value.
+
 <a id="src-first-filled-additional-kind-computations"></a>
 #### Direct one-star additional-kind `FirstFilledValue` computations
 

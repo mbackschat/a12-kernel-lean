@@ -10,9 +10,10 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: read-only route discovery required.
-- `gap`: [SG6 checked DateRange bound extraction](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion) over the now-canonical stored-input value.
-- `next`: inventory the existing resolved-range, field-read, `StartOfDateRange`/`EndOfDateRange`, and full-Date consumer owners; verify whether a nonrepeatable checked field can reuse them without another operand or document representation before selecting red/green loci.
+- `state`: verified route ready for red/green.
+- `gap`: [SG6 checked DateRange bound extraction](SEMANTICS-GAPS.md#gap-sg6-checked-date-range-bound) over the now-canonical stored-input value.
+- `oracle`: [stored DateRange bound extraction](SOURCES.md#src-date-range-bound-extraction).
+- `next`: add the failing checked endpoint query at the canonical DateRange input locus, then implement direct nonrepeatable start/finish projection through `DateRangeValue` and `CheckedDocument` with no second operand or document representation.
 - `blocked-on`: none.
 - `consumer-probe-trigger`: defer the next bounded Execute/Explain probe until checked DateRange bound extraction joins canonical stored input into one reusable field-consumer slice; raw classification alone already answers its predicted query and adds no operator decision.
 - `resume`: `rg -n 'StartOfDateRange|EndOfDateRange|DateRangeValue|ResolvedDateRange|dateRange' A12Kernel/Elaboration A12Kernel/Semantics A12Kernel/Conformance docs/SOURCES.md ../a12-rulekit/interpreter`
