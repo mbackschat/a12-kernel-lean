@@ -1,6 +1,6 @@
 # Open semantic gaps
 
-This is the open-only work index for convergence toward complete semantic conformance with A12 Kernel 30.8.1. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) is the sole detailed owner of implemented/proved/evidenced coverage; [`PLAN.md`](PLAN.md) selects the immediate unit from this index.
+This is the open-only work index for convergence toward complete semantic conformance with A12 Kernel 30.8.1. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) is the sole detailed owner of implemented/proved/evidenced coverage. Working context selects uninterrupted work from this index; [`PLAN.md`](PLAN.md) persists that selection only for cross-session handoff.
 
 ## Query contract
 

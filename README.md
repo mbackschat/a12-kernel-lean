@@ -82,7 +82,7 @@ This is an active formal-semantics project, not a complete A12 interpreter or a 
 - Empirical correspondence arrives through two channels: compact observations retained and replayed here, and corrections confirmed upstream by a12-dmkits law tests that execute the real kernel. They are tracked separately because only local replay can guard a refactor in this repository. A family with neither remains honestly marked `external evidence pending`.
 - The immediate hard frontier is completing that canonical addressed operand stream across cross-level, RNU, group, and whole-rule repeatable routes. Whole-document computation scheduling remains gated behind this boundary and its source audit.
 
-[`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) is the exact coverage index. [`docs/PLAN.md`](docs/PLAN.md) records the active capsule and next frontier, while [`docs/SEMANTICS-GAPS.md`](docs/SEMANTICS-GAPS.md) owns unresolved semantic obligations.
+[`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) is the exact coverage index. [`docs/PLAN.md`](docs/PLAN.md) records persisted cross-session handoff state, while [`docs/SEMANTICS-GAPS.md`](docs/SEMANTICS-GAPS.md) owns unresolved semantic obligations and working context carries uninterrupted capsule selection.
 
 ## Quick start
 
