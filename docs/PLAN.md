@@ -10,9 +10,9 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: route discovery.
-- `gap`: none selected.
-- `next`: select the smallest non-overlapping open gap whose discriminator, exclusions, evidence checkpoint, and implementation route can be verified before red/green.
-- `blocked-on`: none.
+- `state`: blocked on an owner decision.
+- `gap`: [direct temporal `FirstFilledValue` computation remainder](SEMANTICS-GAPS.md#gap-sg8-temporal-first-filled-computation).
+- `next`: adopt one universal checked DateRange declaration and value representation, then route-discover the smallest foundational capsule before returning to the DateRange computation.
+- `blocked-on`: the universal checked document carries only scalar `Value`, but the existing `ResolvedDateRange` is owned by a later semantics module. Choosing the foundational carrier changes the model, document, target, and future comparison consumers; do not create a parallel DateRange document or begin semantic edits before the route is verified.
 - `consumer-probe-trigger`: inactive; evaluate only when the selected work reaches a reusable family, major addressing or computation boundary, or public compatibility claim.
-- `resume`: `rg -n '^<a id="gap-|^### (SG|SQ)' docs/SEMANTICS-GAPS.md`
+- `resume`: `rg -n 'gap-sg8-temporal-first-filled-computation|inductive (Value|FieldKind|SurfaceScalarKind)|structure (FlatFieldDecl|CheckedAddressedCell|ResolvedDateRange)' docs/SEMANTICS-GAPS.md A12Kernel`
