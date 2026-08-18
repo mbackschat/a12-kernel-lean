@@ -1,13 +1,53 @@
 import A12Kernel.Semantics.ModelZone
 import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.TemporalFormat
+import A12Kernel.Elaboration.Flat.Types
 
-/-! # Checked DateRange stored-text ingestion
+/-! # Checked DateRange declaration and stored-text ingestion
 
 This capsule classifies stored DateRange text for the two exact declaration pairs already admitted by the bounded computation family. It retains present-empty placement, four distinct formal causes, decoded Gregorian components, model-zone midnight instants, and stored-calendar provenance. Wider `SimpleDateFormat` syntax, fragment ranges, other legal zones, JSON mapper behavior, and document traversal remain separate.
 -/
 
 namespace A12Kernel
+
+inductive CanonicalDateRangeFieldError where
+  | notDateRange (path : List String) (actual : FieldKind)
+  | unsupportedPolicy (path : List String) (format separator : String)
+  | incoherentCore
+  deriving Repr, DecidableEq
+
+/-- One DateRange declaration with its exact field identity, policy, and supported parser selected once. -/
+structure CheckedCanonicalDateRangeField where
+  private mk ::
+  declaration : FlatFieldDecl
+  field : FlatDateRangeField
+  policy : DateRangeDeclarationPolicy
+  format : DateRangeFormat
+  fieldOwned : declaration.toDateRangeField? = some field
+  policyOwned : declaration.toDateRangeDeclarationPolicy? = some policy
+  formatOwned : DateRangeFormat.ofPolicy? policy = some format
+
+/-- Certify one declaration without imposing direct-versus-repeatable addressing; each consumer owns that separate shape gate. -/
+def certifyCanonicalDateRangeField (declaration : FlatFieldDecl) :
+    Except CanonicalDateRangeFieldError CheckedCanonicalDateRangeField :=
+  match hField : declaration.toDateRangeField? with
+  | none => .error (.notDateRange declaration.path
+      declaration.policy.kind)
+  | some field =>
+      match hPolicy : declaration.toDateRangeDeclarationPolicy? with
+      | none => .error .incoherentCore
+      | some policy =>
+          match hFormat : DateRangeFormat.ofPolicy? policy with
+          | none => .error (.unsupportedPolicy declaration.path
+              policy.format policy.separator)
+          | some format => .ok {
+              declaration
+              field
+              policy
+              format
+              fieldOwned := hField
+              policyOwned := hPolicy
+              formatOwned := hFormat }
 
 /-- The bounded classifier cannot guess a value when the declaration or model-zone profile is outside its exact executable fragment. Local-midnight resolution failure remains separate from stored-value formal invalidity. -/
 inductive DateRangeInputError where

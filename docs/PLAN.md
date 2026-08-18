@@ -10,10 +10,10 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: read-only route discovery required.
+- `state`: verified implementation route.
 - `gap`: [SG6 checked DateRange overlap operand assembly](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
 - `oracle`: [canonical Date-range and overlap clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap).
-- `next`: inventory the existing exact `DateRangeValue` conversion, overlap operators, checked flat operand/addressing constructors, Git history, and active cross-project handoffs; verify the smallest nonredundant route before semantic edits.
+- `next`: add the first red full-validation checked-document separator for singular `DateRangesOverlap`, then assemble admitted direct, plain-star, and filtered-star cells into the existing ordered skipped/kept operand scan.
 - `blocked-on`: none.
 - `consumer-probe-trigger`: inactive until a wider reusable DateRange operand or target capability closes, or public compatibility is considered.
-- `resume`: `rg -n 'DateRangeValue|toResolvedDateRange|ResolvedDateRangeOperand|DateRangesOverlap|AtLeastOneDateRangeOverlaps' spec/05-dates-and-time.md docs/SEMANTICS-GAPS.md docs/IMPLEMENTATION-MAP.md A12Kernel`
+- `resume`: `rg -n 'CheckedDateRangesOverlap|ResolvedCheckedEntityOperandCore|ResolvedDateRangeOperand|evalDateRangesOverlap' docs/SEMANTICS-GAPS.md docs/IMPLEMENTATION-MAP.md A12Kernel`

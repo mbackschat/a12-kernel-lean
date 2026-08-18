@@ -39,6 +39,8 @@ inductive KernelStaticDiagnostic where
   | noWildcardsGAllowed
   /-- Scalar `GroupFilled` received a starred group, where the group must stay whole. -/
   | noWildcardsAllowed
+  /-- An operator-specific field-list gate refused a group-scope operand. -/
+  | noGroupsAllowed
   /-- A group path names no group in the model, or a key path names no field. Retained because it separates an unknown operand from every overlap class. -/
   | invalidEntity
   /-- A root group appears under a group-list operator that forbids every root operand. -/
@@ -92,6 +94,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidWildcard => "MVK_INVALID_WILDCARD"
   | .noWildcardsGAllowed => "MVK_NO_WILDCARDS_G_ALLOWED"
   | .noWildcardsAllowed => "MVK_NO_WILDCARDS_ALLOWED"
+  | .noGroupsAllowed => "MVK_NO_GROUPS_ALLOWED"
   | .invalidEntity => "MVK_INVALID_ENTITY"
   | .rootGroupReferenced => "MVK_ROOT_GROUP_REFERENCED"
   | .rootGroupWithOtherParameters =>
@@ -120,6 +123,7 @@ def all : List KernelStaticDiagnostic :=
     .varyingTypesNotAllowed, .noBoolyAllowed, .paramSizeInvalidN,
     .paramSizeInvalidGN, .paramSizeInvalid2, .duplicateParam1, .duplicateParam2,
     .noWildcard, .invalidWildcard, .noWildcardsGAllowed, .noWildcardsAllowed,
+    .noGroupsAllowed,
     .invalidEntity, .rootGroupReferenced, .rootGroupWithOtherParameters,
     .repeatableGroupMissing, .negativeConditionInIteration,
     .errorFieldNotReferenced,

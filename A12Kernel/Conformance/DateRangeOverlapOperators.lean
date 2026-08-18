@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.DateRangeOverlap
 import A12Kernel.Semantics.DateRangeOverlapOperators
 
 /-! # Resolved Date-range overlap operator locks
@@ -8,6 +9,107 @@ These cases start after authored operands have been expanded and filtered into o
 namespace A12Kernel.Conformance.DateRangeOverlapOperators
 
 open A12Kernel
+
+/-! ## Checked `DateRangesOverlap` source admission -/
+
+private def rangeField (id : FieldId) (groupPath : GroupPath) (name : String)
+    (scope : List RepeatableLevel := []) (format : String := "yyyy-MM-dd")
+    (separator : String := "/") : FlatFieldDecl := {
+  id, groupPath, name, repeatableScope := scope
+  policy := { kind := .dateRange }
+  dateRangePolicy := some { format, separator }
+}
+
+private def admissionModel : FlatModel := {
+  fields := [
+    rangeField 1 ["Form"] "Start",
+    rangeField 2 ["Form"] "Finish" [] "dd.MM.yyyy" "-",
+    rangeField 3 ["Form", "Rows"] "Window" [10],
+    rangeField 4 ["Form"] "Unsupported" [] "yyyy-MM-dd" "-",
+    { id := 5, groupPath := ["Form"], name := "Code",
+      policy := { kind := .string },
+      stringPolicy := { lineBreaksPermitted := true } },
+    { id := 6, groupPath := ["Form", "Rows"], name := "Guard",
+      repeatableScope := [10],
+      policy := { kind := .number { scale := 0, signed := false } } },
+    rangeField 7 ["Form", "Fixed"] "Left",
+    rangeField 8 ["Form", "Fixed"] "Right"]
+  repeatableGroups := [
+    { level := 10, path := ["Form", "Rows"], repeatability := some 4 }]
+}
+
+private def direct (field : String) : SurfaceFieldEntityOperand :=
+  .field { base := .relative 0, groups := [], field }
+
+private def star (field : String) : SurfaceStarFieldPath := {
+  base := .absolute
+  groups := [{ name := "Form" }, { name := "Rows", starred := true }]
+  field
+}
+
+private def selfFilter : SurfaceCorrelatedHaving :=
+  .compareNumbers .equal
+    { origin := .inner,
+      field := { base := .absolute, groups := ["Form", "Rows"], field := "Guard" } }
+    { origin := .inner,
+      field := { base := .absolute, groups := ["Form", "Rows"], field := "Guard" } }
+
+private def starredRowsGroup : SurfaceFieldEntityOperand :=
+  .starredGroup {
+    base := .absolute
+    groups := [{ name := "Form" }, { name := "Rows", starred := true }]
+  }
+
+private def checkedSource? (first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand := []) :
+    Option (CheckedDateRangesOverlapSource admissionModel) :=
+  (elaborateDateRangesOverlapSource admissionModel ["Form"] { first, rest }).toOption
+
+private def admissionError? (first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand := []) :
+    Option DateRangesOverlapElabError :=
+  match elaborateDateRangesOverlapSource admissionModel ["Form"] { first, rest } with
+  | .ok _ => none
+  | .error error => some error
+
+/- The operator accepts both canonical full-year policies in one list; it does not require one presentation. -/
+example : (checkedSource? (direct "Start") [direct "Finish"]).isSome = true := by
+  native_decide
+
+/- A sole star satisfies multiplicity, and a filter stays attached to its exact authored slot. -/
+example :
+    (checkedSource? (.star (star "Window"))).map (·.hasHaving) = some false ∧
+      (checkedSource? (.starHaving (star "Window") selfFilter)).map
+        (·.hasHaving) = some true := by
+  native_decide
+
+/- Authored groups are an operator-specific refusal even when their whole expansion is DateRange. -/
+example :
+    (admissionError? (.group (.path {
+      base := .absolute, groups := ["Form", "Fixed"] }))).bind
+        DateRangesOverlapElabError.diagnostic? = some .noGroupsAllowed ∧
+      admissionError? starredRowsGroup =
+        some (.groupsNotAllowed ["Form", "Rows"]) := by
+  native_decide
+
+/- Shared arity and duplicate gates remain earlier than DateRange certification. -/
+example :
+    (admissionError? (direct "Start")).bind DateRangesOverlapElabError.diagnostic? =
+        some .paramSizeInvalidN ∧
+      (admissionError? (direct "Start") [direct "Start"]).bind
+        DateRangesOverlapElabError.diagnostic? = some .duplicateParam1 := by
+  native_decide
+
+/- Wrong-kind and unsupported-policy sources fail explicitly instead of becoming empty operands. -/
+example :
+    admissionError? (direct "Start") [direct "Code"] =
+        some (.sourceNotDateRange ["Form", "Code"] .string) ∧
+      admissionError? (direct "Start") [direct "Unsupported"] =
+        some (.unsupportedPolicy ["Form", "Unsupported"] "yyyy-MM-dd" "-") ∧
+      admissionError? (.field { base := .relative 0, groups := [], field := "Start" }
+        (.projected "Band")) [direct "Finish"] =
+        some (.unsupportedReadForm ["Form", "Start"] (.projected "Band")) := by
+  native_decide
 
 private def date2024 (month day : Nat)
     (admissible : (FullDate.ofYmd? 2024 month day).isSome) : FullDate :=

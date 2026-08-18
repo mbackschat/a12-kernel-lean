@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.DateRangeOverlap
 import A12Kernel.Semantics.DateRangeOverlapOperators
 import A12Kernel.Proofs.DateRangeOverlap
 
@@ -7,6 +8,16 @@ These laws cover the two ordered scans after cell classification and filter sele
 -/
 
 namespace A12Kernel
+
+/-- Every DateRange declaration retained by checked singular-overlap admission has one of the exact executable stored-input policies. -/
+theorem checkedDateRangesOverlap_policies_supported
+    (checked : CheckedDateRangesOverlapSource model) :
+    checked.operands.all (fun operand =>
+      (DateRangeFormat.ofPolicy? operand.source.policy).isSome) = true := by
+  apply List.all_eq_true.mpr
+  intro operand _
+  rw [operand.source.formatOwned]
+  rfl
 
 /-- The any-pair operator has no UNKNOWN result at this resolved skipped-or-kept boundary. -/
 theorem scanDateRangesOverlapOccurrences_ne_unknown

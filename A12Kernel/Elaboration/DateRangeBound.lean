@@ -22,10 +22,9 @@ def FlatModel.admitsDateRangeBoundSource
   | .error _ => false
   | .ok declaration =>
       declaration.repeatableScope.isEmpty &&
-        declaration.toDateRangeField? == some source &&
-        match declaration.toDateRangeDeclarationPolicy? with
-        | some policy => (DateRangeFormat.ofPolicy? policy).isSome
-        | none => false
+        match certifyCanonicalDateRangeField declaration with
+        | .ok checked => checked.field == source
+        | .error _ => false
 
 /-- One selected endpoint of a model-certified direct nonrepeatable DateRange field. -/
 structure CheckedDateRangeBound (model : FlatModel) where
@@ -58,20 +57,16 @@ def elaborateDateRangeBound (model : FlatModel) (sourceField : FieldId)
     Except DateRangeBoundElabError (CheckedDateRangeBound model) := do
   let declaration ←
     model.resolveNonrepeatableDeclarationById sourceField |>.mapError .source
-  let source ← match declaration.toDateRangeField? with
-    | some source => pure source
-    | none => throw (.sourceNotDateRange sourceField
-        declaration.policy.kind.surfaceKind)
-  let policy ← match declaration.toDateRangeDeclarationPolicy? with
-    | some policy => pure policy
-    | none => throw .incoherentCore
-  match DateRangeFormat.ofPolicy? policy with
-  | none => throw (.unsupportedPolicy sourceField policy.format policy.separator)
-  | some _ =>
-      if hSource : model.admitsDateRangeBoundSource source = true then
-        pure { source, bound, sourceAdmitted := hSource }
-      else
-        throw .incoherentCore
+  let checked ← certifyCanonicalDateRangeField declaration |>.mapError fun
+    | .notDateRange _ actual =>
+        .sourceNotDateRange sourceField actual.surfaceKind
+    | .unsupportedPolicy _ format separator =>
+        .unsupportedPolicy sourceField format separator
+    | .incoherentCore => .incoherentCore
+  if hSource : model.admitsDateRangeBoundSource checked.field = true then
+    pure { source := checked.field, bound, sourceAdmitted := hSource }
+  else
+    throw .incoherentCore
 
 /-- Resolve one direct bound and retain its authored comparison position and fixed full-Date peer. -/
 def elaborateDateRangeBoundComparison (model : FlatModel)
