@@ -135,7 +135,12 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `discriminator`: compare start and finish against the same full-Date value while their exact instants differ; retain empty and formal unavailability so a label-only or eager-default composition fails.
 - `consumer`: Execute and Explain must obtain the comparison verdict and selected source identity from existing owners without a second expression or document representation.
 - `reopen-when`: direct nonrepeatable full-Date comparison has a verified route, or a wider consumer is explicitly selected.
-- `route-state`: discovery-required
+- `route-state`: verified
+- `red-locus`: [`DateRangeInput.lean`](../A12Kernel/Conformance/DateRangeInput.lean) owns the canonical checked range, endpoint separator, and empty/formal observations for the first failing comparison query.
+- `green-locus`: [`DateRangeBound.lean`](../A12Kernel/Elaboration/DateRangeBound.lean) owns the checked direct-bound certificate and sole document read that the comparison must specialize.
+- `supporting-locus`: [`DateRangeOverlap.lean`](../A12Kernel/Semantics/DateRangeOverlap.lean) owns the existing `DateValue` to `FullDate` projection.
+- `supporting-locus`: [`DateComparison.lean`](../A12Kernel/Semantics/DateComparison.lean) owns the six full-Date comparison operators and validation verdict projection.
+- `route-limit`: compose one direct nonrepeatable checked DateRange bound with one fixed `FullDate` validation operand; exclude a new expression tree, document route, parser, comparison evaluator, direct Date field, BaseYear, fragment or constructed range, repeatable addressing, and nested consumers.
 
 - Most dangerous discriminator: equal Berlin wall labels can denote different instants, and another `World` can change `Now`. Wall-label-only identity, early clock resolution, or elapsed-duration substitution is unsound.
 - Consumer hypothesis: Execute, Transform, and Explain must retain instant, source format, decoded components, calendar/profile, world dependency, and target rendering policy. An unsupported zone/profile is explicit insufficiency.
