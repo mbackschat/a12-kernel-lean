@@ -137,6 +137,7 @@ import A12Kernel.Conformance.BooleanFirstFilledComputation
 import A12Kernel.Conformance.CustomFirstFilledComputation
 import A12Kernel.Conformance.DateFragmentFirstFilledComputation
 import A12Kernel.Conformance.FullDateFirstFilledComputation
+import A12Kernel.Conformance.TimeFirstFilledComputation
 import A12Kernel.Conformance.FieldEntityGroupOperand
 import A12Kernel.Conformance.TemporalEntityGroupOperand
 import A12Kernel.Conformance.BooleanEntityGroupOperand

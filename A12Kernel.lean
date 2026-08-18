@@ -134,6 +134,7 @@ import A12Kernel.Elaboration.CustomFirstFilledComputation
 import A12Kernel.Elaboration.TemporalFirstFilledStarComputation
 import A12Kernel.Elaboration.DateFragmentFirstFilledComputation
 import A12Kernel.Elaboration.FullDateFirstFilledComputation
+import A12Kernel.Elaboration.TimeFirstFilledComputation
 import A12Kernel.Elaboration.StarGroup
 import A12Kernel.Elaboration.StarNumber
 import A12Kernel.Elaboration.NumberEntityValueList

@@ -5,13 +5,14 @@ import A12Kernel.Elaboration.FirstFilledStarSource
 
 namespace A12Kernel
 
-/-- Exact temporal computation carriers completed through the shared direct-star shape. This closed set does not include Time, DateTime, wider Date formats, or additional DateFragment policies. -/
+/-- Exact temporal computation carriers completed through the shared direct-star shape. This closed set does not include DateTime, DateRange, wider temporal formats, or additional policies. -/
 inductive TemporalFirstFilledStarCarrier where
   | monthFragment
   | fullDateIso
+  | timeHms
   deriving Repr, DecidableEq
 
-/-- Classify only the two completed temporal declaration profiles. Optional pre-1900 checking remains outside until checked temporal input represents that declaration-owned source check. -/
+/-- Classify only the completed temporal declaration profiles. Date profiles with optional pre-1900 checking remain outside until checked temporal input represents that declaration-owned source check. -/
 def FlatFieldDecl.temporalFirstFilledStarCarrier?
     (declaration : FlatFieldDecl) : Option TemporalFirstFilledStarCarrier :=
   match declaration.policy.kind, declaration.toTemporalTargetPolicy? with
@@ -25,6 +26,12 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
       else if policy.format == "yyyy-MM-dd" &&
           policy.partialMode == .full then
         some .fullDateIso
+      else
+        none
+  | .temporal .time components, some policy =>
+      if components == TemporalComponents.time &&
+          policy.format == "HH:mm:ss" then
+        some .timeHms
       else
         none
   | _, _ => none
@@ -52,7 +59,7 @@ structure CheckedTemporalFirstFilledStarComputation
   sourceCarrier : source.declaration.temporalFirstFilledStarCarrier? = some carrier
   sourceDirectSingleStar : source.isDirectSingleStar = true
 
-/-- Check the target/source/direct-star shape shared by the completed DateFragment and full-Date computations. Runtime payload and target-policy evaluation remain carrier-owned. -/
+/-- Check the target/source/direct-star shape shared by the completed DateFragment, full-Date, and Time computations. Runtime payload and target-policy evaluation remain carrier-owned. -/
 def checkTemporalFirstFilledStarComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) (carrier : TemporalFirstFilledStarCarrier) :
