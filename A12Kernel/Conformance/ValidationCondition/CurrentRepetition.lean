@@ -211,8 +211,8 @@ private def repeatableRetainedShape?
       RepeatableCurrentRepetitionComparison) := do
   let checked ← repeatableChecked? comparison
   match checked.core with
-  | .leaf (.guardedRepeatableCurrentRepetition guard group retained) =>
-      some (guard.id, group.level, retained)
+  | .leaf (.guardedRepeatableCurrentRepetition guard source retained) =>
+      some (guard.id, source.group.level, retained)
   | _ => none
 
 private def repeatableRule?
@@ -281,11 +281,12 @@ private def repeatableSurfaceError?
   | .error error => some error
 
 private def repeatableDirectError?
-    (guard : FlatFieldDecl) (group : RepeatableGroupDecl) :
-    Option ValidationConditionAssemblyError :=
+    (guard : FlatFieldDecl) : Option ValidationConditionAssemblyError := do
+  let source ← (checkCurrentRepetitionSource repeatableModel ["Order"]
+    (groupPath ["Order", "Sections"])).toOption
   match CheckedValidationCondition.checkCore repeatableModel ["Order"]
       (ValidationCondition.guardedRepeatableCurrentRepetition
-        guard group .greaterThanOne) (by native_decide) with
+        guard source .greaterThanOne) (by native_decide) with
   | .ok _ => none
   | .error error => some error
 
@@ -346,7 +347,7 @@ example :
         some .unknown := by
   native_decide
 
-/- Surface and direct checked admission reject a detached group, a nonrepeatable group, and counterfeit retained declarations. -/
+/- Surface and direct checked admission reject detached or unknown groups and counterfeit guard declarations; the shared coordinate source makes a counterfeit group unconstructable. -/
 example :
     repeatableSurfaceError?
         (fieldPath ["Order", "Sections"] "OuterAmount")
@@ -361,11 +362,8 @@ example :
         (fieldPath ["Order", "Sections", "Details"] "SectionDetail")
         (groupPath ["Order", "Sections"]) =
       some .incoherentCore ∧
-    repeatableDirectError? outerAmount
-        { repeatableSections with repeatability := some 2 } =
-      some .incoherentCore ∧
-    repeatableDirectError? { outerAmount with name := "Counterfeit" }
-        repeatableSections = some .incoherentCore := by
+    repeatableDirectError? { outerAmount with name := "Counterfeit" } =
+      some .incoherentCore := by
   native_decide
 
 /- Analyze sees the filled guard as the only field dependency and pointer, while execution and partial-support queries expose the addressed boundary explicitly. -/

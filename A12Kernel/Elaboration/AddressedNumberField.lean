@@ -105,18 +105,26 @@ abbrev AddressedNumberFieldFault := AddressedNumericLeafFault
 
 namespace CheckedAddressedNumberSource
 
-/-- Read and evaluate this direct Number source at one already-certified target path. -/
-def evaluateAtPath
+/-- Read and evaluate this direct Number source at one already-certified target path through a caller-supplied exact-address view. -/
+def evaluateAtPathWithRead
     (source : CheckedAddressedNumberSource model)
-    (input : CheckedDocument model) (path : List Nat) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (path : List Nat) :
     Except AddressedNumericLeafFault NumericComputationResult := do
   let address : CellAddr := {
     field := source.placement.sourceDeclaration.id
     path
   }
-  let cell ← (input.read address).mapError .sourceRead
+  let cell ← (read address).mapError .sourceRead
   (source.placement.evaluateSourceAtom cell
     (.field source.placement.sourceDeclaration)).mapError .evaluation
+
+/-- Read and evaluate this direct Number source against the immutable checked document. -/
+def evaluateAtPath
+    (source : CheckedAddressedNumberSource model)
+    (input : CheckedDocument model) (path : List Nat) :
+    Except AddressedNumericLeafFault NumericComputationResult :=
+  source.evaluateAtPathWithRead input.read path
 
 end CheckedAddressedNumberSource
 
@@ -207,12 +215,21 @@ private def evaluateSource
   operation.placement.evaluateSourceAtom sourceCell
     (.field operation.placement.sourceDeclaration)
 
+/-- Execute the direct Number read through a caller-supplied exact-address view while target iteration and prior-target classification remain owned by the immutable checked document. -/
+def executeWithRead (operation : CheckedAddressedNumberField model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except AddressedNumberFieldFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  operation.placement.target.executeWithPath input
+    (operation.toCheckedAddressedNumberSource.evaluateAtPathWithRead read)
+
 /-- Execute the certified direct Number read through the shared addressed placement. -/
 def execute (operation : CheckedAddressedNumberField model)
     (input : CheckedDocument model) :
     Except AddressedNumberFieldFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  operation.placement.executeWith input operation.evaluateSource
+  operation.executeWithRead input input.read
 
 /-- Classify exact addressed outcomes against the immutable source document. -/
 def executeResult

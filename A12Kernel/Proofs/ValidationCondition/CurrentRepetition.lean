@@ -86,21 +86,21 @@ theorem validationConditionLeaf_guardedRootCurrentRepetition_partialUnsupported
 /-- Addressed evaluation reads the direct guard and the named model-owned coordinate, then delegates only their conjunction to the shared verdict tree. -/
 theorem validationConditionLeaf_guardedRepeatableCurrentRepetition_evalAddressed
     (model : FlatModel) (guard : FlatFieldDecl)
-    (group : RepeatableGroupDecl)
+    (source : CheckedCurrentRepetitionSource model)
     (comparison : RepeatableCurrentRepetitionComparison)
     (context : AddressedValidationEvaluationContext model)
     (cell : CheckedCell) (coordinate : Nat)
     (readGuard : context.readCell context.outer guard.id = .ok cell)
-    (readCoordinate : context.outer.bindingAt group.level = .ok coordinate) :
+    (readCoordinate : source.coordinateAt context.outer = .ok coordinate) :
     (ValidationConditionLeaf.guardedRepeatableCurrentRepetition
-        guard group comparison).evalAddressed context =
+        guard source comparison).evalAddressed context =
       .ok (Verdict.conj
         (RepeatableFieldPresenceOperator.filled.eval
           (observeCell .validation cell))
         (comparison.eval coordinate)) := by
   change (do
     let reachedCell ← context.readCell context.outer guard.id
-    let reachedCoordinate ← context.outer.bindingAt group.level
+    let reachedCoordinate ← source.coordinateAt context.outer
       |>.mapError CheckedAddressingError.environment
     pure (Verdict.conj
       (RepeatableFieldPresenceOperator.filled.eval
@@ -113,10 +113,10 @@ theorem validationConditionLeaf_guardedRepeatableCurrentRepetition_evalAddressed
 @[simp]
 theorem validationCondition_guardedRepeatableCurrentRepetition_referencesField
     (model : FlatModel) (guard : FlatFieldDecl)
-    (group : RepeatableGroupDecl)
+    (source : CheckedCurrentRepetitionSource model)
     (comparison : RepeatableCurrentRepetitionComparison) (field : FieldId) :
     (ValidationCondition.guardedRepeatableCurrentRepetition (model := model)
-        guard group comparison).referencesField field =
+        guard source comparison).referencesField field =
       (guard.id == field) := by
   rfl
 
@@ -124,10 +124,10 @@ theorem validationCondition_guardedRepeatableCurrentRepetition_referencesField
 @[simp]
 theorem validationCondition_guardedRepeatableCurrentRepetition_iterationScope
     (model : FlatModel) (guard : FlatFieldDecl)
-    (group : RepeatableGroupDecl)
+    (source : CheckedCurrentRepetitionSource model)
     (comparison : RepeatableCurrentRepetitionComparison) :
     (ValidationCondition.guardedRepeatableCurrentRepetition (model := model)
-        guard group comparison).ordinaryIterationScope =
+        guard source comparison).ordinaryIterationScope =
       .ok (some guard.repeatableScope) := by
   rfl
 
@@ -135,10 +135,10 @@ theorem validationCondition_guardedRepeatableCurrentRepetition_iterationScope
 @[simp]
 theorem validationConditionLeaf_guardedRepeatableCurrentRepetition_partialUnsupported
     (model : FlatModel) (guard : FlatFieldDecl)
-    (group : RepeatableGroupDecl)
+    (source : CheckedCurrentRepetitionSource model)
     (comparison : RepeatableCurrentRepetitionComparison) :
     (ValidationConditionLeaf.guardedRepeatableCurrentRepetition
-      (model := model) guard group comparison).supportsAddressedPartial = false := by
+      (model := model) guard source comparison).supportsAddressedPartial = false := by
   rfl
 
 end A12Kernel

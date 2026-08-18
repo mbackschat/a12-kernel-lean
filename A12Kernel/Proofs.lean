@@ -142,6 +142,7 @@ import A12Kernel.Proofs.AddressedFieldValueAsNumber
 import A12Kernel.Proofs.AddressedRangeAsNumber
 import A12Kernel.Proofs.AddressedStringLength
 import A12Kernel.Proofs.AddressedNumberField
+import A12Kernel.Proofs.CurrentRepetitionComputation
 import A12Kernel.Proofs.AddressedNumberAbs
 import A12Kernel.Proofs.AddressedNumberRound
 import A12Kernel.Proofs.AddressedNumberExtremum

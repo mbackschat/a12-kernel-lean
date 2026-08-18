@@ -38,6 +38,12 @@ private def ValidationConditionAssemblyError.ofFixedGroupReferenceError :
   | .repeatableGroupRequiresAddress path =>
       .repeatableGroupRequiresAddress path
 
+private def ValidationConditionAssemblyError.ofCurrentRepetitionSourceError :
+    CurrentRepetitionSourceElabError → ValidationConditionAssemblyError
+  | .model error => .invalidModel error
+  | .reference error => .groupReference error
+  | .group error => .groupReference (.resolve error)
+
 namespace ValidationConditionAssemblyError
 
 /-- Project the measured group-list quantifier admission classes. Every other refusal returns `none`, which keeps the uncovered surface countable.
@@ -176,13 +182,12 @@ def fromGuardedRepeatableCurrentRepetition
           |>.mapError .fieldReference
       if declaration.repeatableScope.isEmpty then
         throw (.repeatableFieldRequired declaration.path)
-      let resolved ← group.resolveAgainst rowGroup
-        |>.mapError .groupReference
-      let repeatable ← model.lookupUniqueRepeatablePath resolved
-        |>.mapError (fun error => .groupReference (.resolve error))
+      let source ← checkCurrentRepetitionSource model rowGroup group
+        |>.mapError
+          ValidationConditionAssemblyError.ofCurrentRepetitionSourceError
       checkCore model rowGroup
         (ValidationCondition.guardedRepeatableCurrentRepetition
-          declaration repeatable comparison)
+          declaration source comparison)
         (by rw [hModel]; rfl)
 
 private def resolveGroupListOperand (model : FlatModel) (rowGroup : GroupPath) :

@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.RepetitionNotUnique
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.StarGroup
 import A12Kernel.Elaboration.ValidationContext
-import A12Kernel.Elaboration.ValidationCondition.CurrentRepetition
+import A12Kernel.Elaboration.CurrentRepetition
 
 /-! # Shared resolved validation conditions
 
@@ -238,7 +238,8 @@ inductive ValidationConditionLeaf (model : FlatModel) where
       (guard : FlatFieldDecl) (group : GroupPath)
       (comparison : RootCurrentRepetitionComparison)
   | guardedRepeatableCurrentRepetition
-      (guard : FlatFieldDecl) (group : RepeatableGroupDecl)
+      (guard : FlatFieldDecl)
+      (source : CheckedCurrentRepetitionSource model)
       (comparison : RepeatableCurrentRepetitionComparison)
 
 /-- One checked connective tree whose leaves retain their family-specific resolved certificates and evaluation policies. -/
@@ -296,10 +297,11 @@ def guardedRootCurrentRepetition
 
 /-- Embed the exact measured same-group repeatable condition. The filled guard, model-owned level, and closed comparison remain one leaf. -/
 def guardedRepeatableCurrentRepetition
-    (guard : FlatFieldDecl) (group : RepeatableGroupDecl)
+    (guard : FlatFieldDecl)
+    (source : CheckedCurrentRepetitionSource model)
     (comparison : RepeatableCurrentRepetitionComparison) :
     ValidationCondition model :=
-  .leaf (.guardedRepeatableCurrentRepetition guard group comparison)
+  .leaf (.guardedRepeatableCurrentRepetition guard source comparison)
 
 end ValidationCondition
 
@@ -454,14 +456,12 @@ def wellFormedBool (rowGroup : GroupPath) :
         match model.lookupUniqueId guard.id with
         | .ok checked => checked == guard
         | .error _ => false
-  | .guardedRepeatableCurrentRepetition guard group _ =>
-      guard.groupPath == group.path &&
-        guard.repeatableScope.getLast? == some group.level &&
-        match model.lookupUniqueRepeatablePath group.path,
-            model.lookupUniqueId guard.id with
-        | .ok checkedGroup, .ok checkedGuard =>
-            checkedGroup == group && checkedGuard == guard
-        | _, _ => false
+  | .guardedRepeatableCurrentRepetition guard source _ =>
+      guard.groupPath == source.path &&
+        guard.repeatableScope.getLast? == some source.group.level &&
+        match model.lookupUniqueId guard.id with
+        | .ok checkedGuard => checkedGuard == guard
+        | .error _ => false
 
 /-- Evaluate one reached leaf with its own relevance rule. Ordinary numeric expressions require every field atom, ordered numeric atoms gate their own reached sources, and flat leaf rules retain their existing operator-specific checks. -/
 def evalSelected (context : ValidationEvaluationContext)
@@ -600,9 +600,9 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
           (← context.readCell context.outer declaration.id)))
   | .repetitionNotUnique _ =>
       .error (.repetitionNotUniqueResult context.outer)
-  | .guardedRepeatableCurrentRepetition guard group comparison => do
+  | .guardedRepeatableCurrentRepetition guard source comparison => do
       let cell ← context.readCell context.outer guard.id
-      let coordinate ← context.outer.bindingAt group.level
+      let coordinate ← source.coordinateAt context.outer
         |>.mapError .environment
       pure (Verdict.conj
         (RepeatableFieldPresenceOperator.filled.eval
