@@ -119,21 +119,15 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `claim`: a construction from filled full-Date fields `2024-06-01` and `2024-06-30` equals a stored `01.06.2024-30.06.2024` range and does not equal a stored range whose finish alone is `2024-06-29`; the maintained pair authors construction-left equality and stored-left inequality, and all three engines agree.
 - `limit`: the case does not establish empty or formally unavailable input, construction-versus-construction, DateFragment or format admission, raw parsing, computation targets or rendering, repeatable placement, overlap arguments, or bound extraction.
 
-<a id="src-first-filled-boolean-computation"></a>
-#### Direct one-star Boolean `FirstFilledValue` computation
+<a id="src-first-filled-additional-kind-computations"></a>
+#### Direct one-star additional-kind `FirstFilledValue` computations
 
-- `revision`: the maintained runtime case was introduced at a12-dmkits `feba4552110858b07966660bf7080441d3b90d00` and inspected unchanged at clean HEAD `89aa03957034de620562eb23a095d878f6547dca`.
-- `route`: [`FirstFilledValueAdditionalKindDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/FirstFilledValueAdditionalKindDiffTest.kt) executes dynamic Groovy, generated Java, and the interpreter over one nonrepeatable Boolean target and one direct single-level starred Boolean source.
-- `claim`: an instantiated row with no source value clears a target seeded with `false`, while the same source filled with `true` produces `true`; all three engines agree.
-- `limit`: the case does not establish a filled `false`, formal poison, multiple or mixed operands, group operands, `Having`, nested repetition, partial validation, validation comparisons, target application topology, or the other result kinds exercised beside Boolean.
-
-<a id="src-first-filled-custom-computation"></a>
-#### Direct one-star Custom `FirstFilledValue` computation
-
-- `revision`: the maintained runtime case was introduced at a12-dmkits `feba4552110858b07966660bf7080441d3b90d00` and inspected unchanged at clean HEAD `89aa03957034de620562eb23a095d878f6547dca`.
-- `route`: [`FirstFilledValueAdditionalKindDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/FirstFilledValueAdditionalKindDiffTest.kt) executes dynamic Groovy, generated Java, and the interpreter over one nonrepeatable Custom target and one direct single-level starred Custom source whose declarations share `ReviewCode`.
-- `claim`: an instantiated row with no source value clears a target seeded with `SEED`, while the same source filled with `A7` produces `A7`; the supplied validator accepts the filled value and all three engines agree.
-- `limit`: the case does not establish validator rejection, differing Custom types, ordinary String mixing, multiple or group operands, `Having`, nested repetition, partial validation, validation comparisons, target application topology, or other result kinds.
+- `revision`: the maintained Boolean, Custom, and DateFragment runtime matrix was introduced at a12-dmkits `feba4552110858b07966660bf7080441d3b90d00` and inspected unchanged at clean HEAD `89aa03957034de620562eb23a095d878f6547dca`.
+- `route`: [`FirstFilledValueAdditionalKindDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/FirstFilledValueAdditionalKindDiffTest.kt) executes dynamic Groovy, generated Java, and the interpreter over three fixed targets, each fed by one direct single-level starred source: Boolean, Custom sharing `ReviewCode`, and DateFragment sharing `MM`.
+- `claim`: an instantiated row with no source value clears targets seeded with `false`, `SEED`, and `01`; all three engines agree for every carrier.
+- `claim`: filled Boolean `true`, Custom `A7`, and DateFragment `06` sources produce `true`, `A7`, and `06`; the supplied Custom validator accepts `A7`, and all three engines agree.
+- `limit`: the matrix does not establish Boolean `false`, any formal rejection or poison, Custom type mismatch, a DateFragment format other than `MM`, or whether the DateFragment output is copied or rendered.
+- `limit`: the matrix does not establish multiple, mixed, group, or filtered operands, nested repetition, partial validation, validation comparisons, target application topology, or result kinds outside its three carriers.
 
 <a id="src-current-repetition-root-condition"></a>
 #### Nonrepeatable-root `CurrentRepetition` condition
