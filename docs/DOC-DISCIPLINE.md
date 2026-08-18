@@ -15,7 +15,7 @@ Before editing documentation, classify each changed fact:
 | Implemented fragment, proof/non-law state, and external-evidence status | [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) |
 | Retained observation, artifact identity, projection, replay, and empirical claim limit | [`EVIDENCE.md`](EVIDENCE.md) |
 | Open semantic obligation, prerequisite, discriminator, verified change route, route limit, or reopening trigger | [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) |
-| Selected action, oracle, stop condition, handoff baseline, blocker, and resume command | [`PLAN.md`](PLAN.md) |
+| Persisted handoff action, oracle, stop condition, baseline, blocker, probe trigger, and resume command | [`PLAN.md`](PLAN.md) |
 | Stable representation, semantic ownership, dependency direction, composition invariant, or accepted/rejected encoding decision | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | Durable non-obvious formalization or research lesson | [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) |
 | Cross-project semantic reconciliation state | [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) |
@@ -53,7 +53,7 @@ The capsule closure assessment in [`TESTING.md`](TESTING.md#same-context-capsule
 - Change [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) when executable, proof, non-law, protocol, or evidence support changes.
 - Change [`SOURCES.md`](SOURCES.md) only when a reusable provenance checkpoint, authoritative source locus, or drill route changes. Capsule-specific source narratives and review chronology stay in working context and Git history.
 - Change [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) only when the open set, prerequisite, discriminator, consumer consequence, evidence need, verified change route, route limit, or reopening trigger changes. Delete a completed entry; never append a shipped-status narrative.
-- Change [`PLAN.md`](PLAN.md) only for current resumption state. Completed-unit narratives, broad backlog, and durable findings do not belong there.
+- Change [`PLAN.md`](PLAN.md) only when a resumption state must survive the current session, a blocker must outlive it, or a consumer-probe trigger changes. Completed-unit narratives, broad backlog, in-session selection, and durable findings do not belong there.
 - Change [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) only for a durable non-obvious lesson or a visible correction to an existing finding.
 - Change [`EVIDENCE.md`](EVIDENCE.md) only for retained observations, provenance, projections, replay, or claim limits.
 - Change [`TESTING.md`](TESTING.md) only for test layers, executable gates, assurance cadence, or contributor test method.
@@ -64,12 +64,12 @@ Reading a source, running a gate, or completing work is not by itself a document
 
 | Event | Required owners | Conditional owners | Owners normally untouched |
 |---|---|---|---|
-| Select existing open work | `PLAN.md` | Gap if its route is missing or stale | Implementation map, sources, spec |
-| Add or refine an open discriminator | `SEMANTICS-GAPS.md` | `PLAN.md` only if selection or blocker changes | Implementation map, sources, spec |
-| Confirm existing behavior externally | `SOURCES.md` | Implementation map if assurance changes; gap if the open set changes; plan if selection changes | Spec |
-| Retain or change a replayed observation | `EVIDENCE.md` | Implementation map if calibration changes; gap if the open set changes; plan if selection changes | Sources, spec |
+| Persist selected open work for handoff | `PLAN.md` | Gap if its route is missing or stale | Implementation map, sources, spec |
+| Add or refine an open discriminator | `SEMANTICS-GAPS.md` | `PLAN.md` only if the persisted handoff action or blocker changes | Implementation map, sources, spec |
+| Confirm existing behavior externally | `SOURCES.md` | Implementation map if assurance changes; gap if the open set changes; plan if the persisted handoff action changes | Spec |
+| Retain or change a replayed observation | `EVIDENCE.md` | Implementation map if calibration changes; gap if the open set changes; plan if the persisted handoff action changes | Sources, spec |
 | Correct behavior | `spec/` plus the applicable synchronization owner | Sources for inbound provenance; implementation map, gap, or plan only when their facts change | Unrelated owners |
-| Implement without new external evidence | Implementation map | Gap if an obligation closes or its route changes; plan if selection changes | Sources, spec |
+| Implement without new external evidence | Implementation map | Gap if an obligation closes or its route changes; plan if the persisted handoff action changes | Sources, spec |
 | Change the resumable next action, blocker, or probe trigger | `PLAN.md` | None | Every other owner |
 
 This table is a trigger contract, not a document-count quota. A unit that genuinely changes several distinct facts changes each canonical owner, but every edit remains record-local.
@@ -115,17 +115,17 @@ Detailed capability, gap, plan, and provenance records use keyed bullets instead
 
 Do not retain how the position was reached, completed route-discovery narrative, prior capsule inventories, or obsolete reopening triggers.
 
-`PLAN.md` is not a persistent mirror of an in-session task list, tool-call sequence, gate progress, or `update_plan` state. Rewrite it only when the resumable answer changes: a semantic unit is selected, a blocker or consumer-probe trigger changes, or the repository is being handed off at a different next action.
+`PLAN.md` is not a persistent mirror of an in-session task list, selected capsule, tool-call sequence, gate progress, or `update_plan` state. During uninterrupted work, keep selection and gate progress in working context and the in-session plan. Rewrite the file only when another session must resume at a different selected action, a blocker must outlive the session, or a consumer-probe trigger changes.
 
-During uninterrupted work, route discovery and closure may rewrite the same working-tree record without preserving intermediate states. Use a separate planning commit only when route discovery independently corrects durable facts or creates a likely handoff boundary. Otherwise commit the final current plan with the capsule, or leave it unchanged when the post-closure resumption state is identical.
+Do not patch and later revert `PLAN.md` around an uninterrupted capsule. At a clean generic route-discovery checkpoint, leave it unchanged. Commit a changed plan with the capsule or blocker that creates the handoff state; use a separate planning commit only when route discovery independently corrects durable facts or the handoff itself is the completed unit.
 
-When selected work relies on an external source, the selected gap's evidence field and the plan's oracle link to one keyed `src-` checkpoint. Exact revisions, source routes, measured claims, and claim limits remain only in that source record. If the selected legacy checkpoint has no stable keyed record, convert only that checkpoint during route discovery before semantic edits.
+When handed-off selected work relies on an external source, the selected gap's evidence field and the plan's oracle link to one keyed `src-` checkpoint. During uninterrupted work, the selected gap and working context carry that route without a Plan edit. Exact revisions, source routes, measured claims, and claim limits remain only in the source record. If the selected legacy checkpoint has no stable keyed record, convert only that checkpoint during route discovery before semantic edits.
 
 The 500-character threshold is an agent-efficiency guard, not a readability target. Review an over-limit line for multiple claims and choose the representation that makes retrieval and mutation cheapest. Prefer a semantic split; an indivisible claim may stay on one line or use a structured continuation when that is more efficient for agents.
 
 ### Verified implementation routes
 
-An open gap may own a verified implementation route for that obligation. The implementation map remains the sole owner of implemented boundaries and stable code ownership. `PLAN.md` remains the sole owner of selection and immediate resumption state and links to the gap instead of copying route fields.
+An open gap may own a verified implementation route for that obligation. The implementation map remains the sole owner of implemented boundaries and stable code ownership. `PLAN.md` remains the sole owner of persisted handoff selection and resumption state and links to the gap instead of copying route fields.
 
 A route block uses the closed state `verified | discovery-required` and these exact cardinalities:
 
@@ -139,15 +139,15 @@ A route block uses the closed state `verified | discovery-required` and these ex
 
 Every locus is a regular relative Markdown link to an existing file plus one short local role. Routes name files rather than line numbers or private symbols. They are current navigation facts, not semantic or architectural claims: they neither promise a complete diagnosis nor confine the final diff, and they do not replace the required pre-edit inventory of current definitions, tests, proofs, history, and overlapping work.
 
-A gap may receive a verified route when current code and history establish it; otherwise use only `route-state: discovery-required` or omit the block until selection. Before semantic edits begin, a selected gap must have a verified route. When it does not, `PLAN.md` selects read-only route discovery instead of implementation, and no speculative locus may accompany `discovery-required`.
+A gap may receive a verified route when current code and history establish it; otherwise use only `route-state: discovery-required` or omit the block until selection. Before semantic edits begin, a selected gap must have a verified route. When a not-yet-verified selection is handed off, `PLAN.md` records read-only route discovery instead of implementation; no speculative locus may accompany `discovery-required`.
 
 Update only the affected gap when a linked file moves, its stated role changes, or a red result changes the entry route or establishes a supporting locus. Update the implementation map separately only when the stable implemented mechanism changes. Delete the route with its completed gap; Git owns route history. If more than two supporting loci seem necessary before the red case, the route is not understood well enough to mark `verified`.
 
-The same-context capsule closure assessment checks three routing invariants when the selected gap carries a route block: `route-state` was `verified` before semantic edits, every locus resolves and still has its stated role, and neither Plan nor the implementation map duplicates the route. It also rejects an embedded baseline revision and transient task or gate progress in `PLAN.md`.
+The same-context capsule closure assessment checks three routing invariants when the selected gap carries a route block: `route-state` was `verified` before semantic edits, every locus resolves and still has its stated role, and neither Plan nor the implementation map duplicates the route. It also rejects an embedded baseline revision, transient task or gate progress, and a Plan edit made only to mirror uninterrupted in-session selection.
 
 An already-triggered cold review checks the same finite invariants. This contract adds no executable gate, registry, schema, parser, generator, linter, or dependency.
 
-Implementation records answer what exists, primary owner, executable/proof/external assurance, and live remainder. Gap records contain only open obligations, prerequisites, discriminators, consumer consequences, evidence needs, blockers, verified change routes, route limits, and reopening triggers. `PLAN.md` is a compact resumption packet, and source records own exact revisions, source drill routes, claims, and claim limits without reverse consumer inventories.
+Implementation records answer what exists, primary owner, executable/proof/external assurance, and live remainder. Gap records contain only open obligations, prerequisites, discriminators, consumer consequences, evidence needs, blockers, verified change routes, route limits, and reopening triggers. `PLAN.md` is a compact cross-session resumption packet, and source records own exact revisions, source drill routes, claims, and claim limits without reverse consumer inventories.
 
 Query converted records directly:
 

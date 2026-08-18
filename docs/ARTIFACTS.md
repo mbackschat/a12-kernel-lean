@@ -29,7 +29,7 @@ The real kernel remains the behavioral authority. The Lean theory is the executa
 
 The three completed migrations demonstrate how a complete raw audit estate can certify a compact semantic bundle without remaining in every checkout. One small generic reader checks the bundle contract, and each typed family projection checks its pinned semantic input/observation account. Each migration ran its former complete binder and compact lane together once; the current tree retains only the compact bundle, while the [validation](archived/VALIDATION-RAW-EVIDENCE.md), [root-String](archived/STRING-COMPUTATION-RAW-EVIDENCE.md), and [direct-cascade](archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md) archives name exact raw recovery revisions and identities.
 
-Detailed evidence claims remain in [`EVIDENCE.md`](EVIDENCE.md), process and manifest compatibility in [`PROTOCOL.md`](PROTOCOL.md), executable gates in [`TESTING.md`](TESTING.md), consumer shipment and qualification contracts in [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md), and current unfinished work in [`PLAN.md`](PLAN.md). This guide owns only the directory-level classification and lifecycle connecting those contracts.
+Detailed evidence claims remain in [`EVIDENCE.md`](EVIDENCE.md), process and manifest compatibility in [`PROTOCOL.md`](PROTOCOL.md), executable gates in [`TESTING.md`](TESTING.md), consumer shipment and qualification contracts in [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md), and persisted unfinished handoff state in [`PLAN.md`](PLAN.md). This guide owns only the directory-level classification and lifecycle connecting those contracts.
 
 ## `evidence/`: retained empirical inputs
 
