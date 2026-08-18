@@ -837,6 +837,10 @@ run_cmd do
 #print axioms A12Kernel.checkedValidationRule_iterationScope_owned
 #print axioms A12Kernel.checkedValidationRule_once_plan_exact
 #print axioms A12Kernel.assembleResolvedValidationRule_rejects_negativeIteration
+#print axioms A12Kernel.oneLevelUnstarredGroup_outside_refuses
+#print axioms A12Kernel.oneLevelUnstarredGroup_inside_positive_admitted
+#print axioms A12Kernel.oneLevelUnstarredGroup_inside_counts_separate
+#print axioms A12Kernel.oneLevelUnstarredGroup_carrier_nonlaw
 #print axioms A12Kernel.checkedValidationRule_scalar_rejects_addressed
 #print axioms A12Kernel.checkedValidationRule_partial_filtered_skips
 #print axioms A12Kernel.checkedValidationRule_partial_evaluated

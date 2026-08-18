@@ -8,5 +8,6 @@ import A12Kernel.Conformance.ValidationRule.OrdinaryTemporal
 import A12Kernel.Conformance.ValidationRule.OrdinaryEntity
 import A12Kernel.Conformance.ValidationRule.OrdinaryNumeric
 import A12Kernel.Conformance.ValidationRule.OrdinaryReference
+import A12Kernel.Conformance.ValidationRule.GroupOperandDiagnostic
 
 /-! Import-only compatibility umbrella for checked whole-rule conformance families. -/

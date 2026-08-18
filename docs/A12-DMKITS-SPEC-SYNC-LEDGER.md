@@ -663,7 +663,7 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Acceptance:** the shared account names the same classes this entry measures, per carrier; the skill's `NumberOfFilledGroups` sentence names the measured class; and the handback supplies the exact reviewed revision plus per-surface disposition.
 - **a12-dmkits revision:** `2d384c59f18cf9a1019e1e8273f2d8e900f741e0`
 - **Local correction:** introducing commit
-- **Disposition:** rejected by the maintained second-root and error-locus controls. A second root separates both root classes from earlier overlap. An unstarred repeatable operand gives `MVK_NO_WILDCARD` outside its error-field row; inside, it reaches operator-specific admission, multiplicity, or negative-iteration gates. Lean maps the root classes; error-locus binding remains open at the rule owner that first sees the error field.
+- **Disposition:** rejected by the maintained second-root and error-locus controls. A second root separates both root classes from earlier overlap. An unstarred repeatable operand gives `MVK_NO_WILDCARD` outside its error-field row; inside, it reaches operator-specific admission, multiplicity, or negative-iteration gates. The correction locates error-locus binding at the rule owner that first sees the error field rather than at condition-level admission.
 
 <a id="spec-2026-08-11-01"></a>
 <a id="spec-2026-08-11-01--the-computed-number-scale-gate-precedes-self-reference-for-a-differing-scale-field-operand-too"></a>

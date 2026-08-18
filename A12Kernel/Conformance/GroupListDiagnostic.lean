@@ -126,7 +126,7 @@ private def countDiagnostic? (groups : List GroupPath)
   | .error error => error.groupCountDiagnostic?
 
 /- A single fixed unstarred operand takes the count's own multiplicity class. A starred operand is
-   admitted, while error-locus binding for an unstarred repeatable remains a rule-owned gap. -/
+   admitted; the separate rule-owned projector covers the measured one-level error-locus matrix. -/
 example : countDiagnostic? [["Probe", "A"]] = some .paramSizeInvalidGN := by
   native_decide
 
