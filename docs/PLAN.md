@@ -10,9 +10,9 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: read-only route discovery required.
-- `gap`: [SG6 wider DateRange computation target/rendering](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion), beyond the fixed ISO/slash direct `FirstFilledValue` profile.
-- `next`: determine whether the smallest coherent widening is the existing second full-Date endpoint renderer under declaration-owned DateRange policy; verify the red conformance owner, green implementation owner, exact admitted separator boundary, and source/evidence limit before semantic edits.
+- `state`: implementation ready.
+- `gap`: [second direct DateRange `FirstFilledValue` policy](SEMANTICS-GAPS.md#gap-sg6-date-range-first-filled-second-policy).
+- `next`: add the red dotted/dash typed-endpoint result and crossed-pair refusal controls, then specialize the existing bounded renderer and checked direct-star shape without widening operands or document architecture.
 - `blocked-on`: none.
 - `consumer-probe-trigger`: satisfied for the exact fixed four-carrier profile; trigger again only after a reusable wider family closes or another defined milestone/risk boundary is reached.
-- `resume`: `rg -n 'DateRangeTargetFormat|dateRangeIsoSlash|DateRangeDeclarationPolicy|wider computation targets' A12Kernel docs/SEMANTICS-GAPS.md docs/IMPLEMENTATION-MAP.md`
+- `resume`: `lake env lean A12Kernel/Conformance/DateRangeFirstFilledComputation.lean`
