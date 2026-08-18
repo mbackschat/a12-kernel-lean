@@ -3,7 +3,7 @@ import A12Kernel.Semantics.ScalarEquality
 
 /-! # Resolved DateRange construction equality
 
-This capsule compares one already-resolved full-Date construction with one filled stored DateRange while retaining their authored positions. It owns only exact equality and inequality. Other operand pairings, empty and formally unavailable input, field/path authoring, endpoint format admission and fragment completion, raw parsing, computation targets and rendering, overlap arguments, and bound extraction remain separate.
+This capsule compares filled, already-resolved full-Date constructions with one another or with one stored DateRange while retaining the mixed pair's authored positions. It owns only exact equality and inequality. Empty and formally unavailable input, checked field/path authoring, endpoint format admission and fragment completion, raw parsing, computation targets and rendering, overlap arguments, and bound extraction remain separate.
 -/
 
 namespace A12Kernel
@@ -31,16 +31,25 @@ inductive DateRangeConstructionPosition where
 
 namespace EqualityOp
 
+/-- Compare two filled resolved DateRanges by exact ordered endpoint equality or inequality. -/
+def evalResolvedDateRanges (op : EqualityOp)
+    (left right : ResolvedDateRange) : Verdict :=
+  op.evalSymmetric (· == ·)
+    (.value left true) (.value right true)
+
 /-- Evaluate exact endpoint equality or inequality between one filled construction and one filled stored range, preserving which side the construction occupied. -/
 def evalDateRangeConstruction (op : EqualityOp)
     (position : DateRangeConstructionPosition)
     (construction : ResolvedDateRangeConstruction)
     (stored : ResolvedDateRange) : Verdict :=
-  let constructed := SimpleComparisonOperand.value construction.resolved true
-  let stored := SimpleComparisonOperand.value stored true
   match position with
-  | .left => op.evalSymmetric (· == ·) constructed stored
-  | .right => op.evalSymmetric (· == ·) stored constructed
+  | .left => op.evalResolvedDateRanges construction.resolved stored
+  | .right => op.evalResolvedDateRanges stored construction.resolved
+
+/-- Evaluate exact endpoint equality or inequality between two filled resolved constructions. -/
+def evalDateRangeConstructions (op : EqualityOp)
+    (left right : ResolvedDateRangeConstruction) : Verdict :=
+  op.evalResolvedDateRanges left.resolved right.resolved
 
 end EqualityOp
 

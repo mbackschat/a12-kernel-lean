@@ -10,10 +10,10 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: verified resolved route ready for red/green implementation.
-- `gap`: [SG6 DateRange construction-versus-construction comparison](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
-- `oracle`: the [canonical Date-range equality clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) and [construction-equality checkpoint](SOURCES.md#src-date-range-construction-equality) establish the exact filled resolved endpoint account and measured static reachability.
-- `next`: add red cases for equal constructions and a finish-only mismatch, factor their exact endpoint comparison through the existing construction/stored semantic owner, and add the smallest symmetry law. Keep full checked execution and external runtime verdicts outside this resolved capsule.
+- `state`: read-only route discovery required.
+- `gap`: [SG6 checked DateRange construction comparison execution](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
+- `oracle`: the [canonical Date-range equality clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) and [construction-equality checkpoint](SOURCES.md#src-date-range-construction-equality) establish filled endpoint identity and static reachability but leave checked empty/formal execution and external runtime verdicts open.
+- `next`: inventory reusable full-Date declaration certification, immutable checked-document reads, construction result classification, and the exact Kernel/a12-dmkits empty and formal routes; establish the smallest phase-complete checked comparison boundary before any edit.
 - `blocked-on`: none.
 - `consumer-probe-trigger`: inactive until checked construction comparison closes, another major DateRange boundary changes, or public compatibility is considered.
-- `resume`: `rg -n 'ResolvedDateRangeConstruction|evalDateRangeConstruction|DateRangeConstructionPosition' A12Kernel/Semantics/DateRangeComparison.lean A12Kernel/Conformance/DateRangeComparison.lean A12Kernel/Proofs/DateRangeComparison.lean`
+- `resume`: `rg -n 'CheckedFullDateTarget|CheckedDocument|DateRangeConstruction|constructDateRange|vergleicheDATERANGE' A12Kernel/Elaboration A12Kernel/Semantics ../a12-kernel ../a12-rulekit/interpreter`

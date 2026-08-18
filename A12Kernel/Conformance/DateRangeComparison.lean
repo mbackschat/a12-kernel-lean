@@ -17,6 +17,9 @@ private def june30 := full 2024 6 30 (by native_decide)
 private def constructed : ResolvedDateRangeConstruction :=
   { start := june1, finish := june30 }
 
+private def constructedChangedFinish : ResolvedDateRangeConstruction :=
+  { start := june1, finish := june29 }
+
 private def storedSame : ResolvedDateRange :=
   { start := june1, finish := june30 }
 
@@ -45,6 +48,18 @@ example :
         .right constructed storedSame = .fired .value ∧
       EqualityOp.notEqual.evalDateRangeConstruction
         .right constructed storedChangedFinish = .fired .value := by
+  native_decide
+
+/- Two constructions compare both ordered endpoints through the same exact equality seam. -/
+example :
+    EqualityOp.equal.evalDateRangeConstructions
+        constructed constructed = .fired .value ∧
+      EqualityOp.notEqual.evalDateRangeConstructions
+        constructed constructed = .notFired ∧
+      EqualityOp.equal.evalDateRangeConstructions
+        constructed constructedChangedFinish = .notFired ∧
+      EqualityOp.notEqual.evalDateRangeConstructions
+        constructedChangedFinish constructed = .fired .value := by
   native_decide
 
 end A12Kernel.Conformance.DateRangeComparison
