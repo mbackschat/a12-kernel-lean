@@ -161,6 +161,30 @@ def fromGuardedRootCurrentRepetition
           declaration resolved comparison)
         (by rw [hModel]; rfl)
 
+/-- Resolve the maintained same-group repeatable `CurrentRepetition` condition. The direct filled guard supplies the iteration scope; the group declaration supplies the exact coordinate identity. -/
+def fromGuardedRepeatableCurrentRepetition
+    (model : FlatModel) (rowGroup : GroupPath)
+    (guard : SurfaceFieldPath) (group : SurfaceGroupPath)
+    (comparison : RepeatableCurrentRepetitionComparison) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) :=
+  match hModel : model.validate with
+  | .error error => .error (.invalidModel error)
+  | .ok () => do
+      let declaration ←
+        (model.resolveFieldDeclarationUnchecked rowGroup guard)
+          |>.mapError .fieldReference
+      if declaration.repeatableScope.isEmpty then
+        throw (.repeatableFieldRequired declaration.path)
+      let resolved ← group.resolveAgainst rowGroup
+        |>.mapError .groupReference
+      let repeatable ← model.lookupUniqueRepeatablePath resolved
+        |>.mapError (fun error => .groupReference (.resolve error))
+      checkCore model rowGroup
+        (ValidationCondition.guardedRepeatableCurrentRepetition
+          declaration repeatable comparison)
+        (by rw [hModel]; rfl)
+
 private def resolveGroupListOperand (model : FlatModel) (rowGroup : GroupPath) :
     SurfaceGroupListOperand →
       Except ValidationConditionAssemblyError

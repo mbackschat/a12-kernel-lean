@@ -338,6 +338,8 @@ private def ValidationConditionLeaf.iterationGuardAt
     ValidationConditionLeaf model → IterationGuardStatus
   | .flat _ | .numeric _ _ | .guardedRootCurrentRepetition _ _ _ =>
       .noReference
+  | .guardedRepeatableCurrentRepetition guard _ _ =>
+      if guard.repeatableScope.contains level then .guarded else .noReference
   | .groupList operator operands =>
       ResolvedGroupListOperands.iterationGuardAt operator operands level
   | .orderedNumeric _ comparison =>
@@ -435,6 +437,7 @@ def ordinaryRepeatableFields (condition : ValidationCondition model) :
           (ordinaryNumericAtomRepeatableFields model) comparison.right
   | .leaf (.repetitionNotUnique source) =>
       source.keys.map fun key => key.source.declaration
+  | .leaf (.guardedRepeatableCurrentRepetition guard _ _) => [guard]
   | .leaf _ => []
   | .and left right | .or left right =>
       ordinaryRepeatableFields left ++ ordinaryRepeatableFields right
@@ -446,6 +449,7 @@ def supportsOrdinaryIteration
     | .flat _ | .groupPresence _ _ | .groupList _ _
     | .repeatableFieldPresence _ _
     | .guardedRootCurrentRepetition _ _ _ => true
+    | .guardedRepeatableCurrentRepetition _ _ _ => true
     | .orderedNumeric .sameGroupAddressed _ => true
     | .repetitionNotUnique _ => true
     | _ => false

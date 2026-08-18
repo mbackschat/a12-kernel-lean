@@ -4,6 +4,7 @@ import A12Kernel.Elaboration.RepetitionNotUnique
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.StarGroup
 import A12Kernel.Elaboration.ValidationContext
+import A12Kernel.Elaboration.ValidationCondition.CurrentRepetition
 
 /-! # Shared resolved validation conditions
 
@@ -219,22 +220,6 @@ def iterationGuardStatus (classify : Leaf → IterationGuardStatus) :
 
 end ConditionTree
 
-/-- The only two comparisons established for `CurrentRepetition` over a nonrepeatable root. The compared literal is structurally fixed to one. -/
-inductive RootCurrentRepetitionComparison where
-  | equalOne
-  | notEqualOne
-  deriving Repr, DecidableEq
-
-def RootCurrentRepetitionComparison.numericOperator :
-    RootCurrentRepetitionComparison → NumericComparisonOp
-  | .equalOne => .equal
-  | .notEqualOne => .notEqual
-
-/-- Evaluate the closed comparison through the shared numeric comparison owner. Both operands are structural fixed values, so a firing is VALUE. -/
-def RootCurrentRepetitionComparison.eval
-    (comparison : RootCurrentRepetitionComparison) : Verdict :=
-  comparison.numericOperator.evalFixedRight (.value 1 .fixed) 1
-
 /-- The validation leaf families admitted by this checked condition boundary, indexed by the one model that owns every retained source certificate. -/
 inductive ValidationConditionLeaf (model : FlatModel) where
   | flat (condition : FlatConditionLeaf)
@@ -252,6 +237,9 @@ inductive ValidationConditionLeaf (model : FlatModel) where
   | guardedRootCurrentRepetition
       (guard : FlatFieldDecl) (group : GroupPath)
       (comparison : RootCurrentRepetitionComparison)
+  | guardedRepeatableCurrentRepetition
+      (guard : FlatFieldDecl) (group : RepeatableGroupDecl)
+      (comparison : RepeatableCurrentRepetitionComparison)
 
 /-- One checked connective tree whose leaves retain their family-specific resolved certificates and evaluation policies. -/
 abbrev ValidationCondition (model : FlatModel) :=
@@ -305,6 +293,13 @@ def guardedRootCurrentRepetition
     (comparison : RootCurrentRepetitionComparison) :
     ValidationCondition model :=
   .leaf (.guardedRootCurrentRepetition guard group comparison)
+
+/-- Embed the exact measured same-group repeatable condition. The filled guard, model-owned level, and closed comparison remain one leaf. -/
+def guardedRepeatableCurrentRepetition
+    (guard : FlatFieldDecl) (group : RepeatableGroupDecl)
+    (comparison : RepeatableCurrentRepetitionComparison) :
+    ValidationCondition model :=
+  .leaf (.guardedRepeatableCurrentRepetition guard group comparison)
 
 end ValidationCondition
 
@@ -391,6 +386,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .repeatableFieldPresence operator _ => operator.canFireOnEmpty
   | .repetitionNotUnique _ => false
   | .guardedRootCurrentRepetition _ _ _ => false
+  | .guardedRepeatableCurrentRepetition _ _ _ => false
 
 def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .flat condition, field => condition.referencesField field
@@ -406,13 +402,16 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
       source.referencesField field
   | .guardedRootCurrentRepetition guard _ _, field =>
       guard.id == field
+  | .guardedRepeatableCurrentRepetition guard _ _, field =>
+      guard.id == field
 
 /-- Whether a leaf retains any `Having` filter in its checked source. Only the model-indexed ordered numeric carrier can currently own such a source; scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool
   | .orderedNumeric _ comparison => comparison.hasHaving
   | .flat _ | .numeric _ _ | .groupPresence _ _ | .groupList _ _
   | .repeatableFieldPresence _ _ | .repetitionNotUnique _
-  | .guardedRootCurrentRepetition _ _ _ => false
+  | .guardedRootCurrentRepetition _ _ _
+  | .guardedRepeatableCurrentRepetition _ _ _ => false
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
@@ -425,6 +424,7 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
   | .repeatableFieldPresence _ _ => true
   | .repetitionNotUnique _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
+  | .guardedRepeatableCurrentRepetition _ _ _ => true
   | _ => false
 
 /-- Static admission reuses each leaf family's existing checked core predicate. -/
@@ -454,6 +454,14 @@ def wellFormedBool (rowGroup : GroupPath) :
         match model.lookupUniqueId guard.id with
         | .ok checked => checked == guard
         | .error _ => false
+  | .guardedRepeatableCurrentRepetition guard group _ =>
+      guard.groupPath == group.path &&
+        guard.repeatableScope.getLast? == some group.level &&
+        match model.lookupUniqueRepeatablePath group.path,
+            model.lookupUniqueId guard.id with
+        | .ok checkedGroup, .ok checkedGuard =>
+            checkedGroup == group && checkedGuard == guard
+        | _, _ => false
 
 /-- Evaluate one reached leaf with its own relevance rule. Ordinary numeric expressions require every field atom, ordered numeric atoms gate their own reached sources, and flat leaf rules retain their existing operator-specific checks. -/
 def evalSelected (context : ValidationEvaluationContext)
@@ -485,6 +493,7 @@ def evalSelected (context : ValidationEvaluationContext)
         else
           .unknown)
         comparison.eval
+  | .guardedRepeatableCurrentRepetition _ _ _ => .unknown
 
 /-- Whether a leaf has an exact partial addressed interpretation. `false` is structural unsupported information and must not be converted to semantic UNKNOWN. -/
 def supportsAddressedPartial : ValidationConditionLeaf model → Bool
@@ -493,6 +502,7 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
       comparison.supportsAddressedPartial
   | .repetitionNotUnique _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
+  | .guardedRepeatableCurrentRepetition _ _ _ => false
   | _ => false
 
 private def evalFlatLeafAddressedPartial
@@ -590,6 +600,14 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
           (← context.readCell context.outer declaration.id)))
   | .repetitionNotUnique _ =>
       .error (.repetitionNotUniqueResult context.outer)
+  | .guardedRepeatableCurrentRepetition guard group comparison => do
+      let cell ← context.readCell context.outer guard.id
+      let coordinate ← context.outer.bindingAt group.level
+        |>.mapError .environment
+      pure (Verdict.conj
+        (RepeatableFieldPresenceOperator.filled.eval
+          (observeCell .validation cell))
+        (comparison.eval coordinate))
   | leaf => pure (leaf.evalSelected context.scalar context.directRelevant)
 
 /-- Evaluate one reached leaf with the rule-owned current-row RNU result. Every other leaf delegates to the established addressed evaluator unchanged. -/

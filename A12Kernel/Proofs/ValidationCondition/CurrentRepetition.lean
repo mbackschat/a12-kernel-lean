@@ -2,7 +2,7 @@ import A12Kernel.Proofs.ValidationCondition
 import A12Kernel.Proofs.NumericComparison
 import A12Kernel.Proofs.Verdict
 
-/-! # Exact nonrepeatable-root CurrentRepetition laws -/
+/-! # Checked CurrentRepetition laws -/
 
 namespace A12Kernel
 
@@ -80,6 +80,64 @@ theorem validationConditionLeaf_guardedRootCurrentRepetition_partialUnsupported
     (model : FlatModel) (guard : FlatFieldDecl) (group : GroupPath)
     (comparison : RootCurrentRepetitionComparison) :
     (ValidationConditionLeaf.guardedRootCurrentRepetition
+      (model := model) guard group comparison).supportsAddressedPartial = false := by
+  rfl
+
+/-- Addressed evaluation reads the direct guard and the named model-owned coordinate, then delegates only their conjunction to the shared verdict tree. -/
+theorem validationConditionLeaf_guardedRepeatableCurrentRepetition_evalAddressed
+    (model : FlatModel) (guard : FlatFieldDecl)
+    (group : RepeatableGroupDecl)
+    (comparison : RepeatableCurrentRepetitionComparison)
+    (context : AddressedValidationEvaluationContext model)
+    (cell : CheckedCell) (coordinate : Nat)
+    (readGuard : context.readCell context.outer guard.id = .ok cell)
+    (readCoordinate : context.outer.bindingAt group.level = .ok coordinate) :
+    (ValidationConditionLeaf.guardedRepeatableCurrentRepetition
+        guard group comparison).evalAddressed context =
+      .ok (Verdict.conj
+        (RepeatableFieldPresenceOperator.filled.eval
+          (observeCell .validation cell))
+        (comparison.eval coordinate)) := by
+  change (do
+    let reachedCell ← context.readCell context.outer guard.id
+    let reachedCoordinate ← context.outer.bindingAt group.level
+      |>.mapError CheckedAddressingError.environment
+    pure (Verdict.conj
+      (RepeatableFieldPresenceOperator.filled.eval
+        (observeCell .validation reachedCell))
+      (comparison.eval reachedCoordinate))) = _
+  rw [readGuard, readCoordinate]
+  rfl
+
+/-- The direct guard remains the only field dependency; the structural row coordinate contributes no field. -/
+@[simp]
+theorem validationCondition_guardedRepeatableCurrentRepetition_referencesField
+    (model : FlatModel) (guard : FlatFieldDecl)
+    (group : RepeatableGroupDecl)
+    (comparison : RepeatableCurrentRepetitionComparison) (field : FieldId) :
+    (ValidationCondition.guardedRepeatableCurrentRepetition (model := model)
+        guard group comparison).referencesField field =
+      (guard.id == field) := by
+  rfl
+
+/-- The repeatable leaf derives its ordinary iteration scope solely from the indivisible direct guard. -/
+@[simp]
+theorem validationCondition_guardedRepeatableCurrentRepetition_iterationScope
+    (model : FlatModel) (guard : FlatFieldDecl)
+    (group : RepeatableGroupDecl)
+    (comparison : RepeatableCurrentRepetitionComparison) :
+    (ValidationCondition.guardedRepeatableCurrentRepetition (model := model)
+        guard group comparison).ordinaryIterationScope =
+      .ok (some guard.repeatableScope) := by
+  rfl
+
+/-- Partial validation refuses the exact repeatable leaf structurally rather than converting a missing row binding to UNKNOWN. -/
+@[simp]
+theorem validationConditionLeaf_guardedRepeatableCurrentRepetition_partialUnsupported
+    (model : FlatModel) (guard : FlatFieldDecl)
+    (group : RepeatableGroupDecl)
+    (comparison : RepeatableCurrentRepetitionComparison) :
+    (ValidationConditionLeaf.guardedRepeatableCurrentRepetition
       (model := model) guard group comparison).supportsAddressedPartial = false := by
   rfl
 

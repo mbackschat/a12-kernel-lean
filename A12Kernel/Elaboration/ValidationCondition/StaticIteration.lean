@@ -327,6 +327,8 @@ def ordinaryIterationScope :
       ResolvedGroupListOperands.iterationScope operands
   | .leaf (.repetitionNotUnique source) =>
       pure (some (source.topology.path.axes.map (·.level)))
+  | .leaf (.guardedRepeatableCurrentRepetition guard _ _) =>
+      pure (some guard.repeatableScope)
   | .leaf _ => pure none
   | .and left right | .or left right => do
       mergeIterationScopes
