@@ -9,11 +9,12 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: paused by owner; both outbound semantic handbacks and the separate Bash fix have been consumed.
-- `gap`: none selected while paused.
-- `objective`: no active implementation unit.
-- `next`: when the owner resumes work, select the next semantic capsule from the live gaps; no cross-project handback is pending.
-- `stop`: do not begin another semantic capsule or consumer probe while paused.
+- `state`: active under the owner's autonomous run-till-blocker instruction.
+- `gap`: [SG5 Number and token group runtime](SEMANTICS-GAPS.md#gap-sg5-number-token-group-runtime).
+- `objective`: execute a sole fixed token-group `FirstFilledValue` through its complete recursive checked-document expansion, including nested repeatable rows, without widening partial validation, computation, raw-`Document`, omitted-tail, or mixed-list routes.
+- `oracle`: maintained a12-dmkits [`FirstFilledValueGroupOperandDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/FirstFilledValueGroupOperandDiffTest.kt) at `08115206d99bf8417c99dff9a73f9005175ca7d7`; its nested-row-2 and direct-before-nested separators run on both kernel strategies and the interpreter.
+- `next`: add red checked-document cases for a value only in nested row 2 and for direct-before-nested encounter order, then remove only the fixed-group nonrepeatability restriction and reuse the existing declaration-major group resolver and generic first-filled evaluator.
+- `stop`: stop if the capsule requires a second resolver, a raw-document topology inference, a new result domain, an unmeasured omitted-tail rule, or support for another authored operand shape.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: the existing bounded diagnostic consumer covers Translate/Explain for the mapped static classes. Run an interpreter/Execute probe only after a reusable runtime family closes, and run an SMT/Verify probe only after a stable proof-bearing relation needs transport; neither is triggered now.
-- `resume`: ``rg -n '^### SG|^#### |^- `state`: open' docs/SEMANTICS-GAPS.md``
+- `consumer-probe-trigger`: assess an Execute probe after this recursive fixed-group capability closes; run an SMT/Verify probe only if the capsule produces a new stable proof-bearing relation rather than merely specializing the existing scan laws.
+- `resume`: `sed -n '145,220p' A12Kernel/Elaboration/TokenFirstFilledValue.lean`
