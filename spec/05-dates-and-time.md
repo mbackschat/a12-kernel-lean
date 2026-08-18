@@ -265,12 +265,16 @@ The two overlap predicates differ in **shape** ⚠:
 - **`DateRangesOverlap(op0, op1, …)`** is **any-pair** among *all* operands' kept, filled ranges (one growing set): a list-internal pair fires even when a scalar operand is disjoint, and a same-cell self-pair via scalar + star fires on every filled row.
 - **`AtLeastOneDateRangeOverlaps(scalar In list…)`** is genuinely **scalar-vs-list**: two list cells overlapping *each other* do **not** fire.
 
+Checked `AtLeastOneDateRangeOverlaps` authoring retains one direct, stored, non-wildcard scalar separately from a nonempty list of direct, plain-starred, filter-starred, fixed-group, or starred-group operands. An admitted group operand contributes every DateRange declaration in its recursive subtree at every instantiated row below the operand's own repetition depth. The current checked fragment admits that group shape only when its complete expansion is nonempty and every declaration is a supported DateRange; mixed and empty expansions remain outside the represented fragment rather than carrying an inferred Kernel refusal.
+
 For both: intervals are **closed** (back-to-back periods sharing a boundary day overlap); an **inverted** range (start after end) **never** overlaps; empty or formally unavailable cells are **skipped**.
 
 Their firing polarity is scan- and operand-shape-sensitive:
 
 - `DateRangesOverlap` fires **OMISSION** exactly when the scan has processed a kept, filled range from a filter-bearing operand at or before the first overlapping pair; otherwise it fires **VALUE**. A filtered operand with no kept, filled range does not taint a later firing.
-- `AtLeastOneDateRangeOverlaps` fires **OMISSION** exactly when the list operand containing the matched range carries a filter; otherwise it fires **VALUE**. An earlier filtered but disjoint list operand does not taint a later unfiltered match.
+- `AtLeastOneDateRangeOverlaps` resolves the scalar first and does not read the list when that scalar is unusable. Otherwise it visits list operands in authored order, visits each operand's cells in its canonical address order, and stops at the first overlap. It fires **OMISSION** exactly when that first matching list operand carries a filter; otherwise it fires **VALUE**. An earlier filtered but disjoint list operand does not taint a later unfiltered match, and a later filtered match cannot change an earlier unfiltered result.
+
+For a group operand's rich Analyze/Explain trace, this specification normalizes canonical address order as declaration-major recursive model order with each declaration's rows in canonical row order. Current external observations establish the complete group extent, including the second field of the second row, but not a Kernel-visible witness order inside one unfiltered group; the normalized intra-group order is therefore project-defined and does not strengthen the external correspondence claim. Group operands carry no filter, so this choice cannot change the predicate verdict or polarity.
 
 For `AtLeastOneDateRangeOverlaps`, an empty, malformed, or formally unavailable scalar collapses directly to no fire; overlaps internal to the list cannot rescue it. Stored inverted ranges are normally rejected by their field's formal check and therefore skipped, while the resolved interval relation independently returns false if an inverted pair reaches it.
 

@@ -95,6 +95,14 @@ theorem atLeastOneDateRangeOverlaps_ne_unknown
       exact scanAtLeastOneDateRangeOverlapOccurrences_ne_unknown range
         (flattenDateRangeOccurrences operands)
 
+/-- Checked plural assembly cannot introduce UNKNOWN after scalar-first structural projection succeeds. -/
+theorem checkedAtLeastOneDateRangeOverlapsResult_verdict_ne_unknown
+    (result : CheckedAtLeastOneDateRangeOverlapsResult model) :
+    result.verdict ≠ .unknown := by
+  simpa [CheckedAtLeastOneDateRangeOverlapsResult.verdict] using
+    atLeastOneDateRangeOverlaps_ne_unknown result.scalar.semantic
+      (result.operands.map (·.semantic))
+
 /-- Scalar-versus-list firing forgets polarity exactly to existence of a primitive overlap in the flattened kept occurrences. -/
 theorem scanAtLeastOneDateRangeOverlapOccurrences_fired_iff
     (scalar : ResolvedDateRange)

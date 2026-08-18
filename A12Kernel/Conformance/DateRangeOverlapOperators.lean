@@ -307,6 +307,28 @@ private def verdict? (first : SurfaceFieldEntityOperand)
     (cells : List ClassifiedCellInput) : Option Verdict :=
   (evaluated? first rest rows cells).map (·.verdict)
 
+private def evaluatedPlural? (scalar first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand) (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (CheckedAtLeastOneDateRangeOverlapsResult admissionModel) := do
+  let source ← checkedPluralSource? scalar first rest
+  let document ← document? rows cells
+  (source.evaluateCheckedDocument document []).toOption
+
+private def pluralVerdict? (scalar first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand) (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) : Option Verdict :=
+  (evaluatedPlural? scalar first rest rows cells).map (·.verdict)
+
+private def pluralListAddresses? (scalar first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand) (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (List (List (FieldId × List Nat))) :=
+  (evaluatedPlural? scalar first rest rows cells).map fun result =>
+    result.operands.map fun operand =>
+      operand.core.addressedCells.map fun cell =>
+        (cell.address.field, cell.address.path)
+
 private def directOverlapCells : List ClassifiedCellInput := [
   rangeCell 1 [] "2024-01-01/2024-01-31" (.parsed (.dateRange januaryValue)),
   rangeCell 2 [] "15.01.2024-31.01.2024" (.parsed (.dateRange lateJanuaryValue))]
@@ -368,6 +390,121 @@ example :
             raw := .parsed (.num 1) }]) = some (.fired .value) ∧
       verdict? filteredSource [direct "Start", direct "Finish"] []
         directOverlapCells = some (.fired .value) := by
+  native_decide
+
+/-! ## Checked plural-overlap assembly -/
+
+/- A skipped scalar terminates before the internally overlapping list is resolved. -/
+example :
+    (evaluatedPlural? (direct "Start") (.star (star "Window")) [] rows12 [
+      rangeCell 1 [] "broken" (.rejected .dateRangeSeparator),
+      rangeCell 3 [1] "2024-01-01/2024-01-31" (.parsed (.dateRange januaryValue)),
+      rangeCell 3 [2] "2024-01-15/2024-01-31"
+        (.parsed (.dateRange lateJanuaryValue))]).map
+          (fun result =>
+            (result.verdict, result.source.operands.length,
+              result.operands.length)) =
+        some (.notFired, 1, 0) := by
+  native_decide
+
+/- The first direct match stops before the later filtered star, while the checked source retains both authored operands. -/
+example :
+    pluralVerdict? (direct "Start") (direct "Finish") [filteredSource]
+      [row1] (directOverlapCells ++ [
+        rangeCell 3 [1] "2024-01-15/2024-01-31"
+          (.parsed (.dateRange lateJanuaryValue)),
+        { address := { field := 6, path := [1] }, stored := "1",
+          raw := .parsed (.num 1) }]) = some (.fired .value) ∧
+      pluralListAddresses? (direct "Start") (direct "Finish")
+        [filteredSource] [row1] (directOverlapCells ++ [
+          rangeCell 3 [1] "2024-01-15/2024-01-31"
+            (.parsed (.dateRange lateJanuaryValue)),
+          { address := { field := 6, path := [1] }, stored := "1",
+            raw := .parsed (.num 1) }]) =
+          some [[(2, [])]] ∧
+      (evaluatedPlural? (direct "Start") (direct "Finish")
+        [filteredSource] [row1] (directOverlapCells ++ [
+          rangeCell 3 [1] "2024-01-15/2024-01-31"
+            (.parsed (.dateRange lateJanuaryValue)),
+          { address := { field := 6, path := [1] }, stored := "1",
+            raw := .parsed (.num 1) }])).map
+          (fun result =>
+            (result.source.operands.length, result.operands.length)) =
+          some (2, 1) ∧
+      pluralVerdict? (direct "Start") filteredSource [] [row1] [
+        rangeCell 1 [] "2024-01-01/2024-01-31"
+          (.parsed (.dateRange januaryValue)),
+        rangeCell 3 [1] "2024-01-15/2024-01-31"
+          (.parsed (.dateRange lateJanuaryValue)),
+        { address := { field := 6, path := [1] }, stored := "1",
+          raw := .parsed (.num 1) }] = some (.fired .omission) := by
+  native_decide
+
+/- An earlier filtered but disjoint operand does not taint a later direct match. -/
+example :
+    pluralVerdict? (direct "Start") filteredSource [direct "Finish"] [row1] [
+      rangeCell 1 [] "2024-01-01/2024-01-31"
+        (.parsed (.dateRange januaryValue)),
+      rangeCell 2 [] "15.01.2024-31.01.2024"
+        (.parsed (.dateRange lateJanuaryValue)),
+      rangeCell 3 [1] "2024-03-01/2024-03-31"
+        (.parsed (.dateRange marchValue)),
+      { address := { field := 6, path := [1] }, stored := "1",
+        raw := .parsed (.num 1) }] = some (.fired .value) := by
+  native_decide
+
+private def periodsRows12 : List RowAddr := [
+  { group := 11, path := [1] }, { group := 11, path := [2] }]
+
+/- Fixed groups retain declaration order and reach both direct fields. -/
+example :
+    pluralVerdict? (direct "Start")
+      (.group (.path {
+        base := .absolute, groups := ["Form", "Fixed"] })) [] [] [
+          rangeCell 1 [] "2024-01-01/2024-01-31"
+            (.parsed (.dateRange januaryValue)),
+          rangeCell 7 [] "2024-03-01/2024-03-31"
+            (.parsed (.dateRange marchValue)),
+          rangeCell 8 [] "2024-01-15/2024-01-31"
+            (.parsed (.dateRange lateJanuaryValue))] = some (.fired .value) ∧
+      pluralListAddresses? (direct "Start")
+        (.group (.path {
+          base := .absolute, groups := ["Form", "Fixed"] })) [] [] [
+            rangeCell 1 [] "2024-01-01/2024-01-31"
+              (.parsed (.dateRange januaryValue)),
+            rangeCell 7 [] "2024-03-01/2024-03-31"
+              (.parsed (.dateRange marchValue)),
+            rangeCell 8 [] "2024-01-15/2024-01-31"
+              (.parsed (.dateRange lateJanuaryValue))] =
+          some [[(7, []), (8, [])]] := by
+  native_decide
+
+/- A starred group reaches the second declaration in the second row. -/
+example :
+    pluralVerdict? (direct "Start") starredPeriodsGroup [] periodsRows12 [
+      rangeCell 1 [] "2024-01-01/2024-01-31"
+        (.parsed (.dateRange januaryValue)),
+      rangeCell 9 [1] "2024-03-01/2024-03-31"
+        (.parsed (.dateRange marchValue)),
+      rangeCell 9 [2] "2024-03-01/2024-03-31"
+        (.parsed (.dateRange marchValue)),
+      rangeCell 10 [1] "2024-03-01/2024-03-31"
+        (.parsed (.dateRange marchValue)),
+      rangeCell 10 [2] "2024-01-15/2024-01-31"
+        (.parsed (.dateRange lateJanuaryValue))] = some (.fired .value) ∧
+      pluralListAddresses? (direct "Start") starredPeriodsGroup []
+        periodsRows12 [
+          rangeCell 1 [] "2024-01-01/2024-01-31"
+            (.parsed (.dateRange januaryValue)),
+          rangeCell 9 [1] "2024-03-01/2024-03-31"
+            (.parsed (.dateRange marchValue)),
+          rangeCell 9 [2] "2024-03-01/2024-03-31"
+            (.parsed (.dateRange marchValue)),
+          rangeCell 10 [1] "2024-03-01/2024-03-31"
+            (.parsed (.dateRange marchValue)),
+          rangeCell 10 [2] "2024-01-15/2024-01-31"
+            (.parsed (.dateRange lateJanuaryValue))] =
+        some [[(9, [1]), (9, [2]), (10, [1]), (10, [2])]] := by
   native_decide
 
 private def date2024 (month day : Nat)

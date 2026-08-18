@@ -10,10 +10,10 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: verified runtime route ready for red/green implementation.
-- `gap`: [SG6 plural scalar-versus-list DateRange overlap assembly](SEMANTICS-GAPS.md#gap-sg6-plural-date-range-overlap).
-- `oracle`: [canonical Date-range and overlap clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) plus the [plural overlap source checkpoint](SOURCES.md#src-date-range-plural-overlap).
-- `next`: add full-validation assembly guards for scalar-first termination, matched-list filter polarity, ordered direct/star/group addressing, and the second-field/second-row group discriminator, then resolve the admitted source through one immutable checked document into the existing pure evaluator.
+- `state`: read-only route discovery required.
+- `gap`: [SG6 DateRange construction-versus-construction comparison](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
+- `oracle`: the [canonical Date-range equality clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) admits two constructions, while the [current source checkpoint](SOURCES.md#src-date-range-construction-equality) explicitly excludes that pairing.
+- `next`: inventory the existing construction-equality carrier and evaluator, checked endpoint sources, exact a12-dmkits static route, runtime/evidence history, proofs, and separating cases; establish the smallest exact route before any edit.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: inactive until the plural scalar-versus-list capability closes, another major DateRange addressing or computation boundary changes, or public compatibility is considered.
-- `resume`: `rg -n 'AtLeastOneDateRangeOverlaps|ResolvedDateRangeSlot|CheckedDateRangesOverlap|FieldEntity|GroupEntity' spec/05-dates-and-time.md docs/SEMANTICS-GAPS.md docs/IMPLEMENTATION-MAP.md A12Kernel ../a12-rulekit`
+- `consumer-probe-trigger`: inactive until the next reusable capability or another major DateRange boundary closes, or public compatibility is considered.
+- `resume`: `rg -n 'DateRange.*DateRange|DateRangeConstruction|evalDateRangeConstruction|construction-versus-construction' spec/05-dates-and-time.md docs/SEMANTICS-GAPS.md docs/IMPLEMENTATION-MAP.md docs/SOURCES.md A12Kernel ../a12-rulekit`

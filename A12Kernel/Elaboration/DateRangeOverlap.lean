@@ -339,6 +339,7 @@ inductive DateRangesOverlapEvaluationError where
   | addressing (error : CheckedAddressingError)
   | sourceValueKind (address : CellAddr)
   | unresolvedRange (address : CellAddr) (value : DateRangeValue)
+  | incoherentDirectOperand (actualCells : Nat)
   deriving Repr, DecidableEq
 
 /-- One resolved operand retains exact source and addressing metadata beside its pure overlap input. -/
@@ -399,5 +400,115 @@ def evaluateCheckedDocument
   pure { operands }
 
 end CheckedDateRangesOverlapSource
+
+/-! ## Checked plural-overlap assembly -/
+
+/-- The separately resolved scalar retains its checked declaration and concrete addressed cell beside the pure scalar slot. -/
+structure ResolvedCheckedAtLeastOneDateRangeOverlapScalar
+    (model : FlatModel) where
+  private mk ::
+  source : CheckedCanonicalDateRangeField
+  core : ResolvedCheckedEntityOperandCore
+  semantic : ResolvedDateRangeSlot
+
+/-- One resolved list operand retains its authored field/group boundary and complete addressed extent beside the pure scan input. -/
+structure ResolvedCheckedAtLeastOneDateRangeOverlapListOperand
+    (model : FlatModel) where
+  private mk ::
+  source : CheckedAtLeastOneDateRangeOverlapsListOperand model
+  core : ResolvedCheckedEntityOperandCore
+  semantic : ResolvedDateRangeOperand
+
+private def resolveCheckedAtLeastOneDateRangeOverlapScalar
+    (source : CheckedCanonicalDateRangeField)
+    (document : CheckedDocument model) :
+    Except DateRangesOverlapEvaluationError
+      (ResolvedCheckedAtLeastOneDateRangeOverlapScalar model) := do
+  let core ←
+    (document.resolveCheckedDirectEntityOperandCore source.declaration.id)
+      |>.mapError .addressing
+  match core.addressedCells with
+  | [addressed] => do
+      let semantic ← checkedDateRangeSlot addressed
+      pure { source, core, semantic }
+  | addressed => throw (.incoherentDirectOperand addressed.length)
+
+namespace CheckedAtLeastOneDateRangeOverlapsListOperand
+
+/-- Resolve one admitted list operand without erasing its authored field/group boundary, filter provenance, or checked group extent. -/
+def resolveCheckedValidation
+    (source : CheckedAtLeastOneDateRangeOverlapsListOperand model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except DateRangesOverlapEvaluationError
+      (ResolvedCheckedAtLeastOneDateRangeOverlapListOperand model) :=
+  match source with
+  | .field fieldSource => do
+      let resolved ← fieldSource.resolveCheckedValidation document outer
+      pure {
+        source := .field fieldSource
+        core := resolved.core
+        semantic := resolved.semantic }
+  | .group groupSource => do
+      let declarations :=
+        (groupSource.first :: groupSource.rest).map (·.declaration)
+      let core ← document.resolveCheckedGroupEntityOperandCore outer
+        groupSource.source.boundLevelCount declarations
+        |>.mapError .addressing
+      let slots ← core.addressedCells.mapM checkedDateRangeSlot
+      pure {
+        source := .group groupSource
+        core
+        semantic := { slots, hasFilter := false } }
+
+end CheckedAtLeastOneDateRangeOverlapsListOperand
+
+/-- Rich resolved plural-overlap query result. The checked source keeps every authored list boundary even when an empty `operands` list records scalar-first termination; reached operands remain in authored order. -/
+structure CheckedAtLeastOneDateRangeOverlapsResult (model : FlatModel) where
+  private mk ::
+  source : CheckedAtLeastOneDateRangeOverlapsSource model
+  scalar : ResolvedCheckedAtLeastOneDateRangeOverlapScalar model
+  operands : List (ResolvedCheckedAtLeastOneDateRangeOverlapListOperand model)
+
+namespace CheckedAtLeastOneDateRangeOverlapsResult
+
+/-- Evaluate the established scalar-versus-list scan over the resolved checked source. -/
+def verdict (result : CheckedAtLeastOneDateRangeOverlapsResult model) : Verdict :=
+  evalAtLeastOneDateRangeOverlaps result.scalar.semantic
+    (result.operands.map (·.semantic))
+
+end CheckedAtLeastOneDateRangeOverlapsResult
+
+namespace CheckedAtLeastOneDateRangeOverlapsSource
+
+private def resolveUntilFirstOverlap
+    (scalar : ResolvedDateRangeSlot)
+    (document : CheckedDocument model) (outer : Env) :
+    List (CheckedAtLeastOneDateRangeOverlapsListOperand model) →
+      Except DateRangesOverlapEvaluationError
+        (List (ResolvedCheckedAtLeastOneDateRangeOverlapListOperand model))
+  | [] => pure []
+  | source :: remaining => do
+      let resolved ← source.resolveCheckedValidation document outer
+      match evalAtLeastOneDateRangeOverlaps scalar [resolved.semantic] with
+      | .fired _ => pure [resolved]
+      | _ => pure (resolved ::
+          (← resolveUntilFirstOverlap scalar document outer remaining))
+
+/-- Resolve the scalar first, then resolve authored list operands against the same immutable checked document only through the first overlap. -/
+def evaluateCheckedDocument
+    (checked : CheckedAtLeastOneDateRangeOverlapsSource model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except DateRangesOverlapEvaluationError
+      (CheckedAtLeastOneDateRangeOverlapsResult model) := do
+  let scalar ←
+    resolveCheckedAtLeastOneDateRangeOverlapScalar checked.scalar document
+  match scalar.semantic with
+  | .skipped => pure { source := checked, scalar, operands := [] }
+  | .kept _ => do
+      let operands ←
+        resolveUntilFirstOverlap scalar.semantic document outer checked.operands
+      pure { source := checked, scalar, operands }
+
+end CheckedAtLeastOneDateRangeOverlapsSource
 
 end A12Kernel
