@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.DateRangeBound
 
-/-! # Checked DateRange stored-text ingestion, direct-bound, and comparison locks -/
+/-! # Checked DateRange stored-text ingestion, direct-bound, comparison, and numeric-component locks -/
 
 namespace A12Kernel.Conformance.DateRangeInput
 
@@ -427,6 +427,56 @@ example :
       | .error (.selectedDateUnavailable source value) =>
           source == travel.id && value == malformed
       | _ => false) = true := by
+  native_decide
+
+/- All four component tags compose with the checked bound while retaining start/finish identity. -/
+example :
+    let stored := "2019-11-30/2024-04-01"
+    let raw := (classifyStoredDateRange "UTC" isoPolicy stored).toOption.get
+      (by native_decide)
+    let input := (checkOne stored raw).toOption.get (by native_decide)
+    let startYear := (elaborateDateRangeBoundComponent model travel.id .start
+      .year).toOption.get (by native_decide)
+    let finishMonth := (elaborateDateRangeBoundComponent model travel.id .finish
+      .month).toOption.get (by native_decide)
+    let startDay := (elaborateDateRangeBoundComponent model travel.id .start
+      .day).toOption.get (by native_decide)
+    let finishQuarter :=
+      (elaborateDateRangeBoundComponent model travel.id .finish
+        .quarter).toOption.get (by native_decide)
+    (startYear.evaluate input).toOption.map (·.component) =
+        some (.value 2019 .fixed) ∧
+      (finishMonth.evaluate input).toOption.map (·.component) =
+        some (.value 4 .fixed) ∧
+      (startDay.evaluate input).toOption.map (·.component) =
+        some (.value 30 .fixed) ∧
+      (finishQuarter.evaluate input).toOption.map (·.component) =
+        some (.value 2 .fixed) := by
+  native_decide
+
+/- Component extraction retains exact selected identity, fillable empty zero, and formal cause. -/
+example :
+    let component := (elaborateDateRangeBoundComponent model travel.id .start
+      .year).toOption.get (by native_decide)
+    let altered : DateValue := {
+      january.start with
+      instant := { epochMillis := january.start.instant.epochMillis + 1 }
+      basis := .legacyHybrid }
+    let empty := (checkOne "" .presentEmpty).toOption.get (by native_decide)
+    let invalid := (checkOne "garbage"
+      (.rejected .dateRangeSeparator)).toOption.get (by native_decide)
+    component.evaluateSelected (.value altered) = {
+      selected := .value altered
+      component := .value 2024 .fixed
+    } ∧
+    (component.evaluate empty).toOption = some {
+      selected := .empty
+      component := .value 0 .both
+    } ∧
+    (component.evaluate invalid).toOption = some {
+      selected := .unknown .dateRangeSeparator
+      component := .unknown .dateRangeSeparator
+    } := by
   native_decide
 
 end A12Kernel.Conformance.DateRangeInput

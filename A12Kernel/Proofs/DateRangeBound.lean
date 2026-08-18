@@ -112,4 +112,33 @@ theorem dateRangeBoundComparison_evaluateSelected_value
       TemporalComparisonOp.evalObserved, TemporalComparisonOp.eval,
       evalSymmetricComparison]
 
+/-- A present exact endpoint remains available while its selected decoded component becomes fixed. -/
+@[simp] theorem dateRangeBoundComponent_evaluateSelected_value
+    (operation : CheckedDateRangeBoundComponent model)
+    (value : DateValue) :
+    operation.evaluateSelected (.value value) = {
+      selected := .value value
+      component := .value (operation.part.extract value.parts) .fixed
+    } := by
+  rfl
+
+/-- Empty selection remains visible and delegates to the Date extractor's symmetric fillable zero. -/
+@[simp] theorem dateRangeBoundComponent_evaluateSelected_empty
+    (operation : CheckedDateRangeBoundComponent model) :
+    operation.evaluateSelected .empty = {
+      selected := .empty
+      component := .value 0 .both
+    } := by
+  rfl
+
+/-- Formal unavailability remains visible and preserves its exact cause in the numeric operand. -/
+@[simp] theorem dateRangeBoundComponent_evaluateSelected_unknown
+    (operation : CheckedDateRangeBoundComponent model)
+    (cause : FormalCause) :
+    operation.evaluateSelected (.unknown cause) = {
+      selected := .unknown cause
+      component := .unknown cause
+    } := by
+  rfl
+
 end A12Kernel

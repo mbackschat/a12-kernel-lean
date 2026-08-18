@@ -10,10 +10,10 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: read-only route discovery required after the current capsule commit.
-- `gap`: [SG6 DateRange bound component extraction composition](SEMANTICS-GAPS.md#gap-sg6-date-range-bound-component).
+- `state`: bounded Execute/Explain consumer probe ready.
+- `capability`: [checked direct DateRange bound capability](IMPLEMENTATION-MAP.md#cap-checked-date-range-bound), exact two-policy nonrepeatable subset.
 - `oracle`: [stored DateRange bound extraction](SOURCES.md#src-date-range-bound-extraction).
-- `next`: inventory the existing typed Date-component projection, numeric operand/result owners, and bound-read phase projection; verify the narrow composition route before semantic edits.
+- `next`: run the triggered artifact-only Execute/Explain probe against the canonical DateRange clause, source limit, checked bound result, fixed-Date comparison, and numeric-component projection; feed any missing distinction back into the owning representation before selecting another capsule.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: defer the next bounded probe until component composition adds a new operator decision.
-- `resume`: `rg -n 'DateNumericPart|fromFullDateObservation|resolveDateNumericOperand|DateRangeBound|DateValue' A12Kernel/Elaboration A12Kernel/Semantics A12Kernel/Conformance docs/SOURCES.md`
+- `consumer-probe-trigger`: active because direct bound selection now reaches two existing consumers while retaining exact selected identity and one-read non-value behavior.
+- `resume`: `rg -n 'StartOfDateRange|EndOfDateRange|DateRangeBound|DateRangeBoundComparisonResult|DateRangeBoundComponentResult' spec/05-dates-and-time.md docs/IMPLEMENTER-GUIDE.md docs/USE-CASES.md A12Kernel/Elaboration/DateRangeBound.lean A12Kernel/Conformance/DateRangeInput.lean`
