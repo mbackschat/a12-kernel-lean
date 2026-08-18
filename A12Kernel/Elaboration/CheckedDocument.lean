@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.StringContext
+import A12Kernel.Elaboration.DateRangeInput
 import A12Kernel.Semantics.NumericInput
 import A12Kernel.Semantics.ScalarText
 import A12Kernel.Semantics.StarAddressing
@@ -11,7 +12,7 @@ This module starts at the theory's established scalar-parser boundary. A finite 
 
 namespace A12Kernel
 
-/-- One physically placed field plus its parser-boundary classification. `stored` retains application text. `raw` remains caller-classified for non-Number kinds and must match the canonical Boolean/Confirm token classifier. A filled Number may carry an explicit decimal representation in `numericDecimal`; `none` selects the exact String-valued regime already carried by `stored`. Document checking derives and verifies the selected formal-read classification. An absent cell has no entry. -/
+/-- One physically placed field plus its parser-boundary classification. `stored` retains application text. `raw` remains caller-classified for non-Number kinds and must match the canonical Boolean/Confirm classifier plus the bounded DateRange classifier whenever its declaration and zone are supported. A filled Number may carry an explicit decimal representation in `numericDecimal`; `none` selects the exact String-valued regime already carried by `stored`. Document checking derives and verifies the selected formal-read classification. An absent cell has no entry. -/
 structure ClassifiedCellInput where
   address : CellAddr
   stored : String
@@ -208,9 +209,19 @@ private def ClassifiedCellInput.numberCoherent
       constraints.classifyFormalRead info numeric == input.raw
 
 private def ClassifiedCellInput.canonicalScalarCoherent
-    (input : ClassifiedCellInput) : FieldKind → Bool
+    (input : ClassifiedCellInput) (model : FlatModel)
+    (declaration : FlatFieldDecl) : Bool :=
+  match declaration.policy.kind with
   | .boolean => input.raw == classifyStoredBooleanText input.stored
   | .confirm => input.raw == classifyStoredConfirmText input.stored
+  | .dateRange =>
+      match declaration.toDateRangeDeclarationPolicy? with
+      | none => true
+      | some policy =>
+          match classifyStoredDateRange model.timeZoneId policy input.stored with
+          | .ok canonical => input.raw == canonical
+          | .error (.unsupportedPolicy _ _) => true
+          | .error (.unsupportedZone _) | .error (.unresolvableEndpoint _) => false
   | _ => true
 
 private def checkPlacedCell
@@ -225,7 +236,7 @@ private def checkPlacedCell
     | .boolean | .confirm | .string | .enumeration | .temporal _ _ | .dateRange =>
         input.ordinaryCoherent
   if !coherent then throw (.incoherentCell input.address)
-  if !input.canonicalScalarCoherent declaration.policy.kind then
+  if !input.canonicalScalarCoherent model declaration then
     throw (.incoherentCell input.address)
   let overLimit ← match model.addressOverLimit?
       declaration.repeatableScope input.address.path with

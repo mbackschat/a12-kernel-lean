@@ -2,7 +2,7 @@ import A12Kernel.Semantics.DateTimeComparison
 
 /-! # Temporal format-component admission
 
-This capsule owns the static component facts shared by direct temporal comparisons and temporal extrema. Direct comparisons preserve the original date-versus-time class, compare year presence after optional Base Year supplementation, and require matching time presence only for equality/inequality. Aggregate admission preserves that original class and additionally requires the complete supplemented component sets to match. Text parsing, format spelling, operand classification, and resolved value evaluation remain separate.
+This capsule owns the static component facts shared by direct temporal comparisons and temporal extrema plus the exact DateRange presentation discriminator shared by bounded input and target consumers. Direct comparisons preserve the original date-versus-time class, compare year presence after optional Base Year supplementation, and require matching time presence only for equality/inequality. Aggregate admission preserves that original class and additionally requires the complete supplemented component sets to match. Text parsing, scalar temporal format spelling, operand classification, and resolved value evaluation remain separate.
 -/
 
 namespace A12Kernel
@@ -76,6 +76,30 @@ def DateRangeDeclarationPolicy.error?
     some .emptySeparator
   else
     none
+
+/-- Exact DateRange presentations shared by bounded stored-input and computed-target consumers. The model-owned source format and separator remain in `DateRangeDeclarationPolicy`. -/
+inductive DateRangeFormat where
+  | isoSlash
+  | dayMonthYearDash
+  deriving Repr, DecidableEq
+
+namespace DateRangeFormat
+
+/-- Recognize only the two externally established declaration pairs used by the current checked input and target fragments. -/
+def ofPolicy? (policy : DateRangeDeclarationPolicy) : Option DateRangeFormat :=
+  if policy.format == "yyyy-MM-dd" && policy.separator == "/" then
+    some .isoSlash
+  else if policy.format == "dd.MM.yyyy" && policy.separator == "-" then
+    some .dayMonthYearDash
+  else
+    none
+
+/-- Exact separator carried by one admitted DateRange presentation. -/
+def separator : DateRangeFormat → String
+  | .isoSlash => "/"
+  | .dayMonthYearDash => "-"
+
+end DateRangeFormat
 
 /-- Check only the cross-field invariants visible at the parser-independent flat boundary. A non-full partial mode belongs to a full Date declaration; the opt-in pre-1900 check belongs only to Date. -/
 def TemporalTargetPolicy.errorFor?

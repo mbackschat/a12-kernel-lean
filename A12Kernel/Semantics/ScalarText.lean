@@ -7,16 +7,6 @@ This capsule classifies the stored data-document text consumed by Boolean and Co
 
 namespace A12Kernel
 
-namespace FormalCause
-
-/-- Fixed runtime formal-error code for one canonical Boolean/Confirm token failure. Other causes need their declaration- or validator-specific message owner. -/
-def fixedFormalErrorCode? : FormalCause → Option String
-  | .booleanToken => some "feldJaNeinFalsch"
-  | .confirmToken => some "feldJaFalsch"
-  | _ => none
-
-end FormalCause
-
 /-- Classify one physically stored Boolean text before ordinary formal checking. Equality is exact and case-sensitive. -/
 def classifyStoredBooleanText (text : String) : RawCell :=
   if text.isEmpty then

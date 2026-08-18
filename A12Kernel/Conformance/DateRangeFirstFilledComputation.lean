@@ -85,14 +85,21 @@ private def inputFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
     stored := input.stored
     raw := input.raw
   }
+  let targetStored :=
+    if targetDeclaration.dateRangePolicy ==
+        some ({ format := "dd.MM.yyyy", separator := "-" } :
+          DateRangeDeclarationPolicy) then
+      "20.03.2024-21.03.2024"
+    else
+      "2024-03-20/2024-03-21"
   (checkDocument prepared "en_US" {
     instantiatedRows := [
       { group := 10, path := [1] }, { group := 10, path := [2] }]
     cells := [{
       address := { field := targetDeclaration.id, path := [] }
-      stored := "2000-01-01/2000-01-02"
+      stored := targetStored
       raw := .parsed (.dateRange
-        (rangeValue 946684800000 946771200000 1 2))
+        (rangeValue 1710892800000 1710979200000 20 21))
     }] ++ sourceCells
   }).toOption
 
@@ -116,25 +123,7 @@ private def signatureFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
 
 private def signature? := signatureFor? target source
 
-private def unresolvedEndpoint? (sourceInputs : List SourceInput) :
-    Option DateRangeValue := do
-  let execution ← execution? sourceInputs
-  match execution with
-  | .error (.unresolvedEndpoint range) => some range
-  | .error (.source _) | .ok _ => none
-
 private def selectedRange := rangeValue 1710892800000 1710979200000 20 21
-private def invalidRange : DateRangeValue := {
-  selectedRange with
-  finish := { selectedRange.finish with
-    parts := { year := 2024, month := 2, day := 30 } }
-}
-
-private def invalidInput : List SourceInput := [{
-  row := 1
-  stored := "2024-03-20/2024-02-30"
-  raw := .parsed (.dateRange invalidRange)
-}]
 
 /- The retained temporal-family probe Kernel-calibrates these exact all-empty and first-row-filled result signatures. -/
 example :
@@ -146,20 +135,11 @@ example :
       }] = some "VALUE|2024-03-20/2024-03-21" := by
   native_decide
 
-/- Typed endpoints, not the source token, supply the rendered target value; this mechanism separator is internal rather than externally calibrated. -/
-example :
-    signature? [{
-      row := 1
-      stored := "2001-02-03/2001-02-04"
-      raw := .parsed (.dateRange selectedRange)
-    }] = some "VALUE|2024-03-20/2024-03-21" := by
-  native_decide
-
-/- The second exact legal declaration pair selects the same typed endpoints but renders through the target-owned dotted/dash policy. Static admission and the renderer are externally established separately; their direct `FirstFilledValue` composition remains external-evidence pending. -/
+/- The second exact legal declaration pair selects and renders the same checked typed endpoint payload. Static admission and the renderer are externally established separately; their direct `FirstFilledValue` composition remains external-evidence pending. -/
 example :
     signatureFor? dottedTarget dottedSource [{
       row := 1
-      stored := "copied-text-would-be-wrong"
+      stored := "20.03.2024-21.03.2024"
       raw := .parsed (.dateRange selectedRange)
     }] = some "VALUE|20.03.2024-21.03.2024" := by
   native_decide
@@ -167,19 +147,13 @@ example :
 /- A reached formal cause terminates before a later present range. -/
 example :
     signature? [
-      { row := 1, stored := "XX", raw := .rejected .malformed },
+      { row := 1, stored := "XX", raw := .rejected .dateRangeSeparator },
       {
         row := 2
         stored := "2024-03-20/2024-03-21"
         raw := .parsed (.dateRange selectedRange)
       }
     ] = some "POISON" := by
-  native_decide
-
-/- The universal value remains wider than the resolved target bridge. -/
-example :
-    (execution? invalidInput).isSome = true ∧
-      unresolvedEndpoint? invalidInput = some invalidRange := by
   native_decide
 
 /- Both declarations must share one exact admitted DateRange pair; crossing the two legal pairs or changing only the ISO separator remains refused. -/

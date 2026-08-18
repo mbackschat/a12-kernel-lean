@@ -11,8 +11,8 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 ## Selected work
 
 - `state`: read-only route discovery required.
-- `gap`: [SG6 DateRange raw ingestion and formal propagation](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion), beyond the closed direct `FirstFilledValue` declaration policies.
-- `next`: determine whether the existing checked-document route can parse stored DateRange text under both exact declaration pairs while preserving empty, malformed, and endpoint-resolution distinctions; verify the source and red/green owners before semantic edits.
+- `gap`: [SG6 checked DateRange bound extraction](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion) over the now-canonical stored-input value.
+- `next`: inventory the existing resolved-range, field-read, `StartOfDateRange`/`EndOfDateRange`, and full-Date consumer owners; verify whether a nonrepeatable checked field can reuse them without another operand or document representation before selecting red/green loci.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: satisfied for the direct temporal `FirstFilledValue` family; the wider DateFragment policies add no new consumer distinction beyond exact declaration matching and checked-token selection. Trigger again only after a reusable wider family closes or another defined milestone/risk boundary is reached.
-- `resume`: `rg -n 'DateRange|RawCell|parse.*Range|formalCheck' A12Kernel/Elaboration A12Kernel/Semantics A12Kernel/Conformance docs/SOURCES.md ../a12-rulekit/interpreter`
+- `consumer-probe-trigger`: defer the next bounded Execute/Explain probe until checked DateRange bound extraction joins canonical stored input into one reusable field-consumer slice; raw classification alone already answers its predicted query and adds no operator decision.
+- `resume`: `rg -n 'StartOfDateRange|EndOfDateRange|DateRangeValue|ResolvedDateRange|dateRange' A12Kernel/Elaboration A12Kernel/Semantics A12Kernel/Conformance docs/SOURCES.md ../a12-rulekit/interpreter`

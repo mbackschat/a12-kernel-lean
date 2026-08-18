@@ -503,6 +503,8 @@ private def dateTimeComponents : TemporalComponents :=
 
 private def instant : Instant := { epochMillis := 1719292867000 }
 
+private def dateMidnight : Instant := { epochMillis := 1719273600000 }
+
 private def dateParts : DateParts :=
   { year := 2024, month := 6, day := 25 }
 
@@ -545,8 +547,14 @@ example :
         dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } }
       "2024-06-25/2024-06-25"
       (.parsed (.dateRange {
-        start := { instant, parts := dateParts, basis := .storedGregorian }
-        finish := { instant, parts := dateParts, basis := .storedGregorian } })) = true := by
+        start := {
+          instant := dateMidnight
+          parts := dateParts
+          basis := .storedGregorian }
+        finish := {
+          instant := dateMidnight
+          parts := dateParts
+          basis := .storedGregorian } })) = true := by
   native_decide
 
 /- The shared model certificate rejects a raw/no-value String index before preliminary dispatch. -/

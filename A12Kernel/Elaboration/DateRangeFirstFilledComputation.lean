@@ -60,7 +60,7 @@ namespace CheckedDateRangeFirstFilledComputation
 /-- Execute one checked carrier through the single document, bridge the typed range into resolved full-Date endpoints, and render through the retained target policy. -/
 private def executeWith
     (shape : CheckedTemporalFirstFilledStarComputation model carrier)
-    (format : DateRangeTargetFormat)
+    (format : DateRangeFormat)
     (input : CheckedDocument model) :
     Except DateRangeFirstFilledComputationFault DateRangeTargetOutcome := do
   let resolved ← shape.source.resolveCheckedField input []

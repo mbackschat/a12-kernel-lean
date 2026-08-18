@@ -39,6 +39,10 @@ structure FieldPolicy where
     here and enter only through their later model/document passes. -/
 inductive BaseFormalCause where
   | malformed
+  | dateRangeSeparator
+  | dateRangeFormat
+  | dateRangeInvalid
+  | dateRangeTooEarly
   | booleanToken
   | confirmToken
   | declaredConstraint
@@ -50,6 +54,10 @@ inductive BaseFormalCause where
 
 def BaseFormalCause.toFormalCause : BaseFormalCause → FormalCause
   | .malformed => .malformed
+  | .dateRangeSeparator => .dateRangeSeparator
+  | .dateRangeFormat => .dateRangeFormat
+  | .dateRangeInvalid => .dateRangeInvalid
+  | .dateRangeTooEarly => .dateRangeTooEarly
   | .booleanToken => .booleanToken
   | .confirmToken => .confirmToken
   | .declaredConstraint => .declaredConstraint
@@ -58,6 +66,20 @@ def BaseFormalCause.toFormalCause : BaseFormalCause → FormalCause
   | .customValidation => .customValidation
   | .registeredCustomValidation rejection =>
       .registeredCustomValidation rejection
+
+namespace FormalCause
+
+/-- Fixed runtime formal-error code for causes whose message identity does not depend on a declaration or registered validator. -/
+def fixedFormalErrorCode? : FormalCause → Option String
+  | .dateRangeSeparator => some "datumBereichTrennerFehlt"
+  | .dateRangeFormat => some "datumBereichFormatFalsch"
+  | .dateRangeInvalid => some "datumBereichNichtGueltig"
+  | .dateRangeTooEarly => some "datumBereichDatumFalsch"
+  | .booleanToken => some "feldJaNeinFalsch"
+  | .confirmToken => some "feldJaFalsch"
+  | _ => none
+
+end FormalCause
 
 /-- Scalar-parser output at the formal-check boundary. `empty` means that no field
     placement exists; `presentEmpty` represents a physical placement with no raw value.

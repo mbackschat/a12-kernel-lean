@@ -231,16 +231,10 @@ inductive DateTimeTargetOutcome where
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
-/-- Exact DateRange target presentations admitted by the bounded computation fragment. The model-owned source format and separator remain in `DateRangeDeclarationPolicy`. -/
-inductive DateRangeTargetFormat where
-  | isoSlash
-  | dayMonthYearDash
-  deriving Repr, DecidableEq
-
-namespace DateRangeTargetFormat
+namespace DateRangeFormat
 
 /-- Render both resolved full-Date endpoints through the target policy's exact presentation. -/
-def renderText (format : DateRangeTargetFormat) (range : ResolvedDateRange) : String :=
+def renderText (format : DateRangeFormat) (range : ResolvedDateRange) : String :=
   match format with
   | .isoSlash =>
       FullDateTargetFormat.renderText .yearMonthDayDashes range.start ++ "/" ++
@@ -249,7 +243,7 @@ def renderText (format : DateRangeTargetFormat) (range : ResolvedDateRange) : St
       FullDateTargetFormat.renderText .dayMonthYearDots range.start ++ "-" ++
         FullDateTargetFormat.renderText .dayMonthYearDots range.finish
 
-end DateRangeTargetFormat
+end DateRangeFormat
 
 /-- A nonempty rendered DateRange target value kept separate from scalar temporal stored text. -/
 structure StoredDateRange where
@@ -257,10 +251,10 @@ structure StoredDateRange where
   nonempty : text ≠ ""
   deriving Repr, DecidableEq
 
-namespace DateRangeTargetFormat
+namespace DateRangeFormat
 
 /-- Render one resolved DateRange into its exact nonempty target value. -/
-def render (format : DateRangeTargetFormat)
+def render (format : DateRangeFormat)
     (range : ResolvedDateRange) : StoredDateRange := {
   text := format.renderText range
   nonempty := by
@@ -269,7 +263,7 @@ def render (format : DateRangeTargetFormat)
       FullDateTargetFormat.renderCivilText, TemporalTargetText.twoDigits]
 }
 
-end DateRangeTargetFormat
+end DateRangeFormat
 
 /-- Root result before a checked DateRange target consumes the selected typed interval. -/
 inductive DateRangeComputationResult where

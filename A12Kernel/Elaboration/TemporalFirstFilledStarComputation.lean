@@ -61,12 +61,10 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
       else
         none
   | .dateRange, _, some policy =>
-      if policy.format == "yyyy-MM-dd" && policy.separator == "/" then
-        some .dateRangeIsoSlash
-      else if policy.format == "dd.MM.yyyy" && policy.separator == "-" then
-        some .dateRangeDayMonthYearDash
-      else
-        none
+      match DateRangeFormat.ofPolicy? policy with
+      | some .isoSlash => some .dateRangeIsoSlash
+      | some .dayMonthYearDash => some .dateRangeDayMonthYearDash
+      | none => none
   | _, _, _ => none
 
 inductive TemporalFirstFilledStarComputationElabError where

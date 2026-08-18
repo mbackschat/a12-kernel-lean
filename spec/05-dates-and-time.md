@@ -6,6 +6,8 @@ Empty-date behaviour (not-evaluated in comparisons; `0` in the extractors/differ
 
 Stored Date, Time, DateTime, and DateRange text is converted non-leniently against the field's declared format. A noncanonical spelling such as `2024-3-5` or `20240305` for a `yyyy-MM-dd` declaration, `14:5:0` for `HH:mm:ss`, or `1.1.2024-31.12.2024` for a fixed-width range does not normalize to a temporal value: conversion fails, the physical placement and exact text remain, and formal checking makes the cell not-check-relevant. Conversely, text that converts already has the model format, so stored temporal input has no Number-like canonicalization stage.
 
+Stored DateRange formal checking has four ordered failures. A token that does not contain the declared separator yields `datumBereichTrennerFehlt`; once the separator is present, a split other than two nonempty endpoints or a lexically or calendrically invalid endpoint yields `datumBereichFormatFalsch`; two valid endpoints with start after finish yield `datumBereichNichtGueltig`; an otherwise ordered range whose start precedes `1583-10-16` yields `datumBereichDatumFalsch`. Equal endpoints are valid. Every failure keeps the physical placement and exact text while making a reached validation read UNKNOWN and a reached computation read poison.
+
 ---
 
 ## 1. Constant format and the string/date literal ambiguity ⚠

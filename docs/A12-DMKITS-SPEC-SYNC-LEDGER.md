@@ -77,6 +77,23 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 **The producer side now discloses its rewrites, which is what this project asked for.** The 2026-08-12 handbacks name the rebase, list the branch SHAs that no longer exist as reachable objects and must not be cited, and give revisions read off `main` as the last step before sending. Every revision they cite resolved from `main` when checked here on 2026-08-12: `06b84701`, `b99e43e1`, `4b244b84`, `73bc4a04`, and `ae567007`. A handback dated 2026-08-12 or later is therefore discharged against its own cited revision, while an earlier one still needs the maintained-owner route above. The reverse error is now on record too: `2bffcb10` was reported dead from here and resolves fine, which the 2026-08-10 boundary already predicted for it, so a reachability measurement taken against a stale checkout is itself a claim with a date on it.
 
+<a id="spec-2026-08-18-01"></a>
+<a id="spec-2026-08-18-01--a-present-date-range-separator-with-a-malformed-split-is-a-format-error"></a>
+
+### SPEC-2026-08-18-01 - a present DateRange separator with a malformed split is a format error
+
+- **Status:** pending
+- **Kind:** semantic correction, locally originated from kernel source
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `89aa03957034de620562eb23a095d878f6547dca` (clean before and after)
+- **Kernel behavior:** 30.8.1 runtime source
+- **Canonical clause:** [`05-dates-and-time.md` stored DateRange formal checking](../spec/05-dates-and-time.md)
+- **Delta:** `datumBereichTrennerFehlt` applies only when the stored token does not contain its declared range separator. Once the separator is present, a split with more than two parts or an empty endpoint yields `datumBereichFormatFalsch`, before endpoint parsing, order, and floor checks.
+- **Basis:** At kernel revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`, `FormatDefinitionDatumBereich.formalePruefung` first tests `wert.contains(dbTrenner)`, then calls `DateUtil.splitStringBySeparator`, which preserves empty tokens, and maps any length other than two or either empty side to the format error. The current a12-dmkits `FormalError` instead maps every `parts.size != 2` result to `DATE_RANGE_SEPARATOR`; its maintained differential covers separator absence but no extra-separator or empty-side discriminator.
+- **Requested a12-dmkits reconciliation:** Correct the existing DateRange formal classifier and canonical prose at their current owners. Extend `DateRangeFormalDiffTest` and the matching interpreter unit family with an absent separator yielding `datumBereichTrennerFehlt`, an extra separator yielding `datumBereichFormatFalsch`, and a leading or trailing empty endpoint yielding `datumBereichFormatFalsch`. Reuse the existing classifier and differential route; add no parser, value type, or harness.
+- **Compatibility:** Treating every non-two-part split as a missing separator reports the wrong public formal code for stored values that visibly contain the separator. The correction must not change valid/equal ranges, invalid endpoint syntax or calendar reality, inverted order, the Gregorian floor, fragment completion, or declaration-owned separator selection.
+- **Acceptance:** Canonical a12-dmkits prose states the containment-versus-shape distinction; maintained dynamic-Groovy/generated-Java and interpreter/JVM/Node cases retain all three split discriminators and neighboring cause controls; the existing DateRange classifier remains the sole owner; and the handback supplies the exact committed revision plus per-surface disposition.
+
 <a id="spec-2026-08-17-03"></a>
 <a id="spec-2026-08-17-03--starred-group-firstfilledvalue-is-declaration-major-across-rows"></a>
 
