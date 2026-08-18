@@ -139,6 +139,22 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: the exact dotted/dash filled mixed rows are Kernel-locked by the upstream tri-engine route. ISO/slash mixed execution is internal composition over the separately checked stored-input policy, with no local retained calibration projection; construction-pair runtime rows and mixed empty/formal rows also remain internal.
 - `limit`: DateFragment or wider cross-format admission, computation targets or rendering, repeatable placement, overlap arguments, and bound extraction remain outside this checkpoint.
 
+<a id="src-date-range-year-fragment-construction"></a>
+#### Year-fragment DateRange construction
+
+- `revision`: source-shipped dmtool `0.13.0` and the independent interpreter were inspected at clean a12-dmkits `89aa03957034de620562eb23a095d878f6547dca`; both Kernel strategies used built/runtime kernel `30.8.1` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`.
+- `runtime-probe`: one dmtool-authored, structurally checked, Kernel-confirmed model declares four `yyyy` DateFragment endpoints, one `yyyy`/`/` stored DateRange, construction-pair equality, and construction-versus-stored equality.
+- `runtime-claim`: both Kernel strategies fire both rules on `2024..2025` equality and fire neither when only the right finish and stored finish change to `2024`; two unchanged runs are byte-identical.
+- `runtime-identity`: artifact SHA-256 `57acd114ab8b16dacd93abf16abdabdc7b338016dbf8fbff6fe4417037dce9bd`; request `a2c9cda27a319492671ceb4e9bf5fc77ac15c26355e2f027cd3ef5f151181f46`; model `dd3bdbdd3460e69d487723de24becbfa226341df2ebbd7710c8b589e5acee1fc`.
+- `runtime-identity`: equal document SHA-256 `f9469e0da3d5b87deaa39a4bfb0656867b521c5c6bd72810ec7ac2b46150c128`; finish-only negative document `2204f7c9e3b14b31e8507b049de4bbeaf97bc6a1062d0087c90b9f6d1b62f78d`.
+- `static-probe`: the same declaration family admits `yyyy` construction equality and refuses `yyyy`/full-Date mismatch in either authored order as `MVK_INVALID_COMPARE_TO_DATE_RANGE`.
+- `static-identity`: observation artifact SHA-256 `f4f46f02cf0a1b06b5c1f8ddfdad0190d1fae11456a499b301ba5e590591de39`; request SHA-256 `9323a6bd62b31ef98a000355fac1334d6c7aeed313de0192b709dd62ede5879c`.
+- `divergence`: a12-dmkits' interpreter matches both construction-pair rows but omits the construction-versus-stored firing on the equal row; the finish-only negative remains silent.
+- `source`: kernel [`RuntimeController.constructDateRange`](../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_30_8/internal/core/RuntimeController.java) delegates typed start and finish inputs to its endpoint-position range completion; a12-dmkits [`ExprEval`](../../a12-rulekit/interpreter/src/commonMain/kotlin/io/github/mbackschat/a12/dm/interpreter/eval/ExprEval.kt) instead constructs the range from two ordinary evaluated temporal texts.
+- `diagnosis-limit`: the interpreter source shape and its existing bound-aware [`DateMath`](../../a12-rulekit/interpreter/src/commonMain/kotlin/io/github/mbackschat/a12/dm/interpreter/eval/DateMath.kt) helper identify a likely missing finish-position completion, but the retained observation establishes only the divergent outcome until an upstream isolating test discharges the cause.
+- `limit`: this checkpoint establishes exact direct nonrepeatable `yyyy` endpoints, pair and stored equality outcomes, a finish-only negative, and one cross-component static refusal. Other fragments, Base-Year supplementation, exact endpoint instants, empty/formal rows, indices, repeatable placement, targets, and rendering remain unmeasured.
+- `sync`: §6 already owns endpoint-position completion; §8 now owns cross-DateRange component compatibility under pending [`SPEC-2026-08-19-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-01--date-range-equality-requires-matching-component-sets-across-both-operands). The interpreter divergence is an implementation defect, not another semantic correction.
+
 <a id="src-date-range-bound-extraction"></a>
 #### Stored DateRange bound extraction
 

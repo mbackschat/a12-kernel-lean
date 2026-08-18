@@ -260,6 +260,10 @@ Date ranges support only `==` / `!=` (**no ordering**). A stored DATE_RANGE or `
 
 Each `DateRange` endpoint is a bare A12 `entitySpec` reference, including a literal- or field-keyed semantic-index selection; a bracketed calculation is illegal there. Each endpoint must be a DATE or DATE_FRAGMENT whose declared format has at least one date component and no time component. After Base-Year supplementation, the endpoints must expose the same date-component set. DATE and DATE_FRAGMENT may mix, and different lexical format spellings are legal when that component set agrees. Overlap tests treat endpoints as **inclusive (closed intervals)**.
 
+Equality or inequality additionally requires the two resulting DateRange operands to expose the same declared date-component set. A component mismatch between otherwise valid constructions is refused with `MVK_INVALID_COMPARE_TO_DATE_RANGE`; it is not evaluated by completing the coarser range into the finer one. Base-Year-dependent cross-range compatibility remains unmeasured.
+
+DateFragment endpoints use [§6's asymmetric fragment-range completion](#6-date-fragments-and-fragment-ranges): a start completes to its earliest local date and a finish to its latest, so `yyyy` endpoints become January 1 and December 31 respectively. The completed local labels are resolved under the model's accepted zone profile, and DateRange equality or inequality compares both ordered resolved endpoints. Exact external instant-identity coverage remains limited to the rows named in [`SOURCES.md`](../docs/SOURCES.md#src-date-range-year-fragment-construction).
+
 The two overlap predicates differ in **shape** ⚠:
 
 - **`DateRangesOverlap(op0, op1, …)`** is **any-pair** among *all* operands' kept, filled ranges (one growing set): a list-internal pair fires even when a scalar operand is disjoint, and a same-cell self-pair via scalar + star fires on every filled row.

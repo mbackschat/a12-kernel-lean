@@ -1,21 +1,95 @@
 import A12Kernel.Elaboration.DateRangeBound
 import A12Kernel.Elaboration.TemporalTargetPolicy
+import A12Kernel.Elaboration.ValueAsDate
 import A12Kernel.Semantics.DateRangeComparison
 
-/-! # Checked full-Date construction comparison
+/-! # Checked DateRange construction comparison
 
-This capsule certifies two nonrepeatable full-Date endpoints per `DateRange` construction, composes either two constructions or one construction with a canonical direct stored DateRange, and reads each checked operand through one immutable document in authored order. Construction labels are re-resolved under their declaration's model-zone profile before the exact observations delegate to the shared equality seam. DateFragment completion, semantic-index endpoints, repeatable placement, computation, rendering, overlap, and bound extraction remain separate.
+This capsule certifies two nonrepeatable Date endpoints per `DateRange` construction, including the first exact `yyyy` DateFragment profile, composes two component-compatible constructions or one full-Date construction with a canonical direct stored DateRange, and reads each checked operand through one immutable document in authored order. Construction labels are completed by endpoint position and re-resolved under their declaration's model-zone profile before the exact observations delegate to the shared equality seam. Wider DateFragment formats, Base-Year component matching, fragment construction-versus-stored execution, semantic-index endpoints, repeatable placement, computation, rendering, overlap, and bound extraction remain separate.
 -/
 
 namespace A12Kernel
 
+inductive DateRangeEndpointFormat where
+  | full (format : FullDateTargetFormat)
+  | yearFragment
+  deriving Repr, DecidableEq
+
+namespace DateRangeEndpointFormat
+
+/-- Recognize only the already-closed full-Date profiles and the Kernel-confirmed `yyyy` DateFragment profile. -/
+def ofPolicy? (policy : TemporalTargetPolicy) : Option DateRangeEndpointFormat :=
+  match policy.partialMode with
+  | .full => FullDateTargetFormat.ofSource? policy.format |>.map .full
+  | .yearOptional => if policy.format == "yyyy" then some .yearFragment else none
+  | .dayOptional | .monthOptional => none
+
+/-- Exact component-set compatibility for the bounded endpoint profiles. Lexical spelling does not distinguish the two complete full-Date formats. -/
+def sameComponents : DateRangeEndpointFormat → DateRangeEndpointFormat → Bool
+  | .full _, .full _ => true
+  | .yearFragment, .yearFragment => true
+  | _, _ => false
+
+/-- Whether the endpoint belongs to the complete Date profile retained by mixed execution. -/
+def isFull : DateRangeEndpointFormat → Bool
+  | .full _ => true
+  | .yearFragment => false
+
+/-- Complete one decoded endpoint label by its authored range position. -/
+def complete? (format : DateRangeEndpointFormat) (bound : DateRangeBound)
+    (parts : DateParts) : Option FullDate :=
+  match format, bound with
+  | .full _, _ => FullDate.ofYmd? parts.year parts.month parts.day
+  | .yearFragment, .start => (OmittedMonthDate.ofYear? parts.year).map (·.first)
+  | .yearFragment, .finish => (OmittedMonthDate.ofYear? parts.year).map (·.last)
+
+end DateRangeEndpointFormat
+
+structure CheckedDateRangeEndpoint (model : FlatModel) where
+  checked : CheckedTemporalTargetPolicy model
+  format : DateRangeEndpointFormat
+  profile : ModelZone.ConcreteProfile
+  targetIsDate : checked.target.kind = .date
+  formatMatches : DateRangeEndpointFormat.ofPolicy? checked.policy = some format
+  profileMatches : ModelZone.ConcreteProfile.ofId? checked.timeZoneId = some profile
+
+inductive DateRangeEndpointElabError where
+  | targetPolicy (cause : TemporalTargetElabError)
+  | targetKind (target : FieldId) (actual : TemporalKind)
+  | unsupportedPolicy (target : FieldId) (mode : TemporalPartialMode)
+      (format : String)
+  | unsupportedZone (zoneId : String)
+  deriving Repr, DecidableEq
+
+/-- Resolve one exact nonrepeatable endpoint profile without widening the scalar Date target owner. -/
+def elaborateDateRangeEndpoint (model : FlatModel) (field : FieldId) :
+    Except DateRangeEndpointElabError (CheckedDateRangeEndpoint model) := do
+  let checked ← elaborateTemporalTargetPolicy model field |>.mapError .targetPolicy
+  if hKind : checked.target.kind = .date then
+    match hFormat : DateRangeEndpointFormat.ofPolicy? checked.policy with
+    | none => throw (.unsupportedPolicy field checked.policy.partialMode checked.policy.format)
+    | some format =>
+        match hProfile : ModelZone.ConcreteProfile.ofId? checked.timeZoneId with
+        | none => throw (.unsupportedZone checked.timeZoneId)
+        | some profile => pure {
+            checked
+            format
+            profile
+            targetIsDate := hKind
+            formatMatches := hFormat
+            profileMatches := hProfile }
+  else
+    throw (.targetKind field checked.target.kind)
+
 structure CheckedDateRangeConstruction (model : FlatModel) where
-  start : CheckedFullDateTarget model
-  finish : CheckedFullDateTarget model
+  start : CheckedDateRangeEndpoint model
+  finish : CheckedDateRangeEndpoint model
+  componentsMatch : start.format.sameComponents finish.format = true
 
 inductive DateRangeConstructionElabError where
-  | start (cause : FullDateTargetElabError)
-  | finish (cause : FullDateTargetElabError)
+  | start (cause : DateRangeEndpointElabError)
+  | finish (cause : DateRangeEndpointElabError)
+  | componentMismatch (start finish : DateRangeEndpointFormat)
   deriving Repr, DecidableEq
 
 /-- Certify one pair of construction endpoints once for every checked comparison consumer. -/
@@ -23,21 +97,29 @@ def elaborateDateRangeConstruction (model : FlatModel)
     (start finish : FieldId) :
     Except DateRangeConstructionElabError
       (CheckedDateRangeConstruction model) := do
-  let checkedStart ← elaborateFullDateTarget model start |>.mapError .start
-  let checkedFinish ← elaborateFullDateTarget model finish |>.mapError .finish
-  pure { start := checkedStart, finish := checkedFinish }
+  let checkedStart ← elaborateDateRangeEndpoint model start |>.mapError .start
+  let checkedFinish ← elaborateDateRangeEndpoint model finish |>.mapError .finish
+  if hComponents : checkedStart.format.sameComponents checkedFinish.format then
+    pure {
+      start := checkedStart
+      finish := checkedFinish
+      componentsMatch := hComponents }
+  else
+    throw (.componentMismatch checkedStart.format checkedFinish.format)
 
 inductive DateRangeConstructionComparisonElabError where
   | left (cause : DateRangeConstructionElabError)
   | right (cause : DateRangeConstructionElabError)
+  | componentMismatch (left right : DateRangeEndpointFormat)
   deriving Repr, DecidableEq
 
 structure CheckedDateRangeConstructionComparison (model : FlatModel) where
   left : CheckedDateRangeConstruction model
   right : CheckedDateRangeConstruction model
   comparison : EqualityOp
+  componentsMatch : left.start.format.sameComponents right.start.format = true
 
-/-- Certify all four endpoint declarations while retaining the authored comparison. -/
+/-- Certify all four endpoint declarations and the cross-construction component invariant while retaining the authored comparison. -/
 def elaborateDateRangeConstructionComparison (model : FlatModel)
     (leftStart leftFinish rightStart rightFinish : FieldId)
     (comparison : EqualityOp) :
@@ -47,10 +129,14 @@ def elaborateDateRangeConstructionComparison (model : FlatModel)
     |>.mapError .left
   let right ← elaborateDateRangeConstruction model rightStart rightFinish
     |>.mapError .right
-  pure {
-    left
-    right
-    comparison }
+  if hComponents : left.start.format.sameComponents right.start.format then
+    pure {
+      left
+      right
+      comparison
+      componentsMatch := hComponents }
+  else
+    throw (.componentMismatch left.start.format right.start.format)
 
 /-- Both endpoint observations retained for Execute and Explain. -/
 structure DateRangeConstructionObservation where
@@ -80,19 +166,25 @@ inductive DateRangeConstructionFault where
 
 namespace CheckedDateRangeConstruction
 
-private def evaluateEndpoint (source : CheckedFullDateTarget model)
-    (phase : Phase) (input : CheckedDocument model) :
+private def evaluateEndpoint (source : CheckedDateRangeEndpoint model)
+    (bound : DateRangeBound) (phase : Phase) (input : CheckedDocument model) :
     Except DateRangeConstructionFault (CellObservation DateValue) := do
   let field := source.checked.target.id
   let cell ← input.read { field, path := [] } |>.mapError .document
   match observeCell phase cell with
   | .empty => pure .empty
   | .value (.temporal (.date value)) =>
-      let instant? := value.toFullDate? |>.bind fun date =>
-        (LocalDateTime.ofDateHms? date 0 0 0).bind source.profile.resolveLocal?
-      match instant? with
-      | some instant => pure (.value { value with instant, basis := .storedGregorian })
+      match source.format.complete? bound value.parts with
       | none => throw (.endpointDateUnavailable field value)
+      | some date =>
+          let instant? := (LocalDateTime.ofDateHms? date 0 0 0).bind
+            source.profile.resolveLocal?
+          match instant? with
+          | some instant => pure (.value {
+              instant
+              parts := date.civil.parts
+              basis := .storedGregorian })
+          | none => throw (.endpointDateUnavailable field value)
   | .value _ => throw (.endpointValueKind field)
   | .unknown cause => pure (.unknown cause)
   | .poison cause => pure (.poison cause)
@@ -101,8 +193,8 @@ private def evaluateEndpoint (source : CheckedFullDateTarget model)
 def evaluate (construction : CheckedDateRangeConstruction model)
     (phase : Phase) (input : CheckedDocument model) :
     Except DateRangeConstructionFault DateRangeConstructionObservation := do
-  let start ← evaluateEndpoint construction.start phase input
-  let finish ← evaluateEndpoint construction.finish phase input
+  let start ← evaluateEndpoint construction.start .start phase input
+  let finish ← evaluateEndpoint construction.finish .finish phase input
   pure { start, finish }
 
 end CheckedDateRangeConstruction
@@ -140,6 +232,7 @@ end CheckedDateRangeConstructionComparison
 
 inductive DateRangeConstructionStoredComparisonElabError where
   | construction (cause : DateRangeConstructionElabError)
+  | unsupportedConstructionProfile (start finish : DateRangeEndpointFormat)
   | stored (cause : DirectDateRangeElabError)
   deriving Repr, DecidableEq
 
@@ -149,8 +242,9 @@ structure CheckedDateRangeConstructionStoredComparison (model : FlatModel) where
   stored : CheckedDirectDateRange model
   position : DateRangeConstructionPosition
   comparison : EqualityOp
+  constructionIsFull : construction.start.format.isFull = true
 
-/-- Certify both mixed operands in authored order without introducing a second source or comparison representation. -/
+/-- Certify both full-Date mixed operands in authored order without introducing a second source or comparison representation. -/
 def elaborateDateRangeConstructionStoredComparison (model : FlatModel)
     (start finish stored : FieldId) (position : DateRangeConstructionPosition)
     (comparison : EqualityOp) :
@@ -160,13 +254,21 @@ def elaborateDateRangeConstructionStoredComparison (model : FlatModel)
   | .left => do
       let construction ← elaborateDateRangeConstruction model start finish
         |>.mapError .construction
-      let stored ← elaborateDirectDateRange model stored |>.mapError .stored
-      pure { construction, stored, position, comparison }
+      if hFull : construction.start.format.isFull then
+        let stored ← elaborateDirectDateRange model stored |>.mapError .stored
+        pure { construction, stored, position, comparison, constructionIsFull := hFull }
+      else
+        throw (.unsupportedConstructionProfile
+          construction.start.format construction.finish.format)
   | .right => do
       let stored ← elaborateDirectDateRange model stored |>.mapError .stored
       let construction ← elaborateDateRangeConstruction model start finish
         |>.mapError .construction
-      pure { construction, stored, position, comparison }
+      if hFull : construction.start.format.isFull then
+        pure { construction, stored, position, comparison, constructionIsFull := hFull }
+      else
+        throw (.unsupportedConstructionProfile
+          construction.start.format construction.finish.format)
 
 inductive DateRangeConstructionStoredComparisonFault where
   | construction (cause : DateRangeConstructionFault)

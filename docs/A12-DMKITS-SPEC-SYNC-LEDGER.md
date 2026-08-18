@@ -77,6 +77,23 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 **The producer side now discloses its rewrites, which is what this project asked for.** The 2026-08-12 handbacks name the rebase, list the branch SHAs that no longer exist as reachable objects and must not be cited, and give revisions read off `main` as the last step before sending. Every revision they cite resolved from `main` when checked here on 2026-08-12: `06b84701`, `b99e43e1`, `4b244b84`, `73bc4a04`, and `ae567007`. A handback dated 2026-08-12 or later is therefore discharged against its own cited revision, while an earlier one still needs the maintained-owner route above. The reverse error is now on record too: `2bffcb10` was reported dead from here and resolves fine, which the 2026-08-10 boundary already predicted for it, so a reachability measurement taken against a stale checkout is itself a claim with a date on it.
 
+<a id="spec-2026-08-19-01"></a>
+<a id="spec-2026-08-19-01--date-range-equality-requires-matching-component-sets-across-both-operands"></a>
+
+### SPEC-2026-08-19-01 - DateRange equality requires matching component sets across both operands
+
+- **Status:** pending
+- **Kind:** semantic correction, locally originated and locally measured
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `89aa03957034de620562eb23a095d878f6547dca` (clean before and after)
+- **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool `0.13.0`
+- **Canonical clause:** [`05-dates-and-time.md` §8](../spec/05-dates-and-time.md#8-date-ranges-and-overlap)
+- **Delta:** After each `DateRange(start, finish)` has passed its own endpoint-component gate, `==` and `!=` still require both resulting DateRange operands to expose the same declared date-component set. A mismatch is refused before evaluation; Base-Year-dependent compatibility is outside this correction.
+- **Basis:** One static observation batch over a Kernel-confirmed model admits exact `yyyy` construction equality and refuses a `yyyy` construction beside full `yyyy-MM-dd` in either authored order as `MVK_INVALID_COMPARE_TO_DATE_RANGE`. The observation artifact is SHA-256 `f4f46f02cf0a1b06b5c1f8ddfdad0190d1fae11456a499b301ba5e590591de39`; its request is `9323a6bd62b31ef98a000355fac1334d6c7aeed313de0192b709dd62ede5879c`.
+- **Requested a12-dmkits reconciliation:** State the cross-operand component gate in the canonical DateRange account and lock the exact same-profile admission plus fragment/full refusal in the smallest existing DateRange construction law family. Reuse the current construction and kernel-validation routes; add no parser, evaluator, schema, or harness.
+- **Compatibility:** Checking only each construction internally admits a rule the Kernel refuses. The correction must not narrow DATE/DATE_FRAGMENT mixing within one construction when the endpoint component sets match, same-profile construction equality, construction-versus-stored equality, or either legal operator.
+- **Acceptance:** Maintained documentation names the cross-operand gate, the positive and negative static rows remain Kernel-locked with the exact diagnostic, existing typed operands remain the sole representation, and the handback supplies the reviewed revision plus per-surface disposition.
+
 <a id="spec-2026-08-18-01"></a>
 <a id="spec-2026-08-18-01--a-present-date-range-separator-with-a-malformed-split-is-a-format-error"></a>
 
