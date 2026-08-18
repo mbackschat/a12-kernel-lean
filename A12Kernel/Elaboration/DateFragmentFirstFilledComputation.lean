@@ -25,7 +25,7 @@ def checkDateFragmentFirstFilledComputation
 def dateFragmentFirstFilledCellAt
     (addressed : CheckedAddressedCell) : ValueListCell .token :=
   match observeCell .computation addressed.cell, addressed.stored with
-  | .value (.temporal (.date _ _ _)), some token => .present token
+  | .value (.temporal (.date _)), some token => .present token
   | .value _, _ => .unknown .malformed
   | .empty, _ => .empty
   | .unknown cause, _ | .poison cause, _ => .unknown cause

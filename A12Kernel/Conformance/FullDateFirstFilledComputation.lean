@@ -114,7 +114,10 @@ private def prepared :
     builtinStringPatternCompiler model).toOption.get (by native_decide)
 
 private def dateValue (epochMillis : Int) (year month day : Nat) : Value :=
-  .temporal (.date { epochMillis } { year, month, day } .storedGregorian)
+  .temporal (.date {
+    instant := { epochMillis }
+    parts := { year, month, day }
+    basis := .storedGregorian })
 
 private structure SourceInput where
   row : Nat

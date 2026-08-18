@@ -424,7 +424,7 @@ def berlinDaylightFoldValue : Value :=
 
 def dateValue (year : Int) (month day : Nat)
     (basis : DateCalendarBasis := .storedGregorian) : Value :=
-  .temporal (.date instant { year, month, day } basis)
+  .temporal (.date { instant, parts := { year, month, day }, basis })
 
 def checkedResultOf
     (expression : AuthoredNumericExpr SurfaceNumericAtom)

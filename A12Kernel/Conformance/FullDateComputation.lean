@@ -39,8 +39,10 @@ private def temporalRaw (year : Int) (month day : Nat) : RawCell :=
   match instant? year month day with
   | none => .rejected .malformed
   | some instant =>
-      .parsed (.temporal (.date instant
-        { year, month, day } .storedGregorian))
+      .parsed (.temporal (.date {
+        instant
+        parts := { year, month, day }
+        basis := .storedGregorian }))
 
 private def input (sourceStored targetStored : String)
     (sourceRaw targetRaw : RawCell) : DocumentData := {

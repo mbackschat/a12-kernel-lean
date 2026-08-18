@@ -163,7 +163,7 @@ def evaluateOperand (operation : CheckedFullDateComputation model)
           match observeCell .computation cell with
           | .empty => pure .noValue
           | .poison cause | .unknown cause => pure (.poison cause)
-          | .value (.temporal (.date instant _ _)) => pure (.value instant)
+          | .value (.temporal (.date date)) => pure (.value date.instant)
           | .value _ => throw (.sourceValueKind source.id)
   | .todayValue zoneId =>
       match world.today? zoneId with

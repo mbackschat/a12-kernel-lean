@@ -528,7 +528,8 @@ example :
     duplicatesFor {
         key with policy := { kind := .temporal .date dateComponents } }
       "2024-06-25"
-      (.parsed (.temporal (.date instant dateParts .storedGregorian))) &&
+      (.parsed (.temporal (.date {
+        instant, parts := dateParts, basis := .storedGregorian }))) &&
     duplicatesFor {
         key with policy := { kind := .temporal .time timeComponents } }
       "05:21:07" (.parsed (.temporal (.time instant clock))) &&

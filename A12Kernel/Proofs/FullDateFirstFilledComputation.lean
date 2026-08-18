@@ -6,11 +6,10 @@ namespace A12Kernel
 
 /-- A clean checked full-Date value retains exact instant identity before target rendering. -/
 theorem fullDateFirstFilledCellAt_value
-    (addressed : CheckedAddressedCell) (instant : Instant)
-    (parts : DateParts) (basis : DateCalendarBasis)
+    (addressed : CheckedAddressedCell) (date : DateValue)
     (observed : observeCell .computation addressed.cell =
-      .value (.temporal (.date instant parts basis))) :
-    fullDateFirstFilledCellAt addressed = .value instant := by
+      .value (.temporal (.date date))) :
+    fullDateFirstFilledCellAt addressed = .value date.instant := by
   simp [fullDateFirstFilledCellAt, observed]
 
 /-- A reached formal rejection retains its exact cause at the full-Date selection boundary. -/

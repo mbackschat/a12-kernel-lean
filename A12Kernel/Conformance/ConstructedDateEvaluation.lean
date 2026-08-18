@@ -272,7 +272,10 @@ private def temporalCell (field : FieldId) (stored : String)
 }
 
 private def dateValue (year : Int) (month day : Nat) : TemporalValue :=
-  .date { epochMillis := 0 } { year, month, day } .storedGregorian
+  .date {
+    instant := { epochMillis := 0 }
+    parts := { year, month, day }
+    basis := .storedGregorian }
 
 private def dateTimeValue (year : Int) (month day : Nat) : TemporalValue :=
   .dateTime { epochMillis := 0 } { year, month, day }

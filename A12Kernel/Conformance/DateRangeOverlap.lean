@@ -28,6 +28,39 @@ private def mar31 := date2024 3 31 (by native_decide)
 private def january : ResolvedDateRange :=
   { start := jan1, finish := jan31 }
 
+private def dateValue (date : FullDate) (epochMillis : Int) : DateValue :=
+  { instant := { epochMillis }
+    parts := date.civil.parts
+    basis := .storedGregorian }
+
+private def januaryValue : DateRangeValue :=
+  { start := dateValue jan1 1704067200000
+    finish := dateValue jan31 1706659200000 }
+
+/- The universal range projects into the established full-Date relation without discarding the richer source value. -/
+example : januaryValue.toResolvedDateRange? = some january := by
+  native_decide
+
+/- A resolved comparison projection is intentionally narrower than the universal value: equal civil endpoints do not erase exact instant or calendar-basis identity from the source. -/
+example :
+    let changedIdentity : DateRangeValue := {
+      januaryValue with
+      start := {
+        januaryValue.start with
+        instant := { epochMillis := januaryValue.start.instant.epochMillis + 1 }
+        basis := .legacyHybrid } }
+    januaryValue != changedIdentity ∧
+      januaryValue.toResolvedDateRange? = changedIdentity.toResolvedDateRange? := by
+  native_decide
+
+/- Either inadmissible endpoint makes the resolved projection unavailable. -/
+example :
+    (({ januaryValue with
+      finish := { januaryValue.finish with
+        parts := { year := 2024, month := 2, day := 30 } } } : DateRangeValue)
+        |>.toResolvedDateRange?) = none := by
+  native_decide
+
 /- Equal ranges overlap. -/
 example : january.overlaps january = true := by
   native_decide

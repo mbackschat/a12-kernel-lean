@@ -34,7 +34,7 @@ private def clock : TimeOfDay :=
 
 private def temporalValue (kind : TemporalKind) (instant : Instant) : Value :=
   match kind with
-  | .date => .temporal (.date instant dateParts .storedGregorian)
+  | .date => .temporal (.date { instant, parts := dateParts, basis := .storedGregorian })
   | .time => .temporal (.time instant clock)
   | .dateTime =>
       .temporal (.dateTime instant dateParts clock .storedGregorian)

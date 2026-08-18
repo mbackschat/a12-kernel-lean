@@ -33,7 +33,7 @@ def checkFullDateFirstFilledComputation
 def fullDateFirstFilledCellAt
     (addressed : CheckedAddressedCell) : TemporalComputationResult :=
   match observeCell .computation addressed.cell with
-  | .value (.temporal (.date instant _ _)) => .value instant
+  | .value (.temporal (.date date)) => .value date.instant
   | .value _ => .poison .malformed
   | .empty => .noValue
   | .unknown cause | .poison cause => .poison cause

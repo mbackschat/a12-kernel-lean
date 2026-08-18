@@ -53,13 +53,13 @@ theorem fullDateComputation_field_value
     (operand : operation.operand = .fieldValue source)
     (read :
       input.read { field := source.id, path := [] } = .ok cell)
-    (value :
-      observeCell .computation cell =
-        .value (.temporal (.date instant parts basis))) :
+    (date : DateValue)
+    (value : observeCell .computation cell =
+      .value (.temporal (.date date))) :
     operation.evaluateOutcome world input =
-      (operation.target.evaluate (.value instant)).mapError .target := by
+      (operation.target.evaluate (.value date.instant)).mapError .target := by
   have operandRead :
-      operation.evaluateOperand world input = .ok (.value instant) := by
+      operation.evaluateOperand world input = .ok (.value date.instant) := by
     simp [CheckedFullDateComputation.evaluateOperand,
       operand, read, value] <;> rfl
   unfold CheckedFullDateComputation.evaluateOutcome

@@ -11,11 +11,22 @@ private def instant : Instant := { epochMillis := 1719292867000 }
 private def dateParts : DateParts :=
   { year := 2024, month := 6, day := 25 }
 
+private def dateValue : DateValue :=
+  { instant, parts := dateParts, basis := .storedGregorian }
+
+private def laterDateValue : DateValue :=
+  { instant := { epochMillis := 1719379267000 }
+    parts := { year := 2024, month := 6, day := 26 }
+    basis := .legacyHybrid }
+
+private def dateRangeValue : DateRangeValue :=
+  { start := dateValue, finish := laterDateValue }
+
 private def clock : TimeOfDay :=
   (TimeOfDay.ofHms? 5 21 7).get (by native_decide)
 
 private def datePayload : TemporalValue :=
-  .date instant dateParts .storedGregorian
+  .date dateValue
 
 private def dateTimePayload : TemporalValue :=
   .dateTime instant dateParts clock .storedGregorian
@@ -69,7 +80,7 @@ example :
 
 /- The closed constructors derive kind, retain the available component halves and calendar basis, and exclude unavailable projections. -/
 example :
-    (TemporalValue.date instant dateParts .storedGregorian).kind = .date ∧
+    (TemporalValue.date dateValue).kind = .date ∧
       (TemporalValue.time instant clock).kind = .time ∧
       (TemporalValue.dateTime instant dateParts clock .legacyHybrid).kind =
         .dateTime ∧
@@ -83,7 +94,17 @@ example :
         some .legacyHybrid ∧
       (TemporalValue.time instant clock).dateParts? = none ∧
       (TemporalValue.time instant clock).calendarBasis? = none ∧
-      (TemporalValue.date instant dateParts .storedGregorian).time? = none := by
+      (TemporalValue.date dateValue).time? = none := by
+  native_decide
+
+/- Scalar Date and DateRange share the same endpoint payload without collapsing the range into the scalar temporal family. -/
+example :
+    (TemporalValue.date dateValue).instant = dateValue.instant ∧
+      (TemporalValue.date dateValue).dateParts? = some dateValue.parts ∧
+      (TemporalValue.date dateValue).calendarBasis? = some dateValue.basis ∧
+      dateRangeValue.start = dateValue ∧
+      dateRangeValue.finish = laterDateValue ∧
+      Value.dateRange dateRangeValue != .temporal (.date dateValue) := by
   native_decide
 
 end A12Kernel.Conformance.TemporalValue

@@ -44,8 +44,10 @@ private def laterDate : FlatTemporalField :=
   { id := 4, kind := .date, components := temporalComponents }
 
 private def dateValue (millis : Int) : Value :=
-  .temporal (.date { epochMillis := millis }
-    { year := 2024, month := 6, day := 25 } .storedGregorian)
+  .temporal (.date {
+    instant := { epochMillis := millis }
+    parts := { year := 2024, month := 6, day := 25 }
+    basis := .storedGregorian })
 
 private def temporalContext : FlatContext where
   read id :=

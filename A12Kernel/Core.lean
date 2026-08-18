@@ -154,15 +154,28 @@ inductive TemporalKind where
   | dateTime
   deriving Repr, DecidableEq
 
-/-- Calendar provenance retained by date-bearing expression values. Stored parsed values use the proleptic Gregorian basis; constructed `Date(...)` descendants retain the legacy hybrid basis. -/
+/-- Calendar provenance retained by date-bearing values. Stored parsed values use the proleptic Gregorian basis; constructed `Date(...)` descendants retain the legacy hybrid basis. -/
 inductive DateCalendarBasis where
   | storedGregorian
   | legacyHybrid
   deriving Repr, DecidableEq
 
+/-- One universal decoded Date payload shared by scalar Date and both DateRange endpoints. Exact runtime identity remains separate from decoded local components and calendar provenance; consumer-specific projections own any stricter admission. -/
+structure DateValue where
+  instant : Instant
+  parts : DateParts
+  basis : DateCalendarBasis
+  deriving Repr, DecidableEq
+
+/-- Two ordered Date endpoints. Ordering validity and full-Date admission remain consumer-specific checks rather than construction invariants of the universal runtime value. -/
+structure DateRangeValue where
+  start : DateValue
+  finish : DateValue
+  deriving Repr, DecidableEq
+
 /-- One admitted scalar temporal payload. Exact runtime identity remains separate from decoded local components, and the closed constructors make each kind's available component halves explicit. -/
 inductive TemporalValue where
-  | date (instant : Instant) (parts : DateParts) (basis : DateCalendarBasis)
+  | date (value : DateValue)
   | time (instant : Instant) (parts : TimeOfDay)
   | dateTime (instant : Instant) (date : DateParts) (time : TimeOfDay)
       (basis : DateCalendarBasis)
@@ -172,31 +185,31 @@ namespace TemporalValue
 
 /-- Derive the runtime temporal kind from the closed payload shape. -/
 def kind : TemporalValue → TemporalKind
-  | .date _ _ _ => .date
+  | .date _ => .date
   | .time _ _ => .time
   | .dateTime _ _ _ _ => .dateTime
 
 /-- Exact scalar instant identity used by direct comparison and instant arithmetic. -/
 def instant : TemporalValue → Instant
-  | .date instant _ _ => instant
+  | .date value => value.instant
   | .time instant _ => instant
   | .dateTime instant _ _ _ => instant
 
 /-- Decoded date components when the payload is Date or DateTime. -/
 def dateParts? : TemporalValue → Option DateParts
-  | .date _ parts _ => some parts
+  | .date value => some value.parts
   | .time _ _ => none
   | .dateTime _ parts _ _ => some parts
 
 /-- Decoded clock components when the payload is Time or DateTime. -/
 def time? : TemporalValue → Option TimeOfDay
-  | .date _ _ _ => none
+  | .date _ => none
   | .time _ clock => some clock
   | .dateTime _ _ clock _ => some clock
 
 /-- Date calendar provenance when the payload has a date component. -/
 def calendarBasis? : TemporalValue → Option DateCalendarBasis
-  | .date _ _ basis => some basis
+  | .date value => some value.basis
   | .time _ _ => none
   | .dateTime _ _ _ basis => some basis
 
@@ -235,8 +248,8 @@ def TemporalComponents.isFullDateTime (components : TemporalComponents) : Bool :
     (`7` vs `7.00`) is a separate rendered-string concern, not carried here. Arithmetic
     applies explicit rounding (scale-19 `HALF_UP` for compares, `MathContext(50)` for
     intermediates) at the `spec/04` points, so exactness never silently diverges from the
-    engine. Date, Time, and DateTime retain one closed payload with exact instant identity,
-    decoded component halves, and date calendar provenance; declared format and
+    engine. Date, Time, DateTime, and DateRange retain closed payloads with exact instant
+    identity, decoded component halves, and date calendar provenance; declared format and
     partial-value admission remain upstream. (`spec/13` §1) -/
 inductive Value where
   | num  (d : Rat)
@@ -245,6 +258,7 @@ inductive Value where
   | conf (b : Bool)         -- Stored Confirm values are `true`; `false` is comparison-local substitution.
   | enum (stored : String)  -- compared by the stored token, never the display text
   | temporal (value : TemporalValue)
+  | dateRange (value : DateRangeValue)
   deriving Repr, DecidableEq
 
 /-! ## Sanity checks (double as regression guards) -/

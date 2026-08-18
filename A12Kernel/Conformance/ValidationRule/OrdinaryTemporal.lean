@@ -13,8 +13,10 @@ open A12Kernel.Conformance.ValidationRule.OrdinarySupport
 
 private def checkedDateRawAt
     (epochMillis year : Int) (month day : Nat) : RawCell :=
-  .parsed (.temporal (.date { epochMillis }
-    { year, month, day } .storedGregorian))
+  .parsed (.temporal (.date {
+    instant := { epochMillis }
+    parts := { year, month, day }
+    basis := .storedGregorian }))
 
 private def checkedDateRaw (year : Int) (month day : Nat) : RawCell :=
   checkedDateRawAt 0 year month day

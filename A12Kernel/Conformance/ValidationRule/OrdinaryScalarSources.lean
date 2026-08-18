@@ -347,8 +347,10 @@ private def expectedRepeatableTemporalSnapshot
 example :
     (repeatableTemporalPartSnapshot? "InnerDate" innerDate.id
       (.date .day) (.ordinary .equal) 25 "2024-06-25"
-      (some (.parsed (.temporal (.date { epochMillis := 0 }
-        temporalDateParts .storedGregorian)))) ==
+      (some (.parsed (.temporal (.date {
+        instant := { epochMillis := 0 }
+        parts := temporalDateParts
+        basis := .storedGregorian })))) ==
       expectedRepeatableTemporalSnapshot (.fired .value)
         (some (MessagePointer.ofCellAddr {
           field := innerDate.id

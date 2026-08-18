@@ -26,7 +26,9 @@ private def temporalClock : TimeOfDay :=
 private def temporalValue (kind : TemporalKind) (millis : Int) : Value :=
   let instant : Instant := { epochMillis := millis }
   match kind with
-  | .date => .temporal (.date instant temporalDateParts .storedGregorian)
+  | .date =>
+      .temporal (.date {
+        instant, parts := temporalDateParts, basis := .storedGregorian })
   | .time => .temporal (.time instant temporalClock)
   | .dateTime =>
       .temporal (.dateTime instant temporalDateParts temporalClock

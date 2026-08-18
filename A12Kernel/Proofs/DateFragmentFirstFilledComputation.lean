@@ -6,10 +6,9 @@ namespace A12Kernel
 
 /-- A clean checked DateFragment value retains the token presented to the bounded first-filled adapter. -/
 theorem dateFragmentFirstFilledCellAt_value
-    (addressed : CheckedAddressedCell) (instant : Instant)
-    (parts : DateParts) (basis : DateCalendarBasis) (token : String)
+    (addressed : CheckedAddressedCell) (date : DateValue) (token : String)
     (observed : observeCell .computation addressed.cell =
-      .value (.temporal (.date instant parts basis)))
+      .value (.temporal (.date date)))
     (stored : addressed.stored = some token) :
     dateFragmentFirstFilledCellAt addressed = .present token := by
   simp [dateFragmentFirstFilledCellAt, observed, stored]

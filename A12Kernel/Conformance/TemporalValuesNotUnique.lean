@@ -155,8 +155,10 @@ private def prepared :
     builtinStringPatternCompiler model).toOption.get (by native_decide)
 
 private def dateValue (year month day : Nat) : TemporalValue :=
-  .date { epochMillis := 0 }
-    { year := (year : Int), month, day } .storedGregorian
+  .date {
+    instant := { epochMillis := 0 }
+    parts := { year := (year : Int), month, day }
+    basis := .storedGregorian }
 
 /-- One placed temporal cell: its stored text and its decoded value are supplied independently, so a
     case can hold the decoded value fixed while varying the text. -/

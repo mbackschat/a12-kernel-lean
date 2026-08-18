@@ -42,8 +42,10 @@ def crossGroupDatePartOutcome (target : Rat) : Option FlatRuleOutcome := do
   let raw : RawFlatContext := {
     read field :=
       if field = crossGroupDate.id then
-        .parsed (.temporal (.date { epochMillis := 1719292867000 }
-          { year := 2024, month := 6, day := 25 } .storedGregorian))
+        .parsed (.temporal (.date {
+          instant := { epochMillis := 1719292867000 }
+          parts := { year := 2024, month := 6, day := 25 }
+          basis := .storedGregorian }))
       else if field = crossGroupTarget.id then .parsed (.num target)
       else .empty }
   evalValidationRule? crossGroupModel rule raw
@@ -60,8 +62,10 @@ def crossGroupDayDifferenceOutcome
   let raw : RawFlatContext := {
     read field :=
       if field = crossGroupDate.id then
-        .parsed (.temporal (.date instant
-          { year := 2024, month := 1, day := 2 } .storedGregorian))
+        .parsed (.temporal (.date {
+          instant
+          parts := { year := 2024, month := 1, day := 2 }
+          basis := .storedGregorian }))
       else if field = crossGroupTarget.id then .parsed (.num target)
       else .empty }
   evalValidationRule? crossGroupModel rule raw

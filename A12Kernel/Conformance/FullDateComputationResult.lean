@@ -26,8 +26,10 @@ private def source (stored : String) (raw : RawCell) : DocumentData := {
   cells := [{ address := { field := target.id, path := [] }, stored, raw }] }
 
 private def oldSource : DocumentData :=
-  source oldDate.text (.parsed (.temporal (.date { epochMillis := 0 }
-    { year := 2024, month := 4, day := 6 } .storedGregorian)))
+  source oldDate.text (.parsed (.temporal (.date {
+    instant := { epochMillis := 0 }
+    parts := { year := 2024, month := 4, day := 6 }
+    basis := .storedGregorian })))
 
 private def view? (input : DocumentData) (outcome : FullDateTargetOutcome)
     (messages : List FormalCause := []) :

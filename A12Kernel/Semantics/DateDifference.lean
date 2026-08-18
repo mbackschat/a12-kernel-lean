@@ -120,8 +120,10 @@ namespace DateDifferenceOperand
 /-- Project one observed scalar Date. Static admission has already rejected DateTime. -/
 def ofObservation : CellObservation Value → DateDifferenceOperand
   | .empty => .empty
-  | .value (.temporal (.date _ parts .storedGregorian)) => .value parts
-  | .value (.temporal (.date _ _ .legacyHybrid)) => .unsupportedCalendar
+  | .value (.temporal (.date date)) =>
+      match date.basis with
+      | .storedGregorian => .value date.parts
+      | .legacyHybrid => .unsupportedCalendar
   | .value _ => .unavailable .malformed
   | .unknown cause | .poison cause => .unavailable cause
 
@@ -150,16 +152,19 @@ namespace CalendarDayDifferenceOperand
 /-- Project one observed Date or DateTime without re-resolving its exact instant. The current concrete fragment accepts only post-floor stored-Gregorian values. -/
 def ofObservation : CellObservation Value → CalendarDayDifferenceOperand
   | .empty => .empty
-  | .value (.temporal (.date instant parts .storedGregorian)) =>
-      match LocalDateTime.ofYmdHms? parts.year parts.month parts.day 0 0 0 with
-      | some localDateTime => .value localDateTime instant
-      | none => .unsupportedCalendar
+  | .value (.temporal (.date date)) =>
+      match date.basis with
+      | .legacyHybrid => .unsupportedCalendar
+      | .storedGregorian =>
+          match LocalDateTime.ofYmdHms?
+              date.parts.year date.parts.month date.parts.day 0 0 0 with
+          | some localDateTime => .value localDateTime date.instant
+          | none => .unsupportedCalendar
   | .value (.temporal
       (.dateTime instant parts time .storedGregorian)) =>
       match FullDate.ofYmd? parts.year parts.month parts.day with
       | some date => .value { date, time } instant
       | none => .unsupportedCalendar
-  | .value (.temporal (.date _ _ .legacyHybrid))
   | .value (.temporal (.dateTime _ _ _ .legacyHybrid)) =>
       .unsupportedCalendar
   | .value _ => .unavailable .malformed

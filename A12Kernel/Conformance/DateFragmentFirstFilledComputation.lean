@@ -90,8 +90,10 @@ private def prepared :
     builtinStringPatternCompiler model).toOption.get (by native_decide)
 
 private def dateValue (month : Nat) : Value :=
-  .temporal (.date { epochMillis := 0 }
-    { year := 2000, month, day := 1 } .storedGregorian)
+  .temporal (.date {
+    instant := { epochMillis := 0 }
+    parts := { year := 2000, month, day := 1 }
+    basis := .storedGregorian })
 
 private def input? (sourceInput : Option (String × RawCell)) :
     Option (CheckedDocument model) :=

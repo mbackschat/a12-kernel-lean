@@ -13,6 +13,24 @@ structure ResolvedDateRange where
   finish : FullDate
   deriving Repr, DecidableEq
 
+namespace DateValue
+
+/-- Project one universal Date endpoint into the established real, floor-admitted full-Date domain. Exact instant and calendar provenance remain available on the source value. -/
+def toFullDate? (value : DateValue) : Option FullDate :=
+  FullDate.ofYmd? value.parts.year value.parts.month value.parts.day
+
+end DateValue
+
+namespace DateRangeValue
+
+/-- Project both endpoints into the established resolved range exactly when both are admitted full Dates. -/
+def toResolvedDateRange? (value : DateRangeValue) : Option ResolvedDateRange := do
+  let start ← value.start.toFullDate?
+  let finish ← value.finish.toFullDate?
+  pure { start, finish }
+
+end DateRangeValue
+
 /-- The resolved endpoint order kept explicit so inversion cannot be silently normalized. -/
 inductive DateRangeDirection where
   | ordered
