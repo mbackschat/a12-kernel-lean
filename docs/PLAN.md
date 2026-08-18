@@ -10,10 +10,10 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: bounded Execute/Explain consumer probe ready.
-- `capability`: [checked direct DateRange bound capability](IMPLEMENTATION-MAP.md#cap-checked-date-range-bound), exact two-policy nonrepeatable subset.
-- `oracle`: [stored DateRange bound extraction](SOURCES.md#src-date-range-bound-extraction).
-- `next`: run the triggered artifact-only Execute/Explain probe against the canonical DateRange clause, source limit, checked bound result, fixed-Date comparison, and numeric-component projection; feed any missing distinction back into the owning representation before selecting another capsule.
+- `state`: read-only route discovery required.
+- `gap`: [SG6 checked DateRange overlap operand assembly](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
+- `oracle`: [canonical Date-range and overlap clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap).
+- `next`: inventory the existing exact `DateRangeValue` conversion, overlap operators, checked flat operand/addressing constructors, Git history, and active cross-project handoffs; verify the smallest nonredundant route before semantic edits.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: active because direct bound selection now reaches two existing consumers while retaining exact selected identity and one-read non-value behavior.
-- `resume`: `rg -n 'StartOfDateRange|EndOfDateRange|DateRangeBound|DateRangeBoundComparisonResult|DateRangeBoundComponentResult' spec/05-dates-and-time.md docs/IMPLEMENTER-GUIDE.md docs/USE-CASES.md A12Kernel/Elaboration/DateRangeBound.lean A12Kernel/Conformance/DateRangeInput.lean`
+- `consumer-probe-trigger`: inactive until a wider reusable DateRange operand or target capability closes, or public compatibility is considered.
+- `resume`: `rg -n 'DateRangeValue|toResolvedDateRange|ResolvedDateRangeOperand|DateRangesOverlap|AtLeastOneDateRangeOverlaps' spec/05-dates-and-time.md docs/SEMANTICS-GAPS.md docs/IMPLEMENTATION-MAP.md A12Kernel`
