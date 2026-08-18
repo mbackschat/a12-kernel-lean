@@ -144,6 +144,19 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: exact endpoint identity and phase distinctions remain internal claims when Lean projects the already-canonical checked value.
 - `sync`: the direct-field bound clause is inbound from these maintained a12-dmkits and Kernel routes and creates no outbound reconciliation request.
 
+<a id="src-date-range-plural-overlap"></a>
+#### Plural scalar-versus-list DateRange overlap
+
+- `revision`: a12-dmkits `021344e972ecf9b5e813fbd3bb1eaf1f71dd4126` introduced the scalar-versus-list differential and `ce6f2c864b88f61b6754c2fde712b290b2233577` added the separating polarity rows; the maintained file was inspected at clean HEAD `89aa03957034de620562eb23a095d878f6547dca` with blob `1691dfa4383669bb4b2ec3ace28a49548b13dc84`.
+- `route`: [`DateRangeOverlapSemanticsDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/DateRangeOverlapSemanticsDiffTest.kt) tri-checks dynamic Groovy, generated Java, and the independent interpreter.
+- `claim`: `AtLeastOneDateRangeOverlaps(scalar In list…)` compares one unstarred scalar against the nonempty list and never compares list cells with each other; an empty, malformed, or formally unavailable scalar exits without firing.
+- `claim`: a match in an unfiltered list operand fires VALUE and a match in a filtered operand fires OMISSION; an earlier filtered but disjoint operand does not taint a later unfiltered match.
+- `revision`: a12-dmkits `e233548e2c35a8810454f362f8366cb7d6a0dea0` owns the static group-admission sweep; `6e2b0ef88adad819d7b03112a9ed25d0b686dc66` introduced the group runtime discriminator, whose maintained file was inspected at the same clean HEAD with blob `73999c9b600e42a32c0fb83755e0c60cd5a34f09`.
+- `route`: [`GroupOperandCarrierAdmissionLawsTest`](../../a12-rulekit/src/test/java/io/github/mbackschat/a12/dm/rulekit/validate/laws/GroupOperandCarrierAdmissionLawsTest.java) admits a starred DateRange group in the list slot while refusing either group shape under singular `DateRangesOverlap`.
+- `route`: [`GroupOperandDateRangeOverlapDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/GroupOperandDateRangeOverlapDiffTest.kt) tri-checks both admitted group shapes.
+- `claim`: an admitted list-side group contributes every DateRange field in its recursive subtree across every row below the operand's own repetition depth; the starred discriminator requires the second field of the second row, and the fixed-group discriminator includes both declared fields.
+- `limit`: the retained runtime matrices use the dotted/dash policy under full validation; they do not establish the ISO/slash policy, partial validation, rule/message assembly beyond observed type and count, empty group expansion, mixed-kind group diagnostics, wider zones, or computation consumers.
+
 <a id="src-first-filled-additional-kind-computations"></a>
 #### Direct one-star additional-kind `FirstFilledValue` computations
 

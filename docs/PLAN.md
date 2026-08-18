@@ -10,10 +10,10 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: read-only route discovery required.
-- `gap`: [SG6 plural scalar-versus-list DateRange overlap assembly](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
-- `oracle`: [canonical Date-range and overlap clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap).
-- `next`: inventory the existing scalar-versus-list surface shape, cardinality and group-admission gates, checked DateRange declaration reuse, direct/star/group addressing owners, pure `evalAtLeastOneDateRangeOverlaps` scan, proofs, cases, Git history, and current a12-dmkits handoffs; verify the smallest nonredundant route before semantic edits.
+- `state`: verified route ready for red/green implementation.
+- `gap`: [SG6 plural scalar-versus-list DateRange overlap assembly](SEMANTICS-GAPS.md#gap-sg6-plural-date-range-overlap).
+- `oracle`: [canonical Date-range and overlap clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) plus the [plural overlap source checkpoint](SOURCES.md#src-date-range-plural-overlap).
+- `next`: add the first plural static-admission guards in the gap's verified red locus, then implement the distinct scalar/list certificate through the shared nonempty entity-list shape without widening into checked-document execution.
 - `blocked-on`: none.
 - `consumer-probe-trigger`: inactive until the plural scalar-versus-list capability closes, another major DateRange addressing or computation boundary changes, or public compatibility is considered.
 - `resume`: `rg -n 'AtLeastOneDateRangeOverlaps|ResolvedDateRangeSlot|CheckedDateRangesOverlap|FieldEntity|GroupEntity' spec/05-dates-and-time.md docs/SEMANTICS-GAPS.md docs/IMPLEMENTATION-MAP.md A12Kernel ../a12-rulekit`
