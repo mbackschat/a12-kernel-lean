@@ -10,10 +10,10 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: read-only route discovery required.
+- `state`: verified resolved route ready for red/green implementation.
 - `gap`: [SG6 DateRange construction-versus-construction comparison](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
-- `oracle`: the [canonical Date-range equality clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) admits two constructions, while the [current source checkpoint](SOURCES.md#src-date-range-construction-equality) explicitly excludes that pairing.
-- `next`: inventory the existing construction-equality carrier and evaluator, checked endpoint sources, exact a12-dmkits static route, runtime/evidence history, proofs, and separating cases; establish the smallest exact route before any edit.
+- `oracle`: the [canonical Date-range equality clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) and [construction-equality checkpoint](SOURCES.md#src-date-range-construction-equality) establish the exact filled resolved endpoint account and measured static reachability.
+- `next`: add red cases for equal constructions and a finish-only mismatch, factor their exact endpoint comparison through the existing construction/stored semantic owner, and add the smallest symmetry law. Keep full checked execution and external runtime verdicts outside this resolved capsule.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: inactive until the next reusable capability or another major DateRange boundary closes, or public compatibility is considered.
-- `resume`: `rg -n 'DateRange.*DateRange|DateRangeConstruction|evalDateRangeConstruction|construction-versus-construction' spec/05-dates-and-time.md docs/SEMANTICS-GAPS.md docs/IMPLEMENTATION-MAP.md docs/SOURCES.md A12Kernel ../a12-rulekit`
+- `consumer-probe-trigger`: inactive until checked construction comparison closes, another major DateRange boundary changes, or public compatibility is considered.
+- `resume`: `rg -n 'ResolvedDateRangeConstruction|evalDateRangeConstruction|DateRangeConstructionPosition' A12Kernel/Semantics/DateRangeComparison.lean A12Kernel/Conformance/DateRangeComparison.lean A12Kernel/Proofs/DateRangeComparison.lean`
