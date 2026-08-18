@@ -135,7 +135,11 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `discriminator`: select start and finish whose year, month, day, and quarter differ; retain validation-empty zero/fillability and formal cause so a label parser or optional-number projection fails.
 - `consumer`: Execute and Explain must obtain the numeric component, fillability or cause, and selected field/bound identity from the existing checked result.
 - `reopen-when`: the component composition route is verified, or a wider nested consumer is explicitly selected.
-- `route-state`: discovery-required
+- `route-state`: verified
+- `red-locus`: [`DateRangeInput.lean`](../A12Kernel/Conformance/DateRangeInput.lean) owns the canonical checked range, differing endpoints, and empty/formal observations for the first failing component query.
+- `green-locus`: [`DateRangeBound.lean`](../A12Kernel/Elaboration/DateRangeBound.lean) owns the checked direct-bound certificate, sole document read, and one-read consumer result shape.
+- `supporting-locus`: [`DateNumeric.lean`](../A12Kernel/Semantics/DateNumeric.lean) owns the generic typed Date-component projection, including validation-empty fillability and formal-cause behavior.
+- `route-limit`: compose one direct nonrepeatable checked DateRange bound with one `DateNumericPart` in validation phase; exclude arithmetic or comparison assembly, a new expression tree or document route, BaseYear, fragment or constructed ranges, repeatable addressing, and nested consumers.
 
 - Most dangerous discriminator: equal Berlin wall labels can denote different instants, and another `World` can change `Now`. Wall-label-only identity, early clock resolution, or elapsed-duration substitution is unsound.
 - Consumer hypothesis: Execute, Transform, and Explain must retain instant, source format, decoded components, calendar/profile, world dependency, and target rendering policy. An unsupported zone/profile is explicit insufficiency.
