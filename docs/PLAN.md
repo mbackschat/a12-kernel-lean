@@ -9,12 +9,12 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: read-only route discovery after removing two completed-work overlaps from the open routing surface.
-- `gap`: no implementation selected; the SG5 Number/token group-runtime route is `discovery-required`, and captured `$` `CurrentRepetition` is already owned by the checked correlation capability rather than open SG9 work.
-- `objective`: choose the first genuinely open semantic obligation whose existing owners and external discriminator support a bounded red/green capsule.
-- `oracle`: [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) owns the open set and verified routes; [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns the implemented baseline.
-- `next`: inventory the remaining source-backed obligations, select one gap, add or verify its exclusive route in that owner, then update this plan to link to it before semantic edits.
-- `stop`: do not begin another semantic edit until its selected gap has a verified route; do not carry the diagnostic family's review denominator into the next unit.
+- `state`: selected with a verified implementation route.
+- `gap`: [nested addressed Number extrema](SEMANTICS-GAPS.md#gap-sg5-nested-addressed-number-extrema).
+- `objective`: retain one nested same- or different-selector `Min`/`Max` call as one addressed extremum operand, preserving call boundaries, per-call literal budgets, scale union, dependencies, authored order, and row-local selection.
+- `oracle`: [numeric extremum call boundaries](SOURCES.md#src-numeric-extremum-call-boundary) owns the maintained static separator; [numeric wrappers and extrema](IMPLEMENTATION-MAP.md#5--numbers-and-decimals) owns the implemented direct and bounded operation baseline.
+- `next`: write the nested same-selector, different-selector, flattened-budget, scale, dependency, and evaluation-order cases red in the routed conformance owner before changing the checked operand.
+- `stop`: do not admit division, power, surrounding arithmetic, parser lowering, partial execution, or wider scheduling; do not infer repeatable Kernel runtime correspondence from the static source matrix.
 - `blocked-on`: none.
 - `consumer-probe-trigger`: inactive after the whole-rule diagnostic probe; evaluate the next trigger only at another reusable family or risk boundary.
-- `resume`: `rg -n '^### SG|^- \`route-state\`:' docs/SEMANTICS-GAPS.md`
+- `resume`: `rg -n 'gap-sg5-nested-addressed-number-extrema|SurfaceAddressedNumberExtremumOperand|CheckedAddressedNumberExtremumOperand' docs/SEMANTICS-GAPS.md A12Kernel/Elaboration/AddressedNumberExtremum.lean`
