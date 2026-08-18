@@ -9,12 +9,12 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: ready for route discovery after the one-level nested addressed-extremum capsule passed its Tier 1 gate.
-- `gap`: none selected; the completed boundary is consolidated in [numeric wrappers and extrema](IMPLEMENTATION-MAP.md#5--numbers-and-decimals), while wider nested shapes remain in SG5.
-- `objective`: select the next smallest open semantic unit whose source discriminator and implementation route are both verifiable from current owners.
-- `oracle`: start from [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md), then verify the candidate against its source and implementation-map owners before editing Lean.
-- `next`: inventory open routed records, reject completed or overlapping work, and select one exact red/green/proof slice.
-- `stop`: do not edit semantics before the selected gap owns a verified route and explicit exclusions.
+- `state`: ready for red/green on resolved DateRange construction equality after route discovery rejected three stale SG6 overlaps already owned by the implementation map.
+- `gap`: [DateRange construction equality](SEMANTICS-GAPS.md#gap-sg6-date-range-construction-equality).
+- `objective`: compare one resolved full-Date construction with one resolved stored DateRange under exact `==`/`!=` in either authored order, without adding a second range value carrier.
+- `oracle`: maintained a12-dmkits [`DateRangeEqualityDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/DateRangeEqualityDiffTest.kt) plus the gap's endpoint-change and operand-swap separators.
+- `next`: add the endpoint-change equality case red at the routed conformance owner, implement the smallest comparison capsule over `ResolvedDateRange`, then add the useful complement/swap laws.
+- `stop`: do not widen into field/path authoring, DateFragment completion, parsing, empty/formal claims, construction-versus-construction, computation, target rendering, overlap arguments, or bound extraction.
 - `blocked-on`: none.
 - `consumer-probe-trigger`: inactive after the whole-rule diagnostic probe; evaluate the next trigger only at another reusable family or risk boundary.
-- `resume`: `rg -n '^#### |^- `state`: open|^- `route-state`:' docs/SEMANTICS-GAPS.md`
+- `resume`: `sed -n '/gap-sg6-date-range-construction-equality/,/^### /p' docs/SEMANTICS-GAPS.md`
