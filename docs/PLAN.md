@@ -10,9 +10,9 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: Tier 2 calibration ready.
-- `gap`: [direct temporal `FirstFilledValue` literal calibration](SEMANTICS-GAPS.md#gap-sg8-temporal-first-filled-computation).
-- `next`: capture literal empty and first-row-filled signatures for full Date, Time, DateTime, and DateRange through the existing `kernelProbe` route, then evaluate the triggered bounded Execute consumer probe.
+- `state`: bounded Execute consumer probe ready.
+- `gap`: [resolved `FirstFilledValue`](IMPLEMENTATION-MAP.md#cap-first-filled-value), exact direct temporal/date-range subset.
+- `next`: run the triggered artifact-only Execute probe against the canonical computation clauses and calibrated clear/value matrix; feed any missing distinction back into the owning semantic clause before selecting another capsule.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: active because the bounded direct temporal/date-range family is internally closed; run it only after literal calibration fixes the claimed observable signatures.
-- `resume`: `rg -n 'src-first-filled-kind-computations|kernelProbe|FirstFilledValueKindDiffTest' docs/SOURCES.md docs/TESTING.md ../a12-rulekit/adapter/src/test ../a12-rulekit/scripts`
+- `consumer-probe-trigger`: active and calibrated because the bounded direct temporal/date-range family is internally and externally closed for its exact clear/value matrix.
+- `resume`: `rg -n 'FirstFilledValue|Temporal stored form|consumer probe' spec/02-logic-and-formal-errors.md spec/09-computations.md docs/IMPLEMENTER-GUIDE.md docs/TESTING.md docs/USE-CASES.md`

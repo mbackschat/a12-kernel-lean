@@ -110,7 +110,7 @@ private def signature? (sourceInputs : List SourceInput) : Option String := do
     | .accepted stored => "VALUE|" ++ stored.text
     | .poison _ => "POISON")
 
-/- The empty and row-1 inputs mirror the maintained cross-engine test, while row 2 is an internal empty-prefix separator; the upstream test asserts agreement rather than either literal outcome. -/
+/- The retained temporal-family probe calibrates CLEARED, a filled VALUE, and leading-empty continuation for this carrier using a different filled literal; the exact `2024-03-20T10:11:12` bytes here remain internal. -/
 example :
     signature? [] = some "CLEARED" ∧
       signature? [selectedInput 1] = some "VALUE|2024-03-20T10:11:12" ∧

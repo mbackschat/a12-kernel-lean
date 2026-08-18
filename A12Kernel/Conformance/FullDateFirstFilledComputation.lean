@@ -157,7 +157,7 @@ private def signature? (sourceInputs : List SourceInput) :
     | .errored _ _ => "ERRORED"
     | .poison _ => "POISON")
 
-/- These local rows mirror the maintained cross-engine inputs; the upstream test asserts agreement rather than either literal outcome. -/
+/- The retained temporal-family probe Kernel-calibrates these exact empty, row-1, and leading-empty result signatures. -/
 example :
     signature? [] = some "CLEARED" ∧
       signature? [{

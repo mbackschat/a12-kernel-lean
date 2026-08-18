@@ -119,7 +119,7 @@ private def invalidInput : List SourceInput := [{
   raw := .parsed (.dateRange invalidRange)
 }]
 
-/- The maintained two-empty-row and first-row-filled inputs are executable locally; the external checkpoint establishes engine agreement but not either literal signature. -/
+/- The retained temporal-family probe Kernel-calibrates these exact all-empty and first-row-filled result signatures. -/
 example :
     signature? [] = some "CLEARED" ∧
       signature? [{
