@@ -82,7 +82,7 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 ### SPEC-2026-08-17-03 - starred-group `FirstFilledValue` is declaration-major across rows
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** semantic extension, locally originated and locally measured
 - **Local revision:** `ac924d381b6a55fff74d6b26fb3de5802887893f`
 - **a12-dmkits basis revision:** `57ddd442f2f609b645c0030280662bc96d8ac49c` (clean before and after)
@@ -94,13 +94,15 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Requested a12-dmkits reconciliation:** Extend the maintained `FirstFilledValueGroupOperandDiffTest` with the declaration-major cross-row separator and independent reachability controls, and extend the existing no-row fallback family with the starred-group form. Reuse the current typed group operand, interpreter scan, and differential owners; add no second evaluator, artifact schema, or probe route.
 - **Compatibility:** A row-major traversal selects `second` in the cross-row document. Treating a no-row group star as a neutral empty slot changes the fallback from OMISSION to VALUE. Treating later rows or declared capacity as a prefix changes the immediate first-row control from VALUE to OMISSION.
 - **Acceptance:** Both kernel strategies and the JVM/Node interpreter retain all six selected-token and VALUE/OMISSION outcomes under maintained tests; canonical peer prose names declaration-major group traversal; the handback supplies the exact reviewed revision and per-surface disposition without a parallel scan or probe route.
+- **a12-dmkits revision:** `08115206d99bf8417c99dff9a73f9005175ca7d7`
+- **Disposition:** accepted as stated. `FirstFilledValueGroupOperandDiffTest` retains all six outcomes across dynamic Groovy, generated Java, and the interpreter; `FirstFilledValueGroupOrderTest` retains the same matrix on JVM and Node. Canonical prose names declaration-major traversal, and the existing typed operand and scan remain the sole owners.
 
 <a id="spec-2026-08-17-02"></a>
 <a id="spec-2026-08-17-02--fixed-group-firstfilledvalue-uses-model-declaration-order"></a>
 
 ### SPEC-2026-08-17-02 - fixed-group `FirstFilledValue` uses model declaration order
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** semantic extension, locally originated and locally measured
 - **Local revision:** `b5f8bb0ec5f9e75cd0066ae1253d7c869a609310`
 - **a12-dmkits basis revision:** `57ddd442f2f609b645c0030280662bc96d8ac49c` (clean before and after)
@@ -111,6 +113,8 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Requested a12-dmkits reconciliation:** State declaration order for the fixed-group first-filled expansion in the canonical repetition account and add the four separating rows to the smallest existing group-runtime or `FirstFilledValue` kernel law family. Reuse the existing group expansion and runtime-probe owners; add no new evaluator, schema, or harness.
 - **Compatibility:** Lexically sorting field paths selects `Alpha` in both both-filled rows. Treating a nested subgroup as an unordered scope loses the same distinction. Dropping empty-prefix provenance changes OMISSION to VALUE on the three fallback/nested rows; deriving polarity from the whole expansion changes the direct-both row from VALUE to OMISSION.
 - **Acceptance:** Canonical peer prose names stable model declaration order; maintained kernel cases retain the two both-filled separators and both second-only controls, including VALUE/OMISSION; the handback supplies the exact reviewed revision and per-surface disposition without adding a parallel expansion or probe route.
+- **a12-dmkits revision:** `08115206d99bf8417c99dff9a73f9005175ca7d7`
+- **Disposition:** accepted as stated. `FirstFilledValueGroupOperandDiffTest` retains all four outcomes across dynamic Groovy, generated Java, and the interpreter; `FirstFilledValueGroupOrderTest` retains the same matrix on JVM and Node. Canonical prose names stable model declaration order, and no evaluator, schema, or probe route was added.
 
 <a id="spec-2026-08-17-01"></a>
 <a id="spec-2026-08-17-01--fixed-group-duplication-precedes-ancestor-overlap-while-starred-groups-remain-occurrences"></a>

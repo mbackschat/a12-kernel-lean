@@ -261,7 +261,9 @@ a12-dmkits `4105b256da528154d1aba851bdc18f96947b3cae`, `d510684807738aac614e0d59
 <a id="src-group-first-filled-runtime-order"></a>
 #### Fixed-group first-filled runtime order
 
-- `revision`: clean a12-dmkits `57ddd442f2f609b645c0030280662bc96d8ac49c`, dmtool 0.13.0, built/runtime kernel 30.8.1.
+- `observation-revision`: clean a12-dmkits `57ddd442f2f609b645c0030280662bc96d8ac49c`, dmtool 0.13.0, built/runtime kernel 30.8.1.
+- `lock-revision`: reviewed a12-dmkits `08115206d99bf8417c99dff9a73f9005175ca7d7`.
+- `lock`: [`FirstFilledValueGroupOperandDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/FirstFilledValueGroupOperandDiffTest.kt) retains the four rows across dynamic Groovy, generated Java, and the interpreter; [`FirstFilledValueGroupOrderTest`](../../a12-rulekit/interpreter/src/commonTest/kotlin/io/github/mbackschat/a12/dm/interpreter/FirstFilledValueGroupOrderTest.kt) retains the same matrix on JVM and Node.
 - `route`: source-shipped `:adapter:kernelProbe` over one dmtool-authored self-contained model and four canonical documents; dynamic Groovy and static Java agree on every reported channel.
 - `claim`: when both fixed-group direct String fields are filled, `FirstFilledValue` selects the field declared first even though its `ZetaDirect` path sorts after `AlphaDirect`; when only the second is filled, it selects the second.
 - `claim`: the same declaration-order rule holds for `ZetaNested/Value` before `AlphaNested/Value`; the nested cases report OMISSION with an empty direct prefix, while the direct-both case reports VALUE despite its later empty nested declarations.
@@ -269,12 +271,14 @@ a12-dmkits `4105b256da528154d1aba851bdc18f96947b3cae`, `d510684807738aac614e0d59
 - `integrity`: the request has SHA-256 `adefc3b59a79f38eb9aaa5bacb91c12ac74bf8c6a317785db4f3ea36d74fbbd3`; two unchanged runs produced byte-identical artifacts at SHA-256 `a9c702f51df0801319ef01ce27e434b9b98b16228c9c711cf700be2f621f1a49`.
 - `integrity`: model SHA-256 `15e4de7a9e26d9b7b18a99a23af6e74f02ffad4dac4762686c9817e30a2d8d16`; document hashes in request order are `8949bca51ece7c5674e40985cafe87bb6c42fc95f10c8672f83159e4531df42b`, `f8363ee52ef1a78130bc98dc458db63d5bc0459d1ca7416d2a1e3da4d0819c06`, `845b15de7d823676df62c0015c8df02bb39c78821343b44e004259bdb37b6c91`, and `e0d764fb2b728c69b2777d24cbf0c01b19684e71212fe87fa9f67bf9e7929ff6`.
 - `limit`: fixed nonrepeatable group, direct and fixed nested declarations, full validation, exact selected token, and resulting VALUE/OMISSION only; starred groups, repeatable row order, wider lists, computation, partial validation, and legacy raw-document routes are not measured.
-- `sync`: the declaration-order detail extends the canonical group-expansion account and requires outbound reconciliation.
+- `sync`: [`SPEC-2026-08-17-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-17-02) was accepted as stated at the lock revision.
 
 <a id="src-star-group-first-filled-runtime-order"></a>
 #### Starred-group first-filled runtime order
 
-- `revision`: clean a12-dmkits `57ddd442f2f609b645c0030280662bc96d8ac49c`, dmtool 0.13.0, built/runtime kernel 30.8.1.
+- `observation-revision`: clean a12-dmkits `57ddd442f2f609b645c0030280662bc96d8ac49c`, dmtool 0.13.0, built/runtime kernel 30.8.1.
+- `lock-revision`: reviewed a12-dmkits `08115206d99bf8417c99dff9a73f9005175ca7d7`.
+- `lock`: [`FirstFilledValueGroupOperandDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/FirstFilledValueGroupOperandDiffTest.kt) retains the six rows across dynamic Groovy, generated Java, and the interpreter; [`FirstFilledValueGroupOrderTest`](../../a12-rulekit/interpreter/src/commonTest/kotlin/io/github/mbackschat/a12/dm/interpreter/FirstFilledValueGroupOrderTest.kt) retains the same matrix on JVM and Node.
 - `prior-lock`: maintained [`FirstFilledValueGroupOperandDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/FirstFilledValueGroupOperandDiffTest.kt) establishes that an unstarred group reaches nested row 2 and visits a direct declaration before nested rows.
 - `prior-lock`: maintained [`FirstFilledValueOmittedTailDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/FirstFilledValueOmittedTailDiffTest.kt) establishes no-row fallback polarity for a field star, not a starred group.
 - `route`: source-shipped `:adapter:kernelProbe` over one dmtool-authored self-contained model and six canonical documents; dynamic Groovy and static Java agree on every reported channel.
@@ -284,7 +288,7 @@ a12-dmkits `4105b256da528154d1aba851bdc18f96947b3cae`, `d510684807738aac614e0d59
 - `integrity`: request SHA-256 `8da7f4ebfa04c6df58dbdeb5e5db9157f6f96bf20a2be942e6848da45e7a2eea`; two unchanged runs produced byte-identical artifacts at SHA-256 `67f5a549b80601ab022de127b2fe7b69a606f6ad717f0bcc4edee7fbc6202a8f`; model SHA-256 `005d9357cb105be4195de4d82f24c7077ed7aa0eda9596096bf44d8320aacf41`.
 - `integrity`: document hashes in request order are `bf8736afcc211da325a89fc81effa8f9ac338392f9fe7a6c034a8db6bdb6a60b`, `94574f4e190799b734ec48668dcb2a2d0ad1816156c1e8f6ba043bfac547f5c0`, `3a940ddc07627b5fb0359dd573edbb5fead71348891aaa3a983d13fc9610bf56`, `930ebb29a920ed456bd2d7f354489174687944b77a48109d60dc8074c05c6264`, `2fe01b8f534c37b2c7afbe4c4427a693a0a6ed5f0f835a5792754d33d837a69e`, and `284b0b02d9bfc0472259d91f561cd4bf25856640be8d7d8901b49d3852447890`.
 - `limit`: terminal single-level starred group, two direct String declarations, full validation, declaration-major selection, VALUE/OMISSION, and one direct fallback only; nested or multi-level stars, outer binding, other mixed lists, computation, partial validation, raw-document routes, and an isolated omitted-tail mechanism are not measured.
-- `sync`: declaration-major row traversal and the group-star no-row fallback outcome require outbound reconciliation.
+- `sync`: [`SPEC-2026-08-17-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-17-03) was accepted as stated at the lock revision.
 
 #### Additional carrier-sweep provenance
 
