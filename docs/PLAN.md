@@ -10,10 +10,10 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: bounded consumer probe, then read-only route discovery.
-- `gap`: [SG6 remaining DateRange overlap assembly](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
+- `state`: read-only route discovery required.
+- `gap`: [SG6 plural scalar-versus-list DateRange overlap assembly](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
 - `oracle`: [canonical Date-range and overlap clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap).
-- `next`: run the milestone consumer query against the public checked singular-overlap API, requiring recovery of authored operand order, concrete addresses, skipped/kept slots, exact filter provenance, and the derived verdict without source archaeology; then discover the plural scalar-versus-list admission and checked-document route read-only.
+- `next`: inventory the existing scalar-versus-list surface shape, cardinality and group-admission gates, checked DateRange declaration reuse, direct/star/group addressing owners, pure `evalAtLeastOneDateRangeOverlaps` scan, proofs, cases, Git history, and current a12-dmkits handoffs; verify the smallest nonredundant route before semantic edits.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: active because the reusable checked singular DateRange operand capability closed.
-- `resume`: `rg -n 'CheckedDateRangesOverlapResult|evaluateCheckedDocument|DateRange overlap' docs/USE-CASES.md docs/IMPLEMENTATION-MAP.md A12Kernel`
+- `consumer-probe-trigger`: inactive until the plural scalar-versus-list capability closes, another major DateRange addressing or computation boundary changes, or public compatibility is considered.
+- `resume`: `rg -n 'AtLeastOneDateRangeOverlaps|ResolvedDateRangeSlot|CheckedDateRangesOverlap|FieldEntity|GroupEntity' spec/05-dates-and-time.md docs/SEMANTICS-GAPS.md docs/IMPLEMENTATION-MAP.md A12Kernel ../a12-rulekit`

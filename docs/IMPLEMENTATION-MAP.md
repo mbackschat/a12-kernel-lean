@@ -227,8 +227,10 @@ For an assurance drill, use the row’s linked owner, then the matching [`Proofs
 - `proof`: [DateRange construction equality laws](../A12Kernel/Proofs/DateRangeComparison.lean) and [checked policy plus resolved overlap laws](../A12Kernel/Proofs/DateRangeOverlapOperators.lean).
 - `assurance`: E/P closed for the named scalar, aggregate, overlap, bounded DateRange construction-equality, singular overlap-source admission, and singular full-validation checked-document assembly families; the checked source proves every retained policy executable, and the assembled result cannot be UNKNOWN after structural resolution succeeds.
 - `assurance`: L for filled construction equality is pinned by [its source checkpoint](SOURCES.md#src-date-range-construction-equality), while the exact group refusal is pinned by the [group-carrier sweep](SOURCES.md#src-group-carrier-admission-sweep).
-- `assurance`: the new checked assembly adds no retained external comparison, mixed-presentation overlap admission remains externally unverified, and C/X/Q remain none.
+- `assurance`: the new checked assembly adds no retained external comparison, mixed-presentation overlap admission remains externally unverified, and C/X remain none.
+- `assurance`: Q closed for the bounded internal Execute/Explain/Analyze probe: an isolated reader recovered authored order, source identity, concrete addresses, topology, ordered skipped/kept occurrences, operand-local filter provenance, duplicate same-address occurrences, the derived verdict, and every named exclusion without external A12 research.
 - `remains`: DateFragment and wider format admission/completion, construction-versus-construction, partial-validation and rule/message integration, plural scalar-versus-list assembly, wider computation targets, wider operands, and wider repeatable overlap execution remain in [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
+- `remains`: research-closed shipment and public compatibility remain unclaimed; current Q is only the bounded internal probe defined by the [consumer maturation path](IMPLEMENTER-GUIDE.md#consumer-probes-before-shipment).
 
 ### §7 — strings and patterns
 
