@@ -55,7 +55,7 @@ private structure OneLevelUnstarredGroupBinding where
   reference : ResolvedGroupReference
   locus : OneLevelGroupErrorLocus
 
-/-- Resolve only the measured one-level ordinary-path profile. Nested scope, `RuleGroup`, a different repeated branch, or an invalid model remains unmapped. -/
+/-- Resolve only the measured one-level non-root ordinary path to the repeatable declaration itself. A repeatable root, a fixed descendant that merely shares the level, nested scope, `RuleGroup`, a different repeated branch, or an invalid model remains unmapped. -/
 private def resolveOneLevelUnstarredGroupBinding?
     (model : FlatModel) (declaringGroup : GroupPath)
     (errorField : FieldId) (surface : SurfaceGroupReference) :
@@ -67,9 +67,11 @@ private def resolveOneLevelUnstarredGroupBinding?
     match reference.origin with
     | .ruleGroup => none
     | .path =>
-      if !model.hasGroupPath reference.path then none
+      if reference.isRoot then none
       else
-        match model.repeatableScopeForGroupPath reference.path with
+        let repeatable ←
+          (model.lookupUniqueRepeatablePath reference.path).toOption
+        match model.repeatableScopeForGroupPath repeatable.path with
         | [level] =>
           let declaration ← (model.lookupUniqueId errorField).toOption
           if reference.path.isPrefixOf declaration.groupPath &&

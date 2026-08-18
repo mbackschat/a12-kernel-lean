@@ -28,6 +28,35 @@ private def nestedModel : FlatModel :=
       { level := 10, path := ["Shipment", "Parcels"] },
       { level := 20, path := ["Shipment", "Parcels", "Items"] }] }
 
+private def fixedDescendantModel : FlatModel :=
+  { model with fields :=
+      { id := 4, groupPath := ["Shipment", "Parcels", "Details"],
+        name := "Code", policy := { kind := .number unsigned },
+        repeatableScope := [10] } :: model.fields }
+
+private def disjointRootModel : FlatModel :=
+  { model with fields :=
+      { id := 7, groupPath := ["Carrier"], name := "Name",
+        policy := { kind := .number unsigned } } :: model.fields }
+
+private def fixedAncestorModel : FlatModel :=
+  { fields := [
+      { id := 5, groupPath := ["Shipment", "Container"], name := "Name",
+        policy := { kind := .number unsigned } },
+      { id := 6, groupPath := ["Shipment", "Container", "Parcels"],
+        name := "Label", policy := { kind := .number unsigned },
+        repeatableScope := [30] }]
+    repeatableGroups := [{
+      level := 30, path := ["Shipment", "Container", "Parcels"] }] }
+
+private def repeatableRootModel : FlatModel :=
+  { fields := [
+      { id := 8, groupPath := ["Parcels"], name := "Label",
+        policy := { kind := .number unsigned }, repeatableScope := [40] },
+      { id := 9, groupPath := ["Destination", "Office"], name := "Name",
+        policy := { kind := .number unsigned } }]
+    repeatableGroups := [{ level := 40, path := ["Parcels"] }] }
+
 private def group (groups : GroupPath) : SurfaceGroupReference :=
   .path { base := .absolute, groups }
 
@@ -107,12 +136,58 @@ example :
         groupOperand ["Shipment", "Parcels"]] = .unmapped := by
   native_decide
 
+/- A fixed descendant shares the measured level but is not the repeatable group operand measured by the matrix. -/
+example :
+    projectGroupFilledRuleAdmission fixedDescendantModel ["Shipment"] 4
+        (group ["Shipment", "Parcels", "Details"]) = .unmapped ∧
+      projectGroupListRuleAdmission fixedDescendantModel ["Shipment"] 4
+        .atLeastOneGroupFilled [
+          groupOperand ["Shipment", "Parcels", "Details"]] = .unmapped ∧
+      projectFilledGroupCountGreaterZeroRuleAdmission
+        fixedDescendantModel ["Shipment"] 4 [
+          group ["Shipment", "Parcels", "Details"]] = .unmapped := by
+  native_decide
+
+/- A repeatable root is a separate unmeasured shape, even though it owns exactly one level. -/
+example :
+    projectGroupFilledRuleAdmission repeatableRootModel ["Parcels"] 8
+        (group ["Parcels"]) = .unmapped ∧
+      projectGroupListRuleAdmission repeatableRootModel ["Parcels"] 8
+        .atLeastOneGroupFilled [groupOperand ["Parcels"]] = .unmapped ∧
+      projectFilledGroupCountGreaterZeroRuleAdmission
+        repeatableRootModel ["Parcels"] 8 [group ["Parcels"]] = .unmapped ∧
+      projectGroupListRuleAdmission repeatableRootModel ["Parcels"] 8
+        .allGroupsFilled [
+          groupOperand ["Parcels"],
+          groupOperand ["Destination", "Office"]] = .unmapped := by
+  native_decide
+
 /- `RuleGroup` is a valid fixed reference elsewhere, but is unmeasured in this paired matrix. -/
 example :
     groupList ["Shipment", "Destination"] 3 .allGroupsFilled [
         groupOperand ["Shipment", "Parcels"], .group ruleGroup] = .unmapped ∧
       groupCount ["Shipment", "Destination"] 3 [
         group ["Shipment", "Parcels"], ruleGroup] = .unmapped := by
+  native_decide
+
+/- `RuleGroup` is also unmeasured as the first operand even when it resolves to the repeated declaring group. -/
+example :
+    projectGroupFilledRuleAdmission model ["Shipment", "Parcels"] 3
+        ruleGroup = .unmapped ∧
+      projectGroupListRuleAdmission model ["Shipment", "Parcels"] 3
+        .atLeastOneGroupFilled [.group ruleGroup] = .unmapped := by
+  native_decide
+
+/- Paired shapes cover only the measured disjoint non-root fixed peer. Root and overlapping fixed peers remain unmapped. -/
+example :
+    projectGroupListRuleAdmission disjointRootModel ["Shipment"] 3
+        .allGroupsFilled [
+          groupOperand ["Shipment", "Parcels"],
+          groupOperand ["Carrier"]] = .unmapped ∧
+      projectFilledGroupCountGreaterZeroRuleAdmission
+        fixedAncestorModel ["Shipment"] 6 [
+          group ["Shipment", "Container", "Parcels"],
+          group ["Shipment", "Container"]] = .unmapped := by
   native_decide
 
 example :
