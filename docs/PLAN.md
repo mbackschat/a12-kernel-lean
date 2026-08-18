@@ -10,9 +10,9 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: route discovery required.
-- `gap`: [direct temporal `FirstFilledValue` computation remainder](SEMANTICS-GAPS.md#gap-sg8-temporal-first-filled-computation).
-- `next`: verify the direct one-star DateRange carrier, target policy, result, and application route against the shared scan and the newly checked declaration before adding red computation cases.
+- `state`: Tier 2 calibration ready.
+- `gap`: [direct temporal `FirstFilledValue` literal calibration](SEMANTICS-GAPS.md#gap-sg8-temporal-first-filled-computation).
+- `next`: capture literal empty and first-row-filled signatures for full Date, Time, DateTime, and DateRange through the existing `kernelProbe` route, then evaluate the triggered bounded Execute consumer probe.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: inactive; evaluate only when the selected work reaches a reusable family, major addressing or computation boundary, or public compatibility claim.
-- `resume`: `rg -n 'DateRange|FirstFilled|TemporalFirstFilledStarCarrier|toDateRangeDeclarationPolicy' docs/SEMANTICS-GAPS.md A12Kernel/Elaboration A12Kernel/Semantics A12Kernel/Conformance`
+- `consumer-probe-trigger`: active because the bounded direct temporal/date-range family is internally closed; run it only after literal calibration fixes the claimed observable signatures.
+- `resume`: `rg -n 'src-first-filled-kind-computations|kernelProbe|FirstFilledValueKindDiffTest' docs/SOURCES.md docs/TESTING.md ../a12-rulekit/adapter/src/test ../a12-rulekit/scripts`

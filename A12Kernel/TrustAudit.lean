@@ -1964,6 +1964,10 @@ run_cmd do
 #print axioms A12Kernel.customFirstFilledCellAt_registeredRejection
 #print axioms A12Kernel.dateFragmentFirstFilledCellAt_value
 #print axioms A12Kernel.dateFragmentFirstFilledCellAt_poison
+#print axioms A12Kernel.dateRangeFirstFilledCellAt_value
+#print axioms A12Kernel.dateRangeFirstFilledCellAt_poison
+#print axioms A12Kernel.evalDateRangeFirstFilledCells_present_head
+#print axioms A12Kernel.dateRangeTargetAccepted_applyTo
 #print axioms A12Kernel.dateTimeFirstFilledCellAt_value
 #print axioms A12Kernel.dateTimeFirstFilledCellAt_poison
 #print axioms A12Kernel.fullDateFirstFilledCellAt_value

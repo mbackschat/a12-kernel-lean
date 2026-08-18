@@ -1,8 +1,10 @@
 import A12Kernel.Semantics.ModelZone
+import A12Kernel.Semantics.DateRangeOverlap
+import A12Kernel.Semantics.TemporalFormat
 
 /-! # Bounded temporal computation targets
 
-This capsule owns bounded Time, full-Date, and DateTime target result domains. Time admits the kernel's exact whole-second format and remains a zone-free clock rather than acquiring the runtime transport date. Full Date admits two exact formats, the universal Date floor, and the optional pre-1900 check; the checked declaration layer admits only FULL precision for computation. DateTime admits the bounded standard whole-second formats and deliberately separates its rendered local wall label from the exact source instant, including any millisecond remainder. Partially known input values, wider `SimpleDateFormat` syntax, and document application remain separate.
+This capsule owns bounded Time, full-Date, DateTime, and DateRange target result domains. Time admits the kernel's exact whole-second format and remains a zone-free clock rather than acquiring the runtime transport date. Full Date admits two exact formats, the universal Date floor, and the optional pre-1900 check; the checked declaration layer admits only FULL precision for computation. DateTime admits the bounded standard whole-second formats and deliberately separates its rendered local wall label from the exact source instant, including any millisecond remainder. DateRange admits only the exact ISO/slash target profile and renders through resolved full-Date endpoints while remaining outside scalar temporal indexing. Partially known input values, wider `SimpleDateFormat` syntax, and document application remain separate.
 -/
 
 namespace A12Kernel
@@ -226,6 +228,54 @@ end DateTimeTargetFormat
 inductive DateTimeTargetOutcome where
   | noValue
   | accepted (stored : StoredDateTime)
+  | poison (cause : FormalCause)
+  deriving Repr, DecidableEq
+
+/-- The exact DateRange target presentation admitted by the bounded computation fragment. The model-owned source format and separator remain in `DateRangeDeclarationPolicy`. -/
+inductive DateRangeTargetFormat where
+  | isoSlash
+  deriving Repr, DecidableEq
+
+namespace DateRangeTargetFormat
+
+/-- Render both resolved full-Date endpoints through the target policy's exact ISO/slash presentation. -/
+def renderText (_ : DateRangeTargetFormat) (range : ResolvedDateRange) : String :=
+  FullDateTargetFormat.renderText .yearMonthDayDashes range.start ++ "/" ++
+    FullDateTargetFormat.renderText .yearMonthDayDashes range.finish
+
+end DateRangeTargetFormat
+
+/-- A nonempty rendered DateRange target value kept separate from scalar temporal stored text. -/
+structure StoredDateRange where
+  text : String
+  nonempty : text ≠ ""
+  deriving Repr, DecidableEq
+
+namespace DateRangeTargetFormat
+
+/-- Render one resolved DateRange into its exact nonempty target value. -/
+def render (format : DateRangeTargetFormat)
+    (range : ResolvedDateRange) : StoredDateRange := {
+  text := format.renderText range
+  nonempty := by
+    cases format
+    simp [renderText, FullDateTargetFormat.renderText,
+      FullDateTargetFormat.renderCivilText, TemporalTargetText.twoDigits]
+}
+
+end DateRangeTargetFormat
+
+/-- Root result before a checked DateRange target consumes the selected typed interval. -/
+inductive DateRangeComputationResult where
+  | noValue
+  | value (range : DateRangeValue)
+  | poison (cause : FormalCause)
+  deriving Repr, DecidableEq
+
+/-- Rich DateRange target result before delta classification or application. -/
+inductive DateRangeTargetOutcome where
+  | noValue
+  | accepted (stored : StoredDateRange)
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 

@@ -136,6 +136,7 @@ import A12Kernel.Conformance.FirstFilledValueElaboration
 import A12Kernel.Conformance.BooleanFirstFilledComputation
 import A12Kernel.Conformance.CustomFirstFilledComputation
 import A12Kernel.Conformance.DateFragmentFirstFilledComputation
+import A12Kernel.Conformance.DateRangeFirstFilledComputation
 import A12Kernel.Conformance.DateTimeFirstFilledComputation
 import A12Kernel.Conformance.FullDateFirstFilledComputation
 import A12Kernel.Conformance.TimeFirstFilledComputation

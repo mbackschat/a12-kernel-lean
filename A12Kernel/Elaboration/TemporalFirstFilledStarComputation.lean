@@ -5,19 +5,21 @@ import A12Kernel.Elaboration.FirstFilledStarSource
 
 namespace A12Kernel
 
-/-- Exact temporal computation carriers completed through the shared direct-star shape. This closed set does not include DateRange, wider temporal formats, or additional policies. -/
+/-- Exact date-bearing and scalar temporal computation carriers completed through the shared direct-star shape. Wider formats and additional policies remain excluded. -/
 inductive TemporalFirstFilledStarCarrier where
   | monthFragment
   | fullDateIso
   | timeHms
   | dateTimeIso
+  | dateRangeIsoSlash
   deriving Repr, DecidableEq
 
 /-- Classify only the completed temporal declaration profiles. Date profiles with optional pre-1900 checking remain outside until checked temporal input represents that declaration-owned source check. -/
 def FlatFieldDecl.temporalFirstFilledStarCarrier?
     (declaration : FlatFieldDecl) : Option TemporalFirstFilledStarCarrier :=
-  match declaration.policy.kind, declaration.toTemporalTargetPolicy? with
-  | .temporal .date components, some policy =>
+  match declaration.policy.kind, declaration.toTemporalTargetPolicy?,
+      declaration.toDateRangeDeclarationPolicy? with
+  | .temporal .date components, some policy, _ =>
       if components != TemporalComponents.fullDate ||
           policy.youngerThan1900Check then
         none
@@ -29,19 +31,24 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
         some .fullDateIso
       else
         none
-  | .temporal .time components, some policy =>
+  | .temporal .time components, some policy, _ =>
       if components == TemporalComponents.time &&
           policy.format == "HH:mm:ss" then
         some .timeHms
       else
         none
-  | .temporal .dateTime components, some policy =>
+  | .temporal .dateTime components, some policy, _ =>
       if components == TemporalComponents.now &&
           policy.format == "yyyy-MM-dd'T'HH:mm:ss" then
         some .dateTimeIso
       else
         none
-  | _, _ => none
+  | .dateRange, _, some policy =>
+      if policy.format == "yyyy-MM-dd" && policy.separator == "/" then
+        some .dateRangeIsoSlash
+      else
+        none
+  | _, _, _ => none
 
 inductive TemporalFirstFilledStarComputationElabError where
   | target (cause : ResolveError)
@@ -53,7 +60,7 @@ inductive TemporalFirstFilledStarComputationElabError where
   | sourceShape (path : List String)
   deriving Repr, DecidableEq
 
-/-- One fixed target and one direct single-level starred source with the same exact completed temporal carrier. -/
+/-- One fixed target and one direct single-level starred source with the same exact completed date-bearing or scalar temporal carrier. -/
 structure CheckedTemporalFirstFilledStarComputation
     (model : FlatModel) (carrier : TemporalFirstFilledStarCarrier) where
   private mk ::
@@ -66,7 +73,7 @@ structure CheckedTemporalFirstFilledStarComputation
   sourceCarrier : source.declaration.temporalFirstFilledStarCarrier? = some carrier
   sourceDirectSingleStar : source.isDirectSingleStar = true
 
-/-- Check the target/source/direct-star shape shared by the completed DateFragment, full-Date, Time, and DateTime computations. Runtime payload and target-policy evaluation remain carrier-owned. -/
+/-- Check the target/source/direct-star shape shared by the completed DateFragment, full-Date, Time, DateTime, and DateRange computations. Runtime payload and target-policy evaluation remain carrier-owned. -/
 def checkTemporalFirstFilledStarComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) (carrier : TemporalFirstFilledStarCarrier) :

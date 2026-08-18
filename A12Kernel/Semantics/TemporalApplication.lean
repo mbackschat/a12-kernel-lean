@@ -2,7 +2,7 @@ import A12Kernel.Semantics.TemporalTarget
 
 /-! # Temporal delta and exact one-target application
 
-This capsule shares only the source-placement mechanism whose meaning agrees for Time, Date, and DateTime. Stored text remains kind-indexed, and each target family retains its own outcome and delta domain. Application preserves exact text and absent versus present-empty placement without reparsing. Document traversal, missing-ancestor creation, repeatable addressing, scheduling, and multi-target application remain separate.
+This capsule shares only the source-placement mechanism whose meaning agrees for Time, Date, DateTime, and DateRange. Scalar stored text remains kind-indexed while DateRange supplies its own stored type, and each target family retains its own outcome domain. Application preserves exact text and absent versus present-empty placement without reparsing. Document traversal, missing-ancestor creation, repeatable addressing, scheduling, and multi-target application remain separate.
 -/
 
 namespace A12Kernel
@@ -36,7 +36,7 @@ def projectNoValue :
 
 end TemporalValueDelta
 
-/-- Exact state of one scalar temporal target cell. The stored type keeps Date and DateTime values distinct. -/
+/-- Exact state of one stored date-bearing or scalar temporal target cell. The stored type keeps target families distinct. -/
 inductive TemporalTargetState (Stored : Type) where
   | absent
   | presentEmpty
@@ -74,7 +74,7 @@ def toDeltaPrior :
 
 end TemporalTargetState
 
-/-- Exact caller-supplied field projection used by scalar temporal whole-result application. -/
+/-- Exact caller-supplied field projection used by date-bearing and scalar temporal whole-result application. -/
 abbrev TemporalComputationDestination (Stored : Type) :=
   FieldId → TemporalTargetState Stored
 
@@ -262,5 +262,17 @@ def applyTo :
   | .poison _, prior => prior.clearValue
 
 end DateTimeTargetOutcome
+
+namespace DateRangeTargetOutcome
+
+/-- Apply one DateRange outcome through the existing exact value/clear state without reparsing its stored text or indexing DateRange as a scalar temporal kind. -/
+def applyTo :
+    DateRangeTargetOutcome → TemporalTargetState StoredDateRange →
+      TemporalTargetState StoredDateRange
+  | .accepted value, _ => .presentValue value
+  | .noValue, prior => TemporalTargetState.clearValue prior
+  | .poison _, prior => TemporalTargetState.clearValue prior
+
+end DateRangeTargetOutcome
 
 end A12Kernel

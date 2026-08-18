@@ -163,6 +163,7 @@ import A12Kernel.Proofs.FirstFilledValue
 import A12Kernel.Proofs.BooleanFirstFilledComputation
 import A12Kernel.Proofs.CustomFirstFilledComputation
 import A12Kernel.Proofs.DateFragmentFirstFilledComputation
+import A12Kernel.Proofs.DateRangeFirstFilledComputation
 import A12Kernel.Proofs.DateTimeFirstFilledComputation
 import A12Kernel.Proofs.FullDateFirstFilledComputation
 import A12Kernel.Proofs.TimeFirstFilledComputation
