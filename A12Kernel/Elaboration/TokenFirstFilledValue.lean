@@ -151,15 +151,19 @@ private def scanCheckedFirstFilledTokenOperands
 namespace CheckedTokenEntitySource
 
 private inductive GroupFirstFilledRuntimeShape where
-  | fixedNonrepeatable
+  | fixed
   | directSingleStar
 
+/-- A fixed source binds every repeatable level above its authored terminal and may therefore walk
+    repeatable descendants, but a terminal that is itself repeatable belongs to the separate
+    iteration-owned account. The starred specialization stays on its measured direct one-level shape. -/
 private def groupFirstFilledRuntimeShape?
     (group : CheckedTokenEntityGroup model) : Option GroupFirstFilledRuntimeShape :=
   match group.source with
   | .fixed _ =>
-      if group.slots.all (fun slot => slot.declaration.repeatableScope.isEmpty) then
-        some .fixedNonrepeatable
+      if !model.repeatableGroups.any (fun repeatable =>
+          repeatable.path == group.groupPath) then
+        some .fixed
       else
         none
   | .starred _ =>
@@ -180,8 +184,9 @@ private def resolveCheckedFirstFilledValidationSide
     |>.valueListSideAt .validation)
 
 /-- Evaluate the measured full-validation group fragments through the immutable checked document.
-    One fixed wholly nonrepeatable group and one direct single-level group star are complete operand
-    lists; the measured group-star form may additionally precede one nonrepeatable direct fallback.
+    One fixed group whose authored terminal is nonrepeatable, including its recursive repeatable
+    descendants, and one direct single-level group star are complete operand lists; the measured
+    group-star form may additionally precede one nonrepeatable direct fallback.
     Every reached cell keeps its declaration-owned token projection, and the shared first-filled
     evaluator consumes resolved operands in authored order and group cells declaration-major.
     `none` keeps every wider source outside without confusing refusal with `.noValue`. -/
@@ -208,7 +213,7 @@ def evaluateCheckedGroupFirstFilledValidation?
             resolveCheckedFirstFilledValidationSide
               (.field fallback) document outer
           pure (some (evalFirstFilledTokenOperands { first, rest := [second] }))
-      | some .fixedNonrepeatable | none => pure none
+      | some .fixed | none => pure none
   | _, _ => pure none
 
 /-- Evaluate checked direct and independently resolved star slots in authored order. Later topology, filters, relevance, and target reads remain unobserved after a terminal prefix. -/

@@ -461,14 +461,14 @@ private def groupFirstFilledDecision
     (operand : SurfaceFieldEntityOperand) (cells : List ClassifiedCellInput)
     (declaringGroup : GroupPath := ["Form"])
     (rest : List SurfaceFieldEntityOperand := [])
-    (instantiatedRows : List RowAddr := []) :
+    (instantiatedRows : List RowAddr := []) (outer : Env := []) :
     Option (Option FirstFilledTokenResult) := do
   let source ←
     (elaborateFirstFilledTokenSource probeModel declaringGroup
       { first := operand, rest }).toOption
   let document ←
     (checkDocument prepared "en_US" { instantiatedRows, cells }).toOption
-  (source.evaluateCheckedGroupFirstFilledValidation? document []).toOption
+  (source.evaluateCheckedGroupFirstFilledValidation? document outer).toOption
 
 private def encounterFirstFilled? (cells : List ClassifiedCellInput) :
     Option FirstFilledTokenResult :=
@@ -526,8 +526,43 @@ example :
       (declaringGroup := ["Form", "Outer"]) = some none := by
   native_decide
 
+/- A fixed nonrepeatable terminal below a bound repeatable ancestor keeps that ancestor coordinate;
+   the repeatable group itself remains outside this capsule. -/
 example :
-    groupFirstFilledDecision (group ["Form", "Bag"]) [] = some none := by
+    groupFirstFilledDecision (.group (.ruleGroup false))
+      [str 15 [1] "wrong-row", str 15 [2] "bound-row"]
+      (declaringGroup := ["Form", "Outer", "Fixed"])
+      (instantiatedRows := [
+        { group := 30, path := [1] }, { group := 30, path := [2] }])
+      (outer := [(30, 2)]) = some (some (.value "bound-row" false)) := by
+  native_decide
+
+/-! ## A fixed group reaches recursive repeatable descendants
+
+The maintained kernel matrix reaches nested row 2 and places a direct declaration before all rows
+of its later nested declaration. These cases specialize that same recursive extent through the
+checked-document evaluator; the empty case separates an evaluated empty group from refusal.
+-/
+
+private def bagFirstFilled? (cells : List ClassifiedCellInput) :
+    Option (Option FirstFilledTokenResult) :=
+  groupFirstFilledDecision (group ["Form", "Bag"]) cells
+    (instantiatedRows := rows)
+
+/- The only value is in nested row 2. A direct-child-only or row-1-pinned expansion returns no
+   value, while the recursive declaration-major extent reaches it after the empty direct prefix. -/
+example :
+    bagFirstFilled? [str 2 [2] "nested-row-2"] =
+      some (some (.value "nested-row-2" true)) := by
+  native_decide
+
+/- A filled direct declaration precedes every row of the later nested declaration. -/
+example :
+    bagFirstFilled? [str 1 [] "direct", str 2 [1] "nested"] =
+      some (some (.value "direct" false)) := by
+  native_decide
+
+example : bagFirstFilled? [] = some (some .noValue) := by
   native_decide
 
 example :

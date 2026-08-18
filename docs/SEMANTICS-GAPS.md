@@ -90,7 +90,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `red-locus`: [`TokenEntityGroupOperand.lean`](../A12Kernel/Conformance/TokenEntityGroupOperand.lean) owns the current starred-group refusal and the first measured runtime separator.
 - `green-locus`: [`TokenFirstFilledValue.lean`](../A12Kernel/Elaboration/TokenFirstFilledValue.lean) owns the checked full-validation specialization and fail-closed wider fragments.
 - `supporting-locus`: [`CheckedStarDocument.lean`](../A12Kernel/Elaboration/CheckedStarDocument.lean) owns the declaration-major checked group resolver and canonical per-declaration row walk.
-- `route-limit`: the measured terminal single-level direct-declaration star and its one direct fallback do not authorize computation, partial validation, raw-`Document`, nested-star, outer-bound, or other mixed-list shapes.
+- `route-limit`: recursive fixed-group full validation and the measured terminal single-level direct-declaration star with one direct fallback do not authorize computation, partial validation, raw-`Document`, a repeatable fixed terminal, nested-star, outer-bound star, or other mixed-list shapes.
 
 <a id="gap-sg5-temporal-group-runtime"></a>
 #### Temporal group runtime
