@@ -10,10 +10,10 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: verified implementation route.
-- `gap`: [SG6 checked DateRange overlap operand assembly](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
+- `state`: bounded consumer probe, then read-only route discovery.
+- `gap`: [SG6 remaining DateRange overlap assembly](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
 - `oracle`: [canonical Date-range and overlap clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap).
-- `next`: add the first red full-validation checked-document separator for singular `DateRangesOverlap`, then assemble admitted direct, plain-star, and filtered-star cells into the existing ordered skipped/kept operand scan.
+- `next`: run the milestone consumer query against the public checked singular-overlap API, requiring recovery of authored operand order, concrete addresses, skipped/kept slots, exact filter provenance, and the derived verdict without source archaeology; then discover the plural scalar-versus-list admission and checked-document route read-only.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: inactive until a wider reusable DateRange operand or target capability closes, or public compatibility is considered.
-- `resume`: `rg -n 'CheckedDateRangesOverlap|ResolvedCheckedEntityOperandCore|ResolvedDateRangeOperand|evalDateRangesOverlap' docs/SEMANTICS-GAPS.md docs/IMPLEMENTATION-MAP.md A12Kernel`
+- `consumer-probe-trigger`: active because the reusable checked singular DateRange operand capability closed.
+- `resume`: `rg -n 'CheckedDateRangesOverlapResult|evaluateCheckedDocument|DateRange overlap' docs/USE-CASES.md docs/IMPLEMENTATION-MAP.md A12Kernel`

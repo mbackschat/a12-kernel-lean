@@ -111,6 +111,116 @@ example :
         some (.unsupportedReadForm ["Form", "Start"] (.projected "Band")) := by
   native_decide
 
+/-! ## Checked-document assembly -/
+
+private def prepared :
+    PreparedFlatStringContext admissionModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler admissionModel).toOption.get (by native_decide)
+
+private def dateValue (epochMillis : Int) (month day : Nat) : DateValue := {
+  instant := { epochMillis }
+  parts := { year := 2024, month, day }
+  basis := .storedGregorian
+}
+
+private def rangeValue (startMillis finishMillis : Int)
+    (startMonth startDay finishMonth finishDay : Nat) : DateRangeValue := {
+  start := dateValue startMillis startMonth startDay
+  finish := dateValue finishMillis finishMonth finishDay
+}
+
+private def januaryValue :=
+  rangeValue 1704067200000 1706659200000 1 1 1 31
+private def lateJanuaryValue :=
+  rangeValue 1705276800000 1706659200000 1 15 1 31
+private def marchValue :=
+  rangeValue 1709251200000 1711843200000 3 1 3 31
+
+private def rangeCell (field : FieldId) (path : List Nat)
+    (stored : String) (raw : RawCell) : ClassifiedCellInput :=
+  { address := { field, path }, stored, raw }
+
+private def document? (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) : Option (CheckedDocument admissionModel) :=
+  (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
+
+private def evaluated? (first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand) (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (CheckedDateRangesOverlapResult admissionModel) := do
+  let source ← checkedSource? first rest
+  let document ← document? rows cells
+  (source.evaluateCheckedDocument document []).toOption
+
+private def verdict? (first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand) (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) : Option Verdict :=
+  (evaluated? first rest rows cells).map (·.verdict)
+
+private def directOverlapCells : List ClassifiedCellInput := [
+  rangeCell 1 [] "2024-01-01/2024-01-31" (.parsed (.dateRange januaryValue)),
+  rangeCell 2 [] "15.01.2024-31.01.2024" (.parsed (.dateRange lateJanuaryValue))]
+
+/- Direct fields use one checked document and retain their addresses for Explain. -/
+example :
+    verdict? (direct "Start") [direct "Finish"] [] directOverlapCells =
+        some (.fired .value) ∧
+      (evaluated? (direct "Start") [direct "Finish"] [] directOverlapCells).map
+        (fun result => result.operands.map fun operand =>
+          operand.core.addressedCells.map fun cell =>
+            (cell.address.field, cell.address.path)) =
+        some [[(1, [])], [(2, [])]] := by
+  native_decide
+
+private def row1 : RowAddr := { group := 10, path := [1] }
+
+private def rows12 : List RowAddr := [
+  row1, { group := 10, path := [2] }]
+
+/- A disjoint direct field cannot hide the star's later internal pair. -/
+example :
+    verdict? (direct "Start") [.star (star "Window")] rows12 [
+      rangeCell 1 [] "2024-03-01/2024-03-31" (.parsed (.dateRange marchValue)),
+      rangeCell 3 [1] "2024-01-01/2024-01-31" (.parsed (.dateRange januaryValue)),
+      rangeCell 3 [2] "2024-01-15/2024-01-31" (.parsed (.dateRange lateJanuaryValue))] =
+        some (.fired .value) := by
+  native_decide
+
+/- Repeating one star keeps duplicate occurrences, so one filled row can pair with itself. -/
+example :
+    verdict? (.star (star "Window")) [.star (star "Window")] [row1] [
+      rangeCell 3 [1] "2024-01-01/2024-01-31" (.parsed (.dateRange januaryValue))] =
+        some (.fired .value) := by
+  native_decide
+
+/- A formally unavailable direct cell is skipped before a later star-internal match. -/
+example :
+    verdict? (direct "Start") [.star (star "Window")] rows12 [
+      rangeCell 1 [] "broken" (.rejected .dateRangeSeparator),
+      rangeCell 3 [1] "2024-01-01/2024-01-31" (.parsed (.dateRange januaryValue)),
+      rangeCell 3 [2] "2024-01-15/2024-01-31" (.parsed (.dateRange lateJanuaryValue))] =
+        some (.fired .value) := by
+  native_decide
+
+private def filteredSource : SurfaceFieldEntityOperand :=
+  .starHaving (star "Window") selfFilter
+
+/- Only a kept filtered occurrence taints the later direct match; an empty filtered cell or extent is inert. -/
+example :
+    verdict? filteredSource [direct "Start", direct "Finish"] [row1] (
+      directOverlapCells ++ [
+        rangeCell 3 [1] "2024-03-01/2024-03-31" (.parsed (.dateRange marchValue)),
+        { address := { field := 6, path := [1] }, stored := "1",
+          raw := .parsed (.num 1) }]) = some (.fired .omission) ∧
+      verdict? filteredSource [direct "Start", direct "Finish"] [row1] (
+        directOverlapCells ++ [
+          { address := { field := 6, path := [1] }, stored := "1",
+            raw := .parsed (.num 1) }]) = some (.fired .value) ∧
+      verdict? filteredSource [direct "Start", direct "Finish"] []
+        directOverlapCells = some (.fired .value) := by
+  native_decide
+
 private def date2024 (month day : Nat)
     (admissible : (FullDate.ofYmd? 2024 month day).isSome) : FullDate :=
   (FullDate.ofYmd? 2024 month day).get admissible

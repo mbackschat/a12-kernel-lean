@@ -57,6 +57,15 @@ theorem dateRangesOverlap_ne_unknown
   scanDateRangesOverlapOccurrences_ne_unknown [] false
     (flattenDateRangeOccurrences operands)
 
+/-- Checked-document assembly cannot introduce UNKNOWN after structural projection succeeds. -/
+theorem checkedDateRangesOverlapResult_verdict_ne_unknown
+    (result : CheckedDateRangesOverlapResult model) :
+    result.verdict ≠ .unknown :=
+  by
+    simpa [CheckedDateRangesOverlapResult.verdict] using
+      dateRangesOverlap_ne_unknown
+        (result.operands.map fun operand => operand.semantic)
+
 /-- Neither a skipped scalar nor any resolved list scan can produce UNKNOWN. -/
 theorem atLeastOneDateRangeOverlaps_ne_unknown
     (scalar : ResolvedDateRangeSlot)
