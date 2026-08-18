@@ -133,6 +133,7 @@ import A12Kernel.Elaboration.BooleanFirstFilledComputation
 import A12Kernel.Elaboration.CustomFirstFilledComputation
 import A12Kernel.Elaboration.TemporalFirstFilledStarComputation
 import A12Kernel.Elaboration.DateFragmentFirstFilledComputation
+import A12Kernel.Elaboration.DateTimeFirstFilledComputation
 import A12Kernel.Elaboration.FullDateFirstFilledComputation
 import A12Kernel.Elaboration.TimeFirstFilledComputation
 import A12Kernel.Elaboration.StarGroup

@@ -5,11 +5,12 @@ import A12Kernel.Elaboration.FirstFilledStarSource
 
 namespace A12Kernel
 
-/-- Exact temporal computation carriers completed through the shared direct-star shape. This closed set does not include DateTime, DateRange, wider temporal formats, or additional policies. -/
+/-- Exact temporal computation carriers completed through the shared direct-star shape. This closed set does not include DateRange, wider temporal formats, or additional policies. -/
 inductive TemporalFirstFilledStarCarrier where
   | monthFragment
   | fullDateIso
   | timeHms
+  | dateTimeIso
   deriving Repr, DecidableEq
 
 /-- Classify only the completed temporal declaration profiles. Date profiles with optional pre-1900 checking remain outside until checked temporal input represents that declaration-owned source check. -/
@@ -32,6 +33,12 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
       if components == TemporalComponents.time &&
           policy.format == "HH:mm:ss" then
         some .timeHms
+      else
+        none
+  | .temporal .dateTime components, some policy =>
+      if components == TemporalComponents.now &&
+          policy.format == "yyyy-MM-dd'T'HH:mm:ss" then
+        some .dateTimeIso
       else
         none
   | _, _ => none
@@ -59,7 +66,7 @@ structure CheckedTemporalFirstFilledStarComputation
   sourceCarrier : source.declaration.temporalFirstFilledStarCarrier? = some carrier
   sourceDirectSingleStar : source.isDirectSingleStar = true
 
-/-- Check the target/source/direct-star shape shared by the completed DateFragment, full-Date, and Time computations. Runtime payload and target-policy evaluation remain carrier-owned. -/
+/-- Check the target/source/direct-star shape shared by the completed DateFragment, full-Date, Time, and DateTime computations. Runtime payload and target-policy evaluation remain carrier-owned. -/
 def checkTemporalFirstFilledStarComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) (carrier : TemporalFirstFilledStarCarrier) :

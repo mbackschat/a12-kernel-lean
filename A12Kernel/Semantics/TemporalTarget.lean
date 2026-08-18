@@ -2,7 +2,7 @@ import A12Kernel.Semantics.ModelZone
 
 /-! # Bounded temporal computation targets
 
-This capsule owns bounded Time, full-Date, and DateTime target result domains. Time admits the kernel's exact whole-second format and remains a zone-free clock rather than acquiring the runtime transport date. Full Date admits two exact formats, the universal Date floor, and the optional pre-1900 check; the checked declaration layer admits only FULL precision for computation. DateTime admits the kernel's standard seconds format and deliberately separates its rendered local wall label from the exact source instant, including any millisecond remainder. Partially known input values, wider `SimpleDateFormat` syntax, and document application remain separate.
+This capsule owns bounded Time, full-Date, and DateTime target result domains. Time admits the kernel's exact whole-second format and remains a zone-free clock rather than acquiring the runtime transport date. Full Date admits two exact formats, the universal Date floor, and the optional pre-1900 check; the checked declaration layer admits only FULL precision for computation. DateTime admits the bounded standard whole-second formats and deliberately separates its rendered local wall label from the exact source instant, including any millisecond remainder. Partially known input values, wider `SimpleDateFormat` syntax, and document application remain separate.
 -/
 
 namespace A12Kernel
@@ -164,32 +164,41 @@ def before1900 (date : FullDate) : Bool :=
 
 end FullDate
 
-/-- The first exact DateTime declaration source admitted by the executable target renderer. -/
+/-- Exact whole-second DateTime declaration formats admitted by the executable target renderer. -/
 inductive DateTimeTargetFormat where
   | dayMonthYearTime
+  | yearMonthDayTime
   deriving Repr, DecidableEq
 
 namespace DateTimeTargetFormat
 
-/-- Admit only the kernel's standard whole-second DateTime format. -/
+/-- Admit only the bounded standard whole-second DateTime formats. -/
 def ofSource? : String → Option DateTimeTargetFormat
   | "dd.MM.yyyy'T'HH:mm:ss" => some .dayMonthYearTime
+  | "yyyy-MM-dd'T'HH:mm:ss" => some .yearMonthDayTime
   | _ => none
 
 /-- Render one admitted local DateTime wall label. The exact source instant may retain finer precision than this text. -/
-def renderText (_ : DateTimeTargetFormat)
+def renderText (format : DateTimeTargetFormat)
     (dateTime : LocalDateTime) : String :=
   let date := dateTime.date.civil.parts
   let seconds := dateTime.time.secondsSinceMidnight
   let hour := seconds / 3600
   let minute := (seconds % 3600) / 60
   let second := seconds % 60
-  TemporalTargetText.twoDigits date.day ++ "." ++
-    TemporalTargetText.twoDigits date.month ++ "." ++
-    toString date.year ++ "T" ++
+  let timeText :=
     TemporalTargetText.twoDigits hour ++ ":" ++
-    TemporalTargetText.twoDigits minute ++ ":" ++
-    TemporalTargetText.twoDigits second
+      TemporalTargetText.twoDigits minute ++ ":" ++
+      TemporalTargetText.twoDigits second
+  match format with
+  | .dayMonthYearTime =>
+      TemporalTargetText.twoDigits date.day ++ "." ++
+        TemporalTargetText.twoDigits date.month ++ "." ++
+        toString date.year ++ "T" ++ timeText
+  | .yearMonthDayTime =>
+      toString date.year ++ "-" ++
+        TemporalTargetText.twoDigits date.month ++ "-" ++
+        TemporalTargetText.twoDigits date.day ++ "T" ++ timeText
 
 end DateTimeTargetFormat
 
@@ -205,7 +214,10 @@ def render (format : DateTimeTargetFormat)
     text := format.renderText dateTime
     nonempty := by
       cases format
-      simp [renderText, TemporalTargetText.twoDigits]
+      · simp [renderText, TemporalTargetText.twoDigits]
+      · intro empty
+        have emptyLength := congrArg String.length empty
+        simp [renderText] at emptyLength
   }
 
 end DateTimeTargetFormat

@@ -258,6 +258,11 @@ example :
           text := "23.06.2025T10:00:00"
           nonempty := by decide }) ∧
       evaluateDateTimeAt?
+        (dateTimeModel "yyyy-MM-dd'T'HH:mm:ss" "UTC") instant? =
+        some (.accepted {
+          text := "2025-06-23T10:00:00"
+          nonempty := by decide }) ∧
+      evaluateDateTimeAt?
         (dateTimeModel "dd.MM.yyyy'T'HH:mm:ss"
           "Europe/Berlin") instant? =
         some (.accepted {
@@ -275,13 +280,13 @@ example :
         (dateTimeModel "dd.MM.yyyy'T'HH:mm:ss" "UTC"
           missingSeconds)
     , dateTimeElabError?
-        (dateTimeModel "yyyy-MM-dd'T'HH:mm:ss" "UTC")
+        (dateTimeModel "yyyy/MM/dd'T'HH:mm:ss" "UTC")
     , dateTimeElabError?
         (dateTimeModel "dd.MM.yyyy'T'HH:mm:ss"
           "Pacific/Apia") ] =
       [ some (.targetKind 0 .date)
       , some (.components 0 missingSeconds)
-      , some (.unsupportedFormat 0 "yyyy-MM-dd'T'HH:mm:ss")
+      , some (.unsupportedFormat 0 "yyyy/MM/dd'T'HH:mm:ss")
       , some (.unsupportedZone "Pacific/Apia") ] := by
   native_decide
 

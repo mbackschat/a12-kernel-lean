@@ -117,9 +117,9 @@ example : (do
 /- Unsupported target syntax is rejected by the existing DateTime target certificate before any world is observed. -/
 example :
     errorOf (elaborateDateTimeNowComputation
-      (modelFor "yyyy-MM-dd'T'HH:mm:ss") 1) =
+      (modelFor "yyyy/MM/dd'T'HH:mm:ss") 1) =
       some (.target
-        (.unsupportedFormat 1 "yyyy-MM-dd'T'HH:mm:ss")) := by
+        (.unsupportedFormat 1 "yyyy/MM/dd'T'HH:mm:ss")) := by
   native_decide
 
 /- All three dynamic sub-day shifts sample this call's exact world once, preserve
