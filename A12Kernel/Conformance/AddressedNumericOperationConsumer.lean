@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.AddressedNumericOperationConsumer
 
 /-! # Addressed numeric-operation Analyze/Transform probe
 
-The bounded probe consumes checked same-scope repeatable conversion, direct Number, root `Abs`, root Round, and field/literal/operand-local-wrapper operand-list extrema. It recovers exact bounded read/write impact, compares transformation-sensitive fingerprints without claiming equivalence, and exercises exact identity as the sole admitted Transform.
+The bounded probe consumes checked same-scope repeatable conversion, direct Number, root `Abs`, root Round, and field/literal/operand-local-wrapper/one-level-nested operand-list extrema. It recovers exact bounded read/write impact, compares transformation-sensitive fingerprints without claiming equivalence, and exercises exact identity as the sole admitted Transform.
 -/
 
 namespace A12Kernel.Conformance.AddressedNumericOperationConsumer
@@ -324,6 +324,18 @@ example :
         parameters := .extremum .maximum
           { scale := .exact 3, canExpandScale := false }
           [.field selected.id, .field amount.id, .field precise.id]
+      } ∧
+    analyzed? (literalExtremumLeaf? .minimum sameScaleTarget
+      (.extremum .maximum (.field (bare "Amount"))
+        [.literal { value := 1, authoredScale := 0 }, .field (bare "Converted")]) []) =
+      some {
+        targetField := sameScaleTarget.id
+        sourceFields := [amount.id, converted.id]
+        scope := [10]
+        parameters := .extremum .minimum
+          { scale := .exact 2, canExpandScale := false }
+          [.extremum .maximum
+            [.field amount.id, .literal { value := 1, authoredScale := 0 }, .field converted.id]]
       } := by
   native_decide
 

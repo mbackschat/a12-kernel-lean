@@ -76,6 +76,12 @@ private def multiplication (left right : String) :
     SurfaceAddressedNumberExtremumOperand :=
   arith .multiply (fld left) (fld right)
 
+private def nestedExtremum (op : NumericExtremumOp)
+    (first : SurfaceAddressedNumberArithmeticOperand)
+    (rest : List SurfaceAddressedNumberArithmeticOperand) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .extremum op first rest
+
 private def field (name : String) : SurfaceAddressedNumberExtremumOperand :=
   .field (bare name)
 
@@ -371,6 +377,76 @@ example : outcomesInto? target .minimum
     (arith .multiply (lit (3 / 2) 1) (lit 2 0)) [] =
     some ((List.range 8).map fun row =>
       (addr target.id (row + 1), .accepted (stored 3 0))) := by
+  native_decide
+
+/- Each nested call owns its immediate-literal budget. One literal inside the child and one at the outer call are admitted, while either call still rejects a second immediate literal of its own. The child remains one bounded outer operand rather than being flattened. -/
+example :
+    (operation? target
+      (nestedExtremum .minimum (fld "A") [lit 1 0])
+      [literal 2 0]).isSome = true ∧
+    (operation? target
+      (nestedExtremum .maximum (fld "A") [lit 1 0])
+      [literal 2 0]).isSome = true ∧
+    (operation? target (field "C")
+      [nestedExtremum .minimum (fld "A") [lit 1 0]]).isSome = true ∧
+    (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
+        target.id
+        (nestedExtremum .minimum (fld "A") [lit 1 0, lit 2 0])
+        [] .minimum with
+      | .error .tooManyLiterals => true
+      | _ => false) = true ∧
+    (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
+        target.id (field "A") [literal 1 0, literal 2 0] .minimum with
+      | .error .tooManyLiterals => true
+      | _ => false) = true := by
+  native_decide
+
+/- The nested call contributes the union of its own leaf scales to the outer target check. A scale-4 literal beside scale-2 `A` therefore admits only the scale-4 target. -/
+example :
+    (operation? widePrecision
+      (nestedExtremum .maximum (fld "A") [lit (3 / 2) 4]) []).isSome = true ∧
+    (operation? target
+      (nestedExtremum .maximum (fld "A") [lit (3 / 2) 4]) []).isNone = true := by
+  native_decide
+
+/- Outer authored order is independent of nested leaf order. Whichever outer operand is reached first supplies the row-6 poison, and placing the nested call second exercises the retained call as a rest operand. -/
+example :
+    (outcomes? (nestedExtremum .minimum (fld "B") [lit 1 0])
+        [field "A"] >>= (·[5]?)) =
+      some (addr target.id 6, .inheritedPoison .declaredConstraint) ∧
+    (outcomes? (field "A")
+        [nestedExtremum .minimum (fld "B") [lit 1 0]] >>= (·[5]?)) =
+      some (addr target.id 6, .inheritedPoison .malformed) := by
+  native_decide
+
+/- Empty nested leaves retain the established extremum substitution law: each empty leaf contributes zero before the nested and outer selectors run. -/
+example :
+    (outcomes? (nestedExtremum .minimum (fld "A") [fld "B"])
+        [field "C"] >>= (·[2]?)) =
+      some (addr target.id 3, .accepted (stored 0 0)) ∧
+    (outcomes? (nestedExtremum .minimum (fld "A") [fld "B"])
+        [field "C"] >>= (·[4]?)) =
+      some (addr target.id 5, .accepted (stored 0 0)) := by
+  native_decide
+
+/- The nested selector is executable semantics, not decoration: the same child values distinguish `Min` from `Max` before the outer minimum sees `C`. -/
+example :
+    (outcomes? (nestedExtremum .minimum (fld "A") [fld "B"])
+        [field "C"] >>= List.head?) =
+      some (addr target.id 1, .accepted (stored 15 1)) ∧
+    (outcomes? (nestedExtremum .maximum (fld "A") [fld "B"])
+        [field "C"] >>= List.head?) =
+      some (addr target.id 1, .accepted (stored 225 2)) := by
+  native_decide
+
+/- Nested evaluation preserves authored leaf order: when both sources are poisoned on row 6, the first nested leaf supplies the inherited cause. -/
+example :
+    (outcomes? (nestedExtremum .minimum (fld "B") [fld "A"])
+        [field "C"] >>= (·[5]?)) =
+      some (addr target.id 6, .inheritedPoison .declaredConstraint) ∧
+    (outcomes? (nestedExtremum .minimum (fld "A") [fld "B"])
+        [field "C"] >>= (·[5]?)) =
+      some (addr target.id 6, .inheritedPoison .malformed) := by
   native_decide
 
 private inductive InnerShape where

@@ -9,12 +9,12 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: selected with a verified implementation route.
-- `gap`: [nested addressed Number extrema](SEMANTICS-GAPS.md#gap-sg5-nested-addressed-number-extrema).
-- `objective`: retain one nested same- or different-selector `Min`/`Max` call as one addressed extremum operand, preserving call boundaries, per-call literal budgets, scale union, dependencies, authored order, and row-local selection.
-- `oracle`: [numeric extremum call boundaries](SOURCES.md#src-numeric-extremum-call-boundary) owns the maintained static separator; [numeric wrappers and extrema](IMPLEMENTATION-MAP.md#5--numbers-and-decimals) owns the implemented direct and bounded operation baseline.
-- `next`: write the nested same-selector, different-selector, flattened-budget, scale, dependency, and evaluation-order cases red in the routed conformance owner before changing the checked operand.
-- `stop`: do not admit division, power, surrounding arithmetic, parser lowering, partial execution, or wider scheduling; do not infer repeatable Kernel runtime correspondence from the static source matrix.
+- `state`: ready for route discovery after the one-level nested addressed-extremum capsule passed its Tier 1 gate.
+- `gap`: none selected; the completed boundary is consolidated in [numeric wrappers and extrema](IMPLEMENTATION-MAP.md#5--numbers-and-decimals), while wider nested shapes remain in SG5.
+- `objective`: select the next smallest open semantic unit whose source discriminator and implementation route are both verifiable from current owners.
+- `oracle`: start from [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md), then verify the candidate against its source and implementation-map owners before editing Lean.
+- `next`: inventory open routed records, reject completed or overlapping work, and select one exact red/green/proof slice.
+- `stop`: do not edit semantics before the selected gap owns a verified route and explicit exclusions.
 - `blocked-on`: none.
 - `consumer-probe-trigger`: inactive after the whole-rule diagnostic probe; evaluate the next trigger only at another reusable family or risk boundary.
-- `resume`: `rg -n 'gap-sg5-nested-addressed-number-extrema|SurfaceAddressedNumberExtremumOperand|CheckedAddressedNumberExtremumOperand' docs/SEMANTICS-GAPS.md A12Kernel/Elaboration/AddressedNumberExtremum.lean`
+- `resume`: `rg -n '^#### |^- `state`: open|^- `route-state`:' docs/SEMANTICS-GAPS.md`

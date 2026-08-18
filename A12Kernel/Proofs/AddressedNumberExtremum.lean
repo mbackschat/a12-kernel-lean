@@ -20,6 +20,28 @@ theorem checkedAddressedNumberArithmeticChild_sourceCertified
       simp [CheckedAddressedNumberArithmeticChild.sources, source.sourceCertified]
   | literals _ _ => simp [CheckedAddressedNumberArithmeticChild.sources]
 
+/-- Every field-backed nested leaf retains its direct Number witness; literal leaves contribute no dependency. -/
+theorem checkedAddressedNumberExtremumLeaf_sourceCertified
+    (leaf : CheckedAddressedNumberExtremumLeaf model) :
+    ∀ source ∈ leaf.sources,
+      source.placement.sourceDeclaration.toNumberField? = some source.source := by
+  cases leaf with
+  | field source =>
+      simp [CheckedAddressedNumberExtremumLeaf.sources, source.sourceCertified]
+  | literal _ => simp [CheckedAddressedNumberExtremumLeaf.sources]
+
+/-- Every dependency retained by a nested extremum keeps its direct Number witness. -/
+theorem checkedAddressedNumberNestedExtremum_sourceCertified
+    (operation : CheckedAddressedNumberNestedExtremum model) :
+    ∀ source ∈ operation.sources,
+      source.placement.sourceDeclaration.toNumberField? = some source.source := by
+  intro source member
+  simp only [CheckedAddressedNumberNestedExtremum.sources,
+    CheckedAddressedNumberNestedExtremum.orderedOperands,
+    List.mem_flatMap] at member
+  rcases member with ⟨leaf, _, sourceMember⟩
+  exact checkedAddressedNumberExtremumLeaf_sourceCertified leaf source sourceMember
+
 /-- Every dependency behind one retained operand keeps its direct Number witness. Literal and constant-only operands contribute none. -/
 theorem checkedAddressedNumberExtremumOperand_sourceCertified
     (operand : CheckedAddressedNumberExtremumOperand model) :
@@ -33,7 +55,26 @@ theorem checkedAddressedNumberExtremumOperand_sourceCertified
   | arithmetic _ child =>
       simpa [CheckedAddressedNumberExtremumOperand.sources] using
         checkedAddressedNumberArithmeticChild_sourceCertified child
+  | extremum operation =>
+      simpa [CheckedAddressedNumberExtremumOperand.sources] using
+        checkedAddressedNumberNestedExtremum_sourceCertified operation
   | literal _ => simp [CheckedAddressedNumberExtremumOperand.sources]
+
+/-- A nested extremum contributes its own ordered leaf-scale union without flattening those leaves into the parent call. -/
+theorem checkedAddressedNumberExtremum_nestedScaleSummary
+    (operation : CheckedAddressedNumberNestedExtremum model) :
+    CheckedAddressedNumberExtremumOperand.scaleSummary
+        (.extremum operation) = operation.scaleSummary := by
+  rfl
+
+/-- A nested extremum operand delegates row-local selection to the nested call while preserving its selector and authored leaf order. -/
+theorem checkedAddressedNumberExtremum_nestedEvaluation
+    (operation : CheckedAddressedNumberNestedExtremum model)
+    (input : CheckedDocument model) (path : List Nat) :
+    (CheckedAddressedNumberExtremumOperand.extremum
+        operation).evaluateAtPath input path =
+      operation.evaluateAtPath input path := by
+  rfl
 
 /-- Every bounded arithmetic node contributes exactly its child's shared scale summary. The operation, not the extremum, owns whether the scale is the maximum or the sum and whether multiplicative-constant capability survives. -/
 theorem checkedAddressedNumberExtremum_arithmeticScaleSummary
