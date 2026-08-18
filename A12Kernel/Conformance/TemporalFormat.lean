@@ -97,6 +97,14 @@ private def validationError (model : FlatModel) : Option ResolveError :=
   | .ok () => none
   | .error error => some error
 
+private def dateRangeDeclaration
+    (id : FieldId) (name format separator : String) : FlatFieldDecl := {
+  id
+  groupPath := ["Order"]
+  name
+  policy := { kind := .dateRange }
+  dateRangePolicy := some { format, separator } }
+
 /- Exact source and four-valued partial-date mode survive independently of component shape. -/
 example :
     let european := temporalTarget 0 "EuropeanDate" "dd.MM.yyyy"
@@ -144,6 +152,47 @@ example :
       policy := { kind := .number { scale := 0, signed := true } } }
     validationError { fields := [numberTarget] } =
       some (.temporalTargetPolicyRequiresTemporal numberTarget.path) := by
+  native_decide
+
+/- DateRange retains its exact declaration-owned format and separator through the checked projections. -/
+example :
+    let declaration := dateRangeDeclaration 0 "Travel" "yyyy-MM-dd" "/"
+    validationError { fields := [declaration] } = none ∧
+      declaration.toDateRangeField?.map (·.id) = some declaration.id ∧
+      declaration.toDateRangeDeclarationPolicy?.map (fun policy =>
+        (policy.format, policy.separator)) = some ("yyyy-MM-dd", "/") ∧
+      declaration.toPresenceField = .dateRange { id := declaration.id } := by
+  native_decide
+
+/- Every DateRange declaration requires its policy. -/
+example :
+    let declaration : FlatFieldDecl := {
+      id := 0
+      groupPath := ["Order"]
+      name := "Travel"
+      policy := { kind := .dateRange } }
+    validationError { fields := [declaration] } =
+      some (.dateRangeDeclarationPolicyRequired declaration.path) := by
+  native_decide
+
+/- Empty format and separator are independent declaration-policy failures. -/
+example :
+    let emptyFormat := dateRangeDeclaration 0 "Travel" "" "/"
+    let emptySeparator := dateRangeDeclaration 1 "Stay" "yyyy-MM-dd" ""
+    validationError { fields := [emptyFormat] } =
+        some (.invalidDateRangeDeclarationPolicy emptyFormat.path .emptyFormat) ∧
+      validationError { fields := [emptySeparator] } =
+        some (.invalidDateRangeDeclarationPolicy emptySeparator.path .emptySeparator) := by
+  native_decide
+
+/- DateRange policy cannot attach to another declaration kind. -/
+example :
+    let range := dateRangeDeclaration 0 "Travel" "yyyy-MM-dd" "/"
+    let scalarDate : FlatFieldDecl := {
+      range with
+      policy := { kind := .temporal .date fullDate } }
+    validationError { fields := [scalarDate] } =
+      some (.dateRangeDeclarationPolicyRequiresDateRange scalarDate.path) := by
   native_decide
 
 end A12Kernel.Conformance.TemporalFormat

@@ -76,11 +76,10 @@ theorem firstKindGateRefusal_never_mixing
       subst refusal
       simp [TemporalValuesNotUniqueElabError.diagnostic?]
 
-/-- BOOLEAN and CONFIRM are the represented kinds refused outright. DATE_RANGE, the Kernel's
-    other measured outright refusal, has no declaration form here. -/
+/-- BOOLEAN, CONFIRM, and DATE_RANGE are the represented kinds refused outright. -/
 theorem fieldListAdmission_refusedByKind_iff (kind : SurfaceScalarKind) :
     kind.fieldListAdmission = .refusedByKind ↔
-      kind = .boolean ∨ kind = .confirm := by
+      kind = .boolean ∨ kind = .confirm ∨ kind = .dateRange := by
   cases kind <;> simp [SurfaceScalarKind.fieldListAdmission]
 
 /-- An admitted entity list has pairwise non-overlapping slots: the indirect duplicate arm's scan

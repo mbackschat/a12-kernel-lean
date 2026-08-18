@@ -11,6 +11,7 @@ def FieldKind.surfaceKind : FieldKind → SurfaceScalarKind
   | .string => .string
   | .enumeration => .enumeration
   | .temporal kind _ => .temporal kind
+  | .dateRange => .dateRange
 
 def SurfaceComparisonOp.toEquality? : SurfaceComparisonOp → Option EqualityOp
   | .equal => some .equal

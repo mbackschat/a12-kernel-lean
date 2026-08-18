@@ -538,7 +538,15 @@ example :
         policy := { kind := .temporal .dateTime dateTimeComponents } }
       "2024-06-25T05:21:07"
       (.parsed (.temporal
-        (.dateTime instant dateParts clock .storedGregorian))) = true := by
+        (.dateTime instant dateParts clock .storedGregorian))) &&
+    duplicatesFor {
+        key with
+        policy := { kind := .dateRange }
+        dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } }
+      "2024-06-25/2024-06-25"
+      (.parsed (.dateRange {
+        start := { instant, parts := dateParts, basis := .storedGregorian }
+        finish := { instant, parts := dateParts, basis := .storedGregorian } })) = true := by
   native_decide
 
 /- The shared model certificate rejects a raw/no-value String index before preliminary dispatch. -/

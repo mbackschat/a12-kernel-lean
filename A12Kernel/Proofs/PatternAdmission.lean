@@ -72,17 +72,17 @@ theorem stringPatternCondition_pattern_diagnostic
       some .invalidPattern := by
   cases error <;> rfl
 
-/-- Every non-String kind reaches the same local refusal constructor, and the
-complete represented kind matrix measures one external class for that locus. -/
+/-- Every non-String kind in the measured scalar matrix reaches one external diagnostic class. DateRange remains deliberately unmapped because that matrix did not measure it. -/
 @[simp]
 theorem stringPatternCondition_fieldKind_diagnostic
     (path : List String) (kind : SurfaceScalarKind)
-    (notString : kind ≠ .string) :
+    (notString : kind ≠ .string) (notDateRange : kind ≠ .dateRange) :
     StringPatternConditionElabError.diagnostic? (.fieldKind path kind) =
       some .invalidTypeForPatternComparison := by
   cases kind with
   | number | boolean | confirm | enumeration => rfl
   | string => contradiction
   | temporal temporalKind => cases temporalKind <;> rfl
+  | dateRange => contradiction
 
 end A12Kernel

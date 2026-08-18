@@ -11,7 +11,7 @@ The fourth comparability category of one operator. Slot admission, authored orde
 
 **The compared identity is the operand's exact stored text**, not its decoded value. That is what the *dynamic* kernel runtime reads for this operator, with the generated-Java strategy unread for this comparison, and it is deliberately a different reading from the decoded date that `NumberOfDifferentValues` uses over the same entity lists — the two neighbouring operators do not share a value identity. Under the mandatory single format the stored-text and decoded accounts agree *if* one declared format admits one text per value; that assumption is unmeasured and [`SG7`](../../docs/SEMANTICS-GAPS.md) owns its witness class. Reusing the canonical token atom is therefore exact rather than a rendering: the value compared is the stored text itself, so no normal form is invented.
 
-Two admission facts are not modelled here and are annotations rather than gates. A declaration whose declared format disagrees with its own kind family is not refused by this gate, because format equality is stated as a total function and the authorability of such a declaration is unmeasured. And DATE_RANGE, which the kernel refuses by kind, has no representation in this flat model at all.
+One admission fact is an annotation rather than a gate. A declaration whose declared format disagrees with its own kind family is not refused by this gate, because format equality is stated as a total function and the authorability of such a declaration is unmeasured. DATE_RANGE is represented by its distinct flat declaration kind and is refused before this temporal format scan by the shared measured kind gate.
 -/
 
 namespace A12Kernel

@@ -207,7 +207,7 @@ private def CheckedDocument.indexFindings
             let declaration ← model.lookupUniqueId field |>.mapError .model
             match declaration.policy.kind with
             | .number _ | .boolean | .confirm | .string | .enumeration
-            | .temporal _ _ =>
+            | .temporal _ _ | .dateRange =>
                 pure (indexFindingsForGroup
                   (← checked.indexCandidates group defaulted
                     silentlyUnavailable declaration relevance))

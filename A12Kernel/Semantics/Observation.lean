@@ -23,6 +23,7 @@ inductive FieldKind where
   | string
   | enumeration
   | temporal (kind : TemporalKind) (components : TemporalComponents)
+  | dateRange
   deriving Repr, DecidableEq
 
 /-- Static scalar policy consumed once by formal checking. Requiredness is deliberately
@@ -89,6 +90,7 @@ def FieldKind.accepts : FieldKind → Value → Bool
   | .string, .str _ => true
   | .enumeration, .enum _ => true
   | .temporal expected _, .temporal actual => expected == actual.kind
+  | .dateRange, .dateRange _ => true
   | _, _ => false
 
 /-- Project a parser result through one caller-supplied value admission step. The parser owns text decoding and raw constraints; this function owns placement and formal-cause construction once. -/

@@ -42,11 +42,17 @@ private def scalarKindTag : SurfaceScalarKind → String
   | .temporal .date => "date"
   | .temporal .time => "time"
   | .temporal .dateTime => "dateTime"
+  | .dateRange => "dateRange"
 
 private def temporalTargetPolicyErrorTag : TemporalTargetPolicyError → String
   | .emptyFormat => "emptyFormat"
   | .partialModeRequiresFullDate => "partialModeRequiresFullDate"
   | .youngerThan1900RequiresDate => "youngerThan1900RequiresDate"
+
+private def dateRangeDeclarationPolicyErrorTag :
+    DateRangeDeclarationPolicyError → String
+  | .emptyFormat => "emptyFormat"
+  | .emptySeparator => "emptySeparator"
 
 private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → Diagnostic
   | .invalidModelPath path =>
@@ -109,6 +115,19 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
       .make .fieldKindMismatch "$.model"
         (Json.mkObj [("operation", toJson "temporalTargetPolicy"),
           ("reason", toJson (temporalTargetPolicyErrorTag error)),
+          ("path", toJson path)])
+  | .dateRangeDeclarationPolicyRequired path =>
+      .make .fieldKindMismatch "$.model"
+        (Json.mkObj [("operation", toJson "dateRangeDeclarationPolicy"),
+          ("reason", toJson "required"), ("path", toJson path)])
+  | .dateRangeDeclarationPolicyRequiresDateRange path =>
+      .make .fieldKindMismatch "$.model"
+        (Json.mkObj [("operation", toJson "dateRangeDeclarationPolicy"),
+          ("expected", toJson "dateRange"), ("path", toJson path)])
+  | .invalidDateRangeDeclarationPolicy path error =>
+      .make .fieldKindMismatch "$.model"
+        (Json.mkObj [("operation", toJson "dateRangeDeclarationPolicy"),
+          ("reason", toJson (dateRangeDeclarationPolicyErrorTag error)),
           ("path", toJson path)])
   | .enumerationMetadataRequiresEnumeration _
   | .enumerationDeclarationRequired _

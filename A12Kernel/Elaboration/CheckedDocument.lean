@@ -222,7 +222,7 @@ private def checkPlacedCell
   let coherent := match declaration.policy.kind with
     | .number info =>
         input.numberCoherent declaration.numericTargetConstraints info
-    | .boolean | .confirm | .string | .enumeration | .temporal _ _ =>
+    | .boolean | .confirm | .string | .enumeration | .temporal _ _ | .dateRange =>
         input.ordinaryCoherent
   if !coherent then throw (.incoherentCell input.address)
   if !input.canonicalScalarCoherent declaration.policy.kind then

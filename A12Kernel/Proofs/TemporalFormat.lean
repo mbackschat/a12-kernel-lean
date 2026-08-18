@@ -96,6 +96,15 @@ theorem temporalTargetPolicy_valid_format_nonempty
   cases h : policy.format.isEmpty <;>
     simp_all [TemporalTargetPolicy.errorFor?]
 
+/-- Every parser-independently valid DateRange policy retains both exact nonempty sources. -/
+theorem dateRangeDeclarationPolicy_valid_sources_nonempty
+    (policy : DateRangeDeclarationPolicy)
+    (valid : policy.error? = none) :
+    policy.format.isEmpty = false ∧ policy.separator.isEmpty = false := by
+  cases hFormat : policy.format.isEmpty <;>
+    cases hSeparator : policy.separator.isEmpty <;>
+    simp_all [DateRangeDeclarationPolicy.error?]
+
 /-- A non-Date target can retain neither partial-date admission nor the Date-only pre-1900 check. -/
 theorem temporalTargetPolicy_valid_nonDate
     (policy : TemporalTargetPolicy)

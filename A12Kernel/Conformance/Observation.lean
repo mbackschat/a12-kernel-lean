@@ -26,6 +26,9 @@ private def fullDateComponents : TemporalComponents :=
 private def date : FieldPolicy :=
   { kind := .temporal .date fullDateComponents }
 
+private def dateRange : FieldPolicy :=
+  { kind := .dateRange }
+
 private def dateParts : DateParts :=
   { year := 2024, month := 6, day := 25 }
 
@@ -38,6 +41,16 @@ private def temporalValue (kind : TemporalKind) (instant : Instant) : Value :=
   | .time => .temporal (.time instant clock)
   | .dateTime =>
       .temporal (.dateTime instant dateParts clock .storedGregorian)
+
+private def dateRangeValue : DateRangeValue :=
+  { start := {
+      instant := { epochMillis := 100000 }
+      parts := { year := 2024, month := 6, day := 25 }
+      basis := .storedGregorian }
+    finish := {
+      instant := { epochMillis := 200000 }
+      parts := { year := 2024, month := 6, day := 30 }
+      basis := .storedGregorian } }
 
 private def requiredEmpty : CheckedCell :=
   (formalCheck optionalNumber .empty).withFinding .required
@@ -93,6 +106,23 @@ example :
           parsed := some (temporalValue .date instant)
           findings := [] } ∧
       formalCheck date (.parsed (temporalValue .dateTime instant)) =
+        { rawPresent := true
+          parsed := none
+          findings := [.malformed] } := by
+  decide
+
+/- An already-decoded DateRange is admitted only under the distinct DateRange declaration kind. -/
+example :
+    let instant : Instant := { epochMillis := 100999 }
+    formalCheck dateRange (.parsed (.dateRange dateRangeValue)) =
+        { rawPresent := true
+          parsed := some (.dateRange dateRangeValue)
+          findings := [] } ∧
+      formalCheck dateRange (.parsed (temporalValue .date instant)) =
+        { rawPresent := true
+          parsed := none
+          findings := [.malformed] } ∧
+      formalCheck date (.parsed (.dateRange dateRangeValue)) =
         { rawPresent := true
           parsed := none
           findings := [.malformed] } := by

@@ -156,14 +156,14 @@ inductive FieldListOperandAdmission where
   | refusedByKind
   deriving Repr, DecidableEq
 
-/-- Classify every represented scalar kind for the shared `FieldValuesNotUnique` kind gate. BOOLEAN and CONFIRM are measured outright refusals; DATE_RANGE has no flat declaration form. -/
+/-- Classify every represented scalar kind for the shared `FieldValuesNotUnique` kind gate. BOOLEAN, CONFIRM, and DATE_RANGE are measured outright refusals. -/
 def SurfaceScalarKind.fieldListAdmission :
     SurfaceScalarKind → FieldListOperandAdmission
   | .string => .category .string
   | .enumeration => .category .enumeration
   | .number => .category .number
   | .temporal _ => .category .temporal
-  | .boolean | .confirm => .refusedByKind
+  | .boolean | .confirm | .dateRange => .refusedByKind
 
 structure FieldListKindRefusal where
   path : List String

@@ -119,7 +119,7 @@ private def numericTargetConstraintsError? :
             match constraints.maxIntegerDigits with
             | some 0 => some (.numericMaximumIntegerDigitsZero declaration.path)
             | some _ | none => numericTargetConstraintsError? rest
-      | .boolean | .confirm | .string | .enumeration | .temporal _ _ =>
+      | .boolean | .confirm | .string | .enumeration | .temporal _ _ | .dateRange =>
           if constraints == NumericTargetConstraints.unconstrained then
             numericTargetConstraintsError? rest
           else some (.numericTargetConstraintsRequireNumber declaration.path)
@@ -135,6 +135,22 @@ private def temporalTargetPolicyError? :
           | some error => some (.invalidTemporalTargetPolicy declaration.path error)
           | none => temporalTargetPolicyError? rest
       | _, some _ => some (.temporalTargetPolicyRequiresTemporal declaration.path)
+
+private def dateRangeDeclarationPolicyError? :
+    List FlatFieldDecl → Option ResolveError
+  | [] => none
+  | declaration :: rest =>
+      match declaration.policy.kind, declaration.dateRangePolicy with
+      | .dateRange, none =>
+          some (.dateRangeDeclarationPolicyRequired declaration.path)
+      | .dateRange, some policy =>
+          match policy.error? with
+          | some error =>
+              some (.invalidDateRangeDeclarationPolicy declaration.path error)
+          | none => dateRangeDeclarationPolicyError? rest
+      | _, some _ =>
+          some (.dateRangeDeclarationPolicyRequiresDateRange declaration.path)
+      | _, none => dateRangeDeclarationPolicyError? rest
 
 private def enumerationDeclarationError? :
     List FlatFieldDecl → Option ResolveError
@@ -240,6 +256,9 @@ def FlatModel.validate (model : FlatModel) : Except ResolveError Unit := do
   | some error => throw error
   | none => pure ()
   match temporalTargetPolicyError? model.fields with
+  | some error => throw error
+  | none => pure ()
+  match dateRangeDeclarationPolicyError? model.fields with
   | some error => throw error
   | none => pure ()
   match enumerationDeclarationError? model.fields with

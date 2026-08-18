@@ -6,6 +6,10 @@ namespace A12Kernel.Conformance.CheckedIndexColumn
 
 open A12Kernel
 
+/- DateRange follows the established exact-stored-token index branch rather than Number normalization. -/
+example : FieldKind.dateRange.supportsExactTextParallelKey = true := by
+  rfl
+
 private def indexDecl (id : FieldId) (group : String)
     (scope : RepeatableLevel) : FlatFieldDecl := {
   id

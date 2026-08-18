@@ -67,7 +67,7 @@ namespace FieldKind
 /-- Parallel iteration orders every non-Number index by its exact stored token. Number needs declaration/locale-owned rendering and therefore fails this bounded profile closed. -/
 def supportsExactTextParallelKey : FieldKind → Bool
   | .number _ => false
-  | .boolean | .confirm | .string | .enumeration | .temporal _ _ => true
+  | .boolean | .confirm | .string | .enumeration | .temporal _ _ | .dateRange => true
 
 end FieldKind
 

@@ -108,6 +108,7 @@ inductive SurfaceScalarKind where
   | string
   | enumeration
   | temporal (kind : TemporalKind)
+  | dateRange
   deriving Repr, DecidableEq
 
 /-- Whether a String declaration exposes an evaluation value. Raw Strings retain storage presence but close every checked value-reading route. -/
@@ -203,6 +204,8 @@ structure FlatFieldDecl where
     NumericTargetConstraints.unconstrained
   /-- Complete resolved temporal policy for consumers that need exact stored format, partial precision, or the additional Date check. Absence keeps ordinary temporal reads available but makes such consumers explicitly insufficient. -/
   temporalTargetPolicy : Option TemporalTargetPolicy := none
+  /-- Exact already-classified DateRange format and separator sources. Decoded endpoint values do not retain presentation policy. -/
+  dateRangePolicy : Option DateRangeDeclarationPolicy := none
   repeatableScope : List RepeatableLevel := []
   deriving Repr, DecidableEq
 
@@ -224,7 +227,7 @@ def isRawString (declaration : FlatFieldDecl) : Bool :=
 def toNumberField? (declaration : FlatFieldDecl) : Option FlatNumberField :=
   match declaration.policy.kind with
   | .number info => some { id := declaration.id, info }
-  | .boolean | .confirm | .string | .enumeration | .temporal _ _ => none
+  | .boolean | .confirm | .string | .enumeration | .temporal _ _ | .dateRange => none
 
 /-- Whether a Number declaration admits only nonnegative values by signedness or an explicit lower bound. Date and Time constructor fields share this exact static condition. -/
 def numberDomainNonnegative (declaration : FlatFieldDecl)
@@ -241,13 +244,13 @@ def toNumericTargetPolicy? (declaration : FlatFieldDecl) :
     Option NumericTargetPolicy :=
   match declaration.policy.kind with
   | .number info => declaration.numericTargetConstraints.toPolicy? info
-  | .boolean | .confirm | .string | .enumeration | .temporal _ _ => none
+  | .boolean | .confirm | .string | .enumeration | .temporal _ _ | .dateRange => none
 
 /-- Convert one expanded declaration to the shared resolved temporal-field representation. -/
 def toTemporalField? (declaration : FlatFieldDecl) : Option FlatTemporalField :=
   match declaration.policy.kind with
   | .temporal kind components => some { id := declaration.id, kind, components }
-  | .number _ | .boolean | .confirm | .string | .enumeration => none
+  | .number _ | .boolean | .confirm | .string | .enumeration | .dateRange => none
 
 /-- Recover the complete checked temporal-target policy only when it agrees with this declaration's kind and component shape. -/
 def toTemporalTargetPolicy? (declaration : FlatFieldDecl) :
@@ -255,6 +258,20 @@ def toTemporalTargetPolicy? (declaration : FlatFieldDecl) :
   match declaration.policy.kind, declaration.temporalTargetPolicy with
   | .temporal kind components, some policy =>
       if policy.errorFor? kind components == none then some policy else none
+  | _, _ => none
+
+/-- Convert one DateRange declaration to its resolved field identity. -/
+def toDateRangeField? (declaration : FlatFieldDecl) : Option FlatDateRangeField :=
+  match declaration.policy.kind with
+  | .dateRange => some { id := declaration.id }
+  | .number _ | .boolean | .confirm | .string | .enumeration | .temporal _ _ => none
+
+/-- Recover the exact checked DateRange declaration policy only when it belongs to this kind and satisfies the parser-independent invariants. -/
+def toDateRangeDeclarationPolicy? (declaration : FlatFieldDecl) :
+    Option DateRangeDeclarationPolicy :=
+  match declaration.policy.kind, declaration.dateRangePolicy with
+  | .dateRange, some policy =>
+      if policy.error? == none then some policy else none
   | _, _ => none
 
 def toPresenceField (declaration : FlatFieldDecl) : FlatField :=
@@ -266,6 +283,7 @@ def toPresenceField (declaration : FlatFieldDecl) : FlatField :=
   | .enumeration => .enumeration { id := declaration.id }
   | .temporal kind components =>
       .temporal { id := declaration.id, kind, components }
+  | .dateRange => .dateRange { id := declaration.id }
 
 /-- Resolve one exact stored/category projection from a legal Enumeration declaration for direct textual comparison. Category access is statically exempt from display-remapping compatibility. -/
 def toEnumerationTextFieldComparison? (declaration : FlatFieldDecl)
@@ -357,6 +375,10 @@ inductive ResolveError where
   | temporalTargetPolicyRequiresTemporal (path : List String)
   | invalidTemporalTargetPolicy (path : List String)
       (error : TemporalTargetPolicyError)
+  | dateRangeDeclarationPolicyRequired (path : List String)
+  | dateRangeDeclarationPolicyRequiresDateRange (path : List String)
+  | invalidDateRangeDeclarationPolicy (path : List String)
+      (error : DateRangeDeclarationPolicyError)
   | rawStringRequiresLineBreakPermission (path : List String)
   | rawStringForbidsMinimumLength (path : List String)
   | rawStringForbidsPattern (path : List String)

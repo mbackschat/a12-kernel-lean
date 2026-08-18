@@ -62,6 +62,13 @@ private def nestedDetailText : FlatFieldDecl :=
     policy := { kind := .string }
     repeatableScope := [10, 11, 12] }
 
+private def travel : FlatFieldDecl :=
+  { id := 7
+    groupPath := ["Order", "Details"]
+    name := "Travel"
+    policy := { kind := .dateRange }
+    dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } }
+
 private def model : FlatModel :=
   { fields := [customCode, note, itemText, count, lineText, nestedDetailText]
     repeatableGroups := [
@@ -93,6 +100,25 @@ private def checked? (data : DocumentData) : Option (CheckedDocument model) :=
   | .error _ => none
   | .ok prepared => (checkDocument prepared "en_US" data).toOption
 
+private def rangeModel : FlatModel :=
+  { fields := [travel] }
+
+private def rangeChecked?
+    (data : DocumentData) : Option (CheckedDocument rangeModel) :=
+  match prepareFlatStringContext world builtinStringPatternCompiler rangeModel with
+  | .error _ => none
+  | .ok prepared => (checkDocument prepared "en_US" data).toOption
+
+private def rangeValue : DateRangeValue :=
+  { start := {
+      instant := { epochMillis := 1704067200000 }
+      parts := { year := 2024, month := 1, day := 1 }
+      basis := .storedGregorian }
+    finish := {
+      instant := { epochMillis := 1706659200000 }
+      parts := { year := 2024, month := 1, day := 31 }
+      basis := .storedGregorian } }
+
 private def overLimitRows : DocumentData :=
   { instantiatedRows := [row1, row2, row3]
     cells := [
@@ -116,6 +142,20 @@ example : ((checked? classified).map fun checked =>
       (checked.read { field := 2, path := [] }).toOption.map (·.rawPresent),
       (checked.read { field := 4, path := [] }).toOption.map (·.rawPresent))) =
     some (.unknown (.registeredCustomValidation rejection), some true, some false) := by
+  native_decide
+
+/- DateRange uses the ordinary immutable checked-document route and retains its decoded value separately from stored text. -/
+example : ((rangeChecked? {
+    instantiatedRows := []
+    cells := [{
+      address := { field := travel.id, path := [] }
+      stored := "2024-01-01/2024-01-31"
+      raw := .parsed (.dateRange rangeValue)
+    }]
+  }).map fun checked =>
+    (checked.source.toDocument.rawCells { field := travel.id, path := [] },
+      checked.flatContext.observeValidationAt travel.id)) =
+    some (some "2024-01-01/2024-01-31", .value (.dateRange rangeValue)) := by
   native_decide
 
 /- A decimal-valued Number placement cannot carry an unrelated caller-supplied parsed value; the checked-document boundary must derive the formal read from the retained input representation. -/

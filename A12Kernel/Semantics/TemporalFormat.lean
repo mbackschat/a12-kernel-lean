@@ -54,6 +54,29 @@ structure TemporalTargetPolicy where
   youngerThan1900Check : Bool := false
   deriving Repr, DecidableEq
 
+/-- Static incoherence in one declaration-owned DateRange format policy. Exact format syntax and separator membership remain parser-owned; this boundary requires both retained sources to be present. -/
+inductive DateRangeDeclarationPolicyError where
+  | emptyFormat
+  | emptySeparator
+  deriving Repr, DecidableEq
+
+/-- Exact DateRange declaration sources retained separately from the decoded endpoint value. -/
+structure DateRangeDeclarationPolicy where
+  format : String
+  separator : String
+  deriving Repr, DecidableEq
+
+/-- Check only the source-presence invariants visible before raw DateRange parsing. -/
+def DateRangeDeclarationPolicy.error?
+    (policy : DateRangeDeclarationPolicy) :
+    Option DateRangeDeclarationPolicyError :=
+  if policy.format.isEmpty then
+    some .emptyFormat
+  else if policy.separator.isEmpty then
+    some .emptySeparator
+  else
+    none
+
 /-- Check only the cross-field invariants visible at the parser-independent flat boundary. A non-full partial mode belongs to a full Date declaration; the opt-in pre-1900 check belongs only to Date. -/
 def TemporalTargetPolicy.errorFor?
     (policy : TemporalTargetPolicy)

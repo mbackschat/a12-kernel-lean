@@ -10,9 +10,9 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: implementation route verified.
-- `gap`: [checked DateRange declaration and admission](SEMANTICS-GAPS.md#gap-sg6-date-range-checked-declaration).
-- `next`: after the independently reviewed value-core commit lands, add the declaration route's red policy/admission separators and implement it through the ordinary checked document.
+- `state`: route discovery required.
+- `gap`: [direct temporal `FirstFilledValue` computation remainder](SEMANTICS-GAPS.md#gap-sg8-temporal-first-filled-computation).
+- `next`: verify the direct one-star DateRange carrier, target policy, result, and application route against the shared scan and the newly checked declaration before adding red computation cases.
 - `blocked-on`: none.
 - `consumer-probe-trigger`: inactive; evaluate only when the selected work reaches a reusable family, major addressing or computation boundary, or public compatibility claim.
-- `resume`: `rg -n 'gap-sg6-date-range-checked-declaration|inductive (FieldKind|SurfaceScalarKind)|structure FlatFieldDecl|temporalTargetPolicyError' docs/SEMANTICS-GAPS.md A12Kernel/Semantics/Observation.lean A12Kernel/Elaboration/Flat`
+- `resume`: `rg -n 'DateRange|FirstFilled|TemporalFirstFilledStarCarrier|toDateRangeDeclarationPolicy' docs/SEMANTICS-GAPS.md A12Kernel/Elaboration A12Kernel/Semantics A12Kernel/Conformance`

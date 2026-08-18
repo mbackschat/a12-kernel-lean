@@ -564,6 +564,8 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
                   throw (.temporalFormatsIncompatible declaration.path literalPath)
           | literal =>
               throw (.literalKindMismatch declaration.path (.temporal kind) literal.kind)
+      | .dateRange =>
+          throw (.literalKindMismatch declaration.path .dateRange literal.kind)
   | .lengthCompare op reference expected => do
       let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
       if declaration.isRawString then

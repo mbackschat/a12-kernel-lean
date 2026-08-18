@@ -46,6 +46,10 @@ structure FlatTemporalField where
   components : TemporalComponents
   deriving Repr, DecidableEq
 
+structure FlatDateRangeField where
+  id : FieldId
+  deriving Repr, DecidableEq
+
 /-- A typed, resolved field reference for presence predicates. -/
 inductive FlatField where
   | number (field : FlatNumberField)
@@ -54,6 +58,7 @@ inductive FlatField where
   | string (field : FlatStringField)
   | enumeration (field : FlatEnumerationField)
   | temporal (field : FlatTemporalField)
+  | dateRange (field : FlatDateRangeField)
   deriving Repr, DecidableEq
 
 namespace FlatField
@@ -66,6 +71,7 @@ def id : FlatField → FieldId
   | .string field => field.id
   | .enumeration field => field.id
   | .temporal field => field.id
+  | .dateRange field => field.id
 
 end FlatField
 
@@ -569,6 +575,7 @@ def FlatField.observeValidation (context : FlatContext) : FlatField → CellObse
   | .string field => context.observeValidationAt field.id
   | .enumeration field => context.observeValidationAt field.id
   | .temporal field => context.observeValidationAt field.id
+  | .dateRange field => context.observeValidationAt field.id
 
 namespace CellObservation
 

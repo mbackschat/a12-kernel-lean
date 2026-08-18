@@ -184,7 +184,17 @@ For an assurance drill, use the row’s linked owner, then the matching [`Proofs
 - `bridge`: `DateRangeValue.toResolvedDateRange?` projects both decoded endpoints through full-Date reality and floor admission; failure of either endpoint returns `none`, while the richer source range remains available so equal resolved intervals do not imply equal exact values.
 - `owner`: [`Core.lean`](../A12Kernel/Core.lean) owns the universal payloads; [`DateRangeOverlap.lean`](../A12Kernel/Semantics/DateRangeOverlap.lean) owns the resolved bridge; [proofs](../A12Kernel/Proofs/TemporalValue.lean), [payload cases](../A12Kernel/Conformance/TemporalValue.lean), and [bridge cases](../A12Kernel/Conformance/DateRangeOverlap.lean) own projection assurance.
 - `assurance`: E/P closed for the represented payloads and resolved bridge. The range representation is internally justified and adds no kernel-correspondence claim; existing scalar external evidence remains scoped to its owning capabilities.
-- `remains`: checked DateRange declaration/admission, raw parsing, target policy, computation, and authored consumers: [SG6](SEMANTICS-GAPS.md#gap-sg6-date-range-checked-declaration).
+- `remains`: raw parsing, executable target policy, computation, and authored operator consumers: [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
+
+<a id="cap-date-range-checked-declaration"></a>
+#### Checked DateRange declaration and admission
+
+- `state`: implemented for already-decoded DateRange cells through the existing flat declaration and checked-document route.
+- `boundary`: `FieldKind.dateRange`, `SurfaceScalarKind.dateRange`, and `FlatFieldDecl.dateRangePolicy` retain a distinct range kind plus exact format and separator sources; model validation requires the policy, rejects it on every other kind, and requires both sources to be nonempty without claiming their legal syntax.
+- `route`: `FlatFieldDecl.toDateRangeField?`, `toDateRangeDeclarationPolicy?`, and `toPresenceField` feed formal checking, generic presence/required/index ownership, and the existing immutable `CheckedDocument`; no DateRange-specific document or architecture abstraction exists.
+- `owner`: [`TemporalFormat.lean`](../A12Kernel/Semantics/TemporalFormat.lean) owns policy invariants; [`Observation.lean`](../A12Kernel/Semantics/Observation.lean) owns value admission; [`Flat/Types.lean`](../A12Kernel/Elaboration/Flat/Types.lean) and [`Flat/Model.lean`](../A12Kernel/Elaboration/Flat/Model.lean) own checked declaration coherence; [`CheckedDocument.lean`](../A12Kernel/Elaboration/CheckedDocument.lean) remains the sole document route.
+- `assurance`: E/P internally closed for exact policy preservation, both independent empty-source refusals, missing and wrong-kind policy, range-versus-scalar admission, presence projection, ordinary document storage/read, and nonempty-source law. `FieldValuesNotUnique` retains its measured DateRange kind refusal; unmeasured pattern diagnostic identity remains unmapped.
+- `remains`: raw parsing, exact legal format/separator allowlists, detailed external diagnostics, range operators, target rendering/application, and computation: [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion) and [SG8](SEMANTICS-GAPS.md#gap-sg8-temporal-first-filled-computation).
 
 <a id="cap-temporal-comparison-and-aggregates"></a>
 #### Temporal comparison and aggregates
@@ -196,7 +206,7 @@ For an assurance drill, use the row’s linked owner, then the matching [`Proofs
 - `case`: [DateRange construction equality cases](../A12Kernel/Conformance/DateRangeComparison.lean).
 - `proof`: [DateRange construction equality laws](../A12Kernel/Proofs/DateRangeComparison.lean).
 - `assurance`: E/P closed for the named scalar, aggregate, overlap, and bounded DateRange construction-equality families; L for the filled construction-versus-stored range is pinned by [the source checkpoint](SOURCES.md#src-date-range-construction-equality); C/X/Q none.
-- `remains`: checked field/path authoring, DateFragment and format admission/completion, raw parsing, empty/formal propagation, construction-versus-construction, computation targets and rendering, overlap/bound nesting, wider operands, and repeatable placement remain in [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
+- `remains`: DateFragment and format admission/completion, raw parsing, empty/formal propagation, construction-versus-construction, computation targets and rendering, overlap/bound nesting, wider operands, and repeatable operator use remain in [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
 
 ### §7 — strings and patterns
 
@@ -234,7 +244,7 @@ For an assurance drill, use the row’s linked owner, then the matching [`Proofs
 - `assurance`: Boolean false and all six formal-failure branches are internally checked with external evidence pending. Existing prefix/lookahead seams remain upstream locked; C none.
 - `source`: [direct one-star additional-kind computations](SOURCES.md#src-first-filled-additional-kind-computations).
 - `source`: [direct one-star established-kind computations](SOURCES.md#src-first-filled-kind-computations).
-- `remains`: full `entitySpec` expansion, multiple/mixed/group/filtered operands, nested repetition, wider temporal formats and policies, validation-rule use, target application, checked DateRange declaration and computation, literal full-Date/Time/DateTime calibration, and focused external false/poison/rejection calibration remain under [SG8](SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion) and [SG4](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition).
+- `remains`: full `entitySpec` expansion, multiple/mixed/group/filtered operands, nested repetition, wider temporal formats and policies, validation-rule use, target application, DateRange computation, literal full-Date/Time/DateTime calibration, and focused external false/poison/rejection calibration remain under [SG8](SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion) and [SG4](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition).
 
 | Capability | Exists | Owner | Assurance | Remains |
 |---|---|---|---|---|
