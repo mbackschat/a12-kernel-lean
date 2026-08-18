@@ -1,6 +1,6 @@
-import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.DateRangeBound
 
-/-! # Checked DateRange stored-text ingestion locks -/
+/-! # Checked DateRange stored-text ingestion and direct-bound locks -/
 
 namespace A12Kernel.Conformance.DateRangeInput
 
@@ -145,6 +145,16 @@ private def model : FlatModel := {
   timeZoneId := "UTC"
 }
 
+private def dottedTravel : FlatFieldDecl := {
+  travel with
+  dateRangePolicy := some dottedPolicy
+}
+
+private def dottedModel : FlatModel := {
+  fields := [dottedTravel]
+  timeZoneId := "UTC"
+}
+
 private def prepared :
     PreparedFlatStringContext model builtinStringPatternCompiler :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
@@ -155,6 +165,21 @@ private def checkOne (stored : String) (raw : RawCell) :=
     instantiatedRows := []
     cells := [{
       address := { field := travel.id, path := [] }
+      stored
+      raw
+    }]
+  }
+
+private def dottedPrepared :
+    PreparedFlatStringContext dottedModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler dottedModel).toOption.get (by native_decide)
+
+private def checkDottedOne (stored : String) (raw : RawCell) :=
+  checkDocument dottedPrepared "en_US" {
+    instantiatedRows := []
+    cells := [{
+      address := { field := dottedTravel.id, path := [] }
       stored
       raw
     }]
@@ -238,6 +263,91 @@ example :
       | .error (.incoherentCell address) =>
           address == { field := travel.id, path := [] }
       | _ => false) = true := by
+  native_decide
+
+/- Both checked policies select their exact stored endpoints instead of reconstructing them from rendered text. -/
+example :
+    let isoInput := (checkOne "2024-01-01/2024-01-31"
+      (.parsed (.dateRange january))).toOption.get (by native_decide)
+    let dottedInput := (checkDottedOne "01.01.2024-31.01.2024"
+      (.parsed (.dateRange january))).toOption.get (by native_decide)
+    let start := (elaborateDateRangeBound model travel.id .start).toOption.get
+      (by native_decide)
+    let finish := (elaborateDateRangeBound dottedModel dottedTravel.id .finish).toOption.get
+      (by native_decide)
+    (match start.evaluate .validation isoInput with
+      | .ok (.value selected) => selected == january.start
+      | _ => false) &&
+    (match finish.evaluate .validation dottedInput with
+      | .ok (.value selected) => selected == january.finish
+      | _ => false) = true := by
+  native_decide
+
+/- Endpoint projection preserves every part of the shared `DateValue`, including identities a rendered label cannot carry. -/
+example :
+    let altered : DateRangeValue := {
+      january with
+      start := {
+        january.start with
+        instant := { epochMillis := january.start.instant.epochMillis + 1 }
+        basis := .legacyHybrid } }
+    altered.select .start == altered.start &&
+      altered.select .finish == altered.finish &&
+      altered.select .start != january.start := by
+  native_decide
+
+/- Empty, validation-unknown, and computation-poison remain distinct through the same checked field query. -/
+example :
+    let bound := (elaborateDateRangeBound model travel.id .start).toOption.get
+      (by native_decide)
+    let empty := (checkOne "" .presentEmpty).toOption.get (by native_decide)
+    let invalid := (checkOne "garbage"
+      (.rejected .dateRangeSeparator)).toOption.get (by native_decide)
+    (match bound.evaluate .validation empty with
+      | .ok .empty => true
+      | _ => false) &&
+    (match bound.evaluate .validation invalid with
+      | .ok (.unknown .dateRangeSeparator) => true
+      | _ => false) &&
+    (match bound.evaluate .computation invalid with
+      | .ok (.poison .dateRangeSeparator) => true
+      | _ => false) = true := by
+  native_decide
+
+/- Admission stays bounded to direct nonrepeatable DateRange fields under the two canonical policies. -/
+example :
+    let repeated : FlatFieldDecl := {
+      travel with
+      groupPath := ["Order", "Rows"]
+      repeatableScope := [10] }
+    let repeatedModel : FlatModel := {
+      fields := [repeated]
+      repeatableGroups := [{ level := 10, path := ["Order", "Rows"] }] }
+    let dateField : FlatFieldDecl := {
+      id := 2
+      groupPath := ["Order"]
+      name := "Date"
+      policy := { kind := .temporal .date TemporalComponents.fullDate }
+      temporalTargetPolicy := some {
+        format := "yyyy-MM-dd"
+        partialMode := .full } }
+    let dateModel : FlatModel := { fields := [dateField] }
+    (elaborateDateRangeBound model travel.id .start).isOk &&
+      (elaborateDateRangeBound dottedModel dottedTravel.id .finish).isOk &&
+      (match elaborateDateRangeBound unsupportedPolicyModel
+          unsupportedPolicyTravel.id .start with
+        | .error (.unsupportedPolicy field format separator) =>
+            field == unsupportedPolicyTravel.id &&
+              format == "yyyy-MM-dd" && separator == "-"
+        | _ => false) &&
+      (match elaborateDateRangeBound repeatedModel repeated.id .start with
+        | .error (.source (.repeatableReference path)) =>
+            path == repeated.path
+        | _ => false) &&
+      (match elaborateDateRangeBound dateModel dateField.id .start with
+        | .error (.sourceNotDateRange field (.temporal .date)) =>
+            field == dateField.id
+        | _ => false) = true := by
   native_decide
 
 end A12Kernel.Conformance.DateRangeInput

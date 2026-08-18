@@ -256,6 +256,8 @@ A **fragment-format date range** completes its two endpoints **asymmetrically**:
 
 Date ranges support only `==` / `!=` (**no ordering**). A stored DATE_RANGE or `DateRange(start, end)` construction may appear on either equality side, against another construction, or as a DATE_RANGE computation result. A construction is not admitted as a date-range overlap or bound-extraction argument and **cannot be nested** inside other constructs.
 
+`StartOfDateRange(field)` and `EndOfDateRange(field)` select the stored range's first and second endpoint respectively and expose it as a Date. An empty range stays empty. Ordinary formal invalidity makes validation UNKNOWN and poisons computation with the same cause before either endpoint is selected. The validation-scoped required-empty finding remains the existing exception: it is UNKNOWN in validation and stays empty in computation. The ordinary operand is a direct non-wildcard, non-category DATE_RANGE field; `BaseYear` is the separately typed source described above, while a `DateRange(start, end)` construction is not admitted here.
+
 Each `DateRange` endpoint is a bare A12 `entitySpec` reference, including a literal- or field-keyed semantic-index selection; a bracketed calculation is illegal there. Each endpoint must be a DATE or DATE_FRAGMENT whose declared format has at least one date component and no time component. After Base-Year supplementation, the endpoints must expose the same date-component set. DATE and DATE_FRAGMENT may mix, and different lexical format spellings are legal when that component set agrees. Overlap tests treat endpoints as **inclusive (closed intervals)**.
 
 The two overlap predicates differ in **shape** ⚠:

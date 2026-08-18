@@ -459,6 +459,12 @@ run_cmd do
 #print axioms A12Kernel.observeAdmittedRawCell_rejected_computation
 #print axioms A12Kernel.flatTemporalDate_projects_instant_and_component
 #print axioms A12Kernel.dateRangeValue_toResolvedDateRange_of_endpoints
+#print axioms A12Kernel.dateRangeValue_select_start
+#print axioms A12Kernel.dateRangeValue_select_finish
+#print axioms A12Kernel.dateRangeBound_evaluate_value
+#print axioms A12Kernel.dateRangeBound_evaluate_empty
+#print axioms A12Kernel.dateRangeBound_evaluate_unknown
+#print axioms A12Kernel.dateRangeBound_evaluate_poison
 #print axioms A12Kernel.flatTemporalDateTime_projects_all_consumers
 #print axioms A12Kernel.withFinding_preserves_wellFormed
 #print axioms A12Kernel.formalCheck_empty_observes_empty

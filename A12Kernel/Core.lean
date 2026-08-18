@@ -173,6 +173,21 @@ structure DateRangeValue where
   finish : DateValue
   deriving Repr, DecidableEq
 
+/-- Which exact endpoint a DateRange bound operation selects. -/
+inductive DateRangeBound where
+  | start
+  | finish
+  deriving Repr, DecidableEq
+
+namespace DateRangeValue
+
+/-- Select one endpoint without reparsing, re-resolving, or discarding exact Date identity. -/
+def select (value : DateRangeValue) : DateRangeBound → DateValue
+  | .start => value.start
+  | .finish => value.finish
+
+end DateRangeValue
+
 /-- One admitted scalar temporal payload. Exact runtime identity remains separate from decoded local components, and the closed constructors make each kind's available component halves explicit. -/
 inductive TemporalValue where
   | date (value : DateValue)
