@@ -1962,4 +1962,8 @@ run_cmd do
 #print axioms A12Kernel.customFirstFilledCellAt_registeredRejection
 #print axioms A12Kernel.dateFragmentFirstFilledCellAt_value
 #print axioms A12Kernel.dateFragmentFirstFilledCellAt_poison
+#print axioms A12Kernel.fullDateFirstFilledCellAt_value
+#print axioms A12Kernel.fullDateFirstFilledCellAt_poison
+#print axioms A12Kernel.evalFullDateFirstFilledCells_present_head
+#print axioms A12Kernel.evalFullDateFirstFilledCells_poison_head
 #print axioms A12Kernel.booleanValueCount_confirm_empty

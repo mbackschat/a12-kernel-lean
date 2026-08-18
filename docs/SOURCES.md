@@ -129,6 +129,16 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: the matrix does not establish Boolean `false`, any formal rejection or poison, Custom type mismatch, a DateFragment format other than `MM`, or whether the DateFragment output is copied or rendered.
 - `limit`: the matrix does not establish multiple, mixed, group, or filtered operands, nested repetition, partial validation, validation comparisons, target application topology, or result kinds outside its three carriers.
 
+<a id="src-first-filled-kind-computations"></a>
+#### Direct one-star established-kind `FirstFilledValue` computations
+
+- `revision`: a12-dmkits `feba4552110858b07966660bf7080441d3b90d00` widened the maintained kind matrix; its `FirstFilledValueKindDiffTest` blob `c82d63d0d7408ae3e726d96cf397d5b0ced6d242` is unchanged at clean HEAD `89aa03957034de620562eb23a095d878f6547dca`.
+- `route`: [`FirstFilledValueKindDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/FirstFilledValueKindDiffTest.kt) compares the dynamic-Groovy Kernel route with the interpreter for fixed targets fed by direct single-level starred sources.
+- `claim`: for full Date `yyyy-MM-dd`, Time `HH:mm:ss`, DateTime `yyyy-MM-dd'T'HH:mm:ss`, DateRange `yyyy-MM-dd` with `/`, stored Enumeration, and ordinary String, the maintained test executes named empty and first-row-filled computation inputs and asserts that the dynamic-Groovy Kernel and interpreter signatures agree.
+- `claim`: Number has empty-computation and empty-comparison controls only; those rows also assert cross-engine agreement, but the test has no first-row-filled Number case.
+- `unverified`: the helper compares the two produced signatures but never asserts either literal signature; its test names, messages, and comments describe clear/value/comparison outcomes that are not executable expectations. Those literal outcomes therefore remain unverified here.
+- `limit`: the case does not execute generated static Java and does not establish copy-versus-decode/render mechanism, zero instantiated rows, a later filled row, formal invalidity, alternate formats or separators, optional temporal checks, mixed kinds, multiple/group/filtered operands, nested repetition, partial validation, or document application.
+
 <a id="src-current-repetition-root-condition"></a>
 #### Nonrepeatable-root `CurrentRepetition` condition
 
