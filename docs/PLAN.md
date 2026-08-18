@@ -9,11 +9,11 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: ready to select the next semantic unit with the bounded whole-rule diagnostic probe complete.
-- `gap`: none selected in this landing slice.
-- `objective`: choose the first ready open semantic obligation whose existing owners and external discriminator support a bounded red/green capsule.
+- `state`: read-only route discovery after removing two completed-work overlaps from the open routing surface.
+- `gap`: no implementation selected; the SG5 Number/token group-runtime route is `discovery-required`, and captured `$` `CurrentRepetition` is already owned by the checked correlation capability rather than open SG9 work.
+- `objective`: choose the first genuinely open semantic obligation whose existing owners and external discriminator support a bounded red/green capsule.
 - `oracle`: [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) owns the open set and verified routes; [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns the implemented baseline.
-- `next`: select one gap, add or verify its exclusive route in that owner, then update this plan to link to it before semantic edits.
+- `next`: inventory the remaining source-backed obligations, select one gap, add or verify its exclusive route in that owner, then update this plan to link to it before semantic edits.
 - `stop`: do not begin another semantic edit until its selected gap has a verified route; do not carry the diagnostic family's review denominator into the next unit.
 - `blocked-on`: none.
 - `consumer-probe-trigger`: inactive after the whole-rule diagnostic probe; evaluate the next trigger only at another reusable family or risk boundary.
