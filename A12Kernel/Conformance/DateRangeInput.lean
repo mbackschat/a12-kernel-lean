@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.DateRangeBound
 
-/-! # Checked DateRange stored-text ingestion and direct-bound locks -/
+/-! # Checked DateRange stored-text ingestion, direct-bound, and comparison locks -/
 
 namespace A12Kernel.Conformance.DateRangeInput
 
@@ -348,6 +348,85 @@ example :
         | .error (.sourceNotDateRange field (.temporal .date)) =>
             field == dateField.id
         | _ => false) = true := by
+  native_decide
+
+private def fullDate (year : Int) (month day : Nat)
+    (admitted : (FullDate.ofYmd? year month day).isSome) : FullDate :=
+  (FullDate.ofYmd? year month day).get admitted
+
+private def januaryMidpoint : FullDate :=
+  fullDate 2024 1 15 (by native_decide)
+
+/- Start and finish retain their authored identity while delegating to the existing full-Date comparison. -/
+example :
+    let input := (checkOne "2024-01-01/2024-01-31"
+      (.parsed (.dateRange january))).toOption.get (by native_decide)
+    let start := (elaborateDateRangeBoundComparison model travel.id .start
+      .left .before januaryMidpoint).toOption.get (by native_decide)
+    let finish := (elaborateDateRangeBoundComparison model travel.id .finish
+      .left .before januaryMidpoint).toOption.get (by native_decide)
+    (start.evaluate input).toOption = some {
+      selected := .value january.start
+      verdict := .fired .value
+    } ∧
+    (finish.evaluate input).toOption = some {
+      selected := .value january.finish
+      verdict := .notFired
+    } := by
+  native_decide
+
+/- Authored operand position remains observable for directional comparisons. -/
+example :
+    let selected := (elaborateDateRangeBoundComparison model travel.id .start
+      .right .before januaryMidpoint).toOption.get (by native_decide)
+    (selected.evaluateSelected (.value january.start)).toOption = some {
+      selected := .value january.start
+      verdict := .notFired
+    } := by
+  native_decide
+
+/- Empty and formal unavailability retain both their selected observation and established validation verdict. -/
+example :
+    let comparison := (elaborateDateRangeBoundComparison model travel.id .start
+      .left .equal januaryMidpoint).toOption.get (by native_decide)
+    let empty := (checkOne "" .presentEmpty).toOption.get (by native_decide)
+    let invalid := (checkOne "garbage"
+      (.rejected .dateRangeSeparator)).toOption.get (by native_decide)
+    (comparison.evaluate empty).toOption = some {
+      selected := .empty
+      verdict := .notFired
+    } ∧
+    (comparison.evaluate invalid).toOption = some {
+      selected := .unknown .dateRangeSeparator
+      verdict := .unknown
+    } := by
+  native_decide
+
+/- Comparison projects decoded calendar identity while preserving the exact selected endpoint for explanation. -/
+example :
+    let comparison := (elaborateDateRangeBoundComparison model travel.id .start
+      .left .before januaryMidpoint).toOption.get (by native_decide)
+    let altered : DateValue := {
+      january.start with
+      instant := { epochMillis := january.start.instant.epochMillis + 1 }
+      basis := .legacyHybrid }
+    (comparison.evaluateSelected (.value altered)).toOption = some {
+      selected := .value altered
+      verdict := .fired .value
+    } := by
+  native_decide
+
+/- A malformed universal payload cannot be silently coerced into the full-Date comparison domain. -/
+example :
+    let comparison := (elaborateDateRangeBoundComparison model travel.id .start
+      .left .equal januaryMidpoint).toOption.get (by native_decide)
+    let malformed : DateValue := {
+      january.start with
+      parts := { year := 2024, month := 1, day := 0 } }
+    (match comparison.evaluateSelected (.value malformed) with
+      | .error (.selectedDateUnavailable source value) =>
+          source == travel.id && value == malformed
+      | _ => false) = true := by
   native_decide
 
 end A12Kernel.Conformance.DateRangeInput

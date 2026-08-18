@@ -199,15 +199,17 @@ For an assurance drill, use the row’s linked owner, then the matching [`Proofs
 - `remains`: fragment and wider format/separator parsing, other legal zones, full message construction, range-operand assembly, and target/computation breadth beyond the exact direct FirstFilled route: [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion) and [SG10](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration).
 
 <a id="cap-checked-date-range-bound"></a>
-#### Checked direct DateRange bound extraction
+#### Checked direct DateRange bound extraction and fixed-Date comparison
 
-- `state`: implemented for direct nonrepeatable DateRange fields under the canonical `yyyy-MM-dd`/`/` and `dd.MM.yyyy`/`-` stored-input policies.
+- `state`: implemented for direct nonrepeatable DateRange fields under the canonical `yyyy-MM-dd`/`/` and `dd.MM.yyyy`/`-` stored-input policies, including comparison with one fixed full Date in either authored position.
 - `boundary`: `DateRangeBound` selects start or finish directly from `DateRangeValue`; the checked operation reads the field once through `CheckedDocument`, returns the exact `DateValue`, and preserves empty, validation-unknown, computation-poison, and exact cause identity without label reconstruction.
-- `owner`: [`Core.lean`](../A12Kernel/Core.lean) owns endpoint selection, and [`DateRangeBound.lean`](../A12Kernel/Elaboration/DateRangeBound.lean) owns direct-field admission plus the sole checked read.
-- `case`: [canonical input and bound cases](../A12Kernel/Conformance/DateRangeInput.lean) distinguish both policies, both endpoints, exact instant/parts/basis identity, all three non-value observations, unsupported policy, repeatable placement, and wrong kind.
-- `proof`: [bound laws](../A12Kernel/Proofs/DateRangeBound.lean) preserve selected value, empty, validation cause, and computation cause through the checked read.
-- `assurance`: E/P internally closed for the named direct-field fragment. L observes the dotted range's start year/month and finish day and pins direct field admission at [the source checkpoint](SOURCES.md#src-date-range-bound-extraction), but those rows do not separate endpoint direction; exact direction, instant/basis transport, phase failures, and the ISO policy remain source-established or internal composition claims as recorded there.
-- `remains`: BaseYear, fragment ranges, constructed ranges, comparison and computation-target assembly, nested consumers, and repeatable addressing remain in [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
+- `boundary`: the checked comparison retains field, bound, operand position, operator, fixed peer, exact selected observation, and established full-Date verdict in one result; it projects decoded calendar identity only at the existing comparison seam and reports an impossible non-full endpoint explicitly.
+- `owner`: [`Core.lean`](../A12Kernel/Core.lean) owns endpoint selection, [`DateRangeBound.lean`](../A12Kernel/Elaboration/DateRangeBound.lean) owns direct-field admission, the sole checked read, and comparison composition, while [`DateComparison.lean`](../A12Kernel/Semantics/DateComparison.lean) remains the comparison-semantic owner.
+- `case`: [canonical input, bound, and comparison cases](../A12Kernel/Conformance/DateRangeInput.lean) distinguish both policies, both endpoints, exact instant/parts/basis identity, operand position, all three bound non-value observations, comparison empty/unknown, impossible full-Date projection, unsupported policy, repeatable placement, and wrong kind.
+- `proof`: [bound and comparison laws](../A12Kernel/Proofs/DateRangeBound.lean) preserve selected value, empty, validation cause, and computation cause through the checked read, then preserve exact selected identity while delegating value, empty, and unavailable comparison behavior.
+- `assurance`: E/P internally closed for the named direct-field and fixed-Date comparison fragment.
+- `assurance`: L observes the dotted range's start year/month and finish day and pins direct field admission at [the source checkpoint](SOURCES.md#src-date-range-bound-extraction), but those rows do not separate endpoint direction or directly compare a bound with a full Date; exact direction, instant/basis transport, phase failures, fixed-Date comparison, and the ISO policy remain source-established or internal composition claims as recorded there.
+- `remains`: BaseYear, fragment ranges, constructed ranges, date-component and wider comparison operands, overlap and computation-target assembly, nested consumers, and repeatable addressing remain in [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
 
 <a id="cap-temporal-comparison-and-aggregates"></a>
 #### Temporal comparison and aggregates

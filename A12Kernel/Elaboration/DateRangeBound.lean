@@ -1,6 +1,8 @@
 import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Semantics.DateComparison
+import A12Kernel.Semantics.DateRangeOverlap
 
-/-! # Checked direct DateRange bound extraction -/
+/-! # Checked direct DateRange bound extraction and fixed-Date comparison -/
 
 namespace A12Kernel
 
@@ -31,6 +33,19 @@ structure CheckedDateRangeBound (model : FlatModel) where
   bound : DateRangeBound
   sourceAdmitted : model.admitsDateRangeBoundSource source = true
 
+/-- Authored side occupied by the selected DateRange bound in one full-Date comparison. -/
+inductive DateRangeBoundComparisonPosition where
+  | left
+  | right
+  deriving Repr, DecidableEq
+
+/-- One checked direct DateRange bound composed with the existing full-Date comparison consumer. -/
+structure CheckedDateRangeBoundComparison (model : FlatModel)
+    extends CheckedDateRangeBound model where
+  position : DateRangeBoundComparisonPosition
+  comparison : TemporalComparisonOp
+  expected : FullDate
+
 /-- Resolve one direct field and accept only the two DateRange policies whose stored input is decoded by `CheckedDocument`. -/
 def elaborateDateRangeBound (model : FlatModel) (sourceField : FieldId)
     (bound : DateRangeBound) :
@@ -52,10 +67,31 @@ def elaborateDateRangeBound (model : FlatModel) (sourceField : FieldId)
       else
         throw .incoherentCore
 
+/-- Resolve one direct bound and retain its authored comparison position and fixed full-Date peer. -/
+def elaborateDateRangeBoundComparison (model : FlatModel)
+    (sourceField : FieldId) (bound : DateRangeBound)
+    (position : DateRangeBoundComparisonPosition)
+    (comparison : TemporalComparisonOp) (expected : FullDate) :
+    Except DateRangeBoundElabError (CheckedDateRangeBoundComparison model) := do
+  let source ← elaborateDateRangeBound model sourceField bound
+  pure { source with position, comparison, expected }
+
 /-- Structural failure outside the phase-sensitive endpoint observation. -/
 inductive DateRangeBoundFault where
   | document (error : CheckedDocumentError)
   | sourceValueKind (source : FieldId)
+  deriving Repr, DecidableEq
+
+/-- Defensive failure while composing one selected endpoint with a full-Date comparison. -/
+inductive DateRangeBoundComparisonFault where
+  | bound (cause : DateRangeBoundFault)
+  | selectedDateUnavailable (source : FieldId) (value : DateValue)
+  deriving Repr, DecidableEq
+
+/-- One-read result for Execute and Explain: exact selected observation plus its existing comparison verdict. -/
+structure DateRangeBoundComparisonResult where
+  selected : CellObservation DateValue
+  verdict : Verdict
   deriving Repr, DecidableEq
 
 namespace CheckedDateRangeBound
@@ -74,5 +110,40 @@ def evaluate (operation : CheckedDateRangeBound model) (phase : Phase)
   | .poison cause => pure (.poison cause)
 
 end CheckedDateRangeBound
+
+namespace CheckedDateRangeBoundComparison
+
+/-- Project an exact selected endpoint into the established full-Date comparison domain while keeping impossible malformed payloads explicit. -/
+def projectSelected (source : FieldId) :
+    CellObservation DateValue →
+    Except DateRangeBoundComparisonFault (CellObservation FullDate)
+  | .empty => .ok .empty
+  | .value value =>
+      match value.toFullDate? with
+      | some date => .ok (.value date)
+      | none => throw (.selectedDateUnavailable source value)
+  | .unknown cause => .ok (.unknown cause)
+  | .poison cause => .ok (.poison cause)
+
+/-- Compare one already-selected exact endpoint while retaining it for explanation. -/
+def evaluateSelected (operation : CheckedDateRangeBoundComparison model)
+    (selected : CellObservation DateValue) :
+    Except DateRangeBoundComparisonFault DateRangeBoundComparisonResult := do
+  let projected ← projectSelected operation.source.id selected
+  let expected : CellObservation FullDate := .value operation.expected
+  let verdict := match operation.position with
+    | .left => operation.comparison.evalObserved projected expected
+    | .right => operation.comparison.evalObserved expected projected
+  .ok { selected, verdict }
+
+/-- Read the certified source once in validation phase, then delegate its selected endpoint to the established full-Date comparison. -/
+def evaluate (operation : CheckedDateRangeBoundComparison model)
+    (input : CheckedDocument model) :
+    Except DateRangeBoundComparisonFault DateRangeBoundComparisonResult := do
+  let selected ←
+    (operation.toCheckedDateRangeBound.evaluate .validation input).mapError .bound
+  operation.evaluateSelected selected
+
+end CheckedDateRangeBoundComparison
 
 end A12Kernel

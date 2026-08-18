@@ -11,9 +11,9 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 ## Selected work
 
 - `state`: read-only route discovery required after the current capsule commit.
-- `gap`: [SG6 DateRange bound comparison composition](SEMANTICS-GAPS.md#gap-sg6-date-range-bound-comparison).
+- `gap`: [SG6 DateRange bound component extraction composition](SEMANTICS-GAPS.md#gap-sg6-date-range-bound-component).
 - `oracle`: [stored DateRange bound extraction](SOURCES.md#src-date-range-bound-extraction).
-- `next`: inventory the existing direct full-Date comparison surfaces, checked operand/result owners, and bound-read phase projections; verify the narrow composition route before semantic edits.
+- `next`: inventory the existing typed Date-component projection, numeric operand/result owners, and bound-read phase projection; verify the narrow composition route before semantic edits.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: defer the next bounded probe until comparison composition adds a new operator decision.
-- `resume`: `rg -n 'StartOfDateRange|EndOfDateRange|DateRangeValue|ResolvedDateRange|dateRange' A12Kernel/Elaboration A12Kernel/Semantics A12Kernel/Conformance docs/SOURCES.md ../a12-rulekit/interpreter`
+- `consumer-probe-trigger`: defer the next bounded probe until component composition adds a new operator decision.
+- `resume`: `rg -n 'DateNumericPart|fromFullDateObservation|resolveDateNumericOperand|DateRangeBound|DateValue' A12Kernel/Elaboration A12Kernel/Semantics A12Kernel/Conformance docs/SOURCES.md`

@@ -465,6 +465,9 @@ run_cmd do
 #print axioms A12Kernel.dateRangeBound_evaluate_empty
 #print axioms A12Kernel.dateRangeBound_evaluate_unknown
 #print axioms A12Kernel.dateRangeBound_evaluate_poison
+#print axioms A12Kernel.dateRangeBoundComparison_evaluateSelected_value
+#print axioms A12Kernel.dateRangeBoundComparison_evaluateSelected_empty
+#print axioms A12Kernel.dateRangeBoundComparison_evaluateSelected_unknown
 #print axioms A12Kernel.flatTemporalDateTime_projects_all_consumers
 #print axioms A12Kernel.withFinding_preserves_wellFormed
 #print axioms A12Kernel.formalCheck_empty_observes_empty

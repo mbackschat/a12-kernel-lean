@@ -65,4 +65,51 @@ theorem dateRangeBound_evaluate_poison
   rw [observed]
   rfl
 
+/-- A present endpoint is projected once to `FullDate`, while the exact selected value remains in the result. -/
+theorem dateRangeBoundComparison_evaluateSelected_value
+    (operation : CheckedDateRangeBoundComparison model)
+    (value : DateValue) (date : FullDate)
+    (resolved : value.toFullDate? = some date) :
+    operation.evaluateSelected (.value value) = .ok {
+      selected := .value value
+      verdict := match operation.position with
+        | .left => operation.comparison.evalObserved
+            (.value date) (.value operation.expected)
+        | .right => operation.comparison.evalObserved
+            (.value operation.expected) (.value date)
+    } := by
+  cases position : operation.position <;>
+    simp [CheckedDateRangeBoundComparison.evaluateSelected,
+      CheckedDateRangeBoundComparison.projectSelected, resolved,
+      position, bind, Except.bind]
+
+/-- Empty selection remains visible and makes either authored comparison position not fire. -/
+@[simp] theorem dateRangeBoundComparison_evaluateSelected_empty
+    (operation : CheckedDateRangeBoundComparison model) :
+    operation.evaluateSelected .empty = .ok {
+      selected := .empty
+      verdict := .notFired
+    } := by
+  cases position : operation.position <;>
+    simp [CheckedDateRangeBoundComparison.evaluateSelected, position,
+      CheckedDateRangeBoundComparison.projectSelected,
+      CellObservation.asValidationSimpleOperand, bind, Except.bind,
+      TemporalComparisonOp.evalObserved, TemporalComparisonOp.eval,
+      evalSymmetricComparison]
+
+/-- Formal unavailability remains visible and makes either authored comparison position unknown. -/
+@[simp] theorem dateRangeBoundComparison_evaluateSelected_unknown
+    (operation : CheckedDateRangeBoundComparison model)
+    (cause : FormalCause) :
+    operation.evaluateSelected (.unknown cause) = .ok {
+      selected := .unknown cause
+      verdict := .unknown
+    } := by
+  cases position : operation.position <;>
+    simp [CheckedDateRangeBoundComparison.evaluateSelected, position,
+      CheckedDateRangeBoundComparison.projectSelected,
+      CellObservation.asValidationSimpleOperand, bind, Except.bind,
+      TemporalComparisonOp.evalObserved, TemporalComparisonOp.eval,
+      evalSymmetricComparison]
+
 end A12Kernel
