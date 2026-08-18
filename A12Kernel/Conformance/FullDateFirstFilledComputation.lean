@@ -69,15 +69,25 @@ private def repeatedTarget :=
   dateField 6 ["Cart", "Lines"] "RepeatedTarget" [10]
 private def nestedSource :=
   dateField 7 ["Cart", "Lines", "Details"] "NestedDate" [10, 20]
-private def otherFormatTarget :=
+private def dottedTarget :=
   dateField 8 ["Cart"] "DottedTarget" [] "dd.MM.yyyy"
 private def otherGroupTarget := dateField 9 ["Other"] "OtherDate"
+private def unsupportedFormatTarget :=
+  dateField 13 ["Cart"] "UnsupportedTarget" [] "yyyy/MM/dd"
+private def unsupportedFormatSource :=
+  dateField 14 ["Cart", "Lines"] "UnsupportedSource" [10] "yyyy/MM/dd"
+private def checkedDottedSource :=
+  dateField 15 ["Cart", "Lines"] "CheckedDottedSource" [10]
+    "dd.MM.yyyy" true
+private def checkedDottedTarget :=
+  dateField 16 ["Cart"] "CheckedDottedTarget" [] "dd.MM.yyyy" true
 
 private def model : FlatModel := {
   fields := [
     target, source, dottedSource, checkedSource, timeSource, monthSource,
     partialSource, incompleteSource, repeatedTarget, nestedSource,
-    otherFormatTarget, otherGroupTarget]
+    dottedTarget, otherGroupTarget, unsupportedFormatTarget,
+    unsupportedFormatSource, checkedDottedSource, checkedDottedTarget]
   repeatableGroups := [
     { level := 10, path := ["Cart", "Lines"], repeatability := some 99 },
     { level := 20, path := ["Cart", "Lines", "Details"],
@@ -124,10 +134,11 @@ private structure SourceInput where
   stored : String
   raw : RawCell
 
-private def input? (sourceInputs : List SourceInput) :
+private def inputFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
+    (sourceInputs : List SourceInput) :
     Option (CheckedDocument model) :=
   let sourceCells := sourceInputs.map fun input => {
-    address := { field := source.id, path := [input.row] }
+    address := { field := sourceDeclaration.id, path := [input.row] }
     stored := input.stored
     raw := input.raw
   }
@@ -136,26 +147,32 @@ private def input? (sourceInputs : List SourceInput) :
       { group := 10, path := [1] },
       { group := 10, path := [2] }]
     cells := [{
-      address := { field := target.id, path := [] }
+      address := { field := targetDeclaration.id, path := [] }
       stored := "2000-01-01"
       raw := .parsed (dateValue 946684800000 2000 1 1)
     }] ++ sourceCells
   }).toOption
 
-private def outcome? (sourceInputs : List SourceInput) :
+private def outcomeFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
+    (sourceInputs : List SourceInput) :
     Option FullDateTargetOutcome := do
-  let operation ← checked? target.id (star "PromiseDate")
-  let input ← input? sourceInputs
+  let operation ← checked? targetDeclaration.id (star sourceDeclaration.name)
+  let input ← inputFor? targetDeclaration sourceDeclaration sourceInputs
   operation.execute input |>.toOption
 
-private def signature? (sourceInputs : List SourceInput) :
+private def outcome? := outcomeFor? target source
+
+private def signatureFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
+    (sourceInputs : List SourceInput) :
     Option String := do
-  let outcome ← outcome? sourceInputs
+  let outcome ← outcomeFor? targetDeclaration sourceDeclaration sourceInputs
   pure (match outcome with
     | .noValue => "CLEARED"
     | .accepted stored => "VALUE|" ++ stored.text
     | .errored _ _ => "ERRORED"
     | .poison _ => "POISON")
+
+private def signature? := signatureFor? target source
 
 /- The retained temporal-family probe Kernel-calibrates these exact empty, row-1, and leading-empty result signatures. -/
 example :
@@ -181,6 +198,15 @@ example :
     }] = some "VALUE|2024-03-20" := by
   native_decide
 
+/- The second bounded full-Date declaration retains the same typed instant and delegates its exact dotted result to the target-owned renderer. Its direct `FirstFilledValue` composition remains external-evidence pending. -/
+example :
+    signatureFor? dottedTarget dottedSource [{
+      row := 1
+      stored := "copied-text-would-be-wrong"
+      raw := .parsed (dateValue 1710892800000 2024 3 20)
+    }] = some "VALUE|20.03.2024" := by
+  native_decide
+
 /- First-present and first-formal terminals both hide the suffix; these order branches remain externally uncalibrated. -/
 example :
     signature? [
@@ -201,16 +227,21 @@ example :
       ] = some "POISON" := by
   native_decide
 
-/- The checked boundary admits only the bounded fixed `yyyy-MM-dd` full-Date target and direct single-level starred source. -/
+/- The checked boundary admits either exact full-Date format only when target and direct single-level starred source match; optional checks and wider profiles remain excluded. -/
 example :
     (checked? target.id (star "PromiseDate")).isSome = true ∧
       (checked? target.id (star "DottedDate")).isNone = true ∧
+      (checked? dottedTarget.id (star "PromiseDate")).isNone = true ∧
+      (checked? dottedTarget.id (star "DottedDate")).isSome = true ∧
       (checked? target.id (star "CheckedDate")).isNone = true ∧
+      (checked? dottedTarget.id (star "CheckedDottedSource")).isNone = true ∧
+      (checked? checkedDottedTarget.id (star "DottedDate")).isNone = true ∧
+      (checked? unsupportedFormatTarget.id
+        (star "UnsupportedSource")).isNone = true ∧
       (checked? target.id (star "Time")).isNone = true ∧
       (checked? target.id (star "Month")).isNone = true ∧
       (checked? target.id (star "PartialDate")).isNone = true ∧
       (checked? target.id (star "IncompleteDate")).isNone = true ∧
-      (checked? otherFormatTarget.id (star "PromiseDate")).isNone = true ∧
       (checked? otherGroupTarget.id (star "PromiseDate")).isNone = true ∧
       (checkedAt? ["Cart", "Lines"] repeatedTarget.id
         (star "PromiseDate")).isNone = true ∧

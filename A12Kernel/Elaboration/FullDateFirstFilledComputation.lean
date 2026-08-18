@@ -10,24 +10,39 @@ inductive FullDateFirstFilledComputationElabError where
   | targetPolicy (cause : FullDateTargetElabError)
   deriving Repr, DecidableEq
 
-/-- One fixed `yyyy-MM-dd` full-Date target and one direct single-level starred source of the same bounded carrier. -/
+/-- Carrier-specific direct-star shape retained beneath the checked full-Date computation boundary. -/
+inductive FullDateFirstFilledShape (model : FlatModel) where
+  | iso
+      (shape : CheckedTemporalFirstFilledStarComputation model .fullDateIso)
+  | dotted
+      (shape : CheckedTemporalFirstFilledStarComputation model .fullDateDotted)
+
+/-- One fixed full-Date target and one direct single-level starred source sharing one exact admitted declaration format. The private constructor keeps the separately checked target policy tied to the assembly route. -/
 structure CheckedFullDateFirstFilledComputation (model : FlatModel) where
   private mk ::
-  shape : CheckedTemporalFirstFilledStarComputation model .fullDateIso
+  shape : FullDateFirstFilledShape model
   targetPolicy : CheckedFullDateTarget model
 
-/-- Check the exact externally measured full-Date computation shape. Wider formats, policies, operands, nesting, validation use, and application remain outside this boundary. -/
+/-- Check the two exact bounded full-Date formats. The ISO composition is externally measured; dotted target rendering is measured separately while its direct `FirstFilledValue` composition remains pending. Wider formats, policies, operands, nesting, validation use, and application stay outside. -/
 def checkFullDateFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) :
     Except FullDateFirstFilledComputationElabError
       (CheckedFullDateFirstFilledComputation model) := do
-  let shape ← checkTemporalFirstFilledStarComputation
-    model declaringGroup targetField authored .fullDateIso
-      |>.mapError .shape
-  let targetPolicy ← elaborateFullDateTarget model targetField
-    |>.mapError .targetPolicy
-  pure { shape, targetPolicy }
+  match checkTemporalFirstFilledStarComputation
+      model declaringGroup targetField authored .fullDateIso with
+  | .ok shape =>
+      let targetPolicy ← elaborateFullDateTarget model targetField
+        |>.mapError .targetPolicy
+      pure { shape := .iso shape, targetPolicy }
+  | .error (.targetCarrier _) =>
+      let shape ← checkTemporalFirstFilledStarComputation
+        model declaringGroup targetField authored .fullDateDotted
+          |>.mapError .shape
+      let targetPolicy ← elaborateFullDateTarget model targetField
+        |>.mapError .targetPolicy
+      pure { shape := .dotted shape, targetPolicy }
+  | .error cause => throw (.shape cause)
 
 /-- Project one checked full-Date cell into the typed root computation result consumed by the target policy. Stored text is deliberately not selected here, so the account does not choose copy over decode/render. -/
 def fullDateFirstFilledCellAt
@@ -54,14 +69,26 @@ inductive FullDateFirstFilledComputationFault where
 
 namespace CheckedFullDateFirstFilledComputation
 
-/-- Execute the checked source over immutable rows, then let the existing target policy render and classify the selected typed Date. -/
-def execute (operation : CheckedFullDateFirstFilledComputation model)
+/-- Execute one checked carrier over immutable rows, then let the existing target policy render and classify the selected typed Date. -/
+private def executeWith
+    (shape : CheckedTemporalFirstFilledStarComputation model carrier)
+    (targetPolicy : CheckedFullDateTarget model)
     (input : CheckedDocument model) :
     Except FullDateFirstFilledComputationFault FullDateTargetOutcome := do
-  let resolved ← operation.shape.source.resolveCheckedField input []
+  let resolved ← shape.source.resolveCheckedField input []
     |>.mapError .source
-  operation.targetPolicy.evaluate (evalFullDateFirstFilledCells resolved.cells)
+  targetPolicy.evaluate (evalFullDateFirstFilledCells resolved.cells)
     |>.mapError .target
+
+/-- Execute through the single checked document and the exact full-Date target policy retained during assembly. -/
+def execute (operation : CheckedFullDateFirstFilledComputation model)
+    (input : CheckedDocument model) :
+    Except FullDateFirstFilledComputationFault FullDateTargetOutcome :=
+  match operation with
+  | { shape := .iso shape, targetPolicy } =>
+      executeWith shape targetPolicy input
+  | { shape := .dotted shape, targetPolicy } =>
+      executeWith shape targetPolicy input
 
 end CheckedFullDateFirstFilledComputation
 

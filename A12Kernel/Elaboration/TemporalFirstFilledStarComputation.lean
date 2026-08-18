@@ -9,6 +9,7 @@ namespace A12Kernel
 inductive TemporalFirstFilledStarCarrier where
   | monthFragment
   | fullDateIso
+  | fullDateDotted
   | timeHms
   | dateTimeIso
   | dateRangeIsoSlash
@@ -30,6 +31,9 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
       else if policy.format == "yyyy-MM-dd" &&
           policy.partialMode == .full then
         some .fullDateIso
+      else if policy.format == "dd.MM.yyyy" &&
+          policy.partialMode == .full then
+        some .fullDateDotted
       else
         none
   | .temporal .time components, some policy, _ =>

@@ -10,9 +10,9 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: implementation ready.
-- `gap`: [second direct full-Date `FirstFilledValue` policy](SEMANTICS-GAPS.md#gap-sg6-full-date-first-filled-second-policy).
-- `next`: add the red dotted typed-instant result and crossed-format refusals, then specialize the existing direct-star certificate while reusing the checked full-Date target policy unchanged.
+- `state`: read-only route discovery required.
+- `gap`: [SG6 remaining temporal `FirstFilledValue` policies](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion), after closing both bounded full-Date and DateRange declaration pairs.
+- `next`: determine whether any remaining authorable temporal declaration can receive a computed `FirstFilledValue` result without widening the checked value representation; reject time-only DateTime and partial or optional-check routes unless exact target admission and runtime semantics support them.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: satisfied for the exact fixed four-carrier profile; the second DateRange policy adds no new consumer distinction beyond the already-probed declaration-owned rendering decision. Trigger again only after a reusable wider family closes or another defined milestone/risk boundary is reached.
-- `resume`: `lake build A12Kernel.Conformance.FullDateFirstFilledComputation`
+- `consumer-probe-trigger`: satisfied for the exact fixed four-carrier profile; the second full-Date and DateRange policies add no new consumer distinction beyond the already-probed declaration-owned rendering decision. Trigger again only after a reusable wider family closes or another defined milestone/risk boundary is reached.
+- `resume`: `rg -n 'dateTimeIso|monthFragment|youngerThan1900Check|TemporalFirstFilledStarCarrier' A12Kernel docs/SOURCES.md ../a12-rulekit/src/test`
