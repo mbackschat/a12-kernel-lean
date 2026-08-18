@@ -33,9 +33,16 @@ private def admissionModel : FlatModel := {
       repeatableScope := [10],
       policy := { kind := .number { scale := 0, signed := false } } },
     rangeField 7 ["Form", "Fixed"] "Left",
-    rangeField 8 ["Form", "Fixed"] "Right"]
+    rangeField 8 ["Form", "Fixed"] "Right",
+    rangeField 9 ["Form", "Periods"] "Window" [11],
+    rangeField 10 ["Form", "Periods"] "Grace" [11],
+    { id := 11, groupPath := ["Form"], name := "Quantity",
+      policy := { kind := .number { scale := 0, signed := false } } },
+    { id := 12, groupPath := ["Form"], name := "BackorderQuantity",
+      policy := { kind := .number { scale := 0, signed := false } } }]
   repeatableGroups := [
-    { level := 10, path := ["Form", "Rows"], repeatability := some 4 }]
+    { level := 10, path := ["Form", "Rows"], repeatability := some 4 },
+    { level := 11, path := ["Form", "Periods"], repeatability := some 3 }]
 }
 
 private def direct (field : String) : SurfaceFieldEntityOperand :=
@@ -46,6 +53,15 @@ private def star (field : String) : SurfaceStarFieldPath := {
   groups := [{ name := "Form" }, { name := "Rows", starred := true }]
   field
 }
+
+private def periodsStar (field : String) : SurfaceStarFieldPath := {
+  base := .absolute
+  groups := [{ name := "Form" }, { name := "Periods", starred := true }]
+  field
+}
+
+private def projected (field : String) : SurfaceFieldEntityOperand :=
+  .field { base := .relative 0, groups := [], field } (.projected "Band")
 
 private def selfFilter : SurfaceCorrelatedHaving :=
   .compareNumbers .equal
@@ -58,6 +74,12 @@ private def starredRowsGroup : SurfaceFieldEntityOperand :=
   .starredGroup {
     base := .absolute
     groups := [{ name := "Form" }, { name := "Rows", starred := true }]
+  }
+
+private def starredPeriodsGroup : SurfaceFieldEntityOperand :=
+  .starredGroup {
+    base := .absolute
+    groups := [{ name := "Form" }, { name := "Periods", starred := true }]
   }
 
 private def checkedSource? (first : SurfaceFieldEntityOperand)
@@ -109,6 +131,133 @@ example :
       admissionError? (.field { base := .relative 0, groups := [], field := "Start" }
         (.projected "Band")) [direct "Finish"] =
         some (.unsupportedReadForm ["Form", "Start"] (.projected "Band")) := by
+  native_decide
+
+/-! ## Checked `AtLeastOneDateRangeOverlaps` source admission -/
+
+private def checkedPluralSource? (scalar first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand := []) :
+    Option (CheckedAtLeastOneDateRangeOverlapsSource admissionModel) :=
+  (elaborateAtLeastOneDateRangeOverlapsSource admissionModel ["Form"] {
+    scalar
+    list := { first, rest }
+  }).toOption
+
+private def pluralAdmissionError? (scalar first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand := []) :
+    Option AtLeastOneDateRangeOverlapsElabError :=
+  match elaborateAtLeastOneDateRangeOverlapsSource admissionModel ["Form"] {
+      scalar
+      list := { first, rest }
+    } with
+  | .ok _ => none
+  | .error error => some error
+
+private def pluralGroupSummary? :
+    CheckedAtLeastOneDateRangeOverlapsListOperand admissionModel →
+      Option (GroupPath × Bool × List FieldId)
+  | .field _ => none
+  | .group source => some (
+      source.source.groupPath,
+      source.source.isStarred,
+      (source.first :: source.rest).map (·.declaration.id))
+
+/- A single direct list field is legal: list nonemptiness is distinct from the singular aggregate's multiplicity gate. -/
+example :
+    (checkedPluralSource? (direct "Start") (direct "Finish")).isSome = true := by
+  native_decide
+
+/- The public certificate keeps the scalar outside the ordered list and preserves field identity. -/
+example :
+    (checkedPluralSource? (direct "Start") (direct "Finish")
+      [.star (star "Window")]).map (fun checked =>
+        (checked.scalar.declaration.id,
+          checked.operands.map fun operand =>
+            operand.fields.map (·.declaration.id))) =
+      some (1, [[2], [3]]) := by
+  native_decide
+
+/- Plain and filtered stars retain their exact filter slot on the list side. -/
+example :
+    (checkedPluralSource? (direct "Start") (.star (star "Window"))).map
+        (·.hasHaving) = some false ∧
+      (checkedPluralSource? (direct "Start")
+        (.starHaving (star "Window") selfFilter)).map (·.hasHaving) = some true := by
+  native_decide
+
+/- Both measured group spellings are admitted in the list slot and retain one authored operand. -/
+example :
+    (checkedPluralSource? (direct "Start")
+      (.group (.path {
+        base := .absolute, groups := ["Form", "Fixed"] }))).map
+        (·.operands.length) = some 1 ∧
+      (checkedPluralSource? (direct "Start") starredPeriodsGroup).map
+        (·.operands.length) = some 1 := by
+  native_decide
+
+/- Group certificates keep authored group identity and complete declaration order. -/
+example :
+    (checkedPluralSource? (direct "Start")
+      (.group (.path {
+        base := .absolute, groups := ["Form", "Fixed"] }))).bind
+        (pluralGroupSummary? ·.first) =
+          some (["Form", "Fixed"], false, [7, 8]) ∧
+      (checkedPluralSource? (direct "Start") starredPeriodsGroup).bind
+        (pluralGroupSummary? ·.first) =
+          some (["Form", "Periods"], true, [9, 10]) := by
+  native_decide
+
+/- The measured scalar/list reversal gets its exact class; an unmeasured scalar group remains unmapped. -/
+example :
+    (pluralAdmissionError? (.star (star "Window")) (direct "Start")).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? =
+          some .invalidParameterForDateRangeComparison ∧
+      (pluralAdmissionError?
+        (.group (.path { base := .absolute, groups := ["Form", "Fixed"] }))
+        (direct "Start")).bind
+          AtLeastOneDateRangeOverlapsElabError.diagnostic? = none := by
+  native_decide
+
+/- The scalar wildcard gate precedes list overlap checks; the unmeasured filtered spelling stays unmapped. -/
+example :
+    (pluralAdmissionError? (.star (periodsStar "Window"))
+      starredPeriodsGroup).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? =
+          some .invalidParameterForDateRangeComparison ∧
+      (pluralAdmissionError? (.starHaving (star "Window") selfFilter)
+        (direct "Start")).bind
+          AtLeastOneDateRangeOverlapsElabError.diagnostic? = none := by
+  native_decide
+
+/- The exact measured Number/Number pair maps to `MVK_NO_DATE_RANGE`; either isolated kind mismatch stays unmapped. -/
+example :
+    (pluralAdmissionError? (direct "Quantity")
+      (direct "BackorderQuantity")).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? = some .noDateRange ∧
+      (pluralAdmissionError? (direct "Code") (direct "Start")).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? = none ∧
+      (pluralAdmissionError? (direct "Start") (direct "Code")).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? = none := by
+  native_decide
+
+/- Unsupported policy and read-form refusals stay unmapped on either side. -/
+example :
+    (pluralAdmissionError? (direct "Unsupported") (direct "Finish")).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? = none ∧
+      (pluralAdmissionError? (direct "Start") (direct "Unsupported")).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? = none ∧
+      (pluralAdmissionError? (projected "Start") (direct "Finish")).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? = none ∧
+      (pluralAdmissionError? (direct "Start") (projected "Finish")).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? = none := by
+  native_decide
+
+/- Exact duplication spans scalar and list, and a group cannot certify by silently dropping its wrong-kind field. -/
+example :
+    (pluralAdmissionError? (direct "Start") (direct "Start")).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? = some .duplicateParam1 ∧
+      pluralAdmissionError? (direct "Start") starredRowsGroup =
+        some (.groupExpansionNotDateRange ["Form", "Rows"]) := by
   native_decide
 
 /-! ## Checked-document assembly -/

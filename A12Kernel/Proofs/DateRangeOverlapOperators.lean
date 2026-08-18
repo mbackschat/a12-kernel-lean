@@ -19,6 +19,23 @@ theorem checkedDateRangesOverlap_policies_supported
   rw [operand.source.formatOwned]
   rfl
 
+/-- Every DateRange declaration retained on either side of checked scalar-versus-list admission has an exact executable stored-input policy. -/
+theorem checkedAtLeastOneDateRangeOverlaps_policies_supported
+    (checked : CheckedAtLeastOneDateRangeOverlapsSource model) :
+    (DateRangeFormat.ofPolicy? checked.scalar.policy).isSome = true ∧
+      checked.operands.all (fun operand =>
+        operand.fields.all (fun source =>
+          (DateRangeFormat.ofPolicy? source.policy).isSome)) = true := by
+  constructor
+  · rw [checked.scalar.formatOwned]
+    rfl
+  · apply List.all_eq_true.mpr
+    intro operand _
+    apply List.all_eq_true.mpr
+    intro source _
+    rw [source.formatOwned]
+    rfl
+
 /-- The any-pair operator has no UNKNOWN result at this resolved skipped-or-kept boundary. -/
 theorem scanDateRangesOverlapOccurrences_ne_unknown
     (seen : List ResolvedDateRange)

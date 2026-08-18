@@ -124,18 +124,18 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 #### Plural scalar-versus-list DateRange overlap assembly
 
 - `state`: open
-- `missing`: certify and execute one direct nonrepeatable DateRange scalar against an authored nonempty list of direct, starred, filtered-starred, fixed-group, or starred-group DateRange operands.
-- `baseline`: [temporal comparison and aggregates](IMPLEMENTATION-MAP.md#cap-temporal-comparison-and-aggregates) owns the singular checked path and pure scalar-versus-list evaluator.
+- `missing`: execute the checked direct nonrepeatable DateRange scalar against its admitted nonempty direct, starred, filtered-starred, fixed-group, or starred-group DateRange list through one immutable full-validation document.
+- `baseline`: [temporal comparison and aggregates](IMPLEMENTATION-MAP.md#cap-temporal-comparison-and-aggregates) owns plural static admission, the singular checked-document path, and the pure scalar-versus-list evaluator.
 - `evidence`: the [plural overlap checkpoint](SOURCES.md#src-date-range-plural-overlap) owns scalar/list semantics, exact measured static rows, recursive group execution, and their limits.
 - `discriminator`: list-internal overlap cannot rescue a disjoint or unavailable scalar; only the matched list operand controls polarity; a starred group must reach the second field of the second row.
 - `consumer`: Execute needs exact scalar-first termination and operand-bounded group extent; Analyze and Explain need authored list boundaries, filter provenance, and ordered reached cells.
 - `blocked-on`: none
 - `route-state`: verified
-- `red-locus`: [`DateRangeOverlapOperators.lean`](../A12Kernel/Conformance/DateRangeOverlapOperators.lean) owns the first failing plural static-admission guards.
-- `green-locus`: [`DateRangeOverlap.lean`](../A12Kernel/Elaboration/DateRangeOverlap.lean) owns the plural scalar/list certificate and operator-specific diagnostic projection.
-- `supporting-locus`: [`FieldEntityList.lean`](../A12Kernel/Elaboration/FieldEntityList.lean) owns shared resolution, wildcard, duplicate, overlap, and the new nonempty shape below the aggregate-only multiplicity gate.
-- `supporting-locus`: [`DateRangeInput.lean`](../A12Kernel/Elaboration/DateRangeInput.lean) owns exact canonical DateRange policy certification.
-- `route-limit`: first close static admission for one direct nonrepeatable scalar, the exact measured starred-scalar reversal, and a nonempty direct, starred, filtered-starred, fixed-group, or starred-group list under the two canonical policies; checked-document execution, partial validation, rule/message assembly, wider policies, scalar groups, and every unmeasured diagnostic remain outside this capsule.
+- `red-locus`: [`DateRangeOverlapOperators.lean`](../A12Kernel/Conformance/DateRangeOverlapOperators.lean) owns the first failing full-validation scalar/list assembly guards.
+- `green-locus`: [`DateRangeOverlap.lean`](../A12Kernel/Elaboration/DateRangeOverlap.lean) owns plural checked-document resolution and result assembly.
+- `supporting-locus`: [`CheckedStarDocument.lean`](../A12Kernel/Elaboration/CheckedStarDocument.lean) owns direct, starred, filtered-starred, and group cell addressing.
+- `supporting-locus`: [`DateRangeOverlapOperators.lean`](../A12Kernel/Semantics/DateRangeOverlapOperators.lean) owns scalar-first termination and matched-list polarity.
+- `route-limit`: close full-validation execution for the admitted static source under the two canonical policies; partial validation, rule/message assembly, wider policies, scalar groups, and every unmeasured diagnostic remain outside the capsule.
 
 ### SG7 — String, pattern, and custom-field completion
 

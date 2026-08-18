@@ -110,6 +110,7 @@ run_cmd do
 #print axioms A12Kernel.scanDateRangesOverlapOccurrences_ne_unknown
 #print axioms A12Kernel.scanAtLeastOneDateRangeOverlapOccurrences_ne_unknown
 #print axioms A12Kernel.checkedDateRangesOverlap_policies_supported
+#print axioms A12Kernel.checkedAtLeastOneDateRangeOverlaps_policies_supported
 #print axioms A12Kernel.dateRangesOverlap_ne_unknown
 #print axioms A12Kernel.checkedDateRangesOverlapResult_verdict_ne_unknown
 #print axioms A12Kernel.atLeastOneDateRangeOverlaps_ne_unknown

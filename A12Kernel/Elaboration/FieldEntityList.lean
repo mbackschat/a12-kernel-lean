@@ -329,7 +329,8 @@ def operands (checked : CheckedFieldEntityShape model) :
 
 end CheckedFieldEntityShape
 
-private def resolveFieldEntityOperand (model : FlatModel)
+/-- Resolve one field-entity operand after the caller has established model validity. Whole-list cardinality, duplicate, and overlap gates remain with `elaborateFieldEntityShape`. -/
+def resolveFieldEntityOperandUnchecked (model : FlatModel)
     (declaringGroup : GroupPath) : SurfaceFieldEntityOperand →
       Except FieldEntityShapeElabError (ResolvedFieldEntityOperand model)
   | .field path form => do
@@ -359,7 +360,7 @@ private def resolveFieldEntityOperands (model : FlatModel)
         (List (ResolvedFieldEntityOperand model))
   | [] => pure []
   | operand :: remaining => do
-      pure ((← resolveFieldEntityOperand model declaringGroup operand) ::
+      pure ((← resolveFieldEntityOperandUnchecked model declaringGroup operand) ::
         (← resolveFieldEntityOperands model declaringGroup remaining))
 
 /-- Validate the common entity-list shape: model, path resolution and its star gate, exact duplicates in authored encounter order, ancestor/descendant overlap, then the multiple-slots-or-one-already-many cardinality gate.
@@ -371,7 +372,8 @@ def elaborateFieldEntityShape (model : FlatModel)
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
-      let first ← resolveFieldEntityOperand model declaringGroup authored.first
+      let first ←
+        resolveFieldEntityOperandUnchecked model declaringGroup authored.first
       let rest ← resolveFieldEntityOperands model declaringGroup authored.rest
       match hDuplicate : firstDuplicateResolvedEntityOperand? (first :: rest) with
       | some (.field (field, _)) => throw (.duplicateOperand field)

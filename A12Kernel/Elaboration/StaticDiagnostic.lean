@@ -75,6 +75,10 @@ inductive KernelStaticDiagnostic where
   | errorSemanticIndexOrCategoryForErrorField
   /-- A Date computation targets a declaration with partial rather than FULL precision. -/
   | invalidDateType
+  /-- The measured direct Number/Number source pair under plural DateRange overlap contains no DateRange. -/
+  | noDateRange
+  /-- `AtLeastOneDateRangeOverlaps` received a starred field in its scalar position rather than its list position. -/
+  | invalidParameterForDateRangeComparison
   deriving Repr, DecidableEq
 
 namespace KernelStaticDiagnostic
@@ -116,6 +120,9 @@ def kernelCode : KernelStaticDiagnostic → String
   | .errorSemanticIndexOrCategoryForErrorField =>
       "MVK_ERROR_SEMANTIC_INDEX_OR_CATEGORY_FOR_ERRORFIELD"
   | .invalidDateType => "MVK_INVALID_DATE_TYPE"
+  | .noDateRange => "MVK_NO_DATE_RANGE"
+  | .invalidParameterForDateRangeComparison =>
+      "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON"
 
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
 def all : List KernelStaticDiagnostic :=
@@ -131,7 +138,8 @@ def all : List KernelStaticDiagnostic :=
     .invalidLengthOfRawType, .noNumber, .notSortable,
     .stringEnumAndNonStringEnum, .invalidCompareDecimalPlaces,
     .errorReferenceToCalculatedField,
-    .errorSemanticIndexOrCategoryForErrorField, .invalidDateType]
+    .errorSemanticIndexOrCategoryForErrorField, .invalidDateType, .noDateRange,
+    .invalidParameterForDateRangeComparison]
 
 end KernelStaticDiagnostic
 
