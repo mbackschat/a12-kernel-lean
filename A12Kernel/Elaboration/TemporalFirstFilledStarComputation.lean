@@ -12,6 +12,7 @@ inductive TemporalFirstFilledStarCarrier where
   | timeHms
   | dateTimeIso
   | dateRangeIsoSlash
+  | dateRangeDayMonthYearDash
   deriving Repr, DecidableEq
 
 /-- Classify only the completed temporal declaration profiles. Date profiles with optional pre-1900 checking remain outside until checked temporal input represents that declaration-owned source check. -/
@@ -46,6 +47,8 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
   | .dateRange, _, some policy =>
       if policy.format == "yyyy-MM-dd" && policy.separator == "/" then
         some .dateRangeIsoSlash
+      else if policy.format == "dd.MM.yyyy" && policy.separator == "-" then
+        some .dateRangeDayMonthYearDash
       else
         none
   | _, _, _ => none

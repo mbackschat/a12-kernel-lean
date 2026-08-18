@@ -10,9 +10,9 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: implementation ready.
-- `gap`: [second direct DateRange `FirstFilledValue` policy](SEMANTICS-GAPS.md#gap-sg6-date-range-first-filled-second-policy).
-- `next`: add the red dotted/dash typed-endpoint result and crossed-pair refusal controls, then specialize the existing bounded renderer and checked direct-star shape without widening operands or document architecture.
+- `state`: read-only route discovery required.
+- `gap`: [SG6 remaining temporal `FirstFilledValue` policies](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion), after closing both exact DateRange pairs.
+- `next`: identify the smallest externally sourced remaining temporal declaration policy whose typed selection and target renderer already have distinct owners; verify its exact authorable format, red conformance owner, and composition evidence limit before semantic edits.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: satisfied for the exact fixed four-carrier profile; trigger again only after a reusable wider family closes or another defined milestone/risk boundary is reached.
-- `resume`: `lake env lean A12Kernel/Conformance/DateRangeFirstFilledComputation.lean`
+- `consumer-probe-trigger`: satisfied for the exact fixed four-carrier profile; the second DateRange policy adds no new consumer distinction beyond the already-probed declaration-owned rendering decision. Trigger again only after a reusable wider family closes or another defined milestone/risk boundary is reached.
+- `resume`: `rg -n 'dateTimeIso|fullDateIso|TemporalFirstFilledStarCarrier|FirstFilledValueFamilyLawsTest' A12Kernel docs/SOURCES.md ../a12-rulekit/src/test`

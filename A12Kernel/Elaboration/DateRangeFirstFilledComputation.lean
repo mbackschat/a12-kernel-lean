@@ -9,21 +9,28 @@ inductive DateRangeFirstFilledComputationElabError where
   | shape (cause : TemporalFirstFilledStarComputationElabError)
   deriving Repr, DecidableEq
 
-/-- One fixed ISO/slash DateRange target and one direct single-level starred source of the same carrier. -/
-structure CheckedDateRangeFirstFilledComputation (model : FlatModel) where
-  private mk ::
-  shape : CheckedTemporalFirstFilledStarComputation model .dateRangeIsoSlash
+/-- One fixed DateRange target and one direct single-level starred source sharing one exact admitted declaration pair. -/
+inductive CheckedDateRangeFirstFilledComputation (model : FlatModel) where
+  | isoSlash
+      (shape : CheckedTemporalFirstFilledStarComputation model .dateRangeIsoSlash)
+  | dayMonthYearDash
+      (shape : CheckedTemporalFirstFilledStarComputation model .dateRangeDayMonthYearDash)
 
-/-- Check the exact maintained DateRange computation shape without widening policy, operands, nesting, or document architecture. -/
+/-- Check either exact admitted DateRange declaration pair without widening operands, nesting, or document architecture. -/
 def checkDateRangeFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) :
     Except DateRangeFirstFilledComputationElabError
       (CheckedDateRangeFirstFilledComputation model) := do
-  let shape ← checkTemporalFirstFilledStarComputation
-    model declaringGroup targetField authored .dateRangeIsoSlash
-      |>.mapError .shape
-  pure { shape }
+  match checkTemporalFirstFilledStarComputation
+      model declaringGroup targetField authored .dateRangeIsoSlash with
+  | .ok shape => pure (.isoSlash shape)
+  | .error (.targetCarrier _) =>
+      let shape ← checkTemporalFirstFilledStarComputation
+        model declaringGroup targetField authored .dateRangeDayMonthYearDash
+          |>.mapError .shape
+      pure (.dayMonthYearDash shape)
+  | .error cause => throw (.shape cause)
 
 /-- Project one checked DateRange cell into the typed root result consumed by the target policy. Source stored text is not selected. -/
 def dateRangeFirstFilledCellAt
@@ -50,11 +57,13 @@ inductive DateRangeFirstFilledComputationFault where
 
 namespace CheckedDateRangeFirstFilledComputation
 
-/-- Execute through the single checked document, bridge the typed range into resolved full-Date endpoints, and render through the checked target policy. -/
-def execute (operation : CheckedDateRangeFirstFilledComputation model)
+/-- Execute one checked carrier through the single document, bridge the typed range into resolved full-Date endpoints, and render through the retained target policy. -/
+private def executeWith
+    (shape : CheckedTemporalFirstFilledStarComputation model carrier)
+    (format : DateRangeTargetFormat)
     (input : CheckedDocument model) :
     Except DateRangeFirstFilledComputationFault DateRangeTargetOutcome := do
-  let resolved ← operation.shape.source.resolveCheckedField input []
+  let resolved ← shape.source.resolveCheckedField input []
     |>.mapError .source
   match evalDateRangeFirstFilledCells resolved.cells with
   | .noValue => pure .noValue
@@ -63,7 +72,15 @@ def execute (operation : CheckedDateRangeFirstFilledComputation model)
       match range.toResolvedDateRange? with
       | none => throw (.unresolvedEndpoint range)
       | some resolvedRange =>
-          pure (.accepted (DateRangeTargetFormat.isoSlash.render resolvedRange))
+          pure (.accepted (format.render resolvedRange))
+
+/-- Execute through the single checked document and the exact target policy retained during assembly. -/
+def execute (operation : CheckedDateRangeFirstFilledComputation model)
+    (input : CheckedDocument model) :
+    Except DateRangeFirstFilledComputationFault DateRangeTargetOutcome :=
+  match operation with
+  | .isoSlash shape => executeWith shape .isoSlash input
+  | .dayMonthYearDash shape => executeWith shape .dayMonthYearDash input
 
 end CheckedDateRangeFirstFilledComputation
 

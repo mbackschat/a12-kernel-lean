@@ -21,15 +21,25 @@ private def rangeField (id : FieldId) (groupPath : GroupPath) (name : String)
 private def target := rangeField 1 ["Cart"] "FirstWindow"
 private def source := rangeField 2 ["Cart", "Lines"] "Window" [10]
 private def otherFormatSource :=
-  rangeField 3 ["Cart", "Lines"] "DottedWindow" [10] "dd.MM.yyyy"
+  rangeField 3 ["Cart", "Lines"] "DottedWindow" [10] "dd.MM.yyyy" "-"
 private def otherSeparatorTarget :=
   rangeField 4 ["Cart"] "DashedWindow" [] "yyyy-MM-dd" "-"
 private def otherSeparatorSource :=
   rangeField 5 ["Cart", "Lines"] "DashedSource" [10] "yyyy-MM-dd" "-"
+private def dottedTarget :=
+  rangeField 6 ["Cart"] "DottedTarget" [] "dd.MM.yyyy" "-"
+private def dottedSource :=
+  rangeField 7 ["Cart", "Lines"] "DottedSource" [10] "dd.MM.yyyy" "-"
+private def unsupportedDottedTarget :=
+  rangeField 8 ["Cart"] "UnsupportedDottedTarget" [] "dd.MM.yyyy" "/"
+private def unsupportedDottedSource :=
+  rangeField 9 ["Cart", "Lines"] "UnsupportedDottedSource" [10]
+    "dd.MM.yyyy" "/"
 
 private def model : FlatModel := {
   fields := [target, source, otherFormatSource, otherSeparatorTarget,
-    otherSeparatorSource]
+    otherSeparatorSource, dottedTarget, dottedSource, unsupportedDottedTarget,
+    unsupportedDottedSource]
   repeatableGroups := [
     { level := 10, path := ["Cart", "Lines"], repeatability := some 99 }]
   timeZoneId := "UTC"
@@ -67,10 +77,11 @@ private structure SourceInput where
   stored : String
   raw : RawCell
 
-private def input? (sourceInputs : List SourceInput) :
+private def inputFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
+    (sourceInputs : List SourceInput) :
     Option (CheckedDocument model) :=
   let sourceCells := sourceInputs.map fun input => {
-    address := { field := source.id, path := [input.row] }
+    address := { field := sourceDeclaration.id, path := [input.row] }
     stored := input.stored
     raw := input.raw
   }
@@ -78,26 +89,32 @@ private def input? (sourceInputs : List SourceInput) :
     instantiatedRows := [
       { group := 10, path := [1] }, { group := 10, path := [2] }]
     cells := [{
-      address := { field := target.id, path := [] }
+      address := { field := targetDeclaration.id, path := [] }
       stored := "2000-01-01/2000-01-02"
       raw := .parsed (.dateRange
         (rangeValue 946684800000 946771200000 1 2))
     }] ++ sourceCells
   }).toOption
 
-private def execution? (sourceInputs : List SourceInput) :
+private def executionFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
+    (sourceInputs : List SourceInput) :
     Option (Except DateRangeFirstFilledComputationFault DateRangeTargetOutcome) := do
-  let operation ← checked? target.id "Window"
-  let input ← input? sourceInputs
+  let operation ← checked? targetDeclaration.id sourceDeclaration.name
+  let input ← inputFor? targetDeclaration sourceDeclaration sourceInputs
   pure (operation.execute input)
 
-private def signature? (sourceInputs : List SourceInput) : Option String := do
-  let execution ← execution? sourceInputs
+private def execution? := executionFor? target source
+
+private def signatureFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
+    (sourceInputs : List SourceInput) : Option String := do
+  let execution ← executionFor? targetDeclaration sourceDeclaration sourceInputs
   let outcome ← execution.toOption
   pure (match outcome with
     | .noValue => "CLEARED"
     | .accepted stored => "VALUE|" ++ stored.text
     | .poison _ => "POISON")
+
+private def signature? := signatureFor? target source
 
 private def unresolvedEndpoint? (sourceInputs : List SourceInput) :
     Option DateRangeValue := do
@@ -138,6 +155,15 @@ example :
     }] = some "VALUE|2024-03-20/2024-03-21" := by
   native_decide
 
+/- The second exact legal declaration pair selects the same typed endpoints but renders through the target-owned dotted/dash policy. Static admission and the renderer are externally established separately; their direct `FirstFilledValue` composition remains external-evidence pending. -/
+example :
+    signatureFor? dottedTarget dottedSource [{
+      row := 1
+      stored := "copied-text-would-be-wrong"
+      raw := .parsed (.dateRange selectedRange)
+    }] = some "VALUE|20.03.2024-21.03.2024" := by
+  native_decide
+
 /- A reached formal cause terminates before a later present range. -/
 example :
     signature? [
@@ -156,12 +182,16 @@ example :
       unresolvedEndpoint? invalidInput = some invalidRange := by
   native_decide
 
-/- Both declarations must share the exact ISO/slash carrier. -/
+/- Both declarations must share one exact admitted DateRange pair; crossing the two legal pairs or changing only the ISO separator remains refused. -/
 example :
     (checked? target.id "Window").isSome = true ∧
       (checked? target.id "DottedWindow").isNone = true ∧
+      (checked? dottedTarget.id "Window").isNone = true ∧
+      (checked? dottedTarget.id "DottedSource").isSome = true ∧
       (checked? target.id "DashedSource").isNone = true ∧
-      (checked? otherSeparatorTarget.id "Window").isNone = true := by
+      (checked? otherSeparatorTarget.id "Window").isNone = true ∧
+      (checked? unsupportedDottedTarget.id "UnsupportedDottedSource").isNone =
+        true := by
   native_decide
 
 private def storedRange : StoredDateRange := {
