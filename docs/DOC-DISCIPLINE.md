@@ -111,6 +111,10 @@ Detailed capability, gap, plan, and provenance records use keyed bullets instead
 - One record must be understandable in a window of at most 80 lines including its heading.
 - Links target the narrowest stable owner or record anchor. Record text states current truth only; Git owns chronology unless an intentional historical owner applies.
 
+`PLAN.md` is stricter than the other operational owners: its state and verified baseline describe only the current resumable position. Do not retain how that position was reached, completed route-discovery narrative, prior capsule inventories, or obsolete reopening triggers. Write a route before semantic edits, but use a separate planning commit only when route discovery independently corrects durable facts or creates a likely handoff boundary; otherwise commit the current plan with the capsule.
+
+When selected work relies on an external source, the selected gap's evidence field and the plan's oracle link to one keyed `src-` checkpoint. Exact revisions, source routes, measured claims, and claim limits remain only in that source record. If the selected legacy checkpoint has no stable keyed record, convert only that checkpoint during route discovery before semantic edits.
+
 The 500-character threshold is an agent-efficiency guard, not a readability target. Review an over-limit line for multiple claims and choose the representation that makes retrieval and mutation cheapest. Prefer a semantic split; an indivisible claim may stay on one line or use a structured continuation when that is more efficient for agents.
 
 ### Verified implementation routes
@@ -148,4 +152,4 @@ rg -n '^- `route-state`:|^- `(red|green|supporting)-locus`:|^- `route-limit`:' d
 rg -n '^- `assurance`:|^- `remains`:' docs/IMPLEMENTATION-MAP.md
 ```
 
-The bounded-record contract is adopted through the SG5 group-operand slice. Implementation routing is initially adopted only for the selected Date-group diagnostic gap; another gap receives routing fields only when selected or when its route changes for an independent reason. Existing unconverted sections remain valid, and neither adoption creates a repository-wide migration backlog or standing cleanup campaign. Converting another existing section requires a separate user decision.
+Existing unconverted sections remain valid and create no migration backlog. Independently selected work may convert only the exact legacy capability, gap, plan, or source record it must read or mutate, without another user decision. Do not convert neighboring records, a whole section, or the repository merely for consistency; broader consolidation remains separately approved governance work.
