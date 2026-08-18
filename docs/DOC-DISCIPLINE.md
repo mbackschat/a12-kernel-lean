@@ -70,7 +70,7 @@ Reading a source, running a gate, or completing work is not by itself a document
 | Retain or change a replayed observation | `EVIDENCE.md` | Implementation map if calibration changes; gap if the open set changes; plan if selection changes | Sources, spec |
 | Correct behavior | `spec/` plus the applicable synchronization owner | Sources for inbound provenance; implementation map, gap, or plan only when their facts change | Unrelated owners |
 | Implement without new external evidence | Implementation map | Gap if an obligation closes or its route changes; plan if selection changes | Sources, spec |
-| Refresh a verified baseline | `PLAN.md` | None | Every other owner |
+| Change the resumable next action, blocker, or probe trigger | `PLAN.md` | None | Every other owner |
 
 This table is a trigger contract, not a document-count quota. A unit that genuinely changes several distinct facts changes each canonical owner, but every edit remains record-local.
 
@@ -111,7 +111,13 @@ Detailed capability, gap, plan, and provenance records use keyed bullets instead
 - One record must be understandable in a window of at most 80 lines including its heading.
 - Links target the narrowest stable owner or record anchor. Record text states current truth only; Git owns chronology unless an intentional historical owner applies.
 
-`PLAN.md` is stricter than the other operational owners: its state and verified baseline describe only the current resumable position. Do not retain how that position was reached, completed route-discovery narrative, prior capsule inventories, or obsolete reopening triggers. Write a route before semantic edits, but use a separate planning commit only when route discovery independently corrects durable facts or creates a likely handoff boundary; otherwise commit the current plan with the capsule.
+`PLAN.md` is stricter than the other operational owners: its state and verified baseline describe only the current resumable position. The baseline names the current committed Lean state and its applicable gate, never an exact commit identifier, branch distance, repository count, or sibling revision. Git and the source owner already answer those exact-identity questions; embedding them forces a redundant post-commit refresh.
+
+Do not retain how the position was reached, completed route-discovery narrative, prior capsule inventories, or obsolete reopening triggers.
+
+`PLAN.md` is not a persistent mirror of an in-session task list, tool-call sequence, gate progress, or `update_plan` state. Rewrite it only when the resumable answer changes: a semantic unit is selected, a blocker or consumer-probe trigger changes, or the repository is being handed off at a different next action.
+
+During uninterrupted work, route discovery and closure may rewrite the same working-tree record without preserving intermediate states. Use a separate planning commit only when route discovery independently corrects durable facts or creates a likely handoff boundary. Otherwise commit the final current plan with the capsule, or leave it unchanged when the post-closure resumption state is identical.
 
 When selected work relies on an external source, the selected gap's evidence field and the plan's oracle link to one keyed `src-` checkpoint. Exact revisions, source routes, measured claims, and claim limits remain only in that source record. If the selected legacy checkpoint has no stable keyed record, convert only that checkpoint during route discovery before semantic edits.
 
@@ -137,7 +143,9 @@ A gap may receive a verified route when current code and history establish it; o
 
 Update only the affected gap when a linked file moves, its stated role changes, or a red result changes the entry route or establishes a supporting locus. Update the implementation map separately only when the stable implemented mechanism changes. Delete the route with its completed gap; Git owns route history. If more than two supporting loci seem necessary before the red case, the route is not understood well enough to mark `verified`.
 
-The same-context capsule closure assessment checks three routing invariants when the selected gap carries a route block: `route-state` was `verified` before semantic edits, every locus resolves and still has its stated role, and neither Plan nor the implementation map duplicates the route. An already-triggered cold review checks the same finite invariants; this contract adds no executable gate, registry, schema, parser, generator, linter, or dependency.
+The same-context capsule closure assessment checks three routing invariants when the selected gap carries a route block: `route-state` was `verified` before semantic edits, every locus resolves and still has its stated role, and neither Plan nor the implementation map duplicates the route. It also rejects an embedded baseline revision and transient task or gate progress in `PLAN.md`.
+
+An already-triggered cold review checks the same finite invariants. This contract adds no executable gate, registry, schema, parser, generator, linter, or dependency.
 
 Implementation records answer what exists, primary owner, executable/proof/external assurance, and live remainder. Gap records contain only open obligations, prerequisites, discriminators, consumer consequences, evidence needs, blockers, verified change routes, route limits, and reopening triggers. `PLAN.md` is a compact resumption packet, and source records own exact revisions, source drill routes, claims, and claim limits without reverse consumer inventories.
 
