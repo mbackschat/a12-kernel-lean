@@ -226,6 +226,14 @@ theorem assembleResolvedValidationRule_rejects_negativeIteration
       .error (.negativeConditionInIteration level) := by
   simp [assembleResolvedValidationRule, invalid]
 
+/-- The already-derived negative-iteration assembly error projects to the exact measured Kernel diagnostic class. -/
+theorem flatRuleAssemblyError_negativeIteration_diagnostic
+    (level : RepeatableLevel) :
+    FlatRuleAssemblyError.diagnostic?
+        (.negativeConditionInIteration level) =
+      some KernelStaticDiagnostic.negativeConditionInIteration := by
+  rfl
+
 /-- The scalar checked entry point reports missing addressed context before evaluating a repeatable condition; it cannot manufacture semantic UNKNOWN. -/
 theorem checkedValidationRule_scalar_rejects_addressed
     (rule : CheckedResolvedValidationRule model)

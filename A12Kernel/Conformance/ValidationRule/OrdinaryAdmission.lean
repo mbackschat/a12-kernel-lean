@@ -213,6 +213,14 @@ private def outerGroupEmptyCondition? :
   (CheckedValidationCondition.fromGroupPresence ordinaryIterationModel
     ["Order"] (absoluteGroup ["Order", "Sections"]) .notFilled).toOption
 
+private def guardedOuterGroupEmptyCondition? :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let guard ←
+    (CheckedValidationCondition.fromGroupPresence ordinaryIterationModel
+      ["Order"] (absoluteGroup ["Order", "Sections"]) .filled).toOption
+  let negative ← outerGroupEmptyCondition?
+  (guard.and negative).toOption
+
 private def guardedOrMissingInnerLevelCondition? :
     Option (CheckedValidationCondition ordinaryIterationModel) := do
   let outer ← outerIterationCondition?
@@ -234,6 +242,15 @@ example :
       some (.negativeConditionInIteration 10) ∧
     ordinaryAssemblyError? outerGroupEmptyCondition? outerAmount =
       some (.negativeConditionInIteration 10) := by
+  native_decide
+
+/- The typed whole-rule error projects the exact Kernel class, while a direct positive group guard keeps the same negative leaf admitted. -/
+example :
+    (ordinaryAssemblyError? outerGroupEmptyCondition? outerAmount).bind
+        FlatRuleAssemblyError.diagnostic? =
+      some .negativeConditionInIteration ∧
+    guardedOuterGroupEmptyCondition?.isSome = true ∧
+    ordinaryAssemblyError? guardedOuterGroupEmptyCondition? outerAmount = none := by
   native_decide
 
 /- Direct iterating Number comparisons against host-converted zero reproduce the source visitor's exact operator partition in both operand orders. -/
