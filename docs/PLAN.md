@@ -10,10 +10,10 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: read-only route discovery required.
+- `state`: checked full-Date route ready for red/green implementation.
 - `gap`: [SG6 checked DateRange construction comparison execution](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
-- `oracle`: the [canonical Date-range equality clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) and [construction-equality checkpoint](SOURCES.md#src-date-range-construction-equality) establish filled endpoint identity and static reachability but leave checked empty/formal execution and external runtime verdicts open.
-- `next`: inventory reusable full-Date declaration certification, immutable checked-document reads, construction result classification, and the exact Kernel/a12-dmkits empty and formal routes; establish the smallest phase-complete checked comparison boundary before any edit.
+- `oracle`: the [canonical Date-range equality clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) and [construction-equality checkpoint](SOURCES.md#src-date-range-construction-equality) establish full-Date authoring, exact endpoint identity, formal-before-empty source classification, and the external-evidence limit.
+- `next`: add red checked-document cases for equal constructions, finish-only mismatch, empty endpoint suppression, formal-over-empty UNKNOWN, and wrong runtime value kind; implement one checked construction/result carrier over `CheckedFullDateTarget`, retain all four endpoint observations, and delegate verdict projection to the existing symmetric DateRange comparison seam.
 - `blocked-on`: none.
 - `consumer-probe-trigger`: inactive until checked construction comparison closes, another major DateRange boundary changes, or public compatibility is considered.
-- `resume`: `rg -n 'CheckedFullDateTarget|CheckedDocument|DateRangeConstruction|constructDateRange|vergleicheDATERANGE' A12Kernel/Elaboration A12Kernel/Semantics ../a12-kernel ../a12-rulekit/interpreter`
+- `resume`: `rg -n 'CheckedFullDateTarget|CheckedDocument|DateRangeConstruction|evalSymmetric' A12Kernel/Elaboration A12Kernel/Semantics A12Kernel/Conformance A12Kernel/Proofs`
