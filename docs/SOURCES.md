@@ -172,6 +172,26 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: this checkpoint establishes calendar labels, not exact endpoint instants. Static admission, empty/formal rows, Base-Year-dependent fragments, indices, repeatable placement, computation targets, and rendering remain unmeasured.
 - `sync`: §6 and §8 already own endpoint-position completion and cross-DateRange component compatibility. The interpreter divergence is an implementation defect, not another semantic correction.
 
+<a id="src-date-range-base-year-fragment-construction"></a>
+#### Base-Year and yearless DateRange fragments
+
+- `revision`: source-shipped dmtool `0.13.0` and the independent interpreter were inspected at clean a12-dmkits `89aa03957034de620562eb23a095d878f6547dca`; both Kernel strategies used built/runtime kernel `30.8.1` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`.
+- `static-probe`: one 14-row observation packet admits matching direct nonrepeatable `MM` and `MM-dd` construction and stored comparison with or without Base Year. With Base Year, cross-construction `MM`/`yyyy-MM` and `MM-dd`/full-Date mismatches yield `MVK_INVALID_COMPARE_TO_DATE_RANGE`; the same mismatches inside one construction yield `MVK_WRONG_DATE_FORMAT_FOR_OP`.
+- `static-probe`: without Base Year, a full-year overlap operand against an `MM` or `MM-dd` stored range yields `MVK_DATE_WITH_AND_WITHOUT_YEAR` even though same-profile equality remains admitted.
+- `static-identity`: observation artifact SHA-256 `df757b1edc9dd050847d6f9bf5ac475cc9a34f8a549b273a01eeb4dcba4340aa`; request SHA-256 `f6d4932d4ae8c893c5437f297aeddb4ef89451cef2069da358823a36e2e7d14e`.
+- `runtime-probe`: the 2024 and 2023 models each compare two matching constructions, compare one construction with a matching stored fragment range, and overlap that stored range with a full-Date probe. Each uses both `MM` and `MM-dd` profiles.
+- `runtime-claim`: in 2024, only a full-Date probe containing February 1 or February 29 overlaps the `MM` range for February, while `02-29` is the exact `MM-dd` endpoint. In 2023, the corresponding latest day and exact `MM-dd` endpoint are February 28. Pair and stored equality fire on every row.
+- `runtime-identity`: two unchanged runs are byte-identical. The 2024 artifact is SHA-256 `bbfc9dc234a6a8d1c19b44089f73eb4e92a3dfcba18b5f9a96772105f3c0bc9f`, request `7571c1378b7b621b55f65b281f275acce645fdcbf4b0005935f1fc80f5519cc6`, and model `38222702257530df0ca8e867513714e6ebe8e42b3a60f3edf228d85a06f7a5f6`.
+- `runtime-identity`: the 2023 artifact is SHA-256 `a88e482b010aacebe0f5840c40d0dec22e8f6c2a16f175b6ea98d3e2f85b5ec4`, request `3c4c2f17ce25e1b57532e44261c2595bb6c2b2c48fe61c2e7c7a0fc7e823ab1b`, and model `cefec45aa01953d2db89ceefa71bbc4f49926e7d28795b507cdcb359279fb562`.
+- `yearless-probe`: without Base Year, same-profile construction equality and construction-versus-stored equality fire for both formats. Changing only a construction start or finish fires pair inequality while stored equality remains; changing only a stored finish fires stored inequality while pair equality remains.
+- `yearless-identity`: two unchanged forced runs are byte-identical; artifact SHA-256 `0413e8d27b16c5cb57b77fdfdc4cbc2f80ff0d62a56083ed8d9847514187b9e5`, request `020d1d9305d96802d5fcfd68f507d17d319ab1b03d9a90ada4ac34b97cba8e55`, and model `06c20a67057b1aaa18157c293ba7455fed665481484f43437765f0b30ca7966a`.
+- `separation`: the inside, before, and after rows distinguish earliest/latest month completion and configured-year leap handling. The yearless equality and inequality rows distinguish both ordered endpoints without claiming an unobserved internal value representation.
+- `divergence`: a12-dmkits' interpreter matches construction-pair results, `MM-dd` construction-versus-stored results, and the measured overlap polarity. It treats equal `MM` construction-versus-stored operands as unequal with or without Base Year, which is an interpreter defect rather than a dmtool defect.
+- `source`: kernel [`RuntimeController.constructDateRange`](../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_30_8/internal/core/RuntimeController.java) owns endpoint construction; a12-dmkits [`ExprEval`](../../a12-rulekit/interpreter/src/commonMain/kotlin/io/github/mbackschat/a12/dm/interpreter/eval/ExprEval.kt) owns the independent comparison route.
+- `mechanism-limit`: the observations discharge outcomes, component gates, configured-year calendar labels, and the interpreter divergence. They do not establish the Kernel's yearless carrier or the cause of the interpreter defect.
+- `limit`: exact instants are locally reconstructed under the checked model-zone profile but not externally exposed. Empty/formal rows, indices, repeatable placement, fragment construction-versus-stored Lean execution, computation targets, and rendering remain outside this checkpoint.
+- `sync`: configured Base-Year completion uses the existing §6 account. Yearless comparison is a new canonical correction under pending [`SPEC-2026-08-19-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-02--yearless-date-range-comparison-remains-legal-without-base-year).
+
 <a id="src-date-range-bound-extraction"></a>
 #### Stored DateRange bound extraction
 

@@ -94,6 +94,24 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Compatibility:** Checking only each construction internally admits a rule the Kernel refuses. The correction must not narrow DATE/DATE_FRAGMENT mixing within one construction when the endpoint component sets match, same-profile construction equality, construction-versus-stored equality, or either legal operator.
 - **Acceptance:** Maintained documentation names the cross-operand gate, the positive and negative static rows remain Kernel-locked with the exact diagnostic, existing typed operands remain the sole representation, and the handback supplies the reviewed revision plus per-surface disposition.
 
+<a id="spec-2026-08-19-02"></a>
+<a id="spec-2026-08-19-02--yearless-date-range-comparison-remains-legal-without-base-year"></a>
+
+### SPEC-2026-08-19-02 - yearless DateRange comparison remains legal without Base Year
+
+- **Status:** pending
+- **Kind:** semantic correction, locally originated and locally measured
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `89aa03957034de620562eb23a095d878f6547dca` (clean before and after)
+- **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool `0.13.0` and both Kernel strategies
+- **Canonical clause:** [`05-dates-and-time.md` §6 and §8](../spec/05-dates-and-time.md#6-date-fragments-and-fragment-ranges)
+- **Delta:** Without a declared Base Year, direct nonrepeatable same-profile `MM` and `MM-dd` DateRange construction equality, inequality, and construction-versus-stored comparison remain legal. Changing either ordered endpoint changes the corresponding equality result. These rows do not supply a year-bearing instant, and a full-year overlap operand against either yearless stored profile is separately refused with `MVK_DATE_WITH_AND_WITHOUT_YEAR`.
+- **Basis:** The static observation artifact SHA-256 `df757b1edc9dd050847d6f9bf5ac475cc9a34f8a549b273a01eeb4dcba4340aa` admits all four same-profile equality shapes and records both overlap refusals; its request is `f6d4932d4ae8c893c5437f297aeddb4ef89451cef2069da358823a36e2e7d14e`.
+- **Basis:** The four-row no-Base-Year runtime artifact SHA-256 `0413e8d27b16c5cb57b77fdfdc4cbc2f80ff0d62a56083ed8d9847514187b9e5` separates pair-start, pair-finish, and stored-finish changes for both profiles; its request is `020d1d9305d96802d5fcfd68f507d17d319ab1b03d9a90ada4ac34b97cba8e55` and two unchanged forced runs are byte-identical.
+- **Requested a12-dmkits reconciliation:** State the yearless comparison boundary in the canonical DateRange account and lock the exact pair, stored, endpoint-change, and year-bearing overlap rows in the existing law and differential families. Correct the interpreter's equal `MM` construction-versus-stored result through its existing typed construction/comparison route; add no parser, value schema, probe route, or harness.
+- **Compatibility:** Do not invent a Base Year, infer an instant, widen cross-component comparison, or change `MM-dd` results that already agree. The correction must preserve configured-Base-Year completion and the exact static refusal classes.
+- **Acceptance:** Canonical prose separates yearless comparison from concrete-Date completion; maintained JVM/Node and Kernel-route controls lock both endpoints and the overlap refusal; equal `MM` construction-versus-stored operands agree across engines; and the handback supplies the reviewed revision plus per-surface disposition.
+
 <a id="spec-2026-08-18-01"></a>
 <a id="spec-2026-08-18-01--a-present-date-range-separator-with-a-malformed-split-is-a-format-error"></a>
 

@@ -10,10 +10,10 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: read-only source discriminator required.
+- `state`: read-only representation-route discovery required.
 - `gap`: [SG6 DateRange Date/DateFragment endpoint admission and completion](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
-- `oracle`: the [canonical Date-range clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) and the exact [`yyyy-MM` Kernel checkpoint](SOURCES.md#src-date-range-year-month-fragment-construction); its pair and stored-overlap rows agree across engines, while its separate construction-versus-stored rows expose the existing a12-dmkits interpreter defect.
-- `next`: obtain one exact Kernel authorability and runtime packet for direct nonrepeatable Base-Year-dependent `MM` and `MM-dd` endpoints before extending checked construction; separate each component profile and keep semantic indices, repeatable placement, computation targets, and rendering outside that slice.
+- `oracle`: the [canonical Date-range clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) and the exact [Base-Year and yearless Kernel checkpoint](SOURCES.md#src-date-range-base-year-fragment-construction).
+- `next`: inspect the existing partial-Date carriers, checked stored-DateRange path, and consumer requirements to identify the smallest representation that can express measured same-profile yearless `MM`/`MM-dd` equality without inventing an instant or creating a parallel checked-document architecture. Do not implement until the route and representation boundary are explicit.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: inactive after the exact `yyyy-MM` construction-pair Execute/Analyze/Explain readback; trigger again when the Base-Year-dependent component family changes represented equality or public compatibility is considered.
-- `resume`: `rg -n 'DateRangeEndpointFormat|unknownYear|BaseYear|baseYear|MM-dd|datesAndFormatsToDateRange|buildRangeEndpoint' A12Kernel ../a12-kernel/ ../a12-rulekit/ spec/05-dates-and-time.md docs/SOURCES.md`
+- `consumer-probe-trigger`: inactive after the configured-Base-Year construction-pair Execute/Analyze/Explain readback; trigger again when a yearless endpoint representation changes the result domain or public compatibility is considered.
+- `resume`: `rg -n 'PartiallyKnownDateValue|DateRangeValue|DateRangeEndpointFormat|unknownYear|baseYear|MM-dd' A12Kernel spec/05-dates-and-time.md docs/SOURCES.md docs/USE-CASES.md`

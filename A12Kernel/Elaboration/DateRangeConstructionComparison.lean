@@ -5,7 +5,7 @@ import A12Kernel.Semantics.DateRangeComparison
 
 /-! # Checked DateRange construction comparison
 
-This capsule certifies two nonrepeatable Date endpoints per `DateRange` construction, including the exact `yyyy` and `yyyy-MM` DateFragment profiles, composes two component-compatible constructions or one full-Date construction with a canonical direct stored DateRange, and reads each checked operand through one immutable document in authored order. Construction labels are completed by endpoint position and re-resolved under their declaration's model-zone profile before the exact observations delegate to the shared equality seam. Base-Year-dependent DateFragment formats, fragment construction-versus-stored execution, semantic-index endpoints, repeatable placement, computation, rendering, overlap, and bound extraction remain separate.
+This capsule certifies two nonrepeatable Date endpoints per `DateRange` construction, including the exact `yyyy`, `yyyy-MM`, and Base-Year-resolved `MM` and `MM-dd` DateFragment profiles, composes two component-compatible constructions or one full-Date construction with a canonical direct stored DateRange, and reads each checked operand through one immutable document in authored order. Construction labels are completed by endpoint position and re-resolved under their declaration's model-zone profile before the exact observations delegate to the shared equality seam. Yearless execution without a Base Year, fragment construction-versus-stored execution, semantic-index endpoints, repeatable placement, computation, rendering, overlap, and bound extraction remain separate.
 -/
 
 namespace A12Kernel
@@ -14,12 +14,15 @@ inductive DateRangeEndpointFormat where
   | full (format : FullDateTargetFormat)
   | yearFragment
   | yearMonthFragment
+  | monthFragment (baseYear : Int)
+  | monthDayFragment (baseYear : Int)
   deriving Repr, DecidableEq
 
 namespace DateRangeEndpointFormat
 
-/-- Recognize only the already-closed full-Date, `yyyy`, and `yyyy-MM` profiles. -/
-def ofPolicy? (policy : TemporalTargetPolicy) : Option DateRangeEndpointFormat :=
+/-- Recognize the exact resolved endpoint profiles, requiring a declared Base Year for yearless fragments. -/
+def ofPolicy? (baseYear : Option Int) (policy : TemporalTargetPolicy) :
+    Option DateRangeEndpointFormat :=
   match policy.partialMode with
   | .full => FullDateTargetFormat.ofSource? policy.format |>.map .full
   | .yearOptional =>
@@ -27,6 +30,10 @@ def ofPolicy? (policy : TemporalTargetPolicy) : Option DateRangeEndpointFormat :
         some .yearFragment
       else if policy.format == "yyyy-MM" then
         some .yearMonthFragment
+      else if policy.format == "MM" then
+        baseYear.map .monthFragment
+      else if policy.format == "MM-dd" then
+        baseYear.map .monthDayFragment
       else
         none
   | .dayOptional | .monthOptional => none
@@ -36,12 +43,15 @@ def sameComponents : DateRangeEndpointFormat → DateRangeEndpointFormat → Boo
   | .full _, .full _ => true
   | .yearFragment, .yearFragment => true
   | .yearMonthFragment, .yearMonthFragment => true
+  | .monthFragment _, .monthFragment _ => true
+  | .monthDayFragment _, .monthDayFragment _ => true
   | _, _ => false
 
 /-- Whether the endpoint belongs to the complete Date profile retained by mixed execution. -/
 def isFull : DateRangeEndpointFormat → Bool
   | .full _ => true
-  | .yearFragment | .yearMonthFragment => false
+  | .yearFragment | .yearMonthFragment | .monthFragment _
+  | .monthDayFragment _ => false
 
 /-- Complete one decoded endpoint label by its authored range position. -/
 def complete? (format : DateRangeEndpointFormat) (bound : DateRangeBound)
@@ -54,6 +64,11 @@ def complete? (format : DateRangeEndpointFormat) (bound : DateRangeBound)
       (OmittedDayDate.ofYearMonth? parts.year parts.month).map (·.first)
   | .yearMonthFragment, .finish =>
       (OmittedDayDate.ofYearMonth? parts.year parts.month).map (·.last)
+  | .monthFragment year, .start =>
+      (OmittedDayDate.ofYearMonth? year parts.month).map (·.first)
+  | .monthFragment year, .finish =>
+      (OmittedDayDate.ofYearMonth? year parts.month).map (·.last)
+  | .monthDayFragment year, _ => FullDate.ofYmd? year parts.month parts.day
 
 end DateRangeEndpointFormat
 
@@ -62,7 +77,7 @@ structure CheckedDateRangeEndpoint (model : FlatModel) where
   format : DateRangeEndpointFormat
   profile : ModelZone.ConcreteProfile
   targetIsDate : checked.target.kind = .date
-  formatMatches : DateRangeEndpointFormat.ofPolicy? checked.policy = some format
+  formatMatches : DateRangeEndpointFormat.ofPolicy? model.baseYear checked.policy = some format
   profileMatches : ModelZone.ConcreteProfile.ofId? checked.timeZoneId = some profile
 
 inductive DateRangeEndpointElabError where
@@ -78,7 +93,7 @@ def elaborateDateRangeEndpoint (model : FlatModel) (field : FieldId) :
     Except DateRangeEndpointElabError (CheckedDateRangeEndpoint model) := do
   let checked ← elaborateTemporalTargetPolicy model field |>.mapError .targetPolicy
   if hKind : checked.target.kind = .date then
-    match hFormat : DateRangeEndpointFormat.ofPolicy? checked.policy with
+    match hFormat : DateRangeEndpointFormat.ofPolicy? model.baseYear checked.policy with
     | none => throw (.unsupportedPolicy field checked.policy.partialMode checked.policy.format)
     | some format =>
         match hProfile : ModelZone.ConcreteProfile.ofId? checked.timeZoneId with
