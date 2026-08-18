@@ -42,8 +42,15 @@ private def leftFinish := dateField 2 "LeftFinish"
 private def rightStart := dateField 3 "RightStart"
 private def rightFinish := dateField 4 "RightFinish"
 
+private def storedRange : FlatFieldDecl := {
+  id := 5
+  groupPath := ["Order"]
+  name := "StoredRange"
+  policy := { kind := .dateRange }
+  dateRangePolicy := some { format := "dd.MM.yyyy", separator := "-" } }
+
 private def checkedModel : FlatModel := {
-  fields := [leftStart, leftFinish, rightStart, rightFinish]
+  fields := [leftStart, leftFinish, rightStart, rightFinish, storedRange]
   timeZoneId := "Europe/Berlin" }
 
 private def dateValue (epochMillis : Int)
@@ -70,23 +77,37 @@ private def inputCell (field : FlatFieldDecl)
   stored := storedForRaw raw
   raw }
 
-private def checkedInput?
-    (leftStartRaw leftFinishRaw rightStartRaw rightFinishRaw : RawCell) :
+private def checkedInputFrom (cells : List ClassifiedCellInput) :
     Option (CheckedDocument checkedModel) := do
   let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler checkedModel).toOption
-  checkDocument prepared "en_US" {
-    instantiatedRows := []
-    cells := [
-      inputCell leftStart leftStartRaw,
-      inputCell leftFinish leftFinishRaw,
-      inputCell rightStart rightStartRaw,
-      inputCell rightFinish rightFinishRaw
-    ] } |>.toOption
+  checkDocument prepared "en_US" { instantiatedRows := [], cells } |>.toOption
+
+private def checkedInput?
+    (leftStartRaw leftFinishRaw rightStartRaw rightFinishRaw : RawCell) :
+    Option (CheckedDocument checkedModel) :=
+  checkedInputFrom [
+    inputCell leftStart leftStartRaw,
+    inputCell leftFinish leftFinishRaw,
+    inputCell rightStart rightStartRaw,
+    inputCell rightFinish rightFinishRaw ]
+
+private def checkedMixedInput? (startRaw finishRaw : RawCell)
+    (stored : String) (storedRaw : RawCell) :
+    Option (CheckedDocument checkedModel) :=
+  checkedInputFrom [
+    inputCell leftStart startRaw,
+    inputCell leftFinish finishRaw,
+    { address := { field := storedRange.id, path := [] }, stored, raw := storedRaw } ]
 
 private def checkedOperation? (op : EqualityOp) :=
   (elaborateDateRangeConstructionComparison checkedModel
     leftStart.id leftFinish.id rightStart.id rightFinish.id op).toOption
+
+private def checkedMixedOperation? (position : DateRangeConstructionPosition)
+    (op : EqualityOp) :=
+  (elaborateDateRangeConstructionStoredComparison checkedModel
+    leftStart.id leftFinish.id storedRange.id position op).toOption
 
 private def checkedResult? (op : EqualityOp)
     (leftStartRaw leftFinishRaw rightStartRaw rightFinishRaw : RawCell) :
@@ -96,9 +117,24 @@ private def checkedResult? (op : EqualityOp)
   let operation ← checkedOperation? op
   (operation.evaluate input).toOption
 
+private def checkedMixedResult? (position : DateRangeConstructionPosition)
+    (op : EqualityOp) (startRaw finishRaw : RawCell)
+    (stored : String) (storedRaw : RawCell) :
+    Option DateRangeConstructionStoredComparisonResult := do
+  let input ← checkedMixedInput? startRaw finishRaw stored storedRaw
+  let operation ← checkedMixedOperation? position op
+  (operation.evaluate input).toOption
+
 private def startValue := dateValue 1717192800000 2024 6 1
+private def changedStartValue := dateValue 1717279200000 2024 6 2
 private def finishValue := dateValue 1719698400000 2024 6 30
 private def changedFinishValue := dateValue 1719612000000 2024 6 29
+private def storedSameValue : DateRangeValue := {
+  start := startValue, finish := finishValue }
+private def storedChangedStartValue : DateRangeValue := {
+  start := changedStartValue, finish := finishValue }
+private def storedChangedValue : DateRangeValue := {
+  start := startValue, finish := changedFinishValue }
 
 /- Construction-versus-field equality and inequality are exact complements on the maintained full-Date source pair. -/
 example :
@@ -106,6 +142,54 @@ example :
         .left constructed storedSame = .fired .value ∧
       EqualityOp.notEqual.evalDateRangeConstruction
         .left constructed storedSame = .notFired := by
+  native_decide
+
+/- Checked mixed execution preserves authored side, both rich operands, exact finish comparison, and complementary equality. -/
+example :
+    ((checkedMixedResult? .left .equal
+      (dateRaw startValue) (dateRaw finishValue)
+      "01.06.2024-30.06.2024" (.parsed (.dateRange storedSameValue))).map fun result =>
+        (result.position, result.construction.start,
+          result.stored, result.verdict)) =
+      some (.left, .value startValue,
+        .value storedSameValue, .fired .value) ∧
+    ((checkedMixedResult? .right .notEqual
+      (dateRaw startValue) (dateRaw finishValue)
+      "01.06.2024-29.06.2024" (.parsed (.dateRange storedChangedValue))).map fun result =>
+        (result.position, result.verdict)) =
+      some (.right, .fired .value) ∧
+    (checkedMixedResult? .right .equal
+      (dateRaw startValue) (dateRaw finishValue)
+      "02.06.2024-30.06.2024" (.parsed (.dateRange storedChangedStartValue))).map
+        (fun result => result.verdict) = some .notFired ∧
+    (checkedMixedResult? .left .notEqual
+      (dateRaw startValue) (dateRaw finishValue)
+      "02.06.2024-30.06.2024" (.parsed (.dateRange storedChangedStartValue))).map
+        (fun result => result.verdict) = some (.fired .value) := by
+  native_decide
+
+/- Mixed execution compares reconstructed instants, not the construction input's incoming instant. -/
+example :
+  let alteredStart := { startValue with instant := { epochMillis := 1001 } }
+  (checkedMixedResult? .left .equal
+    (dateRaw alteredStart) (dateRaw finishValue)
+    "01.06.2024-30.06.2024" (.parsed (.dateRange storedSameValue))).map
+      (fun result => (result.construction.start, result.verdict)) =
+    some (.value startValue, .fired .value) := by
+  native_decide
+
+/- Formal construction input dominates an empty stored range; stored formal invalidity remains independently visible. -/
+example :
+    ((checkedMixedResult? .left .equal
+      (.rejected .malformed) (dateRaw finishValue)
+      "" .presentEmpty).map fun result =>
+        (result.construction.start, result.stored, result.verdict)) =
+      some (.unknown .malformed, .empty, .unknown) ∧
+    ((checkedMixedResult? .right .equal
+      (dateRaw startValue) (dateRaw finishValue)
+      "garbage" (.rejected .dateRangeSeparator)).map fun result =>
+        (result.stored, result.verdict)) =
+      some (.unknown .dateRangeSeparator, .unknown) := by
   native_decide
 
 /- Changing only the finish endpoint separates whole-range identity from start-only comparison. -/
@@ -205,8 +289,8 @@ example : (match elaborateDateRangeConstructionComparison checkedModel
     leftStart.id leftFinish.id rightStart.id 99 .equal with
   | .ok _ => none
   | .error error => some error) =
-    some (.rightFinish
-      (.targetPolicy (.resolve (.unknownFieldId 99)))) := by
+    some (.right (.finish
+      (.targetPolicy (.resolve (.unknownFieldId 99))))) := by
   native_decide
 
 /- A typed Date with unreal decoded parts is a structural endpoint fault, not empty or formal unavailability. -/

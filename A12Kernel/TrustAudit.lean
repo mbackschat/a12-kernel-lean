@@ -469,6 +469,7 @@ run_cmd do
 #print axioms A12Kernel.dateRangeValue_toResolvedDateRange_of_endpoints
 #print axioms A12Kernel.dateRangeValue_select_start
 #print axioms A12Kernel.dateRangeValue_select_finish
+#print axioms A12Kernel.directDateRange_evaluate_value
 #print axioms A12Kernel.dateRangeBound_evaluate_value
 #print axioms A12Kernel.dateRangeBound_evaluate_empty
 #print axioms A12Kernel.dateRangeBound_evaluate_unknown
