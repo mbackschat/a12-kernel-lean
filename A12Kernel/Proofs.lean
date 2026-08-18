@@ -90,6 +90,7 @@ import A12Kernel.Proofs.NumericValidation.Lowering
 import A12Kernel.Proofs.ValidationCondition
 import A12Kernel.Proofs.ValidationCondition.GroupList
 import A12Kernel.Proofs.ValidationCondition.Reference
+import A12Kernel.Proofs.ValidationCondition.CurrentRepetition
 import A12Kernel.Proofs.FlatPresenceContradiction
 import A12Kernel.Proofs.Elaboration
 import A12Kernel.Proofs.CheckedIndexPreliminary

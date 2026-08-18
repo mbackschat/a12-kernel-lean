@@ -89,6 +89,7 @@ import A12Kernel.Conformance.NumericApplication
 import A12Kernel.Conformance.NumericDependency
 import A12Kernel.Conformance.NumericValidation
 import A12Kernel.Conformance.ValidationCondition
+import A12Kernel.Conformance.ValidationCondition.CurrentRepetition
 import A12Kernel.Conformance.NumericTolerance
 import A12Kernel.Conformance.StringLength
 import A12Kernel.Conformance.StringIngestion

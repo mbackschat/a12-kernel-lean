@@ -139,6 +139,28 @@ def fromRepetitionNotUnique (model : FlatModel) (rowGroup : GroupPath)
     (ValidationCondition.repetitionNotUnique source)
     source.modelWellFormed
 
+/-- Resolve the exact measured nonrepeatable-root `CurrentRepetition` condition. The surface accepts an ordinary group path only; the checked leaf keeps its direct filled guard and equality tag indivisible. -/
+def fromGuardedRootCurrentRepetition
+    (model : FlatModel) (rowGroup : GroupPath)
+    (guard : SurfaceFieldPath) (group : SurfaceGroupPath)
+    (comparison : RootCurrentRepetitionComparison) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) :=
+  match hModel : model.validate with
+  | .error error => .error (.invalidModel error)
+  | .ok () => do
+      let declaration ←
+        (model.resolveNonrepeatableFieldUnchecked rowGroup guard)
+          |>.mapError .fieldReference
+      let resolved ← group.resolveAgainst rowGroup
+        |>.mapError .groupReference
+      if !model.hasGroupPath resolved then
+        throw (.unknownGroup resolved)
+      checkCore model rowGroup
+        (ValidationCondition.guardedRootCurrentRepetition
+          declaration resolved comparison)
+        (by rw [hModel]; rfl)
+
 private def resolveGroupListOperand (model : FlatModel) (rowGroup : GroupPath) :
     SurfaceGroupListOperand →
       Except ValidationConditionAssemblyError

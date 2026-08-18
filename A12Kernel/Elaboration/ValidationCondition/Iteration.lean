@@ -336,7 +336,8 @@ def ResolvedGroupListOperands.iterationGuardAt
 private def ValidationConditionLeaf.iterationGuardAt
     (level : RepeatableLevel) :
     ValidationConditionLeaf model → IterationGuardStatus
-  | .flat _ | .numeric _ _ => .noReference
+  | .flat _ | .numeric _ _ | .guardedRootCurrentRepetition _ _ _ =>
+      .noReference
   | .groupList operator operands =>
       ResolvedGroupListOperands.iterationGuardAt operator operands level
   | .orderedNumeric _ comparison =>
@@ -443,7 +444,8 @@ def supportsOrdinaryIteration
     (condition : ValidationCondition model) : Bool :=
   condition.allLeaves fun
     | .flat _ | .groupPresence _ _ | .groupList _ _
-    | .repeatableFieldPresence _ _ => true
+    | .repeatableFieldPresence _ _
+    | .guardedRootCurrentRepetition _ _ _ => true
     | .orderedNumeric .sameGroupAddressed _ => true
     | .repetitionNotUnique _ => true
     | _ => false

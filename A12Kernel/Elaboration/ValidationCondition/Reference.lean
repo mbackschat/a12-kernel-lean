@@ -233,6 +233,8 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
         (fun declaration => comparison.referencesField model declaration.id)
         environment
   | .groupPresence _ reference => fixedGroupPointers model reference environment
+  | .guardedRootCurrentRepetition guard _ _ =>
+      (concreteFieldPointer guard environment).map ([·])
   | _ => .error .unclassifiedLeaf
 
 private def treePointers (environment : Env) :
