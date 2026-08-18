@@ -10,9 +10,9 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: read-only route discovery required.
-- `gap`: [SG6 remaining temporal `FirstFilledValue` policies](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion), after closing both exact DateRange pairs.
-- `next`: identify the smallest externally sourced remaining temporal declaration policy whose typed selection and target renderer already have distinct owners; verify its exact authorable format, red conformance owner, and composition evidence limit before semantic edits.
+- `state`: implementation ready.
+- `gap`: [second direct full-Date `FirstFilledValue` policy](SEMANTICS-GAPS.md#gap-sg6-full-date-first-filled-second-policy).
+- `next`: add the red dotted typed-instant result and crossed-format refusals, then specialize the existing direct-star certificate while reusing the checked full-Date target policy unchanged.
 - `blocked-on`: none.
 - `consumer-probe-trigger`: satisfied for the exact fixed four-carrier profile; the second DateRange policy adds no new consumer distinction beyond the already-probed declaration-owned rendering decision. Trigger again only after a reusable wider family closes or another defined milestone/risk boundary is reached.
-- `resume`: `rg -n 'dateTimeIso|fullDateIso|TemporalFirstFilledStarCarrier|FirstFilledValueFamilyLawsTest' A12Kernel docs/SOURCES.md ../a12-rulekit/src/test`
+- `resume`: `lake build A12Kernel.Conformance.FullDateFirstFilledComputation`

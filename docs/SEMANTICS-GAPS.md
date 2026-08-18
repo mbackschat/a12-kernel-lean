@@ -125,6 +125,23 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - Open reviewed domain: [temporal comparison and aggregates](IMPLEMENTATION-MAP.md#cap-temporal-comparison-and-aggregates) closes filled full-Date construction-versus-stored DateRange equality, while the [checked DateRange declaration](IMPLEMENTATION-MAP.md#cap-date-range-checked-declaration) closes already-decoded kind, policy, presence, and ordinary-document admission.
 - Remaining DateRange work: DateFragment and additional format admission/completion, raw parsing, empty/formal propagation beyond the direct `FirstFilledValue` slice, construction-versus-construction, computation targets and rendering beyond the two exact direct policies, overlap/bound nesting, wider operands, and repeatable operator use.
 
+<a id="gap-sg6-full-date-first-filled-second-policy"></a>
+#### Second direct full-Date `FirstFilledValue` policy
+
+- `state`: open
+- `missing`: admit and execute the exact full `dd.MM.yyyy` Date declaration through the existing direct single-level starred `FirstFilledValue` computation.
+- `baseline`: [fixed temporal `FirstFilledValue`](IMPLEMENTATION-MAP.md#cap-first-filled-value) already selects a typed Date instant under the `yyyy-MM-dd` carrier and delegates rendering and checks to the checked full-Date target policy.
+- `source`: [direct one-star established-kind `FirstFilledValue`](SOURCES.md#src-first-filled-kind-computations) establishes dotted Date authorability, format-keyed cross-format refusal, and exact dotted target attempts separately; same-format dotted admission and the combined direct runtime remain external evidence pending.
+- `discriminator`: a typed instant for local date `2024-03-20` with deliberately unrelated stored source text must render as `20.03.2024`; crossing the dotted and ISO declarations remains refused in both target directions.
+- `consumer`: Execute must retain target-policy rendering while selecting instant identity, rather than copying source text or collapsing both declared formats into one admission carrier.
+- `blocked-on`: none
+- `route-state`: verified
+- `red-locus`: [`FullDateFirstFilledComputation.lean`](../A12Kernel/Conformance/FullDateFirstFilledComputation.lean) owns the exact result, crossed-format, optional-check, and direct-star controls.
+- `green-locus`: [`FullDateFirstFilledComputation.lean`](../A12Kernel/Elaboration/FullDateFirstFilledComputation.lean) owns checked assembly and execution through the retained full-Date target policy.
+- `supporting-locus`: [`TemporalFirstFilledStarComputation.lean`](../A12Kernel/Elaboration/TemporalFirstFilledStarComputation.lean) owns the exact declaration-format carriers.
+- `supporting-locus`: [`TemporalTargetPolicy.lean`](../A12Kernel/Elaboration/TemporalTargetPolicy.lean) already owns both bounded full-Date renderers, model-zone projection, target checks, and attempted values.
+- `route-limit`: widen only to full `dd.MM.yyyy` with the optional pre-1900 check disabled; exclude partial Dates, other formats, optional source checks, multiple/group/filtered operands, nested repetition, validation use, and any new document route.
+
 - Most dangerous discriminator: equal Berlin wall labels can denote different instants, and another `World` can change `Now`. Wall-label-only identity, early clock resolution, or elapsed-duration substitution is unsound.
 - Consumer hypothesis: Execute, Transform, and Explain must retain instant, source format, decoded components, calendar/profile, world dependency, and target rendering policy. An unsupported zone/profile is explicit insufficiency.
 - Forbidden shortcut: do not reuse a day-only operand for sub-day expressions, create a parallel temporal AST, re-resolve an instant, invent target rendering, substitute proleptic dates for an unsupported profile, or equate calendar steps with elapsed duration.
