@@ -39,10 +39,7 @@ private def admissionModel : FlatModel := {
     { id := 11, groupPath := ["Form"], name := "Quantity",
       policy := { kind := .number { scale := 0, signed := false } } },
     { id := 12, groupPath := ["Form"], name := "BackorderQuantity",
-      policy := { kind := .number { scale := 0, signed := false } } },
-    rangeField 13 ["Form"] "YearMonth" [] "yyyy-MM",
-    rangeField 14 ["Form", "Rows"] "FragmentWindow" [10] "yyyy-MM",
-    rangeField 15 ["Form"] "Year" [] "yyyy"]
+      policy := { kind := .number { scale := 0, signed := false } } }]
   repeatableGroups := [
     { level := 10, path := ["Form", "Rows"], repeatability := some 4 },
     { level := 11, path := ["Form", "Periods"], repeatability := some 3 }]
@@ -99,16 +96,6 @@ private def admissionError? (first : SurfaceFieldEntityOperand)
 
 /- The operator accepts both canonical full-year policies in one list; it does not require one presentation. -/
 example : (checkedSource? (direct "Start") [direct "Finish"]).isSome = true := by
-  native_decide
-
-/- Singular direct admission accepts the measured year-month fragment without widening stars. -/
-example :
-    (checkedSource? (direct "YearMonth") [direct "Start"]).isSome = true ∧
-      admissionError? (.star (star "FragmentWindow")) [direct "Start"] =
-        some (.unsupportedPolicy ["Form", "Rows", "FragmentWindow"]
-          "yyyy-MM" "/") ∧
-      admissionError? (direct "Year") [direct "Start"] =
-        some (.unsupportedPolicy ["Form", "Year"] "yyyy" "/") := by
   native_decide
 
 /- A sole star satisfies multiplicity, and a filter stays attached to its exact authored slot. -/
@@ -178,12 +165,6 @@ private def pluralGroupSummary? :
 /- A single direct list field is legal: list nonemptiness is distinct from the singular aggregate's multiplicity gate. -/
 example :
     (checkedPluralSource? (direct "Start") (direct "Finish")).isSome = true := by
-  native_decide
-
-/- Singular year-month admission does not widen the plural list policy. -/
-example :
-    pluralAdmissionError? (direct "Start") (direct "YearMonth") =
-      some (.unsupportedPolicy .list ["Form", "YearMonth"] "yyyy-MM" "/") := by
   native_decide
 
 /- The public certificate keeps the scalar outside the ordered list and preserves field identity. -/
@@ -304,12 +285,6 @@ private def lateJanuaryValue :=
   rangeValue 1705276800000 1706659200000 1 15 1 31
 private def marchValue :=
   rangeValue 1709251200000 1711843200000 3 1 3 31
-private def februaryValue :=
-  rangeValue 1706745600000 1709164800000 2 1 2 29
-private def leapDayValue :=
-  rangeValue 1709164800000 1709164800000 2 29 2 29
-private def marchFirstValue :=
-  rangeValue 1709251200000 1709251200000 3 1 3 1
 
 private def rangeCell (field : FieldId) (path : List Nat)
     (stored : String) (raw : RawCell) : ClassifiedCellInput :=
@@ -367,19 +342,6 @@ example :
           operand.core.addressedCells.map fun cell =>
             (cell.address.field, cell.address.path)) =
         some [[(1, [])], [(2, [])]] := by
-  native_decide
-
-/- The measured year-month range reaches leap day but not the next day, in both recursive operand positions. -/
-example :
-    verdict? (direct "YearMonth") [direct "Start"] [] [
-      rangeCell 13 [] "2024-02/2024-02" (.parsed (.dateRange februaryValue)),
-      rangeCell 1 [] "2024-02-29/2024-02-29"
-        (.parsed (.dateRange leapDayValue))] = some (.fired .value) ∧
-      verdict? (direct "Start") [direct "YearMonth"] [] [
-        rangeCell 1 [] "2024-03-01/2024-03-01"
-          (.parsed (.dateRange marchFirstValue)),
-        rangeCell 13 [] "2024-02/2024-02"
-          (.parsed (.dateRange februaryValue))] = some .notFired := by
   native_decide
 
 private def row1 : RowAddr := { group := 10, path := [1] }

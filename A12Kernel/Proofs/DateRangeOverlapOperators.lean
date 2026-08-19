@@ -9,7 +9,7 @@ These laws cover the two ordered scans after cell classification and filter sele
 
 namespace A12Kernel
 
-/-- Every DateRange declaration retained by checked singular-overlap admission has either an exact executable policy or the measured direct year-month policy. -/
+/-- Every DateRange declaration retained by checked singular-overlap admission has either an exact executable policy or one measured direct fragment profile valid for the checked model. -/
 theorem checkedDateRangesOverlap_policies_supported
     (checked : CheckedDateRangesOverlapSource model) :
     checked.operands.all
@@ -24,10 +24,9 @@ theorem checkedDateRangesOverlap_policies_supported
             CheckedDateRangesOverlapOperand.source]
           rw [source.formatOwned]
           rfl
-  | yearMonthField source =>
+  | fragmentField source =>
       simp only [CheckedSingularDateRangesOverlapOperand.policySupported]
-      rw [source.formatOwned, source.formatIsYearMonth]
-      rfl
+      exact source.profileOwned
 
 /-- Every DateRange declaration retained on either side of checked scalar-versus-list admission has an exact executable stored-input policy. -/
 theorem checkedAtLeastOneDateRangeOverlaps_policies_supported

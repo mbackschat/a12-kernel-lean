@@ -10,6 +10,7 @@ import A12Kernel.Conformance.DateRangeOverlap
 import A12Kernel.Conformance.DateRangeComparison
 import A12Kernel.Conformance.DateRangeCellEquality
 import A12Kernel.Conformance.DateRangeOverlapOperators
+import A12Kernel.Conformance.DateRangeFragmentOverlap
 import A12Kernel.Conformance.DateConstruction
 import A12Kernel.Conformance.DateConstructionNumeric
 import A12Kernel.Conformance.ConstructedDateShift

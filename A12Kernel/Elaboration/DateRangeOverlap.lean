@@ -5,7 +5,7 @@ import A12Kernel.Semantics.DateRangeOverlapOperators
 
 /-! # Checked DateRange overlap operands
 
-This boundary owns operator-specific static admission and full-validation checked-document assembly for DateRange overlap conditions. It reuses the shared entity-list shape and checked DateRange declaration policies; singular direct fields additionally certify the measured `yyyy-MM` input profile while starred and plural routes remain canonical. Pure overlap truth and polarity remain in `A12Kernel.Semantics.DateRangeOverlapOperators`.
+This boundary owns operator-specific static admission and full-validation checked-document assembly for DateRange overlap conditions. It reuses the shared entity-list shape and checked DateRange declaration policies; singular direct fields additionally certify measured year-month and Base-Year-completed fragment profiles while starred and plural routes remain canonical. Pure overlap truth and polarity remain in `A12Kernel.Semantics.DateRangeOverlapOperators`.
 -/
 
 namespace A12Kernel
@@ -17,6 +17,7 @@ inductive DateRangesOverlapElabError where
   | unsupportedPolicy (path : List String) (format separator : String)
   | unsupportedReadForm (path : List String) (form : FieldEntityReadForm)
   | groupsNotAllowed (path : GroupPath)
+  | dateWithAndWithoutYear
   | having (error : CorrelationElabError)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -26,6 +27,7 @@ namespace DateRangesOverlapElabError
 def diagnostic? : DateRangesOverlapElabError → Option KernelStaticDiagnostic
   | .shape error => error.diagnostic?
   | .groupsNotAllowed _ => some .noGroupsAllowed
+  | .dateWithAndWithoutYear => some .dateWithAndWithoutYear
   | .sourceNotDateRange _ _ | .unsupportedPolicy _ _ _ |
       .unsupportedReadForm _ _ | .having _ | .incoherentCore => none
 
@@ -60,28 +62,49 @@ def resolveValidationCore (operand : CheckedDateRangesOverlapOperand model)
 
 end CheckedDateRangesOverlapOperand
 
-/-- One direct DateRange field whose checked input profile is exactly the measured year-month fragment. -/
-structure CheckedYearMonthDateRangeField extends CheckedDateRangeInputField where
-  private mk ::
-  formatIsYearMonth : format = .yearMonthFragment
+/-- One singular direct fragment profile that resolves to an exact range without changing starred or plural admission. -/
+inductive DirectDateRangeOverlapFragmentProfile where
+  | yearMonth
+  | month (baseYear : Int)
+  | monthDay (baseYear : Int)
+  deriving Repr, DecidableEq
 
-/-- One singular-overlap operand. Only a direct field gains the measured year-month profile; canonical direct and star operands retain their existing certificate. -/
+namespace DirectDateRangeOverlapFragmentProfile
+
+def accepts (profile : DirectDateRangeOverlapFragmentProfile)
+    (model : FlatModel) (format : DateRangeInputFormat) : Bool :=
+  match profile with
+  | .yearMonth => format == .yearMonthFragment
+  | .month baseYear =>
+      format == .yearlessMonth && model.baseYear == some baseYear
+  | .monthDay baseYear =>
+      format == .yearlessMonthDay && model.baseYear == some baseYear
+
+end DirectDateRangeOverlapFragmentProfile
+
+/-- One direct DateRange field whose checked input profile is year-bearing or completed by the checked model's Base Year. -/
+structure CheckedDirectDateRangeOverlapFragmentField (model : FlatModel)
+    extends CheckedDateRangeInputField where
+  private mk ::
+  profile : DirectDateRangeOverlapFragmentProfile
+  profileOwned : profile.accepts model format = true
+
+/-- One singular-overlap operand. Only a direct field gains the measured fragment profiles; canonical direct and star operands retain their existing certificate. -/
 inductive CheckedSingularDateRangesOverlapOperand (model : FlatModel) where
   | canonical (source : CheckedDateRangesOverlapOperand model)
-  | yearMonthField (source : CheckedYearMonthDateRangeField)
+  | fragmentField (source : CheckedDirectDateRangeOverlapFragmentField model)
 
 namespace CheckedSingularDateRangesOverlapOperand
 
 def hasHaving : CheckedSingularDateRangesOverlapOperand model → Bool
   | .canonical source => source.hasHaving
-  | .yearMonthField _ => false
+  | .fragmentField _ => false
 
-/-- Whether the retained declaration satisfies the exact canonical policy or the singular-only year-month policy. -/
+/-- Whether the retained declaration satisfies the exact canonical policy or one singular-only direct fragment profile valid for the checked model. -/
 def policySupported : CheckedSingularDateRangesOverlapOperand model → Bool
   | .canonical source =>
       (DateRangeFormat.ofPolicy? source.source.policy).isSome
-  | .yearMonthField source =>
-      DateRangeInputFormat.ofPolicy? source.policy == some .yearMonthFragment
+  | .fragmentField source => source.profile.accepts model source.format
 
 /-- Resolve one singular full-validation operand through the existing checked direct/star addressing boundary. -/
 def resolveValidationCore (operand : CheckedSingularDateRangesOverlapOperand model)
@@ -89,7 +112,7 @@ def resolveValidationCore (operand : CheckedSingularDateRangesOverlapOperand mod
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore :=
   match operand with
   | .canonical source => source.resolveValidationCore document outer
-  | .yearMonthField source =>
+  | .fragmentField source =>
       document.resolveCheckedDirectEntityOperandCore source.declaration.id
 
 end CheckedSingularDateRangesOverlapOperand
@@ -120,9 +143,9 @@ private def certifyDateRangesOverlapField (declaration : FlatFieldDecl) :
         .unsupportedPolicy path format separator
     | .incoherentCore => .incoherentCore
 
-private def certifyYearMonthDateRangesOverlapField
-    (declaration : FlatFieldDecl) :
-    Except DateRangesOverlapElabError CheckedYearMonthDateRangeField := do
+private def certifyDirectDateRangeOverlapFragmentField (model : FlatModel)
+    (declaration : FlatFieldDecl) : Except DateRangesOverlapElabError
+      (CheckedDirectDateRangeOverlapFragmentField model) := do
   let source ← certifyDateRangeInputField declaration |>.mapError fun
     | .notDateRange path actual => .sourceNotDateRange path actual.surfaceKind
     | .unsupportedPolicy path format separator =>
@@ -130,9 +153,34 @@ private def certifyYearMonthDateRangesOverlapField
     | .incoherentCore => .incoherentCore
   match hFormat : source.format with
   | .yearMonthFragment =>
-      pure { source with formatIsYearMonth := hFormat }
-  | _ => throw (.unsupportedPolicy declaration.path
-      source.policy.format source.policy.separator)
+      pure {
+        source with
+        profile := .yearMonth
+        profileOwned := by
+          simp [DirectDateRangeOverlapFragmentProfile.accepts, hFormat] }
+  | .yearlessMonth =>
+      match hBaseYear : model.baseYear with
+      | some baseYear => pure {
+          source with
+          profile := .month baseYear
+          profileOwned := by
+            simp [DirectDateRangeOverlapFragmentProfile.accepts, hFormat,
+              hBaseYear] }
+      | none => throw (.unsupportedPolicy declaration.path
+          source.policy.format source.policy.separator)
+  | .yearlessMonthDay =>
+      match hBaseYear : model.baseYear with
+      | some baseYear => pure {
+          source with
+          profile := .monthDay baseYear
+          profileOwned := by
+            simp [DirectDateRangeOverlapFragmentProfile.accepts, hFormat,
+              hBaseYear] }
+      | none => throw (.unsupportedPolicy declaration.path
+          source.policy.format source.policy.separator)
+  | .exact _ | .yearFragment =>
+      throw (.unsupportedPolicy declaration.path
+        source.policy.format source.policy.separator)
 
 private def certifyDateRangesOverlapOperand (model : FlatModel)
     (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
@@ -161,7 +209,8 @@ private def certifySingularDateRangesOverlapOperand (model : FlatModel)
       match certifyDateRangesOverlapField declaration with
       | .ok source => pure (.canonical (.field source))
       | .error (.unsupportedPolicy _ _ _) =>
-          .yearMonthField <$> certifyYearMonthDateRangesOverlapField declaration
+          .fragmentField <$>
+            certifyDirectDateRangeOverlapFragmentField model declaration
       | .error error => throw error
   | operand =>
       .canonical <$> certifyDateRangesOverlapOperand model declaringGroup operand
@@ -172,13 +221,46 @@ private def certifySingularDateRangesOverlapOperands (model : FlatModel)
         (List (CheckedSingularDateRangesOverlapOperand model)) :=
   List.mapM (certifySingularDateRangesOverlapOperand model declaringGroup)
 
-/-- Apply the shared shape gates first, then the singular operator's group refusal and exact-or-direct-year-month policy certification in authored order. -/
+private def isCanonicalDirectDateRangeOperand :
+    ResolvedFieldEntityOperand model → Bool
+  | .field declaration .stored =>
+      (certifyCanonicalDateRangeField declaration).toOption.isSome
+  | _ => false
+
+private def isYearlessDirectDateRangeOperand :
+    ResolvedFieldEntityOperand model → Bool
+  | .field declaration .stored =>
+      match (certifyDateRangeInputField declaration).toOption.map (·.format) with
+      | some format =>
+          match format with
+          | .yearlessMonth | .yearlessMonthDay => true
+          | _ => false
+      | none => false
+  | _ => false
+
+/-- The retained diagnostic row is exactly one canonical direct range beside one unconfigured yearless direct range. -/
+private def hasMeasuredYearlessDateRangeMix (model : FlatModel)
+    (operands : List (ResolvedFieldEntityOperand model)) : Bool :=
+  if model.baseYear.isSome then
+    false
+  else
+    match operands with
+    | [left, right] =>
+        (isCanonicalDirectDateRangeOperand left &&
+          isYearlessDirectDateRangeOperand right) ||
+        (isYearlessDirectDateRangeOperand left &&
+          isCanonicalDirectDateRangeOperand right)
+    | _ => false
+
+/-- Apply the shared shape gates first, then the singular operator's group refusal and exact-or-direct-fragment policy certification in authored order. -/
 def elaborateDateRangesOverlapSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
     Except DateRangesOverlapElabError
       (CheckedDateRangesOverlapSource model) := do
   let shape ← elaborateFieldEntityShape model declaringGroup authored
     |>.mapError .shape
+  if hasMeasuredYearlessDateRangeMix model (shape.first :: shape.rest) then
+    throw .dateWithAndWithoutYear
   let first ← certifySingularDateRangesOverlapOperand model declaringGroup
     shape.first
   let rest ← certifySingularDateRangesOverlapOperands model declaringGroup
@@ -335,7 +417,8 @@ private def pluralListError : DateRangesOverlapElabError →
       .unsupportedPolicy .list path format separator
   | .unsupportedReadForm path form => .unsupportedReadForm .list path form
   | .having error => .having error
-  | .shape _ | .groupsNotAllowed _ | .incoherentCore => .incoherentCore
+  | .shape _ | .groupsNotAllowed _ | .dateWithAndWithoutYear |
+      .incoherentCore => .incoherentCore
 
 private def certifyAtLeastOneDateRangeOverlapsListOperand (model : FlatModel)
     (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
