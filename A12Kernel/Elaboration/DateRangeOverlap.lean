@@ -338,6 +338,7 @@ def elaborateAtLeastOneDateRangeOverlapsSource (model : FlatModel)
 inductive DateRangesOverlapEvaluationError where
   | addressing (error : CheckedAddressingError)
   | sourceValueKind (address : CellAddr)
+  | sourceValueProfile (address : CellAddr) (value : DateRangeCellValue)
   | unresolvedRange (address : CellAddr) (value : DateRangeValue)
   | incoherentDirectOperand (actualCells : Nat)
   deriving Repr, DecidableEq
@@ -354,10 +355,12 @@ private def checkedDateRangeSlot
     Except DateRangesOverlapEvaluationError ResolvedDateRangeSlot :=
   match observeCell .validation addressed.cell with
   | .empty | .unknown _ | .poison _ => pure .skipped
-  | .value (Value.dateRange value) =>
+  | .value (Value.dateRange (.exact value)) =>
       match value.toResolvedDateRange? with
       | some range => pure (.kept range)
       | none => throw (.unresolvedRange addressed.address value)
+  | .value (Value.dateRange value) =>
+      throw (.sourceValueProfile addressed.address value)
   | .value _ => throw (.sourceValueKind addressed.address)
 
 namespace CheckedDateRangesOverlapOperand

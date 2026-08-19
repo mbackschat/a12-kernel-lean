@@ -188,6 +188,21 @@ def select (value : DateRangeValue) : DateRangeBound → DateValue
 
 end DateRangeValue
 
+/-- A yearless month/day label retained without a synthetic calendar year or instant. Calendar admission remains parser-owned. -/
+structure MonthDayValue where
+  month : Nat
+  day : Nat
+  deriving Repr, DecidableEq
+
+/-- The checked DateRange cell domain. Fully resolved values keep the exact `DateRangeValue`; yearless fragment values retain only the component identity established by their declaration. -/
+inductive DateRangeCellValue where
+  | exact (value : DateRangeValue)
+  | yearlessMonth (start finish : Nat)
+  | yearlessMonthDay (start finish : MonthDayValue)
+  deriving Repr, DecidableEq
+
+instance : Coe DateRangeValue DateRangeCellValue := ⟨.exact⟩
+
 /-- One admitted scalar temporal payload. Exact runtime identity remains separate from decoded local components, and the closed constructors make each kind's available component halves explicit. -/
 inductive TemporalValue where
   | date (value : DateValue)
@@ -263,9 +278,10 @@ def TemporalComponents.isFullDateTime (components : TemporalComponents) : Bool :
     (`7` vs `7.00`) is a separate rendered-string concern, not carried here. Arithmetic
     applies explicit rounding (scale-19 `HALF_UP` for compares, `MathContext(50)` for
     intermediates) at the `spec/04` points, so exactness never silently diverges from the
-    engine. Date, Time, DateTime, and DateRange retain closed payloads with exact instant
-    identity, decoded component halves, and date calendar provenance; declared format and
-    partial-value admission remain upstream. (`spec/13` §1) -/
+    engine. Date, Time, and DateTime retain closed payloads with exact instant identity,
+    decoded component halves, and date calendar provenance. DateRange cells retain either
+    that exact endpoint identity or an explicit yearless `MM`/`MM-dd` component pair;
+    declared format and partial-value admission remain upstream. (`spec/13` §1) -/
 inductive Value where
   | num  (d : Rat)
   | str  (s : String)
@@ -273,7 +289,7 @@ inductive Value where
   | conf (b : Bool)         -- Stored Confirm values are `true`; `false` is comparison-local substitution.
   | enum (stored : String)  -- compared by the stored token, never the display text
   | temporal (value : TemporalValue)
-  | dateRange (value : DateRangeValue)
+  | dateRange (value : DateRangeCellValue)
   deriving Repr, DecidableEq
 
 /-! ## Sanity checks (double as regression guards) -/

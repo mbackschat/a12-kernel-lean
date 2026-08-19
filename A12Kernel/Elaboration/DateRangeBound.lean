@@ -102,6 +102,7 @@ def elaborateDateRangeBoundComponent (model : FlatModel)
 inductive DirectDateRangeFault where
   | document (error : CheckedDocumentError)
   | sourceValueKind (source : FieldId)
+  | sourceValueProfile (source : FieldId) (value : DateRangeCellValue)
   deriving Repr, DecidableEq
 
 abbrev DateRangeBoundFault := DirectDateRangeFault
@@ -134,7 +135,8 @@ def evaluate (operation : CheckedDirectDateRange model) (phase : Phase)
     |>.mapError .document
   match observeCell phase cell with
   | .empty => pure .empty
-  | .value (.dateRange value) => pure (.value value)
+  | .value (.dateRange (.exact value)) => pure (.value value)
+  | .value (.dateRange value) => throw (.sourceValueProfile operation.source.id value)
   | .value _ => throw (.sourceValueKind operation.source.id)
   | .unknown cause => pure (.unknown cause)
   | .poison cause => pure (.poison cause)

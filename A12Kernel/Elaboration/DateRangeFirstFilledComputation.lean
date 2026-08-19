@@ -36,7 +36,8 @@ def checkDateRangeFirstFilledComputation
 def dateRangeFirstFilledCellAt
     (addressed : CheckedAddressedCell) : DateRangeComputationResult :=
   match observeCell .computation addressed.cell with
-  | .value (.dateRange range) => .value range
+  | .value (.dateRange (.exact range)) => .value range
+  | .value (.dateRange _) => .poison .malformed
   | .value _ => .poison .malformed
   | .empty => .noValue
   | .unknown cause | .poison cause => .poison cause

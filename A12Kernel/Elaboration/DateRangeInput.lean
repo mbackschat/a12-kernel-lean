@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.Flat.Types
 
 /-! # Checked DateRange declaration and stored-text ingestion
 
-This capsule classifies stored DateRange text for the two exact declaration pairs already admitted by the bounded computation family. It retains present-empty placement, four distinct formal causes, decoded Gregorian components, model-zone midnight instants, and stored-calendar provenance. Wider `SimpleDateFormat` syntax, fragment ranges, other legal zones, JSON mapper behavior, and document traversal remain separate.
+This capsule classifies stored DateRange text for two exact full-Date pairs plus slash-separated `MM` and `MM-dd`. It retains present-empty placement and four distinct formal causes. Full-Date input and configured fragments resolve stored-Gregorian model-zone midnight instants; fragments without a Base Year retain only their ordered component identity. Stored `yyyy`/`yyyy-MM`, wider `SimpleDateFormat` syntax, other legal zones, JSON mapper behavior, and document traversal remain separate.
 -/
 
 namespace A12Kernel
@@ -56,38 +56,70 @@ inductive DateRangeInputError where
   | unresolvableEndpoint (parts : DateParts)
   deriving Repr, DecidableEq
 
-namespace DateRangeFormat
+/-- Stored DateRange presentations currently classified by the checked-document route. Exact full-Date formats retain their target-compatible owner; the two yearless profiles are input-only. -/
+inductive DateRangeInputFormat where
+  | exact (format : DateRangeFormat)
+  | yearlessMonth
+  | yearlessMonthDay
+  deriving Repr, DecidableEq
+
+namespace DateRangeInputFormat
+
+/-- Recognize the two exact full-Date policies plus the measured slash-separated yearless fragment policies. -/
+def ofPolicy? (policy : DateRangeDeclarationPolicy) : Option DateRangeInputFormat :=
+  match DateRangeFormat.ofPolicy? policy with
+  | some format => some (.exact format)
+  | none =>
+      if policy.format == "MM" && policy.separator == "/" then
+        some .yearlessMonth
+      else if policy.format == "MM-dd" && policy.separator == "/" then
+        some .yearlessMonthDay
+      else
+        none
+
+end DateRangeInputFormat
 
 /-- Decode one fixed-width ASCII component. -/
-private def parseComponent? (width : Nat) (text : String) : Option Nat :=
+private def parseDateRangeComponent? (width : Nat) (text : String) : Option Nat :=
   if text.length = width then parseAsciiNatural? text else none
+
+/-- Split one range token while retaining the established missing-separator versus malformed-shape precedence. -/
+private def splitDateRange (separator text : String) :
+    Except BaseFormalCause (String × String) :=
+  match text.splitOn separator with
+  | [_] => throw .dateRangeSeparator
+  | [startText, finishText] => pure (startText, finishText)
+  | _ => throw .dateRangeFormat
+
+private def requireDateRangeFormat : Option α → Except BaseFormalCause α
+  | some value => pure value
+  | none => throw .dateRangeFormat
+
+namespace DateRangeFormat
 
 /-- Decode one endpoint through the exact component order and calendar-reality check of the selected presentation. The universal floor is deliberately later because it has its own DateRange cause and precedence. -/
 private def parseEndpoint? : DateRangeFormat → String → Option CivilDate
   | .isoSlash, text =>
       match text.splitOn "-" with
       | [yearText, monthText, dayText] => do
-          let year ← parseComponent? 4 yearText
-          let month ← parseComponent? 2 monthText
-          let day ← parseComponent? 2 dayText
+          let year ← parseDateRangeComponent? 4 yearText
+          let month ← parseDateRangeComponent? 2 monthText
+          let day ← parseDateRangeComponent? 2 dayText
           CivilDate.ofYmd? year month day
       | _ => none
   | .dayMonthYearDash, text =>
       match text.splitOn "." with
       | [dayText, monthText, yearText] => do
-          let day ← parseComponent? 2 dayText
-          let month ← parseComponent? 2 monthText
-          let year ← parseComponent? 4 yearText
+          let day ← parseDateRangeComponent? 2 dayText
+          let month ← parseDateRangeComponent? 2 monthText
+          let year ← parseDateRangeComponent? 4 yearText
           CivilDate.ofYmd? year month day
       | _ => none
 
 /-- Parse and formally classify both endpoint labels before model-zone resolution. Separator absence wins first; malformed split shape or endpoint format/calendar reality comes second, endpoint order third, and the universal floor last. -/
 private def parseCivilRange (format : DateRangeFormat) (text : String) :
     Except BaseFormalCause (CivilDate × CivilDate) := do
-  let (startText, finishText) ← match text.splitOn format.separator with
-    | [_] => throw .dateRangeSeparator
-    | [startText, finishText] => pure (startText, finishText)
-    | _ => throw .dateRangeFormat
+  let (startText, finishText) ← splitDateRange format.separator text
   let start ← match format.parseEndpoint? startText with
     | some start => pure start
     | none => throw .dateRangeFormat
@@ -115,6 +147,60 @@ private def resolveEndpoint? (profile : ModelZone.ConcreteProfile)
 
 end DateRangeFormat
 
+namespace DateRangeInputFormat
+
+private def parseMonth? (text : String) : Option Nat := do
+  let month ← parseDateRangeComponent? 2 text
+  if 1 ≤ month && month ≤ 12 then some month else none
+
+private def parseMonthDay? (text : String) : Option MonthDayValue :=
+  match text.splitOn "-" with
+  | [monthText, dayText] => do
+      let month ← parseDateRangeComponent? 2 monthText
+      let day ← parseDateRangeComponent? 2 dayText
+      let _ ← CivilDate.ofYmd? 2000 month day
+      pure { month, day }
+  | _ => none
+
+private def monthDayBefore (left right : MonthDayValue) : Bool :=
+  decide (left.month < right.month ∨
+    left.month = right.month ∧ left.day < right.day)
+
+/-- Parse one yearless range without manufacturing a calendar year. February 29 is admitted because it denotes a real month/day label in the Gregorian calendar. -/
+private def parseYearlessRange (format : DateRangeInputFormat) (separator text : String) :
+    Except BaseFormalCause DateRangeCellValue := do
+  let (startText, finishText) ← splitDateRange separator text
+  match format with
+  | .yearlessMonth =>
+      let start ← requireDateRangeFormat (parseMonth? startText)
+      let finish ← requireDateRangeFormat (parseMonth? finishText)
+      if finish < start then throw .dateRangeInvalid
+      else pure (.yearlessMonth start finish)
+  | .yearlessMonthDay =>
+      let start ← requireDateRangeFormat (parseMonthDay? startText)
+      let finish ← requireDateRangeFormat (parseMonthDay? finishText)
+      if monthDayBefore finish start then throw .dateRangeInvalid
+      else pure (.yearlessMonthDay start finish)
+  | .exact _ => throw .dateRangeFormat
+
+private def completedCivilRange (year : Int) :
+    DateRangeCellValue → Except BaseFormalCause (CivilDate × CivilDate)
+  | .yearlessMonth start finish => do
+      let startDate ← requireDateRangeFormat (CivilDate.ofYmd? year start 1)
+      let lastDay ← requireDateRangeFormat (DateParts.daysInMonth? year finish)
+      let finishDate ← requireDateRangeFormat
+        (CivilDate.ofYmd? year finish lastDay)
+      pure (startDate, finishDate)
+  | .yearlessMonthDay start finish => do
+      let startDate ← requireDateRangeFormat
+        (CivilDate.ofYmd? year start.month start.day)
+      let finishDate ← requireDateRangeFormat
+        (CivilDate.ofYmd? year finish.month finish.day)
+      pure (startDate, finishDate)
+  | .exact _ => throw .dateRangeFormat
+
+end DateRangeInputFormat
+
 /-- Classify one physical DateRange token under a declaration and model zone. Formal text failures are successful classifications carrying their exact cause; only unsupported semantic capability returns `Except.error`. -/
 def classifyStoredDateRange (zoneId : String)
     (policy : DateRangeDeclarationPolicy) (text : String) :
@@ -137,9 +223,45 @@ def classifyStoredDateRange (zoneId : String)
         let finishValue ← match DateRangeFormat.resolveEndpoint? profile finish with
           | some value => pure value
           | none => throw (DateRangeInputError.unresolvableEndpoint finish.parts)
-        pure (.parsed (.dateRange {
+        pure (.parsed (.dateRange (.exact {
           start := startValue
           finish := finishValue
-        }))
+        })))
+
+/-- Classify all currently checked stored DateRange profiles. A Base Year resolves yearless fragments to the existing exact carrier; without one, their component identity remains explicitly yearless. -/
+def classifyStoredDateRangeForModel (zoneId : String) (baseYear : Option Int)
+    (policy : DateRangeDeclarationPolicy) (text : String) :
+    Except DateRangeInputError RawCell := do
+  let format ← match DateRangeInputFormat.ofPolicy? policy with
+    | some format => pure format
+    | none => throw (.unsupportedPolicy policy.format policy.separator)
+  match format with
+  | .exact _ => classifyStoredDateRange zoneId policy text
+  | .yearlessMonth | .yearlessMonthDay =>
+      if text.isEmpty then
+        pure .presentEmpty
+      else
+        match format.parseYearlessRange policy.separator text with
+        | .error cause => pure (.rejected cause)
+        | .ok yearless =>
+            match baseYear with
+            | none => pure (.parsed (.dateRange yearless))
+            | some year =>
+                let profile ← match ModelZone.ConcreteProfile.ofId? zoneId with
+                  | some profile => pure profile
+                  | none => throw (.unsupportedZone zoneId)
+                match DateRangeInputFormat.completedCivilRange year yearless with
+                | .error cause => pure (.rejected cause)
+                | .ok (start, finish) =>
+                    if decide (start.Before CivilDate.gregorianFloor) then
+                      pure (.rejected .dateRangeTooEarly)
+                    else
+                      let startValue ← match DateRangeFormat.resolveEndpoint? profile start with
+                        | some value => pure value
+                        | none => throw (.unresolvableEndpoint start.parts)
+                      let finishValue ← match DateRangeFormat.resolveEndpoint? profile finish with
+                        | some value => pure value
+                        | none => throw (.unresolvableEndpoint finish.parts)
+                      pure (.parsed (.dateRange (.exact { start := startValue, finish := finishValue })))
 
 end A12Kernel

@@ -218,7 +218,8 @@ private def ClassifiedCellInput.canonicalScalarCoherent
       match declaration.toDateRangeDeclarationPolicy? with
       | none => true
       | some policy =>
-          match classifyStoredDateRange model.timeZoneId policy input.stored with
+          match classifyStoredDateRangeForModel model.timeZoneId model.baseYear
+              policy input.stored with
           | .ok canonical => input.raw == canonical
           | .error (.unsupportedPolicy _ _) => true
           | .error (.unsupportedZone _) | .error (.unresolvableEndpoint _) => false

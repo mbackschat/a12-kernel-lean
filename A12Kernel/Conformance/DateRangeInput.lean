@@ -16,6 +16,16 @@ private def dottedPolicy : DateRangeDeclarationPolicy := {
   separator := "-"
 }
 
+private def monthPolicy : DateRangeDeclarationPolicy := {
+  format := "MM"
+  separator := "/"
+}
+
+private def monthDayPolicy : DateRangeDeclarationPolicy := {
+  format := "MM-dd"
+  separator := "/"
+}
+
 private def dateValue (epochMillis : Int) (year month day : Nat) : DateValue := {
   instant := { epochMillis }
   parts := { year, month, day }
@@ -41,6 +51,46 @@ private def gregorianFloorRange : DateRangeValue := {
   start := dateValue (-12187670400000) 1583 10 16
   finish := dateValue (-12187670400000) 1583 10 16
 }
+
+private def february2024 : DateRangeValue := {
+  start := dateValue 1706745600000 2024 2 1
+  finish := dateValue 1709164800000 2024 2 29
+}
+
+private def leapDay2024 : DateRangeValue := {
+  start := dateValue 1709164800000 2024 2 29
+  finish := dateValue 1709164800000 2024 2 29
+}
+
+/- Yearless fragment ranges retain only their measured component identities, while a declared Base Year resolves the same labels to the existing exact range carrier. -/
+example :
+    (classifyStoredDateRangeForModel "UTC" none monthPolicy "02/03").toOption =
+      some (.parsed (.dateRange (.yearlessMonth 2 3))) ∧
+    (classifyStoredDateRangeForModel "UTC" none monthDayPolicy
+        "02-28/02-29").toOption =
+      some (.parsed (.dateRange (.yearlessMonthDay
+        { month := 2, day := 28 } { month := 2, day := 29 }))) ∧
+    (classifyStoredDateRangeForModel "UTC" (some 2024) monthPolicy
+        "02/02").toOption =
+      some (.parsed (.dateRange february2024)) ∧
+    (classifyStoredDateRangeForModel "UTC" (some 2024) monthDayPolicy
+        "02-29/02-29").toOption =
+      some (.parsed (.dateRange leapDay2024)) := by
+  native_decide
+
+/- Fragment parsing retains the established separator, format, and ordering causes without fabricating a year. -/
+example :
+    (classifyStoredDateRangeForModel "UTC" none monthPolicy "02").toOption =
+      some (.rejected .dateRangeSeparator) ∧
+    (classifyStoredDateRangeForModel "UTC" none monthDayPolicy
+        "02-30/03-01").toOption =
+      some (.rejected .dateRangeFormat) ∧
+    (classifyStoredDateRangeForModel "UTC" none monthPolicy "12/01").toOption =
+      some (.rejected .dateRangeInvalid) ∧
+    (classifyStoredDateRangeForModel "UTC" none monthDayPolicy
+        "03-01/02-29").toOption =
+      some (.rejected .dateRangeInvalid) := by
+  native_decide
 
 /- Both exact declaration pairs decode to typed endpoint values rather than preserving only the stored token. -/
 example :
@@ -155,6 +205,21 @@ private def dottedModel : FlatModel := {
   timeZoneId := "UTC"
 }
 
+private def monthTravel : FlatFieldDecl := {
+  travel with
+  name := "Months"
+  dateRangePolicy := some monthPolicy
+}
+
+private def monthModel : FlatModel := {
+  fields := [monthTravel]
+  timeZoneId := "UTC"
+}
+
+private def baseYearMonthModel : FlatModel := {
+  monthModel with baseYear := some 2024
+}
+
 private def prepared :
     PreparedFlatStringContext model builtinStringPatternCompiler :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
@@ -180,6 +245,37 @@ private def checkDottedOne (stored : String) (raw : RawCell) :=
     instantiatedRows := []
     cells := [{
       address := { field := dottedTravel.id, path := [] }
+      stored
+      raw
+    }]
+  }
+
+private def monthPrepared :
+    PreparedFlatStringContext monthModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler monthModel).toOption.get (by native_decide)
+
+private def checkMonthOne (stored : String) (raw : RawCell) :=
+  checkDocument monthPrepared "en_US" {
+    instantiatedRows := []
+    cells := [{
+      address := { field := monthTravel.id, path := [] }
+      stored
+      raw
+    }]
+  }
+
+private def baseYearMonthPrepared :
+    PreparedFlatStringContext baseYearMonthModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler baseYearMonthModel).toOption.get
+      (by native_decide)
+
+private def checkBaseYearMonthOne (stored : String) (raw : RawCell) :=
+  checkDocument baseYearMonthPrepared "en_US" {
+    instantiatedRows := []
+    cells := [{
+      address := { field := monthTravel.id, path := [] }
       stored
       raw
     }]
@@ -224,6 +320,26 @@ example :
         (.parsed (.dateRange berlinTransition)) with
       | .error (.incoherentCell address) =>
           address == { field := travel.id, path := [] }
+      | _ => false) = true := by
+  native_decide
+
+/- Canonical coherence covers both yearless and Base-Year-resolved fragment cells through the same immutable checked document. -/
+example :
+    (checkMonthOne "02/03"
+      (.parsed (.dateRange (.yearlessMonth 2 3)))).toOption.map
+        (fun checked => checked.flatContext.observeValidationAt monthTravel.id) =
+      some (.value (.dateRange (.yearlessMonth 2 3))) ∧
+    (match checkMonthOne "02/03"
+        (.parsed (.dateRange (.yearlessMonth 2 4))) with
+      | .error (.incoherentCell address) =>
+          address == { field := monthTravel.id, path := [] }
+      | _ => false) = true ∧
+    (checkBaseYearMonthOne "02/02"
+      (.parsed (.dateRange february2024))).isOk = true ∧
+    (match checkBaseYearMonthOne "02/02"
+        (.parsed (.dateRange (.yearlessMonth 2 2))) with
+      | .error (.incoherentCell address) =>
+          address == { field := monthTravel.id, path := [] }
       | _ => false) = true := by
   native_decide
 
@@ -334,6 +450,10 @@ example :
     let dateModel : FlatModel := { fields := [dateField] }
     (elaborateDateRangeBound model travel.id .start).isOk &&
       (elaborateDateRangeBound dottedModel dottedTravel.id .finish).isOk &&
+      (match elaborateDateRangeBound monthModel monthTravel.id .start with
+        | .error (.unsupportedPolicy field format separator) =>
+            field == monthTravel.id && format == "MM" && separator == "/"
+        | _ => false) &&
       (match elaborateDateRangeBound unsupportedPolicyModel
           unsupportedPolicyTravel.id .start with
         | .error (.unsupportedPolicy field format separator) =>

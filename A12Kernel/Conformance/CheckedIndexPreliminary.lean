@@ -546,7 +546,7 @@ example :
         policy := { kind := .dateRange }
         dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } }
       "2024-06-25/2024-06-25"
-      (.parsed (.dateRange {
+      (.parsed (.dateRange (.exact {
         start := {
           instant := dateMidnight
           parts := dateParts
@@ -554,7 +554,7 @@ example :
         finish := {
           instant := dateMidnight
           parts := dateParts
-          basis := .storedGregorian } })) = true := by
+          basis := .storedGregorian } }))) = true := by
   native_decide
 
 /- The shared model certificate rejects a raw/no-value String index before preliminary dispatch. -/
