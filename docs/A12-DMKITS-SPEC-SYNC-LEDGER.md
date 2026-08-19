@@ -112,6 +112,23 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Compatibility:** Do not invent a Base Year, infer an instant, widen cross-component comparison, or change `MM-dd` results that already agree. The correction must preserve configured-Base-Year completion and the exact static refusal classes.
 - **Acceptance:** Canonical prose separates yearless comparison from concrete-Date completion; maintained JVM/Node and Kernel-route controls lock both endpoints and the overlap refusal; equal `MM` construction-versus-stored operands agree across engines; and the handback supplies the reviewed revision plus per-surface disposition.
 
+<a id="spec-2026-08-19-03"></a>
+<a id="spec-2026-08-19-03--date-range-firstfilledvalue-admits-matching-fragment-profiles"></a>
+
+### SPEC-2026-08-19-03 - DateRange FirstFilledValue admits matching fragment profiles
+
+- **Status:** pending
+- **Kind:** semantic correction, locally originated and locally measured
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `89aa03957034de620562eb23a095d878f6547dca` (clean before and after)
+- **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool `0.13.0` and both Kernel strategies
+- **Canonical clause:** [`09-computations.md` §4](../spec/09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape)
+- **Delta:** Direct single-level starred DateRange `FirstFilledValue` admits one matching target/source profile under either exact policy or slash-separated `yyyy`, `yyyy-MM`, `MM`, and `MM-dd`. Year-bearing and Base-Year-completed values retain exact endpoints; without Base Year, `MM` and `MM-dd` retain and render ordered component pairs without a synthetic year or instant. Crossed profiles remain refused.
+- **Basis:** Guarded dmtool dry runs admit matching `yyyy`, `yyyy-MM`, `MM`, and `MM-dd`, including `MM` and `MM-dd` without Base Year, while `yyyy`/`yyyy-MM` and `MM`/`MM-dd` crosses yield `MVK_INVALID_COMPARE_TO_DATE_RANGE`. Two unchanged configured runtime artifacts are SHA-256 `0796741f7e4f2e9754beeeba5a118fa9f3541bc344a405fa6134686e9a0b2801`; two unchanged no-Base-Year artifacts are `867c9afa9a038ee6950acdc4560905d7380c305dba4aacbb157c4ae55244e01e`.
+- **Requested a12-dmkits reconciliation:** State the six matching DateRange profiles and the exact-versus-yearless result boundary in the canonical computation account. Reuse the existing typed DateRange value, ordered selection, interpreter computation, target rendering, and current differential routes; add no value schema, document, evaluator, probe route, or harness. Lock all four fragment outputs, both no-Base-Year outputs, the two crossed-profile controls, and one empty/formal separator through the existing Kernel and JVM/Node families.
+- **Compatibility:** Do not invent Base Year, force a yearless cell through full-Date resolution, copy source text as semantic identity, widen crossed profiles, or disturb either exact policy. Empty-prefix scanning, formal poison, and target application remain the existing generic computation rules.
+- **Acceptance:** Canonical peer prose and maintained cases cover the six matching profiles, both yearless outputs, crossed-profile refusal, and empty/formal behavior across the applicable Kernel and JVM/Node routes; the existing typed value and target owners remain singular; and the handback supplies the reviewed revision plus per-surface disposition.
+
 <a id="spec-2026-08-18-01"></a>
 <a id="spec-2026-08-18-01--a-present-date-range-separator-with-a-malformed-split-is-a-format-error"></a>
 

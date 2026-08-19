@@ -222,6 +222,22 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `claim`: an admitted list-side group contributes every DateRange field in its recursive subtree across every row below the operand's own repetition depth; the starred discriminator requires the second field of the second row, and the fixed-group discriminator includes both declared fields.
 - `limit`: the retained runtime matrices use the dotted/dash policy under full validation; they do not establish the ISO/slash policy, partial validation, rule/message assembly beyond observed type and count, empty group expansion, mixed-kind group diagnostics, wider zones, or computation consumers. Group rows establish complete extent but not a Kernel-visible witness order inside one group; declaration-major rich-trace order is a project normalization.
 
+<a id="src-date-range-fragment-first-filled"></a>
+#### Fragment DateRange `FirstFilledValue`
+
+- `revision`: source-shipped dmtool `0.13.0` and its structured authoring route were inspected at clean a12-dmkits `89aa03957034de620562eb23a095d878f6547dca`; both runtime strategies used built/runtime Kernel `30.8.1`.
+- `static-route`: guarded `computation add --dry-run` checks used fresh dmtool-authored models with one fixed target and one direct single-level starred source per DateRange policy.
+- `static-claim`: matching `yyyy`, `yyyy-MM`, `MM`, and `MM-dd` target/source pairs are Kernel-confirmed, including `MM` and `MM-dd` in a model without Base Year.
+- `control`: crossing `yyyy` with `yyyy-MM`, or `MM` with `MM-dd`, is Kernel-confirmed rejected with `MVK_INVALID_COMPARE_TO_DATE_RANGE`.
+- `runtime-route`: two persisted dmtool-authored `Europe/Berlin` models run through `:adapter:kernelProbe`; one has Base Year 2024 and all four fragment policies, while the second omits Base Year and retains the two yearless policies.
+- `runtime-claim`: dynamic Groovy and static Java agree that the configured model produces `2024/2025`, `2024-12/2025-02`, `01/02`, and `01-31/02-29` from the matching row-1 sources, with no messages or formal operands.
+- `runtime-claim`: without Base Year, both Kernel strategies produce `01/02` and `01-31/02-29` from the matching row-1 sources, with no messages or formal operands.
+- `integrity`: the configured request is SHA-256 `ba341f5ce50f47a5801b867a35f426bb6a9bb1d8faf256daa333920120a8c7ee`, model `b16c9114508ec743288233917733e04fe9aee9f66814a21861ad36de1162e2f9`, document `36313a64dfa86265bbd821bc3a11608ab3d33d8133f4276008ee6f8fa95a1751`, and two unchanged artifacts `0796741f7e4f2e9754beeeba5a118fa9f3541bc344a405fa6134686e9a0b2801`.
+- `integrity`: the no-Base-Year request is SHA-256 `8392d3dc6ba39b0680412bebef9baf7bc9064b9c6dd0d0adda6117a3e8cd9475`, model `d04baa4d7936be9f2b1734f113ffbc9c38399804ee0f0a5ca6c8940f92601d7d`, document `cebe20be87a455f0a007e0c85096cf73894f3748df778fdf43ccaf7ec5029148`, and two unchanged artifacts `867c9afa9a038ee6950acdc4560905d7380c305dba4aacbb157c4ae55244e01e`.
+- `mechanism-limit`: the runtime rows establish target values and preservation of yearless presentations, not the Kernel's internal exact-versus-yearless carrier or copy-versus-render mechanism.
+- `limit`: the packet has one filled row per source and does not establish empty-prefix scanning, formal poison, inverted target handling, mixed/multiple/group/filtered operands, nested repetition, partial validation, scheduling, or application.
+- `sync`: the observations extend the canonical DateRange computation account; pending [`SPEC-2026-08-19-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-03--date-range-firstfilledvalue-admits-matching-fragment-profiles) carries the outbound reconciliation.
+
 <a id="src-first-filled-additional-kind-computations"></a>
 #### Direct one-star additional-kind `FirstFilledValue` computations
 
