@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.ModelZone
+import A12Kernel.Elaboration.FullDateInput
 import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.TemporalFormat
 import A12Kernel.Elaboration.Flat.Types
@@ -125,24 +125,14 @@ private def requireDateRangeFormat : Option α → Except BaseFormalCause α
 
 namespace DateRangeFormat
 
-/-- Decode one endpoint through the exact component order and calendar-reality check of the selected presentation. The universal floor is deliberately later because it has its own DateRange cause and precedence. -/
-private def parseEndpoint? : DateRangeFormat → String → Option CivilDate
-  | .isoSlash, text =>
-      match text.splitOn "-" with
-      | [yearText, monthText, dayText] => do
-          let year ← parseDateRangeComponent? 4 yearText
-          let month ← parseDateRangeComponent? 2 monthText
-          let day ← parseDateRangeComponent? 2 dayText
-          CivilDate.ofYmd? year month day
-      | _ => none
-  | .dayMonthYearDash, text =>
-      match text.splitOn "." with
-      | [dayText, monthText, yearText] => do
-          let day ← parseDateRangeComponent? 2 dayText
-          let month ← parseDateRangeComponent? 2 monthText
-          let year ← parseDateRangeComponent? 4 yearText
-          CivilDate.ofYmd? year month day
-      | _ => none
+/-- Reuse the scalar full-Date parser selected by each exact DateRange presentation. -/
+private def endpointFormat : DateRangeFormat → FullDateTargetFormat
+  | .isoSlash => .yearMonthDayDashes
+  | .dayMonthYearDash => .dayMonthYearDots
+
+/-- Decode one endpoint through the exact component order and default-cutover calendar-reality check of the selected presentation. The universal floor is deliberately later because it has its own DateRange cause and precedence. -/
+private def parseEndpoint? : DateRangeFormat → String → Option DateParts
+  | format, text => format.endpointFormat.parseLegacyParts? text
 
 /-- Parse and formally classify both endpoint labels before model-zone resolution. Separator absence wins first; malformed split shape or endpoint format/calendar reality comes second, endpoint order third, and the universal floor last. -/
 private def parseCivilRange (format : DateRangeFormat) (text : String) :
@@ -156,32 +146,22 @@ private def parseCivilRange (format : DateRangeFormat) (text : String) :
     | none => throw .dateRangeFormat
   if decide (finish.Before start) then
     throw .dateRangeInvalid
-  else if decide (start.Before CivilDate.gregorianFloor) then
+  else if decide (start.Before CivilDate.gregorianFloor.parts) then
     throw .dateRangeTooEarly
-  else
-    pure (start, finish)
-
-/-- Resolve one already real and floor-admitted endpoint at local midnight while retaining its decoded components and stored-Gregorian origin. -/
-private def resolveEndpoint? (profile : ModelZone.ConcreteProfile)
-    (date : CivilDate) : Option DateValue := do
-  let full ← FullDate.ofCivil? date
-  let localDateTime ← LocalDateTime.ofDateHms? full 0 0 0
-  let instant ← profile.resolveLocal? localDateTime
-  pure {
-    instant
-    parts := date.parts
-    basis := .storedGregorian
-  }
+  else do
+    let startDate ← requireDateRangeFormat (CivilDate.ofParts? start)
+    let finishDate ← requireDateRangeFormat (CivilDate.ofParts? finish)
+    pure (startDate, finishDate)
 
 end DateRangeFormat
 
 /-- Resolve an already admitted civil range to the shared exact stored carrier. -/
 private def resolveCivilRange (profile : ModelZone.ConcreteProfile)
     (start finish : CivilDate) : Except DateRangeInputError RawCell := do
-  let startValue ← match DateRangeFormat.resolveEndpoint? profile start with
+  let startValue ← match profile.resolveStoredDate? start with
     | some value => pure value
     | none => throw (.unresolvableEndpoint start.parts)
-  let finishValue ← match DateRangeFormat.resolveEndpoint? profile finish with
+  let finishValue ← match profile.resolveStoredDate? finish with
     | some value => pure value
     | none => throw (.unresolvableEndpoint finish.parts)
   pure (.parsed (.dateRange (.exact { start := startValue, finish := finishValue })))

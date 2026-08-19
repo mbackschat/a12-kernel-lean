@@ -21,6 +21,8 @@ structure RegisteredCustomRejection where
 /-- Why a checked cell is unavailable. The ordinary constructors are formal-invalidity sources routed through `formalCheck`; `computedDependency` is the cause-blind transient marker placed only in a computation overlay after an earlier computed target became invalid. -/
 inductive FormalCause where
   | malformed                -- not well-formed for the field's type (bad date/number/…)
+  | dateFormat               -- stored Date text does not match its declaration or a real calendar day
+  | dateTooEarly             -- stored Date is below the universal floor or enabled pre-1900 boundary
   | dateRangeSeparator       -- the stored DateRange omits its declared range separator
   | dateRangeFormat          -- one stored DateRange endpoint is lexically or calendrically malformed
   | dateRangeInvalid         -- both endpoints are valid, but start is after finish
