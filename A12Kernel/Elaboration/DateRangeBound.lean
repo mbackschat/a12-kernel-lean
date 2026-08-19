@@ -43,8 +43,8 @@ structure CheckedDirectDateRange (model : FlatModel) where
 
 /-- Whether one checked input profile always supplies exact full-Date endpoints to a bound consumer. -/
 def DateRangeInputFormat.supportsDirectBound : DateRangeInputFormat → Bool
-  | .exact _ | .yearFragment => true
-  | .yearMonthFragment | .yearlessMonth | .yearlessMonthDay => false
+  | .exact _ | .yearFragment | .yearMonthFragment => true
+  | .yearlessMonth | .yearlessMonthDay => false
 
 /-- One selected endpoint of an exact-valued direct DateRange field. -/
 structure CheckedDateRangeBound (model : FlatModel)
@@ -97,21 +97,13 @@ def elaborateDateRangeBound (model : FlatModel) (sourceField : FieldId)
     (bound : DateRangeBound) :
     Except DateRangeBoundElabError (CheckedDateRangeBound model) := do
   let source ← elaborateDirectDateRange model sourceField
-  match hFormat : source.format with
-  | .exact _ =>
-      pure {
-        toCheckedDirectDateRange := source
-        bound
-        sourceSupportsBound := by
-          simp [DateRangeInputFormat.supportsDirectBound, hFormat] }
-  | .yearFragment =>
-      pure {
-        toCheckedDirectDateRange := source
-        bound
-        sourceSupportsBound := by
-          simp [DateRangeInputFormat.supportsDirectBound, hFormat] }
-  | .yearMonthFragment | .yearlessMonth | .yearlessMonthDay =>
-      throw (.unsupportedPolicy sourceField source.policy.format source.policy.separator)
+  if hSupported : source.format.supportsDirectBound then
+    pure {
+      toCheckedDirectDateRange := source
+      bound
+      sourceSupportsBound := hSupported }
+  else
+    throw (.unsupportedPolicy sourceField source.policy.format source.policy.separator)
 
 /-- Resolve one direct bound and retain its authored comparison position and fixed full-Date peer. -/
 def elaborateDateRangeBoundComparison (model : FlatModel)
