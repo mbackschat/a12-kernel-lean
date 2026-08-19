@@ -9,6 +9,7 @@ namespace A12Kernel
 inductive DateRangeConstructionTargetFormat where
   | exact (format : DateRangeFormat)
   | yearFragment
+  | yearMonthFragment
   deriving Repr, DecidableEq
 
 namespace DateRangeConstructionTargetFormat
@@ -18,14 +19,22 @@ def ofProfiles? : DateRangeEndpointFormat → DateRangeInputFormat →
     Option DateRangeConstructionTargetFormat
   | .full _, .exact format => some (.exact format)
   | .yearFragment, .yearFragment => some .yearFragment
+  | .yearMonthFragment, .yearMonthFragment => some .yearMonthFragment
   | _, _ => none
 
-/-- Render one resolved range through the checked exact or year-only target presentation. Each constructor is derived from the declaration's exact format/separator pair. -/
+/-- Render one resolved range through the checked exact or year-bearing target presentation. Each constructor is derived from the declaration's exact format/separator pair. -/
 def render : DateRangeConstructionTargetFormat → ResolvedDateRange → StoredDateRange
   | .exact format, range => format.render range
   | .yearFragment, range => {
       text := toString range.start.civil.parts.year ++ "/" ++
         toString range.finish.civil.parts.year
+      nonempty := by simp
+    }
+  | .yearMonthFragment, range => {
+      text := toString range.start.civil.parts.year ++ "-" ++
+        TemporalTargetText.twoDigits range.start.civil.parts.month ++ "/" ++
+        toString range.finish.civil.parts.year ++ "-" ++
+        TemporalTargetText.twoDigits range.finish.civil.parts.month
       nonempty := by simp
     }
 
@@ -36,7 +45,7 @@ def evaluateComputationResult (format : DateRangeConstructionTargetFormat) :
   | result =>
       match format with
       | .exact targetFormat => targetFormat.evaluateComputationResult result
-      | .yearFragment =>
+      | .yearFragment | .yearMonthFragment =>
           match result with
           | .noValue => .ok .noValue
           | .poison cause => .ok (.poison cause)
@@ -69,7 +78,7 @@ inductive DateRangeConstructionComputationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- One checked full-Date or year-fragment construction and its matching direct nonrepeatable DateRange target. -/
+/-- One checked full-Date or year-bearing-fragment construction and its matching direct nonrepeatable DateRange target. -/
 structure CheckedDateRangeConstructionComputation (model : FlatModel) where
   construction : CheckedDateRangeConstruction model
   target : CheckedDirectDateRange model
@@ -106,9 +115,9 @@ def elaborateDateRangeConstructionComputation
           }
       | none =>
           match target.format with
-          | .yearMonthFragment | .yearlessMonth | .yearlessMonthDay =>
+          | .yearlessMonth | .yearlessMonthDay =>
               throw (.targetFormat target.format)
-          | .exact _ | .yearFragment =>
+          | .exact _ | .yearFragment | .yearMonthFragment =>
               throw (.endpointFormat construction.start.format construction.finish.format)
     else
       throw .incoherentCore

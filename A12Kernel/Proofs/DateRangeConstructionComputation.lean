@@ -44,7 +44,7 @@ theorem dateRangeTarget_evaluateComputationResult_inverted
       .ok (.poison cause) := by
   cases format <;> rfl
 
-/-- Every resolved typed range reaches the checked exact or year-fragment target renderer. -/
+/-- Every resolved typed range reaches the checked exact or year-bearing target renderer. -/
 theorem dateRangeConstructionTarget_evaluateComputationResult_value
     (format : DateRangeConstructionTargetFormat) (range : DateRangeValue)
     (resolved : ResolvedDateRange)
