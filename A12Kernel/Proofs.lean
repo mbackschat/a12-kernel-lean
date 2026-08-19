@@ -6,6 +6,7 @@ import A12Kernel.Proofs.DateAggregate
 import A12Kernel.Proofs.DateRangeOverlap
 import A12Kernel.Proofs.DateRangeComparison
 import A12Kernel.Proofs.DateRangeBound
+import A12Kernel.Proofs.DateRangeConstructionComputation
 import A12Kernel.Proofs.DateRangeOverlapOperators
 import A12Kernel.Proofs.DateConstruction
 import A12Kernel.Proofs.DateConstructionNumeric

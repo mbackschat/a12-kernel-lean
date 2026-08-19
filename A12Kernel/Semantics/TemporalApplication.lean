@@ -271,6 +271,7 @@ def applyTo :
       TemporalTargetState StoredDateRange
   | .accepted value, _ => .presentValue value
   | .noValue, prior => TemporalTargetState.clearValue prior
+  | .errored _ _, prior => TemporalTargetState.clearValue prior
   | .poison _, prior => TemporalTargetState.clearValue prior
 
 end DateRangeTargetOutcome

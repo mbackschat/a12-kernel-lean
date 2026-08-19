@@ -272,11 +272,41 @@ inductive DateRangeComputationResult where
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
+/-- Target-owned rejection after a typed DateRange value has been rendered. -/
+inductive DateRangeTargetError where
+  | inverted
+  deriving Repr, DecidableEq
+
 /-- Rich DateRange target result before delta classification or application. -/
 inductive DateRangeTargetOutcome where
   | noValue
   | accepted (stored : StoredDateRange)
+  | errored (attempted : StoredDateRange) (cause : DateRangeTargetError)
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
+
+/-- Structural failure while projecting a typed DateRange result into one exact target presentation. -/
+inductive DateRangeTargetEvaluationFault where
+  | unresolvedEndpoint (range : DateRangeValue)
+  deriving Repr, DecidableEq
+
+namespace DateRangeFormat
+
+/-- Consume one typed DateRange computation result through the exact target renderer shared by every checked producer. -/
+def evaluateComputationResult (format : DateRangeFormat) :
+    DateRangeComputationResult →
+      Except DateRangeTargetEvaluationFault DateRangeTargetOutcome
+  | .noValue => .ok .noValue
+  | .poison cause => .ok (.poison cause)
+  | .value range =>
+      match range.toResolvedDateRange? with
+      | none => .error (.unresolvedEndpoint range)
+      | some resolved =>
+          let attempted := format.render resolved
+          match resolved.direction with
+          | .ordered => .ok (.accepted attempted)
+          | .inverted => .ok (.errored attempted .inverted)
+
+end DateRangeFormat
 
 end A12Kernel

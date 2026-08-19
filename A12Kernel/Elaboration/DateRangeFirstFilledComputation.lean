@@ -66,14 +66,9 @@ private def executeWith
     Except DateRangeFirstFilledComputationFault DateRangeTargetOutcome := do
   let resolved ← shape.source.resolveCheckedField input []
     |>.mapError .source
-  match evalDateRangeFirstFilledCells resolved.cells with
-  | .noValue => pure .noValue
-  | .poison cause => pure (.poison cause)
-  | .value range =>
-      match range.toResolvedDateRange? with
-      | none => throw (.unresolvedEndpoint range)
-      | some resolvedRange =>
-          pure (.accepted (format.render resolvedRange))
+  format.evaluateComputationResult (evalDateRangeFirstFilledCells resolved.cells)
+    |>.mapError fun
+      | .unresolvedEndpoint range => .unresolvedEndpoint range
 
 /-- Execute through the single checked document and the exact target policy retained during assembly. -/
 def execute (operation : CheckedDateRangeFirstFilledComputation model)

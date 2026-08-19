@@ -119,6 +119,7 @@ private def signatureFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
   pure (match outcome with
     | .noValue => "CLEARED"
     | .accepted stored => "VALUE|" ++ stored.text
+    | .errored stored _ => "ERRORED|" ++ stored.text
     | .poison _ => "POISON")
 
 private def signature? := signatureFor? target source
