@@ -11,6 +11,7 @@ inductive DateRangeConstructionTargetFormat where
   | yearFragment
   | yearMonthFragment
   | monthFragment
+  | monthDayFragment
   deriving Repr, DecidableEq
 
 namespace DateRangeConstructionTargetFormat
@@ -22,6 +23,7 @@ def ofProfiles? : DateRangeEndpointFormat → DateRangeInputFormat →
   | .yearFragment, .yearFragment => some .yearFragment
   | .yearMonthFragment, .yearMonthFragment => some .yearMonthFragment
   | .monthFragment _, .yearlessMonth => some .monthFragment
+  | .monthDayFragment _, .yearlessMonthDay => some .monthDayFragment
   | _, _ => none
 
 /-- Render one resolved range through the checked exact or fragment target presentation. Each constructor is derived from the declaration's exact format/separator pair. -/
@@ -44,6 +46,13 @@ def render : DateRangeConstructionTargetFormat → ResolvedDateRange → StoredD
         TemporalTargetText.twoDigits range.finish.civil.parts.month
       nonempty := by simp
     }
+  | .monthDayFragment, range => {
+      text := TemporalTargetText.twoDigits range.start.civil.parts.month ++ "-" ++
+        TemporalTargetText.twoDigits range.start.civil.parts.day ++ "/" ++
+        TemporalTargetText.twoDigits range.finish.civil.parts.month ++ "-" ++
+        TemporalTargetText.twoDigits range.finish.civil.parts.day
+      nonempty := by simp
+    }
 
 /-- Consume one typed construction result through its checked target presentation. -/
 def evaluateComputationResult (format : DateRangeConstructionTargetFormat) :
@@ -52,7 +61,7 @@ def evaluateComputationResult (format : DateRangeConstructionTargetFormat) :
   | result =>
       match format with
       | .exact targetFormat => targetFormat.evaluateComputationResult result
-      | .yearFragment | .yearMonthFragment | .monthFragment =>
+      | .yearFragment | .yearMonthFragment | .monthFragment | .monthDayFragment =>
           match result with
           | .noValue => .ok .noValue
           | .poison cause => .ok (.poison cause)
@@ -80,7 +89,6 @@ inductive DateRangeConstructionComputationElabError where
   | construction (cause : DateRangeConstructionElabError)
   | target (cause : DirectDateRangeElabError)
   | targetGroup (actual expected : GroupPath)
-  | targetFormat (actual : DateRangeInputFormat)
   | endpointFormat (start finish : DateRangeEndpointFormat)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -121,11 +129,7 @@ def elaborateDateRangeConstructionComputation
             profileOwned := hFormat
           }
       | none =>
-          match target.format with
-          | .yearlessMonthDay =>
-              throw (.targetFormat target.format)
-          | .exact _ | .yearFragment | .yearMonthFragment | .yearlessMonth =>
-              throw (.endpointFormat construction.start.format construction.finish.format)
+          throw (.endpointFormat construction.start.format construction.finish.format)
     else
       throw .incoherentCore
   else

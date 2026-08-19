@@ -78,12 +78,24 @@ private def monthStart : FlatFieldDecl := {
 private def monthFinish : FlatFieldDecl := {
   monthStart with id := 15, name := "MonthFinish"
 }
+private def monthDayStart : FlatFieldDecl := {
+  fragmentStart with
+  id := 17
+  name := "MonthDayStart"
+  temporalTargetPolicy := some {
+    format := "MM-dd"
+    partialMode := .yearOptional
+  }
+}
+private def monthDayFinish : FlatFieldDecl := {
+  monthDayStart with id := 18, name := "MonthDayFinish"
+}
 
 private def model : FlatModel := {
   fields := [start, finish, target, isoTarget, wrongGroupTarget,
     repeatedTarget, fragmentStart, fragmentFinish, fragmentTarget,
     yearMonthTarget, yearMonthStart, yearMonthFinish, monthTarget,
-    monthStart, monthFinish, monthDayTarget]
+    monthStart, monthFinish, monthDayTarget, monthDayStart, monthDayFinish]
   repeatableGroups := [{ level := 10, path := ["Order", "Rows"] }]
   timeZoneId := "UTC"
   baseYear := some 2024
@@ -163,6 +175,16 @@ private def expectedMonthInvertedStored : StoredDateRange := {
   nonempty := by decide
 }
 
+private def expectedMonthDayStored : StoredDateRange := {
+  text := "01-31/02-29"
+  nonempty := by decide
+}
+
+private def expectedMonthDayInvertedStored : StoredDateRange := {
+  text := "03-15/02-29"
+  nonempty := by decide
+}
+
 private def inputCell (field : FlatFieldDecl) (stored : String)
     (raw : RawCell) : ClassifiedCellInput := {
   address := { field := field.id, path := [] }
@@ -208,6 +230,9 @@ private def executeYearMonth? :=
 
 private def executeMonth? := executeFor? monthTarget monthStart monthFinish
 
+private def executeMonthDay? :=
+  executeFor? monthDayTarget monthDayStart monthDayFinish
+
 /- Full-Date constructions reach both exact targets, and matching exact-valued fragments reach their targets. -/
 example :
     (elaborateDateRangeConstructionComputation model ["Order"] target.id
@@ -219,10 +244,12 @@ example :
     (elaborateDateRangeConstructionComputation model ["Order"] yearMonthTarget.id
       yearMonthStart.id yearMonthFinish.id).isOk = true ∧
     (elaborateDateRangeConstructionComputation model ["Order"] monthTarget.id
-      monthStart.id monthFinish.id).isOk = true := by
+      monthStart.id monthFinish.id).isOk = true ∧
+    (elaborateDateRangeConstructionComputation model ["Order"] monthDayTarget.id
+      monthDayStart.id monthDayFinish.id).isOk = true := by
   native_decide
 
-/- Unsupported target profiles, component mismatch, direct placement, declaring group, and target kind remain separate static gates. -/
+/- Profile mismatch, direct placement, declaring group, and target kind remain separate static gates. -/
 example :
     (match elaborateDateRangeConstructionComputation model ["Order"]
         monthTarget.id yearMonthStart.id yearMonthFinish.id with
@@ -234,11 +261,27 @@ example :
       | _ => false) &&
     (match elaborateDateRangeConstructionComputation model ["Order"]
         monthDayTarget.id monthStart.id monthFinish.id with
-      | .error (.targetFormat .yearlessMonthDay) => true
+      | .error (.endpointFormat (.monthFragment 2024) (.monthFragment 2024)) => true
+      | _ => false) &&
+    (match elaborateDateRangeConstructionComputation model ["Order"]
+        monthTarget.id monthDayStart.id monthDayFinish.id with
+      | .error (.endpointFormat (.monthDayFragment 2024) (.monthDayFragment 2024)) => true
       | _ => false) &&
     (match elaborateDateRangeConstructionComputation unconfiguredModel ["Order"]
         monthTarget.id monthStart.id monthFinish.id with
       | .error (.endpointFormat .yearlessMonth .yearlessMonth) => true
+      | _ => false) &&
+    (match elaborateDateRangeConstructionComputation unconfiguredModel ["Order"]
+        monthDayTarget.id monthDayStart.id monthDayFinish.id with
+      | .error (.endpointFormat .yearlessMonthDay .yearlessMonthDay) => true
+      | _ => false) &&
+    (match elaborateDateRangeConstructionComputation model ["Order"]
+        monthDayTarget.id start.id finish.id with
+      | .error (.endpointFormat (.full _) (.full _)) => true
+      | _ => false) &&
+    (match elaborateDateRangeConstructionComputation model ["Order"]
+        target.id monthDayStart.id monthDayFinish.id with
+      | .error (.endpointFormat (.monthDayFragment 2024) (.monthDayFragment 2024)) => true
       | _ => false) &&
     (match elaborateDateRangeConstructionComputation model ["Order"]
         monthTarget.id start.id finish.id with
@@ -370,6 +413,23 @@ example :
       (.parsed (.temporal (.date marchValue)))
       (.parsed (.temporal (.date yearMonthFinishValue)))).map (·.outcome) =
         some (.errored expectedMonthInvertedStored .inverted) := by
+  native_decide
+
+/- Configured month-day fragments discard incoming carrier identity, retain authored days, and render through the matching declaration. -/
+example :
+    executeMonthDay? "01-31" "02-29"
+      (.parsed (.temporal (.date (dateValue 0 2000 1 31))))
+      (.parsed (.temporal (.date (dateValue 0 2000 2 29)))) = some {
+        construction := {
+          start := .value (.exact (dateValue 1706659200000 2024 1 31))
+          finish := .value (.exact (dateValue 1709164800000 2024 2 29))
+        }
+        outcome := .accepted expectedMonthDayStored
+      } ∧
+    (executeMonthDay? "03-15" "02-29"
+      (.parsed (.temporal (.date (dateValue 0 2000 3 15))))
+      (.parsed (.temporal (.date (dateValue 0 2000 2 29))))).map (·.outcome) =
+        some (.errored expectedMonthDayInvertedStored .inverted) := by
   native_decide
 
 /- Filled endpoints retain their exact observations and render through the target declaration rather than either source label. -/
