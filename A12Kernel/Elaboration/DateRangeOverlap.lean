@@ -5,7 +5,7 @@ import A12Kernel.Semantics.DateRangeOverlapOperators
 
 /-! # Checked DateRange overlap operands
 
-This boundary owns operator-specific static admission and full-validation checked-document assembly for DateRange overlap conditions. It reuses the shared entity-list shape and the canonical checked DateRange declaration policy; pure overlap truth and polarity remain in `A12Kernel.Semantics.DateRangeOverlapOperators`.
+This boundary owns operator-specific static admission and full-validation checked-document assembly for DateRange overlap conditions. It reuses the shared entity-list shape and checked DateRange declaration policies; singular direct fields additionally certify the measured `yyyy-MM` input profile while starred and plural routes remain canonical. Pure overlap truth and polarity remain in `A12Kernel.Semantics.DateRangeOverlapOperators`.
 -/
 
 namespace A12Kernel
@@ -31,7 +31,7 @@ def diagnostic? : DateRangesOverlapElabError → Option KernelStaticDiagnostic
 
 end DateRangesOverlapElabError
 
-/-- One certified direct, plain-star, or filter-bearing star DateRange operand. -/
+/-- One certified canonical direct, plain-star, or filter-bearing star DateRange operand. -/
 inductive CheckedDateRangesOverlapOperand (model : FlatModel) where
   | field (source : CheckedCanonicalDateRangeField)
   | star (path : CheckedStarFieldPath model)
@@ -60,21 +60,55 @@ def resolveValidationCore (operand : CheckedDateRangesOverlapOperand model)
 
 end CheckedDateRangesOverlapOperand
 
+/-- One direct DateRange field whose checked input profile is exactly the measured year-month fragment. -/
+structure CheckedYearMonthDateRangeField extends CheckedDateRangeInputField where
+  private mk ::
+  formatIsYearMonth : format = .yearMonthFragment
+
+/-- One singular-overlap operand. Only a direct field gains the measured year-month profile; canonical direct and star operands retain their existing certificate. -/
+inductive CheckedSingularDateRangesOverlapOperand (model : FlatModel) where
+  | canonical (source : CheckedDateRangesOverlapOperand model)
+  | yearMonthField (source : CheckedYearMonthDateRangeField)
+
+namespace CheckedSingularDateRangesOverlapOperand
+
+def hasHaving : CheckedSingularDateRangesOverlapOperand model → Bool
+  | .canonical source => source.hasHaving
+  | .yearMonthField _ => false
+
+/-- Whether the retained declaration satisfies the exact canonical policy or the singular-only year-month policy. -/
+def policySupported : CheckedSingularDateRangesOverlapOperand model → Bool
+  | .canonical source =>
+      (DateRangeFormat.ofPolicy? source.source.policy).isSome
+  | .yearMonthField source =>
+      DateRangeInputFormat.ofPolicy? source.policy == some .yearMonthFragment
+
+/-- Resolve one singular full-validation operand through the existing checked direct/star addressing boundary. -/
+def resolveValidationCore (operand : CheckedSingularDateRangesOverlapOperand model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError ResolvedCheckedEntityOperandCore :=
+  match operand with
+  | .canonical source => source.resolveValidationCore document outer
+  | .yearMonthField source =>
+      document.resolveCheckedDirectEntityOperandCore source.declaration.id
+
+end CheckedSingularDateRangesOverlapOperand
+
 /-- A model-checked nonempty `DateRangesOverlap` operand list retaining the shared shape and exact authored filter slots. -/
 structure CheckedDateRangesOverlapSource (model : FlatModel) where
   private mk ::
   shape : CheckedFieldEntityShape model
-  first : CheckedDateRangesOverlapOperand model
-  rest : List (CheckedDateRangesOverlapOperand model)
+  first : CheckedSingularDateRangesOverlapOperand model
+  rest : List (CheckedSingularDateRangesOverlapOperand model)
 
 namespace CheckedDateRangesOverlapSource
 
 def operands (checked : CheckedDateRangesOverlapSource model) :
-    List (CheckedDateRangesOverlapOperand model) :=
+    List (CheckedSingularDateRangesOverlapOperand model) :=
   checked.first :: checked.rest
 
 def hasHaving (checked : CheckedDateRangesOverlapSource model) : Bool :=
-  checked.operands.any CheckedDateRangesOverlapOperand.hasHaving
+  checked.operands.any CheckedSingularDateRangesOverlapOperand.hasHaving
 
 end CheckedDateRangesOverlapSource
 
@@ -85,6 +119,20 @@ private def certifyDateRangesOverlapField (declaration : FlatFieldDecl) :
     | .unsupportedPolicy path format separator =>
         .unsupportedPolicy path format separator
     | .incoherentCore => .incoherentCore
+
+private def certifyYearMonthDateRangesOverlapField
+    (declaration : FlatFieldDecl) :
+    Except DateRangesOverlapElabError CheckedYearMonthDateRangeField := do
+  let source ← certifyDateRangeInputField declaration |>.mapError fun
+    | .notDateRange path actual => .sourceNotDateRange path actual.surfaceKind
+    | .unsupportedPolicy path format separator =>
+        .unsupportedPolicy path format separator
+    | .incoherentCore => .incoherentCore
+  match hFormat : source.format with
+  | .yearMonthFragment =>
+      pure { source with formatIsYearMonth := hFormat }
+  | _ => throw (.unsupportedPolicy declaration.path
+      source.policy.format source.policy.separator)
 
 private def certifyDateRangesOverlapOperand (model : FlatModel)
     (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
@@ -105,24 +153,36 @@ private def certifyDateRangesOverlapOperand (model : FlatModel)
   | .starredGroup source => throw (.groupsNotAllowed source.group.path)
   | .starredGroupPresence source => throw (.groupsNotAllowed source.groupPath)
 
-private def certifyDateRangesOverlapOperands (model : FlatModel)
+private def certifySingularDateRangesOverlapOperand (model : FlatModel)
+    (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
+      Except DateRangesOverlapElabError
+        (CheckedSingularDateRangesOverlapOperand model)
+  | .field declaration .stored =>
+      match certifyDateRangesOverlapField declaration with
+      | .ok source => pure (.canonical (.field source))
+      | .error (.unsupportedPolicy _ _ _) =>
+          .yearMonthField <$> certifyYearMonthDateRangesOverlapField declaration
+      | .error error => throw error
+  | operand =>
+      .canonical <$> certifyDateRangesOverlapOperand model declaringGroup operand
+
+private def certifySingularDateRangesOverlapOperands (model : FlatModel)
     (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →
       Except DateRangesOverlapElabError
-        (List (CheckedDateRangesOverlapOperand model))
-  | [] => pure []
-  | operand :: remaining => do
-      pure ((← certifyDateRangesOverlapOperand model declaringGroup operand) ::
-        (← certifyDateRangesOverlapOperands model declaringGroup remaining))
+        (List (CheckedSingularDateRangesOverlapOperand model)) :=
+  List.mapM (certifySingularDateRangesOverlapOperand model declaringGroup)
 
-/-- Apply the shared shape gates first, then the singular operator's group refusal and exact DateRange policy certification in authored order. -/
+/-- Apply the shared shape gates first, then the singular operator's group refusal and exact-or-direct-year-month policy certification in authored order. -/
 def elaborateDateRangesOverlapSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
     Except DateRangesOverlapElabError
       (CheckedDateRangesOverlapSource model) := do
   let shape ← elaborateFieldEntityShape model declaringGroup authored
     |>.mapError .shape
-  let first ← certifyDateRangesOverlapOperand model declaringGroup shape.first
-  let rest ← certifyDateRangesOverlapOperands model declaringGroup shape.rest
+  let first ← certifySingularDateRangesOverlapOperand model declaringGroup
+    shape.first
+  let rest ← certifySingularDateRangesOverlapOperands model declaringGroup
+    shape.rest
   pure { shape, first, rest }
 
 /-! ## Checked `AtLeastOneDateRangeOverlaps` source admission -/
@@ -346,7 +406,7 @@ inductive DateRangesOverlapEvaluationError where
 /-- One resolved operand retains exact source and addressing metadata beside its pure overlap input. -/
 structure ResolvedCheckedDateRangesOverlapOperand (model : FlatModel) where
   private mk ::
-  source : CheckedDateRangesOverlapOperand model
+  source : CheckedSingularDateRangesOverlapOperand model
   core : ResolvedCheckedEntityOperandCore
   semantic : ResolvedDateRangeOperand
 
@@ -363,19 +423,25 @@ private def checkedDateRangeSlot
       throw (.sourceValueProfile addressed.address value)
   | .value _ => throw (.sourceValueKind addressed.address)
 
-namespace CheckedDateRangesOverlapOperand
+private def checkedDateRangeOperandSemantic
+    (core : ResolvedCheckedEntityOperandCore) :
+    Except DateRangesOverlapEvaluationError ResolvedDateRangeOperand := do
+  let slots ← core.addressedCells.mapM checkedDateRangeSlot
+  pure { slots, hasFilter := core.hasHaving }
+
+namespace CheckedSingularDateRangesOverlapOperand
 
 /-- Resolve and project one admitted operand without discarding authored identity, concrete addresses, topology, or filter provenance. -/
 def resolveCheckedValidation
-    (source : CheckedDateRangesOverlapOperand model)
+    (source : CheckedSingularDateRangesOverlapOperand model)
     (document : CheckedDocument model) (outer : Env) :
     Except DateRangesOverlapEvaluationError
       (ResolvedCheckedDateRangesOverlapOperand model) := do
   let core ← (source.resolveValidationCore document outer).mapError .addressing
-  let slots ← core.addressedCells.mapM checkedDateRangeSlot
-  pure { source, core, semantic := { slots, hasFilter := core.hasHaving } }
+  let semantic ← checkedDateRangeOperandSemantic core
+  pure { source, core, semantic }
 
-end CheckedDateRangesOverlapOperand
+end CheckedSingularDateRangesOverlapOperand
 
 /-- Rich resolved singular-overlap query result. Its verdict is derived from, rather than stored beside, the occurrence-preserving semantic operands. -/
 structure CheckedDateRangesOverlapResult (model : FlatModel) where
@@ -446,11 +512,13 @@ def resolveCheckedValidation
       (ResolvedCheckedAtLeastOneDateRangeOverlapListOperand model) :=
   match source with
   | .field fieldSource => do
-      let resolved ← fieldSource.resolveCheckedValidation document outer
+      let core ← (fieldSource.resolveValidationCore document outer)
+        |>.mapError .addressing
+      let semantic ← checkedDateRangeOperandSemantic core
       pure {
         source := .field fieldSource
-        core := resolved.core
-        semantic := resolved.semantic }
+        core
+        semantic }
   | .group groupSource => do
       let declarations :=
         (groupSource.first :: groupSource.rest).map (·.declaration)

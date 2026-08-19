@@ -11,11 +11,11 @@ Detailed coverage belongs in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), o
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: direct stored `yyyy` and `yyyy-MM` DateRange input and matching construction comparisons are represented; the measured year-bearing mixed family and its consumer probe are closed.
+- `state`: direct stored `yyyy` and `yyyy-MM` DateRange input and matching construction comparisons are represented; singular direct `yyyy-MM` overlap and its consumer probe are closed without widening starred or plural routes.
 - `gap`: [SG6 DateRange Date/DateFragment endpoint admission and completion](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
-- `oracle`: the [canonical Date-range clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) and the exact [`yyyy-MM` Kernel checkpoint](SOURCES.md#src-date-range-year-month-fragment-construction), including its full-Date overlap discriminator.
+- `oracle`: the [canonical Date-range clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) and the exact [Base-Year fragment checkpoint](SOURCES.md#src-date-range-base-year-fragment-construction), including configured `MM`/`MM-dd` overlap and without-Base-Year refusal.
 - `route`: the completed representation boundary is owned by [Architecture](ARCHITECTURE.md#values-keep-semantic-identity-separate-from-storage-identity) and the [temporal comparison implementation record](IMPLEMENTATION-MAP.md#cap-temporal-comparison-and-aggregates).
-- `next`: admit direct nonrepeatable stored `yyyy-MM` DateRange operands in the checked singular overlap owner, then retain the leap-aware last-day overlap and next-day non-overlap without widening construction, bound, or repeatable routes.
+- `next`: admit direct nonrepeatable stored `MM` and `MM-dd` DateRange operands in the checked singular overlap owner only with Base Year, retain 2024/2023 boundary polarity, and preserve the measured without-Base-Year refusal.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: passed for the measured year-bearing mixed family; reactivate only when the selected fragment-overlap slice closes a reusable overlap boundary.
-- `resume`: `rg -n 'CheckedCanonicalDateRangeField|certifyDateRangesOverlapField|DateRangeInputFormat|DateRangeCellValue|resolveValidationCore' A12Kernel/Elaboration/DateRangeOverlap.lean A12Kernel/Elaboration/DateRangeInput.lean A12Kernel/Conformance/DateRangeOverlapOperators.lean`
+- `consumer-probe-trigger`: passed for singular direct year-month overlap; active again when the configured Base-Year fragment-overlap family closes.
+- `resume`: `rg -n 'CheckedYearMonthDateRangeField|certifyYearMonthDateRangesOverlapField|yearlessMonth|baseYear|DATE_WITH_AND_WITHOUT_YEAR' A12Kernel/Elaboration/DateRangeOverlap.lean A12Kernel/Elaboration/DateRangeInput.lean A12Kernel/Conformance/DateRangeOverlapOperators.lean spec/05-dates-and-time.md`
