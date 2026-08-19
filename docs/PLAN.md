@@ -11,7 +11,7 @@ Detailed coverage belongs in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), o
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: DateRange stored input and checked consumers support six local policies, while external direct-star runtime now covers all eight declaration pairs and leaves static operation admission of the two added pairs unverified. Flat declaration validation still checks only source presence, differs from the exact eight-pair allowlist, and wrongly treats an empty separator as intrinsically invalid.
+- `state`: DateRange stored input and checked consumers support six local policies, while external direct-star static admission and runtime cover all eight declaration pairs. Flat declaration validation still checks only source presence, differs from the exact eight-pair allowlist, and wrongly treats an empty separator as intrinsically invalid.
 - `gap`: [SG6 DateRange declaration and temporal completion](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
 - `oracle`: use the canonical [DateRange clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap), the [reviewed DateRange reconciliation checkpoint](SOURCES.md#src-date-range-2026-08-19-reconciliation), and the [checked declaration capability](IMPLEMENTATION-MAP.md#cap-date-range-checked-declaration).
 - `route`: SG6 owns the verified red, green, and supporting loci for the exact declaration gate.

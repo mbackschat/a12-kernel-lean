@@ -121,7 +121,7 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 ### SPEC-2026-08-19-03 - DateRange FirstFilledValue admits matching fragment profiles
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic correction, locally originated and locally measured
 - **Local revision:** `bf3fda0c65154ff3b3daead99e9b8ebf9b3077f4`
 - **a12-dmkits basis revision:** `89aa03957034de620562eb23a095d878f6547dca` (clean before and after)
@@ -134,11 +134,10 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Requested a12-dmkits reconciliation:** Reuse the existing typed DateRange value, ordered selection, interpreter computation, target rendering, and current differential routes; add no value schema, document, evaluator, probe route, or harness. Lock every admitted pair, the crossed-component controls, and empty/formal behavior through the existing Kernel and JVM/Node families.
 - **Compatibility:** Do not invent Base Year, force a yearless cell through full-Date resolution, copy source text as semantic identity, widen crossed profiles, or disturb either exact policy. Empty-prefix scanning, formal poison, and target application remain the existing generic computation rules.
 - **Acceptance:** Canonical peer prose and maintained cases independently cover all eight matching profiles, yearless outputs, crossed-component refusal, and empty/formal behavior across the applicable Kernel and JVM/Node routes; the existing typed value and target owners remain singular; and the handback supplies the reviewed revision plus per-surface disposition.
-- **a12-dmkits revision:** `87f49bbec9a24431cc6df51d13c97ea5d5fba396`
-- **Disposition:** handed off. `DateRangeFirstFilledProfileDiffTest` measures all eight runtime results through both Kernel strategies and the interpreter, but it does not invoke the separate Kernel `checkConsistency` route despite its comment saying every pair does.
+- **a12-dmkits revision:** `52ce932dc9b32aefe8c1e424d7e56d7749709540`
+- **Disposition:** accepted. `DateRangeFirstFilledProfileDiffTest.everyProfileAndTheCrossedTargetAreKernelAdmitted` asserts an empty Kernel `checkConsistency` result for all eight matching profiles and the full-Date lexical-cross model. The same differential retains all eight runtime results through dynamic Groovy, generated Java, and the interpreter.
 - **Evidence:** the two added rows produce `0609` for `MM` with an empty separator and `01.06-30.09` for `dd.MM` with dash. Existing rows retain first-filled order, seeded all-empty clearing, malformed-input clearing, and target-owned lexical rendering; `DateRangeProfileRenderTest` covers all eight outputs on JVM and Node.
-- **Remaining:** assert an empty `checkConsistency` result for every parameterized profile, or otherwise retain an exact static-operation admission route, before accepting the two added pairs as authorable computations. Correct the peer test comment and canonical finding if the static route remains absent.
-- **Scope:** the eight-pair runtime result applies to direct single-level starred `FirstFilledValue`; static computation admission of the two added pairs remains unverified. Direct field lists remain measured for `MM`/slash and full ISO/slash, and `DateRange(start, finish)` targets remain measured for `MM`/slash and `MM-dd`/slash.
+- **Scope:** static admission and runtime results apply to direct single-level starred `FirstFilledValue` across all eight matching profiles; static admission also covers the full-Date lexical cross. Direct field lists remain measured for `MM`/slash and full ISO/slash, and `DateRange(start, finish)` targets remain measured for `MM`/slash and `MM-dd`/slash.
 
 <a id="spec-2026-08-19-04"></a>
 <a id="spec-2026-08-19-04--date-range-firstfilledvalue-scans-two-direct-fields-lazily"></a>
