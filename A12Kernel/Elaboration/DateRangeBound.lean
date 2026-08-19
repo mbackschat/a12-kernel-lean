@@ -96,7 +96,7 @@ def elaborateDateRangeBound (model : FlatModel) (sourceField : FieldId)
   match hFormat : source.format with
   | .exact exactFormat =>
       pure { source with bound, exactFormat, sourceIsExact := hFormat }
-  | .yearlessMonth | .yearlessMonthDay =>
+  | .yearFragment | .yearlessMonth | .yearlessMonthDay =>
       throw (.unsupportedPolicy sourceField source.policy.format source.policy.separator)
 
 /-- Resolve one direct bound and retain its authored comparison position and fixed full-Date peer. -/
@@ -145,7 +145,7 @@ structure DateRangeBoundComponentResult where
 
 namespace CheckedDirectDateRange
 
-/-- Read one whole range through the sole immutable checked-document route while retaining exact or yearless identity. Empty and formal unavailability retain their phase-specific observation constructors. -/
+/-- Read one whole range through the sole immutable checked-document route while retaining exact or fragment identity. Empty and formal unavailability retain their phase-specific observation constructors. -/
 def evaluate (operation : CheckedDirectDateRange model) (phase : Phase)
     (input : CheckedDocument model) :
     Except DirectDateRangeFault (CellObservation DateRangeCellValue) := do
@@ -162,7 +162,7 @@ end CheckedDirectDateRange
 
 namespace CheckedDateRangeBound
 
-/-- Select one endpoint after the exact-policy refinement and shared direct DateRange read. A yearless runtime carrier still fails defensively if a malformed checked document crosses that static boundary. -/
+/-- Select one endpoint after the exact-policy refinement and shared direct DateRange read. Any non-exact runtime carrier still fails defensively if a malformed checked document crosses that static boundary. -/
 def evaluate (operation : CheckedDateRangeBound model) (phase : Phase)
     (input : CheckedDocument model) :
     Except DateRangeBoundFault (CellObservation DateValue) := do

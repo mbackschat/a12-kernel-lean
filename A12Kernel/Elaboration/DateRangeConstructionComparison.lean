@@ -5,7 +5,7 @@ import A12Kernel.Semantics.DateRangeComparison
 
 /-! # Checked DateRange construction comparison
 
-This capsule certifies two nonrepeatable Date endpoints per `DateRange` construction, including exact `yyyy`, `yyyy-MM`, Base-Year-resolved `MM` and `MM-dd`, and yearless `MM` and `MM-dd` DateFragment profiles. It composes two component-compatible constructions or one full-Date, Base-Year-resolved, or yearless construction with a matching direct stored DateRange and reads each checked operand through one immutable document in authored order. Exact construction labels are completed by endpoint position and re-resolved under their declaration's model-zone profile; yearless execution retains only the authored components. Both delegate to the shared equality seam. Semantic-index endpoints, repeatable placement, computation, rendering, overlap, and bound extraction remain separate.
+This capsule certifies two nonrepeatable Date endpoints per `DateRange` construction, including exact `yyyy`, `yyyy-MM`, Base-Year-resolved `MM` and `MM-dd`, and yearless `MM` and `MM-dd` DateFragment profiles. It composes two component-compatible constructions or one full-Date, `yyyy`, Base-Year-resolved, or yearless construction with a matching direct stored DateRange and reads each checked operand through one immutable document in authored order. Exact construction labels are completed by endpoint position and re-resolved under their declaration's model-zone profile; yearless execution retains only the authored components. Both delegate to the shared equality seam. Stored `yyyy-MM`, semantic-index endpoints, repeatable placement, computation, rendering, overlap, and bound extraction remain separate.
 -/
 
 namespace A12Kernel
@@ -57,13 +57,14 @@ def sameComponents : DateRangeEndpointFormat → DateRangeEndpointFormat → Boo
 
 /-- Whether the endpoint profile participates in the bounded construction-versus-stored route. -/
 def supportsStoredComparison : DateRangeEndpointFormat → Bool
-  | .full _ | .monthFragment _ | .monthDayFragment _
+  | .full _ | .yearFragment | .monthFragment _ | .monthDayFragment _
   | .yearlessMonth | .yearlessMonthDay => true
-  | .yearFragment | .yearMonthFragment => false
+  | .yearMonthFragment => false
 
 /-- Match the construction's available component identity to the stored declaration profile. Exact lexical spelling does not distinguish the two full-Date formats. -/
 def matchesStoredInput : DateRangeEndpointFormat → DateRangeInputFormat → Bool
   | .full _, .exact _ => true
+  | .yearFragment, .yearFragment => true
   | .monthFragment _, .yearlessMonth => true
   | .monthDayFragment _, .yearlessMonthDay => true
   | .yearlessMonth, .yearlessMonth => true
@@ -318,7 +319,7 @@ structure CheckedDateRangeConstructionStoredComparison (model : FlatModel) where
   constructionSupported : construction.start.format.supportsStoredComparison = true
   componentsMatch : construction.start.format.matchesStoredInput stored.format = true
 
-/-- Certify matching full-Date, Base-Year-resolved, or yearless mixed operands in authored order without introducing a second source or comparison representation. -/
+/-- Certify matching full-Date, year-fragment, Base-Year-resolved, or yearless mixed operands in authored order without introducing a second source or comparison representation. -/
 def elaborateDateRangeConstructionStoredComparison (model : FlatModel)
     (start finish stored : FieldId) (position : DateRangeConstructionPosition)
     (comparison : EqualityOp) :

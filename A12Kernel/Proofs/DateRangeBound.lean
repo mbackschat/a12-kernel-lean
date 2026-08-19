@@ -12,7 +12,7 @@ namespace A12Kernel
     value.select .finish = value.finish := by
   rfl
 
-/-- A reached whole DateRange retains its exact or yearless identity through the shared direct read. -/
+/-- A reached whole DateRange retains its exact or fragment identity through the shared direct read. -/
 theorem directDateRange_evaluate_value
     (operation : CheckedDirectDateRange model) (phase : Phase)
     (input : CheckedDocument model) (cell : CheckedCell)

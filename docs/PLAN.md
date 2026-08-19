@@ -11,11 +11,11 @@ Detailed coverage belongs in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), o
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: matching `MM` and `MM-dd` construction-versus-stored execution is represented with or without Base Year; direct stored `yyyy` and `yyyy-MM` DateRange input remains selected.
+- `state`: direct stored `yyyy` DateRange input and matching construction comparison are represented; stored `yyyy-MM` input remains selected.
 - `gap`: [SG6 DateRange Date/DateFragment endpoint admission and completion](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
-- `oracle`: the [canonical Date-range clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) and the exact [`yyyy` Kernel checkpoint](SOURCES.md#src-date-range-year-fragment-construction).
+- `oracle`: the [canonical Date-range clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) and the exact [`yyyy-MM` Kernel checkpoint](SOURCES.md#src-date-range-year-month-fragment-construction).
 - `route`: the completed representation boundary is owned by [Architecture](ARCHITECTURE.md#values-keep-semantic-identity-separate-from-storage-identity) and the [temporal comparison implementation record](IMPLEMENTATION-MAP.md#cap-temporal-comparison-and-aggregates).
-- `next`: add direct nonrepeatable stored `yyyy` DateRange input, then admit it against a matching `yyyy` construction in both authored positions while retaining exact completed observations and refusing `yyyy-MM` or other component mismatches.
+- `next`: add direct nonrepeatable stored `yyyy-MM` DateRange input, then admit it against a matching `yyyy-MM` construction in both authored positions while retaining leap-aware exact observations and refusing other component profiles.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: the configured-Base-Year mixed milestone passed its public Execute/Analyze/Explain readback; run the next bounded probe only after both stored `yyyy` and `yyyy-MM` mixed profiles close the remaining measured year-bearing fragment family.
-- `resume`: `rg -n 'DateRangeInputFormat|parseYearlessRange|yearFragment|supportsStoredComparison|matchesStoredInput' A12Kernel/Elaboration/DateRangeInput.lean A12Kernel/Elaboration/DateRangeConstructionComparison.lean A12Kernel/Conformance/DateRangeInput.lean A12Kernel/Conformance/DateRangeComparison.lean`
+- `consumer-probe-trigger`: active when stored `yyyy-MM` mixed execution closes the remaining measured year-bearing fragment family; run the bounded Execute/Analyze/Explain readback before that capsule closes.
+- `resume`: `rg -n 'DateRangeInputFormat|parseYearRange|yearMonthFragment|supportsStoredComparison|matchesStoredInput' A12Kernel/Elaboration/DateRangeInput.lean A12Kernel/Elaboration/DateRangeConstructionComparison.lean A12Kernel/Conformance/DateRangeInput.lean A12Kernel/Conformance/DateRangeComparison.lean`

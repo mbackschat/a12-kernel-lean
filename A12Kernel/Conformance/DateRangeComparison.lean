@@ -124,6 +124,12 @@ private def storedIsoRange : FlatFieldDecl := {
   name := "StoredIsoRange"
   dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } }
 
+private def storedYearRange : FlatFieldDecl := {
+  storedRange with
+  id := 28
+  name := "StoredYears"
+  dateRangePolicy := some { format := "yyyy", separator := "/" } }
+
 private def checkedModel : FlatModel := {
   fields := [leftStart, leftFinish, rightStart, rightFinish, storedRange,
     leftYearStart, leftYearFinish, rightYearStart, rightYearFinish,
@@ -132,7 +138,7 @@ private def checkedModel : FlatModel := {
     rightMonthOnlyStart, rightMonthOnlyFinish, leftMonthDayStart,
     leftMonthDayFinish, rightMonthDayStart, rightMonthDayFinish,
     dottedStart, dottedFinish, storedMonthRange, storedMonthDayRange,
-    storedIsoRange]
+    storedIsoRange, storedYearRange]
   timeZoneId := "Europe/Berlin"
   baseYear := some 2024 }
 
@@ -329,6 +335,18 @@ private def changedMonthStart2024 :=
 
 private def changedMonthFinish2024 :=
   (berlinRangeValue? 2024 2 1 3 31).get (by native_decide)
+
+private def years2024To2025 : DateRangeValue := {
+  start := (berlinDateValue? 2024 1 1).get (by native_decide)
+  finish := (berlinDateValue? 2025 12 31).get (by native_decide) }
+
+private def year2024 : DateRangeValue := {
+  start := (berlinDateValue? 2024 1 1).get (by native_decide)
+  finish := (berlinDateValue? 2024 12 31).get (by native_decide) }
+
+private def years2023To2025 : DateRangeValue := {
+  start := (berlinDateValue? 2023 1 1).get (by native_decide)
+  finish := (berlinDateValue? 2025 12 31).get (by native_decide) }
 
 /- Construction-versus-field equality and inequality are exact complements on the maintained full-Date source pair. -/
 example :
@@ -534,6 +552,35 @@ example :
     "01.06.2024-30.06.2024" (.parsed (.dateRange storedSameValue))).map
       (fun result => (result.construction.start, result.verdict)) =
     some (.value (.exact startValue), .fired .value) := by
+  native_decide
+
+/- A stored `yyyy` profile compares with the matching asymmetrically completed construction. -/
+example :
+  ((checkedMixedResultFor? checkedModel
+      leftYearStart leftYearFinish storedYearRange .left .equal
+      (dateRaw (yearValue 2024)) (dateRaw (yearValue 2025))
+      "2024/2025" (.parsed (.dateRange (.exact years2024To2025)))).map fun result =>
+        (result.position, result.construction.start, result.construction.finish,
+          result.stored, result.verdict)) =
+    some (.left, .value (.exact years2024To2025.start),
+      .value (.exact years2024To2025.finish), .value (.exact years2024To2025),
+      .fired .value) := by
+  native_decide
+
+/- Stored `yyyy` comparison observes changes to either completed endpoint and preserves authored side. -/
+example :
+  (checkedMixedResultFor? checkedModel
+      leftYearStart leftYearFinish storedYearRange .right .equal
+      (dateRaw (yearValue 2024)) (dateRaw (yearValue 2025))
+      "2024/2024" (.parsed (.dateRange (.exact year2024)))).map
+        (fun result => (result.position, result.stored, result.verdict)) =
+    some (.right, .value (.exact year2024), .notFired) ∧
+  (checkedMixedResultFor? checkedModel
+      leftYearStart leftYearFinish storedYearRange .left .notEqual
+      (dateRaw (yearValue 2024)) (dateRaw (yearValue 2025))
+      "2023/2025" (.parsed (.dateRange (.exact years2023To2025)))).map
+        (fun result => (result.position, result.stored, result.verdict)) =
+    some (.left, .value (.exact years2023To2025), .fired .value) := by
   native_decide
 
 /- A configured `MM` construction and matching stored profile expose the same completed leap-year range. -/
@@ -823,20 +870,34 @@ example :
       | .error _ => false) = true := by
   native_decide
 
-/- Unsupported exact fragments remain excluded, while supported construction profiles must match the stored declaration's component identity. -/
+/- Unsupported `yyyy-MM` remains excluded, while every supported construction profile must match the stored declaration's component identity. -/
 example :
     (match elaborateDateRangeConstructionStoredComparison checkedModel
         leftYearStart.id leftYearFinish.id storedRange.id .left .equal with
-      | .error (.unsupportedConstructionProfile .yearFragment .yearFragment) => true
+      | .error (.componentMismatch .yearFragment
+          (.exact .dayMonthYearDash)) => true
       | _ => false) = true ∧
     (match elaborateDateRangeConstructionStoredComparison checkedModel
         leftYearStart.id leftYearFinish.id storedRange.id .right .equal with
-      | .error (.unsupportedConstructionProfile .yearFragment .yearFragment) => true
+      | .error (.componentMismatch .yearFragment
+          (.exact .dayMonthYearDash)) => true
       | _ => false) = true ∧
     (match elaborateDateRangeConstructionStoredComparison checkedModel
         leftMonthStart.id leftMonthFinish.id storedRange.id .left .equal with
       | .error (.unsupportedConstructionProfile
           .yearMonthFragment .yearMonthFragment) => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstructionStoredComparison checkedModel
+        leftYearStart.id leftYearFinish.id storedYearRange.id .left .equal with
+      | .ok _ => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstructionStoredComparison checkedModel
+        leftYearStart.id leftYearFinish.id storedYearRange.id .right .equal with
+      | .ok _ => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstructionStoredComparison checkedModel
+        leftYearStart.id leftYearFinish.id storedMonthRange.id .left .equal with
+      | .error (.componentMismatch .yearFragment .yearlessMonth) => true
       | _ => false) = true ∧
     (match elaborateDateRangeConstructionStoredComparison checkedModel
         leftMonthOnlyStart.id leftMonthOnlyFinish.id storedRange.id .left .equal with
@@ -894,11 +955,12 @@ example :
 /- Full-profile refinement participates in authored static order before the later mixed operand is certified. -/
 example :
     (match elaborateDateRangeConstructionStoredComparison checkedModel
-        leftYearStart.id leftYearFinish.id 99 .left .equal with
-      | .error (.unsupportedConstructionProfile .yearFragment .yearFragment) => true
+        leftMonthStart.id leftMonthFinish.id 99 .left .equal with
+      | .error (.unsupportedConstructionProfile
+          .yearMonthFragment .yearMonthFragment) => true
       | _ => false) = true ∧
     (match elaborateDateRangeConstructionStoredComparison checkedModel
-        leftYearStart.id leftYearFinish.id 99 .right .equal with
+        leftMonthStart.id leftMonthFinish.id 99 .right .equal with
       | .error (.stored (.source (.unknownFieldId 99))) => true
       | _ => false) = true := by
   native_decide
