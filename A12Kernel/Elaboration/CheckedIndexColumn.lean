@@ -176,6 +176,14 @@ def admitsParallelKey (column : ResolvedCheckedIndexColumn model)
     (key : SemanticIndexKey) : Bool :=
   column.admitsSelectableKey key
 
+/-- Recover the unique selectable physical entry without choosing a consumer-specific missing or poison policy. -/
+def selectableEntryFor? (column : ResolvedCheckedIndexColumn model)
+    (key : SemanticIndexKey) : Option ResolvedCheckedIndexEntry :=
+  if column.admitsSelectableKey key then
+    column.entries.find? fun entry => entry.key == key
+  else
+    none
+
 end ResolvedCheckedIndexColumn
 
 namespace CheckedParallelIndexGroups
@@ -452,14 +460,6 @@ def resolveCheckedParallelFrameEnvironments
       preliminary.collectParallelFrameEnvironments
         scope commonPath rows []
 
-private def entryFor?
-    (column : ResolvedCheckedIndexColumn model) (key : SemanticIndexKey) :
-    Option ResolvedCheckedIndexEntry :=
-  if column.admitsParallelKey key then
-    column.entries.find? fun entry => entry.key == key
-  else
-    none
-
 private def textKeys
     (column : ResolvedCheckedIndexColumn model) : List String :=
   column.entries.filterMap fun entry =>
@@ -473,7 +473,7 @@ private def textKeys
 private def parallelSide (column : ResolvedCheckedIndexColumn model)
     (key : SemanticIndexKey) : ResolvedParallelIndexSide := {
   group := column.group
-  environment := (entryFor? column key).map (·.environment)
+  environment := (column.selectableEntryFor? key).map (·.environment)
   unavailableKey := column.unavailableKey
 }
 

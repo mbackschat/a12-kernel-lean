@@ -206,6 +206,22 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: exact and Base-Year-completed fragment constructor targets, crossed target profiles, alternate separators, repeatable targets, alternatives, scheduling, partial validation, and application destinations remain outside this checkpoint.
 - `sync`: this checkpoint extends the canonical computation account under pending [`SPEC-2026-08-19-05`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-05--date-range-construction-targets-admit-yearless-fragments).
 
+<a id="src-indexed-date-range-construction-target"></a>
+#### String-indexed DateRange construction targets
+
+- `revision`: source-shipped dmtool `0.13.0` was run from clean a12-dmkits `89aa03957034de620562eb23a095d878f6547dca`; both runtime strategies used built/runtime Kernel `30.8.1` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`.
+- `static-route`: dmtool structured computation authoring Kernel-confirms both `DateRange(/Order/Items/PromiseStart For "sku1", /Order/Items/PromiseFinish For "sku2")` and the corresponding pair keyed by direct nonrepeatable String selector fields.
+- `runtime-route`: one direct one-level repeatable `/Order/Items` group uses its direct String `Sku` field as semantic index; exact full-Date start and finish fields are selected into a direct ISO/slash DateRange target through dynamic Groovy and generated Java.
+- `literal-claim`: both Kernel strategies render `2024-01-01/2024-02-29` when the two literal keys select different rows, clear for a selected empty endpoint or a clean missing literal key, and clear with both duplicate-key formal errors in operands when the index column contains duplicate `sku1` rows.
+- `field-claim`: both Kernel strategies render the same range for filled selector fields, clear for a clean unmatched or empty selector, and clear with the same duplicate-key formal errors before selection.
+- `literal-identity`: model SHA-256 `1aba3401ca2a9d3a80973cefff145d5afb80f5cfa63c61d5f8440018ae9a095a`; four-row request `f80d972639de0744e36607b22e38288fdc2bbec4847e7aab46ef7fafacb93fd7`; artifact `416b73dc0ee4554f7281fed4ecfeff361a24e6609071e6242e7da7855e5330c5`.
+- `missing-literal-identity`: model SHA-256 `a753c6538e588df4185834429871a8967167df935c6de78dc37ca33902473925`; request `af3906f5d11c4a2a9ff5ddef95f588db2a9434abb22c65ec14bd04c0e7888b89`; artifact `9c26935ebfaf38813c7fd061d30dbf5d9f71ce45ec71b83ac5369f3110a7ebd8`.
+- `field-identity`: model SHA-256 `8e4dacfcb1d91194a19f0b6e34541aa5b65ebe74542a4e41aff409f535662902`; request `aeed64a0f7148b88edf91225472019404484eece00fa52fa1956fc3c31f8f719`; two byte-identical artifacts `c48f06f5f646395ce8ca509deb8a6b82bf4b1bca4696f0722887eefaba04c050`.
+- `separation`: clean no-match and selected empty distinguish ordinary clearing from duplicate-column formal poison; the two key forms distinguish authored constant identity from a document-provided selector. Lean separately locks literal-key reversal as an internal semantic-selection separator; the retained external packet did not execute a reversed-key row.
+- `mechanism-limit`: the artifacts establish static authorability and public outputs only. They do not establish the Kernel's internal lookup order, address carrier, poison representation, or why duplicate formal messages precede selection.
+- `limit`: the measured profile is one direct one-level String index, direct exact full-Date targets, one direct ISO/slash DateRange computation target, UTC, and full computation. Number or Enumeration indices, fragments, nested or cross-group indices, validation/comparison consumers, partial evaluation, alternatives, scheduling, and application remain outside.
+- `sync`: semantic-index endpoints are already canonical in [`spec/05`](../spec/05-dates-and-time.md#8-date-ranges-and-overlap); this observation adds provenance and creates no outbound correction.
+
 <a id="src-date-range-bound-extraction"></a>
 #### Stored DateRange bound extraction
 

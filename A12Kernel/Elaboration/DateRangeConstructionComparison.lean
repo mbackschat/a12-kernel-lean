@@ -220,16 +220,20 @@ inductive DateRangeConstructionFault where
 
 namespace CheckedDateRangeConstruction
 
-private def evaluateEndpoint (source : CheckedDateRangeEndpoint model)
-    (bound : DateRangeBound) (phase : Phase) (input : CheckedDocument model) :
+end CheckedDateRangeConstruction
+
+namespace DateRangeEndpointFormat
+
+/-- Complete one already-observed Date endpoint while preserving empty and formal states. Direct and semantic-index consumers share this sole positional completion boundary. -/
+def evaluateObservation (format : DateRangeEndpointFormat)
+    (profile : ModelZone.ConcreteProfile) (field : FieldId)
+    (bound : DateRangeBound) (observation : CellObservation) :
     Except DateRangeConstructionFault
       (CellObservation DateRangeConstructionEndpointValue) := do
-  let field := source.checked.target.id
-  let cell ← input.read { field, path := [] } |>.mapError .document
-  match observeCell phase cell with
+  match observation with
   | .empty => pure .empty
   | .value (.temporal (.date value)) =>
-      match source.format with
+      match format with
       | .yearlessMonth =>
           match DateParts.daysInMonth? 2000 value.parts.month with
           | some _ => pure (.value (.month value.parts.month))
@@ -245,7 +249,7 @@ private def evaluateEndpoint (source : CheckedDateRangeEndpoint model)
           | none => throw (.endpointDateUnavailable field value)
           | some date =>
               let instant? := (LocalDateTime.ofDateHms? date 0 0 0).bind
-                source.profile.resolveLocal?
+                profile.resolveLocal?
               match instant? with
               | some instant => pure (.value (.exact {
                   instant
@@ -255,6 +259,19 @@ private def evaluateEndpoint (source : CheckedDateRangeEndpoint model)
   | .value _ => throw (.endpointValueKind field)
   | .unknown cause => pure (.unknown cause)
   | .poison cause => pure (.poison cause)
+
+end DateRangeEndpointFormat
+
+namespace CheckedDateRangeConstruction
+
+private def evaluateEndpoint (source : CheckedDateRangeEndpoint model)
+    (bound : DateRangeBound) (phase : Phase) (input : CheckedDocument model) :
+    Except DateRangeConstructionFault
+      (CellObservation DateRangeConstructionEndpointValue) := do
+  let field := source.checked.target.id
+  let cell ← input.read { field, path := [] } |>.mapError .document
+  source.format.evaluateObservation source.profile field bound
+    (observeCell phase cell)
 
 /-- Read each certified endpoint once from one immutable checked document. -/
 def evaluate (construction : CheckedDateRangeConstruction model)

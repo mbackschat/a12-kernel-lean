@@ -218,6 +218,20 @@ For an assurance drill, use the row’s linked owner, then the matching [`Proofs
 - `assurance`: Q closed for bounded public Execute/Analyze/Explain/Transform probes that recover all six target profiles, target and endpoint identities, model Base Year where applicable, exact or yearless endpoint observations, accepted or errored stored attempts, and applied or cleared values without renewed source research.
 - `remains`: alternatives, repetition, scheduling, overlap, bounds, wider application, shipment, and public compatibility remain in [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
 
+<a id="cap-indexed-date-range-construction-computation"></a>
+#### Literal-keyed DateRange construction computation
+
+- `state`: implemented for two exact full-Date fields selected by literal exact-text keys in one direct one-level String-indexed group and rendered into one direct same-declaring-group exact DateRange target.
+- `boundary`: checked admission derives the indexed group and its declared String index from each repeated Date endpoint, requires exact full-Date endpoint policies under one supported zone, requires both endpoints to share the exact indexed group, and reuses direct DateRange target ownership and presentation certification.
+- `boundary`: execution resolves one generated preliminary index column, projects each selected target through the shared semantic-index computation policy, retains the authored key plus selected physical address, completes each Date at its endpoint position, and delegates the resulting typed range to the existing target renderer.
+- `boundary`: clean no-match and selected empty become no value; any unavailable index column poisons before lookup, duplicate participants expose no selected address, and keyed reversal changes physical endpoint rows without changing authored endpoint position.
+- `owner`: [`IndexedDateRangeConstructionComputation.lean`](../A12Kernel/Elaboration/IndexedDateRangeConstructionComputation.lean) owns bounded indexed admission, rich selection, and target assembly; [`CheckedIndexColumn.lean`](../A12Kernel/Elaboration/CheckedIndexColumn.lean), [`SemanticIndex.lean`](../A12Kernel/Semantics/SemanticIndex.lean), and [`DateRangeConstructionComparison.lean`](../A12Kernel/Elaboration/DateRangeConstructionComparison.lean) retain shared column, lookup, and endpoint-completion ownership.
+- `case`: [indexed constructor-target cases](../A12Kernel/Conformance/IndexedDateRangeConstructionComputation.lean) separate physical row selection, key reversal, clean missing key, selected empty endpoint, duplicate-column poison, String-index admission, nested-scope refusal, and cross-group refusal.
+- `proof`: [`checkedIndexedDateRangeConstructionComputation_admitted`](../A12Kernel/Proofs/IndexedDateRangeConstructionComputation.lean) exposes same-group, direct-target ownership, and target-profile certificates.
+- `assurance`: E/P closed for the named literal-key profile; L pins static admission, filled output, missing-key and selected-empty clearing, and duplicate-index formal clearing at the [String-index checkpoint](SOURCES.md#src-indexed-date-range-construction-target); C/X none.
+- `consumer`: Execute and Analyze can recover both authored keys, selected concrete addresses, endpoint observations, target policy, and output without re-running index selection; Explain can distinguish no selection from selected empty and column poison.
+- `remains`: field-valued keys, fragments, Number or Enumeration indices, nested or cross-group selection, comparisons, partial validation, alternatives, scheduling, application, shipment, and public compatibility remain in [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
+
 <a id="cap-checked-date-range-bound"></a>
 #### Checked direct DateRange bound extraction, fixed-Date comparison, and components
 
