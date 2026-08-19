@@ -71,21 +71,20 @@ inductive DateRangeFirstFilledDirectComputationElabError where
   | unsupportedSourceShape
   | targetGroup (actual expected : GroupPath)
   | sourceGroup (path : List String) (actual expected : GroupPath)
-  | unsupportedProfile (path : List String) (format separator : String)
   | varyingProfiles (first second : List String)
   | targetSelfReference (path : List String)
   deriving Repr, DecidableEq
 
 namespace DateRangeFirstFilledDirectComputationElabError
 
-/-- Project the shared entity-list classes, measured exact-profile mismatch, and established target self-reference class. Wider local refusals stay unmapped. -/
+/-- Project the shared entity-list classes, measured profile mismatch, and established target self-reference class. Wider local refusals stay unmapped. -/
 def diagnostic? : DateRangeFirstFilledDirectComputationElabError →
     Option KernelStaticDiagnostic
   | .sourceShape cause => cause.diagnostic?
   | .varyingProfiles _ _ => some .varyingTypesNotAllowed
   | .targetSelfReference _ => some .errorReferenceToCalculatedField
   | .target _ | .source _ _ | .unsupportedSourceShape | .targetGroup _ _ |
-      .sourceGroup _ _ _ | .unsupportedProfile _ _ _ => none
+      .sourceGroup _ _ _ => none
 
 end DateRangeFirstFilledDirectComputationElabError
 
@@ -104,29 +103,29 @@ private structure NonselfDateRangeFirstFilledDirectCandidate
   candidate : GroupedDateRangeFirstFilledDirectCandidate model targetGroup
   excludesTarget : candidate.candidate.direct.source.id ≠ targetField
 
-/-- One checked direct source in the target's group and exact declaration profile. -/
+/-- One checked direct source in the target's group and declaration profile. -/
 structure CheckedDateRangeFirstFilledDirectSource
-    (model : FlatModel) (targetField : FieldId) (format : DateRangeFormat)
+    (model : FlatModel) (targetField : FieldId) (format : DateRangeInputFormat)
     (targetGroup : GroupPath) where
   private mk ::
   declaration : FlatFieldDecl
   direct : CheckedDirectDateRange model
   sourceIdentity : direct.source.id = declaration.id
-  sourceFormat : direct.format = .exact format
+  sourceFormat : direct.format = format
   ownedByGroup : declaration.groupPath = targetGroup
   excludesTarget : direct.source.id ≠ targetField
 
-/-- One fixed exact DateRange target and a finite direct nonrepeatable same-group source list sharing its declaration profile. -/
+/-- One fixed DateRange target and a finite direct nonrepeatable same-group source list sharing its declaration profile. -/
 structure CheckedDateRangeFirstFilledDirectComputation (model : FlatModel) where
   private mk ::
   target : CheckedDirectDateRange model
   targetDeclaration : FlatFieldDecl
   shape : CheckedFieldEntityShape model
-  format : DateRangeFormat
+  format : DateRangeInputFormat
   targetGroup : GroupPath
   sources : List (CheckedDateRangeFirstFilledDirectSource model
     target.source.id format targetGroup)
-  targetFormat : target.format = .exact format
+  targetFormat : target.format = format
   targetOwnedByGroup : targetDeclaration.groupPath = targetGroup
 
 private def directStoredDeclarations (model : FlatModel) :
@@ -179,7 +178,7 @@ private def certifyDirectSourcesExcludeTarget (targetField : FieldId) :
           (← certifyDirectSourcesExcludeTarget targetField remaining))
 
 private def certifyDirectSourceProfiles (targetPath : List String)
-    (format : DateRangeFormat) :
+    (format : DateRangeInputFormat) :
     List (NonselfDateRangeFirstFilledDirectCandidate
       model targetField targetGroup) →
       Except DateRangeFirstFilledDirectComputationElabError
@@ -189,24 +188,19 @@ private def certifyDirectSourceProfiles (targetPath : List String)
   | candidate :: remaining => do
       let grouped := candidate.candidate
       let source := grouped.candidate
-      match hFormat : source.direct.format with
-      | .exact sourceFormat =>
-          if hMatches : sourceFormat = format then
-            pure ({
-              declaration := source.declaration
-              direct := source.direct
-              sourceIdentity := source.sourceIdentity
-              sourceFormat := by rw [hFormat, hMatches]
-              ownedByGroup := grouped.ownedByGroup
-              excludesTarget := candidate.excludesTarget
-            } :: (← certifyDirectSourceProfiles targetPath format remaining))
-          else
-            throw (.varyingProfiles targetPath source.declaration.path)
-      | _ =>
-          throw (.unsupportedProfile source.declaration.path
-            source.direct.policy.format source.direct.policy.separator)
+      if hMatches : source.direct.format = format then
+        pure ({
+          declaration := source.declaration
+          direct := source.direct
+          sourceIdentity := source.sourceIdentity
+          sourceFormat := hMatches
+          ownedByGroup := grouped.ownedByGroup
+          excludesTarget := candidate.excludesTarget
+        } :: (← certifyDirectSourceProfiles targetPath format remaining))
+      else
+        throw (.varyingProfiles targetPath source.declaration.path)
 
-/-- Check a finite exact direct-field list through the shared entity-list and direct DateRange owners. External authorability is calibrated at lengths two and three. -/
+/-- Check a finite direct-field list through the shared entity-list and direct DateRange owners. External authorability is calibrated at lengths two and three. -/
 def checkDateRangeFirstFilledDirectComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceFieldEntitySource) :
@@ -222,22 +216,17 @@ def checkDateRangeFirstFilledDirectComputation
   if hTargetGroup : targetDeclaration.groupPath = declaringGroup then
     let grouped ← certifyDirectSourceGroups declaringGroup candidates
     let nonself ← certifyDirectSourcesExcludeTarget target.source.id grouped
-    match hTargetFormat : target.format with
-    | .exact targetFormat =>
-        let sources ← certifyDirectSourceProfiles
-          targetDeclaration.path targetFormat nonself
-        pure {
-          target
-          targetDeclaration
-          shape
-          format := targetFormat
-          targetGroup := declaringGroup
-          sources
-          targetFormat := hTargetFormat
-          targetOwnedByGroup := hTargetGroup }
-    | _ =>
-        throw (.unsupportedProfile targetDeclaration.path
-          target.policy.format target.policy.separator)
+    let sources ← certifyDirectSourceProfiles
+      targetDeclaration.path target.format nonself
+    pure {
+      target
+      targetDeclaration
+      shape
+      format := target.format
+      targetGroup := declaringGroup
+      sources
+      targetFormat := rfl
+      targetOwnedByGroup := hTargetGroup }
   else
     throw (.targetGroup targetDeclaration.groupPath declaringGroup)
 
@@ -342,14 +331,14 @@ end CheckedDateRangeFirstFilledComputation
 
 namespace CheckedDateRangeFirstFilledDirectComputation
 
-/-- Execute the finite exact direct source list lazily through the one checked document. A terminal observation leaves every suffix field unread. -/
+/-- Execute the finite direct source list lazily through the one checked document. A terminal observation leaves every suffix field unread. -/
 def execute (operation : CheckedDateRangeFirstFilledDirectComputation model)
     (input : CheckedDocument model) :
     Except DateRangeFirstFilledComputationFault DateRangeTargetOutcome := do
   let result ← scanDirectDateRangeFirstFilled
     (operation.sources.map fun source _ =>
       source.direct.evaluate .computation input |>.mapError .directSource)
-  evaluateDateRangeFirstFilledResult (.exact operation.format) result
+  evaluateDateRangeFirstFilledResult operation.format result
 
 end CheckedDateRangeFirstFilledDirectComputation
 
