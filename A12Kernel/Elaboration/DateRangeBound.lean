@@ -41,17 +41,21 @@ structure CheckedDirectDateRange (model : FlatModel) where
   format : DateRangeInputFormat
   sourceAdmitted : model.directDateRangeInput? source = some (policy, format)
 
-/-- Whether one checked input profile always supplies exact full-Date endpoints to a bound consumer. -/
-def DateRangeInputFormat.supportsDirectBound : DateRangeInputFormat → Bool
+/-- Whether one checked input profile supplies exact full-Date endpoints under the model's optional Base Year. -/
+def DateRangeInputFormat.supportsDirectBound
+    (format : DateRangeInputFormat) (baseYear : Option Int) : Bool :=
+  match format with
   | .exact _ | .yearFragment | .yearMonthFragment => true
-  | .yearlessMonth | .yearlessMonthDay => false
+  | .yearlessMonth => baseYear.isSome
+  | .yearlessMonthDay => false
 
 /-- One selected endpoint of an exact-valued direct DateRange field. -/
 structure CheckedDateRangeBound (model : FlatModel)
     extends CheckedDirectDateRange model where
   private mk ::
   bound : DateRangeBound
-  sourceSupportsBound : toCheckedDirectDateRange.format.supportsDirectBound = true
+  sourceSupportsBound :
+    toCheckedDirectDateRange.format.supportsDirectBound model.baseYear = true
 
 /-- Authored side occupied by the selected DateRange bound in one full-Date comparison. -/
 inductive DateRangeBoundComparisonPosition where
@@ -97,7 +101,7 @@ def elaborateDateRangeBound (model : FlatModel) (sourceField : FieldId)
     (bound : DateRangeBound) :
     Except DateRangeBoundElabError (CheckedDateRangeBound model) := do
   let source ← elaborateDirectDateRange model sourceField
-  if hSupported : source.format.supportsDirectBound then
+  if hSupported : source.format.supportsDirectBound model.baseYear then
     pure {
       toCheckedDirectDateRange := source
       bound

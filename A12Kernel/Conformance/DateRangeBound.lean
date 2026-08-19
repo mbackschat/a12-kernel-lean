@@ -43,6 +43,14 @@ private def monthDayModel := modelFor monthDayTravel
 private def yearModel := modelFor yearTravel
 private def yearMonthModel := modelFor yearMonthTravel
 
+private def configuredMonthModel (baseYear : Int) : FlatModel := {
+  monthModel with baseYear := some baseYear
+}
+
+private def configuredMonthDayModel (baseYear : Int) : FlatModel := {
+  monthDayModel with baseYear := some baseYear
+}
+
 private def dateValue (epochMillis : Int) (year month day : Nat) : DateValue := {
   instant := { epochMillis }
   parts := { year, month, day }
@@ -206,11 +214,19 @@ example :
       (elaborateDateRangeBound dottedModel dottedTravel.id .finish).isOk &&
       (elaborateDateRangeBound yearModel yearTravel.id .start).isOk &&
       (elaborateDateRangeBound yearMonthModel yearMonthTravel.id .finish).isOk &&
+      (elaborateDateRangeBound (configuredMonthModel 2024) monthTravel.id
+        .start).isOk &&
       (match elaborateDateRangeBound monthModel monthTravel.id .start with
         | .error (.unsupportedPolicy source format separator) =>
             source == monthTravel.id && format == "MM" && separator == "/"
         | _ => false) &&
       (match elaborateDateRangeBound monthDayModel monthDayTravel.id .start with
+        | .error (.unsupportedPolicy source format separator) =>
+            source == monthDayTravel.id && format == "MM-dd" &&
+              separator == "/"
+        | _ => false) &&
+      (match elaborateDateRangeBound (configuredMonthDayModel 2024)
+          monthDayTravel.id .start with
         | .error (.unsupportedPolicy source format separator) =>
             source == monthDayTravel.id && format == "MM-dd" &&
               separator == "/"
@@ -294,6 +310,58 @@ example :
       .value 29 .fixed) ∧
     yearMonthBoundConsumerSnapshot february2023 "2023-02/2023-02"
       (fullDate 2023 2 28 (by native_decide)) = some (
+      .value february2023.start,
+      .value february2023.finish,
+      .notFired,
+      .value 28 .fixed) := by
+  native_decide
+
+private def configuredMonthBoundConsumerSnapshot (baseYear : Int)
+    (range : DateRangeValue) (stored : String)
+    (februaryTwentyEighth : FullDate) : Option
+      (DateRangeInputFormat × CellObservation DateValue ×
+        CellObservation DateValue × Verdict × NumericOperand) := do
+  let checkedModel := configuredMonthModel baseYear
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler checkedModel).toOption
+  let input ← (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := [{
+      address := { field := monthTravel.id, path := [] }
+      stored
+      raw := .parsed (.dateRange (.exact range))
+    }]
+  }).toOption
+  let start ← (elaborateDateRangeBound checkedModel monthTravel.id .start)
+    |>.toOption
+  let finish ← (elaborateDateRangeBound checkedModel monthTravel.id .finish)
+    |>.toOption
+  let comparison ← (elaborateDateRangeBoundComparison checkedModel
+    monthTravel.id .finish .left .after februaryTwentyEighth).toOption
+  let component ← (elaborateDateRangeBoundComponent checkedModel
+    monthTravel.id .finish .day).toOption
+  let startValue ← (start.evaluate .validation input).toOption
+  let finishValue ← (finish.evaluate .validation input).toOption
+  let comparisonResult ← (comparison.evaluate input).toOption
+  let componentResult ← (component.evaluate input).toOption
+  pure (start.format, startValue, finishValue, comparisonResult.verdict,
+    componentResult.component)
+
+/- Configured `MM` retains its model-owned year and leap-aware end; the ordinary-year control rejects fixed February completion. -/
+example :
+    configuredMonthBoundConsumerSnapshot 2024 february2024 "02/02"
+      (fullDate 2024 2 28 (by native_decide)) = some (
+      .yearlessMonth,
+      .value february2024.start,
+      .value february2024.finish,
+      .fired .value,
+      .value 29 .fixed) := by
+  native_decide
+
+example :
+    configuredMonthBoundConsumerSnapshot 2023 february2023 "02/02"
+      (fullDate 2023 2 28 (by native_decide)) = some (
+      .yearlessMonth,
       .value february2023.start,
       .value february2023.finish,
       .notFired,
