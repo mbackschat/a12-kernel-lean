@@ -11,11 +11,11 @@ Detailed coverage belongs in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), o
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: singular direct `yyyy-MM` and Base-Year-completed `MM`/`MM-dd` overlap are closed with their consumer probes; the measured without-Base-Year diagnostic is represented without widening starred or plural routes.
+- `state`: singular direct `yyyy`, `yyyy-MM`, and Base-Year-completed `MM`/`MM-dd` overlap are closed with their consumer probes; the measured without-Base-Year diagnostic is represented without widening starred or plural routes. Direct `yyyy` overlap remains external evidence pending.
 - `gap`: [SG6 DateRange Date/DateFragment endpoint admission and completion](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
-- `oracle`: the [canonical Date-range clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap), the exact [`yyyy` completion checkpoint](SOURCES.md#src-date-range-year-fragment-construction), and the established pure inclusive overlap predicate. Direct `yyyy` overlap remains external evidence pending.
+- `oracle`: the [canonical Date-range clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap), the exact [`yyyy` completion checkpoint](SOURCES.md#src-date-range-year-fragment-construction), the [stored bound checkpoint](SOURCES.md#src-date-range-bound-extraction), and the established typed bound comparison/component seams. Direct `yyyy` bound composition will remain external evidence pending unless measured separately.
 - `route`: the completed representation boundary is owned by [Architecture](ARCHITECTURE.md#values-keep-semantic-identity-separate-from-storage-identity) and the [temporal comparison implementation record](IMPLEMENTATION-MAP.md#cap-temporal-comparison-and-aggregates).
-- `next`: admit direct nonrepeatable stored `yyyy` DateRange operands in the checked singular overlap owner, retain January 1/December 31 boundary polarity and next-year non-overlap, and keep fragment stars and plural positions refused.
+- `next`: admit direct nonrepeatable stored `yyyy` DateRange operands in the checked bound owner, retain January 1/December 31 endpoint identity through both bounds plus the existing full-Date comparison and component consumers, and keep every other fragment profile refused.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: passed for configured Base-Year fragment overlap; active again when the direct year-bearing fragment-overlap family closes.
-- `resume`: `rg -n 'DirectDateRangeOverlapFragmentProfile|certifyDirectDateRangeOverlapFragmentField|yearFragment|yearMonth|fragmentField' A12Kernel/Elaboration/DateRangeOverlap.lean A12Kernel/Conformance/DateRangeFragmentOverlap.lean A12Kernel/Elaboration/DateRangeInput.lean`
+- `consumer-probe-trigger`: passed for the direct year-bearing fragment-overlap family; next active if direct fragment-bound composition closes.
+- `resume`: `rg -n 'CheckedDateRangeBound|elaborateDateRangeBound|sourceIsExact|yearFragment|sourceValueProfile' A12Kernel/Elaboration/DateRangeBound.lean A12Kernel/Conformance/DateRangeBound.lean A12Kernel/Proofs/DateRangeBound.lean`

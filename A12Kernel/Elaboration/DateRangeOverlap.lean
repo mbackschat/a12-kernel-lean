@@ -5,7 +5,7 @@ import A12Kernel.Semantics.DateRangeOverlapOperators
 
 /-! # Checked DateRange overlap operands
 
-This boundary owns operator-specific static admission and full-validation checked-document assembly for DateRange overlap conditions. It reuses the shared entity-list shape and checked DateRange declaration policies; singular direct fields additionally certify measured year-month and Base-Year-completed fragment profiles while starred and plural routes remain canonical. Pure overlap truth and polarity remain in `A12Kernel.Semantics.DateRangeOverlapOperators`.
+This boundary owns operator-specific static admission and full-validation checked-document assembly for DateRange overlap conditions. It reuses the shared entity-list shape and checked DateRange declaration policies; singular direct fields additionally certify the internally supported year fragment plus measured year-month and Base-Year-completed fragment profiles while starred and plural routes remain canonical. Pure overlap truth and polarity remain in `A12Kernel.Semantics.DateRangeOverlapOperators`.
 -/
 
 namespace A12Kernel
@@ -64,6 +64,7 @@ end CheckedDateRangesOverlapOperand
 
 /-- One singular direct fragment profile that resolves to an exact range without changing starred or plural admission. -/
 inductive DirectDateRangeOverlapFragmentProfile where
+  | year
   | yearMonth
   | month (baseYear : Int)
   | monthDay (baseYear : Int)
@@ -74,6 +75,7 @@ namespace DirectDateRangeOverlapFragmentProfile
 def accepts (profile : DirectDateRangeOverlapFragmentProfile)
     (model : FlatModel) (format : DateRangeInputFormat) : Bool :=
   match profile with
+  | .year => format == .yearFragment
   | .yearMonth => format == .yearMonthFragment
   | .month baseYear =>
       format == .yearlessMonth && model.baseYear == some baseYear
@@ -89,7 +91,7 @@ structure CheckedDirectDateRangeOverlapFragmentField (model : FlatModel)
   profile : DirectDateRangeOverlapFragmentProfile
   profileOwned : profile.accepts model format = true
 
-/-- One singular-overlap operand. Only a direct field gains the measured fragment profiles; canonical direct and star operands retain their existing certificate. -/
+/-- One singular-overlap operand. Only a direct field gains the supported fragment profiles; canonical direct and star operands retain their existing certificate. -/
 inductive CheckedSingularDateRangesOverlapOperand (model : FlatModel) where
   | canonical (source : CheckedDateRangesOverlapOperand model)
   | fragmentField (source : CheckedDirectDateRangeOverlapFragmentField model)
@@ -152,6 +154,12 @@ private def certifyDirectDateRangeOverlapFragmentField (model : FlatModel)
         .unsupportedPolicy path format separator
     | .incoherentCore => .incoherentCore
   match hFormat : source.format with
+  | .yearFragment =>
+      pure {
+        source with
+        profile := .year
+        profileOwned := by
+          simp [DirectDateRangeOverlapFragmentProfile.accepts, hFormat] }
   | .yearMonthFragment =>
       pure {
         source with
@@ -178,7 +186,7 @@ private def certifyDirectDateRangeOverlapFragmentField (model : FlatModel)
               hBaseYear] }
       | none => throw (.unsupportedPolicy declaration.path
           source.policy.format source.policy.separator)
-  | .exact _ | .yearFragment =>
+  | .exact _ =>
       throw (.unsupportedPolicy declaration.path
         source.policy.format source.policy.separator)
 

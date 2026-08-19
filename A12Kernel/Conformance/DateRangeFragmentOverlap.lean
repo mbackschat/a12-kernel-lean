@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.DateRangeOverlap
 
 /-! # Direct DateFragment range overlap locks
 
-These cases isolate the measured singular direct fragment profiles from the canonical and plural overlap matrix. `yyyy-MM` is year-bearing by itself; `MM` and `MM-dd` become exact only through the model's Base Year. Starred and plural fragment routes remain outside this boundary.
+These cases isolate the singular direct fragment profiles from the canonical and plural overlap matrix. `yyyy` and `yyyy-MM` are year-bearing by themselves; `MM` and `MM-dd` become exact only through the model's Base Year. Starred and plural fragment routes remain outside this boundary. Direct `yyyy` overlap remains external evidence pending.
 -/
 
 namespace A12Kernel.Conformance.DateRangeFragmentOverlap
@@ -66,14 +66,13 @@ private def pluralAdmissionError? (checkedModel : FlatModel)
   | .ok _ => none
   | .error error => some error
 
-/- Year-month direct admission stays singular, exact-profile, and non-starred. -/
+/- Year-bearing direct fragments stay singular, exact-profile, and non-starred. -/
 example :
-    (checkedSource? model (direct "YearMonth") [direct "Probe"]).isSome = true ∧
+    (checkedSource? model (direct "Year") [direct "Probe"]).isSome = true ∧
+      (checkedSource? model (direct "YearMonth") [direct "Probe"]).isSome = true ∧
       admissionError? model fragmentStar [direct "Probe"] =
         some (.unsupportedPolicy ["Form", "Rows", "FragmentWindow"]
           "yyyy-MM" "/") ∧
-      admissionError? model (direct "Year") [direct "Probe"] =
-        some (.unsupportedPolicy ["Form", "Year"] "yyyy" "/") ∧
       pluralAdmissionError? model (direct "Probe") (direct "YearMonth") =
         some (.unsupportedPolicy .list ["Form", "YearMonth"] "yyyy-MM" "/") := by
   native_decide
@@ -152,6 +151,29 @@ private def marchFirst2023 :=
   rangeValue 2023 1677628800000 1677628800000 3 1 3 1
 private def february2023 :=
   rangeValue 2023 1675209600000 1677542400000 2 1 2 28
+private def year2024 :=
+  rangeValue 2024 1704067200000 1735603200000 1 1 12 31
+private def januaryFirst2024 :=
+  rangeValue 2024 1704067200000 1704067200000 1 1 1 1
+private def decemberLast2024 :=
+  rangeValue 2024 1735603200000 1735603200000 12 31 12 31
+private def januaryFirst2025 :=
+  rangeValue 2025 1735689600000 1735689600000 1 1 1 1
+
+/- The year fragment reaches both calendar boundaries but not the next year. -/
+example :
+    verdict? model (direct "Year") [direct "Probe"] [
+      rangeCell 3 "2024/2024" year2024,
+      rangeCell 1 "2024-01-01/2024-01-01" januaryFirst2024] =
+        some (.fired .value) ∧
+      verdict? model (direct "Probe") [direct "Year"] [
+        rangeCell 1 "2024-12-31/2024-12-31" decemberLast2024,
+        rangeCell 3 "2024/2024" year2024] = some (.fired .value) ∧
+      verdict? model (direct "Year") [direct "Probe"] [
+        rangeCell 3 "2024/2024" year2024,
+        rangeCell 1 "2025-01-01/2025-01-01" januaryFirst2025] =
+          some .notFired := by
+  native_decide
 
 /- The year-bearing fragment reaches leap day but not the next day. -/
 example :
