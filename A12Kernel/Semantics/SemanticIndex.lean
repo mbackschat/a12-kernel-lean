@@ -11,7 +11,7 @@ This capsule starts after path resolution, key admission and normalization, and 
 
 Validation and computation deliberately consume that same resolved column differently. Validation accepts a clean unique match despite an unrelated unavailable key and consults column invalidity only after no match. Computation checks column invalidity before lookup, so any unavailable key poisons every indexed read. No match over a clean column and a matched empty target both return `CellObservation.empty`.
 
-A field-valued Number key reaches this boundary as its phase-indexed observation. A present Number delegates to the same normalized lookup as a literal; an empty key performs a no-match while retaining the column policy; formal unavailability remains validation-unknown or computation-poison.
+A field-valued Number or exact-text key reaches this boundary as its phase-indexed observation. A present key delegates to the same normalized lookup as a literal; an empty key performs a no-match while retaining the column policy; formal unavailability remains validation-unknown or computation-poison.
 -/
 
 namespace A12Kernel
@@ -92,16 +92,26 @@ def lookupValue (column : ResolvedSemanticIndexColumn)
     (phase : Phase) (token : String) : CellObservation :=
   column.lookupKey phase (.text token)
 
-/-- Read one admitted Number key by numeric value, independent of its authored or stored decimal spelling. -/
-def lookupNumberValue (column : ResolvedSemanticIndexColumn)
-    (phase : Phase) (value : Rat) : CellObservation :=
-  column.lookupKey phase (.number value)
-
-private def unavailableNumberKey (phase : Phase)
+private def unavailableObservedKey (phase : Phase)
     (cause : FormalCause) : CellObservation :=
   match phase with
   | .validation => .unknown cause
   | .computation => .poison cause
+
+/-- Resolve one phase-indexed exact-text key observation through the same canonical column. Empty text has the same clean no-match behavior as an absent key; column unavailability retains the phase-specific policy. -/
+def lookupTextObservation (column : ResolvedSemanticIndexColumn)
+    (phase : Phase) (key : CellObservation String) : CellObservation :=
+  match key with
+  | .empty => column.noMatch phase
+  | .value value =>
+      if value.isEmpty then column.noMatch phase
+      else column.lookupValue phase value
+  | .unknown cause | .poison cause => unavailableObservedKey phase cause
+
+/-- Read one admitted Number key by numeric value, independent of its authored or stored decimal spelling. -/
+def lookupNumberValue (column : ResolvedSemanticIndexColumn)
+    (phase : Phase) (value : Rat) : CellObservation :=
+  column.lookupKey phase (.number value)
 
 /-- Resolve one phase-indexed Number key observation through the same canonical column. Empty means a genuine no-match, not an unavailable key; the column's match/no-match phase policy still applies. -/
 def lookupNumberObservation (column : ResolvedSemanticIndexColumn)
@@ -109,8 +119,8 @@ def lookupNumberObservation (column : ResolvedSemanticIndexColumn)
   match key with
   | .empty => column.noMatch phase
   | .value (.num value) => column.lookupNumberValue phase value
-  | .unknown cause | .poison cause => unavailableNumberKey phase cause
-  | .value _ => unavailableNumberKey phase .malformed
+  | .unknown cause | .poison cause => unavailableObservedKey phase cause
+  | .value _ => unavailableObservedKey phase .malformed
 
 /-- Feed one resolved numeric-key validation lookup into the same direct-comparison empty and polarity rule as the exact-text entry point. -/
 def validationNumberKeyOperand (column : ResolvedSemanticIndexColumn)

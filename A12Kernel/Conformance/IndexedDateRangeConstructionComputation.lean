@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.IndexedDateRangeConstructionComputation
 
-/-! # Literal-keyed DateRange construction computation locks -/
+/-! # String-keyed DateRange construction computation locks -/
 
 namespace A12Kernel.Conformance.IndexedDateRangeConstructionComputation
 
@@ -33,6 +33,16 @@ private def target : FlatFieldDecl := {
   dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" }
 }
 
+private def selector (id : FieldId) (name : String) : FlatFieldDecl := {
+  id
+  groupPath := ["Order"]
+  name
+  policy := { kind := .string }
+}
+
+private def startSelector := selector 5 "StartSelector"
+private def finishSelector := selector 6 "FinishSelector"
+
 private def items : RepeatableGroupDecl := {
   level := 10
   path := ["Order", "Items"]
@@ -41,7 +51,7 @@ private def items : RepeatableGroupDecl := {
 }
 
 private def model : FlatModel := {
-  fields := [index, start, finish, target]
+  fields := [index, start, finish, target, startSelector, finishSelector]
   repeatableGroups := [items]
   timeZoneId := "UTC"
 }
@@ -61,7 +71,16 @@ private def cell (field coordinate : Nat) (stored : String) (raw : RawCell) :
   raw
 }
 
-private def data (duplicate emptyStart : Bool) : DocumentData := {
+private def directCell (field : FieldId) (stored : String) (raw : RawCell) :
+    ClassifiedCellInput := {
+  address := { field, path := [] }
+  stored
+  raw
+}
+
+private def dataWithSelectors (duplicate emptyStart : Bool)
+    (startSelectorStored finishSelectorStored : String)
+    (startSelectorRaw finishSelectorRaw : RawCell) : DocumentData := {
   instantiatedRows := [row 1, row 2]
   cells := [
     cell index.id 1 "sku1" (.parsed (.str "sku1")),
@@ -71,9 +90,15 @@ private def data (duplicate emptyStart : Bool) : DocumentData := {
     cell index.id 2 (if duplicate then "sku1" else "sku2")
       (.parsed (.str (if duplicate then "sku1" else "sku2"))),
     cell start.id 2 "2024-02-01" (.parsed (.temporal (.date (dateValue 2024 2 1)))),
-    cell finish.id 2 "2024-02-29" (.parsed (.temporal (.date (dateValue 2024 2 29))))
+    cell finish.id 2 "2024-02-29" (.parsed (.temporal (.date (dateValue 2024 2 29)))),
+    directCell startSelector.id startSelectorStored startSelectorRaw,
+    directCell finishSelector.id finishSelectorStored finishSelectorRaw
   ]
 }
+
+private def data (duplicate emptyStart : Bool) : DocumentData :=
+  dataWithSelectors duplicate emptyStart "sku1" "sku2"
+    (.parsed (.str "sku1")) (.parsed (.str "sku2"))
 
 private def preliminary? (source : DocumentData) : Option (CheckedIndexPreliminary model) := do
   let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
@@ -90,6 +115,22 @@ private def execute? (startKey finishKey : String) (source : DocumentData) := do
   let preliminary ← preliminary? source
   (operation.execute preliminary).toOption
 
+private def fieldOperation? :=
+  (elaborateIndexedDateRangeConstructionComputation model ["Order"] target.id
+    start.id (.field startSelector.id) finish.id (.field finishSelector.id)).toOption
+
+private def fieldExecute? (source : DocumentData) := do
+  let operation ← fieldOperation?
+  let preliminary ← preliminary? source
+  (operation.execute preliminary).toOption
+
+private def elaborationErrorOf {checkedModel : FlatModel} :
+    Except IndexedDateRangeConstructionComputationElabError
+      (CheckedIndexedDateRangeConstructionComputation checkedModel) →
+        Option IndexedDateRangeConstructionComputationElabError
+  | .ok _ => none
+  | .error cause => some cause
+
 private def expected : StoredDateRange := {
   text := "2024-01-01/2024-02-29"
   nonempty := by decide
@@ -97,9 +138,11 @@ private def expected : StoredDateRange := {
 
 /- Exact literal keys may select different rows; the rich result retains both concrete addresses. -/
 example : (execute? "sku1" "sku2" (data false false)).map (fun result =>
-    (result.start.address, result.finish.address, result.outcome)) =
-  some (some { field := start.id, path := [1] },
-    some { field := finish.id, path := [2] }, .accepted expected) := by
+    (result.start.key, result.start.address, result.finish.key,
+      result.finish.address, result.outcome)) =
+  some (.literal "sku1", some { field := start.id, path := [1] },
+    .literal "sku2", some { field := finish.id, path := [2] },
+    .accepted expected) := by
   native_decide
 
 /- Reversing only the keys reverses the selected endpoint rows rather than falling back to physical order. -/
@@ -117,6 +160,93 @@ example :
       (execute? "sku1" "sku2" (data false true)).map (fun result =>
         (result.start.address, result.start.value, result.outcome)) =
         some (some { field := start.id, path := [1] }, .empty, .noValue) := by
+  native_decide
+
+/- Direct evaluated String selector fields retain their checked observations and select the same concrete rows as literal keys. -/
+example : (fieldExecute? (data false false)).map (fun result =>
+    (result.start.key, result.start.address, result.finish.key,
+      result.finish.address, result.outcome)) =
+  some (.field { id := startSelector.id } (.value "sku1"),
+    some { field := start.id, path := [1] },
+    .field { id := finishSelector.id } (.value "sku2"),
+    some { field := finish.id, path := [2] }, .accepted expected) := by
+  native_decide
+
+/- Changing only the checked selector-field values reverses physical endpoint selection. -/
+example : (fieldExecute? (dataWithSelectors false false "sku2" "sku1"
+    (.parsed (.str "sku2")) (.parsed (.str "sku1")))).map (fun result =>
+      (result.start.address, result.finish.address)) =
+  some (some { field := start.id, path := [2] },
+    some { field := finish.id, path := [1] }) := by
+  native_decide
+
+/- A filled no-match selector and an empty selector retain distinct key observations while both expose no selected address and clear the target. -/
+example :
+    (fieldExecute? (dataWithSelectors false false "missing" "sku2"
+      (.parsed (.str "missing")) (.parsed (.str "sku2")))).map (fun result =>
+        (result.start.key, result.start.address, result.outcome)) =
+      some (.field { id := startSelector.id } (.value "missing"), none, .noValue) ∧
+    (fieldExecute? (dataWithSelectors false false "" "sku2"
+      .presentEmpty (.parsed (.str "sku2")))).map (fun result =>
+        (result.start.key, result.start.address, result.outcome)) =
+      some (.field { id := startSelector.id } .empty, none, .noValue) := by
+  native_decide
+
+/- A formally unavailable selector retains its exact computation-phase cause and poisons the endpoint before target assembly. -/
+example : (fieldExecute? (dataWithSelectors false false "bad" "sku2"
+    (.rejected .declaredConstraint) (.parsed (.str "sku2")))).map (fun result =>
+      (result.start.key, result.start.address, result.start.value, result.outcome)) =
+  some (.field { id := startSelector.id } (.poison .declaredConstraint),
+    none, .poison .declaredConstraint, .poison .declaredConstraint) := by
+  native_decide
+
+/- Duplicate index participants poison field-keyed selection before either endpoint exposes an address. -/
+example : (fieldExecute? (data true false)).map (fun result =>
+    (result.start.key, result.start.address, result.finish.key,
+      result.finish.address, result.outcome)) =
+  some (.field { id := startSelector.id } (.value "sku1"), none,
+    .field { id := finishSelector.id } (.value "sku2"), none,
+    .poison .duplicateIndex) := by
+  native_decide
+
+/- A raw String selector remains a valid model declaration but not an evaluated field-valued key. -/
+example :
+    let rawSelector := { startSelector with
+      stringValueMode := .raw
+      stringPolicy := { lineBreaksPermitted := true } }
+    let rawModel := { model with
+      fields := [index, start, finish, target, rawSelector, finishSelector] }
+    rawModel.validate.isOk = true ∧
+    elaborationErrorOf
+      (elaborateIndexedDateRangeConstructionComputation rawModel ["Order"] target.id
+        start.id (.field rawSelector.id) finish.id (.field finishSelector.id)) =
+      some (.start (.keyNotEvaluatedString rawSelector.path)) := by
+  native_decide
+
+/- A non-String selector remains model-valid but is refused at exact key-value admission. -/
+example :
+    let numberSelector := { startSelector with
+      policy := { kind := .number { scale := 0, signed := false } } }
+    let numberModel := { model with
+      fields := [index, start, finish, target, numberSelector, finishSelector] }
+    numberModel.validate.isOk = true ∧
+    elaborationErrorOf
+      (elaborateIndexedDateRangeConstructionComputation numberModel ["Order"] target.id
+        start.id (.field numberSelector.id) finish.id (.field finishSelector.id)) =
+      some (.start (.keyNotEvaluatedString numberSelector.path)) := by
+  native_decide
+
+/- A repeatable String selector remains model-valid but is refused by the direct-key boundary. -/
+example :
+    let repeatableSelector := { startSelector with
+      groupPath := items.path, repeatableScope := [items.level] }
+    let repeatableModel := { model with
+      fields := [index, start, finish, target, repeatableSelector, finishSelector] }
+    repeatableModel.validate.isOk = true ∧
+    elaborationErrorOf
+      (elaborateIndexedDateRangeConstructionComputation repeatableModel ["Order"] target.id
+        start.id (.field repeatableSelector.id) finish.id (.field finishSelector.id)) =
+      some (.start (.resolve (.repeatableReference repeatableSelector.path))) := by
   native_decide
 
 /- Duplicate index participants poison computation before lookup, expose no selected address, and clear an existing target. -/
