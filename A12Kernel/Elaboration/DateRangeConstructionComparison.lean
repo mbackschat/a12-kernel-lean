@@ -5,7 +5,7 @@ import A12Kernel.Semantics.DateRangeComparison
 
 /-! # Checked DateRange construction comparison
 
-This capsule certifies two nonrepeatable Date endpoints per `DateRange` construction, including the exact `yyyy`, `yyyy-MM`, and Base-Year-resolved `MM` and `MM-dd` DateFragment profiles, composes two component-compatible constructions or one full-Date construction with a canonical direct stored DateRange, and reads each checked operand through one immutable document in authored order. Construction labels are completed by endpoint position and re-resolved under their declaration's model-zone profile before the exact observations delegate to the shared equality seam. Yearless execution without a Base Year, fragment construction-versus-stored execution, semantic-index endpoints, repeatable placement, computation, rendering, overlap, and bound extraction remain separate.
+This capsule certifies two nonrepeatable Date endpoints per `DateRange` construction, including exact `yyyy`, `yyyy-MM`, Base-Year-resolved `MM` and `MM-dd`, and yearless `MM` and `MM-dd` DateFragment profiles. It composes two component-compatible constructions or one full-Date construction with a canonical direct stored DateRange and reads each checked operand through one immutable document in authored order. Exact construction labels are completed by endpoint position and re-resolved under their declaration's model-zone profile; yearless pair execution retains only the authored components. Both delegate to the shared equality seam. Yearless construction-versus-stored execution, semantic-index endpoints, repeatable placement, computation, rendering, overlap, and bound extraction remain separate.
 -/
 
 namespace A12Kernel
@@ -16,11 +16,13 @@ inductive DateRangeEndpointFormat where
   | yearMonthFragment
   | monthFragment (baseYear : Int)
   | monthDayFragment (baseYear : Int)
+  | yearlessMonth
+  | yearlessMonthDay
   deriving Repr, DecidableEq
 
 namespace DateRangeEndpointFormat
 
-/-- Recognize the exact resolved endpoint profiles, requiring a declared Base Year for yearless fragments. -/
+/-- Recognize the checked endpoint profile; Base Year selects exact completion or retained yearless identity for `MM` and `MM-dd`. -/
 def ofPolicy? (baseYear : Option Int) (policy : TemporalTargetPolicy) :
     Option DateRangeEndpointFormat :=
   match policy.partialMode with
@@ -31,9 +33,13 @@ def ofPolicy? (baseYear : Option Int) (policy : TemporalTargetPolicy) :
       else if policy.format == "yyyy-MM" then
         some .yearMonthFragment
       else if policy.format == "MM" then
-        baseYear.map .monthFragment
+        match baseYear with
+        | some year => some (.monthFragment year)
+        | none => some .yearlessMonth
       else if policy.format == "MM-dd" then
-        baseYear.map .monthDayFragment
+        match baseYear with
+        | some year => some (.monthDayFragment year)
+        | none => some .yearlessMonthDay
       else
         none
   | .dayOptional | .monthOptional => none
@@ -45,13 +51,15 @@ def sameComponents : DateRangeEndpointFormat → DateRangeEndpointFormat → Boo
   | .yearMonthFragment, .yearMonthFragment => true
   | .monthFragment _, .monthFragment _ => true
   | .monthDayFragment _, .monthDayFragment _ => true
+  | .yearlessMonth, .yearlessMonth => true
+  | .yearlessMonthDay, .yearlessMonthDay => true
   | _, _ => false
 
 /-- Whether the endpoint belongs to the complete Date profile retained by mixed execution. -/
 def isFull : DateRangeEndpointFormat → Bool
   | .full _ => true
   | .yearFragment | .yearMonthFragment | .monthFragment _
-  | .monthDayFragment _ => false
+  | .monthDayFragment _ | .yearlessMonth | .yearlessMonthDay => false
 
 /-- Complete one decoded endpoint label by its authored range position. -/
 def complete? (format : DateRangeEndpointFormat) (bound : DateRangeBound)
@@ -69,6 +77,7 @@ def complete? (format : DateRangeEndpointFormat) (bound : DateRangeBound)
   | .monthFragment year, .finish =>
       (OmittedDayDate.ofYearMonth? year parts.month).map (·.last)
   | .monthDayFragment year, _ => FullDate.ofYmd? year parts.month parts.day
+  | .yearlessMonth, _ | .yearlessMonthDay, _ => none
 
 end DateRangeEndpointFormat
 
@@ -88,7 +97,7 @@ inductive DateRangeEndpointElabError where
   | unsupportedZone (zoneId : String)
   deriving Repr, DecidableEq
 
-/-- Resolve one exact nonrepeatable endpoint profile without widening the scalar Date target owner. -/
+/-- Resolve one exact-or-yearless nonrepeatable endpoint profile without widening the scalar Date target owner. -/
 def elaborateDateRangeEndpoint (model : FlatModel) (field : FieldId) :
     Except DateRangeEndpointElabError (CheckedDateRangeEndpoint model) := do
   let checked ← elaborateTemporalTargetPolicy model field |>.mapError .targetPolicy
@@ -165,22 +174,35 @@ def elaborateDateRangeConstructionComparison (model : FlatModel)
   else
     throw (.componentMismatch left.start.format right.start.format)
 
-/-- Both endpoint observations retained for Execute and Explain. -/
+/-- One exact or yearless endpoint identity retained without fabricating unavailable components. -/
+inductive DateRangeConstructionEndpointValue where
+  | exact (value : DateValue)
+  | month (value : Nat)
+  | monthDay (value : MonthDayValue)
+  deriving Repr, DecidableEq
+
+/-- Both typed endpoint observations retained for Execute and Explain. -/
 structure DateRangeConstructionObservation where
-  start : CellObservation DateValue
-  finish : CellObservation DateValue
+  start : CellObservation DateRangeConstructionEndpointValue
+  finish : CellObservation DateRangeConstructionEndpointValue
   deriving Repr, DecidableEq
 
 namespace DateRangeConstructionObservation
 
-/-- Classify one construction for comparison. Formal unavailability dominates emptiness; only two present endpoints form a value. -/
+/-- Classify one construction for comparison. Formal unavailability dominates emptiness; two present endpoints must expose one common profile. Defensive mixed carriers fail closed as malformed. -/
 def comparisonOperand (observation : DateRangeConstructionObservation) :
-    SimpleComparisonOperand DateRangeValue :=
+    SimpleComparisonOperand DateRangeCellValue :=
   match observation.start, observation.finish with
   | .unknown cause, _ | .poison cause, _ => .unknown cause
   | _, .unknown cause | _, .poison cause => .unknown cause
   | .empty, _ | _, .empty => .notEvaluated
-  | .value start, .value finish => .value { start, finish } true
+  | .value (.exact start), .value (.exact finish) =>
+      .value (.exact { start, finish }) true
+  | .value (.month start), .value (.month finish) =>
+      .value (.yearlessMonth start finish) true
+  | .value (.monthDay start), .value (.monthDay finish) =>
+      .value (.yearlessMonthDay start finish) true
+  | .value _, .value _ => .unknown .malformed
 
 end DateRangeConstructionObservation
 
@@ -195,23 +217,36 @@ namespace CheckedDateRangeConstruction
 
 private def evaluateEndpoint (source : CheckedDateRangeEndpoint model)
     (bound : DateRangeBound) (phase : Phase) (input : CheckedDocument model) :
-    Except DateRangeConstructionFault (CellObservation DateValue) := do
+    Except DateRangeConstructionFault
+      (CellObservation DateRangeConstructionEndpointValue) := do
   let field := source.checked.target.id
   let cell ← input.read { field, path := [] } |>.mapError .document
   match observeCell phase cell with
   | .empty => pure .empty
   | .value (.temporal (.date value)) =>
-      match source.format.complete? bound value.parts with
-      | none => throw (.endpointDateUnavailable field value)
-      | some date =>
-          let instant? := (LocalDateTime.ofDateHms? date 0 0 0).bind
-            source.profile.resolveLocal?
-          match instant? with
-          | some instant => pure (.value {
-              instant
-              parts := date.civil.parts
-              basis := .storedGregorian })
+      match source.format with
+      | .yearlessMonth =>
+          match DateParts.daysInMonth? 2000 value.parts.month with
+          | some _ => pure (.value (.month value.parts.month))
           | none => throw (.endpointDateUnavailable field value)
+      | .yearlessMonthDay =>
+          match FullDate.ofYmd? 2000 value.parts.month value.parts.day with
+          | some _ => pure (.value (.monthDay {
+              month := value.parts.month
+              day := value.parts.day }))
+          | none => throw (.endpointDateUnavailable field value)
+      | format =>
+          match format.complete? bound value.parts with
+          | none => throw (.endpointDateUnavailable field value)
+          | some date =>
+              let instant? := (LocalDateTime.ofDateHms? date 0 0 0).bind
+                source.profile.resolveLocal?
+              match instant? with
+              | some instant => pure (.value (.exact {
+                  instant
+                  parts := date.civil.parts
+                  basis := .storedGregorian }))
+              | none => throw (.endpointDateUnavailable field value)
   | .value _ => throw (.endpointValueKind field)
   | .unknown cause => pure (.unknown cause)
   | .poison cause => pure (.poison cause)
@@ -235,16 +270,16 @@ structure DateRangeConstructionComparisonResult where
 
 namespace CheckedDateRangeConstructionComparison
 
-/-- Compare already-read observations without discarding endpoint identity or availability. -/
-def evaluateObserved (operation : CheckedDateRangeConstructionComparison model)
+/-- Compare internally read observations without discarding endpoint identity or availability. -/
+private def evaluateObserved (operation : CheckedDateRangeConstructionComparison model)
     (left right : DateRangeConstructionObservation) :
     DateRangeConstructionComparisonResult := {
   left
   right
-  verdict := operation.comparison.evalDateRangeValues
+  verdict := operation.comparison.evalDateRangeCellValues
     left.comparisonOperand right.comparisonOperand }
 
-/-- Read both checked constructions in validation phase from the same immutable document and evaluate their exact endpoint identity. -/
+/-- Read both checked constructions in validation phase from the same immutable document and evaluate their exact-or-yearless endpoint identity. -/
 def evaluate (operation : CheckedDateRangeConstructionComparison model)
     (input : CheckedDocument model) :
     Except DateRangeConstructionFault
@@ -312,8 +347,15 @@ structure DateRangeConstructionStoredComparisonResult where
 
 namespace CheckedDateRangeConstructionStoredComparison
 
-/-- Compare already-read mixed observations through the shared exact-instant equality seam. -/
-def evaluateObserved
+/-- Lift the stored exact range into the shared cell comparison domain. -/
+private def storedComparisonOperand : CellObservation DateRangeValue →
+    SimpleComparisonOperand DateRangeCellValue
+  | .empty => .notEvaluated
+  | .value value => .value (.exact value) true
+  | .unknown cause | .poison cause => .unknown cause
+
+/-- Compare internally read mixed observations through the shared exact-instant equality seam. -/
+private def evaluateObserved
     (operation : CheckedDateRangeConstructionStoredComparison model)
     (construction : DateRangeConstructionObservation)
     (stored : CellObservation DateRangeValue) :
@@ -322,10 +364,10 @@ def evaluateObserved
   stored
   position := operation.position
   verdict := match operation.position with
-    | .left => operation.comparison.evalDateRangeValues
-        construction.comparisonOperand stored.asValidationSimpleOperand
-    | .right => operation.comparison.evalDateRangeValues
-        stored.asValidationSimpleOperand construction.comparisonOperand }
+    | .left => operation.comparison.evalDateRangeCellValues
+        construction.comparisonOperand (storedComparisonOperand stored)
+    | .right => operation.comparison.evalDateRangeCellValues
+        (storedComparisonOperand stored) construction.comparisonOperand }
 
 /-- Read both operands from one immutable document in authored order, preserving every observation beside the verdict. -/
 def evaluate (operation : CheckedDateRangeConstructionStoredComparison model)

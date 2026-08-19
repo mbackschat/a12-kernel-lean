@@ -265,6 +265,10 @@ private def monthDayValue (year : Int) (month day : Nat) : DateValue := {
   parts := { year, month, day }
   basis := .storedGregorian }
 
+private def monthDayEndpoint (month day : Nat) :
+    DateRangeConstructionEndpointValue :=
+  .monthDay { month, day }
+
 private def berlinDateValue? (year : Int) (month day : Nat) : Option DateValue := do
   let instant ← ModelZone.concreteResolveLocal? "Europe/Berlin" year month day 0 0 0
   pure { instant, parts := { year, month, day }, basis := .storedGregorian }
@@ -283,10 +287,10 @@ example : ((checkedMonthOnlyFragmentResult? .equal
     (dateRaw (yearMonthValue 2001 2)) (dateRaw (yearMonthValue 2001 2))).map fun result =>
       (result.left.start, result.left.finish,
         result.right.start, result.right.finish, result.verdict)) =
-    some (.value ((berlinDateValue? 2024 2 1).get (by native_decide)),
-      .value ((berlinDateValue? 2024 2 29).get (by native_decide)),
-      .value ((berlinDateValue? 2024 2 1).get (by native_decide)),
-      .value ((berlinDateValue? 2024 2 29).get (by native_decide)),
+    some (.value (.exact ((berlinDateValue? 2024 2 1).get (by native_decide))),
+      .value (.exact ((berlinDateValue? 2024 2 29).get (by native_decide))),
+      .value (.exact ((berlinDateValue? 2024 2 1).get (by native_decide))),
+      .value (.exact ((berlinDateValue? 2024 2 29).get (by native_decide))),
       .fired .value) := by
   native_decide
 
@@ -296,10 +300,10 @@ example : ((checkedMonthDayFragmentResult? .equal
     (dateRaw (monthDayValue 2000 2 29)) (dateRaw (monthDayValue 2000 2 29))).map fun result =>
       (result.left.start, result.left.finish,
         result.right.start, result.right.finish, result.verdict)) =
-    some (.value ((berlinDateValue? 2024 2 29).get (by native_decide)),
-      .value ((berlinDateValue? 2024 2 29).get (by native_decide)),
-      .value ((berlinDateValue? 2024 2 29).get (by native_decide)),
-      .value ((berlinDateValue? 2024 2 29).get (by native_decide)),
+    some (.value (.exact ((berlinDateValue? 2024 2 29).get (by native_decide))),
+      .value (.exact ((berlinDateValue? 2024 2 29).get (by native_decide))),
+      .value (.exact ((berlinDateValue? 2024 2 29).get (by native_decide))),
+      .value (.exact ((berlinDateValue? 2024 2 29).get (by native_decide))),
       .fired .value) := by
   native_decide
 
@@ -309,15 +313,15 @@ example :
       (dateRaw (yearMonthValue 2000 2)) (dateRaw (yearMonthValue 2000 2))
       (dateRaw (yearMonthValue 2004 2)) (dateRaw (yearMonthValue 2004 2))).map fun result =>
         (result.left.start, result.left.finish, result.verdict)) =
-      some (.value ((berlinDateValue? 2023 2 1).get (by native_decide)),
-        .value ((berlinDateValue? 2023 2 28).get (by native_decide)),
+      some (.value (.exact ((berlinDateValue? 2023 2 1).get (by native_decide))),
+        .value (.exact ((berlinDateValue? 2023 2 28).get (by native_decide))),
         .fired .value) ∧
     ((checkedMonthDayFragmentResultFor? checkedModel2023 .equal
       (dateRaw (monthDayValue 2000 2 28)) (dateRaw (monthDayValue 2000 2 28))
       (dateRaw (monthDayValue 2004 2 28)) (dateRaw (monthDayValue 2004 2 28))).map fun result =>
         (result.left.start, result.left.finish, result.verdict)) =
-      some (.value ((berlinDateValue? 2023 2 28).get (by native_decide)),
-        .value ((berlinDateValue? 2023 2 28).get (by native_decide)),
+      some (.value (.exact ((berlinDateValue? 2023 2 28).get (by native_decide))),
+        .value (.exact ((berlinDateValue? 2023 2 28).get (by native_decide))),
         .fired .value) := by
   native_decide
 
@@ -339,6 +343,38 @@ example :
     some (some (.endpointDateUnavailable leftMonthDayStart.id unrealIn2023)) := by
   native_decide
 
+/- Yearless endpoint projection still rejects impossible decoded month and month/day components. -/
+example :
+  let unrealMonth := yearMonthValue 2000 13
+  let unrealMonthDay := monthDayValue 2000 2 30
+  (do
+    let input ← checkedInputFromFor checkedModelNoBase [
+      inputCell leftMonthOnlyStart (dateRaw unrealMonth),
+      inputCell leftMonthOnlyFinish (dateRaw (yearMonthValue 2000 3)),
+      inputCell rightMonthOnlyStart (dateRaw (yearMonthValue 2000 2)),
+      inputCell rightMonthOnlyFinish (dateRaw (yearMonthValue 2000 3))]
+    let operation ← (elaborateDateRangeConstructionComparison checkedModelNoBase
+      leftMonthOnlyStart.id leftMonthOnlyFinish.id
+      rightMonthOnlyStart.id rightMonthOnlyFinish.id .equal).toOption
+    pure (match operation.evaluate input with
+      | .ok _ => none
+      | .error error => some error)) =
+      some (some (.endpointDateUnavailable leftMonthOnlyStart.id unrealMonth)) ∧
+    (do
+      let input ← checkedInputFromFor checkedModelNoBase [
+        inputCell leftMonthDayStart (dateRaw unrealMonthDay),
+        inputCell leftMonthDayFinish (dateRaw (monthDayValue 2000 3 1)),
+        inputCell rightMonthDayStart (dateRaw (monthDayValue 2000 2 28)),
+        inputCell rightMonthDayFinish (dateRaw (monthDayValue 2000 3 1))]
+      let operation ← (elaborateDateRangeConstructionComparison checkedModelNoBase
+        leftMonthDayStart.id leftMonthDayFinish.id
+        rightMonthDayStart.id rightMonthDayFinish.id .equal).toOption
+      pure (match operation.evaluate input with
+        | .ok _ => none
+        | .error error => some error)) =
+      some (some (.endpointDateUnavailable leftMonthDayStart.id unrealMonthDay)) := by
+  native_decide
+
 /- Checked mixed execution preserves authored side, both rich operands, exact finish comparison, and complementary equality. -/
 example :
     ((checkedMixedResult? .left .equal
@@ -346,7 +382,7 @@ example :
       "01.06.2024-30.06.2024" (.parsed (.dateRange storedSameValue))).map fun result =>
         (result.position, result.construction.start,
           result.stored, result.verdict)) =
-      some (.left, .value startValue,
+      some (.left, .value (.exact startValue),
         .value storedSameValue, .fired .value) ∧
     ((checkedMixedResult? .right .notEqual
       (dateRaw startValue) (dateRaw finishValue)
@@ -370,7 +406,7 @@ example :
     (dateRaw alteredStart) (dateRaw finishValue)
     "01.06.2024-30.06.2024" (.parsed (.dateRange storedSameValue))).map
       (fun result => (result.construction.start, result.verdict)) =
-    some (.value startValue, .fired .value) := by
+    some (.value (.exact startValue), .fired .value) := by
   native_decide
 
 /- Formal construction input dominates an empty stored range; stored formal invalidity remains independently visible. -/
@@ -421,8 +457,8 @@ example : ((checkedResult? .equal
     (dateRaw startValue) (dateRaw finishValue)).map fun result =>
       (result.left.start, result.left.finish,
         result.right.start, result.right.finish, result.verdict)) =
-    some (.value startValue, .value finishValue,
-      .value startValue, .value finishValue, .fired .value) := by
+    some (.value (.exact startValue), .value (.exact finishValue),
+      .value (.exact startValue), .value (.exact finishValue), .fired .value) := by
   native_decide
 
 /- A checked `yyyy` DateFragment construction completes its start to January 1 and its finish to December 31 before comparing exact instants. -/
@@ -431,10 +467,10 @@ example : ((checkedYearFragmentResult? .equal
     (dateRaw (yearValue 2024)) (dateRaw (yearValue 2025))).map fun result =>
       (result.left.start, result.left.finish,
         result.right.start, result.right.finish, result.verdict)) =
-    some (.value ((berlinDateValue? 2024 1 1).get (by native_decide)),
-      .value ((berlinDateValue? 2025 12 31).get (by native_decide)),
-      .value ((berlinDateValue? 2024 1 1).get (by native_decide)),
-      .value ((berlinDateValue? 2025 12 31).get (by native_decide)),
+    some (.value (.exact ((berlinDateValue? 2024 1 1).get (by native_decide))),
+      .value (.exact ((berlinDateValue? 2025 12 31).get (by native_decide))),
+      .value (.exact ((berlinDateValue? 2024 1 1).get (by native_decide))),
+      .value (.exact ((berlinDateValue? 2025 12 31).get (by native_decide))),
       .fired .value) := by
   native_decide
 
@@ -445,17 +481,17 @@ example :
       (dateRaw (yearMonthValue 2024 2)) (dateRaw (yearMonthValue 2024 2))).map fun result =>
         (result.left.start, result.left.finish,
           result.right.start, result.right.finish, result.verdict)) =
-      some (.value ((berlinDateValue? 2024 2 1).get (by native_decide)),
-        .value ((berlinDateValue? 2024 2 29).get (by native_decide)),
-        .value ((berlinDateValue? 2024 2 1).get (by native_decide)),
-        .value ((berlinDateValue? 2024 2 29).get (by native_decide)),
+      some (.value (.exact ((berlinDateValue? 2024 2 1).get (by native_decide))),
+        .value (.exact ((berlinDateValue? 2024 2 29).get (by native_decide))),
+        .value (.exact ((berlinDateValue? 2024 2 1).get (by native_decide))),
+        .value (.exact ((berlinDateValue? 2024 2 29).get (by native_decide))),
         .fired .value) ∧
     ((checkedYearMonthFragmentResult? .equal
       (dateRaw (yearMonthValue 2023 2)) (dateRaw (yearMonthValue 2023 2))
       (dateRaw (yearMonthValue 2023 2)) (dateRaw (yearMonthValue 2023 2))).map fun result =>
         (result.left.finish, result.right.finish, result.verdict)) =
-      some (.value ((berlinDateValue? 2023 2 28).get (by native_decide)),
-        .value ((berlinDateValue? 2023 2 28).get (by native_decide)),
+      some (.value (.exact ((berlinDateValue? 2023 2 28).get (by native_decide))),
+        .value (.exact ((berlinDateValue? 2023 2 28).get (by native_decide))),
         .fired .value) := by
   native_decide
 
@@ -483,15 +519,80 @@ example :
       | _ => false) = true := by
   native_decide
 
-/- The exact-instant profile refuses yearless fragments when the model has no Base Year instead of guessing an instant. -/
+/- Matching yearless fragment profiles remain admissible without inventing a Base Year. -/
 example :
     (match elaborateDateRangeConstruction checkedModelNoBase
         leftMonthOnlyStart.id leftMonthOnlyFinish.id with
-      | .error (.start (.unsupportedPolicy _ .yearOptional "MM")) => true
-      | _ => false) = true ∧
+      | .ok _ => true
+      | .error _ => false) = true ∧
     (match elaborateDateRangeConstruction checkedModelNoBase
         leftMonthDayStart.id leftMonthDayFinish.id with
-      | .error (.start (.unsupportedPolicy _ .yearOptional "MM-dd")) => true
+      | .ok _ => true
+      | .error _ => false) = true := by
+  native_decide
+
+/- Yearless `MM` execution retains all four authored months and compares both ordered endpoints. -/
+example :
+    ((checkedMonthOnlyFragmentResultFor? checkedModelNoBase .equal
+      (dateRaw (yearMonthValue 1999 2)) (dateRaw (yearMonthValue 1999 3))
+      (dateRaw (yearMonthValue 2001 2)) (dateRaw (yearMonthValue 2001 3))).map fun result =>
+        (result.left.start, result.left.finish,
+          result.right.start, result.right.finish, result.verdict)) =
+      some (.value (.month 2), .value (.month 3),
+        .value (.month 2), .value (.month 3), .fired .value) ∧
+    (checkedMonthOnlyFragmentResultFor? checkedModelNoBase .notEqual
+      (dateRaw (yearMonthValue 1999 2)) (dateRaw (yearMonthValue 1999 3))
+      (dateRaw (yearMonthValue 2001 1)) (dateRaw (yearMonthValue 2001 3))).map
+        (·.verdict) = some (.fired .value) ∧
+    (checkedMonthOnlyFragmentResultFor? checkedModelNoBase .notEqual
+      (dateRaw (yearMonthValue 1999 2)) (dateRaw (yearMonthValue 1999 3))
+      (dateRaw (yearMonthValue 2001 2)) (dateRaw (yearMonthValue 2001 4))).map
+        (·.verdict) = some (.fired .value) := by
+  native_decide
+
+/- Yearless `MM-dd` execution retains both component pairs and separates start-only and finish-only changes. -/
+example :
+    ((checkedMonthDayFragmentResultFor? checkedModelNoBase .equal
+      (dateRaw (monthDayValue 2000 2 29)) (dateRaw (monthDayValue 2000 3 1))
+      (dateRaw (monthDayValue 2004 2 29)) (dateRaw (monthDayValue 2004 3 1))).map fun result =>
+        (result.left.start, result.left.finish,
+          result.right.start, result.right.finish, result.verdict)) =
+      some (.value (monthDayEndpoint 2 29), .value (monthDayEndpoint 3 1),
+        .value (monthDayEndpoint 2 29), .value (monthDayEndpoint 3 1),
+        .fired .value) ∧
+    (checkedMonthDayFragmentResultFor? checkedModelNoBase .notEqual
+      (dateRaw (monthDayValue 2000 2 27)) (dateRaw (monthDayValue 2000 3 1))
+      (dateRaw (monthDayValue 2004 2 28)) (dateRaw (monthDayValue 2004 3 1))).map
+        (·.verdict) = some (.fired .value) ∧
+    (checkedMonthDayFragmentResultFor? checkedModelNoBase .notEqual
+      (dateRaw (monthDayValue 2000 2 28)) (dateRaw (monthDayValue 2000 3 2))
+      (dateRaw (monthDayValue 2004 2 28)) (dateRaw (monthDayValue 2004 3 1))).map
+        (·.verdict) = some (.fired .value) := by
+  native_decide
+
+/- Yearless execution keeps empty suppression and formal-before-empty precedence. -/
+example :
+    ((checkedMonthOnlyFragmentResultFor? checkedModelNoBase .equal
+      .presentEmpty (dateRaw (yearMonthValue 1999 3))
+      (dateRaw (yearMonthValue 2001 2)) (dateRaw (yearMonthValue 2001 3))).map fun result =>
+        (result.left.start, result.verdict)) = some (.empty, .notFired) ∧
+    ((checkedMonthDayFragmentResultFor? checkedModelNoBase .equal
+      .presentEmpty (.rejected .malformed)
+      (dateRaw (monthDayValue 2004 2 28)) (dateRaw (monthDayValue 2004 3 1))).map fun result =>
+        (result.left.start, result.left.finish, result.verdict)) =
+      some (.empty, .unknown .malformed, .unknown) := by
+  native_decide
+
+/- The no-Base-Year route still refuses component mismatch within and across constructions. -/
+example :
+    (match elaborateDateRangeConstruction checkedModelNoBase
+        leftMonthOnlyStart.id leftMonthDayFinish.id with
+      | .error (.componentMismatch .yearlessMonth .yearlessMonthDay) => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstructionComparison checkedModelNoBase
+        leftMonthOnlyStart.id leftMonthOnlyFinish.id
+        rightMonthDayStart.id rightMonthDayFinish.id .equal with
+      | .error (.componentMismatch .yearlessMonth .yearlessMonthDay) => true
       | _ => false) = true := by
   native_decide
 
@@ -553,6 +654,16 @@ example :
         leftMonthDayStart.id leftMonthDayFinish.id storedRange.id .right .equal with
       | .error (.unsupportedConstructionProfile
           (.monthDayFragment 2024) (.monthDayFragment 2024)) => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstructionStoredComparison checkedModelNoBase
+        leftMonthOnlyStart.id leftMonthOnlyFinish.id storedRange.id .left .equal with
+      | .error (.unsupportedConstructionProfile
+          .yearlessMonth .yearlessMonth) => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstructionStoredComparison checkedModelNoBase
+        leftMonthDayStart.id leftMonthDayFinish.id storedRange.id .right .equal with
+      | .error (.unsupportedConstructionProfile
+          .yearlessMonthDay .yearlessMonthDay) => true
       | _ => false) = true := by
   native_decide
 
@@ -590,7 +701,7 @@ example :
       (dateRaw startValue) (dateRaw finishValue)
       (dateRaw alteredStart) (dateRaw finishValue)).map fun result =>
         (result.right.start, result.verdict)) =
-        some (.value startValue, .fired .value) := by
+        some (.value (.exact startValue), .fired .value) := by
   native_decide
 
 /- Any empty endpoint remains visible and suppresses the comparison instead of constructing a partial range. -/
@@ -609,17 +720,17 @@ example : ((checkedResult? .equal
     some (.empty, .unknown .malformed, .unknown) := by
   native_decide
 
-/- The checked operation retains computation poison and projects it to validation UNKNOWN even when the same construction also has an empty endpoint. -/
-example : (checkedOperation? .equal).map (fun operation =>
+/- Pure construction classification retains computation poison and projects it to validation UNKNOWN even when the same construction also has an empty endpoint. -/
+example :
     let left : DateRangeConstructionObservation := {
       start := .empty
       finish := .poison .computedDependency }
     let right : DateRangeConstructionObservation := {
-      start := .value startValue
-      finish := .value finishValue }
-    let result := operation.evaluateObserved left right
-    (result.left.finish, result.verdict)) =
-      some (.poison .computedDependency, .unknown) := by
+      start := .value (.exact startValue)
+      finish := .value (.exact finishValue) }
+    left.finish = .poison .computedDependency ∧
+      EqualityOp.equal.evalDateRangeCellValues
+        left.comparisonOperand right.comparisonOperand = .unknown := by
   native_decide
 
 /- Failure while certifying the final endpoint remains attributed to that authored position. -/
