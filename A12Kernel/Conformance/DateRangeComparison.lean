@@ -306,6 +306,30 @@ private def berlinDateValue? (year : Int) (month day : Nat) : Option DateValue :
   let instant ← ModelZone.concreteResolveLocal? "Europe/Berlin" year month day 0 0 0
   pure { instant, parts := { year, month, day }, basis := .storedGregorian }
 
+private def berlinRangeValue? (year : Int)
+    (startMonth startDay finishMonth finishDay : Nat) : Option DateRangeValue := do
+  let start ← berlinDateValue? year startMonth startDay
+  let finish ← berlinDateValue? year finishMonth finishDay
+  pure { start, finish }
+
+private def february2024 :=
+  (berlinRangeValue? 2024 2 1 2 29).get (by native_decide)
+
+private def february2023 :=
+  (berlinRangeValue? 2023 2 1 2 28).get (by native_decide)
+
+private def leapDayRange2024 :=
+  (berlinRangeValue? 2024 2 29 3 1).get (by native_decide)
+
+private def monthDayRange2023 :=
+  (berlinRangeValue? 2023 2 28 3 1).get (by native_decide)
+
+private def changedMonthStart2024 :=
+  (berlinRangeValue? 2024 1 1 2 29).get (by native_decide)
+
+private def changedMonthFinish2024 :=
+  (berlinRangeValue? 2024 2 1 3 31).get (by native_decide)
+
 /- Construction-versus-field equality and inequality are exact complements on the maintained full-Date source pair. -/
 example :
     EqualityOp.equal.evalDateRangeConstruction
@@ -510,6 +534,72 @@ example :
     "01.06.2024-30.06.2024" (.parsed (.dateRange storedSameValue))).map
       (fun result => (result.construction.start, result.verdict)) =
     some (.value (.exact startValue), .fired .value) := by
+  native_decide
+
+/- A configured `MM` construction and matching stored profile expose the same completed leap-year range. -/
+example :
+  ((checkedMixedResultFor? checkedModel
+      leftMonthOnlyStart leftMonthOnlyFinish storedMonthRange .left .equal
+      (dateRaw (yearMonthValue 1999 2)) (dateRaw (yearMonthValue 2001 2))
+      "02/02" (.parsed (.dateRange (.exact february2024)))).map fun result =>
+        (result.position, result.construction.start, result.construction.finish,
+          result.stored, result.verdict)) =
+    some (.left, .value (.exact february2024.start),
+      .value (.exact february2024.finish), .value (.exact february2024),
+      .fired .value) := by
+  native_decide
+
+/- A non-leap configured `MM` comparison is symmetric and completes February to day 28. -/
+example :
+  ((checkedMixedResultFor? checkedModel2023
+      leftMonthOnlyStart leftMonthOnlyFinish storedMonthRange .right .equal
+      (dateRaw (yearMonthValue 2004 2)) (dateRaw (yearMonthValue 2004 2))
+      "02/02" (.parsed (.dateRange (.exact february2023)))).map fun result =>
+        (result.position, result.construction.start, result.construction.finish,
+          result.stored, result.verdict)) =
+    some (.right, .value (.exact february2023.start),
+      .value (.exact february2023.finish), .value (.exact february2023),
+      .fired .value) := by
+  native_decide
+
+/- Configured `MM-dd` resolves both authored labels in a leap Base Year at the right mixed position. -/
+example :
+  ((checkedMixedResultFor? checkedModel
+      leftMonthDayStart leftMonthDayFinish storedMonthDayRange .right .equal
+      (dateRaw (monthDayValue 2000 2 29)) (dateRaw (monthDayValue 2000 3 1))
+      "02-29/03-01" (.parsed (.dateRange (.exact leapDayRange2024)))).map fun result =>
+        (result.position, result.construction.start, result.construction.finish,
+          result.stored, result.verdict)) =
+    some (.right, .value (.exact leapDayRange2024.start),
+      .value (.exact leapDayRange2024.finish), .value (.exact leapDayRange2024),
+      .fired .value) := by
+  native_decide
+
+/- Configured `MM-dd` also resolves the non-leap labels at the left mixed position. -/
+example :
+  ((checkedMixedResultFor? checkedModel2023
+      leftMonthDayStart leftMonthDayFinish storedMonthDayRange .left .equal
+      (dateRaw (monthDayValue 2004 2 28)) (dateRaw (monthDayValue 2004 3 1))
+      "02-28/03-01" (.parsed (.dateRange (.exact monthDayRange2023)))).map fun result =>
+        (result.position, result.construction.start, result.construction.finish,
+          result.stored, result.verdict)) =
+    some (.left, .value (.exact monthDayRange2023.start),
+      .value (.exact monthDayRange2023.finish), .value (.exact monthDayRange2023),
+      .fired .value) := by
+  native_decide
+
+/- Configured mixed equality compares both completed endpoints, not only the start or finish. -/
+example :
+  (checkedMixedResultFor? checkedModel
+      leftMonthOnlyStart leftMonthOnlyFinish storedMonthRange .left .equal
+      (dateRaw (yearMonthValue 1999 2)) (dateRaw (yearMonthValue 2001 2))
+      "01/02" (.parsed (.dateRange (.exact changedMonthStart2024)))).map
+        (·.verdict) = some .notFired ∧
+  (checkedMixedResultFor? checkedModel
+      leftMonthOnlyStart leftMonthOnlyFinish storedMonthRange .right .notEqual
+      (dateRaw (yearMonthValue 1999 2)) (dateRaw (yearMonthValue 2001 2))
+      "02/03" (.parsed (.dateRange (.exact changedMonthFinish2024)))).map
+        (·.verdict) = some (.fired .value) := by
   native_decide
 
 /- Formal construction input dominates an empty stored range; stored formal invalidity remains independently visible. -/
@@ -750,13 +840,13 @@ example :
       | _ => false) = true ∧
     (match elaborateDateRangeConstructionStoredComparison checkedModel
         leftMonthOnlyStart.id leftMonthOnlyFinish.id storedRange.id .left .equal with
-      | .error (.unsupportedConstructionProfile
-          (.monthFragment 2024) (.monthFragment 2024)) => true
+      | .error (.componentMismatch
+          (.monthFragment 2024) (.exact .dayMonthYearDash)) => true
       | _ => false) = true ∧
     (match elaborateDateRangeConstructionStoredComparison checkedModel
         leftMonthDayStart.id leftMonthDayFinish.id storedRange.id .right .equal with
-      | .error (.unsupportedConstructionProfile
-          (.monthDayFragment 2024) (.monthDayFragment 2024)) => true
+      | .error (.componentMismatch
+          (.monthDayFragment 2024) (.exact .dayMonthYearDash)) => true
       | _ => false) = true ∧
     (match elaborateDateRangeConstructionStoredComparison checkedModelNoBase
         leftMonthOnlyStart.id leftMonthOnlyFinish.id storedRange.id .left .equal with
@@ -777,8 +867,22 @@ example :
       | _ => false) = true ∧
     (match elaborateDateRangeConstructionStoredComparison checkedModel
         leftMonthOnlyStart.id leftMonthOnlyFinish.id storedMonthRange.id .left .equal with
-      | .error (.unsupportedConstructionProfile
-          (.monthFragment 2024) (.monthFragment 2024)) => true
+      | .ok _ => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstructionStoredComparison checkedModel
+        leftMonthDayStart.id leftMonthDayFinish.id
+        storedMonthDayRange.id .right .equal with
+      | .ok _ => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstructionStoredComparison checkedModel
+        leftMonthOnlyStart.id leftMonthOnlyFinish.id
+        storedMonthDayRange.id .left .equal with
+      | .error (.componentMismatch (.monthFragment 2024) .yearlessMonthDay) => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstructionStoredComparison checkedModel
+        leftMonthDayStart.id leftMonthDayFinish.id
+        storedMonthRange.id .right .equal with
+      | .error (.componentMismatch (.monthDayFragment 2024) .yearlessMonth) => true
       | _ => false) = true ∧
     (match elaborateDateRangeConstructionStoredComparison checkedModel
         leftStart.id leftFinish.id storedMonthRange.id .right .equal with
