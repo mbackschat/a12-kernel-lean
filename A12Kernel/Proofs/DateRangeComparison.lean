@@ -5,16 +5,34 @@ import A12Kernel.Proofs.ScalarEquality
 
 namespace A12Kernel
 
+namespace DateRangeCellValue
+
+/-- The available exact-or-yearless ordered identity is symmetric within every profile. -/
+theorem sameIdentity_comm (left right : DateRangeCellValue) :
+    left.sameIdentity right = right.sameIdentity left := by
+  cases left <;> cases right <;>
+    simp [sameIdentity, DateRangeValue.sameEndpointInstants,
+      Bool.beq_comm]
+
+end DateRangeCellValue
+
 namespace EqualityOp
+
+/-- Exchanging two classified exact-or-yearless DateRange values preserves equality or inequality verdict and polarity. -/
+theorem evalDateRangeCellValues_comm (op : EqualityOp)
+    (left right : SimpleComparisonOperand DateRangeCellValue) :
+    op.evalDateRangeCellValues left right =
+      op.evalDateRangeCellValues right left := by
+  exact op.evalSymmetric_swapped DateRangeCellValue.sameIdentity
+    DateRangeCellValue.sameIdentity_comm left right
 
 /-- Exchanging two classified exact DateRange values preserves equality or inequality verdict and polarity. -/
 theorem evalDateRangeValues_comm (op : EqualityOp)
     (left right : SimpleComparisonOperand DateRangeValue) :
     op.evalDateRangeValues left right =
       op.evalDateRangeValues right left := by
-  exact op.evalSymmetric_swapped DateRangeValue.sameEndpointInstants
-    (fun _ _ => by simp [DateRangeValue.sameEndpointInstants, Bool.beq_comm])
-    left right
+  unfold evalDateRangeValues
+  exact op.evalDateRangeCellValues_comm _ _
 
 end EqualityOp
 

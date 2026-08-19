@@ -123,7 +123,12 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `entry-gate`: each selected temporal family needs one bounded source packet and separating matrix over format, world, profile, gap/overlap/cutover, empty/formal precedence, and target policy.
 - `completion-gate`: every admitted temporal operation and target path is checked across its legal profile with exact empty/formal polarity and separating gap/overlap/cutover/millisecond cases.
 - `blocked-on`: none.
-- `route-state`: discovery-required.
+- `route-state`: verified.
+- `red-locus`: [`DateRangeComparison.lean`](../A12Kernel/Conformance/DateRangeComparison.lean) owns the no-Base-Year construction refusal and existing endpoint/result matrix.
+- `green-locus`: [`DateRangeConstructionComparison.lean`](../A12Kernel/Elaboration/DateRangeConstructionComparison.lean) owns checked construction-pair admission, endpoint projection, rich results, and equality delegation.
+- `supporting-locus`: [`DateRangeComparison.lean`](../A12Kernel/Semantics/DateRangeComparison.lean) owns the completed exact-or-yearless equality seam.
+- `supporting-locus`: [`Core.lean`](../A12Kernel/Core.lean) owns the exact-or-yearless `DateRangeCellValue` carrier.
+- `route-limit`: the next slice admits only direct nonrepeatable same-profile no-Base-Year `MM` and `MM-dd` construction pairs; construction-versus-stored, cross-profile, repeatable, overlap, bound, target, and rendering work remain outside it.
 
 ### SG7 — String, pattern, and custom-field completion
 

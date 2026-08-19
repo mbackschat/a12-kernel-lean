@@ -10,11 +10,11 @@ This is the cross-session resumption checkpoint, not an in-session task list or 
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: implementation route selected; yearless stored input is now represented.
+- `state`: yearless stored input and the shared exact-or-yearless equality seam are represented; checked construction-pair execution remains selected.
 - `gap`: [SG6 DateRange Date/DateFragment endpoint admission and completion](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
 - `oracle`: the [canonical Date-range clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) and the exact [Base-Year and yearless Kernel checkpoint](SOURCES.md#src-date-range-base-year-fragment-construction).
 - `route`: the completed representation boundary is owned by [Architecture](ARCHITECTURE.md#values-keep-semantic-identity-separate-from-storage-identity) and the [checked DateRange implementation record](IMPLEMENTATION-MAP.md#cap-date-range-checked-declaration).
-- `next`: extend checked construction-pair and construction-versus-stored equality to the matching yearless branches, retain both endpoint observations and authored order, and delegate exact and yearless values to one typed equality seam. Keep cross-profile pairs statically refused.
+- `next`: extend checked construction-pair equality to no-Base-Year `MM` and `MM-dd`, retain all four component-only endpoint observations, delegate to the shared equality seam, and refuse cross-profile pairs statically. Keep construction-versus-stored execution for the following slice.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: active after the yearless equality assembly changes the result domain; run the bounded Execute/Analyze/Explain readback before capsule closure.
-- `resume`: `rg -n 'DateRangeCellValue|DateRangeEndpointFormat|unsupportedConstructionProfile|baseYear|MM-dd' A12Kernel/Elaboration/DateRangeConstructionComparison.lean A12Kernel/Semantics/DateRangeComparison.lean A12Kernel/Conformance/DateRangeComparison.lean`
+- `consumer-probe-trigger`: active after construction-pair execution changes the rich result domain; run the bounded Execute/Analyze/Explain readback before that capsule closes.
+- `resume`: `rg -n 'DateRangeCellValue|DateRangeEndpointFormat|baseYear|MM-dd' A12Kernel/Elaboration/DateRangeConstructionComparison.lean A12Kernel/Conformance/DateRangeComparison.lean`
