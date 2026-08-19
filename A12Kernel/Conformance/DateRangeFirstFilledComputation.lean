@@ -1,7 +1,7 @@
 import A12Kernel.Elaboration.DateRangeFirstFilledComputation
 import A12Kernel.Semantics.TemporalApplication
 
-/-! # Direct one-star DateRange `FirstFilledValue` computation locks -/
+/-! # Bounded DateRange `FirstFilledValue` computation locks -/
 
 namespace A12Kernel.Conformance.DateRangeFirstFilledComputation
 
@@ -51,12 +51,19 @@ private def monthDayTarget :=
   rangeField 16 ["Cart"] "MonthDayTarget" [] "MM-dd" "/"
 private def monthDaySource :=
   rangeField 17 ["Cart", "Lines"] "MonthDaySource" [10] "MM-dd" "/"
+private def directDottedFirst :=
+  rangeField 18 ["Cart"] "DirectDottedFirst" [] "dd.MM.yyyy" "-"
+private def directDottedSecond :=
+  rangeField 19 ["Cart"] "DirectDottedSecond" [] "dd.MM.yyyy" "-"
+private def directIsoSource :=
+  rangeField 20 ["Cart"] "DirectIsoSource" [] "yyyy-MM-dd" "/"
 
 private def model : FlatModel := {
   fields := [target, source, otherFormatSource, otherSeparatorTarget,
     otherSeparatorSource, dottedTarget, dottedSource, unsupportedDottedTarget,
     unsupportedDottedSource, yearTarget, yearSource, yearMonthTarget,
-    yearMonthSource, monthTarget, monthSource, monthDayTarget, monthDaySource]
+    yearMonthSource, monthTarget, monthSource, monthDayTarget, monthDaySource,
+    directDottedFirst, directDottedSecond, directIsoSource]
   repeatableGroups := [
     { level := 10, path := ["Cart", "Lines"], repeatability := some 99 }]
   timeZoneId := "UTC"
@@ -70,12 +77,30 @@ private def star (field : String) : SurfaceStarFieldPath := {
   field
 }
 
+private def bare (field : String) : SurfaceFieldPath :=
+  { base := .relative 0, groups := [], field }
+
+private def directSource (first second : String) : SurfaceFieldEntitySource := {
+  first := .field (bare first)
+  rest := [.field (bare second)]
+}
+
 private def checkedFor? (candidate : FlatModel)
     (targetField : FieldId) (field : String) :=
   (checkDateRangeFirstFilledComputation
     candidate ["Cart"] targetField (star field)).toOption
 
 private def checked? := checkedFor? model
+
+private def directChecked? (targetField : FieldId) (first second : String) :=
+  (checkDateRangeFirstFilledDirectComputation model ["Cart"] targetField
+    (directSource first second)).toOption
+
+private def directDiagnostic? (targetField : FieldId) (first second : String) :=
+  match checkDateRangeFirstFilledDirectComputation model ["Cart"] targetField
+      (directSource first second) with
+  | .ok _ => none
+  | .error cause => cause.diagnostic?
 
 private def preparedFor? (candidate : FlatModel) :
     Option (PreparedFlatStringContext candidate builtinStringPatternCompiler) :=
@@ -147,6 +172,34 @@ private def exactRange (startMillis finishMillis : Int)
   finish := dateValue finishMillis finishYear finishMonth finishDay
 }
 
+private structure DirectInput where
+  declaration : FlatFieldDecl
+  stored : String
+  raw : RawCell
+
+private def directInputFor? (inputs : List DirectInput) :
+    Option (CheckedDocument model) := do
+  let prepared ← preparedFor? model
+  (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := inputs.map fun input => {
+      address := { field := input.declaration.id, path := [] }
+      stored := input.stored
+      raw := input.raw
+    }
+  }).toOption
+
+private def directSignature? (inputs : List DirectInput) : Option String := do
+  let operation ← directChecked? dottedTarget.id
+    "DirectDottedFirst" "DirectDottedSecond"
+  let input ← directInputFor? inputs
+  let outcome ← (operation.execute input).toOption
+  pure (match outcome with
+    | .noValue => "CLEARED"
+    | .accepted stored => "VALUE|" ++ stored.text
+    | .errored stored _ => "ERRORED|" ++ stored.text
+    | .poison _ => "POISON")
+
 /- The retained temporal-family probe Kernel-calibrates these exact all-empty and first-row-filled result signatures. -/
 example :
     signature? [] = some "CLEARED" ∧
@@ -155,6 +208,58 @@ example :
         stored := "2024-03-20/2024-03-21"
         raw := .parsed (.dateRange selectedRange)
       }] = some "VALUE|2024-03-20/2024-03-21" := by
+  native_decide
+
+/- The exact two-direct-field shape admits only one shared declaration profile and retains the shared entity-list cardinality/duplicate gates. -/
+example :
+    (directChecked? dottedTarget.id
+      "DirectDottedFirst" "DirectDottedSecond").isSome = true ∧
+      directDiagnostic? dottedTarget.id
+        "DirectDottedFirst" "DirectIsoSource" =
+          some .varyingTypesNotAllowed ∧
+      directDiagnostic? dottedTarget.id
+        "DottedTarget" "DirectDottedSecond" =
+          some .errorReferenceToCalculatedField ∧
+      directDiagnostic? dottedTarget.id
+        "DirectDottedFirst" "DottedTarget" =
+          some .errorReferenceToCalculatedField ∧
+      (directChecked? dottedTarget.id
+        "DirectDottedFirst" "DirectDottedFirst").isNone = true := by
+  native_decide
+
+/- Direct fields are scanned in authored order: empty continues, a present value hides a later formal cell, and a reached formal cell hides a later value. -/
+example :
+    directSignature? [] = some "CLEARED" ∧
+      directSignature? [{
+      declaration := directDottedFirst
+      stored := ""
+      raw := .presentEmpty
+    }, {
+      declaration := directDottedSecond
+      stored := "01.06.2024-30.06.2024"
+      raw := .parsed (.dateRange (exactRange
+        1717200000000 1719705600000 2024 6 1 2024 6 30))
+    }] = some "VALUE|01.06.2024-30.06.2024" ∧
+      directSignature? [{
+        declaration := directDottedFirst
+        stored := "01.05.2024-31.05.2024"
+        raw := .parsed (.dateRange (exactRange
+          1714521600000 1717113600000 2024 5 1 2024 5 31))
+      }, {
+        declaration := directDottedSecond
+        stored := "garbage"
+        raw := .rejected .dateRangeSeparator
+      }] = some "VALUE|01.05.2024-31.05.2024" ∧
+      directSignature? [{
+        declaration := directDottedFirst
+        stored := "garbage"
+        raw := .rejected .dateRangeSeparator
+      }, {
+        declaration := directDottedSecond
+        stored := "01.06.2024-30.06.2024"
+        raw := .parsed (.dateRange (exactRange
+          1717200000000 1719705600000 2024 6 1 2024 6 30))
+      }] = some "POISON" := by
   native_decide
 
 /- All four fragment policies are admitted only as matching target/source pairs. -/

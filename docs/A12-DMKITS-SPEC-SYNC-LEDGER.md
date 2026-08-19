@@ -129,6 +129,23 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Compatibility:** Do not invent Base Year, force a yearless cell through full-Date resolution, copy source text as semantic identity, widen crossed profiles, or disturb either exact policy. Empty-prefix scanning, formal poison, and target application remain the existing generic computation rules.
 - **Acceptance:** Canonical peer prose and maintained cases cover the six matching profiles, both yearless outputs, crossed-profile refusal, and empty/formal behavior across the applicable Kernel and JVM/Node routes; the existing typed value and target owners remain singular; and the handback supplies the reviewed revision plus per-surface disposition.
 
+<a id="spec-2026-08-19-04"></a>
+<a id="spec-2026-08-19-04--date-range-firstfilledvalue-scans-two-direct-fields-lazily"></a>
+
+### SPEC-2026-08-19-04 - DateRange FirstFilledValue scans two direct fields lazily
+
+- **Status:** pending
+- **Kind:** semantic extension, locally originated and locally measured
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `89aa03957034de620562eb23a095d878f6547dca` (clean before and after)
+- **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool `0.13.0` and both Kernel strategies
+- **Canonical clause:** [`09-computations.md` §4](../spec/09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape)
+- **Delta:** A DateRange `FirstFilledValue` over exactly two direct nonrepeatable fields is admitted when both sources and the fixed target share one exact declaration pair. Selection is authored-order lazy: an empty first source continues, a present first source supplies the result despite a malformed second source, and a malformed first source prevents a later value. The separate eager formal-input inventory still reports a malformed source after a terminal first value.
+- **Basis:** Maintained `FirstFilledValueFamilyLawsTest` blob `579c1e49c225a76c077167000a286e21ccc09c0e` admits two dotted/dash DateRange fields and rejects an exact-policy cross with `MVK_VARYING_TYPES_NOT_ALLOWED`. Two byte-identical dual-Kernel four-row runtime artifacts are SHA-256 `531567e1abe42b52ae88b4072cf93d4b3180862f4c01f5ec03012bad167917c1`; the request is `a84ad16ce0aad93641c3460502d5e34267efb0f12dbdc991e3f098137bf8d957`.
+- **Requested a12-dmkits reconciliation:** State the two-direct-field exact DateRange boundary and the distinction between eager formal ingestion and lazy computation selection in the canonical computation account. Reuse the current entity-list admission, interpreter scan, typed DateRange target, and existing differential/probe routes. Lock empty-first, terminal-first, first-formal, all-empty, same-profile, and crossed-profile controls without adding a value type, evaluator, document, probe route, or harness.
+- **Compatibility:** Do not suppress formal-input reporting for an unread computation suffix, eagerly poison selection from that suffix, widen fragments or more operands from this packet, or disturb direct-star behavior. ISO/slash execution may reuse the same checked exact mechanism locally but remains outside the retained runtime packet.
+- **Acceptance:** Canonical peer prose names both observation phases; maintained static and dual-Kernel/JVM/Node cases separate the three authored-order branches and exact-policy gate; existing entity-list, scan, value, and target owners remain singular; and the handback supplies the reviewed revision plus per-surface disposition.
+
 <a id="spec-2026-08-18-01"></a>
 <a id="spec-2026-08-18-01--a-present-date-range-separator-with-a-malformed-split-is-a-format-error"></a>
 

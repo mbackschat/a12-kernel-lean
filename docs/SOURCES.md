@@ -238,6 +238,18 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: the packet has one filled row per source and does not establish empty-prefix scanning, formal poison, inverted target handling, mixed/multiple/group/filtered operands, nested repetition, partial validation, scheduling, or application.
 - `sync`: the observations extend the canonical DateRange computation account; pending [`SPEC-2026-08-19-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-03--date-range-firstfilledvalue-admits-matching-fragment-profiles) carries the outbound reconciliation.
 
+<a id="src-date-range-direct-first-filled"></a>
+#### Exact two-direct-field DateRange `FirstFilledValue`
+
+- `revision`: source-shipped dmtool `0.13.0` and the maintained static route were inspected at clean a12-dmkits `89aa03957034de620562eb23a095d878f6547dca`; both runtime strategies used built/runtime Kernel `30.8.1`.
+- `static-route`: [`FirstFilledValueFamilyLawsTest`](../../a12-rulekit/src/test/java/io/github/mbackschat/a12/dm/rulekit/validate/laws/FirstFilledValueFamilyLawsTest.java) blob `579c1e49c225a76c077167000a286e21ccc09c0e` admits two direct dotted/dash DateRange fields and rejects an exact-policy cross with `MVK_VARYING_TYPES_NOT_ALLOWED`.
+- `runtime-route`: one fresh dmtool-compatible `Europe/Berlin` model assigns a dotted/dash target from `FirstFilledValue(First, Second)` and runs four documents through `:adapter:kernelProbe`.
+- `runtime-claim`: both Kernel strategies return no computed change for an all-empty fresh target, select a filled second source after an empty first source, and retain a filled first value despite a malformed second source.
+- `runtime-claim`: when the first source is malformed and the second is filled, neither strategy returns a computed target outcome. Formal input inventory independently reports the malformed source in either authored position, including when a terminal first value hides it from computation selection.
+- `integrity`: the request is SHA-256 `a84ad16ce0aad93641c3460502d5e34267efb0f12dbdc991e3f098137bf8d957`, model `50db84cbb00995e21f6c692bc24d7dd2447491d58103697a000ad1b4c1fd58b6`, and two unchanged artifacts are `531567e1abe42b52ae88b4072cf93d4b3180862f4c01f5ec03012bad167917c1`.
+- `limit`: the packet covers exactly two direct nonrepeatable dotted/dash sources and a fresh target. ISO/slash runtime, more operands, fragments, groups, stars, filters, repetition, target application, scheduling, and cause identity beyond the reported formal code remain unmeasured here.
+- `sync`: pending [`SPEC-2026-08-19-04`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-04--date-range-firstfilledvalue-scans-two-direct-fields-lazily) carries the outbound reconciliation.
+
 <a id="src-first-filled-additional-kind-computations"></a>
 #### Direct one-star additional-kind `FirstFilledValue` computations
 

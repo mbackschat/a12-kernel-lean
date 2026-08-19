@@ -1,7 +1,7 @@
 import A12Kernel.Elaboration.DateRangeFirstFilledComputation
 import A12Kernel.Semantics.TemporalApplication
 
-/-! # Direct one-star DateRange `FirstFilledValue` computation laws -/
+/-! # Bounded DateRange `FirstFilledValue` computation laws -/
 
 namespace A12Kernel
 
@@ -27,6 +27,29 @@ theorem evalDateRangeFirstFilledCells_present_head
     (selected : dateRangeFirstFilledCellAt addressed = .value range) :
     evalDateRangeFirstFilledCells (addressed :: remaining) = .value range := by
   simp [evalDateRangeFirstFilledCells, selected]
+
+/-- An empty first direct field delegates to the second observation. -/
+theorem scanTwoDirectDateRangeFirstFilled_empty
+    (second : Unit → Except ε (CellObservation DateRangeCellValue)) :
+    scanTwoDirectDateRangeFirstFilled (.ok .empty) second =
+      (DateRangeFirstFilledResult.ofObservation <$> second ()) := by
+  rfl
+
+/-- A present first direct field terminates without consulting the second observation. -/
+theorem scanTwoDirectDateRangeFirstFilled_value
+    (range : DateRangeCellValue)
+    (second : Unit → Except ε (CellObservation DateRangeCellValue)) :
+    scanTwoDirectDateRangeFirstFilled (.ok (.value range)) second =
+      .ok (.value range) := by
+  rfl
+
+/-- A reached formal cause terminates without consulting the second observation. -/
+theorem scanTwoDirectDateRangeFirstFilled_poison
+    (cause : FormalCause)
+    (second : Unit → Except ε (CellObservation DateRangeCellValue)) :
+    scanTwoDirectDateRangeFirstFilled (.ok (.poison cause)) second =
+      .ok (.poison cause) := by
+  rfl
 
 /-- Applying an accepted DateRange stores the exact rendered target value independently of prior placement. -/
 theorem dateRangeTargetAccepted_applyTo

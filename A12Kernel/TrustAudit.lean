@@ -2001,6 +2001,9 @@ run_cmd do
 #print axioms A12Kernel.dateRangeFirstFilledCellAt_value
 #print axioms A12Kernel.dateRangeFirstFilledCellAt_poison
 #print axioms A12Kernel.evalDateRangeFirstFilledCells_present_head
+#print axioms A12Kernel.scanTwoDirectDateRangeFirstFilled_empty
+#print axioms A12Kernel.scanTwoDirectDateRangeFirstFilled_value
+#print axioms A12Kernel.scanTwoDirectDateRangeFirstFilled_poison
 #print axioms A12Kernel.dateRangeTargetAccepted_applyTo
 #print axioms A12Kernel.dateTimeFirstFilledCellAt_value
 #print axioms A12Kernel.dateTimeFirstFilledCellAt_poison
