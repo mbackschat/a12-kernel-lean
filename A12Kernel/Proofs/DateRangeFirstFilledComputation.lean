@@ -28,26 +28,38 @@ theorem evalDateRangeFirstFilledCells_present_head
     evalDateRangeFirstFilledCells (addressed :: remaining) = .value range := by
   simp [evalDateRangeFirstFilledCells, selected]
 
-/-- An empty first direct field delegates to the second observation. -/
-theorem scanTwoDirectDateRangeFirstFilled_empty
-    (second : Unit → Except ε (CellObservation DateRangeCellValue)) :
-    scanTwoDirectDateRangeFirstFilled (.ok .empty) second =
-      (DateRangeFirstFilledResult.ofObservation <$> second ()) := by
+/-- Exhausting the checked direct source list keeps the no-value identity. -/
+theorem scanDirectDateRangeFirstFilled_nil :
+    scanDirectDateRangeFirstFilled ([] :
+      List (Unit → Except ε (CellObservation DateRangeCellValue))) =
+        .ok .noValue := by
   rfl
 
-/-- A present first direct field terminates without consulting the second observation. -/
-theorem scanTwoDirectDateRangeFirstFilled_value
+/-- An empty direct head delegates to the complete checked suffix. -/
+theorem scanDirectDateRangeFirstFilled_empty
+    (remaining : List
+      (Unit → Except ε (CellObservation DateRangeCellValue))) :
+    scanDirectDateRangeFirstFilled ((fun _ => .ok .empty) :: remaining) =
+      scanDirectDateRangeFirstFilled remaining := by
+  rfl
+
+/-- A present direct head terminates without consulting any suffix observation. -/
+theorem scanDirectDateRangeFirstFilled_value
     (range : DateRangeCellValue)
-    (second : Unit → Except ε (CellObservation DateRangeCellValue)) :
-    scanTwoDirectDateRangeFirstFilled (.ok (.value range)) second =
+    (remaining : List
+      (Unit → Except ε (CellObservation DateRangeCellValue))) :
+    scanDirectDateRangeFirstFilled
+      ((fun _ => .ok (.value range)) :: remaining) =
       .ok (.value range) := by
   rfl
 
-/-- A reached formal cause terminates without consulting the second observation. -/
-theorem scanTwoDirectDateRangeFirstFilled_poison
+/-- A reached direct formal cause terminates without consulting any suffix observation. -/
+theorem scanDirectDateRangeFirstFilled_poison
     (cause : FormalCause)
-    (second : Unit → Except ε (CellObservation DateRangeCellValue)) :
-    scanTwoDirectDateRangeFirstFilled (.ok (.poison cause)) second =
+    (remaining : List
+      (Unit → Except ε (CellObservation DateRangeCellValue))) :
+    scanDirectDateRangeFirstFilled
+      ((fun _ => .ok (.poison cause)) :: remaining) =
       .ok (.poison cause) := by
   rfl
 

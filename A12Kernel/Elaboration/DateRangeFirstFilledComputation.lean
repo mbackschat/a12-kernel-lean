@@ -63,7 +63,7 @@ def checkDateRangeFirstFilledComputation
       | .error cause => throw (.shape cause)
   | .error cause => throw (.shape cause)
 
-/-- Static refusal while checking the bounded two-direct-field DateRange source. -/
+/-- Static refusal while checking the bounded direct-field-list DateRange source. -/
 inductive DateRangeFirstFilledDirectComputationElabError where
   | target (cause : DirectDateRangeElabError)
   | source (path : List String) (cause : DirectDateRangeElabError)
@@ -89,28 +89,124 @@ def diagnostic? : DateRangeFirstFilledDirectComputationElabError →
 
 end DateRangeFirstFilledDirectComputationElabError
 
-/-- One fixed exact DateRange target and exactly two direct nonrepeatable same-group sources sharing its declaration profile. -/
+private structure DateRangeFirstFilledDirectCandidate (model : FlatModel) where
+  declaration : FlatFieldDecl
+  direct : CheckedDirectDateRange model
+  sourceIdentity : direct.source.id = declaration.id
+
+private structure GroupedDateRangeFirstFilledDirectCandidate
+    (model : FlatModel) (targetGroup : GroupPath) where
+  candidate : DateRangeFirstFilledDirectCandidate model
+  ownedByGroup : candidate.declaration.groupPath = targetGroup
+
+private structure NonselfDateRangeFirstFilledDirectCandidate
+    (model : FlatModel) (targetField : FieldId) (targetGroup : GroupPath) where
+  candidate : GroupedDateRangeFirstFilledDirectCandidate model targetGroup
+  excludesTarget : candidate.candidate.direct.source.id ≠ targetField
+
+/-- One checked direct source in the target's group and exact declaration profile. -/
+structure CheckedDateRangeFirstFilledDirectSource
+    (model : FlatModel) (targetField : FieldId) (format : DateRangeFormat)
+    (targetGroup : GroupPath) where
+  private mk ::
+  declaration : FlatFieldDecl
+  direct : CheckedDirectDateRange model
+  sourceIdentity : direct.source.id = declaration.id
+  sourceFormat : direct.format = .exact format
+  ownedByGroup : declaration.groupPath = targetGroup
+  excludesTarget : direct.source.id ≠ targetField
+
+/-- One fixed exact DateRange target and a finite direct nonrepeatable same-group source list sharing its declaration profile. -/
 structure CheckedDateRangeFirstFilledDirectComputation (model : FlatModel) where
   private mk ::
   target : CheckedDirectDateRange model
   targetDeclaration : FlatFieldDecl
   shape : CheckedFieldEntityShape model
-  first : CheckedDirectDateRange model
-  firstDeclaration : FlatFieldDecl
-  second : CheckedDirectDateRange model
-  secondDeclaration : FlatFieldDecl
   format : DateRangeFormat
   targetGroup : GroupPath
+  sources : List (CheckedDateRangeFirstFilledDirectSource model
+    target.source.id format targetGroup)
   targetFormat : target.format = .exact format
-  firstFormat : first.format = .exact format
-  secondFormat : second.format = .exact format
   targetOwnedByGroup : targetDeclaration.groupPath = targetGroup
-  firstOwnedByGroup : firstDeclaration.groupPath = targetGroup
-  secondOwnedByGroup : secondDeclaration.groupPath = targetGroup
-  sourcesExcludeTarget :
-    first.source.id ≠ target.source.id ∧ second.source.id ≠ target.source.id
 
-/-- Check the externally measured exact two-direct-field shape through the shared entity-list and direct DateRange owners. -/
+private def directStoredDeclarations (model : FlatModel) :
+    List (ResolvedFieldEntityOperand model) →
+      Except DateRangeFirstFilledDirectComputationElabError
+        (List FlatFieldDecl)
+  | [] => pure []
+  | .field declaration .stored :: remaining => do
+      pure (declaration :: (← directStoredDeclarations model remaining))
+  | _ :: _ => throw .unsupportedSourceShape
+
+private def elaborateDirectCandidates (model : FlatModel) :
+    List FlatFieldDecl →
+      Except DateRangeFirstFilledDirectComputationElabError
+        (List (DateRangeFirstFilledDirectCandidate model))
+  | [] => pure []
+  | declaration :: remaining => do
+      let direct ← elaborateDirectDateRange model declaration.id
+        |>.mapError fun cause => .source declaration.path cause
+      if hIdentity : direct.source.id = declaration.id then
+        pure ({ declaration, direct, sourceIdentity := hIdentity } ::
+          (← elaborateDirectCandidates model remaining))
+      else
+        throw (.source declaration.path .incoherentCore)
+
+private def certifyDirectSourceGroups (targetGroup : GroupPath) :
+    List (DateRangeFirstFilledDirectCandidate model) →
+      Except DateRangeFirstFilledDirectComputationElabError
+        (List (GroupedDateRangeFirstFilledDirectCandidate model targetGroup))
+  | [] => pure []
+  | candidate :: remaining => do
+      if hOwned : candidate.declaration.groupPath = targetGroup then
+        pure ({ candidate, ownedByGroup := hOwned } ::
+          (← certifyDirectSourceGroups targetGroup remaining))
+      else
+        throw (.sourceGroup candidate.declaration.path
+          candidate.declaration.groupPath targetGroup)
+
+private def certifyDirectSourcesExcludeTarget (targetField : FieldId) :
+    List (GroupedDateRangeFirstFilledDirectCandidate model targetGroup) →
+      Except DateRangeFirstFilledDirectComputationElabError
+        (List (NonselfDateRangeFirstFilledDirectCandidate
+          model targetField targetGroup))
+  | [] => pure []
+  | candidate :: remaining => do
+      if hExcludes : candidate.candidate.direct.source.id = targetField then
+        throw (.targetSelfReference candidate.candidate.declaration.path)
+      else
+        pure ({ candidate, excludesTarget := hExcludes } ::
+          (← certifyDirectSourcesExcludeTarget targetField remaining))
+
+private def certifyDirectSourceProfiles (targetPath : List String)
+    (format : DateRangeFormat) :
+    List (NonselfDateRangeFirstFilledDirectCandidate
+      model targetField targetGroup) →
+      Except DateRangeFirstFilledDirectComputationElabError
+        (List (CheckedDateRangeFirstFilledDirectSource
+          model targetField format targetGroup))
+  | [] => pure []
+  | candidate :: remaining => do
+      let grouped := candidate.candidate
+      let source := grouped.candidate
+      match hFormat : source.direct.format with
+      | .exact sourceFormat =>
+          if hMatches : sourceFormat = format then
+            pure ({
+              declaration := source.declaration
+              direct := source.direct
+              sourceIdentity := source.sourceIdentity
+              sourceFormat := by rw [hFormat, hMatches]
+              ownedByGroup := grouped.ownedByGroup
+              excludesTarget := candidate.excludesTarget
+            } :: (← certifyDirectSourceProfiles targetPath format remaining))
+          else
+            throw (.varyingProfiles targetPath source.declaration.path)
+      | _ =>
+          throw (.unsupportedProfile source.declaration.path
+            source.direct.policy.format source.direct.policy.separator)
+
+/-- Check a finite exact direct-field list through the shared entity-list and direct DateRange owners. External authorability is calibrated at lengths two and three. -/
 def checkDateRangeFirstFilledDirectComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceFieldEntitySource) :
@@ -118,73 +214,30 @@ def checkDateRangeFirstFilledDirectComputation
       (CheckedDateRangeFirstFilledDirectComputation model) := do
   let shape ← elaborateFieldEntityShape model declaringGroup authored
     |>.mapError .sourceShape
-  let firstDeclaration ← match shape.first, shape.rest with
-    | .field first .stored, [.field _ .stored] => pure first
-    | _, _ => throw .unsupportedSourceShape
-  let secondDeclaration ← match shape.first, shape.rest with
-    | .field _ .stored, [.field second .stored] => pure second
-    | _, _ => throw .unsupportedSourceShape
+  let sourceDeclarations ← directStoredDeclarations model shape.operands
   let targetDeclaration ← model.resolveNonrepeatableDeclarationById targetField
     |>.mapError fun cause => .target (.source cause)
   let target ← elaborateDirectDateRange model targetField |>.mapError .target
-  let first ← elaborateDirectDateRange model firstDeclaration.id
-    |>.mapError fun cause => .source firstDeclaration.path cause
-  let second ← elaborateDirectDateRange model secondDeclaration.id
-    |>.mapError fun cause => .source secondDeclaration.path cause
+  let candidates ← elaborateDirectCandidates model sourceDeclarations
   if hTargetGroup : targetDeclaration.groupPath = declaringGroup then
-    if hFirstGroup : firstDeclaration.groupPath = declaringGroup then
-      if hSecondGroup : secondDeclaration.groupPath = declaringGroup then
-        if hFirstTarget : first.source.id = target.source.id then
-          throw (.targetSelfReference firstDeclaration.path)
-        else if hSecondTarget : second.source.id = target.source.id then
-          throw (.targetSelfReference secondDeclaration.path)
-        else
-          match hTargetFormat : target.format with
-          | .exact targetFormat =>
-              match hFirstFormat : first.format with
-              | .exact firstFormat =>
-                  match hSecondFormat : second.format with
-                  | .exact secondFormat =>
-                      if hFirstProfile : firstFormat = targetFormat then
-                        if hSecondProfile : secondFormat = targetFormat then
-                          pure {
-                            target
-                            targetDeclaration
-                            shape
-                            first
-                            firstDeclaration
-                            second
-                            secondDeclaration
-                            format := targetFormat
-                            targetGroup := declaringGroup
-                            targetFormat := hTargetFormat
-                            firstFormat := by rw [hFirstFormat, hFirstProfile]
-                            secondFormat := by rw [hSecondFormat, hSecondProfile]
-                            targetOwnedByGroup := hTargetGroup
-                            firstOwnedByGroup := hFirstGroup
-                            secondOwnedByGroup := hSecondGroup
-                            sourcesExcludeTarget := ⟨hFirstTarget, hSecondTarget⟩ }
-                        else
-                          throw (.varyingProfiles targetDeclaration.path
-                            secondDeclaration.path)
-                      else
-                        throw (.varyingProfiles targetDeclaration.path
-                          firstDeclaration.path)
-                  | _ =>
-                      throw (.unsupportedProfile secondDeclaration.path
-                        second.policy.format second.policy.separator)
-              | _ =>
-                  throw (.unsupportedProfile firstDeclaration.path
-                    first.policy.format first.policy.separator)
-          | _ =>
-              throw (.unsupportedProfile targetDeclaration.path
-                target.policy.format target.policy.separator)
-      else
-        throw (.sourceGroup secondDeclaration.path
-          secondDeclaration.groupPath declaringGroup)
-    else
-      throw (.sourceGroup firstDeclaration.path
-        firstDeclaration.groupPath declaringGroup)
+    let grouped ← certifyDirectSourceGroups declaringGroup candidates
+    let nonself ← certifyDirectSourcesExcludeTarget target.source.id grouped
+    match hTargetFormat : target.format with
+    | .exact targetFormat =>
+        let sources ← certifyDirectSourceProfiles
+          targetDeclaration.path targetFormat nonself
+        pure {
+          target
+          targetDeclaration
+          shape
+          format := targetFormat
+          targetGroup := declaringGroup
+          sources
+          targetFormat := hTargetFormat
+          targetOwnedByGroup := hTargetGroup }
+    | _ =>
+        throw (.unsupportedProfile targetDeclaration.path
+          target.policy.format target.policy.separator)
   else
     throw (.targetGroup targetDeclaration.groupPath declaringGroup)
 
@@ -205,16 +258,16 @@ def ofObservation : CellObservation DateRangeCellValue → DateRangeFirstFilledR
 
 end DateRangeFirstFilledResult
 
-/-- Scan exactly two direct observations without forcing the second after a terminal first result. -/
-def scanTwoDirectDateRangeFirstFilled
-    (first : Except ε (CellObservation DateRangeCellValue))
-    (second : Unit → Except ε (CellObservation DateRangeCellValue)) :
-    Except ε DateRangeFirstFilledResult := do
-  let firstObserved ← first
-  match DateRangeFirstFilledResult.ofObservation firstObserved with
-  | .noValue =>
-      DateRangeFirstFilledResult.ofObservation <$> second ()
-  | result => pure result
+/-- Scan a finite direct list without forcing any suffix after a terminal value or formal cause. -/
+def scanDirectDateRangeFirstFilled :
+    List (Unit → Except ε (CellObservation DateRangeCellValue)) →
+      Except ε DateRangeFirstFilledResult
+  | [] => pure .noValue
+  | observe :: remaining => do
+      let observed ← observe ()
+      match DateRangeFirstFilledResult.ofObservation observed with
+      | .noValue => scanDirectDateRangeFirstFilled remaining
+      | result => pure result
 
 /-- Project one checked DateRange cell into the typed root result consumed by the target policy. Source stored text is not selected. -/
 def dateRangeFirstFilledCellAt
@@ -289,14 +342,13 @@ end CheckedDateRangeFirstFilledComputation
 
 namespace CheckedDateRangeFirstFilledDirectComputation
 
-/-- Execute the exact two-field source lazily through the one checked document. A terminal first observation leaves the second field unread. -/
+/-- Execute the finite exact direct source list lazily through the one checked document. A terminal observation leaves every suffix field unread. -/
 def execute (operation : CheckedDateRangeFirstFilledDirectComputation model)
     (input : CheckedDocument model) :
     Except DateRangeFirstFilledComputationFault DateRangeTargetOutcome := do
-  let result ← scanTwoDirectDateRangeFirstFilled
-    (operation.first.evaluate .computation input |>.mapError .directSource)
-    (fun _ =>
-      operation.second.evaluate .computation input |>.mapError .directSource)
+  let result ← scanDirectDateRangeFirstFilled
+    (operation.sources.map fun source _ =>
+      source.direct.evaluate .computation input |>.mapError .directSource)
   evaluateDateRangeFirstFilledResult (.exact operation.format) result
 
 end CheckedDateRangeFirstFilledDirectComputation

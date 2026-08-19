@@ -11,11 +11,11 @@ Detailed coverage belongs in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), o
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: direct nonrepeatable constructor targets remain internally closed for both exact policies and matching exact-valued fragments. DateRange `FirstFilledValue` covers the six direct-star policies plus exactly two direct nonrepeatable same-group sources under either exact policy, preserving typed identity, authored-order lazy selection, and declaration-owned target rendering.
+- `state`: direct nonrepeatable constructor targets remain internally closed for both exact policies and matching exact-valued fragments. DateRange `FirstFilledValue` covers the six direct-star policies plus a finite direct nonrepeatable same-group list under either exact policy, preserving typed identity, authored source order, recursive lazy selection, and declaration-owned target rendering; Kernel calibration covers direct-list lengths two and three.
 - `gap`: [SG6 DateRange Date/DateFragment endpoint admission and completion](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
 - `oracle`: use the [canonical Date-range clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap), [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion), and the current [temporal implementation owners](IMPLEMENTATION-MAP.md#6--dates-and-time) to select a source-closed non-overlapping unit.
-- `route`: SG6 requires read-only route discovery before another semantic edit; the completed direct-star and exact two-direct-field slices do not establish more-than-two, mixed, group, filtered, nested, partial-validation, or scheduling routes.
+- `route`: SG6 requires read-only route discovery before another semantic edit; the completed direct-star and exact direct-list slices do not establish external authorability beyond three sources or mixed, group, filtered, nested, partial-validation, or scheduling routes.
 - `next`: inventory the remaining SG6 clauses, source checkpoints, current owners, and overlapping work; select the smallest evidence-sufficient semantic unit and verify its red, green, and supporting loci before implementation.
 - `blocked-on`: none.
-- `consumer-probe-trigger`: passed for the six-policy constructor-target, direct-star, and exact two-direct-field DateRange Execute decisions; active again at the next reusable capability milestone.
+- `consumer-probe-trigger`: passed for the six-policy constructor-target/direct-star decisions and the exact direct-list Execute/Analyze decision through the calibrated third source; active again at the next reusable capability milestone.
 - `resume`: `rg -n '^- `(remains|external-gap|unresolved-source|risk|route-state)`:' docs/SEMANTICS-GAPS.md && rg -n '^- `(state|boundary|assurance|remains)`:' docs/IMPLEMENTATION-MAP.md`

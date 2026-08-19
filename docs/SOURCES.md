@@ -239,7 +239,7 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `sync`: the observations extend the canonical DateRange computation account; pending [`SPEC-2026-08-19-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-03--date-range-firstfilledvalue-admits-matching-fragment-profiles) carries the outbound reconciliation.
 
 <a id="src-date-range-direct-first-filled"></a>
-#### Exact two-direct-field DateRange `FirstFilledValue`
+#### Exact direct-field-list DateRange `FirstFilledValue`
 
 - `revision`: source-shipped dmtool `0.13.0` and the maintained static route were inspected at clean a12-dmkits `89aa03957034de620562eb23a095d878f6547dca`; both runtime strategies used built/runtime Kernel `30.8.1`.
 - `static-route`: [`FirstFilledValueFamilyLawsTest`](../../a12-rulekit/src/test/java/io/github/mbackschat/a12/dm/rulekit/validate/laws/FirstFilledValueFamilyLawsTest.java) blob `579c1e49c225a76c077167000a286e21ccc09c0e` admits two direct dotted/dash DateRange fields and rejects an exact-policy cross with `MVK_VARYING_TYPES_NOT_ALLOWED`.
@@ -247,8 +247,15 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `runtime-claim`: both Kernel strategies return no computed change for an all-empty fresh target, select a filled second source after an empty first source, and retain a filled first value despite a malformed second source.
 - `runtime-claim`: when the first source is malformed and the second is filled, neither strategy returns a computed target outcome. Formal input inventory independently reports the malformed source in either authored position, including when a terminal first value hides it from computation selection.
 - `integrity`: the request is SHA-256 `a84ad16ce0aad93641c3460502d5e34267efb0f12dbdc991e3f098137bf8d957`, model `50db84cbb00995e21f6c692bc24d7dd2447491d58103697a000ad1b4c1fd58b6`, and two unchanged artifacts are `531567e1abe42b52ae88b4072cf93d4b3180862f4c01f5ec03012bad167917c1`.
-- `limit`: the packet covers exactly two direct nonrepeatable dotted/dash sources and a fresh target. ISO/slash runtime, more operands, fragments, groups, stars, filters, repetition, target application, scheduling, and cause identity beyond the reported formal code remain unmeasured here.
-- `sync`: pending [`SPEC-2026-08-19-04`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-04--date-range-firstfilledvalue-scans-two-direct-fields-lazily) carries the outbound reconciliation.
+- `static-route`: a second structured dmtool transaction admits `FirstFilledValue(First, Second, Third)` for three direct dotted/dash sources.
+- `static-claim`: a mismatched ISO/slash third source is rejected with `MVK_VARYING_TYPES_NOT_ALLOWED`.
+- `static-claim`: the target in third position is rejected with `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD`.
+- `integrity`: the matching, crossed-profile, and target-self-reference operation requests are SHA-256 `ef4d86ec29b467bbdb0be91c9daa5b055f2078feb3bf62a9e708caa2b9252e9a`, `b6b3ee95e9ee59cc9d829f1d6090e5825b3875e35d07cb8342d40d6f4bae03f5`, and `afe91a740198c77e24dca6227eeb97734776bfd85c6987b34366fc70f2705037`.
+- `runtime-route`: the three-source model runs all-empty, two-empty-then-value, middle-value-then-formal, and middle-formal-then-value documents through both Kernel strategies.
+- `runtime-claim`: both strategies return no target outcome for the all-empty fresh target, recursively reach a filled third source after two empty prefixes, retain a filled middle source despite a malformed third source, and return no target outcome when the middle source is malformed before a filled third source; the eager formal-input inventory reports the malformed source independently.
+- `integrity`: the three-source request is SHA-256 `ae2085e8e39ca7c8cbeb26bd0472b14789c94d04cedcb919334f5caaed815634`, model `8b3697c369d1a7564c41393b0ec3ad95906fd0924c01ad120717828884d04aa1`, and two unchanged artifacts are `62c7c9054ca72257a760d094c470beffdee95b378a25521f44c1b1e5f777dc67`.
+- `limit`: the packets cover direct nonrepeatable dotted/dash lists of exactly two and three sources with a fresh target. ISO/slash runtime, lengths greater than three, fragments, groups, stars, filters, repetition, target application, scheduling, and cause identity beyond the reported formal code remain unmeasured here.
+- `sync`: pending [`SPEC-2026-08-19-04`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-04--date-range-firstfilledvalue-scans-direct-field-lists-lazily) carries the outbound reconciliation.
 
 <a id="src-first-filled-additional-kind-computations"></a>
 #### Direct one-star additional-kind `FirstFilledValue` computations
