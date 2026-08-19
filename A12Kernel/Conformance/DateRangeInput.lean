@@ -31,6 +31,11 @@ private def yearPolicy : DateRangeDeclarationPolicy := {
   separator := "/"
 }
 
+private def yearMonthPolicy : DateRangeDeclarationPolicy := {
+  format := "yyyy-MM"
+  separator := "/"
+}
+
 private def dateValue (epochMillis : Int) (year month day : Nat) : DateValue := {
   instant := { epochMillis }
   parts := { year, month, day }
@@ -62,6 +67,11 @@ private def february2024 : DateRangeValue := {
   finish := dateValue 1709164800000 2024 2 29
 }
 
+private def february2023 : DateRangeValue := {
+  start := dateValue 1675209600000 2023 2 1
+  finish := dateValue 1677542400000 2023 2 28
+}
+
 private def leapDay2024 : DateRangeValue := {
   start := dateValue 1709164800000 2024 2 29
   finish := dateValue 1709164800000 2024 2 29
@@ -82,6 +92,32 @@ example :
       some (.parsed (.dateRange (.exact years2024To2025))) ∧
     (classifyStoredDateRangeForModel "UTC" none yearPolicy "").toOption =
       some .presentEmpty := by
+  native_decide
+
+/- A stored `yyyy-MM` range completes the finish to the calendar's leap-aware last day without consulting Base Year. -/
+example :
+    (classifyStoredDateRangeForModel "UTC" none yearMonthPolicy
+      "2024-02/2024-02").toOption =
+      some (.parsed (.dateRange (.exact february2024))) ∧
+    (classifyStoredDateRangeForModel "UTC" (some 1900) yearMonthPolicy
+      "2023-02/2023-02").toOption =
+      some (.parsed (.dateRange (.exact february2023))) ∧
+    (classifyStoredDateRangeForModel "UTC" none yearMonthPolicy "").toOption =
+      some .presentEmpty := by
+  native_decide
+
+/- Stored `yyyy-MM` parsing preserves separator, width, calendar, order, and Gregorian-floor causes. -/
+example :
+    (classifyStoredDateRangeForModel "UTC" none yearMonthPolicy
+      "2024-02").toOption = some (.rejected .dateRangeSeparator) ∧
+    (classifyStoredDateRangeForModel "UTC" none yearMonthPolicy
+      "2024-2/2024-02").toOption = some (.rejected .dateRangeFormat) ∧
+    (classifyStoredDateRangeForModel "UTC" none yearMonthPolicy
+      "2024-13/2024-13").toOption = some (.rejected .dateRangeFormat) ∧
+    (classifyStoredDateRangeForModel "UTC" none yearMonthPolicy
+      "2024-03/2024-02").toOption = some (.rejected .dateRangeInvalid) ∧
+    (classifyStoredDateRangeForModel "UTC" none yearMonthPolicy
+      "1582-12/1583-01").toOption = some (.rejected .dateRangeTooEarly) := by
   native_decide
 
 /- Stored `yyyy` parsing preserves separator, width, order, and Gregorian-floor causes. -/
@@ -255,6 +291,17 @@ private def yearModel : FlatModel := {
   timeZoneId := "UTC"
 }
 
+private def yearMonthTravel : FlatFieldDecl := {
+  travel with
+  name := "YearMonths"
+  dateRangePolicy := some yearMonthPolicy
+}
+
+private def yearMonthModel : FlatModel := {
+  fields := [yearMonthTravel]
+  timeZoneId := "UTC"
+}
+
 private def prepared :
     PreparedFlatStringContext model builtinStringPatternCompiler :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
@@ -316,6 +363,21 @@ private def checkYearOne (stored : String) (raw : RawCell) :=
     }]
   }
 
+private def yearMonthPrepared :
+    PreparedFlatStringContext yearMonthModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler yearMonthModel).toOption.get (by native_decide)
+
+private def checkYearMonthOne (stored : String) (raw : RawCell) :=
+  checkDocument yearMonthPrepared "en_US" {
+    instantiatedRows := []
+    cells := [{
+      address := { field := yearMonthTravel.id, path := [] }
+      stored
+      raw
+    }]
+  }
+
 private def unsupportedPolicyTravel : FlatFieldDecl := {
   travel with
   dateRangePolicy := some { format := "yyyy-MM-dd", separator := "-" }
@@ -368,6 +430,15 @@ example :
         (.parsed (.dateRange (.exact january))) with
       | .error (.incoherentCell address) =>
           address == { field := yearTravel.id, path := [] }
+      | _ => false) = true ∧
+    (checkYearMonthOne "2024-02/2024-02"
+      (.parsed (.dateRange (.exact february2024)))).toOption.map
+        (fun checked => checked.flatContext.observeValidationAt yearMonthTravel.id) =
+      some (.value (.dateRange (.exact february2024))) ∧
+    (match checkYearMonthOne "2024-02/2024-02"
+        (.parsed (.dateRange (.exact february2023))) with
+      | .error (.incoherentCell address) =>
+          address == { field := yearMonthTravel.id, path := [] }
       | _ => false) = true ∧
     (checkMonthOne "02/03"
       (.parsed (.dateRange (.yearlessMonth 2 3)))).toOption.map

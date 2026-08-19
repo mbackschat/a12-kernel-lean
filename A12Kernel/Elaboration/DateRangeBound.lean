@@ -96,7 +96,7 @@ def elaborateDateRangeBound (model : FlatModel) (sourceField : FieldId)
   match hFormat : source.format with
   | .exact exactFormat =>
       pure { source with bound, exactFormat, sourceIsExact := hFormat }
-  | .yearFragment | .yearlessMonth | .yearlessMonthDay =>
+  | .yearFragment | .yearMonthFragment | .yearlessMonth | .yearlessMonthDay =>
       throw (.unsupportedPolicy sourceField source.policy.format source.policy.separator)
 
 /-- Resolve one direct bound and retain its authored comparison position and fixed full-Date peer. -/
