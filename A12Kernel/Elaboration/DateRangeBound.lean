@@ -17,28 +17,37 @@ inductive DirectDateRangeElabError where
 
 abbrev DateRangeBoundElabError := DirectDateRangeElabError
 
-/-- Whether one resolved field is exactly a nonrepeatable DateRange source under a canonically supported stored-input policy. -/
-def FlatModel.admitsDirectDateRangeSource
-    (model : FlatModel) (source : FlatDateRangeField) : Bool :=
+/-- Recover the declaration policy and checked input profile for one direct nonrepeatable DateRange source. -/
+def FlatModel.directDateRangeInput?
+    (model : FlatModel) (source : FlatDateRangeField) :
+    Option (DateRangeDeclarationPolicy × DateRangeInputFormat) :=
   match model.lookupUniqueId source.id with
-  | .error _ => false
+  | .error _ => none
   | .ok declaration =>
-      declaration.repeatableScope.isEmpty &&
-        match certifyCanonicalDateRangeField declaration with
-        | .ok checked => checked.field == source
-        | .error _ => false
+      if declaration.repeatableScope.isEmpty then
+        match certifyDateRangeInputField declaration with
+        | .ok checked =>
+            if checked.field == source then some (checked.policy, checked.format)
+            else none
+        | .error _ => none
+      else
+        none
 
-/-- One model-certified direct nonrepeatable DateRange field shared by whole-range and bound consumers. -/
+/-- One model-certified direct nonrepeatable DateRange field retaining the declaration-owned checked input profile. -/
 structure CheckedDirectDateRange (model : FlatModel) where
   private mk ::
   source : FlatDateRangeField
-  sourceAdmitted : model.admitsDirectDateRangeSource source = true
+  policy : DateRangeDeclarationPolicy
+  format : DateRangeInputFormat
+  sourceAdmitted : model.directDateRangeInput? source = some (policy, format)
 
-/-- One selected endpoint of a model-certified direct nonrepeatable DateRange field. -/
+/-- One selected endpoint of an exact full-year direct DateRange field. -/
 structure CheckedDateRangeBound (model : FlatModel)
     extends CheckedDirectDateRange model where
   private mk ::
   bound : DateRangeBound
+  exactFormat : DateRangeFormat
+  sourceIsExact : toCheckedDirectDateRange.format = .exact exactFormat
 
 /-- Authored side occupied by the selected DateRange bound in one full-Date comparison. -/
 inductive DateRangeBoundComparisonPosition where
@@ -58,28 +67,37 @@ structure CheckedDateRangeBoundComponent (model : FlatModel)
     extends CheckedDateRangeBound model where
   part : DateNumericPart
 
-/-- Resolve one direct field and accept only the two DateRange policies whose stored input is decoded by `CheckedDocument`. -/
+/-- Resolve one direct field and accept every DateRange input profile decoded by `CheckedDocument`. -/
 def elaborateDirectDateRange (model : FlatModel) (sourceField : FieldId) :
     Except DirectDateRangeElabError (CheckedDirectDateRange model) := do
   let declaration ←
     model.resolveNonrepeatableDeclarationById sourceField |>.mapError .source
-  let checked ← certifyCanonicalDateRangeField declaration |>.mapError fun
+  let checked ← certifyDateRangeInputField declaration |>.mapError fun
     | .notDateRange _ actual =>
         .sourceNotDateRange sourceField actual.surfaceKind
     | .unsupportedPolicy _ format separator =>
         .unsupportedPolicy sourceField format separator
     | .incoherentCore => .incoherentCore
-  if hSource : model.admitsDirectDateRangeSource checked.field = true then
-    pure { source := checked.field, sourceAdmitted := hSource }
+  if hSource : model.directDateRangeInput? checked.field =
+      some (checked.policy, checked.format) then
+    pure {
+      source := checked.field
+      policy := checked.policy
+      format := checked.format
+      sourceAdmitted := hSource }
   else
     throw .incoherentCore
 
-/-- Attach one selected endpoint to an already shared direct DateRange source. -/
+/-- Refine the shared direct source to an exact full-year policy before attaching one selected endpoint. -/
 def elaborateDateRangeBound (model : FlatModel) (sourceField : FieldId)
     (bound : DateRangeBound) :
     Except DateRangeBoundElabError (CheckedDateRangeBound model) := do
   let source ← elaborateDirectDateRange model sourceField
-  pure { source with bound }
+  match hFormat : source.format with
+  | .exact exactFormat =>
+      pure { source with bound, exactFormat, sourceIsExact := hFormat }
+  | .yearlessMonth | .yearlessMonthDay =>
+      throw (.unsupportedPolicy sourceField source.policy.format source.policy.separator)
 
 /-- Resolve one direct bound and retain its authored comparison position and fixed full-Date peer. -/
 def elaborateDateRangeBoundComparison (model : FlatModel)
@@ -127,16 +145,15 @@ structure DateRangeBoundComponentResult where
 
 namespace CheckedDirectDateRange
 
-/-- Read one whole range through the sole immutable checked-document route. Empty and exact formal unavailability retain their phase-specific observation constructors. -/
+/-- Read one whole range through the sole immutable checked-document route while retaining exact or yearless identity. Empty and formal unavailability retain their phase-specific observation constructors. -/
 def evaluate (operation : CheckedDirectDateRange model) (phase : Phase)
     (input : CheckedDocument model) :
-    Except DirectDateRangeFault (CellObservation DateRangeValue) := do
+    Except DirectDateRangeFault (CellObservation DateRangeCellValue) := do
   let cell ← input.read { field := operation.source.id, path := [] }
     |>.mapError .document
   match observeCell phase cell with
   | .empty => pure .empty
-  | .value (.dateRange (.exact value)) => pure (.value value)
-  | .value (.dateRange value) => throw (.sourceValueProfile operation.source.id value)
+  | .value (.dateRange value) => pure (.value value)
   | .value _ => throw (.sourceValueKind operation.source.id)
   | .unknown cause => pure (.unknown cause)
   | .poison cause => pure (.poison cause)
@@ -145,14 +162,15 @@ end CheckedDirectDateRange
 
 namespace CheckedDateRangeBound
 
-/-- Select one endpoint after the shared direct DateRange read. -/
+/-- Select one endpoint after the exact-policy refinement and shared direct DateRange read. A yearless runtime carrier still fails defensively if a malformed checked document crosses that static boundary. -/
 def evaluate (operation : CheckedDateRangeBound model) (phase : Phase)
     (input : CheckedDocument model) :
     Except DateRangeBoundFault (CellObservation DateValue) := do
   let observed ← operation.toCheckedDirectDateRange.evaluate phase input
   match observed with
   | .empty => pure .empty
-  | .value value => pure (.value (value.select operation.bound))
+  | .value (.exact value) => pure (.value (value.select operation.bound))
+  | .value value => throw (.sourceValueProfile operation.source.id value)
   | .unknown cause => pure (.unknown cause)
   | .poison cause => pure (.poison cause)
 

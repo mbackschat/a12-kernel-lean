@@ -16,38 +16,45 @@ inductive CanonicalDateRangeFieldError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- One DateRange declaration with its exact field identity, policy, and supported parser selected once. -/
-structure CheckedCanonicalDateRangeField where
+/-- One DateRange declaration with its field identity and coherent policy recovered once for every checked input profile. -/
+structure CheckedDateRangeFieldPolicy where
   private mk ::
   declaration : FlatFieldDecl
   field : FlatDateRangeField
   policy : DateRangeDeclarationPolicy
-  format : DateRangeFormat
   fieldOwned : declaration.toDateRangeField? = some field
   policyOwned : declaration.toDateRangeDeclarationPolicy? = some policy
-  formatOwned : DateRangeFormat.ofPolicy? policy = some format
 
-/-- Certify one declaration without imposing direct-versus-repeatable addressing; each consumer owns that separate shape gate. -/
-def certifyCanonicalDateRangeField (declaration : FlatFieldDecl) :
-    Except CanonicalDateRangeFieldError CheckedCanonicalDateRangeField :=
+/-- Recover the shared DateRange field and declaration policy before a consumer selects its supported input profile. -/
+private def certifyDateRangeFieldPolicy (declaration : FlatFieldDecl) :
+    Except CanonicalDateRangeFieldError CheckedDateRangeFieldPolicy :=
   match hField : declaration.toDateRangeField? with
   | none => .error (.notDateRange declaration.path
       declaration.policy.kind)
   | some field =>
       match hPolicy : declaration.toDateRangeDeclarationPolicy? with
       | none => .error .incoherentCore
-      | some policy =>
-          match hFormat : DateRangeFormat.ofPolicy? policy with
-          | none => .error (.unsupportedPolicy declaration.path
-              policy.format policy.separator)
-          | some format => .ok {
-              declaration
-              field
-              policy
-              format
-              fieldOwned := hField
-              policyOwned := hPolicy
-              formatOwned := hFormat }
+      | some policy => .ok {
+          declaration
+          field
+          policy
+          fieldOwned := hField
+          policyOwned := hPolicy }
+
+/-- One DateRange declaration with its exact field identity, policy, and full-year parser selected once. -/
+structure CheckedCanonicalDateRangeField extends CheckedDateRangeFieldPolicy where
+  private mk ::
+  format : DateRangeFormat
+  formatOwned : DateRangeFormat.ofPolicy? policy = some format
+
+/-- Certify one full-year declaration without imposing direct-versus-repeatable addressing; each consumer owns that separate shape gate. -/
+def certifyCanonicalDateRangeField (declaration : FlatFieldDecl) :
+    Except CanonicalDateRangeFieldError CheckedCanonicalDateRangeField := do
+  let checked ← certifyDateRangeFieldPolicy declaration
+  match hFormat : DateRangeFormat.ofPolicy? checked.policy with
+  | none => throw (.unsupportedPolicy declaration.path
+      checked.policy.format checked.policy.separator)
+  | some format => pure { checked with format, formatOwned := hFormat }
 
 /-- The bounded classifier cannot guess a value when the declaration or model-zone profile is outside its exact executable fragment. Local-midnight resolution failure remains separate from stored-value formal invalidity. -/
 inductive DateRangeInputError where
@@ -78,6 +85,21 @@ def ofPolicy? (policy : DateRangeDeclarationPolicy) : Option DateRangeInputForma
         none
 
 end DateRangeInputFormat
+
+/-- One DateRange declaration with any checked-document input profile selected once. -/
+structure CheckedDateRangeInputField extends CheckedDateRangeFieldPolicy where
+  private mk ::
+  format : DateRangeInputFormat
+  formatOwned : DateRangeInputFormat.ofPolicy? policy = some format
+
+/-- Certify one of the four checked-document DateRange input profiles without imposing an addressing shape. -/
+def certifyDateRangeInputField (declaration : FlatFieldDecl) :
+    Except CanonicalDateRangeFieldError CheckedDateRangeInputField := do
+  let checked ← certifyDateRangeFieldPolicy declaration
+  match hFormat : DateRangeInputFormat.ofPolicy? checked.policy with
+  | none => throw (.unsupportedPolicy declaration.path
+      checked.policy.format checked.policy.separator)
+  | some format => pure { checked with format, formatOwned := hFormat }
 
 /-- Decode one fixed-width ASCII component. -/
 private def parseDateRangeComponent? (width : Nat) (text : String) : Option Nat :=

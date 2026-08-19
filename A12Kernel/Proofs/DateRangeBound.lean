@@ -12,11 +12,11 @@ namespace A12Kernel
     value.select .finish = value.finish := by
   rfl
 
-/-- A reached whole DateRange retains both exact endpoints through the shared direct read. -/
+/-- A reached whole DateRange retains its exact or yearless identity through the shared direct read. -/
 theorem directDateRange_evaluate_value
     (operation : CheckedDirectDateRange model) (phase : Phase)
     (input : CheckedDocument model) (cell : CheckedCell)
-    (range : DateRangeValue)
+    (range : DateRangeCellValue)
     (read : input.read { field := operation.source.id, path := [] } = .ok cell)
     (observed : observeCell phase cell = .value (.dateRange range)) :
     operation.evaluate phase input = .ok (.value range) := by
@@ -32,11 +32,11 @@ theorem dateRangeBound_evaluate_value
     (input : CheckedDocument model) (cell : CheckedCell)
     (range : DateRangeValue)
     (read : input.read { field := operation.source.id, path := [] } = .ok cell)
-    (observed : observeCell phase cell = .value (.dateRange range)) :
+    (observed : observeCell phase cell = .value (.dateRange (.exact range))) :
     operation.evaluate phase input = .ok (.value (range.select operation.bound)) := by
   unfold CheckedDateRangeBound.evaluate
   rw [directDateRange_evaluate_value operation.toCheckedDirectDateRange
-    phase input cell range read observed]
+    phase input cell (.exact range) read observed]
   rfl
 
 /-- An empty source remains empty rather than acquiring an endpoint or cause. -/

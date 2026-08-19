@@ -5,7 +5,7 @@ import A12Kernel.Semantics.DateRangeComparison
 
 /-! # Checked DateRange construction comparison
 
-This capsule certifies two nonrepeatable Date endpoints per `DateRange` construction, including exact `yyyy`, `yyyy-MM`, Base-Year-resolved `MM` and `MM-dd`, and yearless `MM` and `MM-dd` DateFragment profiles. It composes two component-compatible constructions or one full-Date construction with a canonical direct stored DateRange and reads each checked operand through one immutable document in authored order. Exact construction labels are completed by endpoint position and re-resolved under their declaration's model-zone profile; yearless pair execution retains only the authored components. Both delegate to the shared equality seam. Yearless construction-versus-stored execution, semantic-index endpoints, repeatable placement, computation, rendering, overlap, and bound extraction remain separate.
+This capsule certifies two nonrepeatable Date endpoints per `DateRange` construction, including exact `yyyy`, `yyyy-MM`, Base-Year-resolved `MM` and `MM-dd`, and yearless `MM` and `MM-dd` DateFragment profiles. It composes two component-compatible constructions or one full-Date or yearless construction with a matching direct stored DateRange and reads each checked operand through one immutable document in authored order. Exact construction labels are completed by endpoint position and re-resolved under their declaration's model-zone profile; yearless execution retains only the authored components. Both delegate to the shared equality seam. Configured-fragment construction-versus-stored execution, semantic-index endpoints, repeatable placement, computation, rendering, overlap, and bound extraction remain separate.
 -/
 
 namespace A12Kernel
@@ -55,11 +55,18 @@ def sameComponents : DateRangeEndpointFormat → DateRangeEndpointFormat → Boo
   | .yearlessMonthDay, .yearlessMonthDay => true
   | _, _ => false
 
-/-- Whether the endpoint belongs to the complete Date profile retained by mixed execution. -/
-def isFull : DateRangeEndpointFormat → Bool
-  | .full _ => true
+/-- Whether the endpoint profile participates in the bounded construction-versus-stored route. -/
+def supportsStoredComparison : DateRangeEndpointFormat → Bool
+  | .full _ | .yearlessMonth | .yearlessMonthDay => true
   | .yearFragment | .yearMonthFragment | .monthFragment _
-  | .monthDayFragment _ | .yearlessMonth | .yearlessMonthDay => false
+  | .monthDayFragment _ => false
+
+/-- Match the construction's available component identity to the stored declaration profile. Exact lexical spelling does not distinguish the two full-Date formats. -/
+def matchesStoredInput : DateRangeEndpointFormat → DateRangeInputFormat → Bool
+  | .full _, .exact _ => true
+  | .yearlessMonth, .yearlessMonth => true
+  | .yearlessMonthDay, .yearlessMonthDay => true
+  | _, _ => false
 
 /-- Complete one decoded endpoint label by its authored range position. -/
 def complete? (format : DateRangeEndpointFormat) (bound : DateRangeBound)
@@ -296,6 +303,8 @@ inductive DateRangeConstructionStoredComparisonElabError where
   | construction (cause : DateRangeConstructionElabError)
   | unsupportedConstructionProfile (start finish : DateRangeEndpointFormat)
   | stored (cause : DirectDateRangeElabError)
+  | componentMismatch (construction : DateRangeEndpointFormat)
+      (stored : DateRangeInputFormat)
   deriving Repr, DecidableEq
 
 /-- One construction and one direct stored DateRange, retaining their authored order. -/
@@ -304,9 +313,10 @@ structure CheckedDateRangeConstructionStoredComparison (model : FlatModel) where
   stored : CheckedDirectDateRange model
   position : DateRangeConstructionPosition
   comparison : EqualityOp
-  constructionIsFull : construction.start.format.isFull = true
+  constructionSupported : construction.start.format.supportsStoredComparison = true
+  componentsMatch : construction.start.format.matchesStoredInput stored.format = true
 
-/-- Certify both full-Date mixed operands in authored order without introducing a second source or comparison representation. -/
+/-- Certify matching full-Date or yearless mixed operands in authored order without introducing a second source or comparison representation. -/
 def elaborateDateRangeConstructionStoredComparison (model : FlatModel)
     (start finish stored : FieldId) (position : DateRangeConstructionPosition)
     (comparison : EqualityOp) :
@@ -316,9 +326,18 @@ def elaborateDateRangeConstructionStoredComparison (model : FlatModel)
   | .left => do
       let construction ← elaborateDateRangeConstruction model start finish
         |>.mapError .construction
-      if hFull : construction.start.format.isFull then
+      if hSupported : construction.start.format.supportsStoredComparison then
         let stored ← elaborateDirectDateRange model stored |>.mapError .stored
-        pure { construction, stored, position, comparison, constructionIsFull := hFull }
+        if hComponents : construction.start.format.matchesStoredInput stored.format then
+          pure {
+            construction
+            stored
+            position
+            comparison
+            constructionSupported := hSupported
+            componentsMatch := hComponents }
+        else
+          throw (.componentMismatch construction.start.format stored.format)
       else
         throw (.unsupportedConstructionProfile
           construction.start.format construction.finish.format)
@@ -326,8 +345,17 @@ def elaborateDateRangeConstructionStoredComparison (model : FlatModel)
       let stored ← elaborateDirectDateRange model stored |>.mapError .stored
       let construction ← elaborateDateRangeConstruction model start finish
         |>.mapError .construction
-      if hFull : construction.start.format.isFull then
-        pure { construction, stored, position, comparison, constructionIsFull := hFull }
+      if hSupported : construction.start.format.supportsStoredComparison then
+        if hComponents : construction.start.format.matchesStoredInput stored.format then
+          pure {
+            construction
+            stored
+            position
+            comparison
+            constructionSupported := hSupported
+            componentsMatch := hComponents }
+        else
+          throw (.componentMismatch construction.start.format stored.format)
       else
         throw (.unsupportedConstructionProfile
           construction.start.format construction.finish.format)
@@ -337,37 +365,30 @@ inductive DateRangeConstructionStoredComparisonFault where
   | stored (cause : DirectDateRangeFault)
   deriving Repr, DecidableEq
 
-/-- Rich mixed result retaining authored position and both exact operand observations. -/
+/-- Rich mixed result retaining authored position and both exact-or-yearless operand observations. -/
 structure DateRangeConstructionStoredComparisonResult where
   construction : DateRangeConstructionObservation
-  stored : CellObservation DateRangeValue
+  stored : CellObservation DateRangeCellValue
   position : DateRangeConstructionPosition
   verdict : Verdict
   deriving Repr, DecidableEq
 
 namespace CheckedDateRangeConstructionStoredComparison
 
-/-- Lift the stored exact range into the shared cell comparison domain. -/
-private def storedComparisonOperand : CellObservation DateRangeValue →
-    SimpleComparisonOperand DateRangeCellValue
-  | .empty => .notEvaluated
-  | .value value => .value (.exact value) true
-  | .unknown cause | .poison cause => .unknown cause
-
-/-- Compare internally read mixed observations through the shared exact-instant equality seam. -/
+/-- Compare internally read mixed observations through the shared exact-or-yearless equality seam. -/
 private def evaluateObserved
     (operation : CheckedDateRangeConstructionStoredComparison model)
     (construction : DateRangeConstructionObservation)
-    (stored : CellObservation DateRangeValue) :
+    (stored : CellObservation DateRangeCellValue) :
     DateRangeConstructionStoredComparisonResult := {
   construction
   stored
   position := operation.position
   verdict := match operation.position with
     | .left => operation.comparison.evalDateRangeCellValues
-        construction.comparisonOperand (storedComparisonOperand stored)
+        construction.comparisonOperand stored.asValidationSimpleOperand
     | .right => operation.comparison.evalDateRangeCellValues
-        (storedComparisonOperand stored) construction.comparisonOperand }
+        stored.asValidationSimpleOperand construction.comparisonOperand }
 
 /-- Read both operands from one immutable document in authored order, preserving every observation beside the verdict. -/
 def evaluate (operation : CheckedDateRangeConstructionStoredComparison model)

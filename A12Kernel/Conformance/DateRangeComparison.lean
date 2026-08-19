@@ -106,6 +106,24 @@ private def storedRange : FlatFieldDecl := {
   policy := { kind := .dateRange }
   dateRangePolicy := some { format := "dd.MM.yyyy", separator := "-" } }
 
+private def storedMonthRange : FlatFieldDecl := {
+  storedRange with
+  id := 25
+  name := "StoredMonths"
+  dateRangePolicy := some { format := "MM", separator := "/" } }
+
+private def storedMonthDayRange : FlatFieldDecl := {
+  storedRange with
+  id := 26
+  name := "StoredMonthDays"
+  dateRangePolicy := some { format := "MM-dd", separator := "/" } }
+
+private def storedIsoRange : FlatFieldDecl := {
+  storedRange with
+  id := 27
+  name := "StoredIsoRange"
+  dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } }
+
 private def checkedModel : FlatModel := {
   fields := [leftStart, leftFinish, rightStart, rightFinish, storedRange,
     leftYearStart, leftYearFinish, rightYearStart, rightYearFinish,
@@ -113,7 +131,8 @@ private def checkedModel : FlatModel := {
     wrongModeMonthFragment, leftMonthOnlyStart, leftMonthOnlyFinish,
     rightMonthOnlyStart, rightMonthOnlyFinish, leftMonthDayStart,
     leftMonthDayFinish, rightMonthDayStart, rightMonthDayFinish,
-    dottedStart, dottedFinish]
+    dottedStart, dottedFinish, storedMonthRange, storedMonthDayRange,
+    storedIsoRange]
   timeZoneId := "Europe/Berlin"
   baseYear := some 2024 }
 
@@ -197,6 +216,20 @@ private def checkedMixedResult? (position : DateRangeConstructionPosition)
     Option DateRangeConstructionStoredComparisonResult := do
   let input ← checkedMixedInput? startRaw finishRaw stored storedRaw
   let operation ← checkedMixedOperation? position op
+  (operation.evaluate input).toOption
+
+private def checkedMixedResultFor? (model : FlatModel)
+    (startField finishField storedField : FlatFieldDecl)
+    (position : DateRangeConstructionPosition) (op : EqualityOp)
+    (startRaw finishRaw : RawCell) (storedText : String) (storedRaw : RawCell) :
+    Option DateRangeConstructionStoredComparisonResult := do
+  let input ← checkedInputFromFor model [
+    inputCell startField startRaw,
+    inputCell finishField finishRaw,
+    { address := { field := storedField.id, path := [] },
+      stored := storedText, raw := storedRaw }]
+  let operation ← (elaborateDateRangeConstructionStoredComparison model
+    startField.id finishField.id storedField.id position op).toOption
   (operation.evaluate input).toOption
 
 private def checkedFragmentResultFor? (model : FlatModel)
@@ -397,6 +430,76 @@ example :
       (dateRaw startValue) (dateRaw finishValue)
       "02.06.2024-30.06.2024" (.parsed (.dateRange storedChangedStartValue))).map
         (fun result => result.verdict) = some (.fired .value) := by
+  native_decide
+
+/- A no-Base-Year `MM` construction compares directly with the matching stored component profile without manufacturing a year. -/
+example :
+    ((checkedMixedResultFor? checkedModelNoBase
+      leftMonthOnlyStart leftMonthOnlyFinish storedMonthRange .left .equal
+      (dateRaw (yearMonthValue 1999 2)) (dateRaw (yearMonthValue 2001 3))
+      "02/03" (.parsed (.dateRange (.yearlessMonth 2 3)))).map fun result =>
+        (result.position, result.construction.start, result.construction.finish,
+          result.stored, result.verdict)) =
+      some (.left, .value (.month 2), .value (.month 3),
+        .value (.yearlessMonth 2 3), .fired .value) := by
+  native_decide
+
+/- The mixed compatibility gate preserves both exact stored presentations rather than keying admission on one lexical spelling. -/
+example :
+    ((checkedMixedResultFor? checkedModel
+      leftStart leftFinish storedIsoRange .left .equal
+      (dateRaw startValue) (dateRaw finishValue)
+      "2024-06-01/2024-06-30"
+      (.parsed (.dateRange storedSameValue))).map fun result =>
+        (result.stored, result.verdict)) =
+      some (.value (.exact storedSameValue), .fired .value) := by
+  native_decide
+
+/- Yearless `MM` comparison is symmetric in authored position and observes changes to either ordered endpoint. -/
+example :
+    (checkedMixedResultFor? checkedModelNoBase
+      leftMonthOnlyStart leftMonthOnlyFinish storedMonthRange .right .notEqual
+      (dateRaw (yearMonthValue 2004 2)) (dateRaw (yearMonthValue 2004 3))
+      "02/04" (.parsed (.dateRange (.yearlessMonth 2 4)))).map
+        (fun result => (result.position, result.verdict)) =
+      some (.right, .fired .value) ∧
+    (checkedMixedResultFor? checkedModelNoBase
+      leftMonthOnlyStart leftMonthOnlyFinish storedMonthRange .left .equal
+      (dateRaw (yearMonthValue 1999 2)) (dateRaw (yearMonthValue 1999 3))
+      "01/03" (.parsed (.dateRange (.yearlessMonth 1 3)))).map
+        (fun result => result.verdict) = some .notFired := by
+  native_decide
+
+/- No-Base-Year `MM-dd` retains both month/day endpoint labels and delegates equality through the same shared cell seam. -/
+example :
+    ((checkedMixedResultFor? checkedModelNoBase
+      leftMonthDayStart leftMonthDayFinish storedMonthDayRange .right .equal
+      (dateRaw (monthDayValue 1999 2 29)) (dateRaw (monthDayValue 2001 3 1))
+      "02-29/03-01" (.parsed (.dateRange (.yearlessMonthDay
+        { month := 2, day := 29 } { month := 3, day := 1 })))).map fun result =>
+          (result.position, result.construction.start, result.construction.finish,
+            result.stored, result.verdict)) =
+      some (.right, .value (monthDayEndpoint 2 29),
+        .value (monthDayEndpoint 3 1),
+        .value (.yearlessMonthDay
+          { month := 2, day := 29 } { month := 3, day := 1 }),
+        .fired .value) ∧
+    (checkedMixedResultFor? checkedModelNoBase
+      leftMonthDayStart leftMonthDayFinish storedMonthDayRange .left .notEqual
+      (dateRaw (monthDayValue 2000 2 28)) (dateRaw (monthDayValue 2000 3 1))
+      "02-28/03-02" (.parsed (.dateRange (.yearlessMonthDay
+        { month := 2, day := 28 } { month := 3, day := 2 })))).map
+          (fun result => result.verdict) = some (.fired .value) := by
+  native_decide
+
+/- Yearless mixed execution preserves formal-before-empty classification and stored emptiness through its rich result. -/
+example :
+    ((checkedMixedResultFor? checkedModelNoBase
+      leftMonthOnlyStart leftMonthOnlyFinish storedMonthRange .left .equal
+      (.rejected .malformed) .presentEmpty "" .presentEmpty).map fun result =>
+        (result.construction.start, result.construction.finish,
+          result.stored, result.verdict)) =
+      some (.unknown .malformed, .empty, .empty, .unknown) := by
   native_decide
 
 /- Mixed execution compares reconstructed instants, not the construction input's incoming instant. -/
@@ -630,7 +733,7 @@ example :
       | .error _ => false) = true := by
   native_decide
 
-/- DateFragment construction remains excluded from the construction-versus-stored execution capsule. -/
+/- Unsupported exact fragments remain excluded, while supported construction profiles must match the stored declaration's component identity. -/
 example :
     (match elaborateDateRangeConstructionStoredComparison checkedModel
         leftYearStart.id leftYearFinish.id storedRange.id .left .equal with
@@ -657,13 +760,30 @@ example :
       | _ => false) = true ∧
     (match elaborateDateRangeConstructionStoredComparison checkedModelNoBase
         leftMonthOnlyStart.id leftMonthOnlyFinish.id storedRange.id .left .equal with
-      | .error (.unsupportedConstructionProfile
-          .yearlessMonth .yearlessMonth) => true
+      | .error (.componentMismatch .yearlessMonth (.exact .dayMonthYearDash)) => true
       | _ => false) = true ∧
     (match elaborateDateRangeConstructionStoredComparison checkedModelNoBase
         leftMonthDayStart.id leftMonthDayFinish.id storedRange.id .right .equal with
+      | .error (.componentMismatch .yearlessMonthDay (.exact .dayMonthYearDash)) => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstructionStoredComparison checkedModelNoBase
+        leftMonthOnlyStart.id leftMonthOnlyFinish.id
+        storedMonthDayRange.id .left .equal with
+      | .error (.componentMismatch .yearlessMonth .yearlessMonthDay) => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstructionStoredComparison checkedModelNoBase
+        leftMonthDayStart.id leftMonthDayFinish.id storedMonthRange.id .right .equal with
+      | .error (.componentMismatch .yearlessMonthDay .yearlessMonth) => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstructionStoredComparison checkedModel
+        leftMonthOnlyStart.id leftMonthOnlyFinish.id storedMonthRange.id .left .equal with
       | .error (.unsupportedConstructionProfile
-          .yearlessMonthDay .yearlessMonthDay) => true
+          (.monthFragment 2024) (.monthFragment 2024)) => true
+      | _ => false) = true ∧
+    (match elaborateDateRangeConstructionStoredComparison checkedModel
+        leftStart.id leftFinish.id storedMonthRange.id .right .equal with
+      | .error (.componentMismatch (.full .yearMonthDayDashes)
+          .yearlessMonth) => true
       | _ => false) = true := by
   native_decide
 
