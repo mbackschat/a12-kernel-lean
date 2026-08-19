@@ -11,8 +11,8 @@ Detailed coverage belongs in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), o
 <a id="active-unit"></a>
 ## Selected work
 
-- `state`: direct nonrepeatable constructor targets remain internally closed for both exact policies and matching exact-valued fragments. DateRange `FirstFilledValue` covers the six direct-star policies plus a finite direct nonrepeatable same-group list under any one of those six policies, preserving exact or yearless identity, authored source order, recursive lazy selection, and declaration-owned target rendering.
-- `state`: Kernel calibration covers dotted/dash lists at lengths two and three and three-source lists for all four fragments.
+- `state`: direct nonrepeatable constructor targets are internally closed for both exact policies and all four matching fragments, preserving component-only `MM` and `MM-dd` without Base Year. DateRange `FirstFilledValue` covers the six direct-star policies plus a finite direct nonrepeatable same-group list under any one of those six policies, preserving exact or yearless identity, authored source order, recursive lazy selection, and declaration-owned target rendering.
+- `state`: Kernel calibration covers no-Base-Year `MM` and `MM-dd` constructor targets, dotted/dash lists at lengths two and three, and three-source lists for all four fragments.
 - `gap`: [SG6 DateRange Date/DateFragment endpoint admission and completion](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
 - `oracle`: use the [canonical Date-range clause](../spec/05-dates-and-time.md#8-date-ranges-and-overlap), [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion), and the current [temporal implementation owners](IMPLEMENTATION-MAP.md#6--dates-and-time) to select a source-closed non-overlapping unit.
 - `route`: SG6 requires read-only route discovery before another semantic edit; the completed direct-star and six-profile direct-list slices do not establish ISO/slash list correspondence, fragment-list formal suffixes, external authorability beyond three sources, or mixed, group, filtered, nested, partial-validation, and scheduling routes.

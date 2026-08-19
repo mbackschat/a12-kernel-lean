@@ -152,6 +152,25 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Compatibility:** Do not suppress formal-input reporting for an unread computation suffix, eagerly poison selection from that suffix, synthesize years for unconfigured fragments, infer ISO/slash list correspondence or authorability beyond three sources, widen other entity shapes from this packet, or disturb direct-star behavior.
 - **Acceptance:** Canonical peer prose names both observation phases and the measured two/three-source exact and three-source fragment boundaries; maintained static and dual-Kernel/JVM/Node cases separate recursive continuation, both terminal classes, exact/fragment identity, profile and target-self-reference gates; existing entity-list, scan, value, and target owners remain singular; and the handback supplies the reviewed revision plus per-surface disposition.
 
+<a id="spec-2026-08-19-05"></a>
+<a id="spec-2026-08-19-05--date-range-construction-targets-admit-yearless-fragments"></a>
+
+### SPEC-2026-08-19-05 - DateRange construction targets admit yearless fragments
+
+- **Status:** pending
+- **Kind:** semantic correction, locally originated and locally measured
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `89aa03957034de620562eb23a095d878f6547dca` (clean before and after)
+- **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool `0.13.0` and both Kernel strategies
+- **Canonical clause:** [`09-computations.md` §4](../spec/09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape)
+- **Delta:** Without Base Year, a direct nonrepeatable `MM` or `MM-dd` DateRange target admits a same-profile `DateRange(start, finish)` computation in the same fixed group. The result retains and renders the two ordered component labels without manufacturing a year or instant.
+- **Delta:** Ordered inputs are accepted; inverted inputs retain the attempted target text as ERRORED; empty inputs clear a seeded target; and malformed input is reported through the formal-input inventory while the target clears. Existing cross-profile and structural refusals remain unchanged.
+- **Basis:** Two guarded structured modifications plus persisted readback and whole-model checking are Kernel-confirmed. The `MM` and `MM-dd` operation identities are SHA-256 `2d997b66fde9b991c194ea4bb260a794e575d1ea54c4d85f6b5304416e4edd53` and `962f0dd82431b57db50be4ac4e2aa0f8eef1c4d1096a8c7f57b9f7eabc9d2325`.
+- **Basis:** The four-row request is SHA-256 `b73e200d2d91b4b7cba7ff72ceaa77611cf6af3f91f7440ded9c7e443d238d17`; the model is `a03a0a49947735da129c19b9a5ba1f2de27277bd57f11154a147765f6c9693ef`; two byte-identical dual-Kernel artifacts are `5110e7aa524f8ef367ca0a41c6fe152dd038a00762d72670492b498b1a08e8b9`.
+- **Requested a12-dmkits reconciliation:** Extend the canonical DateRange construction-target account and existing constructor computation tests to both no-Base-Year fragment profiles. Reuse the current typed DateRange value, checked document, construction evaluator, target renderer, and Kernel/JVM/Node routes; add no value schema, document, evaluator, probe route, or harness.
+- **Compatibility:** Do not invent Base Year, force component-only values through exact endpoint resolution, copy source text as semantic identity, widen crossed profiles or repeatable targets, or disturb configured fragment and exact targets.
+- **Acceptance:** Canonical peer prose states the six matching constructor-target profiles and exact-versus-yearless result boundary; maintained Kernel and JVM/Node cases cover both yearless accepted and inverted outputs plus empty/formal behavior and crossed-profile controls; existing typed value and target owners remain singular; and the handback supplies the reviewed revision plus per-surface disposition.
+
 <a id="spec-2026-08-18-01"></a>
 <a id="spec-2026-08-18-01--a-present-date-range-separator-with-a-malformed-split-is-a-format-error"></a>
 

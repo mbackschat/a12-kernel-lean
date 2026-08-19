@@ -192,11 +192,12 @@ private def inputCell (field : FlatFieldDecl) (stored : String)
   raw
 }
 
-private def checkedInputFor? (startField finishField : FlatFieldDecl)
+private def checkedInputForModel? (candidate : FlatModel)
+    (startField finishField : FlatFieldDecl)
     (startStored finishStored : String)
-    (startRaw finishRaw : RawCell) : Option (CheckedDocument model) := do
+    (startRaw finishRaw : RawCell) : Option (CheckedDocument candidate) := do
   let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
-    builtinStringPatternCompiler model).toOption
+    builtinStringPatternCompiler candidate).toOption
   (checkDocument prepared "en_US" {
     instantiatedRows := []
     cells := [
@@ -205,20 +206,29 @@ private def checkedInputFor? (startField finishField : FlatFieldDecl)
     ]
   }).toOption
 
-private def operationFor? (target start finish : FlatFieldDecl) :=
-  (elaborateDateRangeConstructionComputation model ["Order"]
+private def checkedInputFor? := checkedInputForModel? model
+
+private def operationForModel? (candidate : FlatModel)
+    (target start finish : FlatFieldDecl) :=
+  (elaborateDateRangeConstructionComputation candidate ["Order"]
     target.id start.id finish.id).toOption
+
+private def operationFor? := operationForModel? model
 
 private def operation? := operationFor? target start finish
 
-private def executeFor? (target start finish : FlatFieldDecl)
+private def executeForModel? (candidate : FlatModel)
+    (target start finish : FlatFieldDecl)
     (startStored finishStored : String)
     (startRaw finishRaw : RawCell) :
     Option DateRangeConstructionComputationResult := do
-  let input ← checkedInputFor? start finish startStored finishStored
+  let input ← checkedInputForModel? candidate start finish
+    startStored finishStored
     startRaw finishRaw
-  let operation ← operationFor? target start finish
+  let operation ← operationForModel? candidate target start finish
   (operation.execute input).toOption
+
+private def executeFor? := executeForModel? model
 
 private def execute? := executeFor? target start finish
 
@@ -233,7 +243,13 @@ private def executeMonth? := executeFor? monthTarget monthStart monthFinish
 private def executeMonthDay? :=
   executeFor? monthDayTarget monthDayStart monthDayFinish
 
-/- Full-Date constructions reach both exact targets, and matching exact-valued fragments reach their targets. -/
+private def executeUnconfiguredMonth? :=
+  executeForModel? unconfiguredModel monthTarget monthStart monthFinish
+
+private def executeUnconfiguredMonthDay? :=
+  executeForModel? unconfiguredModel monthDayTarget monthDayStart monthDayFinish
+
+/- Full-Date constructions and every matching fragment profile reach their targets, including the two component-only profiles without Base Year. -/
 example :
     (elaborateDateRangeConstructionComputation model ["Order"] target.id
       start.id finish.id).isOk = true ∧
@@ -246,7 +262,11 @@ example :
     (elaborateDateRangeConstructionComputation model ["Order"] monthTarget.id
       monthStart.id monthFinish.id).isOk = true ∧
     (elaborateDateRangeConstructionComputation model ["Order"] monthDayTarget.id
-      monthDayStart.id monthDayFinish.id).isOk = true := by
+      monthDayStart.id monthDayFinish.id).isOk = true ∧
+    (elaborateDateRangeConstructionComputation unconfiguredModel ["Order"]
+      monthTarget.id monthStart.id monthFinish.id).isOk = true ∧
+    (elaborateDateRangeConstructionComputation unconfiguredModel ["Order"]
+      monthDayTarget.id monthDayStart.id monthDayFinish.id).isOk = true := by
   native_decide
 
 /- Profile mismatch, direct placement, declaring group, and target kind remain separate static gates. -/
@@ -268,11 +288,27 @@ example :
       | .error (.endpointFormat (.monthDayFragment 2024) (.monthDayFragment 2024)) => true
       | _ => false) &&
     (match elaborateDateRangeConstructionComputation unconfiguredModel ["Order"]
-        monthTarget.id monthStart.id monthFinish.id with
+        monthDayTarget.id monthStart.id monthFinish.id with
       | .error (.endpointFormat .yearlessMonth .yearlessMonth) => true
       | _ => false) &&
     (match elaborateDateRangeConstructionComputation unconfiguredModel ["Order"]
-        monthDayTarget.id monthDayStart.id monthDayFinish.id with
+        monthTarget.id monthDayStart.id monthDayFinish.id with
+      | .error (.endpointFormat .yearlessMonthDay .yearlessMonthDay) => true
+      | _ => false) &&
+    (match elaborateDateRangeConstructionComputation unconfiguredModel ["Order"]
+        target.id monthStart.id monthFinish.id with
+      | .error (.endpointFormat .yearlessMonth .yearlessMonth) => true
+      | _ => false) &&
+    (match elaborateDateRangeConstructionComputation unconfiguredModel ["Order"]
+        isoTarget.id monthStart.id monthFinish.id with
+      | .error (.endpointFormat .yearlessMonth .yearlessMonth) => true
+      | _ => false) &&
+    (match elaborateDateRangeConstructionComputation unconfiguredModel ["Order"]
+        target.id monthDayStart.id monthDayFinish.id with
+      | .error (.endpointFormat .yearlessMonthDay .yearlessMonthDay) => true
+      | _ => false) &&
+    (match elaborateDateRangeConstructionComputation unconfiguredModel ["Order"]
+        isoTarget.id monthDayStart.id monthDayFinish.id with
       | .error (.endpointFormat .yearlessMonthDay .yearlessMonthDay) => true
       | _ => false) &&
     (match elaborateDateRangeConstructionComputation model ["Order"]
@@ -427,6 +463,36 @@ example :
         outcome := .accepted expectedMonthDayStored
       } ∧
     (executeMonthDay? "03-15" "02-29"
+      (.parsed (.temporal (.date (dateValue 0 2000 3 15))))
+      (.parsed (.temporal (.date (dateValue 0 2000 2 29))))).map (·.outcome) =
+        some (.errored expectedMonthDayInvertedStored .inverted) := by
+  native_decide
+
+/- Without Base Year, construction targets retain component-only endpoint identity, including inverted attempted values. -/
+example :
+    executeUnconfiguredMonth? "01" "02"
+      (.parsed (.temporal (.date (dateValue 0 2000 1 1))))
+      (.parsed (.temporal (.date (dateValue 0 2000 2 1)))) = some {
+        construction := {
+          start := .value (.month 1)
+          finish := .value (.month 2)
+        }
+        outcome := .accepted expectedMonthStored
+      } ∧
+    (executeUnconfiguredMonth? "03" "02"
+      (.parsed (.temporal (.date (dateValue 0 2000 3 1))))
+      (.parsed (.temporal (.date (dateValue 0 2000 2 1))))).map (·.outcome) =
+        some (.errored expectedMonthInvertedStored .inverted) ∧
+    executeUnconfiguredMonthDay? "01-31" "02-29"
+      (.parsed (.temporal (.date (dateValue 0 2000 1 31))))
+      (.parsed (.temporal (.date (dateValue 0 2000 2 29)))) = some {
+        construction := {
+          start := .value (.monthDay { month := 1, day := 31 })
+          finish := .value (.monthDay { month := 2, day := 29 })
+        }
+        outcome := .accepted expectedMonthDayStored
+      } ∧
+    (executeUnconfiguredMonthDay? "03-15" "02-29"
       (.parsed (.temporal (.date (dateValue 0 2000 3 15))))
       (.parsed (.temporal (.date (dateValue 0 2000 2 29))))).map (·.outcome) =
         some (.errored expectedMonthDayInvertedStored .inverted) := by

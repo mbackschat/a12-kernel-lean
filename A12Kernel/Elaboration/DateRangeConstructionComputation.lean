@@ -33,6 +33,8 @@ def ofProfiles? : DateRangeEndpointFormat → DateRangeInputFormat →
   | .yearMonthFragment, .yearMonthFragment => some .yearMonthFragment
   | .monthFragment _, .yearlessMonth => some .monthFragment
   | .monthDayFragment _, .yearlessMonthDay => some .monthDayFragment
+  | .yearlessMonth, .yearlessMonth => some .monthFragment
+  | .yearlessMonthDay, .yearlessMonthDay => some .monthDayFragment
   | _, _ => none
 
 /-- Render one resolved range through the checked exact or fragment target presentation. Each constructor is derived from the declaration's exact format/separator pair. -/

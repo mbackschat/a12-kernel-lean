@@ -192,6 +192,20 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: exact instants are locally reconstructed under the checked model-zone profile but not externally exposed. Empty/formal rows, indices, repeatable placement, computation targets, and rendering remain outside this checkpoint.
 - `sync`: configured Base-Year completion uses the existing §6 account. Yearless comparison is a new canonical correction under pending [`SPEC-2026-08-19-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-02--yearless-date-range-comparison-remains-legal-without-base-year).
 
+<a id="src-date-range-yearless-construction-target"></a>
+#### Yearless DateRange construction targets
+
+- `revision`: source-shipped dmtool `0.13.0` and its structured authoring route were inspected at clean a12-dmkits `89aa03957034de620562eb23a095d878f6547dca`; both runtime strategies used built/runtime Kernel `30.8.1` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`.
+- `static-route`: two guarded `computation modify --dry-run` transactions replace existing direct computations with `DateRange(MonthStart, MonthFinish)` and `DateRange(MonthDayStart, MonthDayFinish)` in one no-Base-Year model; persisted structured readback and whole-model checking retain both operations as `KERNEL_CONFIRMED`.
+- `static-identity`: the `MM` operation is SHA-256 `2d997b66fde9b991c194ea4bb260a794e575d1ea54c4d85f6b5304416e4edd53`; the `MM-dd` operation is `962f0dd82431b57db50be4ac4e2aa0f8eef1c4d1096a8c7f57b9f7eabc9d2325`.
+- `runtime-route`: the persisted `Europe/Berlin` model runs filled, inverted, empty, and malformed-start rows through dynamic Groovy and generated Java.
+- `runtime-claim`: both Kernel strategies accept `01/02` and `01-31/02-29`; retain inverted attempts `12/02` and `12-31/01-01` with target error state; clear seeded targets for empty inputs; and clear both targets while reporting `datumFormatFalsch` for malformed starts.
+- `runtime-identity`: request SHA-256 `b73e200d2d91b4b7cba7ff72ceaa77611cf6af3f91f7440ded9c7e443d238d17`; model `a03a0a49947735da129c19b9a5ba1f2de27277bd57f11154a147765f6c9693ef`; two byte-identical artifacts `5110e7aa524f8ef367ca0a41c6fe152dd038a00762d72670492b498b1a08e8b9`.
+- `separation`: the `MM` and `MM-dd` rows distinguish component granularity; the filled/inverted pair separates presentation from target acceptance, while empty and malformed rows separate ordinary clearing from formal-input clearing.
+- `mechanism-limit`: these observations discharge static authorability and public outcomes. They do not establish the Kernel's exact-versus-yearless carrier, copy-versus-render mechanism, or internal poison representation.
+- `limit`: exact and Base-Year-completed fragment constructor targets, crossed target profiles, alternate separators, repeatable targets, alternatives, scheduling, partial validation, and application destinations remain outside this checkpoint.
+- `sync`: this checkpoint extends the canonical computation account under pending [`SPEC-2026-08-19-05`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-05--date-range-construction-targets-admit-yearless-fragments).
+
 <a id="src-date-range-bound-extraction"></a>
 #### Stored DateRange bound extraction
 
