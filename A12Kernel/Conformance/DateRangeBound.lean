@@ -28,14 +28,17 @@ private def isoPolicy := policy "yyyy-MM-dd" "/"
 private def dottedPolicy := policy "dd.MM.yyyy" "-"
 private def monthPolicy := policy "MM" "/"
 private def yearPolicy := policy "yyyy" "/"
+private def yearMonthPolicy := policy "yyyy-MM" "/"
 private def travel := field isoPolicy
 private def dottedTravel := field dottedPolicy
 private def monthTravel := field monthPolicy
 private def yearTravel := field yearPolicy
+private def yearMonthTravel := field yearMonthPolicy
 private def model := modelFor travel
 private def dottedModel := modelFor dottedTravel
 private def monthModel := modelFor monthTravel
 private def yearModel := modelFor yearTravel
+private def yearMonthModel := modelFor yearMonthTravel
 
 private def dateValue (epochMillis : Int) (year month day : Nat) : DateValue := {
   instant := { epochMillis }
@@ -46,6 +49,11 @@ private def dateValue (epochMillis : Int) (year month day : Nat) : DateValue := 
 private def january : DateRangeValue := {
   start := dateValue 1704067200000 2024 1 1
   finish := dateValue 1706659200000 2024 1 31
+}
+
+private def year2024 : DateRangeValue := {
+  start := dateValue 1704067200000 2024 1 1
+  finish := dateValue 1735603200000 2024 12 31
 }
 
 private def prepared :
@@ -78,7 +86,22 @@ private def checkDottedOne (stored : String) (raw : RawCell) :=
     }]
   }
 
-/- Both checked policies select their exact stored endpoints instead of reconstructing them from rendered text. -/
+private def yearPrepared :
+    PreparedFlatStringContext yearModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler yearModel).toOption.get (by native_decide)
+
+private def checkYearOne (stored : String) (raw : RawCell) :=
+  checkDocument yearPrepared "en_US" {
+    instantiatedRows := []
+    cells := [{
+      address := { field := yearTravel.id, path := [] }
+      stored
+      raw
+    }]
+  }
+
+/- Both canonical checked policies select their exact stored endpoints instead of reconstructing them from rendered text. -/
 example :
     let isoInput := (checkOne "2024-01-01/2024-01-31"
       (.parsed (.dateRange january))).toOption.get (by native_decide)
@@ -127,7 +150,11 @@ example :
       | _ => false) = true := by
   native_decide
 
-/- Admission stays bounded to direct nonrepeatable DateRange fields under the two canonical policies. -/
+private def fullDate (year : Int) (month day : Nat)
+    (admitted : (FullDate.ofYmd? year month day).isSome) : FullDate :=
+  (FullDate.ofYmd? year month day).get admitted
+
+/- Admission accepts exact full-year policies plus `yyyy`, while every other fragment and addressing boundary stays refused. -/
 example :
     let unsupportedPolicyTravel := field (policy "yyyy-MM-dd" "-")
     let repeated : FlatFieldDecl := {
@@ -148,13 +175,15 @@ example :
     let dateModel : FlatModel := { fields := [dateField] }
     (elaborateDateRangeBound model travel.id .start).isOk &&
       (elaborateDateRangeBound dottedModel dottedTravel.id .finish).isOk &&
+      (elaborateDateRangeBound yearModel yearTravel.id .start).isOk &&
       (match elaborateDateRangeBound monthModel monthTravel.id .start with
         | .error (.unsupportedPolicy source format separator) =>
             source == monthTravel.id && format == "MM" && separator == "/"
         | _ => false) &&
-      (match elaborateDateRangeBound yearModel yearTravel.id .start with
+      (match elaborateDateRangeBound yearMonthModel yearMonthTravel.id .start with
         | .error (.unsupportedPolicy source format separator) =>
-            source == yearTravel.id && format == "yyyy" && separator == "/"
+            source == yearMonthTravel.id && format == "yyyy-MM" &&
+              separator == "/"
         | _ => false) &&
       (match elaborateDateRangeBound (modelFor unsupportedPolicyTravel)
           unsupportedPolicyTravel.id .start with
@@ -172,9 +201,37 @@ example :
         | _ => false) = true := by
   native_decide
 
-private def fullDate (year : Int) (month day : Nat)
-    (admitted : (FullDate.ofYmd? year month day).isSome) : FullDate :=
-  (FullDate.ofYmd? year month day).get admitted
+private def yearBoundConsumerSnapshot : Option
+    (CellObservation DateValue × CellObservation DateValue ×
+      DateRangeBoundComparisonResult × DateRangeBoundComponentResult) := do
+  let input ← (checkYearOne "2024/2024"
+    (.parsed (.dateRange (.exact year2024)))).toOption
+  let januarySecond := fullDate 2024 1 2 (by native_decide)
+  let start ← (elaborateDateRangeBound yearModel yearTravel.id .start).toOption
+  let finish ← (elaborateDateRangeBound yearModel yearTravel.id .finish).toOption
+  let comparison ← (elaborateDateRangeBoundComparison yearModel yearTravel.id
+    .start .left .before januarySecond).toOption
+  let component ← (elaborateDateRangeBoundComponent yearModel yearTravel.id
+    .finish .quarter).toOption
+  let startValue ← (start.evaluate .validation input).toOption
+  let finishValue ← (finish.evaluate .validation input).toOption
+  let comparisonResult ← (comparison.evaluate input).toOption
+  let componentResult ← (component.evaluate input).toOption
+  pure (startValue, finishValue, comparisonResult, componentResult)
+
+/- The year fragment preserves both exact stored endpoints and composes with the existing full-Date comparison and numeric component consumers. -/
+example : yearBoundConsumerSnapshot = some (
+    .value year2024.start,
+    .value year2024.finish,
+    {
+      selected := .value year2024.start
+      verdict := .fired .value
+    },
+    {
+      selected := .value year2024.finish
+      component := .value 4 .fixed
+    }) := by
+  native_decide
 
 private def januaryMidpoint : FullDate :=
   fullDate 2024 1 15 (by native_decide)

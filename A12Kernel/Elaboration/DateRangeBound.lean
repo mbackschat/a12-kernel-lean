@@ -7,7 +7,7 @@ import A12Kernel.Semantics.DateRangeOverlap
 
 namespace A12Kernel
 
-/-- Static refusal before one canonical direct DateRange can be read. -/
+/-- Static refusal before one checked direct DateRange can be read. -/
 inductive DirectDateRangeElabError where
   | source (error : ResolveError)
   | sourceNotDateRange (source : FieldId) (actual : SurfaceScalarKind)
@@ -41,13 +41,17 @@ structure CheckedDirectDateRange (model : FlatModel) where
   format : DateRangeInputFormat
   sourceAdmitted : model.directDateRangeInput? source = some (policy, format)
 
-/-- One selected endpoint of an exact full-year direct DateRange field. -/
+/-- Whether one checked input profile always supplies exact full-Date endpoints to a bound consumer. -/
+def DateRangeInputFormat.supportsDirectBound : DateRangeInputFormat → Bool
+  | .exact _ | .yearFragment => true
+  | .yearMonthFragment | .yearlessMonth | .yearlessMonthDay => false
+
+/-- One selected endpoint of an exact-valued direct DateRange field. -/
 structure CheckedDateRangeBound (model : FlatModel)
     extends CheckedDirectDateRange model where
   private mk ::
   bound : DateRangeBound
-  exactFormat : DateRangeFormat
-  sourceIsExact : toCheckedDirectDateRange.format = .exact exactFormat
+  sourceSupportsBound : toCheckedDirectDateRange.format.supportsDirectBound = true
 
 /-- Authored side occupied by the selected DateRange bound in one full-Date comparison. -/
 inductive DateRangeBoundComparisonPosition where
@@ -88,15 +92,25 @@ def elaborateDirectDateRange (model : FlatModel) (sourceField : FieldId) :
   else
     throw .incoherentCore
 
-/-- Refine the shared direct source to an exact full-year policy before attaching one selected endpoint. -/
+/-- Refine the shared direct source to an exact-valued policy before attaching one selected endpoint. -/
 def elaborateDateRangeBound (model : FlatModel) (sourceField : FieldId)
     (bound : DateRangeBound) :
     Except DateRangeBoundElabError (CheckedDateRangeBound model) := do
   let source ← elaborateDirectDateRange model sourceField
   match hFormat : source.format with
-  | .exact exactFormat =>
-      pure { source with bound, exactFormat, sourceIsExact := hFormat }
-  | .yearFragment | .yearMonthFragment | .yearlessMonth | .yearlessMonthDay =>
+  | .exact _ =>
+      pure {
+        toCheckedDirectDateRange := source
+        bound
+        sourceSupportsBound := by
+          simp [DateRangeInputFormat.supportsDirectBound, hFormat] }
+  | .yearFragment =>
+      pure {
+        toCheckedDirectDateRange := source
+        bound
+        sourceSupportsBound := by
+          simp [DateRangeInputFormat.supportsDirectBound, hFormat] }
+  | .yearMonthFragment | .yearlessMonth | .yearlessMonthDay =>
       throw (.unsupportedPolicy sourceField source.policy.format source.policy.separator)
 
 /-- Resolve one direct bound and retain its authored comparison position and fixed full-Date peer. -/
@@ -162,7 +176,7 @@ end CheckedDirectDateRange
 
 namespace CheckedDateRangeBound
 
-/-- Select one endpoint after the exact-policy refinement and shared direct DateRange read. Any non-exact runtime carrier still fails defensively if a malformed checked document crosses that static boundary. -/
+/-- Select one endpoint after exact-valued profile refinement and the shared direct DateRange read. Any non-exact runtime carrier still fails defensively if a malformed checked document crosses that static boundary. -/
 def evaluate (operation : CheckedDateRangeBound model) (phase : Phase)
     (input : CheckedDocument model) :
     Except DateRangeBoundFault (CellObservation DateValue) := do
