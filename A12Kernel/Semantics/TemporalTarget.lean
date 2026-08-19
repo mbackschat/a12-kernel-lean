@@ -285,7 +285,7 @@ inductive DateRangeTargetOutcome where
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
-/-- Structural failure while projecting a typed DateRange result into one exact target presentation. -/
+/-- Structural failure while projecting one exact typed DateRange value into a checked target presentation. -/
 inductive DateRangeTargetEvaluationFault where
   | unresolvedEndpoint (range : DateRangeValue)
   deriving Repr, DecidableEq

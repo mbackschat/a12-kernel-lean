@@ -63,7 +63,7 @@ inductive DateRangeInputError where
   | unresolvableEndpoint (parts : DateParts)
   deriving Repr, DecidableEq
 
-/-- Stored DateRange presentations currently classified by the checked-document route. Exact full-Date formats retain their target-compatible owner; fragment profiles remain input-specific. -/
+/-- Stored DateRange presentations classified by the checked-document route and reused as checked target profiles. Parsing and exact-or-yearless cell construction remain input-owned. -/
 inductive DateRangeInputFormat where
   | exact (format : DateRangeFormat)
   | yearFragment

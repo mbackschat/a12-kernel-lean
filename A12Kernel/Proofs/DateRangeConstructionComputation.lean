@@ -55,6 +55,9 @@ theorem dateRangeConstructionTarget_evaluateComputationResult_value
   cases format <;>
     simp [DateRangeConstructionTargetFormat.evaluateComputationResult,
       DateRangeConstructionTargetFormat.render,
+      DateRangeConstructionTargetFormat.toInputFormat,
+      DateRangeInputFormat.evaluateExactValue,
+      DateRangeInputFormat.renderResolved,
       DateRangeFormat.evaluateComputationResult, projects, ordered]
 
 /-- Every inverted resolved range retains the exact presentation attempted by the checked target. -/
@@ -68,6 +71,9 @@ theorem dateRangeConstructionTarget_evaluateComputationResult_inverted
   cases format <;>
     simp [DateRangeConstructionTargetFormat.evaluateComputationResult,
       DateRangeConstructionTargetFormat.render,
+      DateRangeConstructionTargetFormat.toInputFormat,
+      DateRangeInputFormat.evaluateExactValue,
+      DateRangeInputFormat.renderResolved,
       DateRangeFormat.evaluateComputationResult, projects, inverted]
 
 /-- Two exact endpoint observations project to the one typed range consumed by the target. -/

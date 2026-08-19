@@ -35,15 +35,34 @@ private def unsupportedDottedTarget :=
 private def unsupportedDottedSource :=
   rangeField 9 ["Cart", "Lines"] "UnsupportedDottedSource" [10]
     "dd.MM.yyyy" "/"
+private def yearTarget :=
+  rangeField 10 ["Cart"] "YearTarget" [] "yyyy" "/"
+private def yearSource :=
+  rangeField 11 ["Cart", "Lines"] "YearSource" [10] "yyyy" "/"
+private def yearMonthTarget :=
+  rangeField 12 ["Cart"] "YearMonthTarget" [] "yyyy-MM" "/"
+private def yearMonthSource :=
+  rangeField 13 ["Cart", "Lines"] "YearMonthSource" [10] "yyyy-MM" "/"
+private def monthTarget :=
+  rangeField 14 ["Cart"] "MonthTarget" [] "MM" "/"
+private def monthSource :=
+  rangeField 15 ["Cart", "Lines"] "MonthSource" [10] "MM" "/"
+private def monthDayTarget :=
+  rangeField 16 ["Cart"] "MonthDayTarget" [] "MM-dd" "/"
+private def monthDaySource :=
+  rangeField 17 ["Cart", "Lines"] "MonthDaySource" [10] "MM-dd" "/"
 
 private def model : FlatModel := {
   fields := [target, source, otherFormatSource, otherSeparatorTarget,
     otherSeparatorSource, dottedTarget, dottedSource, unsupportedDottedTarget,
-    unsupportedDottedSource]
+    unsupportedDottedSource, yearTarget, yearSource, yearMonthTarget,
+    yearMonthSource, monthTarget, monthSource, monthDayTarget, monthDaySource]
   repeatableGroups := [
     { level := 10, path := ["Cart", "Lines"], repeatability := some 99 }]
   timeZoneId := "UTC"
 }
+
+private def configuredModel : FlatModel := { model with baseYear := some 2024 }
 
 private def star (field : String) : SurfaceStarFieldPath := {
   base := .absolute
@@ -51,14 +70,17 @@ private def star (field : String) : SurfaceStarFieldPath := {
   field
 }
 
-private def checked? (targetField : FieldId) (field : String) :=
+private def checkedFor? (candidate : FlatModel)
+    (targetField : FieldId) (field : String) :=
   (checkDateRangeFirstFilledComputation
-    model ["Cart"] targetField (star field)).toOption
+    candidate ["Cart"] targetField (star field)).toOption
 
-private def prepared :
-    PreparedFlatStringContext model builtinStringPatternCompiler :=
+private def checked? := checkedFor? model
+
+private def preparedFor? (candidate : FlatModel) :
+    Option (PreparedFlatStringContext candidate builtinStringPatternCompiler) :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
-    builtinStringPatternCompiler model).toOption.get (by native_decide)
+    builtinStringPatternCompiler candidate).toOption
 
 private def dateValue (epochMillis : Int) (year month day : Nat) : DateValue := {
   instant := { epochMillis }
@@ -77,44 +99,35 @@ private structure SourceInput where
   stored : String
   raw : RawCell
 
-private def inputFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
+private def inputFor? (candidate : FlatModel) (sourceDeclaration : FlatFieldDecl)
     (sourceInputs : List SourceInput) :
-    Option (CheckedDocument model) :=
+    Option (CheckedDocument candidate) := do
+  let prepared ← preparedFor? candidate
   let sourceCells := sourceInputs.map fun input => {
     address := { field := sourceDeclaration.id, path := [input.row] }
     stored := input.stored
     raw := input.raw
   }
-  let targetStored :=
-    if targetDeclaration.dateRangePolicy ==
-        some ({ format := "dd.MM.yyyy", separator := "-" } :
-          DateRangeDeclarationPolicy) then
-      "20.03.2024-21.03.2024"
-    else
-      "2024-03-20/2024-03-21"
   (checkDocument prepared "en_US" {
     instantiatedRows := [
       { group := 10, path := [1] }, { group := 10, path := [2] }]
-    cells := [{
-      address := { field := targetDeclaration.id, path := [] }
-      stored := targetStored
-      raw := .parsed (.dateRange
-        (rangeValue 1710892800000 1710979200000 20 21))
-    }] ++ sourceCells
+    cells := sourceCells
   }).toOption
 
-private def executionFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
+private def executionFor? (candidate : FlatModel)
+    (targetDeclaration sourceDeclaration : FlatFieldDecl)
     (sourceInputs : List SourceInput) :
     Option (Except DateRangeFirstFilledComputationFault DateRangeTargetOutcome) := do
-  let operation ← checked? targetDeclaration.id sourceDeclaration.name
-  let input ← inputFor? targetDeclaration sourceDeclaration sourceInputs
+  let operation ← checkedFor? candidate targetDeclaration.id sourceDeclaration.name
+  let input ← inputFor? candidate sourceDeclaration sourceInputs
   pure (operation.execute input)
 
-private def execution? := executionFor? target source
+private def execution? := executionFor? model target source
 
-private def signatureFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
+private def signatureForModel? (candidate : FlatModel)
+    (targetDeclaration sourceDeclaration : FlatFieldDecl)
     (sourceInputs : List SourceInput) : Option String := do
-  let execution ← executionFor? targetDeclaration sourceDeclaration sourceInputs
+  let execution ← executionFor? candidate targetDeclaration sourceDeclaration sourceInputs
   let outcome ← execution.toOption
   pure (match outcome with
     | .noValue => "CLEARED"
@@ -122,9 +135,17 @@ private def signatureFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
     | .errored stored _ => "ERRORED|" ++ stored.text
     | .poison _ => "POISON")
 
+private def signatureFor? := signatureForModel? model
 private def signature? := signatureFor? target source
 
 private def selectedRange := rangeValue 1710892800000 1710979200000 20 21
+
+private def exactRange (startMillis finishMillis : Int)
+    (startYear startMonth startDay finishYear finishMonth finishDay : Nat) :
+    DateRangeCellValue := .exact {
+  start := dateValue startMillis startYear startMonth startDay
+  finish := dateValue finishMillis finishYear finishMonth finishDay
+}
 
 /- The retained temporal-family probe Kernel-calibrates these exact all-empty and first-row-filled result signatures. -/
 example :
@@ -134,6 +155,65 @@ example :
         stored := "2024-03-20/2024-03-21"
         raw := .parsed (.dateRange selectedRange)
       }] = some "VALUE|2024-03-20/2024-03-21" := by
+  native_decide
+
+/- All four fragment policies are admitted only as matching target/source pairs. -/
+example :
+    (checked? yearTarget.id "YearSource").isSome = true ∧
+      (checked? yearMonthTarget.id "YearMonthSource").isSome = true ∧
+      (checked? monthTarget.id "MonthSource").isSome = true ∧
+      (checked? monthDayTarget.id "MonthDaySource").isSome = true ∧
+      (checked? yearTarget.id "YearMonthSource").isNone = true ∧
+      (checked? monthTarget.id "MonthDaySource").isNone = true := by
+  native_decide
+
+/- Year-bearing fragment sources retain typed endpoint identity and render through the matching target policy. -/
+example :
+    signatureFor? yearTarget yearSource [{
+      row := 1
+      stored := "2024/2025"
+      raw := .parsed (.dateRange
+        (exactRange 1704067200000 1767139200000 2024 1 1 2025 12 31))
+    }] = some "VALUE|2024/2025" ∧
+      signatureFor? yearMonthTarget yearMonthSource [{
+        row := 1
+        stored := "2024-12/2025-02"
+        raw := .parsed (.dateRange
+          (exactRange 1733011200000 1740700800000 2024 12 1 2025 2 28))
+      }] = some "VALUE|2024-12/2025-02" := by
+  native_decide
+
+/- Without Base Year the checked cell preserves month and month/day component ranges rather than manufacturing exact dates. -/
+example :
+    signatureFor? monthTarget monthSource [{
+      row := 1, stored := "", raw := .presentEmpty
+    }, {
+      row := 2
+      stored := "01/02"
+      raw := .parsed (.dateRange (.yearlessMonth 1 2))
+    }] = some "VALUE|01/02" ∧
+      signatureFor? monthDayTarget monthDaySource [{
+        row := 1
+        stored := "01-31/02-29"
+        raw := .parsed (.dateRange (.yearlessMonthDay
+          { month := 1, day := 31 } { month := 2, day := 29 }))
+      }] = some "VALUE|01-31/02-29" := by
+  native_decide
+
+/- With Base Year the same month policy selects the resolved exact carrier but renders only its declared components. -/
+example :
+    signatureForModel? configuredModel monthTarget monthSource [{
+      row := 1
+      stored := "01/02"
+      raw := .parsed (.dateRange
+        (exactRange 1704067200000 1709164800000 2024 1 1 2024 2 29))
+    }] = some "VALUE|01/02" ∧
+      signatureForModel? configuredModel monthDayTarget monthDaySource [{
+        row := 1
+        stored := "01-31/02-29"
+        raw := .parsed (.dateRange
+          (exactRange 1706659200000 1709164800000 2024 1 31 2024 2 29))
+      }] = some "VALUE|01-31/02-29" := by
   native_decide
 
 /- The second exact legal declaration pair selects and renders the same checked typed endpoint payload. Static admission and the renderer are externally established separately; their direct `FirstFilledValue` composition remains external-evidence pending. -/

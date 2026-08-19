@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.FirstFilledStarSource
 
 namespace A12Kernel
 
-/-- Exact date-bearing and scalar temporal computation carriers completed through the shared direct-star shape. Additional policies remain excluded. -/
+/-- Completed scalar temporal and DateRange declaration profiles sharing the direct-star computation shape. Additional policies remain excluded. -/
 inductive TemporalFirstFilledStarCarrier where
   | monthFragment
   | yearFragment
@@ -17,6 +17,10 @@ inductive TemporalFirstFilledStarCarrier where
   | dateTimeIso
   | dateRangeIsoSlash
   | dateRangeDayMonthYearDash
+  | dateRangeYearFragment
+  | dateRangeYearMonthFragment
+  | dateRangeMonthFragment
+  | dateRangeMonthDayFragment
   deriving Repr, DecidableEq
 
 /-- Classify only the completed temporal declaration profiles. Date profiles with optional pre-1900 checking remain outside until checked temporal input represents that declaration-owned source check. -/
@@ -61,9 +65,13 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
       else
         none
   | .dateRange, _, some policy =>
-      match DateRangeFormat.ofPolicy? policy with
-      | some .isoSlash => some .dateRangeIsoSlash
-      | some .dayMonthYearDash => some .dateRangeDayMonthYearDash
+      match DateRangeInputFormat.ofPolicy? policy with
+      | some (.exact .isoSlash) => some .dateRangeIsoSlash
+      | some (.exact .dayMonthYearDash) => some .dateRangeDayMonthYearDash
+      | some .yearFragment => some .dateRangeYearFragment
+      | some .yearMonthFragment => some .dateRangeYearMonthFragment
+      | some .yearlessMonth => some .dateRangeMonthFragment
+      | some .yearlessMonthDay => some .dateRangeMonthDayFragment
       | none => none
   | _, _, _ => none
 
@@ -77,7 +85,7 @@ inductive TemporalFirstFilledStarComputationElabError where
   | sourceShape (path : List String)
   deriving Repr, DecidableEq
 
-/-- One fixed target and one direct single-level starred source with the same exact completed date-bearing or scalar temporal carrier. -/
+/-- One fixed target and one direct single-level starred source with the same completed scalar temporal or DateRange carrier. -/
 structure CheckedTemporalFirstFilledStarComputation
     (model : FlatModel) (carrier : TemporalFirstFilledStarCarrier) where
   private mk ::

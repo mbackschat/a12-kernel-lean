@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.DateRangeConstructionComparison
+import A12Kernel.Elaboration.DateRangeTargetPresentation
 import A12Kernel.Semantics.TemporalApplication
 
 /-! # Checked direct DateRange construction computation -/
@@ -16,6 +17,14 @@ inductive DateRangeConstructionTargetFormat where
 
 namespace DateRangeConstructionTargetFormat
 
+/-- Recover the checked DateRange declaration profile represented by this construction target. -/
+def toInputFormat : DateRangeConstructionTargetFormat → DateRangeInputFormat
+  | .exact format => .exact format
+  | .yearFragment => .yearFragment
+  | .yearMonthFragment => .yearMonthFragment
+  | .monthFragment => .yearlessMonth
+  | .monthDayFragment => .yearlessMonthDay
+
 /-- Recover the executable target presentation only when the construction and target expose the same supported component profile. -/
 def ofProfiles? : DateRangeEndpointFormat → DateRangeInputFormat →
     Option DateRangeConstructionTargetFormat
@@ -28,31 +37,7 @@ def ofProfiles? : DateRangeEndpointFormat → DateRangeInputFormat →
 
 /-- Render one resolved range through the checked exact or fragment target presentation. Each constructor is derived from the declaration's exact format/separator pair. -/
 def render : DateRangeConstructionTargetFormat → ResolvedDateRange → StoredDateRange
-  | .exact format, range => format.render range
-  | .yearFragment, range => {
-      text := toString range.start.civil.parts.year ++ "/" ++
-        toString range.finish.civil.parts.year
-      nonempty := by simp
-    }
-  | .yearMonthFragment, range => {
-      text := toString range.start.civil.parts.year ++ "-" ++
-        TemporalTargetText.twoDigits range.start.civil.parts.month ++ "/" ++
-        toString range.finish.civil.parts.year ++ "-" ++
-        TemporalTargetText.twoDigits range.finish.civil.parts.month
-      nonempty := by simp
-    }
-  | .monthFragment, range => {
-      text := TemporalTargetText.twoDigits range.start.civil.parts.month ++ "/" ++
-        TemporalTargetText.twoDigits range.finish.civil.parts.month
-      nonempty := by simp
-    }
-  | .monthDayFragment, range => {
-      text := TemporalTargetText.twoDigits range.start.civil.parts.month ++ "-" ++
-        TemporalTargetText.twoDigits range.start.civil.parts.day ++ "/" ++
-        TemporalTargetText.twoDigits range.finish.civil.parts.month ++ "-" ++
-        TemporalTargetText.twoDigits range.finish.civil.parts.day
-      nonempty := by simp
-    }
+  | format, range => format.toInputFormat.renderResolved range
 
 /-- Consume one typed construction result through its checked target presentation. -/
 def evaluateComputationResult (format : DateRangeConstructionTargetFormat) :
@@ -65,14 +50,7 @@ def evaluateComputationResult (format : DateRangeConstructionTargetFormat) :
           match result with
           | .noValue => .ok .noValue
           | .poison cause => .ok (.poison cause)
-          | .value range =>
-              match range.toResolvedDateRange? with
-              | none => .error (.unresolvedEndpoint range)
-              | some resolved =>
-                  let attempted := format.render resolved
-                  match resolved.direction with
-                  | .ordered => .ok (.accepted attempted)
-                  | .inverted => .ok (.errored attempted .inverted)
+          | .value range => format.toInputFormat.evaluateExactValue range
 
 end DateRangeConstructionTargetFormat
 

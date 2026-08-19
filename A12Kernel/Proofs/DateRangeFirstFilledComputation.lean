@@ -5,9 +5,9 @@ import A12Kernel.Semantics.TemporalApplication
 
 namespace A12Kernel
 
-/-- A clean checked DateRange cell retains both typed endpoints before target rendering. -/
+/-- A clean checked DateRange cell retains its exact or yearless typed identity before target rendering. -/
 theorem dateRangeFirstFilledCellAt_value
-    (addressed : CheckedAddressedCell) (range : DateRangeValue)
+    (addressed : CheckedAddressedCell) (range : DateRangeCellValue)
     (observed : observeCell .computation addressed.cell =
       .value (.dateRange range)) :
     dateRangeFirstFilledCellAt addressed = .value range := by
@@ -23,7 +23,7 @@ theorem dateRangeFirstFilledCellAt_poison
 /-- A present head terminates the DateRange scan before every suffix cell. -/
 theorem evalDateRangeFirstFilledCells_present_head
     (addressed : CheckedAddressedCell) (remaining : List CheckedAddressedCell)
-    (range : DateRangeValue)
+    (range : DateRangeCellValue)
     (selected : dateRangeFirstFilledCellAt addressed = .value range) :
     evalDateRangeFirstFilledCells (addressed :: remaining) = .value range := by
   simp [evalDateRangeFirstFilledCells, selected]
