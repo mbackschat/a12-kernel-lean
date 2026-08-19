@@ -10,6 +10,7 @@ inductive DateRangeConstructionTargetFormat where
   | exact (format : DateRangeFormat)
   | yearFragment
   | yearMonthFragment
+  | monthFragment
   deriving Repr, DecidableEq
 
 namespace DateRangeConstructionTargetFormat
@@ -20,9 +21,10 @@ def ofProfiles? : DateRangeEndpointFormat → DateRangeInputFormat →
   | .full _, .exact format => some (.exact format)
   | .yearFragment, .yearFragment => some .yearFragment
   | .yearMonthFragment, .yearMonthFragment => some .yearMonthFragment
+  | .monthFragment _, .yearlessMonth => some .monthFragment
   | _, _ => none
 
-/-- Render one resolved range through the checked exact or year-bearing target presentation. Each constructor is derived from the declaration's exact format/separator pair. -/
+/-- Render one resolved range through the checked exact or fragment target presentation. Each constructor is derived from the declaration's exact format/separator pair. -/
 def render : DateRangeConstructionTargetFormat → ResolvedDateRange → StoredDateRange
   | .exact format, range => format.render range
   | .yearFragment, range => {
@@ -37,6 +39,11 @@ def render : DateRangeConstructionTargetFormat → ResolvedDateRange → StoredD
         TemporalTargetText.twoDigits range.finish.civil.parts.month
       nonempty := by simp
     }
+  | .monthFragment, range => {
+      text := TemporalTargetText.twoDigits range.start.civil.parts.month ++ "/" ++
+        TemporalTargetText.twoDigits range.finish.civil.parts.month
+      nonempty := by simp
+    }
 
 /-- Consume one typed construction result through its checked target presentation. -/
 def evaluateComputationResult (format : DateRangeConstructionTargetFormat) :
@@ -45,7 +52,7 @@ def evaluateComputationResult (format : DateRangeConstructionTargetFormat) :
   | result =>
       match format with
       | .exact targetFormat => targetFormat.evaluateComputationResult result
-      | .yearFragment | .yearMonthFragment =>
+      | .yearFragment | .yearMonthFragment | .monthFragment =>
           match result with
           | .noValue => .ok .noValue
           | .poison cause => .ok (.poison cause)
@@ -78,7 +85,7 @@ inductive DateRangeConstructionComputationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- One checked full-Date or year-bearing-fragment construction and its matching direct nonrepeatable DateRange target. -/
+/-- One checked exact-valued construction and its matching direct nonrepeatable DateRange target. -/
 structure CheckedDateRangeConstructionComputation (model : FlatModel) where
   construction : CheckedDateRangeConstruction model
   target : CheckedDirectDateRange model
@@ -115,9 +122,9 @@ def elaborateDateRangeConstructionComputation
           }
       | none =>
           match target.format with
-          | .yearlessMonth | .yearlessMonthDay =>
+          | .yearlessMonthDay =>
               throw (.targetFormat target.format)
-          | .exact _ | .yearFragment | .yearMonthFragment =>
+          | .exact _ | .yearFragment | .yearMonthFragment | .yearlessMonth =>
               throw (.endpointFormat construction.start.format construction.finish.format)
     else
       throw .incoherentCore
