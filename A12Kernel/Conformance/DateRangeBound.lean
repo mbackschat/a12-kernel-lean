@@ -77,6 +77,16 @@ private def february2023 : DateRangeValue := {
   finish := dateValue 1677542400000 2023 2 28
 }
 
+private def leapDay2024 : DateRangeValue := {
+  start := february2024.finish
+  finish := february2024.finish
+}
+
+private def februaryTwentyEighth2023 : DateRangeValue := {
+  start := february2023.finish
+  finish := february2023.finish
+}
+
 private def prepared :
     PreparedFlatStringContext model builtinStringPatternCompiler :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
@@ -191,7 +201,7 @@ private def fullDate (year : Int) (month day : Nat)
     (admitted : (FullDate.ofYmd? year month day).isSome) : FullDate :=
   (FullDate.ofYmd? year month day).get admitted
 
-/- Admission accepts the exact-valued year-bearing profiles, while yearless and addressing boundaries stay refused. -/
+/- Admission accepts every exact-valued profile, while unconfigured yearless and addressing boundaries stay refused. -/
 example :
     let unsupportedPolicyTravel := field (policy "yyyy-MM-dd" "-")
     let repeated : FlatFieldDecl := {
@@ -225,12 +235,8 @@ example :
             source == monthDayTravel.id && format == "MM-dd" &&
               separator == "/"
         | _ => false) &&
-      (match elaborateDateRangeBound (configuredMonthDayModel 2024)
-          monthDayTravel.id .start with
-        | .error (.unsupportedPolicy source format separator) =>
-            source == monthDayTravel.id && format == "MM-dd" &&
-              separator == "/"
-        | _ => false) &&
+      (elaborateDateRangeBound (configuredMonthDayModel 2024)
+        monthDayTravel.id .start).isOk &&
       (match elaborateDateRangeBound (modelFor unsupportedPolicyTravel)
           unsupportedPolicyTravel.id .start with
         | .error (.unsupportedPolicy source format separator) =>
@@ -314,6 +320,75 @@ example :
       .value february2023.finish,
       .notFired,
       .value 28 .fixed) := by
+  native_decide
+
+private structure ConfiguredMonthDayBoundSnapshot where
+  baseYear : Option Int
+  format : DateRangeInputFormat
+  start : CellObservation DateValue
+  finish : CellObservation DateValue
+  verdict : Verdict
+  finishDay : NumericOperand
+  deriving DecidableEq
+
+private def configuredMonthDayBoundConsumerSnapshot (baseYear : Int)
+    (range : DateRangeValue) (stored : String) (expected : FullDate) :
+    Option ConfiguredMonthDayBoundSnapshot := do
+  let checkedModel := configuredMonthDayModel baseYear
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler checkedModel).toOption
+  let input ← (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := [{
+      address := { field := monthDayTravel.id, path := [] }
+      stored
+      raw := .parsed (.dateRange (.exact range))
+    }]
+  }).toOption
+  let start ← (elaborateDateRangeBound checkedModel monthDayTravel.id .start)
+    |>.toOption
+  let finish ← (elaborateDateRangeBound checkedModel monthDayTravel.id .finish)
+    |>.toOption
+  let comparison ← (elaborateDateRangeBoundComparison checkedModel
+    monthDayTravel.id .start .left .equal expected).toOption
+  let component ← (elaborateDateRangeBoundComponent checkedModel
+    monthDayTravel.id .finish .day).toOption
+  let startValue ← (start.evaluate .validation input).toOption
+  let finishValue ← (finish.evaluate .validation input).toOption
+  let comparisonResult ← (comparison.evaluate input).toOption
+  let componentResult ← (component.evaluate input).toOption
+  pure {
+    baseYear := checkedModel.baseYear
+    format := start.format
+    start := startValue
+    finish := finishValue
+    verdict := comparisonResult.verdict
+    finishDay := componentResult.component
+  }
+
+/- Configured `MM-dd` remains one exact point range in the model's year at both endpoints. -/
+example :
+    configuredMonthDayBoundConsumerSnapshot 2024 leapDay2024
+      "02-29/02-29" (fullDate 2024 2 29 (by native_decide)) = some {
+      baseYear := some 2024
+      format := .yearlessMonthDay
+      start := .value leapDay2024.start
+      finish := .value leapDay2024.finish
+      verdict := .fired .value
+      finishDay := .value 29 .fixed
+    } := by
+  native_decide
+
+example :
+    configuredMonthDayBoundConsumerSnapshot 2023 februaryTwentyEighth2023
+      "02-28/02-28" (fullDate 2023 2 28 (by native_decide)) = some {
+      baseYear := some 2023
+      format := .yearlessMonthDay
+      start := .value februaryTwentyEighth2023.start
+      finish := .value februaryTwentyEighth2023.finish
+      verdict := .fired .value
+      finishDay := .value 28 .fixed
+    } := by
   native_decide
 
 private def configuredMonthBoundConsumerSnapshot (baseYear : Int)

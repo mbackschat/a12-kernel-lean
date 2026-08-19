@@ -46,8 +46,7 @@ def DateRangeInputFormat.supportsDirectBound
     (format : DateRangeInputFormat) (baseYear : Option Int) : Bool :=
   match format with
   | .exact _ | .yearFragment | .yearMonthFragment => true
-  | .yearlessMonth => baseYear.isSome
-  | .yearlessMonthDay => false
+  | .yearlessMonth | .yearlessMonthDay => baseYear.isSome
 
 /-- One selected endpoint of an exact-valued direct DateRange field. -/
 structure CheckedDateRangeBound (model : FlatModel)
