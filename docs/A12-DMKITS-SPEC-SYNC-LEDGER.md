@@ -82,9 +82,9 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 ### SPEC-2026-08-19-01 - DateRange equality requires matching component sets across both operands
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** semantic correction, locally originated and locally measured
-- **Local revision:** introducing commit
+- **Local revision:** `bf3eee98bb1579569eabe2c4fa9be2db26534ff9`
 - **a12-dmkits basis revision:** `89aa03957034de620562eb23a095d878f6547dca` (clean before and after)
 - **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool `0.13.0`
 - **Canonical clause:** [`05-dates-and-time.md` §8](../spec/05-dates-and-time.md#8-date-ranges-and-overlap)
@@ -93,15 +93,17 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Requested a12-dmkits reconciliation:** State the cross-operand component gate in the canonical DateRange account and lock the exact same-profile admission plus fragment/full refusal in the smallest existing DateRange construction law family. Reuse the current construction and kernel-validation routes; add no parser, evaluator, schema, or harness.
 - **Compatibility:** Checking only each construction internally admits a rule the Kernel refuses. The correction must not narrow DATE/DATE_FRAGMENT mixing within one construction when the endpoint component sets match, same-profile construction equality, construction-versus-stored equality, or either legal operator.
 - **Acceptance:** Maintained documentation names the cross-operand gate, the positive and negative static rows remain Kernel-locked with the exact diagnostic, existing typed operands remain the sole representation, and the handback supplies the reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `df637d7db9f918e132ccbcc2faf1e36cd4c45bb6`
+- **Disposition:** accepted with the component-set correction. `DateRangeComparabilityLawsTest` retains matching components, both authored mismatch directions, stored-range mismatch, and matching/crossed computation targets against the real Kernel. The reviewed peer account correctly widens lexical-profile equality to date-component-set equality without adding another operand representation.
 
 <a id="spec-2026-08-19-02"></a>
 <a id="spec-2026-08-19-02--yearless-date-range-comparison-remains-legal-without-base-year"></a>
 
 ### SPEC-2026-08-19-02 - yearless DateRange comparison remains legal without Base Year
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** semantic correction, locally originated and locally measured
-- **Local revision:** introducing commit
+- **Local revision:** `78c4b008067d1f4c5c266ad37a5354dc8e2ded06`
 - **a12-dmkits basis revision:** `89aa03957034de620562eb23a095d878f6547dca` (clean before and after)
 - **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool `0.13.0` and both Kernel strategies
 - **Canonical clause:** [`05-dates-and-time.md` §6 and §8](../spec/05-dates-and-time.md#6-date-fragments-and-fragment-ranges)
@@ -111,23 +113,31 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Requested a12-dmkits reconciliation:** State the yearless comparison boundary in the canonical DateRange account and lock the exact pair, stored, endpoint-change, and year-bearing overlap rows in the existing law and differential families. Correct the interpreter's equal `MM` construction-versus-stored result through its existing typed construction/comparison route; add no parser, value schema, probe route, or harness.
 - **Compatibility:** Do not invent a Base Year, infer an instant, widen cross-component comparison, or change `MM-dd` results that already agree. The correction must preserve configured-Base-Year completion and the exact static refusal classes.
 - **Acceptance:** Canonical prose separates yearless comparison from concrete-Date completion; maintained JVM/Node and Kernel-route controls lock both endpoints and the overlap refusal; equal `MM` construction-versus-stored operands agree across engines; and the handback supplies the reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `df637d7db9f918e132ccbcc2faf1e36cd4c45bb6`
+- **Disposition:** accepted with a wider root fix. `ExprEval` and `DateMath.intervalEndOfDeclaredFormat` now apply finish-position completion to every day-omitting construction profile. `ConstructedRangeFragmentDiffTest` and `ConstructedRangeFragmentTest` retain `MM`, `yyyy`, and `yyyy-MM` equality, both changed-endpoint controls, the `MM-dd` separator, and semantic-index completion across Kernel, JVM, and Node routes.
 
 <a id="spec-2026-08-19-03"></a>
 <a id="spec-2026-08-19-03--date-range-firstfilledvalue-admits-matching-fragment-profiles"></a>
 
 ### SPEC-2026-08-19-03 - DateRange FirstFilledValue admits matching fragment profiles
 
-- **Status:** pending
+- **Status:** handed-off
 - **Kind:** semantic correction, locally originated and locally measured
-- **Local revision:** introducing commit
+- **Local revision:** `bf3fda0c65154ff3b3daead99e9b8ebf9b3077f4`
 - **a12-dmkits basis revision:** `89aa03957034de620562eb23a095d878f6547dca` (clean before and after)
 - **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool `0.13.0` and both Kernel strategies
 - **Canonical clause:** [`09-computations.md` §4](../spec/09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape)
-- **Delta:** Direct single-level starred DateRange `FirstFilledValue` admits one matching target/source profile under either exact policy or slash-separated `yyyy`, `yyyy-MM`, `MM`, and `MM-dd`. Year-bearing and Base-Year-completed values retain exact endpoints; without Base Year, `MM` and `MM-dd` retain and render ordered component pairs without a synthetic year or instant. Crossed profiles remain refused.
+- **Delta:** Direct single-level starred DateRange `FirstFilledValue` admits one matching target/source profile under either exact policy or slash-separated `yyyy`, `yyyy-MM`, `MM`, and `MM-dd`. Year-bearing and Base-Year-completed values retain exact endpoints; without Base Year, `MM` and `MM-dd` retain and render ordered component pairs without a synthetic year or instant.
+- **Component compatibility:** Profiles with different date-component sets remain refused. Dotted and ISO full-Date profiles may cross because their component sets agree, with rendering owned by the target declaration.
 - **Basis:** Guarded dmtool dry runs admit matching `yyyy`, `yyyy-MM`, `MM`, and `MM-dd`, including `MM` and `MM-dd` without Base Year, while `yyyy`/`yyyy-MM` and `MM`/`MM-dd` crosses yield `MVK_INVALID_COMPARE_TO_DATE_RANGE`. Two unchanged configured runtime artifacts are SHA-256 `0796741f7e4f2e9754beeeba5a118fa9f3541bc344a405fa6134686e9a0b2801`; two unchanged no-Base-Year artifacts are `867c9afa9a038ee6950acdc4560905d7380c305dba4aacbb157c4ae55244e01e`.
 - **Requested a12-dmkits reconciliation:** State the six matching DateRange profiles and the exact-versus-yearless result boundary in the canonical computation account. Reuse the existing typed DateRange value, ordered selection, interpreter computation, target rendering, and current differential routes; add no value schema, document, evaluator, probe route, or harness. Lock all four fragment outputs, both no-Base-Year outputs, the two crossed-profile controls, and one empty/formal separator through the existing Kernel and JVM/Node families.
 - **Compatibility:** Do not invent Base Year, force a yearless cell through full-Date resolution, copy source text as semantic identity, widen crossed profiles, or disturb either exact policy. Empty-prefix scanning, formal poison, and target application remain the existing generic computation rules.
 - **Acceptance:** Canonical peer prose and maintained cases cover the six matching profiles, both yearless outputs, crossed-profile refusal, and empty/formal behavior across the applicable Kernel and JVM/Node routes; the existing typed value and target owners remain singular; and the handback supplies the reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `df637d7db9f918e132ccbcc2faf1e36cd4c45bb6`
+- **Disposition:** the reviewed revision validates the measured six-profile computation subset, but the acceptance condition remains unmet.
+- **Remaining:** `DateRangeFirstFilledProfileDiffTest` and canonical IF304 still call that subset every Kernel-admitted DateRange profile while the same revision's complete declaration grid proves eight pairs. The declaration measurement does not establish operation admission for the two additional pairs, so a wording correction or those two focused measurements is still required.
+- **Evidence:** `DateRangeFirstFilledProfileDiffTest` retains all six selected outputs, first-filled order, seeded all-empty clearing, malformed-input clearing, and target-owned lexical rendering across both Kernel strategies and the interpreter.
+- **Scope:** the complete declaration allowlist has eight pairs; `MM` with an empty separator and `dd.MM` with `-` are not inferred into this operation-specific runtime subset.
 
 <a id="spec-2026-08-19-04"></a>
 <a id="spec-2026-08-19-04--date-range-firstfilledvalue-scans-two-direct-fields-lazily"></a>
@@ -135,9 +145,9 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 ### SPEC-2026-08-19-04 - DateRange FirstFilledValue scans direct field lists lazily
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** semantic extension, locally originated and locally measured
-- **Local revision:** introducing commit
+- **Local revision:** `3f6fa9f5e97a1c1ba6e0ec726084e8cab52464b7`
 - **a12-dmkits basis revision:** `89aa03957034de620562eb23a095d878f6547dca` (clean before and after)
 - **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool `0.13.0` and both Kernel strategies
 - **Canonical clause:** [`09-computations.md` §4](../spec/09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape)
@@ -151,15 +161,17 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Requested a12-dmkits reconciliation:** Reuse the current entity-list admission, interpreter scan, typed DateRange target, and existing differential/probe routes. Lock recursive empty-prefix continuation, middle value/formal termination, later formal inventory, all-empty, exact and fragment output, same-profile, later crossed-profile, and later target-self-reference controls without adding a value type, evaluator, document, probe route, or harness.
 - **Compatibility:** Do not suppress formal-input reporting for an unread computation suffix, eagerly poison selection from that suffix, synthesize years for unconfigured fragments, infer ISO/slash list correspondence or authorability beyond three sources, widen other entity shapes from this packet, or disturb direct-star behavior.
 - **Acceptance:** Canonical peer prose names both observation phases and the measured two/three-source exact and three-source fragment boundaries; maintained static and dual-Kernel/JVM/Node cases separate recursive continuation, both terminal classes, exact/fragment identity, profile and target-self-reference gates; existing entity-list, scan, value, and target owners remain singular; and the handback supplies the reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `df637d7db9f918e132ccbcc2faf1e36cd4c45bb6`
+- **Disposition:** accepted. `DirectRangeFirstFilledListDiffTest` retains recursive empty-prefix continuation, both terminal classes, all-empty clearing, exact output, and the eager formal-input inventory through the Kernel and public computation report. `FirstFilledValueFamilyLawsTest` locks the third-slot profile gate, while the existing computed-target diagnostic owner retains self-reference without a duplicate route.
 
 <a id="spec-2026-08-19-05"></a>
 <a id="spec-2026-08-19-05--date-range-construction-targets-admit-yearless-fragments"></a>
 
 ### SPEC-2026-08-19-05 - DateRange construction targets admit yearless fragments
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** semantic correction, locally originated and locally measured
-- **Local revision:** introducing commit
+- **Local revision:** `e92b77b4b4d61d22da41ec6c6edad9cbba8136bf`
 - **a12-dmkits basis revision:** `89aa03957034de620562eb23a095d878f6547dca` (clean before and after)
 - **Kernel behavior:** 30.8.1 built and runtime, measured through source-shipped dmtool `0.13.0` and both Kernel strategies
 - **Canonical clause:** [`09-computations.md` §4](../spec/09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape)
@@ -170,15 +182,17 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Requested a12-dmkits reconciliation:** Extend the canonical DateRange construction-target account and existing constructor computation tests to both no-Base-Year fragment profiles. Reuse the current typed DateRange value, checked document, construction evaluator, target renderer, and Kernel/JVM/Node routes; add no value schema, document, evaluator, probe route, or harness.
 - **Compatibility:** Do not invent Base Year, force component-only values through exact endpoint resolution, copy source text as semantic identity, widen crossed profiles or repeatable targets, or disturb configured fragment and exact targets.
 - **Acceptance:** Canonical peer prose states the six matching constructor-target profiles and exact-versus-yearless result boundary; maintained Kernel and JVM/Node cases cover both yearless accepted and inverted outputs plus empty/formal behavior and crossed-profile controls; existing typed value and target owners remain singular; and the handback supplies the reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `df637d7db9f918e132ccbcc2faf1e36cd4c45bb6`
+- **Disposition:** accepted after the shared finish-completion fix. `ConstructedRangeTargetDiffTest` retains both yearless values, both inverted attempted values, empty clearing, and malformed clearing across both Kernel strategies and the interpreter. The target renderer remains the sole stored-form owner.
 
 <a id="spec-2026-08-18-01"></a>
 <a id="spec-2026-08-18-01--a-present-date-range-separator-with-a-malformed-split-is-a-format-error"></a>
 
 ### SPEC-2026-08-18-01 - a present DateRange separator with a malformed split is a format error
 
-- **Status:** pending
+- **Status:** accepted
 - **Kind:** semantic correction, locally originated from kernel source
-- **Local revision:** introducing commit
+- **Local revision:** `6a10409fc60b757ba6ee2b530b77f6ea82fc94fe`
 - **a12-dmkits basis revision:** `89aa03957034de620562eb23a095d878f6547dca` (clean before and after)
 - **Kernel behavior:** 30.8.1 runtime source
 - **Canonical clause:** [`05-dates-and-time.md` stored DateRange formal checking](../spec/05-dates-and-time.md)
@@ -187,6 +201,8 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Requested a12-dmkits reconciliation:** Correct the existing DateRange formal classifier and canonical prose at their current owners. Extend `DateRangeFormalDiffTest` and the matching interpreter unit family with an absent separator yielding `datumBereichTrennerFehlt`, an extra separator yielding `datumBereichFormatFalsch`, and a leading or trailing empty endpoint yielding `datumBereichFormatFalsch`. Reuse the existing classifier and differential route; add no parser, value type, or harness.
 - **Compatibility:** Treating every non-two-part split as a missing separator reports the wrong public formal code for stored values that visibly contain the separator. The correction must not change valid/equal ranges, invalid endpoint syntax or calendar reality, inverted order, the Gregorian floor, fragment completion, or declaration-owned separator selection.
 - **Acceptance:** Canonical a12-dmkits prose states the containment-versus-shape distinction; maintained dynamic-Groovy/generated-Java and interpreter/JVM/Node cases retain all three split discriminators and neighboring cause controls; the existing DateRange classifier remains the sole owner; and the handback supplies the exact committed revision plus per-surface disposition.
+- **a12-dmkits revision:** `df637d7db9f918e132ccbcc2faf1e36cd4c45bb6`
+- **Disposition:** accepted with the reachable empty-separator sibling. `FormalError` now distinguishes separator absence from malformed split shape; `DateRangeFormalDiffTest` and `DateRangeSplitFormalTest` retain absent, extra, leading-empty, and trailing-empty forms. The same owner now halves a legal empty-separator `MM` token, with `0609` retained as `06` through `09`.
 
 <a id="spec-2026-08-17-03"></a>
 <a id="spec-2026-08-17-03--starred-group-firstfilledvalue-is-declaration-major-across-rows"></a>

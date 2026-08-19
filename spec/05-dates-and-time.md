@@ -6,7 +6,11 @@ Empty-date behaviour (not-evaluated in comparisons; `0` in the extractors/differ
 
 Stored Date, Time, DateTime, and DateRange text is converted non-leniently against the field's declared format. A noncanonical spelling such as `2024-3-5` or `20240305` for a `yyyy-MM-dd` declaration, `14:5:0` for `HH:mm:ss`, or `1.1.2024-31.12.2024` for a fixed-width range does not normalize to a temporal value: conversion fails, the physical placement and exact text remain, and formal checking makes the cell not-check-relevant. Conversely, text that converts already has the model format, so stored temporal input has no Number-like canonicalization stage.
 
+The static DATE field-format whitelist is exactly `yyyy-MM-dd`, `dd.MM.yyyy`, `yyyy`, `yyyy-MM`, `yyyyMM`, `MM`, and `MM-dd`. It is not derived compositionally from component presence: `yyyy/MM`, `MM.yyyy`, `MM-yyyy`, and `dd.MM` are refused. The DateRange whitelist is separate and is stated in [§8](#8-date-ranges-and-overlap).
+
 Stored DateRange formal checking has four ordered failures. A token that does not contain the declared separator yields `datumBereichTrennerFehlt`; once the separator is present, a split other than two nonempty endpoints or a lexically or calendrically invalid endpoint yields `datumBereichFormatFalsch`; two valid endpoints with start after finish yield `datumBereichNichtGueltig`; an otherwise ordered range whose start precedes `1583-10-16` yields `datumBereichDatumFalsch`. Equal endpoints are valid. Every failure keeps the physical placement and exact text while making a reached validation read UNKNOWN and a reached computation read poison.
+
+An empty declared DateRange separator is a real admitted policy, not the absence of a delimiter. Under the legal `MM` plus empty-separator declaration, the stored token is split at its midpoint, so `0609` has endpoints `06` and `09`; it is not split into characters and does not yield `datumBereichTrennerFehlt`.
 
 ---
 
@@ -257,9 +261,25 @@ A **fragment-format date range** completes its two endpoints **asymmetrically**:
 
 Date ranges support only `==` / `!=` (**no ordering**). A stored DATE_RANGE or `DateRange(start, end)` construction may appear on either equality side, against another construction, or as a DATE_RANGE computation result. A construction is not admitted as a date-range overlap or bound-extraction argument and **cannot be nested** inside other constructs.
 
+A DATE_RANGE declaration is statically admitted for exactly eight `(format, separator)` pairs: `dd.MM.yyyy` with `-`, `yyyy-MM-dd` with `/`, `yyyy` with `/`, `yyyy-MM` with `/`, `MM` with `/`, `MM-dd` with `/`, `MM` with the empty separator, and `dd.MM` with `-`.
+
+Every other pair in the complete candidate grid is refused, including separator swaps, every dot separator, every other empty separator, and every `yyyyMM` pair. This declaration allowlist does not by itself establish that every DateRange operation admits every pair.
+
+For the retained `dd.MM`-with-dash profile, `interpretationOfYear` may be omitted or set to `FROM` or `TO`. Its retained semantic effect is established only for that day-and-month format with no year.
+
+On a wrapping range, `FROM` keeps the start in the Base Year and moves the finish into the following year, while `TO` keeps the finish in the Base Year and moves the start into the preceding year.
+
 `StartOfDateRange(field)` and `EndOfDateRange(field)` select the stored range's first and second endpoint respectively and expose it as a Date. An empty range stays empty. Ordinary formal invalidity makes validation UNKNOWN and poisons computation with the same cause before either endpoint is selected. The validation-scoped required-empty finding remains the existing exception: it is UNKNOWN in validation and stays empty in computation. The ordinary operand is a direct non-wildcard, non-category DATE_RANGE field; `BaseYear` is the separately typed source described above, while a `DateRange(start, end)` construction is not admitted here.
 
-Each `DateRange` endpoint is a bare A12 `entitySpec` reference, including a literal- or field-keyed semantic-index selection; a bracketed calculation is illegal there. Each endpoint must be a DATE or DATE_FRAGMENT whose declared format has at least one date component and no time component. After Base-Year supplementation, the endpoints must expose the same date-component set. DATE and DATE_FRAGMENT may mix, and different lexical format spellings are legal when that component set agrees. Overlap tests treat endpoints as **inclusive (closed intervals)**.
+Each `DateRange` endpoint is a bare A12 `entitySpec` reference, including a literal- or field-keyed semantic-index selection; a bracketed calculation is illegal there. `Today`, `BaseYear`, an `Add*` operation, and a date literal in either endpoint position are refused with `MVK_UNEXPECTED_TOKEN`.
+
+A starred field is refused with `MVK_NO_WILDCARDS_ALLOWED`; an unstarred group with `MVK_NO_WILDCARD`; and a starred group or the rule-context group with `MVK_NO_GROUPS_ALLOWED`. A top-level outer-iteration marker is refused with `MVK_INVALID_OUTER_ITERATION`, while the same marker is admitted inside a `Having` filter that supplies its iteration.
+
+After the entity-reference gate, each endpoint must be a complete DATE or DATE_FRAGMENT whose declared format has at least one date component and no time component. A Number, String, DateTime, or DateRange field, a partial DATE, or endpoint formats with different component sets are refused with `MVK_WRONG_DATE_FORMAT_FOR_OP`.
+
+DATE and DATE_FRAGMENT may mix, and different lexical format spellings are legal when their component sets agree. Literal- and field-keyed semantic-index endpoints are admitted, but semantic indexing is not the only way to read a field below a repeatable group.
+
+An ordinary unstarred endpoint that crosses a repeatable group is governed by the enclosing rule's iteration scope. With the error field outside that repeated group it is refused with `MVK_NO_WILDCARD`; moving the error field inside the repeated group admits it. This is a rule-locus condition shared with other operators, not a DateRange-construction restriction. The retained filter control instead admits an explicit outer-iteration marker and does not establish ordinary crossed-repeatable endpoint admission from filter context alone. Overlap tests treat endpoints as **inclusive (closed intervals)**.
 
 Equality or inequality additionally requires the two resulting DateRange operands to expose the same declared date-component set. A component mismatch between otherwise valid constructions is refused with `MVK_INVALID_COMPARE_TO_DATE_RANGE`; it is not evaluated by completing the coarser range into the finer one. With a Base Year, this admits matching `MM` or matching `MM-dd` constructions but still refuses `MM` beside `yyyy-MM` and `MM-dd` beside full Date. Mixing those component profiles inside one construction instead yields `MVK_WRONG_DATE_FORMAT_FOR_OP`.
 
