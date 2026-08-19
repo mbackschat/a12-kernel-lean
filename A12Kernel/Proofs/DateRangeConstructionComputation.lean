@@ -33,6 +33,43 @@ theorem dateRangeTarget_evaluateComputationResult_inverted
       .ok (.errored (format.render resolved) .inverted) := by
   simp [DateRangeFormat.evaluateComputationResult, projects, inverted]
 
+@[simp] theorem dateRangeConstructionTarget_evaluateComputationResult_noValue
+    (format : DateRangeConstructionTargetFormat) :
+    format.evaluateComputationResult .noValue = .ok .noValue := by
+  cases format <;> rfl
+
+@[simp] theorem dateRangeConstructionTarget_evaluateComputationResult_poison
+    (format : DateRangeConstructionTargetFormat) (cause : FormalCause) :
+    format.evaluateComputationResult (.poison cause) =
+      .ok (.poison cause) := by
+  cases format <;> rfl
+
+/-- Every resolved typed range reaches the checked exact or year-fragment target renderer. -/
+theorem dateRangeConstructionTarget_evaluateComputationResult_value
+    (format : DateRangeConstructionTargetFormat) (range : DateRangeValue)
+    (resolved : ResolvedDateRange)
+    (projects : range.toResolvedDateRange? = some resolved)
+    (ordered : resolved.direction = .ordered) :
+    format.evaluateComputationResult (.value range) =
+      .ok (.accepted (format.render resolved)) := by
+  cases format <;>
+    simp [DateRangeConstructionTargetFormat.evaluateComputationResult,
+      DateRangeConstructionTargetFormat.render,
+      DateRangeFormat.evaluateComputationResult, projects, ordered]
+
+/-- Every inverted resolved range retains the exact presentation attempted by the checked target. -/
+theorem dateRangeConstructionTarget_evaluateComputationResult_inverted
+    (format : DateRangeConstructionTargetFormat) (range : DateRangeValue)
+    (resolved : ResolvedDateRange)
+    (projects : range.toResolvedDateRange? = some resolved)
+    (inverted : resolved.direction = .inverted) :
+    format.evaluateComputationResult (.value range) =
+      .ok (.errored (format.render resolved) .inverted) := by
+  cases format <;>
+    simp [DateRangeConstructionTargetFormat.evaluateComputationResult,
+      DateRangeConstructionTargetFormat.render,
+      DateRangeFormat.evaluateComputationResult, projects, inverted]
+
 /-- Two exact endpoint observations project to the one typed range consumed by the target. -/
 theorem dateRangeConstructionObservation_asComputationResult_exact
     (start finish : DateValue) :
@@ -40,15 +77,17 @@ theorem dateRangeConstructionObservation_asComputationResult_exact
       (.value (.exact start)) (.value (.exact finish))).asComputationResult =
       .value { start, finish } := rfl
 
-/-- The checked target retains its declaring-group ownership and exact presentation certificate. -/
+/-- The checked target retains its declaring-group ownership and construction-profile certificate. -/
 theorem checkedDateRangeConstructionComputation_target_admitted
     (operation : CheckedDateRangeConstructionComputation model) :
     model.ownsDirectDateRangeTarget
         operation.declaringGroup operation.target = true ∧
-      operation.target.format = .exact operation.format :=
-  ⟨operation.targetOwnedByGroup, operation.formatOwned⟩
+      DateRangeConstructionTargetFormat.ofProfiles?
+        operation.construction.start.format operation.target.format =
+          some operation.format :=
+  ⟨operation.targetOwnedByGroup, operation.profileOwned⟩
 
-/-- One exact construction evaluation reaches the shared target renderer without rereading either endpoint. -/
+/-- One supported construction evaluation reaches its checked target renderer without rereading either endpoint. -/
 theorem checkedDateRangeConstructionComputation_execute_value
     (operation : CheckedDateRangeConstructionComputation model)
     (input : CheckedDocument model)
@@ -65,6 +104,7 @@ theorem checkedDateRangeConstructionComputation_execute_value
     } := by
   rw [CheckedDateRangeConstructionComputation.execute, evaluated]
   simp [Except.mapError, bind, Except.bind, pure, Except.pure, projectsResult,
-    DateRangeFormat.evaluateComputationResult, projectsRange, ordered]
+    dateRangeConstructionTarget_evaluateComputationResult_value
+      operation.format range resolved projectsRange ordered]
 
 end A12Kernel

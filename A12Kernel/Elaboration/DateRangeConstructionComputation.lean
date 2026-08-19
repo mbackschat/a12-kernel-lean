@@ -5,11 +5,51 @@ import A12Kernel.Semantics.TemporalApplication
 
 namespace A12Kernel
 
-/-- Whether one construction endpoint profile supplies an exact full Date for this bounded target computation. -/
-def DateRangeEndpointFormat.supportsConstructionTarget :
-    DateRangeEndpointFormat → Bool
-  | .full _ => true
-  | _ => false
+/-- Target presentations closed by the direct construction computation. The declaration retains the original format and separator policy; this derived carrier certifies only the executable subset. -/
+inductive DateRangeConstructionTargetFormat where
+  | exact (format : DateRangeFormat)
+  | yearFragment
+  deriving Repr, DecidableEq
+
+namespace DateRangeConstructionTargetFormat
+
+/-- Recover the executable target presentation only when the construction and target expose the same supported component profile. -/
+def ofProfiles? : DateRangeEndpointFormat → DateRangeInputFormat →
+    Option DateRangeConstructionTargetFormat
+  | .full _, .exact format => some (.exact format)
+  | .yearFragment, .yearFragment => some .yearFragment
+  | _, _ => none
+
+/-- Render one resolved range through the checked exact or year-only target presentation. Each constructor is derived from the declaration's exact format/separator pair. -/
+def render : DateRangeConstructionTargetFormat → ResolvedDateRange → StoredDateRange
+  | .exact format, range => format.render range
+  | .yearFragment, range => {
+      text := toString range.start.civil.parts.year ++ "/" ++
+        toString range.finish.civil.parts.year
+      nonempty := by simp
+    }
+
+/-- Consume one typed construction result through its checked target presentation. -/
+def evaluateComputationResult (format : DateRangeConstructionTargetFormat) :
+    DateRangeComputationResult →
+      Except DateRangeTargetEvaluationFault DateRangeTargetOutcome
+  | result =>
+      match format with
+      | .exact targetFormat => targetFormat.evaluateComputationResult result
+      | .yearFragment =>
+          match result with
+          | .noValue => .ok .noValue
+          | .poison cause => .ok (.poison cause)
+          | .value range =>
+              match range.toResolvedDateRange? with
+              | none => .error (.unresolvedEndpoint range)
+              | some resolved =>
+                  let attempted := format.render resolved
+                  match resolved.direction with
+                  | .ordered => .ok (.accepted attempted)
+                  | .inverted => .ok (.errored attempted .inverted)
+
+end DateRangeConstructionTargetFormat
 
 /-- Verify that the model-owned direct DateRange target remains in the computation's declaring group. -/
 def FlatModel.ownsDirectDateRangeTarget
@@ -29,19 +69,18 @@ inductive DateRangeConstructionComputationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- One checked full-Date construction and its direct nonrepeatable exact DateRange target. -/
+/-- One checked full-Date or year-fragment construction and its matching direct nonrepeatable DateRange target. -/
 structure CheckedDateRangeConstructionComputation (model : FlatModel) where
   construction : CheckedDateRangeConstruction model
   target : CheckedDirectDateRange model
   declaringGroup : GroupPath
   targetOwnedByGroup : model.ownsDirectDateRangeTarget declaringGroup target = true
-  format : DateRangeFormat
-  formatOwned : target.format = .exact format
-  endpointsSupported :
-    (construction.start.format.supportsConstructionTarget &&
-      construction.finish.format.supportsConstructionTarget) = true
+  format : DateRangeConstructionTargetFormat
+  profileOwned :
+    DateRangeConstructionTargetFormat.ofProfiles?
+      construction.start.format target.format = some format
 
-/-- Certify one full-Date construction and one exact DateRange target against the same checked model. -/
+/-- Certify one supported construction and matching DateRange target against the same checked model. -/
 def elaborateDateRangeConstructionComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (start finish : FieldId) :
@@ -54,23 +93,23 @@ def elaborateDateRangeConstructionComputation
   if _hGroup : targetDeclaration.groupPath = declaringGroup then
     let target ← elaborateDirectDateRange model targetField |>.mapError .target
     if hOwned : model.ownsDirectDateRangeTarget declaringGroup target then
-      match hTargetFormat : target.format with
-      | .exact format =>
-        if hEndpoints :
-            construction.start.format.supportsConstructionTarget &&
-              construction.finish.format.supportsConstructionTarget then
+      match hFormat : DateRangeConstructionTargetFormat.ofProfiles?
+          construction.start.format target.format with
+      | some format =>
           pure {
             construction
             target
             declaringGroup
             targetOwnedByGroup := hOwned
             format
-            formatOwned := hTargetFormat
-            endpointsSupported := hEndpoints
+            profileOwned := hFormat
           }
-        else
-          throw (.endpointFormat construction.start.format construction.finish.format)
-      | actual => throw (.targetFormat actual)
+      | none =>
+          match target.format with
+          | .yearMonthFragment | .yearlessMonth | .yearlessMonthDay =>
+              throw (.targetFormat target.format)
+          | .exact _ | .yearFragment =>
+              throw (.endpointFormat construction.start.format construction.finish.format)
     else
       throw .incoherentCore
   else

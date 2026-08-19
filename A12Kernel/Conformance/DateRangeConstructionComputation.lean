@@ -35,6 +35,8 @@ private def isoTarget :=
   rangeField 4 ["Order"] "IsoWindow" "yyyy-MM-dd" "/"
 private def fragmentTarget :=
   rangeField 9 ["Order"] "YearWindow" "yyyy" "/"
+private def yearMonthTarget :=
+  rangeField 10 ["Order"] "YearMonthWindow" "yyyy-MM" "/"
 private def wrongGroupTarget := rangeField 5 ["Elsewhere"] "OtherWindow"
 private def repeatedTarget :=
   rangeField 6 ["Order", "Rows"] "RepeatedWindow" "dd.MM.yyyy" "-" [10]
@@ -51,7 +53,8 @@ private def fragmentFinish : FlatFieldDecl := {
 
 private def model : FlatModel := {
   fields := [start, finish, target, isoTarget, wrongGroupTarget,
-    repeatedTarget, fragmentStart, fragmentFinish, fragmentTarget]
+    repeatedTarget, fragmentStart, fragmentFinish, fragmentTarget,
+    yearMonthTarget]
   repeatableGroups := [{ level := 10, path := ["Order", "Rows"] }]
   timeZoneId := "UTC"
 }
@@ -65,10 +68,8 @@ private def dateValue (epochMillis : Int) (year : Int)
 
 private def startValue := dateValue 1717200000000 2024 6 1
 private def finishValue := dateValue 1719705600000 2024 6 30
-private def rangeValue : DateRangeValue := {
-  start := startValue
-  finish := finishValue
-}
+private def fragmentStartValue := dateValue 1704067200000 2024 1 1
+private def fragmentFinishValue := dateValue 1735689600000 2025 1 1
 
 private def expectedStored : StoredDateRange := {
   text := "01.06.2024-30.06.2024"
@@ -90,6 +91,16 @@ private def expectedIsoInvertedStored : StoredDateRange := {
   nonempty := by decide
 }
 
+private def expectedYearStored : StoredDateRange := {
+  text := "2024/2025"
+  nonempty := by decide
+}
+
+private def expectedYearInvertedStored : StoredDateRange := {
+  text := "2025/2024"
+  nonempty := by decide
+}
+
 private def inputCell (field : FlatFieldDecl) (stored : String)
     (raw : RawCell) : ClassifiedCellInput := {
   address := { field := field.id, path := [] }
@@ -97,48 +108,62 @@ private def inputCell (field : FlatFieldDecl) (stored : String)
   raw
 }
 
-private def checkedInput? (startStored finishStored : String)
+private def checkedInputFor? (startField finishField : FlatFieldDecl)
+    (startStored finishStored : String)
     (startRaw finishRaw : RawCell) : Option (CheckedDocument model) := do
   let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler model).toOption
   (checkDocument prepared "en_US" {
     instantiatedRows := []
     cells := [
-      inputCell start startStored startRaw,
-      inputCell finish finishStored finishRaw,
-      inputCell target "01.06.2024-30.06.2024"
-        (.parsed (.dateRange (.exact rangeValue)))
+      inputCell startField startStored startRaw,
+      inputCell finishField finishStored finishRaw
     ]
   }).toOption
 
-private def operationFor? (target : FlatFieldDecl) :=
-  (elaborateDateRangeConstructionComputation model ["Order"] target.id
-    start.id finish.id).toOption
+private def operationFor? (target start finish : FlatFieldDecl) :=
+  (elaborateDateRangeConstructionComputation model ["Order"]
+    target.id start.id finish.id).toOption
 
-private def operation? := operationFor? target
+private def operation? := operationFor? target start finish
 
-private def executeFor? (target : FlatFieldDecl) (startStored finishStored : String)
+private def executeFor? (target start finish : FlatFieldDecl)
+    (startStored finishStored : String)
     (startRaw finishRaw : RawCell) :
     Option DateRangeConstructionComputationResult := do
-  let input ← checkedInput? startStored finishStored startRaw finishRaw
-  let operation ← operationFor? target
+  let input ← checkedInputFor? start finish startStored finishStored
+    startRaw finishRaw
+  let operation ← operationFor? target start finish
   (operation.execute input).toOption
 
-private def execute? := executeFor? target
+private def execute? := executeFor? target start finish
 
-/- The full-Date construction is admitted for both exact DateRange target policies. -/
+private def executeFragment? :=
+  executeFor? fragmentTarget fragmentStart fragmentFinish
+
+/- Full-Date constructions reach both exact targets, and matching year fragments reach the year target. -/
 example :
     (elaborateDateRangeConstructionComputation model ["Order"] target.id
       start.id finish.id).isOk = true ∧
     (elaborateDateRangeConstructionComputation model ["Order"] isoTarget.id
-      start.id finish.id).isOk = true := by
+      start.id finish.id).isOk = true ∧
+    (elaborateDateRangeConstructionComputation model ["Order"] fragmentTarget.id
+      fragmentStart.id fragmentFinish.id).isOk = true := by
   native_decide
 
-/- Target presentation, direct placement, declaring group, and full-Date endpoint precision remain separate static gates. -/
+/- Unsupported target profiles, component mismatch, direct placement, declaring group, and target kind remain separate static gates. -/
 example :
     (match elaborateDateRangeConstructionComputation model ["Order"]
+        yearMonthTarget.id fragmentStart.id fragmentFinish.id with
+      | .error (.targetFormat .yearMonthFragment) => true
+      | _ => false) &&
+    (match elaborateDateRangeConstructionComputation model ["Order"]
         fragmentTarget.id start.id finish.id with
-      | .error (.targetFormat .yearFragment) => true
+      | .error (.endpointFormat (.full _) (.full _)) => true
+      | _ => false) &&
+    (match elaborateDateRangeConstructionComputation model ["Order"]
+        target.id fragmentStart.id fragmentFinish.id with
+      | .error (.endpointFormat .yearFragment .yearFragment) => true
       | _ => false) &&
     (match elaborateDateRangeConstructionComputation model ["Order"]
         repeatedTarget.id start.id finish.id with
@@ -154,23 +179,40 @@ example :
         start.id finish.id with
       | .error (.target (.sourceNotDateRange source (.temporal .date))) =>
           source == start.id
-      | _ => false) &&
-    (match elaborateDateRangeConstructionComputation model ["Order"] target.id
-        fragmentStart.id fragmentFinish.id with
-      | .error (.endpointFormat .yearFragment .yearFragment) => true
       | _ => false) = true := by
   native_decide
 
 /- The second exact target policy renders the same typed endpoints through ISO/slash and preserves inversion errors. -/
 example :
-    (executeFor? isoTarget "2024-06-01" "2024-06-30"
+    (executeFor? isoTarget start finish "2024-06-01" "2024-06-30"
       (.parsed (.temporal (.date startValue)))
       (.parsed (.temporal (.date finishValue)))).map (·.outcome) =
         some (.accepted expectedIsoStored) ∧
-    (executeFor? isoTarget "2024-06-30" "2024-06-01"
+    (executeFor? isoTarget start finish "2024-06-30" "2024-06-01"
       (.parsed (.temporal (.date finishValue)))
       (.parsed (.temporal (.date startValue)))).map (·.outcome) =
         some (.errored expectedIsoInvertedStored .inverted) := by
+  native_decide
+
+/- Year fragments complete by endpoint position, then render only the declared year labels while retaining inversion as a target error. -/
+example :
+    executeFragment? "2024" "2025"
+      (.parsed (.temporal (.date fragmentStartValue)))
+      (.parsed (.temporal (.date fragmentFinishValue))) = some {
+        construction := {
+          start := .value (.exact fragmentStartValue)
+          finish := .value (.exact {
+            instant := { epochMillis := 1767139200000 }
+            parts := { year := 2025, month := 12, day := 31 }
+            basis := .storedGregorian
+          })
+        }
+        outcome := .accepted expectedYearStored
+      } ∧
+    (executeFragment? "2025" "2024"
+      (.parsed (.temporal (.date fragmentFinishValue)))
+      (.parsed (.temporal (.date fragmentStartValue)))).map (·.outcome) =
+        some (.errored expectedYearInvertedStored .inverted) := by
   native_decide
 
 /- Filled endpoints retain their exact observations and render through the target declaration rather than either source label. -/
