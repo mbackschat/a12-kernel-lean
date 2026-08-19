@@ -43,14 +43,7 @@ def render : DateRangeConstructionTargetFormat → ResolvedDateRange → StoredD
 def evaluateComputationResult (format : DateRangeConstructionTargetFormat) :
     DateRangeComputationResult →
       Except DateRangeTargetEvaluationFault DateRangeTargetOutcome
-  | result =>
-      match format with
-      | .exact targetFormat => targetFormat.evaluateComputationResult result
-      | .yearFragment | .yearMonthFragment | .monthFragment | .monthDayFragment =>
-          match result with
-          | .noValue => .ok .noValue
-          | .poison cause => .ok (.poison cause)
-          | .value range => format.toInputFormat.evaluateExactValue range
+  | result => format.toInputFormat.evaluateComputationResult result
 
 end DateRangeConstructionTargetFormat
 
@@ -71,7 +64,7 @@ inductive DateRangeConstructionComputationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- One checked exact-valued construction and its matching direct nonrepeatable DateRange target. -/
+/-- One checked construction and its matching direct nonrepeatable DateRange target. -/
 structure CheckedDateRangeConstructionComputation (model : FlatModel) where
   construction : CheckedDateRangeConstruction model
   target : CheckedDirectDateRange model
@@ -113,14 +106,13 @@ def elaborateDateRangeConstructionComputation
   else
     throw (.targetGroup targetDeclaration.groupPath declaringGroup)
 
-/-- Project one evaluated construction into the target result domain while reusing its established formal-before-empty precedence. -/
+/-- Project one evaluated construction into the shared exact-or-yearless target result while reusing its established formal-before-empty precedence. -/
 def DateRangeConstructionObservation.asComputationResult
     (observation : DateRangeConstructionObservation) : DateRangeComputationResult :=
   match observation.comparisonOperand with
   | .notEvaluated => .noValue
   | .unknown cause => .poison cause
-  | .value (.exact range) _ => .value range
-  | .value _ _ => .poison .malformed
+  | .value range _ => .value range
 
 inductive DateRangeConstructionComputationFault where
   | construction (cause : DateRangeConstructionFault)

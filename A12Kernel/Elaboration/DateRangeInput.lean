@@ -247,7 +247,8 @@ private def parseMonthDay? (text : String) : Option MonthDayValue :=
       pure { month, day }
   | _ => none
 
-private def monthDayBefore (left right : MonthDayValue) : Bool :=
+/-- Compare two yearless month/day labels in calendar order without manufacturing a year. -/
+def monthDayBefore (left right : MonthDayValue) : Bool :=
   decide (left.month < right.month ∨
     left.month = right.month ∧ left.day < right.day)
 

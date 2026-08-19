@@ -230,37 +230,27 @@ def checkDateRangeFirstFilledDirectComputation
   else
     throw (.targetGroup targetDeclaration.groupPath declaringGroup)
 
-/-- Root result retaining exact or yearless DateRange cell identity until the checked target policy consumes it. -/
-inductive DateRangeFirstFilledResult where
-  | noValue
-  | value (range : DateRangeCellValue)
-  | poison (cause : FormalCause)
-  deriving Repr, DecidableEq
-
-namespace DateRangeFirstFilledResult
-
 /-- Preserve one phase-projected DateRange observation in the common first-filled result domain. -/
-def ofObservation : CellObservation DateRangeCellValue → DateRangeFirstFilledResult
+private def dateRangeFirstFilledResultOfObservation :
+    CellObservation DateRangeCellValue → DateRangeComputationResult
   | .empty => .noValue
   | .value range => .value range
   | .unknown cause | .poison cause => .poison cause
 
-end DateRangeFirstFilledResult
-
 /-- Scan a finite direct list without forcing any suffix after a terminal value or formal cause. -/
 def scanDirectDateRangeFirstFilled :
     List (Unit → Except ε (CellObservation DateRangeCellValue)) →
-      Except ε DateRangeFirstFilledResult
+      Except ε DateRangeComputationResult
   | [] => pure .noValue
   | observe :: remaining => do
       let observed ← observe ()
-      match DateRangeFirstFilledResult.ofObservation observed with
+      match dateRangeFirstFilledResultOfObservation observed with
       | .noValue => scanDirectDateRangeFirstFilled remaining
       | result => pure result
 
 /-- Project one checked DateRange cell into the typed root result consumed by the target policy. Source stored text is not selected. -/
 def dateRangeFirstFilledCellAt
-    (addressed : CheckedAddressedCell) : DateRangeFirstFilledResult :=
+    (addressed : CheckedAddressedCell) : DateRangeComputationResult :=
   match observeCell .computation addressed.cell with
   | .value (.dateRange range) => .value range
   | .value _ => .poison .malformed
@@ -269,7 +259,7 @@ def dateRangeFirstFilledCellAt
 
 /-- Select the first present DateRange or reached formal cause; exhaustion keeps the no-value identity. -/
 def evalDateRangeFirstFilledCells :
-    List CheckedAddressedCell → DateRangeFirstFilledResult
+    List CheckedAddressedCell → DateRangeComputationResult
   | [] => .noValue
   | addressed :: remaining =>
       match dateRangeFirstFilledCellAt addressed with
@@ -282,26 +272,6 @@ inductive DateRangeFirstFilledComputationFault where
   | unresolvedEndpoint (range : DateRangeValue)
   deriving Repr, DecidableEq
 
-/-- Consume a selected exact or yearless cell through its matching checked declaration profile. -/
-private def evaluateDateRangeFirstFilledResult (format : DateRangeInputFormat) :
-    DateRangeFirstFilledResult →
-      Except DateRangeFirstFilledComputationFault DateRangeTargetOutcome
-  | .noValue => .ok .noValue
-  | .poison cause => .ok (.poison cause)
-  | .value (.exact range) =>
-      format.evaluateExactValue range |>.mapError fun
-        | .unresolvedEndpoint value => .unresolvedEndpoint value
-  | .value (.yearlessMonth start finish) =>
-      match format with
-      | .yearlessMonth => .ok (.accepted
-          (DateRangeInputFormat.renderYearlessMonth start finish))
-      | _ => .ok (.poison .malformed)
-  | .value (.yearlessMonthDay start finish) =>
-      match format with
-      | .yearlessMonthDay => .ok (.accepted
-          (DateRangeInputFormat.renderYearlessMonthDay start finish))
-      | _ => .ok (.poison .malformed)
-
 namespace CheckedDateRangeFirstFilledComputation
 
 /-- Execute one checked carrier through the single document and render its exact or yearless cell through the retained target policy. -/
@@ -312,8 +282,10 @@ private def executeWith
     Except DateRangeFirstFilledComputationFault DateRangeTargetOutcome := do
   let resolved ← shape.source.resolveCheckedField input []
     |>.mapError .source
-  evaluateDateRangeFirstFilledResult format
-    (evalDateRangeFirstFilledCells resolved.cells)
+  format.evaluateComputationResult
+      (evalDateRangeFirstFilledCells resolved.cells)
+    |>.mapError fun
+      | .unresolvedEndpoint value => .unresolvedEndpoint value
 
 /-- Execute through the single checked document and the target policy retained during assembly. -/
 def execute (operation : CheckedDateRangeFirstFilledComputation model)
@@ -338,7 +310,8 @@ def execute (operation : CheckedDateRangeFirstFilledDirectComputation model)
   let result ← scanDirectDateRangeFirstFilled
     (operation.sources.map fun source _ =>
       source.direct.evaluate .computation input |>.mapError .directSource)
-  evaluateDateRangeFirstFilledResult operation.format result
+  operation.format.evaluateComputationResult result |>.mapError fun
+    | .unresolvedEndpoint value => .unresolvedEndpoint value
 
 end CheckedDateRangeFirstFilledDirectComputation
 

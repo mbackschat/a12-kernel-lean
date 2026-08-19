@@ -265,10 +265,10 @@ def render (format : DateRangeFormat)
 
 end DateRangeFormat
 
-/-- Root result before a checked DateRange target consumes the selected typed interval. -/
+/-- Root result before a checked DateRange target consumes one exact or yearless typed interval. -/
 inductive DateRangeComputationResult where
   | noValue
-  | value (range : DateRangeValue)
+  | value (range : DateRangeCellValue)
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
@@ -298,7 +298,7 @@ def evaluateComputationResult (format : DateRangeFormat) :
       Except DateRangeTargetEvaluationFault DateRangeTargetOutcome
   | .noValue => .ok .noValue
   | .poison cause => .ok (.poison cause)
-  | .value range =>
+  | .value (.exact range) =>
       match range.toResolvedDateRange? with
       | none => .error (.unresolvedEndpoint range)
       | some resolved =>
@@ -306,6 +306,7 @@ def evaluateComputationResult (format : DateRangeFormat) :
           match resolved.direction with
           | .ordered => .ok (.accepted attempted)
           | .inverted => .ok (.errored attempted .inverted)
+  | .value _ => .ok (.poison .malformed)
 
 end DateRangeFormat
 

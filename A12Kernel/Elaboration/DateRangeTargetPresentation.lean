@@ -60,4 +60,27 @@ def evaluateExactValue (format : DateRangeInputFormat) (range : DateRangeValue) 
           | .ordered => .ok (.accepted attempted)
           | .inverted => .ok (.errored attempted .inverted)
 
+/-- Consume one exact or yearless typed result through its matching checked DateRange declaration profile. -/
+def evaluateComputationResult (format : DateRangeInputFormat) :
+    DateRangeComputationResult →
+      Except DateRangeTargetEvaluationFault DateRangeTargetOutcome
+  | .noValue => .ok .noValue
+  | .poison cause => .ok (.poison cause)
+  | .value (.exact range) => format.evaluateExactValue range
+  | .value (.yearlessMonth start finish) =>
+      match format with
+      | .yearlessMonth =>
+          let attempted := renderYearlessMonth start finish
+          if finish < start then .ok (.errored attempted .inverted)
+          else .ok (.accepted attempted)
+      | _ => .ok (.poison .malformed)
+  | .value (.yearlessMonthDay start finish) =>
+      match format with
+      | .yearlessMonthDay =>
+          let attempted := renderYearlessMonthDay start finish
+          if monthDayBefore finish start then
+            .ok (.errored attempted .inverted)
+          else .ok (.accepted attempted)
+      | _ => .ok (.poison .malformed)
+
 end A12Kernel.DateRangeInputFormat
