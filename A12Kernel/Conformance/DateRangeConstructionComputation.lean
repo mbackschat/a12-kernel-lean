@@ -33,6 +33,8 @@ private def finish := dateField 2 "Finish"
 private def target := rangeField 3 ["Order"] "Window"
 private def isoTarget :=
   rangeField 4 ["Order"] "IsoWindow" "yyyy-MM-dd" "/"
+private def fragmentTarget :=
+  rangeField 9 ["Order"] "YearWindow" "yyyy" "/"
 private def wrongGroupTarget := rangeField 5 ["Elsewhere"] "OtherWindow"
 private def repeatedTarget :=
   rangeField 6 ["Order", "Rows"] "RepeatedWindow" "dd.MM.yyyy" "-" [10]
@@ -49,7 +51,7 @@ private def fragmentFinish : FlatFieldDecl := {
 
 private def model : FlatModel := {
   fields := [start, finish, target, isoTarget, wrongGroupTarget,
-    repeatedTarget, fragmentStart, fragmentFinish]
+    repeatedTarget, fragmentStart, fragmentFinish, fragmentTarget]
   repeatableGroups := [{ level := 10, path := ["Order", "Rows"] }]
   timeZoneId := "UTC"
 }
@@ -78,6 +80,16 @@ private def expectedInvertedStored : StoredDateRange := {
   nonempty := by decide
 }
 
+private def expectedIsoStored : StoredDateRange := {
+  text := "2024-06-01/2024-06-30"
+  nonempty := by decide
+}
+
+private def expectedIsoInvertedStored : StoredDateRange := {
+  text := "2024-06-30/2024-06-01"
+  nonempty := by decide
+}
+
 private def inputCell (field : FlatFieldDecl) (stored : String)
     (raw : RawCell) : ClassifiedCellInput := {
   address := { field := field.id, path := [] }
@@ -99,28 +111,34 @@ private def checkedInput? (startStored finishStored : String)
     ]
   }).toOption
 
-private def operation? :=
+private def operationFor? (target : FlatFieldDecl) :=
   (elaborateDateRangeConstructionComputation model ["Order"] target.id
     start.id finish.id).toOption
 
-private def execute? (startStored finishStored : String)
+private def operation? := operationFor? target
+
+private def executeFor? (target : FlatFieldDecl) (startStored finishStored : String)
     (startRaw finishRaw : RawCell) :
     Option DateRangeConstructionComputationResult := do
   let input ← checkedInput? startStored finishStored startRaw finishRaw
-  let operation ← operation?
+  let operation ← operationFor? target
   (operation.execute input).toOption
 
-/- The measured full-Date construction and dotted/dash target are admitted through one checked model. -/
+private def execute? := executeFor? target
+
+/- The full-Date construction is admitted for both exact DateRange target policies. -/
 example :
     (elaborateDateRangeConstructionComputation model ["Order"] target.id
+      start.id finish.id).isOk = true ∧
+    (elaborateDateRangeConstructionComputation model ["Order"] isoTarget.id
       start.id finish.id).isOk = true := by
   native_decide
 
 /- Target presentation, direct placement, declaring group, and full-Date endpoint precision remain separate static gates. -/
 example :
     (match elaborateDateRangeConstructionComputation model ["Order"]
-        isoTarget.id start.id finish.id with
-      | .error (.targetFormat (.exact .isoSlash)) => true
+        fragmentTarget.id start.id finish.id with
+      | .error (.targetFormat .yearFragment) => true
       | _ => false) &&
     (match elaborateDateRangeConstructionComputation model ["Order"]
         repeatedTarget.id start.id finish.id with
@@ -141,6 +159,18 @@ example :
         fragmentStart.id fragmentFinish.id with
       | .error (.endpointFormat .yearFragment .yearFragment) => true
       | _ => false) = true := by
+  native_decide
+
+/- The second exact target policy renders the same typed endpoints through ISO/slash and preserves inversion errors. -/
+example :
+    (executeFor? isoTarget "2024-06-01" "2024-06-30"
+      (.parsed (.temporal (.date startValue)))
+      (.parsed (.temporal (.date finishValue)))).map (·.outcome) =
+        some (.accepted expectedIsoStored) ∧
+    (executeFor? isoTarget "2024-06-30" "2024-06-01"
+      (.parsed (.temporal (.date finishValue)))
+      (.parsed (.temporal (.date startValue)))).map (·.outcome) =
+        some (.errored expectedIsoInvertedStored .inverted) := by
   native_decide
 
 /- Filled endpoints retain their exact observations and render through the target declaration rather than either source label. -/

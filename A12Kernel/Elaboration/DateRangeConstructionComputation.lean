@@ -29,18 +29,19 @@ inductive DateRangeConstructionComputationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- One checked full-Date construction and its direct nonrepeatable dotted/dash DateRange target. -/
+/-- One checked full-Date construction and its direct nonrepeatable exact DateRange target. -/
 structure CheckedDateRangeConstructionComputation (model : FlatModel) where
   construction : CheckedDateRangeConstruction model
   target : CheckedDirectDateRange model
   declaringGroup : GroupPath
   targetOwnedByGroup : model.ownsDirectDateRangeTarget declaringGroup target = true
-  targetFormat : target.format = .exact .dayMonthYearDash
+  format : DateRangeFormat
+  formatOwned : target.format = .exact format
   endpointsSupported :
     (construction.start.format.supportsConstructionTarget &&
       construction.finish.format.supportsConstructionTarget) = true
 
-/-- Certify one full-Date construction and one dotted/dash DateRange target against the same checked model. -/
+/-- Certify one full-Date construction and one exact DateRange target against the same checked model. -/
 def elaborateDateRangeConstructionComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (start finish : FieldId) :
@@ -53,7 +54,8 @@ def elaborateDateRangeConstructionComputation
   if _hGroup : targetDeclaration.groupPath = declaringGroup then
     let target ← elaborateDirectDateRange model targetField |>.mapError .target
     if hOwned : model.ownsDirectDateRangeTarget declaringGroup target then
-      if hTargetFormat : target.format = .exact .dayMonthYearDash then
+      match hTargetFormat : target.format with
+      | .exact format =>
         if hEndpoints :
             construction.start.format.supportsConstructionTarget &&
               construction.finish.format.supportsConstructionTarget then
@@ -62,13 +64,13 @@ def elaborateDateRangeConstructionComputation
             target
             declaringGroup
             targetOwnedByGroup := hOwned
-            targetFormat := hTargetFormat
+            format
+            formatOwned := hTargetFormat
             endpointsSupported := hEndpoints
           }
         else
           throw (.endpointFormat construction.start.format construction.finish.format)
-      else
-        throw (.targetFormat target.format)
+      | actual => throw (.targetFormat actual)
     else
       throw .incoherentCore
   else
@@ -103,7 +105,7 @@ def execute (operation : CheckedDateRangeConstructionComputation model)
       DateRangeConstructionComputationResult := do
   let construction ← operation.construction.evaluate .computation input
     |>.mapError .construction
-  let outcome ← DateRangeFormat.dayMonthYearDash.evaluateComputationResult
+  let outcome ← operation.format.evaluateComputationResult
       construction.asComputationResult
     |>.mapError .target
   pure { construction, outcome }

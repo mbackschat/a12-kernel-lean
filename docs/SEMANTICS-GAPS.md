@@ -117,6 +117,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `external-gap`: singular direct `yyyy-MM` and configured `MM`/`MM-dd` overlap are pinned by those checkpoints. Direct `yyyy` overlap is internally closed over the checked year completion and inclusive overlap seams but remains external evidence pending.
 - `external-gap`: direct `yyyy`/`yyyy-MM` and Base-Year-completed `MM`/`MM-dd` bound extraction plus their fixed-Date/component compositions are internally closed over checked completion and the generic source-established bound mechanism, but remain external evidence pending.
 - `external-gap`: the filled full-Date constructor-to-dotted/dash target output is pinned by the [established-kind computation checkpoint](SOURCES.md#src-first-filled-kind-computations). Its inverted render-then-error branch is source-rederived there but lacks a retained Kernel outcome; empty, formal-before-empty, application, and static refusals remain internal.
+- `external-gap`: the ISO/slash constructor target is internally closed by composition through the same checked target policy and shared renderer, but no retained Kernel row executes that constructor-target pair.
 - `external-gap`: a12-dmkits' interpreter omits the measured `yyyy` and `yyyy-MM` construction-versus-stored equalities and reports equal `MM` construction-versus-stored operands as unequal with or without Base Year. Checked pair and mixed execution cover the measured `yyyy`, `yyyy-MM`, `MM`, and `MM-dd` boundaries; upstream needs root fixes before that wider tri-engine boundary can close.
 - `unresolved-source`: distinct-count Date identity must remain separate from uniqueness: the former reads decoded `VkDate` while the latter reads stored text, and exact `VkDate` equality is still unread.
 - `risk`: equal Berlin wall labels can denote different instants, and another `World` can change `Now`; wall-label-only identity, early clock resolution, or elapsed-duration substitution is unsound.
@@ -126,12 +127,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `entry-gate`: each selected temporal family needs one bounded source packet and separating matrix over format, world, profile, gap/overlap/cutover, empty/formal precedence, and target policy.
 - `completion-gate`: every admitted temporal operation and target path is checked across its legal profile with exact empty/formal polarity and separating gap/overlap/cutover/millisecond cases.
 - `blocked-on`: none.
-- `route-state`: verified.
-- `red-locus`: [`DateRangeConstructionComputation.lean`](../A12Kernel/Conformance/DateRangeConstructionComputation.lean) owns the retained dotted/dash route and the next ISO/slash target admission, output, and refusal separator.
-- `green-locus`: [`DateRangeConstructionComputation.lean`](../A12Kernel/Elaboration/DateRangeConstructionComputation.lean) owns the checked constructor-to-target operation and its target-policy dispatch.
-- `supporting-locus`: [`TemporalTarget.lean`](../A12Kernel/Semantics/TemporalTarget.lean) owns the shared typed DateRange target-result evaluator used by constructor and FirstFilled computations.
-- `supporting-locus`: [`DateRangeConstructionComparison.lean`](../A12Kernel/Elaboration/DateRangeConstructionComparison.lean) owns the checked two-endpoint construction and single-document evaluation reused by the computation.
-- `route-limit`: the next slice adds only the exact ISO/slash target policy to the same direct nonrepeatable full-Date constructor operation and retains the dotted/dash policy. DateFragments, alternatives, repetition, scheduling, overlap, bounds, and new target formats remain outside.
+- `route-state`: discovery-required.
 
 ### SG7 — String, pattern, and custom-field completion
 

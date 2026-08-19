@@ -40,13 +40,13 @@ theorem dateRangeConstructionObservation_asComputationResult_exact
       (.value (.exact start)) (.value (.exact finish))).asComputationResult =
       .value { start, finish } := rfl
 
-/-- The checked target retains its declaring-group ownership and dotted/dash presentation certificates. -/
+/-- The checked target retains its declaring-group ownership and exact presentation certificate. -/
 theorem checkedDateRangeConstructionComputation_target_admitted
     (operation : CheckedDateRangeConstructionComputation model) :
     model.ownsDirectDateRangeTarget
         operation.declaringGroup operation.target = true ∧
-      operation.target.format = .exact .dayMonthYearDash :=
-  ⟨operation.targetOwnedByGroup, operation.targetFormat⟩
+      operation.target.format = .exact operation.format :=
+  ⟨operation.targetOwnedByGroup, operation.formatOwned⟩
 
 /-- One exact construction evaluation reaches the shared target renderer without rereading either endpoint. -/
 theorem checkedDateRangeConstructionComputation_execute_value
@@ -61,7 +61,7 @@ theorem checkedDateRangeConstructionComputation_execute_value
     (ordered : resolved.direction = .ordered) :
     operation.execute input = .ok {
       construction := observation
-      outcome := .accepted (DateRangeFormat.render .dayMonthYearDash resolved)
+      outcome := .accepted (operation.format.render resolved)
     } := by
   rw [CheckedDateRangeConstructionComputation.execute, evaluated]
   simp [Except.mapError, bind, Except.bind, pure, Except.pure, projectsResult,
