@@ -79,19 +79,38 @@ theorem scanDateRangesOverlapOccurrences_ne_unknown
           ih (current.range :: seen)
             (reachedFilter || current.fromFilteredOperand)
 
+/-- The scalar-versus-list scan has no UNKNOWN result in any interval domain, once unavailable cells have become skipped slots. Both the resolved and the unconfigured yearless routes specialize this. -/
+theorem scanAtLeastOneOverlapOccurrence_ne_unknown {α}
+    (overlaps : α → α → Bool) (scalar : α)
+    (occurrences : List (OverlapOccurrence α)) :
+    scanAtLeastOneOverlapOccurrence overlaps scalar occurrences ≠ .unknown := by
+  induction occurrences with
+  | nil =>
+      simp [scanAtLeastOneOverlapOccurrence]
+  | cons current rest ih =>
+      by_cases overlap : overlaps scalar current.range
+      · simp [scanAtLeastOneOverlapOccurrence, overlap]
+      · simpa [scanAtLeastOneOverlapOccurrence, overlap] using ih
+
 /-- The scalar-versus-list operator also has no UNKNOWN result after unavailable cells have become skipped slots. -/
 theorem scanAtLeastOneDateRangeOverlapOccurrences_ne_unknown
     (scalar : ResolvedDateRange)
     (occurrences : List ResolvedDateRangeOccurrence) :
     scanAtLeastOneDateRangeOverlapOccurrences scalar occurrences ≠
-      .unknown := by
-  induction occurrences with
-  | nil =>
-      simp [scanAtLeastOneDateRangeOverlapOccurrences]
-  | cons current rest ih =>
-      by_cases overlap : scalar.overlaps current.range
-      · simp [scanAtLeastOneDateRangeOverlapOccurrences, overlap]
-      · simpa [scanAtLeastOneDateRangeOverlapOccurrences, overlap] using ih
+      .unknown :=
+  scanAtLeastOneOverlapOccurrence_ne_unknown _ scalar occurrences
+
+/-- The unconfigured yearless plural route inherits the same absence of UNKNOWN. -/
+theorem atLeastOneYearlessRangeOverlaps_ne_unknown
+    (scalar : OverlapSlot YearlessInterval)
+    (operands : List (OverlapOperand YearlessInterval)) :
+    evalAtLeastOneYearlessRangeOverlaps scalar operands ≠ .unknown := by
+  cases scalar with
+  | skipped =>
+      simp [evalAtLeastOneYearlessRangeOverlaps, evalAtLeastOneOverlap]
+  | kept range =>
+      exact scanAtLeastOneOverlapOccurrence_ne_unknown _ range
+        (flattenOverlapOccurrences operands)
 
 /-- Grouping and filter provenance cannot introduce UNKNOWN into the resolved any-pair evaluator. -/
 theorem dateRangesOverlap_ne_unknown
@@ -116,7 +135,7 @@ theorem atLeastOneDateRangeOverlaps_ne_unknown
     evalAtLeastOneDateRangeOverlaps scalar operands ≠ .unknown := by
   cases scalar with
   | skipped =>
-      simp [evalAtLeastOneDateRangeOverlaps]
+      simp [evalAtLeastOneDateRangeOverlaps, evalAtLeastOneOverlap]
   | kept range =>
       exact scanAtLeastOneDateRangeOverlapOccurrences_ne_unknown range
         (flattenDateRangeOccurrences operands)
@@ -140,11 +159,14 @@ theorem scanAtLeastOneDateRangeOverlapOccurrences_fired_iff
         scalar.overlaps occurrence.range) = true := by
   induction occurrences with
   | nil =>
-      simp [scanAtLeastOneDateRangeOverlapOccurrences]
+      simp [scanAtLeastOneDateRangeOverlapOccurrences,
+        scanAtLeastOneOverlapOccurrence]
   | cons current rest ih =>
       by_cases overlap : scalar.overlaps current.range
-      · simp [scanAtLeastOneDateRangeOverlapOccurrences, overlap]
-      · simp [scanAtLeastOneDateRangeOverlapOccurrences, overlap, ih]
+      · simp [scanAtLeastOneDateRangeOverlapOccurrences,
+          scanAtLeastOneOverlapOccurrence, overlap]
+      · simp [scanAtLeastOneDateRangeOverlapOccurrences,
+          scanAtLeastOneOverlapOccurrence, overlap, ih]
 
 /-- A kept scalar fires exactly when one flattened kept list occurrence overlaps it; operand grouping and filter provenance affect polarity, not truth. -/
 theorem atLeastOneDateRangeOverlaps_fired_iff
@@ -327,7 +349,8 @@ theorem atLeastOneDateRangeOverlap_headMatch
     scanAtLeastOneDateRangeOverlapOccurrences scalar (current :: rest) =
       .fired
         (if current.fromFilteredOperand then .omission else .value) := by
-  simp [scanAtLeastOneDateRangeOverlapOccurrences, overlap]
+  simp [scanAtLeastOneDateRangeOverlapOccurrences,
+    scanAtLeastOneOverlapOccurrence, overlap]
 
 /-- A disjoint occurrence, filtered or not, leaves no sticky polarity in the scalar-versus-list scan. -/
 theorem atLeastOneDateRangeOverlap_disjointHead
@@ -337,7 +360,8 @@ theorem atLeastOneDateRangeOverlap_disjointHead
     (disjoint : scalar.overlaps current.range = false) :
     scanAtLeastOneDateRangeOverlapOccurrences scalar (current :: rest) =
       scanAtLeastOneDateRangeOverlapOccurrences scalar rest := by
-  simp [scanAtLeastOneDateRangeOverlapOccurrences, disjoint]
+  simp [scanAtLeastOneDateRangeOverlapOccurrences,
+    scanAtLeastOneOverlapOccurrence, disjoint]
 
 /-- With one kept list occurrence, scalar-versus-list truth delegates to primitive overlap and polarity is exactly that operand's filter bit. -/
 theorem atLeastOneDateRangeOverlaps_singleOccurrence
@@ -349,9 +373,9 @@ theorem atLeastOneDateRangeOverlaps_singleOccurrence
         .fired (if hasFilter then .omission else .value)
       else
         .notFired := by
-  simp [evalAtLeastOneDateRangeOverlaps,
+  simp [evalAtLeastOneDateRangeOverlaps, evalAtLeastOneOverlap,
     flattenOverlapOccurrences,
     OverlapOperand.occurrences,
-    scanAtLeastOneDateRangeOverlapOccurrences]
+    scanAtLeastOneOverlapOccurrence]
 
 end A12Kernel

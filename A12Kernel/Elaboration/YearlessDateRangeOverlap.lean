@@ -94,21 +94,42 @@ private def slotFor (addressed : CheckedAddressedCell) :
       throw (.sourceValueProfile addressed.address value)
   | .value _ => throw (.sourceValueKind addressed.address)
 
-/-- Resolve one admitted operand against the checked document, retaining its single concrete address. -/
+/-- Resolve one admitted operand's single addressed cell into its yearless slot. -/
+def resolveCheckedSlot
+    (source : CheckedYearlessDateRangeOverlapField model)
+    (document : CheckedDocument model) :
+    Except YearlessDateRangesOverlapEvaluationError
+      (OverlapSlot YearlessInterval) := do
+  let core ← (document.resolveCheckedDirectEntityOperandCore source.declaration.id)
+    |>.mapError .addressing
+  match core.addressedCells with
+  | [addressed] => slotFor addressed
+  | addressed => throw (.incoherentDirectOperand addressed.length)
+
+/-- Resolve one admitted operand against the checked document, retaining its single concrete address. A direct yearless field carries no filter. -/
 def resolveCheckedValidation
     (source : CheckedYearlessDateRangeOverlapField model)
     (document : CheckedDocument model) :
     Except YearlessDateRangesOverlapEvaluationError
       (OverlapOperand YearlessInterval) := do
-  let core ← (document.resolveCheckedDirectEntityOperandCore source.declaration.id)
-    |>.mapError .addressing
-  match core.addressedCells with
-  | [addressed] =>
-      let slot ← slotFor addressed
-      pure { slots := [slot], hasFilter := false }
-  | addressed => throw (.incoherentDirectOperand addressed.length)
+  let slot ← source.resolveCheckedSlot document
+  pure { slots := [slot], hasFilter := false }
 
 end CheckedYearlessDateRangeOverlapField
+
+/-- Evaluate the scalar-versus-list scan over admitted unconfigured yearless operands. The scalar is resolved first and a skipped scalar leaves every list operand unread, exactly as on the completed route; the two routes differ only in the interval domain they compare. -/
+def evaluateYearlessAtLeastOneDateRangeOverlaps
+    (scalar : CheckedYearlessDateRangeOverlapField model)
+    (list : List (CheckedYearlessDateRangeOverlapField model))
+    (document : CheckedDocument model) :
+    Except YearlessDateRangesOverlapEvaluationError Verdict := do
+  let scalarSlot ← scalar.resolveCheckedSlot document
+  match scalarSlot with
+  | .skipped => pure Verdict.notFired
+  | .kept _ => do
+      let operands ← list.mapM fun source =>
+        source.resolveCheckedValidation document
+      pure (evalAtLeastOneYearlessRangeOverlaps scalarSlot operands)
 
 /-- Evaluate the any-pair scan over admitted unconfigured yearless operands in authored order. -/
 def evaluateYearlessDateRangesOverlap

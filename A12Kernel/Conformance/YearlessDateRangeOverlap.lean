@@ -103,4 +103,26 @@ example :
 example : verdict? 1 2 "" "04/09" = some .notFired := by
   native_decide
 
+private def pluralVerdict? (scalar listed : FieldId)
+    (scalarText listedText : String) : Option Verdict := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+  let scalarSource ← certify? model scalar
+  let listedSource ← certify? model listed
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := [storedCell scalar scalarText, storedCell listed listedText]
+  }).toOption
+  (evaluateYearlessAtLeastOneDateRangeOverlaps scalarSource [listedSource]
+    document).toOption
+
+/- The scalar-versus-list scan compares yearless labels exactly as the any-pair scan does, and an
+unusable scalar terminates before the list is read. Each row is a measured Kernel outcome. -/
+example :
+    pluralVerdict? 1 3 "01/06" "06-15/06-20" = some (.fired .value) ∧
+      pluralVerdict? 1 3 "01/06" "07-01/07-05" = some .notFired ∧
+      pluralVerdict? 1 3 "01/02" "02-29/03-05" = some (.fired .value) ∧
+      pluralVerdict? 1 3 "" "06-15/06-20" = some .notFired := by
+  native_decide
+
 end A12Kernel.Conformance.YearlessDateRangeOverlap

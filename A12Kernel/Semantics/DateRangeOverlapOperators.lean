@@ -87,29 +87,43 @@ def evalYearlessRangesOverlap
   scanOverlapOccurrences YearlessInterval.overlaps [] false
     (flattenOverlapOccurrences operands)
 
-/-- First-match scan for the list side of `AtLeastOneDateRangeOverlaps`. Only the matched list operand contributes polarity. -/
-def scanAtLeastOneDateRangeOverlapOccurrences
-    (scalar : ResolvedDateRange) :
-    List ResolvedDateRangeOccurrence → Verdict
+/-- First-match scan for the list side of `AtLeastOneDateRangeOverlaps`, over any interval domain with an overlap relation. Only the matched list operand contributes polarity. -/
+def scanAtLeastOneOverlapOccurrence {α} (overlaps : α → α → Bool) (scalar : α) :
+    List (OverlapOccurrence α) → Verdict
   | [] => Verdict.notFired
   | current :: rest =>
-      if scalar.overlaps current.range then
+      if overlaps scalar current.range then
         Verdict.fired
           (if current.fromFilteredOperand then
             Polarity.omission
           else
             Polarity.value)
       else
-        scanAtLeastOneDateRangeOverlapOccurrences scalar rest
+        scanAtLeastOneOverlapOccurrence overlaps scalar rest
 
-/-- Scalar-versus-list DateRange overlap. A skipped scalar terminates before list-internal pairs can matter. -/
-def evalAtLeastOneDateRangeOverlaps
-    (scalar : ResolvedDateRangeSlot)
-    (operands : List ResolvedDateRangeOperand) : Verdict :=
+/-- Scalar-versus-list overlap over any interval domain. A skipped scalar terminates before list-internal pairs can matter. -/
+def evalAtLeastOneOverlap {α} (overlaps : α → α → Bool)
+    (scalar : OverlapSlot α) (operands : List (OverlapOperand α)) : Verdict :=
   match scalar with
   | .skipped => Verdict.notFired
   | .kept range =>
-      scanAtLeastOneDateRangeOverlapOccurrences range
+      scanAtLeastOneOverlapOccurrence overlaps range
         (flattenOverlapOccurrences operands)
+
+/-- First-match scan over resolved exact ranges. -/
+abbrev scanAtLeastOneDateRangeOverlapOccurrences :
+    ResolvedDateRange → List ResolvedDateRangeOccurrence → Verdict :=
+  scanAtLeastOneOverlapOccurrence ResolvedDateRange.overlaps
+
+/-- Scalar-versus-list DateRange overlap over resolved exact ranges. -/
+abbrev evalAtLeastOneDateRangeOverlaps :
+    ResolvedDateRangeSlot → List ResolvedDateRangeOperand → Verdict :=
+  evalAtLeastOneOverlap ResolvedDateRange.overlaps
+
+/-- Scalar-versus-list overlap over unconfigured yearless labels. The relation disagrees with any completion, so this is a distinct domain rather than a specialization of the exact one. -/
+abbrev evalAtLeastOneYearlessRangeOverlaps :
+    OverlapSlot YearlessInterval →
+      List (OverlapOperand YearlessInterval) → Verdict :=
+  evalAtLeastOneOverlap YearlessInterval.overlaps
 
 end A12Kernel
