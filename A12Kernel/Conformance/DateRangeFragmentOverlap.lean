@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.DateRangeOverlap
+import A12Kernel.Elaboration.AtLeastOneDateRangeOverlap
 
 /-! # Direct DateFragment range overlap locks
 

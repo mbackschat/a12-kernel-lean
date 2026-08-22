@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.DateRangeOverlap
+import A12Kernel.Elaboration.AtLeastOneDateRangeOverlap
 import A12Kernel.Semantics.DateRangeOverlapOperators
 import A12Kernel.Proofs.DateRangeOverlap
 
