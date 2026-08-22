@@ -10,11 +10,12 @@ namespace A12Kernel.Conformance.DateRangeFragmentOverlap
 open A12Kernel
 
 private def rangeField (id : FieldId) (groupPath : GroupPath) (name : String)
-    (scope : List RepeatableLevel := []) (format : String := "yyyy-MM-dd") :
+    (scope : List RepeatableLevel := []) (format : String := "yyyy-MM-dd")
+    (separator : String := "/") :
     FlatFieldDecl := {
   id, groupPath, name, repeatableScope := scope
   policy := { kind := .dateRange }
-  dateRangePolicy := some { format, separator := "/" }
+  dateRangePolicy := some { format, separator }
 }
 
 private def model : FlatModel := {
@@ -24,7 +25,9 @@ private def model : FlatModel := {
     rangeField 3 ["Form"] "Year" [] "yyyy",
     rangeField 4 ["Form", "Rows"] "FragmentWindow" [10] "yyyy-MM",
     rangeField 5 ["Form"] "Month" [] "MM",
-    rangeField 6 ["Form"] "MonthDay" [] "MM-dd"]
+    rangeField 6 ["Form"] "MonthDay" [] "MM-dd",
+    rangeField 7 ["Form"] "MonthEmpty" [] "MM" "",
+    rangeField 8 ["Form"] "DayMonthDotted" [] "dd.MM" "-"]
   repeatableGroups := [
     { level := 10, path := ["Form", "Rows"], repeatability := some 3 }]
 }
@@ -218,6 +221,16 @@ example :
         rangeCell 6 "02-28/02-28" februaryLast2023,
         rangeCell 1 "2023-02-28/2023-02-28" februaryLast2023] =
           some (.fired .value) := by
+  native_decide
+
+/- A Base Year completes both lexical spellings of a component set, so the two variants join their slash-separated siblings as admitted fragment operands. -/
+example :
+    (checkedSource? model2024 (direct "Month") [direct "MonthEmpty"]).isSome = true ∧
+      (checkedSource? model2024 (direct "MonthDay")
+        [direct "DayMonthDotted"]).isSome = true ∧
+      (checkedSource? model2024 (direct "MonthEmpty")
+        [direct "MonthDay"]).isSome = true ∧
+      (checkedSource? model (direct "Month") [direct "MonthEmpty"]).isNone = true := by
   native_decide
 
 end A12Kernel.Conformance.DateRangeFragmentOverlap

@@ -77,10 +77,14 @@ def accepts (profile : DirectDateRangeOverlapFragmentProfile)
   match profile with
   | .year => format == .yearFragment
   | .yearMonth => format == .yearMonthFragment
+  -- A profile is a component set, so both declared spellings of one set qualify once the
+  -- Base Year has completed the value.
   | .month baseYear =>
-      format == .yearlessMonth && model.baseYear == some baseYear
+      (format == .yearlessMonth || format == .yearlessMonthConcatenated) &&
+        model.baseYear == some baseYear
   | .monthDay baseYear =>
-      format == .yearlessMonthDay && model.baseYear == some baseYear
+      (format == .yearlessMonthDay || format == .yearlessDayMonthDotted) &&
+        model.baseYear == some baseYear
 
 end DirectDateRangeOverlapFragmentProfile
 
@@ -166,7 +170,7 @@ private def certifyDirectDateRangeOverlapFragmentField (model : FlatModel)
         profile := .yearMonth
         profileOwned := by
           simp [DirectDateRangeOverlapFragmentProfile.accepts, hFormat] }
-  | .yearlessMonth =>
+  | .yearlessMonth | .yearlessMonthConcatenated =>
       match hBaseYear : model.baseYear with
       | some baseYear => pure {
           source with
@@ -176,7 +180,7 @@ private def certifyDirectDateRangeOverlapFragmentField (model : FlatModel)
               hBaseYear] }
       | none => throw (.unsupportedPolicy declaration.path
           source.policy.format source.policy.separator)
-  | .yearlessMonthDay =>
+  | .yearlessMonthDay | .yearlessDayMonthDotted =>
       match hBaseYear : model.baseYear with
       | some baseYear => pure {
           source with
@@ -186,7 +190,7 @@ private def certifyDirectDateRangeOverlapFragmentField (model : FlatModel)
               hBaseYear] }
       | none => throw (.unsupportedPolicy declaration.path
           source.policy.format source.policy.separator)
-  | .exact _ | .yearlessMonthConcatenated | .yearlessDayMonthDotted =>
+  | .exact _ =>
       throw (.unsupportedPolicy declaration.path
         source.policy.format source.policy.separator)
 
