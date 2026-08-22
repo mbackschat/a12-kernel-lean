@@ -131,11 +131,11 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `evidence`: the [reviewed 2026-08-19 checkpoint](SOURCES.md#src-date-range-2026-08-19-reconciliation) pins the declaration, comparability, completion, formal-split, year-interpretation, operand, and eight-profile direct-star admission/runtime boundaries. Direct-list and constructor-target profile denominators remain narrower; partial/formal, wider repeatable, and wider consumer calibration remains sparse.
 - `entry-gate`: each selected temporal family needs one bounded source packet and separating matrix over format, world, profile, gap/overlap/cutover, empty/formal precedence, and target policy.
 - `completion-gate`: every admitted temporal operation and target path is checked across its legal profile with exact empty/formal polarity and separating gap/overlap/cutover/millisecond cases.
-- `blocked-on`: none.
-- `route-state`: verified
-- `route-state`: discovery-required for the next temporal unit; the eight-pair direct-star route is closed.
-- `next-candidate`: the full-Date lexical cross is statically admitted upstream for the direct-star computation and refused locally, so admitting it needs the component-set comparison rule rather than another presentation.
-- `oracle`: the [reviewed 2026-08-19 checkpoint](SOURCES.md#src-date-range-2026-08-19-reconciliation) pins that crossed model's static admission and its target-owned rendered output.
+- `blocked-on`: [`EXP-2026-08-22-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#exp-2026-08-22-01--does-the-date-range-component-set-gate-admit-two-spellings-of-one-fragment-shape) for the crossing branch: whether the component-set gate admits two spellings of one fragment shape decides both the relation's shape and four locked cases. No other temporal branch is blocked.
+- `route-state`: blocked for the crossing branch; discovery-required for every other temporal unit. The eight matching-profile direct-star routes are closed.
+- `next-candidate`: the full-Date lexical cross is measured admitted with a pinned stored output, but implementing it means replacing carrier equality with a component-set relation, and that same relation decides four same-component fragment crossings that no retained row measures.
+- `next-candidate-detail`: the crossed model stores `2024-06-01/2024-06-30` from the source text `01.06.2024-30.06.2024`, so the target's declared spelling decides the output rather than the source's.
+- `oracle`: the [reviewed 2026-08-19 checkpoint](SOURCES.md#src-date-range-2026-08-19-reconciliation) pins that crossed model's admission and its target-owned output on both Kernel strategies.
 
 ### SG7 — String, pattern, and custom-field completion
 

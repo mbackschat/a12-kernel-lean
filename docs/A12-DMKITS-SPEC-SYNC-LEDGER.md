@@ -835,6 +835,24 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 ## Experiment requests
 
+<a id="exp-2026-08-22-01"></a>
+<a id="exp-2026-08-22-01--does-the-date-range-component-set-gate-admit-two-spellings-of-one-fragment-shape"></a>
+
+### EXP-2026-08-22-01 — does the DateRange component-set gate admit two spellings of one fragment shape
+
+- **Status:** pending
+- **Kind:** experiment request
+- **Kernel behavior:** 30.8.1
+- **Local revision:** resolve with `git log -S 'EXP-2026-08-22-01'`
+- **a12-dmkits basis revision:** `52ce932dc9b32aefe8c1e424d7e56d7749709540`, read read-only.
+- **The question.** A direct single-level starred `FirstFilledValue` over a DATE_RANGE column, computed into a DATE_RANGE target whose declaration carries the **same date-component set under a different spelling**: is the model admitted, and if so what does the target store? The two cases are a `MM`-with-slash source into a `MM`-with-empty-separator target, and an `MM-dd`-with-slash source into a `dd.MM`-with-dash target, each also in the reverse direction.
+- **Why the answer is not already implied.** `CheckVergleichsBedingungImpl.checkDateRangeType` gates on `rt1.getDateFormat().hasSameComponents(rt2.getDateFormat(), false)`, and `DateRangeFirstFilledProfileDiffTest.theTargetFormatDecidesTheStoredForm` measures one crossing that differs in **both** format string and separator — `dd.MM.yyyy`+`-` into `yyyy-MM-dd`+`/` — as admitted, storing `2024-06-01/2024-06-30`. Read literally, that mechanism admits every same-component crossing, including the four above. But `DateRangeComparabilityLawsTest` retains only **different**-component refusals, so no retained row measures a same-component crossing among the yearless profiles, and the two added declaration pairs are new enough that the comparability fixture predates them.
+- **Competing accounts.** Account A, mechanism-faithful: the gate reads the component set alone, so all four crossings are admitted and the target's declared spelling decides the stored text, exactly as in the measured full-Date cross. Account B, spelling-sensitive: something outside the cited expression additionally constrains the range separator or the fragment spelling, so only the full-Date pair crosses and the four remain refused. Nothing read so far distinguishes them, because the one measured crossing is consistent with both.
+- **The shape needed.** Four computation models, one per crossing direction, each with a filled source row: `MM`+`/` → `MM`+`""`, `MM`+`""` → `MM`+`/`, `MM-dd`+`/` → `dd.MM`+`-`, and `dd.MM`+`-` → `MM-dd`+`/`. For each, the model-admission verdict, and where admitted the exact stored target text on both kernel strategies. A matching-profile row for the same source is the control, and it is already retained.
+- **Why this project cannot settle it.** Both accounts are consistent with every retained observation, and the distinguishing models are not in the corpus. This is an admission question, so the interpreter cannot answer it independently of the kernel gate it reimplements.
+- **What this project will do with the result.** The answer decides whether the checked first-filled shape keeps carrier equality or relaxes to a component-set relation, and it decides four executable cases that currently lock the refusals on internal grounds. Account A additionally generalizes a behavioral `spec/09` clause that today names only the full-Date crossing, which would carry its own `SPEC-` entry.
+- **Acceptance:** the four admission verdicts, the stored text of each admitted crossing on both kernel strategies, the exact a12-dmkits revision, and a statement of which account is refuted. A reasoned refusal is conclusive only if it names why the crossed fragment model cannot be authored, in which case this project records the boundary as permanently uncalibrated and keeps carrier equality.
+
 <a id="exp-2026-08-11-01"></a>
 <a id="exp-2026-08-11-01--does-the-referenced-channel-expand-an-unstarred-group-operand"></a>
 

@@ -515,7 +515,7 @@ example :
     ] = some "POISON" := by
   native_decide
 
-/- Both declarations must share one admitted DateRange pair. All eight pairs now carry a profile, so the refusals that remain are genuine crossings: the two full-Date pairs, the two month-only separators, and the two day-and-month spellings each stay separate even where the retained components agree. -/
+/- Both declarations must share one admitted DateRange pair. The four crossings between profiles that retain the same components are refused on internal grounds only, and the peer's named component-set gate predicts the opposite; `EXP-2026-08-22-01` owns that question, so treat these four conjuncts as the current fail-closed choice rather than a measured boundary. -/
 example :
     (checked? target.id "Window").isSome = true ∧
       (checked? target.id "DottedWindow").isNone = true ∧
