@@ -201,6 +201,35 @@ private def fullDate (year : Int) (month day : Nat)
     (admitted : (FullDate.ofYmd? year month day).isSome) : FullDate :=
   (FullDate.ofYmd? year month day).get admitted
 
+private def monthEmptyPolicy := policy "MM" ""
+private def dayMonthDottedPolicy := policy "dd.MM" "-"
+private def monthEmptyTravel := field monthEmptyPolicy
+private def dayMonthDottedTravel := field dayMonthDottedPolicy
+
+private def configuredModelFor (source : FlatFieldDecl) (baseYear : Int) :
+    FlatModel := {
+  modelFor source with baseYear := some baseYear
+}
+
+/- The two lexical variants gain bound extraction exactly when Base Year completes them, like the slash-separated profiles that share their components. Without Base Year they stay refused. -/
+example :
+    (elaborateDateRangeBound (configuredModelFor monthEmptyTravel 2024)
+      monthEmptyTravel.id .start).isOk = true ∧
+    (elaborateDateRangeBound (configuredModelFor dayMonthDottedTravel 2024)
+      dayMonthDottedTravel.id .finish).isOk = true ∧
+    (match elaborateDateRangeBound (modelFor monthEmptyTravel)
+        monthEmptyTravel.id .start with
+      | .error (.unsupportedPolicy source format separator) =>
+          source == monthEmptyTravel.id && format == "MM" && separator == ""
+      | _ => false) = true ∧
+    (match elaborateDateRangeBound (modelFor dayMonthDottedTravel)
+        dayMonthDottedTravel.id .finish with
+      | .error (.unsupportedPolicy source format separator) =>
+          source == dayMonthDottedTravel.id && format == "dd.MM" &&
+            separator == "-"
+      | _ => false) = true := by
+  native_decide
+
 /- Admission accepts every exact-valued profile, while unconfigured yearless and addressing boundaries stay refused. -/
 example :
     let unsupportedPolicyTravel := field (policy "dd.MM" "-")

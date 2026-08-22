@@ -309,6 +309,21 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: the packets cover dotted/dash lists of exactly two and three sources and all four fragment profiles at exactly three sources with a fresh target. ISO/slash list execution, lengths greater than three, fragment-list formal suffixes, groups, stars, filters, repetition, target application, scheduling, and cause identity beyond the reported formal code remain unmeasured here.
 - `sync`: [`SPEC-2026-08-19-04`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-04--date-range-firstfilledvalue-scans-direct-field-lists-lazily) is accepted at the reviewed checkpoint.
 
+<a id="src-date-range-bound-base-year"></a>
+#### DateRange bound extraction and Base-Year completion, measured locally 2026-08-22
+
+- `revision`: clean a12-dmkits `52ce932dc9b32aefe8c1e424d7e56d7749709540`, dmtool `0.13.0`, kernel `30.8.1` built and runtime; the sibling worktree was empty before and after and the artifact records `CLEAN`.
+- `admission-route`: two dmtool-authored models differing only in `modelInfo.baseYear` carry five DATE_RANGE fields; `rule check` supplies the kernel's static verdict for `YearFromDate(StartOfDateRange(field)) == 2024`.
+- `admission-claim`: with Base Year 2024 every profile admits bound extraction, including `MM` with the empty separator and `dd.MM` with dash. Without Base Year all four yearless and fragment profiles are refused with `MVK_WRONG_DATE_FORMAT_FOR_OP`, while `yyyy-MM-dd` with slash stays admitted. The two lexical variants therefore behave exactly like the slash-separated profiles sharing their components.
+- `admission-claim`: component extraction from a bound follows the range's own declared components. `DayFromDate` on a month-only range is refused with `MVK_WRONG_DATE_FORMAT_FOR_OP` while `MonthFromDate` and `YearFromDate` are admitted; on `dd.MM` with dash, `DayFromDate` is admitted.
+- `admission-claim`: comparing an extracted bound with a full date literal is refused with `MVK_INVALID_COMPARE_TO_DATE`, so a completed yearless bound is not thereby a full-Date operand.
+- `runtime-route`: `:adapter:kernelProbe` observes `validateFull` on both codegen strategies over one document with `MM`+empty `0609` and `dd.MM`+dash `01.06-30.09` under Base Year 2024.
+- `runtime-claim`: both strategies fire exactly the rules asserting start year 2024, start month 6, and end month 9 for the halved month pair, and start year 2024, start month 6, and end day 30 for the dotted pair. The two negative controls asserting start month 7 and end day 29 stayed silent, so the completion is pinned rather than merely consistent.
+- `overlap-claim`: `DateRangesOverlap` is statically admitted for every pair tried, including two profiles with different component sets and including models with no Base Year. This operator therefore does not apply the comparability gate that assignment and comparison apply, and this project's narrower singular-overlap admission is not derived from a measurement.
+- `integrity`: models `d10bf7dadf0d46dc7927815b9735044de28552205313bd116c88c5c8816f46a7` (Base Year 2024) and `f78eef6fbdbeebec043128c891fb778014e652b99cb3657507938a06078b07b1` (none), request `ffb8a9c8175ad41ed64f1d3aaa60611ae8d457d62c69cf74b53c6574f84e2c75`, document `47512a822900055f851f3968f8db040be4f415cbe3ce2587a65a6b49fa94267f`, artifact `8b5ec786670de3a4f581c23d21ccc23994c3ece65eb2319a5bd35e0bd618e46a`. The Base-Year model carries the eight probe rules; the unconfigured copy was taken before they were added.
+- `limit`: one filled value per profile, one Base Year, and the UTC-free default zone. Wrapping ranges, `interpretationOfYear`, empty and malformed values, overlap runtime behaviour, and the `{Y}` and `{Y,M}` profiles' bound values were not exercised.
+- `sync`: the bound-admission and completion claims confirm the existing local account and widen its evidence, so they create no outbound ledger entry. The overlap claim contradicts no clause; it records that a local restriction lacks a measurement.
+
 <a id="src-date-range-component-set-crossing"></a>
 #### DateRange component-set crossing, measured locally 2026-08-22
 

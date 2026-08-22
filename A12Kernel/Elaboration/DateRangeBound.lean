@@ -46,9 +46,10 @@ def DateRangeInputFormat.supportsDirectBound
     (format : DateRangeInputFormat) (baseYear : Option Int) : Bool :=
   match format with
   | .exact _ | .yearFragment | .yearMonthFragment => true
-  | .yearlessMonth | .yearlessMonthDay => baseYear.isSome
-  -- The two lexical variants have no retained bound observation, so they stay refused.
-  | .yearlessMonthConcatenated | .yearlessDayMonthDotted => false
+  -- Every yearless presentation needs the model's Base Year to supply the missing
+  -- year, and the declared spelling does not change that.
+  | .yearlessMonth | .yearlessMonthDay | .yearlessMonthConcatenated
+  | .yearlessDayMonthDotted => baseYear.isSome
 
 /-- One selected endpoint of an exact-valued direct DateRange field. -/
 structure CheckedDateRangeBound (model : FlatModel)
