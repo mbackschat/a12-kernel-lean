@@ -176,7 +176,7 @@ example :
       [.star (star "Window")]).map (fun checked =>
         (checked.scalar.declaration.id,
           checked.operands.map fun operand =>
-            operand.fields.map (·.declaration.id))) =
+            operand.fields.map (·.id))) =
       some (1, [[2], [3]]) := by
   native_decide
 
@@ -243,12 +243,15 @@ example :
         AtLeastOneDateRangeOverlapsElabError.diagnostic? = none := by
   native_decide
 
-/- Unsupported policy and read-form refusals stay unmapped on either side. -/
+/- A yearless declaration beside a year-bearing one meets the uniform-year gate on either side;
+read-form refusals stay unmapped. -/
 example :
     (pluralAdmissionError? (direct "Unsupported") (direct "Finish")).bind
-        AtLeastOneDateRangeOverlapsElabError.diagnostic? = none ∧
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? =
+      some .dateWithAndWithoutYear ∧
       (pluralAdmissionError? (direct "Start") (direct "Unsupported")).bind
-        AtLeastOneDateRangeOverlapsElabError.diagnostic? = none ∧
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? =
+        some .dateWithAndWithoutYear ∧
       (pluralAdmissionError? (projected "Start") (direct "Finish")).bind
         AtLeastOneDateRangeOverlapsElabError.diagnostic? = none ∧
       (pluralAdmissionError? (direct "Start") (projected "Finish")).bind

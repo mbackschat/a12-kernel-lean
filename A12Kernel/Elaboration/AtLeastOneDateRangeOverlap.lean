@@ -34,6 +34,7 @@ inductive AtLeastOneDateRangeOverlapsElabError where
       (path : List String) (form : FieldEntityReadForm)
   | groupExpansionEmpty (path : GroupPath)
   | groupExpansionNotDateRange (path : GroupPath)
+  | dateWithAndWithoutYear
   | having (error : CorrelationElabError)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -46,6 +47,7 @@ def diagnostic? : AtLeastOneDateRangeOverlapsElabError →
   | .shape error => error.diagnostic?
   | .scalarStarred _ => some .invalidParameterForDateRangeComparison
   | .measuredNumberPairNotDateRange _ _ => some .noDateRange
+  | .dateWithAndWithoutYear => some .dateWithAndWithoutYear
   | .scalarFilteredStarred _ | .scalarGroup _ |
       .sourceNotDateRange _ _ _ | .unsupportedPolicy _ _ _ _ |
       .unsupportedReadForm _ _ _ | .groupExpansionEmpty _ |
@@ -69,7 +71,7 @@ structure CheckedDateRangeEntityGroup (model : FlatModel) where
 
 /-- One certified list-side field, star, or recursively expanded group operand. -/
 inductive CheckedAtLeastOneDateRangeOverlapsListOperand (model : FlatModel) where
-  | field (source : CheckedDateRangesOverlapOperand model)
+  | field (source : CheckedSingularDateRangesOverlapOperand model)
   | group (source : CheckedDateRangeEntityGroup model)
 
 namespace CheckedAtLeastOneDateRangeOverlapsListOperand
@@ -78,10 +80,18 @@ def hasHaving : CheckedAtLeastOneDateRangeOverlapsListOperand model → Bool
   | .field source => source.hasHaving
   | .group _ => false
 
+/-- Whether every declaration this operand retains has a supported policy. A group operand expands only through the exact canonical certification, so its whole expansion is exact. -/
+def policySupported : CheckedAtLeastOneDateRangeOverlapsListOperand model → Bool
+  | .field source => source.policySupported
+  | .group source =>
+      (source.first :: source.rest).all fun field =>
+        (DateRangeFormat.ofPolicy? field.policy).isSome
+
+/-- The declarations this operand contributes, in the operand's own order. -/
 def fields : CheckedAtLeastOneDateRangeOverlapsListOperand model →
-    List CheckedCanonicalDateRangeField
-  | .field source => [source.source]
-  | .group source => source.first :: source.rest
+    List FlatFieldDecl
+  | .field source => [source.declaration]
+  | .group source => (source.first :: source.rest).map (·.declaration)
 
 end CheckedAtLeastOneDateRangeOverlapsListOperand
 
@@ -91,11 +101,30 @@ structure SurfaceAtLeastOneDateRangeOverlapsSource where
   list : SurfaceFieldEntitySource
   deriving Repr, DecidableEq
 
+/-- One certified plural scalar: the canonical exact policy, or one direct fragment profile the checked model resolves. The scalar is always a direct stored field, so it needs no star or group arm. -/
+inductive CheckedAtLeastOneDateRangeOverlapsScalar (model : FlatModel) where
+  | canonical (source : CheckedCanonicalDateRangeField)
+  | fragmentField (source : CheckedDirectDateRangeOverlapFragmentField model)
+
+namespace CheckedAtLeastOneDateRangeOverlapsScalar
+
+/-- The authored declaration behind the scalar. -/
+def declaration : CheckedAtLeastOneDateRangeOverlapsScalar model → FlatFieldDecl
+  | .canonical source => source.declaration
+  | .fragmentField source => source.declaration
+
+/-- Whether the retained scalar declaration satisfies the exact canonical policy or one direct fragment profile valid for the checked model. -/
+def policySupported : CheckedAtLeastOneDateRangeOverlapsScalar model → Bool
+  | .canonical source => (DateRangeFormat.ofPolicy? source.policy).isSome
+  | .fragmentField source => source.profile.accepts model source.format
+
+end CheckedAtLeastOneDateRangeOverlapsScalar
+
 /-- A model-checked scalar-versus-list source. The shared shape spans both sides, so exact duplication or overlap between the scalar and any list operand is rejected once. -/
 structure CheckedAtLeastOneDateRangeOverlapsSource (model : FlatModel) where
   private mk ::
   shape : CheckedFieldEntityShape model
-  scalar : CheckedCanonicalDateRangeField
+  scalar : CheckedAtLeastOneDateRangeOverlapsScalar model
   first : CheckedAtLeastOneDateRangeOverlapsListOperand model
   rest : List (CheckedAtLeastOneDateRangeOverlapsListOperand model)
 
@@ -120,6 +149,17 @@ private def certifyPluralDateRangeField (role : DateRangeOverlapSourceRole)
     | .unsupportedPolicy path format separator =>
         .unsupportedPolicy role path format separator
     | .incoherentCore => .incoherentCore
+
+/-- Certify the scalar as the exact canonical policy, falling back to a direct fragment profile the model resolves. A declaration that is neither keeps the canonical refusal, because that is the one this operator's diagnostics already name. -/
+private def certifyPluralScalar (model : FlatModel) (declaration : FlatFieldDecl) :
+    Except AtLeastOneDateRangeOverlapsElabError
+      (CheckedAtLeastOneDateRangeOverlapsScalar model) :=
+  match certifyPluralDateRangeField .scalar declaration with
+  | .ok canonical => pure (.canonical canonical)
+  | .error canonicalError =>
+      match certifyDirectDateRangeOverlapFragmentField model declaration with
+      | .ok fragment => pure (.fragmentField fragment)
+      | .error _ => throw canonicalError
 
 private def certifyAtLeastOneDateRangeOverlapScalarShape :
     ResolvedFieldEntityOperand model →
@@ -175,8 +215,17 @@ private def certifyAtLeastOneDateRangeOverlapsListOperand (model : FlatModel)
       .group <$> certifyDateRangeEntityGroup model (.starred source)
   | .starredGroupPresence source =>
       .group <$> certifyDateRangeEntityGroup model (.starredPresence source)
+  | .field declaration .stored =>
+      match certifyDateRangesOverlapOperand model declaringGroup
+          (.field declaration .stored) with
+      | .ok canonical => pure (.field (.canonical canonical))
+      | .error canonicalError =>
+          match certifyDirectDateRangeOverlapFragmentField model declaration with
+          | .ok fragment => pure (.field (.fragmentField fragment))
+          | .error _ => throw (pluralListError canonicalError)
   | operand =>
-      .field <$> (certifyDateRangesOverlapOperand model declaringGroup operand
+      .field <$> ((.canonical <$>
+        certifyDateRangesOverlapOperand model declaringGroup operand)
         |>.mapError pluralListError)
 
 private def certifyAtLeastOneDateRangeOverlapsListOperands (model : FlatModel)
@@ -212,8 +261,9 @@ def elaborateAtLeastOneDateRangeOverlapsSource (model : FlatModel)
                 throw (.measuredNumberPairNotDateRange
                   scalarDeclaration.path listed.path)
           | _, _ => pure ()
-          let scalar ←
-            certifyPluralDateRangeField .scalar scalarDeclaration
+          if mixesDateRangeYearInclusion model (shape.first :: shape.rest) then
+            throw .dateWithAndWithoutYear
+          let scalar ← certifyPluralScalar model scalarDeclaration
           let first ← certifyAtLeastOneDateRangeOverlapsListOperand model
             declaringGroup listFirst
           let rest ← certifyAtLeastOneDateRangeOverlapsListOperands model
@@ -225,7 +275,7 @@ def elaborateAtLeastOneDateRangeOverlapsSource (model : FlatModel)
 structure ResolvedCheckedAtLeastOneDateRangeOverlapScalar
     (model : FlatModel) where
   private mk ::
-  source : CheckedCanonicalDateRangeField
+  source : CheckedAtLeastOneDateRangeOverlapsScalar model
   core : ResolvedCheckedEntityOperandCore
   semantic : ResolvedDateRangeSlot
 
@@ -238,7 +288,7 @@ structure ResolvedCheckedAtLeastOneDateRangeOverlapListOperand
   semantic : ResolvedDateRangeOperand
 
 private def resolveCheckedAtLeastOneDateRangeOverlapScalar
-    (source : CheckedCanonicalDateRangeField)
+    (source : CheckedAtLeastOneDateRangeOverlapsScalar model)
     (document : CheckedDocument model) :
     Except DateRangesOverlapEvaluationError
       (ResolvedCheckedAtLeastOneDateRangeOverlapScalar model) := do

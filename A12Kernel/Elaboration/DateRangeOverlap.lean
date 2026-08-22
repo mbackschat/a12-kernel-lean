@@ -112,6 +112,11 @@ def policySupported : CheckedSingularDateRangesOverlapOperand model → Bool
       (DateRangeFormat.ofPolicy? source.source.policy).isSome
   | .fragmentField source => source.profile.accepts model source.format
 
+/-- The authored declaration behind a direct operand, or the starred field's declaration. -/
+def declaration : CheckedSingularDateRangesOverlapOperand model → FlatFieldDecl
+  | .canonical source => source.source.declaration
+  | .fragmentField source => source.declaration
+
 /-- Resolve one singular full-validation operand through the existing checked direct/star addressing boundary. -/
 def resolveValidationCore (operand : CheckedSingularDateRangesOverlapOperand model)
     (document : CheckedDocument model) (outer : Env) :
@@ -149,7 +154,8 @@ private def certifyDateRangesOverlapField (declaration : FlatFieldDecl) :
         .unsupportedPolicy path format separator
     | .incoherentCore => .incoherentCore
 
-private def certifyDirectDateRangeOverlapFragmentField (model : FlatModel)
+/-- Certify one direct DateRange field whose profile is year-bearing on its own or completed by the model's Base Year. Shared with the plural operator, whose scalar and list sides accept the same profiles. -/
+def certifyDirectDateRangeOverlapFragmentField (model : FlatModel)
     (declaration : FlatFieldDecl) : Except DateRangesOverlapElabError
       (CheckedDirectDateRangeOverlapFragmentField model) := do
   let source ← certifyDateRangeInputField declaration |>.mapError fun

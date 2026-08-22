@@ -69,24 +69,20 @@ private def pluralAdmissionError? (checkedModel : FlatModel)
   | .ok _ => none
   | .error error => some error
 
-/- Year-bearing direct fragments stay singular, exact-profile, and non-starred. -/
+/- Year-bearing direct fragments are admitted directly and stay non-starred. -/
 example :
     (checkedSource? model (direct "Year") [direct "Probe"]).isSome = true ∧
       (checkedSource? model (direct "YearMonth") [direct "Probe"]).isSome = true ∧
       admissionError? model fragmentStar [direct "Probe"] =
         some (.unsupportedPolicy ["Form", "Rows", "FragmentWindow"]
-          "yyyy-MM" "/") ∧
-      pluralAdmissionError? model (direct "Probe") (direct "YearMonth") =
-        some (.unsupportedPolicy .list ["Form", "YearMonth"] "yyyy-MM" "/") := by
+          "yyyy-MM" "/") := by
   native_decide
 
-/- Base Year admits both shorter profiles only on the singular direct route. -/
+/- Base Year admits both shorter profiles on the singular direct route. -/
 example :
     (checkedSource? model2024 (direct "Month") [direct "Probe"]).isSome = true ∧
       (checkedSource? model2024 (direct "Probe") [direct "MonthDay"]).isSome =
-        true ∧
-      pluralAdmissionError? model2024 (direct "Probe") (direct "Month") =
-        some (.unsupportedPolicy .list ["Form", "Month"] "MM" "/") := by
+        true := by
   native_decide
 
 /- Without Base Year, a canonical range beside a yearless one gets the measured diagnostic in
@@ -132,6 +128,29 @@ example :
         [direct "Month", direct "MonthDay"]).isSome = true ∧
       (checkedSource? model2024 (direct "Year")
         [direct "DayMonthDotted"]).isSome = true := by
+  native_decide
+
+/- The plural operator applies the same uniform-year gate over scalar and list, and admits a
+fragment on either side once the class is uniform. Every row is measured on both Kernel
+strategies; a uniformly yearless list stays with the unconfigured route and is refused here. -/
+example :
+    (pluralAdmissionError? model (direct "Probe") (direct "Month")).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? =
+      some .dateWithAndWithoutYear ∧
+      (pluralAdmissionError? model (direct "Month") (direct "Probe")).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? =
+      some .dateWithAndWithoutYear ∧
+      (pluralAdmissionError? model (direct "Probe") (direct "YearMonth")).isNone =
+        true ∧
+      (pluralAdmissionError? model (direct "Probe") (direct "Year")).isNone = true ∧
+      (pluralAdmissionError? model (direct "YearMonth") (direct "Probe")).isNone =
+        true ∧
+      (pluralAdmissionError? model2024 (direct "Probe") (direct "Month")).isNone =
+        true ∧
+      (pluralAdmissionError? model2024 (direct "Month") (direct "Probe")).isNone =
+        true ∧
+      (pluralAdmissionError? model2024 (direct "Year") (direct "Month")).isNone =
+        true := by
   native_decide
 
 /- The new diagnostic keeps its exact observable Kernel identity. -/
@@ -275,6 +294,56 @@ example :
       storedCell model2024 5 "06/06"] = some (.fired .value) ∧
       verdict? model2024 (direct "Year") [direct "Month"] [
         storedCell model2024 3 "2023/2023",
+        storedCell model2024 5 "06/06"] = some .notFired := by
+  native_decide
+
+private def checkedPluralSource? (checkedModel : FlatModel)
+    (scalar first : SurfaceFieldEntityOperand) :
+    Option (CheckedAtLeastOneDateRangeOverlapsSource checkedModel) :=
+  (elaborateAtLeastOneDateRangeOverlapsSource checkedModel ["Form"] {
+    scalar
+    list := { first, rest := [] }
+  }).toOption
+
+private def pluralVerdict? (checkedModel : FlatModel)
+    (scalar first : SurfaceFieldEntityOperand)
+    (cells : List ClassifiedCellInput) : Option Verdict := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler checkedModel).toOption
+  let source ← checkedPluralSource? checkedModel scalar first
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells
+  }).toOption
+  (source.evaluateCheckedDocument document []).toOption.map (·.verdict)
+
+/- The plural scan reads a completed fragment on either side, and the exact operand keeps its own
+year there too, so the same month in another year is disjoint. -/
+example :
+    pluralVerdict? model2024 (direct "Probe") (direct "Month") [
+      storedCell model2024 1 "2024-06-01/2024-06-30",
+      storedCell model2024 5 "06/06"] = some (.fired .value) ∧
+      pluralVerdict? model2024 (direct "Month") (direct "Probe") [
+        storedCell model2024 5 "06/06",
+        storedCell model2024 1 "2024-06-01/2024-06-30"] = some (.fired .value) ∧
+      pluralVerdict? model2024 (direct "Probe") (direct "Month") [
+        storedCell model2024 1 "2023-06-01/2023-06-30",
+        storedCell model2024 5 "06/06"] = some .notFired ∧
+      pluralVerdict? model2024 (direct "Probe") (direct "Month") [
+        storedCell model2024 1 "2024-03-01/2024-03-31",
+        storedCell model2024 5 "06/06"] = some .notFired := by
+  native_decide
+
+/- A year fragment scalar decides by its own year, and an unusable scalar leaves the list unread,
+so a filled fragment scalar against an empty list is a definite no-fire rather than unknown. -/
+example :
+    pluralVerdict? model2024 (direct "Year") (direct "Month") [
+      storedCell model2024 3 "2024/2024",
+      storedCell model2024 5 "06/06"] = some (.fired .value) ∧
+      pluralVerdict? model2024 (direct "Year") (direct "Month") [
+        storedCell model2024 3 "2023/2023",
+        storedCell model2024 5 "06/06"] = some .notFired ∧
+      pluralVerdict? model2024 (direct "Month") (direct "Probe") [
         storedCell model2024 5 "06/06"] = some .notFired := by
   native_decide
 

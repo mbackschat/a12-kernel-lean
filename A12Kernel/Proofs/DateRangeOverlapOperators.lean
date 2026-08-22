@@ -9,13 +9,10 @@ These laws cover the two ordered scans after cell classification and filter sele
 
 namespace A12Kernel
 
-/-- Every DateRange declaration retained by checked singular-overlap admission has either an exact executable policy or one supported direct fragment profile valid for the checked model. -/
-theorem checkedDateRangesOverlap_policies_supported
-    (checked : CheckedDateRangesOverlapSource model) :
-    checked.operands.all
-      CheckedSingularDateRangesOverlapOperand.policySupported = true := by
-  apply List.all_eq_true.mpr
-  intro operand _
+/-- One retained singular operand has either an exact executable policy or one supported direct fragment profile valid for the checked model. The plural operator's list side reuses this, because its field arm retains exactly this certificate. -/
+theorem checkedDateRangesOverlap_policySupported_operand
+    (operand : CheckedSingularDateRangesOverlapOperand model) :
+    operand.policySupported = true := by
   cases operand with
   | canonical source =>
       cases source with
@@ -28,22 +25,42 @@ theorem checkedDateRangesOverlap_policies_supported
       simp only [CheckedSingularDateRangesOverlapOperand.policySupported]
       exact source.profileOwned
 
-/-- Every DateRange declaration retained on either side of checked scalar-versus-list admission has an exact executable stored-input policy. -/
+/-- Every DateRange declaration retained by checked singular-overlap admission has either an exact executable policy or one supported direct fragment profile valid for the checked model. -/
+theorem checkedDateRangesOverlap_policies_supported
+    (checked : CheckedDateRangesOverlapSource model) :
+    checked.operands.all
+      CheckedSingularDateRangesOverlapOperand.policySupported = true := by
+  apply List.all_eq_true.mpr
+  intro operand _
+  exact checkedDateRangesOverlap_policySupported_operand operand
+
+/-- Every DateRange declaration retained on either side of checked scalar-versus-list admission has either an exact executable policy or one supported direct fragment profile valid for the checked model. The former stronger reading, that every retained policy is exact, was refuted by the measured plural fragment admission. -/
 theorem checkedAtLeastOneDateRangeOverlaps_policies_supported
     (checked : CheckedAtLeastOneDateRangeOverlapsSource model) :
-    (DateRangeFormat.ofPolicy? checked.scalar.policy).isSome = true ∧
-      checked.operands.all (fun operand =>
-        operand.fields.all (fun source =>
-          (DateRangeFormat.ofPolicy? source.policy).isSome)) = true := by
+    checked.scalar.policySupported = true ∧
+      checked.operands.all
+        CheckedAtLeastOneDateRangeOverlapsListOperand.policySupported = true := by
   constructor
-  · rw [checked.scalar.formatOwned]
-    rfl
+  · cases hScalar : checked.scalar with
+    | canonical source =>
+        simp only [CheckedAtLeastOneDateRangeOverlapsScalar.policySupported]
+        rw [source.formatOwned]
+        rfl
+    | fragmentField source =>
+        simp only [CheckedAtLeastOneDateRangeOverlapsScalar.policySupported]
+        exact source.profileOwned
   · apply List.all_eq_true.mpr
     intro operand _
-    apply List.all_eq_true.mpr
-    intro source _
-    rw [source.formatOwned]
-    rfl
+    cases operand with
+    | field source =>
+        simpa only [CheckedAtLeastOneDateRangeOverlapsListOperand.policySupported]
+          using checkedDateRangesOverlap_policySupported_operand source
+    | group source =>
+        simp only [CheckedAtLeastOneDateRangeOverlapsListOperand.policySupported]
+        apply List.all_eq_true.mpr
+        intro field _
+        rw [field.formatOwned]
+        rfl
 
 /-- The any-pair operator has no UNKNOWN result at this resolved skipped-or-kept boundary. -/
 theorem scanDateRangesOverlapOccurrences_ne_unknown
