@@ -35,6 +35,8 @@ inductive AtLeastOneDateRangeOverlapsElabError where
   | groupExpansionEmpty (path : GroupPath)
   | groupExpansionNotDateRange (path : GroupPath)
   | dateWithAndWithoutYear
+  | yearInterpretationNotSupported (role : DateRangeOverlapSourceRole)
+      (path : List String)
   | having (error : CorrelationElabError)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -48,6 +50,7 @@ def diagnostic? : AtLeastOneDateRangeOverlapsElabError →
   | .scalarStarred _ => some .invalidParameterForDateRangeComparison
   | .measuredNumberPairNotDateRange _ _ => some .noDateRange
   | .dateWithAndWithoutYear => some .dateWithAndWithoutYear
+  | .yearInterpretationNotSupported _ _ => some .invalidDateRangeFormat
   | .scalarFilteredStarred _ | .scalarGroup _ |
       .sourceNotDateRange _ _ _ | .unsupportedPolicy _ _ _ _ |
       .unsupportedReadForm _ _ _ | .groupExpansionEmpty _ |
@@ -139,6 +142,19 @@ def hasHaving (checked : CheckedAtLeastOneDateRangeOverlapsSource model) : Bool 
 
 end CheckedAtLeastOneDateRangeOverlapsSource
 
+/-- Re-label one singular-operator refusal for the plural operator's side that produced it. Both sides share every operand cause, so the role is the only difference and the shared causes stay one list. -/
+private def pluralOperandError (role : DateRangeOverlapSourceRole) :
+    DateRangesOverlapElabError → AtLeastOneDateRangeOverlapsElabError
+  | .sourceNotDateRange path actual => .sourceNotDateRange role path actual
+  | .unsupportedPolicy path format separator =>
+      .unsupportedPolicy role path format separator
+  | .unsupportedReadForm path form => .unsupportedReadForm role path form
+  | .yearInterpretationNotSupported path =>
+      .yearInterpretationNotSupported role path
+  | .having error => .having error
+  | .shape _ | .groupsNotAllowed _ | .dateWithAndWithoutYear |
+      .incoherentCore => .incoherentCore
+
 private def certifyPluralDateRangeField (role : DateRangeOverlapSourceRole)
     (declaration : FlatFieldDecl) :
     Except AtLeastOneDateRangeOverlapsElabError
@@ -150,16 +166,17 @@ private def certifyPluralDateRangeField (role : DateRangeOverlapSourceRole)
         .unsupportedPolicy role path format separator
     | .incoherentCore => .incoherentCore
 
-/-- Certify the scalar as the exact canonical policy, falling back to a direct fragment profile the model resolves. A declaration that is neither keeps the canonical refusal, because that is the one this operator's diagnostics already name. -/
+/-- Certify the scalar as the exact canonical policy, falling back to a direct fragment profile the model resolves. Only an unsupported canonical policy opens that fallback: any other canonical refusal, and every refusal the fragment route raises on its own, is reported as itself rather than replaced by the policy cause. -/
 private def certifyPluralScalar (model : FlatModel) (declaration : FlatFieldDecl) :
     Except AtLeastOneDateRangeOverlapsElabError
       (CheckedAtLeastOneDateRangeOverlapsScalar model) :=
   match certifyPluralDateRangeField .scalar declaration with
   | .ok canonical => pure (.canonical canonical)
-  | .error canonicalError =>
-      match certifyDirectDateRangeOverlapFragmentField model declaration with
-      | .ok fragment => pure (.fragmentField fragment)
-      | .error _ => throw canonicalError
+  | .error (.unsupportedPolicy _ _ _ _) =>
+      (.fragmentField <$>
+        certifyDirectDateRangeOverlapFragmentField model declaration)
+        |>.mapError (pluralOperandError .scalar)
+  | .error canonicalError => throw canonicalError
 
 private def certifyAtLeastOneDateRangeOverlapScalarShape :
     ResolvedFieldEntityOperand model →
@@ -195,16 +212,6 @@ private def certifyDateRangeEntityGroup (model : FlatModel)
   else
     throw (.groupExpansionNotDateRange source.groupPath)
 
-private def pluralListError : DateRangesOverlapElabError →
-    AtLeastOneDateRangeOverlapsElabError
-  | .sourceNotDateRange path actual => .sourceNotDateRange .list path actual
-  | .unsupportedPolicy path format separator =>
-      .unsupportedPolicy .list path format separator
-  | .unsupportedReadForm path form => .unsupportedReadForm .list path form
-  | .having error => .having error
-  | .shape _ | .groupsNotAllowed _ | .dateWithAndWithoutYear |
-      .incoherentCore => .incoherentCore
-
 private def certifyAtLeastOneDateRangeOverlapsListOperand (model : FlatModel)
     (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
       Except AtLeastOneDateRangeOverlapsElabError
@@ -219,14 +226,15 @@ private def certifyAtLeastOneDateRangeOverlapsListOperand (model : FlatModel)
       match certifyDateRangesOverlapOperand model declaringGroup
           (.field declaration .stored) with
       | .ok canonical => pure (.field (.canonical canonical))
-      | .error canonicalError =>
-          match certifyDirectDateRangeOverlapFragmentField model declaration with
-          | .ok fragment => pure (.field (.fragmentField fragment))
-          | .error _ => throw (pluralListError canonicalError)
+      | .error (.unsupportedPolicy _ _ _) =>
+          ((fun fragment => .field (.fragmentField fragment)) <$>
+            certifyDirectDateRangeOverlapFragmentField model declaration)
+            |>.mapError (pluralOperandError .list)
+      | .error canonicalError => throw (pluralOperandError .list canonicalError)
   | operand =>
       .field <$> ((.canonical <$>
         certifyDateRangesOverlapOperand model declaringGroup operand)
-        |>.mapError pluralListError)
+        |>.mapError (pluralOperandError .list))
 
 private def certifyAtLeastOneDateRangeOverlapsListOperands (model : FlatModel)
     (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →

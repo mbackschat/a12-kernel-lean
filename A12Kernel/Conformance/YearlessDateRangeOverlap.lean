@@ -13,10 +13,12 @@ open A12Kernel
 
 private def rangeField (id : FieldId) (name format separator : String)
     (groupPath : GroupPath := ["Form"])
-    (scope : List RepeatableLevel := []) : FlatFieldDecl := {
+    (scope : List RepeatableLevel := [])
+    (interpretationOfYear : Option DateRangeYearInterpretation := none) :
+    FlatFieldDecl := {
   id, name, groupPath, repeatableScope := scope
   policy := { kind := .dateRange }
-  dateRangePolicy := some { format, separator }
+  dateRangePolicy := some { format, separator, interpretationOfYear }
 }
 
 private def model : FlatModel := {
@@ -31,7 +33,8 @@ private def model : FlatModel := {
       repeatableScope := [10]
       policy := { kind := .number { scale := 0, signed := false } } },
     rangeField 8 "WindowLeft" "MM" "/" ["Form", "Windows"],
-    rangeField 9 "WindowRight" "MM-dd" "/" ["Form", "Windows"]]
+    rangeField 9 "WindowRight" "MM-dd" "/" ["Form", "Windows"],
+    rangeField 10 "MonthSlashFrom" "MM" "/" ["Form"] [] (some .anchorStart)]
   repeatableGroups := [
     { level := 10, path := ["Form", "Rows"], repeatability := some 4 }]
 }
@@ -253,6 +256,22 @@ example :
       groupCarrierVerdict? "01/06" "08/09" "05-01/07-31" = some (.fired .value) ∧
       groupCarrierVerdict? "01/03" "06/09" "10-01/12-31" = some .notFired ∧
       groupCarrierVerdict? "" "04/09" "10-01/12-31" = some .notFired := by
+  native_decide
+
+/- The unconfigured route refuses an interpretation-bearing declaration on the same terms as the completed one. The interpretation has no anchor year to act on here, so the refusal is a property of the declaration rather than of its completion, and it carries the Kernel's format diagnostic through the shared singular cause. -/
+example :
+    (match model.lookupUniqueId 10 with
+      | .ok declaration =>
+          certifyYearlessDateRangeOverlapField model declaration
+            |>.toOption.isNone
+      | .error _ => false) = true ∧
+    (match model.lookupUniqueId 10 with
+      | .ok declaration =>
+          match certifyYearlessDateRangeOverlapField model declaration with
+          | .error (.source cause) => cause.diagnostic?
+          | _ => none
+      | .error _ => none) = some .invalidDateRangeFormat ∧
+    (certify? model 1).isSome = true := by
   native_decide
 
 end A12Kernel.Conformance.YearlessDateRangeOverlap

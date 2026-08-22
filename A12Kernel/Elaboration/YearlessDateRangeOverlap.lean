@@ -62,6 +62,7 @@ def certifyYearlessDateRangeOverlapField (model : FlatModel)
     | .unsupportedPolicy path format separator =>
         .source (.unsupportedPolicy path format separator)
     | .incoherentCore => .source .incoherentCore
+  (refuseDateRangeOverlapYearInterpretation declaration checked.policy).mapError .source
   match hShape : YearlessOverlapShape.ofInputFormat? checked.format with
   | none =>
       throw (.notYearless declaration.path checked.policy.format

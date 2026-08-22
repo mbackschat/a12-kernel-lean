@@ -18,6 +18,7 @@ inductive DateRangesOverlapElabError where
   | unsupportedReadForm (path : List String) (form : FieldEntityReadForm)
   | groupsNotAllowed (path : GroupPath)
   | dateWithAndWithoutYear
+  | yearInterpretationNotSupported (path : List String)
   | having (error : CorrelationElabError)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -28,6 +29,7 @@ def diagnostic? : DateRangesOverlapElabError → Option KernelStaticDiagnostic
   | .shape error => error.diagnostic?
   | .groupsNotAllowed _ => some .noGroupsAllowed
   | .dateWithAndWithoutYear => some .dateWithAndWithoutYear
+  | .yearInterpretationNotSupported _ => some .invalidDateRangeFormat
   | .sourceNotDateRange _ _ | .unsupportedPolicy _ _ _ |
       .unsupportedReadForm _ _ | .having _ | .incoherentCore => none
 
@@ -146,13 +148,24 @@ def hasHaving (checked : CheckedDateRangesOverlapSource model) : Bool :=
 
 end CheckedDateRangesOverlapSource
 
+/-- Refuse a DateRange declaration that carries an `interpretationOfYear`. Both overlap operators key their format allowlist on the whole declaration including that reading, so the composite format is refused on either operand side, under every profile including a year-bearing exact one, and with or without a Base Year. Bound extraction and comparison accept the same declaration, so this gate belongs to the overlap operators alone. -/
+def refuseDateRangeOverlapYearInterpretation (declaration : FlatFieldDecl)
+    (policy : DateRangeDeclarationPolicy) :
+    Except DateRangesOverlapElabError Unit :=
+  if policy.interpretationOfYear.isSome then
+    throw (.yearInterpretationNotSupported declaration.path)
+  else
+    pure ()
+
 private def certifyDateRangesOverlapField (declaration : FlatFieldDecl) :
-    Except DateRangesOverlapElabError CheckedCanonicalDateRangeField :=
-  (certifyCanonicalDateRangeField declaration).mapError fun
+    Except DateRangesOverlapElabError CheckedCanonicalDateRangeField := do
+  let checked ← (certifyCanonicalDateRangeField declaration).mapError fun
     | .notDateRange path actual => .sourceNotDateRange path actual.surfaceKind
     | .unsupportedPolicy path format separator =>
         .unsupportedPolicy path format separator
     | .incoherentCore => .incoherentCore
+  refuseDateRangeOverlapYearInterpretation declaration checked.policy
+  pure checked
 
 /-- Certify one direct DateRange field whose profile is year-bearing on its own or completed by the model's Base Year. Shared with the plural operator, whose scalar and list sides accept the same profiles. -/
 def certifyDirectDateRangeOverlapFragmentField (model : FlatModel)
@@ -163,6 +176,7 @@ def certifyDirectDateRangeOverlapFragmentField (model : FlatModel)
     | .unsupportedPolicy path format separator =>
         .unsupportedPolicy path format separator
     | .incoherentCore => .incoherentCore
+  refuseDateRangeOverlapYearInterpretation declaration source.policy
   match hFormat : source.format with
   | .yearFragment =>
       pure {

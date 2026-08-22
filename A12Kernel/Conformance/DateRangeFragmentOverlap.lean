@@ -11,11 +11,12 @@ open A12Kernel
 
 private def rangeField (id : FieldId) (groupPath : GroupPath) (name : String)
     (scope : List RepeatableLevel := []) (format : String := "yyyy-MM-dd")
-    (separator : String := "/") :
+    (separator : String := "/")
+    (interpretationOfYear : Option DateRangeYearInterpretation := none) :
     FlatFieldDecl := {
   id, groupPath, name, repeatableScope := scope
   policy := { kind := .dateRange }
-  dateRangePolicy := some { format, separator }
+  dateRangePolicy := some { format, separator, interpretationOfYear }
 }
 
 private def model : FlatModel := {
@@ -27,7 +28,9 @@ private def model : FlatModel := {
     rangeField 5 ["Form"] "Month" [] "MM",
     rangeField 6 ["Form"] "MonthDay" [] "MM-dd",
     rangeField 7 ["Form"] "MonthEmpty" [] "MM" "",
-    rangeField 8 ["Form"] "DayMonthDotted" [] "dd.MM" "-"]
+    rangeField 8 ["Form"] "DayMonthDotted" [] "dd.MM" "-",
+    rangeField 9 ["Form"] "DottedFrom" [] "dd.MM" "-" (some .anchorStart),
+    rangeField 10 ["Form"] "ExactTo" [] "yyyy-MM-dd" "/" (some .anchorFinish)]
   repeatableGroups := [
     { level := 10, path := ["Form", "Rows"], repeatability := some 3 }]
 }
@@ -345,6 +348,32 @@ example :
         storedCell model2024 5 "06/06"] = some .notFired ∧
       pluralVerdict? model2024 (direct "Month") (direct "Probe") [
         storedCell model2024 5 "06/06"] = some .notFired := by
+  native_decide
+
+/- Both operators refuse an operand whose declaration carries an `interpretationOfYear`, on either side and under a yearless or an exact profile. The Kernel keys its format allowlist on the whole declaration including that reading, so the refusal does not depend on a Base Year completing the profile and is not a value-level concern. Its own diagnostic is the format class, distinct from the year-class gate that refuses a mixed list. -/
+example :
+    admissionError? model2024 (direct "DottedFrom") [direct "Probe"] =
+        some (.yearInterpretationNotSupported ["Form", "DottedFrom"]) ∧
+      admissionError? model2024 (direct "Probe") [direct "DottedFrom"] =
+        some (.yearInterpretationNotSupported ["Form", "DottedFrom"]) ∧
+      admissionError? model (direct "ExactTo") [direct "Probe"] =
+        some (.yearInterpretationNotSupported ["Form", "ExactTo"]) ∧
+      pluralAdmissionError? model2024 (direct "DottedFrom") (direct "Probe") =
+        some (.yearInterpretationNotSupported .scalar ["Form", "DottedFrom"]) ∧
+      pluralAdmissionError? model2024 (direct "Probe") (direct "DottedFrom") =
+        some (.yearInterpretationNotSupported .list ["Form", "DottedFrom"]) := by
+  native_decide
+
+/- The refusal reports the Kernel's own format diagnostic rather than the local unsupported-policy insufficiency, so a consumer reading it learns which declaration property to drop. -/
+example :
+    (admissionError? model2024 (direct "DottedFrom") [direct "Probe"]).bind
+        DateRangesOverlapElabError.diagnostic? =
+      some .invalidDateRangeFormat ∧
+    (pluralAdmissionError? model2024 (direct "DottedFrom")
+        (direct "Probe")).bind AtLeastOneDateRangeOverlapsElabError.diagnostic? =
+      some .invalidDateRangeFormat ∧
+    KernelStaticDiagnostic.invalidDateRangeFormat.kernelCode =
+      "MVK_INVALID_DATE_RANGE_FORMAT" := by
   native_decide
 
 end A12Kernel.Conformance.DateRangeFragmentOverlap
