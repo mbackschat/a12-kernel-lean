@@ -120,7 +120,7 @@ def evaluateComputationResult (format : DateRangeInputFormat) :
       | none => .ok (.poison .malformed)
       | some spelling =>
           let attempted := spelling start finish
-          if monthDayBefore finish start then
+          if finish.before start then
             .ok (.errored attempted .inverted)
           else .ok (.accepted attempted)
 

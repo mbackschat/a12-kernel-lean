@@ -194,6 +194,11 @@ structure MonthDayValue where
   day : Nat
   deriving Repr, DecidableEq
 
+/-- Calendar order on two yearless month/day labels, without manufacturing a year. -/
+def MonthDayValue.before (left right : MonthDayValue) : Bool :=
+  decide (left.month < right.month ∨
+    left.month = right.month ∧ left.day < right.day)
+
 /-- The checked DateRange cell domain. Fully resolved values keep the exact `DateRangeValue`; yearless fragment values retain only the component identity established by their declaration. -/
 inductive DateRangeCellValue where
   | exact (value : DateRangeValue)

@@ -87,7 +87,7 @@ theorem dateRangeConstructionTarget_evaluateComputationResult_yearlessMonth
   simp [DateRangeConstructionTargetFormat.evaluateComputationResult,
     DateRangeConstructionTargetFormat.toInputFormat,
     DateRangeInputFormat.evaluateComputationResult,
-    DateRangeInputFormat.monthSpelling?, DateRangeInputFormat.monthDaySpelling?,
+    DateRangeInputFormat.monthSpelling?,
     ordered]
 
 /-- An inverted yearless month construction retains its component-only attempted value. -/
@@ -100,13 +100,13 @@ theorem dateRangeConstructionTarget_evaluateComputationResult_yearlessMonth_inve
   simp [DateRangeConstructionTargetFormat.evaluateComputationResult,
     DateRangeConstructionTargetFormat.toInputFormat,
     DateRangeInputFormat.evaluateComputationResult,
-    DateRangeInputFormat.monthSpelling?, DateRangeInputFormat.monthDaySpelling?,
+    DateRangeInputFormat.monthSpelling?,
     inverted]
 
 /-- An ordered yearless month/day construction reaches the component-only target without manufacturing a year. -/
 theorem dateRangeConstructionTarget_evaluateComputationResult_yearlessMonthDay
     (start finish : MonthDayValue)
-    (ordered : DateRangeInputFormat.monthDayBefore finish start = false) :
+    (ordered : finish.before start = false) :
     DateRangeConstructionTargetFormat.monthDayFragment.evaluateComputationResult
         (.value (.yearlessMonthDay start finish)) =
       .ok (.accepted
@@ -114,13 +114,13 @@ theorem dateRangeConstructionTarget_evaluateComputationResult_yearlessMonthDay
   simp [DateRangeConstructionTargetFormat.evaluateComputationResult,
     DateRangeConstructionTargetFormat.toInputFormat,
     DateRangeInputFormat.evaluateComputationResult,
-    DateRangeInputFormat.monthSpelling?, DateRangeInputFormat.monthDaySpelling?,
+    DateRangeInputFormat.monthDaySpelling?,
     ordered]
 
 /-- An inverted yearless month/day construction retains its component-only attempted value. -/
 theorem dateRangeConstructionTarget_evaluateComputationResult_yearlessMonthDay_inverted
     (start finish : MonthDayValue)
-    (inverted : DateRangeInputFormat.monthDayBefore finish start = true) :
+    (inverted : finish.before start = true) :
     DateRangeConstructionTargetFormat.monthDayFragment.evaluateComputationResult
         (.value (.yearlessMonthDay start finish)) =
       .ok (.errored
@@ -128,7 +128,7 @@ theorem dateRangeConstructionTarget_evaluateComputationResult_yearlessMonthDay_i
   simp [DateRangeConstructionTargetFormat.evaluateComputationResult,
     DateRangeConstructionTargetFormat.toInputFormat,
     DateRangeInputFormat.evaluateComputationResult,
-    DateRangeInputFormat.monthSpelling?, DateRangeInputFormat.monthDaySpelling?,
+    DateRangeInputFormat.monthDaySpelling?,
     inverted]
 
 /-- A yearless result cannot acquire an exact target presentation by bypassing checked profile admission. -/

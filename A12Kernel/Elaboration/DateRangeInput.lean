@@ -254,11 +254,6 @@ private def parseDayMonth? (text : String) : Option MonthDayValue :=
       pure { month, day }
   | _ => none
 
-/-- Compare two yearless month/day labels in calendar order without manufacturing a year. -/
-def monthDayBefore (left right : MonthDayValue) : Bool :=
-  decide (left.month < right.month ∨
-    left.month = right.month ∧ left.day < right.day)
-
 /-- Parse one yearless range without manufacturing a calendar year. February 29 is admitted because it denotes a real month/day label in the Gregorian calendar. The stored presentation selects the split and the endpoint spelling; the retained component pair and its order rule are shared, so an inverted range is invalid under every presentation. -/
 private def parseYearlessRange (format : DateRangeInputFormat) (separator text : String) :
     Except BaseFormalCause DateRangeCellValue := do
@@ -276,12 +271,12 @@ private def parseYearlessRange (format : DateRangeInputFormat) (separator text :
   | .yearlessMonthDay =>
       let start ← requireDateRangeFormat (parseMonthDay? startText)
       let finish ← requireDateRangeFormat (parseMonthDay? finishText)
-      if monthDayBefore finish start then throw .dateRangeInvalid
+      if finish.before start then throw .dateRangeInvalid
       else pure (.yearlessMonthDay start finish)
   | .yearlessDayMonthDotted =>
       let start ← requireDateRangeFormat (parseDayMonth? startText)
       let finish ← requireDateRangeFormat (parseDayMonth? finishText)
-      if monthDayBefore finish start then throw .dateRangeInvalid
+      if finish.before start then throw .dateRangeInvalid
       else pure (.yearlessMonthDay start finish)
   | .exact _ => throw .dateRangeFormat
 
