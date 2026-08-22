@@ -527,4 +527,128 @@ example :
       | _ => false) = true := by
   native_decide
 
+private def dayMonthDottedFromPolicy : DateRangeDeclarationPolicy := {
+  format := "dd.MM"
+  separator := "-"
+  interpretationOfYear := some .anchorStart
+}
+
+private def dayMonthDottedToPolicy : DateRangeDeclarationPolicy := {
+  format := "dd.MM"
+  separator := "-"
+  interpretationOfYear := some .anchorFinish
+}
+
+private def wrapFromBaseYear : DateRangeValue := {
+  start := dateValue 1604188800000 2020 11 1
+  finish := dateValue 1614470400000 2021 2 28
+}
+
+private def wrapToBaseYear : DateRangeValue := {
+  start := dateValue 1572566400000 2019 11 1
+  finish := dateValue 1582848000000 2020 2 28
+}
+
+private def orderedInBaseYear : DateRangeValue := {
+  start := dateValue 1590969600000 2020 6 1
+  finish := dateValue 1601424000000 2020 9 30
+}
+
+/- The declared interpretation decides whether a wrapping yearless range is formally valid at all, and where its two calendar years fall. The identical stored text is invalid with no interpretation, anchored at the Base Year and completed into the following year under `FROM`, and anchored at the preceding year under `TO`. -/
+example :
+    (classifyStoredDateRangeForModel "UTC" (some 2020) dayMonthDottedPolicy
+        "01.11-28.02").toOption =
+      some (.rejected .dateRangeInvalid) ∧
+    (classifyStoredDateRangeForModel "UTC" (some 2020) dayMonthDottedFromPolicy
+        "01.11-28.02").toOption =
+      some (.parsed (.dateRange wrapFromBaseYear)) ∧
+    (classifyStoredDateRangeForModel "UTC" (some 2020) dayMonthDottedToPolicy
+        "01.11-28.02").toOption =
+      some (.parsed (.dateRange wrapToBaseYear)) := by
+  native_decide
+
+/- An ordered range is unaffected by every interpretation: both endpoints stay in the Base Year, so the interpretation is a wrap-only rule rather than a general year-placement rule. -/
+example :
+    (classifyStoredDateRangeForModel "UTC" (some 2020) dayMonthDottedFromPolicy
+        "01.06-30.09").toOption =
+      some (.parsed (.dateRange orderedInBaseYear)) ∧
+    (classifyStoredDateRangeForModel "UTC" (some 2020) dayMonthDottedToPolicy
+        "01.06-30.09").toOption =
+      some (.parsed (.dateRange orderedInBaseYear)) ∧
+    (classifyStoredDateRangeForModel "UTC" (some 2020) dayMonthDottedPolicy
+        "01.06-30.09").toOption =
+      some (.parsed (.dateRange orderedInBaseYear)) := by
+  native_decide
+
+/- Without a declared Base Year the interpretation has no anchor year to complete against, so a wrapping range keeps the order refusal and an ordered one keeps its yearless component identity. This is the deliberately scoped account: no interpretation-bearing unconfigured model was observed, so the wrapping row here carries no external evidence. -/
+example :
+    (classifyStoredDateRangeForModel "UTC" none dayMonthDottedFromPolicy
+        "01.11-28.02").toOption =
+      some (.rejected .dateRangeInvalid) ∧
+    (classifyStoredDateRangeForModel "UTC" none dayMonthDottedToPolicy
+        "01.11-28.02").toOption =
+      some (.rejected .dateRangeInvalid) ∧
+    (classifyStoredDateRangeForModel "UTC" none dayMonthDottedFromPolicy
+        "01.06-30.09").toOption =
+      some (.parsed (.dateRange (.yearlessMonthDay
+        { month := 6, day := 1 } { month := 9, day := 30 }))) := by
+  native_decide
+
+private def wrapTravel : FlatFieldDecl := {
+  travel with
+  name := "Season"
+  dateRangePolicy := some dayMonthDottedPolicy
+}
+
+private def wrapModel : FlatModel := {
+  fields := [wrapTravel]
+  timeZoneId := "UTC"
+  baseYear := some 2020
+}
+
+private def wrapFromModel : FlatModel := {
+  wrapModel with
+  fields := [{ wrapTravel with dateRangePolicy := some dayMonthDottedFromPolicy }]
+}
+
+private def wrapPrepared :
+    PreparedFlatStringContext wrapModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler wrapModel).toOption.get (by native_decide)
+
+private def wrapFromPrepared :
+    PreparedFlatStringContext wrapFromModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler wrapFromModel).toOption.get (by native_decide)
+
+private def checkWrap (prepared : PreparedFlatStringContext m builtinStringPatternCompiler)
+    (raw : RawCell) :=
+  checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := [{
+      address := { field := wrapTravel.id, path := [] }
+      stored := "01.11-28.02"
+      raw
+    }]
+  }
+
+/- The declaration key flips the same stored text's document validity. Under the standard reading the wrapping value is a coherent formal invalidity that validation observes as unknown; under `FROM` the identical text is a coherent resolved range, and the formal refusal it replaced is now incoherent. Declaring the key is admitted in both models, so the flip is a classification consequence rather than a declaration refusal. -/
+example :
+    ((checkWrap wrapPrepared (.rejected .dateRangeInvalid)).toOption.bind
+      fun checked =>
+        (checked.read { field := wrapTravel.id, path := [] }).toOption.map
+          fun cell => observeCell .validation cell) =
+      some (.unknown .dateRangeInvalid) ∧
+    ((checkWrap wrapFromPrepared
+      (.parsed (.dateRange wrapFromBaseYear))).toOption.bind
+      fun checked =>
+        (checked.read { field := wrapTravel.id, path := [] }).toOption.map
+          fun cell => observeCell .validation cell) =
+      some (.value (.dateRange wrapFromBaseYear)) ∧
+    (match checkWrap wrapFromPrepared (.rejected .dateRangeInvalid) with
+      | .error (.incoherentCell address) =>
+          address == { field := wrapTravel.id, path := [] }
+      | _ => false) = true := by
+  native_decide
+
 end A12Kernel.Conformance.DateRangeInput

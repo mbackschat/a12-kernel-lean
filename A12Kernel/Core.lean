@@ -208,6 +208,12 @@ inductive DateRangeCellValue where
 
 instance : Coe DateRangeValue DateRangeCellValue := ⟨.exact⟩
 
+/-- Whether a yearless pair wraps the calendar year, meaning its finish label precedes its start. Month-only and month/day shapes share the rule, so a wrap is recognized identically under every yearless presentation. An exact range carries its own endpoint years and therefore never wraps. -/
+def DateRangeCellValue.wrapsYearBoundary : DateRangeCellValue → Bool
+  | .exact _ => false
+  | .yearlessMonth start finish => decide (finish < start)
+  | .yearlessMonthDay start finish => finish.before start
+
 /-- One admitted scalar temporal payload. Exact runtime identity remains separate from decoded local components, and the closed constructors make each kind's available component halves explicit. -/
 inductive TemporalValue where
   | date (value : DateValue)

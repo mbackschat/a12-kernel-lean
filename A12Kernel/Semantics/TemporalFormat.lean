@@ -61,10 +61,23 @@ inductive DateRangeDeclarationPolicyError where
   | unsupportedPair
   deriving Repr, DecidableEq
 
-/-- Exact DateRange declaration sources retained separately from the decoded endpoint value. -/
+/-- The declared reading of a yearless DateRange whose endpoints wrap the calendar year, named for the Kernel's `interpretationOfYear` tokens. `anchorStart` is `FROM` and `anchorFinish` is `TO`; each names the endpoint that stays in the Base Year. -/
+inductive DateRangeYearInterpretation where
+  | anchorStart
+  | anchorFinish
+  deriving Repr, DecidableEq
+
+/-- Place the two calendar years of a wrapping yearless range. The anchored endpoint keeps the Base Year and the other endpoint moves into the adjacent year, so the completed range spans exactly one year boundary. -/
+def DateRangeYearInterpretation.wrappingYears :
+    DateRangeYearInterpretation → Int → Int × Int
+  | .anchorStart, baseYear => (baseYear, baseYear + 1)
+  | .anchorFinish, baseYear => (baseYear - 1, baseYear)
+
+/-- Exact DateRange declaration sources retained separately from the decoded endpoint value. An absent `interpretationOfYear` is the standard reading, under which a wrapping yearless range is formally invalid; a present-but-empty declared token is illegal at model deserialization rather than defaulting, so it never reaches this record and has no representation here. The key is accepted on every admitted pair, so it takes no part in declaration admission. -/
 structure DateRangeDeclarationPolicy where
   format : String
   separator : String
+  interpretationOfYear : Option DateRangeYearInterpretation := none
   deriving Repr, DecidableEq
 
 /-- Decide declaration admission against the exact Kernel-measured `(format, separator)` allowlist. Month-only is the sole format admitting the legal empty separator, and admission carries no claim that every DateRange operation supports the pair. -/

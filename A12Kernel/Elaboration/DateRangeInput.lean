@@ -262,8 +262,8 @@ private def parseDayMonth? (text : String) : Option MonthDayValue :=
       pure { month, day }
   | _ => none
 
-/-- Parse one yearless range without manufacturing a calendar year. February 29 is admitted because it denotes a real month/day label in the Gregorian calendar. The stored presentation selects the split and the endpoint spelling; the retained component pair and its order rule are shared, so an inverted range is invalid under every presentation. -/
-private def parseYearlessRange (format : DateRangeInputFormat) (separator text : String) :
+/-- Decode one yearless range's endpoint labels without manufacturing a calendar year and without deciding their order. February 29 is admitted because it denotes a real month/day label in the Gregorian calendar. The stored presentation selects the split and the endpoint spelling; the retained component pair is shared, so the order rule can be applied once by the caller that knows whether a wrap is legal. -/
+private def parseYearlessEndpoints (format : DateRangeInputFormat) (separator text : String) :
     Except BaseFormalCause DateRangeCellValue := do
   let (startText, finishText) ←
     match format with
@@ -274,33 +274,31 @@ private def parseYearlessRange (format : DateRangeInputFormat) (separator text :
   | .yearlessMonth | .yearlessMonthConcatenated =>
       let start ← requireDateRangeFormat (parseMonth? startText)
       let finish ← requireDateRangeFormat (parseMonth? finishText)
-      if finish < start then throw .dateRangeInvalid
-      else pure (.yearlessMonth start finish)
+      pure (.yearlessMonth start finish)
   | .yearlessMonthDay =>
       let start ← requireDateRangeFormat (parseMonthDay? startText)
       let finish ← requireDateRangeFormat (parseMonthDay? finishText)
-      if finish.before start then throw .dateRangeInvalid
-      else pure (.yearlessMonthDay start finish)
+      pure (.yearlessMonthDay start finish)
   | .yearlessDayMonthDotted =>
       let start ← requireDateRangeFormat (parseDayMonth? startText)
       let finish ← requireDateRangeFormat (parseDayMonth? finishText)
-      if finish.before start then throw .dateRangeInvalid
-      else pure (.yearlessMonthDay start finish)
+      pure (.yearlessMonthDay start finish)
   | .exact _ => throw .dateRangeFormat
 
-private def completedCivilRange (year : Int) :
+/-- Complete a decoded yearless pair into two civil dates, one placed in each supplied calendar year. An ordered range receives the same year twice; a wrapping range receives the adjacent pair its declared interpretation selects. The month-only finish takes the last day of its own placed year, so a February finish follows that year's leap rule rather than the start year's. -/
+private def completedCivilRange (startYear finishYear : Int) :
     DateRangeCellValue → Except BaseFormalCause (CivilDate × CivilDate)
   | .yearlessMonth start finish => do
-      let startDate ← requireDateRangeFormat (CivilDate.ofYmd? year start 1)
-      let lastDay ← requireDateRangeFormat (DateParts.daysInMonth? year finish)
+      let startDate ← requireDateRangeFormat (CivilDate.ofYmd? startYear start 1)
+      let lastDay ← requireDateRangeFormat (DateParts.daysInMonth? finishYear finish)
       let finishDate ← requireDateRangeFormat
-        (CivilDate.ofYmd? year finish lastDay)
+        (CivilDate.ofYmd? finishYear finish lastDay)
       pure (startDate, finishDate)
   | .yearlessMonthDay start finish => do
       let startDate ← requireDateRangeFormat
-        (CivilDate.ofYmd? year start.month start.day)
+        (CivilDate.ofYmd? startYear start.month start.day)
       let finishDate ← requireDateRangeFormat
-        (CivilDate.ofYmd? year finish.month finish.day)
+        (CivilDate.ofYmd? finishYear finish.month finish.day)
       pure (startDate, finishDate)
   | .exact _ => throw .dateRangeFormat
 
@@ -318,6 +316,40 @@ private def classifyExactFragmentRange (zoneId text : String)
     match parseRange text with
     | .error cause => pure (.rejected cause)
     | .ok (start, finish) => resolveCivilRange profile start finish
+
+/-- Select each endpoint's calendar year under a declared Base Year. An ordered pair takes that year twice, so every interpretation agrees on it; a wrapping pair takes the adjacent pair its interpretation selects, and has no placement at all without one. -/
+def completionYears (interpretation : Option DateRangeYearInterpretation)
+    (baseYear : Int) (yearless : DateRangeCellValue) : Option (Int × Int) :=
+  if yearless.wrapsYearBoundary then
+    interpretation.map (·.wrappingYears baseYear)
+  else
+    some (baseYear, baseYear)
+
+/-- Place a decoded yearless pair under the model's Base Year and declared year interpretation.
+
+Without a Base Year there is no anchor year to complete against, so the pair keeps its component identity and a wrapping pair keeps the order refusal under every interpretation. Under a Base Year the placement comes from `completionYears`, and an unplaceable wrapping pair is `dateRangeInvalid`. The model zone is consulted only where a completion actually happens, so an unsupported zone is not refused on the uncompleted route.
+-/
+def resolveYearlessForModel (zoneId : String) (baseYear : Option Int)
+    (interpretation : Option DateRangeYearInterpretation)
+    (yearless : DateRangeCellValue) : Except DateRangeInputError RawCell :=
+  match baseYear with
+  | none =>
+      if yearless.wrapsYearBoundary then .ok (.rejected .dateRangeInvalid)
+      else .ok (.parsed (.dateRange yearless))
+  | some year =>
+      match completionYears interpretation year yearless with
+      | none => .ok (.rejected .dateRangeInvalid)
+      | some (startYear, finishYear) => do
+          let profile ← match ModelZone.ConcreteProfile.ofId? zoneId with
+            | some profile => pure profile
+            | none => throw (.unsupportedZone zoneId)
+          match DateRangeInputFormat.completedCivilRange startYear finishYear yearless with
+          | .error cause => pure (.rejected cause)
+          | .ok (start, finish) =>
+              if decide (start.Before CivilDate.gregorianFloor) then
+                pure (.rejected .dateRangeTooEarly)
+              else
+                resolveCivilRange profile start finish
 
 /-- Classify one physical DateRange token under a declaration and model zone. Formal text failures are successful classifications carrying their exact cause; only unsupported semantic capability returns `Except.error`. -/
 def classifyStoredDateRange (zoneId : String)
@@ -356,21 +388,9 @@ def classifyStoredDateRangeForModel (zoneId : String) (baseYear : Option Int)
       if text.isEmpty then
         pure .presentEmpty
       else
-        match format.parseYearlessRange policy.separator text with
+        match format.parseYearlessEndpoints policy.separator text with
         | .error cause => pure (.rejected cause)
         | .ok yearless =>
-            match baseYear with
-            | none => pure (.parsed (.dateRange yearless))
-            | some year =>
-                let profile ← match ModelZone.ConcreteProfile.ofId? zoneId with
-                  | some profile => pure profile
-                  | none => throw (.unsupportedZone zoneId)
-                match DateRangeInputFormat.completedCivilRange year yearless with
-                | .error cause => pure (.rejected cause)
-                | .ok (start, finish) =>
-                    if decide (start.Before CivilDate.gregorianFloor) then
-                      pure (.rejected .dateRangeTooEarly)
-                    else
-                      resolveCivilRange profile start finish
+            resolveYearlessForModel zoneId baseYear policy.interpretationOfYear yearless
 
 end A12Kernel
