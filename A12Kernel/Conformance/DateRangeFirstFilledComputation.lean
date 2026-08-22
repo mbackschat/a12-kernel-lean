@@ -23,18 +23,18 @@ private def source := rangeField 2 ["Cart", "Lines"] "Window" [10]
 private def otherFormatSource :=
   rangeField 3 ["Cart", "Lines"] "DottedWindow" [10] "dd.MM.yyyy" "-"
 private def otherSeparatorTarget :=
-  rangeField 4 ["Cart"] "DashedWindow" [] "yyyy-MM-dd" "-"
+  rangeField 4 ["Cart"] "MonthEmptyWindow" [] "MM" ""
 private def otherSeparatorSource :=
-  rangeField 5 ["Cart", "Lines"] "DashedSource" [10] "yyyy-MM-dd" "-"
+  rangeField 5 ["Cart", "Lines"] "MonthEmptySource" [10] "MM" ""
 private def dottedTarget :=
   rangeField 6 ["Cart"] "DottedTarget" [] "dd.MM.yyyy" "-"
 private def dottedSource :=
   rangeField 7 ["Cart", "Lines"] "DottedSource" [10] "dd.MM.yyyy" "-"
 private def unsupportedDottedTarget :=
-  rangeField 8 ["Cart"] "UnsupportedDottedTarget" [] "dd.MM.yyyy" "/"
+  rangeField 8 ["Cart"] "UnsupportedDottedTarget" [] "dd.MM" "-"
 private def unsupportedDottedSource :=
   rangeField 9 ["Cart", "Lines"] "UnsupportedDottedSource" [10]
-    "dd.MM.yyyy" "/"
+    "dd.MM" "-"
 private def yearTarget :=
   rangeField 10 ["Cart"] "YearTarget" [] "yyyy" "/"
 private def yearSource :=
@@ -515,14 +515,14 @@ example :
     ] = some "POISON" := by
   native_decide
 
-/- Both declarations must share one exact admitted DateRange pair; crossing the two legal pairs or changing only the ISO separator remains refused. -/
+/- Both declarations must share one admitted DateRange pair, and the shared pair must have a checked profile; crossing the two full-Date pairs, differing only in the month-only separator, or sharing a profileless legal pair all stay refused. -/
 example :
     (checked? target.id "Window").isSome = true ∧
       (checked? target.id "DottedWindow").isNone = true ∧
       (checked? dottedTarget.id "Window").isNone = true ∧
       (checked? dottedTarget.id "DottedSource").isSome = true ∧
-      (checked? target.id "DashedSource").isNone = true ∧
-      (checked? otherSeparatorTarget.id "Window").isNone = true ∧
+      (checked? monthTarget.id "MonthEmptySource").isNone = true ∧
+      (checked? otherSeparatorTarget.id "MonthSource").isNone = true ∧
       (checked? unsupportedDottedTarget.id "UnsupportedDottedSource").isNone =
         true := by
   native_decide

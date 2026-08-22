@@ -25,7 +25,7 @@ private def admissionModel : FlatModel := {
     rangeField 1 ["Form"] "Start",
     rangeField 2 ["Form"] "Finish" [] "dd.MM.yyyy" "-",
     rangeField 3 ["Form", "Rows"] "Window" [10],
-    rangeField 4 ["Form"] "Unsupported" [] "yyyy-MM-dd" "-",
+    rangeField 4 ["Form"] "Unsupported" [] "dd.MM" "-",
     { id := 5, groupPath := ["Form"], name := "Code",
       policy := { kind := .string },
       stringPolicy := { lineBreaksPermitted := true } },
@@ -127,7 +127,7 @@ example :
     admissionError? (direct "Start") [direct "Code"] =
         some (.sourceNotDateRange ["Form", "Code"] .string) ∧
       admissionError? (direct "Start") [direct "Unsupported"] =
-        some (.unsupportedPolicy ["Form", "Unsupported"] "yyyy-MM-dd" "-") ∧
+        some (.unsupportedPolicy ["Form", "Unsupported"] "dd.MM" "-") ∧
       admissionError? (.field { base := .relative 0, groups := [], field := "Start" }
         (.projected "Band")) [direct "Finish"] =
         some (.unsupportedReadForm ["Form", "Start"] (.projected "Band")) := by

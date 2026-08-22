@@ -53,6 +53,7 @@ private def dateRangeDeclarationPolicyErrorTag :
     DateRangeDeclarationPolicyError → String
   | .emptyFormat => "emptyFormat"
   | .emptySeparator => "emptySeparator"
+  | .unsupportedPair => "unsupportedPair"
 
 private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → Diagnostic
   | .invalidModelPath path =>

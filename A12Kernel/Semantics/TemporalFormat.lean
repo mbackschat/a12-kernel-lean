@@ -54,10 +54,11 @@ structure TemporalTargetPolicy where
   youngerThan1900Check : Bool := false
   deriving Repr, DecidableEq
 
-/-- Static incoherence in one declaration-owned DateRange format policy. Exact format syntax and separator membership remain parser-owned; this boundary requires both retained sources to be present. -/
+/-- Static incoherence in one declaration-owned DateRange format policy. A refused pair is classified by an absent source where one is missing and by unsupported pair membership otherwise; no external Kernel diagnostic class is claimed for either. -/
 inductive DateRangeDeclarationPolicyError where
   | emptyFormat
   | emptySeparator
+  | unsupportedPair
   deriving Repr, DecidableEq
 
 /-- Exact DateRange declaration sources retained separately from the decoded endpoint value. -/
@@ -66,16 +67,35 @@ structure DateRangeDeclarationPolicy where
   separator : String
   deriving Repr, DecidableEq
 
-/-- Check only the source-presence invariants visible before raw DateRange parsing. -/
+/-- Decide declaration admission against the exact Kernel-measured `(format, separator)` allowlist. Month-only is the sole format admitting the legal empty separator, and admission carries no claim that every DateRange operation supports the pair. -/
+def DateRangeDeclarationPolicy.admitted
+    (policy : DateRangeDeclarationPolicy) : Bool :=
+  match policy.format, policy.separator with
+  | "dd.MM.yyyy", "-" => true
+  | "yyyy-MM-dd", "/" => true
+  | "yyyy", "/" => true
+  | "yyyy-MM", "/" => true
+  | "MM", "/" => true
+  | "MM-dd", "/" => true
+  | "MM", "" => true
+  | "dd.MM", "-" => true
+  | _, _ => false
+
+/-- Classify one already-refused declaration. An absent source keeps its own cause because it is refused under every format; any other refused pair is unsupported membership rather than a missing source. This is total on refused pairs only: admission is decided separately. -/
+def DateRangeDeclarationPolicy.refusal
+    (policy : DateRangeDeclarationPolicy) : DateRangeDeclarationPolicyError :=
+  if policy.format.isEmpty then
+    .emptyFormat
+  else if policy.separator.isEmpty then
+    .emptySeparator
+  else
+    .unsupportedPair
+
+/-- Refuse every declaration outside the admitted allowlist, before raw DateRange parsing. -/
 def DateRangeDeclarationPolicy.error?
     (policy : DateRangeDeclarationPolicy) :
     Option DateRangeDeclarationPolicyError :=
-  if policy.format.isEmpty then
-    some .emptyFormat
-  else if policy.separator.isEmpty then
-    some .emptySeparator
-  else
-    none
+  if policy.admitted then none else some policy.refusal
 
 /-- Exact DateRange presentations shared by bounded stored-input and computed-target consumers. The model-owned source format and separator remain in `DateRangeDeclarationPolicy`. -/
 inductive DateRangeFormat where

@@ -175,14 +175,34 @@ example :
       some (.dateRangeDeclarationPolicyRequired declaration.path) := by
   native_decide
 
-/- Empty format and separator are independent declaration-policy failures. -/
+/- A refusal separates an absent format, an illegal empty separator, and an unsupported pair whose sources are both present. Only the third cause is new to the allowlist, and none of the three claims a Kernel diagnostic class. -/
 example :
     let emptyFormat := dateRangeDeclaration 0 "Travel" "" "/"
     let emptySeparator := dateRangeDeclaration 1 "Stay" "yyyy-MM-dd" ""
+    let separatorSwap := dateRangeDeclaration 2 "Trip" "yyyy-MM-dd" "-"
+    let unknownFormat := dateRangeDeclaration 3 "Leg" "yyyyMM" "/"
     validationError { fields := [emptyFormat] } =
         some (.invalidDateRangeDeclarationPolicy emptyFormat.path .emptyFormat) ∧
       validationError { fields := [emptySeparator] } =
-        some (.invalidDateRangeDeclarationPolicy emptySeparator.path .emptySeparator) := by
+        some (.invalidDateRangeDeclarationPolicy emptySeparator.path .emptySeparator) ∧
+      validationError { fields := [separatorSwap] } =
+        some (.invalidDateRangeDeclarationPolicy separatorSwap.path .unsupportedPair) ∧
+      validationError { fields := [unknownFormat] } =
+        some (.invalidDateRangeDeclarationPolicy unknownFormat.path .unsupportedPair) := by
+  native_decide
+
+/- The complete measured candidate grid admits exactly the eight Kernel-established DateRange pairs. Separator swaps, every dot separator, `yyyyMM`, and every empty separator other than month-only are refused. -/
+example :
+    let formats := ["dd.MM.yyyy", "yyyy-MM-dd", "yyyy", "yyyy-MM", "MM", "MM-dd",
+      "dd.MM", "yyyyMM"]
+    let separators := ["-", "/", ".", ""]
+    ((formats.flatMap fun format => separators.map fun separator =>
+        ((format, separator),
+          (validationError
+            { fields := [dateRangeDeclaration 0 "Travel" format separator] }).isNone)).filter
+      (·.2)).map (·.1) =
+      [("dd.MM.yyyy", "-"), ("yyyy-MM-dd", "/"), ("yyyy", "/"), ("yyyy-MM", "/"),
+        ("MM", "/"), ("MM", ""), ("MM-dd", "/"), ("dd.MM", "-")] := by
   native_decide
 
 /- DateRange policy cannot attach to another declaration kind. -/

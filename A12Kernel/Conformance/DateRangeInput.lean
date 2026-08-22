@@ -238,13 +238,24 @@ example :
       some "datumBereichDatumFalsch" := by
   decide
 
+/- The two pairs the Kernel allowlist adds beyond the checked stored-input profiles are legal declarations without an input profile: declaration legality and local ingestion support are separate decisions. -/
+example :
+    let monthEmptySeparator : DateRangeDeclarationPolicy :=
+      { format := "MM", separator := "" }
+    let dottedDayMonth : DateRangeDeclarationPolicy :=
+      { format := "dd.MM", separator := "-" }
+    (monthEmptySeparator.error?, dottedDayMonth.error?) = (none, none) ∧
+      (DateRangeInputFormat.ofPolicy? monthEmptySeparator,
+        DateRangeInputFormat.ofPolicy? dottedDayMonth) = (none, none) := by
+  native_decide
+
 /- Unsupported declaration and zone profiles are explicit ingestion insufficiency, not semantic invalidity. -/
 example :
     (match classifyStoredDateRange "UTC"
-        { format := "yyyy-MM-dd", separator := "-" }
-        "2024-01-01-2024-01-31" with
+        { format := "dd.MM", separator := "-" }
+        "01.06-30.09" with
       | .error (.unsupportedPolicy format separator) =>
-          format == "yyyy-MM-dd" && separator == "-"
+          format == "dd.MM" && separator == "-"
       | _ => false) = true ∧
     (match classifyStoredDateRange "Pacific/Apia" isoPolicy
         "2024-01-01/2024-01-31" with
@@ -380,7 +391,7 @@ private def checkYearMonthOne (stored : String) (raw : RawCell) :=
 
 private def unsupportedPolicyTravel : FlatFieldDecl := {
   travel with
-  dateRangePolicy := some { format := "yyyy-MM-dd", separator := "-" }
+  dateRangePolicy := some { format := "dd.MM", separator := "-" }
 }
 
 private def unsupportedPolicyModel : FlatModel := {

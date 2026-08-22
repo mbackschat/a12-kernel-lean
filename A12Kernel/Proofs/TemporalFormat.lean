@@ -96,14 +96,16 @@ theorem temporalTargetPolicy_valid_format_nonempty
   cases h : policy.format.isEmpty <;>
     simp_all [TemporalTargetPolicy.errorFor?]
 
-/-- Every parser-independently valid DateRange policy retains both exact nonempty sources. -/
-theorem dateRangeDeclarationPolicy_valid_sources_nonempty
+/-- Every admitted DateRange declaration retains a nonempty exact format, and the legal empty separator belongs to the month-only format alone. The former conjunct requiring a nonempty separator was refuted by the Kernel-measured allowlist. -/
+theorem dateRangeDeclarationPolicy_valid_sources
     (policy : DateRangeDeclarationPolicy)
     (valid : policy.error? = none) :
-    policy.format.isEmpty = false ∧ policy.separator.isEmpty = false := by
-  cases hFormat : policy.format.isEmpty <;>
-    cases hSeparator : policy.separator.isEmpty <;>
-    simp_all [DateRangeDeclarationPolicy.error?]
+    policy.format.isEmpty = false ∧
+      (policy.separator.isEmpty = true → policy.format = "MM") := by
+  have hAdmitted : policy.admitted = true := by
+    cases h : policy.admitted <;> simp_all [DateRangeDeclarationPolicy.error?]
+  unfold DateRangeDeclarationPolicy.admitted at hAdmitted
+  split at hAdmitted <;> simp_all
 
 /-- A non-Date target can retain neither partial-date admission nor the Date-only pre-1900 check. -/
 theorem temporalTargetPolicy_valid_nonDate

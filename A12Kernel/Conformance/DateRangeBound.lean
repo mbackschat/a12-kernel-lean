@@ -203,7 +203,7 @@ private def fullDate (year : Int) (month day : Nat)
 
 /- Admission accepts every exact-valued profile, while unconfigured yearless and addressing boundaries stay refused. -/
 example :
-    let unsupportedPolicyTravel := field (policy "yyyy-MM-dd" "-")
+    let unsupportedPolicyTravel := field (policy "dd.MM" "-")
     let repeated : FlatFieldDecl := {
       travel with
       groupPath := ["Order", "Rows"]
@@ -241,7 +241,7 @@ example :
           unsupportedPolicyTravel.id .start with
         | .error (.unsupportedPolicy source format separator) =>
             source == unsupportedPolicyTravel.id &&
-              format == "yyyy-MM-dd" && separator == "-"
+              format == "dd.MM" && separator == "-"
         | _ => false) &&
       (match elaborateDateRangeBound repeatedModel repeated.id .start with
         | .error (.source (.repeatableReference path)) =>
