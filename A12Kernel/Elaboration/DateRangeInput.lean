@@ -106,6 +106,17 @@ def includesYear : DateRangeInputFormat → Bool
   | .yearlessMonth | .yearlessMonthDay | .yearlessMonthConcatenated
   | .yearlessDayMonthDotted => false
 
+/-- The date components one stored DateRange profile exposes. A DateRange declaration carries no wall-time component, so only the three calendar halves vary, and two profiles expose the same set exactly when their lexical spellings retain the same components: both full-Date spellings, both month-only spellings, and both day-and-month spellings agree. -/
+def components : DateRangeInputFormat → TemporalComponents
+  | .exact _ => TemporalComponents.fullDate
+  | .yearFragment =>
+      { TemporalComponents.fullDate with month := false, day := false }
+  | .yearMonthFragment => { TemporalComponents.fullDate with day := false }
+  | .yearlessMonth | .yearlessMonthConcatenated =>
+      { TemporalComponents.fullDate with year := false, day := false }
+  | .yearlessMonthDay | .yearlessDayMonthDotted =>
+      { TemporalComponents.fullDate with year := false }
+
 end DateRangeInputFormat
 
 /-- One DateRange declaration with any checked-document input profile selected once. -/

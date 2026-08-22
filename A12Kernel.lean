@@ -115,6 +115,7 @@ import A12Kernel.Elaboration.DateRangeTargetPresentation
 import A12Kernel.Elaboration.DateRangeConstructionComputation
 import A12Kernel.Elaboration.IndexedDateRangeConstructionComputation
 import A12Kernel.Elaboration.DateRangeBound
+import A12Kernel.Elaboration.DateRangeStoredComparison
 import A12Kernel.Elaboration.DateRangeOverlap
 import A12Kernel.Elaboration.AtLeastOneDateRangeOverlap
 import A12Kernel.Elaboration.YearlessDateRangeOverlap

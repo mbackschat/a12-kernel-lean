@@ -81,6 +81,8 @@ inductive KernelStaticDiagnostic where
   | invalidParameterForDateRangeComparison
   /-- A full-year DateRange overlap operand was paired with an `MM` or `MM-dd` range that has no Base Year. -/
   | dateWithAndWithoutYear
+  /-- Two stored DateRange operands of an equality expose different date-component sets. Lexical spelling does not enter it, so both spellings of one component set cross freely and the refusal is symmetric in the authored order and identical for `==` and `!=`. -/
+  | invalidCompareToDateRange
   /-- An overlap operand's DateRange declaration carries an `interpretationOfYear`. Both operators key their format allowlist on the whole declaration including that reading, so the composite format is refused on either side, under every profile, and with or without a Base Year. -/
   | invalidDateRangeFormat
   deriving Repr, DecidableEq
@@ -128,6 +130,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidParameterForDateRangeComparison =>
       "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON"
   | .dateWithAndWithoutYear => "MVK_DATE_WITH_AND_WITHOUT_YEAR"
+  | .invalidCompareToDateRange => "MVK_INVALID_COMPARE_TO_DATE_RANGE"
   | .invalidDateRangeFormat => "MVK_INVALID_DATE_RANGE_FORMAT"
 
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
@@ -146,7 +149,7 @@ def all : List KernelStaticDiagnostic :=
     .errorReferenceToCalculatedField,
     .errorSemanticIndexOrCategoryForErrorField, .invalidDateType, .noDateRange,
     .invalidParameterForDateRangeComparison, .dateWithAndWithoutYear,
-    .invalidDateRangeFormat]
+    .invalidDateRangeFormat, .invalidCompareToDateRange]
 
 end KernelStaticDiagnostic
 
