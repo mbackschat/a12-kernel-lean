@@ -265,7 +265,7 @@ A DATE_RANGE declaration is statically admitted for exactly eight `(format, sepa
 
 Every other pair in the complete candidate grid is refused, including separator swaps, every dot separator, every other empty separator, and every `yyyyMM` pair. This declaration allowlist does not by itself establish that every DateRange operation admits every pair.
 
-For the retained `dd.MM`-with-dash profile, `interpretationOfYear` may be omitted or set to `FROM` or `TO`. Its retained semantic effect is established only for that day-and-month format with no year.
+For the retained `dd.MM`-with-dash profile, `interpretationOfYear` may be omitted or set to `FROM` or `TO`. Its retained semantic effect is established only for that day-and-month format with no year. An omitted key **is** the standard interpretation; a present but empty token is **not** an omission and makes the model illegal at deserialization rather than defaulting, so empty and absent stay distinct here exactly as they do for a cell value. The tempting mechanism points the other way, because the host JSON binder coerces an empty token to null for enums by default; this family does not follow it.
 
 On a wrapping range, `FROM` keeps the start in the Base Year and moves the finish into the following year, while `TO` keeps the finish in the Base Year and moves the start into the preceding year.
 
