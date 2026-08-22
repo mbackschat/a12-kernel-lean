@@ -79,4 +79,20 @@ theorem anyPairDateRangesOverlap_duplicate_iff
       range.direction = .ordered := by
   rw [anyPairDateRangesOverlap_pair, dateRange_overlap_self]
 
+/-- The yearless relation is symmetric, so an any-pair scan cannot depend on authored operand order. -/
+theorem yearlessInterval_overlaps_comm (left right : YearlessInterval) :
+    left.overlaps right = right.overlaps left := by
+  simp only [YearlessInterval.overlaps]
+  cases hLeft : left.direction <;> cases hRight : right.direction <;>
+    simp [Bool.and_comm]
+
+/-- An inverted yearless interval overlaps nothing, in either position. The relation keeps the resolved guard rather than normalizing an authored order. -/
+theorem yearlessInterval_overlaps_inverted
+    (interval other : YearlessInterval)
+    (inverted : interval.direction = .inverted) :
+    interval.overlaps other = false ∧ other.overlaps interval = false := by
+  constructor <;>
+    simp only [YearlessInterval.overlaps, inverted] <;>
+    cases hOther : other.direction <;> simp
+
 end A12Kernel

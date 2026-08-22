@@ -124,4 +124,54 @@ example :
        { start := mar1, finish := mar31 }] = false := by
   native_decide
 
+/-! ## Unconfigured yearless intervals
+
+Kernel-measured rows from the [yearless-overlap checkpoint](../../docs/SOURCES.md). Every row
+below ran with no Base Year, where the operator compares labels and completes nothing.
+-/
+
+/- A month-only pair spans whole months and the interval is closed, so a touching pair overlaps. -/
+example :
+    let janJun := YearlessInterval.ofMonthPair 1 6
+    (janJun.overlaps (YearlessInterval.ofMonthPair 4 9), true) = (true, true) ∧
+      (YearlessInterval.ofMonthPair 1 3).overlaps
+        (YearlessInterval.ofMonthPair 6 9) = false ∧
+      janJun.overlaps (YearlessInterval.ofMonthPair 6 9) = true := by
+  native_decide
+
+/- A month-only endpoint reaches inside its month against a day-bearing operand, and stops at the month's edges. -/
+example :
+    (YearlessInterval.ofMonthPair 1 6).overlaps
+        (YearlessInterval.ofMonthDayPair { month := 6, day := 15 }
+          { month := 6, day := 20 }) = true ∧
+      (YearlessInterval.ofMonthPair 7 12).overlaps
+        (YearlessInterval.ofMonthDayPair { month := 6, day := 1 }
+          { month := 6, day := 30 }) = false ∧
+      (YearlessInterval.ofMonthPair 6 12).overlaps
+        (YearlessInterval.ofMonthDayPair { month := 5, day := 1 }
+          { month := 6, day := 1 }) = true ∧
+      (YearlessInterval.ofMonthPair 1 6).overlaps
+        (YearlessInterval.ofMonthDayPair { month := 6, day := 30 }
+          { month := 7, day := 31 }) = true := by
+  native_decide
+
+/- February reaches day 29 because no year decides leapness, and the span still stops before March. -/
+example :
+    (YearlessInterval.ofMonthPair 1 2).overlaps
+        (YearlessInterval.ofMonthDayPair { month := 2, day := 29 }
+          { month := 3, day := 5 }) = true ∧
+      (YearlessInterval.ofMonthPair 1 2).overlaps
+        (YearlessInterval.ofMonthDayPair { month := 3, day := 1 }
+          { month := 3, day := 5 }) = false := by
+  native_decide
+
+/- An inverted interval does not overlap anything, matching the resolved guard rather than normalizing the order. -/
+example :
+    let inverted : YearlessInterval :=
+      { start := { month := 9, day := 1 }, finish := { month := 6, day := 1 } }
+    inverted.overlaps (YearlessInterval.ofMonthPair 1 12) = false ∧
+      (YearlessInterval.ofMonthPair 1 12).overlaps inverted = false ∧
+      inverted.direction = .inverted := by
+  native_decide
+
 end A12Kernel.Conformance.DateRangeOverlap
