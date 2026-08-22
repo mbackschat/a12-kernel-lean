@@ -11,9 +11,10 @@ namespace A12Kernel.Conformance.YearlessDateRangeOverlap
 
 open A12Kernel
 
-private def rangeField (id : FieldId) (name format separator : String) :
-    FlatFieldDecl := {
-  id, name, groupPath := ["Form"]
+private def rangeField (id : FieldId) (name format separator : String)
+    (groupPath : GroupPath := ["Form"])
+    (scope : List RepeatableLevel := []) : FlatFieldDecl := {
+  id, name, groupPath, repeatableScope := scope
   policy := { kind := .dateRange }
   dateRangePolicy := some { format, separator }
 }
@@ -24,7 +25,10 @@ private def model : FlatModel := {
     rangeField 2 "OtherMonthSlash" "MM" "/",
     rangeField 3 "MonthDaySlash" "MM-dd" "/",
     rangeField 4 "MonthEmpty" "MM" "",
-    rangeField 5 "ExactIso" "yyyy-MM-dd" "/"]
+    rangeField 5 "ExactIso" "yyyy-MM-dd" "/",
+    rangeField 6 "Period" "MM" "/" ["Form", "Rows"] [10]]
+  repeatableGroups := [
+    { level := 10, path := ["Form", "Rows"], repeatability := some 4 }]
 }
 
 private def configured : FlatModel := { model with baseYear := some 2024 }
@@ -123,6 +127,59 @@ example :
       pluralVerdict? 1 3 "01/06" "07-01/07-05" = some .notFired ∧
       pluralVerdict? 1 3 "01/02" "02-29/03-05" = some (.fired .value) ∧
       pluralVerdict? 1 3 "" "06-15/06-20" = some .notFired := by
+  native_decide
+
+private def periodStar : SurfaceFieldEntityOperand :=
+  .star {
+    base := .absolute
+    groups := [{ name := "Form" }, { name := "Rows", starred := true }]
+    field := "Period"
+  }
+
+private def starOperand? (checkedModel : FlatModel)
+    (authored : SurfaceFieldEntityOperand) :
+    Option (CheckedYearlessDateRangeOverlapOperand checkedModel) :=
+  match resolveFieldEntityOperandUnchecked checkedModel ["Form"] authored with
+  | .ok resolved =>
+      (certifyYearlessDateRangeOverlapOperand checkedModel resolved).toOption
+  | .error _ => none
+
+private def rowCell (row : Nat) (stored : String) : ClassifiedCellInput := {
+  address := { field := 6, path := [row] }
+  stored
+  raw :=
+    match model.lookupUniqueId 6 with
+    | .ok declaration =>
+        match declaration.toDateRangeDeclarationPolicy? with
+        | some policy =>
+            (classifyStoredDateRangeForModel model.timeZoneId model.baseYear
+              policy stored).toOption.getD .empty
+        | none => .empty
+    | .error _ => .empty
+}
+
+private def starVerdict? (rows : List (Nat × String)) : Option Verdict := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+  let operand ← starOperand? model periodStar
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows :=
+      (List.range 4).map fun index => { group := 10, path := [index + 1] }
+    cells := rows.map fun (row, stored) => rowCell row stored
+  }).toOption
+  (evaluateYearlessDateRangeOverlapOperands [operand] document []).toOption
+
+/- A plain starred yearless operand is admitted without a Base Year, and its flattened rows
+compare as yearless labels: an internal overlapping pair fires, a disjoint list does not, and
+February still reaches day 29. Empty rows are skipped rather than compared. -/
+example :
+    (starOperand? model periodStar).isSome = true ∧
+      starVerdict? [(1, "01/06"), (2, "04/09")] = some (.fired .value) ∧
+      starVerdict? [(1, "01/03"), (2, "06/09")] = some .notFired ∧
+      starVerdict? [(1, "01/06"), (2, "06/09")] = some (.fired .value) ∧
+      starVerdict? [(1, "01/02"), (2, "02/02")] = some (.fired .value) ∧
+      starVerdict? [(1, "01/06")] = some .notFired ∧
+      starVerdict? [(1, "01/06"), (2, "")] = some .notFired := by
   native_decide
 
 end A12Kernel.Conformance.YearlessDateRangeOverlap
