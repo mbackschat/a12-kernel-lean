@@ -41,14 +41,25 @@ private def model : FlatModel := {
   baseYear := some 2020
 }
 
-private def admitted (left right : FieldId) : Bool :=
-  (elaborateDirectDateRangeComparison model left right .equal).toOption.isSome
+/-- The same declarations with no Base Year, so a yearless class is compared as retained labels
+rather than after completion. -/
+private def unconfigured : FlatModel := { model with baseYear := none }
+
+private def admittedIn (checkedModel : FlatModel) (left right : FieldId) : Bool :=
+  (elaborateDirectDateRangeComparison checkedModel left right .equal).toOption.isSome
+
+private def admitted (left right : FieldId) : Bool := admittedIn model left right
+
+private def refusalIn? (checkedModel : FlatModel) (left right : FieldId)
+    (op : EqualityOp := .equal) :
+    Option DirectDateRangeComparisonElabError :=
+  match elaborateDirectDateRangeComparison checkedModel left right op with
+  | .ok _ => none
+  | .error error => some error
 
 private def refusal? (left right : FieldId) (op : EqualityOp := .equal) :
     Option DirectDateRangeComparisonElabError :=
-  match elaborateDirectDateRangeComparison model left right op with
-  | .ok _ => none
-  | .error error => some error
+  refusalIn? model left right op
 
 /- Every same-component pair is admitted, in either authored order for each of the three
 lexical crossings. Spelling therefore never enters the gate: the two full-Date, the two
@@ -88,31 +99,40 @@ example :
 
 /-- Classify one stored token exactly as the checked-document route does, so the fixture cannot
 disagree with canonical classification. -/
-private def storedCell (field : FieldId) (stored : String) : ClassifiedCellInput := {
+private def storedCellIn (checkedModel : FlatModel) (field : FieldId)
+    (stored : String) : ClassifiedCellInput := {
   address := { field, path := [] }
   stored
   raw :=
-    match model.lookupUniqueId field with
+    match checkedModel.lookupUniqueId field with
     | .ok declaration =>
         match declaration.toDateRangeDeclarationPolicy? with
         | some policy =>
-            (classifyStoredDateRangeForModel model.timeZoneId model.baseYear
-              policy stored).toOption.getD .empty
+            (classifyStoredDateRangeForModel checkedModel.timeZoneId
+              checkedModel.baseYear policy stored).toOption.getD .empty
         | none => .empty
     | .error _ => .empty
 }
 
-private def verdict? (left right : FieldId) (op : EqualityOp)
-    (cells : List ClassifiedCellInput) : Option Verdict := do
+private def storedCell (field : FieldId) (stored : String) : ClassifiedCellInput :=
+  storedCellIn model field stored
+
+private def verdictIn? (checkedModel : FlatModel) (left right : FieldId)
+    (op : EqualityOp) (cells : List ClassifiedCellInput) : Option Verdict := do
   let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
-    builtinStringPatternCompiler model).toOption
-  let checked ← (elaborateDirectDateRangeComparison model left right op).toOption
+    builtinStringPatternCompiler checkedModel).toOption
+  let checked ←
+    (elaborateDirectDateRangeComparison checkedModel left right op).toOption
   let document ← (checkDocument prepared "en_US" {
     instantiatedRows := []
     cells
   }).toOption
   let result ← (checked.evaluate .validation document).toOption
   pure result.verdict
+
+private def verdict? (left right : FieldId) (op : EqualityOp)
+    (cells : List ClassifiedCellInput) : Option Verdict :=
+  verdictIn? model left right op cells
 
 /- Each lexical crossing compares retained identity rather than stored text: an ISO range and
 the dotted spelling of the same two days are equal, and so are both month-only and both
@@ -174,6 +194,32 @@ example :
     verdict? 12 13 .equal
         [storedCell 12 "01.11-28.02", storedCell 13 "01.03-31.10"] =
       some .notFired := by
+  native_decide
+
+/- Removing the Base Year changes neither the gate nor the crossings. The same five component
+classes decide admission, and each class still compares its own retained identity: a yearless
+class now compares month or month-day labels rather than completed instants, and February 29
+remains a real label with no year to make it leap-dependent. -/
+example :
+    admittedIn unconfigured 8 9 = true ∧
+    admittedIn unconfigured 10 11 = true ∧
+    (refusalIn? unconfigured 8 10).bind
+        DirectDateRangeComparisonElabError.diagnostic? =
+      some .invalidCompareToDateRange ∧
+    verdictIn? unconfigured 8 9 .equal
+        [storedCellIn unconfigured 8 "06/09",
+          storedCellIn unconfigured 9 "0609"] = some (.fired .value) ∧
+    verdictIn? unconfigured 10 11 .equal
+        [storedCellIn unconfigured 10 "06-01/09-30",
+          storedCellIn unconfigured 11 "01.06-30.09"] = some (.fired .value) ∧
+    verdictIn? unconfigured 10 11 .equal
+        [storedCellIn unconfigured 10 "02-01/02-29",
+          storedCellIn unconfigured 11 "01.02-29.02"] = some (.fired .value) ∧
+    verdictIn? unconfigured 8 9 .notEqual
+        [storedCellIn unconfigured 8 "06/09",
+          storedCellIn unconfigured 9 "0610"] = some (.fired .value) ∧
+    verdictIn? unconfigured 8 9 .equal
+        [storedCellIn unconfigured 8 "06/09"] = some .notFired := by
   native_decide
 
 end A12Kernel.Conformance.DateRangeStoredComparison
