@@ -137,7 +137,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `completion-gate`: every admitted temporal operation and target path is checked across its legal profile with exact empty/formal polarity and separating gap/overlap/cutover/millisecond cases.
 - `blocked-on`: none.
 - `route-state`: discovery-required. The eight matching-profile direct-star routes, every crossing within a component set, and singular-overlap year-class admission are closed.
-- `next-candidate`: none selected. The mixed year-class branch closed with its own measurement, so the next temporal unit needs route discovery from the `remains` list. The plural route needs its authored list syntax established before any yearless plural row can be measured.
+- `next-candidate`: none selected. The mixed year-class branch closed with its own measurement, so the next temporal unit needs route discovery from the `remains` list. The plural route's authored form is `AtLeastOneDateRangeOverlaps(scalar In list)` with no parentheses around the list, verified admitted locally, so its yearless row is measurable through the same dry-run oracle.
 
 ### SG7 — String, pattern, and custom-field completion
 
