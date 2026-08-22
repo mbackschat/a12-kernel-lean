@@ -1,0 +1,106 @@
+import A12Kernel.Elaboration.YearlessDateRangeOverlap
+
+/-! # Unconfigured yearless DateRange overlap locks
+
+These cases run the whole route for a model with no Base Year: stored text, checked cells,
+admission, and the any-pair verdict. Their expected verdicts are the Kernel rows in the
+yearless-overlap checkpoint, measured on both codegen strategies.
+-/
+
+namespace A12Kernel.Conformance.YearlessDateRangeOverlap
+
+open A12Kernel
+
+private def rangeField (id : FieldId) (name format separator : String) :
+    FlatFieldDecl := {
+  id, name, groupPath := ["Form"]
+  policy := { kind := .dateRange }
+  dateRangePolicy := some { format, separator }
+}
+
+private def model : FlatModel := {
+  fields := [
+    rangeField 1 "MonthSlash" "MM" "/",
+    rangeField 2 "OtherMonthSlash" "MM" "/",
+    rangeField 3 "MonthDaySlash" "MM-dd" "/",
+    rangeField 4 "MonthEmpty" "MM" "",
+    rangeField 5 "ExactIso" "yyyy-MM-dd" "/"]
+}
+
+private def configured : FlatModel := { model with baseYear := some 2024 }
+
+private def certify? (checkedModel : FlatModel) (id : FieldId) :
+    Option (CheckedYearlessDateRangeOverlapField checkedModel) :=
+  match checkedModel.lookupUniqueId id with
+  | .ok declaration =>
+      (certifyYearlessDateRangeOverlapField checkedModel declaration).toOption
+  | .error _ => none
+
+/-- Classify one stored token exactly as the checked-document route does, so the fixture cannot disagree with canonical classification. -/
+private def storedCell (field : FieldId) (stored : String) : ClassifiedCellInput := {
+  address := { field, path := [] }
+  stored
+  raw :=
+    match model.lookupUniqueId field with
+    | .ok declaration =>
+        match declaration.toDateRangeDeclarationPolicy? with
+        | some policy =>
+            (classifyStoredDateRangeForModel model.timeZoneId model.baseYear
+              policy stored).toOption.getD .empty
+        | none => .empty
+    | .error _ => .empty
+}
+
+private def verdict? (left right : FieldId)
+    (leftText rightText : String) : Option Verdict := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+  let leftSource ← certify? model left
+  let rightSource ← certify? model right
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := [storedCell left leftText, storedCell right rightText]
+  }).toOption
+  (evaluateYearlessDateRangesOverlap [leftSource, rightSource] document).toOption
+
+/- Both yearless spellings are admitted without a Base Year, and a configured model routes to the completed owner instead. -/
+example :
+    (certify? model 1).isSome = true ∧
+      (certify? model 4).isSome = true ∧
+      (certify? model 3).isSome = true ∧
+      (certify? configured 1).isNone = true ∧
+      (certify? model 5).isNone = true := by
+  native_decide
+
+/- A month-only pair spans whole months, the interval is closed, and a disjoint pair does not fire. -/
+example :
+    verdict? 1 2 "01/06" "04/09" = some (.fired .value) ∧
+      verdict? 1 2 "01/03" "06/09" = some .notFired ∧
+      verdict? 1 2 "01/06" "06/09" = some (.fired .value) := by
+  native_decide
+
+/- The halved spelling behaves exactly like its slash sibling on the same components. -/
+example :
+    verdict? 1 4 "01/06" "0409" = some (.fired .value) ∧
+      verdict? 1 4 "01/03" "0609" = some .notFired := by
+  native_decide
+
+/- A month-only operand compares against a day-bearing operand of a different component set, reaching inside its month and stopping at the month's edges. -/
+example :
+    verdict? 1 3 "01/06" "06-15/06-20" = some (.fired .value) ∧
+      verdict? 1 3 "07/12" "06-01/06-30" = some .notFired ∧
+      verdict? 1 3 "06/12" "05-01/06-01" = some (.fired .value) ∧
+      verdict? 1 3 "01/06" "06-30/07-31" = some (.fired .value) := by
+  native_decide
+
+/- February reaches day 29 where no year can decide leapness, and the span still stops before March. -/
+example :
+    verdict? 1 3 "01/02" "02-29/03-05" = some (.fired .value) ∧
+      verdict? 1 3 "01/02" "03-01/03-05" = some .notFired := by
+  native_decide
+
+/- An empty operand is skipped rather than compared, so no pair remains. -/
+example : verdict? 1 2 "" "04/09" = some .notFired := by
+  native_decide
+
+end A12Kernel.Conformance.YearlessDateRangeOverlap
