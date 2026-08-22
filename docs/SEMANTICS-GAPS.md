@@ -10,7 +10,7 @@ Open only the selected `gap-` record where one exists; otherwise open the legacy
 
 ```sh
 rg -n '^<a id="gap-' docs/SEMANTICS-GAPS.md
-rg -n '^### (SG|SQ)' docs/SEMANTICS-GAPS.md
+rg -n '^### SG' docs/SEMANTICS-GAPS.md
 rg -n '^- `state`:|^- `blocked-on`:|^- `reopen-when`:|^- (Open|Blocked on|Prerequisite|Unresolved source fact|Most dangerous discriminator|Consumer hypothesis|Forbidden shortcut|Evidence status|Entry gate|Completion gate):' docs/SEMANTICS-GAPS.md
 ```
 
@@ -216,17 +216,22 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - Entry gate: select one result-domain family and show existing product/tally/traversal owners express every observed branch.
 - Completion gate: every admitted direct/list/starred/partial/filtered/count consumer delegates to the established owner with exact order, relevance, error, polarity, and poison behavior.
 
-## Scope questions
+### SG14 — mandatory-information derivation
 
-<a id="scope-questions-not-yet-obligations"></a>
-<a id="scope-questions--not-yet-obligations"></a>
-
-### SQ1 — is mandatory-information derivation part of the targeted language?
-
-- Status: open scope question, not yet an obligation.
-- Basis: a12-dmkits `ee2f5d84` found one `FeldOperationUtil.getZahlKonstanteWert` `-1` sentinel conflation in mandatory-information comparison derivation; colliding literals include `-1`, `4294967295`, and `8589934591`.
-- Decision required: if mandatory-information derivation is in scope, model the caller asymmetry and probe its observable output; if out of scope, state the exclusion in [`SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md).
-- Blocking: nothing. Decide scope before requesting an oracle observation.
+- Missing invariant: derived mandatory-information comparison must keep an authored numeric literal distinct from the derivation's own sentinel, so a legal literal equal to that sentinel cannot read as an absent bound.
+- Scope decision: in scope and unscheduled, decided 2026-08-22. The owner ruled that a sentinel conflation inside comparison derivation falls within the targeted observable language, so this is an ordinary obligation rather than an exclusion stated in [`SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md). Superseded the former SQ1 scope question; that identifier is not reused.
+- Current boundary: unmodeled. No Lean owner exists, and no clause in [`spec/`](../spec/) states the derivation.
+- Basis: inbound a12-dmkits `ee2f5d84` found one `FeldOperationUtil.getZahlKonstanteWert` `-1` sentinel conflation in mandatory-information comparison derivation; the colliding literals it names are `-1`, `4294967295`, and `8589934591`.
+- Open: identify the caller asymmetry, then determine whether any observable engine output exposes the derived answer. Whether the conflation is observable at all is unmeasured, and whether it can change firing is unknown; neither may be assumed in a clause.
+- Unresolved source fact: the derivation's callers were read by the peer, not by this project, and no local source audit of the sentinel's reachability from an authored model exists.
+- Most dangerous discriminator: an authored literal exactly equal to the sentinel beside a genuinely absent bound, evaluated at each caller, because one shared derivation makes both read alike.
+- Evidence needed: the observable output for a sentinel-valued authored literal and for an absent bound, on both kernel strategies. A negative result closes the entry by establishing that the derivation is unobservable rather than by assuming it.
+- Consumer hypothesis: Analyze and Explain need "no mandatory-information bound" separated from "a bound whose value equals the sentinel"; Execute needs the distinction only if the derived answer reaches firing.
+- Forbidden shortcut: do not encode the sentinel as absence, do not state a firing consequence before one is observed, and do not model the derivation from the peer's caller reading alone.
+- Entry gate: establish one observable output that exposes the derivation before writing any Lean. Absent that, record the negative result here and write none.
+- Completion gate: the derived comparison retains authored literal identity at every caller, and absence is representable only as absence.
+- Blocked on: nothing. Unscheduled by choice, not by a missing discriminator.
+- `route-state`: discovery-required
 
 ## Cross-family conformance gap
 
