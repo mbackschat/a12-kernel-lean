@@ -47,6 +47,8 @@ def DateRangeInputFormat.supportsDirectBound
   match format with
   | .exact _ | .yearFragment | .yearMonthFragment => true
   | .yearlessMonth | .yearlessMonthDay => baseYear.isSome
+  -- The two lexical variants have no retained bound observation, so they stay refused.
+  | .yearlessMonthConcatenated | .yearlessDayMonthDotted => false
 
 /-- One selected endpoint of an exact-valued direct DateRange field. -/
 structure CheckedDateRangeBound (model : FlatModel)

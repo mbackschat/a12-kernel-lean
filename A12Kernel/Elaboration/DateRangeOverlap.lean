@@ -186,7 +186,7 @@ private def certifyDirectDateRangeOverlapFragmentField (model : FlatModel)
               hBaseYear] }
       | none => throw (.unsupportedPolicy declaration.path
           source.policy.format source.policy.separator)
-  | .exact _ =>
+  | .exact _ | .yearlessMonthConcatenated | .yearlessDayMonthDotted =>
       throw (.unsupportedPolicy declaration.path
         source.policy.format source.policy.separator)
 

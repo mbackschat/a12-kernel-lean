@@ -238,18 +238,63 @@ example :
       some "datumBereichDatumFalsch" := by
   decide
 
-/- The two pairs the Kernel allowlist adds beyond the checked stored-input profiles are legal declarations without an input profile: declaration legality and local ingestion support are separate decisions. -/
+private def monthEmptyPolicy : DateRangeDeclarationPolicy := {
+  format := "MM"
+  separator := ""
+}
+
+private def dayMonthDottedPolicy : DateRangeDeclarationPolicy := {
+  format := "dd.MM"
+  separator := "-"
+}
+
+/- Every admitted declaration pair now selects exactly one stored-input profile, and the two lexical variants stay distinct from the slash-separated profiles that share their component shape. -/
 example :
-    let monthEmptySeparator : DateRangeDeclarationPolicy :=
-      { format := "MM", separator := "" }
-    let dottedDayMonth : DateRangeDeclarationPolicy :=
-      { format := "dd.MM", separator := "-" }
-    (monthEmptySeparator.error?, dottedDayMonth.error?) = (none, none) ∧
-      (DateRangeInputFormat.ofPolicy? monthEmptySeparator,
-        DateRangeInputFormat.ofPolicy? dottedDayMonth) = (none, none) := by
+    (monthEmptyPolicy.error?, dayMonthDottedPolicy.error?) = (none, none) ∧
+      DateRangeInputFormat.ofPolicy? monthEmptyPolicy =
+        some .yearlessMonthConcatenated ∧
+      DateRangeInputFormat.ofPolicy? dayMonthDottedPolicy =
+        some .yearlessDayMonthDotted := by
   native_decide
 
-/- Unsupported declaration and zone profiles are explicit ingestion insufficiency, not semantic invalidity. -/
+/- The empty separator halves its stored token and dotted endpoints read day before month; both retain an ordered yearless pair with no synthetic year or instant. -/
+example :
+    (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "0609").toOption =
+        some (.parsed (.dateRange (.yearlessMonth 6 9))) ∧
+      (classifyStoredDateRangeForModel "UTC" none dayMonthDottedPolicy "01.06-30.09").toOption =
+        some (.parsed (.dateRange (.yearlessMonthDay
+          { month := 6, day := 1 } { month := 9, day := 30 }))) := by
+  native_decide
+
+/- A token split would report the well-formed `0609` as missing its separator, so the missing-separator cause is unreachable under an empty separator while every other yearless precedence survives. The dotted profile keeps that cause because its separator is present. -/
+example :
+    (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "0606").toOption =
+        some (.parsed (.dateRange (.yearlessMonth 6 6))) ∧
+      (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "0906").toOption =
+        some (.rejected .dateRangeInvalid) ∧
+      (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "06").toOption =
+        some (.rejected .dateRangeFormat) ∧
+      (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "06x9").toOption =
+        some (.rejected .dateRangeFormat) ∧
+      (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "1309").toOption =
+        some (.rejected .dateRangeFormat) ∧
+      (classifyStoredDateRangeForModel "UTC" none dayMonthDottedPolicy "01.06").toOption =
+        some (.rejected .dateRangeSeparator) := by
+  native_decide
+
+/- Reading the dotted endpoints as month-before-day swaps both components. The first witness parses under either reading and separates them by retained value; the second is ordered under the correct reading and a month failure under the wrong one; the third admits February 29 as a real month/day label. -/
+example :
+    (classifyStoredDateRangeForModel "UTC" none dayMonthDottedPolicy "01.06-09.12").toOption =
+        some (.parsed (.dateRange (.yearlessMonthDay
+          { month := 6, day := 1 } { month := 12, day := 9 }))) ∧
+      (classifyStoredDateRangeForModel "UTC" none dayMonthDottedPolicy "30.09-01.06").toOption =
+        some (.rejected .dateRangeInvalid) ∧
+      (classifyStoredDateRangeForModel "UTC" none dayMonthDottedPolicy "29.02-01.03").toOption =
+        some (.parsed (.dateRange (.yearlessMonthDay
+          { month := 2, day := 29 } { month := 3, day := 1 }))) := by
+  native_decide
+
+/- The exact-format entry point refuses an admitted fragment policy, and an unsupported zone is refused for a supported one. Both are explicit ingestion insufficiency rather than semantic invalidity. -/
 example :
     (match classifyStoredDateRange "UTC"
         { format := "dd.MM", separator := "-" }
@@ -389,23 +434,6 @@ private def checkYearMonthOne (stored : String) (raw : RawCell) :=
     }]
   }
 
-private def unsupportedPolicyTravel : FlatFieldDecl := {
-  travel with
-  dateRangePolicy := some { format := "dd.MM", separator := "-" }
-}
-
-private def unsupportedPolicyModel : FlatModel := {
-  fields := [unsupportedPolicyTravel]
-  timeZoneId := "UTC"
-}
-
-private def unsupportedPolicyPrepared :
-    PreparedFlatStringContext unsupportedPolicyModel
-      builtinStringPatternCompiler :=
-  (prepareFlatStringContext { now := { epochMillis := 0 } }
-    builtinStringPatternCompiler unsupportedPolicyModel).toOption.get
-      (by native_decide)
-
 private def unsupportedZoneModel : FlatModel := {
   fields := [travel]
   timeZoneId := "Pacific/Apia"
@@ -469,16 +497,8 @@ example :
       | _ => false) = true := by
   native_decide
 
-/- Wider policies retain the prior caller-classified boundary, while a filled value under a supported policy and unsupported zone fails canonical coherence. -/
+/- A filled value under a supported policy and an unsupported zone fails canonical coherence. The former companion conjunct exercised a declaration whose pair carried no input profile; every admitted pair now selects one, so that branch has no witness through a prepared model. -/
 example :
-    (checkDocument unsupportedPolicyPrepared "en_US" {
-      instantiatedRows := []
-      cells := [{
-        address := { field := unsupportedPolicyTravel.id, path := [] }
-        stored := "caller-classified"
-        raw := .parsed (.dateRange january)
-      }]
-    }).isOk = true ∧
     (match checkDocument unsupportedZonePrepared "en_US" {
       instantiatedRows := []
       cells := [{

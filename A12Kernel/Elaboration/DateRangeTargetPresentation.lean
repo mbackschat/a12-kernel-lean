@@ -21,6 +21,24 @@ def renderYearlessMonthDay (start finish : MonthDayValue) : StoredDateRange := {
   nonempty := by simp
 }
 
+/-- Render an ordered yearless month range whose declaration carries no separator, concatenating the two months. -/
+def renderYearlessMonthConcatenated (start finish : Nat) : StoredDateRange := {
+  text := TemporalTargetText.twoDigits start ++ TemporalTargetText.twoDigits finish
+  -- No literal separator anchors this text, so nonemptiness comes from both rendered components.
+  nonempty := by
+    simp only [TemporalTargetText.twoDigits]
+    split <;> split <;> simp
+}
+
+/-- Render an ordered yearless day-and-month range under the dotted endpoint spelling and dash separator. -/
+def renderYearlessDayMonthDotted (start finish : MonthDayValue) : StoredDateRange := {
+  text := TemporalTargetText.twoDigits start.day ++ "." ++
+    TemporalTargetText.twoDigits start.month ++ "-" ++
+    TemporalTargetText.twoDigits finish.day ++ "." ++
+    TemporalTargetText.twoDigits finish.month
+  nonempty := by simp
+}
+
 /-- Render one resolved range through the declaration profile retained by a checked DateRange target. -/
 def renderResolved : DateRangeInputFormat → ResolvedDateRange → StoredDateRange
   | .exact format, range => format.render range
@@ -41,6 +59,15 @@ def renderResolved : DateRangeInputFormat → ResolvedDateRange → StoredDateRa
         range.finish.civil.parts.month
   | .yearlessMonthDay, range =>
       renderYearlessMonthDay
+        { month := range.start.civil.parts.month
+          day := range.start.civil.parts.day }
+        { month := range.finish.civil.parts.month
+          day := range.finish.civil.parts.day }
+  | .yearlessMonthConcatenated, range =>
+      renderYearlessMonthConcatenated range.start.civil.parts.month
+        range.finish.civil.parts.month
+  | .yearlessDayMonthDotted, range =>
+      renderYearlessDayMonthDotted
         { month := range.start.civil.parts.month
           day := range.start.civil.parts.day }
         { month := range.finish.civil.parts.month

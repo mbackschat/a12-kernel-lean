@@ -72,6 +72,8 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
       | some .yearMonthFragment => some .dateRangeYearMonthFragment
       | some .yearlessMonth => some .dateRangeMonthFragment
       | some .yearlessMonthDay => some .dateRangeMonthDayFragment
+      -- The concatenated and dotted presentations have no target kind yet.
+      | some .yearlessMonthConcatenated | some .yearlessDayMonthDotted => none
       | none => none
   | _, _, _ => none
 

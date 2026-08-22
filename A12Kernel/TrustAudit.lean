@@ -490,6 +490,7 @@ run_cmd do
 #print axioms A12Kernel.checkedDateRangeConstructionComputation_target_admitted
 #print axioms A12Kernel.checkedDateRangeConstructionComputation_execute_value
 #print axioms A12Kernel.checkedIndexedDateRangeConstructionComputation_admitted
+#print axioms A12Kernel.dateRangeInputFormat_ofPolicy_isSome_of_admitted
 #print axioms A12Kernel.dateRangeValue_select_start
 #print axioms A12Kernel.dateRangeValue_select_finish
 #print axioms A12Kernel.directDateRange_evaluate_value

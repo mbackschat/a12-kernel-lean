@@ -63,18 +63,22 @@ inductive DateRangeInputError where
   | unresolvableEndpoint (parts : DateParts)
   deriving Repr, DecidableEq
 
-/-- Stored DateRange presentations classified by the checked-document route and reused as checked target profiles. Parsing and exact-or-yearless cell construction remain input-owned. -/
+/-- Stored DateRange presentations classified by the checked-document route and reused as checked target profiles. Parsing and exact-or-yearless cell construction remain input-owned. A constructor names one stored presentation rather than one component shape: two constructors retain a month pair and two retain a month/day pair, because the declared separator and endpoint spelling change the stored text without changing the retained components. -/
 inductive DateRangeInputFormat where
   | exact (format : DateRangeFormat)
   | yearFragment
   | yearMonthFragment
   | yearlessMonth
   | yearlessMonthDay
+  /-- `MM` with the declared empty separator, whose stored token is the two months concatenated. -/
+  | yearlessMonthConcatenated
+  /-- `dd.MM` with dash, whose endpoints spell day before month. -/
+  | yearlessDayMonthDotted
   deriving Repr, DecidableEq
 
 namespace DateRangeInputFormat
 
-/-- Recognize the two exact full-Date policies plus the measured slash-separated fragment policies. -/
+/-- Recognize every admitted declaration pair: the two exact full-Date policies, the slash-separated fragment policies, and the two lexical variants that share a fragment's components under a different stored spelling. -/
 def ofPolicy? (policy : DateRangeDeclarationPolicy) : Option DateRangeInputFormat :=
   match DateRangeFormat.ofPolicy? policy with
   | some format => some (.exact format)
@@ -87,6 +91,10 @@ def ofPolicy? (policy : DateRangeDeclarationPolicy) : Option DateRangeInputForma
         some .yearlessMonth
       else if policy.format == "MM-dd" && policy.separator == "/" then
         some .yearlessMonthDay
+      else if policy.format == "MM" && policy.separator == "" then
+        some .yearlessMonthConcatenated
+      else if policy.format == "dd.MM" && policy.separator == "-" then
+        some .yearlessDayMonthDotted
       else
         none
 
@@ -122,6 +130,15 @@ private def splitDateRange (separator text : String) :
 private def requireDateRangeFormat : Option α → Except BaseFormalCause α
   | some value => pure value
   | none => throw .dateRangeFormat
+
+/-- Halve one stored token whose declaration carries no separator. A token cannot fail the separator-presence check under an empty separator, so an odd length is a shape failure rather than a missing separator. -/
+private def halveDateRange (text : String) :
+    Except BaseFormalCause (String × String) :=
+  if text.length % 2 == 0 then
+    pure ((text.take (text.length / 2)).toString,
+      (text.drop (text.length / 2)).toString)
+  else
+    throw .dateRangeFormat
 
 namespace DateRangeFormat
 
@@ -227,18 +244,31 @@ private def parseMonthDay? (text : String) : Option MonthDayValue :=
       pure { month, day }
   | _ => none
 
+/-- Decode one dotted endpoint whose components spell day before month. The leap probe year is the same one the slash-separated profile uses, so February 29 stays a real month/day label. -/
+private def parseDayMonth? (text : String) : Option MonthDayValue :=
+  match text.splitOn "." with
+  | [dayText, monthText] => do
+      let day ← parseDateRangeComponent? 2 dayText
+      let month ← parseDateRangeComponent? 2 monthText
+      let _ ← CivilDate.ofYmd? 2000 month day
+      pure { month, day }
+  | _ => none
+
 /-- Compare two yearless month/day labels in calendar order without manufacturing a year. -/
 def monthDayBefore (left right : MonthDayValue) : Bool :=
   decide (left.month < right.month ∨
     left.month = right.month ∧ left.day < right.day)
 
-/-- Parse one yearless range without manufacturing a calendar year. February 29 is admitted because it denotes a real month/day label in the Gregorian calendar. -/
+/-- Parse one yearless range without manufacturing a calendar year. February 29 is admitted because it denotes a real month/day label in the Gregorian calendar. The stored presentation selects the split and the endpoint spelling; the retained component pair and its order rule are shared, so an inverted range is invalid under every presentation. -/
 private def parseYearlessRange (format : DateRangeInputFormat) (separator text : String) :
     Except BaseFormalCause DateRangeCellValue := do
-  let (startText, finishText) ← splitDateRange separator text
+  let (startText, finishText) ←
+    match format with
+    | .yearlessMonthConcatenated => halveDateRange text
+    | _ => splitDateRange separator text
   match format with
   | .yearFragment | .yearMonthFragment => throw .dateRangeFormat
-  | .yearlessMonth =>
+  | .yearlessMonth | .yearlessMonthConcatenated =>
       let start ← requireDateRangeFormat (parseMonth? startText)
       let finish ← requireDateRangeFormat (parseMonth? finishText)
       if finish < start then throw .dateRangeInvalid
@@ -246,6 +276,11 @@ private def parseYearlessRange (format : DateRangeInputFormat) (separator text :
   | .yearlessMonthDay =>
       let start ← requireDateRangeFormat (parseMonthDay? startText)
       let finish ← requireDateRangeFormat (parseMonthDay? finishText)
+      if monthDayBefore finish start then throw .dateRangeInvalid
+      else pure (.yearlessMonthDay start finish)
+  | .yearlessDayMonthDotted =>
+      let start ← requireDateRangeFormat (parseDayMonth? startText)
+      let finish ← requireDateRangeFormat (parseDayMonth? finishText)
       if monthDayBefore finish start then throw .dateRangeInvalid
       else pure (.yearlessMonthDay start finish)
   | .exact _ => throw .dateRangeFormat
@@ -313,7 +348,8 @@ def classifyStoredDateRangeForModel (zoneId : String) (baseYear : Option Int)
   | .yearMonthFragment =>
       classifyExactFragmentRange zoneId text
         (DateRangeInputFormat.parseYearMonthRange policy.separator)
-  | .yearlessMonth | .yearlessMonthDay =>
+  | .yearlessMonth | .yearlessMonthDay | .yearlessMonthConcatenated
+  | .yearlessDayMonthDotted =>
       if text.isEmpty then
         pure .presentEmpty
       else
