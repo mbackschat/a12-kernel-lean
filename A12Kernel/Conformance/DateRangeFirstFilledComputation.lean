@@ -515,18 +515,53 @@ example :
     ] = some "POISON" := by
   native_decide
 
-/- Both declarations must share one admitted DateRange pair. The four crossings between profiles that retain the same components are refused on internal grounds only, and the peer's named component-set gate predicts the opposite; `EXP-2026-08-22-01` owns that question, so treat these four conjuncts as the current fail-closed choice rather than a measured boundary. -/
+/- Source and target must expose the same declared component set, not the same lexical profile. Every crossing within a component set is admitted in both directions, including the two full-Date profiles, the two month-only separators, and the two day-and-month spellings. -/
 example :
     (checked? target.id "Window").isSome = true ∧
-      (checked? target.id "DottedWindow").isNone = true ∧
-      (checked? dottedTarget.id "Window").isNone = true ∧
+      (checked? target.id "DottedWindow").isSome = true ∧
+      (checked? dottedTarget.id "Window").isSome = true ∧
       (checked? dottedTarget.id "DottedSource").isSome = true ∧
-      (checked? monthTarget.id "MonthEmptySource").isNone = true ∧
-      (checked? otherSeparatorTarget.id "MonthSource").isNone = true ∧
+      (checked? monthTarget.id "MonthEmptySource").isSome = true ∧
+      (checked? otherSeparatorTarget.id "MonthSource").isSome = true ∧
       (checked? otherSeparatorTarget.id "MonthEmptySource").isSome = true ∧
       (checked? dayMonthDottedTarget.id "DayMonthDottedSource").isSome = true ∧
-      (checked? monthDayTarget.id "DayMonthDottedSource").isNone = true ∧
-      (checked? dayMonthDottedTarget.id "MonthDaySource").isNone = true := by
+      (checked? monthDayTarget.id "DayMonthDottedSource").isSome = true ∧
+      (checked? dayMonthDottedTarget.id "MonthDaySource").isSome = true := by
+  native_decide
+
+/- A different component set stays refused in either direction, so the relaxation is component-set equality rather than blanket DateRange assignability. -/
+example :
+    (checked? monthTarget.id "MonthDaySource").isNone = true ∧
+      (checked? monthDayTarget.id "MonthSource").isNone = true ∧
+      (checked? yearTarget.id "YearMonthSource").isNone = true ∧
+      (checked? target.id "MonthSource").isNone = true ∧
+      (checked? otherSeparatorTarget.id "DayMonthDottedSource").isNone = true := by
+  native_decide
+
+/- On a crossing the target's declared spelling decides the stored text, which a source-keyed renderer would get wrong on every row: the same component pair stores `0609` under the empty separator and `06/09` under slash, and one full-Date instant pair stores both lexical forms. -/
+example :
+    signatureFor? otherSeparatorTarget monthSource [{
+      row := 1
+      stored := "06/09"
+      raw := .parsed (.dateRange (.yearlessMonth 6 9))
+    }] = some "VALUE|0609" ∧
+      signatureFor? monthTarget otherSeparatorSource [{
+        row := 1
+        stored := "0609"
+        raw := .parsed (.dateRange (.yearlessMonth 6 9))
+      }] = some "VALUE|06/09" ∧
+      signatureFor? target dottedSource [{
+        row := 1
+        stored := "01.06.2024-30.06.2024"
+        raw := .parsed (.dateRange
+          (exactRange 1717200000000 1719705600000 2024 6 1 2024 6 30))
+      }] = some "VALUE|2024-06-01/2024-06-30" ∧
+      signatureFor? dottedTarget source [{
+        row := 1
+        stored := "2024-06-01/2024-06-30"
+        raw := .parsed (.dateRange
+          (exactRange 1717200000000 1719705600000 2024 6 1 2024 6 30))
+      }] = some "VALUE|01.06.2024-30.06.2024" := by
   native_decide
 
 /- Each lexical presentation stores its target's own spelling: the empty separator concatenates the two months and the dotted pair spells day before month. A shared-component sibling would have stored `06/09` and `06-01/09-30`. -/

@@ -840,7 +840,7 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 ### EXP-2026-08-22-01 — does the DateRange component-set gate admit two spellings of one fragment shape
 
-- **Status:** pending
+- **Status:** resolved
 - **Kind:** experiment request
 - **Kernel behavior:** 30.8.1
 - **Local revision:** resolve with `git log -S 'EXP-2026-08-22-01'`
@@ -852,6 +852,8 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Why this project cannot settle it.** Both accounts are consistent with every retained observation, and the distinguishing models are not in the corpus. This is an admission question, so the interpreter cannot answer it independently of the kernel gate it reimplements.
 - **What this project will do with the result.** The answer decides whether the checked first-filled shape keeps carrier equality or relaxes to a component-set relation, and it decides four executable cases that currently lock the refusals on internal grounds. Account A additionally generalizes a behavioral `spec/09` clause that today names only the full-Date crossing, which would carry its own `SPEC-` entry.
 - **Acceptance:** the four admission verdicts, the stored text of each admitted crossing on both kernel strategies, the exact a12-dmkits revision, and a statement of which account is refuted. A reasoned refusal is conclusive only if it names why the crossed fragment model cannot be authored, in which case this project records the boundary as permanently uncalibrated and keeps carrier equality.
+- **Disposition, resolved locally the same day without an upstream request.** The maintained routes reach this question and no upstream change was needed, so nothing was ever handed off. `computation add --dry-run` supplies the kernel's static verdict and `:adapter:kernelProbe` the runtime one; both were run at clean a12-dmkits `52ce932dc9b32aefe8c1e424d7e56d7749709540` and are recorded in [`SOURCES.md`](SOURCES.md#src-date-range-component-set-crossing). **Account A is confirmed and Account B refuted:** all six crossings within a component set are admitted in both directions, a different component set is refused with `MVK_INVALID_COMPARE_TO_DATE_RANGE`, and the target's declared spelling decides the stored text on both kernel strategies. Lean's checked shape now compares component sets instead of carrier identity.
+- **Why this entry should not have existed.** [`TESTING.md`](TESTING.md#structured-dmtool-probes-and-feedback) requires checking a kernel question against the maintained probe route *before* it becomes an `EXP-` request, and that step was skipped because the question read as a mechanism question about a source expression rather than as something a probe could answer. It kept its `pending` status for one commit. [`LF95`](LEAN-FINDINGS.md) records the classification error so the next question is routed by what the instruments can observe rather than by how the question is phrased.
 
 <a id="exp-2026-08-11-01"></a>
 <a id="exp-2026-08-11-01--does-the-referenced-channel-expand-an-unstarred-group-operand"></a>

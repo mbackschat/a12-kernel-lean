@@ -79,6 +79,33 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
       | none => none
   | _, _, _ => none
 
+/-- The declared date-component set one DateRange carrier exposes. Two profiles exposing the same set are mutually assignable, and the target's own spelling decides the stored text. -/
+inductive DateRangeCarrierComponents where
+  | yearMonthDay
+  | year
+  | yearMonth
+  | month
+  | monthDay
+  deriving Repr, DecidableEq
+
+/-- Project a DateRange carrier onto its declared component set. A scalar temporal carrier is not a DateRange carrier and exposes none. -/
+def TemporalFirstFilledStarCarrier.dateRangeComponents? :
+    TemporalFirstFilledStarCarrier → Option DateRangeCarrierComponents
+  | .dateRangeIsoSlash | .dateRangeDayMonthYearDash => some .yearMonthDay
+  | .dateRangeYearFragment => some .year
+  | .dateRangeYearMonthFragment => some .yearMonth
+  | .dateRangeMonthFragment | .dateRangeMonthConcatenated => some .month
+  | .dateRangeMonthDayFragment | .dateRangeDayMonthDotted => some .monthDay
+  | _ => none
+
+/-- Whether a target carrier accepts a source carrier. A DateRange target accepts every profile exposing its own declared component set, which is the Kernel's own comparability gate; every other carrier requires identity because no crossing is measured for it. -/
+def TemporalFirstFilledStarCarrier.acceptsSource
+    (target source : TemporalFirstFilledStarCarrier) : Bool :=
+  match target.dateRangeComponents?, source.dateRangeComponents? with
+  | some targetComponents, some sourceComponents =>
+      targetComponents == sourceComponents
+  | _, _ => target == source
+
 inductive TemporalFirstFilledStarComputationElabError where
   | target (cause : ResolveError)
   | targetGroup (actual expected : GroupPath)
@@ -96,10 +123,14 @@ structure CheckedTemporalFirstFilledStarComputation
   target : FlatFieldDecl
   source : CheckedStarFieldPath model
   targetGroup : GroupPath
+  /-- The source's own declared profile, which a DateRange crossing lets differ from the target's. -/
+  sourceProfile : TemporalFirstFilledStarCarrier
   targetCarrier : target.temporalFirstFilledStarCarrier? = some carrier
   targetFixed : target.repeatableScope = []
   targetOwnedByGroup : target.groupPath = targetGroup
-  sourceCarrier : source.declaration.temporalFirstFilledStarCarrier? = some carrier
+  sourceCarrier :
+    source.declaration.temporalFirstFilledStarCarrier? = some sourceProfile
+  sourceAccepted : carrier.acceptsSource sourceProfile = true
   sourceDirectSingleStar : source.isDirectSingleStar = true
 
 /-- Check the target/source/direct-star shape shared by the completed DateFragment, full-Date, Time, DateTime, and DateRange computations. Runtime payload and target-policy evaluation remain carrier-owned. -/
@@ -114,23 +145,27 @@ def checkTemporalFirstFilledStarComputation
   if hGroup : target.groupPath = declaringGroup then
     if hFixed : target.repeatableScope = [] then
       if hTarget : target.temporalFirstFilledStarCarrier? = some carrier then
-        if hSource :
-            source.declaration.temporalFirstFilledStarCarrier? = some carrier then
-          if hShape : source.isDirectSingleStar = true then
-            pure {
-              target
-              source
-              targetGroup := declaringGroup
-              targetCarrier := hTarget
-              targetFixed := hFixed
-              targetOwnedByGroup := hGroup
-              sourceCarrier := hSource
-              sourceDirectSingleStar := hShape
-            }
+        match hSource : source.declaration.temporalFirstFilledStarCarrier? with
+        | none => throw (.sourceCarrier source.declaration.path)
+        | some sourceProfile =>
+          if hAccepted : carrier.acceptsSource sourceProfile = true then
+            if hShape : source.isDirectSingleStar = true then
+              pure {
+                target
+                source
+                targetGroup := declaringGroup
+                sourceProfile
+                targetCarrier := hTarget
+                targetFixed := hFixed
+                targetOwnedByGroup := hGroup
+                sourceCarrier := hSource
+                sourceAccepted := hAccepted
+                sourceDirectSingleStar := hShape
+              }
+            else
+              throw (.sourceShape source.declaration.path)
           else
-            throw (.sourceShape source.declaration.path)
-        else
-          throw (.sourceCarrier source.declaration.path)
+            throw (.sourceCarrier source.declaration.path)
       else
         throw (.targetCarrier target.path)
     else

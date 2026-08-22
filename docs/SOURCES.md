@@ -309,6 +309,20 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: the packets cover dotted/dash lists of exactly two and three sources and all four fragment profiles at exactly three sources with a fresh target. ISO/slash list execution, lengths greater than three, fragment-list formal suffixes, groups, stars, filters, repetition, target application, scheduling, and cause identity beyond the reported formal code remain unmeasured here.
 - `sync`: [`SPEC-2026-08-19-04`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-04--date-range-firstfilledvalue-scans-direct-field-lists-lazily) is accepted at the reviewed checkpoint.
 
+<a id="src-date-range-component-set-crossing"></a>
+#### DateRange component-set crossing, measured locally 2026-08-22
+
+- `revision`: clean a12-dmkits `52ce932dc9b32aefe8c1e424d7e56d7749709540`, dmtool `0.13.0`, kernel `30.8.1` built and runtime. The sibling worktree was empty before and after every command, and both probe artifacts record `producer.source.state` `CLEAN`.
+- `admission-route`: one dmtool-authored model carries six DATE_RANGE targets and six matching repeatable columns across the `{Y,M,D}`, `{M}`, and `{M,D}` component sets; `computation add --dry-run` supplies the real kernel's static verdict per crossing.
+- `admission-claim`: every crossing within one component set is admitted in both directions: `MM`+`/` with `MM`+empty, `MM-dd`+`/` with `dd.MM`+`-`, and `yyyy-MM-dd`+`/` with `dd.MM.yyyy`+`-`. Each accepted preview reports `verification` `KERNEL_CONFIRMED` with no diagnostics.
+- `admission-claim`: a different component set is refused with `MVK_INVALID_COMPARE_TO_DATE_RANGE`; the same command shape produced that refusal for `MM-dd`+`/` into `MM`+`/` and for `MM`+`/` into `yyyy-MM-dd`+`/`, which is the live negative control proving the gate arbitrated rather than being skipped.
+- `runtime-route`: `:adapter:kernelProbe` over the same model and one document row, observing `validateFull` and `compute` on dynamic Groovy and static Java.
+- `runtime-claim`: both strategies agree on every crossing and the target's declared spelling decides the stored text. Source `06/09` into a `MM`+empty target stores `0609`; source `06-01/09-30` into a `dd.MM`+`-` target stores `01.06-30.09`; source `01.06.2024-30.06.2024` into an ISO target stores `2024-06-01/2024-06-30`; source `2024-06-01/2024-06-30` into a dotted target stores `01.06.2024-30.06.2024`. No messages and no `formalErrorsInOperands` in any block.
+- `integrity`: model `013ce4385c5ac0f4c119aadab8c319bf12798f2b783f2a55a85104f0a938c5d5`, request `0dfe13cc21fe2a0b3245d9cfd0602b778fb3322288a3e07d4fa0a47940d49869`, document `d511e63061e859f0f104cffcd8a1b2e917bd9495c6a0af698cd870272624a758`, and the two artifacts `27d9098898efd58722ccc6e5642b954f8a8daa0332349e9957ee1e6190723e67` and `724346b6f4b9ee5246829138b901a05e82db51ba7db732f212bd7c229f10eff5`. The model grew between the two runs, so the first artifact covers the two yearless crossings and the second covers all four.
+- `corroboration`: `model seed` independently writes `0112` for `MM`+empty and `01.01-31.12` for `dd.MM`+`-`, so the two stored spellings are also what dmtool's own generator produces.
+- `limit`: measured for the direct single-level starred `FirstFilledValue` shape with one filled row and a fresh target. Crossings for the `{Y}` and `{Y,M}` sets have only one profile each and therefore cannot cross; scalar temporal carriers, the direct-field-list shape, Base-Year completion, clearing, and formal branches were not exercised.
+- `sync`: the general component-set rule was already reconciled in [`spec/09`](../spec/09-computations.md); this checkpoint widens its evidence and its crossing example, so it creates no outbound ledger entry.
+
 <a id="src-date-range-2026-08-19-reconciliation"></a>
 #### Reviewed 2026-08-19 DateRange reconciliation and correction batch
 
