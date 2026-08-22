@@ -54,11 +54,11 @@ theorem scanDateRangesOverlapOccurrences_ne_unknown
       .unknown := by
   induction occurrences generalizing seen reachedFilter with
   | nil =>
-      simp [scanDateRangesOverlapOccurrences]
+      simp [scanOverlapOccurrences]
   | cons current rest ih =>
       by_cases overlap : seen.any current.range.overlaps
-      · simp [scanDateRangesOverlapOccurrences, overlap]
-      · simpa [scanDateRangesOverlapOccurrences, overlap] using
+      · simp [scanOverlapOccurrences, overlap]
+      · simpa [scanOverlapOccurrences, overlap] using
           ih (current.range :: seen)
             (reachedFilter || current.fromFilteredOperand)
 
@@ -208,18 +208,18 @@ private theorem scanDateRangesOverlapOccurrences_fired_iff
         anyPairDateRangesOverlap (occurrences.map (·.range))) = true := by
   induction occurrences generalizing seen reachedFilter with
   | nil =>
-      simp [scanDateRangesOverlapOccurrences,
+      simp [scanOverlapOccurrences,
         anyDateRangeOccurrenceOverlapsSeen,
         anyPairDateRangesOverlap]
   | cons current rest ih =>
       by_cases overlap : seen.any current.range.overlaps
-      · simp [scanDateRangesOverlapOccurrences,
+      · simp [scanOverlapOccurrences,
           anyDateRangeOccurrenceOverlapsSeen,
           anyPairDateRangesOverlap, overlap]
       · have noSeenOverlap :
             seen.any current.range.overlaps = false := by
           simpa using overlap
-        rw [scanDateRangesOverlapOccurrences]
+        simp only [scanOverlapOccurrences]
         rw [if_neg overlap]
         rw [ih (current.range :: seen)
           (reachedFilter || current.fromFilteredOperand)]
@@ -250,9 +250,9 @@ theorem dateRangesOverlap_unfiltered_pair
     evalDateRangesOverlap
         [{ slots := [.kept left, .kept right], hasFilter := false }] =
       if left.overlaps right then .fired .value else .notFired := by
-  simp [evalDateRangesOverlap, flattenDateRangeOccurrences,
-    ResolvedDateRangeOperand.occurrences,
-    scanDateRangesOverlapOccurrences, dateRange_overlap_symmetric]
+  simp [evalDateRangesOverlap, flattenOverlapOccurrences,
+    OverlapOperand.occurrences,
+    scanOverlapOccurrences, dateRange_overlap_symmetric]
 
 /-- Once a kept filtered occurrence is reached, a later unfiltered pair is omission-typed even when that filtered occurrence is disjoint from both members. -/
 theorem dateRangesOverlap_reachedFilteredPrefix
@@ -264,9 +264,9 @@ theorem dateRangesOverlap_reachedFilteredPrefix
         [{ slots := [.kept prior], hasFilter := true },
          { slots := [.kept left, .kept right], hasFilter := false }] =
       .fired .omission := by
-  simp [evalDateRangesOverlap, flattenDateRangeOccurrences,
-    ResolvedDateRangeOperand.occurrences,
-    scanDateRangesOverlapOccurrences, dateRange_overlap_symmetric,
+  simp [evalDateRangesOverlap, flattenOverlapOccurrences,
+    OverlapOperand.occurrences,
+    scanOverlapOccurrences, dateRange_overlap_symmetric,
     priorLeft, priorRight, pair]
 
 /-- A filtered current occurrence contributes its filter before the overlap check that fires. -/
@@ -277,9 +277,9 @@ theorem dateRangesOverlap_filteredCurrentMatch
         [{ slots := [.kept left], hasFilter := false },
          { slots := [.kept right], hasFilter := true }] =
       .fired .omission := by
-  simp [evalDateRangesOverlap, flattenDateRangeOccurrences,
-    ResolvedDateRangeOperand.occurrences,
-    scanDateRangesOverlapOccurrences, dateRange_overlap_symmetric, pair]
+  simp [evalDateRangesOverlap, flattenOverlapOccurrences,
+    OverlapOperand.occurrences,
+    scanOverlapOccurrences, dateRange_overlap_symmetric, pair]
 
 /-- A filter after an unfiltered match is unreachable and cannot change its polarity. -/
 theorem dateRangesOverlap_laterFilter_irrelevant
@@ -290,9 +290,9 @@ theorem dateRangesOverlap_laterFilter_irrelevant
         [{ slots := [.kept left, .kept right], hasFilter := false },
          { slots := later, hasFilter := true }] =
       .fired .value := by
-  simp [evalDateRangesOverlap, flattenDateRangeOccurrences,
-    ResolvedDateRangeOperand.occurrences,
-    scanDateRangesOverlapOccurrences, dateRange_overlap_symmetric, pair]
+  simp [evalDateRangesOverlap, flattenOverlapOccurrences,
+    OverlapOperand.occurrences,
+    scanOverlapOccurrences, dateRange_overlap_symmetric, pair]
 
 /-- A skipped scalar terminates before the list side is inspected. -/
 theorem atLeastOneDateRangeOverlaps_skippedScalar
@@ -333,8 +333,8 @@ theorem atLeastOneDateRangeOverlaps_singleOccurrence
       else
         .notFired := by
   simp [evalAtLeastOneDateRangeOverlaps,
-    flattenDateRangeOccurrences,
-    ResolvedDateRangeOperand.occurrences,
+    flattenOverlapOccurrences,
+    OverlapOperand.occurrences,
     scanAtLeastOneDateRangeOverlapOccurrences]
 
 end A12Kernel

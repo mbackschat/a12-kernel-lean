@@ -8,63 +8,84 @@ This capsule begins after authored operands have been expanded and filtered in o
 
 namespace A12Kernel
 
-/-- One expanded DateRange position after formal checking and filter selection. -/
-inductive ResolvedDateRangeSlot where
+/-- One expanded position after formal checking and filter selection, over whichever interval domain the operand's declarations denote. -/
+inductive OverlapSlot (α : Type) where
   | skipped
-  | kept (range : ResolvedDateRange)
+  | kept (range : α)
   deriving Repr, DecidableEq
 
 /-- One authored operand after ordered expansion and filtering. `hasFilter` records the presence of that operand's `Having` clause, not its result. -/
-structure ResolvedDateRangeOperand where
-  slots : List ResolvedDateRangeSlot
+structure OverlapOperand (α : Type) where
+  slots : List (OverlapSlot α)
   hasFilter : Bool
   deriving Repr, DecidableEq
 
 /-- A kept range tagged with the operand provenance needed by the consuming operator. -/
-structure ResolvedDateRangeOccurrence where
-  range : ResolvedDateRange
+structure OverlapOccurrence (α : Type) where
+  range : α
   fromFilteredOperand : Bool
   deriving Repr, DecidableEq
 
-namespace ResolvedDateRangeOperand
+/-- The resolved full-Date instantiation, which every Base-Year-completed and year-bearing declaration uses. -/
+abbrev ResolvedDateRangeSlot := OverlapSlot ResolvedDateRange
+abbrev ResolvedDateRangeOperand := OverlapOperand ResolvedDateRange
+abbrev ResolvedDateRangeOccurrence := OverlapOccurrence ResolvedDateRange
+
+namespace OverlapOperand
 
 /-- Retain kept occurrences in slot order. A filter-bearing operand with only skipped slots contributes nothing. -/
-def occurrences (operand : ResolvedDateRangeOperand) :
-    List ResolvedDateRangeOccurrence :=
+def occurrences {α : Type} (operand : OverlapOperand α) :
+    List (OverlapOccurrence α) :=
   operand.slots.filterMap fun
     | .skipped => none
     | .kept range =>
         some { range, fromFilteredOperand := operand.hasFilter }
 
-end ResolvedDateRangeOperand
+end OverlapOperand
 
 /-- Flatten authored operands without losing operand order, slot order, or duplicate occurrences. -/
-def flattenDateRangeOccurrences
-    (operands : List ResolvedDateRangeOperand) :
-    List ResolvedDateRangeOccurrence :=
-  operands.flatMap ResolvedDateRangeOperand.occurrences
+def flattenOverlapOccurrences {α : Type}
+    (operands : List (OverlapOperand α)) :
+    List (OverlapOccurrence α) :=
+  operands.flatMap OverlapOperand.occurrences
 
-/-- Prefix scan for `DateRangesOverlap`. The filter marker becomes sticky only after a kept occurrence is reached and is observed before that occurrence is compared with earlier ones. -/
-def scanDateRangesOverlapOccurrences
-    (seen : List ResolvedDateRange)
+@[inherit_doc flattenOverlapOccurrences]
+abbrev flattenDateRangeOccurrences :
+    List ResolvedDateRangeOperand → List ResolvedDateRangeOccurrence :=
+  flattenOverlapOccurrences
+
+/-- Prefix scan for `DateRangesOverlap`, parameterized by the interval domain's own overlap relation. The filter marker becomes sticky only after a kept occurrence is reached and is observed before that occurrence is compared with earlier ones. -/
+def scanOverlapOccurrences {α : Type} (overlaps : α → α → Bool)
+    (seen : List α)
     (reachedFilter : Bool) :
-    List ResolvedDateRangeOccurrence → Verdict
+    List (OverlapOccurrence α) → Verdict
   | [] => Verdict.notFired
   | current :: rest =>
       let reachedFilter :=
         reachedFilter || current.fromFilteredOperand
-      if seen.any current.range.overlaps then
+      if seen.any (overlaps current.range) then
         Verdict.fired
           (if reachedFilter then Polarity.omission else Polarity.value)
       else
-        scanDateRangesOverlapOccurrences
+        scanOverlapOccurrences overlaps
           (current.range :: seen) reachedFilter rest
+
+@[inherit_doc scanOverlapOccurrences]
+abbrev scanDateRangesOverlapOccurrences :
+    List ResolvedDateRange → Bool → List ResolvedDateRangeOccurrence → Verdict :=
+  scanOverlapOccurrences ResolvedDateRange.overlaps
 
 /-- Any-pair DateRange overlap with order-sensitive reached-filter polarity. -/
 def evalDateRangesOverlap
     (operands : List ResolvedDateRangeOperand) : Verdict :=
-  scanDateRangesOverlapOccurrences [] false
-    (flattenDateRangeOccurrences operands)
+  scanOverlapOccurrences ResolvedDateRange.overlaps [] false
+    (flattenOverlapOccurrences operands)
+
+/-- The same any-pair scan over unconfigured yearless intervals, which no Base Year completes. -/
+def evalYearlessRangesOverlap
+    (operands : List (OverlapOperand YearlessInterval)) : Verdict :=
+  scanOverlapOccurrences YearlessInterval.overlaps [] false
+    (flattenOverlapOccurrences operands)
 
 /-- First-match scan for the list side of `AtLeastOneDateRangeOverlaps`. Only the matched list operand contributes polarity. -/
 def scanAtLeastOneDateRangeOverlapOccurrences
@@ -89,6 +110,6 @@ def evalAtLeastOneDateRangeOverlaps
   | .skipped => Verdict.notFired
   | .kept range =>
       scanAtLeastOneDateRangeOverlapOccurrences range
-        (flattenDateRangeOccurrences operands)
+        (flattenOverlapOccurrences operands)
 
 end A12Kernel
