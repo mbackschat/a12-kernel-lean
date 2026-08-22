@@ -139,133 +139,8 @@ example : KernelStaticDiagnostic.dateWithAndWithoutYear.kernelCode =
     "MVK_DATE_WITH_AND_WITHOUT_YEAR" := by
   native_decide
 
-private def dateValue (year : Int) (epochMillis : Int)
-    (month day : Nat) : DateValue := {
-  instant := { epochMillis }
-  parts := { year, month, day }
-  basis := .storedGregorian
-}
-
-private def rangeValue (year : Int) (startMillis finishMillis : Int)
-    (startMonth startDay finishMonth finishDay : Nat) : DateRangeValue := {
-  start := dateValue year startMillis startMonth startDay
-  finish := dateValue year finishMillis finishMonth finishDay
-}
-
-private def rangeCell (field : FieldId) (stored : String)
-    (value : DateRangeValue) : ClassifiedCellInput := {
-  address := { field, path := [] }
-  stored
-  raw := .parsed (.dateRange (.exact value))
-}
-
-private def verdict? (checkedModel : FlatModel)
-    (first : SurfaceFieldEntityOperand) (rest : List SurfaceFieldEntityOperand)
-    (cells : List ClassifiedCellInput) : Option Verdict := do
-  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
-    builtinStringPatternCompiler checkedModel).toOption
-  let source ← checkedSource? checkedModel first rest
-  let document ← (checkDocument prepared "en_US" {
-    instantiatedRows := []
-    cells
-  }).toOption
-  (source.evaluateCheckedDocument document []).toOption.map (·.verdict)
-
-private def february2024 :=
-  rangeValue 2024 1706745600000 1709164800000 2 1 2 29
-private def februaryFirst2024 :=
-  rangeValue 2024 1706745600000 1706745600000 2 1 2 1
-private def februaryLast2024 :=
-  rangeValue 2024 1709164800000 1709164800000 2 29 2 29
-private def marchFirst2024 :=
-  rangeValue 2024 1709251200000 1709251200000 3 1 3 1
-private def februaryLast2023 :=
-  rangeValue 2023 1677542400000 1677542400000 2 28 2 28
-private def marchFirst2023 :=
-  rangeValue 2023 1677628800000 1677628800000 3 1 3 1
-private def february2023 :=
-  rangeValue 2023 1675209600000 1677542400000 2 1 2 28
-private def year2024 :=
-  rangeValue 2024 1704067200000 1735603200000 1 1 12 31
-private def januaryFirst2024 :=
-  rangeValue 2024 1704067200000 1704067200000 1 1 1 1
-private def decemberLast2024 :=
-  rangeValue 2024 1735603200000 1735603200000 12 31 12 31
-private def januaryFirst2025 :=
-  rangeValue 2025 1735689600000 1735689600000 1 1 1 1
-
-/- The year fragment reaches both calendar boundaries but not the next year. -/
-example :
-    verdict? model (direct "Year") [direct "Probe"] [
-      rangeCell 3 "2024/2024" year2024,
-      rangeCell 1 "2024-01-01/2024-01-01" januaryFirst2024] =
-        some (.fired .value) ∧
-      verdict? model (direct "Probe") [direct "Year"] [
-        rangeCell 1 "2024-12-31/2024-12-31" decemberLast2024,
-        rangeCell 3 "2024/2024" year2024] = some (.fired .value) ∧
-      verdict? model (direct "Year") [direct "Probe"] [
-        rangeCell 3 "2024/2024" year2024,
-        rangeCell 1 "2025-01-01/2025-01-01" januaryFirst2025] =
-          some .notFired := by
-  native_decide
-
-/- The year-bearing fragment reaches leap day but not the next day. -/
-example :
-    verdict? model (direct "YearMonth") [direct "Probe"] [
-      rangeCell 2 "2024-02/2024-02" february2024,
-      rangeCell 1 "2024-02-29/2024-02-29" februaryLast2024] =
-        some (.fired .value) ∧
-      verdict? model (direct "Probe") [direct "YearMonth"] [
-        rangeCell 1 "2024-03-01/2024-03-01" marchFirst2024,
-        rangeCell 2 "2024-02/2024-02" february2024] = some .notFired := by
-  native_decide
-
-/- Configured `MM` spans the whole leap or ordinary month; `MM-dd` remains one exact day. -/
-example :
-    verdict? model2024 (direct "Month") [direct "Probe"] [
-      rangeCell 5 "02/02" february2024,
-      rangeCell 1 "2024-02-01/2024-02-01" februaryFirst2024] =
-        some (.fired .value) ∧
-      verdict? model2024 (direct "Month") [direct "Probe"] [
-        rangeCell 5 "02/02" february2024,
-        rangeCell 1 "2024-02-29/2024-02-29" februaryLast2024] =
-          some (.fired .value) ∧
-      verdict? model2024 (direct "Probe") [direct "Month"] [
-        rangeCell 1 "2024-03-01/2024-03-01" marchFirst2024,
-        rangeCell 5 "02/02" february2024] = some .notFired ∧
-      verdict? model2024 (direct "MonthDay") [direct "Probe"] [
-        rangeCell 6 "02-29/02-29" februaryLast2024,
-        rangeCell 1 "2024-02-29/2024-02-29" februaryLast2024] =
-          some (.fired .value) := by
-  native_decide
-
-/- Nonleap Base Year moves both the month end and exact month-day boundary to February 28. -/
-example :
-    verdict? model2023 (direct "Month") [direct "Probe"] [
-      rangeCell 5 "02/02" february2023,
-      rangeCell 1 "2023-02-28/2023-02-28" februaryLast2023] =
-        some (.fired .value) ∧
-      verdict? model2023 (direct "Probe") [direct "Month"] [
-        rangeCell 1 "2023-03-01/2023-03-01" marchFirst2023,
-        rangeCell 5 "02/02" february2023] = some .notFired ∧
-      verdict? model2023 (direct "MonthDay") [direct "Probe"] [
-        rangeCell 6 "02-28/02-28" februaryLast2023,
-        rangeCell 1 "2023-02-28/2023-02-28" februaryLast2023] =
-          some (.fired .value) := by
-  native_decide
-
-/- A Base Year completes both lexical spellings of a component set, so the two variants join their slash-separated siblings as admitted fragment operands. -/
-example :
-    (checkedSource? model2024 (direct "Month") [direct "MonthEmpty"]).isSome = true ∧
-      (checkedSource? model2024 (direct "MonthDay")
-        [direct "DayMonthDotted"]).isSome = true ∧
-      (checkedSource? model2024 (direct "MonthEmpty")
-        [direct "MonthDay"]).isSome = true ∧
-      (checkedSource? model (direct "Month") [direct "MonthEmpty"]).isNone = true := by
-  native_decide
-
-/-- Classify one stored token exactly as the checked-document route does, so a mixed-year fixture
-cannot disagree with canonical classification or silently supply its own completion. -/
+/-- Classify one stored token exactly as the checked-document route does, so no fixture here can
+disagree with canonical classification or silently supply its own Base-Year completion. -/
 private def storedCell (checkedModel : FlatModel) (field : FieldId)
     (stored : String) : ClassifiedCellInput := {
   address := { field, path := [] }
@@ -280,6 +155,88 @@ private def storedCell (checkedModel : FlatModel) (field : FieldId)
         | none => .empty
     | .error _ => .empty
 }
+
+private def verdict? (checkedModel : FlatModel)
+    (first : SurfaceFieldEntityOperand) (rest : List SurfaceFieldEntityOperand)
+    (cells : List ClassifiedCellInput) : Option Verdict := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler checkedModel).toOption
+  let source ← checkedSource? checkedModel first rest
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells
+  }).toOption
+  (source.evaluateCheckedDocument document []).toOption.map (·.verdict)
+
+/- The year fragment reaches both calendar boundaries but not the next year. -/
+example :
+    verdict? model (direct "Year") [direct "Probe"] [
+      storedCell model 3 "2024/2024",
+      storedCell model 1 "2024-01-01/2024-01-01"] =
+        some (.fired .value) ∧
+      verdict? model (direct "Probe") [direct "Year"] [
+        storedCell model 1 "2024-12-31/2024-12-31",
+        storedCell model 3 "2024/2024"] = some (.fired .value) ∧
+      verdict? model (direct "Year") [direct "Probe"] [
+        storedCell model 3 "2024/2024",
+        storedCell model 1 "2025-01-01/2025-01-01"] =
+          some .notFired := by
+  native_decide
+
+/- The year-bearing fragment reaches leap day but not the next day. -/
+example :
+    verdict? model (direct "YearMonth") [direct "Probe"] [
+      storedCell model 2 "2024-02/2024-02",
+      storedCell model 1 "2024-02-29/2024-02-29"] =
+        some (.fired .value) ∧
+      verdict? model (direct "Probe") [direct "YearMonth"] [
+        storedCell model 1 "2024-03-01/2024-03-01",
+        storedCell model 2 "2024-02/2024-02"] = some .notFired := by
+  native_decide
+
+/- Configured `MM` spans the whole leap or ordinary month; `MM-dd` remains one exact day. -/
+example :
+    verdict? model2024 (direct "Month") [direct "Probe"] [
+      storedCell model2024 5 "02/02",
+      storedCell model2024 1 "2024-02-01/2024-02-01"] =
+        some (.fired .value) ∧
+      verdict? model2024 (direct "Month") [direct "Probe"] [
+        storedCell model2024 5 "02/02",
+        storedCell model2024 1 "2024-02-29/2024-02-29"] =
+          some (.fired .value) ∧
+      verdict? model2024 (direct "Probe") [direct "Month"] [
+        storedCell model2024 1 "2024-03-01/2024-03-01",
+        storedCell model2024 5 "02/02"] = some .notFired ∧
+      verdict? model2024 (direct "MonthDay") [direct "Probe"] [
+        storedCell model2024 6 "02-29/02-29",
+        storedCell model2024 1 "2024-02-29/2024-02-29"] =
+          some (.fired .value) := by
+  native_decide
+
+/- Nonleap Base Year moves both the month end and exact month-day boundary to February 28. -/
+example :
+    verdict? model2023 (direct "Month") [direct "Probe"] [
+      storedCell model2023 5 "02/02",
+      storedCell model2023 1 "2023-02-28/2023-02-28"] =
+        some (.fired .value) ∧
+      verdict? model2023 (direct "Probe") [direct "Month"] [
+        storedCell model2023 1 "2023-03-01/2023-03-01",
+        storedCell model2023 5 "02/02"] = some .notFired ∧
+      verdict? model2023 (direct "MonthDay") [direct "Probe"] [
+        storedCell model2023 6 "02-28/02-28",
+        storedCell model2023 1 "2023-02-28/2023-02-28"] =
+          some (.fired .value) := by
+  native_decide
+
+/- A Base Year completes both lexical spellings of a component set, so the two variants join their slash-separated siblings as admitted fragment operands. -/
+example :
+    (checkedSource? model2024 (direct "Month") [direct "MonthEmpty"]).isSome = true ∧
+      (checkedSource? model2024 (direct "MonthDay")
+        [direct "DayMonthDotted"]).isSome = true ∧
+      (checkedSource? model2024 (direct "MonthEmpty")
+        [direct "MonthDay"]).isSome = true ∧
+      (checkedSource? model (direct "Month") [direct "MonthEmpty"]).isNone = true := by
+  native_decide
 
 /- A Base Year completes only the yearless operand; the exact operand keeps its own year, so the
 same month in another year is disjoint. This is what separates completion to the Base Year from a
