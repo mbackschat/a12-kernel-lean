@@ -21,6 +21,8 @@ inductive TemporalFirstFilledStarCarrier where
   | dateRangeYearMonthFragment
   | dateRangeMonthFragment
   | dateRangeMonthDayFragment
+  | dateRangeMonthConcatenated
+  | dateRangeDayMonthDotted
   deriving Repr, DecidableEq
 
 /-- Classify only the completed temporal declaration profiles. Date profiles with optional pre-1900 checking remain outside until checked temporal input represents that declaration-owned source check. -/
@@ -72,8 +74,8 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
       | some .yearMonthFragment => some .dateRangeYearMonthFragment
       | some .yearlessMonth => some .dateRangeMonthFragment
       | some .yearlessMonthDay => some .dateRangeMonthDayFragment
-      -- The concatenated and dotted presentations have no target kind yet.
-      | some .yearlessMonthConcatenated | some .yearlessDayMonthDotted => none
+      | some .yearlessMonthConcatenated => some .dateRangeMonthConcatenated
+      | some .yearlessDayMonthDotted => some .dateRangeDayMonthDotted
       | none => none
   | _, _, _ => none
 

@@ -30,10 +30,10 @@ private def dottedTarget :=
   rangeField 6 ["Cart"] "DottedTarget" [] "dd.MM.yyyy" "-"
 private def dottedSource :=
   rangeField 7 ["Cart", "Lines"] "DottedSource" [10] "dd.MM.yyyy" "-"
-private def unsupportedDottedTarget :=
-  rangeField 8 ["Cart"] "UnsupportedDottedTarget" [] "dd.MM" "-"
-private def unsupportedDottedSource :=
-  rangeField 9 ["Cart", "Lines"] "UnsupportedDottedSource" [10]
+private def dayMonthDottedTarget :=
+  rangeField 8 ["Cart"] "DayMonthDottedTarget" [] "dd.MM" "-"
+private def dayMonthDottedSource :=
+  rangeField 9 ["Cart", "Lines"] "DayMonthDottedSource" [10]
     "dd.MM" "-"
 private def yearTarget :=
   rangeField 10 ["Cart"] "YearTarget" [] "yyyy" "/"
@@ -74,8 +74,8 @@ private def directMonthDayThird := rangeField 33 ["Cart"] "DirectMonthDayThird" 
 
 private def model : FlatModel := {
   fields := [target, source, otherFormatSource, otherSeparatorTarget,
-    otherSeparatorSource, dottedTarget, dottedSource, unsupportedDottedTarget,
-    unsupportedDottedSource, yearTarget, yearSource, yearMonthTarget,
+    otherSeparatorSource, dottedTarget, dottedSource, dayMonthDottedTarget,
+    dayMonthDottedSource, yearTarget, yearSource, yearMonthTarget,
     yearMonthSource, monthTarget, monthSource, monthDayTarget, monthDaySource,
     directDottedFirst, directDottedSecond, directIsoSource, directDottedThird,
     directYearFirst, directYearSecond, directYearThird, directYearMonthFirst,
@@ -515,7 +515,7 @@ example :
     ] = some "POISON" := by
   native_decide
 
-/- Both declarations must share one admitted DateRange pair, and the shared pair must have a checked profile; crossing the two full-Date pairs, differing only in the month-only separator, or sharing a profileless legal pair all stay refused. -/
+/- Both declarations must share one admitted DateRange pair. All eight pairs now carry a profile, so the refusals that remain are genuine crossings: the two full-Date pairs, the two month-only separators, and the two day-and-month spellings each stay separate even where the retained components agree. -/
 example :
     (checked? target.id "Window").isSome = true ∧
       (checked? target.id "DottedWindow").isNone = true ∧
@@ -523,8 +523,27 @@ example :
       (checked? dottedTarget.id "DottedSource").isSome = true ∧
       (checked? monthTarget.id "MonthEmptySource").isNone = true ∧
       (checked? otherSeparatorTarget.id "MonthSource").isNone = true ∧
-      (checked? unsupportedDottedTarget.id "UnsupportedDottedSource").isNone =
-        true := by
+      (checked? otherSeparatorTarget.id "MonthEmptySource").isSome = true ∧
+      (checked? dayMonthDottedTarget.id "DayMonthDottedSource").isSome = true ∧
+      (checked? monthDayTarget.id "DayMonthDottedSource").isNone = true ∧
+      (checked? dayMonthDottedTarget.id "MonthDaySource").isNone = true := by
+  native_decide
+
+/- Each lexical presentation stores its target's own spelling: the empty separator concatenates the two months and the dotted pair spells day before month. A shared-component sibling would have stored `06/09` and `06-01/09-30`. -/
+example :
+    signatureFor? otherSeparatorTarget otherSeparatorSource [{
+      row := 1, stored := "", raw := .presentEmpty
+    }, {
+      row := 2
+      stored := "0609"
+      raw := .parsed (.dateRange (.yearlessMonth 6 9))
+    }] = some "VALUE|0609" ∧
+      signatureFor? dayMonthDottedTarget dayMonthDottedSource [{
+        row := 1
+        stored := "01.06-30.09"
+        raw := .parsed (.dateRange (.yearlessMonthDay
+          { month := 6, day := 1 } { month := 9, day := 30 }))
+      }] = some "VALUE|01.06-30.09" := by
   native_decide
 
 private def storedRange : StoredDateRange := {

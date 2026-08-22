@@ -26,6 +26,12 @@ inductive CheckedDateRangeFirstFilledComputation (model : FlatModel) where
       (shape : CheckedTemporalFirstFilledStarComputation model .dateRangeMonthFragment)
   | monthDayFragment
       (shape : CheckedTemporalFirstFilledStarComputation model .dateRangeMonthDayFragment)
+  | monthConcatenated
+      (shape :
+        CheckedTemporalFirstFilledStarComputation model .dateRangeMonthConcatenated)
+  | dayMonthDotted
+      (shape :
+        CheckedTemporalFirstFilledStarComputation model .dateRangeDayMonthDotted)
 
 /-- Offer one admitted declaration profile for the authored target. A target-carrier mismatch means "not this profile", so the caller may offer the next one; every other refusal is reached before the carrier comparison and is therefore shared by all profiles. -/
 private def offerDateRangeFirstFilledCarrier (model : FlatModel)
@@ -67,7 +73,9 @@ def checkDateRangeFirstFilledComputation
       fun _ => offer .dateRangeYearFragment .yearFragment,
       fun _ => offer .dateRangeYearMonthFragment .yearMonthFragment,
       fun _ => offer .dateRangeMonthFragment .monthFragment,
-      fun _ => offer .dateRangeMonthDayFragment .monthDayFragment
+      fun _ => offer .dateRangeMonthDayFragment .monthDayFragment,
+      fun _ => offer .dateRangeMonthConcatenated .monthConcatenated,
+      fun _ => offer .dateRangeDayMonthDotted .dayMonthDotted
     ] |>.mapError .shape
   match offered with
   | some checked => pure checked
@@ -313,6 +321,9 @@ def execute (operation : CheckedDateRangeFirstFilledComputation model)
   | .yearMonthFragment shape => executeWith shape .yearMonthFragment input
   | .monthFragment shape => executeWith shape .yearlessMonth input
   | .monthDayFragment shape => executeWith shape .yearlessMonthDay input
+  | .monthConcatenated shape =>
+      executeWith shape .yearlessMonthConcatenated input
+  | .dayMonthDotted shape => executeWith shape .yearlessDayMonthDotted input
 
 end CheckedDateRangeFirstFilledComputation
 

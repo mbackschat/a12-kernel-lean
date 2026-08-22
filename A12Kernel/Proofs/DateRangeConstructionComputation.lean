@@ -86,7 +86,9 @@ theorem dateRangeConstructionTarget_evaluateComputationResult_yearlessMonth
       .ok (.accepted (DateRangeInputFormat.renderYearlessMonth start finish)) := by
   simp [DateRangeConstructionTargetFormat.evaluateComputationResult,
     DateRangeConstructionTargetFormat.toInputFormat,
-    DateRangeInputFormat.evaluateComputationResult, ordered]
+    DateRangeInputFormat.evaluateComputationResult,
+    DateRangeInputFormat.monthSpelling?, DateRangeInputFormat.monthDaySpelling?,
+    ordered]
 
 /-- An inverted yearless month construction retains its component-only attempted value. -/
 theorem dateRangeConstructionTarget_evaluateComputationResult_yearlessMonth_inverted
@@ -97,7 +99,9 @@ theorem dateRangeConstructionTarget_evaluateComputationResult_yearlessMonth_inve
         .inverted) := by
   simp [DateRangeConstructionTargetFormat.evaluateComputationResult,
     DateRangeConstructionTargetFormat.toInputFormat,
-    DateRangeInputFormat.evaluateComputationResult, inverted]
+    DateRangeInputFormat.evaluateComputationResult,
+    DateRangeInputFormat.monthSpelling?, DateRangeInputFormat.monthDaySpelling?,
+    inverted]
 
 /-- An ordered yearless month/day construction reaches the component-only target without manufacturing a year. -/
 theorem dateRangeConstructionTarget_evaluateComputationResult_yearlessMonthDay
@@ -109,7 +113,9 @@ theorem dateRangeConstructionTarget_evaluateComputationResult_yearlessMonthDay
         (DateRangeInputFormat.renderYearlessMonthDay start finish)) := by
   simp [DateRangeConstructionTargetFormat.evaluateComputationResult,
     DateRangeConstructionTargetFormat.toInputFormat,
-    DateRangeInputFormat.evaluateComputationResult, ordered]
+    DateRangeInputFormat.evaluateComputationResult,
+    DateRangeInputFormat.monthSpelling?, DateRangeInputFormat.monthDaySpelling?,
+    ordered]
 
 /-- An inverted yearless month/day construction retains its component-only attempted value. -/
 theorem dateRangeConstructionTarget_evaluateComputationResult_yearlessMonthDay_inverted
@@ -121,7 +127,9 @@ theorem dateRangeConstructionTarget_evaluateComputationResult_yearlessMonthDay_i
         (DateRangeInputFormat.renderYearlessMonthDay start finish) .inverted) := by
   simp [DateRangeConstructionTargetFormat.evaluateComputationResult,
     DateRangeConstructionTargetFormat.toInputFormat,
-    DateRangeInputFormat.evaluateComputationResult, inverted]
+    DateRangeInputFormat.evaluateComputationResult,
+    DateRangeInputFormat.monthSpelling?, DateRangeInputFormat.monthDaySpelling?,
+    inverted]
 
 /-- A yearless result cannot acquire an exact target presentation by bypassing checked profile admission. -/
 theorem dateRangeTarget_evaluateComputationResult_yearlessMonth_refused

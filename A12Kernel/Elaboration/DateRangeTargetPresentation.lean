@@ -87,7 +87,21 @@ def evaluateExactValue (format : DateRangeInputFormat) (range : DateRangeValue) 
           | .ordered => .ok (.accepted attempted)
           | .inverted => .ok (.errored attempted .inverted)
 
-/-- Consume one exact or yearless typed result through its matching checked DateRange declaration profile. -/
+/-- Select the stored spelling of a month pair, or refuse a profile that retains different components. Every profile listed here shares one order rule. -/
+def monthSpelling? :
+    DateRangeInputFormat → Option (Nat → Nat → StoredDateRange)
+  | .yearlessMonth => some renderYearlessMonth
+  | .yearlessMonthConcatenated => some renderYearlessMonthConcatenated
+  | _ => none
+
+/-- Select the stored spelling of a month/day pair under the same rule. -/
+def monthDaySpelling? :
+    DateRangeInputFormat → Option (MonthDayValue → MonthDayValue → StoredDateRange)
+  | .yearlessMonthDay => some renderYearlessMonthDay
+  | .yearlessDayMonthDotted => some renderYearlessDayMonthDotted
+  | _ => none
+
+/-- Consume one exact or yearless typed result through a checked DateRange declaration profile that retains the same components. A profile retaining different components poisons the target rather than inventing a spelling. -/
 def evaluateComputationResult (format : DateRangeInputFormat) :
     DateRangeComputationResult →
       Except DateRangeTargetEvaluationFault DateRangeTargetOutcome
@@ -95,19 +109,19 @@ def evaluateComputationResult (format : DateRangeInputFormat) :
   | .poison cause => .ok (.poison cause)
   | .value (.exact range) => format.evaluateExactValue range
   | .value (.yearlessMonth start finish) =>
-      match format with
-      | .yearlessMonth =>
-          let attempted := renderYearlessMonth start finish
+      match monthSpelling? format with
+      | none => .ok (.poison .malformed)
+      | some spelling =>
+          let attempted := spelling start finish
           if finish < start then .ok (.errored attempted .inverted)
           else .ok (.accepted attempted)
-      | _ => .ok (.poison .malformed)
   | .value (.yearlessMonthDay start finish) =>
-      match format with
-      | .yearlessMonthDay =>
-          let attempted := renderYearlessMonthDay start finish
+      match monthDaySpelling? format with
+      | none => .ok (.poison .malformed)
+      | some spelling =>
+          let attempted := spelling start finish
           if monthDayBefore finish start then
             .ok (.errored attempted .inverted)
           else .ok (.accepted attempted)
-      | _ => .ok (.poison .malformed)
 
 end A12Kernel.DateRangeInputFormat
