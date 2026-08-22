@@ -26,7 +26,10 @@ private def model : FlatModel := {
     rangeField 3 "MonthDaySlash" "MM-dd" "/",
     rangeField 4 "MonthEmpty" "MM" "",
     rangeField 5 "ExactIso" "yyyy-MM-dd" "/",
-    rangeField 6 "Period" "MM" "/" ["Form", "Rows"] [10]]
+    rangeField 6 "Period" "MM" "/" ["Form", "Rows"] [10],
+    { id := 7, name := "Guard", groupPath := ["Form", "Rows"]
+      repeatableScope := [10]
+      policy := { kind := .number { scale := 0, signed := false } } }]
   repeatableGroups := [
     { level := 10, path := ["Form", "Rows"], repeatability := some 4 }]
 }
@@ -141,7 +144,7 @@ private def starOperand? (checkedModel : FlatModel)
     Option (CheckedYearlessDateRangeOverlapOperand checkedModel) :=
   match resolveFieldEntityOperandUnchecked checkedModel ["Form"] authored with
   | .ok resolved =>
-      (certifyYearlessDateRangeOverlapOperand checkedModel resolved).toOption
+      (certifyYearlessDateRangeOverlapOperand checkedModel ["Form"] resolved).toOption
   | .error _ => none
 
 private def rowCell (row : Nat) (stored : String) : ClassifiedCellInput := {
@@ -158,16 +161,45 @@ private def rowCell (row : Nat) (stored : String) : ClassifiedCellInput := {
     | .error _ => .empty
 }
 
-private def starVerdict? (rows : List (Nat × String)) : Option Verdict := do
+private def guardFilter : SurfaceCorrelatedHaving :=
+  .compareNumbers .equal
+    { origin := .inner,
+      field := { base := .absolute, groups := ["Form", "Rows"], field := "Guard" } }
+    { origin := .inner,
+      field := { base := .absolute, groups := ["Form", "Rows"], field := "Guard" } }
+
+private def filteredPeriodStar : SurfaceFieldEntityOperand :=
+  .starHaving {
+    base := .absolute
+    groups := [{ name := "Form" }, { name := "Rows", starred := true }]
+    field := "Period"
+  } guardFilter
+
+/-- One filled per-row guard so a self-comparing filter keeps its row. -/
+private def guardCell (row : Nat) : ClassifiedCellInput := {
+  address := { field := 7, path := [row] }
+  stored := "1"
+  raw := .parsed (.num 1)
+}
+
+private def verdictFor? (authored : SurfaceFieldEntityOperand)
+    (rows : List (Nat × String)) : Option Verdict := do
   let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler model).toOption
-  let operand ← starOperand? model periodStar
+  let operand ← starOperand? model authored
   let document ← (checkDocument prepared "en_US" {
     instantiatedRows :=
       (List.range 4).map fun index => { group := 10, path := [index + 1] }
-    cells := rows.map fun (row, stored) => rowCell row stored
+    cells := (rows.map fun (row, stored) => rowCell row stored) ++
+      rows.map fun (row, _) => guardCell row
   }).toOption
   (evaluateYearlessDateRangeOverlapOperands [operand] document []).toOption
+
+private def filteredStarVerdict? (rows : List (Nat × String)) : Option Verdict :=
+  verdictFor? filteredPeriodStar rows
+
+private def starVerdict? (rows : List (Nat × String)) : Option Verdict :=
+  verdictFor? periodStar rows
 
 /- A plain starred yearless operand is admitted without a Base Year, and its flattened rows
 compare as yearless labels: an internal overlapping pair fires, a disjoint list does not, and
@@ -180,6 +212,16 @@ example :
       starVerdict? [(1, "01/02"), (2, "02/02")] = some (.fired .value) ∧
       starVerdict? [(1, "01/06")] = some .notFired ∧
       starVerdict? [(1, "01/06"), (2, "")] = some .notFired := by
+  native_decide
+
+/- A filtered yearless star is admitted, and a firing that reached a filter-bearing operand is
+OMISSION rather than VALUE. The filter itself is self-comparing here, so it keeps every row and
+isolates the polarity rule from the selection rule. -/
+example :
+    (starOperand? model filteredPeriodStar).isSome = true ∧
+      filteredStarVerdict? [(1, "01/06"), (2, "04/09")] =
+        some (.fired .omission) ∧
+      filteredStarVerdict? [(1, "01/03"), (2, "06/09")] = some .notFired := by
   native_decide
 
 end A12Kernel.Conformance.YearlessDateRangeOverlap

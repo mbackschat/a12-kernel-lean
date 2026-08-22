@@ -41,7 +41,6 @@ inductive YearlessDateRangesOverlapElabError where
   | baseYearConfigured (path : List String)
   | notYearless (path : List String) (format separator : String)
   | unsupportedReadForm (path : List String) (form : FieldEntityReadForm)
-  | filteredStar (path : List String)
   | groupsNotAllowed (path : GroupPath)
   deriving Repr, DecidableEq
 
@@ -125,13 +124,19 @@ inductive CheckedYearlessDateRangeOverlapOperand (model : FlatModel) where
   | direct (source : CheckedYearlessDateRangeOverlapField model)
   | star (path : CheckedStarFieldPath model)
       (source : CheckedYearlessDateRangeOverlapField model)
+      (filter : Option CorrelatedHaving)
 
 namespace CheckedYearlessDateRangeOverlapOperand
 
 /-- The certified yearless declaration behind either shape. -/
 def source : CheckedYearlessDateRangeOverlapOperand model →
     CheckedYearlessDateRangeOverlapField model
-  | .direct source | .star _ source => source
+  | .direct source | .star _ source _ => source
+
+/-- Whether this operand carries an authored filter, which is what makes a firing that reaches it an omission. -/
+def hasFilter : CheckedYearlessDateRangeOverlapOperand model → Bool
+  | .direct _ | .star _ _ none => false
+  | .star _ _ (some _) => true
 
 /-- Resolve the operand's addressed cells into yearless slots. A direct field contributes exactly one; a star contributes one per instantiated row in canonical address order, so an empty row becomes a skipped slot rather than disappearing. -/
 def resolveCheckedValidation
@@ -141,18 +146,19 @@ def resolveCheckedValidation
       (OverlapOperand YearlessInterval) :=
   match operand with
   | .direct source => source.resolveCheckedValidation document
-  | .star path _ => do
+  | .star path _ filter => do
       let core ←
-        (path.resolveCheckedValidationEntityOperandCore document outer none)
+        (path.resolveCheckedValidationEntityOperandCore document outer filter)
           |>.mapError .addressing
       let slots ← core.addressedCells.mapM
         CheckedYearlessDateRangeOverlapField.slotFor
-      pure { slots, hasFilter := false }
+      pure { slots, hasFilter := filter.isSome }
 
 end CheckedYearlessDateRangeOverlapOperand
 
-/-- Certify one authored operand for the unconfigured yearless route. Read forms, filtered stars, and group carriers are refused here rather than guessed. -/
-def certifyYearlessDateRangeOverlapOperand (model : FlatModel) :
+/-- Certify one authored operand for the unconfigured yearless route. Non-stored read forms and group carriers are refused here rather than guessed. -/
+def certifyYearlessDateRangeOverlapOperand (model : FlatModel)
+    (declaringGroup : GroupPath) :
     ResolvedFieldEntityOperand model →
       Except YearlessDateRangesOverlapElabError
         (CheckedYearlessDateRangeOverlapOperand model)
@@ -162,8 +168,12 @@ def certifyYearlessDateRangeOverlapOperand (model : FlatModel) :
       throw (.unsupportedReadForm declaration.path form)
   | .star path => do
       pure (.star path
-        (← certifyYearlessDateRangeOverlapField model path.declaration))
-  | .starHaving path _ => throw (.filteredStar path.declaration.path)
+        (← certifyYearlessDateRangeOverlapField model path.declaration) none)
+  | .starHaving path authored => do
+      let source ← certifyYearlessDateRangeOverlapField model path.declaration
+      let filter ← elaborateStarHavingCore model declaringGroup path authored
+        |>.mapError fun error => .source (.having error)
+      pure (.star path source (some filter.condition))
   | .group reference => throw (.groupsNotAllowed reference.path)
   | .starredGroup source => throw (.groupsNotAllowed source.group.path)
   | .starredGroupPresence source => throw (.groupsNotAllowed source.groupPath)
