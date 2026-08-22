@@ -27,41 +27,56 @@ inductive CheckedDateRangeFirstFilledComputation (model : FlatModel) where
   | monthDayFragment
       (shape : CheckedTemporalFirstFilledStarComputation model .dateRangeMonthDayFragment)
 
-/-- Check one of the six admitted matching DateRange declaration profiles without widening operands, nesting, or document architecture. -/
+/-- Offer one admitted declaration profile for the authored target. A target-carrier mismatch means "not this profile", so the caller may offer the next one; every other refusal is reached before the carrier comparison and is therefore shared by all profiles. -/
+private def offerDateRangeFirstFilledCarrier (model : FlatModel)
+    (declaringGroup : GroupPath) (targetField : FieldId)
+    (authored : SurfaceStarFieldPath)
+    (carrier : TemporalFirstFilledStarCarrier)
+    (wrap : CheckedTemporalFirstFilledStarComputation model carrier →
+      CheckedDateRangeFirstFilledComputation model) :
+    Except TemporalFirstFilledStarComputationElabError
+      (Option (CheckedDateRangeFirstFilledComputation model)) :=
+  match checkTemporalFirstFilledStarComputation model declaringGroup targetField
+      authored carrier with
+  | .ok shape => pure (some (wrap shape))
+  | .error (.targetCarrier _) => pure none
+  | .error cause => throw cause
+
+/-- Take the first offered profile that owns the target, preserving authored offer order. -/
+private def firstOfferedDateRangeFirstFilled {model : FlatModel} :
+    List (Unit → Except TemporalFirstFilledStarComputationElabError
+      (Option (CheckedDateRangeFirstFilledComputation model))) →
+    Except TemporalFirstFilledStarComputationElabError
+      (Option (CheckedDateRangeFirstFilledComputation model))
+  | [] => pure none
+  | offer :: rest => do
+      match ← offer () with
+      | some checked => pure (some checked)
+      | none => firstOfferedDateRangeFirstFilled rest
+
+/-- Check one of the admitted matching DateRange declaration profiles without widening operands, nesting, or document architecture. -/
 def checkDateRangeFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) :
     Except DateRangeFirstFilledComputationElabError
       (CheckedDateRangeFirstFilledComputation model) := do
-  match checkTemporalFirstFilledStarComputation
-      model declaringGroup targetField authored .dateRangeIsoSlash with
-  | .ok shape => pure (.isoSlash shape)
-  | .error (.targetCarrier _) =>
-      match checkTemporalFirstFilledStarComputation
-          model declaringGroup targetField authored .dateRangeDayMonthYearDash with
-      | .ok shape => pure (.dayMonthYearDash shape)
-      | .error (.targetCarrier _) =>
-          match checkTemporalFirstFilledStarComputation
-              model declaringGroup targetField authored .dateRangeYearFragment with
-          | .ok shape => pure (.yearFragment shape)
-          | .error (.targetCarrier _) =>
-              match checkTemporalFirstFilledStarComputation model declaringGroup
-                  targetField authored .dateRangeYearMonthFragment with
-              | .ok shape => pure (.yearMonthFragment shape)
-              | .error (.targetCarrier _) =>
-                  match checkTemporalFirstFilledStarComputation model declaringGroup
-                      targetField authored .dateRangeMonthFragment with
-                  | .ok shape => pure (.monthFragment shape)
-                  | .error (.targetCarrier _) =>
-                      let shape ← checkTemporalFirstFilledStarComputation
-                        model declaringGroup targetField authored
-                          .dateRangeMonthDayFragment |>.mapError .shape
-                      pure (.monthDayFragment shape)
-                  | .error cause => throw (.shape cause)
-              | .error cause => throw (.shape cause)
-          | .error cause => throw (.shape cause)
-      | .error cause => throw (.shape cause)
-  | .error cause => throw (.shape cause)
+  let offer := offerDateRangeFirstFilledCarrier model declaringGroup targetField authored
+  let offered ← firstOfferedDateRangeFirstFilled [
+      fun _ => offer .dateRangeIsoSlash .isoSlash,
+      fun _ => offer .dateRangeDayMonthYearDash .dayMonthYearDash,
+      fun _ => offer .dateRangeYearFragment .yearFragment,
+      fun _ => offer .dateRangeYearMonthFragment .yearMonthFragment,
+      fun _ => offer .dateRangeMonthFragment .monthFragment,
+      fun _ => offer .dateRangeMonthDayFragment .monthDayFragment
+    ] |>.mapError .shape
+  match offered with
+  | some checked => pure checked
+  | none =>
+      -- Every profile reached the carrier comparison, so the target resolves here; the
+      -- repeated lookup only names the target that owns no admitted profile.
+      let target ← model.lookupUniqueId targetField
+        |>.mapError fun cause => .shape (.target cause)
+      throw (.shape (.targetCarrier target.path))
 
 /-- Static refusal while checking the bounded direct-field-list DateRange source. -/
 inductive DateRangeFirstFilledDirectComputationElabError where
