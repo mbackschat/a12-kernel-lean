@@ -119,23 +119,36 @@ def resolveCheckedValidation
 
 end CheckedYearlessDateRangeOverlapField
 
-/-- One admitted unconfigured yearless operand: a direct stored field, or a plain starred field whose declaration is yearless. A filtered star is refused, because no retained observation covers filter-derived polarity in this domain. -/
+/-- One group carrier whose complete recursive expansion is nonempty and entirely yearless. -/
+structure CheckedYearlessDateRangeEntityGroup (model : FlatModel) where
+  source : CheckedEntityGroupSource model
+  first : CheckedYearlessDateRangeOverlapField model
+  rest : List (CheckedYearlessDateRangeOverlapField model)
+  expansionAllYearless :
+    (model.groupSubtreeFields source.groupPath).all
+      (fun declaration =>
+        (certifyYearlessDateRangeOverlapField model declaration).toOption.isSome)
+      = true
+
+/-- One admitted unconfigured yearless operand: a direct stored field, or a plain starred field whose declaration is yearless. A filter makes a firing that reaches the operand an omission. A group carrier contributes every yearless declaration in its recursive expansion. -/
 inductive CheckedYearlessDateRangeOverlapOperand (model : FlatModel) where
   | direct (source : CheckedYearlessDateRangeOverlapField model)
   | star (path : CheckedStarFieldPath model)
       (source : CheckedYearlessDateRangeOverlapField model)
       (filter : Option CorrelatedHaving)
+  | group (source : CheckedYearlessDateRangeEntityGroup model)
 
 namespace CheckedYearlessDateRangeOverlapOperand
 
 /-- The certified yearless declaration behind either shape. -/
-def source : CheckedYearlessDateRangeOverlapOperand model →
-    CheckedYearlessDateRangeOverlapField model
-  | .direct source | .star _ source _ => source
+def source? : CheckedYearlessDateRangeOverlapOperand model →
+    Option (CheckedYearlessDateRangeOverlapField model)
+  | .direct source | .star _ source _ => some source
+  | .group _ => none
 
 /-- Whether this operand carries an authored filter, which is what makes a firing that reaches it an omission. -/
 def hasFilter : CheckedYearlessDateRangeOverlapOperand model → Bool
-  | .direct _ | .star _ _ none => false
+  | .direct _ | .star _ _ none | .group _ => false
   | .star _ _ (some _) => true
 
 /-- Resolve the operand's addressed cells into yearless slots. A direct field contributes exactly one; a star contributes one per instantiated row in canonical address order, so an empty row becomes a skipped slot rather than disappearing. -/
@@ -153,8 +166,35 @@ def resolveCheckedValidation
       let slots ← core.addressedCells.mapM
         CheckedYearlessDateRangeOverlapField.slotFor
       pure { slots, hasFilter := filter.isSome }
+  | .group source => do
+      let declarations :=
+        (source.first :: source.rest).map (·.declaration)
+      let core ← document.resolveCheckedGroupEntityOperandCore outer
+        source.source.boundLevelCount declarations
+        |>.mapError .addressing
+      let slots ← core.addressedCells.mapM
+        CheckedYearlessDateRangeOverlapField.slotFor
+      pure { slots, hasFilter := false }
 
 end CheckedYearlessDateRangeOverlapOperand
+
+/-- Certify one group carrier: every declaration in its complete recursive expansion must be yearless, and the expansion must be nonempty. A subtree carrying any other kind or an exact profile is refused rather than silently narrowed. -/
+def certifyYearlessDateRangeEntityGroup (model : FlatModel)
+    (source : CheckedEntityGroupSource model) :
+    Except YearlessDateRangesOverlapElabError
+      (CheckedYearlessDateRangeEntityGroup model) :=
+  if hAll : (model.groupSubtreeFields source.groupPath).all
+      (fun declaration =>
+        (certifyYearlessDateRangeOverlapField model declaration).toOption.isSome)
+      = true then
+    match (model.groupSubtreeFields source.groupPath).filterMap
+        (fun declaration =>
+          (certifyYearlessDateRangeOverlapField model declaration).toOption) with
+    | [] => throw (.groupsNotAllowed source.groupPath)
+    | first :: rest =>
+        pure { source, first, rest, expansionAllYearless := hAll }
+  else
+    throw (.groupsNotAllowed source.groupPath)
 
 /-- Certify one authored operand for the unconfigured yearless route. Non-stored read forms and group carriers are refused here rather than guessed. -/
 def certifyYearlessDateRangeOverlapOperand (model : FlatModel)
@@ -174,9 +214,13 @@ def certifyYearlessDateRangeOverlapOperand (model : FlatModel)
       let filter ← elaborateStarHavingCore model declaringGroup path authored
         |>.mapError fun error => .source (.having error)
       pure (.star path source (some filter.condition))
-  | .group reference => throw (.groupsNotAllowed reference.path)
-  | .starredGroup source => throw (.groupsNotAllowed source.group.path)
-  | .starredGroupPresence source => throw (.groupsNotAllowed source.groupPath)
+  | .group reference =>
+      .group <$> certifyYearlessDateRangeEntityGroup model (.fixed reference)
+  | .starredGroup source =>
+      .group <$> certifyYearlessDateRangeEntityGroup model (.starred source)
+  | .starredGroupPresence source =>
+      .group <$>
+        certifyYearlessDateRangeEntityGroup model (.starredPresence source)
 
 /-- Evaluate the any-pair scan over admitted unconfigured yearless operands of any admitted shape, in authored order. -/
 def evaluateYearlessDateRangeOverlapOperands
@@ -187,19 +231,22 @@ def evaluateYearlessDateRangeOverlapOperands
     operand.resolveCheckedValidation document outer
   pure (evalYearlessRangesOverlap resolved)
 
-/-- Evaluate the scalar-versus-list scan over admitted unconfigured yearless operands. The scalar is resolved first and a skipped scalar leaves every list operand unread, exactly as on the completed route; the two routes differ only in the interval domain they compare. -/
-def evaluateYearlessAtLeastOneDateRangeOverlaps
-    (scalar : CheckedYearlessDateRangeOverlapField model)
-    (list : List (CheckedYearlessDateRangeOverlapField model))
-    (document : CheckedDocument model) :
+/-- Evaluate the scalar-versus-list scan where each list entry may be any admitted operand shape, including a group carrier. The scalar stays a direct stored field, which is the only scalar shape the Kernel admits. -/
+def evaluateYearlessAtLeastOneDateRangeOverlapsOperands
+    (scalar : CheckedYearlessDateRangeOverlapOperand model)
+    (list : List (CheckedYearlessDateRangeOverlapOperand model))
+    (document : CheckedDocument model) (outer : Env) :
     Except YearlessDateRangesOverlapEvaluationError Verdict := do
-  let scalarSlot ← scalar.resolveCheckedSlot document
-  match scalarSlot with
-  | .skipped => pure Verdict.notFired
-  | .kept _ => do
-      let operands ← list.mapM fun source =>
-        source.resolveCheckedValidation document
-      pure (evalAtLeastOneYearlessRangeOverlaps scalarSlot operands)
+  let scalarOperand ← scalar.resolveCheckedValidation document outer
+  match scalarOperand.slots with
+  | [slot] =>
+      match slot with
+      | .skipped => pure Verdict.notFired
+      | .kept _ => do
+          let operands ← list.mapM fun operand =>
+            operand.resolveCheckedValidation document outer
+          pure (evalAtLeastOneYearlessRangeOverlaps slot operands)
+  | slots => throw (.incoherentDirectOperand slots.length)
 
 /-- Evaluate the any-pair scan over admitted unconfigured yearless operands in authored order. -/
 def evaluateYearlessDateRangesOverlap

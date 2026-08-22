@@ -367,6 +367,17 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: measured for the direct single-level starred `FirstFilledValue` shape with one filled row and a fresh target. Crossings for the `{Y}` and `{Y,M}` sets have only one profile each and therefore cannot cross; scalar temporal carriers, the direct-field-list shape, Base-Year completion, clearing, and formal branches were not exercised.
 - `sync`: the general component-set rule was already reconciled in [`spec/09`](../spec/09-computations.md); this checkpoint widens its evidence and its crossing example, so it creates no outbound ledger entry.
 
+<a id="src-date-range-yearless-group-carrier"></a>
+#### Yearless DateRange group carriers, measured locally 2026-08-23
+
+- `revision`: model authored with the source-matched launcher at clean a12-dmkits `07d578ce6584692e164a958b64b19ad915331b05`; the probe ran at clean `108d047b787f0e049dcd2f4902f24d7523347a00`, recorded as the artifact's producer with state `CLEAN`. The sibling stayed empty throughout. dmtool `0.13.0`, kernel `30.8.1` built and runtime.
+- `route`: one unconfigured model declares a repeatable group of two yearless fields and a fixed group of one `MM` plus one `MM-dd` field. `rule add --dry-run` decides four conditions and `:adapter:kernelProbe` observes five documents on both codegen strategies, which agreed on every row.
+- `admission-claim`: the singular operator refuses **every** group carrier with `MVK_NO_GROUPS_ALLOWED`: a starred group, a fixed group, and a fixed group beside a starred one are all refused even though each expansion is entirely DateRange. The plural operator instead admits a group carrier on its list side, including a yearless group in an unconfigured model.
+- `runtime-claim`: an admitted group carrier contributes every yearless declaration in its recursive expansion at every instantiated row. A scalar `01/06` fires against a row's first member `04/09` and, on a different document, against the second member `05-01/07-31` while the first is disjoint; it fires against a second row's member when the first row misses entirely; and a disjoint expansion does not fire. An empty scalar terminates before the list is read, so the scalar-first rule is unchanged by a group carrier. Every firing is VALUE, since no filter is attached.
+- `integrity`: model `269ded4f19ad41f7ff2e325a47565863d972495625738fd2cb4769ed5588e97d`; request `61f43a06247ef4e161d5db860a4a8e1aaaad0348fec6788fba2e17e7fcd151df`; artifact `4c4f37059d754466810d272dcf9d68071f23fae719ca994bda0a05c68732439b`.
+- `limit`: one repeatable level and one fixed group, both with two-member expansions. No nested group, no mixed-kind expansion, no empty expansion, and no filtered group carrier. The singular refusal rows carry a Kernel diagnostic; the plural admission rows do not exercise a mixed year class inside one expansion.
+- `sync`: locally originated and consistent with the existing account, which already states the plural group carrier's recursive expansion and the singular group refusal. This measurement supplies the Kernel rows behind both in the unconfigured yearless domain and creates no new ledger entry.
+
 <a id="src-date-range-starred-yearless-overlap"></a>
 #### Starred yearless DateRange overlap, measured locally 2026-08-23
 

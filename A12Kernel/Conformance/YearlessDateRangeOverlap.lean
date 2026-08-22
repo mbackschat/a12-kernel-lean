@@ -29,7 +29,9 @@ private def model : FlatModel := {
     rangeField 6 "Period" "MM" "/" ["Form", "Rows"] [10],
     { id := 7, name := "Guard", groupPath := ["Form", "Rows"]
       repeatableScope := [10]
-      policy := { kind := .number { scale := 0, signed := false } } }]
+      policy := { kind := .number { scale := 0, signed := false } } },
+    rangeField 8 "WindowLeft" "MM" "/" ["Form", "Windows"],
+    rangeField 9 "WindowRight" "MM-dd" "/" ["Form", "Windows"]]
   repeatableGroups := [
     { level := 10, path := ["Form", "Rows"], repeatability := some 4 }]
 }
@@ -120,8 +122,8 @@ private def pluralVerdict? (scalar listed : FieldId)
     instantiatedRows := []
     cells := [storedCell scalar scalarText, storedCell listed listedText]
   }).toOption
-  (evaluateYearlessAtLeastOneDateRangeOverlaps scalarSource [listedSource]
-    document).toOption
+  (evaluateYearlessAtLeastOneDateRangeOverlapsOperands (.direct scalarSource)
+    [.direct listedSource] document []).toOption
 
 /- The scalar-versus-list scan compares yearless labels exactly as the any-pair scan does, and an
 unusable scalar terminates before the list is read. Each row is a measured Kernel outcome. -/
@@ -222,6 +224,35 @@ example :
       filteredStarVerdict? [(1, "01/06"), (2, "04/09")] =
         some (.fired .omission) ∧
       filteredStarVerdict? [(1, "01/03"), (2, "06/09")] = some .notFired := by
+  native_decide
+
+private def windowsGroup : SurfaceFieldEntityOperand :=
+  .group (.path { base := .absolute, groups := ["Form", "Windows"] })
+
+private def groupCarrierVerdict? (scalarText leftText rightText : String) :
+    Option Verdict := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+  let scalar ← starOperand? model (.field {
+    base := .relative 0, groups := [], field := "MonthSlash" })
+  let listed ← starOperand? model windowsGroup
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := [storedCell 1 scalarText, storedCell 8 leftText,
+      storedCell 9 rightText]
+  }).toOption
+  (evaluateYearlessAtLeastOneDateRangeOverlapsOperands scalar [listed] document
+    []).toOption
+
+/- A group carrier on the plural list side contributes every yearless declaration in its subtree,
+so either member can be the match, and an unusable scalar still terminates first. The singular
+operator's refusal of every group carrier is measured too, and stays locked with its exact
+diagnostic in `Conformance.DateRangeOverlapOperators`. -/
+example :
+    groupCarrierVerdict? "01/06" "04/09" "10-01/12-31" = some (.fired .value) ∧
+      groupCarrierVerdict? "01/06" "08/09" "05-01/07-31" = some (.fired .value) ∧
+      groupCarrierVerdict? "01/03" "06/09" "10-01/12-31" = some .notFired ∧
+      groupCarrierVerdict? "" "04/09" "10-01/12-31" = some .notFired := by
   native_decide
 
 end A12Kernel.Conformance.YearlessDateRangeOverlap
