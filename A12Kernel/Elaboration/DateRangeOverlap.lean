@@ -5,7 +5,7 @@ import A12Kernel.Semantics.DateRangeOverlapOperators
 
 /-! # Checked DateRange overlap operands
 
-This boundary owns operator-specific static admission and full-validation checked-document assembly for DateRange overlap conditions. It reuses the shared entity-list shape and checked DateRange declaration policies; singular direct fields additionally certify the internally supported year fragment plus measured year-month and Base-Year-completed fragment profiles while starred and plural routes remain canonical. Pure overlap truth and polarity remain in `A12Kernel.Semantics.DateRangeOverlapOperators`.
+This boundary owns operator-specific static admission and full-validation checked-document assembly for DateRange overlap conditions. It reuses the shared entity-list shape and checked DateRange declaration policies; singular direct fields additionally certify the internally supported year fragment plus measured year-month and Base-Year-completed fragment profiles while starred and plural routes remain canonical. Every operand list first passes the Kernel's uniform-year gate, which is decided by the declarations and the model's Base Year alone. Pure overlap truth and polarity remain in `A12Kernel.Semantics.DateRangeOverlapOperators`.
 -/
 
 namespace A12Kernel
@@ -233,36 +233,19 @@ private def certifySingularDateRangesOverlapOperands (model : FlatModel)
         (List (CheckedSingularDateRangesOverlapOperand model)) :=
   List.mapM (certifySingularDateRangesOverlapOperand model declaringGroup)
 
-private def isCanonicalDirectDateRangeOperand :
-    ResolvedFieldEntityOperand model → Bool
+/-- Whether one operand's compared value carries a year: either its declaration does, or the model's Base Year completes a yearless declaration into an exact range. `none` is an operand shape whose declaration this boundary does not read, which keeps its own certification instead of being guessed at either way. -/
+def dateRangeOperandIncludesYear? (model : FlatModel) :
+    ResolvedFieldEntityOperand model → Option Bool
   | .field declaration .stored =>
-      (certifyCanonicalDateRangeField declaration).toOption.isSome
-  | _ => false
+      (certifyDateRangeInputField declaration).toOption.map fun checked =>
+        checked.format.includesYear || model.baseYear.isSome
+  | _ => none
 
-private def isYearlessDirectDateRangeOperand :
-    ResolvedFieldEntityOperand model → Bool
-  | .field declaration .stored =>
-      match (certifyDateRangeInputField declaration).toOption.map (·.format) with
-      | some format =>
-          match format with
-          | .yearlessMonth | .yearlessMonthDay => true
-          | _ => false
-      | none => false
-  | _ => false
-
-/-- The retained diagnostic row is exactly one canonical direct range beside one unconfigured yearless direct range. -/
-private def hasMeasuredYearlessDateRangeMix (model : FlatModel)
+/-- The Kernel's uniform-year gate over a whole overlap operand list: every compared range must include the year, or none may. It is a property of the list rather than of a distinguished pair, so it reaches lists longer than two and every declared spelling of a component set. A configured Base Year makes each yearless declaration year-bearing, so a configured model never mixes. -/
+def mixesDateRangeYearInclusion (model : FlatModel)
     (operands : List (ResolvedFieldEntityOperand model)) : Bool :=
-  if model.baseYear.isSome then
-    false
-  else
-    match operands with
-    | [left, right] =>
-        (isCanonicalDirectDateRangeOperand left &&
-          isYearlessDirectDateRangeOperand right) ||
-        (isYearlessDirectDateRangeOperand left &&
-          isCanonicalDirectDateRangeOperand right)
-    | _ => false
+  let inclusions := operands.filterMap (dateRangeOperandIncludesYear? model)
+  inclusions.contains true && inclusions.contains false
 
 /-- Apply the shared shape gates first, then the singular operator's group refusal and exact-or-direct-fragment policy certification in authored order. -/
 def elaborateDateRangesOverlapSource (model : FlatModel)
@@ -271,7 +254,7 @@ def elaborateDateRangesOverlapSource (model : FlatModel)
       (CheckedDateRangesOverlapSource model) := do
   let shape ← elaborateFieldEntityShape model declaringGroup authored
     |>.mapError .shape
-  if hasMeasuredYearlessDateRangeMix model (shape.first :: shape.rest) then
+  if mixesDateRangeYearInclusion model (shape.first :: shape.rest) then
     throw .dateWithAndWithoutYear
   let first ← certifySingularDateRangesOverlapOperand model declaringGroup
     shape.first

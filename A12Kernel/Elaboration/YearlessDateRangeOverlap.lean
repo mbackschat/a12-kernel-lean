@@ -9,9 +9,12 @@ retain different domains: the completed route yields exact instants, and this on
 manufacture a year.
 
 The admitted shape is deliberately narrow. Every operand is a direct stored field whose
-declaration is yearless, so a pair mixing an exact operand with a yearless one is refused:
-no retained observation covers it, and guessing would put a manufactured year in a public
-result. Filters, stars, groups, and the plural operator keep their existing owners.
+declaration is yearless, and a list mixing a year-bearing operand with a yearless one is
+refused here because the Kernel refuses it statically: with no Base Year to complete the
+yearless side, the uniform-year gate in `A12Kernel.Elaboration.DateRangeOverlap` rejects the
+whole list. A configured model completes the value instead, so a mixed list there is admitted
+and belongs to the exact route. Filters, stars, groups, and the plural operator keep their
+existing owners.
 -/
 
 namespace A12Kernel

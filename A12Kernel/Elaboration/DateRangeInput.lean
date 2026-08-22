@@ -98,6 +98,14 @@ def ofPolicy? (policy : DateRangeDeclarationPolicy) : Option DateRangeInputForma
       else
         none
 
+/-- Whether the declared endpoints carry a year of their own. This is the declaration's own
+component set, independent of any model: a yearless profile gains a year only from a configured
+Base Year, and the consuming operator decides whether that completion counts. -/
+def includesYear : DateRangeInputFormat → Bool
+  | .exact _ | .yearFragment | .yearMonthFragment => true
+  | .yearlessMonth | .yearlessMonthDay | .yearlessMonthConcatenated
+  | .yearlessDayMonthDotted => false
+
 end DateRangeInputFormat
 
 /-- One DateRange declaration with any checked-document input profile selected once. -/

@@ -122,12 +122,15 @@ example :
         DateRangesOverlapElabError.diagnostic? = some .duplicateParam1 := by
   native_decide
 
-/- Wrong-kind and unsupported-policy sources fail explicitly instead of becoming empty operands. -/
+/- Wrong-kind and wrong-read-form sources fail explicitly instead of becoming empty operands.
+A yearless declaration beside a year-bearing one meets the earlier uniform-year gate, so this
+route's policy refusal is reachable only from a uniformly yearless list and is locked with its
+payload in `Conformance.DateRangeFragmentOverlap`. -/
 example :
     admissionError? (direct "Start") [direct "Code"] =
         some (.sourceNotDateRange ["Form", "Code"] .string) ∧
-      admissionError? (direct "Start") [direct "Unsupported"] =
-        some (.unsupportedPolicy ["Form", "Unsupported"] "dd.MM" "-") ∧
+      (admissionError? (direct "Start") [direct "Unsupported"]).bind
+        DateRangesOverlapElabError.diagnostic? = some .dateWithAndWithoutYear ∧
       admissionError? (.field { base := .relative 0, groups := [], field := "Start" }
         (.projected "Band")) [direct "Finish"] =
         some (.unsupportedReadForm ["Form", "Start"] (.projected "Band")) := by

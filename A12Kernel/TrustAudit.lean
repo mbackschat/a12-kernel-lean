@@ -102,6 +102,8 @@ run_cmd do
 #print axioms A12Kernel.dateRange_invalid_left_never_overlaps
 #print axioms A12Kernel.dateRange_invalid_right_never_overlaps
 #print axioms A12Kernel.dateRange_strict_gap_never_overlaps
+#print axioms A12Kernel.mixesDateRangeYearInclusion_eq_false_of_baseYear
+#print axioms A12Kernel.mixesDateRangeYearInclusion_eq_false_of_no_year
 #print axioms A12Kernel.anyPairDateRangesOverlap_singleton
 #print axioms A12Kernel.anyPairDateRangesOverlap_pair
 #print axioms A12Kernel.anyPairDateRangesOverlap_duplicate_iff

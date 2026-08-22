@@ -4,6 +4,7 @@ import A12Kernel.Proofs.FullDate
 import A12Kernel.Proofs.DateComparison
 import A12Kernel.Proofs.DateAggregate
 import A12Kernel.Proofs.DateRangeOverlap
+import A12Kernel.Proofs.DateRangeOverlapAdmission
 import A12Kernel.Proofs.DateRangeComparison
 import A12Kernel.Proofs.DateRangeBound
 import A12Kernel.Proofs.DateRangeInput

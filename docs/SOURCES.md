@@ -323,6 +323,21 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: two-operand pairs only, one filled value per field, no empty or malformed operand, no repetition list, no starred operand, and no wrapping range. The `{Y}` and `{Y,M}` profiles were not exercised, and the Base-Year overlap rows cover only the three ordinary pairs plus the February boundary.
 - `sync`: this measurement widens local evidence and contradicts no clause; it creates no outbound ledger entry.
 
+<a id="src-date-range-mixed-year-overlap"></a>
+#### Mixed-year DateRange overlap admission and completion, measured locally 2026-08-22
+
+- `revision`: clean a12-dmkits `52ce932dc9b32aefe8c1e424d7e56d7749709540`, dmtool `0.13.0`, kernel `30.8.1` built and runtime; the sibling stayed empty before and after every command and the artifact records `CLEAN`.
+- `route`: one dmtool-authored model declares all eight admitted DATE_RANGE pairs beside a STRING flag; a second copy adds Base Year 2024. `rule add --dry-run` decides admission for 15 conditions against each copy, and `:adapter:kernelProbe` observes `validateFull` on both codegen strategies for 15 documents against the configured copy. Every probe row agreed across strategies.
+- `admission-claim`: without a Base Year, an operand list mixing a year-bearing declaration with a yearless one is refused `MVK_DATE_WITH_AND_WITHOUT_YEAR`. All eight mixed pairs tried are refused, including `yyyy` and `yyyy-MM` fragments on the year-bearing side and both lexical spellings of a yearless set on the other, and a three-operand list is refused on the same mix.
+- `admission-claim`: with Base Year 2024 every one of those same 15 conditions is admitted, so the gate is lifted by the Base Year rather than by the declared formats. The completion that admits the value is what supplies its year.
+- `admission-claim`: within one year class the operator applies no component-set gate. `yyyy-MM-dd` beside `yyyy` is admitted with no Base Year, as is `MM` beside `MM-dd`, so overlap does not inherit the equality comparability rule that refuses `MVK_INVALID_COMPARE_TO_DATE_RANGE`.
+- `runtime-claim`: a completed yearless operand occupies the Base Year alone and the exact operand keeps its own year. `2024-06-01/2024-06-30` overlaps `06/06`, while the same range in 2023 or 2025 does not, so the comparison is not year-blind. An exact range spanning into the Base Year still meets the completion: `2023-11-01/2024-02-28` overlaps `01/01` and `2023-11-01/2023-12-31` does not.
+- `runtime-claim`: the completed operand keeps closed endpoints. `2024-06-30/2024-07-05` overlaps `06-01/06-30` and `2024-07-01/2024-07-05` does not. Under leap Base Year 2024, `02-29/03-05` overlaps `2024-02-29/2024-02-29`.
+- `runtime-claim`: a `yyyy` operand is year-bearing on its own and its year decides the outcome against a completed yearless operand. `2024/2024` overlaps `06/06`; `2023/2023` does not.
+- `integrity`: models `3efb28a3cb5c8376c2f2c6275828d6135caadd606358ea7f4ad58810cf766dff` and `1682744bb1156217e6602824c659c4366d57bd28a0ace408474871c1253a1752`; request `491d24667f414cc8e3a33f670a64c1f72f21bb07067c01b567f8517a9812d879`; artifact `73790fe5946ccf4dd1058465091d09d07e6299ad3e57902349633cbc853b921c`. The admission rows reproduce against those exact model bytes.
+- `limit`: singular `DateRangesOverlap` only, direct stored operands, one filled value per field, and ordered ranges. No starred, filtered, group, or repetition operand; no empty or malformed operand; no wrapping range; and the plural `AtLeastOneDateRangeOverlaps` route was not reached, because its authored list syntax was not established in this session.
+- `sync`: locally originated. It corrects the narrower overlap sentence in [§6](../spec/05-dates-and-time.md#6-date-fragments-and-fragment-ranges) and adds the year-class gate to [§8](../spec/05-dates-and-time.md#8-date-ranges-and-overlap); [`SPEC-2026-08-22-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-22-01--date-range-overlap-admits-by-year-class-and-a-base-year-lifts-the-gate) carries it.
+
 <a id="src-date-range-bound-base-year"></a>
 #### DateRange bound extraction and Base-Year completion, measured locally 2026-08-22
 
