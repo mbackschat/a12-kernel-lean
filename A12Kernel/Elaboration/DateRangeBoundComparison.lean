@@ -54,7 +54,7 @@ namespace DateRangeBoundPairElabError
 ingestion insufficiency. -/
 def diagnostic? : DateRangeBoundPairElabError → Option KernelStaticDiagnostic
   | .formatsNotComparable _ _ => some .invalidCompareToDate
-  | .left _ | .right _ => none
+  | .left cause | .right cause => cause.diagnostic?
 
 end DateRangeBoundPairElabError
 

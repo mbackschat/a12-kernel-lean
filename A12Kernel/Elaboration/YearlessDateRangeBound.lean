@@ -71,7 +71,8 @@ namespace YearlessDateRangeBoundElabError
 routing facts: a configured or year-bearing declaration belongs to the exact owner. -/
 def diagnostic? : YearlessDateRangeBoundElabError → Option KernelStaticDiagnostic
   | .componentNotExposed _ _ => some .wrongDateFormatForOp
-  | .source _ | .notYearless _ _ _ | .baseYearConfigured _ => none
+  | .source cause => cause.diagnostic?
+  | .notYearless _ _ _ | .baseYearConfigured _ => none
 
 end YearlessDateRangeBoundElabError
 

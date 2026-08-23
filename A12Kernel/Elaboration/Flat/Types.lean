@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.FlatValidation
 import A12Kernel.Semantics.TemporalFormat
 import A12Kernel.Semantics.CustomFieldType
@@ -405,6 +406,15 @@ inductive ResolveError where
   | shortNameNotUnique (name : String)
   | repeatableReference (path : List String)
   deriving Repr, DecidableEq
+
+/-- The Kernel class a resolution failure reports, projected once for every wrapping error type.
+An unstarred repeatable operand read from a rule locus that does not iterate its level is the
+shared missing-wildcard class; whether that same operand is *admitted* from an iterating locus is a
+separate question this projection does not answer. Every other resolution failure stays uncovered
+here until its own class is established. -/
+def ResolveError.diagnostic? : ResolveError → Option KernelStaticDiagnostic
+  | .repeatableReference _ => some .noWildcard
+  | _ => none
 
 inductive AuthoredFieldPathError where
   | syntax (error : PathSyntaxError)

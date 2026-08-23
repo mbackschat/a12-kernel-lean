@@ -250,6 +250,7 @@ def FieldEntityShapeElabError.diagnostic? :
   | .duplicateOperand _ => some .duplicateParam1
   | .duplicateGroupOperand _ => some .duplicateParam1
   | .overlappingOperands _ _ => some .duplicateParam2
+  | .resolve error => error.diagnostic?
   | .groupReference (.repeatableGroupRequiresAddress _) => some .noWildcard
   | .starredGroup (.path (.wildcardOnNonrepeatable _)) => some .invalidWildcard
   | .starPath (.iterationBelowWildcard _) => some .noWildcard

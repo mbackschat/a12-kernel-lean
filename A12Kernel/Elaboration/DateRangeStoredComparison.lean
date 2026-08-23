@@ -23,7 +23,7 @@ namespace DirectDateRangeComparisonElabError
 /-- Only the component-set refusal has an established Kernel diagnostic; the two operand refusals are local ingestion insufficiency. -/
 def diagnostic? : DirectDateRangeComparisonElabError → Option KernelStaticDiagnostic
   | .componentMismatch _ _ => some .invalidCompareToDateRange
-  | .left _ | .right _ => none
+  | .left cause | .right cause => cause.diagnostic?
 
 end DirectDateRangeComparisonElabError
 

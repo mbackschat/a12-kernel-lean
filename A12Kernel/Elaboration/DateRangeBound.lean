@@ -15,6 +15,16 @@ inductive DirectDateRangeElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
+/-- The one gate this owner reports to a rule author. An unstarred repeatable source read from a
+non-iterating rule locus is the shared missing-wildcard class, and it is raised here rather than at
+each carrier, so every DateRange endpoint and stored-value carrier reports it identically. The
+remaining refusals are kind and declaration-policy classes whose codes belong to their consuming
+operator. -/
+def DirectDateRangeElabError.diagnostic? :
+    DirectDateRangeElabError → Option KernelStaticDiagnostic
+  | .source error => error.diagnostic?
+  | .sourceNotDateRange _ _ | .unsupportedPolicy _ _ _ | .incoherentCore => none
+
 abbrev DateRangeBoundElabError := DirectDateRangeElabError
 
 /-- Recover the declaration policy and checked input profile for one direct nonrepeatable DateRange source. -/

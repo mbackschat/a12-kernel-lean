@@ -123,7 +123,7 @@ because it resolves a field id rather than an authored path. -/
 def diagnostic? : DateRangeEndpointElabError → Option KernelStaticDiagnostic
   | .targetKind _ _ | .unsupportedPolicy _ _ _ => some .wrongDateFormatForOp
   | .targetPolicy (.targetNotTemporal _) => some .wrongDateFormatForOp
-  | .targetPolicy (.resolve (.repeatableReference _)) => some .noWildcard
+  | .targetPolicy (.resolve error) => error.diagnostic?
   | .targetPolicy _ | .unsupportedZone _ => none
 
 end DateRangeEndpointElabError

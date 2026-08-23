@@ -77,6 +77,23 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 **The producer side now discloses its rewrites, which is what this project asked for.** The 2026-08-12 handbacks name the rebase, list the branch SHAs that no longer exist as reachable objects and must not be cited, and give revisions read off `main` as the last step before sending. Every revision they cite resolved from `main` when checked here on 2026-08-12: `06b84701`, `b99e43e1`, `4b244b84`, `73bc4a04`, and `ae567007`. A handback dated 2026-08-12 or later is therefore discharged against its own cited revision, while an earlier one still needs the maintained-owner route above. The reverse error is now on record too: `2bffcb10` was reported dead from here and resolves fine, which the 2026-08-10 boundary already predicted for it, so a reachability measurement taken against a stale checkout is itself a claim with a date on it.
 
+<a id="spec-2026-08-23-04"></a>
+<a id="spec-2026-08-23-04--the-operand-locus-gate-decides-before-the-error-field-gate"></a>
+
+### SPEC-2026-08-23-04 - The operand-locus gate decides before the error-field gate
+
+- **Status:** pending
+- **Kind:** semantic addition, locally originated and locally measured
+- **Local revision:** resolve with the introducing-commit recipe in the ledger contract above; the introducing commit cannot name itself.
+- **a12-dmkits basis revision:** `108d047b787f0e049dcd2f4902f24d7523347a00` (clean before and after every command)
+- **Kernel behavior:** 30.8.1 built and runtime, observed through source-shipped dmtool `0.13.0` with `rule check`, the real consistency oracle
+- **Canonical clause:** [`07-repetition-and-iteration.md`](../spec/07-repetition-and-iteration.md) §1, on the error-field bullets; the carrier breadth lands in [`05-dates-and-time.md`](../spec/05-dates-and-time.md)
+- **Delta:** two additions. First, the **gate order**: a condition holding an unstarred repeatable operand read from a non-iterating locus is refused `MVK_NO_WILDCARD` even when the error field is absent from that condition, while the same unreferenced error field draws `MVK_ERROR_FIELD_NOT_REFERENCED` once the repeatable operand is removed. The two gates were each already stated; which one reports first was not. Second, the locus rule is now **measured on four DateRange carriers** rather than stated for the construction endpoint and assumed shared: the overlap predicate, stored range equality, an extracted endpoint compared against a fixed Date, and the two-endpoint construction all admit the same operand from inside the repeated group and refuse it from outside.
+- **Basis:** twelve `rule check` decisions on one Kernel-valid model, varying only the error field, including a re-measured construction row that carries no presence guard so its refusal names the construction endpoint rather than a guard operand, plus the two-row isolation that reaches `MVK_ERROR_FIELD_NOT_REFERENCED` on a scalar-only condition with the same error field. The [rule-locus checkpoint](SOURCES.md#src-date-range-rule-locus) records the exact conditions and the model hash.
+- **Requested a12-dmkits reconciliation:** State the gate order where the error-field gates are documented, so a checker is not free to report the reference failure first, and record the four measured DateRange carriers rather than transferring the rule from one of them. Lock the ordering with the two-row separator — offend both gates, then remove the repeatable operand — and one admitted inside-locus row per carrier. Reuse the existing rule-check route; add no harness.
+- **Compatibility:** A checker that runs the error-field gate first reports `MVK_ERROR_FIELD_NOT_REFERENCED` where the Kernel reports `MVK_NO_WILDCARD`, which sends a rule author to fix the wrong half of the condition. A consumer that transfers the locus rule between carriers without measuring it inherits whichever carrier it sampled; here all four agree, which is a result rather than an assumption.
+- **Acceptance:** Maintained documentation states the order and names the measured carriers; the ordering separator and one admitted row per carrier are Kernel-locked; and the handback supplies the reviewed revision plus per-surface disposition.
+
 <a id="spec-2026-08-23-03"></a>
 <a id="spec-2026-08-23-03--the-direct-list-firstfilledvalue-shape-gates-sources-and-target-differently"></a>
 
