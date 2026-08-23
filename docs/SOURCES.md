@@ -522,6 +522,16 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: one DATE declaration in its default `yyyy-MM-dd` format, one repeatable level, two rows, validation phase only. A differently declared DATE format is unmeasured, as are Time, DateTime, and DateRange columns; the identity reading above is source-established for all of them, but only this format's reachability is measured. Nothing here claims what a *non-Date* distinct count does, and the not-given and not-relevant flags' exclusion from equality is source-only, because a value carrying them is never inserted into the distinctness set.
 - `sync`: none. Every row confirms an already-canonical clause — the non-lenient stored-conversion clause in [`spec/05`](../spec/05-dates-and-time.md) and the combiner suppression account — so this checkpoint adds provenance and closes two local residuals without changing `spec/`.
 
+<a id="src-filled-field-count"></a>
+#### What a formally invalid operand does to `NumberOfFilledFields`, measured locally 2026-08-23
+
+- `revision`: clean a12-dmkits `108d047b787f0e049dcd2f4902f24d7523347a00`, dmtool `0.13.0`, kernel `30.8.1` built and runtime; artifact header records `producer.source.state: CLEAN` and the same revision. The sibling worktree was empty before and after every command.
+- `route`: `:adapter:kernelProbe` observing `validateFull` on both codegen strategies over one model declaring a String `A`, a `yyyy-MM-dd` Date `B`, a Number, and a String note, carrying **three** persisted rules that compare `NumberOfFilledFields(A, B)` against `0`, `1`, and `2`. Artifact SHA-256 `8ca06c74f9828271c393ef7010de490002345f16247a2638d4d1f7c3a0469a2e`, held in session scratch rather than retained under `evidence/`, because the account it settles is now carried by executable cases.
+- `design`: three comparisons rather than one, because a single rule's non-firing cannot distinguish "the count differs" from "the count is unavailable". With all three present, each row's firing names the count itself, and a row that fires **nothing** is the unavailability.
+- `invalid-claim`: **a formally invalid operand makes the whole count unavailable.** With `A` filled and `B` holding the unreal date `2024-02-30`, the Kernel reported `datumFormatFalsch` for `B` and fired **none** of the three rules. Skipping the invalid operand would have counted `1` and fired the first; treating it as filled would have counted `2` and fired the second. Both accounts are therefore refuted, not merely unconfirmed.
+- `empty-claim`: the three other rows are each other's controls and each fires exactly the rule naming its own count: filled-beside-empty fires the `1` rule, both-filled the `2` rule, and **both-empty the `0` rule**. So an empty cell is never counted, and an all-empty list still compares normally rather than answering unavailable — emptiness and invalidity are two states in this operator.
+- `limit`: the **validation** arm only. `NumberOfFilledGroups` has two arms that differ precisely on this question, so nothing here transfers to the field count's computation arm; that remains unmeasured.
+
 <a id="src-date-from-datetime"></a>
 #### What `DateFromDateTime` reads, and the source gate both component extractors share, measured locally 2026-08-23
 

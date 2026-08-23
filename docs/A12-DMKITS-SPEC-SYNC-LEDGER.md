@@ -2560,3 +2560,19 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Compatibility:** the reading delta can produce a **wrong value** rather than a rejection: a consumer converting to UTC first is off by one day for any label within the zone offset of midnight, which is the most likely implementation error and the hardest to notice. The source-gate delta is a wrong acceptance.
 - **Acceptance:** canonical peer prose states the label-reading account with the near-midnight witness, states the result's Date kind with the two `MVK_INVALID_COMPARE_TO_DATE` refusals rather than an admission, and records the shared complete-DateTime source gate covering a plain Date field; peer cases separate the wall and instant readings on a near-midnight label.
 
+<a id="spec-2026-08-23-14"></a>
+
+### SPEC-2026-08-23-14 - A formally invalid operand makes `NumberOfFilledFields` unavailable, not skipped and not counted
+
+- **Status:** pending
+- **Kind:** semantic addition, locally originated and locally measured
+- **Local revision:** resolve with the introducing-commit recipe in the ledger contract above; the introducing commit cannot name itself.
+- **Kernel behavior:** measured through the maintained `:adapter:kernelProbe` task at clean a12-dmkits `108d047b787f0e049dcd2f4902f24d7523347a00`, kernel `30.8.1` built and runtime, artifact `producer.source.state: CLEAN`, observing `validateFull` on **both** codegen strategies, which agreed on every row.
+- **Canonical clause:** [`03-empty-and-required.md`](../spec/03-empty-and-required.md), the count-family row of the empty-operand table.
+- **Delta (addition):** a **formally invalid** operand makes the whole count UNAVAILABLE. The clause stated only the empty rule, which left the invalid case to be guessed, and both plausible guesses are wrong: the count is neither skipped, which would have made a filled-beside-invalid pair count `1`, nor treated as filled, which would have made it count `2`. Three rules comparing one two-operand count against `0`, `1`, and `2` were authored in one model; on the filled-beside-invalid row the Kernel reported the invalid operand's own formal error and fired **none** of them, while the same three rules fired correctly on filled-beside-empty (`1`), both-filled (`2`), and both-empty (`0`).
+- **Delta (addition):** an **all-empty** operand list counts `0` and compares normally rather than answering unavailable. So emptiness and invalidity are two states in this operator, not one, which is the distinction the three-rule design exists to separate.
+- **Basis (measured):** four `:adapter:kernelProbe` rows over one kernel-valid model declaring a String, a `yyyy-MM-dd` Date, a Number, and a String note, with three persisted rules and the invalid operand produced by the unreal date `2024-02-30`. The three non-invalid rows are each other's controls: every one fires exactly the rule naming its own count, so a non-firing row is informative rather than vacuous. Recorded at the [filled-field-count checkpoint](SOURCES.md#src-filled-field-count).
+- **Scope limit:** the **validation** arm only. The group sibling `NumberOfFilledGroups` has two arms that differ precisely on this question, so the computation arm is left unmodelled here rather than assumed to follow either; that is an open measurement, not a decided semantics.
+- **Compatibility:** a wrong value rather than a rejection, in the direction most likely to be implemented by accident: a consumer that skips invalid operands returns a count one lower and fires a comparison the Kernel suppresses.
+- **Acceptance:** canonical peer prose distinguishes empty from invalid in the count family and states the unavailability, with the three-way comparison design named so the claim is reproducible; peer cases keep an all-empty row so the two states stay separated.
+
