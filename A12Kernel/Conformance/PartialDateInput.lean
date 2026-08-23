@@ -17,13 +17,13 @@ namespace A12Kernel.Conformance.PartialDateInput
 open A12Kernel
 
 private def declaration (mode : TemporalPartialMode)
-    (before1900 : Bool := false) : FlatFieldDecl := {
+    (before1900 : Bool := false) (format : String := "yyyy-MM-dd") : FlatFieldDecl := {
   id := 0
   groupPath := ["Order"]
   name := "P"
   policy := { kind := .temporal .date TemporalComponents.fullDate }
   temporalTargetPolicy := some {
-    format := "yyyy-MM-dd"
+    format
     partialMode := mode
     youngerThan1900Check := before1900 }
 }
@@ -37,9 +37,10 @@ private inductive Outcome where
   deriving Repr, DecidableEq
 
 private def classify? (mode : TemporalPartialMode) (text : String)
-    (before1900 : Bool := false) : Option Outcome := do
+    (before1900 : Bool := false) (format : String := "yyyy-MM-dd") :
+    Option Outcome := do
   let checked ←
-    (certifyPartialDateInputField (declaration mode before1900)).toOption
+    (certifyPartialDateInputField (declaration mode before1900 format)).toOption
   pure <| match checked.classifyStored text with
     | .presentEmpty => .empty
     | .rejected cause => .rejected cause
@@ -131,6 +132,24 @@ report and deliberately not this classifier's. -/
 example :
     classify? .full "2024-06-00" = none ∧
       classify? .full "2024-06-15" = none := by
+  native_decide
+
+/- The whole rule is **independent of the declared spelling**. The German `dd.MM.yyyy` declaration
+reproduces the ladder, the non-suffix refusal, the reality-before-position order, and the floor cause
+cell for cell, so the omission marker is the zero *component* rather than a position in the ISO text.
+Measured on the same model as the rows above. -/
+example :
+    classify? .dayOptional "00.06.2024" (format := "dd.MM.yyyy") = some .admitted ∧
+      classify? .dayOptional "00.00.2024" (format := "dd.MM.yyyy") =
+        some (.rejected .dateInvalid) ∧
+      classify? .monthOptional "00.00.2024" (format := "dd.MM.yyyy") =
+        some .admitted ∧
+      classify? .yearOptional "15.00.2024" (format := "dd.MM.yyyy") =
+        some (.rejected .dateInvalid) ∧
+      classify? .dayOptional "00.13.2024" (format := "dd.MM.yyyy") =
+        some (.rejected .dateFormat) ∧
+      classify? .dayOptional "00.10.1583" (format := "dd.MM.yyyy") =
+        some (.rejected .dateInvalid) := by
   native_decide
 
 /- **Internal, not measured.** The admitted value is the one the shape denotes, not merely "some
