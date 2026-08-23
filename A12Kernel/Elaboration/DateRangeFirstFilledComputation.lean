@@ -95,6 +95,8 @@ inductive DateRangeFirstFilledDirectComputationElabError where
   | targetGroup (actual expected : GroupPath)
   | sourceGroup (path : List String) (actual expected : GroupPath)
   | varyingProfiles (first second : List String)
+  | targetProfileNotComparable (target : List String)
+      (source : DateRangeInputFormat)
   | targetSelfReference (path : List String)
   deriving Repr, DecidableEq
 
@@ -105,6 +107,7 @@ def diagnostic? : DateRangeFirstFilledDirectComputationElabError →
     Option KernelStaticDiagnostic
   | .sourceShape cause => cause.diagnostic?
   | .varyingProfiles _ _ => some .varyingTypesNotAllowed
+  | .targetProfileNotComparable _ _ => some .invalidCompareToDateRange
   | .targetSelfReference _ => some .errorReferenceToCalculatedField
   | .target _ | .source _ _ | .unsupportedSourceShape | .targetGroup _ _ |
       .sourceGroup _ _ _ => none
@@ -126,7 +129,7 @@ private structure NonselfDateRangeFirstFilledDirectCandidate
   candidate : GroupedDateRangeFirstFilledDirectCandidate model targetGroup
   excludesTarget : candidate.candidate.direct.source.id ≠ targetField
 
-/-- One checked direct source in the target's group and declaration profile. -/
+/-- One checked direct source in the target's group sharing the list's one declared profile. Every source must expose the identical declared format; the shared format only has to expose the *target's* component set, so a lexical cross between the list and its target is admitted while a cross inside the list is not. -/
 structure CheckedDateRangeFirstFilledDirectSource
     (model : FlatModel) (targetField : FieldId) (format : DateRangeInputFormat)
     (targetGroup : GroupPath) where
@@ -148,7 +151,7 @@ structure CheckedDateRangeFirstFilledDirectComputation (model : FlatModel) where
   targetGroup : GroupPath
   sources : List (CheckedDateRangeFirstFilledDirectSource model
     target.source.id format targetGroup)
-  targetFormat : target.format = format
+  targetComparable : target.format.components = format.components
   targetOwnedByGroup : targetDeclaration.groupPath = targetGroup
 
 private def directStoredDeclarations (model : FlatModel) :
@@ -239,17 +242,26 @@ def checkDateRangeFirstFilledDirectComputation
   if hTargetGroup : targetDeclaration.groupPath = declaringGroup then
     let grouped ← certifyDirectSourceGroups declaringGroup candidates
     let nonself ← certifyDirectSourcesExcludeTarget target.source.id grouped
+    -- The list's own profile leads: every source must repeat the first one's exact declared
+    -- format, and only that shared format is then compared with the target. An empty list has
+    -- no profile of its own, so the target's stands in and the comparison is trivial.
+    let sharedFormat := match nonself with
+      | [] => target.format
+      | candidate :: _ => candidate.candidate.candidate.direct.format
     let sources ← certifyDirectSourceProfiles
-      targetDeclaration.path target.format nonself
-    pure {
-      target
-      targetDeclaration
-      shape
-      format := target.format
-      targetGroup := declaringGroup
-      sources
-      targetFormat := rfl
-      targetOwnedByGroup := hTargetGroup }
+      targetDeclaration.path sharedFormat nonself
+    if hComparable : target.format.components = sharedFormat.components then
+      pure {
+        target
+        targetDeclaration
+        shape
+        format := sharedFormat
+        targetGroup := declaringGroup
+        sources
+        targetComparable := hComparable
+        targetOwnedByGroup := hTargetGroup }
+    else
+      throw (.targetProfileNotComparable targetDeclaration.path sharedFormat)
   else
     throw (.targetGroup targetDeclaration.groupPath declaringGroup)
 
@@ -336,7 +348,9 @@ def execute (operation : CheckedDateRangeFirstFilledDirectComputation model)
   let result ← scanDirectDateRangeFirstFilled
     (operation.sources.map fun source _ =>
       source.direct.evaluate .computation input |>.mapError .directSource)
-  operation.format.evaluateComputationResult result |>.mapError fun
+  -- The target's own declared spelling renders the selected value, which is what makes an
+  -- admitted lexical cross observable: the source profile decides nothing about the output.
+  operation.target.format.evaluateComputationResult result |>.mapError fun
     | .unresolvedEndpoint value => .unresolvedEndpoint value
 
 end CheckedDateRangeFirstFilledDirectComputation

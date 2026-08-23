@@ -71,6 +71,10 @@ private def directMonthThird := rangeField 30 ["Cart"] "DirectMonthThird" [] "MM
 private def directMonthDayFirst := rangeField 31 ["Cart"] "DirectMonthDayFirst" [] "MM-dd" "/"
 private def directMonthDaySecond := rangeField 32 ["Cart"] "DirectMonthDaySecond" [] "MM-dd" "/"
 private def directMonthDayThird := rangeField 33 ["Cart"] "DirectMonthDayThird" [] "MM-dd" "/"
+private def directMonthEmptyFirst :=
+  rangeField 34 ["Cart"] "DirectMonthEmptyFirst" [] "MM" ""
+private def directMonthEmptySecond :=
+  rangeField 35 ["Cart"] "DirectMonthEmptySecond" [] "MM" ""
 
 private def model : FlatModel := {
   fields := [target, source, otherFormatSource, otherSeparatorTarget,
@@ -81,7 +85,8 @@ private def model : FlatModel := {
     directYearFirst, directYearSecond, directYearThird, directYearMonthFirst,
     directYearMonthSecond, directYearMonthThird, directMonthFirst,
     directMonthSecond, directMonthThird, directMonthDayFirst,
-    directMonthDaySecond, directMonthDayThird]
+    directMonthDaySecond, directMonthDayThird, directMonthEmptyFirst,
+    directMonthEmptySecond]
   repeatableGroups := [
     { level := 10, path := ["Cart", "Lines"], repeatability := some 99 }]
   timeZoneId := "UTC"
@@ -594,5 +599,52 @@ example :
       DateRangeTargetOutcome.noValue.applyTo (.presentValue storedRange) =
         .presentEmpty := by
   decide
+
+/- The direct-list route applies two ordered gates the Kernel keeps distinct. Every source must
+repeat the **identical** declared format, so a same-component crossing inside the list is
+refused `MVK_VARYING_TYPES_NOT_ALLOWED` even where the component sets agree; that gate decides
+first, before the target is consulted. The shared source format then only has to expose the
+**target's** component set, so a list of dotted sources feeds an ISO target and a list of
+empty-separator month sources feeds a slash-separated month target. A genuinely different
+component set is refused `MVK_INVALID_COMPARE_TO_DATE_RANGE`. -/
+example :
+    (directChecked? target.id "DirectDottedFirst" "DirectDottedSecond").isSome =
+        true ∧
+      (directChecked? monthTarget.id "DirectMonthEmptyFirst"
+        "DirectMonthEmptySecond").isSome = true ∧
+      directDiagnostic? target.id "DirectDottedFirst" "DirectIsoSource" =
+        some .varyingTypesNotAllowed ∧
+      directListDiagnostic? target.id "DirectDottedFirst"
+          ["DirectDottedSecond", "DirectIsoSource"] =
+        some .varyingTypesNotAllowed ∧
+      directDiagnostic? target.id "DirectMonthEmptyFirst"
+        "DirectMonthEmptySecond" = some .invalidCompareToDateRange ∧
+      directDiagnostic? monthTarget.id "DirectDottedFirst"
+        "DirectDottedSecond" = some .invalidCompareToDateRange := by
+  native_decide
+
+/- On an admitted crossing the target's own spelling renders the selected value, so a dotted
+source list stores ISO text on an ISO target. The source profile decides nothing about the
+output, which is the whole observable consequence of admitting the cross. -/
+example :
+    directListSignature? target.id "DirectDottedFirst" ["DirectDottedSecond"]
+        [{ declaration := directDottedFirst
+           stored := "01.06.2024-30.06.2024"
+           raw := .parsed (.dateRange (exactRange 1717200000000 1719705600000
+             2024 6 1 2024 6 30)) }] =
+      some "VALUE|2024-06-01/2024-06-30" ∧
+    directListSignature? monthTarget.id "DirectMonthEmptyFirst"
+        ["DirectMonthEmptySecond"]
+        [{ declaration := directMonthEmptyFirst
+           stored := "0609"
+           raw := .parsed (.dateRange (.yearlessMonth 6 9)) }] =
+      some "VALUE|06/09" ∧
+    directListSignature? target.id "DirectDottedFirst" ["DirectDottedSecond"]
+        [{ declaration := directDottedSecond
+           stored := "02.07.2024-31.07.2024"
+           raw := .parsed (.dateRange (exactRange 1719878400000 1722384000000
+             2024 7 2 2024 7 31)) }] =
+      some "VALUE|2024-07-02/2024-07-31" := by
+  native_decide
 
 end A12Kernel.Conformance.DateRangeFirstFilledComputation
