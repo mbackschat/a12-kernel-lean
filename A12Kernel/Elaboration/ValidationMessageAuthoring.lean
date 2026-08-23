@@ -1,6 +1,19 @@
 import A12Kernel.Elaboration.ValidationRule
 
-/-! # Checked authoring for bounded flat validation-message templates -/
+/-! # Checked authoring for bounded flat validation-message templates
+
+A parameter's entity spec is the **shared path grammar** the condition parser uses, so this fragment
+decodes the same separators and hands the result to the one existing field resolver rather than
+carrying a second lookup: a leading `/` is absolute, each leading `..` crosses one enclosing group
+with an optional explicit turning point after the last of them, and `/` separates the remaining group
+names from the field. A field is therefore addressable by its bare name when that name is unique, by
+a path relative to the rule group, or absolutely when it lies outside the rule context.
+
+What stays outside is the rest of the parameter grammar: every non-field parameter form, the semantic
+index and category suffixes, quoted names, and repeatable targets. Two of the Kernel's own `.value`
+gates are unreachable in this fragment rather than modelled — a star reference needs a repeatable
+path, and a declaration's "no value validation" flag has no representation here.
+-/
 
 namespace A12Kernel
 
@@ -18,8 +31,10 @@ inductive ValidationMessageTemplateError where
 
 private inductive ParsedValidationMessagePart where
   | text (value : String)
-  | fieldName (name : String)
-  | fieldValue (name : String)
+  /-- The authored spelling beside the path it decoded to. Both travel, because the spelling is what
+  a diagnostic and an Explain consumer quote while the path is what resolves. -/
+  | fieldName (parameter : String) (reference : SurfaceFieldPath)
+  | fieldValue (parameter : String) (reference : SurfaceFieldPath)
 
 private def isLineSeparator (character : Char) : Bool :=
   character == '\n' || character == '\r' ||
@@ -40,15 +55,58 @@ private def isBareNameCharacter (character : Char) : Bool :=
 private def isBareName (name : String) : Bool :=
   !name.isEmpty && name.toList.all isBareNameCharacter
 
+/-- Split the up-run off a relative spec, returning the parent count, the optional turning point, and
+the remaining segments. A name attached directly to a `..` is the turning point, so it ends the run;
+one written after a `/` is an ordinary path element. -/
+private def splitParentWalk :
+    Nat → List String → Nat × Option String × List String
+  | parents, ".." :: rest => splitParentWalk (parents + 1) rest
+  | parents, segment :: rest =>
+      if segment.startsWith ".." then
+        (parents + 1, some (segment.drop 2).toString, rest)
+      else
+        (parents, none, segment :: rest)
+  | parents, [] => (parents, none, [])
+
+/-- Decode one parameter's entity spec into the shared structured path. Failure is the Kernel's own
+single parse class rather than a family of shape classes, because that is what the parameter parser
+reports for every malformed spec. -/
+private def parseMessagePath (spec : String) :
+    Except ValidationMessageTemplateError SurfaceFieldPath :=
+  let segments := spec.splitOn "/"
+  let malformed := Except.error (ValidationMessageTemplateError.invalidParameter spec)
+  match segments with
+  | [] => malformed
+  | first :: rest =>
+      if first.isEmpty then
+        -- A leading separator is the absolute form, which needs at least one group and a field.
+        match rest.reverse with
+        | field :: group :: groups =>
+            if isBareName field && (group :: groups).all isBareName then
+              .ok { base := .absolute
+                    groups := (group :: groups).reverse
+                    field }
+            else malformed
+        | _ => malformed
+      else
+        let (parents, turningPoint, remaining) := splitParentWalk 0 segments
+        match remaining.reverse with
+        | field :: groups =>
+            if isBareName field && groups.all isBareName &&
+                turningPoint.all isBareName then
+              .ok { base := .relative parents, turningPoint
+                    groups := groups.reverse, field }
+            else malformed
+        | [] => malformed
+
+/-- Strip the value suffix, then decode the remaining entity spec as a path. The suffix is taken at
+the end of the whole spec, which is this fragment's committed reading of a grammar that also lets a
+trailing reserved word belong to the name itself. -/
 private def parseParameter (parameter : String) :
     Except ValidationMessageTemplateError ParsedValidationMessagePart :=
   match parameter.splitOn ".value" with
-  | [name, ""] =>
-      if isBareName name then .ok (.fieldValue name)
-      else .error (.invalidParameter parameter)
-  | [_] =>
-      if isBareName parameter then .ok (.fieldName parameter)
-      else .error (.invalidParameter parameter)
+  | [spec, ""] => .fieldValue parameter <$> parseMessagePath spec
+  | [spec] => .fieldName parameter <$> parseMessagePath spec
   | _ => .error (.invalidParameter parameter)
 
 private def textPart (value : String) : List ParsedValidationMessagePart :=
@@ -86,16 +144,16 @@ private def parseValidationMessageTemplate (source : String) :
     Except ValidationMessageTemplateError (List ParsedValidationMessagePart) := do
   parseSegments (← validateMessageTemplateSource source)
 
-private def bareMessageField (name : String) : SurfaceFieldPath :=
-  { base := .relative 0, groups := [], field := name }
-
+/-- One checked field reference of a message parameter. `parameter` retains the authored spelling for
+Explain, including any value suffix; `reference` is its decoded path, which is what resolved. -/
 structure CheckedValidationMessageReference
     (model : FlatModel) (condition : CheckedFlatCondition model) where
   parameter : String
+  reference : SurfaceFieldPath
   declaration : FlatFieldDecl
   resolved :
-    model.resolveNonrepeatableFieldUnchecked condition.rowGroup
-      (bareMessageField parameter) = .ok declaration
+    model.resolveNonrepeatableFieldUnchecked condition.rowGroup reference =
+      .ok declaration
   conditionReferenced :
     condition.core.referencesField declaration.id = true
 
@@ -112,12 +170,14 @@ structure CheckedValidationMessageTemplate
 
 private def resolveMessageReference (model : FlatModel)
     (profile : PathKeywordProfile) (condition : CheckedFlatCondition model)
-    (parameter : String) :
+    (parameter : String) (reference : SurfaceFieldPath) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageReference model condition) := do
-  if profile.requiresQuote parameter then
-    throw (.unsupportedQuotedName parameter)
-  let reference := bareMessageField parameter
+  -- Every name-bearing position is checked, because a reserved word may sit at any path level.
+  match (reference.field :: reference.groups ++ reference.turningPoint.toList).find?
+      profile.requiresQuote with
+  | some reserved => throw (.unsupportedQuotedName reserved)
+  | none => pure ()
   match hResolved :
       model.resolveNonrepeatableFieldUnchecked condition.rowGroup reference with
   | .error error => throw (.reference parameter error)
@@ -126,6 +186,7 @@ private def resolveMessageReference (model : FlatModel)
           condition.core.referencesField declaration.id = true then
         pure {
           parameter
+          reference
           declaration
           resolved := hResolved
           conditionReferenced := hReferenced
@@ -141,11 +202,13 @@ private def checkMessageParts (model : FlatModel)
   | [] => .ok []
   | .text value :: rest => do
       pure (.text value :: (← checkMessageParts model profile condition rest))
-  | .fieldName name :: rest => do
-      pure (.fieldName (← resolveMessageReference model profile condition name) ::
+  | .fieldName parameter reference :: rest => do
+      pure (.fieldName
+        (← resolveMessageReference model profile condition parameter reference) ::
         (← checkMessageParts model profile condition rest))
-  | .fieldValue name :: rest => do
-      pure (.fieldValue (← resolveMessageReference model profile condition name) ::
+  | .fieldValue parameter reference :: rest => do
+      pure (.fieldValue
+        (← resolveMessageReference model profile condition parameter reference) ::
         (← checkMessageParts model profile condition rest))
 
 def elaborateValidationMessageTemplate (model : FlatModel)
