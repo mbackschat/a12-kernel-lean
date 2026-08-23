@@ -129,6 +129,14 @@ private def outcomes? (source : SurfaceFieldPath) (bound : DateRangeBound)
   let executed ← (operation.execute input).toOption
   pure (executed.map fun entry => (entry.targetField, entry.outcome))
 
+private def result? (source : SurfaceFieldPath) (bound : DateRangeBound)
+    (part : DateNumericPart) (cells : List ClassifiedCellInput) :
+    Option (NumericComputationRunView
+      (ComputationFormalMessage Unit) CellAddr) := do
+  let operation ← (checked target.id source bound part).toOption
+  let input ← checkedDocument cells
+  (operation.executeResult input (fun _ => ()) []).toOption
+
 private def addressAt (field : FieldId) (row : Nat) : CellAddr :=
   { field, path := [row] }
 
@@ -183,6 +191,38 @@ example :
       (addressAt target.id 2, .accepted (stored 1)),
       (addressAt target.id 3, .accepted (stored 0))
     ] := by
+  native_decide
+
+/- The same yearless carrier over the probe's third measured pair, where start and finish share one
+month, so the quarter follows that single label. -/
+example :
+    outcomes? (bare "RowMonths") .finish .quarter [
+      storedCell rowMonths.id [1] "05/05"
+    ] = some [
+      (addressAt target.id 1, .accepted (stored 2)),
+      (addressAt target.id 2, .accepted (stored 0)),
+      (addressAt target.id 3, .accepted (stored 0))
+    ] := by
+  native_decide
+
+/- The channel a poisoned operand reaches is `cleared`, not the error channel, and only a target
+that was filled in the source is reported there. This is the exact channel shape the Kernel returns
+for this row: cleared, not errored, and carrying no value. -/
+example :
+    (do
+      let view ← result? (bare "RowDates") .start .month [
+        storedCell rowDates.id [1] "2024-07-31/2024-06-01",
+        { address := { field := target.id, path := [1] }, stored := "99"
+          raw := .parsed (.num 99) },
+        storedCell rowDates.id [2] "2024-06-01/2024-07-31"
+      ]
+      pure (view.cleared,
+        view.withChanges.map fun entry => (entry.targetField, entry.value),
+        view.withErrors)) =
+      some (
+        [addressAt target.id 1],
+        [(addressAt target.id 2, stored 6), (addressAt target.id 3, stored 0)],
+        []) := by
   native_decide
 
 end A12Kernel.Conformance.AddressedDateRangeBoundPart
