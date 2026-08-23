@@ -30,8 +30,18 @@ private def indexField : FlatFieldDecl :=
   { id := 4, groupPath := ["Order"], name := "index",
     policy := { kind := .string } }
 
+/-- One Enumeration field with a declared category, so the category suffix has both an admitted and a
+refused name to separate. -/
+private def status : FlatFieldDecl :=
+  { id := 5, groupPath := ["Order"], name := "Status",
+    policy := { kind := .enumeration }
+    enumeration := some {
+      storedTokens := ["open", "closed"]
+      categories := [{ name := "Group", tokens := ["A", "B"] }]
+    } }
+
 private def model : FlatModel :=
-  { fields := [amount, other, headAmount, forField, indexField] }
+  { fields := [amount, other, headAmount, forField, indexField, status] }
 
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
@@ -160,6 +170,28 @@ example :
         "See $'index'$" = some true := by
   native_decide
 
+/- The category suffix's three gates, in the Kernel's own order: a missing name is a parse failure, a
+non-Enumeration field is refused before any category is looked up, and an undeclared name arrives
+through the one existing Enumeration projection gate carrying its own class. -/
+example :
+    pathTemplateOk? ["Order"] (pathAt (.relative 0) [] "Status")
+        "See $Status->Group$" = some true ∧
+      pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Status")
+        "See $Status->$" = some (.missingCategoryName "Status->") ∧
+      pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Status")
+        "See $Status->Nope$" =
+          some (.category "Status->Nope" (.unknownCategory "Nope")) ∧
+      pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Amount")
+        "See $Amount->Group$" =
+          some (.categoryFieldNotEnumeration "Amount->Group" amount.id) := by
+  native_decide
+
+/- The suffixes are alternatives, so a second arrow is a parse failure rather than a nested access. -/
+example :
+    pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Status")
+        "See $Status->A->B$" = some (.invalidParameter "Status->A->B") := by
+  native_decide
+
 /- An unbalanced quote is a parse failure rather than a name, so a half-written escape never resolves
 as a literal name containing a quote. -/
 example :
@@ -180,12 +212,30 @@ private def inputs : ValidationMessageInputs where
       { displayValue := some "$Other$", defaultDisplay := "0" }
     else
       { displayValue := none, defaultDisplay := "" }
+  fieldCategory field category :=
+    { display := s!"[{field}:{category}]" }
 
 private def render? (template : String) : Option ResolvedMessageText := do
   let condition ← condition?
   let checked ←
     (elaborateValidationMessageTemplate model keywordProfile condition template).toOption
   pure (checked.toRenderPlan inputs).render
+
+/-- Render a template under a condition chosen by its operand, so a case may pick the field it needs. -/
+private def renderOn? (group : GroupPath) (reference : SurfaceFieldPath)
+    (template : String) : Option ResolvedMessageText := do
+  let condition ← conditionOn? group reference
+  let checked ←
+    (elaborateValidationMessageTemplate model keywordProfile condition
+      template).toOption
+  pure (checked.toRenderPlan inputs).render
+
+/- A category access contributes one opaque text run supplied by the caller, keyed by the field and
+the selected category, and this producer asserts no fallback policy of its own for it. -/
+example :
+    renderOn? ["Order"] (pathAt (.relative 0) [] "Status")
+        "Is $Status->Group$ now" = some { text := "Is [5:Group] now" } := by
+  native_decide
 
 private def templateError? (template : String) :
     Option ValidationMessageTemplateError := do

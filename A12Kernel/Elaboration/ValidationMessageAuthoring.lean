@@ -15,8 +15,14 @@ quoting requirement is deliberately **narrower** than the condition language's: 
 historically accepted unquoted inside an entity name, and the caller supplies both lists from the
 language version it supports.
 
+A field reference may carry an Enumeration **category** suffix, `->Name`, whose three gates are the
+Kernel's own and are checked in its order: a missing name, a field that is not an Enumeration, and a
+name that is not one of that declaration's categories. It carries neither of the value suffix's extra
+gates. What it *renders* is deliberately not claimed: the checked part hands the caller an opaque text
+input with no fallback policy of its own.
+
 What stays outside is the rest of the parameter grammar: every non-field parameter form, the semantic
-index and category suffixes, and repeatable targets. Two of the Kernel's own `.value` gates are
+index suffix, and repeatable targets. Two of the Kernel's own `.value` gates are
 unreachable in this fragment rather than modelled — a star reference needs a repeatable path, and a
 declaration's "no value validation" flag has no representation here. The bounded-ASCII template gate
 also refuses a name carrying one of the grammar's accented letters before the name rules see it.
@@ -35,6 +41,13 @@ inductive ValidationMessageTemplateError where
   | unquotedTerminalName (name : String)
   | reference (parameter : String) (error : ResolveError)
   | fieldNotReferenced (parameter : String) (field : FieldId)
+  /-- A category suffix was written with no category name after the arrow. -/
+  | missingCategoryName (parameter : String)
+  /-- A category suffix was applied to a field that is not an Enumeration declaration. -/
+  | categoryFieldNotEnumeration (parameter : String) (field : FieldId)
+  /-- The named category is not one this Enumeration declaration declares, or the declaration itself
+  is ill-formed. Both arrive through the one existing Enumeration projection gate. -/
+  | category (parameter : String) (error : EnumerationOperandError)
   deriving Repr, DecidableEq
 
 private inductive ParsedValidationMessagePart where
@@ -43,6 +56,8 @@ private inductive ParsedValidationMessagePart where
   a diagnostic and an Explain consumer quote while the path is what resolves. -/
   | fieldName (parameter : String) (reference : AuthoredFieldPath)
   | fieldValue (parameter : String) (reference : AuthoredFieldPath)
+  | fieldCategory (parameter : String) (reference : AuthoredFieldPath)
+      (category : String)
 
 private def isLineSeparator (character : Char) : Bool :=
   character == '\n' || character == '\r' ||
@@ -153,9 +168,17 @@ the end of the whole spec, which is this fragment's committed reading of a gramm
 trailing reserved word belong to the name itself. -/
 private def parseParameter (parameter : String) :
     Except ValidationMessageTemplateError ParsedValidationMessagePart :=
-  match parameter.splitOn ".value" with
-  | [spec, ""] => .fieldValue parameter <$> parseMessagePath spec
-  | [spec] => .fieldName parameter <$> parseMessagePath spec
+  -- The two suffixes are alternatives in the grammar, and the arrow cannot occur inside a name, so
+  -- splitting on it first is unambiguous.
+  match parameter.splitOn "->" with
+  | [spec, category] =>
+      if category.isEmpty then .error (.missingCategoryName parameter)
+      else (.fieldCategory parameter · category) <$> parseMessagePath spec
+  | [_] =>
+      match parameter.splitOn ".value" with
+      | [spec, ""] => .fieldValue parameter <$> parseMessagePath spec
+      | [spec] => .fieldName parameter <$> parseMessagePath spec
+      | _ => .error (.invalidParameter parameter)
   | _ => .error (.invalidParameter parameter)
 
 private def textPart (value : String) : List ParsedValidationMessagePart :=
@@ -206,11 +229,24 @@ structure CheckedValidationMessageReference
   conditionReferenced :
     condition.core.referencesField declaration.id = true
 
+/-- One checked category access: the field reference beside the resolved projection, with witnesses
+that the projection belongs to *that* field's own Enumeration declaration and selects *that* category.
+Together with the projection's own check this is the complete gate. -/
+structure CheckedValidationMessageCategory
+    (model : FlatModel) (condition : CheckedFlatCondition model) where
+  reference : CheckedValidationMessageReference model condition
+  category : String
+  projection : CheckedEnumerationProjection
+  enumerationOwned :
+    reference.declaration.enumeration = some projection.declaration.declaration
+  categorySelected : projection.projectionRef = .category category
+
 inductive CheckedValidationMessagePart
     (model : FlatModel) (condition : CheckedFlatCondition model) where
   | text (value : String)
   | fieldName (reference : CheckedValidationMessageReference model condition)
   | fieldValue (reference : CheckedValidationMessageReference model condition)
+  | fieldCategory (access : CheckedValidationMessageCategory model condition)
 
 structure CheckedValidationMessageTemplate
     (model : FlatModel) (condition : CheckedFlatCondition model) where
@@ -247,6 +283,35 @@ private def resolveMessageReference (model : FlatModel)
       else
         throw (.fieldNotReferenced parameter declaration.id)
 
+/-- Apply the category suffix's three gates in the Kernel's own order to an already-resolved field
+reference. The missing-name gate belongs to parsing, so only the kind and the declared-category gates
+remain here, and both reuse the one existing Enumeration projection boundary. -/
+private def resolveMessageCategory
+    (reference : CheckedValidationMessageReference model condition)
+    (parameter category : String) :
+    Except ValidationMessageTemplateError
+      (CheckedValidationMessageCategory model condition) :=
+  match hSource : reference.declaration.enumeration with
+  | none =>
+      throw (.categoryFieldNotEnumeration parameter reference.declaration.id)
+  | some source =>
+      match elaborateEnumeration source with
+      | .error _ =>
+          throw (.category parameter (.unknownCategory category))
+      | .ok checked =>
+          match checkEnumerationProjection checked (.category category) with
+          | .error error => throw (.category parameter error)
+          | .ok projection =>
+              if hOwned : source = projection.declaration.declaration ∧
+                  projection.projectionRef =
+                    EnumerationProjectionRef.category category then
+                .ok {
+                  reference, category, projection
+                  enumerationOwned := by rw [hSource, hOwned.1]
+                  categorySelected := hOwned.2 }
+              else
+                throw (.category parameter (.unknownCategory category))
+
 private def checkMessageParts (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
     (condition : CheckedFlatCondition model) :
@@ -264,6 +329,12 @@ private def checkMessageParts (model : FlatModel)
       pure (.fieldValue
         (← resolveMessageReference model profile condition parameter reference) ::
         (← checkMessageParts model profile condition rest))
+  | .fieldCategory parameter reference category :: rest => do
+      let resolved ←
+        resolveMessageReference model profile condition parameter reference
+      pure (.fieldCategory
+        (← resolveMessageCategory resolved parameter category) ::
+        (← checkMessageParts model profile condition rest))
 
 def elaborateValidationMessageTemplate (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
@@ -276,6 +347,9 @@ def elaborateValidationMessageTemplate (model : FlatModel)
 structure ValidationMessageInputs where
   fieldName : FieldId → MessageNameInput
   fieldValue : FieldId → MessageValueInput
+  /-- Keyed by the field and the selected category, because one field may be accessed through more
+  than one category in a single template. -/
+  fieldCategory : FieldId → String → MessageCategoryInput
 
 def CheckedValidationMessagePart.toRenderPart
     (inputs : ValidationMessageInputs) :
@@ -283,6 +357,9 @@ def CheckedValidationMessagePart.toRenderPart
   | .text value => .text value
   | .fieldName reference => .fieldName (inputs.fieldName reference.declaration.id)
   | .fieldValue reference => .fieldValue (inputs.fieldValue reference.declaration.id)
+  | .fieldCategory access =>
+      .fieldCategory
+        (inputs.fieldCategory access.reference.declaration.id access.category)
 
 def CheckedValidationMessageTemplate.toRenderPlan
     (template : CheckedValidationMessageTemplate model condition)

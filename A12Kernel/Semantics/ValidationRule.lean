@@ -54,11 +54,19 @@ def resolve (input : MessageValueInput) : String :=
 
 end MessageValueInput
 
+/-- One Enumeration category access. Unlike a name or a value input this carries **no** fallback
+policy: the caller supplies the exact bytes, because this producer's provider/label/default order for
+a category access is not established here. -/
+structure MessageCategoryInput where
+  display : String
+  deriving Repr, DecidableEq
+
 /-- One already-decoded rule-message part. Field references and `$` syntax have been checked before this point; replacement strings are opaque and are never parsed again. -/
 inductive MessageRenderPart where
   | text (value : String)
   | fieldName (input : MessageNameInput)
   | fieldValue (input : MessageValueInput)
+  | fieldCategory (input : MessageCategoryInput)
   deriving Repr, DecidableEq
 
 namespace MessageRenderPart
@@ -67,6 +75,7 @@ def render : MessageRenderPart → String
   | .text value => value
   | .fieldName input => input.resolve
   | .fieldValue input => input.resolve
+  | .fieldCategory input => input.display
 
 end MessageRenderPart
 
