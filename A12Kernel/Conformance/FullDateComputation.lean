@@ -44,6 +44,24 @@ private def temporalRaw (year : Int) (month day : Nat) : RawCell :=
         parts := { year, month, day }
         basis := .storedGregorian }))
 
+/-- The same stored label in a **named zone**. A document belongs to one model, and a stored Date's
+retained instant is that model zone's local midnight, so a fixture reused across two zones needs one
+raw per zone: the checked-document coherence gate compares the caller's cell against what the model's
+own classifier derives, and a UTC-resolved instant is not what a Berlin model derives. -/
+private def temporalRawIn (zoneId : String) (year : Int) (month day : Nat) :
+    RawCell :=
+  match ModelZone.ConcreteProfile.ofId? zoneId,
+      LocalDateTime.ofYmdHms? year month day 0 0 0 with
+  | some profile, some wallLabel =>
+      match profile.resolveLocal? wallLabel with
+      | some instant =>
+          .parsed (.temporal (.date {
+            instant
+            parts := { year, month, day }
+            basis := .storedGregorian }))
+      | none => .rejected .malformed
+  | _, _ => .rejected .malformed
+
 private def input (sourceStored targetStored : String)
     (sourceRaw targetRaw : RawCell) : DocumentData := {
   instantiatedRows := []
@@ -184,9 +202,12 @@ example : (do
       some { epochMillis := day.epochMillis + 23 * 60 * 60 * 1000 +
         30 * 60 * 1000 }
     let utcView ← todayView? "UTC" now
-      (input "ignored" oldDate.text copiedRaw oldRaw)
+      (input "2024-04-07" oldDate.text
+        (temporalRawIn "UTC" 2024 4 7) (temporalRawIn "UTC" 2024 4 6))
     let berlinView ← todayView? "Europe/Berlin" now
-      (input "ignored" oldDate.text copiedRaw oldRaw)
+      (input "2024-04-07" oldDate.text
+        (temporalRawIn "Europe/Berlin" 2024 4 7)
+        (temporalRawIn "Europe/Berlin" 2024 4 6))
     pure (
       utcView.withoutErrors.map (·.value.text),
       berlinView.withoutErrors.map (·.value.text))) =
@@ -199,9 +220,9 @@ example : (do
     let second := { first with
       epochMillis := first.epochMillis + 24 * 60 * 60 * 1000 }
     let firstView ← todayView? "UTC" first
-      (input "ignored" oldDate.text copiedRaw oldRaw)
+      (input "2024-04-07" oldDate.text copiedRaw oldRaw)
     let secondView ← todayView? "UTC" second
-      (input "ignored" oldDate.text copiedRaw oldRaw)
+      (input "2024-04-07" oldDate.text copiedRaw oldRaw)
     pure (
       firstView.withoutErrors.map (·.value.text),
       secondView.withoutErrors.map (·.value.text))) =
@@ -212,7 +233,7 @@ example : (do
 example : (do
     let now ← instant? 2024 4 6
     let checked ← checked? "UTC"
-      (input "ignored" oldDate.text copiedRaw oldRaw)
+      (input "2024-04-07" oldDate.text copiedRaw oldRaw)
     let operation ← todayOperation? "UTC"
     pure (faultOf (operation.executeResult { now } checked
       ([] : List FormalCause)))) =
@@ -224,7 +245,7 @@ example : (do
     let now ← instant? 2024 4 6
     let view ← baseYearView? "UTC"
       { now, modelZoneRules := ModelZone.concreteRules }
-      (input "ignored" oldDate.text copiedRaw oldRaw)
+      (input "2024-04-07" oldDate.text copiedRaw oldRaw)
     pure (view.withoutErrors.map (·.value.text),
       view.withChanges.map (·.value.text))) =
     some (["01.01.2020"], ["01.01.2020"]) := by
@@ -234,12 +255,15 @@ example : (do
 example : (do
     let first ← instant? 2024 4 6
     let second ← instant? 2025 9 17
+    let berlinInput := input "2024-04-07" oldDate.text
+      (temporalRawIn "Europe/Berlin" 2024 4 7)
+      (temporalRawIn "Europe/Berlin" 2024 4 6)
     let firstView ← baseYearView? "Europe/Berlin"
       { now := first, modelZoneRules := ModelZone.concreteRules }
-      (input "ignored" oldDate.text copiedRaw oldRaw)
+      berlinInput
     let secondView ← baseYearView? "Europe/Berlin"
       { now := second, modelZoneRules := ModelZone.concreteRules }
-      (input "ignored" oldDate.text copiedRaw oldRaw)
+      berlinInput
     pure (firstView.withoutErrors, secondView.withoutErrors)) =
     some ([
       { targetField := target.id,
@@ -263,7 +287,7 @@ example :
 example : (do
     let now ← instant? 2024 4 6
     let checked ← checked? "UTC"
-      (input "ignored" oldDate.text copiedRaw oldRaw)
+      (input "2024-04-07" oldDate.text copiedRaw oldRaw)
     let operation ← baseYearOperation? "UTC"
     pure (faultOf (operation.executeResult { now } checked
       ([] : List FormalCause)))) =
@@ -276,9 +300,9 @@ example : (do
     let world : World :=
       { now, modelZoneRules := ModelZone.concreteRules }
     let start ← baseYearRangeView? "UTC" .start world
-      (input "ignored" oldDate.text copiedRaw oldRaw)
+      (input "2024-04-07" oldDate.text copiedRaw oldRaw)
     let finish ← baseYearRangeView? "UTC" .finish world
-      (input "ignored" oldDate.text copiedRaw oldRaw)
+      (input "2024-04-07" oldDate.text copiedRaw oldRaw)
     pure (
       start.withoutErrors.map (·.value.text),
       finish.withoutErrors.map (·.value.text))) =
@@ -298,7 +322,7 @@ example :
 example : (do
     let now ← instant? 2024 4 6
     let checked ← checked? "UTC"
-      (input "ignored" oldDate.text copiedRaw oldRaw)
+      (input "2024-04-07" oldDate.text copiedRaw oldRaw)
     let operation ← baseYearRangeOperation? "UTC" .finish
     pure (faultOf (operation.executeResult { now } checked
       ([] : List FormalCause)))) =
