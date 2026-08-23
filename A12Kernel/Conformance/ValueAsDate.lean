@@ -601,7 +601,10 @@ example :
     result = some (some (.value expectedLocal expectedInstant false)) := by
   native_decide
 
-/- Generated Date-before-Time evaluation is observable: a Date formal failure stops first, while unknown-year non-relevance still reaches a failing Time read before the helper runs. -/
+/- Generated Date-before-Time evaluation is observable: a Date formal failure stops first and keeps its
+own cause, so the failing Time read below it never speaks. The second row is an **over-deep omission**
+— all three components omitted against a day-only precision — and its cause is the measured date
+finding rather than a generic malformed one, which is what distinguishes it from a spelling failure. -/
 example :
     let model := modelWithTime
     let result (dateRaw : RawCell String) := do
@@ -612,7 +615,24 @@ example :
     result (.rejected .declaredConstraint) =
         some (some (.unavailable .declaredConstraint)) ∧
       result (.parsed "00.00.0000") =
-        some (some (.unavailable .malformed)) := by
+        some (some (.unavailable .dateInvalid)) := by
+  native_decide
+
+/- The genuine unknown-year row needs a precision that **admits** the shape: the same stored text
+against `YEAR_OPTIONAL` is not a failure at all, so its cause-free non-relevance survives the Date step
+and the failing Time read below it is what decides the result. That is the contrast the row above
+cannot show, because at day-only precision the Date never becomes a value. -/
+example :
+    let model : FlatModel :=
+      { fields := [dayOptionalSource (partialMode := .yearOptional), timeSource]
+        timeZoneId := "Europe/Berlin" }
+    let result := do
+      let checked ← (elaborateValueAsDateTimeField
+        model 0 .firstDay 1).toOption
+      let input ← timeDocument? model "bad" (.rejected .malformed)
+      pure (checked.evaluateRaw .computation input (.parsed "00.00.0000")
+        |>.toOption)
+    result = some (some (.unavailable .malformed)) := by
   native_decide
 
 /- The first checked field slice is deliberately complete-Time; a partial component set remains explicit unsupported authoring rather than being default-filled here. -/

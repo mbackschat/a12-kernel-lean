@@ -32,7 +32,7 @@ private def declaration (mode : TemporalPartialMode)
 separately, because most rows are about *which* gate spoke rather than about the value. -/
 private inductive Outcome where
   | empty
-  | rejected (cause : FormalCause)
+  | rejected (cause : BaseFormalCause)
   | admitted
   deriving Repr, DecidableEq
 

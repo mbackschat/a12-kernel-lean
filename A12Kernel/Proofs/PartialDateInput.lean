@@ -52,6 +52,6 @@ preserves that distinction before any component is read. -/
 @[simp] theorem classifyStored_empty
     (checked : CheckedPartialDateInputField) :
     checked.classifyStored "" = .presentEmpty := by
-  simp [CheckedPartialDateInputField.classifyStored]
+  simp [CheckedPartialDateInputField.classifyStored, classifyPartialDateStored]
 
 end A12Kernel

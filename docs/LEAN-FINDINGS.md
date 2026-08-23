@@ -1346,3 +1346,16 @@ Two corollaries worth keeping.
 
 - **Order the caller's own gates by the observable, not by convenience.** The measured order here is reality, then position in time, then the declaration's precision, and it is observable: an impossible month standing beside a legally omitted day reports the format cause, so the calendar question is settled before the omission question. Testing the floor first would have been equally natural to write and wrong in exactly one cell.
 - **The retained cases must name the cause, not the refusal.** A row asserting "this text is rejected" passes under both accounts, because both reject it. Only rows asserting *which* cause distinguish them — the same point [`LF80`](#lf80--a-separator-that-both-accounts-satisfy-is-not-a-separator-and-a-boolean-lock-hides-which-one-you-have) makes about verdicts, reappearing in the diagnostic channel.
+
+## LF102 — a consumer that accepts raw text already contains the classifier you are about to write, in a coarser form
+
+> Date: 2026-08-23. Sections: §6. Basis: `checkSourceRaw` in [`ValueAsDate.lean`](../A12Kernel/Elaboration/ValueAsDate.lean) beside the classifier added in [`PartialDateInput.lean`](../A12Kernel/Elaboration/PartialDateInput.lean).
+
+The partial-Date stored classifier was built as a new capability, on the strength of `ValueAsDate.lean`'s own module docstring saying that "detailed formal-error codes" remained separate. That sentence was true and still misleading: the module did not carry the *codes*, but it did carry the whole admission ladder — a lexical splitter, a suffix-legality test, calendar and floor tests, and the precision gate — inside a private raw adapter that mapped every one of those failures to a single `malformed` finding. So the new capsule reimplemented a decision that already existed, and the two copies disagreed on every rejection.
+
+**The search that would have found it is not a search for the capability, it is a search for the consumer's input surface.** Grepping for the partial-value *type* found `ValueAsDate` immediately and looked like confirmation that only the value domain lived there. What was needed was the question "does any consumer already accept raw text for this kind?" — `RawCell String`, `checkRawCellWith`, a `parse`/`admit` private helper. A consumer that takes text must already decide admission, and a coarse cause is exactly how that decision hides: it produces no constructor a grep for the interesting codes would match.
+
+Two consequences worth keeping.
+
+- **A deliberate coarsening reads as an absence.** "All failures become the ordinary malformed finding" is a documented decision, not a gap, so it does not appear in any gap list and the next author sees no owner. When coarsening a cause on purpose, name the distinctions being collapsed, so the eventual refinement is a rewrite of one function rather than a second implementation of it.
+- **Consolidating corrected a defect the duplication was hiding.** Routing the adapter through the single owner changed one retained case from `malformed` to the measured cause, and that case's own comment claimed to exercise unknown-year non-relevance while its precision made the value a rejection instead — so the row had never tested what it said. One owner made both errors visible at once.

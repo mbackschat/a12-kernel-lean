@@ -96,20 +96,23 @@ def certifyPartialDateInputField (declaration : FlatFieldDecl) :
 witness, so a consumer cannot pair a value with a declaration that does not allow it. -/
 inductive PartialDateInputCell (mode : TemporalPartialMode) where
   | presentEmpty
-  | rejected (cause : FormalCause)
+  | rejected (cause : BaseFormalCause)
   | admitted (value : AdmittedPartiallyKnownDate mode)
   deriving Repr
 
-/-- Classify stored text of a certified partial-Date declaration. Every formal text failure is a
-successful classification carrying its cause; this classifier consults no model zone, because an
-admitted partial value denotes an interval and resolves to an instant only under `ValueAsDate`. -/
-def CheckedPartialDateInputField.classifyStored
-    (checked : CheckedPartialDateInputField) (text : String) :
-    PartialDateInputCell checked.mode :=
+/-- Classify stored partial-Date text against the three declaration facts that decide it, with no
+certificate required. This is the **single owner** of the decision: every consumer that reads a
+partial-Date cell routes here rather than repeating the ladder, so the measured cause cannot drift
+between two implementations of it. Every formal text failure is a successful classification carrying
+its cause; no model zone is consulted, because an admitted partial value denotes an interval and
+resolves to an instant only when an endpoint is selected. -/
+def classifyPartialDateStored (format : FullDateTargetFormat)
+    (mode : TemporalPartialMode) (youngerThan1900Check : Bool) (text : String) :
+    PartialDateInputCell mode :=
   if text.isEmpty then
     .presentEmpty
   else
-    match checked.format.parseComponents? text with
+    match format.parseComponents? text with
     | none => .rejected .dateFormat
     | some parts =>
         -- The gates run in the measured order, and the order is the whole content of this clause:
@@ -136,8 +139,8 @@ def CheckedPartialDateInputField.classifyStored
             (FullDate.ofYmd? (parts.year : Int) parts.month parts.day |>.map .full)
 where
   /-- Apply the declaration's precision gate to one structurally legal shape. -/
-  gateByPrecision (value : PartiallyKnownDateValue) : PartialDateInputCell checked.mode :=
-    if h : checked.mode.admitsPartiallyKnownValue value = true then
+  gateByPrecision (value : PartiallyKnownDateValue) : PartialDateInputCell mode :=
+    if h : mode.admitsPartiallyKnownValue value = true then
       .admitted { value, admitted := h }
     else
       .rejected .dateInvalid
@@ -147,16 +150,24 @@ where
   builders apply the floor internally too, so `build` is consulted only after the floor has already
   passed and its `none` can mean nothing but unreality. -/
   guardCompletion (earliest : DateParts)
-      (build : Option PartiallyKnownDateValue) : PartialDateInputCell checked.mode :=
+      (build : Option PartiallyKnownDateValue) : PartialDateInputCell mode :=
     if !DateParts.LegacyHybrid.isReal earliest then
       .rejected .dateFormat
     else if decide (earliest.Before CivilDate.gregorianFloor.parts) ||
-        (checked.policy.youngerThan1900Check &&
+        (youngerThan1900Check &&
           decide (earliest.Before FullDate.year1900Start.civil.parts)) then
       .rejected .dateInvalid
     else
       match build with
       | none => .rejected .dateFormat
       | some value => gateByPrecision value
+
+/-- Classify stored text of a certified partial-Date declaration, reading the deciding facts off its
+certificate. -/
+def CheckedPartialDateInputField.classifyStored
+    (checked : CheckedPartialDateInputField) (text : String) :
+    PartialDateInputCell checked.mode :=
+  classifyPartialDateStored checked.format checked.mode
+    checked.policy.youngerThan1900Check text
 
 end A12Kernel
