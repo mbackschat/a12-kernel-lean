@@ -56,6 +56,7 @@ import A12Kernel.Semantics.FirstFilledValue
 import A12Kernel.Semantics.StarCompleteness
 import A12Kernel.Semantics.StarAddressing
 import A12Kernel.Semantics.NumericAggregate
+import A12Kernel.Semantics.PartialDate
 import A12Kernel.Semantics.ComputationFillQuantifier
 import A12Kernel.Semantics.ValidationFillQuantifier
 import A12Kernel.Semantics.GroupPresence
@@ -81,6 +82,7 @@ import A12Kernel.Elaboration.StringPattern
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Elaboration.FullDateInput
+import A12Kernel.Elaboration.PartialDateInput
 import A12Kernel.Elaboration.TimeComputation
 import A12Kernel.Elaboration.TemporalShiftAmount
 import A12Kernel.Elaboration.ValueAsDate

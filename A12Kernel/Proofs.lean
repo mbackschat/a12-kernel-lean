@@ -36,6 +36,7 @@ import A12Kernel.Proofs.TemporalFormat
 import A12Kernel.Proofs.TemporalTargetPolicy
 import A12Kernel.Proofs.TimeComputation
 import A12Kernel.Proofs.ValueAsDate
+import A12Kernel.Proofs.PartialDateInput
 import A12Kernel.Proofs.TimeConstruction
 import A12Kernel.Proofs.TimeLiteral
 import A12Kernel.Proofs.ValueAsDateTimeExtraction

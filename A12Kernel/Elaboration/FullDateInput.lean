@@ -70,14 +70,15 @@ inductive FullDateInputError where
   | unresolvableDate (parts : DateParts)
   deriving Repr, DecidableEq
 
-/-- Decode one fixed-width ASCII full Date under the default-cutover legacy calendar used by non-lenient stored-value parsing. -/
-def FullDateTargetFormat.parseLegacyParts? (format : FullDateTargetFormat)
+/-- Split one fixed-width ASCII date into its three declared components **without** judging them. The
+widths and the separator are the whole gate here: a component of the wrong width, a non-ASCII-digit
+body, or a wrong field count is rejected, while a zero component or an impossible calendar day still
+passes. Partial precision needs exactly this step, because a zero is an omission marker there rather
+than an unreal date, so the reality test cannot be folded into the split. -/
+def FullDateTargetFormat.parseComponents? (format : FullDateTargetFormat)
     (text : String) : Option DateParts :=
   let component (width : Nat) (source : String) : Option Nat :=
     if source.length = width then parseAsciiNatural? source else none
-  let legacyParts (year month day : Nat) : Option DateParts :=
-    let parts : DateParts := { year := year, month, day }
-    if DateParts.LegacyHybrid.isReal parts then some parts else none
   match format with
   | .dayMonthYearDots =>
       match text.splitOn "." with
@@ -85,7 +86,7 @@ def FullDateTargetFormat.parseLegacyParts? (format : FullDateTargetFormat)
           let day ← component 2 dayText
           let month ← component 2 monthText
           let year ← component 4 yearText
-          legacyParts year month day
+          pure { year, month, day }
       | _ => none
   | .yearMonthDayDashes =>
       match text.splitOn "-" with
@@ -93,8 +94,14 @@ def FullDateTargetFormat.parseLegacyParts? (format : FullDateTargetFormat)
           let year ← component 4 yearText
           let month ← component 2 monthText
           let day ← component 2 dayText
-          legacyParts year month day
+          pure { year, month, day }
       | _ => none
+
+/-- Decode one fixed-width ASCII full Date under the default-cutover legacy calendar used by non-lenient stored-value parsing. -/
+def FullDateTargetFormat.parseLegacyParts? (format : FullDateTargetFormat)
+    (text : String) : Option DateParts := do
+  let parts ← format.parseComponents? text
+  if DateParts.LegacyHybrid.isReal parts then some parts else none
 
 /-- Resolve one admitted stored Date label at local midnight while retaining its decoded components and stored-Gregorian origin. -/
 def ModelZone.ConcreteProfile.resolveStoredDate? (profile : ModelZone.ConcreteProfile)
@@ -120,7 +127,7 @@ def CheckedFullDateInputField.classifyStoredForModel
         if decide (parts.Before CivilDate.gregorianFloor.parts) ||
             (checked.policy.youngerThan1900Check &&
               decide (parts.Before FullDate.year1900Start.civil.parts)) then
-          pure (.rejected .dateTooEarly)
+          pure (.rejected .dateInvalid)
         else
           match CivilDate.ofParts? parts with
           | none => pure (.rejected .dateFormat)

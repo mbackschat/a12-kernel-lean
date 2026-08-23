@@ -57,9 +57,9 @@ example :
 
 example :
     classifyResult? (dateField "yyyy-MM-dd") "UTC" "1583-10-15" =
-      some (.inr (.rejected .dateTooEarly)) ∧
+      some (.inr (.rejected .dateInvalid)) ∧
     classifyResult? (dateField "yyyy-MM-dd") "UTC" "1500-02-29" =
-      some (.inr (.rejected .dateTooEarly)) ∧
+      some (.inr (.rejected .dateInvalid)) ∧
     classifyResult? (dateField "yyyy-MM-dd") "UTC" "1583-10-16" =
       (utcDate? 1583 10 16).map .inr ∧
     classifyResult? (dateField "yyyy-MM-dd") "UTC" "2024-13-01" =
@@ -69,7 +69,7 @@ example :
     classifyResult? (dateField "yyyy-MM-dd") "UTC" "1899-12-31" =
       (utcDate? 1899 12 31).map .inr ∧
     classifyResult? (dateField "yyyy-MM-dd" .full true) "UTC" "1899-12-31" =
-      some (.inr (.rejected .dateTooEarly)) ∧
+      some (.inr (.rejected .dateInvalid)) ∧
     classifyResult? (dateField "yyyy-MM-dd" .full true) "UTC" "1900-01-01" =
       (utcDate? 1900 1 1).map .inr := by native_decide
 
@@ -115,6 +115,6 @@ example :
 example :
     FormalCause.dateFormat.fixedFormalErrorCode? =
       some "datumFormatFalsch" ∧
-    FormalCause.dateTooEarly.fixedFormalErrorCode? = some "datumFalsch" := by native_decide
+    FormalCause.dateInvalid.fixedFormalErrorCode? = some "datumFalsch" := by native_decide
 
 end A12Kernel.Conformance.FullDateInput

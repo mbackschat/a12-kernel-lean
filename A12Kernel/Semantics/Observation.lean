@@ -40,7 +40,7 @@ structure FieldPolicy where
 inductive BaseFormalCause where
   | malformed
   | dateFormat
-  | dateTooEarly
+  | dateInvalid
   | dateRangeSeparator
   | dateRangeFormat
   | dateRangeInvalid
@@ -57,7 +57,7 @@ inductive BaseFormalCause where
 def BaseFormalCause.toFormalCause : BaseFormalCause → FormalCause
   | .malformed => .malformed
   | .dateFormat => .dateFormat
-  | .dateTooEarly => .dateTooEarly
+  | .dateInvalid => .dateInvalid
   | .dateRangeSeparator => .dateRangeSeparator
   | .dateRangeFormat => .dateRangeFormat
   | .dateRangeInvalid => .dateRangeInvalid
@@ -76,7 +76,7 @@ namespace FormalCause
 /-- Fixed runtime formal-error code for causes whose message identity does not depend on a declaration or registered validator. -/
 def fixedFormalErrorCode? : FormalCause → Option String
   | .dateFormat => some "datumFormatFalsch"
-  | .dateTooEarly => some "datumFalsch"
+  | .dateInvalid => some "datumFalsch"
   | .dateRangeSeparator => some "datumBereichTrennerFehlt"
   | .dateRangeFormat => some "datumBereichFormatFalsch"
   | .dateRangeInvalid => some "datumBereichNichtGueltig"
