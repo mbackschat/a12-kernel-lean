@@ -593,4 +593,17 @@ example :
       some (.errored { text := "0302", nonempty := by decide } .inverted) := by
   native_decide
 
+/- Equal fragment endpoints form a valid one-unit range under either year-bearing profile, so
+the ordered check is inclusive at both ends rather than strict. -/
+example :
+    (executeFragment? "2024" "2024"
+        (.parsed (.temporal (.date fragmentStartValue)))
+        (.parsed (.temporal (.date fragmentStartValue)))).map (·.outcome) =
+      some (.accepted { text := "2024/2024", nonempty := by decide }) ∧
+    (executeYearMonth? "2024-01" "2024-01"
+        (.parsed (.temporal (.date yearMonthStartValue)))
+        (.parsed (.temporal (.date yearMonthStartValue)))).map (·.outcome) =
+      some (.accepted { text := "2024-01/2024-01", nonempty := by decide }) := by
+  native_decide
+
 end A12Kernel.Conformance.DateRangeConstructionComputation

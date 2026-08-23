@@ -367,6 +367,19 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: measured for the direct single-level starred `FirstFilledValue` shape with one filled row and a fresh target. Crossings for the `{Y}` and `{Y,M}` sets have only one profile each and therefore cannot cross; scalar temporal carriers, the direct-field-list shape, Base-Year completion, clearing, and formal branches were not exercised.
 - `sync`: the general component-set rule was already reconciled in [`spec/09`](../spec/09-computations.md); this checkpoint widens its evidence and its crossing example, so it creates no outbound ledger entry.
 
+<a id="src-date-range-year-fragment-constructor-target"></a>
+#### Year-bearing fragment constructor targets, measured locally 2026-08-23
+
+- `revision`: model authored and both computations persisted with the source-matched launcher at clean a12-dmkits `108d047b787f0e049dcd2f4902f24d7523347a00`, which the artifact records as its producer with state `CLEAN`. dmtool `0.13.0`, kernel `30.8.1` built and runtime; the sibling stayed empty throughout.
+- `route`: one unconfigured UTC model declares `yyyy` and `yyyy-MM` DATEFRAGMENT endpoint pairs and a DateRange target for each profile. Two persisted `DateRange(start, finish)` computations feed `:adapter:kernelProbe` observing `validateFull` and `compute` over three documents on both codegen strategies, which agreed on every row.
+- `runtime-claim`: each target renders only its declared components. `yyyy` endpoints `2024` and `2025` store `2024/2025`; `yyyy-MM` endpoints `2024-06` and `2024-09` store `2024-06/2024-09`. Neither completes to a day in the stored text, even though the endpoints themselves complete asymmetrically for the ordered check.
+- `inclusive-claim`: equal endpoints form a valid range under both profiles, storing `2024/2024` and `2024-06/2024-06` with no error, so the ordered check is inclusive at both ends.
+- `inverted-claim`: an inverted pair retains its attempted text with `errored: true` — `2025/2024` and `2024-09/2024-06` — matching the attempted-value retention already established for the other profiles.
+- `local-state`: Lean already produced exactly these outcomes by composing the checked completion with the shared target renderer, so this checkpoint changes no clause and no code. It upgrades those two constructor targets from internally composed to Kernel-pinned, and adds the equal-endpoint row, which had no case.
+- `integrity`: model `3e145a74121ce3e74a2f56fbae7d29f74c34d099bc5c7c52ce21d512c560be95`; request `97ee97cce3bfdaef2461bb289db4ff3214a7a344bc4030fdcc871527ef97acef`; artifact `10e3604d8b08573a00e90ea9c022cbc8ba48e4ddd25359aaf1a6edee67d486a5`.
+- `limit`: two profiles, one unconfigured model, one endpoint pair per profile, and the compute channel only. No empty, formal, or clearing branch; no exact full-Date constructor target in this batch; and no configured model, where a Base Year would not change these two year-bearing profiles anyway.
+- `sync`: locally originated and purely an evidence-status correction. The canonical clause's calibration sentence claimed these two constructor targets were internally composed, which is no longer true; the behavioral account is unchanged, so it creates no outbound ledger entry.
+
 <a id="src-date-range-construction-target-crossing"></a>
 #### DateRange construction target spellings, measured locally 2026-08-23
 
