@@ -330,12 +330,21 @@ def operands (checked : CheckedFieldEntityShape model) :
 
 end CheckedFieldEntityShape
 
-/-- Resolve one field-entity operand after the caller has established model validity. Whole-list cardinality, duplicate, and overlap gates remain with `elaborateFieldEntityShape`. -/
-def resolveFieldEntityOperandUnchecked (model : FlatModel)
-    (declaringGroup : GroupPath) : SurfaceFieldEntityOperand →
+/-- Resolve one field-entity operand after the caller has established model validity. Whole-list cardinality, duplicate, and overlap gates remain with `elaborateFieldEntityShape`.
+
+    `scope` is the reading rule's own iteration scope. An unstarred field operand is accepted when
+    that scope binds every repeatable level it crosses, so the empty scope is the scalar rule and a
+    rule iterating a level may read an operand inside it. Starred and group operands carry their own
+    topology and are unaffected. -/
+def resolveFieldEntityOperandIn (model : FlatModel)
+    (declaringGroup : GroupPath) (scope : List RepeatableLevel) :
+    SurfaceFieldEntityOperand →
       Except FieldEntityShapeElabError (ResolvedFieldEntityOperand model)
   | .field path form => do
-      let declaration ← model.resolveNonrepeatableFieldUnchecked declaringGroup path
+      let resolved ←
+        model.resolveFieldDeclarationUnchecked declaringGroup path
+          |>.mapError .resolve
+      let declaration ← resolved.requireRepetitionBoundBy scope
         |>.mapError .resolve
       pure (.field declaration form)
   | .star path => do
@@ -355,27 +364,35 @@ def resolveFieldEntityOperandUnchecked (model : FlatModel)
       | .terminalRepeatable source => pure (.starredGroup source)
       | .terminalPresence source => pure (.starredGroupPresence source)
 
+/-- The scalar instance: an operand read where no repeatable level is bound. -/
+def resolveFieldEntityOperandUnchecked (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceFieldEntityOperand) :
+    Except FieldEntityShapeElabError (ResolvedFieldEntityOperand model) :=
+  resolveFieldEntityOperandIn model declaringGroup [] authored
+
 private def resolveFieldEntityOperands (model : FlatModel)
-    (declaringGroup : GroupPath) : List SurfaceFieldEntityOperand →
+    (declaringGroup : GroupPath) (scope : List RepeatableLevel) :
+    List SurfaceFieldEntityOperand →
       Except FieldEntityShapeElabError
         (List (ResolvedFieldEntityOperand model))
   | [] => pure []
   | operand :: remaining => do
-      pure ((← resolveFieldEntityOperandUnchecked model declaringGroup operand) ::
-        (← resolveFieldEntityOperands model declaringGroup remaining))
+      pure ((← resolveFieldEntityOperandIn model declaringGroup scope operand) ::
+        (← resolveFieldEntityOperands model declaringGroup scope remaining))
 
 /-- Validate the common entity-list shape: model, path resolution and its star gate, exact duplicates in authored encounter order, ancestor/descendant overlap, then the multiple-slots-or-one-already-many cardinality gate.
 
     Path resolution precedes the whole-list gates and the kind scan follows them. Every exact non-wildcard identity shares one scan, independent of field/group class; strict ancestor overlap follows it. Cardinality is structurally separate on this typed surface: its singleton direct-field input cannot also contain a repeated or overlapping pair. -/
-def elaborateFieldEntityShape (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
+def elaborateFieldEntityShapeIn (model : FlatModel)
+    (declaringGroup : GroupPath) (scope : List RepeatableLevel)
+    (authored : SurfaceFieldEntitySource) :
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
       let first ←
-        resolveFieldEntityOperandUnchecked model declaringGroup authored.first
-      let rest ← resolveFieldEntityOperands model declaringGroup authored.rest
+        resolveFieldEntityOperandIn model declaringGroup scope authored.first
+      let rest ← resolveFieldEntityOperands model declaringGroup scope authored.rest
       match hDuplicate : firstDuplicateResolvedEntityOperand? (first :: rest) with
       | some (.field (field, _)) => throw (.duplicateOperand field)
       | some (.fixedGroup path) => throw (.duplicateGroupOperand path)
@@ -394,5 +411,11 @@ def elaborateFieldEntityShape (model : FlatModel)
                   disjointOperands := hOverlap }
               else
                 throw .tooFewFields
+
+/-- The scalar instance of the shared shape gates. -/
+def elaborateFieldEntityShape (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
+    Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
+  elaborateFieldEntityShapeIn model declaringGroup [] authored
 
 end A12Kernel

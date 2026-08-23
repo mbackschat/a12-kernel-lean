@@ -259,4 +259,132 @@ example :
       some [([(10, 1)], .fired .value), ([(10, 2)], .fired .value)] := by
   native_decide
 
+/-! ## The overlap predicate at an iterating row -/
+
+private def operand (groups : List String) (field : String) :
+    SurfaceFieldEntityOperand :=
+  .field { base := .absolute, groups, field }
+
+private def rowsStar (field : String) : SurfaceFieldEntityOperand :=
+  .star {
+    base := .absolute
+    groups := [{ name := "Form" }, { name := "Rows", starred := true }]
+    field
+  }
+
+private def overlap? (rowGroup : GroupPath) (first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) :=
+  CheckedValidationCondition.fromIteratedDateRangeOverlap model rowGroup
+    { first, rest }
+
+private def bareRow := operand ["Form", "Rows"] "RowRange"
+private def scalarExisting := operand ["Form"] "Existing"
+private def scalarDotted := operand ["Form"] "Dotted"
+
+/- The locus decides the bare operand here exactly as it does on the comparison carriers, in either
+slot, at list length three, and beside a starred occurrence of the same field — the mixed spelling
+the Kernel admits from this locus. Read from the enclosing scalar group the same condition is
+refused as a repeatable reference. -/
+example :
+    [overlap? ["Form", "Rows"] bareRow [scalarExisting],
+      overlap? ["Form", "Rows"] scalarExisting [bareRow],
+      overlap? ["Form", "Rows"] bareRow [scalarExisting, scalarDotted],
+      overlap? ["Form", "Rows"] bareRow [rowsStar "RowRange"]].all (·.isOk) =
+      true ∧
+    (match overlap? ["Form"] bareRow [scalarExisting] with
+      | .error (.fieldReference (.repeatableReference path)) =>
+          path == rowRange.path
+      | _ => false) = true := by
+  native_decide
+
+/- A list whose only repeatable reference is a **star** reads no enclosing row, so it stays with the
+scalar overlap owner rather than becoming a second way to express one condition. This leaf refuses
+it from either locus, and the refusal names the operand it would have had to read. -/
+example :
+    (match overlap? ["Form", "Rows"] (rowsStar "RowRange") [scalarExisting] with
+      | .error (.repeatableFieldRequired path) => path == existing.path
+      | _ => false) = true ∧
+    (match overlap? ["Form"] (rowsStar "RowRange") [scalarExisting] with
+      | .error (.repeatableFieldRequired path) => path == existing.path
+      | _ => false) = true := by
+  native_decide
+
+/- Every whole-list gate stays the scalar operator's: a sole operand is still refused for
+multiplicity, a repeated operand for duplication, and a group operand outright. Only the operand
+locus widened. -/
+example :
+    (overlap? ["Form", "Rows"] bareRow []).isOk = false ∧
+      (overlap? ["Form", "Rows"] bareRow [bareRow]).isOk = false ∧
+      (overlap? ["Form", "Rows"] bareRow
+        [.group (.path { base := .absolute, groups := ["Form", "Rows"] })]).isOk =
+        false := by
+  native_decide
+
+/- The bare operand contributes its level to the derived iteration scope and the leaf needs the
+addressed evaluator. A starred operand beside it adds nothing to that scope, because a star reopens
+its own level rather than reading the enclosing row. -/
+example :
+    (match (overlap? ["Form", "Rows"] bareRow [scalarExisting]).toOption with
+      | some checked =>
+          (match checked.core.ordinaryIterationScope with
+            | .ok (some scope) => scope == [10]
+            | _ => false) && checked.core.requiresAddressedValidation
+      | none => false) = true ∧
+    (match (overlap? ["Form", "Rows"] bareRow [rowsStar "RowRange"]).toOption with
+      | some checked =>
+          (match checked.core.ordinaryIterationScope with
+            | .ok (some scope) => scope == [10]
+            | _ => false)
+      | none => false) = true := by
+  native_decide
+
+private def overlapRowVerdicts? (rowGroup : GroupPath)
+    (first : SurfaceFieldEntityOperand) (rest : List SurfaceFieldEntityOperand)
+    (data : DocumentData) : Option (List (Env × Verdict)) := do
+  let checked ← (overlap? rowGroup first rest).toOption
+  let rule ← (assembleResolvedValidationRule model checked rowRange.id
+    "iteratedDateRangeOverlap" .error { parts := [] }).toOption
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let outcomes ← (rule.evalOrdinaryRepeatableFull document).toOption
+  pure (outcomes.map fun entry => (entry.1, entry.2.verdict))
+
+private def overlapData : DocumentData := {
+  instantiatedRows := [{ group := 10, path := [1] }, { group := 10, path := [2] }]
+  cells := [
+    storedCell existing.id [] "2024-06-15/2024-07-15",
+    storedCell rowRange.id [1] "2024-06-01/2024-06-30",
+    storedCell rowRange.id [2] "2024-01-01/2024-01-31"]
+}
+
+/- Each row is scanned against its own value: the row whose window meets the scalar range fires and
+the row that does not stay unfired, which is what separates the row read from a root read. -/
+example :
+    overlapRowVerdicts? ["Form", "Rows"] bareRow [scalarExisting] overlapData =
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] := by
+  native_decide
+
+/- The mixed spelling composes the two reads rather than choosing between them: the bare operand
+contributes the current row and the star contributes every row, so the current row forms a same-cell
+self-pair and the predicate fires on every row that has a value. That is the canonical clause's own
+account of a scalar-plus-star list, now reached from an iterating locus; the admission is measured
+and the verdict is this composition, which is locked because a consumer expecting the star to exclude
+the current row would read the opposite outcome. -/
+example :
+    overlapRowVerdicts? ["Form", "Rows"] bareRow [rowsStar "RowRange"]
+        overlapData =
+      some [([(10, 1)], .fired .value), ([(10, 2)], .fired .value)] := by
+  native_decide
+
+/- A row with no stored range skips its slot, so the scan cannot fire on absence. -/
+example :
+    overlapRowVerdicts? ["Form", "Rows"] bareRow [scalarExisting] {
+      instantiatedRows := [{ group := 10, path := [1] }]
+      cells := [storedCell existing.id [] "2024-06-15/2024-07-15"] } =
+      some [([(10, 1)], .notFired)] := by
+  native_decide
+
 end A12Kernel.Conformance.IteratedDateRangeCondition

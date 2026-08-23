@@ -1,12 +1,13 @@
 import A12Kernel.Elaboration.DateRangeStoredComparison
+import A12Kernel.Elaboration.DateRangeOverlap
 
 /-! # DateRange conditions read at a rule's iterating row
 
 The DateRange condition carriers differ in what they compare — two stored ranges, one endpoint
-against a fixed date, two endpoints — but they read their operands the same way: at one reading
-scope, one cell per operand, at the row the enclosing rule is currently evaluating. This module owns
-that common shape so the checked condition tree carries one leaf family rather than one per carrier,
-and so a new carrier lands as a member here instead of as another set of dispatch arms.
+against a fixed date, two endpoints, an overlap scan — but they read their operands the same way: at
+one reading scope, at the row the enclosing rule is currently evaluating. This module owns that
+common shape so the checked condition tree carries one leaf family rather than one per carrier, and
+so a new carrier lands as a member here instead of as another set of dispatch arms.
 
 The reading scope is the enclosing rule's own iteration scope. Admission is therefore the measured
 locus rule stated positively: an operand is accepted exactly when that scope binds every repeatable
@@ -24,12 +25,14 @@ inductive IteratedDateRangeCondition (model : FlatModel) where
       (comparison : TemporalComparisonOp) (expected : FullDate)
   | boundPair (left right : CheckedIteratedDateRangeBound model)
       (comparison : TemporalComparisonOp)
+  | overlap (source : CheckedDateRangesOverlapSource model)
 
 /-- Static refusal while resolving one iterated DateRange condition. -/
 inductive IteratedDateRangeConditionElabError where
   | storedEquality (cause : DirectDateRangeComparisonElabError)
   | operand (cause : DirectDateRangeElabError)
   | formatsNotComparable (left right : TemporalComponents)
+  | overlap (cause : DateRangesOverlapElabError)
   deriving Repr, DecidableEq
 
 namespace IteratedDateRangeConditionElabError
@@ -42,6 +45,7 @@ def diagnostic? :
   | .storedEquality cause => cause.diagnostic?
   | .operand cause => cause.diagnostic?
   | .formatsNotComparable _ _ => some .invalidCompareToDate
+  | .overlap cause => cause.diagnostic?
 
 end IteratedDateRangeConditionElabError
 
@@ -53,12 +57,13 @@ def operandDeclarations : IteratedDateRangeCondition model → List FlatFieldDec
       [comparison.left.declaration, comparison.right.declaration]
   | .boundAgainstFixed operand _ _ _ => [operand.declaration]
   | .boundPair left right _ => [left.declaration, right.declaration]
-
-/-- The reading scope every operand was certified at. -/
-def readingScope : IteratedDateRangeCondition model → List RepeatableLevel
-  | .storedEquality comparison => comparison.left.scope
-  | .boundAgainstFixed operand _ _ _ => operand.scope
-  | .boundPair left _ _ => left.scope
+  | .overlap source =>
+      -- Only the unstarred operands are read at the enclosing row. A starred operand reopens its
+      -- own levels, so it is neither bound by the reading scope nor a contributor to it.
+      source.shape.operands.filterMap fun operand =>
+        match operand with
+        | .field declaration _ => some declaration
+        | _ => none
 
 /-- The operands that actually cross a repeatable level. These are the declarations the enclosing
 rule resolves before evaluation and the levels it derives its iteration from. -/
@@ -72,20 +77,21 @@ group's scope. The checked condition re-establishes this at assembly, so a leaf 
 stale declaration or an unbound level past the locus gate. -/
 def wellFormedIn (condition : IteratedDateRangeCondition model)
     (scope : List RepeatableLevel) : Bool :=
-  condition.readingScope == scope &&
-    !condition.repeatableDeclarations.isEmpty &&
+  !condition.repeatableDeclarations.isEmpty &&
     condition.operandDeclarations.all fun declaration =>
       declaration.repetitionBoundBy scope &&
         match model.lookupUniqueId declaration.id with
         | .ok owned => owned == declaration
         | .error _ => false
 
-/-- Produce this condition's verdict from cells read at the consuming row. The read is a parameter
-because its failure channel belongs to the enclosing leaf, which owns the row environment; each
-member then reuses its own carrier's comparison unchanged. -/
-def verdictOf {m : Type → Type} [Monad m]
-    (condition : IteratedDateRangeCondition model)
-    (read : FieldId → m CheckedCell) : m Verdict :=
+/-- Produce this condition's verdict at the consuming row. The cell read is a parameter because its
+failure channel belongs to the enclosing leaf, which owns the row environment; the overlap member
+additionally needs the document, because a starred operand's extent is a stream of rows rather than
+one cell. Each member then reuses its own carrier's comparison or scan unchanged. -/
+def verdictOf (condition : IteratedDateRangeCondition model)
+    (document : CheckedDocument model) (outer : Env)
+    (read : FieldId → Except CheckedAddressingError CheckedCell) :
+    Except CheckedAddressingError Verdict :=
   match condition with
   | .storedEquality comparison => do
       let left ← read comparison.left.declaration.id
@@ -101,6 +107,11 @@ def verdictOf {m : Type → Type} [Monad m]
       let rightCell ← read right.declaration.id
       pure (comparison.evalObserved (left.selectFrom leftCell)
         (right.selectFrom rightCell))
+  | .overlap source => do
+      let cores ← source.operands.mapM fun operand =>
+        operand.resolveValidationCore document outer
+      pure (evalDateRangesOverlap
+        (cores.map totalCheckedDateRangeOperandSemantic))
 
 end IteratedDateRangeCondition
 
@@ -145,5 +156,18 @@ def elaborateIteratedBoundPair (model : FlatModel)
     pure (.boundPair left right comparison)
   else
     throw (.formatsNotComparable left.format.components right.format.components)
+
+/-- Resolve one singular overlap predicate whose unstarred operands the rule's own iteration may
+cross. Every gate is the scalar operator's, including the group refusal and the uniform-year rule;
+only the operand-locus admission widens. A starred operand keeps its own topology, so a list mixing
+a starred and an unstarred occurrence of one field is admitted here exactly as the Kernel admits it,
+with the star reopening the level the bare operand reads at the current row. -/
+def elaborateIteratedOverlap (model : FlatModel) (declaringGroup : GroupPath)
+    (scope : List RepeatableLevel) (authored : SurfaceFieldEntitySource) :
+    Except IteratedDateRangeConditionElabError
+      (IteratedDateRangeCondition model) :=
+  (.overlap <$>
+    elaborateDateRangesOverlapSourceIn model declaringGroup scope authored)
+    |>.mapError .overlap
 
 end A12Kernel

@@ -151,7 +151,13 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
   | .repetitionNotUnique _ =>
       .error (.repetitionNotUniqueResult context.outer)
   | .iteratedDateRange condition =>
-      condition.verdictOf (context.readCell context.outer)
+      match context.input with
+      | .checked document | .partialView document _ =>
+          condition.verdictOf document context.outer
+            (context.readCell context.outer)
+      | .legacy _ _ =>
+          -- The legacy scalar channel carries no checked document, and this leaf reads at a row.
+          .error (.checkedDocumentRequired [])
   | .guardedRepeatableCurrentRepetition guard source comparison => do
       let cell ← context.readCell context.outer guard.id
       let coordinate ← source.coordinateAt context.outer

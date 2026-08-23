@@ -58,7 +58,9 @@ def resolveValidationCore (operand : CheckedDateRangesOverlapOperand model)
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore :=
   match operand with
   | .field source =>
-      document.resolveCheckedDirectEntityOperandCore source.declaration.id
+      -- The reading row, not the document root: a nonrepeatable operand addresses identically at
+      -- either, and an operand the rule's own iteration binds must be read at its row.
+      document.resolveCheckedDirectEntityOperandCoreAt outer source.declaration.id
   | .star path _ filter =>
       path.resolveCheckedValidationEntityOperandCore document outer filter
 
@@ -126,7 +128,7 @@ def resolveValidationCore (operand : CheckedSingularDateRangesOverlapOperand mod
   match operand with
   | .canonical source => source.resolveValidationCore document outer
   | .fragmentField source =>
-      document.resolveCheckedDirectEntityOperandCore source.declaration.id
+      document.resolveCheckedDirectEntityOperandCoreAt outer source.declaration.id
 
 end CheckedSingularDateRangesOverlapOperand
 
@@ -268,12 +270,18 @@ def mixesDateRangeYearInclusion (model : FlatModel)
   let inclusions := operands.filterMap (dateRangeOperandIncludesYear? model)
   inclusions.contains true && inclusions.contains false
 
-/-- Apply the shared shape gates first, then the singular operator's group refusal and exact-or-direct-fragment policy certification in authored order. -/
-def elaborateDateRangesOverlapSource (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
+/-- Apply the shared shape gates first, then the singular operator's group refusal and exact-or-direct-fragment policy certification in authored order.
+
+    `scope` is the reading rule's iteration scope, threaded to the shared shape resolver so an
+    unstarred operand inside a level the rule iterates is admitted. Every other gate — arity,
+    duplicates, overlap, the group refusal, the uniform-year rule, and per-operand policy — is
+    unchanged and unaware of the scope. -/
+def elaborateDateRangesOverlapSourceIn (model : FlatModel)
+    (declaringGroup : GroupPath) (scope : List RepeatableLevel)
+    (authored : SurfaceFieldEntitySource) :
     Except DateRangesOverlapElabError
       (CheckedDateRangesOverlapSource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored
+  let shape ← elaborateFieldEntityShapeIn model declaringGroup scope authored
     |>.mapError .shape
   if mixesDateRangeYearInclusion model (shape.first :: shape.rest) then
     throw .dateWithAndWithoutYear
@@ -282,6 +290,13 @@ def elaborateDateRangesOverlapSource (model : FlatModel)
   let rest ← certifySingularDateRangesOverlapOperands model declaringGroup
     shape.rest
   pure { shape, first, rest }
+
+/-- The scalar instance: a source read where the rule iterates no level. -/
+def elaborateDateRangesOverlapSource (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
+    Except DateRangesOverlapElabError
+      (CheckedDateRangesOverlapSource model) :=
+  elaborateDateRangesOverlapSourceIn model declaringGroup [] authored
 
 /-! ## Checked-document assembly -/
 
@@ -314,6 +329,25 @@ def checkedDateRangeSlot
   | .value (Value.dateRange value) =>
       throw (.sourceValueProfile addressed.address value)
   | .value _ => throw (.sourceValueKind addressed.address)
+
+/-- Total slot projection for a consumer whose failure channel carries addressing failures only.
+Every payload `checkedDateRangeSlot` rejects is already excluded by the operand's own policy
+certificate, so the collapse is unreachable; skipping is also the only direction that cannot invent
+an overlap, which is the fail-closed choice for an error condition. -/
+def totalCheckedDateRangeSlot (addressed : CheckedAddressedCell) :
+    ResolvedDateRangeSlot :=
+  match observeCell .validation addressed.cell with
+  | .value (Value.dateRange (.exact value)) =>
+      match value.toResolvedDateRange? with
+      | some range => .kept range
+      | none => .skipped
+  | _ => .skipped
+
+/-- The total counterpart of the operand projection, retaining filter provenance unchanged. -/
+def totalCheckedDateRangeOperandSemantic
+    (core : ResolvedCheckedEntityOperandCore) : ResolvedDateRangeOperand :=
+  { slots := core.addressedCells.map totalCheckedDateRangeSlot
+    hasFilter := core.hasHaving }
 
 /-- Project one resolved operand core into the pure overlap operand, carrying its filter provenance. Shared with the plural operator's list side. -/
 def checkedDateRangeOperandSemantic

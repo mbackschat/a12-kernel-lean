@@ -152,9 +152,13 @@ private def fromIteratedDateRange (model : FlatModel) (rowGroup : GroupPath)
   | .ok () => do
       let condition ←
         (build (model.repeatableScopeForGroupPath rowGroup)).mapError fun
+          -- Every member reports a locus refusal as the same resolution failure, so a consumer
+          -- reads one class for "this operand crosses a level the rule does not iterate" rather
+          -- than one per carrier.
           | .storedEquality (.left (.source error))
           | .storedEquality (.right (.source error))
-          | .operand (.source error) => .fieldReference error
+          | .operand (.source error)
+          | .overlap (.shape (.resolve error)) => .fieldReference error
           | error => .iteratedDateRange error
       match condition.repeatableDeclarations, condition.operandDeclarations with
       | [], first :: _ => throw (.repeatableFieldRequired first.path)
@@ -204,6 +208,14 @@ def fromIteratedDateRangeBoundPair (model : FlatModel) (rowGroup : GroupPath)
   fromIteratedDateRange model rowGroup fun scope =>
     elaborateIteratedBoundPair model scope leftDeclaration.id leftBound
       rightDeclaration.id rightBound comparison
+
+/-- One singular DateRange overlap predicate read at the rule's own row. -/
+def fromIteratedDateRangeOverlap (model : FlatModel) (rowGroup : GroupPath)
+    (authored : SurfaceFieldEntitySource) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) :=
+  fromIteratedDateRange model rowGroup fun scope =>
+    elaborateIteratedOverlap model rowGroup scope authored
 
 /-- Resolve one checked RNU source and retain it as an ordinary leaf in the shared condition tree. -/
 def fromRepetitionNotUnique (model : FlatModel) (rowGroup : GroupPath)

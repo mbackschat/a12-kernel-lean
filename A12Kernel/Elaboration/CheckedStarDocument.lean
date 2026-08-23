@@ -133,10 +133,10 @@ def resolvingCorrelationContext (checked : CheckedDocument model) :
   bindingError := .environment
 
 /-- Resolve one direct entity-list occurrence through the same model-owned address query as every starred occurrence. -/
-def resolveCheckedDirectEntityOperandCore
-    (checked : CheckedDocument model) (field : FieldId) :
+def resolveCheckedDirectEntityOperandCoreAt
+    (checked : CheckedDocument model) (outer : Env) (field : FieldId) :
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore := do
-  let addressed ← checked.addressedCell [] field
+  let addressed ← checked.validationAddressedCell outer field
   pure {
     topology := none
     addressedCells := [addressed]
@@ -144,6 +144,14 @@ def resolveCheckedDirectEntityOperandCore
     hasHaving := false
     hasNonRelevant := false
   }
+
+/-- The scalar instance: a direct operand read at the document root. A nonrepeatable declaration
+addresses identically at every environment, so this is the same single-cell read every caller
+performed before the row-aware form existed. -/
+def resolveCheckedDirectEntityOperandCore
+    (checked : CheckedDocument model) (field : FieldId) :
+    Except CheckedAddressingError ResolvedCheckedEntityOperandCore :=
+  checked.resolveCheckedDirectEntityOperandCoreAt [] field
 
 /-- Walk a group operand's `(row × field)` extent, keeping each reached cell beside the payload its owning declaration carries.
 
