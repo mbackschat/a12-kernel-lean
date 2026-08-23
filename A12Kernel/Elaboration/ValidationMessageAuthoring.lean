@@ -9,10 +9,17 @@ with an optional explicit turning point after the last of them, and `/` separate
 names from the field. A field is therefore addressable by its bare name when that name is unique, by
 a path relative to the rule group, or absolutely when it lies outside the rule context.
 
+A name that collides with a terminal is written in the grammar's **single-quote** escape, and the
+quotes are erased before any semantic lookup, so an unnecessary quote is transparent. This producer's
+quoting requirement is deliberately **narrower** than the condition language's: a set of terminals is
+historically accepted unquoted inside an entity name, and the caller supplies both lists from the
+language version it supports.
+
 What stays outside is the rest of the parameter grammar: every non-field parameter form, the semantic
-index and category suffixes, quoted names, and repeatable targets. Two of the Kernel's own `.value`
-gates are unreachable in this fragment rather than modelled — a star reference needs a repeatable
-path, and a declaration's "no value validation" flag has no representation here.
+index and category suffixes, and repeatable targets. Two of the Kernel's own `.value` gates are
+unreachable in this fragment rather than modelled — a star reference needs a repeatable path, and a
+declaration's "no value validation" flag has no representation here. The bounded-ASCII template gate
+also refuses a name carrying one of the grammar's accented letters before the name rules see it.
 -/
 
 namespace A12Kernel
@@ -24,7 +31,8 @@ inductive ValidationMessageTemplateError where
   | unsupportedCharacter (character : Char)
   | oddDollarCount
   | invalidParameter (parameter : String)
-  | unsupportedQuotedName (name : String)
+  /-- A name colliding with a terminal was written without the grammar's quote escape. -/
+  | unquotedTerminalName (name : String)
   | reference (parameter : String) (error : ResolveError)
   | fieldNotReferenced (parameter : String) (field : FieldId)
   deriving Repr, DecidableEq
@@ -33,8 +41,8 @@ private inductive ParsedValidationMessagePart where
   | text (value : String)
   /-- The authored spelling beside the path it decoded to. Both travel, because the spelling is what
   a diagnostic and an Explain consumer quote while the path is what resolves. -/
-  | fieldName (parameter : String) (reference : SurfaceFieldPath)
-  | fieldValue (parameter : String) (reference : SurfaceFieldPath)
+  | fieldName (parameter : String) (reference : AuthoredFieldPath)
+  | fieldValue (parameter : String) (reference : AuthoredFieldPath)
 
 private def isLineSeparator (character : Char) : Bool :=
   character == '\n' || character == '\r' ||
@@ -55,6 +63,43 @@ private def isBareNameCharacter (character : Char) : Bool :=
 private def isBareName (name : String) : Bool :=
   !name.isEmpty && name.toList.all isBareNameCharacter
 
+/-- The quoting rule for a rule-message parameter. A name colliding with one of the selected
+language's terminals must be quoted, **except** for the terminals this producer has historically
+accepted unquoted inside an entity name. The exemption belongs to this producer rather than to the
+path grammar, which is why it does not live on `PathKeywordProfile`. -/
+structure ValidationMessageKeywordProfile where
+  path : PathKeywordProfile
+  unquotedTerminals : List String := []
+  deriving Repr, DecidableEq
+
+/-- Treat an exempt terminal as if the author had quoted it, then reuse the one existing
+quote-provenance lowering. The exemption says exactly "no quote is needed here", so recording it as
+quoted expresses that decision in the shared type instead of duplicating the lowering walk. -/
+private def exemptQuoting (profile : ValidationMessageKeywordProfile)
+    (name : AuthoredPathName) : AuthoredPathName :=
+  if profile.unquotedTerminals.contains name.text then
+    { name with quoted := true }
+  else
+    name
+
+/-- Decode one authored segment's quote syntax into the shared name-with-provenance type. -/
+private def decodeSegment (segment : String) : Option AuthoredPathName :=
+  match segment.toList with
+  | '\'' :: rest =>
+      match rest.reverse with
+      | '\'' :: inner =>
+          let text := String.mk inner.reverse
+          if isBareName text then some { text, quoted := true } else none
+      | _ => none
+  | _ => if isBareName segment then some { text := segment } else none
+
+/-- Decode a list of authored segments, failing as a whole if any segment is malformed. -/
+private def decodeSegments : List String → Option (List AuthoredPathName)
+  | [] => some []
+  | segment :: rest => do
+      let name ← decodeSegment segment
+      pure (name :: (← decodeSegments rest))
+
 /-- Split the up-run off a relative spec, returning the parent count, the optional turning point, and
 the remaining segments. A name attached directly to a `..` is the turning point, so it ends the run;
 one written after a `/` is an ordinary path element. -/
@@ -72,7 +117,7 @@ private def splitParentWalk :
 single parse class rather than a family of shape classes, because that is what the parameter parser
 reports for every malformed spec. -/
 private def parseMessagePath (spec : String) :
-    Except ValidationMessageTemplateError SurfaceFieldPath :=
+    Except ValidationMessageTemplateError AuthoredFieldPath :=
   let segments := spec.splitOn "/"
   let malformed := Except.error (ValidationMessageTemplateError.invalidParameter spec)
   match segments with
@@ -82,22 +127,26 @@ private def parseMessagePath (spec : String) :
         -- A leading separator is the absolute form, which needs at least one group and a field.
         match rest.reverse with
         | field :: group :: groups =>
-            if isBareName field && (group :: groups).all isBareName then
-              .ok { base := .absolute
-                    groups := (group :: groups).reverse
-                    field }
-            else malformed
+            match decodeSegments (field :: group :: groups) with
+            | some (field :: groups) =>
+                .ok { base := .absolute, groups := groups.reverse, field }
+            | _ => malformed
         | _ => malformed
       else
         let (parents, turningPoint, remaining) := splitParentWalk 0 segments
-        match remaining.reverse with
-        | field :: groups =>
-            if isBareName field && groups.all isBareName &&
-                turningPoint.all isBareName then
-              .ok { base := .relative parents, turningPoint
-                    groups := groups.reverse, field }
-            else malformed
-        | [] => malformed
+        match remaining.reverse, turningPoint with
+        | field :: groups, none =>
+            match decodeSegments (field :: groups) with
+            | some (field :: groups) =>
+                .ok { base := .relative parents, groups := groups.reverse, field }
+            | _ => malformed
+        | field :: groups, some turningPoint =>
+            match decodeSegments (field :: groups), decodeSegment turningPoint with
+            | some (field :: groups), some turningPoint =>
+                .ok { base := .relative parents, turningPoint := some turningPoint
+                      groups := groups.reverse, field }
+            | _, _ => malformed
+        | [], _ => malformed
 
 /-- Strip the value suffix, then decode the remaining entity spec as a path. The suffix is taken at
 the end of the whole spec, which is this fragment's committed reading of a grammar that also lets a
@@ -169,15 +218,19 @@ structure CheckedValidationMessageTemplate
   parts : List (CheckedValidationMessagePart model condition)
 
 private def resolveMessageReference (model : FlatModel)
-    (profile : PathKeywordProfile) (condition : CheckedFlatCondition model)
-    (parameter : String) (reference : SurfaceFieldPath) :
+    (profile : ValidationMessageKeywordProfile)
+    (condition : CheckedFlatCondition model)
+    (parameter : String) (authored : AuthoredFieldPath) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageReference model condition) := do
-  -- Every name-bearing position is checked, because a reserved word may sit at any path level.
-  match (reference.field :: reference.groups ++ reference.turningPoint.toList).find?
-      profile.requiresQuote with
-  | some reserved => throw (.unsupportedQuotedName reserved)
-  | none => pure ()
+  -- Every name-bearing position is checked, because a terminal may sit at any path level.
+  let reference ← match ({ authored with
+      turningPoint := authored.turningPoint.map (exemptQuoting profile)
+      groups := authored.groups.map (exemptQuoting profile)
+      field := exemptQuoting profile authored.field
+    } : AuthoredFieldPath).lower profile.path with
+    | .ok reference => pure reference
+    | .error (.unquotedKeyword name) => throw (.unquotedTerminalName name)
   match hResolved :
       model.resolveNonrepeatableFieldUnchecked condition.rowGroup reference with
   | .error error => throw (.reference parameter error)
@@ -195,7 +248,8 @@ private def resolveMessageReference (model : FlatModel)
         throw (.fieldNotReferenced parameter declaration.id)
 
 private def checkMessageParts (model : FlatModel)
-    (profile : PathKeywordProfile) (condition : CheckedFlatCondition model) :
+    (profile : ValidationMessageKeywordProfile)
+    (condition : CheckedFlatCondition model) :
     List ParsedValidationMessagePart →
       Except ValidationMessageTemplateError
         (List (CheckedValidationMessagePart model condition))
@@ -212,8 +266,8 @@ private def checkMessageParts (model : FlatModel)
         (← checkMessageParts model profile condition rest))
 
 def elaborateValidationMessageTemplate (model : FlatModel)
-    (profile : PathKeywordProfile) (condition : CheckedFlatCondition model)
-    (source : String) :
+    (profile : ValidationMessageKeywordProfile)
+    (condition : CheckedFlatCondition model) (source : String) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageTemplate model condition) := do
   let parsed ← parseValidationMessageTemplate source

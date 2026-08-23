@@ -20,14 +20,37 @@ private def headAmount : FlatFieldDecl :=
   { id := 2, groupPath := ["Order", "Head"], name := "Amount",
     policy := { kind := .string } }
 
+/-- A field whose name collides with a terminal that **must** be quoted in a parameter. -/
+private def forField : FlatFieldDecl :=
+  { id := 3, groupPath := ["Order"], name := "For",
+    policy := { kind := .string } }
+
+/-- A field whose name collides with a terminal this producer accepts **unquoted**. -/
+private def indexField : FlatFieldDecl :=
+  { id := 4, groupPath := ["Order"], name := "index",
+    policy := { kind := .string } }
+
 private def model : FlatModel :=
-  { fields := [amount, other, headAmount] }
+  { fields := [amount, other, headAmount, forField, indexField] }
 
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
-private def keywordProfile : PathKeywordProfile :=
-  { reserved := ["For", "value"] }
+/-- The en_US parameter terminal set read off the Kernel's own parameter lexer, together with the
+seven this producer historically accepts unquoted inside an entity name. Only `For`, `RuleGroup`, and
+`Referenzjahr` therefore need the quote escape here. -/
+private def keywordProfile : ValidationMessageKeywordProfile := {
+  path := {
+    reserved := [
+      "value", "For", "RuleGroup", "RootGroup", "Zeile", "Usb", "index",
+      "Vordruckzeile", "Vordruckname", "Referenzjahr"
+    ]
+  }
+  unquotedTerminals := [
+    "value", "RootGroup", "Zeile", "Usb", "index", "Vordruckzeile",
+    "Vordruckname"
+  ]
+}
 
 private def condition? : Option (CheckedFlatCondition model) :=
   (elaborate model ["Order"] (.fieldFilled (bare "Amount"))).toOption
@@ -110,11 +133,38 @@ example :
         "See $..$" = some (.invalidParameter "..") := by
   native_decide
 
-/- A reserved word is refused at **any** path level, not only as the final name, and the refusal names
-the colliding segment rather than the whole spec. -/
+/- A terminal collision is refused at **any** path level, not only as the final name, and the refusal
+names the colliding segment rather than the whole spec. -/
 example :
     pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head"] "Amount")
-        "See $For/Amount$" = some (.unsupportedQuotedName "For") := by
+        "See $For/Amount$" = some (.unquotedTerminalName "For") := by
+  native_decide
+
+/- The grammar's single-quote escape makes a colliding name authorable, and the quotes are erased
+before lookup, so the same field is reached and the refusal is about the missing escape rather than
+about the name. -/
+example :
+    pathTemplateOk? ["Order"] (pathAt (.relative 0) [] "For")
+        "See $'For'$" = some true ∧
+      pathTemplateError? ["Order"] (pathAt (.relative 0) [] "For")
+        "See $For$" = some (.unquotedTerminalName "For") := by
+  native_decide
+
+/- This producer's quoting rule is **narrower** than the condition language's: a terminal it
+historically accepts unquoted needs no escape, and quoting it anyway stays transparent. Without that
+exemption the first of these two would be refused. -/
+example :
+    pathTemplateOk? ["Order"] (pathAt (.relative 0) [] "index")
+        "See $index$" = some true ∧
+      pathTemplateOk? ["Order"] (pathAt (.relative 0) [] "index")
+        "See $'index'$" = some true := by
+  native_decide
+
+/- An unbalanced quote is a parse failure rather than a name, so a half-written escape never resolves
+as a literal name containing a quote. -/
+example :
+    pathTemplateError? ["Order"] (pathAt (.relative 0) [] "For")
+        "See $'For$" = some (.invalidParameter "'For") := by
   native_decide
 
 private def inputs : ValidationMessageInputs where
@@ -183,7 +233,7 @@ example :
       templateError? "$Amount.nope$" =
         some (.invalidParameter "Amount.nope") ∧
       templateError? "$For$" =
-        some (.unsupportedQuotedName "For") := by
+        some (.unquotedTerminalName "For") := by
   native_decide
 
 example :
