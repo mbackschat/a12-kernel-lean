@@ -52,7 +52,7 @@ theorem dateExtremum_select_of_before (left right : FullDate)
     TemporalExtremumOp.minimum.select left right = left ∧
       TemporalExtremumOp.maximum.select left right = right := by
   have reverse : right.before left = false := by
-    simpa [TemporalComparisonOp.holds] using
+    simpa [TemporalComparisonOp.holds, TemporalComparisonOp.holdsOrdered] using
       dateComparison_before_excludes_after left right before
   simp [TemporalExtremumOp.select, before, reverse]
 

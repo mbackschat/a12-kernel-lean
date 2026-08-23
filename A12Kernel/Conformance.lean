@@ -144,6 +144,7 @@ import A12Kernel.Conformance.DateRangeInput
 import A12Kernel.Conformance.DateRangeBound
 import A12Kernel.Conformance.DateRangeStoredComparison
 import A12Kernel.Conformance.YearlessDateRangeBound
+import A12Kernel.Conformance.DateRangeBoundComparison
 import A12Kernel.Conformance.DateRangeFirstFilledComputation
 import A12Kernel.Conformance.DateRangeTargetPresentation
 import A12Kernel.Conformance.DateRangeConstructionComputation

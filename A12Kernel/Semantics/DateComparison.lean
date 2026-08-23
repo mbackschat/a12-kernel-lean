@@ -9,16 +9,29 @@ This capsule evaluates the shared six ordinary temporal comparison operators aft
 
 namespace A12Kernel
 
-/-- Evaluate one comparison over two present full-Date values. -/
-def TemporalComparisonOp.holds (op : TemporalComparisonOp)
-    (left right : FullDate) : Bool :=
+/-- Evaluate one comparison over any temporal domain that has decidable equality and a strict
+before relation. The four order forms are derived from `before` alone, so no domain restates
+them and none can disagree about the closed forms. -/
+def TemporalComparisonOp.holdsOrdered {α} [DecidableEq α] (op : TemporalComparisonOp)
+    (before : α → α → Bool) (left right : α) : Bool :=
   match op with
   | .equal => left == right
   | .notEqual => left != right
-  | .before => left.before right
-  | .beforeOrEqual => !right.before left
-  | .after => right.before left
-  | .afterOrEqual => !left.before right
+  | .before => before left right
+  | .beforeOrEqual => !before right left
+  | .after => before right left
+  | .afterOrEqual => !before left right
+
+/-- Evaluate one comparison over two present full-Date values. -/
+def TemporalComparisonOp.holds (op : TemporalComparisonOp)
+    (left right : FullDate) : Bool :=
+  op.holdsOrdered FullDate.before left right
+
+/-- Evaluate one comparison over two yearless month/day labels, without manufacturing a year.
+The order is the calendar order inside any single year, which is total on the label pair. -/
+def TemporalComparisonOp.holdsMonthDay (op : TemporalComparisonOp)
+    (left right : MonthDayValue) : Bool :=
+  op.holdsOrdered MonthDayValue.before left right
 
 /-- Evaluate two classified Date operands through the shared symmetric scalar projection. -/
 def TemporalComparisonOp.eval (op : TemporalComparisonOp)

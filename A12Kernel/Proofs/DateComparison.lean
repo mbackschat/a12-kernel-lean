@@ -9,12 +9,12 @@ namespace A12Kernel
 /-- Resolved Date equality fires exactly on identical calendar values. -/
 theorem dateComparison_equal_iff (left right : FullDate) :
     TemporalComparisonOp.equal.holds left right = true ↔ left = right := by
-  simp [TemporalComparisonOp.holds]
+  simp [TemporalComparisonOp.holds, TemporalComparisonOp.holdsOrdered]
 
 /-- Resolved Date inequality fires exactly on distinct calendar values. -/
 theorem dateComparison_notEqual_iff (left right : FullDate) :
     TemporalComparisonOp.notEqual.holds left right = true ↔ left ≠ right := by
-  simp [TemporalComparisonOp.holds]
+  simp [TemporalComparisonOp.holds, TemporalComparisonOp.holdsOrdered]
 
 /-- Exchanging operands and the directional operator preserves every resolved comparison result. -/
 theorem dateComparison_swapped (op : TemporalComparisonOp)
@@ -29,7 +29,7 @@ theorem dateComparison_swapped (op : TemporalComparisonOp)
 theorem dateComparison_before_excludes_after (left right : FullDate)
     (before : TemporalComparisonOp.before.holds left right = true) :
     TemporalComparisonOp.after.holds left right = false := by
-  simp only [TemporalComparisonOp.holds] at before ⊢
+  simp only [TemporalComparisonOp.holds, TemporalComparisonOp.holdsOrdered] at before ⊢
   cases reverse : right.before left with
   | false => rfl
   | true =>
