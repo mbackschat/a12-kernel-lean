@@ -367,6 +367,19 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: measured for the direct single-level starred `FirstFilledValue` shape with one filled row and a fresh target. Crossings for the `{Y}` and `{Y,M}` sets have only one profile each and therefore cannot cross; scalar temporal carriers, the direct-field-list shape, Base-Year completion, clearing, and formal branches were not exercised.
 - `sync`: the general component-set rule was already reconciled in [`spec/09`](../spec/09-computations.md); this checkpoint widens its evidence and its crossing example, so it creates no outbound ledger entry.
 
+<a id="src-date-range-exact-and-configured-constructor-targets"></a>
+#### Exact ISO and configured-fragment constructor targets, measured locally 2026-08-23
+
+- `revision`: model authored and all three computations persisted with the source-matched launcher at clean a12-dmkits `108d047b787f0e049dcd2f4902f24d7523347a00`, which the artifact records as its producer with state `CLEAN`. dmtool `0.13.0`, kernel `30.8.1` built and runtime; the sibling stayed empty throughout.
+- `route`: one Base-Year-2024 UTC model declares `dd.MM.yyyy` DATE endpoints with a `yyyy-MM-dd`+slash target, and `MM` and `MM-dd` DATEFRAGMENT endpoint pairs with their own slash-separated targets. Three persisted `DateRange(start, finish)` computations feed `:adapter:kernelProbe` observing `validateFull` and `compute` over three documents on both codegen strategies, which agreed on every row.
+- `exact-claim`: a dotted full-Date construction stores ISO text on an ISO target — `01.06.2024`/`30.09.2024` becomes `2024-06-01/2024-09-30` — so the exact lexical cross renders under the target on the construction shape as it does on the others.
+- `configured-claim`: a Base-Year-completed fragment construction renders **back to its target's declared components**. `MM` endpoints `01` and `02` store `01/02` even though the completion reaches 2024-02-29, and `MM-dd` endpoints store `01-01/02-29`. The leap-aware month end is therefore invisible in the stored text while still deciding the ordered check.
+- `inverted-claim`: all three targets retain the attempted text with `errored: true` — `2024-09-30/2024-06-01`, `09/06`, and `09-30/06-01` — so attempted-value retention is uniform across exact, configured-fragment, and yearless targets.
+- `local-state`: Lean already produced every one of these outcomes, including the `01/02` rendering over the 2024-02-29 completion, so this checkpoint changes no clause and no code. It upgrades the last two internally composed constructor targets to Kernel-pinned.
+- `integrity`: model `0bf58fcc94656922d38942fe276cae047c3857890d0c389a9c23ec66721cf1c1`; request `48a08a2d62ffc9da289afc5bd42397a8c03204f478fc2eacf9439d76f8d2aa37`; artifact `82e9bf09d8267404e4244acea90ea7f12e39497a0a87b97dccdc76aa0483a817`.
+- `limit`: one configured model, one endpoint pair per profile, and the compute channel only. No empty, formal, or clearing branch; no dotted target in this batch, which the established-kind checkpoint already pins; and no unconfigured control here, which the construction-target checkpoint covers.
+- `sync`: locally originated and purely an evidence-status correction, like the year-fragment batch. The behavioral account is unchanged, so it creates no outbound ledger entry.
+
 <a id="src-date-range-year-fragment-constructor-target"></a>
 #### Year-bearing fragment constructor targets, measured locally 2026-08-23
 
