@@ -20,6 +20,11 @@ inductive CheckedAddressingError where
   | checkedDocumentRequired (path : GroupPath)
   | repetitionNotUniqueResult (row : Env)
   | partialUnavailable (row : Env) (field : FieldId)
+  /-- A certified operand's stored payload contradicted the declaration that certified it. No
+  checked certificate can produce one, so this class exists to be *reported* rather than skipped:
+  a family whose standalone evaluation names such a payload and whose condition-leaf evaluation
+  silently dropped it would be two accounts of one certificate. -/
+  | operandPayload (address : CellAddr)
   deriving Repr, DecidableEq
 
 /-- Compatibility name for the original one-star projection API. -/

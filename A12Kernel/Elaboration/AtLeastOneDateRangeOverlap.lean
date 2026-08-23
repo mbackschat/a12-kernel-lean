@@ -243,8 +243,8 @@ private def certifyAtLeastOneDateRangeOverlapsListOperands (model : FlatModel)
   List.mapM (certifyAtLeastOneDateRangeOverlapsListOperand model declaringGroup)
 
 /-- Resolve and gate the scalar shape before reading the list, then resolve both sides as one nonempty entity sequence so cross-side duplicate and overlap checks remain shared. Finally certify the supported DateRange policies. -/
-def elaborateAtLeastOneDateRangeOverlapsSource (model : FlatModel)
-    (declaringGroup : GroupPath)
+def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
+    (declaringGroup : GroupPath) (scope : List RepeatableLevel)
     (authored : SurfaceAtLeastOneDateRangeOverlapsSource) :
     Except AtLeastOneDateRangeOverlapsElabError
       (CheckedAtLeastOneDateRangeOverlapsSource model) :=
@@ -252,10 +252,10 @@ def elaborateAtLeastOneDateRangeOverlapsSource (model : FlatModel)
   | .error error => .error (.shape (.resolve error))
   | .ok () => do
       let scalarDeclaration ←
-        resolveFieldEntityOperandUnchecked model declaringGroup authored.scalar
+        resolveFieldEntityOperandIn model declaringGroup scope authored.scalar
           |>.mapError .shape
           |>.bind certifyAtLeastOneDateRangeOverlapScalarShape
-      let shape ← elaborateFieldEntityShape model declaringGroup {
+      let shape ← elaborateFieldEntityShapeIn model declaringGroup scope {
           first := authored.scalar
           rest := authored.list.first :: authored.list.rest
         } |>.mapError .shape
@@ -277,6 +277,15 @@ def elaborateAtLeastOneDateRangeOverlapsSource (model : FlatModel)
           let rest ← certifyAtLeastOneDateRangeOverlapsListOperands model
             declaringGroup listRest
           pure { shape, scalar, first, rest }
+
+/-- The scalar instance: a source read where the reading rule iterates no level. -/
+def elaborateAtLeastOneDateRangeOverlapsSource (model : FlatModel)
+    (declaringGroup : GroupPath)
+    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) :
+    Except AtLeastOneDateRangeOverlapsElabError
+      (CheckedAtLeastOneDateRangeOverlapsSource model) :=
+  elaborateAtLeastOneDateRangeOverlapsSourceIn model declaringGroup [] authored
+
 /-! ## Checked plural-overlap assembly -/
 
 /-- The separately resolved scalar retains its checked declaration and concrete addressed cell beside the pure scalar slot. -/
@@ -297,12 +306,12 @@ structure ResolvedCheckedAtLeastOneDateRangeOverlapListOperand
 
 private def resolveCheckedAtLeastOneDateRangeOverlapScalar
     (source : CheckedAtLeastOneDateRangeOverlapsScalar model)
-    (document : CheckedDocument model) :
+    (document : CheckedDocument model) (outer : Env) :
     Except DateRangesOverlapEvaluationError
       (ResolvedCheckedAtLeastOneDateRangeOverlapScalar model) := do
   let core ←
-    (document.resolveCheckedDirectEntityOperandCore source.declaration.id)
-      |>.mapError .addressing
+    (document.resolveCheckedDirectEntityOperandCoreAt outer
+      source.declaration.id) |>.mapError .addressing
   match core.addressedCells with
   | [addressed] => do
       let semantic ← checkedDateRangeSlot addressed
@@ -379,7 +388,7 @@ def evaluateCheckedDocument
     Except DateRangesOverlapEvaluationError
       (CheckedAtLeastOneDateRangeOverlapsResult model) := do
   let scalar ←
-    resolveCheckedAtLeastOneDateRangeOverlapScalar checked.scalar document
+    resolveCheckedAtLeastOneDateRangeOverlapScalar checked.scalar document outer
   match scalar.semantic with
   | .skipped => pure { source := checked, scalar, operands := [] }
   | .kept _ => do

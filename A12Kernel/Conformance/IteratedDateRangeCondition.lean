@@ -485,4 +485,71 @@ example :
       some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] := by
   native_decide
 
+/-! ## The plural overlap predicate at an iterating row -/
+
+private def plural? (rowGroup : GroupPath) (scalar : SurfaceFieldEntityOperand)
+    (first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand := []) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) :=
+  CheckedValidationCondition.fromIteratedDateRangePluralOverlap model rowGroup
+    { scalar, list := { first, rest } }
+
+/- Either side may be the one the rule iterates, and both are refused from the enclosing scalar
+group. A starred list operand is locus-free and needs no row read, so a list of stars beside a scalar
+belongs to the scalar owner and is refused here. -/
+example :
+    (plural? ["Form", "Rows"] bareRow scalarExisting).isOk = true ∧
+      (plural? ["Form", "Rows"] scalarExisting bareRow).isOk = true ∧
+      (match plural? ["Form"] bareRow scalarExisting with
+        | .error (.fieldReference (.repeatableReference path)) =>
+            path == rowRange.path
+        | _ => false) = true ∧
+      (match plural? ["Form"] scalarExisting bareRow with
+        | .error (.fieldReference (.repeatableReference path)) =>
+            path == rowRange.path
+        | _ => false) = true ∧
+      (match plural? ["Form", "Rows"] scalarExisting (rowsStar "RowRange") with
+        | .error (.repeatableFieldRequired path) => path == existing.path
+        | _ => false) = true := by
+  native_decide
+
+/- The locus widening adds no admission of its own. The cross-side duplicate check still refuses one
+operand named on both sides, while the two declared spellings of one component set still cross, since
+this operator applies no component gate. -/
+example :
+    (plural? ["Form", "Rows"] bareRow bareRow).isOk = false ∧
+      (plural? ["Form", "Rows"] bareRow scalarDotted).isOk = true := by
+  native_decide
+
+private def pluralRowVerdicts? (scalar : SurfaceFieldEntityOperand)
+    (first : SurfaceFieldEntityOperand) (data : DocumentData) :
+    Option (List (Env × Verdict)) := do
+  let checked ← (plural? ["Form", "Rows"] scalar first).toOption
+  let rule ← (assembleResolvedValidationRule model checked rowRange.id
+    "iteratedPluralOverlap" .error { parts := [] }).toOption
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let outcomes ← (rule.evalOrdinaryRepeatableFull document).toOption
+  pure (outcomes.map fun entry => (entry.1, entry.2.verdict))
+
+/- The scalar-versus-list scan runs per row: the row whose range meets the scalar list member fires
+and the row that does not stay unfired, in either authored arrangement. -/
+example :
+    pluralRowVerdicts? bareRow scalarExisting overlapData =
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] ∧
+    pluralRowVerdicts? scalarExisting bareRow overlapData =
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] := by
+  native_decide
+
+/- An unusable scalar terminates before the list is read, so a row with no stored range does not
+fire even though its scalar peer is filled. -/
+example :
+    pluralRowVerdicts? bareRow scalarExisting {
+      instantiatedRows := [{ group := 10, path := [1] }]
+      cells := [storedCell existing.id [] "2024-06-15/2024-07-15"] } =
+      some [([(10, 1)], .notFired)] := by
+  native_decide
+
 end A12Kernel.Conformance.IteratedDateRangeCondition

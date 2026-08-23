@@ -161,7 +161,8 @@ private def fromIteratedDateRange (model : FlatModel) (rowGroup : GroupPath)
           | .storedOperand (.source error)
           | .construction (.start (.targetPolicy (.resolve error)))
           | .construction (.finish (.targetPolicy (.resolve error)))
-          | .overlap (.shape (.resolve error)) => .fieldReference error
+          | .overlap (.shape (.resolve error))
+          | .pluralOverlap (.shape (.resolve error)) => .fieldReference error
           | error => .iteratedDateRange error
       match condition.repeatableDeclarations, condition.operandDeclarations with
       | [], first :: _ => throw (.repeatableFieldRequired first.path)
@@ -211,6 +212,15 @@ def fromIteratedDateRangeBoundPair (model : FlatModel) (rowGroup : GroupPath)
   fromIteratedDateRange model rowGroup fun scope =>
     elaborateIteratedBoundPair model scope leftDeclaration.id leftBound
       rightDeclaration.id rightBound comparison
+
+/-- One plural DateRange overlap predicate read at the rule's own row. -/
+def fromIteratedDateRangePluralOverlap (model : FlatModel)
+    (rowGroup : GroupPath)
+    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) :=
+  fromIteratedDateRange model rowGroup fun scope =>
+    elaborateIteratedPluralOverlap model rowGroup scope authored
 
 /-- One constructed range compared with one stored range at the rule's own row. -/
 def fromIteratedDateRangeConstructionAgainstStored (model : FlatModel)

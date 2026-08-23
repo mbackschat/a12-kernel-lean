@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.DateRangeStoredComparison
-import A12Kernel.Elaboration.DateRangeOverlap
+import A12Kernel.Elaboration.AtLeastOneDateRangeOverlap
 import A12Kernel.Elaboration.DateRangeConstructionComparison
 
 /-! # DateRange conditions read at a rule's iterating row
@@ -60,6 +60,7 @@ inductive IteratedDateRangeCondition (model : FlatModel) where
   | boundPair (left right : CheckedDateRangeSourceBound model)
       (comparison : TemporalComparisonOp)
   | overlap (source : CheckedDateRangesOverlapSource model)
+  | pluralOverlap (source : CheckedAtLeastOneDateRangeOverlapsSource model)
   | constructionAgainstStored
       (comparison : CheckedIteratedConstructionStoredComparison model)
 
@@ -69,6 +70,7 @@ inductive IteratedDateRangeConditionElabError where
   | operand (cause : DirectDateRangeElabError)
   | formatsNotComparable (left right : TemporalComponents)
   | overlap (cause : DateRangesOverlapElabError)
+  | pluralOverlap (cause : AtLeastOneDateRangeOverlapsElabError)
   | construction (cause : DateRangeConstructionElabError)
   | storedOperand (cause : DirectDateRangeElabError)
   | constructionComponentMismatch (construction : DateRangeEndpointFormat)
@@ -86,6 +88,7 @@ def diagnostic? :
   | .operand cause => cause.diagnostic?
   | .formatsNotComparable _ _ => some .invalidCompareToDate
   | .overlap cause => cause.diagnostic?
+  | .pluralOverlap cause => cause.diagnostic?
   | .construction cause => cause.diagnostic?
   | .storedOperand cause => cause.diagnostic?
   | .constructionComponentMismatch _ _ => some .invalidCompareToDateRange
@@ -103,6 +106,13 @@ def operandDeclarations : IteratedDateRangeCondition model → List FlatFieldDec
   | .overlap source =>
       -- Only the unstarred operands are read at the enclosing row. A starred operand reopens its
       -- own levels, so it is neither bound by the reading scope nor a contributor to it.
+      source.shape.operands.filterMap fun operand =>
+        match operand with
+        | .field declaration _ => some declaration
+        | _ => none
+  | .pluralOverlap source =>
+      -- The distinguished scalar is always read at the row; among the list operands only the
+      -- unstarred ones are, for the same reason a star contributes nothing above.
       source.shape.operands.filterMap fun operand =>
         match operand with
         | .field declaration _ => some declaration
@@ -155,10 +165,15 @@ def verdictOf (condition : IteratedDateRangeCondition model)
       pure (comparison.evalObserved (left.selectFrom leftCell)
         (right.selectFrom rightCell))
   | .overlap source => do
-      let cores ← source.operands.mapM fun operand =>
-        operand.resolveValidationCore document outer
-      pure (evalDateRangesOverlap
-        (cores.map totalCheckedDateRangeOperandSemantic))
+      let result ← (source.evaluateCheckedDocument document outer).mapError
+        (DateRangesOverlapEvaluationError.toAddressing
+          { field := source.first.declaration.id, path := [] })
+      pure result.verdict
+  | .pluralOverlap source => do
+      let result ← (source.evaluateCheckedDocument document outer).mapError
+        (DateRangesOverlapEvaluationError.toAddressing
+          { field := source.scalar.declaration.id, path := [] })
+      pure result.verdict
   | .constructionAgainstStored comparison => do
       let start ← read comparison.construction.start.checked.declaration.id
       let finish ← read comparison.construction.finish.checked.declaration.id
@@ -237,6 +252,19 @@ def elaborateIteratedConstructionStoredComparison (model : FlatModel)
   else
     throw (.constructionComponentMismatch construction.start.format
       storedSource.format)
+
+/-- Resolve one plural overlap predicate whose unstarred operands the rule's own iteration may
+cross, on either side. The distinguished scalar and the list share the reading scope, and every other
+gate — the scalar's own shape rule, the cross-side duplicate and overlap checks, the uniform-year
+rule, and the measured Number-pair refusal — is the scalar operator's, unchanged. -/
+def elaborateIteratedPluralOverlap (model : FlatModel)
+    (declaringGroup : GroupPath) (scope : List RepeatableLevel)
+    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) :
+    Except IteratedDateRangeConditionElabError
+      (IteratedDateRangeCondition model) :=
+  (.pluralOverlap <$>
+    elaborateAtLeastOneDateRangeOverlapsSourceIn model declaringGroup scope
+      authored) |>.mapError .pluralOverlap
 
 /-- Resolve one singular overlap predicate whose unstarred operands the rule's own iteration may
 cross. Every gate is the scalar operator's, including the group refusal and the uniform-year rule;

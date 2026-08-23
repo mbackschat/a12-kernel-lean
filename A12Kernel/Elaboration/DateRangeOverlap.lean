@@ -309,6 +309,18 @@ inductive DateRangesOverlapEvaluationError where
   | incoherentDirectOperand (actualCells : Nat)
   deriving Repr, DecidableEq
 
+/-- Project this family's evaluation failure into the shared addressing channel a condition leaf
+carries. The three payload classes name a stored value that contradicts its own certificate, which no
+checked source can produce, and the incoherent-extent class names a direct operand that resolved to
+other than one cell; all four report as the shared payload class at the offending address rather than
+being dropped, so the standalone and leaf routes give one account of one certificate. -/
+def DateRangesOverlapEvaluationError.toAddressing (fallback : CellAddr) :
+    DateRangesOverlapEvaluationError → CheckedAddressingError
+  | .addressing error => error
+  | .sourceValueKind address | .sourceValueProfile address _
+  | .unresolvedRange address _ => .operandPayload address
+  | .incoherentDirectOperand _ => .operandPayload fallback
+
 /-- One resolved operand retains exact source and addressing metadata beside its pure overlap input. -/
 structure ResolvedCheckedDateRangesOverlapOperand (model : FlatModel) where
   private mk ::
@@ -329,25 +341,6 @@ def checkedDateRangeSlot
   | .value (Value.dateRange value) =>
       throw (.sourceValueProfile addressed.address value)
   | .value _ => throw (.sourceValueKind addressed.address)
-
-/-- Total slot projection for a consumer whose failure channel carries addressing failures only.
-Every payload `checkedDateRangeSlot` rejects is already excluded by the operand's own policy
-certificate, so the collapse is unreachable; skipping is also the only direction that cannot invent
-an overlap, which is the fail-closed choice for an error condition. -/
-def totalCheckedDateRangeSlot (addressed : CheckedAddressedCell) :
-    ResolvedDateRangeSlot :=
-  match observeCell .validation addressed.cell with
-  | .value (Value.dateRange (.exact value)) =>
-      match value.toResolvedDateRange? with
-      | some range => .kept range
-      | none => .skipped
-  | _ => .skipped
-
-/-- The total counterpart of the operand projection, retaining filter provenance unchanged. -/
-def totalCheckedDateRangeOperandSemantic
-    (core : ResolvedCheckedEntityOperandCore) : ResolvedDateRangeOperand :=
-  { slots := core.addressedCells.map totalCheckedDateRangeSlot
-    hasFilter := core.hasHaving }
 
 /-- Project one resolved operand core into the pure overlap operand, carrying its filter provenance. Shared with the plural operator's list side. -/
 def checkedDateRangeOperandSemantic
