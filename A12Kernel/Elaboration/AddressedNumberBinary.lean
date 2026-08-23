@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumberField
 
-/-! # Same-scope repeatable direct-Number binary arithmetic
+/-! # Repeatable direct-Number binary arithmetic
 
 This capsule retains two ordered checked Number sources, delegates each arithmetic node to the existing precision-50 semantics, and reuses the shared exact-address target owner.
 -/

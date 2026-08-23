@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumericLeaf
 
-/-! # Same-scope repeatable DateRange-endpoint component
+/-! # Repeatable DateRange-endpoint component
 
 One numeric Date component of a selected DateRange endpoint, computed per row into a repeatable
 Number target through the shared addressed numeric placement and the scalar computation evaluator.
@@ -31,7 +31,7 @@ def diagnostic? :
 
 end AddressedDateRangeBoundPartElabError
 
-/-- One same-scope repeatable endpoint-component operation certified against a validated model. The
+/-- One repeatable endpoint-component operation certified against a validated model. The
 source field is derived from the placement rather than carried, because a `DATE_RANGE` reference is
 determined by its declaration and the exposure certificate already re-derives the checked profile. -/
 structure CheckedAddressedDateRangeBoundPart (model : FlatModel) where

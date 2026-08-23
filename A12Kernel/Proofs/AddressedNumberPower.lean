@@ -1,7 +1,7 @@
 import A12Kernel.Proofs.AddressedNumberField
 import A12Kernel.Elaboration.AddressedNumberPower
 
-/-! # Same-scope repeatable direct-Number power certificate -/
+/-! # Repeatable direct-Number power certificate -/
 
 namespace A12Kernel
 

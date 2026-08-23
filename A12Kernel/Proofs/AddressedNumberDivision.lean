@@ -1,7 +1,7 @@
 import A12Kernel.Proofs.AddressedNumberField
 import A12Kernel.Elaboration.AddressedNumberDivision
 
-/-! # Same-scope repeatable direct-Number division certificate -/
+/-! # Repeatable direct-Number division certificate -/
 
 namespace A12Kernel
 

@@ -1,13 +1,13 @@
 import A12Kernel.Elaboration.NumericComputation.RunApplication
 
-/-! # Shared same-scope repeatable numeric-leaf placement
+/-! # Shared repeatable numeric-leaf placement
 
 This module owns the model-certified target/source placement and exact addressed execution seam shared by completed one-source numeric leaves. A specialized leaf still owns source-kind admission, static result scale, and the exact scalar evaluator it passes here.
 -/
 
 namespace A12Kernel
 
-/-- Fail-closed errors for the shared same-scope repeatable placement. These are library diagnostics, not claims about kernel diagnostic precedence. -/
+/-- Fail-closed errors for the shared repeatable placement. These are library diagnostics, not claims about kernel diagnostic precedence. -/
 inductive AddressedNumericPlacementElabError where
   | model (cause : ResolveError)
   | target (cause : ResolveError)
@@ -17,6 +17,7 @@ inductive AddressedNumericPlacementElabError where
   | targetPolicyUnavailable (path : List String)
   | targetNotRepeatable (path : List String)
   | targetSelfReference (field : FieldId)
+  /-- The source crosses a repeatable level the target's own scope does not bind. -/
   | scopeMismatch (target source : List String)
   deriving Repr, DecidableEq
 
@@ -36,7 +37,7 @@ structure CheckedAddressedNumericTarget (model : FlatModel) where
     targetDeclaration.toNumericTargetPolicy? = some targetPolicy
   targetRepeatable : targetDeclaration.repeatableScope ≠ []
 
-/-- The common checked placement of one Number target and one source declaration at the same nonempty repeatable scope. -/
+/-- The common checked placement of one Number target at a nonempty repeatable scope and one source declaration whose own repeatable levels that scope binds. -/
 structure CheckedAddressedNumericPlacement (model : FlatModel) where
   private mk ::
   target : CheckedAddressedNumericTarget model
@@ -47,9 +48,12 @@ structure CheckedAddressedNumericPlacement (model : FlatModel) where
         sourceReference =
       .ok sourceDeclaration
   sourceNotTarget : sourceDeclaration.id ≠ target.targetField
-  sameScope :
-    sourceDeclaration.repeatableScope =
-      target.targetDeclaration.repeatableScope
+  /-- Every repeatable level the source crosses is bound by the target's own scope, so the source
+  addresses at its own — possibly shorter — path inside the target's row. Measured: an outer-scope
+  source computing a row target is admitted, while a sibling or deeper source is `MVK_NO_WILDCARD`. -/
+  sourceScopeBound :
+    sourceDeclaration.repetitionBoundBy
+      target.targetDeclaration.repeatableScope = true
 
 namespace CheckedAddressedNumericPlacement
 
@@ -164,8 +168,8 @@ def checkAddressedNumericPlacement
                 if hSelf : sourceDeclaration.id == targetField then
                   .error (.targetSelfReference targetField)
                 else if hScope :
-                    sourceDeclaration.repeatableScope =
-                      targetDeclaration.repeatableScope then
+                    sourceDeclaration.repetitionBoundBy
+                      targetDeclaration.repeatableScope = true then
                   .ok {
                     target := {
                       declaringGroup
@@ -188,7 +192,7 @@ def checkAddressedNumericPlacement
                     sourceNotTarget := by
                       intro equal
                       simp [equal] at hSelf
-                    sameScope := hScope
+                    sourceScopeBound := hScope
                   }
                 else
                   .error (.scopeMismatch
@@ -247,10 +251,10 @@ end CheckedAddressedNumericPlacement
 
 namespace CheckedAddressedNumericTarget
 
-private def executeWithPathUsing (placement : CheckedAddressedNumericTarget model)
+private def executeAtEnvironmentUsing (placement : CheckedAddressedNumericTarget model)
     (input : CheckedDocument model)
     (checkTarget : NumericComputationResult → NumericTargetCheckResult)
-    (evaluate : List Nat →
+    (evaluate : Env →
       Except AddressedNumericLeafFault NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) := do
@@ -264,7 +268,7 @@ private def executeWithPathUsing (placement : CheckedAddressedNumericTarget mode
       field := placement.targetField
       path
     }
-    let result ← evaluate path
+    let result ← evaluate environment
     let outcome ←
       match checkTarget result with
       | .supported outcome => pure outcome
@@ -275,24 +279,25 @@ private def executeWithPathUsing (placement : CheckedAddressedNumericTarget mode
       source := input.numericTargetPlacementStateAt targetAddress
     }
 
-/-- Execute through the ordinary unsuppressed target checker. -/
-def executeWithPath (placement : CheckedAddressedNumericTarget model)
+/-- Execute through the ordinary unsuppressed target checker. The callback receives the row
+environment rather than the target's path, because a source addresses at its own scope. -/
+def executeAtEnvironment (placement : CheckedAddressedNumericTarget model)
     (input : CheckedDocument model)
-    (evaluate : List Nat →
+    (evaluate : Env →
       Except AddressedNumericLeafFault NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  placement.executeWithPathUsing input placement.targetPolicy.check evaluate
+  placement.executeAtEnvironmentUsing input placement.targetPolicy.check evaluate
 
 /-- Execute through this placement's own warning-suppressed target checker. -/
-def executeWithPathScaleWarningSuppressed
+def executeAtEnvironmentScaleWarningSuppressed
     (placement : CheckedAddressedNumericTarget model)
     (input : CheckedDocument model)
-    (evaluate : List Nat →
+    (evaluate : Env →
       Except AddressedNumericLeafFault NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  placement.executeWithPathUsing input
+  placement.executeAtEnvironmentUsing input
     placement.targetPolicy.checkWithScaleWarningSuppressed evaluate
 
 end CheckedAddressedNumericTarget
@@ -300,23 +305,23 @@ end CheckedAddressedNumericTarget
 namespace CheckedAddressedNumericPlacement
 
 /-- Execute through the target half's ordinary unsuppressed checker. -/
-def executeWithPath (placement : CheckedAddressedNumericPlacement model)
+def executeAtEnvironment (placement : CheckedAddressedNumericPlacement model)
     (input : CheckedDocument model)
-    (evaluate : List Nat →
+    (evaluate : Env →
       Except AddressedNumericLeafFault NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  placement.target.executeWithPath input evaluate
+  placement.target.executeAtEnvironment input evaluate
 
 /-- Execute through the target half's own warning-suppressed checker. -/
-def executeWithPathScaleWarningSuppressed
+def executeAtEnvironmentScaleWarningSuppressed
     (placement : CheckedAddressedNumericPlacement model)
     (input : CheckedDocument model)
-    (evaluate : List Nat →
+    (evaluate : Env →
       Except AddressedNumericLeafFault NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  placement.target.executeWithPathScaleWarningSuppressed input evaluate
+  placement.target.executeAtEnvironmentScaleWarningSuppressed input evaluate
 
 /-- Execute one source-cell evaluator through the shared path-indexed target owner. -/
 def executeWith (placement : CheckedAddressedNumericPlacement model)
@@ -325,10 +330,13 @@ def executeWith (placement : CheckedAddressedNumericPlacement model)
       Except NumericComputationFault NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  placement.executeWithPath input fun path => do
+  placement.executeAtEnvironment input fun environment => do
+    let sourcePath ←
+      (environment.pathForScope
+        placement.sourceDeclaration.repeatableScope).mapError .environment
     let sourceAddress : CellAddr := {
       field := placement.sourceDeclaration.id
-      path
+      path := sourcePath
     }
     let sourceCell ←
       (input.read sourceAddress).mapError .sourceRead

@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedFieldValueAsString
 
-/-! # Same-scope repeatable `FieldValueAsString` certificate -/
+/-! # Repeatable `FieldValueAsString` certificate -/
 
 namespace A12Kernel
 
@@ -22,13 +22,14 @@ theorem checkedAddressedFieldValueAsString_sound
       operation.targetDeclaration.repeatableScope ≠ [] ∧
       (∃ info,
         operation.sourceDeclaration.policy.kind = .number info) ∧
-      operation.sourceDeclaration.repeatableScope =
-        operation.targetDeclaration.repeatableScope := by
+      operation.sourceDeclaration.repetitionBoundBy
+
+        operation.targetDeclaration.repeatableScope = true := by
   exact ⟨operation.modelWellFormed, operation.targetOwned,
     operation.sourceResolved, operation.targetInDeclaringGroup,
     operation.targetString, operation.targetEvaluated,
     operation.targetOrdinary, operation.targetNotEnumerated,
     operation.targetRepeatable, operation.sourceNumber,
-    operation.sameScope⟩
+    operation.sourceScopeBound⟩
 
 end A12Kernel

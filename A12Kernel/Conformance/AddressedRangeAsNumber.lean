@@ -115,11 +115,9 @@ example :
         model ["Order", "Rows"] amount.id (bare "Wrong") 2 4 with
       | .error (.sourceNotEvaluatedString path) => path == wrong.path
       | _ => false) = true ∧
-    (match checkAddressedRangeAsNumber
-        model ["Order", "Rows"] amount.id (parent "OuterCode") 2 4 with
-      | .error (.placement (.scopeMismatch targetPath sourcePath)) =>
-          targetPath == amount.path && sourcePath == outerCode.path
-      | _ => false) = true := by
+    (checkAddressedRangeAsNumber
+      model ["Order", "Rows"] amount.id (parent "OuterCode") 2 4).isOk =
+        true := by
   native_decide
 
 /- Selection is 1-based and inclusive: `A012B[2..4]` is `012` and therefore 12; a filled nondigit selection and a missing source both produce real zero. -/

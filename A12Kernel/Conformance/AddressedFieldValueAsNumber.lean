@@ -149,7 +149,7 @@ private def addressAt (field : FieldId) (row : Nat) : CellAddr :=
 private def stored (unscaled : Int) : StoredNumber :=
   { unscaled, scale := 0 }
 
-/- The checked authoring route admits same-scope repeatable String, stored Enumeration, and named category conversion; wrong-kind and noniterating String sources fail closed. -/
+/- The checked authoring route admits repeatable String, stored Enumeration, and named category conversion; wrong-kind and noniterating String sources fail closed. -/
 example :
     operation?.isSome = true ∧
     storedEnumerationOperation?.isSome = true ∧
@@ -158,11 +158,9 @@ example :
         model ["Order", "Rows"] amount.id (.direct (bare "Wrong")) with
       | .error (.sourceKindMismatch path .number) => path == wrong.path
       | _ => false) = true ∧
-    (match checkAddressedFieldValueAsNumber
-        model ["Order", "Rows"] amount.id (.direct (parent "OuterCode")) with
-      | .error (.placement (.scopeMismatch targetPath sourcePath)) =>
-          targetPath == amount.path && sourcePath == outerCode.path
-      | _ => false) = true := by
+    (checkAddressedFieldValueAsNumber
+      model ["Order", "Rows"] amount.id (.direct (parent "OuterCode"))).isOk =
+        true := by
   native_decide
 
 /- Stored and category conversion retain distinct selected tokens: stored `1` becomes `1`, while category `Numeric` becomes `.5`. -/

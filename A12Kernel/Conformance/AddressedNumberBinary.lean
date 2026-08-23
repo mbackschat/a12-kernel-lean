@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumberBinary
 
-/-! # Same-scope repeatable direct-Number binary arithmetic locks -/
+/-! # Repeatable direct-Number binary arithmetic locks, including one outer-scope operand -/
 
 namespace A12Kernel.Conformance.AddressedNumberBinary
 
@@ -25,9 +25,12 @@ private def product : FlatFieldDecl := {
   numericTargetConstraints := { maximum := some (9999 / 1000) }
 }
 private def wrongScale := number 5 "WrongScale" 1
+private def outerLeft : FlatFieldDecl := {
+  number 6 "Outer" 1 with groupPath := ["Probe"], repeatableScope := []
+}
 
 private def model : FlatModel := {
-  fields := [left, right, additive, product, wrongScale]
+  fields := [left, right, additive, product, wrongScale, outerLeft]
   repeatableGroups := [{
     level := 10
     path := ["Probe", "Rows"]
@@ -77,6 +80,9 @@ private def operation? (target : FlatFieldDecl) (op : NumericArithmeticOp) :
     Option (CheckedAddressedNumberBinary model) :=
   (checkAddressedNumberBinary model ["Probe", "Rows"] target.id
     (bare "A") (bare "B") op).toOption
+
+private def parent (field : String) : SurfaceFieldPath :=
+  { base := .relative 1, groups := [], field }
 
 private def addr (field : FieldId) (row : Nat) : CellAddr :=
   { field, path := [row] }
@@ -152,5 +158,30 @@ example :
         [addr product.id 5],
         [addr product.id 7]) := by
   native_decide
+
+private def outerPairOutcomes? :
+    Option (List (CellAddr × NumericTargetOutcome)) := do
+  let operation ←
+    (checkAddressedNumberBinary model ["Probe", "Rows"] additive.id
+      (parent "Outer") (bare "B") .add).toOption
+  let input ← input? [
+    { address := { field := outerLeft.id, path := [] }, stored := "0.5"
+      raw := .parsed (.num (1 / 2)) }]
+  let outcomes ← (operation.execute input).toOption
+  pure (outcomes.map fun entry => (entry.targetField, entry.outcome))
+
+/- The pair reads each operand at its **own** scope: the outer left operand resolves once at the
+document root and combines with every row's own right operand. This is the second independent read
+site the widening touched, and borrowing the target's path here would have read the outer operand as
+empty in every row. -/
+example : outerPairOutcomes? = some [
+    (addr additive.id 1, .accepted (stored 175 2)),
+    (addr additive.id 2, .accepted (stored 575 2)),
+    (addr additive.id 3, .accepted (stored 5 1)),
+    (addr additive.id 4, .accepted (stored 5 1)),
+    (addr additive.id 5, .inheritedPoison .declaredConstraint),
+    (addr additive.id 6, .inheritedPoison .declaredConstraint),
+    (addr additive.id 7, .accepted (stored 35 1))
+  ] := by native_decide
 
 end A12Kernel.Conformance.AddressedNumberBinary

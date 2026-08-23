@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumericLeaf
 
-/-! # Same-scope repeatable direct Number-field computation -/
+/-! # Repeatable direct Number-field computation -/
 
 namespace A12Kernel
 
@@ -10,7 +10,7 @@ inductive AddressedNumberSourceElabError where
   | sourceNotNumber (path : List String) (actual : SurfaceScalarKind)
   deriving Repr, DecidableEq
 
-/-- One direct Number source certified on the shared same-scope repeatable placement. -/
+/-- One direct Number source certified on the shared repeatable placement. -/
 structure CheckedAddressedNumberSource (model : FlatModel) where
   private mk ::
   placement : CheckedAddressedNumericPlacement model
@@ -34,7 +34,7 @@ def checkAddressedNumberSource
           placement.sourceDeclaration.policy.kind.surfaceKind)
     | some source => .ok { placement, source, sourceCertified := hSource }
 
-/-- Fail-closed errors shared by same-scope operations over two ordered direct Number sources. -/
+/-- Fail-closed errors shared by operations over two ordered direct Number sources. -/
 inductive AddressedNumberPairElabError where
   | left (cause : AddressedNumberSourceElabError)
   | right (cause : AddressedNumberSourceElabError)
@@ -105,12 +105,18 @@ abbrev AddressedNumberFieldFault := AddressedNumericLeafFault
 
 namespace CheckedAddressedNumberSource
 
-/-- Read and evaluate this direct Number source at one already-certified target path through a caller-supplied exact-address view. -/
-def evaluateAtPathWithRead
+/-- Read and evaluate this direct Number source at the row environment through a caller-supplied
+exact-address view. The source addresses at its **own** repeatable scope, which the placement
+certifies the target's scope binds, so an outer-scope operand resolves to its own shorter path
+rather than borrowing the target's. -/
+def evaluateAtEnvironmentWithRead
     (source : CheckedAddressedNumberSource model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
-    (path : List Nat) :
+    (environment : Env) :
     Except AddressedNumericLeafFault NumericComputationResult := do
+  let path ←
+    (environment.pathForScope
+      source.placement.sourceDeclaration.repeatableScope).mapError .environment
   let address : CellAddr := {
     field := source.placement.sourceDeclaration.id
     path
@@ -120,32 +126,32 @@ def evaluateAtPathWithRead
     (.field source.placement.sourceDeclaration)).mapError .evaluation
 
 /-- Read and evaluate this direct Number source against the immutable checked document. -/
-def evaluateAtPath
+def evaluateAtEnvironment
     (source : CheckedAddressedNumberSource model)
-    (input : CheckedDocument model) (path : List Nat) :
+    (input : CheckedDocument model) (environment : Env) :
     Except AddressedNumericLeafFault NumericComputationResult :=
-  source.evaluateAtPathWithRead input.read path
+  source.evaluateAtEnvironmentWithRead input.read environment
 
 end CheckedAddressedNumberSource
 
 namespace CheckedAddressedNumberPair
 
-/-- Evaluate both sources at one already-certified row in authored order. A left poison prevents the right source from being reached; the caller supplies the scalar operation over reached outcomes. -/
-def evaluateAtPath
+/-- Evaluate both sources at one already-certified row environment in authored order, each at its own repeatable scope. A left poison prevents the right source from being reached; the caller supplies the scalar operation over reached outcomes. -/
+def evaluateAtEnvironment
     (pair : CheckedAddressedNumberPair model)
     (input : CheckedDocument model)
     (combine : NumericComputationResult → NumericComputationResult →
       NumericComputationResult)
-    (path : List Nat) :
+    (environment : Env) :
     Except AddressedNumericLeafFault NumericComputationResult := do
-  let leftResult ← pair.left.evaluateAtPath input path
+  let leftResult ← pair.left.evaluateAtEnvironment input environment
   match leftResult with
   | .poison cause => pure (.poison cause)
   | .value _ | .domainFailure =>
-      let rightResult ← pair.right.evaluateAtPath input path
+      let rightResult ← pair.right.evaluateAtEnvironment input environment
       pure (combine leftResult rightResult)
 
-/-- Execute two direct Number sources in authored order through their shared exact target path and ordinary target checker. A left poison prevents the right source from being reached. -/
+/-- Execute two direct Number sources in authored order at the same row environment through the ordinary target checker. A left poison prevents the right source from being reached. -/
 def executeWith
     (pair : CheckedAddressedNumberPair model)
     (input : CheckedDocument model)
@@ -153,8 +159,8 @@ def executeWith
       NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  pair.left.placement.executeWithPath input
-    (pair.evaluateAtPath input combine)
+  pair.left.placement.executeAtEnvironment input
+    (pair.evaluateAtEnvironment input combine)
 
 /-- Execute two direct Number sources through the same target's warning-suppressed checker. -/
 def executeWithScaleWarningSuppressed
@@ -164,8 +170,8 @@ def executeWithScaleWarningSuppressed
       NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  pair.left.placement.executeWithPathScaleWarningSuppressed input
-    (pair.evaluateAtPath input combine)
+  pair.left.placement.executeAtEnvironmentScaleWarningSuppressed input
+    (pair.evaluateAtEnvironment input combine)
 
 private def resultFromOutcomes
     (outcomes : List (SourcedNumericTargetOutcome CellAddr))
@@ -221,8 +227,8 @@ def executeWithRead (operation : CheckedAddressedNumberField model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedNumberFieldFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  operation.placement.target.executeWithPath input
-    (operation.toCheckedAddressedNumberSource.evaluateAtPathWithRead read)
+  operation.placement.target.executeAtEnvironment input
+    (operation.toCheckedAddressedNumberSource.evaluateAtEnvironmentWithRead read)
 
 /-- Execute the certified direct Number read through the shared addressed placement. -/
 def execute (operation : CheckedAddressedNumberField model)

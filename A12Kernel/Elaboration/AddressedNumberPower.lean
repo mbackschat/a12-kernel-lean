@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumberField
 
-/-! # Same-scope repeatable direct-Number power
+/-! # Repeatable direct-Number power
 
 This capsule retains an ordered direct Number base and exponent, certifies the exponent's static scale-0 admission and the required result-scale suppression, delegates staged power evaluation to the existing scalar semantics, and selects the exact target placement's warning-suppressed checker.
 -/

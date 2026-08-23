@@ -419,6 +419,18 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: two component sets, one unconfigured model, DATEFRAGMENT endpoints only, and one endpoint pair per set. No full-Date or year-bearing fragment construction in this batch, no Base-Year model, no formal-input branch, and no semantic-index endpoint. The construction-versus-stored *comparison* inherits the same widened match without an observation of its own.
 - `sync`: locally originated as a Lean correction. The canonical clause already stated that assignment compares component sets rather than lexical profiles, so the rule is unchanged; the outbound half is the spelling coverage and the gate order carried by [`SPEC-2026-08-23-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-23-03--the-daterange-computations-source-and-target-gates-are-ordered-and-both-spellings-participate).
 
+<a id="src-computation-operand-scope"></a>
+#### Which repeatable scopes a computation operand may sit in, measured locally 2026-08-23
+
+- `revision`: clean a12-dmkits `108d047b787f0e049dcd2f4902f24d7523347a00`, dmtool `0.13.0`, kernel `30.8.1` built and runtime; the sibling worktree was empty before and after every command.
+- `route`: one dmtool-authored model, `model check` valid, carries a root scope, a repeatable group `Rows` (max 5), a **sibling** repeatable group `Others` (max 3), and a **nested** repeatable group `Rows/Inner` (max 3), with a Number, a String, and a Date at the root and Numbers at each repeatable level. Thirteen `computation add --dry-run` decisions vary only where the operand sits and which target it writes.
+- `admission-claim`: the gate is the computed target's own repetition scope binding every repeatable level the operand crosses. Admitted: a root operand into a `Rows` target, a root operand into a `Rows/Inner` target, and a `Rows` operand into a `Rows/Inner` target. Refused `MVK_NO_WILDCARD`: an `Others` operand into a `Rows` target, and a `Rows/Inner` operand into a `Rows` target. `Sum(Inner*/InnerNum)` into that same `Rows` target is admitted, which separates the refusal from a blanket ban on deeper operands and identifies the star as the flattening route.
+- `kind-independence-claim`: the gate is the scope and not the operand kind. A root operand into a `Rows` target is admitted as a direct Number assignment, under `Length`, under `MonthFromDate`, under `Abs`, in a mixed outer-plus-row arithmetic pair, and under `FieldValueAsString` into a row String target.
+- `integrity`: model `0dbe323c4232c2cfd87dbda96cbd06fd1cd1b2e190be3cb9c683ae2f4b7f486d`. A computation dry run persists nothing, so the model file is the whole retained input; the hashes for the intermediate states this batch grew through are not retained, because each row was re-decided against the final model.
+- `limit`: static legality only, one sibling group, one nesting level, and no `--dry-run`-free persistence. No runtime observation of an outer operand's computed value through the kernel; the own-path read is locked internally instead, with its wrong-account separator named in the cases.
+- `local-divergence`: one, and it spanned eleven source families. Every addressed one-source placement required the operand's scope to **equal** the target's, so every Kernel-legal form-level constant feeding a row was refused. The shared placement now carries the binding relation, and the two read sites that derived the operand's address from the target's path now derive it from the operand's own scope.
+- `sync`: locally originated and behavioral. Recorded as `SPEC-2026-08-23-06`.
+
 <a id="src-date-range-bound-component-runtime"></a>
 #### What a computed DateRange-endpoint component evaluates to, measured locally 2026-08-23
 

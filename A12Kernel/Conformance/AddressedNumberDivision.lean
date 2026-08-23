@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumberDivision
 
-/-! # Same-scope repeatable direct-Number division locks -/
+/-! # Repeatable direct-Number division locks -/
 
 namespace A12Kernel.Conformance.AddressedNumberDivision
 

@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumericLeaf
 
-/-! # Same-scope repeatable String `Length` — one checked evaluated String source over the shared addressed numeric placement and scalar evaluator. -/
+/-! # Repeatable String `Length` — one checked evaluated String source over the shared addressed numeric placement and scalar evaluator. -/
 
 namespace A12Kernel
 
@@ -11,7 +11,7 @@ inductive AddressedStringLengthElabError where
   | scaleMismatch (target source : Nat)
   deriving Repr, DecidableEq
 
-/-- One same-scope repeatable String-length operation certified against a validated model. -/
+/-- One repeatable String-length operation certified against a validated model. -/
 structure CheckedAddressedStringLength (model : FlatModel) where
   private mk ::
   placement : CheckedAddressedNumericPlacement model

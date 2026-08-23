@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumericLeaf
 
-/-! # Same-scope repeatable `RangeAsNumber`
+/-! # Repeatable `RangeAsNumber`
 
 This capsule admits one ordinary repeatable Number target whose sole expression is `RangeAsNumber` over a checked evaluated String declaration in the same repeatable scope. It specializes the shared addressed numeric placement with one exact 1-based inclusive interval and the existing scalar evaluator.
 -/
@@ -15,7 +15,7 @@ inductive AddressedRangeAsNumberElabError where
   | scaleMismatch (target source : Nat)
   deriving Repr, DecidableEq
 
-/-- One exact same-scope repeatable String-range-to-Number operation certified against a validated model. -/
+/-- One exact repeatable String-range-to-Number operation certified against a validated model. -/
 structure CheckedAddressedRangeAsNumber (model : FlatModel) where
   private mk ::
   placement : CheckedAddressedNumericPlacement model

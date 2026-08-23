@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.AddressedNumericOperationConsumer
 
 /-! # Addressed numeric-operation Analyze/Transform probe
 
-The bounded probe consumes checked same-scope repeatable conversion, direct Number, root `Abs`, root Round, and field/literal/operand-local-wrapper/one-level-nested operand-list extrema. It recovers exact bounded read/write impact, compares transformation-sensitive fingerprints without claiming equivalence, and exercises exact identity as the sole admitted Transform.
+The bounded probe consumes checked repeatable conversion, direct Number, root `Abs`, root Round, and field/literal/operand-local-wrapper/one-level-nested operand-list extrema. It recovers exact bounded read/write impact, compares transformation-sensitive fingerprints without claiming equivalence, and exercises exact identity as the sole admitted Transform.
 -/
 
 namespace A12Kernel.Conformance.AddressedNumericOperationConsumer

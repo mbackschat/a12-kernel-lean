@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumberExtremum
 
-/-! # Same-scope repeatable bounded Number extrema locks -/
+/-! # Repeatable bounded Number extrema locks -/
 
 namespace A12Kernel.Conformance.AddressedNumberExtremum
 

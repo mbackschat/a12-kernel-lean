@@ -1,7 +1,7 @@
 import A12Kernel.Proofs.AddressedNumericLeaf
 import A12Kernel.Elaboration.AddressedStringLength
 
-/-! # Same-scope repeatable String `Length` certificate -/
+/-! # Repeatable String `Length` certificate -/
 
 namespace A12Kernel
 
@@ -22,8 +22,9 @@ theorem checkedAddressedStringLength_sound
       operation.placement.targetDeclaration.repeatableScope ≠ [] ∧
       operation.placement.sourceDeclaration.id ≠
         operation.placement.targetField ∧
-      operation.placement.sourceDeclaration.repeatableScope =
-        operation.placement.targetDeclaration.repeatableScope) ∧
+      operation.placement.sourceDeclaration.repetitionBoundBy
+
+        operation.placement.targetDeclaration.repeatableScope = true) ∧
       operation.placement.sourceDeclaration.toStringValueField? =
         some operation.source ∧
       operation.placement.targetPolicy.info.scale = 0 := by

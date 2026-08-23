@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumberExtremum
 
-/-! # Operand-local field-pair arithmetic inside same-scope repeatable Number extrema -/
+/-! # Operand-local field-pair arithmetic inside repeatable Number extrema -/
 
 namespace A12Kernel.Conformance.AddressedNumberExtremumArithmetic
 

@@ -1,7 +1,7 @@
 import A12Kernel.Proofs.AddressedNumericLeaf
 import A12Kernel.Elaboration.AddressedRangeAsNumber
 
-/-! # Same-scope repeatable `RangeAsNumber` certificate -/
+/-! # Repeatable `RangeAsNumber` certificate -/
 
 namespace A12Kernel
 
@@ -22,8 +22,9 @@ theorem checkedAddressedRangeAsNumber_sound
       operation.placement.targetDeclaration.repeatableScope ≠ [] ∧
       operation.placement.sourceDeclaration.id ≠
         operation.placement.targetField ∧
-      operation.placement.sourceDeclaration.repeatableScope =
-        operation.placement.targetDeclaration.repeatableScope) ∧
+      operation.placement.sourceDeclaration.repetitionBoundBy
+
+        operation.placement.targetDeclaration.repeatableScope = true) ∧
       operation.placement.sourceDeclaration.toStringValueField? =
         some operation.source ∧
       validStringRange operation.start operation.finish = true ∧

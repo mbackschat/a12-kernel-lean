@@ -32,6 +32,14 @@ private def outer : FlatFieldDecl := {
   source with id := 4, name := "Outer", groupPath := ["Order"], repeatableScope := []
 }
 
+private def siblingSource : FlatFieldDecl := {
+  source with
+    id := 6
+    name := "Sibling"
+    groupPath := ["Order", "Others"]
+    repeatableScope := [20]
+}
+
 private def scaleZero : FlatFieldDecl := {
   target with
     id := 5
@@ -41,8 +49,10 @@ private def scaleZero : FlatFieldDecl := {
 }
 
 private def model : FlatModel := {
-  fields := [source, target, wrong, outer, scaleZero]
-  repeatableGroups := [{ level := 10, path := ["Order", "Rows"], repeatability := some 4 }]
+  fields := [source, target, wrong, outer, siblingSource, scaleZero]
+  repeatableGroups := [
+    { level := 10, path := ["Order", "Rows"], repeatability := some 4 },
+    { level := 20, path := ["Order", "Others"], repeatability := some 3 }]
 }
 
 private def prepared : PreparedFlatStringContext model builtinStringPatternCompiler :=
@@ -54,6 +64,9 @@ private def bare (field : String) : SurfaceFieldPath :=
 
 private def parent (field : String) : SurfaceFieldPath :=
   { base := .relative 1, groups := [], field }
+
+private def sibling (field : String) : SurfaceFieldPath :=
+  { base := .relative 1, groups := ["Others"], field }
 
 private def operation? : Option (CheckedAddressedNumberField model) :=
   (checkAddressedNumberField model ["Order", "Rows"] target.id
@@ -91,7 +104,11 @@ private def addr (field : FieldId) (row : Nat) : CellAddr :=
 private def stored (unscaled : Int) (scale : Nat) : StoredNumber :=
   { unscaled, scale }
 
-/- Exact source and target scales are part of checked authoring; wrong kind and scope fail separately. -/
+/- Exact source and target scales are part of checked authoring; wrong kind and unbound scope fail
+separately. The **outer-scope** source is admitted: the placement requires only that the target's own
+scope bind every repeatable level the source crosses, which the Kernel confirms by admitting an
+outer-scope operand and refusing a sibling one. This is the shared placement's branch, so the other
+one-source leaves assert admission alone rather than repeating the refusal. -/
 example :
     operation?.isSome = true ∧
     (match checkAddressedNumberField model ["Order", "Rows"] target.id (bare "Wrong") with
@@ -100,9 +117,12 @@ example :
     (match checkAddressedNumberField model ["Order", "Rows"] scaleZero.id (bare "Source") with
       | .error (.scaleMismatch 0 2) => true
       | _ => false) = true ∧
-    (match checkAddressedNumberField model ["Order", "Rows"] target.id (parent "Outer") with
+    (checkAddressedNumberField model ["Order", "Rows"] target.id
+      (parent "Outer")).isOk = true ∧
+    (match checkAddressedNumberField model ["Order", "Rows"] target.id
+        (sibling "Sibling") with
       | .error (.placement (.scopeMismatch targetPath sourcePath)) =>
-          targetPath == target.path && sourcePath == outer.path
+          targetPath == target.path && sourcePath == siblingSource.path
       | _ => false) = true := by
   native_decide
 
@@ -126,6 +146,52 @@ example :
           attempted := stored 1234 2
           cause := .aboveMaximum
         }]) := by
+  native_decide
+
+private def outerOperation? : Option (CheckedAddressedNumberField model) :=
+  (checkAddressedNumberField model ["Order", "Rows"] target.id
+    (parent "Outer")).toOption
+
+private def outerOutcomes? (cells : List ClassifiedCellInput) :
+    Option (List (CellAddr × NumericTargetOutcome)) := do
+  let operation ← outerOperation?
+  let input ← input? cells
+  let executed ← (operation.execute input).toOption
+  pure (executed.map fun entry => (entry.targetField, entry.outcome))
+
+/- An outer-scope source is read at its **own** path, so one root cell reaches every target row. This
+is what the widening buys and what borrowing the target's path would break: addressing `Outer` at
+`[1]…[4]` would find no cell and read every row as empty. -/
+example :
+    outerOutcomes? [
+      { address := { field := outer.id, path := [] }, stored := "7.50"
+        raw := .parsed (.num (15 / 2)) }
+    ] = some [
+      (addr target.id 1, .accepted (stored 75 1)),
+      (addr target.id 2, .accepted (stored 75 1)),
+      (addr target.id 3, .accepted (stored 75 1)),
+      (addr target.id 4, .accepted (stored 75 1))
+    ] := by
+  native_decide
+
+/- The same source read at its own path keeps its own emptiness and its own formal invalidity, which
+every row then inherits rather than only the row that happens to share its index. -/
+example :
+    outerOutcomes? [] = some [
+      (addr target.id 1, .accepted (stored 0 0)),
+      (addr target.id 2, .accepted (stored 0 0)),
+      (addr target.id 3, .accepted (stored 0 0)),
+      (addr target.id 4, .accepted (stored 0 0))
+    ] ∧
+    outerOutcomes? [
+      { address := { field := outer.id, path := [] }, stored := "bad"
+        raw := .rejected .malformed }
+    ] = some [
+      (addr target.id 1, .inheritedPoison .malformed),
+      (addr target.id 2, .inheritedPoison .malformed),
+      (addr target.id 3, .inheritedPoison .malformed),
+      (addr target.id 4, .inheritedPoison .malformed)
+    ] := by
   native_decide
 
 end A12Kernel.Conformance.AddressedNumberField

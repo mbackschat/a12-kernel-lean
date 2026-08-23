@@ -1,7 +1,7 @@
 import A12Kernel.Proofs.AddressedNumberField
 import A12Kernel.Elaboration.AddressedNumberBinary
 
-/-! # Same-scope repeatable direct-Number binary arithmetic certificate -/
+/-! # Repeatable direct-Number binary arithmetic certificate -/
 
 namespace A12Kernel
 

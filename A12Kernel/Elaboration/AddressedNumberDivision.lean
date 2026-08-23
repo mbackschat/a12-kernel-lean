@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumberField
 
-/-! # Same-scope repeatable direct-Number division
+/-! # Repeatable direct-Number division
 
 This capsule retains two ordered checked Number sources and the required assignment-scale suppression, delegates quotient evaluation to the existing precision-50 semantics, and selects the existing warning-suppressed target checker at one exact addressed boundary.
 -/

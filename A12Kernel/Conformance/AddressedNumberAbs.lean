@@ -97,7 +97,7 @@ private def addr (field : FieldId) (row : Nat) : CellAddr :=
 private def stored (unscaled : Int) (scale : Nat) : StoredNumber :=
   { unscaled, scale }
 
-/- `Abs` shares the direct Number source certificate: one same-scope Number source and an exact target/source scale. -/
+/- `Abs` shares the direct Number source certificate: one Number source and an exact target/source scale. -/
 example :
     operation?.isSome = true ∧
     (match checkAddressedNumberAbs model ["Order", "Rows"] target.id (bare "Wrong") with
@@ -106,10 +106,8 @@ example :
     (match checkAddressedNumberAbs model ["Order", "Rows"] scaleZero.id (bare "Source") with
       | .error (.scaleMismatch 0 2) => true
       | _ => false) = true ∧
-    (match checkAddressedNumberAbs model ["Order", "Rows"] target.id (parent "Outer") with
-      | .error (.placement (.scopeMismatch targetPath sourcePath)) =>
-          targetPath == target.path && sourcePath == outer.path
-      | _ => false) = true := by
+    (checkAddressedNumberAbs model ["Order", "Rows"] target.id
+      (parent "Outer")).isOk = true := by
   native_decide
 
 /- Absolute value transforms the signed source exactly once while retaining empty zero, poison, target rejection, and row keys. -/

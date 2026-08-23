@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumberField
 
-/-! # Same-scope repeatable Number `Abs`
+/-! # Repeatable Number `Abs`
 
 This capsule retains the already-certified direct Number source and target placement, then evaluates one absolute-value node through the existing scalar expression semantics. It introduces no second Number-source representation.
 -/

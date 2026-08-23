@@ -77,6 +77,23 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 **The producer side now discloses its rewrites, which is what this project asked for.** The 2026-08-12 handbacks name the rebase, list the branch SHAs that no longer exist as reachable objects and must not be cited, and give revisions read off `main` as the last step before sending. Every revision they cite resolved from `main` when checked here on 2026-08-12: `06b84701`, `b99e43e1`, `4b244b84`, `73bc4a04`, and `ae567007`. A handback dated 2026-08-12 or later is therefore discharged against its own cited revision, while an earlier one still needs the maintained-owner route above. The reverse error is now on record too: `2bffcb10` was reported dead from here and resolves fine, which the 2026-08-10 boundary already predicted for it, so a reachability measurement taken against a stale checkout is itself a claim with a date on it.
 
+<a id="spec-2026-08-23-06"></a>
+<a id="spec-2026-08-23-06--a-computation-operand-is-admitted-by-the-targets-scope-binding-its-levels-not-by-scope-equality"></a>
+
+### SPEC-2026-08-23-06 - A computation operand is admitted by the target's scope binding its levels, not by scope equality
+
+- **Status:** pending
+- **Kind:** semantic addition, locally originated and locally measured
+- **Local revision:** resolve with the introducing-commit recipe in the ledger contract above; the introducing commit cannot name itself.
+- **a12-dmkits basis revision:** `108d047b787f0e049dcd2f4902f24d7523347a00` (clean before and after every command)
+- **Kernel behavior:** 30.8.1 built and runtime, observed through source-shipped dmtool `0.13.0` with `computation add --dry-run`, the real consistency oracle
+- **Canonical clause:** [`09-computations.md`](../spec/09-computations.md) §5, the scope bullet
+- **Delta:** the clause stated the iteration scope and said nothing about which operands that scope admits. The rule is per operand: the computed target's repetition scope must bind every repeatable level the operand crosses. A **nonrepeatable** operand feeding a repeatable target is admitted, as is an operand one level up feeding a target two levels down; an operand in a **sibling** repeatable group or **below** the target is refused `MVK_NO_WILDCARD`, for which the starred aggregate is the separate flattening route. Measured across five operand shapes on one model — a direct Number, `Length`, `MonthFromDate`, `Abs`, and a mixed outer-plus-row arithmetic pair — so it is the scope gate and not an operand-kind rule.
+- **Delta:** the runtime consequence follows and is stated because an implementation can get it wrong silently: each operand is read at its **own** path inside the current target row. One outer cell therefore reaches every target row and carries its own emptiness and its own formal invalidity to all of them. Deriving the operand's address from the target's path instead reads an outer operand as empty in every row, which is a wrong value rather than a refusal.
+- **Basis:** thirteen `computation add --dry-run` decisions on one Kernel-valid model carrying a root scope, a repeatable group, a sibling repeatable group, and a nested repeatable group, recorded at the [operand-scope checkpoint](SOURCES.md#src-computation-operand-scope). The starred-aggregate control over the nested group is admitted on the same model, which is what separates the refusal from a blanket ban on deeper operands.
+- **Compatibility:** a checker built on scope equality rejects Kernel-legal models — every computation reading a form-level constant into a row — and this project did exactly that across eleven addressed source families. An implementation that admits the shape but addresses the operand at the target's path computes the wrong value silently, which is the worse of the two failures.
+- **Acceptance:** maintained documentation states the per-operand admission rule with both refusal shapes and the own-path runtime read; the separator rows are Kernel-locked, namely one admitted outer operand, one refused sibling, one refused deeper operand, and the admitted starred aggregate over that same deeper group; and the handback supplies the reviewed revision plus per-surface disposition.
+
 <a id="spec-2026-08-23-05"></a>
 <a id="spec-2026-08-23-05--a-declared-base-year-supplements-the-year-component-of-a-selected-daterange-endpoint"></a>
 

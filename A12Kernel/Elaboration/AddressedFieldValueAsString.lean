@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.StringComputationRunApplication
 
-/-! # Same-scope repeatable `FieldValueAsString`
+/-! # Repeatable `FieldValueAsString`
 
 This capsule admits one ordinary repeatable String target whose sole expression is `FieldValueAsString` over a Number declaration in the same repeatable scope. Execution enumerates physically instantiated target environments, reads the Number through the checked document's storage-regime-preserving text boundary, and retains the exact target address through result classification and application.
 
@@ -9,7 +9,7 @@ Other String expressions, cross-scope reads, guards, cascades, and scheduling re
 
 namespace A12Kernel
 
-/-- Fail-closed errors for the bounded same-scope repeatable placement. These are library diagnostics, not claims about kernel diagnostic precedence. -/
+/-- Fail-closed errors for the bounded repeatable placement. These are library diagnostics, not claims about kernel diagnostic precedence. -/
 inductive AddressedFieldValueAsStringElabError where
   | model (cause : ResolveError)
   | target (cause : ResolveError)
@@ -24,7 +24,7 @@ inductive AddressedFieldValueAsStringElabError where
   | scopeMismatch (target source : List String)
   deriving Repr, DecidableEq
 
-/-- One exact same-scope repeatable Number-to-String operation certified against a validated model. -/
+/-- One exact repeatable Number-to-String operation certified against a validated model. -/
 structure CheckedAddressedFieldValueAsString (model : FlatModel) where
   private mk ::
   declaringGroup : GroupPath
@@ -51,8 +51,11 @@ structure CheckedAddressedFieldValueAsString (model : FlatModel) where
   sourceNumber :
     ∃ info, sourceDeclaration.policy.kind = .number info
   targetRepeatable : targetDeclaration.repeatableScope ≠ []
-  sameScope :
-    sourceDeclaration.repeatableScope = targetDeclaration.repeatableScope
+  /-- The target's own scope binds every repeatable level the source crosses, so an outer-scope
+  source reads once at its own shorter path and reaches every target row. -/
+  sourceScopeBound :
+    sourceDeclaration.repetitionBoundBy
+      targetDeclaration.repeatableScope = true
 
 /-- Validate the exact repeatable placement without widening the existing nonrepeatable String-expression elaborator. -/
 def checkAddressedFieldValueAsString
@@ -93,8 +96,8 @@ def checkAddressedFieldValueAsString
                         sourceDeclaration.policy.kind with
                     | .number info =>
                       if hScope :
-                          sourceDeclaration.repeatableScope =
-                            targetDeclaration.repeatableScope then
+                          sourceDeclaration.repetitionBoundBy
+                            targetDeclaration.repeatableScope = true then
                         .ok {
                           declaringGroup
                           sourceReference
@@ -115,7 +118,7 @@ def checkAddressedFieldValueAsString
                           targetRepeatable := by
                             intro empty
                             simp [empty] at hRepeatable
-                          sameScope := hScope
+                          sourceScopeBound := hScope
                         }
                       else
                         .error (.scopeMismatch
@@ -169,9 +172,12 @@ def execute (operation : CheckedAddressedFieldValueAsString model)
     let path ←
       (environment.pathForScope
         operation.targetDeclaration.repeatableScope).mapError .environment
+    let sourcePath ←
+      (environment.pathForScope
+        operation.sourceDeclaration.repeatableScope).mapError .environment
     let sourceAddress : CellAddr := {
       field := operation.sourceDeclaration.id
-      path
+      path := sourcePath
     }
     let targetAddress : CellAddr := {
       field := operation.targetField

@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumberPower
 
-/-! # Same-scope repeatable direct-Number power locks -/
+/-! # Repeatable direct-Number power locks -/
 
 namespace A12Kernel.Conformance.AddressedNumberPower
 

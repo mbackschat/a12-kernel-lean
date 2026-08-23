@@ -142,18 +142,15 @@ private def stored2 : StoredString := ⟨"2", by decide⟩
 
 private def stored12345 : StoredString := ⟨"12345", by decide⟩
 
-/- The checked authoring route is exactly same-scope, repeatable, Number-to-ordinary-String; wrong-kind and noniterating Number sources fail closed. -/
+/- The checked authoring route is exactly a repeatable Number-to-ordinary-String assignment whose operand scope the target's scope binds; a wrong-kind source and a nonrepeatable target fail closed, while an outer-scope Number source is admitted. -/
 example :
     operation?.isSome = true ∧
     (match checkAddressedFieldValueAsString
         model ["Order", "Rows"] text.id (bare "Text") with
       | .error (.sourceKindMismatch path .string) => path == text.path
       | _ => false) = true ∧
-    (match checkAddressedFieldValueAsString
-        model ["Order", "Rows"] text.id (parent "OuterAmount") with
-      | .error (.scopeMismatch targetPath sourcePath) =>
-          targetPath == text.path && sourcePath == outerAmount.path
-      | _ => false) = true := by
+    (checkAddressedFieldValueAsString
+      model ["Order", "Rows"] text.id (parent "OuterAmount")).isOk = true := by
   native_decide
 
 /- Decimal-valued input selects stripped formal-read text while String-valued Number input remains verbatim, and the two rows cannot alias. -/

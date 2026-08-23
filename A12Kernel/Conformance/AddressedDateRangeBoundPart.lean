@@ -93,10 +93,7 @@ example :
         (bare "OuterDates") .start .month with
       | .error (.placement (.targetNotRepeatable path)) => path == rootTarget.path
       | _ => false) = true ∧
-    (match checked target.id (parent "OuterDates") .start .month with
-      | .error (.placement (.scopeMismatch targetPath sourcePath)) =>
-          targetPath == target.path && sourcePath == outerDates.path
-      | _ => false) = true := by
+    (checked target.id (parent "OuterDates") .start .month).isOk = true := by
   native_decide
 
 private def rows : List RowAddr :=

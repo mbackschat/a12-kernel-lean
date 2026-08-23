@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumberField
 
-/-! # Same-scope repeatable direct-Number rounding
+/-! # Repeatable direct-Number rounding
 
 This capsule reuses the shared checked Number source and scalar rounding semantics. Its only new static fact is that the target scale equals the authored rounding places.
 -/

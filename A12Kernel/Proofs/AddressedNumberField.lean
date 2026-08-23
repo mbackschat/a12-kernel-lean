@@ -1,7 +1,7 @@
 import A12Kernel.Proofs.AddressedNumericLeaf
 import A12Kernel.Elaboration.AddressedNumberField
 
-/-! # Same-scope repeatable direct Number-field certificate -/
+/-! # Repeatable direct Number-field certificate -/
 
 namespace A12Kernel
 
@@ -20,8 +20,9 @@ theorem checkedAddressedNumberSource_sound
         some source.placement.targetPolicy ∧
       source.placement.targetDeclaration.repeatableScope ≠ [] ∧
       source.placement.sourceDeclaration.id ≠ source.placement.targetField ∧
-      source.placement.sourceDeclaration.repeatableScope =
-        source.placement.targetDeclaration.repeatableScope) ∧
+      source.placement.sourceDeclaration.repetitionBoundBy
+
+        source.placement.targetDeclaration.repeatableScope = true) ∧
       source.placement.sourceDeclaration.toNumberField? = some source.source := by
   exact ⟨checkedAddressedNumericPlacement_sound source.placement,
     source.sourceCertified⟩
@@ -43,8 +44,9 @@ theorem checkedAddressedNumberField_sound
       operation.placement.targetDeclaration.repeatableScope ≠ [] ∧
       operation.placement.sourceDeclaration.id ≠
         operation.placement.targetField ∧
-      operation.placement.sourceDeclaration.repeatableScope =
-        operation.placement.targetDeclaration.repeatableScope) ∧
+      operation.placement.sourceDeclaration.repetitionBoundBy
+
+        operation.placement.targetDeclaration.repeatableScope = true) ∧
       operation.placement.sourceDeclaration.toNumberField? =
         some operation.source ∧
       operation.placement.targetPolicy.info.scale =

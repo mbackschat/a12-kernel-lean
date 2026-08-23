@@ -1,7 +1,7 @@
 import A12Kernel.Elaboration.AddressedNumberField
 import A12Kernel.Elaboration.NumericExpression
 
-/-! # Same-scope repeatable bounded Number extrema
+/-! # Repeatable bounded Number extrema
 
 This capsule retains a nonempty ordered list containing one or more checked Number sources, permits operand-local absolute-value, rounding, one arithmetic node over two field-or-literal operands, or one nested extremum over direct field-or-literal leaves, and admits at most one immediate decoded literal per extremum call. It delegates each local transformation and the authored-order folds to the existing scalar semantics, then reuses the shared exact-address target owner.
 -/
@@ -100,18 +100,18 @@ abbrev AddressedNumberExtremumFault := AddressedNumericLeafFault
 namespace CheckedAddressedNumberArithmeticChild
 
 /-- Evaluate one arithmetic child at an already-certified row. A field pair delegates both ordered reads to the shared pair evaluator; a literal side contributes its exact decoded value at its authored position without a row read, so poison and empty-as-zero come only from a retained source. A constant-only child reads nothing at all and is therefore constant across rows. -/
-def evaluateAtPath (child : CheckedAddressedNumberArithmeticChild model)
+def evaluateAtEnvironment (child : CheckedAddressedNumberArithmeticChild model)
     (operation : NumericArithmeticOp) (input : CheckedDocument model)
-    (path : List Nat) :
+    (environment : Env) :
     Except AddressedNumberExtremumFault NumericComputationResult :=
   let combine := NumericComputationResult.combineReached fun left right =>
     .value (operation.eval left right)
   match child with
-  | .fields pair => pair.evaluateAtPath input combine path
+  | .fields pair => pair.evaluateAtEnvironment input combine environment
   | .fieldLiteral source decoded =>
-      return combine (← source.evaluateAtPath input path) (.value decoded.value)
+      return combine (← source.evaluateAtEnvironment input environment) (.value decoded.value)
   | .literalField decoded source =>
-      return combine (.value decoded.value) (← source.evaluateAtPath input path)
+      return combine (.value decoded.value) (← source.evaluateAtEnvironment input environment)
   | .literals left right =>
       pure (combine (.value left.value) (.value right.value))
 
@@ -142,12 +142,12 @@ def isImmediateLiteral : CheckedAddressedNumberExtremumLeaf model → Bool
   | _ => false
 
 /-- Evaluate one direct nested leaf at the target-owned row. -/
-def evaluateAtPath
+def evaluateAtEnvironment
     (leaf : CheckedAddressedNumberExtremumLeaf model)
-    (input : CheckedDocument model) (path : List Nat) :
+    (input : CheckedDocument model) (environment : Env) :
     Except AddressedNumberExtremumFault NumericComputationResult :=
   match leaf with
-  | .field source => source.evaluateAtPath input path
+  | .field source => source.evaluateAtEnvironment input environment
   | .literal decoded => pure (.value decoded.value)
 
 end CheckedAddressedNumberExtremumLeaf
@@ -182,23 +182,23 @@ def scaleSummary (operation : CheckedAddressedNumberNestedExtremum model) :
     operation.first.scaleSummary
 
 private def evaluateRestAtPath (op : NumericExtremumOp)
-    (input : CheckedDocument model) (path : List Nat) :
+    (input : CheckedDocument model) (environment : Env) :
     List (CheckedAddressedNumberExtremumLeaf model) →
       NumericComputationResult →
       Except AddressedNumberExtremumFault NumericComputationResult
   | [], result => pure result
   | _, .poison cause => pure (.poison cause)
   | leaf :: rest, result => do
-      let next ← leaf.evaluateAtPath input path
-      evaluateRestAtPath op input path rest
+      let next ← leaf.evaluateAtEnvironment input environment
+      evaluateRestAtPath op input environment rest
         (op.selectComputationResult result next)
 
 /-- Evaluate the nested call in authored order at one target-owned row. -/
-def evaluateAtPath (operation : CheckedAddressedNumberNestedExtremum model)
-    (input : CheckedDocument model) (path : List Nat) :
+def evaluateAtEnvironment (operation : CheckedAddressedNumberNestedExtremum model)
+    (input : CheckedDocument model) (environment : Env) :
     Except AddressedNumberExtremumFault NumericComputationResult := do
-  let initial ← operation.first.evaluateAtPath input path
-  evaluateRestAtPath operation.op input path operation.rest initial
+  let initial ← operation.first.evaluateAtEnvironment input environment
+  evaluateRestAtPath operation.op input environment operation.rest initial
 
 end CheckedAddressedNumberNestedExtremum
 
@@ -243,18 +243,18 @@ def isImmediateLiteral : CheckedAddressedNumberExtremumOperand model → Bool
   | _ => false
 
 /-- Evaluate one retained operand at an already-certified row. Arithmetic nodes delegate ordered reads to their child and supply only the existing scalar node. -/
-def evaluateAtPath
+def evaluateAtEnvironment
     (operand : CheckedAddressedNumberExtremumOperand model)
-    (input : CheckedDocument model) (path : List Nat) :
+    (input : CheckedDocument model) (environment : Env) :
     Except AddressedNumberExtremumFault NumericComputationResult :=
   match operand with
-  | .field source => source.evaluateAtPath input path
+  | .field source => source.evaluateAtEnvironment input environment
   | .abs source =>
-      return (← source.evaluateAtPath input path).absolute
+      return (← source.evaluateAtEnvironment input environment).absolute
   | .round source mode places =>
-      return (← source.evaluateAtPath input path).round mode places
-  | .arithmetic operation child => child.evaluateAtPath operation input path
-  | .extremum operation => operation.evaluateAtPath input path
+      return (← source.evaluateAtEnvironment input environment).round mode places
+  | .arithmetic operation child => child.evaluateAtEnvironment operation input environment
+  | .extremum operation => operation.evaluateAtEnvironment input environment
   | .literal decoded => pure (.value decoded.value)
 
 end CheckedAddressedNumberExtremumOperand
@@ -267,7 +267,7 @@ def addressedNumberExtremumOperandsScaleSummary
   rest.foldl (fun summary operand => summary.union operand.scaleSummary)
     first.scaleSummary
 
-/-- One checked same-scope repeatable operand-list extremum. The target certificate owns iteration and the target policy; the operand list is stored in exact authored order with no positional literal encoding. -/
+/-- One checked repeatable operand-list extremum. The target certificate owns iteration and the target policy; the operand list is stored in exact authored order with no positional literal encoding. -/
 structure CheckedAddressedNumberExtremum (model : FlatModel) where
   private mk ::
   target : CheckedAddressedNumericTarget model
@@ -483,29 +483,29 @@ def scaleSummary (operation : CheckedAddressedNumberExtremum model) :
   addressedNumberExtremumOperandsScaleSummary operation.first operation.rest
 
 private def evaluateRestAtPath (op : NumericExtremumOp)
-    (input : CheckedDocument model) (path : List Nat) :
+    (input : CheckedDocument model) (environment : Env) :
     List (CheckedAddressedNumberExtremumOperand model) →
       NumericComputationResult →
       Except AddressedNumberExtremumFault NumericComputationResult
   | [], result => pure result
   | _, .poison cause => pure (.poison cause)
   | operand :: rest, result => do
-      let next ← operand.evaluateAtPath input path
-      evaluateRestAtPath op input path rest
+      let next ← operand.evaluateAtEnvironment input environment
+      evaluateRestAtPath op input environment rest
         (op.selectComputationResult result next)
 
-private def evaluateAtPath
+private def evaluateAtEnvironment
     (operation : CheckedAddressedNumberExtremum model)
-    (input : CheckedDocument model) (path : List Nat) :
+    (input : CheckedDocument model) (environment : Env) :
     Except AddressedNumberExtremumFault NumericComputationResult := do
-  let initial ← operation.first.evaluateAtPath input path
-  evaluateRestAtPath operation.op input path operation.rest initial
+  let initial ← operation.first.evaluateAtEnvironment input environment
+  evaluateRestAtPath operation.op input environment operation.rest initial
 
 def execute (operation : CheckedAddressedNumberExtremum model)
     (input : CheckedDocument model) :
     Except AddressedNumberExtremumFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  operation.target.executeWithPath input (operation.evaluateAtPath input)
+  operation.target.executeAtEnvironment input (operation.evaluateAtEnvironment input)
 
 def executeResult
     (operation : CheckedAddressedNumberExtremum model)

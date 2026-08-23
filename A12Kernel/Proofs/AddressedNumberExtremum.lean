@@ -1,7 +1,7 @@
 import A12Kernel.Proofs.AddressedNumberField
 import A12Kernel.Elaboration.AddressedNumberExtremum
 
-/-! # Same-scope repeatable bounded Number extrema certificate -/
+/-! # Repeatable bounded Number extrema certificate -/
 
 namespace A12Kernel
 
@@ -70,10 +70,10 @@ theorem checkedAddressedNumberExtremum_nestedScaleSummary
 /-- A nested extremum operand delegates row-local selection to the nested call while preserving its selector and authored leaf order. -/
 theorem checkedAddressedNumberExtremum_nestedEvaluation
     (operation : CheckedAddressedNumberNestedExtremum model)
-    (input : CheckedDocument model) (path : List Nat) :
+    (input : CheckedDocument model) (environment : Env) :
     (CheckedAddressedNumberExtremumOperand.extremum
-        operation).evaluateAtPath input path =
-      operation.evaluateAtPath input path := by
+        operation).evaluateAtEnvironment input environment =
+      operation.evaluateAtEnvironment input environment := by
   rfl
 
 /-- Every bounded arithmetic node contributes exactly its child's shared scale summary. The operation, not the extremum, owns whether the scale is the maximum or the sum and whether multiplicative-constant capability survives. -/
@@ -89,10 +89,10 @@ theorem checkedAddressedNumberExtremum_arithmeticScaleSummary
 theorem checkedAddressedNumberExtremum_arithmeticEvaluation
     (operation : NumericArithmeticOp)
     (child : CheckedAddressedNumberArithmeticChild model)
-    (input : CheckedDocument model) (path : List Nat) :
+    (input : CheckedDocument model) (environment : Env) :
     (CheckedAddressedNumberExtremumOperand.arithmetic operation
-        child).evaluateAtPath input path =
-      child.evaluateAtPath operation input path := by
+        child).evaluateAtEnvironment input environment =
+      child.evaluateAtEnvironment operation input environment := by
   rfl
 
 /-- Addition over two fields contributes the maximum child scale. -/

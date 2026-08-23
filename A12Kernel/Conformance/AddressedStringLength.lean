@@ -110,11 +110,8 @@ example :
         model ["Order", "Rows"] length.id (bare "Wrong") with
       | .error (.sourceNotEvaluatedString path) => path == wrong.path
       | _ => false) = true ∧
-    (match checkAddressedStringLength
-        model ["Order", "Rows"] length.id (parent "OuterText") with
-      | .error (.placement (.scopeMismatch targetPath sourcePath)) =>
-          targetPath == length.path && sourcePath == outerText.path
-      | _ => false) = true ∧
+    (checkAddressedStringLength
+      model ["Order", "Rows"] length.id (parent "OuterText")).isOk = true ∧
     (match checkAddressedStringLength
         model ["Order", "Rows"] scaledLength.id (bare "Text") with
       | .error (.scaleMismatch 2 0) => true

@@ -1,7 +1,7 @@
 import A12Kernel.Proofs.AddressedNumberField
 import A12Kernel.Elaboration.AddressedNumberRound
 
-/-! # Same-scope repeatable direct-Number rounding certificate -/
+/-! # Repeatable direct-Number rounding certificate -/
 
 namespace A12Kernel
 
@@ -22,8 +22,9 @@ theorem checkedAddressedNumberRound_sound
       operation.numberSource.placement.targetDeclaration.repeatableScope ≠ [] ∧
       operation.numberSource.placement.sourceDeclaration.id ≠
         operation.numberSource.placement.targetField ∧
-      operation.numberSource.placement.sourceDeclaration.repeatableScope =
-        operation.numberSource.placement.targetDeclaration.repeatableScope) ∧
+      operation.numberSource.placement.sourceDeclaration.repetitionBoundBy
+
+        operation.numberSource.placement.targetDeclaration.repeatableScope = true) ∧
       operation.numberSource.placement.sourceDeclaration.toNumberField? =
         some operation.numberSource.source ∧
       operation.numberSource.placement.targetPolicy.info.scale =

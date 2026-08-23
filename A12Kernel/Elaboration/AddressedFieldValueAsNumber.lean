@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumericLeaf
 
-/-! # Same-scope repeatable `FieldValueAsNumber`
+/-! # Repeatable `FieldValueAsNumber`
 
 This capsule admits one ordinary repeatable Number target whose sole expression is `FieldValueAsNumber` over a checked String, stored Enumeration, or Enumeration-category declaration in the same repeatable scope. It specializes the shared addressed numeric placement with the certified conversion source and existing scalar evaluator.
 
@@ -17,7 +17,7 @@ inductive AddressedFieldValueAsNumberElabError where
   | scaleMismatch (target source : Nat)
   deriving Repr, DecidableEq
 
-/-- One exact same-scope repeatable textual-to-Number operation certified against a validated model. -/
+/-- One exact repeatable textual-to-Number operation certified against a validated model. -/
 structure CheckedAddressedFieldValueAsNumber (model : FlatModel) where
   private mk ::
   placement : CheckedAddressedNumericPlacement model
