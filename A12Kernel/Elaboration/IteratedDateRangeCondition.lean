@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.DateRangeStoredComparison
 import A12Kernel.Elaboration.DateRangeOverlap
+import A12Kernel.Elaboration.DateRangeConstructionComparison
 
 /-! # DateRange conditions read at a rule's iterating row
 
@@ -17,6 +18,39 @@ with its carrier, so this module decides nothing about meaning beyond who reads 
 
 namespace A12Kernel
 
+/-- One constructed range compared with one stored range, both read at the enclosing rule's current
+row. The two halves keep their own certificates: the construction is the scalar carrier's, whose
+endpoints are already scope-aware, and the stored operand is the iterated DateRange source. Only the
+cross-operand component invariant is stated here.
+
+The stored half is why this pairing exists rather than reusing the scalar mixed carrier: that
+carrier's stored field is the nonrepeatable certificate, and the two DateRange source certificates
+are still parallel types rather than one indexed family. -/
+structure CheckedIteratedConstructionStoredComparison (model : FlatModel) where
+  private mk ::
+  construction : CheckedDateRangeConstruction model
+  stored : CheckedIteratedDateRange model
+  position : DateRangeConstructionPosition
+  comparison : EqualityOp
+  componentsMatch :
+    construction.start.format.matchesStoredInput stored.format = true
+
+namespace CheckedIteratedConstructionStoredComparison
+
+/-- Compare one constructed and one stored observation at the authored positions. The comparison is
+the scalar mixed carrier's own seam, so the two carriers cannot disagree about identity, emptiness,
+or formal unavailability. -/
+def verdictOf (checked : CheckedIteratedConstructionStoredComparison model)
+    (construction : DateRangeConstructionObservation)
+    (stored : CellObservation DateRangeCellValue) : Verdict :=
+  match checked.position with
+  | .left => checked.comparison.evalDateRangeCellValues
+      construction.comparisonOperand stored.asValidationSimpleOperand
+  | .right => checked.comparison.evalDateRangeCellValues
+      stored.asValidationSimpleOperand construction.comparisonOperand
+
+end CheckedIteratedConstructionStoredComparison
+
 /-- One DateRange condition whose operands are read at the enclosing rule's current row. -/
 inductive IteratedDateRangeCondition (model : FlatModel) where
   | storedEquality (comparison : CheckedIteratedDateRangeComparison model)
@@ -26,6 +60,8 @@ inductive IteratedDateRangeCondition (model : FlatModel) where
   | boundPair (left right : CheckedIteratedDateRangeBound model)
       (comparison : TemporalComparisonOp)
   | overlap (source : CheckedDateRangesOverlapSource model)
+  | constructionAgainstStored
+      (comparison : CheckedIteratedConstructionStoredComparison model)
 
 /-- Static refusal while resolving one iterated DateRange condition. -/
 inductive IteratedDateRangeConditionElabError where
@@ -33,6 +69,10 @@ inductive IteratedDateRangeConditionElabError where
   | operand (cause : DirectDateRangeElabError)
   | formatsNotComparable (left right : TemporalComponents)
   | overlap (cause : DateRangesOverlapElabError)
+  | construction (cause : DateRangeConstructionElabError)
+  | storedOperand (cause : DirectDateRangeElabError)
+  | constructionComponentMismatch (construction : DateRangeEndpointFormat)
+      (stored : DateRangeInputFormat)
   deriving Repr, DecidableEq
 
 namespace IteratedDateRangeConditionElabError
@@ -46,6 +86,9 @@ def diagnostic? :
   | .operand cause => cause.diagnostic?
   | .formatsNotComparable _ _ => some .invalidCompareToDate
   | .overlap cause => cause.diagnostic?
+  | .construction cause => cause.diagnostic?
+  | .storedOperand cause => cause.diagnostic?
+  | .constructionComponentMismatch _ _ => some .invalidCompareToDateRange
 
 end IteratedDateRangeConditionElabError
 
@@ -64,6 +107,10 @@ def operandDeclarations : IteratedDateRangeCondition model → List FlatFieldDec
         match operand with
         | .field declaration _ => some declaration
         | _ => none
+  | .constructionAgainstStored comparison =>
+      [comparison.construction.start.checked.declaration,
+        comparison.construction.finish.checked.declaration,
+        comparison.stored.declaration]
 
 /-- The operands that actually cross a repeatable level. These are the declarations the enclosing
 rule resolves before evaluation and the levels it derives its iteration from. -/
@@ -112,6 +159,13 @@ def verdictOf (condition : IteratedDateRangeCondition model)
         operand.resolveValidationCore document outer
       pure (evalDateRangesOverlap
         (cores.map totalCheckedDateRangeOperandSemantic))
+  | .constructionAgainstStored comparison => do
+      let start ← read comparison.construction.start.checked.declaration.id
+      let finish ← read comparison.construction.finish.checked.declaration.id
+      let stored ← read comparison.stored.declaration.id
+      pure (comparison.verdictOf
+        (comparison.construction.observeAt start finish)
+        (observeIteratedDateRangeOperand stored))
 
 end IteratedDateRangeCondition
 
@@ -156,6 +210,33 @@ def elaborateIteratedBoundPair (model : FlatModel)
     pure (.boundPair left right comparison)
   else
     throw (.formatsNotComparable left.format.components right.format.components)
+
+
+/-- Resolve one constructed range compared with one stored range, all three operands read at the
+rule's row. Every gate is the scalar carriers' — endpoint kind and profile, the construction's own
+component pair, and the cross-operand component match — and only the operand locus widens. -/
+def elaborateIteratedConstructionStoredComparison (model : FlatModel)
+    (scope : List RepeatableLevel)
+    (start finish stored : FieldId) (position : DateRangeConstructionPosition)
+    (comparison : EqualityOp) :
+    Except IteratedDateRangeConditionElabError
+      (IteratedDateRangeCondition model) := do
+  let construction ←
+    (elaborateDateRangeConstructionIn model scope start finish).mapError
+      .construction
+  let storedSource ←
+    (elaborateIteratedDateRange model scope stored).mapError .storedOperand
+  if hComponents :
+      construction.start.format.matchesStoredInput storedSource.format then
+    pure (.constructionAgainstStored {
+      construction
+      stored := storedSource
+      position
+      comparison
+      componentsMatch := hComponents })
+  else
+    throw (.constructionComponentMismatch construction.start.format
+      storedSource.format)
 
 /-- Resolve one singular overlap predicate whose unstarred operands the rule's own iteration may
 cross. Every gate is the scalar operator's, including the group refusal and the uniform-year rule;

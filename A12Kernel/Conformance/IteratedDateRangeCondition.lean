@@ -387,4 +387,102 @@ example :
       some [([(10, 1)], .notFired)] := by
   native_decide
 
+/-! ## A constructed range compared with a stored range at the iterating row -/
+
+private def dateField (id : FieldId) (groupPath : GroupPath) (name : String)
+    (scope : List RepeatableLevel := []) : FlatFieldDecl := {
+  id, groupPath, name, repeatableScope := scope
+  policy := { kind := .temporal .date TemporalComponents.fullDate }
+  temporalTargetPolicy := some { format := "yyyy-MM-dd", partialMode := .full }
+}
+
+private def rowStart := dateField 5 ["Form", "Rows"] "RowStart" [10]
+private def rowFinish := dateField 6 ["Form", "Rows"] "RowFinish" [10]
+private def scalarStart := dateField 7 ["Form"] "ScalarStart"
+private def scalarFinish := dateField 8 ["Form"] "ScalarFinish"
+
+private def constructionModel : FlatModel := {
+  model with
+  fields := model.fields ++ [rowStart, rowFinish, scalarStart, scalarFinish]
+}
+
+private def construction? (rowGroup : GroupPath)
+    (start finish stored : SurfaceFieldPath)
+    (position : DateRangeConstructionPosition := .right) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition constructionModel) :=
+  CheckedValidationCondition.fromIteratedDateRangeConstructionAgainstStored
+    constructionModel rowGroup start finish stored position .equal
+
+private def rowStartPath := path ["Form", "Rows"] "RowStart"
+private def rowFinishPath := path ["Form", "Rows"] "RowFinish"
+
+/- The construction's endpoints obey the same locus rule as a stored operand: repeatable endpoints
+against a scalar stored range are admitted from inside and refused from outside, in either authored
+position, and the refusal names the endpoint it could not read. -/
+example :
+    (construction? ["Form", "Rows"] rowStartPath rowFinishPath
+        existingPath).isOk = true ∧
+      (construction? ["Form", "Rows"] rowStartPath rowFinishPath existingPath
+        .left).isOk = true ∧
+      (match construction? ["Form"] rowStartPath rowFinishPath existingPath with
+        | .error (.fieldReference (.repeatableReference path)) =>
+            path == rowStart.path
+        | _ => false) = true := by
+  native_decide
+
+/- A repeatable stored operand beside scalar endpoints is admitted too, so either half may be the
+one the rule iterates; and an all-scalar condition belongs to the existing mixed carrier rather than
+this leaf. -/
+example :
+    (construction? ["Form", "Rows"] (path ["Form"] "ScalarStart")
+        (path ["Form"] "ScalarFinish") rowRangePath).isOk = true ∧
+      (match construction? ["Form"] (path ["Form"] "ScalarStart")
+          (path ["Form"] "ScalarFinish") existingPath with
+        | .error (.repeatableFieldRequired path) => path == scalarStart.path
+        | _ => false) = true := by
+  native_decide
+
+private def constructionRowVerdicts? (start finish stored : SurfaceFieldPath)
+    (data : DocumentData) : Option (List (Env × Verdict)) := do
+  let checked ← (construction? ["Form", "Rows"] start finish stored).toOption
+  let rule ← (assembleResolvedValidationRule constructionModel checked
+    rowStart.id "iteratedConstruction" .error { parts := [] }).toOption
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler constructionModel).toOption
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let outcomes ← (rule.evalOrdinaryRepeatableFull document).toOption
+  pure (outcomes.map fun entry => (entry.1, entry.2.verdict))
+
+private def dateValue (epochMillis : Int) (year : Int)
+    (month day : Nat) : DateValue :=
+  { instant := { epochMillis }, parts := { year, month, day }
+    basis := .storedGregorian }
+
+private def constructionCell (field : FieldId) (path : List Nat)
+    (stored : String) (value : DateValue) : ClassifiedCellInput := {
+  address := { field, path }
+  stored
+  raw := .parsed (.temporal (.date value))
+}
+
+private def june1Value := dateValue 1717200000000 2024 6 1
+private def june30Value := dateValue 1719705600000 2024 6 30
+private def july31Value := dateValue 1722384000000 2024 7 31
+
+/- Each row constructs from its own endpoints: the row whose endpoints reproduce the stored range
+fires, and the row whose finish endpoint differs does not. -/
+example :
+    constructionRowVerdicts? rowStartPath rowFinishPath existingPath {
+      instantiatedRows := [
+        { group := 10, path := [1] }, { group := 10, path := [2] }]
+      cells := [
+        storedCell existing.id [] "2024-06-01/2024-06-30",
+        constructionCell rowStart.id [1] "2024-06-01" june1Value,
+        constructionCell rowFinish.id [1] "2024-06-30" june30Value,
+        constructionCell rowStart.id [2] "2024-06-01" june1Value,
+        constructionCell rowFinish.id [2] "2024-07-31" july31Value] } =
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] := by
+  native_decide
+
 end A12Kernel.Conformance.IteratedDateRangeCondition

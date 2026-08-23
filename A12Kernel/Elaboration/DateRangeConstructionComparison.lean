@@ -129,9 +129,11 @@ def diagnostic? : DateRangeEndpointElabError → Option KernelStaticDiagnostic
 end DateRangeEndpointElabError
 
 /-- Resolve one exact-or-yearless nonrepeatable endpoint profile without widening the scalar Date target owner. -/
-def elaborateDateRangeEndpoint (model : FlatModel) (field : FieldId) :
+def elaborateDateRangeEndpointIn (model : FlatModel)
+    (scope : List RepeatableLevel) (field : FieldId) :
     Except DateRangeEndpointElabError (CheckedDateRangeEndpoint model) := do
-  let checked ← elaborateTemporalTargetPolicy model field |>.mapError .targetPolicy
+  let checked ← elaborateTemporalTargetPolicyIn model scope field
+    |>.mapError .targetPolicy
   if hKind : checked.target.kind = .date then
     match hFormat : DateRangeEndpointFormat.ofPolicy? model.baseYear checked.policy with
     | none => throw (.unsupportedPolicy field checked.policy.partialMode checked.policy.format)
@@ -147,6 +149,11 @@ def elaborateDateRangeEndpoint (model : FlatModel) (field : FieldId) :
             profileMatches := hProfile }
   else
     throw (.targetKind field checked.target.kind)
+
+/-- The scalar instance: an endpoint read where the reading rule iterates no level. -/
+def elaborateDateRangeEndpoint (model : FlatModel) (field : FieldId) :
+    Except DateRangeEndpointElabError (CheckedDateRangeEndpoint model) :=
+  elaborateDateRangeEndpointIn model [] field
 
 structure CheckedDateRangeConstruction (model : FlatModel) where
   start : CheckedDateRangeEndpoint model
@@ -170,13 +177,17 @@ def diagnostic? : DateRangeConstructionElabError → Option KernelStaticDiagnost
 
 end DateRangeConstructionElabError
 
-/-- Certify one pair of construction endpoints once for every checked comparison consumer. -/
-def elaborateDateRangeConstruction (model : FlatModel)
-    (start finish : FieldId) :
+/-- Certify one pair of construction endpoints once for every checked comparison consumer. `scope`
+is the reading rule's iteration scope, so an endpoint inside a level the rule iterates is admitted
+and every other gate stays unchanged. -/
+def elaborateDateRangeConstructionIn (model : FlatModel)
+    (scope : List RepeatableLevel) (start finish : FieldId) :
     Except DateRangeConstructionElabError
       (CheckedDateRangeConstruction model) := do
-  let checkedStart ← elaborateDateRangeEndpoint model start |>.mapError .start
-  let checkedFinish ← elaborateDateRangeEndpoint model finish |>.mapError .finish
+  let checkedStart ← elaborateDateRangeEndpointIn model scope start
+    |>.mapError .start
+  let checkedFinish ← elaborateDateRangeEndpointIn model scope finish
+    |>.mapError .finish
   if hComponents : checkedStart.format.sameComponents checkedFinish.format then
     pure {
       start := checkedStart
@@ -184,6 +195,13 @@ def elaborateDateRangeConstruction (model : FlatModel)
       componentsMatch := hComponents }
   else
     throw (.componentMismatch checkedStart.format checkedFinish.format)
+
+/-- The scalar instance: a construction read where the reading rule iterates no level. -/
+def elaborateDateRangeConstruction (model : FlatModel)
+    (start finish : FieldId) :
+    Except DateRangeConstructionElabError
+      (CheckedDateRangeConstruction model) :=
+  elaborateDateRangeConstructionIn model [] start finish
 
 inductive DateRangeConstructionComparisonElabError where
   | left (cause : DateRangeConstructionElabError)
@@ -310,6 +328,22 @@ private def evaluateEndpoint (source : CheckedDateRangeEndpoint model)
   source.format.evaluateObservation source.profile field bound
     (observeCell phase cell)
 
+/-- Observe both endpoints from cells already read at the consuming row. A payload the endpoint
+projection rejects collapses to UNKNOWN rather than claiming a fault channel a row-reading consumer
+does not own; the endpoint certificates' kind, profile, and format gates make that collapse
+unreachable. -/
+def observeAt (construction : CheckedDateRangeConstruction model)
+    (startCell finishCell : CheckedCell) : DateRangeConstructionObservation :=
+  let observe (endpoint : CheckedDateRangeEndpoint model)
+      (bound : DateRangeBound) (cell : CheckedCell) :
+      CellObservation DateRangeConstructionEndpointValue :=
+    match endpoint.format.evaluateObservation endpoint.profile
+        endpoint.checked.target.id bound (observeCell .validation cell) with
+    | .ok observed => observed
+    | .error _ => .unknown .malformed
+  { start := observe construction.start .start startCell
+    finish := observe construction.finish .finish finishCell }
+
 /-- Read each certified endpoint once from one immutable checked document. -/
 def evaluate (construction : CheckedDateRangeConstruction model)
     (phase : Phase) (input : CheckedDocument model) :
@@ -415,8 +449,10 @@ structure DateRangeConstructionStoredComparisonResult where
 
 namespace CheckedDateRangeConstructionStoredComparison
 
-/-- Compare internally read mixed observations through the shared exact-or-yearless equality seam. -/
-private def evaluateObserved
+/-- Compare already-read mixed observations through the shared exact-or-yearless equality seam. The
+read is deliberately not part of this step, so a consumer that reads its operands at a rule's row
+reaches the same comparison as the document-reading path below. -/
+def evaluateObserved
     (operation : CheckedDateRangeConstructionStoredComparison model)
     (construction : DateRangeConstructionObservation)
     (stored : CellObservation DateRangeCellValue) :

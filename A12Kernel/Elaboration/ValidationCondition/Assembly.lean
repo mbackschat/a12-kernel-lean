@@ -158,6 +158,9 @@ private def fromIteratedDateRange (model : FlatModel) (rowGroup : GroupPath)
           | .storedEquality (.left (.source error))
           | .storedEquality (.right (.source error))
           | .operand (.source error)
+          | .storedOperand (.source error)
+          | .construction (.start (.targetPolicy (.resolve error)))
+          | .construction (.finish (.targetPolicy (.resolve error)))
           | .overlap (.shape (.resolve error)) => .fieldReference error
           | error => .iteratedDateRange error
       match condition.repeatableDeclarations, condition.operandDeclarations with
@@ -208,6 +211,20 @@ def fromIteratedDateRangeBoundPair (model : FlatModel) (rowGroup : GroupPath)
   fromIteratedDateRange model rowGroup fun scope =>
     elaborateIteratedBoundPair model scope leftDeclaration.id leftBound
       rightDeclaration.id rightBound comparison
+
+/-- One constructed range compared with one stored range at the rule's own row. -/
+def fromIteratedDateRangeConstructionAgainstStored (model : FlatModel)
+    (rowGroup : GroupPath) (start finish stored : SurfaceFieldPath)
+    (position : DateRangeConstructionPosition) (comparison : EqualityOp) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) := do
+  let startDeclaration ← resolveIteratedOperand model rowGroup start
+  let finishDeclaration ← resolveIteratedOperand model rowGroup finish
+  let storedDeclaration ← resolveIteratedOperand model rowGroup stored
+  fromIteratedDateRange model rowGroup fun scope =>
+    elaborateIteratedConstructionStoredComparison model scope
+      startDeclaration.id finishDeclaration.id storedDeclaration.id position
+      comparison
 
 /-- One singular DateRange overlap predicate read at the rule's own row. -/
 def fromIteratedDateRangeOverlap (model : FlatModel) (rowGroup : GroupPath)

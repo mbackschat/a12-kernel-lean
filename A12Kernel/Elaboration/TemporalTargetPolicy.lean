@@ -19,9 +19,15 @@ inductive TemporalTargetElabError where
 
 /-- One checked temporal declaration whose policy cannot be replaced by caller input. Existing field names remain target-oriented because computed targets were the first consumer. -/
 structure CheckedTemporalTargetPolicy (model : FlatModel) where
+  /-- The resolved declaration behind the target. It is retained rather than projected away because
+  a consumer reading this field at a rule's row needs the declaration's repeatable scope, and
+  recovering it by identifier lookup would need a total fallback for a declaration that cannot be
+  missing. -/
+  declaration : FlatFieldDecl
   target : FlatTemporalField
   policy : TemporalTargetPolicy
   modelWellFormed : model.validate.isOk = true
+  targetOwned : declaration.toTemporalField? = some target
   policyAdmitted :
     policy.errorFor? target.kind target.components = none
 
@@ -34,37 +40,42 @@ def timeZoneId (_ : CheckedTemporalTargetPolicy model) : String :=
 end CheckedTemporalTargetPolicy
 
 /-- Resolve one complete nonrepeatable temporal target policy. A temporal declaration without retained exact policy is explicit insufficient information. -/
-def elaborateTemporalTargetPolicy
-    (model : FlatModel) (targetField : FieldId) :
+def elaborateTemporalTargetPolicyIn
+    (model : FlatModel) (scope : List RepeatableLevel) (targetField : FieldId) :
     Except TemporalTargetElabError (CheckedTemporalTargetPolicy model) := do
   match hModel : model.validate with
   | .error error => throw (.resolve error)
   | .ok () =>
-      let declaration ←
-        model.resolveNonrepeatableDeclarationById targetField |>.mapError .resolve
-      let target ← match declaration.toTemporalField? with
-        | some target => pure target
-        | none => throw (.targetNotTemporal targetField)
-      let finish :
-          Except TemporalTargetElabError
-            (CheckedTemporalTargetPolicy model) := do
-        let policy ←
-          match declaration.temporalTargetPolicy,
-              declaration.toTemporalTargetPolicy? with
-          | none, _ => throw (.targetPolicyUnavailable targetField)
-          | some _, some policy => pure policy
-          | some _, none => throw .incoherentCore
-        if hPolicy : policy.errorFor? target.kind target.components = none then
-          pure {
-            target
-            policy
-            modelWellFormed := by
-              rw [hModel]
-              rfl
-            policyAdmitted := hPolicy }
-        else
-          throw .incoherentCore
-      finish
+      let resolved ← model.lookupUniqueId targetField |>.mapError .resolve
+      let declaration ← resolved.requireRepetitionBoundBy scope
+        |>.mapError .resolve
+      match hTarget : declaration.toTemporalField? with
+      | none => throw (.targetNotTemporal targetField)
+      | some target =>
+          let policy ←
+            match declaration.temporalTargetPolicy,
+                declaration.toTemporalTargetPolicy? with
+            | none, _ => throw (.targetPolicyUnavailable targetField)
+            | some _, some policy => pure policy
+            | some _, none => throw .incoherentCore
+          if hPolicy : policy.errorFor? target.kind target.components = none then
+            pure {
+              declaration
+              target
+              policy
+              modelWellFormed := by
+                rw [hModel]
+                rfl
+              targetOwned := hTarget
+              policyAdmitted := hPolicy }
+          else
+            throw .incoherentCore
+
+/-- The scalar instance: a target read where the reading rule iterates no level. -/
+def elaborateTemporalTargetPolicy
+    (model : FlatModel) (targetField : FieldId) :
+    Except TemporalTargetElabError (CheckedTemporalTargetPolicy model) :=
+  elaborateTemporalTargetPolicyIn model [] targetField
 
 /-- Static refusal before the bounded Time target can execute. -/
 inductive TimeTargetElabError where
