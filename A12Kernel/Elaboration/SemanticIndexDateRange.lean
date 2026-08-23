@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.DateRangeBoundComparison
 import A12Kernel.Elaboration.DateRangeBoundComponent
+import A12Kernel.Elaboration.DateRangeOverlap
 import A12Kernel.Elaboration.DateRangeStoredComparison
 import A12Kernel.Elaboration.SemanticIndex
 
@@ -15,10 +16,10 @@ The result domain needs no new outcome class. A no-match row and a matched-but-e
 empty, and a duplicated key and a formally invalid matched cell both read UNKNOWN, which is exactly
 the ordinary phase observation the direct route already uses.
 
-Three carriers are wired here, all of which consume the projected observation directly and therefore
-need no second read path: the **numeric component of a selected endpoint**, **stored equality**
-against a direct range, and an **endpoint comparison** against a direct endpoint. Only the overlap
-predicate remains open of the four measured shapes.
+All four measured carriers are wired here, and each consumes the projected observation directly, so
+none needs a second read path: the **numeric component of a selected endpoint**, **stored equality**
+against a direct range, an **endpoint comparison** against a direct endpoint, and the **overlap
+predicate** against a direct range.
 
 The endpoint comparison is the one that needs a runtime **domain** decision, because a selected
 endpoint is a resolved Date under a profile the model can complete and a bare label otherwise. The
@@ -26,9 +27,16 @@ two direct owners' gates are complementary, so the decision is a total two-way r
 profile rather than a preference, and it is taken here from the certificate instead of from which
 owner happened to certify the operand.
 
-Every local refusal stays **unmapped to a Kernel diagnostic**. A non-DateRange selected target, an
-unexposed component, a comparability mismatch, and an incomparable endpoint pair are all unmeasured
-rows for this shape: the admission measurement establishes that the operand is accepted, not which
+The overlap carrier is a **pair**, not the operator's list. The measured authoring is one keyed
+operand against one direct range, and the list operator additionally admits starred, filtered, and
+group slots whose extent is a stream of rows reached by addressing — a keyed slot inside such a list
+would have to thread an index preliminary through that shared resolution, which no observation calls
+for. This carrier instead reuses the operator's own two declaration gates, its uniform-year rule, its
+slot projection, and its pure any-pair scan, so it adds an operand shape rather than a predicate.
+
+Every local refusal stays **unmapped to a Kernel diagnostic**, including the ones reached through the
+shared overlap certifier. Those classes' codes are measured for direct operands; for a keyed one they
+are not, and the admission measurement establishes that the operand is accepted rather than which
 code its rejections carry.
 -/
 
@@ -48,6 +56,10 @@ inductive SemanticIndexDateRangeElabError where
   | directBound (cause : YearlessDateRangeBoundElabError)
   /-- The two endpoints are not comparable under the ordinary direct temporal admission rule. -/
   | boundsNotComparable (keyed direct : TemporalComponents)
+  /-- Either overlap operand failed the operator's own declaration gates. -/
+  | overlap (cause : DateRangesOverlapElabError)
+  /-- The two overlap operands disagree on year presence under this model. -/
+  | overlapMixesYearClass (keyed direct : DateRangeInputFormat)
   deriving Repr, DecidableEq
 
 namespace SemanticIndexDateRangeElabError
@@ -58,8 +70,12 @@ def diagnostic? : SemanticIndexDateRangeElabError → Option KernelStaticDiagnos
   | .source error => error.diagnostic?
   | .directSource cause => cause.diagnostic?
   | .directBound cause => cause.diagnostic?
+  -- The overlap certifier's own classes carry measured codes for a *direct* operand. Reporting one
+  -- here would assert that code for a keyed operand, which no observation covers.
+  | .overlap _ => none
   | .selectedTargetNotDateRange _ | .boundPartNotExposed _ _ |
-    .componentMismatch _ _ | .boundsNotComparable _ _ => none
+    .componentMismatch _ _ | .boundsNotComparable _ _ |
+    .overlapMixesYearClass _ _ => none
 
 end SemanticIndexDateRangeElabError
 
@@ -331,5 +347,86 @@ def evaluate (operation : CheckedSemanticIndexDateRangeBoundComparison model)
   | _, _ => throw (.endpoint .mixedDomains)
 
 end CheckedSemanticIndexDateRangeBoundComparison
+
+/-- One keyed range overlapping one direct range, in either authored order. Both operands carry the
+operator's own canonical-policy and year-interpretation certificates, and the pair satisfies its
+uniform-year rule; the verdict is the operator's own any-pair scan over two single-slot operands. -/
+structure CheckedSemanticIndexDateRangeOverlap (model : FlatModel) where
+  keyed : CheckedDateRangeSemanticIndexSource model
+  keyedCanonical : CheckedCanonicalDateRangeField
+  direct : CheckedDateRangeSource model
+  directCanonical : CheckedCanonicalDateRangeField
+  keyedFirst : Bool
+  yearClassUniform :
+    dateRangeProfileIncludesYear model keyed.format =
+      dateRangeProfileIncludesYear model direct.format
+
+/-- Defensive failure while reading one overlap operand. -/
+inductive SemanticIndexDateRangeOverlapFault where
+  | keyed (error : SemanticIndexDateRangeError)
+  | direct (fault : DirectDateRangeFault)
+  /-- Either slot's projection, reported through the operator's own evaluation vocabulary. -/
+  | slot (error : DateRangesOverlapEvaluationError)
+  deriving Repr, DecidableEq
+
+/-- Certify a keyed overlap operand beside a direct one. The two declaration gates and the
+uniform-year rule are the operator's own, applied to the keyed target's declaration exactly as they
+are to a direct one, so a keyed operand cannot reach a profile the operator refuses elsewhere. -/
+def elaborateSemanticIndexDateRangeOverlap (model : FlatModel)
+    (declaringGroup : GroupPath) (keyedAuthored : SurfaceSemanticIndex)
+    (directScope : List RepeatableLevel) (directSource : FieldId)
+    (keyedFirst : Bool) :
+    Except SemanticIndexDateRangeElabError
+      (CheckedSemanticIndexDateRangeOverlap model) := do
+  let keyed ← elaborateDateRangeSemanticIndexSource model declaringGroup
+    keyedAuthored
+  let direct ← elaborateDateRangeSourceIn model directScope directSource
+    |>.mapError .directSource
+  let keyedCanonical ←
+    certifyDateRangesOverlapField keyed.targetDeclaration |>.mapError .overlap
+  let directCanonical ←
+    certifyDateRangesOverlapField direct.declaration |>.mapError .overlap
+  if hYear : dateRangeProfileIncludesYear model keyed.format =
+      dateRangeProfileIncludesYear model direct.format then
+    pure {
+      keyed, keyedCanonical, direct, directCanonical, keyedFirst
+      yearClassUniform := hYear }
+  else
+    throw (.overlapMixesYearClass keyed.format direct.format)
+
+namespace CheckedSemanticIndexDateRangeOverlap
+
+/-- Read both operands once and take the operator's own any-pair verdict over two single-slot
+operands in authored order. Absence and formal unavailability skip their slot through the shared
+projection, which is why an empty operand on either side suppresses the predicate.
+
+Neither slot carries a filter, so the fired polarity is always the operator's unfiltered one. Each
+fault address names the operand's declaration with no path: both classes are unreachable under the
+canonical certificates above, and the keyed operand has no path of its own in any case, because the
+selecting row belongs to the index column rather than to the operand. -/
+def evaluate (operation : CheckedSemanticIndexDateRangeOverlap model)
+    (preliminary : CheckedIndexPreliminary model) (keyRaw : RawFlatContext)
+    (environment : Env := []) :
+    Except SemanticIndexDateRangeOverlapFault Verdict := do
+  let keyedObserved ← operation.keyed.observePreliminaryRange preliminary keyRaw
+    .validation environment |>.mapError .keyed
+  let directObserved ←
+    operation.direct.evaluateAt environment .validation preliminary.base
+      |>.mapError .direct
+  let keyedSlot ← dateRangeOverlapSlotOf
+    { field := operation.keyed.target.id, path := [] } keyedObserved
+    |>.mapError .slot
+  let directSlot ← dateRangeOverlapSlotOf
+    { field := operation.direct.source.id, path := [] } directObserved
+    |>.mapError .slot
+  let keyedOperand : ResolvedDateRangeOperand :=
+    { slots := [keyedSlot], hasFilter := false }
+  let directOperand : ResolvedDateRangeOperand :=
+    { slots := [directSlot], hasFilter := false }
+  pure (evalDateRangesOverlap
+    (if operation.keyedFirst then [keyedOperand, directOperand]
+      else [directOperand, keyedOperand]))
+
+end CheckedSemanticIndexDateRangeOverlap
 
 end A12Kernel

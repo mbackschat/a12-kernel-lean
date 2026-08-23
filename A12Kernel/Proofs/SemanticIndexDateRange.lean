@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.SemanticIndexDateRange
+import A12Kernel.Proofs.DateRangeOverlapOperators
 
 /-! # Keyed DateRange operand laws
 
@@ -166,5 +167,72 @@ theorem semanticIndexDateRangeBoundComparison_admitted
     operation.comparison.admitsFormats model.baseYear.isSome
       operation.keyed.format.components operation.direct.components = true :=
   operation.formatsAdmitted
+
+/-- Both overlap operands carry the operator's own declaration certificates and satisfy its
+uniform-year rule, so a keyed operand cannot reach a profile the operator refuses elsewhere. -/
+theorem semanticIndexDateRangeOverlap_gates_owned
+    (operation : CheckedSemanticIndexDateRangeOverlap model) :
+    DateRangeFormat.ofPolicy? operation.keyedCanonical.policy =
+        some operation.keyedCanonical.format ∧
+      DateRangeFormat.ofPolicy? operation.directCanonical.policy =
+        some operation.directCanonical.format ∧
+      dateRangeProfileIncludesYear model operation.keyed.format =
+        dateRangeProfileIncludesYear model operation.direct.format :=
+  ⟨operation.keyedCanonical.formatOwned, operation.directCanonical.formatOwned,
+    operation.yearClassUniform⟩
+
+/-- An absent or formally unavailable keyed row suppresses the predicate rather than making it
+unknown, whatever the direct operand holds. This is the measured empty rule reaching the keyed
+operand through the shared slot projection, and it holds in either authored order. -/
+theorem semanticIndexDateRangeOverlap_keyedSkipped_notFired
+    (operation : CheckedSemanticIndexDateRangeOverlap model)
+    (preliminary : CheckedIndexPreliminary model) (keyRaw : RawFlatContext)
+    (environment : Env) (keyed : CellObservation DateRangeCellValue)
+    (directObserved : CellObservation DateRangeCellValue)
+    (directSlot : ResolvedDateRangeSlot)
+    (keyedRead : operation.keyed.observePreliminaryRange preliminary keyRaw
+      .validation environment = .ok keyed)
+    (keyedSkips : dateRangeOverlapSlotOf
+      { field := operation.keyed.target.id, path := [] } keyed = .ok .skipped)
+    (directRead : operation.direct.evaluateAt environment .validation
+      preliminary.base = .ok directObserved)
+    (directProjects : dateRangeOverlapSlotOf
+      { field := operation.direct.source.id, path := [] } directObserved =
+        .ok directSlot) :
+    operation.evaluate preliminary keyRaw environment = .ok .notFired := by
+  simp [CheckedSemanticIndexDateRangeOverlap.evaluate, keyedRead, directRead,
+    keyedSkips, directProjects, Except.mapError, bind, Except.bind, pure,
+    Except.pure]
+  split
+  · exact (dateRangesOverlap_unfiltered_pair_oneSkipped directSlot).1
+  · exact (dateRangesOverlap_unfiltered_pair_oneSkipped directSlot).2
+
+/-- Two kept slots delegate to the operator's closed relation, so the keyed operand's truth is the
+direct pair's and the authored order cannot change it. `keyedFirst` is therefore Explain-only here,
+unlike the directional endpoint comparison where it decides the verdict. -/
+theorem semanticIndexDateRangeOverlap_keptPair_delegates
+    (operation : CheckedSemanticIndexDateRangeOverlap model)
+    (preliminary : CheckedIndexPreliminary model) (keyRaw : RawFlatContext)
+    (environment : Env) (keyed : CellObservation DateRangeCellValue)
+    (directObserved : CellObservation DateRangeCellValue)
+    (keyedRange directRange : ResolvedDateRange)
+    (keyedRead : operation.keyed.observePreliminaryRange preliminary keyRaw
+      .validation environment = .ok keyed)
+    (keyedKeeps : dateRangeOverlapSlotOf
+      { field := operation.keyed.target.id, path := [] } keyed =
+        .ok (.kept keyedRange))
+    (directRead : operation.direct.evaluateAt environment .validation
+      preliminary.base = .ok directObserved)
+    (directKeeps : dateRangeOverlapSlotOf
+      { field := operation.direct.source.id, path := [] } directObserved =
+        .ok (.kept directRange)) :
+    operation.evaluate preliminary keyRaw environment =
+      .ok (if keyedRange.overlaps directRange then .fired .value
+        else .notFired) := by
+  simp [CheckedSemanticIndexDateRangeOverlap.evaluate, keyedRead, directRead,
+    keyedKeeps, directKeeps, Except.mapError, bind, Except.bind, pure,
+    Except.pure]
+  split <;>
+    simp [dateRangesOverlap_unfiltered_operand_pair, dateRange_overlap_symmetric]
 
 end A12Kernel

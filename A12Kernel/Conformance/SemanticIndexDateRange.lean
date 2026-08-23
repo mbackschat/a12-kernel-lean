@@ -428,4 +428,89 @@ example :
           | .yearless _ _ _ => .unknown) = some .notFired := by
   native_decide
 
+private def overlapWith (keyedField : String) (directSource : FieldId)
+    (keyedFirst : Bool) :
+    Except SemanticIndexDateRangeElabError
+      (CheckedSemanticIndexDateRangeOverlap model) :=
+  elaborateSemanticIndexDateRangeOverlap model ["Order"]
+    (literalKeyed keyedField) [] directSource keyedFirst
+
+/- The two declaration gates and the uniform-year rule are the operator's own. An exact pair crosses
+in either order; a yearless operand is refused by the canonical policy gate before the year rule can
+speak, which is why this unconfigured model shows the policy class rather than a mixed-year one. -/
+example :
+    (overlapWith "RowRange" scalarRangeDecl.id true).isOk = true ∧
+      (overlapWith "RowRange" scalarRangeDecl.id false).isOk = true ∧
+      (match overlapWith "RowMonths" scalarRangeDecl.id true with
+        | .error error =>
+            (match error with
+              | .overlap (.unsupportedPolicy _ _ _) => true
+              | _ => false) && error.diagnostic? == none
+        | .ok _ => false) = true ∧
+      (match overlapWith "RowRange" scalarMonthsDecl.id true with
+        | .error (.overlap (.unsupportedPolicy _ _ _)) => true
+        | _ => false) = true := by
+  native_decide
+
+private def overlapVerdict? (directSource : FieldId) (keyedFirst : Bool)
+    (cells : List ClassifiedCellInput) : Option Verdict := do
+  let operation ← (overlapWith "RowRange" directSource keyedFirst).toOption
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] }, { group := 10, path := [2] }
+    ]
+    cells }).toOption
+  let preliminary ← document.applyFullIndexPreliminary.toOption
+  (operation.evaluate preliminary { read := fun _ => .empty }).toOption
+
+/- The keyed row's own range decides: the Sales row overlaps a range that meets it and stays silent
+against a disjoint one, and the Eng row never substitutes for it. -/
+example :
+    overlapVerdict? scalarRangeDecl.id true
+        (storedAt scalarRangeDecl.id [] "2024-07-01/2024-08-31" :: baseline) =
+      some (.fired .value) ∧
+    overlapVerdict? scalarRangeDecl.id true
+        (storedAt scalarRangeDecl.id [] "2024-09-01/2024-09-30" :: baseline) =
+      some .notFired := by
+  native_decide
+
+/- The authored order does not change this verdict, unlike the directional endpoint comparison, so
+`keyedFirst` is retained for Explain rather than for truth. -/
+example :
+    overlapVerdict? scalarRangeDecl.id false
+        (storedAt scalarRangeDecl.id [] "2024-07-01/2024-08-31" :: baseline) =
+      some (.fired .value) := by
+  native_decide
+
+/- An empty direct operand, a no-match key, and a formally invalid keyed row all suppress the
+predicate rather than making it unknown: each skips its own slot, leaving nothing to pair with. -/
+example :
+    overlapVerdict? scalarRangeDecl.id true baseline = some .notFired ∧
+      overlapVerdict? scalarRangeDecl.id true [
+        storedAt scalarRangeDecl.id [] "2024-07-01/2024-08-31",
+        storedAt indexDecl.id [1] "Eng",
+        storedAt rangeDecl.id [1] "2024-06-01/2024-07-31"
+      ] = some .notFired ∧
+      overlapVerdict? scalarRangeDecl.id true
+        (storedAt scalarRangeDecl.id [] "2024-07-01/2024-08-31" ::
+          baseline.map fun input =>
+            if input.address == { field := rangeDecl.id, path := [1] } then
+              storedAt rangeDecl.id [1] "2024-07-31/2024-06-01"
+            else
+              input) = some .notFired := by
+  native_decide
+
+/- A duplicated key reaches UNKNOWN in the read, and the overlap still only skips that slot, so the
+predicate's own domain stays two-valued while the column's unavailability is reported by its own
+cells. -/
+example :
+    overlapVerdict? scalarRangeDecl.id true
+        (storedAt scalarRangeDecl.id [] "2024-07-01/2024-08-31" ::
+          baseline.map fun input =>
+            if input.address == { field := indexDecl.id, path := [2] } then
+              storedAt indexDecl.id [2] "Sales"
+            else
+              input) = some .notFired := by
+  native_decide
+
 end A12Kernel.Conformance.SemanticIndexDateRange

@@ -29,7 +29,9 @@ theorem mixesDateRangeYearInclusion_eq_false_of_baseYear (model : FlatModel)
     obtain ⟨operand, _, hOperand⟩ := hValue
     cases operand with
     | field declaration form =>
-        cases form <;> simp_all [dateRangeOperandIncludesYear?]
+        cases form <;>
+          simp_all [dateRangeOperandIncludesYear?,
+            dateRangeProfileIncludesYear]
     | _ => simp_all [dateRangeOperandIncludesYear?]
   simp only [mixesDateRangeYearInclusion,
     contains_eq_false_of_forall_ne hFalse, Bool.and_false]

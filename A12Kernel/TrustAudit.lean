@@ -133,6 +133,8 @@ run_cmd do
 #print axioms A12Kernel.dateRangesOverlap_fired_iff_flatTruth
 #print axioms A12Kernel.dateRangesOverlap_filteredSkippedOperand_inert
 #print axioms A12Kernel.dateRangesOverlap_unfiltered_pair
+#print axioms A12Kernel.dateRangesOverlap_unfiltered_operand_pair
+#print axioms A12Kernel.dateRangesOverlap_unfiltered_pair_oneSkipped
 #print axioms A12Kernel.dateRangesOverlap_reachedFilteredPrefix
 #print axioms A12Kernel.dateRangesOverlap_filteredCurrentMatch
 #print axioms A12Kernel.dateRangesOverlap_laterFilter_irrelevant
@@ -1369,6 +1371,9 @@ run_cmd do
 #print axioms A12Kernel.semanticIndexDateRangeBoundComparison_exactAgainstYearless
 #print axioms A12Kernel.semanticIndexDateRangeBoundComparison_yearlessAgainstExact
 #print axioms A12Kernel.semanticIndexDateRangeBoundComparison_admitted
+#print axioms A12Kernel.semanticIndexDateRangeOverlap_gates_owned
+#print axioms A12Kernel.semanticIndexDateRangeOverlap_keyedSkipped_notFired
+#print axioms A12Kernel.semanticIndexDateRangeOverlap_keptPair_delegates
 #print axioms A12Kernel.checkedNumberSemanticIndex_preliminary_is_numeric
 #print axioms A12Kernel.checkedNumberSemanticIndex_validationNumberOperand_delegates
 #print axioms A12Kernel.checkedNumberSemanticIndex_invalidTopology

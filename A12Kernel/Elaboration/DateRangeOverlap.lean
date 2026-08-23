@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CheckedStarDocument
+import A12Kernel.Elaboration.DateRangeBound
 import A12Kernel.Elaboration.DateRangeInput
 import A12Kernel.Elaboration.FieldEntityList
 import A12Kernel.Semantics.DateRangeOverlapOperators
@@ -159,7 +160,10 @@ def refuseDateRangeOverlapYearInterpretation (declaration : FlatFieldDecl)
   else
     pure ()
 
-private def certifyDateRangesOverlapField (declaration : FlatFieldDecl) :
+/-- Apply the operator's two declaration-level gates in order: the canonical exact policy, then the
+year-interpretation refusal. Every operand shape the operator admits — direct, starred, filtered, and
+keyed — goes through this, so none can acquire a profile the others refuse. -/
+def certifyDateRangesOverlapField (declaration : FlatFieldDecl) :
     Except DateRangesOverlapElabError CheckedCanonicalDateRangeField := do
   let checked ← (certifyCanonicalDateRangeField declaration).mapError fun
     | .notDateRange path actual => .sourceNotDateRange path actual.surfaceKind
@@ -256,12 +260,20 @@ private def certifySingularDateRangesOverlapOperands (model : FlatModel)
         (List (CheckedSingularDateRangesOverlapOperand model)) :=
   List.mapM (certifySingularDateRangesOverlapOperand model declaringGroup)
 
-/-- Whether one operand's compared value carries a year: either its declaration does, or the model's Base Year completes a yearless declaration into an exact range. `none` is an operand shape whose declaration this boundary does not read, which keeps its own certification instead of being guessed at either way. -/
+/-- Whether one certified profile's compared value carries a year: either the declaration does, or
+the model's Base Year completes a yearless declaration into an exact range. This is the single rule
+the list gate below and every non-addressed operand shape consume, so no shape can classify its own
+year presence differently. -/
+def dateRangeProfileIncludesYear (model : FlatModel)
+    (format : DateRangeInputFormat) : Bool :=
+  format.includesYear || model.baseYear.isSome
+
+/-- The same rule for one authored operand. `none` is an operand shape whose declaration this boundary does not read, which keeps its own certification instead of being guessed at either way. -/
 def dateRangeOperandIncludesYear? (model : FlatModel) :
     ResolvedFieldEntityOperand model → Option Bool
   | .field declaration .stored =>
       (certifyDateRangeInputField declaration).toOption.map fun checked =>
-        checked.format.includesYear || model.baseYear.isSome
+        dateRangeProfileIncludesYear model checked.format
   | _ => none
 
 /-- The Kernel's uniform-year gate over a whole overlap operand list: every compared range must include the year, or none may. It is a property of the list rather than of a distinguished pair, so it reaches lists longer than two and every declared spelling of a component set. A configured Base Year makes each yearless declaration year-bearing, so a configured model never mixes. -/
@@ -328,19 +340,29 @@ structure ResolvedCheckedDateRangesOverlapOperand (model : FlatModel) where
   core : ResolvedCheckedEntityOperandCore
   semantic : ResolvedDateRangeOperand
 
+/-- Project one already-observed range into a kept-or-skipped overlap slot. Absence and formal
+unavailability both skip the slot rather than contributing an interval, which is what makes an empty
+operand suppress the predicate. Every read route shares this, so an addressed cell and a keyed
+lookup cannot disagree about which slots participate. -/
+def dateRangeOverlapSlotOf (address : CellAddr) :
+    CellObservation DateRangeCellValue →
+    Except DateRangesOverlapEvaluationError ResolvedDateRangeSlot
+  | .empty | .unknown _ | .poison _ => .ok .skipped
+  | .value (.exact value) =>
+      match value.toResolvedDateRange? with
+      | some range => .ok (.kept range)
+      | none => .error (.unresolvedRange address value)
+  | .value value => .error (.sourceValueProfile address value)
+
 /-- Project one addressed cell into a kept-or-skipped overlap slot. Shared with the plural operator, whose scalar and group operands read cells through the same validation-phase observation. -/
 def checkedDateRangeSlot
     (addressed : CheckedAddressedCell) :
     Except DateRangesOverlapEvaluationError ResolvedDateRangeSlot :=
-  match observeCell .validation addressed.cell with
-  | .empty | .unknown _ | .poison _ => pure .skipped
-  | .value (Value.dateRange (.exact value)) =>
-      match value.toResolvedDateRange? with
-      | some range => pure (.kept range)
-      | none => throw (.unresolvedRange addressed.address value)
-  | .value (Value.dateRange value) =>
-      throw (.sourceValueProfile addressed.address value)
-  | .value _ => throw (.sourceValueKind addressed.address)
+  match CheckedDateRangeSource.projectRange addressed.address.field
+      (observeCell .validation addressed.cell) with
+  -- The projection's only failure is a payload that is not a DateRange at all.
+  | .error _ => .error (.sourceValueKind addressed.address)
+  | .ok observed => dateRangeOverlapSlotOf addressed.address observed
 
 /-- Project one resolved operand core into the pure overlap operand, carrying its filter provenance. Shared with the plural operator's list side. -/
 def checkedDateRangeOperandSemantic

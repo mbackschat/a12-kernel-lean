@@ -293,6 +293,31 @@ theorem dateRangesOverlap_unfiltered_pair
     OverlapOperand.occurrences,
     scanOverlapOccurrences, dateRange_overlap_symmetric]
 
+/-- Two unfiltered kept occurrences in **separate** operands delegate to the same closed relation, so
+splitting one operand's slots across two operands cannot change the truth. -/
+theorem dateRangesOverlap_unfiltered_operand_pair
+    (left right : ResolvedDateRange) :
+    evalDateRangesOverlap
+        [{ slots := [.kept left], hasFilter := false },
+          { slots := [.kept right], hasFilter := false }] =
+      if left.overlaps right then .fired .value else .notFired := by
+  simp [evalDateRangesOverlap, flattenOverlapOccurrences,
+    OverlapOperand.occurrences,
+    scanOverlapOccurrences, dateRange_overlap_symmetric]
+
+/-- A two-operand predicate with one skipped side never fires, in **either** order: the surviving
+occurrence has nothing to pair with. This is the mechanism by which an absent or formally unavailable
+operand suppresses the predicate rather than making it unknown. -/
+theorem dateRangesOverlap_unfiltered_pair_oneSkipped
+    (slot : ResolvedDateRangeSlot) :
+    evalDateRangesOverlap
+        [{ slots := [slot], hasFilter := false },
+          { slots := [.skipped], hasFilter := false }] = .notFired ∧
+      evalDateRangesOverlap
+        [{ slots := [.skipped], hasFilter := false },
+          { slots := [slot], hasFilter := false }] = .notFired := by
+  cases slot <;> exact ⟨rfl, rfl⟩
+
 /-- Once a kept filtered occurrence is reached, a later unfiltered pair is omission-typed even when that filtered occurrence is disjoint from both members. -/
 theorem dateRangesOverlap_reachedFilteredPrefix
     (prior left right : ResolvedDateRange)
