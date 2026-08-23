@@ -182,4 +182,32 @@ example :
         (OmittedDayDate.ofYearMonth? 2023 2).map (·.resolve .lastDay) := by
   native_decide
 
+/- **What a partial value says, against what it denotes.** Measured on the kernel's own `validateFull`,
+a rule message interpolating one of these values prints its **zero markers literally**: stored
+`2024-06-00` renders `06/00/2024`, `2024-00-00` renders `00/00/2024`, and `0000-00-00` renders
+`00/00/0000`. So the stored components are the renderer's input and a completion is not — the earliest
+boundary of that first value is June **1st**, which is what a consumer reaching for `resolve` would
+print instead. These rows pin the projection that keeps those two apart; the rendered *pattern* itself
+is locale-dependent and only the en_US route is measured, so nothing here fixes the separator order. -/
+example :
+    (admittedValue? .dayOptional "2024-06-00").map (·.storedComponents) =
+        some (some 2024, some 6, none) ∧
+      (admittedValue? .monthOptional "2024-00-00").map (·.storedComponents) =
+        some (some 2024, none, none) ∧
+      (admittedValue? .yearOptional "0000-00-00").map (·.storedComponents) =
+        some (none, none, none) ∧
+      (admittedValue? .dayOptional "2024-06-15").map (·.storedComponents) =
+        some (some 2024, some 6, some 15) := by
+  native_decide
+
+/- The nearest wrong reading, made explicit: the omitted day's own earliest boundary carries day `1`,
+so a renderer built on `resolve` prints a day the stored value never spelled. -/
+example :
+    (OmittedDayDate.ofYearMonth? 2024 6).map
+        (fun boundary => (boundary.resolve .firstDay).civil.parts.day) =
+        some 1 ∧
+      (admittedValue? .dayOptional "2024-06-00").map
+        (fun value => value.storedComponents.2.2) = some none := by
+  native_decide
+
 end A12Kernel.Conformance.PartialDateInput

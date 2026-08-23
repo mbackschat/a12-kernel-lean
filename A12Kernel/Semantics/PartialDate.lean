@@ -95,4 +95,22 @@ structure AdmittedPartiallyKnownDate (mode : TemporalPartialMode) where
   admitted : mode.admitsPartiallyKnownValue value = true
   deriving Repr, DecidableEq
 
+/-- The **stored** component triple a partially known value spells, with `none` for each omitted
+position. This is what a renderer needs and it is deliberately not a completion: measured, a message
+interpolating such a value prints its zero markers literally — an omitted day renders as `00`, not as
+the `01` its earliest boundary carries — so a consumer that reached for `resolve` would print a
+different date than the kernel does. The two boundaries answer "which dates does this denote"; this
+answers "what does it say".
+
+The components are recovered from the shape rather than stored twice: an omitted-day value's boundaries
+share the year and month it spells, and an omitted-month value's share the year. -/
+def PartiallyKnownDateValue.storedComponents :
+    PartiallyKnownDateValue → Option Int × Option Nat × Option Nat
+  | .full date => (some date.civil.parts.year, some date.civil.parts.month,
+      some date.civil.parts.day)
+  | .omittedDay date =>
+      (some date.first.civil.parts.year, some date.first.civil.parts.month, none)
+  | .omittedMonth date => (some date.first.civil.parts.year, none, none)
+  | .omittedYear => (none, none, none)
+
 end A12Kernel
