@@ -17,12 +17,13 @@ language version it supports.
 
 A field reference may carry an Enumeration **category** suffix, `->Name`, whose three gates are the
 Kernel's own: a missing name, a field that is not an Enumeration, and a name that is not one of that
-declaration's categories. It carries neither of the value suffix's extra gates, and combining it with
-the value suffix is a parse failure — the two really are alternatives. A **doubled** arrow is refused
+declaration's categories. It carries neither of the value suffix's extra gates, and combining it with the value suffix is a parse failure — the two really are alternatives. A **doubled** arrow is refused
 here as one parse failure, which is a narrower account than the Kernel's: measured, the Kernel reaches
 its category gate first and reports the *first* name as unknown, so this local class is deliberately
-mapped to no Kernel diagnostic. What a category access *renders* is not claimed at all: the checked
-part hands the caller an opaque text input with no fallback policy of its own.
+mapped to no Kernel diagnostic. What a category access **renders** is measured: the category
+token the field's current stored value maps to, so the checked part carries the declaration's own
+mapping and the caller supplies only the stored token. The empty and unmapped cases render as the
+empty string by this project's choice; neither is observed.
 
 One **non-field** parameter form is admitted: the Base Year terminal with an optional signed offset.
 Its only static gate is that the model declares a Base Year, and the offset is applied at authoring
@@ -403,9 +404,9 @@ def elaborateValidationMessageTemplate (model : FlatModel)
 structure ValidationMessageInputs where
   fieldName : FieldId → MessageNameInput
   fieldValue : FieldId → MessageValueInput
-  /-- Keyed by the field and the selected category, because one field may be accessed through more
-  than one category in a single template. -/
-  fieldCategory : FieldId → String → MessageCategoryInput
+  /-- The field's current stored token. The category mapping is applied by the checked part, not by
+  the caller, because the mapping is the declaration's and is measured. -/
+  fieldStoredToken : FieldId → Option String
 
 def CheckedValidationMessagePart.toRenderPart
     (inputs : ValidationMessageInputs) :
@@ -414,8 +415,10 @@ def CheckedValidationMessagePart.toRenderPart
   | .fieldName reference => .fieldName (inputs.fieldName reference.declaration.id)
   | .fieldValue reference => .fieldValue (inputs.fieldValue reference.declaration.id)
   | .fieldCategory access =>
-      .fieldCategory
-        (inputs.fieldCategory access.reference.declaration.id access.category)
+      .fieldCategory {
+        categoryToken :=
+          (inputs.fieldStoredToken access.reference.declaration.id).bind
+            (access.projection.declaration.categoryTokenFor? access.category) }
   | .baseYear _ year _ => .baseYear year
 
 def CheckedValidationMessageTemplate.toRenderPlan

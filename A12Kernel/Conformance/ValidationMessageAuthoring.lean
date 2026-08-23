@@ -185,11 +185,12 @@ private def baseYearRender? (template : String) : Option ResolvedMessageText := 
     fieldName := fun _ =>
       { providerResult := none, modelLabel := none, debugDisplay := "A" }
     fieldValue := fun _ => { displayValue := none, defaultDisplay := "0" }
-    fieldCategory := fun _ _ => { display := "" }
+    fieldStoredToken := fun _ => none
   }).render
 
 /- The Base Year parameter applies its authored offset at authoring, because nothing about it depends
-on the document. An absent offset is the same parameter with no calculation. -/
+on the document. An absent offset is the same parameter with no calculation. These three rendered
+values are Kernel-measured on both codegen strategies against a Base Year of 2020. -/
 example :
     baseYearRender? "Year $BaseYear$" = some { text := "Year 2020" } ∧
       baseYearRender? "Year $BaseYear+3$" = some { text := "Year 2023" } ∧
@@ -255,8 +256,7 @@ private def inputs : ValidationMessageInputs where
       { displayValue := some "$Other$", defaultDisplay := "0" }
     else
       { displayValue := none, defaultDisplay := "" }
-  fieldCategory field category :=
-    { display := s!"[{field}:{category}]" }
+  fieldStoredToken field := if field == status.id then some "open" else none
 
 private def render? (template : String) : Option ResolvedMessageText := do
   let condition ← condition?
@@ -273,11 +273,25 @@ private def renderOn? (group : GroupPath) (reference : SurfaceFieldPath)
       template).toOption
   pure (checked.toRenderPlan inputs).render
 
-/- A category access contributes one opaque text run supplied by the caller, keyed by the field and
-the selected category, and this producer asserts no fallback policy of its own for it. -/
+/- A category access renders the category token the field's **current stored value** maps to, through
+the declaration's own mapping rather than through anything the caller decides. `open` is the first
+declared value, whose `Group` token is `A` — the exact Kernel-measured pairing. -/
 example :
     renderOn? ["Order"] (pathAt (.relative 0) [] "Status")
-        "Is $Status->Group$ now" = some { text := "Is [5:Group] now" } := by
+        "Is $Status->Group$ now" = some { text := "Is A now" } := by
+  native_decide
+
+/- An unmapped or absent stored value renders as the empty string. That default is this project's
+choice and is deliberately unmeasured, so it is locked here to keep it visible rather than to claim
+the Kernel does the same. -/
+example :
+    (do
+      let condition ← conditionOn? ["Order"] (pathAt (.relative 0) [] "Status")
+      let checked ← (elaborateValidationMessageTemplate model keywordProfile
+        condition "Is $Status->Group$ now").toOption
+      pure (checked.toRenderPlan { inputs with
+        fieldStoredToken := fun _ => none }).render) =
+    some { text := "Is  now" } := by
   native_decide
 
 private def templateError? (template : String) :

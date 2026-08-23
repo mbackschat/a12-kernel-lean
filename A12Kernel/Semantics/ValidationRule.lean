@@ -54,11 +54,12 @@ def resolve (input : MessageValueInput) : String :=
 
 end MessageValueInput
 
-/-- One Enumeration category access. Unlike a name or a value input this carries **no** fallback
-policy: the caller supplies the exact bytes, because this producer's provider/label/default order for
-a category access is not established here. -/
+/-- One Enumeration category access, already resolved to the category token the field's current
+stored value maps to. `none` is an empty field or a value the category does not map; both render as
+the empty string, which is the measured behaviour only for a mapped value — the absent case is this
+project's default and carries no observation. -/
 structure MessageCategoryInput where
-  display : String
+  categoryToken : Option String
   deriving Repr, DecidableEq
 
 /-- One already-decoded rule-message part. Field references and `$` syntax have been checked before this point; replacement strings are opaque and are never parsed again. -/
@@ -78,7 +79,7 @@ def render : MessageRenderPart → String
   | .text value => value
   | .fieldName input => input.resolve
   | .fieldValue input => input.resolve
-  | .fieldCategory input => input.display
+  | .fieldCategory input => input.categoryToken.getD ""
   | .baseYear year => toString year
 
 end MessageRenderPart
