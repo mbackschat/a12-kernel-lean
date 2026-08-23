@@ -110,4 +110,70 @@ example :
       some [([(10, 1)], .fired .value), ([(10, 2)], .fired .value)] := by
   native_decide
 
+/-! ## The unconfigured yearless overlap at the iterating row -/
+
+private def yearlessOperand (groups : List String) (field : String) :
+    SurfaceFieldEntityOperand :=
+  .field { base := .absolute, groups, field }
+
+private def yearlessOverlap? (rowGroup : GroupPath)
+    (first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition yearlessModel) :=
+  CheckedValidationCondition.fromIteratedYearlessDateRangeOverlap yearlessModel
+    rowGroup { first, rest }
+
+private def bareMonths := yearlessOperand ["Form", "Rows"] "RowMonths"
+private def scalarMonthsOperand := yearlessOperand ["Form"] "ScalarMonths"
+
+/- The label-domain overlap reaches the same locus rule, in either slot, and keeps the shared
+whole-list gates: a sole operand is refused for multiplicity and a repeated one for duplication. -/
+example :
+    (yearlessOverlap? ["Form", "Rows"] bareMonths [scalarMonthsOperand]).isOk =
+        true ∧
+      (yearlessOverlap? ["Form", "Rows"] scalarMonthsOperand [bareMonths]).isOk =
+        true ∧
+      (match yearlessOverlap? ["Form"] bareMonths [scalarMonthsOperand] with
+        | .error (.fieldReference (.repeatableReference path)) =>
+            path == rowMonths.path
+        | _ => false) = true ∧
+      (yearlessOverlap? ["Form", "Rows"] bareMonths []).isOk = false ∧
+      (yearlessOverlap? ["Form", "Rows"] bareMonths [bareMonths]).isOk =
+        false := by
+  native_decide
+
+private def yearlessOverlapRowVerdicts?
+    (first : SurfaceFieldEntityOperand) (rest : List SurfaceFieldEntityOperand)
+    (data : DocumentData) : Option (List (Env × Verdict)) := do
+  let checked ← (yearlessOverlap? ["Form", "Rows"] first rest).toOption
+  let rule ← (assembleResolvedValidationRule yearlessModel checked rowMonths.id
+    "iteratedYearlessOverlap" .error { parts := [] }).toOption
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler yearlessModel).toOption
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let outcomes ← (rule.evalOrdinaryRepeatableFull document).toOption
+  pure (outcomes.map fun entry => (entry.1, entry.2.verdict))
+
+/- Each row's own label pair is scanned against the scalar one: an overlapping row fires and a
+disjoint row does not, with the month extents supplied by the shared yearless interval owner. -/
+example :
+    yearlessOverlapRowVerdicts? bareMonths [scalarMonthsOperand] {
+      instantiatedRows := [
+        { group := 10, path := [1] }, { group := 10, path := [2] }]
+      cells := [
+        yearlessCell scalarMonths.id [] "06/09",
+        yearlessCell rowMonths.id [1] "08/11",
+        yearlessCell rowMonths.id [2] "10/12"] } =
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] := by
+  native_decide
+
+/- A row with no stored label pair skips its slot, so the scan cannot fire on absence. -/
+example :
+    yearlessOverlapRowVerdicts? bareMonths [scalarMonthsOperand] {
+      instantiatedRows := [{ group := 10, path := [1] }]
+      cells := [yearlessCell scalarMonths.id [] "06/09"] } =
+      some [([(10, 1)], .notFired)] := by
+  native_decide
+
 end A12Kernel.Conformance.IteratedYearlessDateRangeCondition

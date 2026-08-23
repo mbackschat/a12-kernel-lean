@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.DateRangeStoredComparison
 import A12Kernel.Elaboration.AtLeastOneDateRangeOverlap
 import A12Kernel.Elaboration.DateRangeBoundComparison
+import A12Kernel.Elaboration.YearlessDateRangeOverlap
 import A12Kernel.Elaboration.DateRangeConstructionComparison
 
 /-! # DateRange conditions read at a rule's iterating row
@@ -76,6 +77,7 @@ inductive IteratedDateRangeCondition (model : FlatModel) where
       (comparison : TemporalComparisonOp)
   | overlap (source : CheckedDateRangesOverlapSource model)
   | pluralOverlap (source : CheckedAtLeastOneDateRangeOverlapsSource model)
+  | yearlessOverlap (source : CheckedYearlessDateRangesOverlapSource model)
   | constructionAgainstStored
       (comparison : CheckedIteratedConstructionStoredComparison model)
 
@@ -88,6 +90,7 @@ inductive IteratedDateRangeConditionElabError where
   | mixedBoundDomains
   | overlap (cause : DateRangesOverlapElabError)
   | pluralOverlap (cause : AtLeastOneDateRangeOverlapsElabError)
+  | yearlessOverlap (cause : YearlessDateRangesOverlapElabError)
   | construction (cause : DateRangeConstructionElabError)
   | storedOperand (cause : DirectDateRangeElabError)
   | constructionComponentMismatch (construction : DateRangeEndpointFormat)
@@ -108,6 +111,7 @@ def diagnostic? :
   | .mixedBoundDomains => none
   | .overlap cause => cause.diagnostic?
   | .pluralOverlap cause => cause.diagnostic?
+  | .yearlessOverlap cause => cause.diagnostic?
   | .construction cause => cause.diagnostic?
   | .storedOperand cause => cause.diagnostic?
   | .constructionComponentMismatch _ _ => some .invalidCompareToDateRange
@@ -137,6 +141,11 @@ def operandDeclarations : IteratedDateRangeCondition model → List FlatFieldDec
         match operand with
         | .field declaration _ => some declaration
         | _ => none
+  | .yearlessOverlap source =>
+      source.shape.operands.filterMap fun operand =>
+        match operand with
+        | .field declaration _ => some declaration
+        | _ => none
   | .constructionAgainstStored comparison =>
       [comparison.construction.start.checked.declaration,
         comparison.construction.finish.checked.declaration,
@@ -151,11 +160,14 @@ def repeatableDeclarations (condition : IteratedDateRangeCondition model) :
 
 /-- Whether every retained declaration is still the model's own and still bound by the reading
 group's scope. The checked condition re-establishes this at assembly, so a leaf cannot smuggle a
-stale declaration or an unbound level past the locus gate. -/
+stale declaration or an unbound level past the locus gate.
+
+A condition with no repeatable operand is admitted, because this leaf is the family's only
+rule-level owner: refusing the scalar shape would leave it unreachable from any rule rather than
+handing it to a second owner. -/
 def wellFormedIn (condition : IteratedDateRangeCondition model)
     (scope : List RepeatableLevel) : Bool :=
-  !condition.repeatableDeclarations.isEmpty &&
-    condition.operandDeclarations.all fun declaration =>
+  condition.operandDeclarations.all fun declaration =>
       declaration.repetitionBoundBy scope &&
         match model.lookupUniqueId declaration.id with
         | .ok owned => owned == declaration
@@ -233,6 +245,14 @@ def verdictOf (condition : IteratedDateRangeCondition model)
         (DateRangesOverlapEvaluationError.toAddressing
           { field := source.scalar.declaration.id, path := [] })
       pure result.verdict
+  | .yearlessOverlap source =>
+      -- The fallback address is only reached by the incoherent-extent class, which names no cell;
+      -- the first operand's own declaration is the nearest honest coordinate for it.
+      (evaluateYearlessDateRangeOverlapOperands source.operands document
+        outer).mapError
+        (YearlessDateRangesOverlapEvaluationError.toAddressing
+          { field := (source.first.source?.map (·.declaration.id)).getD 0
+            path := [] })
   | .constructionAgainstStored comparison => do
       let readAt (declaration : FlatFieldDecl) :
           Except CheckedAddressingError CheckedCell := do
@@ -347,6 +367,18 @@ def elaborateIteratedConstructionStoredComparison (model : FlatModel)
   else
     throw (.constructionComponentMismatch construction.start.format
       storedSource.format)
+
+/-- Resolve one unconfigured yearless overlap predicate whose unstarred operands the rule's own
+iteration may cross. Every gate is the yearless owner's, including its per-operand yearless
+certification and the shared shape rules; only the operand locus widens. -/
+def elaborateIteratedYearlessOverlap (model : FlatModel)
+    (declaringGroup : GroupPath) (scope : List RepeatableLevel)
+    (authored : SurfaceFieldEntitySource) :
+    Except IteratedDateRangeConditionElabError
+      (IteratedDateRangeCondition model) :=
+  (.yearlessOverlap <$>
+    elaborateYearlessDateRangesOverlapSourceIn model declaringGroup scope
+      authored) |>.mapError .yearlessOverlap
 
 /-- Resolve one plural overlap predicate whose unstarred operands the rule's own iteration may
 cross, on either side. The distinguished scalar and the list share the reading scope, and every other

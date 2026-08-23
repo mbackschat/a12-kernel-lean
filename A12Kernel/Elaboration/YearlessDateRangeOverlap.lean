@@ -81,6 +81,27 @@ inductive YearlessDateRangesOverlapEvaluationError where
   | sourceValueKind (address : CellAddr)
   deriving Repr, DecidableEq
 
+/-- Project this route's evaluation failure into the shared addressing channel a condition leaf
+carries. The two payload classes name a stored value that contradicts its own certificate, which no
+checked source can produce, and the incoherent-extent class names a direct operand that resolved to
+other than one cell; all three report at the offending address rather than being dropped. -/
+def YearlessDateRangesOverlapEvaluationError.toAddressing (fallback : CellAddr) :
+    YearlessDateRangesOverlapEvaluationError → CheckedAddressingError
+  | .addressing error => error
+  | .sourceValueProfile address _ | .sourceValueKind address =>
+      CheckedAddressingError.operandPayload address
+  | .incoherentDirectOperand _ =>
+      CheckedAddressingError.operandPayload fallback
+
+/-- The Kernel classes this route reports. The yearless certification failures are local ingestion
+insufficiency with no established class; a shape or group refusal keeps the exact owner's class. -/
+def YearlessDateRangesOverlapElabError.diagnostic? :
+    YearlessDateRangesOverlapElabError → Option KernelStaticDiagnostic
+  | .source cause => cause.diagnostic?
+  | .groupsNotAllowed _ => some KernelStaticDiagnostic.noGroupsAllowed
+  | .baseYearConfigured _ | .notYearless _ _ _
+  | .unsupportedReadForm _ _ => none
+
 namespace CheckedYearlessDateRangeOverlapField
 
 /-- Project one addressed cell into a yearless slot. An empty, unavailable, or poisoned cell is skipped exactly as on the exact route; an exact cell is refused here rather than compared, because it belongs to the completed route. Shared by the direct and starred operand shapes. -/
@@ -98,25 +119,36 @@ def slotFor (addressed : CheckedAddressedCell) :
   | .value _ => throw (.sourceValueKind addressed.address)
 
 /-- Resolve one admitted operand's single addressed cell into its yearless slot. -/
-def resolveCheckedSlot
+def resolveCheckedSlotAt
     (source : CheckedYearlessDateRangeOverlapField model)
-    (document : CheckedDocument model) :
+    (document : CheckedDocument model) (outer : Env) :
     Except YearlessDateRangesOverlapEvaluationError
       (OverlapSlot YearlessInterval) := do
-  let core ← (document.resolveCheckedDirectEntityOperandCore source.declaration.id)
-    |>.mapError .addressing
+  let core ←
+    (document.resolveCheckedDirectEntityOperandCoreAt outer
+      source.declaration.id) |>.mapError .addressing
   match core.addressedCells with
   | [addressed] => slotFor addressed
   | addressed => throw (.incoherentDirectOperand addressed.length)
 
-/-- Resolve one admitted operand against the checked document, retaining its single concrete address. A direct yearless field carries no filter. -/
+/-- Resolve one admitted operand at the reading row, retaining its single concrete address. A direct
+yearless field carries no filter. A declaration crossing no repeatable level addresses identically at
+every environment, so the scalar route is this function at the empty one. -/
+def resolveCheckedValidationAt
+    (source : CheckedYearlessDateRangeOverlapField model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except YearlessDateRangesOverlapEvaluationError
+      (OverlapOperand YearlessInterval) := do
+  let slot ← source.resolveCheckedSlotAt document outer
+  pure { slots := [slot], hasFilter := false }
+
+/-- The scalar instance: a direct operand read at the document root. -/
 def resolveCheckedValidation
     (source : CheckedYearlessDateRangeOverlapField model)
     (document : CheckedDocument model) :
     Except YearlessDateRangesOverlapEvaluationError
-      (OverlapOperand YearlessInterval) := do
-  let slot ← source.resolveCheckedSlot document
-  pure { slots := [slot], hasFilter := false }
+      (OverlapOperand YearlessInterval) :=
+  source.resolveCheckedValidationAt document []
 
 end CheckedYearlessDateRangeOverlapField
 
@@ -159,7 +191,7 @@ def resolveCheckedValidation
     Except YearlessDateRangesOverlapEvaluationError
       (OverlapOperand YearlessInterval) :=
   match operand with
-  | .direct source => source.resolveCheckedValidation document
+  | .direct source => source.resolveCheckedValidationAt document outer
   | .star path _ filter => do
       let core ←
         (path.resolveCheckedValidationEntityOperandCore document outer filter)
@@ -222,6 +254,50 @@ def certifyYearlessDateRangeOverlapOperand (model : FlatModel)
   | .starredGroupPresence source =>
       .group <$>
         certifyYearlessDateRangeEntityGroup model (.starredPresence source)
+
+/-- One admitted unconfigured yearless overlap source: the shared entity-list shape beside its
+certified operands in authored order. The shape carries model validity, the multiple-slots-or-one-star
+cardinality rule, exact duplicates, and ancestor overlap; this structure adds only that every operand
+was certified yearless. -/
+structure CheckedYearlessDateRangesOverlapSource (model : FlatModel) where
+  private mk ::
+  shape : CheckedFieldEntityShape model
+  first : CheckedYearlessDateRangeOverlapOperand model
+  rest : List (CheckedYearlessDateRangeOverlapOperand model)
+
+namespace CheckedYearlessDateRangesOverlapSource
+
+/-- Every certified operand in authored order. -/
+def operands (checked : CheckedYearlessDateRangesOverlapSource model) :
+    List (CheckedYearlessDateRangeOverlapOperand model) :=
+  checked.first :: checked.rest
+
+end CheckedYearlessDateRangesOverlapSource
+
+/-- Apply the shared shape gates first, then certify every operand as unconfigured yearless.
+`scope` is the reading rule's iteration scope, so an unstarred operand inside a level the rule
+iterates is admitted; every other gate is the shared checker's and is unaware of the scope. The
+uniform-year gate is not applied here, because a source reaching this route is uniformly yearless by
+construction — a mixed list is refused by the exact owner before the fallback. -/
+def elaborateYearlessDateRangesOverlapSourceIn (model : FlatModel)
+    (declaringGroup : GroupPath) (scope : List RepeatableLevel)
+    (authored : SurfaceFieldEntitySource) :
+    Except YearlessDateRangesOverlapElabError
+      (CheckedYearlessDateRangesOverlapSource model) := do
+  let shape ← elaborateFieldEntityShapeIn model declaringGroup scope authored
+    |>.mapError fun error => .source (.shape error)
+  let first ← certifyYearlessDateRangeOverlapOperand model declaringGroup
+    shape.first
+  let rest ← shape.rest.mapM
+    (certifyYearlessDateRangeOverlapOperand model declaringGroup)
+  pure { shape, first, rest }
+
+/-- The scalar instance: a source read where the reading rule iterates no level. -/
+def elaborateYearlessDateRangesOverlapSource (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
+    Except YearlessDateRangesOverlapElabError
+      (CheckedYearlessDateRangesOverlapSource model) :=
+  elaborateYearlessDateRangesOverlapSourceIn model declaringGroup [] authored
 
 /-- Evaluate the any-pair scan over admitted unconfigured yearless operands of any admitted shape, in authored order. -/
 def evaluateYearlessDateRangeOverlapOperands

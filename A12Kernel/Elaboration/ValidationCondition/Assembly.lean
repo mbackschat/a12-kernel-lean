@@ -136,11 +136,12 @@ def fromRepeatableFieldPresence (model : FlatModel) (rowGroup : GroupPath)
 
 /-- Resolve one DateRange condition whose operands the rule's own iteration may cross. The reading
 scope is the rule group's, so the locus decides admission exactly as the Kernel's does, and an
-operand crossing an unbound level is refused as a repeatable reference. A condition with no
-repeatable operand belongs to the scalar carriers and is refused here rather than offered twice.
+operand crossing an unbound level is refused as a repeatable reference. A condition whose operands
+are all scalar is admitted too and simply derives no iteration, because this leaf is the family's
+only rule-level owner.
 
-The two resolved operand paths are supplied by each member's own front end; this shared step owns
-only the locus scope and the checked-core certification. -/
+The resolved operand paths are supplied by each member's own front end; this shared step owns only
+the locus scope and the checked-core certification. -/
 private def fromIteratedDateRange (model : FlatModel) (rowGroup : GroupPath)
     (build : List RepeatableLevel →
       Except IteratedDateRangeConditionElabError
@@ -163,13 +164,12 @@ private def fromIteratedDateRange (model : FlatModel) (rowGroup : GroupPath)
           | .construction (.start (.targetPolicy (.resolve error)))
           | .construction (.finish (.targetPolicy (.resolve error)))
           | .overlap (.shape (.resolve error))
-          | .pluralOverlap (.shape (.resolve error)) => .fieldReference error
+          | .pluralOverlap (.shape (.resolve error))
+          | .yearlessOverlap (.source (.shape (.resolve error))) =>
+              .fieldReference error
           | error => .iteratedDateRange error
-      match condition.repeatableDeclarations, condition.operandDeclarations with
-      | [], first :: _ => throw (.repeatableFieldRequired first.path)
-      | _, _ =>
-          checkCore model rowGroup (.leaf (.iteratedDateRange condition))
-            (by rw [hModel]; rfl)
+      checkCore model rowGroup (.leaf (.iteratedDateRange condition))
+        (by rw [hModel]; rfl)
 
 /-- Resolve two authored field references at the rule group without deciding their repetition. -/
 private def resolveIteratedOperand (model : FlatModel) (rowGroup : GroupPath)
@@ -213,6 +213,14 @@ def fromIteratedDateRangeBoundPair (model : FlatModel) (rowGroup : GroupPath)
   fromIteratedDateRange model rowGroup fun scope =>
     elaborateIteratedBoundPair model scope leftDeclaration.id leftBound
       rightDeclaration.id rightBound comparison
+
+/-- One unconfigured yearless DateRange overlap predicate read at the rule's own row. -/
+def fromIteratedYearlessDateRangeOverlap (model : FlatModel)
+    (rowGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) :=
+  fromIteratedDateRange model rowGroup fun scope =>
+    elaborateIteratedYearlessOverlap model rowGroup scope authored
 
 /-- One plural DateRange overlap predicate read at the rule's own row. -/
 def fromIteratedDateRangePluralOverlap (model : FlatModel)

@@ -72,12 +72,18 @@ example :
         | _ => false) = true := by
   native_decide
 
-/- A carrier with no repeatable operand belongs to the scalar owner, so this leaf refuses it rather
-than offering a second way to express one condition. -/
+/- A carrier whose operands are all scalar is admitted at a non-iterating locus and derives no
+iteration. This leaf is the family's only rule-level owner, so refusing the scalar shape would make
+it unreachable from any rule rather than hand it to a second owner. -/
 example :
-    (match condition? ["Form"] existingPath (path ["Form"] "Dotted") with
-      | .error (.repeatableFieldRequired path) => path == existing.path
-      | _ => false) = true := by
+    (condition? ["Form"] existingPath (path ["Form"] "Dotted")).isOk = true ∧
+      (match (condition? ["Form"] existingPath
+          (path ["Form"] "Dotted")).toOption with
+        | some checked =>
+            match checked.core.ordinaryIterationScope with
+            | .ok none => true
+            | _ => false
+        | none => false) = true := by
   native_decide
 
 /- The operand gate is the declared component set, exactly as on the scalar carrier: the dotted
@@ -299,16 +305,18 @@ example :
       | _ => false) = true := by
   native_decide
 
-/- A list whose only repeatable reference is a **star** reads no enclosing row, so it stays with the
-scalar overlap owner rather than becoming a second way to express one condition. This leaf refuses
-it from either locus, and the refusal names the operand it would have had to read. -/
+/- A list whose only repeatable reference is a **star** reads no enclosing row, so it is admitted
+from either locus and derives no iteration: the star reopens its own level instead of binding one. -/
 example :
-    (match overlap? ["Form", "Rows"] (rowsStar "RowRange") [scalarExisting] with
-      | .error (.repeatableFieldRequired path) => path == existing.path
-      | _ => false) = true ∧
-    (match overlap? ["Form"] (rowsStar "RowRange") [scalarExisting] with
-      | .error (.repeatableFieldRequired path) => path == existing.path
-      | _ => false) = true := by
+    (overlap? ["Form", "Rows"] (rowsStar "RowRange") [scalarExisting]).isOk =
+        true ∧
+      (match (overlap? ["Form"] (rowsStar "RowRange")
+          [scalarExisting]).toOption with
+        | some checked =>
+            match checked.core.ordinaryIterationScope with
+            | .ok none => true
+            | _ => false
+        | none => false) = true := by
   native_decide
 
 /- Every whole-list gate stays the scalar operator's: a sole operand is still refused for
@@ -432,15 +440,18 @@ example :
   native_decide
 
 /- A repeatable stored operand beside scalar endpoints is admitted too, so either half may be the
-one the rule iterates; and an all-scalar condition belongs to the existing mixed carrier rather than
-this leaf. -/
+one the rule iterates; an all-scalar condition is admitted at a non-iterating locus and derives no
+iteration. -/
 example :
     (construction? ["Form", "Rows"] (path ["Form"] "ScalarStart")
         (path ["Form"] "ScalarFinish") rowRangePath).isOk = true ∧
-      (match construction? ["Form"] (path ["Form"] "ScalarStart")
-          (path ["Form"] "ScalarFinish") existingPath with
-        | .error (.repeatableFieldRequired path) => path == scalarStart.path
-        | _ => false) = true := by
+      (match (construction? ["Form"] (path ["Form"] "ScalarStart")
+          (path ["Form"] "ScalarFinish") existingPath).toOption with
+        | some checked =>
+            match checked.core.ordinaryIterationScope with
+            | .ok none => true
+            | _ => false
+        | none => false) = true := by
   native_decide
 
 private def constructionRowVerdicts? (start finish stored : SurfaceFieldPath)
@@ -496,8 +507,8 @@ private def plural? (rowGroup : GroupPath) (scalar : SurfaceFieldEntityOperand)
     { scalar, list := { first, rest } }
 
 /- Either side may be the one the rule iterates, and both are refused from the enclosing scalar
-group. A starred list operand is locus-free and needs no row read, so a list of stars beside a scalar
-belongs to the scalar owner and is refused here. -/
+group. A starred list operand is locus-free and needs no row read, so a scalar beside a star is admitted
+from either locus and derives no iteration of its own. -/
 example :
     (plural? ["Form", "Rows"] bareRow scalarExisting).isOk = true ∧
       (plural? ["Form", "Rows"] scalarExisting bareRow).isOk = true ∧
@@ -509,9 +520,8 @@ example :
         | .error (.fieldReference (.repeatableReference path)) =>
             path == rowRange.path
         | _ => false) = true ∧
-      (match plural? ["Form", "Rows"] scalarExisting (rowsStar "RowRange") with
-        | .error (.repeatableFieldRequired path) => path == existing.path
-        | _ => false) = true := by
+      (plural? ["Form", "Rows"] scalarExisting (rowsStar "RowRange")).isOk =
+        true := by
   native_decide
 
 /- The locus widening adds no admission of its own. The cross-side duplicate check still refuses one
@@ -550,6 +560,24 @@ example :
       instantiatedRows := [{ group := 10, path := [1] }]
       cells := [storedCell existing.id [] "2024-06-15/2024-07-15"] } =
       some [([(10, 1)], .notFired)] := by
+  native_decide
+
+/-! ## The same carriers at a non-iterating locus -/
+
+/- Every member is reachable from a rule whose operands are all scalar, which is what makes this
+leaf the family's rule-level owner rather than an iteration-only special case. Each derives no
+iteration, and the overlap members keep their whole-list gates there too. -/
+example :
+    [condition? ["Form"] existingPath (path ["Form"] "Dotted"),
+      overlap? ["Form"] scalarExisting [scalarDotted],
+      plural? ["Form"] scalarExisting scalarDotted,
+      boundAgainstFixed? ["Form"] existingPath .start .equal,
+      boundPair? ["Form"] existingPath .start (path ["Form"] "Dotted") .finish
+        .before].all (·.isOk) = true ∧
+    (construction? ["Form"] (path ["Form"] "ScalarStart")
+      (path ["Form"] "ScalarFinish") existingPath).isOk = true ∧
+    (overlap? ["Form"] scalarExisting []).isOk = false ∧
+    (plural? ["Form"] scalarExisting scalarExisting).isOk = false := by
   native_decide
 
 end A12Kernel.Conformance.IteratedDateRangeCondition
