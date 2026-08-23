@@ -137,13 +137,25 @@ def observe (checked : CheckedValueAsDateSource model)
 
 end CheckedValueAsDateSource
 
-/-- Resolve and certify one nonrepeatable partial-Date source for every partial precision. -/
-def elaborateValueAsDateSource
-    (model : FlatModel) (sourceField : FieldId)
+/-- Resolve and certify one partial-Date source read by a rule iterating `scope`, for every partial
+precision.
+
+**The reading locus is the whole content of `scope`.** Measured at kernel 30.8.1, a partial-Date
+operand inside a repeatable group is admitted exactly when the reading rule's own iteration scope binds
+that group: the same absolute operand path is accepted by a rule whose group is the repeatable one and
+refused by a rule at the parent, where the Kernel demands an asterisk instead. A *starred* operand is
+refused outright, at `ValueAsDate` itself rather than at the enclosing comparison, so no scope admits
+one and this signature cannot express it.
+
+Only the direct-comparison carrier was measured. The shift and difference carriers below keep the
+nonrepeatable locus deliberately: in this family a locus verdict does not transfer between carriers. -/
+def elaborateValueAsDateSourceIn
+    (model : FlatModel) (scope : List RepeatableLevel) (sourceField : FieldId)
     (endpoint : ValueAsDateEndpoint) :
     Except ValueAsDateElabError (CheckedValueAsDateSource model) := do
   let source ←
-    elaborateTemporalTargetPolicy model sourceField |>.mapError .sourcePolicy
+    elaborateTemporalTargetPolicyIn model scope sourceField
+      |>.mapError .sourcePolicy
   if hKind : source.target.kind = .date then
     if hMode : source.policy.partialMode ≠ .full then
       match hFormat :
@@ -161,6 +173,14 @@ def elaborateValueAsDateSource
       throw (.unsupportedPartialMode sourceField source.policy.partialMode)
   else
     throw (.sourceKind sourceField source.target.kind)
+
+/-- Resolve and certify one **nonrepeatable** partial-Date source: the `scope = []` case of the one
+locus gate, retained because most consumers read at the document root. -/
+def elaborateValueAsDateSource
+    (model : FlatModel) (sourceField : FieldId)
+    (endpoint : ValueAsDateEndpoint) :
+    Except ValueAsDateElabError (CheckedValueAsDateSource model) :=
+  elaborateValueAsDateSourceIn model [] sourceField endpoint
 
 /-- One checked direct comparison that specializes the shared partial-Date source admission. -/
 structure CheckedValueAsDateComparison (model : FlatModel)
@@ -202,14 +222,25 @@ def evaluateRaw (checked : CheckedValueAsDateComparison model)
 
 end CheckedValueAsDateComparison
 
-/-- Resolve and certify the nonrepeatable direct-comparison `ValueAsDate` slice for every partial precision. -/
+/-- Resolve and certify the direct-comparison `ValueAsDate` slice for a rule iterating `scope`. The
+comparison adds no locus decision of its own: admission is exactly the source's, which is the measured
+account — the Kernel refuses the unbound operand at the operand, not at the comparison. -/
+def elaborateValueAsDateComparisonIn
+    (model : FlatModel) (scope : List RepeatableLevel) (sourceField : FieldId)
+    (endpoint : ValueAsDateEndpoint)
+    (comparison : TemporalComparisonOp) (expected : FullDate) :
+    Except ValueAsDateElabError (CheckedValueAsDateComparison model) := do
+  let source ← elaborateValueAsDateSourceIn model scope sourceField endpoint
+  pure { source with comparison, expected }
+
+/-- The nonrepeatable direct comparison: the `scope = []` case of the one gate above. -/
 def elaborateValueAsDateComparison
     (model : FlatModel) (sourceField : FieldId)
     (endpoint : ValueAsDateEndpoint)
     (comparison : TemporalComparisonOp) (expected : FullDate) :
-    Except ValueAsDateElabError (CheckedValueAsDateComparison model) := do
-  let source ← elaborateValueAsDateSource model sourceField endpoint
-  pure { source with comparison, expected }
+    Except ValueAsDateElabError (CheckedValueAsDateComparison model) :=
+  elaborateValueAsDateComparisonIn model [] sourceField endpoint comparison
+    expected
 
 namespace DateShiftUnit
 

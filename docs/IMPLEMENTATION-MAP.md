@@ -197,6 +197,16 @@ For an assurance drill, use the row’s linked owner, then the matching [`Proofs
 - `assurance`: E closed for the separating matrix; P closes empty-is-not-invalid, unsupported-zone-is-context-not-invalidity, format retention, and the shared date half; **L is exact for the measured admission-and-cause surface** at the [Time/DateTime input checkpoint](SOURCES.md#src-time-datetime-stored-input) on both codegen strategies. The retained **instant** is internal: validation output carries none, so the two-zone row locks this project's account rather than a correspondence. Pending [SPEC-2026-08-23-11](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-23-11); C/X/Q none.
 - `remains`: checked-document integration, other legal zones, repeatable placement, and what a DateTime cell renders remain under [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
 
+<a id="cap-value-as-date-locus"></a>
+#### `ValueAsDate` reading locus
+
+- `state`: implemented. `elaborateValueAsDateSourceIn` and `elaborateValueAsDateComparisonIn` admit a partial-Date operand read by a rule iterating a given scope; the existing nonrepeatable entry points are now the `scope = []` cases of that one gate rather than a separate rule.
+- `boundary`: admission is the **reading rule's iteration scope**, not the operand's spelling — measured, the persisted condition normalises a bare relative operand to its absolute path, so the same text is admitted at the repeatable rule group and refused at the parent. A starred operand is refused at the operator itself, so no scope admits one and the signature cannot express it. The comparison carrier adds no locus decision of its own.
+- `boundary`: the **direct-comparison carrier only**. Shift and difference keep the nonrepeatable locus deliberately, because [§7](../spec/07-repetition-and-iteration.md)'s own finding forbids transferring a locus verdict between carriers in this family. The per-row *cell read* is not modelled: the family consumes stored text directly, and no route resolves a row's cell for it, which is the remaining half of checked-document integration for partial Date.
+- `route`: [`ValueAsDate.lean`](../A12Kernel/Elaboration/ValueAsDate.lean) threads scope into the existing `elaborateTemporalTargetPolicyIn`, whose certificate already retains the declaration precisely so a consumer can read it at a rule's row. The locus gate is the shared `requireRepetitionBoundBy`; no new mechanism.
+- `assurance`: E closed in [`ValueAsDateLocus.lean`](../A12Kernel/Conformance/ValueAsDateLocus.lean) — bound-scope admission, unbound refusal with its exact resolution error, the nonrepeatable specialisation agreeing with the general gate, precision and kind gates still running inside a bound scope, and a bound operand still evaluating through the one raw route. **L is exact for the measured static-admission surface** at the [`ValueAsDate` locus checkpoint](SOURCES.md#src-value-as-date-locus). Pending [SPEC-2026-08-23-12](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-23-12); P/C/X/Q none.
+- `remains`: the per-row read and evaluation, the other three carriers' loci, and a partial Date's checked-document placement stay under [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
+
 <a id="cap-document-temporal-coherence"></a>
 #### Placed-temporal-cell coherence property
 
