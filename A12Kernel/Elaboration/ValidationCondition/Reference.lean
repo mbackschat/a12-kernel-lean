@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ValidationCondition.Core
+import A12Kernel.Elaboration.ValidationCondition.Evaluation
 import A12Kernel.Semantics.MessagePointer
 
 /-! # A12Kernel.Elaboration.ValidationCondition.Reference — structural message references

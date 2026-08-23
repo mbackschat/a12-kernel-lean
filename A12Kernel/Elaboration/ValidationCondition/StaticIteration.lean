@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ValidationCondition.Core
+import A12Kernel.Elaboration.ValidationCondition.Evaluation
 
 /-! # Validation-condition static iteration scope
 
