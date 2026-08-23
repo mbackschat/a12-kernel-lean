@@ -1,6 +1,19 @@
 import A12Kernel.Elaboration.Flat.Model
 
-/-! # Temporal format-admission executable locks -/
+/-! # Temporal format-admission executable locks
+
+**Three temporal format gates, measured to be genuinely different, with different codes.** They are kept
+apart here because a reader who unified any two of them would reject legal models:
+
+- *Direct comparison* tests **year presence** after optional Base-Year supplementation plus date-class
+  agreement, and deliberately not component-set equality. Its refusal is `MVK_INVALID_COMPARE_TO_DATE`.
+- *Aggregates* — `MaxValue`, `MinValue`, and `NumberOfDifferentValues` — require component sets to agree
+  **exactly** after that supplementation. Their refusal is `MVK_DATEFORMATS_NOT_COMPATIBLE`. This is
+  strictly stronger than comparison, which the trusted proof root states as a theorem rather than a case.
+- *`FieldValuesNotUnique`* requires one identical declared **format string**, which no component-set rule
+  can express. Its refusal is `MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED`, and its own owner holds that
+  gate; the cases below only fix that the aggregate rule does **not** reproduce it.
+-/
 
 namespace A12Kernel.Conformance.TemporalFormat
 
@@ -213,6 +226,39 @@ example :
       policy := { kind := .temporal .date fullDate } }
     validationError { fields := [scalarDate] } =
       some (.dateRangeDeclarationPolicyRequiresDateRange scalarDate.path) := by
+  native_decide
+
+/-! ## The aggregate gate is component sets, not format spelling
+
+Measured at kernel 30.8.1 through `rule add --dry-run`, on a model declaring every component-omitting
+Date format beside two complete ones. The rows that matter are the ones where the two candidate readings
+disagree: **two different spellings of the same component set**. -/
+
+/- `yyyy-MM` beside `yyyyMM`, and `yyyy-MM-dd` beside `dd.MM.yyyy`: different declared format strings,
+identical component sets, and the aggregate gate **admits** both — measured on `MaxValue`, `MinValue`, and
+`NumberOfDifferentValues`, at an explicit field list, at explicit starred fields, and at a group operand's
+expansion alike. So this gate cannot be reading the format spelling. -/
+example :
+    temporalAggregateFormatsCompatible false yearMonth yearMonth = true ∧
+      temporalAggregateFormatsCompatible false fullDate fullDate = true := by
+  native_decide
+
+/- The same pair is **refused** by `FieldValuesNotUnique`, whose gate is the declared format string. That
+carrier's rule is therefore not derivable from component sets, which is why the two live apart. -/
+example :
+    temporalAggregateFormatsCompatible false yearMonth fullDate = false ∧
+      TemporalComparisonOp.admitsFormats .equal false yearMonth fullDate = true := by
+  native_decide
+
+/- **A Base Year lifts the aggregate gate for a yearless operand, but only when the remaining components
+already agree.** Measured on four pairs: a yearless month aggregates with `yyyy-MM` and a yearless
+month-day with a complete date, while both stay refused against a year-only operand whose other
+components differ. This is the row that shows supplementation happens *before* the comparison, not
+after. -/
+example :
+    temporalAggregateFormatsCompatible true monthDay fullDate = true ∧
+      temporalAggregateFormatsCompatible false monthDay fullDate = false ∧
+      temporalAggregateFormatsCompatible true monthDay yearMonth = false := by
   native_decide
 
 end A12Kernel.Conformance.TemporalFormat

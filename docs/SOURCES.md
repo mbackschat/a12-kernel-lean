@@ -522,6 +522,19 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: one DATE declaration in its default `yyyy-MM-dd` format, one repeatable level, two rows, validation phase only. A differently declared DATE format is unmeasured, as are Time, DateTime, and DateRange columns; the identity reading above is source-established for all of them, but only this format's reachability is measured. Nothing here claims what a *non-Date* distinct count does, and the not-given and not-relevant flags' exclusion from equality is source-only, because a value carrying them is never inserted into the distinctness set.
 - `sync`: none. Every row confirms an already-canonical clause — the non-lenient stored-conversion clause in [`spec/05`](../spec/05-dates-and-time.md) and the combiner suppression account — so this checkpoint adds provenance and closes two local residuals without changing `spec/`.
 
+<a id="src-temporal-aggregate-gate"></a>
+#### Which temporal format gate each aggregate carrier uses, measured locally 2026-08-23
+
+- `revision`: clean a12-dmkits `108d047b787f0e049dcd2f4902f24d7523347a00`, dmtool `0.13.0`, kernel `30.8.1` built; the sibling worktree was empty before and after every command.
+- `route`: `rule add --dry-run` over one model declaring all five component-omitting Date formats, both complete spellings, a Base-Year variant, and two repeatable groups — one holding two differently-spelled DATE fields, one holding two matching. Twenty-two decisions across three batches, every verdict `KERNEL_CONFIRMED`.
+- `design`: the whole measurement turns on **equal component sets under different format spellings**, because that is the only place a component-set reading and a format-spelling reading disagree. `yyyy-MM-dd` beside `dd.MM.yyyy`, and `yyyy-MM` beside `yyyyMM`, are those pairs. Every admission is paired with its own same-format control, so an admission is not merely the absence of a gate.
+- `aggregate-claim`: **`MaxValue`, `MinValue`, and `NumberOfDifferentValues` read the component set.** All three admit both equal-set-different-spelling pairs, and `MaxValue`/`MinValue` do so at three loci alike: an explicit nonrepeatable field list, explicit starred fields, and a group operand's expansion. Sets that genuinely differ are refused `MVK_DATEFORMATS_NOT_COMPATIBLE`, which names both formats.
+- `uniqueness-claim`: **`FieldValuesNotUnique` reads the declared format string.** It refuses both equal-set pairs, and also two differently-spelled yearless formats, against a same-format control it admits. Its code is `MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED` and the message text names "the same dateformat", so the two gates are distinguishable by code as well as by verdict.
+- `base-year-claim`: a declared Base Year lifts the aggregate refusal for a yearless operand **only when the remaining components already agree**: `MM` with `yyyy-MM` and `MM-dd` with a complete date are admitted, while both stay refused against a year-only operand. Supplementation therefore precedes the set comparison.
+- `strictness-claim`: the aggregate gate is strictly stronger than the direct-comparison gate, measured on four pairs — `yyyy` compares with `yyyy-MM` and with a complete date but aggregates with neither. This project already states that implication as a theorem rather than a case.
+- `excluded`: `Sum` is refused on temporal operands outright, `MVK_NO_NUMBER`, and takes no part in this gate. `FirstFilledValue` was not measured here.
+- `instrument-note`: one row was discarded and re-run because the rule code `Y2` collided with a field of that name, refused `RK_NAME_EXISTS` before the kernel saw it. An instrument refusal carries no `valid` and must never be read as a kernel verdict.
+
 <a id="src-omitting-date-formats"></a>
 #### What a component-omitting DATE format stores, measured locally 2026-08-23
 
