@@ -163,6 +163,10 @@ private def fromIteratedDateRange (model : FlatModel) (rowGroup : GroupPath)
           | .storedOperand (.source error)
           | .construction (.start (.targetPolicy (.resolve error)))
           | .construction (.finish (.targetPolicy (.resolve error)))
+          | .constructionPair (.left (.start (.targetPolicy (.resolve error))))
+          | .constructionPair (.left (.finish (.targetPolicy (.resolve error))))
+          | .constructionPair (.right (.start (.targetPolicy (.resolve error))))
+          | .constructionPair (.right (.finish (.targetPolicy (.resolve error))))
           | .overlap (.shape (.resolve error))
           | .pluralOverlap (.shape (.resolve error))
           | .yearlessOverlap (.source (.shape (.resolve error))) =>
@@ -239,6 +243,22 @@ def fromIteratedDateRangePluralOverlap (model : FlatModel)
       (CheckedValidationCondition model) :=
   fromIteratedDateRange model rowGroup fun scope =>
     elaborateIteratedPluralOverlap model rowGroup scope authored
+
+/-- One constructed range compared with another at the rule's own row. -/
+def fromIteratedDateRangeConstructionPair (model : FlatModel)
+    (rowGroup : GroupPath)
+    (leftStart leftFinish rightStart rightFinish : SurfaceFieldPath)
+    (comparison : EqualityOp) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) := do
+  let leftStartDeclaration ← resolveIteratedOperand model rowGroup leftStart
+  let leftFinishDeclaration ← resolveIteratedOperand model rowGroup leftFinish
+  let rightStartDeclaration ← resolveIteratedOperand model rowGroup rightStart
+  let rightFinishDeclaration ← resolveIteratedOperand model rowGroup rightFinish
+  fromIteratedDateRange model rowGroup fun scope =>
+    elaborateIteratedConstructionPair model scope leftStartDeclaration.id
+      leftFinishDeclaration.id rightStartDeclaration.id
+      rightFinishDeclaration.id comparison
 
 /-- One constructed range compared with one stored range at the rule's own row. -/
 def fromIteratedDateRangeConstructionAgainstStored (model : FlatModel)

@@ -209,21 +209,36 @@ inductive DateRangeConstructionComparisonElabError where
   | componentMismatch (left right : DateRangeEndpointFormat)
   deriving Repr, DecidableEq
 
+namespace DateRangeConstructionComparisonElabError
+
+/-- Each side keeps its own construction diagnostic, and a pair whose component sets disagree reports
+the wrong-format class the endpoint refusals already use, so one code covers the operand, the
+construction, and the pair. -/
+def diagnostic? :
+    DateRangeConstructionComparisonElabError → Option KernelStaticDiagnostic
+  | .left cause | .right cause => cause.diagnostic?
+  | .componentMismatch _ _ => some .wrongDateFormatForOp
+
+end DateRangeConstructionComparisonElabError
+
 structure CheckedDateRangeConstructionComparison (model : FlatModel) where
   left : CheckedDateRangeConstruction model
   right : CheckedDateRangeConstruction model
   comparison : EqualityOp
   componentsMatch : left.start.format.sameComponents right.start.format = true
 
-/-- Certify all four endpoint declarations and the cross-construction component invariant while retaining the authored comparison. -/
-def elaborateDateRangeConstructionComparison (model : FlatModel)
+/-- Certify all four endpoint declarations and the cross-construction component invariant while
+retaining the authored comparison. `scope` is the reading rule's iteration scope, so an endpoint
+inside a level the rule iterates is admitted on either side. -/
+def elaborateDateRangeConstructionComparisonIn (model : FlatModel)
+    (scope : List RepeatableLevel)
     (leftStart leftFinish rightStart rightFinish : FieldId)
     (comparison : EqualityOp) :
     Except DateRangeConstructionComparisonElabError
       (CheckedDateRangeConstructionComparison model) := do
-  let left ← elaborateDateRangeConstruction model leftStart leftFinish
+  let left ← elaborateDateRangeConstructionIn model scope leftStart leftFinish
     |>.mapError .left
-  let right ← elaborateDateRangeConstruction model rightStart rightFinish
+  let right ← elaborateDateRangeConstructionIn model scope rightStart rightFinish
     |>.mapError .right
   if hComponents : left.start.format.sameComponents right.start.format then
     pure {
@@ -233,6 +248,15 @@ def elaborateDateRangeConstructionComparison (model : FlatModel)
       componentsMatch := hComponents }
   else
     throw (.componentMismatch left.start.format right.start.format)
+
+/-- The scalar instance: a comparison read where the reading rule iterates no level. -/
+def elaborateDateRangeConstructionComparison (model : FlatModel)
+    (leftStart leftFinish rightStart rightFinish : FieldId)
+    (comparison : EqualityOp) :
+    Except DateRangeConstructionComparisonElabError
+      (CheckedDateRangeConstructionComparison model) :=
+  elaborateDateRangeConstructionComparisonIn model [] leftStart leftFinish
+    rightStart rightFinish comparison
 
 /-- One exact or yearless endpoint identity retained without fabricating unavailable components. -/
 inductive DateRangeConstructionEndpointValue where
@@ -353,6 +377,15 @@ def evaluate (construction : CheckedDateRangeConstruction model)
   pure { start, finish }
 
 end CheckedDateRangeConstruction
+
+/-- Compare two already-read construction observations. The read is deliberately not part of this
+step, so a consumer reading its endpoints at a rule's row reaches the same comparison as the
+document-reading path. -/
+def CheckedDateRangeConstructionComparison.verdictOf
+    (checked : CheckedDateRangeConstructionComparison model)
+    (left right : DateRangeConstructionObservation) : Verdict :=
+  checked.comparison.evalDateRangeCellValues left.comparisonOperand
+    right.comparisonOperand
 
 /-- Rich checked result retaining both constructions beside their projected verdict. -/
 structure DateRangeConstructionComparisonResult where

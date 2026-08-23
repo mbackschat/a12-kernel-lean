@@ -82,6 +82,8 @@ inductive IteratedDateRangeCondition (model : FlatModel) where
       (source : CheckedYearlessAtLeastOneDateRangeOverlapsSource model)
   | constructionAgainstStored
       (comparison : CheckedIteratedConstructionStoredComparison model)
+  | constructionAgainstConstruction
+      (comparison : CheckedDateRangeConstructionComparison model)
 
 /-- Static refusal while resolving one iterated DateRange condition. -/
 inductive IteratedDateRangeConditionElabError where
@@ -97,6 +99,7 @@ inductive IteratedDateRangeConditionElabError where
   | storedOperand (cause : DirectDateRangeElabError)
   | constructionComponentMismatch (construction : DateRangeEndpointFormat)
       (stored : DateRangeInputFormat)
+  | constructionPair (cause : DateRangeConstructionComparisonElabError)
   deriving Repr, DecidableEq
 
 namespace IteratedDateRangeConditionElabError
@@ -117,6 +120,7 @@ def diagnostic? :
   | .construction cause => cause.diagnostic?
   | .storedOperand cause => cause.diagnostic?
   | .constructionComponentMismatch _ _ => some .invalidCompareToDateRange
+  | .constructionPair cause => cause.diagnostic?
 
 end IteratedDateRangeConditionElabError
 
@@ -152,6 +156,11 @@ def operandDeclarations : IteratedDateRangeCondition model → List FlatFieldDec
       [comparison.construction.start.checked.declaration,
         comparison.construction.finish.checked.declaration,
         comparison.stored.declaration]
+  | .constructionAgainstConstruction comparison =>
+      [comparison.left.start.checked.declaration,
+        comparison.left.finish.checked.declaration,
+        comparison.right.start.checked.declaration,
+        comparison.right.finish.checked.declaration]
 
 /-- The operands that actually cross a repeatable level. These are the declarations the enclosing
 rule resolves before evaluation and the levels it derives its iteration from. -/
@@ -275,6 +284,20 @@ def verdictOf (condition : IteratedDateRangeCondition model)
             (address comparison.stored.declaration))
       pure (comparison.verdictOf
         (comparison.construction.observeAt start finish) storedObserved)
+  | .constructionAgainstConstruction comparison => do
+      let readAt (declaration : FlatFieldDecl) :
+          Except CheckedAddressingError CheckedCell := do
+        let path ← (outer.pathForScope declaration.repeatableScope).mapError
+          CheckedAddressingError.environment
+        (document.read { field := declaration.id, path }).mapError
+          CheckedAddressingError.document
+      let leftStart ← readAt comparison.left.start.checked.declaration
+      let leftFinish ← readAt comparison.left.finish.checked.declaration
+      let rightStart ← readAt comparison.right.start.checked.declaration
+      let rightFinish ← readAt comparison.right.finish.checked.declaration
+      pure (comparison.verdictOf
+        (comparison.left.observeAt leftStart leftFinish)
+        (comparison.right.observeAt rightStart rightFinish))
 
 end IteratedDateRangeCondition
 
@@ -374,6 +397,19 @@ def elaborateIteratedConstructionStoredComparison (model : FlatModel)
   else
     throw (.constructionComponentMismatch construction.start.format
       storedSource.format)
+
+/-- Resolve one constructed range compared with another, all four endpoints read at the rule's row.
+Every gate is the scalar carrier's: each construction's own component pair and the cross-construction
+component invariant. -/
+def elaborateIteratedConstructionPair (model : FlatModel)
+    (scope : List RepeatableLevel)
+    (leftStart leftFinish rightStart rightFinish : FieldId)
+    (comparison : EqualityOp) :
+    Except IteratedDateRangeConditionElabError
+      (IteratedDateRangeCondition model) :=
+  (.constructionAgainstConstruction <$>
+    elaborateDateRangeConstructionComparisonIn model scope leftStart leftFinish
+      rightStart rightFinish comparison) |>.mapError .constructionPair
 
 /-- Resolve one unconfigured yearless plural overlap predicate. Both sides may hold an operand the
 rule's own iteration crosses, and every gate is the yearless owner's. -/

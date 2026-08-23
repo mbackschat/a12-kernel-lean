@@ -562,6 +562,64 @@ example :
       some [([(10, 1)], .notFired)] := by
   native_decide
 
+/-! ## A constructed range compared with another construction -/
+
+private def constructionPair? (rowGroup : GroupPath)
+    (leftStart leftFinish rightStart rightFinish : SurfaceFieldPath) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition constructionModel) :=
+  CheckedValidationCondition.fromIteratedDateRangeConstructionPair
+    constructionModel rowGroup leftStart leftFinish rightStart rightFinish
+    .equal
+
+private def scalarStartPath := path ["Form"] "ScalarStart"
+private def scalarFinishPath := path ["Form"] "ScalarFinish"
+
+/- Four endpoints, and the locus rule applies to each: a row-read construction against a scalar one
+is admitted from inside and refused from outside, while an all-scalar pair is admitted at a
+non-iterating locus. -/
+example :
+    (constructionPair? ["Form", "Rows"] rowStartPath rowFinishPath
+        scalarStartPath scalarFinishPath).isOk = true ∧
+      (constructionPair? ["Form"] scalarStartPath scalarFinishPath
+        scalarStartPath scalarFinishPath).isOk = true ∧
+      (match constructionPair? ["Form"] rowStartPath rowFinishPath
+          scalarStartPath scalarFinishPath with
+        | .error (.fieldReference (.repeatableReference path)) =>
+            path == rowStart.path
+        | _ => false) = true := by
+  native_decide
+
+private def constructionPairRowVerdicts? (data : DocumentData) :
+    Option (List (Env × Verdict)) := do
+  let checked ← (constructionPair? ["Form", "Rows"] rowStartPath rowFinishPath
+    scalarStartPath scalarFinishPath).toOption
+  let rule ← (assembleResolvedValidationRule constructionModel checked
+    rowStart.id "iteratedConstructionPair" .error { parts := [] }).toOption
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler constructionModel).toOption
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let outcomes ← (rule.evalOrdinaryRepeatableFull document).toOption
+  pure (outcomes.map fun entry => (entry.1, entry.2.verdict))
+
+/- Both sides are constructed at the row: the left from the row's own endpoints and the right from
+the scalar pair, so the row reproducing the scalar window fires and the row that does not stay
+unfired. The scalar side is read once per row rather than iterated, which is what a shared right-hand
+construction must do. -/
+example :
+    constructionPairRowVerdicts? {
+      instantiatedRows := [
+        { group := 10, path := [1] }, { group := 10, path := [2] }]
+      cells := [
+        constructionCell scalarStart.id [] "2024-06-01" june1Value,
+        constructionCell scalarFinish.id [] "2024-06-30" june30Value,
+        constructionCell rowStart.id [1] "2024-06-01" june1Value,
+        constructionCell rowFinish.id [1] "2024-06-30" june30Value,
+        constructionCell rowStart.id [2] "2024-06-01" june1Value,
+        constructionCell rowFinish.id [2] "2024-07-31" july31Value] } =
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] := by
+  native_decide
+
 /-! ## The same carriers at a non-iterating locus -/
 
 /- Every member is reachable from a rule whose operands are all scalar, which is what makes this
