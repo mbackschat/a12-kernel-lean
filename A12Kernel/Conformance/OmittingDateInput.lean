@@ -11,10 +11,9 @@ strategies, which agreed on all eleven observed rows. The result is uniform: **o
 `datumFormatFalsch`, for every spelling failure, with no position-in-time cause anywhere, because these
 formats carry no complete date to fall below a floor.
 
-`MM` and `MM-dd` are deliberately outside this capsule. Both are measured legal and their canonical text
-is measured accepted — `06` and `06-15`, with `02-29` accepted and `02-30` refused, so a yearless
-month-day is leap-capable. Representing them needs a yearless value shape this project holds only inside
-the DateRange family, and joining those domains is its own unit rather than a widening here. -/
+The two **yearless** formats classify into the `MonthDayValue` the DateRange family already uses, because
+a month without a year denotes no interval of concrete dates. Their day bound is the month's greatest
+possible day with February at 29, measured across the whole boundary. -/
 
 namespace A12Kernel.Conformance.OmittingDateInput
 
@@ -34,6 +33,8 @@ private inductive Outcome where
   | rejected (cause : BaseFormalCause)
   | interval (firstYear : Int) (firstMonth firstDay : Nat)
       (lastYear : Int) (lastMonth lastDay : Nat)
+  /-- A yearless position: no year, and therefore no interval of concrete dates. -/
+  | yearless (month day : Nat)
   | unowned
   deriving Repr, DecidableEq
 
@@ -48,7 +49,8 @@ private def classify? (format text : String) : Outcome :=
       match checked.classifyStored text with
       | .presentEmpty => .presentEmpty
       | .rejected cause => .rejected cause
-      | .admitted value =>
+      | .admitted (.yearless value) => .yearless value.month value.day
+      | .admitted (.yearBearing value) =>
           match value with
           | .omittedMonth date =>
               intervalOf (date.resolve .firstDay) (date.resolve .lastDay)
@@ -89,14 +91,60 @@ example :
       classify? "yyyy-MM" "" = .presentEmpty := by
   native_decide
 
-/- Certification is refused for a declaration this classifier does not own: the two **complete** formats
-belong to the full-Date classifier, and the two yearless formats have no value shape here yet. Both
-refusals are reachable, since all four are legal declarations. -/
+/- Certification is refused only for the two **complete** formats, which belong to the full-Date
+classifier. Both refusals are reachable, since both are legal declarations. -/
 example :
     classify? "yyyy-MM-dd" "2020-06-15" = .unowned ∧
-      classify? "dd.MM.yyyy" "15.06.2020" = .unowned ∧
-      classify? "MM" "06" = .unowned ∧
-      classify? "MM-dd" "06-15" = .unowned := by
+      classify? "dd.MM.yyyy" "15.06.2020" = .unowned := by
+  native_decide
+
+/-! ## Yearless formats -/
+
+/- A yearless month and month-day are admitted and keep their authored components. `MM` carries no day,
+so it stores day one, which is what its month check is applied to. -/
+example :
+    classify? "MM" "06" = .yearless 6 1 ∧
+      classify? "MM-dd" "06-15" = .yearless 6 15 := by
+  native_decide
+
+/- **The day bound is the month's greatest possible day, and February reaches 29.** No year is available
+to decide leapness, so the boundary is measured on both sides for a short month and for February: April
+31 is refused where April 30 is admitted, January 31 is admitted, and February 29 is admitted where
+February 30 is refused. This is the row a naive implementation gets wrong by resolving against a specific
+year. -/
+example :
+    classify? "MM-dd" "04-31" = .rejected .dateFormat ∧
+      classify? "MM-dd" "04-30" = .yearless 4 30 ∧
+      classify? "MM-dd" "01-31" = .yearless 1 31 ∧
+      classify? "MM-dd" "02-29" = .yearless 2 29 ∧
+      classify? "MM-dd" "02-30" = .rejected .dateFormat := by
+  native_decide
+
+/- Widths, ranges, and the separator are exact here too, and every failure is the same one cause: a month
+carrying an extra component, a zero month, a short month or day, a zero day, a missing separator, and an
+out-of-range month all report the format finding. -/
+example :
+    classify? "MM" "06-15" = .rejected .dateFormat ∧
+      classify? "MM" "00" = .rejected .dateFormat ∧
+      classify? "MM" "13" = .rejected .dateFormat ∧
+      classify? "MM" "6" = .rejected .dateFormat ∧
+      classify? "MM-dd" "6-15" = .rejected .dateFormat ∧
+      classify? "MM-dd" "06-5" = .rejected .dateFormat ∧
+      classify? "MM-dd" "06-00" = .rejected .dateFormat ∧
+      classify? "MM-dd" "0615" = .rejected .dateFormat ∧
+      classify? "MM-dd" "13-01" = .rejected .dateFormat := by
+  native_decide
+
+/- A yearless value has **no** interval form, which is the distinction the two-armed result exists to
+keep: nothing here can hand a consumer a `FullDate` it would then compare against a dated operand. -/
+example :
+    (match certifyOmittingDateInputField (declaration "MM-dd") with
+      | .error _ => none
+      | .ok checked =>
+          match checked.classifyStored "02-29" with
+          | .admitted (.yearless _) => some true
+          | .admitted (.yearBearing _) => some false
+          | _ => none) = some true := by
   native_decide
 
 /- The admitted value is a **partially known Date** in the existing domain, not a new one, so every
@@ -106,7 +154,7 @@ example :
       | .error _ => none
       | .ok checked =>
           match checked.classifyStored "2020" with
-          | .admitted (.omittedMonth date) =>
+          | .admitted (.yearBearing (.omittedMonth date)) =>
               some (date.resolve .firstDay).civil.parts.month
           | _ => none) = some 1 := by
   native_decide
