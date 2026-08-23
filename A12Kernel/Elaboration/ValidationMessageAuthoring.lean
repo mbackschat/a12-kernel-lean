@@ -22,8 +22,9 @@ here as one parse failure, which is a narrower account than the Kernel's: measur
 its category gate first and reports the *first* name as unknown, so this local class is deliberately
 mapped to no Kernel diagnostic. What a category access **renders** is measured: the category
 token the field's current stored value maps to, so the checked part carries the declaration's own
-mapping and the caller supplies only the stored token. The empty and unmapped cases render as the
-empty string by this project's choice; neither is observed.
+mapping and the caller supplies only the stored token. An absent stored token renders as the empty
+string, which is measured; a token the category does not map cannot arise, because a declaration's
+categories align one-to-one with its values.
 
 One **non-field** parameter form is admitted: the Base Year terminal with an optional signed offset.
 Its only static gate is that the model declares a Base Year, and the offset is applied at authoring

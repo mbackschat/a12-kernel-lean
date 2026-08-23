@@ -281,9 +281,9 @@ example :
         "Is $Status->Group$ now" = some { text := "Is A now" } := by
   native_decide
 
-/- An unmapped or absent stored value renders as the empty string. That default is this project's
-choice and is deliberately unmeasured, so it is locked here to keep it visible rather than to claim
-the Kernel does the same. -/
+/- An absent stored value renders as the empty string, which is Kernel-measured: an empty Enumeration
+renders nothing under **both** suffixes while its label still renders. A value the category does not
+map cannot arise, because categories align one-to-one with the declared values. -/
 example :
     (do
       let condition ← conditionOn? ["Order"] (pathAt (.relative 0) [] "Status")
