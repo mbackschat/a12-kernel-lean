@@ -120,6 +120,7 @@ import A12Kernel.Conformance.AddressedFieldValueAsString
 import A12Kernel.Conformance.AddressedFieldValueAsNumber
 import A12Kernel.Conformance.AddressedRangeAsNumber
 import A12Kernel.Conformance.AddressedStringLength
+import A12Kernel.Conformance.AddressedDateRangeBoundPart
 import A12Kernel.Conformance.AddressedNumberField
 import A12Kernel.Conformance.CurrentRepetitionComputation
 import A12Kernel.Conformance.AddressedNumberAbs
