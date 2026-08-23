@@ -36,17 +36,4 @@ theorem checkedValidationMessage_inputs_doNotChangeVerdict
         context hasContent).verdict := by
   rw [flatRule_eval_verdict, flatRule_eval_verdict]
 
-theorem checkedEnUsStringPatternMessage_fieldValue_isOpaque
-    (inputs : StringPatternMessageInputs) :
-    (CheckedEnUsStringPatternMessagePart.fieldValue
-      |>.toRenderPart inputs
-      |>.render) = inputs.fieldValue := by
-  rfl
-
-theorem checkedEnUsStringPatternMessage_rendering_preservesPatternError
-    (template : CheckedEnUsStringPatternMessageTemplate)
-    (inputs : StringPatternMessageInputs) :
-    (template.renderError inputs).error = .pattern := by
-  rfl
-
 end A12Kernel

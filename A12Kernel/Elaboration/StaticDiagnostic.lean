@@ -91,6 +91,8 @@ inductive KernelStaticDiagnostic where
   | invalidDateRangeFormat
   /-- A semantic index's field-valued key is read from a field **inside the indexed group itself**, so a rule iterating that group cannot key the lookup by its current row's own field. The same lookup keyed by a field outside the group, or by a literal, is admitted from that same locus. -/
   | semanticIndexContainedInIndex
+  /-- A rule's error text uses a **semantic index** its condition does not use the same way. The gate's subject is the index rather than the field: measured, a keyed parameter naming a field absent from the condition is admitted whenever the condition keys that group by that key, so the field's own membership is required only of an *unkeyed* parameter, which is refused `INVALID_FIELD` instead. The pairing is exact in both directions — a keyed condition operand does not license an unkeyed parameter, and a differently keyed one does not license this key. No clause produces it yet: the modeled message fragment is nonrepeatable, so it declares no index to pair. -/
+  | indexForErrorTextInvalid
   deriving Repr, DecidableEq
 
 namespace KernelStaticDiagnostic
@@ -141,6 +143,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidCompareToDateRange => "MVK_INVALID_COMPARE_TO_DATE_RANGE"
   | .invalidDateRangeFormat => "MVK_INVALID_DATE_RANGE_FORMAT"
   | .semanticIndexContainedInIndex => "MVK_SEMANTIC_INDEX_CONTAINED_IN_INDEX"
+  | .indexForErrorTextInvalid => "MVK_INDEX_FOR_ERROR_TEXT_INVALID"
 
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
 def all : List KernelStaticDiagnostic :=
@@ -159,7 +162,8 @@ def all : List KernelStaticDiagnostic :=
     .errorSemanticIndexOrCategoryForErrorField, .invalidDateType, .noDateRange,
     .invalidParameterForDateRangeComparison, .dateWithAndWithoutYear,
     .invalidDateRangeFormat, .invalidCompareToDateRange, .wrongDateFormatForOp,
-    .invalidCompareToDate, .semanticIndexContainedInIndex]
+    .invalidCompareToDate, .semanticIndexContainedInIndex,
+    .indexForErrorTextInvalid]
 
 end KernelStaticDiagnostic
 

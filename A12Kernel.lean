@@ -135,6 +135,7 @@ import A12Kernel.Elaboration.CheckedRequired
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.ValidationRuleGroupOperand
 import A12Kernel.Elaboration.ValidationMessageAuthoring
+import A12Kernel.Elaboration.StringPatternMessage
 import A12Kernel.Elaboration.GeneratedComputationValidation
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.ValidationContext

@@ -26,6 +26,21 @@ mapping and the caller supplies only the stored token. An absent stored token re
 string, which is measured; a token the category does not map cannot arise, because a declaration's
 categories align one-to-one with its values.
 
+A field reference may finally carry a **semantic-index key**, `For "k"` or `For SomeField`, after any
+value or category suffix — that order is the grammar's, not a preference. Its gate is on the
+**semantic index**, not on the field: the condition must use that same index the same way, and the
+keyed field itself need not be a condition operand at all. Measured, a keyed parameter naming a field
+the condition never mentions is admitted when the condition keys that group by that key, while the
+unkeyed spelling of the same field is refused — so condition membership belongs to the unkeyed form
+alone. The pairing is exact in the other direction too: a keyed condition operand does not license an
+unkeyed parameter.
+
+A semantic index needs a repeatable group, and this fragment's model is nonrepeatable, so a keyed
+parameter is decoded and then refused as outside the fragment. The refusal is deliberately *not*
+mapped to the Kernel's pairing class, because the Kernel's gate is a question this condition spine
+cannot pose; the grammar in front of it — well-formedness, suffix order, key spelling, nesting — is
+measured and modeled exactly.
+
 One **non-field** parameter form is admitted: the Base Year terminal with an optional signed offset.
 Its only static gate is that the model declares a Base Year, and the offset is applied at authoring
 because nothing about it depends on the document.
@@ -59,6 +74,27 @@ inductive ValidationMessageTemplateError where
   | category (parameter : String) (error : EnumerationOperandError)
   /-- A Base Year parameter was authored against a model that declares none. -/
   | noBaseYear
+  /-- A semantic-index key is itself keyed. -/
+  | nestedSemanticIndex (parameter : String)
+  /-- A **well-formed** keyed parameter, refused because this fragment's model is nonrepeatable and so
+  declares no semantic index for the key to name. This is the fragment's own boundary, not the
+  Kernel's pairing class: the Kernel gates a keyed parameter on whether the **condition uses that same
+  semantic index**, which is a question a flat condition spine cannot pose. -/
+  | semanticIndexUnsupported (parameter : String)
+  deriving Repr, DecidableEq
+
+/-- Which suffix a keyed field reference carries. The grammar puts the suffix **before** the key, so
+a keyed parameter is one shape with three suffix cases rather than three keyed shapes. -/
+inductive MessageParameterSuffix where
+  | none
+  | value
+  | category (name : String)
+  deriving Repr, DecidableEq
+
+/-- A key as the author spelled it: a decoded quoted literal, or a path to the keying field. -/
+inductive AuthoredMessageKey where
+  | literal (token : String)
+  | field (reference : AuthoredFieldPath)
   deriving Repr, DecidableEq
 
 private inductive ParsedValidationMessagePart where
@@ -70,6 +106,9 @@ private inductive ParsedValidationMessagePart where
   | fieldCategory (parameter : String) (reference : AuthoredFieldPath)
       (category : String)
   | baseYear (offset : Int)
+  /-- Any field form above, keyed. The suffix travels so one arm serves all three. -/
+  | keyed (parameter : String) (reference : AuthoredFieldPath)
+      (suffix : MessageParameterSuffix) (key : AuthoredMessageKey)
 
 private def isLineSeparator (character : Char) : Bool :=
   character == '\n' || character == '\r' ||
@@ -100,6 +139,8 @@ structure ValidationMessageKeywordProfile where
   /-- The selected language's spelling of the Base Year parameter terminal. It is data because the
   parameter grammar is bilingual and this project does not choose a language for the author. -/
   baseYearTerminal : String
+  /-- The selected language's spelling of the semantic-index key terminal. -/
+  forTerminal : String
   deriving Repr, DecidableEq
 
 /-- Treat an exempt terminal as if the author had quoted it, then reuse the one existing
@@ -198,6 +239,27 @@ private def parseBaseYearOffset (remainder : String) : Option Int :=
           | _ => none
     | [] => none
 
+/-- Decode a key's own spelling. A literal is the grammar's double-quoted token with `""` as its
+escape; anything else is a path to the keying field, and an unquoted bare word therefore resolves as a
+field rather than as a token. -/
+private def parseMessageKey (parameter key : String) :
+    Except ValidationMessageTemplateError AuthoredMessageKey :=
+  if key.startsWith "\"" && key.endsWith "\"" && key.length ≥ 2 then
+    .ok (.literal
+      (((key.drop 1).dropRight 1).toString.replace "\"\"" "\""))
+  else
+    .field <$> parseMessagePath parameter key
+
+/-- Split the trailing key off a parameter, then decode the remaining spec's own suffix. The key
+separator is the selected language's `For` terminal surrounded by spaces, which is the canonical
+authored spelling; this fragment does not accept the grammar's whitespace-free forms. -/
+private def splitMessageKey (profile : ValidationMessageKeywordProfile)
+    (parameter : String) : String × Option String :=
+  match parameter.splitOn s!" {profile.forTerminal} " with
+  | [spec] => (spec, none)
+  | spec :: rest => (spec, some (String.intercalate s!" {profile.forTerminal} " rest))
+  | [] => (parameter, none)
+
 /-- Strip the value suffix, then decode the remaining entity spec as a path. The suffix is taken at
 the end of the whole spec, which is this fragment's committed reading of a grammar that also lets a
 trailing reserved word belong to the name itself. -/
@@ -206,6 +268,30 @@ private def parseParameter (profile : ValidationMessageKeywordProfile)
     Except ValidationMessageTemplateError ParsedValidationMessagePart :=
   -- The Base Year terminal is checked first: it is a terminal, so an unquoted occurrence is never a
   -- field name, and its offset syntax is not part of any path.
+  match splitMessageKey profile parameter with
+  | (spec, some keyText) =>
+      if (splitMessageKey profile keyText).2.isSome then
+        .error (.nestedSemanticIndex parameter)
+      else do
+        let key ← parseMessageKey parameter keyText
+        -- The suffix sits before the key, so the spec is re-split by the ordinary rules.
+        match spec.splitOn "->" with
+        | [inner, category] =>
+            if category.isEmpty then throw (.missingCategoryName parameter)
+            else
+              pure (.keyed parameter (← parseMessagePath parameter inner)
+                (.category category) key)
+        | [_] =>
+            match spec.splitOn ".value" with
+            | [inner, ""] =>
+                pure (.keyed parameter (← parseMessagePath parameter inner) .value
+                  key)
+            | [inner] =>
+                pure (.keyed parameter (← parseMessagePath parameter inner) .none
+                  key)
+            | _ => throw (.invalidParameter parameter)
+        | _ => throw (.invalidParameter parameter)
+  | (_, none) =>
   if parameter.startsWith profile.baseYearTerminal then
     match parseBaseYearOffset
         ((parameter.drop profile.baseYearTerminal.length).toString) with
@@ -243,7 +329,10 @@ private def parseSegments (profile : ValidationMessageKeywordProfile) :
           parseParameter profile parameter
       pure (textPart text ++ [parameterPart] ++ (← parseSegments profile rest))
 
-private def validateMessageTemplateSource (source : String) :
+/-- The lexical gate **both** message producers share: a nonempty printable-ASCII source with no line
+separator or control character and balanced dollar delimiters, split into alternating text and
+parameter segments. Only the parameter grammar differs between producers, so this stays one gate. -/
+def validateMessageTemplateSource (source : String) :
     Except ValidationMessageTemplateError (List String) := do
   if source.isEmpty then throw .emptyTemplate
   match source.toList.find? isLineSeparator with
@@ -304,12 +393,25 @@ structure CheckedValidationMessageTemplate
   source : String
   parts : List (CheckedValidationMessagePart model condition)
 
-private def resolveMessageReference (model : FlatModel)
+/-- One resolved name-bearing parameter position, carrying its resolution witness but **no**
+membership requirement. -/
+private structure ResolvedMessageEntity
+    (model : FlatModel) (condition : CheckedFlatCondition model) where
+  reference : SurfaceFieldPath
+  declaration : FlatFieldDecl
+  resolved :
+    model.resolveNonrepeatableFieldUnchecked condition.rowGroup reference =
+      .ok declaration
+
+/-- Resolve one name-bearing parameter position to a declaration. This is the part a keyed parameter
+shares with an unkeyed one: measured, an unresolvable name is refused for both, while only the unkeyed
+form additionally requires the condition to name the field. -/
+private def resolveMessageEntity (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
     (condition : CheckedFlatCondition model)
     (parameter : String) (authored : AuthoredFieldPath) :
     Except ValidationMessageTemplateError
-      (CheckedValidationMessageReference model condition) := do
+      (ResolvedMessageEntity model condition) := do
   -- Every name-bearing position is checked, because a terminal may sit at any path level.
   let reference ← match ({ authored with
       turningPoint := authored.turningPoint.map (exemptQuoting profile)
@@ -321,18 +423,26 @@ private def resolveMessageReference (model : FlatModel)
   match hResolved :
       model.resolveNonrepeatableFieldUnchecked condition.rowGroup reference with
   | .error error => throw (.reference parameter error)
-  | .ok declaration =>
-      if hReferenced :
-          condition.core.referencesField declaration.id = true then
-        pure {
-          parameter
-          reference
-          declaration
-          resolved := hResolved
-          conditionReferenced := hReferenced
-        }
-      else
-        throw (.fieldNotReferenced parameter declaration.id)
+  | .ok declaration => pure { reference, declaration, resolved := hResolved }
+
+private def resolveMessageReference (model : FlatModel)
+    (profile : ValidationMessageKeywordProfile)
+    (condition : CheckedFlatCondition model)
+    (parameter : String) (authored : AuthoredFieldPath) :
+    Except ValidationMessageTemplateError
+      (CheckedValidationMessageReference model condition) := do
+  let entity ← resolveMessageEntity model profile condition parameter authored
+  if hReferenced :
+      condition.core.referencesField entity.declaration.id = true then
+    pure {
+      parameter
+      reference := entity.reference
+      declaration := entity.declaration
+      resolved := entity.resolved
+      conditionReferenced := hReferenced
+    }
+  else
+    throw (.fieldNotReferenced parameter entity.declaration.id)
 
 /-- Apply the category suffix's three gates in the Kernel's own order to an already-resolved field
 reference. The missing-name gate belongs to parsing, so only the kind and the declared-category gates
@@ -387,6 +497,20 @@ private def checkMessageParts (model : FlatModel)
           pure (.baseYear offset (base + offset) (by
             rw [hDeclared, Int.add_sub_cancel]) ::
             (← checkMessageParts model profile condition rest))
+  | .keyed parameter reference _suffix key :: rest => do
+      -- Measured, a keyed parameter is *not* subject to the condition-membership gate an unkeyed one
+      -- carries: a keyed read of a field the condition never names is admitted, provided the
+      -- condition uses the same semantic index. Both name-bearing positions are still resolved as
+      -- entities, because an unresolvable name is refused there rather than at the index gate — so
+      -- these resolutions are kept for their refusals, and their results are unusable here. The
+      -- decoded suffix is likewise unusable, since no part this fragment can build carries a key.
+      discard <| resolveMessageEntity model profile condition parameter reference
+      match key with
+        | .literal _ => pure ()
+        | .field keyReference =>
+            discard <|
+              resolveMessageEntity model profile condition parameter keyReference
+      throw (.semanticIndexUnsupported parameter)
   | .fieldCategory parameter reference category :: rest => do
       let resolved ←
         resolveMessageReference model profile condition parameter reference
@@ -426,77 +550,5 @@ def CheckedValidationMessageTemplate.toRenderPlan
     (template : CheckedValidationMessageTemplate model condition)
     (inputs : ValidationMessageInputs) : MessageRenderPlan :=
   { parts := template.parts.map (·.toRenderPart inputs) }
-
-/-- One checked part of the measured en_US String-pattern field-message grammar. The fixed tokens refer to the owning field, never to a rule-relative path. -/
-inductive CheckedEnUsStringPatternMessagePart where
-  | text (value : String)
-  | fieldName
-  | fieldValue
-  deriving Repr, DecidableEq
-
-/-- A checked en_US String-pattern error-text template. Requiredness and every other field-message producer remain distinct and unsupported. -/
-structure CheckedEnUsStringPatternMessageTemplate where
-  source : String
-  parts : List CheckedEnUsStringPatternMessagePart
-  deriving Repr, DecidableEq
-
-private def stringPatternTextPart (value : String) :
-    List CheckedEnUsStringPatternMessagePart :=
-  if value.isEmpty then [] else [.text value]
-
-private def parseEnUsStringPatternParameter (parameter : String) :
-    Except ValidationMessageTemplateError CheckedEnUsStringPatternMessagePart :=
-  match parameter with
-  | "field" => .ok .fieldName
-  | "field.value" => .ok .fieldValue
-  | _ => .error (.invalidParameter parameter)
-
-private def parseEnUsStringPatternSegments :
-    List String →
-      Except ValidationMessageTemplateError
-        (List CheckedEnUsStringPatternMessagePart)
-  | [] => .ok []
-  | [text] => .ok (stringPatternTextPart text)
-  | text :: parameter :: rest => do
-      let parameterPart ← parseEnUsStringPatternParameter parameter
-      pure (stringPatternTextPart text ++ [parameterPart] ++
-        (← parseEnUsStringPatternSegments rest))
-
-/-- Check the bounded English String-pattern producer. Its empty dollar-pair parameter is invalid rather than a literal-dollar escape. -/
-def elaborateEnUsStringPatternMessageTemplate (source : String) :
-    Except ValidationMessageTemplateError
-      CheckedEnUsStringPatternMessageTemplate := do
-  let segments ← validateMessageTemplateSource source
-  pure { source, parts := ← parseEnUsStringPatternSegments segments }
-
-/-- Exact replacement bytes selected by the caller for the owning field. Provider invocation and empty-value fallback precede this boundary and remain outside the supported fragment. -/
-structure StringPatternMessageInputs where
-  fieldName : String
-  fieldValue : String
-  deriving Repr, DecidableEq
-
-def CheckedEnUsStringPatternMessagePart.toRenderPart
-    (inputs : StringPatternMessageInputs) :
-    CheckedEnUsStringPatternMessagePart → MessageRenderPart
-  | .text value => .text value
-  | .fieldName => .text inputs.fieldName
-  | .fieldValue => .text inputs.fieldValue
-
-def CheckedEnUsStringPatternMessageTemplate.toRenderPlan
-    (template : CheckedEnUsStringPatternMessageTemplate)
-    (inputs : StringPatternMessageInputs) : MessageRenderPlan :=
-  { parts := template.parts.map (·.toRenderPart inputs) }
-
-/-- The resolved text attached to an already-established String-pattern failure. Rendering cannot replace or reclassify the underlying formal error. -/
-structure RenderedStringPatternError where
-  error : StringFieldError
-  text : ResolvedMessageText
-  deriving Repr, DecidableEq
-
-def CheckedEnUsStringPatternMessageTemplate.renderError
-    (template : CheckedEnUsStringPatternMessageTemplate)
-    (inputs : StringPatternMessageInputs) : RenderedStringPatternError where
-  error := .pattern
-  text := (template.toRenderPlan inputs).render
 
 end A12Kernel

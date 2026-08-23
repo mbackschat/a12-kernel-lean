@@ -61,6 +61,7 @@ private def keywordProfile : ValidationMessageKeywordProfile := {
     "Vordruckname"
   ]
   baseYearTerminal := "BaseYear"
+  forTerminal := "For"
 }
 
 private def condition? : Option (CheckedFlatCondition model) :=
@@ -301,21 +302,6 @@ private def templateError? (template : String) :
   | .ok _ => none
   | .error error => some error
 
-private def stringPatternInputs : StringPatternMessageInputs where
-  fieldName := "Code"
-  fieldValue := "$field$"
-
-private def stringPatternRender? (template : String) : Option ResolvedMessageText := do
-  let checked ←
-    (elaborateEnUsStringPatternMessageTemplate template).toOption
-  pure (checked.renderError stringPatternInputs).text
-
-private def stringPatternTemplateError? (template : String) :
-    Option ValidationMessageTemplateError :=
-  match elaborateEnUsStringPatternMessageTemplate template with
-  | .ok _ => none
-  | .error error => some error
-
 example :
     render? "Cost $$ $Amount$ [$Amount.value$]" =
         some { text := "Cost $ Amount label [$Other$]" } ∧
@@ -343,22 +329,57 @@ example :
         some (.unquotedTerminalName "For") := by
   native_decide
 
+/- The **semantic-index suffix** on a parameter. A keyed parameter names a semantic index over a
+repeatable group, and this fragment's model is nonrepeatable, so every well-formed keyed parameter is
+refused as outside the fragment rather than admitted or mapped to the Kernel's pairing class. What the
+cases separate is the grammar *in front of* that boundary: which spellings are well formed and reach
+it, and which are refused earlier and where. -/
 example :
-    stringPatternRender? "$field$" =
-        some { text := "Code" } ∧
-      stringPatternRender? "Value [$field.value$]" =
-        some { text := "Value [$field$]" } := by
+    templateError? "Bad $Amount For \"k1\"$" =
+        some (.semanticIndexUnsupported "Amount For \"k1\"") := by
   native_decide
 
+/- Keying **escapes the field-membership gate**. Measured at kernel 30.8.1, a keyed parameter naming a
+field the condition never mentions is admitted, while the *unkeyed* spelling of that same field is
+refused `INVALID_FIELD` — so membership is a property of the unkeyed form, not of parameters in
+general. Here the same field therefore reaches two different refusals depending only on whether it
+carries a key, which is the distinction a fragment without repeatable groups can still hold. -/
 example :
-    stringPatternTemplateError? "$Field$" =
-        some (.invalidParameter "Field") ∧
-      stringPatternTemplateError? "$Code$" =
-        some (.invalidParameter "Code") ∧
-      stringPatternTemplateError? "Cost $$ $field$" =
-        some (.invalidParameter "") ∧
-      stringPatternTemplateError? "$field" =
-        some .oddDollarCount := by
+    templateError? "$Other For \"k1\"$" =
+        some (.semanticIndexUnsupported "Other For \"k1\"") ∧
+      templateError? "$Other$" =
+        some (.fieldNotReferenced "Other" other.id) := by
+  native_decide
+
+/- The suffix sits **before** the key, which is the one ordering the grammar admits: measured, the
+Kernel accepts `$X.value For "k"$` and refuses `$X For "k".value$` as a parse failure. Here the first
+is well formed and reaches the fragment boundary while the second never becomes a parameter at all. -/
+example :
+    templateError? "$Amount.value For \"k1\"$" =
+        some (.semanticIndexUnsupported "Amount.value For \"k1\"") ∧
+      templateError? "$Amount For \"k1\".value$" =
+        some (.invalidParameter "Amount For \"k1\".value") := by
+  native_decide
+
+/- A key is a quoted token or a path to the keying field, and nothing else: an **unquoted** bare word
+is not a token that fails to parse but a field reference that fails to resolve, which is the
+`INVALID_ENTITY` the Kernel reports for that same spelling. So a key's name is resolved even though
+the keyed form requires no membership. A key that is itself keyed is refused as nesting. -/
+example :
+    templateError? "$Amount For \"k1\" For \"k2\"$" =
+        some (.nestedSemanticIndex "Amount For \"k1\" For \"k2\"") ∧
+      templateError? "$Amount For k1$" =
+        some (.reference "Amount For k1"
+          (.invalidEntity (pathAt (.relative 0) [] "k1"))) := by
+  native_decide
+
+/- The key composes with the **category** suffix rather than consuming it, and the spec's own syntax
+is settled first: an empty category name is refused at parsing even when a key follows it. -/
+example :
+    templateError? "$Status->Group For \"k1\"$" =
+        some (.semanticIndexUnsupported "Status->Group For \"k1\"") ∧
+      templateError? "$Status-> For \"k1\"$" =
+        some (.missingCategoryName "Status-> For \"k1\"") := by
   native_decide
 
 end A12Kernel.Conformance.ValidationMessageAuthoring
