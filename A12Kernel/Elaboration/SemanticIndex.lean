@@ -53,8 +53,22 @@ inductive SemanticIndexElabError where
   /-- The reduced raw-context route needs a Number index and a Number target; the general
   preliminary route does not. -/
   | reducedRouteNeedsNumber (path : List String)
+  /-- The field-valued key is read from inside the indexed group itself. -/
+  | keyContainedInIndexedGroup (path : List String) (groupPath : GroupPath)
   | incoherentCore
+
   deriving Repr, DecidableEq
+
+namespace SemanticIndexElabError
+
+/-- Project the two refusals with measured Kernel diagnostics. The reduced-route and coherence
+classes stay unmapped, because they are this project's own boundary rather than the Kernel's. -/
+def diagnostic? : SemanticIndexElabError → Option KernelStaticDiagnostic
+  | .keyContainedInIndexedGroup _ _ => some .semanticIndexContainedInIndex
+  | .resolve error => error.diagnostic?
+  | _ => none
+
+end SemanticIndexElabError
 
 inductive CheckedSemanticIndexKey where
   | literal (token : SemanticIndexKey)
@@ -164,9 +178,16 @@ def elaborateSemanticIndexSource (model : FlatModel)
             | _, _ =>
                 throw (.indexKeyDomainMismatch indexDeclaration.path token)
         | .field reference =>
-            let declaration ← model.resolveNonrepeatableFieldUnchecked
+            -- Resolve without the nonrepeatable gate so a key inside the indexed group reports its
+            -- own measured class rather than the generic repeatable-reference one.
+            let declaration ← model.resolveFieldDeclarationUnchecked
               declaringGroup reference |>.mapError .resolve
-            pure (.field declaration)
+            if group.path.isPrefixOf declaration.groupPath then
+              throw (.keyContainedInIndexedGroup declaration.path group.path)
+            else
+              let checkedDeclaration ← declaration.requireNonrepeatable
+                |>.mapError .resolve
+              pure (.field checkedDeclaration)
       if hGroup : model.repeatableGroups.contains group = true then
         if hDeclared : group.indexField == some indexDeclaration.id then
           if hIndexOwned :

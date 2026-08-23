@@ -89,6 +89,8 @@ inductive KernelStaticDiagnostic where
   | invalidCompareToDateRange
   /-- An overlap operand's DateRange declaration carries an `interpretationOfYear`. Both operators key their format allowlist on the whole declaration including that reading, so the composite format is refused on either side, under every profile, and with or without a Base Year. -/
   | invalidDateRangeFormat
+  /-- A semantic index's field-valued key is read from a field **inside the indexed group itself**, so a rule iterating that group cannot key the lookup by its current row's own field. The same lookup keyed by a field outside the group, or by a literal, is admitted from that same locus. -/
+  | semanticIndexContainedInIndex
   deriving Repr, DecidableEq
 
 namespace KernelStaticDiagnostic
@@ -138,6 +140,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .wrongDateFormatForOp => "MVK_WRONG_DATE_FORMAT_FOR_OP"
   | .invalidCompareToDateRange => "MVK_INVALID_COMPARE_TO_DATE_RANGE"
   | .invalidDateRangeFormat => "MVK_INVALID_DATE_RANGE_FORMAT"
+  | .semanticIndexContainedInIndex => "MVK_SEMANTIC_INDEX_CONTAINED_IN_INDEX"
 
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
 def all : List KernelStaticDiagnostic :=
@@ -156,7 +159,7 @@ def all : List KernelStaticDiagnostic :=
     .errorSemanticIndexOrCategoryForErrorField, .invalidDateType, .noDateRange,
     .invalidParameterForDateRangeComparison, .dateWithAndWithoutYear,
     .invalidDateRangeFormat, .invalidCompareToDateRange, .wrongDateFormatForOp,
-    .invalidCompareToDate]
+    .invalidCompareToDate, .semanticIndexContainedInIndex]
 
 end KernelStaticDiagnostic
 

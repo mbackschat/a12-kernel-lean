@@ -366,9 +366,11 @@ example :
         some (.keyFieldNotNumber ["Order", "RequestedLine"]) := by
   native_decide
 
-/- A repeatable key field requires a row-addressed route and therefore fails closed at this nonrepeatable boundary. -/
+/- A key field read from inside the indexed group carries its own measured placement class rather
+than the generic repeatable-reference one, and projects to the Kernel identifier a checker reports.
+The distinction is observable: the two classes would send a consumer to different remedies. -/
 example :
-    let repeatableKey : SurfaceNumberSemanticIndex := {
+    let containedKey : SurfaceSemanticIndex := {
       fieldAuthored with
         key := .field {
           base := .absolute
@@ -377,8 +379,46 @@ example :
         }
     }
     semanticIndexErrorOf
-      (elaborateNumberSemanticIndexSource model ["Order"] repeatableKey) =
-        some (.resolve (.repeatableReference ["Order", "Items", "LineNo"])) := by
+        (elaborateNumberSemanticIndexSource model ["Order"] containedKey) =
+      some (.keyContainedInIndexedGroup ["Order", "Items", "LineNo"]
+        ["Order", "Items"]) ∧
+    (semanticIndexErrorOf
+        (elaborateNumberSemanticIndexSource model ["Order"] containedKey)).bind
+        SemanticIndexElabError.diagnostic? =
+      some .semanticIndexContainedInIndex := by
+  native_decide
+
+/- A repeatable key field *outside* the indexed group still requires a row-addressed route, so the
+placement class above did not swallow the ordinary nonrepeatable-key boundary. -/
+example :
+    let otherGroup : RepeatableGroupDecl := {
+      level := 11
+      path := ["Order", "Notes"]
+      repeatability := some 20
+      indexField := none
+    }
+    let noteDecl : FlatFieldDecl := {
+      id := 4
+      groupPath := ["Order", "Notes"]
+      name := "LineNo"
+      policy := { kind := .number { scale := 2, signed := false } }
+      repeatableScope := [11]
+    }
+    let twoGroupModel : FlatModel := {
+      fields := [keyDecl, targetDecl, selectorDecl, noteDecl]
+      repeatableGroups := [items, otherGroup]
+    }
+    let siblingKey : SurfaceSemanticIndex := {
+      fieldAuthored with
+        key := .field {
+          base := .absolute
+          groups := ["Order", "Notes"]
+          field := "LineNo"
+        }
+    }
+    semanticIndexErrorOf
+      (elaborateNumberSemanticIndexSource twoGroupModel ["Order"] siblingKey) =
+        some (.resolve (.repeatableReference ["Order", "Notes", "LineNo"])) := by
   native_decide
 
 end A12Kernel
