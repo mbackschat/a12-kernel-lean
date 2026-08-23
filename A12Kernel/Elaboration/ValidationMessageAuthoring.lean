@@ -16,10 +16,13 @@ historically accepted unquoted inside an entity name, and the caller supplies bo
 language version it supports.
 
 A field reference may carry an Enumeration **category** suffix, `->Name`, whose three gates are the
-Kernel's own and are checked in its order: a missing name, a field that is not an Enumeration, and a
-name that is not one of that declaration's categories. It carries neither of the value suffix's extra
-gates. What it *renders* is deliberately not claimed: the checked part hands the caller an opaque text
-input with no fallback policy of its own.
+Kernel's own: a missing name, a field that is not an Enumeration, and a name that is not one of that
+declaration's categories. It carries neither of the value suffix's extra gates, and combining it with
+the value suffix is a parse failure — the two really are alternatives. A **doubled** arrow is refused
+here as one parse failure, which is a narrower account than the Kernel's: measured, the Kernel reaches
+its category gate first and reports the *first* name as unknown, so this local class is deliberately
+mapped to no Kernel diagnostic. What a category access *renders* is not claimed at all: the checked
+part hands the caller an opaque text input with no fallback policy of its own.
 
 One **non-field** parameter form is admitted: the Base Year terminal with an optional signed offset.
 Its only static gate is that the model declares a Base Year, and the offset is applied at authoring
@@ -141,10 +144,13 @@ private def splitParentWalk :
 /-- Decode one parameter's entity spec into the shared structured path. Failure is the Kernel's own
 single parse class rather than a family of shape classes, because that is what the parameter parser
 reports for every malformed spec. -/
-private def parseMessagePath (spec : String) :
+private def parseMessagePath (parameter spec : String) :
     Except ValidationMessageTemplateError AuthoredFieldPath :=
+  -- The refusal quotes the whole authored parameter rather than the spec it was split from, because
+  -- a diagnostic naming a fragment the author never wrote sends them looking in the wrong place.
   let segments := spec.splitOn "/"
-  let malformed := Except.error (ValidationMessageTemplateError.invalidParameter spec)
+  let malformed :=
+    Except.error (ValidationMessageTemplateError.invalidParameter parameter)
   match segments with
   | [] => malformed
   | first :: rest =>
@@ -205,15 +211,17 @@ private def parseParameter (profile : ValidationMessageKeywordProfile)
     | none => .error (.invalidParameter parameter)
   else
   -- The two suffixes are alternatives in the grammar, and the arrow cannot occur inside a name, so
-  -- splitting on it first is unambiguous.
+  -- splitting on it first is unambiguous. A doubled arrow lands in the final catch-all rather than in
+  -- the Kernel's own category gate; see the module note.
+
   match parameter.splitOn "->" with
   | [spec, category] =>
       if category.isEmpty then .error (.missingCategoryName parameter)
-      else (.fieldCategory parameter · category) <$> parseMessagePath spec
+      else (.fieldCategory parameter · category) <$> parseMessagePath parameter spec
   | [_] =>
       match parameter.splitOn ".value" with
-      | [spec, ""] => .fieldValue parameter <$> parseMessagePath spec
-      | [spec] => .fieldName parameter <$> parseMessagePath spec
+      | [spec, ""] => .fieldValue parameter <$> parseMessagePath parameter spec
+      | [spec] => .fieldName parameter <$> parseMessagePath parameter spec
       | _ => .error (.invalidParameter parameter)
   | _ => .error (.invalidParameter parameter)
 

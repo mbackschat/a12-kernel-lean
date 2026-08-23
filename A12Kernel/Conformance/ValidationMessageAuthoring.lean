@@ -223,8 +223,14 @@ example :
           some (.categoryFieldNotEnumeration "Amount->Group" amount.id) := by
   native_decide
 
-/- The suffixes are alternatives, so a second arrow is a parse failure rather than a nested access. -/
+/- The suffixes are alternatives: combining them is a parse failure, which the Kernel confirms. A
+**doubled** arrow is where this fragment is narrower than the Kernel: it lands in the same parse class
+here, while the Kernel reaches its category gate first and reports the first name as unknown. Both
+refuse, and this local class projects to no Kernel diagnostic, so the narrowing publishes no claim. -/
 example :
+    pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Status")
+        "See $Status.value->Group$" =
+      some (.invalidParameter "Status.value->Group") ∧
     pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Status")
         "See $Status->A->B$" = some (.invalidParameter "Status->A->B") := by
   native_decide
