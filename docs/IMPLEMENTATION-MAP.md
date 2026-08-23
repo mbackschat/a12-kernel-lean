@@ -187,6 +187,16 @@ For an assurance drill, use the row’s linked owner, then the matching [`Proofs
 - `assurance`: E closed for the separating classifier matrix, including the legacy cutover gap and Julian-side leap day; P closes decoded-part and calendar-basis preservation in [`TemporalValue.lean`](../A12Kernel/Proofs/TemporalValue.lean); L directly locks both exact formats and malformed-calendar cause, while legacy-calendar parsing, the floor, and pre-1900 transfer are source-grounded and exact UTC/Berlin instants remain external evidence pending under the [stored full-Date checkpoint](SOURCES.md#src-full-date-stored-input); C/X/Q none.
 - `remains`: checked-document integration, wider `SimpleDateFormat` syntax, other legal zones, DateTime/Time ingestion, and wider checked consumers remain under [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion). Partial-precision input is now its own capability below.
 
+<a id="cap-datetime-stored-input"></a>
+#### Bounded DateTime stored classifier
+
+- `state`: implemented for the **one** declarable DateTime storage format, `yyyy-MM-dd'T'HH:mm:ss`, under the model-zone profiles the Date classifier supports. A DateTime declaring any other vocabulary format, the day-first spelling that is not declarable at all, and a non-DateTime kind are each refused certification.
+- `boundary`: two causes, split as everywhere else in this family. `dateFormat` covers a wrong separator or component width, an unreal calendar date in the date half, and an out-of-range clock including hour 24; `dateInvalid` covers the **same** `1583-10-16` universal floor a Date carries. Both halves are settled as spelling before the floor is consulted; the interaction of a bad clock with a below-floor date is unmeasured and that order is inherited from the partial-Date classifier rather than separately established.
+- `boundary`: the `'T'` is one required literal — a space and a missing separator are refused alike. The optional pre-1900 check cannot arise, because the policy gate already refuses it on a DateTime declaration.
+- `route`: [`DateTimeInput.lean`](../A12Kernel/Elaboration/DateTimeInput.lean) reuses the full-Date component parser, its legacy-hybrid reality test, and its `storedGregorian` provenance for the date half, and the authored Time literal's decoder for the clock half, so neither half is a second implementation. It produces the `RawCell` the checked document already carries.
+- `assurance`: E closed for the separating matrix; P closes empty-is-not-invalid, unsupported-zone-is-context-not-invalidity, format retention, and the shared date half; **L is exact for the measured admission-and-cause surface** at the [Time/DateTime input checkpoint](SOURCES.md#src-time-datetime-stored-input) on both codegen strategies. The retained **instant** is internal: validation output carries none, so the two-zone row locks this project's account rather than a correspondence. Pending [SPEC-2026-08-23-11](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-23-11); C/X/Q none.
+- `remains`: checked-document integration, other legal zones, repeatable placement, and what a DateTime cell renders remain under [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
+
 <a id="cap-time-stored-input"></a>
 #### Bounded Time stored classifier
 

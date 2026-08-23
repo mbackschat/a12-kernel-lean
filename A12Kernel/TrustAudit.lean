@@ -290,6 +290,10 @@ run_cmd do
 #print axioms A12Kernel.fullDateTarget_evaluate_pre1900
 #print axioms A12Kernel.partialMode_dayOptional_le_monthOptional
 #print axioms A12Kernel.timeInput_checkStored_singleCause
+#print axioms A12Kernel.dateTimeInput_classify_empty
+#print axioms A12Kernel.dateTimeInput_unsupportedZone
+#print axioms A12Kernel.checkedDateTimeInputField_format_declared
+#print axioms A12Kernel.dateTimeTargetFormat_dateHalf
 #print axioms A12Kernel.timeInput_checkStored_presentEmpty
 #print axioms A12Kernel.timeInput_checkStored_parsed_empty
 #print axioms A12Kernel.checkedTimeInputField_format_declared
