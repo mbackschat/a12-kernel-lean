@@ -25,8 +25,7 @@ theorem dateTimeInput_unsupportedZone
     checked.classifyStoredForModel zoneId text =
       .error (.unsupportedZone zoneId) := by
   simp [CheckedDateTimeInputField.classifyStoredForModel, unsupported,
-    bind, Except.bind, pure, Except.pure, throw, throwThe,
-    MonadExceptOf.throw]
+    bind, Except.bind, throw, throwThe, MonadExceptOf.throw]
 
 /-- A certified declaration retains the one declarable storage format and its kind, so a consumer never
 re-derives which spelling produced the cell. -/

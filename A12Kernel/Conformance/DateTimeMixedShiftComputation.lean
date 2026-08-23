@@ -33,8 +33,7 @@ private def prepared :=
     builtinStringPatternCompiler model).toOption.get (by native_decide)
 
 private def input? (sourceLabel : LocalDateTime) (millisecond : Int)
-    (sourceRaw : Option RawCell) (dayRaw subdayRaw : RawCell)
-    (targetStored : String) :
+    (sourceRaw : Option RawCell) (dayRaw subdayRaw : RawCell) :
     Option (CheckedDocument model) := do
   let resolved ←
     ModelZone.ConcreteProfile.europeBerlin.resolveLocal? sourceLabel
@@ -49,7 +48,11 @@ private def input? (sourceLabel : LocalDateTime) (millisecond : Int)
               sourceLabel.date.civil.parts sourceLabel.time .storedGregorian))
           | some other => other },
       { address := { field := target.id, path := [] }
-        stored := targetStored
+        -- The label a real document would carry, rather than a placeholder: this cell's raw classifies
+        -- from exactly this text, so `CheckedDocument.temporallyCoherent` holds and the fixture describes
+        -- a reachable document. It is not a discriminator here -- every case below compares a shifted
+        -- result against it, so any non-result label classifies the same way.
+        stored := DateTimeTargetFormat.yearMonthDayTime.renderText sourceLabel
         raw := .parsed (.temporal (.dateTime resolved
           sourceLabel.date.civil.parts sourceLabel.time .storedGregorian)) },
       { address := { field := dayAmount.id, path := [] }
@@ -113,7 +116,7 @@ example : (do
     let evaluate (label : LocalDateTime) (ms : Int)
         (unit : DateTimeSubdayUnit) (amount : Rat) := do
       let input ← input? label ms none (.parsed (.num 1))
-        (.parsed (.num amount)) "old"
+        (.parsed (.num amount))
       let operation ← operation? unit (.literal 1) (.literal amount)
       let operand ← operation.evaluateOperand input |>.toOption
       let view ← operation.executeResult input ([] : List FormalCause) |>.toOption
@@ -145,11 +148,11 @@ example : (do
 example : (do
     let label ← LocalDateTime.ofYmdHms? 2024 6 15 10 30 0
     let clean ← input? label 0 none (.parsed (.num 1))
-      (.parsed (.num 1)) "filled"
+      (.parsed (.num 1))
     let malformed ← input? label 0 (some (.rejected .malformed))
-      (.parsed (.num 1)) (.parsed (.num 1)) "filled"
+      (.parsed (.num 1)) (.parsed (.num 1))
     let outerRejected ← input? label 0 none (.parsed (.num 1))
-      (.rejected .declaredConstraint) "filled"
+      (.rejected .declaredConstraint)
     let domain ← domainAmount?
     let innerEmpty ← operation? .hours domain (.literal 1)
     let outerEmpty ← operation? .hours (.literal 1) domain
@@ -184,7 +187,7 @@ example :
 example : (do
     let documentLabel ← LocalDateTime.ofYmdHms? 2024 6 1 0 0 0
     let input ← input? documentLabel 0 none (.parsed (.num 1))
-      (.parsed (.num 1)) "old"
+      (.parsed (.num 1))
     let evaluate (label : LocalDateTime) (ms : Int)
         (unit : DateTimeSubdayUnit) (amount : Rat) := do
       let instant ←
@@ -232,11 +235,11 @@ example : (do
       ModelZone.ConcreteProfile.europeBerlin.resolveLocal? label
     let world : World := { now := worldInstant }
     let clean ← input? label 0 none (.parsed (.num 1))
-      (.parsed (.num 1)) "filled"
+      (.parsed (.num 1))
     let innerRejected ← input? label 0 none (.rejected .malformed)
-      (.parsed (.num 1)) "filled"
+      (.parsed (.num 1))
     let outerRejected ← input? label 0 none (.parsed (.num 1))
-      (.rejected .declaredConstraint) "filled"
+      (.rejected .declaredConstraint)
     let domain ← domainAmount?
     let dayField ←
       (elaborateValueAsDateTimeFieldShiftAmount model dayAmount.id).toOption
@@ -267,7 +270,7 @@ example : (do
     let evaluate (label : LocalDateTime) (ms : Int)
         (unit : DateTimeSubdayUnit) (amount : Rat) := do
       let input ← input? label ms none (.parsed (.num amount))
-        (.parsed (.num 1)) "old"
+        (.parsed (.num 1))
       let operation ← reverseOperation? unit (.literal amount) (.literal 1)
       let operand ← operation.evaluateOperand input |>.toOption
       let view ← operation.executeResult input ([] : List FormalCause) |>.toOption
@@ -299,11 +302,11 @@ example : (do
 example : (do
     let label ← LocalDateTime.ofYmdHms? 2024 6 15 10 30 0
     let clean ← input? label 0 none (.parsed (.num 1))
-      (.parsed (.num 1)) "filled"
+      (.parsed (.num 1))
     let innerRejected ← input? label 0 none (.rejected .malformed)
-      (.parsed (.num 1)) "filled"
+      (.parsed (.num 1))
     let outerRejected ← input? label 0 none (.parsed (.num 1))
-      (.rejected .declaredConstraint) "filled"
+      (.rejected .declaredConstraint)
     let domain ← domainAmount?
     let innerField ←
       (elaborateValueAsDateTimeFieldShiftAmount model dayAmount.id).toOption
@@ -337,7 +340,7 @@ example : (do
 example : (do
     let documentLabel ← LocalDateTime.ofYmdHms? 2024 6 1 0 0 0
     let input ← input? documentLabel 0 none (.parsed (.num 1))
-      (.parsed (.num 1)) "old"
+      (.parsed (.num 1))
     let evaluate (label : LocalDateTime) (ms : Int)
         (unit : DateTimeSubdayUnit) (amount : Rat) := do
       let instant ←
@@ -386,11 +389,11 @@ example : (do
       ModelZone.ConcreteProfile.europeBerlin.resolveLocal? label
     let world : World := { now := worldInstant }
     let clean ← input? label 0 none (.parsed (.num 1))
-      (.parsed (.num 1)) "filled"
+      (.parsed (.num 1))
     let innerRejected ← input? label 0 none (.rejected .malformed)
-      (.parsed (.num 1)) "filled"
+      (.parsed (.num 1))
     let outerRejected ← input? label 0 none (.parsed (.num 1))
-      (.rejected .declaredConstraint) "filled"
+      (.rejected .declaredConstraint)
     let domain ← domainAmount?
     let innerField ←
       (elaborateValueAsDateTimeFieldShiftAmount model dayAmount.id).toOption

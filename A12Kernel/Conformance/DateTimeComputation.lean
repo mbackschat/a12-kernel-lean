@@ -31,8 +31,7 @@ private def preparedFor? (format : String) :=
     builtinStringPatternCompiler (modelFor format)).toOption
 
 private def inputFor? (format : String)
-    (amountRaw : RawCell := .parsed (.num 0))
-    (targetStored : String := "old") :
+    (amountRaw : RawCell := .parsed (.num 0)) :
     Option (CheckedDocument (modelFor format)) := do
   let prepared ← preparedFor? format
   let targetLocal ← LocalDateTime.ofYmdHms? 1970 1 1 0 0 0
@@ -47,7 +46,10 @@ private def inputFor? (format : String)
           | _ => "bad"
         raw := amountRaw },
       { address := { field := (targetFor format).id, path := [] }
-        stored := targetStored
+        -- The label a real document would carry: under this model's UTC zone the epoch instant below is
+        -- exactly what this text classifies to, so the cell is coherent rather than a placeholder. Not a
+        -- discriminator -- every case compares a computed result against it.
+        stored := DateTimeTargetFormat.yearMonthDayTime.renderText targetLocal
         raw := .parsed (.temporal (.dateTime { epochMillis := 0 }
           targetLocal.date.civil.parts targetLocal.time .storedGregorian)) }
     ]

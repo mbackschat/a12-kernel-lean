@@ -208,6 +208,7 @@ import A12Kernel.Conformance.SemanticIndexDateRange
 import A12Kernel.Conformance.SemanticIndexElaboration
 import A12Kernel.Conformance.CustomCondition
 import A12Kernel.Conformance.CheckedDocument
+import A12Kernel.Conformance.DocumentTemporalCoherence
 import A12Kernel.Conformance.CheckedIndexPreliminary
 import A12Kernel.Conformance.CheckedIndexColumn
 import A12Kernel.Conformance.ParallelComputationClearing

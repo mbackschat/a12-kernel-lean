@@ -71,8 +71,11 @@ def certifyTimeInputField (declaration : FlatFieldDecl) :
         .error (.notTime declaration.path declaration.policy.kind)
 
 /-- Classify stored Time text under its certified declaration. Present-empty stays present and
-value-free; every other failure is the one measured cause. -/
-def CheckedTimeInputField.checkStored (checked : CheckedTimeInputField)
+value-free; every other failure is the one measured cause.
+
+The receiver is required but unread: `TimeTargetFormat` has exactly one constructor, so certification
+has already decided the whole lexical rule and there is nothing left to consult per call. -/
+def CheckedTimeInputField.checkStored (_checked : CheckedTimeInputField)
     (raw : RawCell String) : CheckedCell TimeOfDay :=
   checkRawCellWith (fun text =>
     if text.isEmpty then

@@ -52,6 +52,21 @@ private def temporalRaw : RawCell :=
   .parsed (.temporal (.dateTime instant
     sourceLocal.date.civil.parts sourceLocal.time .storedGregorian))
 
+/-- The raw cell a certified DateTime declaration classifies `text` into, in the model's own zone.
+
+Each target label below is load-bearing: it is what decides whether the computed result counts as a
+change. So the label stays the parameter and its value follows from it, which also makes every document
+here one `CheckedDocument.temporallyCoherent` accepts — a real cell's value is derived from its own text
+rather than paired with an unrelated instant. Classification itself is locked in
+[`Conformance/DateTimeInput.lean`](DateTimeInput.lean); this module's subject is the shift. -/
+private def temporalRawOf (text : String) : RawCell :=
+  match (certifyDateTimeInputField target).toOption with
+  | none => .rejected .dateFormat
+  | some checked =>
+      match checked.classifyStoredForModel model.timeZoneId text with
+      | .ok raw => raw
+      | .error _ => .rejected .dateFormat
+
 private def amountStored : RawCell → String
   | .parsed (.num value) => toString value
   | .rejected .declaredConstraint => "0.1"
@@ -67,7 +82,7 @@ private def sourceData (sourceStored targetStored : String)
       raw := sourceRaw },
     { address := { field := target.id, path := [] }
       stored := targetStored
-      raw := temporalRaw }
+      raw := temporalRawOf targetStored }
   ] }
 
 private def dynamicData (targetStored : String) (amountRaw : RawCell) :
@@ -76,7 +91,7 @@ private def dynamicData (targetStored : String) (amountRaw : RawCell) :
   cells := [
     { address := { field := target.id, path := [] }
       stored := targetStored
-      raw := temporalRaw },
+      raw := temporalRawOf targetStored },
     { address := { field := amount.id, path := [] }
       stored := amountStored amountRaw
       raw := amountRaw }
@@ -88,7 +103,7 @@ private def twoDayData (targetStored : String)
   cells := [
     { address := { field := target.id, path := [] }
       stored := targetStored
-      raw := temporalRaw },
+      raw := temporalRawOf targetStored },
     { address := { field := amount.id, path := [] }
       stored := amountStored firstRaw
       raw := firstRaw },
@@ -106,7 +121,7 @@ private def fieldTwoDayData (sourceStored targetStored : String)
       raw := sourceRaw },
     { address := { field := target.id, path := [] }
       stored := targetStored
-      raw := temporalRaw },
+      raw := temporalRawOf targetStored },
     { address := { field := amount.id, path := [] }
       stored := amountStored firstRaw
       raw := firstRaw },

@@ -159,7 +159,7 @@ private def decodeSegment (segment : String) : Option AuthoredPathName :=
   | '\'' :: rest =>
       match rest.reverse with
       | '\'' :: inner =>
-          let text := String.mk inner.reverse
+          let text := String.ofList inner.reverse
           if isBareName text then some { text, quoted := true } else none
       | _ => none
   | _ => if isBareName segment then some { text := segment } else none
@@ -232,7 +232,7 @@ private def parseBaseYearOffset (remainder : String) : Option Int :=
     | sign :: digits =>
         if digits.isEmpty || !digits.all Char.isDigit then none
         else
-          let magnitude := (String.mk digits).toNat!
+          let magnitude := (String.ofList digits).toNat!
           match sign with
           | '+' => some (Int.ofNat magnitude)
           | '-' => some (-Int.ofNat magnitude)
@@ -246,7 +246,7 @@ private def parseMessageKey (parameter key : String) :
     Except ValidationMessageTemplateError AuthoredMessageKey :=
   if key.startsWith "\"" && key.endsWith "\"" && key.length ≥ 2 then
     .ok (.literal
-      (((key.drop 1).dropRight 1).toString.replace "\"\"" "\""))
+      (((key.drop 1).dropEnd 1).toString.replace "\"\"" "\""))
   else
     .field <$> parseMessagePath parameter key
 

@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.DateRangeInput
+import A12Kernel.Elaboration.DateTimeInput
 import A12Kernel.Semantics.NumericInput
 import A12Kernel.Semantics.ScalarText
 import A12Kernel.Semantics.StarAddressing
@@ -208,6 +209,33 @@ private def ClassifiedCellInput.numberCoherent
     numeric.storedText == input.stored &&
       constraints.classifyFormalRead info numeric == input.raw
 
+/-- Whether a caller's temporal cell agrees with what the model's own classifier derives from its
+stored text. This is **not** `RawCell` equality, and the difference is load-bearing: the stored text
+fixes the wall-label components, the calendar provenance, and the *second*, but a retained instant may
+carry a **sub-second remainder** the text cannot express — established behaviour this project already
+tests, where milliseconds survive an exact shift until a target renderer drops them. So the instant is
+compared to within one second and everything the text does determine is compared exactly. A whole-hour
+disagreement, such as a UTC-resolved instant under a non-UTC model zone, still fails. -/
+private def temporalCellAgrees (canonical actual : RawCell) : Bool :=
+  let sameSecond (left right : Instant) : Bool :=
+    (left.epochMillis - right.epochMillis).natAbs < 1000
+  match canonical, actual with
+  | .empty, .empty => true
+  | .presentEmpty, .presentEmpty => true
+  | .rejected expected, .rejected found => expected == found
+  | .parsed (.temporal (.date expected)),
+    .parsed (.temporal (.date found)) =>
+      expected.parts == found.parts && expected.basis == found.basis &&
+        sameSecond expected.instant found.instant
+  | .parsed (.temporal (.dateTime expectedInstant expectedDate expectedTime
+      expectedBasis)),
+    .parsed (.temporal (.dateTime foundInstant foundDate foundTime
+      foundBasis)) =>
+      expectedDate == foundDate && expectedTime == foundTime &&
+        expectedBasis == foundBasis &&
+        sameSecond expectedInstant foundInstant
+  | _, _ => false
+
 private def ClassifiedCellInput.canonicalScalarCoherent
     (input : ClassifiedCellInput) (model : FlatModel)
     (declaration : FlatFieldDecl) : Bool :=
@@ -403,6 +431,51 @@ def stringComputationContext (checked : CheckedDocument model) :
             | .error _ => malformedCheckedCell
         | _ => checked.flatContext.read field
     | .error _ => malformedCheckedCell
+
+/-- Whether every placed temporal cell whose declaration a classifier owns agrees with the value that
+classifier derives from that cell's **own** stored text.
+
+**Deliberately a property a consumer asks for, not a construction gate.** `checkDocument` does enforce
+stored/value correspondence for Boolean, Confirm, Number, and DateRange cells; temporal cells are the
+documented exception, for two independent reasons.
+
+The first is semantic. The duplicate-value clause compares a temporal cell's *exact stored text*, so the
+case that pins which account that clause states needs two cells whose text and decoded value disagree —
+`SPEC-2026-08-05-03` records whether a real model can store such a pair as its open residual. Making the
+text a function of the value would delete the clause's own subject from the representation.
+
+The second is coverage. Only a full-precision Date and a DateTime have an owning input classifier. A
+**partial** Date denotes an interval with no `Value` form and a **Time** carries no instant of its own,
+so those two kinds can never be checked here; a gate covering half a family is one no consumer could
+rely on, whereas a property may honestly report on the half it knows.
+
+`true` therefore means: no placed Date or DateTime cell contradicts its stored text. It does not certify
+the kinds listed above, and it is not a claim that the kernel would produce this document. -/
+def temporallyCoherent (checked : CheckedDocument model) : Bool :=
+  checked.source.cells.all fun input =>
+    match model.lookupUniqueId input.address.field with
+    | .error _ => true
+    | .ok declaration =>
+        match declaration.policy.kind with
+        | .temporal .date _ =>
+            match certifyFullDateInputField declaration with
+            | .error _ => true
+            | .ok owner =>
+                match owner.classifyStoredForModel model.timeZoneId
+                    input.stored with
+                | .ok canonical => temporalCellAgrees canonical input.raw
+                | .error (.unsupportedZone _)
+                | .error (.unresolvableDate _) => false
+        | .temporal .dateTime _ =>
+            match certifyDateTimeInputField declaration with
+            | .error _ => true
+            | .ok owner =>
+                match owner.classifyStoredForModel model.timeZoneId
+                    input.stored with
+                | .ok canonical => temporalCellAgrees canonical input.raw
+                | .error (.unsupportedZone _)
+                | .error (.unresolvableDateTime _ _) => false
+        | _ => true
 
 end CheckedDocument
 

@@ -37,8 +37,7 @@ private def prepared :=
 
 private def input? (sourceLocal : LocalDateTime) (millisecond : Int)
     (sourceRaw : Option RawCell := none)
-    (amountRaw : RawCell := .parsed (.num 0))
-    (targetStored : String := "old") :
+    (amountRaw : RawCell := .parsed (.num 0)) :
     Option (CheckedDocument model) := do
   let resolved ←
     ModelZone.ConcreteProfile.europeBerlin.resolveLocal? sourceLocal
@@ -63,7 +62,10 @@ private def input? (sourceLocal : LocalDateTime) (millisecond : Int)
           | _ => "bad"
         raw := amountRaw },
       { address := { field := target.id, path := [] }
-        stored := targetStored
+        -- The label a real document would carry, rather than a placeholder: this cell's raw is the one
+        -- classified from exactly this text, up to the millisecond remainder stored text cannot express.
+        -- Not a discriminator -- every case compares a shifted result against it.
+        stored := DateTimeTargetFormat.yearMonthDayTime.renderText sourceLocal
         raw := generatedRaw }
     ]
   } |>.toOption
