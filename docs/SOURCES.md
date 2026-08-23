@@ -419,6 +419,17 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: two component sets, one unconfigured model, DATEFRAGMENT endpoints only, and one endpoint pair per set. No full-Date or year-bearing fragment construction in this batch, no Base-Year model, no formal-input branch, and no semantic-index endpoint. The construction-versus-stored *comparison* inherits the same widened match without an observation of its own.
 - `sync`: locally originated as a Lean correction. The canonical clause already stated that assignment compares component sets rather than lexical profiles, so the rule is unchanged; the outbound half is the spelling coverage and the gate order carried by [`SPEC-2026-08-23-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-23-03--the-daterange-computations-source-and-target-gates-are-ordered-and-both-spellings-participate).
 
+<a id="src-semantic-index-kind-independence"></a>
+#### The index field's kind and the selected target's kind are independent, measured locally 2026-08-23
+
+- `revision`: clean a12-dmkits `108d047b787f0e049dcd2f4902f24d7523347a00`, dmtool `0.13.0`, kernel `30.8.1` built and runtime; the sibling worktree was empty before and after every command.
+- `route`: two dmtool-authored models differing only in the declared index field's kind — one `STRING`, one `NUMBER` — each with a repeatable group (max 4) holding that index field and a Number target, plus a root Number limit and a root key field of the index's own kind. Six `rule check` decisions over a literal-keyed lookup, a field-keyed lookup, and a keyed presence operand.
+- `claim`: a **String** index field selects a **Number** target in all three shapes, so the two kinds are independent and the existing clause's "for every non-Number index field, lookup uses exact internally stored text" reaches an ordinary Number consumer. The Number-index model admits the field-keyed lookup and refuses the literal `For "k1"` with `MVK_INDEX_VALUE_INVALID` on the two literal shapes, which is the clause's own declaration-format check firing rather than a new rule.
+- `integrity`: models `724132107caede4fcad2d0f0573131735e25eeaa6f049715189f691b1845ff64` (String index) and `caac93f5e4ba39df479df53e8552f3fd74a946fd36db6d70f14cfec04dc499b1` (Number index). `rule check` persists nothing, so the two model files are the whole retained input.
+- `limit`: static legality only, one repeatable level, one non-Number index kind, and a Number target throughout. No runtime row, and the declaration-format check is observed only as a whole verdict rather than per constraint.
+- `local-divergence`: one. The checked semantic-index elaborator required a **Number** index field, refusing this whole profile even though the shared column owner and the resolved evaluator both already handled it. The certificate now carries the index **declaration**, and the reduced raw-context route keeps the Number requirement as its own explicitly stated refinement rather than as the family's rule.
+- `sync`: locally originated and it adds no rule the canonical clause does not already state — both halves confirm [`spec/08`](../spec/08-paths-and-references.md) §10 as written. No outbound entry.
+
 <a id="src-date-range-endpoint-shapes"></a>
 #### Which operand shapes a DateRange endpoint admits, measured locally 2026-08-23
 

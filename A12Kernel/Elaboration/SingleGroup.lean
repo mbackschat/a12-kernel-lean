@@ -237,6 +237,19 @@ def FlatModel.admitsSingleGroupNumber (model : FlatModel)
       declaration.repeatableScope == [group.level] &&
       (FlatField.number field).matchesDecl declaration
 
+/-- Whether one declaration is a direct member of this group at its own single repeatable level,
+independent of its kind. The Number predicate above is this one plus a kind witness, and a consumer
+that needs no kind — an index field whose identity the shared column owner already decides — uses
+this. -/
+def FlatModel.admitsSingleGroupDeclaration (model : FlatModel)
+    (group : RepeatableGroupDecl) (declaration : FlatFieldDecl) : Bool :=
+  match model.lookupUniqueId declaration.id with
+  | .error _ => false
+  | .ok admitted =>
+      admitted == declaration &&
+        declaration.groupPath == group.path &&
+        declaration.repeatableScope == [group.level]
+
 structure RawSingleGroupContext where
   candidates : List RowIndex
   read : RowIndex → FieldId → RawCell

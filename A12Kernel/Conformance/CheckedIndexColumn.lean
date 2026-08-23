@@ -212,19 +212,20 @@ private def numberData (second : Rat) : DocumentData := {
 
 private def checkedNumber :
     CheckedNumberSemanticIndexSource numberModel := {
-  group := demand
-  indexField := { id := 1, info := numberInfo }
-  targetField := {
-    id := 2
-    info := { scale := 0, signed := false }
+  toCheckedSemanticIndexSource := {
+    group := demand
+    indexDeclaration := numberIndexDecl 1 "Demand" 10
+    targetDeclaration := targetDecl 2 "Demand" 10
+    key := .literal (.number 5)
+    modelWellFormed := by native_decide
+    groupOwned := by native_decide
+    indexDeclared := by native_decide
+    indexOwned := by native_decide
+    targetOwned := by native_decide
+    keyOwned := by native_decide
   }
-  key := .literal 5
-  modelWellFormed := by native_decide
-  groupOwned := by native_decide
-  indexDeclared := by native_decide
-  indexOwned := by native_decide
-  targetOwned := by native_decide
-  keyOwned := by native_decide
+  indexNumber := by native_decide
+  targetNumber := by native_decide
 }
 
 private def noKeyRaw : RawFlatContext := { read := fun _ => .empty }

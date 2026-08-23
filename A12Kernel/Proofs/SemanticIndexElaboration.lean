@@ -1,24 +1,40 @@
 import A12Kernel.Elaboration.SemanticIndex
 import A12Kernel.Proofs.SemanticIndex
 
-/-! # Checked Number semantic-index construction laws -/
+/-! # Checked semantic-index construction laws -/
 
 namespace A12Kernel
 
-/-- The document-backed route delegates key policy to the same semantic-index evaluator after the shared checked column has been projected. -/
-theorem checkedNumberSemanticIndex_preliminary_delegates
-    (checked : CheckedNumberSemanticIndexSource model)
+/-- The document-backed route delegates key policy to the same semantic-index evaluator after the
+shared checked column has been projected, at every index kind. -/
+theorem checkedSemanticIndex_preliminary_delegates
+    (checked : CheckedSemanticIndexSource model)
     (preliminary : CheckedIndexPreliminary model)
     (keyRaw : RawFlatContext) (phase : Phase) (outer : Env)
     (column : ResolvedSemanticIndexColumn)
     (resolved : checked.resolvePreliminaryColumn preliminary outer =
       .ok column) :
     checked.lookupPreliminaryValue preliminary keyRaw phase outer =
-      .ok (column.lookupNumberObservation phase
+      .ok (column.lookupObservationForIndex phase checked.numericIndex
         (checked.key.observe model keyRaw phase)) := by
-  unfold CheckedNumberSemanticIndexSource.lookupPreliminaryValue
+  unfold CheckedSemanticIndexSource.lookupPreliminaryValue
   rw [resolved]
   rfl
+
+/-- A Number-indexed source's shared dispatch is the numeric lookup, so the reduced route's own
+delegation law and the general one agree rather than describing two policies. -/
+theorem checkedNumberSemanticIndex_preliminary_is_numeric
+    (checked : CheckedNumberSemanticIndexSource model)
+    (column : ResolvedSemanticIndexColumn) (phase : Phase)
+    (key : CellObservation) :
+    column.lookupObservationForIndex phase
+        checked.toCheckedSemanticIndexSource.numericIndex key =
+      column.lookupNumberObservation phase key := by
+  have witness := checked.indexNumber
+  unfold FlatFieldDecl.toNumberField? at witness
+  simp only [ResolvedSemanticIndexColumn.lookupObservationForIndex,
+    CheckedSemanticIndexSource.numericIndex]
+  split at witness <;> simp_all
 
 /-- A successfully resolved checked source delegates phase behavior and numeric-key comparison to the existing resolved semantic-index evaluator. -/
 theorem checkedNumberSemanticIndex_lookupValue_delegates

@@ -1,6 +1,10 @@
 import A12Kernel.Elaboration.SemanticIndex
 
-/-! # Checked one-group Number semantic-index conformance -/
+/-! # Checked one-group semantic-index conformance
+
+The index field's kind is not narrowed here; the reduced raw-context route's Number requirement is,
+and the two are separated below.
+-/
 
 namespace A12Kernel
 
@@ -58,16 +62,16 @@ private def model : FlatModel := {
   repeatableGroups := [items]
 }
 
-private def authored (key : Rat) : SurfaceNumberSemanticIndex := {
+private def authored (key : Rat) : SurfaceSemanticIndex := {
   target := {
     base := .absolute
     groups := ["Order", "Items"]
     field := "Amount"
   }
-  key := .literal key
+  key := .literal (.number key)
 }
 
-private def fieldAuthored : SurfaceNumberSemanticIndex := {
+private def fieldAuthored : SurfaceSemanticIndex := {
   target := {
     base := .absolute
     groups := ["Order", "Items"]
@@ -115,30 +119,38 @@ private def semanticIndexErrorOf {value : Type} :
 
 private def checked : CheckedNumberSemanticIndexSource model :=
   {
-    group := items
-    indexField := keyField
-    targetField
-    key := .literal 5
-    modelWellFormed := by native_decide
-    groupOwned := by native_decide
-    indexDeclared := by native_decide
-    indexOwned := by native_decide
-    targetOwned := by native_decide
-    keyOwned := by native_decide
+    toCheckedSemanticIndexSource := {
+      group := items
+      indexDeclaration := keyDecl
+      targetDeclaration := targetDecl
+      key := .literal (.number 5)
+      modelWellFormed := by native_decide
+      groupOwned := by native_decide
+      indexDeclared := by native_decide
+      indexOwned := by native_decide
+      targetOwned := by native_decide
+      keyOwned := by native_decide
+    }
+    indexNumber := by native_decide
+    targetNumber := by native_decide
   }
 
 private def fieldChecked : CheckedNumberSemanticIndexSource model :=
   {
-    group := items
-    indexField := keyField
-    targetField
-    key := .field selectorField
-    modelWellFormed := by native_decide
-    groupOwned := by native_decide
-    indexDeclared := by native_decide
-    indexOwned := by native_decide
-    targetOwned := by native_decide
-    keyOwned := by native_decide
+    toCheckedSemanticIndexSource := {
+      group := items
+      indexDeclaration := keyDecl
+      targetDeclaration := targetDecl
+      key := .field selectorDecl
+      modelWellFormed := by native_decide
+      groupOwned := by native_decide
+      indexDeclared := by native_decide
+      indexOwned := by native_decide
+      targetOwned := by native_decide
+      keyOwned := by native_decide
+    }
+    indexNumber := by native_decide
+    targetNumber := by native_decide
   }
 
 /- The authored route reconstructs that exact checked source from model-owned metadata. -/
@@ -232,16 +244,38 @@ example :
       some (.invalidIndexField ["Order", "Items"] 999) := by
   native_decide
 
-/- This capsule fails closed on a valid non-Number index declaration while leaving that broader model profile available to its future typed owner. -/
+private def textAuthored : SurfaceSemanticIndex := {
+  target := { base := .absolute, groups := ["Order", "Items"], field := "Amount" }
+  key := .literal (.text "L1")
+}
+
+/- A **non-Number index** field is admitted by the general route, which is the measured Kernel rule:
+the index kind and the selected target's kind are independent. Three rows separate the three
+decisions this makes. The literal's identity domain must be the index field's own, so a numeric
+literal against a text-identity index is refused rather than silently never matching; and the
+**reduced raw-context route** still needs a Number index, because it rebuilds the column from a
+one-group scan rather than projecting the shared one. -/
 example :
     let stringKey : FlatFieldDecl := {
       keyDecl with policy := { kind := .string }
     }
     let stringModel : FlatModel := { model with fields := [stringKey, targetDecl] }
     stringModel.validate.isOk = true ∧
+      (elaborateSemanticIndexSource stringModel ["Order"] textAuthored).isOk = true ∧
       semanticIndexErrorOf
-        (elaborateNumberSemanticIndexSource stringModel ["Order"] (authored 5)) =
-          some (.indexFieldNotNumber ["Order", "Items", "LineNo"]) := by
+        (elaborateSemanticIndexSource stringModel ["Order"] (authored 5)) =
+          some (.indexKeyDomainMismatch ["Order", "Items", "LineNo"] (.number 5)) ∧
+      semanticIndexErrorOf
+        (elaborateNumberSemanticIndexSource stringModel ["Order"] textAuthored) =
+          some (.reducedRouteNeedsNumber ["Order", "Items", "LineNo"]) := by
+  native_decide
+
+/- The mirror of the domain gate: a text literal against a **Number** index is refused too, so the
+gate is the index's identity rather than a preference for one literal shape. -/
+example :
+    semanticIndexErrorOf
+      (elaborateSemanticIndexSource model ["Order"] textAuthored) =
+        some (.indexKeyDomainMismatch ["Order", "Items", "LineNo"] (.text "L1")) := by
   native_decide
 
 /- General model validation retains a nested index declaration; only this one-level consumer rejects its wider scope. -/
@@ -262,9 +296,9 @@ example :
       fields := [nestedKey, nestedTarget]
       repeatableGroups := [sections, nestedItems]
     }
-    let nestedAuthored : SurfaceNumberSemanticIndex := {
+    let nestedAuthored : SurfaceSemanticIndex := {
       target := { base := .absolute, groups := nestedItems.path, field := "Amount" }
-      key := .literal 5
+      key := .literal (.number 5)
     }
     nestedModel.validate.isOk = true ∧
       (elaborateNumberSemanticIndexSource nestedModel ["Order"] nestedAuthored).isOk = false := by
