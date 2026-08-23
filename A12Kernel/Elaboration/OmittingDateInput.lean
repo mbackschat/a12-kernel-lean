@@ -64,6 +64,27 @@ def carriesYear : OmittingDateFormat → Bool
   | .year | .yearMonthDashed | .yearMonthConcatenated => true
   | .month | .monthDay => false
 
+/-- The component set a declaration of this format exposes.
+
+Derived from the format rather than declared beside it, because the two cannot disagree: the stored text
+is what carries the components, so a `yyyy` field exposing a day would describe a value it has no way to
+store. Feeding this to `TemporalComparisonOp.admitsFormats` reproduces the measured comparison matrix
+exactly — any two year-bearing formats compare regardless of how many components they carry, and a
+yearless one is refused against a year-bearing one without a Base Year. -/
+def components : OmittingDateFormat → TemporalComponents
+  | .year =>
+      { year := true, month := false, day := false
+        hour := false, minute := false, second := false }
+  | .yearMonthDashed | .yearMonthConcatenated =>
+      { year := true, month := true, day := false
+        hour := false, minute := false, second := false }
+  | .month =>
+      { year := false, month := true, day := false
+        hour := false, minute := false, second := false }
+  | .monthDay =>
+      { year := false, month := true, day := true
+        hour := false, minute := false, second := false }
+
 /-- One exact fixed-width digit run. Every width violation and every non-digit fails here, which is why
 one cause suffices for the whole family. -/
 private def digitsOfWidth? (part : String) (width : Nat) : Option Nat :=

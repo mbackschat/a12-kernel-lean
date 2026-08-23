@@ -159,4 +159,66 @@ example :
           | _ => none) = some 1 := by
   native_decide
 
+/-! ## Comparison admission
+
+The component set is **derived** from the declared format, and feeding it to the existing direct-comparison
+gate reproduces the measured admission matrix. Every row below was read off `rule add --dry-run` at
+kernel 30.8.1 over one model declaring all five formats plus a complete one.
+
+No new comparison rule was needed, which is the point of measuring this: the gate is **year presence**
+after optional Base-Year supplementation plus date-class agreement, and it already said so. -/
+
+private def admits (left right : String) (hasBaseYear : Bool := false) : Bool :=
+  match OmittingDateFormat.ofSource? left, OmittingDateFormat.ofSource? right with
+  | some leftFormat, some rightFormat =>
+      TemporalComparisonOp.admitsFormats .equal hasBaseYear
+        leftFormat.components rightFormat.components
+  | _, _ => false
+
+private def admitsComplete (yearless : String) (hasBaseYear : Bool := false) : Bool :=
+  match OmittingDateFormat.ofSource? yearless with
+  | some format =>
+      TemporalComparisonOp.admitsFormats .equal hasBaseYear format.components
+        TemporalComponents.fullDate
+  | none => false
+
+/- **Component sets need not agree; year presence must.** A year-only operand compares with a year-month
+one and with a complete date, which is what makes this gate a year test rather than a format test. -/
+example :
+    admits "yyyy" "yyyy" = true ∧
+      admits "yyyy" "yyyy-MM" = true ∧
+      admits "yyyy-MM" "yyyyMM" = true ∧
+      admitsComplete "yyyy" = true ∧
+      admitsComplete "yyyy-MM" = true := by
+  native_decide
+
+/- **A yearless operand is refused against a year-bearing one**, and admitted against another yearless
+one. That pair is the measured separator: without it the gate would read as "any two Date formats
+compare". -/
+example :
+    admits "MM-dd" "yyyy" = false ∧
+      admits "MM" "yyyy-MM" = false ∧
+      admitsComplete "MM-dd" = false ∧
+      admits "MM-dd" "MM-dd" = true ∧
+      admits "MM" "MM-dd" = true := by
+  native_decide
+
+/- A declared **Base Year** supplies the missing year and makes the refused pairs compare, which is why
+the gate supplements before testing rather than after. -/
+example :
+    admits "MM-dd" "yyyy" (hasBaseYear := true) = true ∧
+      admitsComplete "MM-dd" (hasBaseYear := true) = true := by
+  native_decide
+
+/- The derived component sets are exactly what the stored text carries, so no declaration can expose a
+component it has no way to store. -/
+example :
+    (OmittingDateFormat.year.components.year,
+        OmittingDateFormat.year.components.month) = (true, false) ∧
+      (OmittingDateFormat.monthDay.components.year,
+        OmittingDateFormat.monthDay.components.day) = (false, true) ∧
+      OmittingDateFormat.month.components.hasDate = true ∧
+      OmittingDateFormat.monthDay.components.hasTime = false := by
+  native_decide
+
 end A12Kernel.Conformance.OmittingDateInput
