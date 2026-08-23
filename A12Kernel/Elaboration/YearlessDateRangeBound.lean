@@ -76,25 +76,29 @@ def diagnostic? : YearlessDateRangeBoundElabError → Option KernelStaticDiagnos
 
 end YearlessDateRangeBoundElabError
 
-/-- One selected endpoint of a yearless DateRange field in a model with no Base Year. -/
+/-- One selected endpoint of a yearless DateRange field in a model with no Base Year. The source
+carries its own reading scope, so this certificate serves a scalar read and a read at a rule's row
+without a second structure. -/
 structure CheckedYearlessDateRangeBound (model : FlatModel)
-    extends CheckedDirectDateRange model where
+    extends CheckedDateRangeSource model where
   private mk ::
   bound : DateRangeBound
-  sourceYearless : toCheckedDirectDateRange.format.includesYear = false
+  sourceYearless : toCheckedDateRangeSource.format.includesYear = false
   modelUnconfigured : model.baseYear = none
 
-/-- Certify one endpoint: the declaration must be yearless and the model must supply no Base
-Year, because a configured model completes the value and belongs to the exact owner. -/
-def elaborateYearlessDateRangeBound (model : FlatModel) (sourceField : FieldId)
+/-- Certify one endpoint at a reading scope: the declaration must be yearless and the model must
+supply no Base Year, because a configured model completes the value and belongs to the exact owner. -/
+def elaborateYearlessDateRangeBoundIn (model : FlatModel)
+    (scope : List RepeatableLevel) (sourceField : FieldId)
     (bound : DateRangeBound) :
     Except YearlessDateRangeBoundElabError
       (CheckedYearlessDateRangeBound model) := do
-  let source ← elaborateDirectDateRange model sourceField |>.mapError .source
+  let source ← elaborateDateRangeSourceIn model scope sourceField
+    |>.mapError .source
   if hYearless : source.format.includesYear = false then
     if hModel : model.baseYear = none then
       pure {
-        toCheckedDirectDateRange := source
+        toCheckedDateRangeSource := source
         bound
         sourceYearless := hYearless
         modelUnconfigured := hModel }
@@ -102,6 +106,13 @@ def elaborateYearlessDateRangeBound (model : FlatModel) (sourceField : FieldId)
       throw (.baseYearConfigured sourceField)
   else
     throw (.notYearless sourceField source.policy.format source.policy.separator)
+
+/-- The scalar instance: an endpoint read where the reading rule iterates no level. -/
+def elaborateYearlessDateRangeBound (model : FlatModel) (sourceField : FieldId)
+    (bound : DateRangeBound) :
+    Except YearlessDateRangeBoundElabError
+      (CheckedYearlessDateRangeBound model) :=
+  elaborateYearlessDateRangeBoundIn model [] sourceField bound
 
 /-- One checked yearless endpoint composed with the existing typed Date-component consumer. -/
 structure CheckedYearlessDateRangeBoundComponent (model : FlatModel)
@@ -137,14 +148,16 @@ structure YearlessDateRangeBoundComponentResult where
 
 namespace CheckedYearlessDateRangeBound
 
-/-- Read the range once and select the endpoint's retained labels. An exact runtime carrier
-still fails defensively if a malformed checked document crosses the static boundary. -/
-def evaluate (operation : CheckedYearlessDateRangeBound model) (phase : Phase)
-    (input : CheckedDocument model) :
+/-- Read the range once at the row the environment binds and select the endpoint's retained labels.
+An exact runtime carrier still fails defensively if a malformed checked document crosses the static
+boundary. -/
+def evaluateAt (operation : CheckedYearlessDateRangeBound model)
+    (environment : Env) (phase : Phase) (input : CheckedDocument model) :
     Except YearlessDateRangeBoundFault
       (CellObservation YearlessDateRangeBoundValue) := do
   let observed ←
-    operation.toCheckedDirectDateRange.evaluate phase input |>.mapError .source
+    operation.toCheckedDateRangeSource.evaluateAt environment phase input
+      |>.mapError .source
   match observed with
   | .empty => pure .empty
   | .value value =>
@@ -153,6 +166,13 @@ def evaluate (operation : CheckedYearlessDateRangeBound model) (phase : Phase)
       | none => throw (.sourceValueProfile operation.source.id value)
   | .unknown cause => pure (.unknown cause)
   | .poison cause => pure (.poison cause)
+
+/-- The scalar instance: a read at the document root. -/
+def evaluate (operation : CheckedYearlessDateRangeBound model) (phase : Phase)
+    (input : CheckedDocument model) :
+    Except YearlessDateRangeBoundFault
+      (CellObservation YearlessDateRangeBoundValue) :=
+  operation.evaluateAt [] phase input
 
 end CheckedYearlessDateRangeBound
 

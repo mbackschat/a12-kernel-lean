@@ -154,7 +154,6 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
       match context.input with
       | .checked document | .partialView document _ =>
           condition.verdictOf document context.outer
-            (context.readCell context.outer)
       | .legacy _ _ =>
           -- The legacy scalar channel carries no checked document, and this leaf reads at a row.
           .error (.checkedDocumentRequired [])

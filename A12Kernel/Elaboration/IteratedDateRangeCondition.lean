@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.DateRangeStoredComparison
 import A12Kernel.Elaboration.AtLeastOneDateRangeOverlap
+import A12Kernel.Elaboration.DateRangeBoundComparison
 import A12Kernel.Elaboration.DateRangeConstructionComparison
 
 /-! # DateRange conditions read at a rule's iterating row
@@ -17,6 +18,18 @@ with its carrier, so this module decides nothing about meaning beyond who reads 
 -/
 
 namespace A12Kernel
+
+/-- Project a DateRange read failure into the shared addressing channel a condition leaf carries.
+The two payload classes name a stored value that contradicts its own certificate, which no checked
+source can produce; they are reported at the offending address rather than dropped, so a leaf and a
+standalone consumer give one account of one certificate. The bridge lives here rather than with the
+read, because the addressing channel belongs to the condition tree. -/
+def DirectDateRangeFault.toAddressing (address : CellAddr) :
+    DirectDateRangeFault → CheckedAddressingError
+  | .document error => CheckedAddressingError.document error
+  | .environment error => CheckedAddressingError.environment error
+  | .sourceValueKind _ | .sourceValueProfile _ _ =>
+      CheckedAddressingError.operandPayload address
 
 /-- One constructed range compared with one stored range, both read at the enclosing rule's current
 row. The two halves keep their own certificates: the construction is the scalar carrier's, whose
@@ -59,6 +72,8 @@ inductive IteratedDateRangeCondition (model : FlatModel) where
       (comparison : TemporalComparisonOp) (expected : FullDate)
   | boundPair (left right : CheckedDateRangeSourceBound model)
       (comparison : TemporalComparisonOp)
+  | boundPairYearless (left right : CheckedYearlessDateRangeBound model)
+      (comparison : TemporalComparisonOp)
   | overlap (source : CheckedDateRangesOverlapSource model)
   | pluralOverlap (source : CheckedAtLeastOneDateRangeOverlapsSource model)
   | constructionAgainstStored
@@ -68,7 +83,9 @@ inductive IteratedDateRangeCondition (model : FlatModel) where
 inductive IteratedDateRangeConditionElabError where
   | storedEquality (cause : DirectDateRangeComparisonElabError)
   | operand (cause : DirectDateRangeElabError)
+  | yearlessOperand (cause : YearlessDateRangeBoundElabError)
   | formatsNotComparable (left right : TemporalComponents)
+  | mixedBoundDomains
   | overlap (cause : DateRangesOverlapElabError)
   | pluralOverlap (cause : AtLeastOneDateRangeOverlapsElabError)
   | construction (cause : DateRangeConstructionElabError)
@@ -86,7 +103,9 @@ def diagnostic? :
     IteratedDateRangeConditionElabError → Option KernelStaticDiagnostic
   | .storedEquality cause => cause.diagnostic?
   | .operand cause => cause.diagnostic?
+  | .yearlessOperand cause => cause.diagnostic?
   | .formatsNotComparable _ _ => some .invalidCompareToDate
+  | .mixedBoundDomains => none
   | .overlap cause => cause.diagnostic?
   | .pluralOverlap cause => cause.diagnostic?
   | .construction cause => cause.diagnostic?
@@ -102,7 +121,8 @@ def operandDeclarations : IteratedDateRangeCondition model → List FlatFieldDec
   | .storedEquality comparison =>
       [comparison.left.declaration, comparison.right.declaration]
   | .boundAgainstFixed operand _ _ _ => [operand.declaration]
-  | .boundPair left right _ => [left.declaration, right.declaration]
+  | .boundPair left right _ | .boundPairYearless left right _ =>
+      [left.declaration, right.declaration]
   | .overlap source =>
       -- Only the unstarred operands are read at the enclosing row. A starred operand reopens its
       -- own levels, so it is neither bound by the reading scope nor a contributor to it.
@@ -141,29 +161,68 @@ def wellFormedIn (condition : IteratedDateRangeCondition model)
         | .ok owned => owned == declaration
         | .error _ => false
 
-/-- Produce this condition's verdict at the consuming row. The cell read is a parameter because its
-failure channel belongs to the enclosing leaf, which owns the row environment; the overlap member
-additionally needs the document, because a starred operand's extent is a stream of rows rather than
-one cell. Each member then reuses its own carrier's comparison or scan unchanged. -/
+/-- Produce this condition's verdict at the consuming row. Each member reads its own operands
+through the row the enclosing rule is evaluating and reuses its carrier's comparison or scan
+unchanged; a read failure projects into the leaf's addressing channel rather than being dropped. -/
 def verdictOf (condition : IteratedDateRangeCondition model)
-    (document : CheckedDocument model) (outer : Env)
-    (read : FieldId → Except CheckedAddressingError CheckedCell) :
+    (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError Verdict :=
+  let address (declaration : FlatFieldDecl) : CellAddr :=
+    { field := declaration.id, path := [] }
   match condition with
   | .storedEquality comparison => do
-      let left ← read comparison.left.declaration.id
-      let right ← read comparison.right.declaration.id
-      pure (comparison.verdictOf (observeIteratedDateRangeOperand left)
-        (observeIteratedDateRangeOperand right))
+      let left ←
+        (comparison.left.evaluateAt outer .validation document).mapError
+          (DirectDateRangeFault.toAddressing (address comparison.left.declaration))
+      let right ←
+        (comparison.right.evaluateAt outer .validation document).mapError
+          (DirectDateRangeFault.toAddressing
+            (address comparison.right.declaration))
+      pure (comparison.verdictOf left right)
   | .boundAgainstFixed operand position comparison expected => do
-      let cell ← read operand.declaration.id
-      pure (position.evalAgainstFixed comparison expected
-        (operand.selectFrom cell))
+      let selected ←
+        (operand.evaluateAt outer .validation document).mapError
+          (DirectDateRangeFault.toAddressing (address operand.declaration))
+      match CheckedDateRangeBoundPair.exactObservation
+          operand.declaration.id selected with
+      | Except.ok projected =>
+          pure (position.evalAgainstFixed comparison expected projected)
+      | Except.error _ =>
+          Except.error (.operandPayload (address operand.declaration))
   | .boundPair left right comparison => do
-      let leftCell ← read left.declaration.id
-      let rightCell ← read right.declaration.id
-      pure (comparison.evalObserved (left.selectFrom leftCell)
-        (right.selectFrom rightCell))
+      let leftSelected ←
+        (left.evaluateAt outer .validation document).mapError
+          (DirectDateRangeFault.toAddressing (address left.declaration))
+      let rightSelected ←
+        (right.evaluateAt outer .validation document).mapError
+          (DirectDateRangeFault.toAddressing (address right.declaration))
+      match CheckedDateRangeBoundPair.exactObservation
+          left.declaration.id leftSelected,
+          CheckedDateRangeBoundPair.exactObservation
+            right.declaration.id rightSelected with
+      | Except.ok leftDate, Except.ok rightDate =>
+          pure (comparison.evalObserved leftDate rightDate)
+      | _, _ => Except.error (.operandPayload (address left.declaration))
+  | .boundPairYearless left right comparison => do
+      let leftSelected ←
+        (left.evaluateAt outer .validation document).mapError fun
+          | .source cause =>
+              DirectDateRangeFault.toAddressing (address left.declaration) cause
+          | .sourceValueProfile _ _ =>
+              CheckedAddressingError.operandPayload (address left.declaration)
+      let rightSelected ←
+        (right.evaluateAt outer .validation document).mapError fun
+          | .source cause =>
+              DirectDateRangeFault.toAddressing (address right.declaration) cause
+          | .sourceValueProfile _ _ =>
+              CheckedAddressingError.operandPayload (address right.declaration)
+      let leftLabel :=
+        CheckedDateRangeBoundPair.yearlessObservation left.bound leftSelected
+      let rightLabel :=
+        CheckedDateRangeBoundPair.yearlessObservation right.bound rightSelected
+      pure (evalSymmetricComparison comparison.holdsMonthDay
+        leftLabel.asValidationSimpleOperand
+        rightLabel.asValidationSimpleOperand)
   | .overlap source => do
       let result ← (source.evaluateCheckedDocument document outer).mapError
         (DateRangesOverlapEvaluationError.toAddressing
@@ -175,12 +234,20 @@ def verdictOf (condition : IteratedDateRangeCondition model)
           { field := source.scalar.declaration.id, path := [] })
       pure result.verdict
   | .constructionAgainstStored comparison => do
-      let start ← read comparison.construction.start.checked.declaration.id
-      let finish ← read comparison.construction.finish.checked.declaration.id
-      let stored ← read comparison.stored.declaration.id
+      let readAt (declaration : FlatFieldDecl) :
+          Except CheckedAddressingError CheckedCell := do
+        let path ← (outer.pathForScope declaration.repeatableScope).mapError
+          CheckedAddressingError.environment
+        (document.read { field := declaration.id, path }).mapError
+          CheckedAddressingError.document
+      let start ← readAt comparison.construction.start.checked.declaration
+      let finish ← readAt comparison.construction.finish.checked.declaration
+      let storedObserved ←
+        (comparison.stored.evaluateAt outer .validation document).mapError
+          (DirectDateRangeFault.toAddressing
+            (address comparison.stored.declaration))
       pure (comparison.verdictOf
-        (comparison.construction.observeAt start finish)
-        (observeIteratedDateRangeOperand stored))
+        (comparison.construction.observeAt start finish) storedObserved)
 
 end IteratedDateRangeCondition
 
@@ -205,8 +272,32 @@ def elaborateIteratedBoundAgainstFixed (model : FlatModel)
     (elaborateDateRangeBoundIn model scope source bound).mapError .operand
   pure (.boundAgainstFixed operand position comparison expected)
 
-/-- Resolve two selected endpoints compared with each other. Comparability is the ordinary temporal
-rule over the two declarations' component sets, so this carrier adds no gate of its own. -/
+/-- One endpoint operand at a reading scope, from whichever bound owner admits its policy. The
+preference order is the scalar carrier's: the exact owner first, the yearless owner only where the
+exact one reports an unsupported policy, so a genuine source failure is never replaced. -/
+private inductive IteratedBoundOperand (model : FlatModel) where
+  | exact (bound : CheckedDateRangeSourceBound model)
+  | yearless (bound : CheckedYearlessDateRangeBound model)
+
+private def IteratedBoundOperand.components :
+    IteratedBoundOperand model → TemporalComponents
+  | .exact bound => bound.format.components
+  | .yearless bound => bound.format.components
+
+private def elaborateIteratedBoundOperand (model : FlatModel)
+    (scope : List RepeatableLevel) (source : FieldId) (bound : DateRangeBound) :
+    Except YearlessDateRangeBoundElabError (IteratedBoundOperand model) :=
+  match elaborateDateRangeBoundIn model scope source bound with
+  | .ok exact => pure (.exact exact)
+  | .error (.unsupportedPolicy _ _ _) =>
+      IteratedBoundOperand.yearless <$>
+        elaborateYearlessDateRangeBoundIn model scope source bound
+  | .error cause => throw (.source cause)
+
+/-- Resolve two selected endpoints compared with each other, in either domain. Comparability is the
+ordinary temporal rule over the two declarations' component sets, so this carrier adds no gate of
+its own; because that gate admits only a homogeneous pair, the mixed case below is unreachable
+rather than a second comparison. -/
 def elaborateIteratedBoundPair (model : FlatModel)
     (scope : List RepeatableLevel)
     (leftSource : FieldId) (leftBound : DateRangeBound)
@@ -215,16 +306,20 @@ def elaborateIteratedBoundPair (model : FlatModel)
     Except IteratedDateRangeConditionElabError
       (IteratedDateRangeCondition model) := do
   let left ←
-    (elaborateDateRangeBoundIn model scope leftSource leftBound).mapError
-      .operand
+    (elaborateIteratedBoundOperand model scope leftSource leftBound).mapError
+      .yearlessOperand
   let right ←
-    (elaborateDateRangeBoundIn model scope rightSource rightBound).mapError
-      .operand
-  if comparison.admitsFormats model.baseYear.isSome left.format.components
-      right.format.components then
-    pure (.boundPair left right comparison)
+    (elaborateIteratedBoundOperand model scope rightSource rightBound).mapError
+      .yearlessOperand
+  if comparison.admitsFormats model.baseYear.isSome left.components
+      right.components then
+    match left, right with
+    | .exact left, .exact right => pure (.boundPair left right comparison)
+    | .yearless left, .yearless right =>
+        pure (.boundPairYearless left right comparison)
+    | _, _ => throw .mixedBoundDomains
   else
-    throw (.formatsNotComparable left.format.components right.format.components)
+    throw (.formatsNotComparable left.components right.components)
 
 
 /-- Resolve one constructed range compared with one stored range, all three operands read at the

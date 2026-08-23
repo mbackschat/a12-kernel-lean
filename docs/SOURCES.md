@@ -419,6 +419,18 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: two component sets, one unconfigured model, DATEFRAGMENT endpoints only, and one endpoint pair per set. No full-Date or year-bearing fragment construction in this batch, no Base-Year model, no formal-input branch, and no semantic-index endpoint. The construction-versus-stored *comparison* inherits the same widened match without an observation of its own.
 - `sync`: locally originated as a Lean correction. The canonical clause already stated that assignment compares component sets rather than lexical profiles, so the rule is unchanged; the outbound half is the spelling coverage and the gate order carried by [`SPEC-2026-08-23-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-23-03--the-daterange-computations-source-and-target-gates-are-ordered-and-both-spellings-participate).
 
+<a id="src-date-range-yearless-locus"></a>
+#### The rule-locus gate over unconfigured yearless DateRange carriers, measured locally 2026-08-23
+
+- `revision`: every decision taken with the source-matched launcher at clean a12-dmkits `108d047b787f0e049dcd2f4902f24d7523347a00`; dmtool `0.13.0`, kernel `30.8.1` built and runtime. The sibling stayed empty before and after every command.
+- `route`: a second model, authored with the structured `model new` / `group add` / `field add` verbs and `model check` valid, declares **no Base Year** so a yearless declaration stays a retained label pair. It holds a repeatable group `/YearlessLocus/Rows` (max 5) with a `MM`+slash `DATE_RANGE`, plus scalar `MM`+slash and `MM-dd`+slash ranges. Six `rule check` decisions vary only the error field.
+- `locus-claim`: the locus rule reaches the unconfigured yearless carriers unchanged. A yearless endpoint pair, the singular overlap predicate, and stored equality are each admitted with the error field inside the repeated group; the endpoint pair and the overlap are refused `MVK_NO_WILDCARD` from outside it.
+- `literal-claim`: comparing an unconfigured yearless endpoint with a **complete date literal** is refused `MVK_INVALID_COMPARE_TO_DATE` from *inside* the repeated group as well, so that refusal is the declaration's own comparability rule and not a locus effect. This is the live control separating the two gates on one model.
+- `integrity`: model `89cf50eefe6456b6d02fc205449b29da8fd20f51aa8d06bb0f04a88a6e321e11`. `rule check` persists nothing, so the model file is the whole retained input.
+- `limit`: `rule check` static legality only, one repeatable level, one unconfigured model, and `MM` declarations on both sides. No runtime observation of what an admitted per-row yearless comparison evaluates to, no `MM-dd` row, and no Base-Year control on this model.
+- `local-divergence`: none. Lean already refused the outside locus and admitted nothing extra; what this measurement authorized is the row-reading representation, which reuses the scalar yearless owner rather than adding a second account.
+- `sync`: locally originated, and it adds no rule the canonical clause does not already state — the locus rule and the yearless comparability rule are both recorded, and this batch shows they compose without either one moving. No outbound entry.
+
 <a id="src-date-range-rule-locus"></a>
 #### The rule-locus gate over four DateRange condition carriers, measured locally 2026-08-23
 

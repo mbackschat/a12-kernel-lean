@@ -121,7 +121,7 @@ inductive DateRangeBoundPairResult where
 namespace CheckedDateRangeBoundPair
 
 /-- Project one exact endpoint observation into the established full-Date comparison domain. -/
-private def exactObservation (source : FieldId) :
+def exactObservation (source : FieldId) :
     CellObservation DateValue →
     Except DateRangeBoundPairFault (CellObservation FullDate)
   | .empty => .ok .empty
@@ -133,7 +133,7 @@ private def exactObservation (source : FieldId) :
   | .poison cause => .ok (.poison cause)
 
 /-- Complete one yearless endpoint observation by its authored position. -/
-private def yearlessObservation (bound : DateRangeBound) :
+def yearlessObservation (bound : DateRangeBound) :
     CellObservation YearlessDateRangeBoundValue → CellObservation MonthDayValue
   | .empty => .empty
   | .value value => .value (value.completed bound)

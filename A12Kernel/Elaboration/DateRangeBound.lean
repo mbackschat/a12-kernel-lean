@@ -69,7 +69,10 @@ operand without a second certificate. -/
 structure CheckedDirectDateRange (model : FlatModel)
     extends CheckedDateRangeSource model where
   private mk ::
-  scalarSource : toCheckedDateRangeSource.scope = []
+  /-- The refinement is stated about the *declaration* rather than the reading scope, because that
+  is the fact a root-reading consumer needs: a declaration crossing no repeatable level addresses
+  identically at every environment. -/
+  scalarSource : toCheckedDateRangeSource.declaration.repeatableScope = []
 
 /-- Resolve one DateRange operand for a rule iterating `scope`. An operand crossing a level the
 locus does not bind is reported as a repeatable reference, which is the class the Kernel reports as
@@ -107,14 +110,6 @@ def DateRangeInputFormat.supportsDirectBound
   | .yearlessMonth | .yearlessMonthDay | .yearlessMonthConcatenated
   | .yearlessDayMonthDotted => baseYear.isSome
 
-/-- One selected endpoint of an exact-valued direct DateRange field. -/
-structure CheckedDateRangeBound (model : FlatModel)
-    extends CheckedDirectDateRange model where
-  private mk ::
-  bound : DateRangeBound
-  sourceSupportsBound :
-    toCheckedDirectDateRange.format.supportsDirectBound model.baseYear = true
-
 /-- One selected endpoint of a DateRange field read at a rule's iterating row. The exact-value gate
 is the scalar carrier's, so an unconfigured yearless profile is excluded here exactly as it is
 there; the iterated yearless endpoint is a separate unmodelled shape. -/
@@ -141,24 +136,14 @@ def elaborateDateRangeBoundIn (model : FlatModel)
     throw (.unsupportedPolicy sourceField source.policy.format
       source.policy.separator)
 
-namespace CheckedDateRangeSourceBound
+/-- One selected endpoint of an exact-valued DateRange field read at the document root: the general
+endpoint below refined by its declaration crossing no repeatable level. -/
+structure CheckedDateRangeBound (model : FlatModel)
+    extends CheckedDateRangeSourceBound model where
+  private mk ::
+  scalarSource :
+    toCheckedDateRangeSourceBound.declaration.repeatableScope = []
 
-/-- Select this endpoint from a cell already read at the consuming row. A non-exact payload cannot
-reach here, because the certificate's exact-value gate excludes every profile that produces one, so
-it collapses to UNKNOWN rather than claiming a fault channel this leaf does not own. -/
-def selectFrom (operation : CheckedDateRangeSourceBound model)
-    (cell : CheckedCell) : CellObservation FullDate :=
-  match observeCell .validation cell with
-  | .empty => .empty
-  | .value (.dateRange (.exact value)) =>
-      match (value.select operation.bound).toFullDate? with
-      | some date => .value date
-      | none => .unknown .malformed
-  | .value _ => .unknown .malformed
-  | .unknown cause => .unknown cause
-  | .poison cause => .poison cause
-
-end CheckedDateRangeSourceBound
 
 /-- Authored side occupied by the selected DateRange bound in one full-Date comparison. -/
 inductive DateRangeBoundComparisonPosition where
@@ -184,9 +169,9 @@ class it draws at any other unbound level. -/
 def elaborateDirectDateRange (model : FlatModel) (sourceField : FieldId) :
     Except DirectDateRangeElabError (CheckedDirectDateRange model) := do
   let checked ← elaborateDateRangeSourceIn model [] sourceField
-  -- The scope was supplied as `[]` one line above; reconstructing it keeps the refinement's
-  -- invariant decidable without a law about the resolver.
-  if hScalar : checked.scope = [] then
+  -- The empty scope admits only a nonrepeatable declaration, so this reconstruction keeps the
+  -- refinement decidable without a law about the resolver.
+  if hScalar : checked.declaration.repeatableScope = [] then
     pure { toCheckedDateRangeSource := checked, scalarSource := hScalar }
   else
     throw .incoherentCore
@@ -195,14 +180,13 @@ def elaborateDirectDateRange (model : FlatModel) (sourceField : FieldId) :
 def elaborateDateRangeBound (model : FlatModel) (sourceField : FieldId)
     (bound : DateRangeBound) :
     Except DateRangeBoundElabError (CheckedDateRangeBound model) := do
-  let source ← elaborateDirectDateRange model sourceField
-  if hSupported : source.format.supportsDirectBound model.baseYear then
-    pure {
-      toCheckedDirectDateRange := source
-      bound
-      sourceSupportsBound := hSupported }
+  let source ← elaborateDateRangeBoundIn model [] sourceField bound
+  -- The empty scope admits only a nonrepeatable declaration, so this reconstruction keeps the
+  -- refinement decidable without a law about the resolver.
+  if hScalar : source.declaration.repeatableScope = [] then
+    pure { toCheckedDateRangeSourceBound := source, scalarSource := hScalar }
   else
-    throw (.unsupportedPolicy sourceField source.policy.format source.policy.separator)
+    throw .incoherentCore
 
 /-- Resolve one direct bound and retain its authored comparison position and fixed full-Date peer. -/
 def elaborateDateRangeBoundComparison (model : FlatModel)
@@ -224,6 +208,9 @@ def elaborateDateRangeBoundComponent (model : FlatModel)
 /-- Structural failure outside one phase-sensitive direct DateRange observation. -/
 inductive DirectDateRangeFault where
   | document (error : CheckedDocumentError)
+  /-- The reading environment did not bind a level the source's declaration crosses. Reachable only
+  for a source read at a row, and never for one read at the document root. -/
+  | environment (error : EnvBindingError)
   | sourceValueKind (source : FieldId)
   | sourceValueProfile (source : FieldId) (value : DateRangeCellValue)
   deriving Repr, DecidableEq
@@ -248,36 +235,72 @@ structure DateRangeBoundComponentResult where
   component : NumericOperand
   deriving Repr, DecidableEq
 
+namespace CheckedDateRangeSource
+
+/-- Project one already-read cell into the retained exact-or-fragment range identity. Shared by the
+root read and the row read, so the two cannot disagree about emptiness, kind, or formal
+unavailability — only about which cell they reach. -/
+def observeRange (source : FieldId) (phase : Phase) (cell : CheckedCell) :
+    Except DirectDateRangeFault (CellObservation DateRangeCellValue) :=
+  match observeCell phase cell with
+  | .empty => .ok .empty
+  | .value (.dateRange value) => .ok (.value value)
+  | .value _ => .error (.sourceValueKind source)
+  | .unknown cause => .ok (.unknown cause)
+  | .poison cause => .ok (.poison cause)
+
+/-- Read one whole range at the row the environment binds. A declaration crossing no repeatable
+level addresses identically at every environment, which is why the root read below can stay a plain
+root read rather than routing through this one. -/
+def evaluateAt (operation : CheckedDateRangeSource model) (environment : Env)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except DirectDateRangeFault (CellObservation DateRangeCellValue) := do
+  let path ← (environment.pathForScope operation.declaration.repeatableScope)
+    |>.mapError .environment
+  let cell ← input.read { field := operation.source.id, path }
+    |>.mapError .document
+  observeRange operation.source.id phase cell
+
+end CheckedDateRangeSource
+
 namespace CheckedDirectDateRange
 
-/-- Read one whole range through the sole immutable checked-document route while retaining exact or fragment identity. Empty and formal unavailability retain their phase-specific observation constructors. -/
+/-- Read one whole range through the sole immutable checked-document route at the document root. -/
 def evaluate (operation : CheckedDirectDateRange model) (phase : Phase)
     (input : CheckedDocument model) :
     Except DirectDateRangeFault (CellObservation DateRangeCellValue) := do
   let cell ← input.read { field := operation.source.id, path := [] }
     |>.mapError .document
-  match observeCell phase cell with
-  | .empty => pure .empty
-  | .value (.dateRange value) => pure (.value value)
-  | .value _ => throw (.sourceValueKind operation.source.id)
-  | .unknown cause => pure (.unknown cause)
-  | .poison cause => pure (.poison cause)
+  CheckedDateRangeSource.observeRange operation.source.id phase cell
 
 end CheckedDirectDateRange
 
-namespace CheckedDateRangeBound
+namespace CheckedDateRangeSourceBound
 
-/-- Select one endpoint after exact-valued profile refinement and the shared direct DateRange read. Any non-exact runtime carrier still fails defensively if a malformed checked document crosses that static boundary. -/
-def evaluate (operation : CheckedDateRangeBound model) (phase : Phase)
-    (input : CheckedDocument model) :
+/-- Read this endpoint's range at the row the environment binds, then select the endpoint. Any
+non-exact runtime carrier still fails defensively if a malformed checked document crosses the
+static exact-value boundary. -/
+def evaluateAt (operation : CheckedDateRangeSourceBound model)
+    (environment : Env) (phase : Phase) (input : CheckedDocument model) :
     Except DateRangeBoundFault (CellObservation DateValue) := do
-  let observed ← operation.toCheckedDirectDateRange.evaluate phase input
+  let observed ←
+    operation.toCheckedDateRangeSource.evaluateAt environment phase input
   match observed with
   | .empty => pure .empty
   | .value (.exact value) => pure (.value (value.select operation.bound))
   | .value value => throw (.sourceValueProfile operation.source.id value)
   | .unknown cause => pure (.unknown cause)
   | .poison cause => pure (.poison cause)
+
+end CheckedDateRangeSourceBound
+
+namespace CheckedDateRangeBound
+
+/-- The scalar instance: a selection read at the document root. -/
+def evaluate (operation : CheckedDateRangeBound model) (phase : Phase)
+    (input : CheckedDocument model) :
+    Except DateRangeBoundFault (CellObservation DateValue) :=
+  operation.toCheckedDateRangeSourceBound.evaluateAt [] phase input
 
 end CheckedDateRangeBound
 
