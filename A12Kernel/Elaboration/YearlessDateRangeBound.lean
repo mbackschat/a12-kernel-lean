@@ -148,9 +148,23 @@ structure YearlessDateRangeBoundComponentResult where
 
 namespace CheckedYearlessDateRangeBound
 
-/-- Read the range once at the row the environment binds and select the endpoint's retained labels.
-An exact runtime carrier still fails defensively if a malformed checked document crosses the static
-boundary. -/
+/-- Select the endpoint's retained labels from one already-read range observation. Every read route
+shares this, so an addressed read and a keyed lookup cannot disagree about emptiness, unavailability,
+or which end they took. An exact runtime carrier still fails defensively if a malformed checked
+document crosses the static boundary. -/
+def projectYearless (source : FieldId) (bound : DateRangeBound) :
+    CellObservation DateRangeCellValue →
+    Except YearlessDateRangeBoundFault
+      (CellObservation YearlessDateRangeBoundValue)
+  | .empty => .ok .empty
+  | .value value =>
+      match value.selectYearlessBound bound with
+      | some selected => .ok (.value selected)
+      | none => .error (.sourceValueProfile source value)
+  | .unknown cause => .ok (.unknown cause)
+  | .poison cause => .ok (.poison cause)
+
+/-- Read the range once at the row the environment binds and select the endpoint's retained labels. -/
 def evaluateAt (operation : CheckedYearlessDateRangeBound model)
     (environment : Env) (phase : Phase) (input : CheckedDocument model) :
     Except YearlessDateRangeBoundFault
@@ -158,14 +172,7 @@ def evaluateAt (operation : CheckedYearlessDateRangeBound model)
   let observed ←
     operation.toCheckedDateRangeSource.evaluateAt environment phase input
       |>.mapError .source
-  match observed with
-  | .empty => pure .empty
-  | .value value =>
-      match value.selectYearlessBound operation.bound with
-      | some selected => pure (.value selected)
-      | none => throw (.sourceValueProfile operation.source.id value)
-  | .unknown cause => pure (.unknown cause)
-  | .poison cause => pure (.poison cause)
+  projectYearless operation.source.id operation.bound observed
 
 /-- The scalar instance: a read at the document root. -/
 def evaluate (operation : CheckedYearlessDateRangeBound model) (phase : Phase)

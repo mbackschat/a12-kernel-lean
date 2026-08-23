@@ -28,9 +28,25 @@ def DirectDateRangeElabError.diagnostic? :
 abbrev DateRangeBoundElabError := DirectDateRangeElabError
 
 /-- Recover the owning declaration, its policy, and its checked input profile for one DateRange
-source read at a context that binds the repeatable levels in `scope`. This is the sole admission
-projection for the family: the direct nonrepeatable read is its `[]` instance, so a scalar and an
-iterated carrier cannot disagree about a declaration's profile. -/
+source, asking nothing about how the row is reached. Every addressed read adds the reading-scope
+gate below; a keyed lookup reaches its row through an index column instead, so it consumes this
+projection directly and the two cannot disagree about a declaration's profile. -/
+def FlatModel.dateRangeSourceProfile (model : FlatModel)
+    (source : FlatDateRangeField) :
+    Option (FlatFieldDecl × DateRangeDeclarationPolicy × DateRangeInputFormat) :=
+  match model.lookupUniqueId source.id with
+  | .error _ => none
+  | .ok declaration =>
+      match certifyDateRangeInputField declaration with
+      | .ok checked =>
+          if checked.field == source then
+            some (declaration, checked.policy, checked.format)
+          else none
+      | .error _ => none
+
+/-- The same projection for a source read at a context that binds the repeatable levels in `scope`.
+This is the sole admission projection for every addressed carrier: the direct nonrepeatable read is
+its `[]` instance, so a scalar and an iterated carrier cannot disagree either. -/
 def FlatModel.dateRangeSourceBoundBy
     (model : FlatModel) (scope : List RepeatableLevel)
     (source : FlatDateRangeField) :
@@ -39,12 +55,7 @@ def FlatModel.dateRangeSourceBoundBy
   | .error _ => none
   | .ok declaration =>
       if declaration.repetitionBoundBy scope then
-        match certifyDateRangeInputField declaration with
-        | .ok checked =>
-            if checked.field == source then
-              some (declaration, checked.policy, checked.format)
-            else none
-        | .error _ => none
+        model.dateRangeSourceProfile source
       else
         none
 

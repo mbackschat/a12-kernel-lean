@@ -47,6 +47,22 @@ private def headcountDecl : FlatFieldDecl := {
   repeatableScope := [10]
 }
 
+private def scalarRangeDecl : FlatFieldDecl := {
+  id := 6
+  groupPath := ["Order"]
+  name := "ScalarRange"
+  policy := { kind := .dateRange }
+  dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" }
+}
+
+private def scalarMonthsDecl : FlatFieldDecl := {
+  id := 7
+  groupPath := ["Order"]
+  name := "ScalarMonths"
+  policy := { kind := .dateRange }
+  dateRangePolicy := some { format := "MM", separator := "/" }
+}
+
 private def wantedDecl : FlatFieldDecl := {
   id := 5
   groupPath := ["Order"]
@@ -62,7 +78,10 @@ private def rows : RepeatableGroupDecl := {
 }
 
 private def model : FlatModel := {
-  fields := [indexDecl, rangeDecl, monthRangeDecl, headcountDecl, wantedDecl]
+  fields := [
+    indexDecl, rangeDecl, monthRangeDecl, headcountDecl, wantedDecl,
+    scalarRangeDecl, scalarMonthsDecl
+  ]
   repeatableGroups := [rows]
 }
 
@@ -121,9 +140,9 @@ private def prepared :
   (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler model).toOption.get (by native_decide)
 
-private def storedCell (field : FieldId) (row : Nat)
+private def storedAt (field : FieldId) (path : List Nat)
     (stored : String) : ClassifiedCellInput := {
-  address := { field, path := [row] }
+  address := { field, path }
   stored
   raw :=
     match model.lookupUniqueId field with
@@ -139,10 +158,10 @@ private def storedCell (field : FieldId) (row : Nat)
 /-- Two departments, each carrying one exact range. Every case below perturbs exactly one cell of
 this baseline, so a difference in outcome is attributable to that perturbation. -/
 private def baseline : List ClassifiedCellInput := [
-  storedCell indexDecl.id 1 "Sales",
-  storedCell rangeDecl.id 1 "2024-06-01/2024-07-31",
-  storedCell indexDecl.id 2 "Eng",
-  storedCell rangeDecl.id 2 "2024-01-15/2024-03-15"
+  storedAt indexDecl.id [1] "Sales",
+  storedAt rangeDecl.id [1] "2024-06-01/2024-07-31",
+  storedAt indexDecl.id [2] "Eng",
+  storedAt rangeDecl.id [2] "2024-01-15/2024-03-15"
 ]
 
 private def operandFor (authored : SurfaceSemanticIndex)
@@ -175,10 +194,10 @@ example :
         (baseline.filter fun input => input.address.field != rangeDecl.id) =
       some (.value 0 .both) ∧
     operandFor (literalKeyed "RowRange") .start .month [
-        storedCell indexDecl.id 1 "Eng",
-        storedCell rangeDecl.id 1 "2024-06-01/2024-07-31",
-        storedCell indexDecl.id 2 "Ops",
-        storedCell rangeDecl.id 2 "2024-01-15/2024-03-15"
+        storedAt indexDecl.id [1] "Eng",
+        storedAt rangeDecl.id [1] "2024-06-01/2024-07-31",
+        storedAt indexDecl.id [2] "Ops",
+        storedAt rangeDecl.id [2] "2024-01-15/2024-03-15"
       ] = some (.value 0 .both) := by
   native_decide
 
@@ -189,14 +208,14 @@ example :
     operandFor (literalKeyed "RowRange") .start .month
         (baseline.map fun input =>
           if input.address == { field := indexDecl.id, path := [2] } then
-            storedCell indexDecl.id 2 "Sales"
+            storedAt indexDecl.id [2] "Sales"
           else
             input) =
       some (.unknown .duplicateIndex) ∧
     operandFor (literalKeyed "RowRange") .start .month
         (baseline.map fun input =>
           if input.address == { field := rangeDecl.id, path := [1] } then
-            storedCell rangeDecl.id 1 "2024-07-31/2024-06-01"
+            storedAt rangeDecl.id [1] "2024-07-31/2024-06-01"
           else
             input) =
       some (.unknown .dateRangeInvalid) := by
@@ -206,9 +225,207 @@ example :
 projection is carrier-independent rather than exact-only. -/
 example :
     operandFor (literalKeyed "RowMonths") .finish .quarter [
-      storedCell indexDecl.id 1 "Sales",
-      storedCell monthRangeDecl.id 1 "03/07"
+      storedAt indexDecl.id [1] "Sales",
+      storedAt monthRangeDecl.id [1] "03/07"
     ] = some (.value 3 .fixed) := by
+  native_decide
+
+private def equality (keyedField : String) (directSource : FieldId)
+    (keyedFirst : Bool) (comparison : EqualityOp) :
+    Except SemanticIndexDateRangeElabError
+      (CheckedSemanticIndexDateRangeEquality model) :=
+  elaborateSemanticIndexDateRangeEquality model ["Order"]
+    (literalKeyed keyedField) [] directSource keyedFirst comparison
+
+/- The component gate is the direct carrier's own declaration-level rule and is symmetric in the
+authored order, so an equal-component pair crosses on either side and a mismatched one is refused
+identically. The mismatch class stays unmapped for the same reason the other two do. -/
+example :
+    (equality "RowRange" scalarRangeDecl.id true .equal).isOk = true ∧
+      (equality "RowRange" scalarRangeDecl.id false .notEqual).isOk = true ∧
+      (match equality "RowRange" scalarMonthsDecl.id true .equal with
+        | .error error =>
+            (match error with
+              | .componentMismatch _ _ => true
+              | _ => false) && error.diagnostic? == none
+        | .ok _ => false) = true ∧
+      (equality "RowMonths" scalarMonthsDecl.id true .equal).isOk = true := by
+  native_decide
+
+/- A repeatable direct operand beside the keyed one keeps its **own** resolution class at a
+nonrepeatable locus rather than becoming a comparability failure, which is what lets a consumer tell
+an unbound level from an incomparable profile. -/
+example :
+    (match equality "RowRange" rangeDecl.id true .equal with
+      | .error (.directSource (.source _)) => true
+      | _ => false) = true := by
+  native_decide
+
+private def equalityResult? (directSource : FieldId) (keyedFirst : Bool)
+    (comparison : EqualityOp) (cells : List ClassifiedCellInput) :
+    Option DirectDateRangeComparisonResult := do
+  let operation ← (equality "RowRange" directSource keyedFirst
+    comparison).toOption
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] }, { group := 10, path := [2] }
+    ]
+    cells }).toOption
+  let preliminary ← document.applyFullIndexPreliminary.toOption
+  (operation.evaluate preliminary { read := fun _ => .empty }).toOption
+
+/- The keyed row is compared against the scalar operand by retained identity: the Sales row's own
+range decides, and the Eng row's differing range never reaches the verdict. -/
+example :
+    (equalityResult? scalarRangeDecl.id true .equal
+        (storedAt scalarRangeDecl.id [] "2024-06-01/2024-07-31" :: baseline)).map
+      (·.verdict) = some (.fired .value) ∧
+    (equalityResult? scalarRangeDecl.id true .equal
+        (storedAt scalarRangeDecl.id [] "2024-01-15/2024-03-15" :: baseline)).map
+      (·.verdict) = some .notFired := by
+  native_decide
+
+/- The authored order is retained in the result rather than normalized, so an Explain consumer
+recovers which side was keyed even where the verdict is symmetric. -/
+example :
+    (equalityResult? scalarRangeDecl.id false .equal
+        (storedAt scalarRangeDecl.id [] "2024-01-15/2024-03-15" :: baseline)).map
+      (fun result => (result.left, result.right)) =
+    (equalityResult? scalarRangeDecl.id true .equal
+        (storedAt scalarRangeDecl.id [] "2024-01-15/2024-03-15" :: baseline)).map
+      (fun result => (result.right, result.left)) := by
+  native_decide
+
+/- Emptiness on either side leaves both directions unfired, and a formally invalid keyed row reaches
+UNKNOWN rather than an error, so the keyed operand is read through the same rules a direct one is. -/
+example :
+    (equalityResult? scalarRangeDecl.id true .equal baseline).map (·.verdict) =
+        some .notFired ∧
+      (equalityResult? scalarRangeDecl.id true .notEqual baseline).map
+        (·.verdict) = some .notFired ∧
+      (equalityResult? scalarRangeDecl.id true .equal
+          (storedAt scalarRangeDecl.id [] "2024-06-01/2024-07-31" ::
+            baseline.map fun input =>
+              if input.address == { field := rangeDecl.id, path := [1] } then
+                storedAt rangeDecl.id [1] "2024-07-31/2024-06-01"
+              else
+                input)).map (·.verdict) = some .unknown := by
+  native_decide
+
+private def boundComparison (keyedField : String) (keyedBound : DateRangeBound)
+    (directSource : FieldId) (directBound : DateRangeBound) (keyedFirst : Bool)
+    (comparison : TemporalComparisonOp) :
+    Except SemanticIndexDateRangeElabError
+      (CheckedSemanticIndexDateRangeBoundComparison model) :=
+  elaborateSemanticIndexDateRangeBoundComparison model ["Order"]
+    (literalKeyed keyedField) keyedBound directSource directBound keyedFirst
+    comparison
+
+/- The gate is the ordinary direct temporal admission rule, so this unconfigured model admits an
+exact pair and a yearless pair but refuses the mixed-year one on either side. The refusal class stays
+unmapped for the same reason the family's other local classes do. -/
+example :
+    (boundComparison "RowRange" .start scalarRangeDecl.id .start true
+        .before).isOk = true ∧
+      (boundComparison "RowMonths" .finish scalarMonthsDecl.id .start false
+        .after).isOk = true ∧
+      (match boundComparison "RowRange" .start scalarMonthsDecl.id .start true
+          .before with
+        | .error error =>
+            (match error with
+              | .boundsNotComparable _ _ => true
+              | _ => false) && error.diagnostic? == none
+        | .ok _ => false) = true ∧
+      (match boundComparison "RowMonths" .start scalarRangeDecl.id .start true
+          .before with
+        | .error (.boundsNotComparable _ _) => true
+        | _ => false) = true := by
+  native_decide
+
+private def comparisonResult? (keyedField : String)
+    (keyedBound : DateRangeBound) (directSource : FieldId)
+    (directBound : DateRangeBound) (keyedFirst : Bool)
+    (comparison : TemporalComparisonOp) (cells : List ClassifiedCellInput) :
+    Option DateRangeBoundPairResult := do
+  let operation ← (boundComparison keyedField keyedBound directSource
+    directBound keyedFirst comparison).toOption
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] }, { group := 10, path := [2] }
+    ]
+    cells }).toOption
+  let preliminary ← document.applyFullIndexPreliminary.toOption
+  (operation.evaluate preliminary { read := fun _ => .empty }).toOption
+
+/-- The scalar range straddles the keyed Sales row, so the *selected* scalar end changes the answer
+while everything else stays fixed. -/
+private def scalarExact : List ClassifiedCellInput :=
+  storedAt scalarRangeDecl.id [] "2024-05-01/2024-12-31" :: baseline
+
+/- The keyed row's own endpoint decides, and which end of the direct operand is selected decides
+too: the Sales row starts after the scalar's start but not after its finish. -/
+example :
+    (comparisonResult? "RowRange" .start scalarRangeDecl.id .start true
+        .after scalarExact).map (fun result =>
+          match result with
+          | .exact _ _ verdict => verdict
+          | .yearless _ _ _ => .unknown) = some (.fired .value) ∧
+      (comparisonResult? "RowRange" .start scalarRangeDecl.id .finish true
+          .after scalarExact).map (fun result =>
+            match result with
+            | .exact _ _ verdict => verdict
+            | .yearless _ _ _ => .unknown) = some .notFired := by
+  native_decide
+
+/- The authored order is retained rather than normalized, so the two observations arrive in the
+authored slots and a directional operator is not silently mirrored. -/
+example :
+    (comparisonResult? "RowRange" .start scalarRangeDecl.id .start false
+        .after scalarExact).map (fun result =>
+          match result with
+          | .exact left right verdict => (left, right, verdict)
+          | .yearless _ _ _ => (.empty, .empty, .unknown)) =
+      (comparisonResult? "RowRange" .start scalarRangeDecl.id .start true
+          .before scalarExact).map (fun result =>
+            match result with
+            | .exact left right verdict => (right, left, verdict)
+            | .yearless _ _ _ => (.empty, .empty, .unknown)) := by
+  native_decide
+
+/- The yearless domain compares retained labels completed by their authored position, so a month-only
+finish reaches the greatest day that month can ever have and no year is manufactured. -/
+example :
+    (comparisonResult? "RowMonths" .finish scalarMonthsDecl.id .start true
+        .after [
+          storedAt indexDecl.id [1] "Sales",
+          storedAt monthRangeDecl.id [1] "03/07",
+          storedAt scalarMonthsDecl.id [] "05/09"
+        ]).map (fun result =>
+          match result with
+          | .yearless left right verdict => (left, right, verdict)
+          | .exact _ _ _ => (.empty, .empty, .unknown)) =
+      some (.value { month := 7, day := 31 }, .value { month := 5, day := 1 },
+        .fired .value) := by
+  native_decide
+
+/- A formally invalid keyed row reaches UNKNOWN through the comparison too, and an absent scalar
+leaves the comparison unfired, so neither operand shape gets its own emptiness rule. -/
+example :
+    (comparisonResult? "RowRange" .start scalarRangeDecl.id .start true .after
+        (storedAt scalarRangeDecl.id [] "2024-05-01/2024-12-31" ::
+          baseline.map fun input =>
+            if input.address == { field := rangeDecl.id, path := [1] } then
+              storedAt rangeDecl.id [1] "2024-07-31/2024-06-01"
+            else
+              input)).map (fun result =>
+                match result with
+                | .exact _ _ verdict => verdict
+                | .yearless _ _ _ => .notFired) = some .unknown ∧
+      (comparisonResult? "RowRange" .start scalarRangeDecl.id .start true .after
+        baseline).map (fun result =>
+          match result with
+          | .exact _ _ verdict => verdict
+          | .yearless _ _ _ => .unknown) = some .notFired := by
   native_decide
 
 end A12Kernel.Conformance.SemanticIndexDateRange
