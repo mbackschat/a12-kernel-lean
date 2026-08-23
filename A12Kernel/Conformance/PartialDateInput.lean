@@ -187,8 +187,10 @@ a rule message interpolating one of these values prints its **zero markers liter
 `2024-06-00` renders `06/00/2024`, `2024-00-00` renders `00/00/2024`, and `0000-00-00` renders
 `00/00/0000`. So the stored components are the renderer's input and a completion is not — the earliest
 boundary of that first value is June **1st**, which is what a consumer reaching for `resolve` would
-print instead. These rows pin the projection that keeps those two apart; the rendered *pattern* itself
-is locale-dependent and only the en_US route is measured, so nothing here fixes the separator order. -/
+print instead. These rows pin the projection that keeps those two apart. The rendered
+*pattern* follows the **message locale** — one unchanged declaration renders `06/15/2024` under en_US
+and `15.06.2024` under de_DE — so it is presentation and stays outside this projection, while the
+components below are the semantics and travel with their marker. -/
 example :
     (admittedValue? .dayOptional "2024-06-00").map (·.storedComponents) =
         some (some 2024, some 6, none) ∧
