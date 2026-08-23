@@ -214,6 +214,15 @@ def fromIteratedDateRangeBoundPair (model : FlatModel) (rowGroup : GroupPath)
     elaborateIteratedBoundPair model scope leftDeclaration.id leftBound
       rightDeclaration.id rightBound comparison
 
+/-- One unconfigured yearless plural DateRange overlap predicate read at the rule's own row. -/
+def fromIteratedYearlessDateRangePluralOverlap (model : FlatModel)
+    (rowGroup : GroupPath)
+    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) :=
+  fromIteratedDateRange model rowGroup fun scope =>
+    elaborateIteratedYearlessPluralOverlap model rowGroup scope authored
+
 /-- One unconfigured yearless DateRange overlap predicate read at the rule's own row. -/
 def fromIteratedYearlessDateRangeOverlap (model : FlatModel)
     (rowGroup : GroupPath) (authored : SurfaceFieldEntitySource) :

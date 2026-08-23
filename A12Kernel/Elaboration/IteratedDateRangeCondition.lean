@@ -78,6 +78,8 @@ inductive IteratedDateRangeCondition (model : FlatModel) where
   | overlap (source : CheckedDateRangesOverlapSource model)
   | pluralOverlap (source : CheckedAtLeastOneDateRangeOverlapsSource model)
   | yearlessOverlap (source : CheckedYearlessDateRangesOverlapSource model)
+  | yearlessPluralOverlap
+      (source : CheckedYearlessAtLeastOneDateRangeOverlapsSource model)
   | constructionAgainstStored
       (comparison : CheckedIteratedConstructionStoredComparison model)
 
@@ -141,7 +143,7 @@ def operandDeclarations : IteratedDateRangeCondition model → List FlatFieldDec
         match operand with
         | .field declaration _ => some declaration
         | _ => none
-  | .yearlessOverlap source =>
+  | .yearlessOverlap source | .yearlessPluralOverlap source =>
       source.shape.operands.filterMap fun operand =>
         match operand with
         | .field declaration _ => some declaration
@@ -253,6 +255,11 @@ def verdictOf (condition : IteratedDateRangeCondition model)
         (YearlessDateRangesOverlapEvaluationError.toAddressing
           { field := (source.first.source?.map (·.declaration.id)).getD 0
             path := [] })
+  | .yearlessPluralOverlap source =>
+      (evaluateYearlessAtLeastOneDateRangeOverlapsOperands
+        (.direct source.scalar) source.operands document outer).mapError
+        (YearlessDateRangesOverlapEvaluationError.toAddressing
+          { field := source.scalar.declaration.id, path := [] })
   | .constructionAgainstStored comparison => do
       let readAt (declaration : FlatFieldDecl) :
           Except CheckedAddressingError CheckedCell := do
@@ -367,6 +374,17 @@ def elaborateIteratedConstructionStoredComparison (model : FlatModel)
   else
     throw (.constructionComponentMismatch construction.start.format
       storedSource.format)
+
+/-- Resolve one unconfigured yearless plural overlap predicate. Both sides may hold an operand the
+rule's own iteration crosses, and every gate is the yearless owner's. -/
+def elaborateIteratedYearlessPluralOverlap (model : FlatModel)
+    (declaringGroup : GroupPath) (scope : List RepeatableLevel)
+    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) :
+    Except IteratedDateRangeConditionElabError
+      (IteratedDateRangeCondition model) :=
+  (.yearlessPluralOverlap <$>
+    elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn model declaringGroup
+      scope authored) |>.mapError .yearlessOverlap
 
 /-- Resolve one unconfigured yearless overlap predicate whose unstarred operands the rule's own
 iteration may cross. Every gate is the yearless owner's, including its per-operand yearless

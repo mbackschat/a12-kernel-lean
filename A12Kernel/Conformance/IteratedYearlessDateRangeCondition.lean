@@ -29,11 +29,15 @@ private def yearlessRange (id : FieldId) (groupPath : GroupPath)
 
 private def rowMonths := yearlessRange 9 ["Form", "Rows"] "RowMonths" [10]
 private def scalarMonths := yearlessRange 10 ["Form"] "ScalarMonths"
+private def otherMonths : FlatFieldDecl := {
+  yearlessRange 11 ["Form"] "OtherMonths" with
+  dateRangePolicy := some { format := "MM-dd", separator := "/" }
+}
 
 /-- No Base Year, so a yearless declaration stays a retained label pair rather than being
 completed into an exact range. -/
 private def yearlessModel : FlatModel := {
-  fields := [rowMonths, scalarMonths]
+  fields := [rowMonths, scalarMonths, otherMonths]
   repeatableGroups := [
     { level := 10, path := ["Form", "Rows"], repeatability := some 5 }]
   timeZoneId := "UTC"
@@ -171,6 +175,77 @@ example :
 /- A row with no stored label pair skips its slot, so the scan cannot fire on absence. -/
 example :
     yearlessOverlapRowVerdicts? bareMonths [scalarMonthsOperand] {
+      instantiatedRows := [{ group := 10, path := [1] }]
+      cells := [yearlessCell scalarMonths.id [] "06/09"] } =
+      some [([(10, 1)], .notFired)] := by
+  native_decide
+
+/-! ## The plural yearless overlap at the iterating row -/
+
+private def yearlessPlural? (rowGroup : GroupPath)
+    (scalar : SurfaceFieldEntityOperand)
+    (first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand := []) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition yearlessModel) :=
+  CheckedValidationCondition.fromIteratedYearlessDateRangePluralOverlap
+    yearlessModel rowGroup { scalar, list := { first, rest } }
+
+/- Either side may hold the operand the rule iterates, the all-scalar shape is admitted at a
+non-iterating locus, and the same condition is refused as a repeatable reference from outside the
+repeated group. -/
+example :
+    (yearlessPlural? ["Form", "Rows"] bareMonths scalarMonthsOperand).isOk =
+        true ∧
+      (yearlessPlural? ["Form", "Rows"] scalarMonthsOperand bareMonths).isOk =
+        true ∧
+      (yearlessPlural? ["Form"] scalarMonthsOperand
+        (yearlessOperand ["Form"] "OtherMonths")).isOk = true ∧
+      (match yearlessPlural? ["Form"] bareMonths scalarMonthsOperand with
+        | .error (.fieldReference (.repeatableReference path)) =>
+            path == rowMonths.path
+        | _ => false) = true := by
+  native_decide
+
+/- The scalar side keeps the plural operator's own shape rule, so a starred or group scalar is
+refused there while the list admits both. -/
+example :
+    (yearlessPlural? ["Form", "Rows"]
+        (.star { base := .absolute
+                 groups := [{ name := "Form" }, { name := "Rows", starred := true }]
+                 field := "RowMonths" })
+        scalarMonthsOperand).isOk = false ∧
+      (yearlessPlural? ["Form", "Rows"] scalarMonthsOperand
+        (.star { base := .absolute
+                 groups := [{ name := "Form" },
+                   { name := "Rows", starred := true }]
+                 field := "RowMonths" })).isOk = true := by
+  native_decide
+
+private def yearlessPluralRowVerdicts? (scalar : SurfaceFieldEntityOperand)
+    (first : SurfaceFieldEntityOperand) (data : DocumentData) :
+    Option (List (Env × Verdict)) := do
+  let checked ← (yearlessPlural? ["Form", "Rows"] scalar first).toOption
+  let rule ← (assembleResolvedValidationRule yearlessModel checked rowMonths.id
+    "iteratedYearlessPlural" .error { parts := [] }).toOption
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler yearlessModel).toOption
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let outcomes ← (rule.evalOrdinaryRepeatableFull document).toOption
+  pure (outcomes.map fun entry => (entry.1, entry.2.verdict))
+
+/- The scalar-versus-list scan runs per row in the label domain: the overlapping row fires and the
+disjoint row does not, and an unusable scalar terminates before the list is read. -/
+example :
+    yearlessPluralRowVerdicts? bareMonths scalarMonthsOperand {
+      instantiatedRows := [
+        { group := 10, path := [1] }, { group := 10, path := [2] }]
+      cells := [
+        yearlessCell scalarMonths.id [] "06/09",
+        yearlessCell rowMonths.id [1] "08/11",
+        yearlessCell rowMonths.id [2] "10/12"] } =
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] ∧
+    yearlessPluralRowVerdicts? bareMonths scalarMonthsOperand {
       instantiatedRows := [{ group := 10, path := [1] }]
       cells := [yearlessCell scalarMonths.id [] "06/09"] } =
       some [([(10, 1)], .notFired)] := by

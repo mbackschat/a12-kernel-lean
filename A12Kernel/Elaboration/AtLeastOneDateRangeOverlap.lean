@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.DateRangeOverlap
+import A12Kernel.Elaboration.YearlessDateRangeOverlap
 
 /-! # Checked plural DateRange overlap
 
@@ -285,6 +285,64 @@ def elaborateAtLeastOneDateRangeOverlapsSource (model : FlatModel)
     Except AtLeastOneDateRangeOverlapsElabError
       (CheckedAtLeastOneDateRangeOverlapsSource model) :=
   elaborateAtLeastOneDateRangeOverlapsSourceIn model declaringGroup [] authored
+
+/-- One admitted unconfigured yearless plural source: the shared entity-list shape over the scalar
+and list operands together, beside the certified scalar and the certified list. The scalar keeps the
+plural operator's own shape rule — a direct stored field, never a star, filter, or group — which is
+the only scalar shape the Kernel admits on this carrier. -/
+structure CheckedYearlessAtLeastOneDateRangeOverlapsSource (model : FlatModel)
+    where
+  private mk ::
+  shape : CheckedFieldEntityShape model
+  scalar : CheckedYearlessDateRangeOverlapField model
+  first : CheckedYearlessDateRangeOverlapOperand model
+  rest : List (CheckedYearlessDateRangeOverlapOperand model)
+
+namespace CheckedYearlessAtLeastOneDateRangeOverlapsSource
+
+/-- Every certified list operand in authored order. The scalar stays separate, because this scan is
+scalar-versus-list rather than any-pair. -/
+def operands (checked : CheckedYearlessAtLeastOneDateRangeOverlapsSource model) :
+    List (CheckedYearlessDateRangeOverlapOperand model) :=
+  checked.first :: checked.rest
+
+end CheckedYearlessAtLeastOneDateRangeOverlapsSource
+
+/-- Gate the scalar shape before reading the list, then resolve both sides as one entity sequence so
+the shared duplicate and overlap checks stay cross-side, then certify every operand as unconfigured
+yearless. `scope` is the reading rule's iteration scope, so an unstarred operand on either side may
+sit inside a level the rule iterates. -/
+def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
+    (declaringGroup : GroupPath) (scope : List RepeatableLevel)
+    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) :
+    Except YearlessDateRangesOverlapElabError
+      (CheckedYearlessAtLeastOneDateRangeOverlapsSource model) := do
+  let scalarOperand ←
+    resolveFieldEntityOperandIn model declaringGroup scope authored.scalar
+      |>.mapError fun error => .source (.shape error)
+  let scalarDeclaration ←
+    match scalarOperand with
+    | .field declaration .stored => pure declaration
+    | .field declaration form => throw (.unsupportedReadForm declaration.path form)
+    | .star source => throw (.groupsNotAllowed source.declaration.groupPath)
+    | .starHaving source _ =>
+        throw (.groupsNotAllowed source.declaration.groupPath)
+    | .group reference => throw (.groupsNotAllowed reference.path)
+    | .starredGroup source => throw (.groupsNotAllowed source.group.path)
+    | .starredGroupPresence source => throw (.groupsNotAllowed source.groupPath)
+  let scalar ← certifyYearlessDateRangeOverlapField model scalarDeclaration
+  let shape ← elaborateFieldEntityShapeIn model declaringGroup scope {
+      first := authored.scalar
+      rest := authored.list.first :: authored.list.rest
+    } |>.mapError fun error => .source (.shape error)
+  match shape.rest with
+  | [] => throw (.source .incoherentCore)
+  | listFirst :: listRest => do
+      let first ← certifyYearlessDateRangeOverlapOperand model declaringGroup
+        listFirst
+      let rest ← listRest.mapM
+        (certifyYearlessDateRangeOverlapOperand model declaringGroup)
+      pure { shape, scalar, first, rest }
 
 /-! ## Checked plural-overlap assembly -/
 
