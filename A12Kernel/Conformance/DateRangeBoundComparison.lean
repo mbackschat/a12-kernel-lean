@@ -159,4 +159,30 @@ example :
       pairVerdict? 1 .start 3 .start .equal [] = some .notFired := by
   native_decide
 
+private def fixedDate : FullDate :=
+  (FullDate.ofYmd? 2020 6 1).get (by native_decide)
+
+private def fixedDateError? (source : FieldId)
+    (comparison : TemporalComparisonOp := .equal) :
+    Option DateRangeBoundPairElabError :=
+  match elaborateDateRangeBoundFixedDateComparison model source .start .left
+      comparison fixedDate with
+  | .ok _ => none
+  | .error error => some error
+
+/- Comparing an endpoint with a fixed complete date is refused for a source with no year and no
+Base Year, and the refusal now carries the Kernel's comparison diagnostic rather than a local
+policy insufficiency: the extraction itself is legal and only the comparison is not. A
+year-bearing source is admitted through the same gate, and the exact owner's certificate is
+reused unchanged. -/
+example :
+    (fixedDateError? 1).bind DateRangeBoundPairElabError.diagnostic? =
+        some .invalidCompareToDate ∧
+      (fixedDateError? 3 .before).bind DateRangeBoundPairElabError.diagnostic? =
+        some .invalidCompareToDate ∧
+      fixedDateError? 4 = none ∧
+      fixedDateError? 5 = none ∧
+      fixedDateError? 6 = none := by
+  native_decide
+
 end A12Kernel.Conformance.DateRangeBoundComparison

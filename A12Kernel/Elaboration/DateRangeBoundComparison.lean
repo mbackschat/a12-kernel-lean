@@ -166,4 +166,26 @@ def evaluate (checked : CheckedDateRangeBoundPair model)
 
 end CheckedDateRangeBoundPair
 
+/-- Certify one extracted endpoint against a fixed full Date. The gate is the same temporal
+admission rule the endpoint pair uses, with a complete date as the peer, so a source the
+comparison cannot reach is refused with the Kernel's own comparison diagnostic rather than the
+exact owner's local policy insufficiency. The exact owner's certificate is then reused
+unchanged, which is sound because the two conditions coincide: a declaration is comparable with
+a complete date exactly when it supports a direct bound. -/
+def elaborateDateRangeBoundFixedDateComparison (model : FlatModel)
+    (source : FieldId) (bound : DateRangeBound)
+    (position : DateRangeBoundComparisonPosition)
+    (comparison : TemporalComparisonOp) (expected : FullDate) :
+    Except DateRangeBoundPairElabError
+      (CheckedDateRangeBoundComparison model) := do
+  let direct ← elaborateDirectDateRange model source
+    |>.mapError (fun cause => .left (.source cause))
+  if comparison.admitsFormats model.baseYear.isSome direct.format.components
+      TemporalComponents.fullDate then
+    elaborateDateRangeBoundComparison model source bound position comparison
+      expected |>.mapError (fun cause => .left (.source cause))
+  else
+    throw (.formatsNotComparable direct.format.components
+      TemporalComponents.fullDate)
+
 end A12Kernel

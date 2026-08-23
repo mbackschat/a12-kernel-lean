@@ -505,6 +505,7 @@ run_cmd do
 #print axioms A12Kernel.dateRangeValue_select_finish
 #print axioms A12Kernel.directDateRange_evaluate_value
 #print axioms A12Kernel.dateRangeBound_evaluate_value
+#print axioms A12Kernel.dateRangeInputFormat_supportsDirectBound_eq_comparableWithFullDate
 #print axioms A12Kernel.dateRangeBound_evaluate_empty
 #print axioms A12Kernel.dateRangeBound_evaluate_unknown
 #print axioms A12Kernel.dateRangeBound_evaluate_poison

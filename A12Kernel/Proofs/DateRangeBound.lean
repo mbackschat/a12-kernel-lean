@@ -154,4 +154,24 @@ theorem dateRangeBoundComparison_evaluateSelected_value
     } := by
   rfl
 
+
+/-- Comparability with a complete date and direct-bound support are the same condition on a
+DateRange declaration: both hold exactly when the declaration carries a year of its own or the
+model supplies one. The endpoint-versus-fixed-Date consumer therefore gates with the ordinary
+temporal admission rule and still reuses the exact bound certificate, without a second policy
+precondition that could drift from it. -/
+theorem dateRangeInputFormat_supportsDirectBound_eq_comparableWithFullDate
+    (format : DateRangeInputFormat) (baseYear : Option Int)
+    (comparison : TemporalComparisonOp) :
+    format.supportsDirectBound baseYear =
+      comparison.admitsFormats baseYear.isSome format.components
+        TemporalComponents.fullDate := by
+  cases comparison <;> cases format <;>
+    cases baseYear <;>
+    simp [DateRangeInputFormat.supportsDirectBound,
+      TemporalComparisonOp.admitsFormats, DateRangeInputFormat.components,
+      TemporalComponents.withBaseYear, TemporalComponents.hasDate,
+      TemporalComponents.hasTime, TemporalComponents.fullDate,
+      TemporalComparisonOp.requiresSameTimePresence]
+
 end A12Kernel
