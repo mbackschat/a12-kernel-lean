@@ -29,7 +29,7 @@ are still parallel types rather than one indexed family. -/
 structure CheckedIteratedConstructionStoredComparison (model : FlatModel) where
   private mk ::
   construction : CheckedDateRangeConstruction model
-  stored : CheckedIteratedDateRange model
+  stored : CheckedDateRangeSource model
   position : DateRangeConstructionPosition
   comparison : EqualityOp
   componentsMatch :
@@ -53,11 +53,11 @@ end CheckedIteratedConstructionStoredComparison
 
 /-- One DateRange condition whose operands are read at the enclosing rule's current row. -/
 inductive IteratedDateRangeCondition (model : FlatModel) where
-  | storedEquality (comparison : CheckedIteratedDateRangeComparison model)
-  | boundAgainstFixed (operand : CheckedIteratedDateRangeBound model)
+  | storedEquality (comparison : CheckedDateRangeSourceComparison model)
+  | boundAgainstFixed (operand : CheckedDateRangeSourceBound model)
       (position : DateRangeBoundComparisonPosition)
       (comparison : TemporalComparisonOp) (expected : FullDate)
-  | boundPair (left right : CheckedIteratedDateRangeBound model)
+  | boundPair (left right : CheckedDateRangeSourceBound model)
       (comparison : TemporalComparisonOp)
   | overlap (source : CheckedDateRangesOverlapSource model)
   | constructionAgainstStored
@@ -176,7 +176,7 @@ def elaborateIteratedStoredEquality (model : FlatModel)
     Except IteratedDateRangeConditionElabError
       (IteratedDateRangeCondition model) :=
   (.storedEquality <$>
-    elaborateIteratedDateRangeComparison model scope left right comparison)
+    elaborateDateRangeSourceComparisonIn model scope left right comparison)
     |>.mapError .storedEquality
 
 /-- Resolve one selected endpoint compared against a fixed complete date. -/
@@ -187,7 +187,7 @@ def elaborateIteratedBoundAgainstFixed (model : FlatModel)
     Except IteratedDateRangeConditionElabError
       (IteratedDateRangeCondition model) := do
   let operand ←
-    (elaborateIteratedDateRangeBound model scope source bound).mapError .operand
+    (elaborateDateRangeBoundIn model scope source bound).mapError .operand
   pure (.boundAgainstFixed operand position comparison expected)
 
 /-- Resolve two selected endpoints compared with each other. Comparability is the ordinary temporal
@@ -200,10 +200,10 @@ def elaborateIteratedBoundPair (model : FlatModel)
     Except IteratedDateRangeConditionElabError
       (IteratedDateRangeCondition model) := do
   let left ←
-    (elaborateIteratedDateRangeBound model scope leftSource leftBound).mapError
+    (elaborateDateRangeBoundIn model scope leftSource leftBound).mapError
       .operand
   let right ←
-    (elaborateIteratedDateRangeBound model scope rightSource rightBound).mapError
+    (elaborateDateRangeBoundIn model scope rightSource rightBound).mapError
       .operand
   if comparison.admitsFormats model.baseYear.isSome left.format.components
       right.format.components then
@@ -225,7 +225,7 @@ def elaborateIteratedConstructionStoredComparison (model : FlatModel)
     (elaborateDateRangeConstructionIn model scope start finish).mapError
       .construction
   let storedSource ←
-    (elaborateIteratedDateRange model scope stored).mapError .storedOperand
+    (elaborateDateRangeSourceIn model scope stored).mapError .storedOperand
   if hComponents :
       construction.start.format.matchesStoredInput storedSource.format then
     pure (.constructionAgainstStored {

@@ -48,61 +48,49 @@ def FlatModel.dateRangeSourceBoundBy
       else
         none
 
-/-- The profile half of the same projection, for carriers that do not retain the declaration. -/
-def FlatModel.dateRangeInputBoundBy
-    (model : FlatModel) (scope : List RepeatableLevel)
-    (source : FlatDateRangeField) :
-    Option (DateRangeDeclarationPolicy × DateRangeInputFormat) :=
-  (model.dateRangeSourceBoundBy scope source).map fun (_, policy, format) =>
-    (policy, format)
-
-/-- The scalar instance of the shared admission projection. -/
-abbrev FlatModel.directDateRangeInput?
-    (model : FlatModel) (source : FlatDateRangeField) :
-    Option (DateRangeDeclarationPolicy × DateRangeInputFormat) :=
-  model.dateRangeInputBoundBy [] source
-
-/-- One model-certified direct nonrepeatable DateRange field retaining the declaration-owned checked input profile. -/
-structure CheckedDirectDateRange (model : FlatModel) where
-  private mk ::
-  source : FlatDateRangeField
-  policy : DateRangeDeclarationPolicy
-  format : DateRangeInputFormat
-  sourceAdmitted : model.directDateRangeInput? source = some (policy, format)
-
-/-- One DateRange field read at a rule locus that binds every repeatable level the field crosses.
-The reading scope is retained as data rather than as a type index, because the condition leaf that
-carries this certificate is indexed by its model alone; admission still runs through the shared
-projection, so this carrier and the direct one agree about every declaration they both accept. -/
-structure CheckedIteratedDateRange (model : FlatModel) where
+/-- One model-certified DateRange field read at a context that binds the repeatable levels in
+`scope`, retaining the declaration-owned checked input profile and the declaration itself. The scope
+is data rather than a type index because the condition leaf that carries this certificate is indexed
+by its model alone; the scalar refinement below fixes it to `[]`. -/
+structure CheckedDateRangeSource (model : FlatModel) where
   private mk ::
   scope : List RepeatableLevel
+  source : FlatDateRangeField
   declaration : FlatFieldDecl
   policy : DateRangeDeclarationPolicy
   format : DateRangeInputFormat
   sourceAdmitted :
-    model.dateRangeSourceBoundBy scope { id := declaration.id } =
+    model.dateRangeSourceBoundBy scope source =
       some (declaration, policy, format)
+
+/-- One direct nonrepeatable DateRange field: the same certificate at the empty reading scope. A
+scalar carrier therefore coerces into the general one, so an iterated consumer accepts a scalar
+operand without a second certificate. -/
+structure CheckedDirectDateRange (model : FlatModel)
+    extends CheckedDateRangeSource model where
+  private mk ::
+  scalarSource : toCheckedDateRangeSource.scope = []
 
 /-- Resolve one DateRange operand for a rule iterating `scope`. An operand crossing a level the
 locus does not bind is reported as a repeatable reference, which is the class the Kernel reports as
 its missing-wildcard refusal. -/
-def elaborateIteratedDateRange (model : FlatModel)
+def elaborateDateRangeSourceIn (model : FlatModel)
     (scope : List RepeatableLevel) (sourceField : FieldId) :
-    Except DirectDateRangeElabError (CheckedIteratedDateRange model) := do
-  let declaration ← model.lookupUniqueId sourceField |>.mapError .source
-  let bound ← declaration.requireRepetitionBoundBy scope |>.mapError .source
-  let checked ← certifyDateRangeInputField bound |>.mapError fun
+    Except DirectDateRangeElabError (CheckedDateRangeSource model) := do
+  let resolved ← model.lookupUniqueId sourceField |>.mapError .source
+  let declaration ← resolved.requireRepetitionBoundBy scope |>.mapError .source
+  let checked ← certifyDateRangeInputField declaration |>.mapError fun
     | .notDateRange _ actual =>
         .sourceNotDateRange sourceField actual.surfaceKind
     | .unsupportedPolicy _ format separator =>
         .unsupportedPolicy sourceField format separator
     | .incoherentCore => .incoherentCore
-  if hSource : model.dateRangeSourceBoundBy scope { id := bound.id } =
-      some (bound, checked.policy, checked.format) then
+  if hSource : model.dateRangeSourceBoundBy scope checked.field =
+      some (declaration, checked.policy, checked.format) then
     pure {
       scope
-      declaration := bound
+      source := checked.field
+      declaration
       policy := checked.policy
       format := checked.format
       sourceAdmitted := hSource }
@@ -130,35 +118,35 @@ structure CheckedDateRangeBound (model : FlatModel)
 /-- One selected endpoint of a DateRange field read at a rule's iterating row. The exact-value gate
 is the scalar carrier's, so an unconfigured yearless profile is excluded here exactly as it is
 there; the iterated yearless endpoint is a separate unmodelled shape. -/
-structure CheckedIteratedDateRangeBound (model : FlatModel)
-    extends CheckedIteratedDateRange model where
+structure CheckedDateRangeSourceBound (model : FlatModel)
+    extends CheckedDateRangeSource model where
   private mk ::
   bound : DateRangeBound
   sourceSupportsBound :
-    toCheckedIteratedDateRange.format.supportsDirectBound model.baseYear = true
+    toCheckedDateRangeSource.format.supportsDirectBound model.baseYear = true
 
 /-- Resolve one endpoint for a rule iterating `scope`, refusing the same profiles the scalar
 endpoint owner refuses. -/
-def elaborateIteratedDateRangeBound (model : FlatModel)
+def elaborateDateRangeBoundIn (model : FlatModel)
     (scope : List RepeatableLevel) (sourceField : FieldId)
     (bound : DateRangeBound) :
-    Except DateRangeBoundElabError (CheckedIteratedDateRangeBound model) := do
-  let source ← elaborateIteratedDateRange model scope sourceField
+    Except DateRangeBoundElabError (CheckedDateRangeSourceBound model) := do
+  let source ← elaborateDateRangeSourceIn model scope sourceField
   if hSupported : source.format.supportsDirectBound model.baseYear then
     pure {
-      toCheckedIteratedDateRange := source
+      toCheckedDateRangeSource := source
       bound
       sourceSupportsBound := hSupported }
   else
     throw (.unsupportedPolicy sourceField source.policy.format
       source.policy.separator)
 
-namespace CheckedIteratedDateRangeBound
+namespace CheckedDateRangeSourceBound
 
 /-- Select this endpoint from a cell already read at the consuming row. A non-exact payload cannot
 reach here, because the certificate's exact-value gate excludes every profile that produces one, so
 it collapses to UNKNOWN rather than claiming a fault channel this leaf does not own. -/
-def selectFrom (operation : CheckedIteratedDateRangeBound model)
+def selectFrom (operation : CheckedDateRangeSourceBound model)
     (cell : CheckedCell) : CellObservation FullDate :=
   match observeCell .validation cell with
   | .empty => .empty
@@ -170,7 +158,7 @@ def selectFrom (operation : CheckedIteratedDateRangeBound model)
   | .unknown cause => .unknown cause
   | .poison cause => .poison cause
 
-end CheckedIteratedDateRangeBound
+end CheckedDateRangeSourceBound
 
 /-- Authored side occupied by the selected DateRange bound in one full-Date comparison. -/
 inductive DateRangeBoundComparisonPosition where
@@ -190,24 +178,16 @@ structure CheckedDateRangeBoundComponent (model : FlatModel)
     extends CheckedDateRangeBound model where
   part : DateNumericPart
 
-/-- Resolve one direct field and accept every DateRange input profile decoded by `CheckedDocument`. -/
+/-- Resolve one direct field and accept every DateRange input profile decoded by `CheckedDocument`.
+This is the general resolver at the empty scope, so a repeatable declaration is refused with the same
+class it draws at any other unbound level. -/
 def elaborateDirectDateRange (model : FlatModel) (sourceField : FieldId) :
     Except DirectDateRangeElabError (CheckedDirectDateRange model) := do
-  let declaration ←
-    model.resolveNonrepeatableDeclarationById sourceField |>.mapError .source
-  let checked ← certifyDateRangeInputField declaration |>.mapError fun
-    | .notDateRange _ actual =>
-        .sourceNotDateRange sourceField actual.surfaceKind
-    | .unsupportedPolicy _ format separator =>
-        .unsupportedPolicy sourceField format separator
-    | .incoherentCore => .incoherentCore
-  if hSource : model.directDateRangeInput? checked.field =
-      some (checked.policy, checked.format) then
-    pure {
-      source := checked.field
-      policy := checked.policy
-      format := checked.format
-      sourceAdmitted := hSource }
+  let checked ← elaborateDateRangeSourceIn model [] sourceField
+  -- The scope was supplied as `[]` one line above; reconstructing it keeps the refinement's
+  -- invariant decidable without a law about the resolver.
+  if hScalar : checked.scope = [] then
+    pure { toCheckedDateRangeSource := checked, scalarSource := hScalar }
   else
     throw .incoherentCore
 

@@ -66,10 +66,10 @@ def observeIteratedDateRangeOperand (cell : CheckedCell) :
 /-- Two DateRange operands read at one rule locus that binds every repeatable level either of them
 crosses. Both operands agree on the reading scope, because a leaf reads one row at a time; the
 component gate is the scalar carrier's, unchanged. -/
-structure CheckedIteratedDateRangeComparison (model : FlatModel) where
+structure CheckedDateRangeSourceComparison (model : FlatModel) where
   private mk ::
-  left : CheckedIteratedDateRange model
-  right : CheckedIteratedDateRange model
+  left : CheckedDateRangeSource model
+  right : CheckedDateRangeSource model
   comparison : EqualityOp
   scopesAgree : left.scope = right.scope
   componentsMatch : left.format.components = right.format.components
@@ -77,14 +77,14 @@ structure CheckedIteratedDateRangeComparison (model : FlatModel) where
 /-- Certify both operands at one reading scope. The refusal classes are the scalar carrier's, so an
 operand crossing an unbound level is reported as its own resolution failure rather than as a
 comparability failure. -/
-def elaborateIteratedDateRangeComparison (model : FlatModel)
+def elaborateDateRangeSourceComparisonIn (model : FlatModel)
     (scope : List RepeatableLevel) (left right : FieldId)
     (comparison : EqualityOp) :
     Except DirectDateRangeComparisonElabError
-      (CheckedIteratedDateRangeComparison model) := do
-  let leftSource ← elaborateIteratedDateRange model scope left |>.mapError .left
+      (CheckedDateRangeSourceComparison model) := do
+  let leftSource ← elaborateDateRangeSourceIn model scope left |>.mapError .left
   let rightSource ←
-    elaborateIteratedDateRange model scope right |>.mapError .right
+    elaborateDateRangeSourceIn model scope right |>.mapError .right
   if hComponents :
       leftSource.format.components = rightSource.format.components then
     -- Both operands were certified at the same argument, so the scope equation is a defensive
@@ -101,12 +101,12 @@ def elaborateIteratedDateRangeComparison (model : FlatModel)
   else
     throw (.componentMismatch leftSource.format rightSource.format)
 
-namespace CheckedIteratedDateRangeComparison
+namespace CheckedDateRangeSourceComparison
 
 /-- The verdict for two already-read operand observations. The read itself belongs to the consuming
 leaf, which owns the row environment; this keeps the comparison identical to the scalar carrier's
 so the two cannot drift on emptiness, unknown, or identity. -/
-def verdictOf (checked : CheckedIteratedDateRangeComparison model)
+def verdictOf (checked : CheckedDateRangeSourceComparison model)
     (left right : CellObservation DateRangeCellValue) : Verdict :=
   checked.comparison.evalDateRangeCellValues
     left.asValidationSimpleOperand right.asValidationSimpleOperand
@@ -114,7 +114,7 @@ def verdictOf (checked : CheckedIteratedDateRangeComparison model)
 /-- Whether both retained declarations are still the model's own and still bound by the reading
 group's scope. The checked condition re-establishes this at assembly, so a leaf cannot smuggle a
 stale declaration or an unbound level past the locus gate. -/
-def wellFormedIn (checked : CheckedIteratedDateRangeComparison model)
+def wellFormedIn (checked : CheckedDateRangeSourceComparison model)
     (scope : List RepeatableLevel) : Bool :=
   [checked.left, checked.right].all fun operand =>
     operand.scope == scope &&
@@ -124,13 +124,13 @@ def wellFormedIn (checked : CheckedIteratedDateRangeComparison model)
       | .error _ => false
 
 /-- The repeatable declarations this carrier reads, in authored order. -/
-def repeatableDeclarations (checked : CheckedIteratedDateRangeComparison model) :
+def repeatableDeclarations (checked : CheckedDateRangeSourceComparison model) :
     List FlatFieldDecl :=
   [checked.left, checked.right].filterMap fun operand =>
     if operand.declaration.repeatableScope.isEmpty then none
     else some operand.declaration
 
-end CheckedIteratedDateRangeComparison
+end CheckedDateRangeSourceComparison
 
 /-- Defensive failure while reading one of the two stored operands. -/
 inductive DirectDateRangeComparisonFault where
