@@ -37,6 +37,7 @@ import A12Kernel.Conformance.TimeAggregate
 import A12Kernel.Conformance.TemporalFormat
 import A12Kernel.Conformance.TemporalTargetPolicy
 import A12Kernel.Conformance.TimeComputation
+import A12Kernel.Conformance.TimeInput
 import A12Kernel.Conformance.ValueAsDate
 import A12Kernel.Conformance.TimeConstruction
 import A12Kernel.Conformance.TimeLiteral
