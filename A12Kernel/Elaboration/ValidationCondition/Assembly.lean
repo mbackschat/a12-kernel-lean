@@ -20,6 +20,7 @@ inductive ValidationConditionAssemblyError where
   | overlappingGroupListOperands (left right : List String)
   | rowGroupMismatch (left right : GroupPath)
   | repetitionNotUnique (error : RepetitionNotUniqueElabError)
+  | dateRangeComparison (error : DirectDateRangeComparisonElabError)
   | multipleRepetitionNotUnique
   | incoherentCore
   deriving Repr, DecidableEq
@@ -131,6 +132,38 @@ def fromRepeatableFieldPresence (model : FlatModel) (rowGroup : GroupPath)
         throw (.repeatableFieldRequired declaration.path)
       checkCore model rowGroup
         (ValidationCondition.repeatableFieldPresence operator declaration)
+        (by rw [hModel]; rfl)
+
+/-- Resolve one stored-DateRange equality whose operands the rule's own iteration may cross. The
+reading scope is the rule group's, so the locus decides admission exactly as the Kernel's does, and
+an operand crossing an unbound level is refused as a repeatable reference. A pair with no repeatable
+operand belongs to the scalar carrier and is refused here rather than offered twice. -/
+def fromIteratedDateRangeEquality (model : FlatModel) (rowGroup : GroupPath)
+    (comparison : EqualityOp) (left right : SurfaceFieldPath) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) :=
+  match hModel : model.validate with
+  | .error error => .error (.invalidModel error)
+  | .ok () => do
+      let leftDeclaration ←
+        (model.resolveFieldDeclarationUnchecked rowGroup left)
+          |>.mapError .fieldReference
+      let rightDeclaration ←
+        (model.resolveFieldDeclarationUnchecked rowGroup right)
+          |>.mapError .fieldReference
+      if leftDeclaration.repeatableScope.isEmpty &&
+          rightDeclaration.repeatableScope.isEmpty then
+        throw (.repeatableFieldRequired leftDeclaration.path)
+      let checked ←
+        (elaborateIteratedDateRangeComparison model
+          (model.repeatableScopeForGroupPath rowGroup)
+          leftDeclaration.id rightDeclaration.id comparison)
+          |>.mapError fun
+            | .left (.source error) | .right (.source error) =>
+                .fieldReference error
+            | error => .dateRangeComparison error
+      checkCore model rowGroup
+        (.leaf (.iteratedDateRangeEquality checked))
         (by rw [hModel]; rfl)
 
 /-- Resolve one checked RNU source and retain it as an ordinary leaf in the shared condition tree. -/

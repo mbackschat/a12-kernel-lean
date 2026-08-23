@@ -237,6 +237,9 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
       (concreteFieldPointer guard environment).map ([·])
   | .guardedRepeatableCurrentRepetition guard _ _ =>
       (concreteFieldPointer guard environment).map ([·])
+  | .iteratedDateRangeEquality comparison => do
+      pure [← concreteFieldPointer comparison.left.declaration environment,
+        ← concreteFieldPointer comparison.right.declaration environment]
   | _ => .error .unclassifiedLeaf
 
 private def treePointers (environment : Env) :

@@ -427,9 +427,27 @@ def GroupPath.matchesTurningPoint (group : GroupPath)
   | none => true
   | some expected => group.getLast? == some expected
 
+/-- Whether every repeatable level a declaration crosses is already bound by the reading scope.
+The empty scope admits exactly the nonrepeatable declarations, so a scalar read is this predicate's
+`[]` instance rather than a separate rule. The scope a caller supplies is the reading rule's own
+iteration scope; a computation has none and therefore reads the empty one. -/
+def FlatFieldDecl.repetitionBoundBy (declaration : FlatFieldDecl)
+    (scope : List RepeatableLevel) : Bool :=
+  declaration.repeatableScope.all (scope.contains ·)
+
 def FlatFieldDecl.requireNonrepeatable (declaration : FlatFieldDecl) :
     Except ResolveError FlatFieldDecl :=
   if declaration.repeatableScope.isEmpty then
+    .ok declaration
+  else
+    .error (.repeatableReference declaration.path)
+
+/-- Accept one operand whose repeatable levels the reading scope binds, and otherwise report the
+same repeatable-reference class the nonrepeatable resolver reports, because the Kernel reports one
+missing-wildcard class for both. -/
+def FlatFieldDecl.requireRepetitionBoundBy (declaration : FlatFieldDecl)
+    (scope : List RepeatableLevel) : Except ResolveError FlatFieldDecl :=
+  if declaration.repetitionBoundBy scope then
     .ok declaration
   else
     .error (.repeatableReference declaration.path)

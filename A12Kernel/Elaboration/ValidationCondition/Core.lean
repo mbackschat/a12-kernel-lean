@@ -5,6 +5,7 @@ import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.StarGroup
 import A12Kernel.Elaboration.ValidationContext
 import A12Kernel.Elaboration.CurrentRepetition
+import A12Kernel.Elaboration.DateRangeStoredComparison
 
 /-! # Shared resolved validation conditions
 
@@ -241,6 +242,8 @@ inductive ValidationConditionLeaf (model : FlatModel) where
       (guard : FlatFieldDecl)
       (source : CheckedCurrentRepetitionSource model)
       (comparison : RepeatableCurrentRepetitionComparison)
+  | iteratedDateRangeEquality
+      (comparison : CheckedIteratedDateRangeComparison model)
 
 /-- One checked connective tree whose leaves retain their family-specific resolved certificates and evaluation policies. -/
 abbrev ValidationCondition (model : FlatModel) :=
@@ -389,6 +392,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .repetitionNotUnique _ => false
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => false
+  | .iteratedDateRangeEquality _ => false
 
 def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .flat condition, field => condition.referencesField field
@@ -406,6 +410,9 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
       guard.id == field
   | .guardedRepeatableCurrentRepetition guard _ _, field =>
       guard.id == field
+  | .iteratedDateRangeEquality comparison, field =>
+      comparison.left.declaration.id == field ||
+        comparison.right.declaration.id == field
 
 /-- Whether a leaf retains any `Having` filter in its checked source. Only the model-indexed ordered numeric carrier can currently own such a source; scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool
@@ -413,7 +420,8 @@ def hasHaving : ValidationConditionLeaf model → Bool
   | .flat _ | .numeric _ _ | .groupPresence _ _ | .groupList _ _
   | .repeatableFieldPresence _ _ | .repetitionNotUnique _
   | .guardedRootCurrentRepetition _ _ _
-  | .guardedRepeatableCurrentRepetition _ _ _ => false
+  | .guardedRepeatableCurrentRepetition _ _ _
+  | .iteratedDateRangeEquality _ => false
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
@@ -427,6 +435,7 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
   | .repetitionNotUnique _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => true
+  | .iteratedDateRangeEquality _ => true
   | _ => false
 
 /-- Static admission reuses each leaf family's existing checked core predicate. -/
@@ -456,6 +465,9 @@ def wellFormedBool (rowGroup : GroupPath) :
         match model.lookupUniqueId guard.id with
         | .ok checked => checked == guard
         | .error _ => false
+  | .iteratedDateRangeEquality comparison =>
+      comparison.wellFormedIn (model.repeatableScopeForGroupPath rowGroup) &&
+        !comparison.repeatableDeclarations.isEmpty
   | .guardedRepeatableCurrentRepetition guard source _ =>
       guard.groupPath == source.path &&
         guard.repeatableScope.getLast? == some source.group.level &&

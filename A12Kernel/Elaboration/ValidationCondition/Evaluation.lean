@@ -12,6 +12,18 @@ namespace A12Kernel
 
 namespace ValidationConditionLeaf
 
+/-- Project one already-read cell into the DateRange comparison domain. A checked condition cannot
+carry a non-DateRange declaration here, so a foreign payload is reported as UNKNOWN rather than
+given a fault channel this leaf does not own. -/
+private def observeDateRangeOperand (cell : CheckedCell) :
+    CellObservation DateRangeCellValue :=
+  match observeCell .validation cell with
+  | .empty => .empty
+  | .value (.dateRange value) => .value value
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .poison cause
+
 /-- Evaluate one reached leaf with its own relevance rule. Ordinary numeric expressions require every field atom, ordered numeric atoms gate their own reached sources, and flat leaf rules retain their existing operator-specific checks. -/
 def evalSelected (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance) :
@@ -43,6 +55,7 @@ def evalSelected (context : ValidationEvaluationContext)
           .unknown)
         comparison.eval
   | .guardedRepeatableCurrentRepetition _ _ _ => .unknown
+  | .iteratedDateRangeEquality _ => .unknown
 
 /-- Whether a leaf has an exact partial addressed interpretation. `false` is structural unsupported information and must not be converted to semantic UNKNOWN. -/
 def supportsAddressedPartial : ValidationConditionLeaf model → Bool
@@ -149,6 +162,13 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
           (← context.readCell context.outer declaration.id)))
   | .repetitionNotUnique _ =>
       .error (.repetitionNotUniqueResult context.outer)
+  | .iteratedDateRangeEquality comparison => do
+      let left ←
+        context.readCell context.outer comparison.left.declaration.id
+      let right ←
+        context.readCell context.outer comparison.right.declaration.id
+      pure (comparison.verdictOf (observeDateRangeOperand left)
+        (observeDateRangeOperand right))
   | .guardedRepeatableCurrentRepetition guard source comparison => do
       let cell ← context.readCell context.outer guard.id
       let coordinate ← source.coordinateAt context.outer
