@@ -379,11 +379,11 @@ private def ValidationConditionLeaf.iterationGuardAt
         .guarded
       else
         .noReference
-  | .iteratedDateRangeEquality comparison =>
-      -- A value comparison guards its own level in both equality directions. The Kernel refuses a
-      -- negated *presence* leaf at an iterated level, and the same model admits `==` and `!=` on a
-      -- repeatable operand, so polarity is not this leaf's question.
-      if comparison.repeatableDeclarations.any fun declaration =>
+  | .iteratedDateRange condition =>
+      -- A value comparison guards its own level at every polarity. The Kernel refuses a negated
+      -- *presence* leaf at an iterated level, and the same model admits `==`, `!=`, and the order
+      -- operators on a repeatable operand, so polarity is not this leaf's question.
+      if condition.repeatableDeclarations.any fun declaration =>
           declaration.repeatableScope.contains level then
         .guarded
       else
@@ -447,8 +447,8 @@ def ordinaryRepeatableFields (condition : ValidationCondition model) :
   | .leaf (.repetitionNotUnique source) =>
       source.keys.map fun key => key.source.declaration
   | .leaf (.guardedRepeatableCurrentRepetition guard _ _) => [guard]
-  | .leaf (.iteratedDateRangeEquality comparison) =>
-      comparison.repeatableDeclarations
+  | .leaf (.iteratedDateRange condition) =>
+      condition.repeatableDeclarations
   | .leaf _ => []
   | .and left right | .or left right =>
       ordinaryRepeatableFields left ++ ordinaryRepeatableFields right
@@ -461,7 +461,7 @@ def supportsOrdinaryIteration
     | .repeatableFieldPresence _ _
     | .guardedRootCurrentRepetition _ _ _ => true
     | .guardedRepeatableCurrentRepetition _ _ _ => true
-    | .iteratedDateRangeEquality _ => true
+    | .iteratedDateRange _ => true
     | .orderedNumeric .sameGroupAddressed _ => true
     | .repetitionNotUnique _ => true
     | _ => false

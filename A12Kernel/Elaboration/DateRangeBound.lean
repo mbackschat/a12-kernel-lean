@@ -127,6 +127,51 @@ structure CheckedDateRangeBound (model : FlatModel)
   sourceSupportsBound :
     toCheckedDirectDateRange.format.supportsDirectBound model.baseYear = true
 
+/-- One selected endpoint of a DateRange field read at a rule's iterating row. The exact-value gate
+is the scalar carrier's, so an unconfigured yearless profile is excluded here exactly as it is
+there; the iterated yearless endpoint is a separate unmodelled shape. -/
+structure CheckedIteratedDateRangeBound (model : FlatModel)
+    extends CheckedIteratedDateRange model where
+  private mk ::
+  bound : DateRangeBound
+  sourceSupportsBound :
+    toCheckedIteratedDateRange.format.supportsDirectBound model.baseYear = true
+
+/-- Resolve one endpoint for a rule iterating `scope`, refusing the same profiles the scalar
+endpoint owner refuses. -/
+def elaborateIteratedDateRangeBound (model : FlatModel)
+    (scope : List RepeatableLevel) (sourceField : FieldId)
+    (bound : DateRangeBound) :
+    Except DateRangeBoundElabError (CheckedIteratedDateRangeBound model) := do
+  let source ← elaborateIteratedDateRange model scope sourceField
+  if hSupported : source.format.supportsDirectBound model.baseYear then
+    pure {
+      toCheckedIteratedDateRange := source
+      bound
+      sourceSupportsBound := hSupported }
+  else
+    throw (.unsupportedPolicy sourceField source.policy.format
+      source.policy.separator)
+
+namespace CheckedIteratedDateRangeBound
+
+/-- Select this endpoint from a cell already read at the consuming row. A non-exact payload cannot
+reach here, because the certificate's exact-value gate excludes every profile that produces one, so
+it collapses to UNKNOWN rather than claiming a fault channel this leaf does not own. -/
+def selectFrom (operation : CheckedIteratedDateRangeBound model)
+    (cell : CheckedCell) : CellObservation FullDate :=
+  match observeCell .validation cell with
+  | .empty => .empty
+  | .value (.dateRange (.exact value)) =>
+      match (value.select operation.bound).toFullDate? with
+      | some date => .value date
+      | none => .unknown .malformed
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .poison cause
+
+end CheckedIteratedDateRangeBound
+
 /-- Authored side occupied by the selected DateRange bound in one full-Date comparison. -/
 inductive DateRangeBoundComparisonPosition where
   | left
@@ -256,6 +301,20 @@ def evaluate (operation : CheckedDateRangeBound model) (phase : Phase)
 
 end CheckedDateRangeBound
 
+namespace DateRangeBoundComparisonPosition
+
+/-- Compare one already-projected endpoint against a fixed complete date at its authored side. The
+authored side is retained rather than normalized, because the comparison is not symmetric and an
+explanation must name the operand the author wrote. -/
+def evalAgainstFixed (position : DateRangeBoundComparisonPosition)
+    (comparison : TemporalComparisonOp) (expected : FullDate)
+    (selected : CellObservation FullDate) : Verdict :=
+  match position with
+  | .left => comparison.evalObserved selected (.value expected)
+  | .right => comparison.evalObserved (.value expected) selected
+
+end DateRangeBoundComparisonPosition
+
 namespace CheckedDateRangeBoundComparison
 
 /-- Project an exact selected endpoint into the established full-Date comparison domain while keeping impossible malformed payloads explicit. -/
@@ -275,11 +334,10 @@ def evaluateSelected (operation : CheckedDateRangeBoundComparison model)
     (selected : CellObservation DateValue) :
     Except DateRangeBoundComparisonFault DateRangeBoundComparisonResult := do
   let projected ← projectSelected operation.source.id selected
-  let expected : CellObservation FullDate := .value operation.expected
-  let verdict := match operation.position with
-    | .left => operation.comparison.evalObserved projected expected
-    | .right => operation.comparison.evalObserved expected projected
-  .ok { selected, verdict }
+  .ok {
+    selected
+    verdict := operation.position.evalAgainstFixed operation.comparison
+      operation.expected projected }
 
 /-- Read the certified source once in validation phase, then delegate its selected endpoint to the established full-Date comparison. -/
 def evaluate (operation : CheckedDateRangeBoundComparison model)

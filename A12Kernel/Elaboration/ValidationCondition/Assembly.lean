@@ -20,7 +20,7 @@ inductive ValidationConditionAssemblyError where
   | overlappingGroupListOperands (left right : List String)
   | rowGroupMismatch (left right : GroupPath)
   | repetitionNotUnique (error : RepetitionNotUniqueElabError)
-  | dateRangeComparison (error : DirectDateRangeComparisonElabError)
+  | iteratedDateRange (error : IteratedDateRangeConditionElabError)
   | multipleRepetitionNotUnique
   | incoherentCore
   deriving Repr, DecidableEq
@@ -134,37 +134,76 @@ def fromRepeatableFieldPresence (model : FlatModel) (rowGroup : GroupPath)
         (ValidationCondition.repeatableFieldPresence operator declaration)
         (by rw [hModel]; rfl)
 
-/-- Resolve one stored-DateRange equality whose operands the rule's own iteration may cross. The
-reading scope is the rule group's, so the locus decides admission exactly as the Kernel's does, and
-an operand crossing an unbound level is refused as a repeatable reference. A pair with no repeatable
-operand belongs to the scalar carrier and is refused here rather than offered twice. -/
-def fromIteratedDateRangeEquality (model : FlatModel) (rowGroup : GroupPath)
-    (comparison : EqualityOp) (left right : SurfaceFieldPath) :
+/-- Resolve one DateRange condition whose operands the rule's own iteration may cross. The reading
+scope is the rule group's, so the locus decides admission exactly as the Kernel's does, and an
+operand crossing an unbound level is refused as a repeatable reference. A condition with no
+repeatable operand belongs to the scalar carriers and is refused here rather than offered twice.
+
+The two resolved operand paths are supplied by each member's own front end; this shared step owns
+only the locus scope and the checked-core certification. -/
+private def fromIteratedDateRange (model : FlatModel) (rowGroup : GroupPath)
+    (build : List RepeatableLevel →
+      Except IteratedDateRangeConditionElabError
+        (IteratedDateRangeCondition model)) :
     Except ValidationConditionAssemblyError
       (CheckedValidationCondition model) :=
   match hModel : model.validate with
   | .error error => .error (.invalidModel error)
   | .ok () => do
-      let leftDeclaration ←
-        (model.resolveFieldDeclarationUnchecked rowGroup left)
-          |>.mapError .fieldReference
-      let rightDeclaration ←
-        (model.resolveFieldDeclarationUnchecked rowGroup right)
-          |>.mapError .fieldReference
-      if leftDeclaration.repeatableScope.isEmpty &&
-          rightDeclaration.repeatableScope.isEmpty then
-        throw (.repeatableFieldRequired leftDeclaration.path)
-      let checked ←
-        (elaborateIteratedDateRangeComparison model
-          (model.repeatableScopeForGroupPath rowGroup)
-          leftDeclaration.id rightDeclaration.id comparison)
-          |>.mapError fun
-            | .left (.source error) | .right (.source error) =>
-                .fieldReference error
-            | error => .dateRangeComparison error
-      checkCore model rowGroup
-        (.leaf (.iteratedDateRangeEquality checked))
-        (by rw [hModel]; rfl)
+      let condition ←
+        (build (model.repeatableScopeForGroupPath rowGroup)).mapError fun
+          | .storedEquality (.left (.source error))
+          | .storedEquality (.right (.source error))
+          | .operand (.source error) => .fieldReference error
+          | error => .iteratedDateRange error
+      match condition.repeatableDeclarations, condition.operandDeclarations with
+      | [], first :: _ => throw (.repeatableFieldRequired first.path)
+      | _, _ =>
+          checkCore model rowGroup (.leaf (.iteratedDateRange condition))
+            (by rw [hModel]; rfl)
+
+/-- Resolve two authored field references at the rule group without deciding their repetition. -/
+private def resolveIteratedOperand (model : FlatModel) (rowGroup : GroupPath)
+    (reference : SurfaceFieldPath) :
+    Except ValidationConditionAssemblyError FlatFieldDecl :=
+  (model.resolveFieldDeclarationUnchecked rowGroup reference)
+    |>.mapError .fieldReference
+
+/-- One stored-versus-stored DateRange equality read at the rule's own row. -/
+def fromIteratedDateRangeEquality (model : FlatModel) (rowGroup : GroupPath)
+    (comparison : EqualityOp) (left right : SurfaceFieldPath) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) := do
+  let leftDeclaration ← resolveIteratedOperand model rowGroup left
+  let rightDeclaration ← resolveIteratedOperand model rowGroup right
+  fromIteratedDateRange model rowGroup fun scope =>
+    elaborateIteratedStoredEquality model scope leftDeclaration.id
+      rightDeclaration.id comparison
+
+/-- One selected DateRange endpoint compared with a fixed complete date at the rule's own row. -/
+def fromIteratedDateRangeBoundAgainstFixed (model : FlatModel)
+    (rowGroup : GroupPath) (source : SurfaceFieldPath)
+    (bound : DateRangeBound) (position : DateRangeBoundComparisonPosition)
+    (comparison : TemporalComparisonOp) (expected : FullDate) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) := do
+  let declaration ← resolveIteratedOperand model rowGroup source
+  fromIteratedDateRange model rowGroup fun scope =>
+    elaborateIteratedBoundAgainstFixed model scope declaration.id bound
+      position comparison expected
+
+/-- Two selected DateRange endpoints compared with each other at the rule's own row. -/
+def fromIteratedDateRangeBoundPair (model : FlatModel) (rowGroup : GroupPath)
+    (left : SurfaceFieldPath) (leftBound : DateRangeBound)
+    (right : SurfaceFieldPath) (rightBound : DateRangeBound)
+    (comparison : TemporalComparisonOp) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) := do
+  let leftDeclaration ← resolveIteratedOperand model rowGroup left
+  let rightDeclaration ← resolveIteratedOperand model rowGroup right
+  fromIteratedDateRange model rowGroup fun scope =>
+    elaborateIteratedBoundPair model scope leftDeclaration.id leftBound
+      rightDeclaration.id rightBound comparison
 
 /-- Resolve one checked RNU source and retain it as an ordinary leaf in the shared condition tree. -/
 def fromRepetitionNotUnique (model : FlatModel) (rowGroup : GroupPath)

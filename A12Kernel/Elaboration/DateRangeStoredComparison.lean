@@ -51,6 +51,18 @@ def elaborateDirectDateRangeComparison (model : FlatModel)
   else
     throw (.componentMismatch leftSource.format rightSource.format)
 
+/-- Project one operand from a cell already read at the consuming row. A non-DateRange payload
+cannot reach here behind a checked condition, so it collapses to UNKNOWN rather than claiming a fault
+channel the consuming leaf does not own. -/
+def observeIteratedDateRangeOperand (cell : CheckedCell) :
+    CellObservation DateRangeCellValue :=
+  match observeCell .validation cell with
+  | .empty => .empty
+  | .value (.dateRange value) => .value value
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .poison cause
+
 /-- Two DateRange operands read at one rule locus that binds every repeatable level either of them
 crosses. Both operands agree on the reading scope, because a leaf reads one row at a time; the
 component gate is the scalar carrier's, unchanged. -/
@@ -98,16 +110,6 @@ def verdictOf (checked : CheckedIteratedDateRangeComparison model)
     (left right : CellObservation DateRangeCellValue) : Verdict :=
   checked.comparison.evalDateRangeCellValues
     left.asValidationSimpleOperand right.asValidationSimpleOperand
-
-/-- Project one operand observation from a cell already read at the consuming row. -/
-def observe (phase : Phase) (source : FieldId) (cell : CheckedCell) :
-    Except DirectDateRangeFault (CellObservation DateRangeCellValue) :=
-  match observeCell phase cell with
-  | .empty => .ok .empty
-  | .value (.dateRange value) => .ok (.value value)
-  | .value _ => .error (.sourceValueKind source)
-  | .unknown cause => .ok (.unknown cause)
-  | .poison cause => .ok (.poison cause)
 
 /-- Whether both retained declarations are still the model's own and still bound by the reading
 group's scope. The checked condition re-establishes this at assembly, so a leaf cannot smuggle a

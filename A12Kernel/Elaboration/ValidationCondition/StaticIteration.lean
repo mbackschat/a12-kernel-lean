@@ -329,10 +329,10 @@ def ordinaryIterationScope :
       pure (some (source.topology.path.axes.map (·.level)))
   | .leaf (.guardedRepeatableCurrentRepetition guard _ _) =>
       pure (some guard.repeatableScope)
-  | .leaf (.iteratedDateRangeEquality comparison) =>
+  | .leaf (.iteratedDateRange condition) =>
       -- Each operand contributes its own declaration scope, and the shared merge decides a nested
       -- pair, so this leaf cannot invent a scope its operands do not name.
-      comparison.repeatableDeclarations.foldlM
+      condition.repeatableDeclarations.foldlM
         (fun scope declaration =>
           mergeIterationScopes scope (some declaration.repeatableScope))
         none

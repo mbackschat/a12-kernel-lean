@@ -93,6 +93,7 @@ theorem dateRangeBoundComparison_evaluateSelected_value
     } := by
   cases position : operation.position <;>
     simp [CheckedDateRangeBoundComparison.evaluateSelected,
+      DateRangeBoundComparisonPosition.evalAgainstFixed,
       CheckedDateRangeBoundComparison.projectSelected, resolved,
       position, bind, Except.bind]
 
@@ -104,7 +105,8 @@ theorem dateRangeBoundComparison_evaluateSelected_value
       verdict := .notFired
     } := by
   cases position : operation.position <;>
-    simp [CheckedDateRangeBoundComparison.evaluateSelected, position,
+    simp [CheckedDateRangeBoundComparison.evaluateSelected,
+      DateRangeBoundComparisonPosition.evalAgainstFixed, position,
       CheckedDateRangeBoundComparison.projectSelected,
       CellObservation.asValidationSimpleOperand, bind, Except.bind,
       TemporalComparisonOp.evalObserved, TemporalComparisonOp.eval,
@@ -119,7 +121,8 @@ theorem dateRangeBoundComparison_evaluateSelected_value
       verdict := .unknown
     } := by
   cases position : operation.position <;>
-    simp [CheckedDateRangeBoundComparison.evaluateSelected, position,
+    simp [CheckedDateRangeBoundComparison.evaluateSelected,
+      DateRangeBoundComparisonPosition.evalAgainstFixed, position,
       CheckedDateRangeBoundComparison.projectSelected,
       CellObservation.asValidationSimpleOperand, bind, Except.bind,
       TemporalComparisonOp.evalObserved, TemporalComparisonOp.eval,

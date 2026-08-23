@@ -1,19 +1,22 @@
 import A12Kernel.Elaboration.ValidationRule
 
-/-! # Iterated stored-DateRange equality locks
+/-! # Iterated DateRange condition locks
 
-These cases exercise the first DateRange condition carrier that reads a repeatable operand at the
-rule's own row. Their static verdicts are the Kernel rows in the rule-locus checkpoint: the same
-condition is admitted when the rule iterates the operand's level and refused `MVK_NO_WILDCARD` when
-it does not, and both equality directions are admitted from inside, which is what distinguishes a
-value comparison from the negated presence predicates the iteration gate does refuse.
+These cases exercise the DateRange condition carriers that read a repeatable operand at the rule's
+own row: stored equality, one selected endpoint against a fixed date, and two selected endpoints.
 
-The runtime rows are internal compositions of the already-calibrated stored-equality verdict with
-the already-calibrated ordinary row scan; what is new here is only that the operand is read at the
-iterating row rather than at the document root.
+Their static verdicts are the Kernel rows in the rule-locus checkpoint. The same condition is
+admitted when the rule iterates the operand's level and refused `MVK_NO_WILDCARD` when it does not,
+and every comparison polarity is admitted from inside, which is what distinguishes a value
+comparison from the negated presence predicates the iteration gate does refuse.
+
+The runtime rows are internal compositions of two separately calibrated mechanisms — each carrier's
+own verdict and the ordinary row scan. What is new here is only that the operand is read at the
+iterating row rather than at the document root, which is exactly what the differing second row
+separates.
 -/
 
-namespace A12Kernel.Conformance.IteratedDateRangeEquality
+namespace A12Kernel.Conformance.IteratedDateRangeCondition
 
 open A12Kernel
 
@@ -168,4 +171,92 @@ example :
         { field := rowRange.id, path := [1] }), none] := by
   native_decide
 
-end A12Kernel.Conformance.IteratedDateRangeEquality
+/-! ## Selected endpoints read at the iterating row -/
+
+private def june1 : FullDate :=
+  (FullDate.ofYmd? 2024 6 1).get (by native_decide)
+
+private def boundAgainstFixed? (rowGroup : GroupPath) (source : SurfaceFieldPath)
+    (bound : DateRangeBound) (comparison : TemporalComparisonOp) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) :=
+  CheckedValidationCondition.fromIteratedDateRangeBoundAgainstFixed model
+    rowGroup source bound .left comparison june1
+
+private def boundPair? (rowGroup : GroupPath)
+    (left : SurfaceFieldPath) (leftBound : DateRangeBound)
+    (right : SurfaceFieldPath) (rightBound : DateRangeBound)
+    (comparison : TemporalComparisonOp) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) :=
+  CheckedValidationCondition.fromIteratedDateRangeBoundPair model rowGroup
+    left leftBound right rightBound comparison
+
+/- Both endpoints and every order operator are admitted from inside the repeated group, and the same
+conditions are refused as repeatable references from outside it. The locus, not the operator, is
+what decides. -/
+example :
+    [boundAgainstFixed? ["Form", "Rows"] rowRangePath .start .equal,
+      boundAgainstFixed? ["Form", "Rows"] rowRangePath .start .notEqual,
+      boundAgainstFixed? ["Form", "Rows"] rowRangePath .start .before,
+      boundAgainstFixed? ["Form", "Rows"] rowRangePath .finish .afterOrEqual].all
+        (·.isOk) = true ∧
+      (match boundAgainstFixed? ["Form"] rowRangePath .start .equal with
+        | .error (.fieldReference (.repeatableReference path)) =>
+            path == rowRange.path
+        | _ => false) = true := by
+  native_decide
+
+/- The pair admits a repeatable endpoint against a scalar peer and two endpoints of the same
+repeatable row, and is refused from outside the group. A month-only peer is refused by the ordinary
+comparability rule rather than by anything this carrier adds. -/
+example :
+    (boundPair? ["Form", "Rows"] rowRangePath .start existingPath .finish
+        .before).isOk = true ∧
+      (boundPair? ["Form", "Rows"] rowRangePath .start rowRangePath .finish
+        .before).isOk = true ∧
+      (boundPair? ["Form"] rowRangePath .start existingPath .finish
+        .before).isOk = false ∧
+      (boundPair? ["Form", "Rows"] rowRangePath .start
+        (path ["Form"] "MonthOnly") .finish .before).isOk = false := by
+  native_decide
+
+private def endpointRowVerdicts? (condition :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model))
+    (data : DocumentData) : Option (List (Env × Verdict)) := do
+  let checked ← condition.toOption
+  let rule ← (assembleResolvedValidationRule model checked rowRange.id
+    "iteratedDateRangeEndpoint" .error { parts := [] }).toOption
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let outcomes ← (rule.evalOrdinaryRepeatableFull document).toOption
+  pure (outcomes.map fun entry => (entry.1, entry.2.verdict))
+
+/- The endpoint is selected from each row's own value: row one starts on the fixed date and row two
+does not, and the finish endpoint of the same rows separates the two selections. -/
+example :
+    endpointRowVerdicts?
+        (boundAgainstFixed? ["Form", "Rows"] rowRangePath .start .equal)
+        twoRowData =
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] ∧
+    endpointRowVerdicts?
+        (boundAgainstFixed? ["Form", "Rows"] rowRangePath .finish .equal)
+        twoRowData =
+      some [([(10, 1)], .notFired), ([(10, 2)], .notFired)] := by
+  native_decide
+
+/- The pair compares two endpoints of one row, so a well-ordered row does not fire while its own
+start and finish are read from the same cell. -/
+example :
+    endpointRowVerdicts?
+        (boundPair? ["Form", "Rows"] rowRangePath .finish rowRangePath .start
+          .before) twoRowData =
+      some [([(10, 1)], .notFired), ([(10, 2)], .notFired)] ∧
+    endpointRowVerdicts?
+        (boundPair? ["Form", "Rows"] rowRangePath .start rowRangePath .finish
+          .before) twoRowData =
+      some [([(10, 1)], .fired .value), ([(10, 2)], .fired .value)] := by
+  native_decide
+
+end A12Kernel.Conformance.IteratedDateRangeCondition
