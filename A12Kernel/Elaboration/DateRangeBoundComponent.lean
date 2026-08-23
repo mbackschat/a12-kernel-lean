@@ -47,6 +47,14 @@ def DateRangeCellValue.selectBoundParts (value : DateRangeCellValue)
     (bound : DateRangeBound) : DateParts :=
   (value.selectBoundObservation bound).parts
 
+/-- The one component clause every read route shares: select the requested endpoint from whichever
+carrier the declaration produced, then apply the symmetric validation projection. Routing the direct
+and the keyed read through this makes their agreement structural rather than a proved coincidence. -/
+def DateNumericPart.fromDateRangeBoundObservation (part : DateNumericPart)
+    (bound : DateRangeBound) :
+    CellObservation DateRangeCellValue → NumericOperand :=
+  part.fromObservation (·.selectBoundParts bound)
+
 /-- Whether one DateRange declaration exposes the requested date component at its selected endpoint.
 The declared profile's own component set decides, with the model's Base Year supplementing the year
 exactly as it does for a direct Date field. -/
@@ -70,6 +78,6 @@ def FlatContext.resolveDateRangeBoundNumericOperand (context : FlatContext)
   match CheckedDateRangeSource.observeRange source.id .validation
       (context.read source.id) with
   | .error _ => .unknown .malformed
-  | .ok observed => part.fromObservation (·.selectBoundParts bound) observed
+  | .ok observed => part.fromDateRangeBoundObservation bound observed
 
 end A12Kernel

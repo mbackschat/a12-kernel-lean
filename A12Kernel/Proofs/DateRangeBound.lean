@@ -23,7 +23,8 @@ theorem directDateRange_evaluate_value
   unfold CheckedDirectDateRange.evaluate
   rw [read]
   simp only [Except.mapError, bind, Except.bind,
-    CheckedDateRangeSource.observeRange, observed]
+    CheckedDateRangeSource.observeRange, CheckedDateRangeSource.projectRange,
+    observed]
 
 /-- A root-read endpoint reads its whole range at the document root. Its declaration crosses no
 repeatable level, so the reading environment cannot change the address, and the four endpoint laws
@@ -52,7 +53,8 @@ theorem dateRangeBound_evaluate_value
     operation.evaluate phase input = .ok (.value (range.select operation.bound)) := by
   rw [dateRangeBound_rootRead, read]
   simp only [Except.mapError, Except.bind,
-    CheckedDateRangeSource.observeRange, observed,
+    CheckedDateRangeSource.observeRange, CheckedDateRangeSource.projectRange,
+    observed,
     CheckedDateRangeSource.selectBound]
 
 /-- An empty source remains empty rather than acquiring an endpoint or cause. -/
@@ -64,7 +66,8 @@ theorem dateRangeBound_evaluate_empty
     operation.evaluate phase input = .ok .empty := by
   rw [dateRangeBound_rootRead, read]
   simp only [Except.mapError, Except.bind,
-    CheckedDateRangeSource.observeRange, observed,
+    CheckedDateRangeSource.observeRange, CheckedDateRangeSource.projectRange,
+    observed,
     CheckedDateRangeSource.selectBound]
 
 /-- Validation unavailability keeps its exact cause and does not select an endpoint. -/
@@ -76,7 +79,8 @@ theorem dateRangeBound_evaluate_unknown
     operation.evaluate phase input = .ok (.unknown cause) := by
   rw [dateRangeBound_rootRead, read]
   simp only [Except.mapError, Except.bind,
-    CheckedDateRangeSource.observeRange, observed,
+    CheckedDateRangeSource.observeRange, CheckedDateRangeSource.projectRange,
+    observed,
     CheckedDateRangeSource.selectBound]
 
 /-- Computation unavailability keeps its exact poison cause and does not select an endpoint. -/
@@ -88,7 +92,8 @@ theorem dateRangeBound_evaluate_poison
     operation.evaluate phase input = .ok (.poison cause) := by
   rw [dateRangeBound_rootRead, read]
   simp only [Except.mapError, Except.bind,
-    CheckedDateRangeSource.observeRange, observed,
+    CheckedDateRangeSource.observeRange, CheckedDateRangeSource.projectRange,
+    observed,
     CheckedDateRangeSource.selectBound]
 
 /-- A present endpoint is projected once to `FullDate`, while the exact selected value remains in the result. -/

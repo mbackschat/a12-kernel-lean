@@ -36,7 +36,7 @@ theorem resolveDateRangeBoundNumericOperand_factors
     (reached : CheckedDateRangeSource.observeRange source.id .validation
       (context.read source.id) = .ok observed) :
     context.resolveDateRangeBoundNumericOperand source bound part =
-      part.fromObservation (·.selectBoundParts bound) observed := by
+      part.fromDateRangeBoundObservation bound observed := by
   simp [FlatContext.resolveDateRangeBoundNumericOperand, reached]
 
 /-- A cell whose kind is not a DateRange at all stays formally unavailable. The static gate makes

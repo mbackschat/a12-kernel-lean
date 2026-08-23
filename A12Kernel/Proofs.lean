@@ -205,6 +205,7 @@ import A12Kernel.Proofs.EnumerationValueList
 import A12Kernel.Proofs.FlatNumberValueList
 import A12Kernel.Proofs.EnumerationRepetitionNotUnique
 import A12Kernel.Proofs.SemanticIndex
+import A12Kernel.Proofs.SemanticIndexDateRange
 import A12Kernel.Proofs.SemanticIndexElaboration
 import A12Kernel.Proofs.CustomCondition
 import A12Kernel.Proofs.ParallelNumericRun

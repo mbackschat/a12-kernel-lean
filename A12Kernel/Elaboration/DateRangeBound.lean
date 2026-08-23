@@ -247,17 +247,22 @@ structure DateRangeBoundComponentResult where
 
 namespace CheckedDateRangeSource
 
-/-- Project one already-read cell into the retained exact-or-fragment range identity. Shared by the
-root read and the row read, so the two cannot disagree about emptiness, kind, or formal
-unavailability — only about which cell they reach. -/
-def observeRange (source : FieldId) (phase : Phase) (cell : CheckedCell) :
-    Except DirectDateRangeFault (CellObservation DateRangeCellValue) :=
-  match observeCell phase cell with
+/-- Project one already-observed cell into the retained exact-or-fragment range identity. Every read
+route shares this, so none can disagree about emptiness, kind, or formal unavailability — only about
+which cell it reaches. A keyed lookup supplies its observation directly, which is why the projection
+is separate from the cell read below. -/
+def projectRange (source : FieldId) :
+    CellObservation → Except DirectDateRangeFault (CellObservation DateRangeCellValue)
   | .empty => .ok .empty
   | .value (.dateRange value) => .ok (.value value)
   | .value _ => .error (.sourceValueKind source)
   | .unknown cause => .ok (.unknown cause)
   | .poison cause => .ok (.poison cause)
+
+/-- Observe one already-read cell at the caller's phase and project it. -/
+def observeRange (source : FieldId) (phase : Phase) (cell : CheckedCell) :
+    Except DirectDateRangeFault (CellObservation DateRangeCellValue) :=
+  projectRange source (observeCell phase cell)
 
 /-- Select one endpoint from an already-observed range. Every endpoint consumer shares this, so a
 numeric component read and a verdict-producing comparison cannot disagree about which runtime carrier
