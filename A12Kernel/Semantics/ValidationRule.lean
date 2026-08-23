@@ -67,6 +67,9 @@ inductive MessageRenderPart where
   | fieldName (input : MessageNameInput)
   | fieldValue (input : MessageValueInput)
   | fieldCategory (input : MessageCategoryInput)
+  /-- The model's Base Year with the parameter's authored offset already applied. It carries no input
+  record because nothing about it depends on the document or on a provider. -/
+  | baseYear (year : Int)
   deriving Repr, DecidableEq
 
 namespace MessageRenderPart
@@ -76,6 +79,7 @@ def render : MessageRenderPart → String
   | .fieldName input => input.resolve
   | .fieldValue input => input.resolve
   | .fieldCategory input => input.display
+  | .baseYear year => toString year
 
 end MessageRenderPart
 

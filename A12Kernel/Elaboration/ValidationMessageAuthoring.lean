@@ -21,7 +21,11 @@ name that is not one of that declaration's categories. It carries neither of the
 gates. What it *renders* is deliberately not claimed: the checked part hands the caller an opaque text
 input with no fallback policy of its own.
 
-What stays outside is the rest of the parameter grammar: every non-field parameter form, the semantic
+One **non-field** parameter form is admitted: the Base Year terminal with an optional signed offset.
+Its only static gate is that the model declares a Base Year, and the offset is applied at authoring
+because nothing about it depends on the document.
+
+What stays outside is the rest of the parameter grammar: the remaining non-field forms, the semantic
 index suffix, and repeatable targets. Two of the Kernel's own `.value` gates are
 unreachable in this fragment rather than modelled — a star reference needs a repeatable path, and a
 declaration's "no value validation" flag has no representation here. The bounded-ASCII template gate
@@ -48,6 +52,8 @@ inductive ValidationMessageTemplateError where
   /-- The named category is not one this Enumeration declaration declares, or the declaration itself
   is ill-formed. Both arrive through the one existing Enumeration projection gate. -/
   | category (parameter : String) (error : EnumerationOperandError)
+  /-- A Base Year parameter was authored against a model that declares none. -/
+  | noBaseYear
   deriving Repr, DecidableEq
 
 private inductive ParsedValidationMessagePart where
@@ -58,6 +64,7 @@ private inductive ParsedValidationMessagePart where
   | fieldValue (parameter : String) (reference : AuthoredFieldPath)
   | fieldCategory (parameter : String) (reference : AuthoredFieldPath)
       (category : String)
+  | baseYear (offset : Int)
 
 private def isLineSeparator (character : Char) : Bool :=
   character == '\n' || character == '\r' ||
@@ -85,6 +92,9 @@ path grammar, which is why it does not live on `PathKeywordProfile`. -/
 structure ValidationMessageKeywordProfile where
   path : PathKeywordProfile
   unquotedTerminals : List String := []
+  /-- The selected language's spelling of the Base Year parameter terminal. It is data because the
+  parameter grammar is bilingual and this project does not choose a language for the author. -/
+  baseYearTerminal : String
   deriving Repr, DecidableEq
 
 /-- Treat an exempt terminal as if the author had quoted it, then reuse the one existing
@@ -163,11 +173,37 @@ private def parseMessagePath (spec : String) :
             | _, _ => malformed
         | [], _ => malformed
 
+/-- Decode the optional signed offset of a Base Year parameter. An absent offset is zero, which is
+the same parameter with no calculation rather than a distinguished shape. -/
+private def parseBaseYearOffset (remainder : String) : Option Int :=
+  if remainder.isEmpty then
+    some 0
+  else
+    match remainder.toList with
+    | sign :: digits =>
+        if digits.isEmpty || !digits.all Char.isDigit then none
+        else
+          let magnitude := (String.mk digits).toNat!
+          match sign with
+          | '+' => some (Int.ofNat magnitude)
+          | '-' => some (-Int.ofNat magnitude)
+          | _ => none
+    | [] => none
+
 /-- Strip the value suffix, then decode the remaining entity spec as a path. The suffix is taken at
 the end of the whole spec, which is this fragment's committed reading of a grammar that also lets a
 trailing reserved word belong to the name itself. -/
-private def parseParameter (parameter : String) :
+private def parseParameter (profile : ValidationMessageKeywordProfile)
+    (parameter : String) :
     Except ValidationMessageTemplateError ParsedValidationMessagePart :=
+  -- The Base Year terminal is checked first: it is a terminal, so an unquoted occurrence is never a
+  -- field name, and its offset syntax is not part of any path.
+  if parameter.startsWith profile.baseYearTerminal then
+    match parseBaseYearOffset
+        ((parameter.drop profile.baseYearTerminal.length).toString) with
+    | some offset => .ok (.baseYear offset)
+    | none => .error (.invalidParameter parameter)
+  else
   -- The two suffixes are alternatives in the grammar, and the arrow cannot occur inside a name, so
   -- splitting on it first is unambiguous.
   match parameter.splitOn "->" with
@@ -184,7 +220,7 @@ private def parseParameter (parameter : String) :
 private def textPart (value : String) : List ParsedValidationMessagePart :=
   if value.isEmpty then [] else [.text value]
 
-private def parseSegments :
+private def parseSegments (profile : ValidationMessageKeywordProfile) :
     List String →
       Except ValidationMessageTemplateError (List ParsedValidationMessagePart)
   | [] => .ok []
@@ -194,8 +230,8 @@ private def parseSegments :
         if parameter.isEmpty then
           pure (.text "$")
         else
-          parseParameter parameter
-      pure (textPart text ++ [parameterPart] ++ (← parseSegments rest))
+          parseParameter profile parameter
+      pure (textPart text ++ [parameterPart] ++ (← parseSegments profile rest))
 
 private def validateMessageTemplateSource (source : String) :
     Except ValidationMessageTemplateError (List String) := do
@@ -212,9 +248,10 @@ private def validateMessageTemplateSource (source : String) :
   if source.toList.count '$' % 2 != 0 then throw .oddDollarCount
   pure (source.splitOn "$")
 
-private def parseValidationMessageTemplate (source : String) :
+private def parseValidationMessageTemplate
+    (profile : ValidationMessageKeywordProfile) (source : String) :
     Except ValidationMessageTemplateError (List ParsedValidationMessagePart) := do
-  parseSegments (← validateMessageTemplateSource source)
+  parseSegments profile (← validateMessageTemplateSource source)
 
 /-- One checked field reference of a message parameter. `parameter` retains the authored spelling for
 Explain, including any value suffix; `reference` is its decoded path, which is what resolved. -/
@@ -247,6 +284,10 @@ inductive CheckedValidationMessagePart
   | fieldName (reference : CheckedValidationMessageReference model condition)
   | fieldValue (reference : CheckedValidationMessageReference model condition)
   | fieldCategory (access : CheckedValidationMessageCategory model condition)
+  /-- The Base Year with its authored offset already applied, beside the witnesses that the model
+  declares that year and that the arithmetic is the authored one. -/
+  | baseYear (offset year : Int)
+      (declared : model.baseYear = some (year - offset))
 
 structure CheckedValidationMessageTemplate
     (model : FlatModel) (condition : CheckedFlatCondition model) where
@@ -329,6 +370,13 @@ private def checkMessageParts (model : FlatModel)
       pure (.fieldValue
         (← resolveMessageReference model profile condition parameter reference) ::
         (← checkMessageParts model profile condition rest))
+  | .baseYear offset :: rest => do
+      match hDeclared : model.baseYear with
+      | none => throw .noBaseYear
+      | some base =>
+          pure (.baseYear offset (base + offset) (by
+            rw [hDeclared, Int.add_sub_cancel]) ::
+            (← checkMessageParts model profile condition rest))
   | .fieldCategory parameter reference category :: rest => do
       let resolved ←
         resolveMessageReference model profile condition parameter reference
@@ -341,7 +389,7 @@ def elaborateValidationMessageTemplate (model : FlatModel)
     (condition : CheckedFlatCondition model) (source : String) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageTemplate model condition) := do
-  let parsed ← parseValidationMessageTemplate source
+  let parsed ← parseValidationMessageTemplate profile source
   pure { source, parts := ← checkMessageParts model profile condition parsed }
 
 structure ValidationMessageInputs where
@@ -360,6 +408,7 @@ def CheckedValidationMessagePart.toRenderPart
   | .fieldCategory access =>
       .fieldCategory
         (inputs.fieldCategory access.reference.declaration.id access.category)
+  | .baseYear _ year _ => .baseYear year
 
 def CheckedValidationMessageTemplate.toRenderPlan
     (template : CheckedValidationMessageTemplate model condition)

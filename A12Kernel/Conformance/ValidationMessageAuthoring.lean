@@ -46,20 +46,21 @@ private def model : FlatModel :=
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
-/-- The en_US parameter terminal set read off the Kernel's own parameter lexer, together with the
-seven this producer historically accepts unquoted inside an entity name. Only `For`, `RuleGroup`, and
-`Referenzjahr` therefore need the quote escape here. -/
+/-- The exact en_US parameter terminal set, read off the Kernel's own English terminal bundle, together
+with the seven this producer historically accepts unquoted inside an entity name. Only `For`,
+`RuleGroup`, and `BaseYear` therefore need the quote escape here. -/
 private def keywordProfile : ValidationMessageKeywordProfile := {
   path := {
     reserved := [
-      "value", "For", "RuleGroup", "RootGroup", "Zeile", "Usb", "index",
-      "Vordruckzeile", "Vordruckname", "Referenzjahr"
+      "For", "index", "RootGroup", "RuleGroup", "Usb", "Vordruckname",
+      "Vordruckzeile", "BaseYear", "value", "Zeile"
     ]
   }
   unquotedTerminals := [
     "value", "RootGroup", "Zeile", "Usb", "index", "Vordruckzeile",
     "Vordruckname"
   ]
+  baseYearTerminal := "BaseYear"
 }
 
 private def condition? : Option (CheckedFlatCondition model) :=
@@ -168,6 +169,42 @@ example :
         "See $index$" = some true ∧
       pathTemplateOk? ["Order"] (pathAt (.relative 0) [] "index")
         "See $'index'$" = some true := by
+  native_decide
+
+/-- The same model with a declared Base Year, so the parameter's one gate has both sides. -/
+private def configured : FlatModel := { model with baseYear := some 2020 }
+
+private def baseYearRender? (template : String) : Option ResolvedMessageText := do
+  let condition ←
+    (elaborate configured ["Order"]
+      (.fieldFilled (pathAt (.relative 0) [] "Amount"))).toOption
+  let checked ←
+    (elaborateValidationMessageTemplate configured keywordProfile condition
+      template).toOption
+  pure (checked.toRenderPlan {
+    fieldName := fun _ =>
+      { providerResult := none, modelLabel := none, debugDisplay := "A" }
+    fieldValue := fun _ => { displayValue := none, defaultDisplay := "0" }
+    fieldCategory := fun _ _ => { display := "" }
+  }).render
+
+/- The Base Year parameter applies its authored offset at authoring, because nothing about it depends
+on the document. An absent offset is the same parameter with no calculation. -/
+example :
+    baseYearRender? "Year $BaseYear$" = some { text := "Year 2020" } ∧
+      baseYearRender? "Year $BaseYear+3$" = some { text := "Year 2023" } ∧
+      baseYearRender? "Year $BaseYear-1$" = some { text := "Year 2019" } := by
+  native_decide
+
+/- Its one static gate is that the model declares a Base Year, and the offset syntax is exactly a
+sign and digits: any other tail is the single parse class rather than a zero offset. -/
+example :
+    pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Amount")
+        "Year $BaseYear$" = some .noBaseYear ∧
+      pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Amount")
+        "Year $BaseYear*2$" = some (.invalidParameter "BaseYear*2") ∧
+      pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Amount")
+        "Year $BaseYear+$" = some (.invalidParameter "BaseYear+") := by
   native_decide
 
 /- The category suffix's three gates, in the Kernel's own order: a missing name is a parse failure, a
