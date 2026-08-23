@@ -148,6 +148,7 @@ import A12Kernel.Conformance.DateRangeBoundComparison
 import A12Kernel.Conformance.DateRangeFirstFilledComputation
 import A12Kernel.Conformance.DateRangeTargetPresentation
 import A12Kernel.Conformance.DateRangeConstructionComputation
+import A12Kernel.Conformance.DateRangeConstructionOperand
 import A12Kernel.Conformance.IndexedDateRangeConstructionComputation
 import A12Kernel.Conformance.DateTimeFirstFilledComputation
 import A12Kernel.Conformance.FullDateFirstFilledComputation

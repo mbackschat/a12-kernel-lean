@@ -111,6 +111,23 @@ inductive DateRangeEndpointElabError where
   | unsupportedZone (zoneId : String)
   deriving Repr, DecidableEq
 
+namespace DateRangeEndpointElabError
+
+/-- The Kernel diagnostic one refused construction endpoint reports. Every operand whose declared
+kind is not a Date-shaped temporal field — Number, String, DateTime, DateRange, and a partial
+Date outside the admitted fragment set — reports the one wrong-format class, so the operand kind
+is not recoverable from the code. A repeatable operand reached from outside its group reports the
+missing-wildcard class instead. The remaining causes are local ingestion insufficiency with no
+measured counterpart, and a **starred** operand is not expressible at this boundary at all,
+because it resolves a field id rather than an authored path. -/
+def diagnostic? : DateRangeEndpointElabError → Option KernelStaticDiagnostic
+  | .targetKind _ _ | .unsupportedPolicy _ _ _ => some .wrongDateFormatForOp
+  | .targetPolicy (.targetNotTemporal _) => some .wrongDateFormatForOp
+  | .targetPolicy (.resolve (.repeatableReference _)) => some .noWildcard
+  | .targetPolicy _ | .unsupportedZone _ => none
+
+end DateRangeEndpointElabError
+
 /-- Resolve one exact-or-yearless nonrepeatable endpoint profile without widening the scalar Date target owner. -/
 def elaborateDateRangeEndpoint (model : FlatModel) (field : FieldId) :
     Except DateRangeEndpointElabError (CheckedDateRangeEndpoint model) := do
@@ -141,6 +158,17 @@ inductive DateRangeConstructionElabError where
   | finish (cause : DateRangeEndpointElabError)
   | componentMismatch (start finish : DateRangeEndpointFormat)
   deriving Repr, DecidableEq
+
+namespace DateRangeConstructionElabError
+
+/-- Endpoint refusals keep their own diagnostic, and a pair whose component sets disagree reports
+the same wrong-format class as a wrong-kind operand, so that one code covers both the operand and
+the pair. -/
+def diagnostic? : DateRangeConstructionElabError → Option KernelStaticDiagnostic
+  | .start cause | .finish cause => cause.diagnostic?
+  | .componentMismatch _ _ => some .wrongDateFormatForOp
+
+end DateRangeConstructionElabError
 
 /-- Certify one pair of construction endpoints once for every checked comparison consumer. -/
 def elaborateDateRangeConstruction (model : FlatModel)
