@@ -38,9 +38,14 @@ filled-beside-empty pair counts `1`, and a filled-beside-invalid pair answers un
 what keeps the count *growable*, so a comparison it satisfies still types OMISSION rather than VALUE.
 
 A `poison` observation is the computation face of the same invalidity and cannot reach this arm; it is
-folded into `unknown` so a misrouted observation fails closed rather than counting as filled. The
-**computation** arm is deliberately absent: the group count's two arms differ precisely here, and no
-observation authorises assuming the field count behaves like either of them. -/
+folded into `unknown` so a misrouted observation fails closed rather than counting as filled.
+
+**There is no computation arm, and that is measured rather than deferred.** The group count needs two
+arms because an invalid *descendant* leaves its group operand present, so the group count must decide
+what to do with it. A field count's invalid operand is the operand itself, so the general
+operand-poison rule fires first: measured, the target is CLEARED and its dependents poisoned before any
+count is evaluated, which is [`spec/09` §3.2](../../spec/09-computations.md)'s existing rule and not this
+operator's to restate. -/
 def numberOfFilledFields (cells : List CellObservation) : FilledFieldCount :=
   if cells.any fun cell =>
       match cell with

@@ -1408,3 +1408,19 @@ Four things worth keeping.
 - **A missing *sibling* is the shape a real gap has.** `NumberOfFilledGroups` existed and `NumberOfFilledFields` did not; `TimeFromDateTime` existed and `DateFromDateTime` did not. Both were genuine, and both were found by asymmetry rather than by counting.
 - **Report coverage in completion levels, not one number.** Representation ran near-complete while kernel correspondence was far thinner, and a single percentage hides exactly the layer that is actually the ceiling.
 
+## LF106 — a probe channel that reports *changes* makes a suppressed operation and a no-op operation identical, and the fix is a stale value rather than a second route
+
+> Date: 2026-08-23. Sections: §9. Basis: three `:adapter:kernelProbe` requests over one `NumberOfFilledFields` computation, at a12-dmkits `108d047b787f0e049dcd2f4902f24d7523347a00`.
+
+The question was what a computation does when one operand is formally invalid. The artifact's `computations.outcomes` came back **empty** — no entry for the target at all — with the operand's error in `formalErrorsInOperands`. The natural reading is that the computation never ran and the whole pass was suppressed at plan level, which is what I first concluded, and it contradicted `spec/09`'s existing "CLEARED + poisons" row.
+
+Both readings were wrong for the same reason. `outcomes` reports **changes**, and the target was already empty, so clearing it changed nothing and produced no entry. Re-running the identical row with a stale `9` in the target produced `{"field": "Order/Expected", "cleared": true, "errored": false}` on both strategies. The spec row was right all along and the observation was a no-op, not a suppression.
+
+Three things worth keeping.
+
+- **Before claiming an operation did not happen, check that its happening would have been visible.** A delta channel cannot distinguish "did nothing" from "did nothing *observable*". This is the same shape as the empty-substitution traps in the semantics itself, arriving through the instrument instead.
+- **Give a clearing test a stale value, always.** One pre-filled target turns an unfalsifiable absence into a positive outcome record. It costs one extra row.
+- **A contradiction with a settled `spec/` row is evidence against the reading, not the row.** The row had its own basis; a fresh observation that appears to refute it should first be suspected of measuring something else. Checking that direction cost one probe and prevented a wrong ledger entry against an already-correct clause.
+
+It also answered the semantic question in the other direction: the field count needs **no** computation-arm rule, because its invalid operand *is* the operand and the general poison rule fires first. `NumberOfFilledGroups` needs two arms only because an invalid *descendant* leaves its group operand present. The asymmetry between the two counts is structural, not a special count behaviour.
+
