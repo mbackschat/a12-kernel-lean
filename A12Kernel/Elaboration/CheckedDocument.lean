@@ -53,6 +53,8 @@ inductive CheckedDocumentError where
   | missingRow (row : RowAddr)
   | incoherentRepeatableScope (scope : List RepeatableLevel)
   | nonNumericField (address : CellAddr)
+  /-- The stored-text read was asked for a declaration whose stored text is not its whole input. -/
+  | nonPartialDateField (address : CellAddr)
   deriving Repr, DecidableEq
 
 /-- Structural failures while projecting one repeatable scope's physically instantiated rows into complete named environments. -/
@@ -198,6 +200,30 @@ private def ClassifiedCellInput.ordinaryCoherent
     | .parsed _ | .rejected _ => true
     | .empty | .presentEmpty => false
 
+/-- Whether a declaration may hold a value whose stored text is its **whole** input. That is a Date
+declaring a partial precision: such a declaration still holds ordinary fully known values, which have a
+`Value` form, but it *may* hold a partially known one, which denotes an interval and has none.
+
+Keyed on the declaration because that is what a placement check can see, and deliberately permissive
+rather than exclusive: which of the two a given cell holds is a property of its stored text, and only the
+partial-Date classifier decides that. -/
+private def FlatFieldDecl.mayStorePartialDateText
+    (declaration : FlatFieldDecl) : Bool :=
+  match declaration.policy.kind, declaration.toTemporalTargetPolicy? with
+  | .temporal .date _, some policy => policy.partialMode != .full
+  | _, _ => false
+
+/-- Coherence for a cell on a partial-precision Date declaration. It **adds** one admitted encoding to
+the ordinary rule rather than replacing it: a nonempty stored text may be placed with no parsed value at
+all, because a partially known Date has no `Value` form and the Date kind accepts none that could stand
+for one. A fully known value on the same declaration still places ordinarily, which is why this is a
+widening and not a restriction. -/
+private def ClassifiedCellInput.partialDateCoherent
+    (input : ClassifiedCellInput) : Bool :=
+  input.ordinaryCoherent ||
+    (input.numericDecimal.isNone && !input.stored.isEmpty &&
+      input.raw == .presentEmpty)
+
 private def ClassifiedCellInput.numberCoherent
     (input : ClassifiedCellInput) (constraints : NumericTargetConstraints)
     (info : NumField) : Bool :=
@@ -263,7 +289,8 @@ private def checkPlacedCell
     | .number info =>
         input.numberCoherent declaration.numericTargetConstraints info
     | .boolean | .confirm | .string | .enumeration | .temporal _ _ | .dateRange =>
-        input.ordinaryCoherent
+        if declaration.mayStorePartialDateText then input.partialDateCoherent
+        else input.ordinaryCoherent
   if !coherent then throw (.incoherentCell input.address)
   if !input.canonicalScalarCoherent model declaration then
     throw (.incoherentCell input.address)
@@ -376,6 +403,45 @@ def read (checked : CheckedDocument model) (address : CellAddr) :
   match checked.checkedCells.find? fun placement => placement.address == address with
   | some placement => pure placement.cell
   | none => pure ((checkAdmittedRawCell .empty).withOverRepetitionIf overLimit)
+
+/-- Read one placed cell's **stored text**, for a Date declaring a partial precision.
+
+The text is the one channel that carries every value such a declaration can hold. A *partially* known
+Date denotes an interval, so it has no `Value` form and the Date kind accepts none that could stand for
+one; a fully known value on the same declaration does have one. Reading the text therefore serves both,
+and which of the two a cell holds is left entirely to the partial-Date classifier that owns it: this read
+reports presence, emptiness, an earlier formal rejection, and over-repetition, and decides nothing about
+the text itself.
+
+Refused for any other declaration, so a caller cannot reach a Number's or a full Date's text by a route
+that skips that kind's own read.
+
+Absence, present-emptiness, and a rejection stay distinguishable: absence carries `rawPresent := false`,
+a present-but-empty text carries `true` with no parsed text, and a rejection carries its cause. -/
+def readStoredText (checked : CheckedDocument model) (address : CellAddr) :
+    Except CheckedDocumentError (CheckedCell String) := do
+  let declaration ←
+    validateCellAddress model checked.source.instantiatedRows address
+  if !declaration.mayStorePartialDateText then
+    throw (.nonPartialDateField address)
+  let overLimit ← match model.addressOverLimit?
+      declaration.repeatableScope address.path with
+    | some overLimit => pure overLimit
+    | none => throw (.incoherentRepeatableScope declaration.repeatableScope)
+  let base : CheckedCell String :=
+    match checked.source.cells.find? fun input => input.address == address with
+    | none => { rawPresent := false, parsed := none, findings := [] }
+    | some input =>
+        match input.raw with
+        | .rejected cause =>
+            { rawPresent := true, parsed := none
+              findings := [cause.toFormalCause] }
+        | _ =>
+            if input.stored.isEmpty then
+              { rawPresent := true, parsed := none, findings := [] }
+            else
+              { rawPresent := true, parsed := some input.stored, findings := [] }
+  pure (base.withOverRepetitionIf overLimit)
 
 /-- Read one checked Number input as a typed cell carrying the regime-selected text. Empty, invalid, and over-limit states retain their ordinary checked-cell structure; the text is never reconstructed from the parsed rational. -/
 def readNumberFormalText (checked : CheckedDocument model)

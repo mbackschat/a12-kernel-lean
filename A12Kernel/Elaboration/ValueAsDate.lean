@@ -113,6 +113,14 @@ structure CheckedValueAsDateSource (model : FlatModel) where
   formatMatches :
     FullDateTargetFormat.ofSource? source.policy.format = some format
 
+/-- Structural failure while reading a bound partial-Date source. Neither arm is reachable for a source
+read at the document root: the environment arm needs a level to be unbound, and the document arm needs an
+address the model rejects. -/
+inductive ValueAsDateReadFault where
+  | document (error : CheckedDocumentError)
+  | environment (error : EnvBindingError)
+  deriving Repr, DecidableEq
+
 namespace CheckedValueAsDateSource
 
 /-- Project raw stored text through the checked declaration policy, delegating the whole decision to the single partial-Date input owner so the cause cannot drift from the measured one. Each failure keeps its own cause: a wrong width or an unreal present component is the date-format finding, while a non-suffix zero pattern, a suffix deeper than the precision admits, and a below-floor or pre-1900 completion are the date finding. This replaced a uniform malformed finding, which was measurably wrong for every one of those inputs. -/
@@ -126,6 +134,36 @@ def checkSourceRaw (checked : CheckedValueAsDateSource model)
     | .presentEmpty => .ok none
     | .rejected cause => .error cause
     | .admitted value => .ok (some value)) raw
+
+/-- Project an already-checked stored-text cell through this source's own classifier.
+
+The text cell's **existing** findings win: a placement the document already rejected, and a row beyond
+the declared repetition, must not be reclassified into a different cause by a later stage. Otherwise the
+one measured classifier decides, so this route and the direct raw route cannot disagree. -/
+def checkSourceText (checked : CheckedValueAsDateSource model)
+    (cell : CheckedCell String) :
+    CheckedCell (AdmittedPartiallyKnownDate checked.source.policy.partialMode) :=
+  match cell.findings with
+  | [] =>
+      match cell.parsed with
+      | none => { rawPresent := cell.rawPresent, parsed := none, findings := [] }
+      | some text => checked.checkSourceRaw (.parsed text)
+  | causes =>
+      { rawPresent := cell.rawPresent, parsed := none, findings := causes }
+
+/-- Read this source's stored text at the row `environment` binds. A declaration crossing no repeatable
+level addresses identically at every environment, so the root read stays a plain root read rather than
+routing through this one. -/
+def readAt (checked : CheckedValueAsDateSource model) (environment : Env)
+    (input : CheckedDocument model) :
+    Except ValueAsDateReadFault
+      (CheckedCell (AdmittedPartiallyKnownDate checked.source.policy.partialMode)) := do
+  let path ←
+    (environment.pathForScope checked.source.declaration.repeatableScope)
+      |>.mapError .environment
+  let cell ← input.readStoredText
+    { field := checked.source.declaration.id, path } |>.mapError .document
+  pure (checked.checkSourceText cell)
 
 /-- Resolve one parser-admitted checked cell at the selected interval endpoint for an operation-specific consumer. -/
 def observe (checked : CheckedValueAsDateSource model)
@@ -219,6 +257,14 @@ def evaluate (checked : CheckedValueAsDateComparison model)
 def evaluateRaw (checked : CheckedValueAsDateComparison model)
     (raw : RawCell String) : Verdict :=
   checked.evaluate (checked.checkSourceRaw raw)
+
+/-- Read and evaluate this comparison at the row `environment` binds. The verdict is the same function of
+the cell that the root route applies, so a bound read changes which cell is read and nothing else. -/
+def evaluateAt (checked : CheckedValueAsDateComparison model)
+    (environment : Env) (input : CheckedDocument model) :
+    Except ValueAsDateReadFault Verdict := do
+  let cell ← checked.toCheckedValueAsDateSource.readAt environment input
+  pure (checked.evaluate cell)
 
 end CheckedValueAsDateComparison
 
