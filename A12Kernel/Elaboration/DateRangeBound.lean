@@ -145,6 +145,16 @@ structure CheckedDateRangeBound (model : FlatModel)
     toCheckedDateRangeSourceBound.declaration.repeatableScope = []
 
 
+/-- Whether one DateRange declaration is a nonrepeatable source addressable by a scalar consumer at
+any locus. Shared by the scalar validation and computation operand surfaces. -/
+def FlatModel.nonrepeatableDateRangeSource (model : FlatModel)
+    (field : FlatDateRangeField) : Bool :=
+  match model.lookupUniqueId field.id with
+  | .ok declaration =>
+      declaration.repeatableScope.isEmpty &&
+        declaration.policy.kind.surfaceKind == .dateRange
+  | .error _ => false
+
 /-- Authored side occupied by the selected DateRange bound in one full-Date comparison. -/
 inductive DateRangeBoundComparisonPosition where
   | left
@@ -249,6 +259,18 @@ def observeRange (source : FieldId) (phase : Phase) (cell : CheckedCell) :
   | .unknown cause => .ok (.unknown cause)
   | .poison cause => .ok (.poison cause)
 
+/-- Select one endpoint from an already-observed range. Every endpoint consumer shares this, so a
+numeric component read and a verdict-producing comparison cannot disagree about which runtime carrier
+is exact; only a malformed checked document reaches the fault. -/
+def selectBound (source : FieldId) (bound : DateRangeBound) :
+    CellObservation DateRangeCellValue →
+    Except DirectDateRangeFault (CellObservation DateValue)
+  | .empty => .ok .empty
+  | .value (.exact value) => .ok (.value (value.select bound))
+  | .value value => .error (.sourceValueProfile source value)
+  | .unknown cause => .ok (.unknown cause)
+  | .poison cause => .ok (.poison cause)
+
 /-- Read one whole range at the row the environment binds. A declaration crossing no repeatable
 level addresses identically at every environment, which is why the root read below can stay a plain
 root read rather than routing through this one. -/
@@ -285,12 +307,7 @@ def evaluateAt (operation : CheckedDateRangeSourceBound model)
     Except DateRangeBoundFault (CellObservation DateValue) := do
   let observed ←
     operation.toCheckedDateRangeSource.evaluateAt environment phase input
-  match observed with
-  | .empty => pure .empty
-  | .value (.exact value) => pure (.value (value.select operation.bound))
-  | .value value => throw (.sourceValueProfile operation.source.id value)
-  | .unknown cause => pure (.unknown cause)
-  | .poison cause => pure (.poison cause)
+  CheckedDateRangeSource.selectBound operation.source.id operation.bound observed
 
 end CheckedDateRangeSourceBound
 

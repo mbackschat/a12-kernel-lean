@@ -39,6 +39,8 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
       .ok (.value (baseYearDateSourceNumericPart year source part) .fixed)
   | .temporalFieldPart field part =>
       (context.fields.resolveTemporalNumericOperand field part).toValidationArithmetic
+  | .dateRangeBoundPart source bound part =>
+      (context.fields.resolveDateRangeBoundNumericOperand source bound part).toValidationArithmetic
   | .stringLength field =>
       (context.fields.resolveStringLengthOperand field).toValidationArithmetic
   | .stringRange field start finish =>

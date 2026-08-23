@@ -23,7 +23,7 @@ theorem directDateRange_evaluate_value
   unfold CheckedDirectDateRange.evaluate
   rw [read]
   simp only [Except.mapError, bind, Except.bind,
-    CheckedDateRangeSource.observeRange, observed, pure, Except.pure]
+    CheckedDateRangeSource.observeRange, observed]
 
 /-- A root-read endpoint reads its whole range at the document root. Its declaration crosses no
 repeatable level, so the reading environment cannot change the address, and the four endpoint laws
@@ -35,15 +35,8 @@ private theorem dateRangeBound_rootRead
       (((input.read { field := operation.source.id, path := [] }).mapError
             DirectDateRangeFault.document).bind
           (CheckedDateRangeSource.observeRange operation.source.id phase)).bind
-        (fun observed =>
-          match observed with
-          | .empty => pure .empty
-          | .value (.exact value) =>
-              pure (.value (value.select operation.bound))
-          | .value value =>
-              throw (.sourceValueProfile operation.source.id value)
-          | .unknown cause => pure (.unknown cause)
-          | .poison cause => pure (.poison cause)) := by
+        (CheckedDateRangeSource.selectBound operation.source.id
+          operation.bound) := by
   unfold CheckedDateRangeBound.evaluate CheckedDateRangeSourceBound.evaluateAt
     CheckedDateRangeSource.evaluateAt
   rw [operation.scalarSource]
@@ -58,8 +51,9 @@ theorem dateRangeBound_evaluate_value
     (observed : observeCell phase cell = .value (.dateRange (.exact range))) :
     operation.evaluate phase input = .ok (.value (range.select operation.bound)) := by
   rw [dateRangeBound_rootRead, read]
-  simp only [Except.mapError, bind, Except.bind,
-    CheckedDateRangeSource.observeRange, observed, pure, Except.pure]
+  simp only [Except.mapError, Except.bind,
+    CheckedDateRangeSource.observeRange, observed,
+    CheckedDateRangeSource.selectBound]
 
 /-- An empty source remains empty rather than acquiring an endpoint or cause. -/
 theorem dateRangeBound_evaluate_empty
@@ -69,8 +63,9 @@ theorem dateRangeBound_evaluate_empty
     (observed : observeCell phase cell = .empty) :
     operation.evaluate phase input = .ok .empty := by
   rw [dateRangeBound_rootRead, read]
-  simp only [Except.mapError, bind, Except.bind,
-    CheckedDateRangeSource.observeRange, observed, pure, Except.pure]
+  simp only [Except.mapError, Except.bind,
+    CheckedDateRangeSource.observeRange, observed,
+    CheckedDateRangeSource.selectBound]
 
 /-- Validation unavailability keeps its exact cause and does not select an endpoint. -/
 theorem dateRangeBound_evaluate_unknown
@@ -80,8 +75,9 @@ theorem dateRangeBound_evaluate_unknown
     (observed : observeCell phase cell = .unknown cause) :
     operation.evaluate phase input = .ok (.unknown cause) := by
   rw [dateRangeBound_rootRead, read]
-  simp only [Except.mapError, bind, Except.bind,
-    CheckedDateRangeSource.observeRange, observed, pure, Except.pure]
+  simp only [Except.mapError, Except.bind,
+    CheckedDateRangeSource.observeRange, observed,
+    CheckedDateRangeSource.selectBound]
 
 /-- Computation unavailability keeps its exact poison cause and does not select an endpoint. -/
 theorem dateRangeBound_evaluate_poison
@@ -91,8 +87,9 @@ theorem dateRangeBound_evaluate_poison
     (observed : observeCell phase cell = .poison cause) :
     operation.evaluate phase input = .ok (.poison cause) := by
   rw [dateRangeBound_rootRead, read]
-  simp only [Except.mapError, bind, Except.bind,
-    CheckedDateRangeSource.observeRange, observed, pure, Except.pure]
+  simp only [Except.mapError, Except.bind,
+    CheckedDateRangeSource.observeRange, observed,
+    CheckedDateRangeSource.selectBound]
 
 /-- A present endpoint is projected once to `FullDate`, while the exact selected value remains in the result. -/
 theorem dateRangeBoundComparison_evaluateSelected_value

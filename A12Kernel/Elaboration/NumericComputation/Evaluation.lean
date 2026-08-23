@@ -62,6 +62,22 @@ def readTemporalNumeric (context : ScalarComputationContext)
   | .value _ => throw (.fieldKindMismatch field.id)
   | .unknown cause | .poison cause => pure (.poison cause)
 
+/-- Read one certified DateRange endpoint's numeric Date component in computation phase. The endpoint
+owner performs both the profile selection and the component extraction, so a computed component and a
+validating one cannot disagree about which runtime carrier is exact. Empty substitutes zero and
+formal unavailability propagates, exactly as every other component read in this family does. -/
+def readDateRangeBoundNumeric (context : ScalarComputationContext)
+    (field : FlatDateRangeField) (bound : DateRangeBound)
+    (part : DateNumericPart) :
+    Except NumericComputationFault NumericComputationResult := do
+  let observed ←
+    (CheckedDateRangeSource.observeRange field.id .computation
+      (context.read field.id)).mapError fun _ => .fieldKindMismatch field.id
+  match observed with
+  | .empty => pure (.value 0)
+  | .value value => pure (.value (part.extract (value.selectBoundParts bound)))
+  | .unknown cause | .poison cause => pure (.poison cause)
+
 def readDateDifferenceOperand (context : ScalarComputationContext) :
     ResolvedDateDifferenceOperand → DateDifferenceOperand
   | .field source => DateDifferenceOperand.ofObservation
@@ -119,6 +135,8 @@ def readNumericComputationAtomWith
       pure (.value (baseYearDateSourceNumericPart year source part))
   | .temporalFieldPart field part =>
       context.readTemporalNumeric field part.project?
+  | .dateRangeBoundPart field bound part =>
+      context.readDateRangeBoundNumeric field bound part
   | .stringLength field =>
       pure ((observeCell .computation
         (context.read field.id)).asStringLengthOperand.toComputationResult)
@@ -283,6 +301,7 @@ def NumericComputationAtom.numericComputationFault? :
   | .baseYear _ => none
   | .baseYearDatePart _ _ _ => none
   | .temporalFieldPart _ _ => none
+  | .dateRangeBoundPart _ _ _ => none
   | .stringLength _ => none
   | .stringRange _ _ _ => none
   | .fieldValueAsNumber _ => none

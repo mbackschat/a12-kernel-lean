@@ -319,6 +319,10 @@ inductive SurfaceNumericAtom
   | baseYear
   | baseYearDatePart (source : BaseYearDateSource) (part : DateNumericPart)
   | temporalFieldPart (path : SurfaceFieldPath) (part : TemporalNumericPart)
+  /-- One numeric date component of a DateRange field's selected endpoint. The endpoint selection
+  and the component are one authored operand, because the endpoint alone is not a numeric value. -/
+  | dateRangeBoundPart (path : SurfaceFieldPath) (bound : DateRangeBound)
+      (part : DateNumericPart)
   | stringLength (path : SurfaceFieldPath)
   | stringRange (path : SurfaceFieldPath) (start finish : Nat)
   | fieldValueAsNumber (source : SurfaceTextFieldOperand)
@@ -338,6 +342,8 @@ inductive ResolvedNumericAtom (Field : Type)
   | baseYearDatePart (year : Int) (source : BaseYearDateSource)
       (part : DateNumericPart)
   | temporalFieldPart (source : FlatTemporalField) (part : TemporalNumericPart)
+  | dateRangeBoundPart (source : FlatDateRangeField) (bound : DateRangeBound)
+      (part : DateNumericPart)
   | stringLength (source : FlatStringField)
   | stringRange (source : FlatStringField) (start finish : Nat)
   | fieldValueAsNumber (source : ResolvedFieldValueAsNumberSource)
@@ -358,6 +364,7 @@ def isDataDependent : ResolvedNumericAtom Field Aggregate → Bool
   | .baseYear _ => false
   | .baseYearDatePart _ _ _ => false
   | .temporalFieldPart _ _ => true
+  | .dateRangeBoundPart _ _ _ => true
   | .stringLength _ => true
   | .stringRange _ _ _ => true
   | .fieldValueAsNumber _ => true
@@ -375,6 +382,7 @@ def summaryWith (fieldSummary : Field → NumericScaleSummary)
   | .baseYear _ => NumericScaleSummary.field 0
   | .baseYearDatePart _ _ _ => NumericScaleSummary.field 0
   | .temporalFieldPart _ _ => NumericScaleSummary.field 0
+  | .dateRangeBoundPart _ _ _ => NumericScaleSummary.field 0
   | .stringLength _ => NumericScaleSummary.field 0
   | .stringRange _ _ _ => NumericScaleSummary.field 0
   | .fieldValueAsNumber source => NumericScaleSummary.field source.scale

@@ -168,6 +168,10 @@ run_cmd do
 #print axioms A12Kernel.dateConstruction_numericPart_same_zero_distinct_provenance
 #print axioms A12Kernel.dateConstruction_numericPart_unavailable_comparison
 #print axioms A12Kernel.dateConstruction_numericPart_true_comparison_polarity
+#print axioms A12Kernel.dateNumericPart_fromObservation_empty
+#print axioms A12Kernel.dateNumericPart_fromObservation_value
+#print axioms A12Kernel.dateNumericPart_fromObservation_unknown
+#print axioms A12Kernel.dateNumericPart_fromObservation_poison
 #print axioms A12Kernel.dateNumericPart_fullDate_empty
 #print axioms A12Kernel.dateNumericPart_fullDate_value
 #print axioms A12Kernel.dateNumericPart_dateTime_uses_date
@@ -515,6 +519,10 @@ run_cmd do
 #print axioms A12Kernel.dateRangeBoundComponent_evaluateSelected_value
 #print axioms A12Kernel.dateRangeBoundComponent_evaluateSelected_empty
 #print axioms A12Kernel.dateRangeBoundComponent_evaluateSelected_unknown
+#print axioms A12Kernel.dateRangeCellValue_selectBoundObservation_yearless
+#print axioms A12Kernel.dateRangeCellValue_selectBoundParts_exact
+#print axioms A12Kernel.resolveDateRangeBoundNumericOperand_factors
+#print axioms A12Kernel.resolveDateRangeBoundNumericOperand_wrongKind
 #print axioms A12Kernel.flatTemporalDateTime_projects_all_consumers
 #print axioms A12Kernel.withFinding_preserves_wellFormed
 #print axioms A12Kernel.formalCheck_empty_observes_empty

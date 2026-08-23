@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.DateRangeBoundComponent
 import A12Kernel.Elaboration.FirstFilledValue
 import A12Kernel.Elaboration.NumericAggregate
 import A12Kernel.Elaboration.StaticDiagnostic
@@ -70,6 +71,9 @@ inductive NumericComputationElabError where
   | fieldValueAsNumberEnumeration (path : List String)
       (error : EnumerationOperandError)
   | incompatibleTemporalSource (path : List String)
+  /-- The declared DateRange profile does not expose the requested date component at its
+  endpoint; the same measured class the validation surface reports. -/
+  | dateRangeBoundPartNotExposed (path : List String) (part : DateNumericPart)
   | incompatibleDateDifference
   | unsupportedCalendarProfile (zoneId : String)
   | baseYearNotDeclared
@@ -147,6 +151,9 @@ def FlatModel.admitsNumericComputationOperand
   | .numeric (.temporalFieldPart source part) =>
       model.admitsTemporalComputationOperand source
         (part.admittedBy source model.hasBaseYear)
+  | .numeric (.dateRangeBoundPart source _ part) =>
+      model.nonrepeatableDateRangeSource source &&
+        model.exposesDateRangeBoundPart source part
   | .numeric (.stringLength source) => model.admitsStringValueField source
   | .numeric (.stringRange source start finish) =>
       validStringRange start finish && model.admitsStringValueField source
@@ -234,6 +241,7 @@ def CheckedNumericComputationAtom.references
   | .numeric (.baseYear _) => false
   | .numeric (.baseYearDatePart _ _ _) => false
   | .numeric (.temporalFieldPart source _) => source.id == field
+  | .numeric (.dateRangeBoundPart source _ _) => source.id == field
   | .numeric (.stringLength source) => source.id == field
   | .numeric (.stringRange source _ _) => source.id == field
   | .numeric (.fieldValueAsNumber source) => source.fieldId == field
@@ -300,6 +308,7 @@ def SurfaceNumericAtom.toNumberEntityComputationAtom :
   | .baseYear => .baseYear
   | .baseYearDatePart source part => .baseYearDatePart source part
   | .temporalFieldPart path part => .temporalFieldPart path part
+  | .dateRangeBoundPart path bound part => .dateRangeBoundPart path bound part
   | .stringLength path => .stringLength path
   | .stringRange path start finish => .stringRange path start finish
   | .fieldValueAsNumber source => .fieldValueAsNumber source
@@ -393,6 +402,16 @@ private def FlatModel.resolveNumericComputationExpression
           declaringGroup target reference
           (fun source => part.admittedBy source model.hasBaseYear)
         pure (.numeric (.temporalFieldPart field part))
+    | .numeric (.dateRangeBoundPart reference bound part) => do
+        let declaration ←
+          (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError
+            .resolve
+        -- The target is a Number field, so a DateRange operand can never be the target itself.
+        let source : FlatDateRangeField := { id := declaration.id }
+        if model.exposesDateRangeBoundPart source part then
+          pure (.numeric (.dateRangeBoundPart source bound part))
+        else
+          throw (.dateRangeBoundPartNotExposed declaration.path part)
     | .numeric (.stringLength reference) => do
         let declaration ←
           (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve

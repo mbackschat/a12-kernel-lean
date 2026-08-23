@@ -355,6 +355,8 @@ def CheckedNumericComputationAtom.toValidationAtom :
       pure (.ordinary (.baseYearDatePart year source part))
   | .numeric (.temporalFieldPart source part) =>
       pure (.ordinary (.temporalFieldPart source part))
+  | .numeric (.dateRangeBoundPart source bound part) =>
+      pure (.ordinary (.dateRangeBoundPart source bound part))
   | .numeric (.stringLength source) => pure (.ordinary (.stringLength source))
   | .numeric (.stringRange source start finish) =>
       pure (.ordinary (.stringRange source start finish))

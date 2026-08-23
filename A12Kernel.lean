@@ -118,6 +118,7 @@ import A12Kernel.Elaboration.DateRangeBound
 import A12Kernel.Elaboration.DateRangeStoredComparison
 import A12Kernel.Elaboration.YearlessDateRangeBound
 import A12Kernel.Elaboration.DateRangeBoundComparison
+import A12Kernel.Elaboration.DateRangeBoundComponent
 import A12Kernel.Elaboration.DateRangeOverlap
 import A12Kernel.Elaboration.AtLeastOneDateRangeOverlap
 import A12Kernel.Elaboration.YearlessDateRangeOverlap

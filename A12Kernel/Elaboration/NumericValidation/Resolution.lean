@@ -86,6 +86,16 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
       let field ← resolveTemporalNumericField model rowGroup reference
         (fun source => part.admittedBy source model.hasBaseYear)
       pure (.temporalFieldPart field part)
+  | .dateRangeBoundPart reference bound part => do
+      let declaration ←
+        (model.resolveField rowGroup reference).mapError .resolve
+      if declaration.groupPath != rowGroup then
+        throw (.fieldOutsideRowGroup declaration.path rowGroup)
+      let source : FlatDateRangeField := { id := declaration.id }
+      if model.exposesDateRangeBoundPart source part then
+        pure (.dateRangeBoundPart source bound part)
+      else
+        throw (.dateRangeBoundPartNotExposed declaration.path part)
   | .stringLength reference => do
       let declaration ← (model.resolveField rowGroup reference).mapError .resolve
       if declaration.groupPath != rowGroup then
@@ -207,6 +217,14 @@ private def resolveAddressedNumericAtom (model : FlatModel)
           else
             throw (.incompatibleTemporalSource declaration.path)
       | none => throw (.incompatibleTemporalSource declaration.path)
+  | .dateRangeBoundPart reference bound part => do
+      let declaration ←
+        resolveAddressedNumericDeclaration model rowGroup reference
+      let source : FlatDateRangeField := { id := declaration.id }
+      if model.exposesDateRangeBoundPart source part then
+        pure (.dateRangeBoundPart source bound part)
+      else
+        throw (.dateRangeBoundPartNotExposed declaration.path part)
   | .stringLength reference => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup reference

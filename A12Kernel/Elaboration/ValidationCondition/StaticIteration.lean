@@ -204,6 +204,15 @@ def ordinaryNumericAtomFieldDeclarations?
             some [declaration]
           else none
       | .error _ => none
+  | .dateRangeBoundPart source _ part =>
+      -- The exposure predicate already certifies the DateRange input profile, so a non-DateRange
+      -- declaration cannot reach the iteration scope through this atom.
+      match model.lookupUniqueId source.id with
+      | .ok declaration =>
+          if model.exposesDateRangeBoundPart source part then
+            some [declaration]
+          else none
+      | .error _ => none
   | .stringLength source =>
       match model.lookupUniqueId source.id with
       | .ok declaration =>

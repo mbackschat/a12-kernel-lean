@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.DateRangeBoundComponent
 import A12Kernel.Elaboration.NumericAggregate
 import A12Kernel.Elaboration.FirstFilledValue
 import A12Kernel.Elaboration.StringContext
@@ -117,6 +118,10 @@ inductive NumericValidationElabError where
   | unsupportedExpression
   | authoring (result : NumericAuthoringCheck)
   | exactScaleMismatch (left right : NumericScaleSummary)
+  /-- The declared DateRange profile does not expose the requested date component at its
+  endpoint. Kept apart from the general temporal-source refusal because only this class has a
+  measured Kernel diagnostic. -/
+  | dateRangeBoundPartNotExposed (path : List String) (part : DateNumericPart)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -131,6 +136,14 @@ def groupCountDiagnostic? :
       some (if left == right then .duplicateParam1 else .duplicateParam2)
   | .rootGroupInGroupCount _ => some .rootGroupWithOtherParameters
   | .unknownGroupInCount _ => some .invalidEntity
+  | _ => none
+
+/-- Project the measured DateRange-endpoint component class. The general temporal-source refusal
+stays unmapped, because it also covers a declaration that is not temporal at all, which the Kernel
+reports differently. -/
+def dateRangeBoundPartDiagnostic? :
+    NumericValidationElabError → Option KernelStaticDiagnostic
+  | .dateRangeBoundPartNotExposed _ _ => some .wrongDateFormatForOp
   | _ => none
 
 end NumericValidationElabError
@@ -207,6 +220,24 @@ def FlatModel.admitsNumberModelWide (model : FlatModel)
         declaration.toNumberField? == some field
   | .error _ => false
 
+private def FlatModel.admitsAddressedDateRange (model : FlatModel)
+    (rowGroup : GroupPath) (field : FlatDateRangeField) : Bool :=
+  match model.lookupUniqueId field.id with
+  | .ok declaration =>
+      declaration.policy.kind.surfaceKind == .dateRange &&
+        declaration.repeatableScope.isPrefixOf
+          (model.repeatableScopeForGroupPath rowGroup)
+  | .error _ => false
+
+private def FlatModel.admitsDateRangeInGroup (model : FlatModel)
+    (rowGroup : GroupPath) (field : FlatDateRangeField) : Bool :=
+  match model.lookupUniqueId field.id with
+  | .ok declaration =>
+      declaration.groupPath == rowGroup &&
+        declaration.repeatableScope.isEmpty &&
+        declaration.policy.kind.surfaceKind == .dateRange
+  | .error _ => false
+
 private def FlatModel.admitsTemporalModelWide (model : FlatModel)
     (field : FlatTemporalField) : Bool :=
   match model.lookupUniqueId field.id with
@@ -261,6 +292,14 @@ def NumericValidationAtom.admitted
         | .modelWideNonrepeatable | .modelWideCheckedComputation =>
             model.admitsTemporalModelWide source) &&
         part.admittedBy source model.hasBaseYear
+  | .dateRangeBoundPart source _ part =>
+      (match scope with
+        | .sameGroup => model.admitsDateRangeInGroup rowGroup source
+        | .sameGroupAddressed =>
+            model.admitsAddressedDateRange rowGroup source
+        | .modelWideNonrepeatable | .modelWideCheckedComputation =>
+            model.nonrepeatableDateRangeSource source) &&
+        model.exposesDateRangeBoundPart source part
   | .stringLength source =>
       match scope with
       | .sameGroup => model.admitsStringInGroup rowGroup source
@@ -434,6 +473,7 @@ def NumericValidationAtom.referencesField (model : FlatModel) :
   | .field source, field => source.id == field
   | .baseYear _, _ | .baseYearDatePart _ _ _, _ => false
   | .temporalFieldPart source _, field => source.id == field
+  | .dateRangeBoundPart source _ _, field => source.id == field
   | .stringLength source, field => source.id == field
   | .stringRange source _ _, field => source.id == field
   | .fieldValueAsNumber source, field => source.fieldId == field
@@ -455,6 +495,7 @@ def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
   | .field source => isRelevant source.id
   | .baseYear _ | .baseYearDatePart _ _ _ => true
   | .temporalFieldPart source _ => isRelevant source.id
+  | .dateRangeBoundPart source _ _ => isRelevant source.id
   | .stringLength source => isRelevant source.id
   | .stringRange source _ _ => isRelevant source.id
   | .fieldValueAsNumber source => isRelevant source.fieldId
