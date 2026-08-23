@@ -252,7 +252,7 @@ example :
 example :
     checkedCountFaultIn nestedDescendantModel
         [["Root", "Details"], ["Root", "Preferences"]]
-        malformedBeside = some .unsupportedGroupCount ∧
+        malformedBeside = some (.unsupportedGroupCount ["Root", "Details"]) ∧
       generatedMismatchErrorOf
         [["Root", "Details"], ["Root", "Preferences"]] =
         some (.conditionAssembly .incoherentCore) := by
@@ -365,34 +365,36 @@ example :
   native_decide
 
 /- Boundary: a deeper descendant field puts the operand outside the measured shape, so it is
-   refused rather than counted through the subtree the validation arm traverses. -/
+   refused rather than counted through the subtree the validation arm traverses. The refusal names
+   the offending operand rather than the whole count, which is what an Explain consumer points at. -/
 example :
     faultIn nestedDescendantModel [detailsGroup, preferencesGroup] malformedBeside =
-      some .unsupportedGroupCount := by
+      some (.unsupportedGroupCount ["Root", "Details"]) := by
   native_decide
 
 /- Boundary: a group inside a repeatable scope is refused, since a scalar context has no
    instantiated row to observe. This arm is reached even with no direct field to reject. -/
 example :
     faultIn repeatableGroupModel [repeatableGroup, preferencesGroup] bothFilled =
-      some .unsupportedGroupCount := by
+      some (.unsupportedGroupCount ["Root", "Rows"]) := by
   native_decide
 
 /- Boundary: a group absent from the model is refused rather than counted as absent. -/
 example :
     faultIn model [missingGroup, preferencesGroup] bothFilled =
-      some .unsupportedGroupCount := by
+      some (.unsupportedGroupCount ["Root", "Missing"]) := by
   native_decide
 
 /- Boundary: the model-free resolved evaluator carries no model, so it cannot enumerate any
-   group's fields and refuses every group operand. The fault is payload-free, so it does not
-   distinguish this cause from an illegal group; that limit is recorded in SG13. -/
+   group's fields and refuses every group operand. It carries its **own** class rather than the
+   illegal-group one, because no single operand is at fault and a consumer's remedy differs: that
+   one is an authoring boundary, this one a missing evaluation input. -/
 example :
     (match ScalarComputationContext.readNumericComputationAtom
         { read := malformedBeside.read }
         (.filledGroupCount [detailsGroup, preferencesGroup]) with
       | .error fault => some fault
-      | .ok _ => none) = some NumericComputationFault.unsupportedGroupCount := by
+      | .ok _ => none) = some NumericComputationFault.groupCountNeedsModel := by
   native_decide
 
 /- The scalar run plan mirrors the scalar evaluator exactly: it now admits an in-shape group

@@ -47,7 +47,14 @@ inductive NumericComputationFault where
   | unsupportedDateCalendar
   | unsupportedDateTimeDifferenceOperand
   | worldRequired
-  | unsupportedGroupCount
+  /-- One resolved group operand of a filled-group count lies outside the admitted scalar boundary.
+  The path names *which* operand, so an Explain or Qualify consumer can point at it rather than at the
+  whole count; the count itself is order-insensitive, so nothing else about the refusal is ordered. -/
+  | unsupportedGroupCount (group : GroupPath)
+  /-- The model-free resolved evaluator cannot enumerate any group's descendants, so no single operand
+  is at fault. Kept distinct from the class above because the remedy differs: that one is an authoring
+  boundary, this one a missing evaluation input. -/
+  | groupCountNeedsModel
   | repeatableContextRequired
   | repeatableAddressing (error : StarAddressingError)
   deriving Repr, DecidableEq

@@ -114,7 +114,7 @@ def readFilledGroupCount (context : ScalarComputationContext) (model : FlatModel
     Except NumericComputationFault NumericComputationResult := do
   let observed ← groups.mapM fun reference =>
     match reference.computationDescendants? model with
-    | none => throw NumericComputationFault.unsupportedGroupCount
+    | none => throw (NumericComputationFault.unsupportedGroupCount reference.path)
     | some descendants =>
         pure (descendants.map fun declaration =>
           observeCell .computation (context.read declaration.id))
@@ -183,7 +183,7 @@ def readNumericComputationAtom (context : ScalarComputationContext) :
     (fun op source =>
       pure ((source.evaluate op fun field =>
         observeCell .computation (context.read field)).toComputationResult))
-    (fun _ => throw .unsupportedGroupCount)
+    (fun _ => throw .groupCountNeedsModel)
 
 /-- Evaluate a checked computation atom without a repeatable document only when its entity-list payload narrows exactly to direct fields. A repeatable operand fails explicitly rather than silently observing an empty synthetic document. -/
 def readCheckedNumericComputationAtom (context : ScalarComputationContext) :
@@ -334,7 +334,8 @@ def NumericComputationAtom.numericComputationFault? :
       | some fault => some fault
       | none => fault? right
   | .aggregate _ _ => none
-  | .filledGroupCount _ => some .unsupportedGroupCount
+  -- No model is available on this route, so no single operand can be named.
+  | .filledGroupCount _ => some .groupCountNeedsModel
 
 def CheckedNumericComputationAtom.numericComputationFault? :
     CheckedNumericComputationAtom model → Option NumericComputationFault
@@ -345,11 +346,10 @@ def CheckedNumericComputationAtom.numericComputationFault? :
   -- A group operand's boundary is model-structural, so it is decided here rather than left
   -- to the reading branch, where a data-dependent poison could otherwise hide it.
   | .numeric (.filledGroupCount groups) =>
-      if groups.all fun reference =>
-          (reference.computationDescendants? model).isSome then
-        none
-      else
-        some .unsupportedGroupCount
+      match groups.find? fun reference =>
+          (reference.computationDescendants? model).isNone with
+      | some reference => some (.unsupportedGroupCount reference.path)
+      | none => none
   | .numeric source =>
       NumericComputationAtom.numericComputationFault? source
   | .sumOfProducts _ => none
