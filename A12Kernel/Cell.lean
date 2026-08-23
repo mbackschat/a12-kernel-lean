@@ -23,6 +23,10 @@ inductive FormalCause where
   | malformed                -- not well-formed for the field's type (bad date/number/…)
   | dateFormat               -- stored Date text does not match its declaration or a real calendar day
   | dateTooEarly             -- stored Date is below the universal floor or enabled pre-1900 boundary
+                             -- The one kernel code behind this also covers a *wrong partially known*
+                             -- Date, which this project does not yet represent: a DATE_FRAGMENT
+                             -- stored value has no value-domain owner, so no clause can produce that
+                             -- arm. Widen the meaning here, do not add a cause, when it lands.
   | dateRangeSeparator       -- the stored DateRange omits its declared range separator
   | dateRangeFormat          -- one stored DateRange endpoint is lexically or calendrically malformed
   | dateRangeInvalid         -- both endpoints are valid, but start is after finish
