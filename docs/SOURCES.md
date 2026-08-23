@@ -522,6 +522,17 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `limit`: one DATE declaration in its default `yyyy-MM-dd` format, one repeatable level, two rows, validation phase only. A differently declared DATE format is unmeasured, as are Time, DateTime, and DateRange columns; the identity reading above is source-established for all of them, but only this format's reachability is measured. Nothing here claims what a *non-Date* distinct count does, and the not-given and not-relevant flags' exclusion from equality is source-only, because a value carrying them is never inserted into the distinctness set.
 - `sync`: none. Every row confirms an already-canonical clause — the non-lenient stored-conversion clause in [`spec/05`](../spec/05-dates-and-time.md) and the combiner suppression account — so this checkpoint adds provenance and closes two local residuals without changing `spec/`.
 
+<a id="src-omitting-date-formats"></a>
+#### What a component-omitting DATE format stores, measured locally 2026-08-23
+
+- `revision`: clean a12-dmkits `108d047b787f0e049dcd2f4902f24d7523347a00`, dmtool `0.13.0`, kernel `30.8.1` built and runtime; artifact header records `producer.source.state: CLEAN`. The sibling worktree was empty before and after every command.
+- `route`: `apply` declared one DATE field for each of the five component-omitting formats, all admitted `KERNEL_CONFIRMED`. Then `:adapter:kernelProbe` observed `validateFull` on both codegen strategies over eleven documents. **No rules were needed:** a formal input failure surfaces in `validateFull` messages on its own, so each row's message list is the classifier's verdict directly. Artifact SHA-256 `736f52be07821b936003342af3d1f4c06e46ebe84f2ce78183f2a91ad6f53e5e`, held in session scratch; the account it settles is carried by executable cases.
+- `declaration-claim`: all five — `yyyy`, `yyyy-MM`, `yyyyMM`, `MM`, `MM-dd` — are legal DATE formats beside the two complete ones, and their canonical texts `2020`, `2020-06`, `202006`, `06`, `06-15` are all accepted in one clean row.
+- `cause-claim`: **one cause covers every failure, and the second temporal cause never appears.** A short year `20`, a year carrying extra components `2020-06`, an out-of-range `2020-13`, a single-digit `6` for `MM`, and an unreal `02-30` for `MM-dd` all report `datumFormatFalsch`, and no row reports the position-in-time code. These formats carry no complete date whose position could fall below the floor, which is the structural difference from complete-format input.
+- `separator-claim`: the separator is exact **in both directions**, which is what keeps the two year-month spellings from collapsing into one lenient parser: `yyyy-MM` refuses `202006` and `yyyyMM` refuses `2020-06`, each against the other's accepted canonical row.
+- `yearless-claim`: `MM-dd` accepts `02-29` and refuses `02-30`, so a **yearless** month-day is leap-capable rather than resolved against a specific year's February. Recorded here as the measured fact; representing it needs a yearless value shape held only in the DateRange family.
+- `empty-claim`: an all-empty document is clean, so empty stored text is present and value-free on every one of these formats rather than a spelling failure.
+
 <a id="src-filled-field-count"></a>
 #### What a formally invalid operand does to `NumberOfFilledFields`, measured locally 2026-08-23
 

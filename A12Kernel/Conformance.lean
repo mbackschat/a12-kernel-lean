@@ -6,6 +6,7 @@ import A12Kernel.Conformance.CustomFieldEvaluation
 import A12Kernel.Conformance.FullDate
 import A12Kernel.Conformance.FullDateInput
 import A12Kernel.Conformance.PartialDateInput
+import A12Kernel.Conformance.OmittingDateInput
 import A12Kernel.Conformance.DateComparison
 import A12Kernel.Conformance.DateAggregate
 import A12Kernel.Conformance.DateRangeOverlap

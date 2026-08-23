@@ -197,6 +197,16 @@ For an assurance drill, use the row’s linked owner, then the matching [`Proofs
 - `assurance`: E closed for the separating matrix; P closes empty-is-not-invalid, unsupported-zone-is-context-not-invalidity, format retention, and the shared date half; **L is exact for the measured admission-and-cause surface** at the [Time/DateTime input checkpoint](SOURCES.md#src-time-datetime-stored-input) on both codegen strategies. The retained **instant** is internal: validation output carries none, so the two-zone row locks this project's account rather than a correspondence. Pending [SPEC-2026-08-23-11](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-23-11); C/X/Q none.
 - `remains`: checked-document integration, other legal zones, repeatable placement, and what a DateTime cell renders remain under [SG6](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
 
+<a id="cap-omitting-date-input"></a>
+#### Component-omitting Date stored classifier
+
+- `state`: implemented for the three **year-bearing** component-omitting DATE formats, `yyyy`, `yyyy-MM`, and `yyyyMM`, in [`OmittingDateInput.lean`](../A12Kernel/Elaboration/OmittingDateInput.lean). All five such formats are measured legal declarations.
+- `boundary`: **one cause, and the position-in-time cause cannot arise.** Every spelling failure is the format finding — wrong width, extra components, out-of-range month — because no complete date is present to fall below the Gregorian floor. That is the structural difference from complete-format input, which needs two causes.
+- `boundary`: the separator is exact in both directions, so the two year-month spellings each refuse the other's text rather than sharing a lenient parser. Empty stored text is present and value-free.
+- `route`: the admitted value is an ordinary `PartiallyKnownDateValue` — a year is the omitted-month shape, a year-month the omitted-day shape — so nothing enters the value domain and every existing `ValueAsDate` consumer reads these through the endpoint resolver it already has.
+- `assurance`: E closed in [`Conformance/OmittingDateInput.lean`](../A12Kernel/Conformance/OmittingDateInput.lean) — the three canonical spellings with their exact intervals including a leap and a non-leap February, four spelling refusals, both separator directions, present-emptiness, the four declarations this classifier does not own, and the value's membership in the existing domain. **L is exact** for the measured admission-and-cause surface at the [component-omitting-format checkpoint](SOURCES.md#src-omitting-date-formats), on both codegen strategies. Pending [SPEC-2026-08-23-15](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-23-15); P/C/X/Q none.
+- `remains`: `MM` and `MM-dd` are measured but unrepresented — a yearless month-day is leap-capable, and its value shape exists here only inside the DateRange family, so joining those domains is its own unit. How these values compare, aggregate, or feed a computed target is untouched, as is repeatable placement.
+
 <a id="cap-filled-field-count"></a>
 #### `NumberOfFilledFields` validation count
 
