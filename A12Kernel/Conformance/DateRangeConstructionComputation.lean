@@ -41,6 +41,10 @@ private def monthTarget :=
   rangeField 13 ["Order"] "MonthWindow" "MM" "/"
 private def monthDayTarget :=
   rangeField 16 ["Order"] "MonthDayWindow" "MM-dd" "/"
+private def monthEmptyTarget :=
+  rangeField 20 ["Order"] "MonthEmptyWindow" "MM" ""
+private def dayMonthDashTarget :=
+  rangeField 21 ["Order"] "DayMonthWindow" "dd.MM" "-"
 private def wrongGroupTarget := rangeField 5 ["Elsewhere"] "OtherWindow"
 private def repeatedTarget :=
   rangeField 6 ["Order", "Rows"] "RepeatedWindow" "dd.MM.yyyy" "-" [10]
@@ -95,7 +99,8 @@ private def model : FlatModel := {
   fields := [start, finish, target, isoTarget, wrongGroupTarget,
     repeatedTarget, fragmentStart, fragmentFinish, fragmentTarget,
     yearMonthTarget, yearMonthStart, yearMonthFinish, monthTarget,
-    monthStart, monthFinish, monthDayTarget, monthDayStart, monthDayFinish]
+    monthStart, monthFinish, monthDayTarget, monthDayStart, monthDayFinish,
+    monthEmptyTarget, dayMonthDashTarget]
   repeatableGroups := [{ level := 10, path := ["Order", "Rows"] }]
   timeZoneId := "UTC"
   baseYear := some 2024
@@ -537,6 +542,55 @@ example :
       } ∧
     (DateRangeTargetOutcome.errored expectedInvertedStored .inverted).applyTo
         (.presentValue expectedStored) = .presentEmpty := by
+  native_decide
+
+private def executeUnconfiguredMonthEmpty? :=
+  executeForModel? unconfiguredModel monthEmptyTarget monthStart monthFinish
+
+private def executeUnconfiguredDayMonthDash? :=
+  executeForModel? unconfiguredModel dayMonthDashTarget monthDayStart
+    monthDayFinish
+
+private def expectedMonthEmptyStored : StoredDateRange := {
+  text := "0102"
+  nonempty := by decide
+}
+
+private def expectedDayMonthDashStored : StoredDateRange := {
+  text := "31.01-29.02"
+  nonempty := by decide
+}
+
+/- A construction target accepts every spelling of its own component set, so the two lexical
+variants join their slash-separated siblings: an `MM` construction reaches a target declaring
+the empty separator, and an `MM-dd` construction reaches a `dd.MM` target. A different component
+set is still refused, which is what separates the widened gate from no gate at all. -/
+example :
+    (elaborateDateRangeConstructionComputation unconfiguredModel ["Order"]
+        monthEmptyTarget.id monthStart.id monthFinish.id).isOk = true ∧
+      (elaborateDateRangeConstructionComputation unconfiguredModel ["Order"]
+        dayMonthDashTarget.id monthDayStart.id monthDayFinish.id).isOk = true ∧
+      (elaborateDateRangeConstructionComputation unconfiguredModel ["Order"]
+        monthEmptyTarget.id monthDayStart.id monthDayFinish.id).isOk = false ∧
+      (elaborateDateRangeConstructionComputation unconfiguredModel ["Order"]
+        dayMonthDashTarget.id monthStart.id monthFinish.id).isOk = false := by
+  native_decide
+
+/- The target's own spelling renders the constructed range, and an inverted construction keeps
+its attempted text under that same spelling. -/
+example :
+    (executeUnconfiguredMonthEmpty? "01" "02"
+        (.parsed (.temporal (.date (dateValue 0 2000 1 1))))
+        (.parsed (.temporal (.date (dateValue 0 2000 2 1))))).map (·.outcome) =
+      some (.accepted expectedMonthEmptyStored) ∧
+    (executeUnconfiguredDayMonthDash? "01-31" "02-29"
+        (.parsed (.temporal (.date (dateValue 0 2000 1 31))))
+        (.parsed (.temporal (.date (dateValue 0 2000 2 29))))).map (·.outcome) =
+      some (.accepted expectedDayMonthDashStored) ∧
+    (executeUnconfiguredMonthEmpty? "03" "02"
+        (.parsed (.temporal (.date (dateValue 0 2000 3 1))))
+        (.parsed (.temporal (.date (dateValue 0 2000 2 1))))).map (·.outcome) =
+      some (.errored { text := "0302", nonempty := by decide } .inverted) := by
   native_decide
 
 end A12Kernel.Conformance.DateRangeConstructionComputation

@@ -6,36 +6,28 @@ import A12Kernel.Semantics.TemporalApplication
 
 namespace A12Kernel
 
-/-- Target presentations closed by the direct construction computation. The declaration retains the original format and separator policy; this derived carrier certifies only the executable subset. -/
-inductive DateRangeConstructionTargetFormat where
-  | exact (format : DateRangeFormat)
-  | yearFragment
-  | yearMonthFragment
-  | monthFragment
-  | monthDayFragment
+/-- The target presentation certified by a direct construction computation: the target's own
+declared input profile, retained rather than re-derived. The former enumeration named only one
+spelling per component set and therefore could not represent a `MM` target with the empty
+separator or a `dd.MM` target at all, even though both accept a construction of their set. -/
+structure DateRangeConstructionTargetFormat where
+  input : DateRangeInputFormat
   deriving Repr, DecidableEq
 
 namespace DateRangeConstructionTargetFormat
 
 /-- Recover the checked DateRange declaration profile represented by this construction target. -/
-def toInputFormat : DateRangeConstructionTargetFormat → DateRangeInputFormat
-  | .exact format => .exact format
-  | .yearFragment => .yearFragment
-  | .yearMonthFragment => .yearMonthFragment
-  | .monthFragment => .yearlessMonth
-  | .monthDayFragment => .yearlessMonthDay
+def toInputFormat (format : DateRangeConstructionTargetFormat) :
+    DateRangeInputFormat :=
+  format.input
 
-/-- Recover the executable target presentation only when the construction and target expose the same supported component profile. -/
-def ofProfiles? : DateRangeEndpointFormat → DateRangeInputFormat →
-    Option DateRangeConstructionTargetFormat
-  | .full _, .exact format => some (.exact format)
-  | .yearFragment, .yearFragment => some .yearFragment
-  | .yearMonthFragment, .yearMonthFragment => some .yearMonthFragment
-  | .monthFragment _, .yearlessMonth => some .monthFragment
-  | .monthDayFragment _, .yearlessMonthDay => some .monthDayFragment
-  | .yearlessMonth, .yearlessMonth => some .monthFragment
-  | .yearlessMonthDay, .yearlessMonthDay => some .monthDayFragment
-  | _, _ => none
+/-- Recover the executable target presentation only when the construction and the target expose
+the same component set. Lexical spelling does not enter it, so both spellings of each set accept
+the construction and the target's own spelling then renders the result. -/
+def ofProfiles? (endpoint : DateRangeEndpointFormat)
+    (stored : DateRangeInputFormat) :
+    Option DateRangeConstructionTargetFormat :=
+  if endpoint.matchesStoredInput stored then some { input := stored } else none
 
 /-- Render one resolved range through the checked exact or fragment target presentation. Each constructor is derived from the declaration's exact format/separator pair. -/
 def render : DateRangeConstructionTargetFormat → ResolvedDateRange → StoredDateRange

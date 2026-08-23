@@ -55,16 +55,25 @@ def sameComponents : DateRangeEndpointFormat → DateRangeEndpointFormat → Boo
   | .yearlessMonthDay, .yearlessMonthDay => true
   | _, _ => false
 
-/-- Match the construction's available component identity to the stored declaration profile. Exact lexical spelling does not distinguish the two full-Date formats. -/
-def matchesStoredInput : DateRangeEndpointFormat → DateRangeInputFormat → Bool
-  | .full _, .exact _ => true
-  | .yearFragment, .yearFragment => true
-  | .yearMonthFragment, .yearMonthFragment => true
-  | .monthFragment _, .yearlessMonth => true
-  | .monthDayFragment _, .yearlessMonthDay => true
-  | .yearlessMonth, .yearlessMonth => true
-  | .yearlessMonthDay, .yearlessMonthDay => true
-  | _, _ => false
+/-- The date components one checked construction endpoint exposes. Base-Year completion does not
+add the year here: a completed `MM` endpoint still answers for the month it declared, exactly as
+a stored declaration does, so one component projection serves both sides of the match. -/
+def components : DateRangeEndpointFormat → TemporalComponents
+  | .full _ => TemporalComponents.fullDate
+  | .yearFragment =>
+      { TemporalComponents.fullDate with month := false, day := false }
+  | .yearMonthFragment => { TemporalComponents.fullDate with day := false }
+  | .monthFragment _ | .yearlessMonth =>
+      { TemporalComponents.fullDate with year := false, day := false }
+  | .monthDayFragment _ | .yearlessMonthDay =>
+      { TemporalComponents.fullDate with year := false }
+
+/-- Match the construction's available component identity to the stored declaration profile.
+Lexical spelling does not enter it, so both full-Date formats, both month-only spellings, and
+both day-and-month spellings each accept a construction of their own component set. -/
+def matchesStoredInput (endpoint : DateRangeEndpointFormat)
+    (stored : DateRangeInputFormat) : Bool :=
+  endpoint.components == stored.components
 
 /-- Complete one decoded endpoint label by its authored range position. -/
 def complete? (format : DateRangeEndpointFormat) (bound : DateRangeBound)
