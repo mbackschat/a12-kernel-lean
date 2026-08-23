@@ -24,7 +24,7 @@ private def target : FlatFieldDecl := {
   name := "CalculatedAt"
   policy := { kind := .temporal .dateTime TemporalComponents.now }
   temporalTargetPolicy := some {
-    format := "dd.MM.yyyy'T'HH:mm:ss"
+    format := "yyyy-MM-dd'T'HH:mm:ss"
     partialMode := .full } }
 
 private def model : FlatModel := {
@@ -94,9 +94,9 @@ example :
     [ text? .hours 2 sourceLocal
     , text? .minutes 2 sourceLocal
     , text? .seconds 45 sourceLocal ] =
-      [ some "16.06.2024T01:59:30"
-      , some "16.06.2024T00:01:30"
-      , some "16.06.2024T00:00:15" ] := by
+      [ some "2024-06-16T01:59:30"
+      , some "2024-06-16T00:01:30"
+      , some "2024-06-16T00:00:15" ] := by
   native_decide
 
 /- Milliseconds survive exact shifting until the target renderer deliberately drops
@@ -110,7 +110,7 @@ example : (do
     let applied ← view.applyTo (fun _ => .absent) |>.toOption
     pure (operand, applied target.id)) =
       some (.value { epochMillis := 1718495970777 },
-        .presentValue ⟨"16.06.2024T01:59:30", by decide⟩) := by
+        .presentValue ⟨"2024-06-16T01:59:30", by decide⟩) := by
   native_decide
 
 /- A formal source stops before a different formal amount and remains target poison. -/

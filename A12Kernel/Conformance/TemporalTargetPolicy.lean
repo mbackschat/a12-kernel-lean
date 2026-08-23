@@ -248,25 +248,22 @@ example :
       , some (.targetKind 0 .dateTime) ] := by
   native_decide
 
-/- DateTime target rendering follows the checked model zone and the bounded seconds format; an exact millisecond remainder is deliberately absent from stored text. -/
+/- DateTime target rendering follows the checked model **zone**, and an exact millisecond remainder is
+deliberately absent from stored text. One instant renders two different wall labels, which is the whole
+observable content here: there is only one declarable DateTime format, so the format cannot vary. -/
 example :
     let instant? := (utcInstant? 2025 6 23 10 0 0).map fun instant =>
       { epochMillis := instant.epochMillis + 999 }
     evaluateDateTimeAt?
-        (dateTimeModel "dd.MM.yyyy'T'HH:mm:ss" "UTC") instant? =
-        some (.accepted {
-          text := "23.06.2025T10:00:00"
-          nonempty := by decide }) ∧
-      evaluateDateTimeAt?
         (dateTimeModel "yyyy-MM-dd'T'HH:mm:ss" "UTC") instant? =
         some (.accepted {
           text := "2025-06-23T10:00:00"
           nonempty := by decide }) ∧
       evaluateDateTimeAt?
-        (dateTimeModel "dd.MM.yyyy'T'HH:mm:ss"
+        (dateTimeModel "yyyy-MM-dd'T'HH:mm:ss"
           "Europe/Berlin") instant? =
         some (.accepted {
-          text := "23.06.2025T12:00:00"
+          text := "2025-06-23T12:00:00"
           nonempty := by decide }) := by
   native_decide
 
@@ -277,17 +274,34 @@ example :
     [ dateTimeElabError?
         (fullDateModel "dd.MM.yyyy" "UTC")
     , dateTimeElabError?
-        (dateTimeModel "dd.MM.yyyy'T'HH:mm:ss" "UTC"
+        (dateTimeModel "yyyy-MM-dd'T'HH:mm:ss" "UTC"
           missingSeconds)
     , dateTimeElabError?
         (dateTimeModel "yyyy/MM/dd'T'HH:mm:ss" "UTC")
     , dateTimeElabError?
-        (dateTimeModel "dd.MM.yyyy'T'HH:mm:ss"
+        (dateTimeModel "dd.MM.yyyy'T'HH:mm:ss" "UTC")
+    , dateTimeElabError?
+        (dateTimeModel "yyyy-MM-dd'T'HH:mm:ss"
           "Pacific/Apia") ] =
       [ some (.targetKind 0 .date)
       , some (.components 0 missingSeconds)
       , some (.unsupportedFormat 0 "yyyy/MM/dd'T'HH:mm:ss")
+      , some (.unsupportedFormat 0 "dd.MM.yyyy'T'HH:mm:ss")
       , some (.unsupportedZone "Pacific/Apia") ] := by
+  native_decide
+
+/- The **day-first** DateTime spelling is refused as a declaration format, which is the correction this
+row guards. That string is the kernel's own, but it tags DateTime-valued *expressions* rather than
+naming a declarable format, and this project admitted it until the model gate was measured — certifying
+declarations the kernel rejects. Its Date sibling really does have two declarable spellings, which is
+what made the wrong symmetry inviting. -/
+example :
+    dateTimeElabError? (dateTimeModel "dd.MM.yyyy'T'HH:mm:ss" "UTC") =
+        some (.unsupportedFormat 0 "dd.MM.yyyy'T'HH:mm:ss") ∧
+      dateTimeElabError? (dateTimeModel "yyyy-MM-dd'T'HH:mm:ss" "UTC") = none ∧
+      DateTimeTargetFormat.ofSource? "dd.MM.yyyy'T'HH:mm:ss" = none ∧
+      FullDateTargetFormat.ofSource? "dd.MM.yyyy" =
+        some .dayMonthYearDots := by
   native_decide
 
 end A12Kernel.Conformance.TemporalTargetPolicy

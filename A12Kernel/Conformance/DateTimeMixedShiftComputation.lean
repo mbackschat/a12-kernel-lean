@@ -14,7 +14,7 @@ private def target : FlatFieldDecl := {
   id := 2, groupPath := ["Order"], name := "CalculatedAt"
   policy := { kind := .temporal .dateTime TemporalComponents.now }
   temporalTargetPolicy := some {
-    format := "dd.MM.yyyy'T'HH:mm:ss", partialMode := .full } }
+    format := "yyyy-MM-dd'T'HH:mm:ss", partialMode := .full } }
 
 private def dayAmount : FlatFieldDecl := {
   id := 3, groupPath := ["Order"], name := "Days"
@@ -136,8 +136,8 @@ example : (do
     some (
       [1718580600777, 1718580600777, 1718580600777,
         1711848600333, 1729992600444],
-      ["17.06.2024T01:30:00"],
-      "17.06.2024T01:30:00") := by
+      ["2024-06-17T01:30:00"],
+      "2024-06-17T01:30:00") := by
   native_decide
 
 /- Quiet failure in either amount clears a filled target; reached inner and outer
@@ -221,7 +221,7 @@ example : (do
     some ([
       1718580600777, 1718667000333, 1718580600777,
       1718580600777, 1711848600333, 1729992600444],
-      ["17.06.2024T01:30:00"], "17.06.2024T01:30:00") := by
+      ["2024-06-17T01:30:00"], "2024-06-17T01:30:00") := by
   native_decide
 
 /- Dynamic quiet failure in either amount clears a filled target; the two checked
@@ -291,7 +291,7 @@ example : (do
       hours.2.withChanges.map (fun entry => entry.value.text), appliedText)) =
     some ([1718580600777, 1718580600777, 1718580600777,
       1711845000333, 1729989000444],
-      ["17.06.2024T01:30:00"], "17.06.2024T01:30:00") := by
+      ["2024-06-17T01:30:00"], "2024-06-17T01:30:00") := by
   native_decide
 
 /- Reverse-order quiet failure clears a filled target; inner and outer formal causes
@@ -375,7 +375,7 @@ example : (do
       view.withChanges.map (fun entry => entry.value.text), appliedText)) =
     some ([1718580600777, 1718667000333, 1718580600777,
       1718580600777, 1711845000333, 1729989000444],
-      ["17.06.2024T01:30:00"], "17.06.2024T01:30:00") := by
+      ["2024-06-17T01:30:00"], "2024-06-17T01:30:00") := by
   native_decide
 
 /- Dynamic reverse quiet failure clears a filled target, while the two amount

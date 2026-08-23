@@ -199,7 +199,7 @@ example :
 example :
     let expected := (date? 2024 6 15).get (by native_decide)
     let dateTime := {
-      dayOptionalSource .full "dd.MM.yyyy'T'HH:mm:ss" with
+      dayOptionalSource .full "yyyy-MM-dd'T'HH:mm:ss" with
       policy := { kind := .temporal .dateTime TemporalComponents.now } }
     let repeated := {
       dayOptionalSource with

@@ -21,7 +21,13 @@ private def dateTimeField (id : FieldId) (groups : GroupPath) (name : String)
 
 private def target := dateTimeField 1 ["Cart"] "FirstMoment"
 private def source := dateTimeField 2 ["Cart", "Lines"] "Moment" [10]
-private def dottedSource := dateTimeField 3 ["Cart", "Lines"] "Dotted" [10] "dd.MM.yyyy'T'HH:mm:ss"
+/- The different-**format** control necessarily uses the degenerate time-only format, because
+`yyyy-MM-dd'T'HH:mm:ss` is the only DateTime *storage* format the model gate admits: the dotted
+`dd.MM.yyyy'T'HH:mm:ss` spelling these two controls used before is a DSL expression tag, not a
+declarable format, and is refused outright. The format gate is kind-independent, so a DateTime field
+declaring the clock format is authorable, and these two differ from the source in the format string
+alone. -/
+private def degenerateSource := dateTimeField 3 ["Cart", "Lines"] "Dotted" [10] "HH:mm:ss"
 private def incompleteSource := dateTimeField 4 ["Cart", "Lines"] "Incomplete" [10] "yyyy-MM-dd'T'HH:mm:ss" { TemporalComponents.now with second := false }
 private def timeSource : FlatFieldDecl := {
   dateTimeField 5 ["Cart", "Lines"] "Time" [10] with
@@ -30,12 +36,12 @@ private def timeSource : FlatFieldDecl := {
 }
 private def repeatedTarget := dateTimeField 6 ["Cart", "Lines"] "RepeatedTarget" [10]
 private def nestedSource := dateTimeField 7 ["Cart", "Lines", "Details"] "Nested" [10, 20]
-private def dottedTarget := dateTimeField 8 ["Cart"] "DottedTarget" [] "dd.MM.yyyy'T'HH:mm:ss"
+private def degenerateTarget := dateTimeField 8 ["Cart"] "DottedTarget" [] "HH:mm:ss"
 private def otherGroupTarget := dateTimeField 9 ["Other"] "OtherMoment"
 private def partialSource := dateTimeField 11 ["Cart", "Lines"] "Partial" [10] "yyyy-MM-dd'T'HH:mm:ss" TemporalComponents.now .yearOptional
 
 private def model : FlatModel := {
-  fields := [target, source, dottedSource, incompleteSource, timeSource, repeatedTarget, nestedSource, dottedTarget, otherGroupTarget]
+  fields := [target, source, degenerateSource, incompleteSource, timeSource, repeatedTarget, nestedSource, degenerateTarget, otherGroupTarget]
   repeatableGroups := [
     { level := 10, path := ["Cart", "Lines"], repeatability := some 99 },
     { level := 20, path := ["Cart", "Lines", "Details"], repeatability := some 4 }]
@@ -139,7 +145,7 @@ example :
       (checked? target.id (star "Incomplete")).isNone = true ∧
       (checked? target.id (star "Time")).isNone = true ∧
       partialSource.temporalFirstFilledStarCarrier? = none ∧
-      (checked? dottedTarget.id (star "Moment")).isNone = true ∧
+      (checked? degenerateTarget.id (star "Moment")).isNone = true ∧
       (checked? otherGroupTarget.id (star "Moment")).isNone = true ∧
       (checkedAt? ["Cart", "Lines"] repeatedTarget.id (star "Moment")).isNone = true ∧
       (checked? target.id nestedStar).isNone = true := by

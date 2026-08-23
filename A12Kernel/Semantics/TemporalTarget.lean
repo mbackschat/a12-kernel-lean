@@ -168,15 +168,17 @@ end FullDate
 
 /-- Exact whole-second DateTime declaration formats admitted by the executable target renderer. -/
 inductive DateTimeTargetFormat where
-  | dayMonthYearTime
   | yearMonthDayTime
   deriving Repr, DecidableEq
 
 namespace DateTimeTargetFormat
 
-/-- Admit only the bounded standard whole-second DateTime formats. -/
+/-- Admit the **one** whole-second DateTime storage format a declaration may carry. Measured, the model
+gate refuses the day-first `dd.MM.yyyy'T'HH:mm:ss` spelling outright: that string is the kernel's own,
+but it tags DateTime-valued *expressions* — `Now`, the `DateTime(...)` constructor, a DSL constant —
+rather than naming a declarable format, and admitting it here certified declarations the kernel rejects.
+Unlike Date, which really does have two declarable spellings, DateTime has one. -/
 def ofSource? : String → Option DateTimeTargetFormat
-  | "dd.MM.yyyy'T'HH:mm:ss" => some .dayMonthYearTime
   | "yyyy-MM-dd'T'HH:mm:ss" => some .yearMonthDayTime
   | _ => none
 
@@ -193,10 +195,6 @@ def renderText (format : DateTimeTargetFormat)
       TemporalTargetText.twoDigits minute ++ ":" ++
       TemporalTargetText.twoDigits second
   match format with
-  | .dayMonthYearTime =>
-      TemporalTargetText.twoDigits date.day ++ "." ++
-        TemporalTargetText.twoDigits date.month ++ "." ++
-        toString date.year ++ "T" ++ timeText
   | .yearMonthDayTime =>
       toString date.year ++ "-" ++
         TemporalTargetText.twoDigits date.month ++ "-" ++
@@ -216,10 +214,9 @@ def render (format : DateTimeTargetFormat)
     text := format.renderText dateTime
     nonempty := by
       cases format
-      · simp [renderText, TemporalTargetText.twoDigits]
-      · intro empty
-        have emptyLength := congrArg String.length empty
-        simp [renderText] at emptyLength
+      intro empty
+      have emptyLength := congrArg String.length empty
+      simp [renderText] at emptyLength
   }
 
 end DateTimeTargetFormat

@@ -18,7 +18,7 @@ private def target : FlatFieldDecl := {
   name := "CalculatedAt"
   policy := { kind := .temporal .dateTime TemporalComponents.now }
   temporalTargetPolicy := some {
-    format := "dd.MM.yyyy'T'HH:mm:ss"
+    format := "yyyy-MM-dd'T'HH:mm:ss"
     partialMode := .full } }
 
 private def amount : FlatFieldDecl := {
@@ -137,10 +137,10 @@ private def errorOf
   | .error error => some error
 
 private def old : StoredDateTime :=
-  ⟨"01.05.1916T23:30:00", by decide⟩
+  ⟨"1916-05-01T23:30:00", by decide⟩
 
 private def shifted : StoredDateTime :=
-  ⟨"30.04.1916T22:30:00", by decide⟩
+  ⟨"1916-04-30T22:30:00", by decide⟩
 
 /- The source-offset fallback preserves the target civil date before declaration-owned
    rendering; the changed value survives result classification and exact application. -/
@@ -226,9 +226,9 @@ example : (do
         (fun (entry : DateTimeComputedInstance) => entry.value.text))) =
     some (
       .value { epochMillis := 1711845000777 },
-      ["31.03.2024T01:30:00"],
-      .presentValue ⟨"31.03.2024T01:30:00", by decide⟩,
-      ["27.10.2024T02:30:00"]) := by
+      ["2024-03-31T01:30:00"],
+      .presentValue ⟨"2024-03-31T01:30:00", by decide⟩,
+      ["2024-10-27T02:30:00"]) := by
   native_decide
 
 /- Dynamic day target execution preserves the settled distinction between formal
@@ -284,7 +284,7 @@ example : (do
     let now ← ModelZone.ConcreteProfile.europeBerlin.resolveLocal? nowLocal
     let unchangedInput ←
       (checkDocument prepared "en_US"
-        (dynamicData "15.06.2024T10:30:00" (.parsed (.num 0)))).toOption
+        (dynamicData "2024-06-15T10:30:00" (.parsed (.num 0)))).toOption
     let unchanged ←
       (elaborateNowDateTimeDayShiftComputation
         model (.literal 0) target.id).toOption
@@ -296,7 +296,7 @@ example : (do
         (fun (entry : DateTimeComputedInstance) => entry.value.text),
       unchangedView.withChanges.map
         (fun (entry : DateTimeComputedInstance) => entry.value.text))) =
-    some (["15.06.2024T10:30:00"], ([] : List String)) := by
+    some (["2024-06-15T10:30:00"], ([] : List String)) := by
   native_decide
 
 /- The bounded dynamic two-day computation retains exact milliseconds, samples each
@@ -334,9 +334,9 @@ example : (do
         (fun (entry : DateTimeComputedInstance) => entry.value.text))) =
     some (
       .value { epochMillis := 1718613000777 },
-      ["17.06.2024T10:30:00"],
-      .presentValue ⟨"17.06.2024T10:30:00", by decide⟩,
-      ["18.06.2024T10:30:00"]) := by
+      ["2024-06-17T10:30:00"],
+      .presentValue ⟨"2024-06-17T10:30:00", by decide⟩,
+      ["2024-06-18T10:30:00"]) := by
   native_decide
 
 /- Source-relative equality remains public without becoming a change. Quiet failure
@@ -346,7 +346,7 @@ example : (do
     let now ← ModelZone.ConcreteProfile.europeBerlin.resolveLocal? nowLocal
     let unchangedInput ←
       (checkDocument prepared "en_US"
-        (twoDayData "17.06.2024T10:30:00"
+        (twoDayData "2024-06-17T10:30:00"
           (.parsed (.num 1)) (.parsed (.num 1)))).toOption
     let unchanged ←
       (elaborateNowDateTimeTwoDayShiftComputation
@@ -378,7 +378,7 @@ example : (do
       innerView.cleared, outerView.cleared,
       innerView.noErrorOccurred && outerView.noErrorOccurred)) =
     some (
-      ["17.06.2024T10:30:00"], [],
+      ["2024-06-17T10:30:00"], [],
       [target.id], [target.id], true) := by
   native_decide
 
@@ -431,7 +431,7 @@ example : (do
         sourceLabel.date.civil.parts sourceLabel.time .storedGregorian))
     let checked ←
       (checkDocument prepared "en_US"
-        (fieldTwoDayData "15.06.2024T10:30:00" old.text raw
+        (fieldTwoDayData "2024-06-15T10:30:00" old.text raw
           (.parsed (.num 1)) (.parsed (.num 1)))).toOption
     let operation ←
       (elaborateDateTimeTwoDayShiftComputation
@@ -445,8 +445,8 @@ example : (do
       applied target.id)) =
     some (
       .value { epochMillis := 1718613000777 },
-      ["17.06.2024T10:30:00"],
-      .presentValue ⟨"17.06.2024T10:30:00", by decide⟩) := by
+      ["2024-06-17T10:30:00"],
+      .presentValue ⟨"2024-06-17T10:30:00", by decide⟩) := by
   native_decide
 
 /- Source-relative equality remains public without becoming a change. Quiet failure
@@ -460,8 +460,8 @@ example : (do
         sourceLabel.date.civil.parts sourceLabel.time .storedGregorian))
     let checked ←
       (checkDocument prepared "en_US"
-        (fieldTwoDayData "15.06.2024T10:30:00"
-          "17.06.2024T10:30:00" raw
+        (fieldTwoDayData "2024-06-15T10:30:00"
+          "2024-06-17T10:30:00" raw
           (.parsed (.num 1)) (.parsed (.num 1)))).toOption
     let unchanged ←
       (elaborateDateTimeTwoDayShiftComputation
@@ -490,7 +490,7 @@ example : (do
       innerView.cleared, outerView.cleared,
       innerView.noErrorOccurred && outerView.noErrorOccurred)) =
     some (
-      ["17.06.2024T10:30:00"], [],
+      ["2024-06-17T10:30:00"], [],
       [target.id], [target.id], true) := by
   native_decide
 

@@ -64,7 +64,7 @@ private def outcomeAt? (now : Instant) :
     Option DateTimeTargetOutcome := do
   let operation ←
     (elaborateDateTimeNowComputation
-      (modelFor "dd.MM.yyyy'T'HH:mm:ss") 1).toOption
+      (modelFor "yyyy-MM-dd'T'HH:mm:ss") 1).toOption
   operation.evaluateOutcome { now } |>.toOption
 
 private def errorOf
@@ -79,11 +79,11 @@ example : (do
     let now ← instant? 2025 6 23 10 0 0 999
     let operation ←
       (elaborateDateTimeNowComputation
-        (modelFor "dd.MM.yyyy'T'HH:mm:ss") 1).toOption
+        (modelFor "yyyy-MM-dd'T'HH:mm:ss") 1).toOption
     let outcome ← operation.evaluateOutcome { now } |>.toOption
     pure (operation.operand, outcome)) =
     some (.nowValue, .accepted {
-      text := "23.06.2025T10:00:00"
+      text := "2025-06-23T10:00:00"
       nonempty := by decide }) := by
   native_decide
 
@@ -106,10 +106,10 @@ example : (do
     pure (calculated, later, calculated ≠ later)) =
     some (
       .accepted {
-        text := "23.06.2025T10:00:00"
+        text := "2025-06-23T10:00:00"
         nonempty := by decide },
       .accepted {
-        text := "23.06.2025T10:00:01"
+        text := "2025-06-23T10:00:01"
         nonempty := by decide },
       true) := by
   native_decide
@@ -126,11 +126,11 @@ example :
    milliseconds and calendar carry, then delegate whole-second target rendering. -/
 example : (do
     let now ← instant? 2025 6 23 23 59 30 777
-    let input ← inputFor? "dd.MM.yyyy'T'HH:mm:ss"
+    let input ← inputFor? "yyyy-MM-dd'T'HH:mm:ss"
     let evaluate (unit : DateTimeSubdayUnit) (value : Rat) := do
       let operation ←
         (elaborateShiftedNowDateTimeComputation
-          (modelFor "dd.MM.yyyy'T'HH:mm:ss")
+          (modelFor "yyyy-MM-dd'T'HH:mm:ss")
           unit (.literal value) 1).toOption
       let operand ← operation.evaluateOperand { now } input |>.toOption
       let outcome ← operation.evaluateOutcome { now } input |>.toOption
@@ -141,11 +141,11 @@ example : (do
     pure (hours, minutes, seconds)) =
       some (
         (.value { epochMillis := 1750730370777 },
-          .accepted ⟨"24.06.2025T01:59:30", by decide⟩),
+          .accepted ⟨"2025-06-24T01:59:30", by decide⟩),
         (.value { epochMillis := 1750723290777 },
-          .accepted ⟨"24.06.2025T00:01:30", by decide⟩),
+          .accepted ⟨"2025-06-24T00:01:30", by decide⟩),
         (.value { epochMillis := 1750723215777 },
-          .accepted ⟨"24.06.2025T00:00:15", by decide⟩)) := by
+          .accepted ⟨"2025-06-24T00:00:15", by decide⟩)) := by
   native_decide
 
 /- Elaboration retains no instant: one checked shifted-Now operation transports two
@@ -153,10 +153,10 @@ example : (do
 example : (do
     let first ← instant? 2025 6 23 10 0 0 1
     let second ← instant? 2025 6 23 10 0 1 999
-    let input ← inputFor? "dd.MM.yyyy'T'HH:mm:ss"
+    let input ← inputFor? "yyyy-MM-dd'T'HH:mm:ss"
     let operation ←
       (elaborateShiftedNowDateTimeComputation
-        (modelFor "dd.MM.yyyy'T'HH:mm:ss")
+        (modelFor "yyyy-MM-dd'T'HH:mm:ss")
         .seconds (.literal 1) 1).toOption
     let firstResult ← operation.evaluateOperand { now := first } input |>.toOption
     let secondResult ← operation.evaluateOperand { now := second } input |>.toOption
@@ -172,25 +172,25 @@ example : (do
 example : (do
     let now ← instant? 2025 6 23 10 0 0
     let poisonedInput ←
-      inputFor? "dd.MM.yyyy'T'HH:mm:ss" (.rejected .declaredConstraint)
+      inputFor? "yyyy-MM-dd'T'HH:mm:ss" (.rejected .declaredConstraint)
     let checkedAmount ←
       (elaborateValueAsDateTimeFieldShiftAmount
-        (modelFor "dd.MM.yyyy'T'HH:mm:ss") amount.id).toOption
+        (modelFor "yyyy-MM-dd'T'HH:mm:ss") amount.id).toOption
     let poisoned ←
       (elaborateShiftedNowDateTimeComputation
-        (modelFor "dd.MM.yyyy'T'HH:mm:ss")
+        (modelFor "yyyy-MM-dd'T'HH:mm:ss")
         .seconds checkedAmount 1).toOption
     let poisonOutcome ←
       poisoned.evaluateOutcome { now } poisonedInput |>.toOption
     let unavailable ←
       (elaborateValueAsDateTimeExpressionShiftAmount
-        (modelFor "dd.MM.yyyy'T'HH:mm:ss") ["Order"]
+        (modelFor "yyyy-MM-dd'T'HH:mm:ss") ["Order"]
         (.binary .divide
           (.literal { value := 1, authoredScale := 0 })
           (.literal { value := 0, authoredScale := 0 }))).toOption
     let empty ←
       (elaborateShiftedNowDateTimeComputation
-        (modelFor "dd.MM.yyyy'T'HH:mm:ss")
+        (modelFor "yyyy-MM-dd'T'HH:mm:ss")
         .seconds unavailable 1).toOption
     let view ←
       empty.executeResult { now } poisonedInput ([] : List FormalCause)
@@ -202,17 +202,17 @@ example : (do
 /- Successful shifted-Now target text reaches source-relative application unchanged. -/
 example : (do
     let now ← instant? 2025 6 23 10 0 0 777
-    let input ← inputFor? "dd.MM.yyyy'T'HH:mm:ss"
+    let input ← inputFor? "yyyy-MM-dd'T'HH:mm:ss"
     let operation ←
       (elaborateShiftedNowDateTimeComputation
-        (modelFor "dd.MM.yyyy'T'HH:mm:ss")
+        (modelFor "yyyy-MM-dd'T'HH:mm:ss")
         .minutes (.literal 1) 1).toOption
     let view ← operation.executeResult { now } input ([] : List FormalCause)
       |>.toOption
     let applied ← view.applyTo (fun _ => .absent) |>.toOption
     pure (view.withChanges.map (·.value.text), applied 1)) =
-      some (["23.06.2025T10:01:00"],
-        .presentValue ⟨"23.06.2025T10:01:00", by decide⟩) := by
+      some (["2025-06-23T10:01:00"],
+        .presentValue ⟨"2025-06-23T10:01:00", by decide⟩) := by
   native_decide
 
 end A12Kernel.Conformance.DateTimeComputation
