@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ValueAsDate
+import A12Kernel.Elaboration.DateFromDateTime
 
 /-! # Partial-Date and checked `TimeFromDateTime`
 
@@ -11,16 +12,14 @@ The complete-DateTime/profile/Number certificate is also the exact static source
 
 namespace A12Kernel
 
-/-- Whether one resolved declaration is the exact ordinary full-DateTime source admitted by this extraction capsule. -/
+/-- Whether one resolved declaration is the ordinary full-DateTime source this extraction admits. It is
+the **same** requirement `DateFromDateTime` imposes, which is measured rather than assumed: the Kernel
+wants a complete DateTime for both component extractors and refuses every other source at the operator.
+[`DateFromDateTime.lean`](DateFromDateTime.lean) owns it; this name is retained for the existing
+certificate. -/
 def FlatModel.admitsValueAsDateTimeExtractionSource
     (model : FlatModel) (source : FlatTemporalField) : Bool :=
-  match model.lookupUniqueId source.id with
-  | .error _ => false
-  | .ok declaration =>
-      declaration.repeatableScope.isEmpty &&
-        declaration.toTemporalField? == some source &&
-        source.kind == .dateTime &&
-        source.components.isFullDateTime
+  model.admitsCompleteDateTimeSource source
 
 /-- Static refusal before a partial-Date constructor can own one checked `TimeFromDateTime` read. -/
 inductive ValueAsDateTimeExtractionElabError where

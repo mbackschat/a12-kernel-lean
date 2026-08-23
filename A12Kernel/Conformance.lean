@@ -39,6 +39,7 @@ import A12Kernel.Conformance.TemporalTargetPolicy
 import A12Kernel.Conformance.TimeComputation
 import A12Kernel.Conformance.TimeInput
 import A12Kernel.Conformance.DateTimeInput
+import A12Kernel.Conformance.DateFromDateTime
 import A12Kernel.Conformance.ValueAsDate
 import A12Kernel.Conformance.ValueAsDateLocus
 import A12Kernel.Conformance.TimeConstruction
