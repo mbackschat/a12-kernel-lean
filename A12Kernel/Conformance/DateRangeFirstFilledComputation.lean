@@ -9,13 +9,14 @@ open A12Kernel
 
 private def rangeField (id : FieldId) (groupPath : GroupPath) (name : String)
     (scope : List RepeatableLevel := []) (format : String := "yyyy-MM-dd")
-    (separator : String := "/") :
+    (separator : String := "/")
+    (interpretationOfYear : Option DateRangeYearInterpretation := none) :
     FlatFieldDecl := {
   id
   groupPath
   name
   policy := { kind := .dateRange }
-  dateRangePolicy := some { format, separator }
+  dateRangePolicy := some { format, separator, interpretationOfYear }
   repeatableScope := scope
 }
 
@@ -52,17 +53,29 @@ private def monthDayTarget :=
   rangeField 16 ["Cart"] "MonthDayTarget" [] "MM-dd" "/"
 private def monthDaySource :=
   rangeField 17 ["Cart", "Lines"] "MonthDaySource" [10] "MM-dd" "/"
+private def fromTarget :=
+  rangeField 18 ["Cart"] "FromTarget" [] "dd.MM" "-" (some .anchorStart)
+private def fromSource :=
+  rangeField 19 ["Cart", "Lines"] "FromSource" [10] "dd.MM" "-"
+    (some .anchorStart)
+private def toTarget :=
+  rangeField 20 ["Cart"] "ToTarget" [] "dd.MM" "-" (some .anchorFinish)
+private def toSource :=
+  rangeField 21 ["Cart", "Lines"] "ToSource" [10] "dd.MM" "-"
+    (some .anchorFinish)
 private def model : FlatModel := {
   fields := [target, source, otherFormatSource, otherSeparatorTarget,
     otherSeparatorSource, dottedTarget, dottedSource, dayMonthDottedTarget,
     dayMonthDottedSource, yearTarget, yearSource, yearMonthTarget,
-    yearMonthSource, monthTarget, monthSource, monthDayTarget, monthDaySource]
+    yearMonthSource, monthTarget, monthSource, monthDayTarget, monthDaySource,
+    fromTarget, fromSource, toTarget, toSource]
   repeatableGroups := [
     { level := 10, path := ["Cart", "Lines"], repeatability := some 99 }]
   timeZoneId := "UTC"
 }
 
 private def configuredModel : FlatModel := { model with baseYear := some 2024 }
+private def interpretationModel : FlatModel := { model with baseYear := some 2020 }
 
 private def star (field : String) : SurfaceStarFieldPath := {
   base := .absolute
@@ -155,6 +168,38 @@ example :
         stored := "2024-03-20/2024-03-21"
         raw := .parsed (.dateRange selectedRange)
       }] = some "VALUE|2024-03-20/2024-03-21" := by
+  native_decide
+
+/- A declared year interpretation is not part of direct-star carrier admission, so opposite interpretations cross in either direction. -/
+example :
+    (checkedFor? interpretationModel fromTarget.id "ToSource").isSome = true ∧
+      (checkedFor? interpretationModel toTarget.id "FromSource").isSome = true := by
+  native_decide
+
+/- The selected exact range retains its source-side endpoint years while the target stores its own yearless spelling; an empty first row reaches the second and exhaustion clears. -/
+example :
+    signatureForModel? interpretationModel fromTarget toSource [{
+      row := 1
+      stored := "01.11-28.02"
+      raw := .parsed (.dateRange (exactRange
+        1572566400000 1582848000000 2019 11 1 2020 2 28))
+    }] = some "VALUE|01.11-28.02" ∧
+      signatureForModel? interpretationModel toTarget fromSource [{
+        row := 1
+        stored := "01.11-28.02"
+        raw := .parsed (.dateRange (exactRange
+          1604188800000 1614470400000 2020 11 1 2021 2 28))
+      }] = some "VALUE|01.11-28.02" ∧
+      signatureForModel? interpretationModel fromTarget toSource [{
+        row := 2
+        stored := "01.11-28.02"
+        raw := .parsed (.dateRange (exactRange
+          1572566400000 1582848000000 2019 11 1 2020 2 28))
+      }] = some "VALUE|01.11-28.02" ∧
+      signatureForModel? interpretationModel fromTarget toSource [] =
+        some "CLEARED" ∧
+      signatureForModel? interpretationModel toTarget fromSource [] =
+        some "CLEARED" := by
   native_decide
 
 /- All four fragment policies are admitted only as matching target/source pairs. -/
