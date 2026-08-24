@@ -67,7 +67,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 #### Number, token, and Boolean group runtime
 
 - `state`: open
-- `missing`: execute retained Boolean group value-count computation over fixed groups and groups containing declarations below a deeper repeatable level, non-value-count token group operands through computation, Number and Boolean plus non-value-list token group operands through partial validation, and all three families through legacy raw-`Document` routes.
+- `missing`: execute retained Boolean group value-count computation over fixed groups outside the measured two-direct-field boundary and groups containing declarations below a deeper repeatable level, non-value-count token group operands through computation, Number and Boolean plus non-value-list token group operands through partial validation, and all three families through legacy raw-`Document` routes.
 - `missing`: make Number directional missingness per cell before admitting a group whose declarations disagree on signedness.
 - `missing`: decide Enumeration/category `NumberOfValueInFields` literal admission over a starred group independently of the current all-expanded-declarations local choice; the measured all-String group does not discriminate that gate.
 - `prerequisite`: legacy raw-`Document` readers must expose instantiated-row topology before they can enumerate the operand-bounded group extent.

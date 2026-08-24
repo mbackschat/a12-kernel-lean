@@ -197,7 +197,7 @@ def resolveCheckedGroupEntityOperandPairs
 
     Cells are emitted declaration-major in stable model declaration order, with each declaration's canonical row order inside it. Fixed-group token `FirstFilledValue` observes declaration order; its terminal single-level starred-group fragment observes that every row of one declaration precedes every row of the next. Set-valued consumers remain insensitive to the order. A filter cannot attach to a group operand, so every cell is unfiltered.
 
-    `hasUninstantiatedTail` is `false` because only instantiated rows are enumerated. That is likewise unobservable here — the uniqueness scan never reads it — and the aggregate families that *do* read it still refuse a group slot, which is what keeps this from becoming an unmeasured fillability claim. -/
+    `hasUninstantiatedTail` is `false` because only instantiated rows are enumerated. A consumer that needs declared-tail fillability must determine it separately: checked Boolean validation does so from every selected declaration's scope, while the measured checked-computation group carriers restrict their admitted shapes and consume only this concrete projection. -/
 def resolveCheckedGroupEntityOperandCore
     (checked : CheckedDocument model) (outer : Env) (boundCount : Nat)
     (declarations : List FlatFieldDecl) :

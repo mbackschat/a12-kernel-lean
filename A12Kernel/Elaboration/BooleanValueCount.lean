@@ -290,11 +290,40 @@ structure CheckedBooleanValueCountStarredGroupSource
     measuredBooleanValueCountStarredGroupShape starredSource group = true
   modelWellFormed : model.validate.isOk = true
 
+/-- The measured fixed computation boundary: exactly two direct nonrepeatable declarations in the
+    authored terminal group, with Boolean then Confirm for `True` or two Booleans for `False`. -/
+def measuredBooleanValueCountFixedGroupShape
+    (reference : ResolvedGroupReference)
+    (group : CheckedBooleanValueCountGroup model expected) : Bool :=
+  group.fields.length == 2 &&
+    (group.fields.all fun declaration =>
+      declaration.groupPath == reference.path &&
+        declaration.repeatableScope.isEmpty) &&
+    group.fields.map (·.policy.kind) ==
+      if expected then [.boolean, .confirm] else [.boolean, .boolean]
+
+/-- One measured fixed Boolean-group computation. The source equality excludes starred carriers,
+    while `measuredShape` keeps recursive and repeatable expansions outside this first runtime slice. -/
+structure CheckedBooleanValueCountFixedGroupSource
+    (model : FlatModel) (expected : Bool) where
+  reference : ResolvedGroupReference
+  group : CheckedBooleanValueCountGroup model expected
+  sourceOwned : group.source = .fixed reference
+  measuredShape :
+    measuredBooleanValueCountFixedGroupShape reference group = true
+  modelWellFormed : model.validate.isOk = true
+
 abbrev CheckedTrueValueCountStarredGroupSource (model : FlatModel) :=
   CheckedBooleanValueCountStarredGroupSource model true
 
 abbrev CheckedFalseValueCountStarredGroupSource (model : FlatModel) :=
   CheckedBooleanValueCountStarredGroupSource model false
+
+abbrev CheckedTrueValueCountFixedGroupSource (model : FlatModel) :=
+  CheckedBooleanValueCountFixedGroupSource model true
+
+abbrev CheckedFalseValueCountFixedGroupSource (model : FlatModel) :=
+  CheckedBooleanValueCountFixedGroupSource model false
 
 namespace CheckedBooleanValueCountSource
 
@@ -336,6 +365,53 @@ def elaborateBooleanValueCountSource (model : FlatModel)
         uniqueDirectOperands := hDuplicate }
   else
     throw .incoherentCore
+
+/-- Resolve the measured two-field fixed Boolean/Confirm group computation without widening to a
+    recursive, repeatable, starred, or mixed entity-list route. -/
+def elaborateBooleanValueCountFixedGroupSource (model : FlatModel)
+    (declaringGroup : GroupPath) (expected : Bool)
+    (authored : SurfaceGroupReference) :
+    Except BooleanValueCountElabError
+      (CheckedBooleanValueCountFixedGroupSource model expected) := do
+  let shape ← elaborateFieldEntityShape model declaringGroup {
+    first := .group authored
+    rest := [] } |>.mapError .shape
+  match shape.first, shape.rest with
+  | .group reference, [] =>
+      let operand ←
+        certifyBooleanValueCountGroup model expected (.fixed reference)
+      match operand with
+      | .group group =>
+          match hSource : group.source with
+          | .fixed fixed =>
+              if hMeasured :
+                  measuredBooleanValueCountFixedGroupShape fixed group = true then
+                pure {
+                  reference := fixed
+                  group
+                  sourceOwned := hSource
+                  measuredShape := hMeasured
+                  modelWellFormed := shape.modelWellFormed }
+              else throw .incoherentCore
+          | .starred _ | .starredPresence _ => throw .incoherentCore
+      | .field _ | .star _ => throw .incoherentCore
+  | _, _ => throw .incoherentCore
+
+/-- Resolve the measured two-field fixed `True` Boolean/Confirm group computation. -/
+def elaborateTrueValueCountFixedGroupSource (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceGroupReference) :
+    Except BooleanValueCountElabError
+      (CheckedTrueValueCountFixedGroupSource model) :=
+  elaborateBooleanValueCountFixedGroupSource
+    model declaringGroup true authored
+
+/-- Resolve the measured two-field fixed `False` Boolean group computation. -/
+def elaborateFalseValueCountFixedGroupSource (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceGroupReference) :
+    Except BooleanValueCountElabError
+      (CheckedFalseValueCountFixedGroupSource model) :=
+  elaborateBooleanValueCountFixedGroupSource
+    model declaringGroup false authored
 
 /-- Resolve one measured Boolean-group value-count computation shape without widening fixed groups, terminal-presence stars, mixed lists, or unmeasured declarations. -/
 def elaborateBooleanValueCountStarredGroupSource (model : FlatModel)
@@ -393,6 +469,34 @@ def booleanValueCountCellAt (phase : Phase)
   | .value _ => .unknown .malformed
   | .unknown cause | .poison cause => .unknown cause
 
+/-- The two externally distinguished checked group-computation extents. Fixed groups consume their
+    complete direct extent; starred groups explicitly exclude cells beyond declared capacity. -/
+inductive BooleanValueCountGroupComputationExtent where
+  | complete
+  | inCapacity
+
+/-- Evaluate one certified Boolean group against the selected checked-document extent. This is the
+    common scan; fixed and starred carriers differ only in the extent they select. -/
+def evaluateCheckedBooleanValueCountGroupComputation
+    (expected : Bool) (group : CheckedBooleanValueCountGroup model expected)
+    (extent : BooleanValueCountGroupComputationExtent)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError NumericOperand := do
+  let core ← document.resolveCheckedGroupEntityOperandCore outer
+    group.source.boundLevelCount group.fields
+  let addressed := match extent with
+    | .complete => core.addressedCells
+    | .inCapacity => core.inCapacityAddressedCells
+  let resolved : ResolvedValueListSide .token := {
+    cells := addressed.map fun cell =>
+      booleanValueCountCellAt .computation cell.cell
+    hasUninstantiatedTail := core.hasUninstantiatedTail
+    hasHaving := core.hasHaving
+    hasNonRelevant := core.hasNonRelevant }
+  let side := (ResolvedValueCountSide.empty : ResolvedValueCountSide .token)
+    |>.appendResolved resolved
+  pure (evalValueCountAggregate (booleanValueCountToken expected) side)
+
 namespace CheckedBooleanValueCountSource
 
 /-- Every Boolean/Confirm value count has the Kernel's fixed integral result scale. -/
@@ -446,20 +550,33 @@ def toCheckedBooleanValueCountSource
 def evaluateCheckedDocumentComputation
     (checked : CheckedBooleanValueCountStarredGroupSource model expected)
     (document : CheckedDocument model) (outer : Env) :
-    Except CheckedAddressingError NumericOperand := do
-  let core ← document.resolveCheckedGroupEntityOperandCore outer
-    checked.group.source.boundLevelCount checked.group.fields
-  let resolved : ResolvedValueListSide .token := {
-    cells := core.inCapacityAddressedCells.map fun addressed =>
-      booleanValueCountCellAt .computation addressed.cell
-    hasUninstantiatedTail := core.hasUninstantiatedTail
-    hasHaving := core.hasHaving
-    hasNonRelevant := core.hasNonRelevant }
-  let side := (ResolvedValueCountSide.empty : ResolvedValueCountSide .token)
-    |>.appendResolved resolved
-  pure (evalValueCountAggregate (booleanValueCountToken expected) side)
+    Except CheckedAddressingError NumericOperand :=
+  evaluateCheckedBooleanValueCountGroupComputation expected checked.group
+    .inCapacity document outer
 
 end CheckedBooleanValueCountStarredGroupSource
+
+namespace CheckedBooleanValueCountFixedGroupSource
+
+def scaleSummary
+    (_checked : CheckedBooleanValueCountFixedGroupSource model expected) :
+    NumericScaleSummary :=
+  NumericScaleSummary.field 0
+
+def referencesField
+    (checked : CheckedBooleanValueCountFixedGroupSource model expected)
+    (field : FieldId) : Bool :=
+  checked.group.referencesField field
+
+/-- Checked fixed-group computation classifies every cell in its complete direct extent. -/
+def evaluateCheckedDocumentComputation
+    (checked : CheckedBooleanValueCountFixedGroupSource model expected)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError NumericOperand :=
+  evaluateCheckedBooleanValueCountGroupComputation expected checked.group
+    .complete document outer
+
+end CheckedBooleanValueCountFixedGroupSource
 
 namespace CheckedBooleanValueCountOperand
 

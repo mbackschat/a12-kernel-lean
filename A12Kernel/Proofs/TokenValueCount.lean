@@ -84,6 +84,26 @@ theorem checkedBooleanValueCountStarredGroup_checkedComputation_usesCapacityProj
       pure (evalValueCountAggregate (booleanValueCountToken expected) side)) := by
   rfl
 
+/-- Each measured fixed Boolean-group computation specializes the shared complete addressed
+    projection before applying canonical constant-specific token classification. -/
+theorem checkedBooleanValueCountFixedGroup_checkedComputation_usesCompleteProjection
+    (checked : CheckedBooleanValueCountFixedGroupSource model expected)
+    (document : CheckedDocument model) (outer : Env) :
+    checked.evaluateCheckedDocumentComputation document outer = (do
+      let core ← document.resolveCheckedGroupEntityOperandCore outer
+        checked.group.source.boundLevelCount checked.group.fields
+      let resolved : ResolvedValueListSide .token := {
+        cells := core.addressedCells.map fun addressed =>
+          booleanValueCountCellAt .computation addressed.cell
+        hasUninstantiatedTail := core.hasUninstantiatedTail
+        hasHaving := core.hasHaving
+        hasNonRelevant := core.hasNonRelevant }
+      let side :=
+        (ResolvedValueCountSide.empty : ResolvedValueCountSide .token)
+          |>.appendResolved resolved
+      pure (evalValueCountAggregate (booleanValueCountToken expected) side)) := by
+  rfl
+
 /-- A retained Boolean/Confirm group omits no descendant: every declaration in the recursive
     subtree is present in its certified expansion. -/
 theorem checkedBooleanValueCountGroup_expansion_complete

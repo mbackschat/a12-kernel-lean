@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.NumericComputation.Evaluation
 import A12Kernel.Elaboration.ValidationCondition.Reference
 
 /-! # Checked Boolean/Confirm group-scope entity-list carrier
@@ -522,6 +523,121 @@ example :
       nestedTwoBooleanComputationModel ["Probe"] nestedOuterComputationGroup) = true ∧
     elaborationFailed (elaborateFalseValueCountStarredGroupSource
       threeBooleanComputationModel ["Probe"] computationGroup) = false := by
+  native_decide
+
+/-! ## Fixed-group computation
+
+The retained Kernel matrix has two direct fields in each nonrepeatable group. It separates group
+expansion from the zero-producing account currently implemented by a12-dmkits and keeps wider fixed
+group shapes outside the checked computation carrier.
+-/
+
+private def fixedComputationModel : FlatModel :=
+  { fields := [
+      booleanField 60 ["Probe", "TrueFlags"] "Flag",
+      confirmField 61 ["Probe", "TrueFlags"] "Confirmed",
+      booleanField 62 ["Probe", "FalseFlags"] "First",
+      booleanField 63 ["Probe", "FalseFlags"] "Second"] }
+
+private def fixedComputationPrepared :
+    PreparedFlatStringContext fixedComputationModel
+      builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler fixedComputationModel).toOption.get
+      (by native_decide)
+
+private def fixedGroup (name : String) : SurfaceGroupReference :=
+  .path { base := .absolute, groups := ["Probe", name] }
+
+private def checkedFixedTrueComputation? :
+    Option (CheckedTrueValueCountFixedGroupSource fixedComputationModel) :=
+  (elaborateTrueValueCountFixedGroupSource fixedComputationModel ["Probe"]
+    (fixedGroup "TrueFlags")).toOption
+
+private def checkedFixedFalseComputation? :
+    Option (CheckedFalseValueCountFixedGroupSource fixedComputationModel) :=
+  (elaborateFalseValueCountFixedGroupSource fixedComputationModel ["Probe"]
+    (fixedGroup "FalseFlags")).toOption
+
+private def widerFixedComputationModel : FlatModel :=
+  { fixedComputationModel with
+    fields := fixedComputationModel.fields ++ [
+      booleanField 64 ["Probe", "FalseFlags"] "Third"] }
+
+private def reversedTrueFixedComputationModel : FlatModel :=
+  { fixedComputationModel with
+    fields := [
+      confirmField 61 ["Probe", "TrueFlags"] "Confirmed",
+      booleanField 60 ["Probe", "TrueFlags"] "Flag",
+      booleanField 62 ["Probe", "FalseFlags"] "First",
+      booleanField 63 ["Probe", "FalseFlags"] "Second"] }
+
+private def fixedCell (field : FieldId) (stored : String)
+    (raw : RawCell) : ClassifiedCellInput :=
+  { address := { field, path := [] }, stored, raw }
+
+private def fixedBooleanCell (field : FieldId)
+    (value : Bool) : ClassifiedCellInput :=
+  fixedCell field (booleanValueCountToken value) (.parsed (.bool value))
+
+private def fixedConfirmCell : ClassifiedCellInput :=
+  fixedCell 61 "true" (.parsed (.conf true))
+
+private def emptyFixedCell (field : FieldId) : ClassifiedCellInput :=
+  fixedCell field "" .presentEmpty
+
+private def malformedFixedBooleanCell (field : FieldId) : ClassifiedCellInput :=
+  fixedCell field "bad" (.rejected .booleanToken)
+
+private def malformedFixedConfirmCell : ClassifiedCellInput :=
+  fixedCell 61 "bad" (.rejected .confirmToken)
+
+private def fixedComputationResults?
+    (cells : List ClassifiedCellInput) :
+    Option (NumericComputationResult × NumericComputationResult) := do
+  let checkedTrue ← checkedFixedTrueComputation?
+  let checkedFalse ← checkedFixedFalseComputation?
+  let document ← (checkDocument fixedComputationPrepared "en_US"
+    { instantiatedRows := [], cells }).toOption
+  let trueCount ←
+    (checkedTrue.evaluateCheckedDocumentComputation document []).toOption
+  let falseCount ←
+    (checkedFalse.evaluateCheckedDocumentComputation document []).toOption
+  pure (trueCount.toComputationResult, falseCount.toComputationResult)
+
+example :
+    checkedFixedTrueComputation?.isSome = true ∧
+    checkedFixedFalseComputation?.isSome = true ∧
+    elaborationFailed (elaborateFalseValueCountFixedGroupSource
+      fixedComputationModel ["Probe"] (fixedGroup "TrueFlags")) = true ∧
+    elaborationFailed (elaborateTrueValueCountFixedGroupSource
+      fixedComputationModel ["Probe"] (fixedGroup "FalseFlags")) = true ∧
+    elaborationFailed (elaborateTrueValueCountFixedGroupSource
+      reversedTrueFixedComputationModel ["Probe"] (fixedGroup "TrueFlags")) = true ∧
+    elaborationFailed (elaborateFalseValueCountFixedGroupSource
+      widerFixedComputationModel ["Probe"] (fixedGroup "FalseFlags")) = true := by
+  native_decide
+
+example :
+    fixedComputationResults? [
+      fixedBooleanCell 60 true, fixedConfirmCell,
+      fixedBooleanCell 62 false, fixedBooleanCell 63 false] =
+        some (.value 2, .value 2) ∧
+    fixedComputationResults? [
+      fixedBooleanCell 60 false, fixedConfirmCell,
+      fixedBooleanCell 62 false, fixedBooleanCell 63 true] =
+        some (.value 1, .value 1) ∧
+    fixedComputationResults? [
+      emptyFixedCell 60, emptyFixedCell 61,
+      emptyFixedCell 62, emptyFixedCell 63] =
+        some (.value 0, .value 0) := by
+  native_decide
+
+example :
+    fixedComputationResults? [
+      fixedBooleanCell 60 true, malformedFixedConfirmCell,
+      fixedBooleanCell 62 false, malformedFixedBooleanCell 63] =
+        some (.poison .confirmToken, .poison .booleanToken) := by
   native_decide
 
 end A12Kernel.Conformance.BooleanEntityGroupOperand
