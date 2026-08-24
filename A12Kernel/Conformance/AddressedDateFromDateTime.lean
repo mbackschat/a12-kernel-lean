@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.AddressedDateFromDateTime
 
 /-! # Repeatable `DateFromDateTime` locks
 
-One same-group DateTime source computes one full-Date target per physically instantiated row. The cases retain both exact addresses and separate clean absence from row-local formal poison. -/
+A DateTime source at the target scope or an enclosing scope computes one full-Date target per physically instantiated row. The cases retain both exact addresses, separate clean absence from row-local formal poison, and pin two-level enclosing-row correlation. -/
 
 namespace A12Kernel.Conformance.AddressedDateFromDateTime
 
@@ -137,6 +137,113 @@ example :
     outerOutcomes? 2 [outerCell "bad" (.rejected .dateFormat)] = some [
       ({ field := outerSource.id, path := [] }, address target.id 1, .poison .dateFormat),
       ({ field := outerSource.id, path := [] }, address target.id 2, .poison .dateFormat)
+    ] := by
+  native_decide
+
+private def nestedSource : FlatFieldDecl := {
+  source with id := 11, name := "MilestoneStamp", groupPath := ["Project", "Milestones"], repeatableScope := [10] }
+
+private def nestedTarget : FlatFieldDecl := {
+  target with id := 12, name := "TaskDate", groupPath := ["Project", "Milestones", "Tasks"], repeatableScope := [10, 20] }
+
+private def nestedModel : FlatModel := {
+  fields := [nestedSource, nestedTarget]
+  timeZoneId := "Europe/Berlin"
+  repeatableGroups := [
+    { level := 10, path := ["Project", "Milestones"], repeatability := some 5 },
+    { level := 20, path := ["Project", "Milestones", "Tasks"],
+      repeatability := some 5 }]
+}
+
+private def nestedPrepared :
+    PreparedFlatStringContext nestedModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler nestedModel).toOption.get (by native_decide)
+
+private def nestedOperation? : Option (CheckedAddressedDateFromDateTime nestedModel) :=
+  (checkAddressedDateFromDateTime nestedModel ["Project", "Milestones", "Tasks"]
+    nestedTarget.id (parent "MilestoneStamp")).toOption
+
+private def nestedSourceCell (outer : Nat) (stored : String)
+    (raw : RawCell) : ClassifiedCellInput :=
+  { address := { field := nestedSource.id, path := [outer] }, stored, raw }
+
+private def nestedOutcomes? (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (List (CellAddr × CellAddr × FullDateTargetOutcome)) := do
+  let operation ← nestedOperation?
+  let input ← (checkDocument nestedPrepared "en_US" {
+    instantiatedRows := rows, cells }).toOption
+  let outcomes ← (operation.execute input).toOption
+  pure (outcomes.map fun entry => (entry.sourceField, entry.targetField, entry.outcome))
+
+private def nestedRows : List RowAddr :=
+  [{ group := 10, path := [1] }, { group := 10, path := [2] },
+    { group := 20, path := [1, 1] }, { group := 20, path := [1, 2] },
+    { group := 20, path := [2, 1] }, { group := 20, path := [2, 2] }]
+
+private def nestedSourceAddress (outer : Nat) : CellAddr :=
+  { field := nestedSource.id, path := [outer] }
+
+private def nestedTargetAddress (outer inner : Nat) : CellAddr :=
+  { field := nestedTarget.id, path := [outer, inner] }
+
+/- Two distinct enclosing values separate own-row correlation from reading the first source globally
+or borrowing the leaf path for a middle-level source. -/
+example :
+    nestedOperation?.isSome = true ∧
+    nestedOutcomes? nestedRows [
+      nestedSourceCell 1 "2024-06-15T00:30:00"
+        (.parsed (.temporal (momentAt 15 0 30 |>.get (by native_decide)))),
+      nestedSourceCell 2 "2024-06-16T23:45:00"
+        (.parsed (.temporal (momentAt 16 23 45 |>.get (by native_decide))))
+    ] = some [
+      (nestedSourceAddress 1, nestedTargetAddress 1 1, accepted "2024-06-15"),
+      (nestedSourceAddress 1, nestedTargetAddress 1 2, accepted "2024-06-15"),
+      (nestedSourceAddress 2, nestedTargetAddress 2 1, accepted "2024-06-16"),
+      (nestedSourceAddress 2, nestedTargetAddress 2 2, accepted "2024-06-16")
+    ] := by
+  native_decide
+
+/- A malformed enclosing source poisons only its own leaves; the sibling enclosing row still
+computes both values. -/
+example :
+    nestedOutcomes? nestedRows [
+      nestedSourceCell 1 "bad" (.rejected .dateFormat),
+      nestedSourceCell 2 "2024-06-16T23:45:00"
+        (.parsed (.temporal (momentAt 16 23 45 |>.get (by native_decide))))
+    ] = some [
+      (nestedSourceAddress 1, nestedTargetAddress 1 1, .poison .dateFormat),
+      (nestedSourceAddress 1, nestedTargetAddress 1 2, .poison .dateFormat),
+      (nestedSourceAddress 2, nestedTargetAddress 2 1, accepted "2024-06-16"),
+      (nestedSourceAddress 2, nestedTargetAddress 2 2, accepted "2024-06-16")
+    ] := by
+  native_decide
+
+/- Clean absence follows the same enclosing-row boundary without becoming poison. -/
+example :
+    nestedOutcomes? nestedRows [
+      nestedSourceCell 2 "2024-06-16T23:45:00"
+        (.parsed (.temporal (momentAt 16 23 45 |>.get (by native_decide))))
+    ] = some [
+      (nestedSourceAddress 1, nestedTargetAddress 1 1, .noValue),
+      (nestedSourceAddress 1, nestedTargetAddress 1 2, .noValue),
+      (nestedSourceAddress 2, nestedTargetAddress 2 1, accepted "2024-06-16"),
+      (nestedSourceAddress 2, nestedTargetAddress 2 2, accepted "2024-06-16")
+    ] := by
+  native_decide
+
+/- An enclosing row with no physical leaves creates no implicit target outcomes. -/
+example :
+    nestedOutcomes?
+      [{ group := 10, path := [1] }, { group := 10, path := [2] },
+        { group := 20, path := [2, 1] }, { group := 20, path := [2, 2] }]
+      [nestedSourceCell 1 "2024-06-15T00:30:00"
+          (.parsed (.temporal (momentAt 15 0 30 |>.get (by native_decide)))),
+        nestedSourceCell 2 "2024-06-16T23:45:00"
+          (.parsed (.temporal (momentAt 16 23 45 |>.get (by native_decide))))] = some [
+      (nestedSourceAddress 2, nestedTargetAddress 2 1, accepted "2024-06-16"),
+      (nestedSourceAddress 2, nestedTargetAddress 2 2, accepted "2024-06-16")
     ] := by
   native_decide
 
