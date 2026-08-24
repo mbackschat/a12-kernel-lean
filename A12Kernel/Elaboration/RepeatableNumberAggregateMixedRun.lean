@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.RepeatableNumberAggregateCascade
-import A12Kernel.Elaboration.ScalarComputationRun
+import A12Kernel.Elaboration.ScalarComputationRunResult
 
 /-! # Aggregate-seeded mixed scalar computation runs -/
 
@@ -74,9 +74,21 @@ structure RepeatableNumberAggregateMixedRunOutcomes where
   scalars : List ScalarComputationOutcome
   deriving Repr, DecidableEq
 
+/-- Public composed result with the prefix outcomes retained separately from the family-preserving scalar suffix view. -/
+structure RepeatableNumberAggregateMixedRunView
+    (StringResidual NumberPayload : Type) where
+  cascade : RepeatableNumberAggregateCascadeOutcomes
+  scalars : ScalarComputationRunView StringResidual NumberPayload
+  deriving Repr, DecidableEq
+
 inductive RepeatableNumberAggregateMixedRunFault where
   | cascade (cause : RepeatableNumberAggregateCascadeFault)
   | run (cause : ScalarComputationRunFault)
+  deriving Repr, DecidableEq
+
+inductive RepeatableNumberAggregateMixedRunResultFault where
+  | execution (cause : RepeatableNumberAggregateMixedRunFault)
+  | numberSource (cause : NumericSourceTargetError)
   deriving Repr, DecidableEq
 
 namespace CheckedRepeatableNumberAggregateMixedRun
@@ -111,6 +123,27 @@ def execute (plan : CheckedRepeatableNumberAggregateMixedRun model)
   let final ← plan.run.executeSteps world patterns input plan.run.steps initial
     |>.mapError .run
   pure { cascade, scalars := final.outcomes.drop 1 }
+
+/-- Execute once, retain the prefix outcomes, and route only the scalar suffix through its established family result owners. -/
+def executeResult (plan : CheckedRepeatableNumberAggregateMixedRun model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (numberPayloadAt : FieldId → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (stringResidualMessages : List StringResidual) :
+    Except RepeatableNumberAggregateMixedRunResultFault
+      (RepeatableNumberAggregateMixedRunView StringResidual NumberPayload) := do
+  let outcomes ← (plan.execute world patterns input).mapError .execution
+  let partitioned :=
+    ScalarComputationOutcomePartitions.ofOutcomes outcomes.scalars
+  let string :=
+    StringComputationRunView.fromOutcomes input
+      stringResidualMessages partitioned.string
+  let number ←
+    (NumericComputationRunView.fromOutcomes input numberPayloadAt
+      numberMessages partitioned.number).mapError .numberSource
+  pure { cascade := outcomes.cascade, scalars := { string, number } }
 
 end CheckedRepeatableNumberAggregateMixedRun
 

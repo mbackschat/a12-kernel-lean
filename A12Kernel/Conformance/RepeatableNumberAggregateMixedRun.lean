@@ -144,6 +144,36 @@ private def summary? (secondQuantity : ClassifiedCellInput) := do
   let outcomes ← (plan.execute world prepared.patterns input).toOption
   pure (plan.analyze, outcomes.cascade.aggregate.outcome, outcomes.scalars)
 
+private structure ResultSummary where
+  aggregate : NumericTargetOutcome
+  stringWithoutErrors : List (FieldId × String)
+  stringWithChanges : List (FieldId × String)
+  stringCleared : List FieldId
+  numberWithoutErrors : List (FieldId × StoredNumber)
+  numberWithChanges : List (FieldId × StoredNumber)
+  numberCleared : List FieldId
+  deriving Repr, DecidableEq
+
+private def resultSummary? (secondQuantity : ClassifiedCellInput) :
+    Option ResultSummary := do
+  let plan ← plan?
+  let input ← input? secondQuantity
+  let result ← (plan.executeResult world prepared.patterns input
+    (fun _ => ()) [] ([] : List Unit)).toOption
+  pure {
+    aggregate := result.cascade.aggregate.outcome
+    stringWithoutErrors := result.scalars.string.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    stringWithChanges := result.scalars.string.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    stringCleared := result.scalars.string.cleared
+    numberWithoutErrors := result.scalars.number.withoutErrors.map fun item =>
+      (item.targetField, item.value)
+    numberWithChanges := result.scalars.number.withChanges.map fun item =>
+      (item.targetField, item.value)
+    numberCleared := result.scalars.number.cleared
+  }
+
 /- The completed aggregate shadows its stale seed for both consumer families. The first false guard falls through, and the supplied suffix order remains visible to Analyze. -/
 example :
     summary? (numberCell quantity.id [2] 3) = some (
@@ -173,6 +203,30 @@ example :
       [
         .string label.id (.poison .computedDependency),
         .number doubled.id (.inheritedPoison .computedDependency)]) := by
+  native_decide
+
+/- Result projection keeps the prefix aggregate separate and routes only the suffix through the established family owners. Successful values are compared with the immutable source; inherited poison clears each stale suffix target. -/
+example :
+    resultSummary? (numberCell quantity.id [2] 3) = some {
+      aggregate := .accepted { unscaled := 5, scale := 0 }
+      stringWithoutErrors := [(label.id, "5")]
+      stringWithChanges := [(label.id, "5")]
+      stringCleared := []
+      numberWithoutErrors := [
+        (doubled.id, { unscaled := 10, scale := 0 })]
+      numberWithChanges := [
+        (doubled.id, { unscaled := 10, scale := 0 })]
+      numberCleared := []
+    } ∧
+    resultSummary? invalidQuantity = some {
+      aggregate := .inheritedPoison .computedDependency
+      stringWithoutErrors := []
+      stringWithChanges := []
+      stringCleared := [label.id]
+      numberWithoutErrors := []
+      numberWithChanges := []
+      numberCleared := [doubled.id]
+    } := by
   native_decide
 
 /- The suffix must consume the aggregate, own disjoint targets, and remain absent from every prefix dependency. -/

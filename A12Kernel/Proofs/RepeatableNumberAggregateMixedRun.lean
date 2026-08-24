@@ -21,4 +21,59 @@ theorem checkedRepeatableNumberAggregateMixedRun_analyze
       } := by
   rfl
 
+/-- Successful result projection preserves the prefix outcomes and delegates the exact scalar suffix partitions to the two existing family owners. -/
+theorem checkedRepeatableNumberAggregateMixedRun_executeResult_routesSuffixFamilies
+    (plan : CheckedRepeatableNumberAggregateMixedRun model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (numberPayloadAt : FieldId → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (stringResidualMessages : List StringResidual)
+    (outcomes : RepeatableNumberAggregateMixedRunOutcomes)
+    (number :
+      NumericComputationRunView
+        (ComputationFormalMessage NumberPayload))
+    (executed : plan.execute world patterns input = .ok outcomes)
+    (numberProjected :
+      NumericComputationRunView.fromOutcomes input numberPayloadAt
+        numberMessages
+        (ScalarComputationOutcomePartitions.ofOutcomes
+          outcomes.scalars).number = .ok number) :
+    plan.executeResult world patterns input numberPayloadAt
+        numberMessages stringResidualMessages =
+      .ok {
+        cascade := outcomes.cascade
+        scalars := {
+          string := StringComputationRunView.fromOutcomes input
+            stringResidualMessages
+            (ScalarComputationOutcomePartitions.ofOutcomes
+              outcomes.scalars).string
+          number
+        }
+      } := by
+  unfold CheckedRepeatableNumberAggregateMixedRun.executeResult
+  rw [executed]
+  change
+    (do
+      let projected ←
+        (NumericComputationRunView.fromOutcomes input numberPayloadAt
+          numberMessages
+          (ScalarComputationOutcomePartitions.ofOutcomes
+            outcomes.scalars).number).mapError
+              RepeatableNumberAggregateMixedRunResultFault.numberSource
+      pure ({
+        cascade := outcomes.cascade
+        scalars := {
+          string := StringComputationRunView.fromOutcomes input
+            stringResidualMessages
+            (ScalarComputationOutcomePartitions.ofOutcomes
+              outcomes.scalars).string
+          number := projected
+        }
+      } : RepeatableNumberAggregateMixedRunView
+        StringResidual NumberPayload)) = _
+  rw [numberProjected]
+  rfl
+
 end A12Kernel
