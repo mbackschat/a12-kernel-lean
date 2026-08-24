@@ -58,4 +58,13 @@ theorem checkedRepeatableNumberAggregateRowChain_analyze
     } := by
   rfl
 
+@[simp]
+theorem checkedRepeatableNumberAggregateNumberToStringRowChain_analyze
+    (plan : CheckedRepeatableNumberAggregateNumberToStringRowChain model) :
+    plan.analyze = {
+      cascade := plan.cascade.analyze
+      suffix := plan.suffix.analyze
+    } := by
+  rfl
+
 end A12Kernel

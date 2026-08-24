@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.RepeatableNumberAggregateRowCascade
 
-/-! # Aggregate-to-repeatable Number cascade locks -/
+/-! # Aggregate-to-repeatable scalar cascade locks -/
 
 namespace A12Kernel.Conformance.RepeatableNumberAggregateRowCascade
 
@@ -20,9 +20,16 @@ private def price := number 4 "Price" ["Order", "Lines"] [30]
 private def amount := number 5 "Amount" ["Order", "Lines"] [30]
 private def allocation := number 6 "Allocation" ["Order", "Lines"] [30]
 private def final := number 7 "Final" ["Order", "Lines"] [30]
+private def label : FlatFieldDecl := {
+  id := 8
+  name := "Label"
+  groupPath := ["Order", "Lines"]
+  repeatableScope := [30]
+  policy := { kind := .string }
+}
 
 private def model : FlatModel := {
-  fields := [total, other, quantity, price, amount, allocation, final]
+  fields := [total, other, quantity, price, amount, allocation, final, label]
   repeatableGroups := [{
     level := 30
     path := ["Order", "Lines"]
@@ -77,6 +84,23 @@ private def chain? : Option (CheckedRepeatableNumberAggregateRowChain model) := 
   let suffix ← rowChain?
   (checkRepeatableNumberAggregateRowChain cascade suffix).toOption
 
+private def checkedNumberToStringRowChain? (numberTarget : FieldId)
+    (numberSource : SurfaceFieldPath) (stringSource : SurfaceFieldPath) :
+    Option (CheckedCurrentRepetitionNumberToStringCascade model) :=
+  (checkCurrentRepetitionNumberToStringCascade model ["Order", "Lines"] group
+    numberTarget numberSource label.id stringSource).toOption
+
+private def numberToStringRowChain? :
+    Option (CheckedCurrentRepetitionNumberToStringCascade model) :=
+  checkedNumberToStringRowChain? allocation.id (parent "Total")
+    (bare "Allocation")
+
+private def numberToStringChain? :
+    Option (CheckedRepeatableNumberAggregateNumberToStringRowChain model) := do
+  let cascade ← cascade?
+  let suffix ← numberToStringRowChain?
+  (checkRepeatableNumberAggregateNumberToStringRowChain cascade suffix).toOption
+
 private def decimalCell (field : FieldId) (path : List Nat)
     (stored : String) (unscaled : Int) : ClassifiedCellInput := {
   address := { field, path }
@@ -98,9 +122,19 @@ private def invalidPrice : ClassifiedCellInput := {
   raw := .rejected .declaredConstraint
 }
 
+private def stringCell (field : FieldId) (path : List Nat)
+    (stored : String) : ClassifiedCellInput := {
+  address := { field, path }
+  stored
+  raw := .parsed (.str stored)
+}
+
+private def prepared :
+    PreparedFlatStringContext model builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption.get (by native_decide)
+
 private def input? (secondPrice : ClassifiedCellInput) : Option (CheckedDocument model) := do
-  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
-    builtinStringPatternCompiler model).toOption
   (checkDocument prepared "en_US" {
     instantiatedRows := [
       { group := 30, path := [1] }, { group := 30, path := [2] }]
@@ -113,7 +147,9 @@ private def input? (secondPrice : ClassifiedCellInput) : Option (CheckedDocument
       decimalCell allocation.id [1] "1.00" 100,
       decimalCell allocation.id [2] "2.00" 200,
       decimalCell final.id [1] "3.00" 300,
-      decimalCell final.id [2] "4.00" 400]
+      decimalCell final.id [2] "4.00" 400,
+      stringCell label.id [1] "old1",
+      stringCell label.id [2] "old2"]
   }).toOption
 
 private def summary? (secondPrice : ClassifiedCellInput) :
@@ -149,6 +185,32 @@ private def chainSummary? (secondPrice : ClassifiedCellInput) :
         firstOutcome := row.first.outcome
         secondTarget := row.second.targetField
         secondOutcome := row.second.outcome })
+
+private structure TypedChainRowSummary where
+  coordinate : Nat
+  numberTarget : CellAddr
+  numberOutcome : NumericTargetOutcome
+  stringTarget : CellAddr
+  stringOutcome : StringTargetOutcome
+  deriving Repr, DecidableEq
+
+private def stored (text : String) (nonempty : text ≠ "") : StoredString :=
+  { text, nonempty }
+
+private def numberToStringChainSummary? (secondPrice : ClassifiedCellInput) :
+    Option (RepeatableNumberAggregateRowChainAnalysis × NumericTargetOutcome ×
+      List TypedChainRowSummary) := do
+  let plan ← numberToStringChain?
+  let input ← input? secondPrice
+  let outcomes ← (plan.execute prepared.patterns
+    { now := { epochMillis := 0 } } input).toOption
+  pure (plan.analyze, outcomes.cascade.aggregate.outcome,
+    outcomes.suffix.rows.map fun row =>
+      { coordinate := row.coordinate
+        numberTarget := row.number.targetField
+        numberOutcome := row.number.outcome
+        stringTarget := row.string.targetField
+        stringOutcome := row.string.outcome })
 
 /- Fresh aggregate state reaches every suffix row; reached aggregate poison does too. -/
 example :
@@ -188,6 +250,82 @@ example :
             .inheritedPoison .computedDependency),
           ({ field := allocation.id, path := [2] },
             .inheritedPoison .computedDependency)]) := by
+  native_decide
+
+/- The typed suffix reuses the direct Number admission boundary before entering its checked String edge. -/
+example :
+    (do
+      let cascade ← cascade?
+      let suffix ← checkedNumberToStringRowChain? allocation.id
+        (parent "Other") (bare "Allocation")
+      match checkRepeatableNumberAggregateNumberToStringRowChain cascade suffix with
+      | .error (.missingAggregateDependency expected actual) =>
+          some (expected, actual)
+      | _ => none) = some (total.id, other.id) ∧
+    (do
+      let cascade ← cascade?
+      let suffix ← checkedNumberToStringRowChain? amount.id
+        (parent "Total") (bare "Amount")
+      match checkRepeatableNumberAggregateNumberToStringRowChain cascade suffix with
+      | .error (.duplicateTarget field) => some field
+      | _ => none) = some amount.id ∧
+    (do
+      let cascade ← (checkRepeatableNumberBinaryAggregateCascade model
+        ["Order", "Lines"] amount.id (bare "Allocation") (bare "Price") .add
+        ["Order"] total.id (star "Amount") .sum).toOption
+      let suffix ← numberToStringRowChain?
+      match checkRepeatableNumberAggregateNumberToStringRowChain cascade suffix with
+      | .error (.cycle field) => some field
+      | _ => none) = some allocation.id := by
+  native_decide
+
+/- Fresh aggregate state reaches the typed row chain; reached poison crosses both target families. -/
+example :
+    (numberToStringChainSummary?
+      (decimalCell price.id [2] "20.00" 2000)).map (·.1) = some {
+        cascade := {
+          producer := .binary .multiply
+          consumer := .plain
+          operation := .sum
+          repeatableScope := [30]
+          fieldDependencies := [
+            (amount.id, [quantity.id, price.id]), (total.id, [amount.id])]
+        }
+        suffix := {
+          structuralGroup := ["Order", "Lines"]
+          scope := [30]
+          fieldDependencies := [
+            (allocation.id, [total.id]), (label.id, [allocation.id])]
+        }
+      } ∧
+    (numberToStringChainSummary?
+      (decimalCell price.id [2] "20.00" 2000)).map (·.2.1) =
+        some (.accepted { unscaled := 8000, scale := 2 }) ∧
+    (numberToStringChainSummary?
+      (decimalCell price.id [2] "20.00" 2000)).map (·.2.2) = some [
+        { coordinate := 1
+          numberTarget := { field := allocation.id, path := [1] }
+          numberOutcome := .accepted { unscaled := 8000, scale := 2 }
+          stringTarget := { field := label.id, path := [1] }
+          stringOutcome := .accepted (stored "80.00" (by decide)) },
+        { coordinate := 2
+          numberTarget := { field := allocation.id, path := [2] }
+          numberOutcome := .accepted { unscaled := 8000, scale := 2 }
+          stringTarget := { field := label.id, path := [2] }
+          stringOutcome := .accepted (stored "80.00" (by decide)) }] ∧
+    (numberToStringChainSummary? invalidPrice).map (·.2.1) =
+      some (.inheritedPoison .computedDependency) ∧
+    (numberToStringChainSummary? invalidPrice).map (·.2.2) = some [
+      { coordinate := 1
+        numberTarget := { field := allocation.id, path := [1] }
+        numberOutcome := .inheritedPoison .computedDependency
+        stringTarget := { field := label.id, path := [1] }
+        stringOutcome := .poison .computedDependency },
+      { coordinate := 2
+        numberTarget := { field := allocation.id, path := [2] }
+        numberOutcome := .inheritedPoison .computedDependency
+        stringTarget := { field := label.id, path := [2] }
+        stringOutcome := .poison .computedDependency }] := by
   native_decide
 
 /- The checked row chain must start from the aggregate, own two new targets, and keep both targets out of every prefix dependency. -/

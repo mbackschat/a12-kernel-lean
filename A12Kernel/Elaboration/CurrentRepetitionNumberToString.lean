@@ -126,10 +126,11 @@ private def readAfterNumber (input : CheckedDocument model)
   | some outcome => .ok (StringDependencyCell.ofNumericOutcome outcome.outcome).checked
   | none => CheckedAddressedFieldValueAsString.readSource input address
 
-/-- Execute the fixed positive guard at every instantiated row, then expose each completed Number outcome only to the String conversion at that exact address. -/
-def execute (plan : CheckedCurrentRepetitionNumberToStringCascade model)
+/-- Execute the fixed positive guard through a caller-supplied initial Number read, then expose each completed Number outcome only to the String conversion at that exact address. Target-row enumeration, String source projection, and prior-target classification remain owned by the immutable checked document. -/
+def executeWithRead (plan : CheckedCurrentRepetitionNumberToStringCascade model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except CurrentRepetitionNumberToStringFault
       CurrentRepetitionNumberToStringOutcomes := do
   let environments ← plan.number.placement.targetEnvironments input
@@ -140,7 +141,7 @@ def execute (plan : CheckedCurrentRepetitionNumberToStringCascade model)
       |>.mapError .coordinate
     if !guard.2 then throw (.guardNotTrue guard.1)
     pure guard.1
-  let numberOutcomes ← plan.number.execute input |>.mapError .number
+  let numberOutcomes ← plan.number.executeWithRead input read |>.mapError .number
   if numberOutcomes.length != environments.length then
     throw (.outcomeCardinality plan.number.placement.targetField
       numberOutcomes.length)
@@ -152,6 +153,14 @@ def execute (plan : CheckedCurrentRepetitionNumberToStringCascade model)
     rows := (coordinates.zip (numberOutcomes.zip stringOutcomes)).map fun
       | (coordinate, number, string) => { coordinate, number, string }
   }
+
+/-- Preserve the immutable-document entry point when no earlier completion feeds the Number source. -/
+def execute (plan : CheckedCurrentRepetitionNumberToStringCascade model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    Except CurrentRepetitionNumberToStringFault
+      CurrentRepetitionNumberToStringOutcomes :=
+  plan.executeWithRead patterns input input.read
 
 end CheckedCurrentRepetitionNumberToStringCascade
 

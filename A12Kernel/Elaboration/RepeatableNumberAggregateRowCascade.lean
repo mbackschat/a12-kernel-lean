@@ -1,7 +1,8 @@
 import A12Kernel.Elaboration.RepeatableNumberAggregateCascade
 import A12Kernel.Elaboration.CurrentRepetitionComputation
+import A12Kernel.Elaboration.CurrentRepetitionNumberToString
 
-/-! # Aggregate completion into one repeatable Number consumer -/
+/-! # Aggregate completion into bounded repeatable scalar consumers -/
 
 namespace A12Kernel
 
@@ -31,6 +32,20 @@ inductive RepeatableNumberAggregateRowCascadeElabError where
   | cycle (field : FieldId)
   deriving Repr, DecidableEq
 
+/-- The shared static certificate for a direct Number suffix that consumes one aggregate completion. -/
+private structure RepeatableNumberAggregateRowSuffixCertificate
+    (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (suffix : CheckedAddressedNumberField model) : Type where
+  distinctFromRows : suffix.placement.targetField ≠ cascade.row.targetField
+  distinctFromAggregate :
+    suffix.placement.targetField ≠ cascade.total.operation.core.target.id
+  noBackEdge :
+    (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies).contains
+      suffix.placement.targetField = false
+  aggregateDependency :
+    suffix.placement.sourceDeclaration.id =
+      cascade.total.operation.core.target.id
+
 /-- One checked row-to-root aggregate prefix followed by one repeatable direct Number assignment that reads the aggregate. -/
 structure CheckedRepeatableNumberAggregateRowCascade (model : FlatModel) where
   private mk ::
@@ -46,11 +61,11 @@ structure CheckedRepeatableNumberAggregateRowCascade (model : FlatModel) where
     suffix.placement.sourceDeclaration.id =
       cascade.total.operation.core.target.id
 
-private def certifyRepeatableNumberAggregateRowCascade
+private def certifyRepeatableNumberAggregateRowSuffix
     (cascade : CheckedRepeatableNumberAggregateCascade model)
     (suffix : CheckedAddressedNumberField model) :
     Except RepeatableNumberAggregateRowCascadeElabError
-      (CheckedRepeatableNumberAggregateRowCascade model) := do
+      (RepeatableNumberAggregateRowSuffixCertificate cascade suffix) := do
   if hRows : suffix.placement.targetField ≠ cascade.row.targetField then
     if hAggregate : suffix.placement.targetField ≠
         cascade.total.operation.core.target.id then
@@ -61,7 +76,6 @@ private def certifyRepeatableNumberAggregateRowCascade
         if hDependency : suffix.placement.sourceDeclaration.id =
             cascade.total.operation.core.target.id then
           pure {
-            cascade, suffix
             distinctFromRows := hRows
             distinctFromAggregate := hAggregate
             noBackEdge := hBackEdge
@@ -89,7 +103,14 @@ def checkRepeatableNumberAggregateRowCascade
     throw (.cycle suffixTarget)
   let suffix ← checkAddressedNumberField model suffixDeclaringGroup
     suffixTarget suffixSource |>.mapError .suffix
-  certifyRepeatableNumberAggregateRowCascade cascade suffix
+  let certificate ← certifyRepeatableNumberAggregateRowSuffix cascade suffix
+  pure {
+    cascade, suffix
+    distinctFromRows := certificate.distinctFromRows
+    distinctFromAggregate := certificate.distinctFromAggregate
+    noBackEdge := certificate.noBackEdge
+    aggregateDependency := certificate.aggregateDependency
+  }
 
 structure RepeatableNumberAggregateRowCascadeAnalysis where
   cascade : RepeatableNumberAggregateCascadeAnalysis
@@ -240,5 +261,73 @@ def execute (plan : CheckedRepeatableNumberAggregateRowChain model)
   pure { cascade, suffix }
 
 end CheckedRepeatableNumberAggregateRowChain
+
+/-- One checked aggregate prefix followed by the existing fixed repeatable Number-to-String cascade. Its established direct-Number suffix certificate is reused unchanged, while the typed suffix retains its separately checked String edge. -/
+structure CheckedRepeatableNumberAggregateNumberToStringRowChain
+    (model : FlatModel) where
+  private mk ::
+  cascade : CheckedRepeatableNumberAggregateCascade model
+  suffix : CheckedCurrentRepetitionNumberToStringCascade model
+  distinctFromRows :
+    suffix.number.placement.targetField ≠ cascade.row.targetField
+  distinctFromAggregate :
+    suffix.number.placement.targetField ≠
+      cascade.total.operation.core.target.id
+  noBackEdge :
+    (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies).contains
+      suffix.number.placement.targetField = false
+  aggregateDependency :
+    suffix.number.placement.sourceDeclaration.id =
+      cascade.total.operation.core.target.id
+
+/-- Reuse the checked direct-Number suffix boundary before retaining the suffix's already-checked structural and typed edge. -/
+def checkRepeatableNumberAggregateNumberToStringRowChain
+    (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (suffix : CheckedCurrentRepetitionNumberToStringCascade model) :
+    Except RepeatableNumberAggregateRowCascadeElabError
+      (CheckedRepeatableNumberAggregateNumberToStringRowChain model) := do
+  let certificate ←
+    certifyRepeatableNumberAggregateRowSuffix cascade suffix.number
+  pure {
+    cascade, suffix
+    distinctFromRows := certificate.distinctFromRows
+    distinctFromAggregate := certificate.distinctFromAggregate
+    noBackEdge := certificate.noBackEdge
+    aggregateDependency := certificate.aggregateDependency
+  }
+
+structure RepeatableNumberAggregateNumberToStringRowChainOutcomes where
+  cascade : RepeatableNumberAggregateCascadeOutcomes
+  suffix : CurrentRepetitionNumberToStringOutcomes
+  deriving Repr, DecidableEq
+
+inductive RepeatableNumberAggregateNumberToStringRowChainFault where
+  | cascade (cause : RepeatableNumberAggregateCascadeFault)
+  | suffix (cause : CurrentRepetitionNumberToStringFault)
+  deriving Repr, DecidableEq
+
+namespace CheckedRepeatableNumberAggregateNumberToStringRowChain
+
+def analyze
+    (plan : CheckedRepeatableNumberAggregateNumberToStringRowChain model) :
+    RepeatableNumberAggregateRowChainAnalysis := {
+  cascade := plan.cascade.analyze
+  suffix := plan.suffix.analyze
+}
+
+/-- Execute the aggregate prefix, expose its completion only to the first repeatable Number read, and reuse the suffix's exact-row Number-to-String projection. -/
+def execute
+    (plan : CheckedRepeatableNumberAggregateNumberToStringRowChain model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (world : World) (input : CheckedDocument model) :
+    Except RepeatableNumberAggregateNumberToStringRowChainFault
+      RepeatableNumberAggregateNumberToStringRowChainOutcomes := do
+  let cascade ← plan.cascade.execute world input |>.mapError .cascade
+  let suffix ← plan.suffix.executeWithRead patterns input
+    (plan.cascade.readCompletion cascade.aggregate.outcome input)
+    |>.mapError .suffix
+  pure { cascade, suffix }
+
+end CheckedRepeatableNumberAggregateNumberToStringRowChain
 
 end A12Kernel

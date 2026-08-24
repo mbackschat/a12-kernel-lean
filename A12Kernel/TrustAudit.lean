@@ -1045,6 +1045,7 @@ run_cmd do
 #print axioms A12Kernel.repeatableNumberAggregateRowCascade_read_completed
 #print axioms A12Kernel.repeatableNumberAggregateRowCascade_read_input
 #print axioms A12Kernel.checkedRepeatableNumberAggregateRowChain_analyze
+#print axioms A12Kernel.checkedRepeatableNumberAggregateNumberToStringRowChain_analyze
 #print axioms A12Kernel.concreteFieldPointer_exact
 #print axioms A12Kernel.reopenedFieldPointer_notExact
 #print axioms A12Kernel.reopenedFieldPointer_arity
