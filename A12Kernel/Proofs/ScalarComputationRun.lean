@@ -24,21 +24,21 @@ theorem scalarComputationRun_stringRead_completed
     (input : CheckedDocument model)
     (field : FieldId)
     (completion : ScalarComputationCompletion)
-    (target : field ∈ run.targetFields)
     (found : state.find? field = some completion) :
     (run.stringContext state input).read field =
       completion.stringCell := by
-  simp [CheckedScalarComputationRun.stringContext, target, found]
+  simp [CheckedScalarComputationRun.stringContext, found]
 
 theorem scalarComputationRun_stringRead_input
     (run : CheckedScalarComputationRun model)
     (state : ScalarComputationRunState)
     (input : CheckedDocument model)
     (field : FieldId)
+    (pending : state.find? field = none)
     (ordinary : field ∉ run.targetFields) :
     (run.stringContext state input).read field =
       input.stringComputationContext.read field := by
-  simp [CheckedScalarComputationRun.stringContext, ordinary]
+  simp [CheckedScalarComputationRun.stringContext, pending, ordinary]
 
 theorem scalarComputationRun_numberRead_pending
     (run : CheckedScalarComputationRun model)
@@ -59,11 +59,10 @@ theorem scalarComputationRun_numberRead_completed
     (input : CheckedDocument model)
     (field : FieldId)
     (completion : ScalarComputationCompletion)
-    (target : field ∈ run.targetFields)
     (found : state.find? field = some completion) :
     (run.numberContext world state input).read field =
       completion.numberCell := by
-  simp [CheckedScalarComputationRun.numberContext, target, found]
+  simp [CheckedScalarComputationRun.numberContext, found]
 
 theorem scalarComputationRun_numberRead_input
     (run : CheckedScalarComputationRun model)
@@ -71,11 +70,12 @@ theorem scalarComputationRun_numberRead_input
     (state : ScalarComputationRunState)
     (input : CheckedDocument model)
     (field : FieldId)
+    (pending : state.find? field = none)
     (ordinary : field ∉ run.targetFields) :
     (run.numberContext world state input).read field =
       input.flatContext.read field := by
   simp [CheckedScalarComputationRun.numberContext,
-    CheckedDocument.scalarComputationContext, ordinary]
+    CheckedDocument.scalarComputationContext, pending, ordinary]
 
 theorem scalarComputationRun_numberContext_world
     (run : CheckedScalarComputationRun model)

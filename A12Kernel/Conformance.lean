@@ -139,6 +139,7 @@ import A12Kernel.Conformance.CurrentRepetitionNumberToString
 import A12Kernel.Conformance.CurrentRepetitionStringToNumber
 import A12Kernel.Conformance.CurrentRepetitionAlternatingChain
 import A12Kernel.Conformance.RepeatableNumberAggregateCascade
+import A12Kernel.Conformance.RepeatableNumberAggregateMixedRun
 import A12Kernel.Conformance.AddressedNumberAbs
 import A12Kernel.Conformance.AddressedNumberRound
 import A12Kernel.Conformance.AddressedNumberExtremum

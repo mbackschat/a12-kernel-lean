@@ -160,6 +160,7 @@ import A12Kernel.Proofs.CurrentRepetitionNumberToString
 import A12Kernel.Proofs.CurrentRepetitionStringToNumber
 import A12Kernel.Proofs.CurrentRepetitionAlternatingChain
 import A12Kernel.Proofs.RepeatableNumberAggregateCascade
+import A12Kernel.Proofs.RepeatableNumberAggregateMixedRun
 import A12Kernel.Proofs.AddressedNumberAbs
 import A12Kernel.Proofs.AddressedNumberRound
 import A12Kernel.Proofs.AddressedNumberExtremum

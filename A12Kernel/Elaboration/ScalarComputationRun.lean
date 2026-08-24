@@ -22,6 +22,10 @@ def targetField : CheckedScalarComputationStep model → FieldId
   | .string table => table.targetField
   | .number table => table.targetField
 
+def targetKind : CheckedScalarComputationStep model → SurfaceScalarKind
+  | .string _ => .string
+  | .number _ => .number
+
 def referencesField (step : CheckedScalarComputationStep model)
     (field : FieldId) : Bool :=
   match step with
@@ -160,31 +164,33 @@ def targetFields (run : CheckedScalarComputationRun model) :
     List FieldId :=
   run.steps.map (·.targetField)
 
-/-- Hide pending targets, project completed targets for String consumption, and delegate ordinary reads to the String document context. -/
+/-- Project completed targets for String consumption, hide suffix-owned pending targets, and delegate ordinary reads to the String document context. A completion may belong to an earlier checked phase rather than to this run. -/
 def stringContext (run : CheckedScalarComputationRun model)
     (state : ScalarComputationRunState)
     (input : CheckedDocument model) : StringComputationContext where
   read field :=
-    if run.targetFields.contains field then
-      match state.find? field with
-      | some completion => completion.stringCell
-      | none => StringDependencyCell.empty.checked
-    else
-      input.stringComputationContext.read field
+    match state.find? field with
+    | some completion => completion.stringCell
+    | none =>
+        if run.targetFields.contains field then
+          StringDependencyCell.empty.checked
+        else
+          input.stringComputationContext.read field
 
-/-- Hide pending targets, project completed targets for Number consumption, and delegate ordinary reads to the scalar document context under one unchanged world. -/
+/-- Project completed targets for Number consumption, hide suffix-owned pending targets, and delegate ordinary reads to the scalar document context under one unchanged world. A completion may belong to an earlier checked phase rather than to this run. -/
 def numberContext (run : CheckedScalarComputationRun model)
     (world : World) (state : ScalarComputationRunState)
     (input : CheckedDocument model) : ScalarComputationContext :=
   let source := input.scalarComputationContext world
   { source with
     read := fun field =>
-      if run.targetFields.contains field then
-        match state.find? field with
-        | some completion => completion.numberCell
-        | none => (NumericDependencyCell.ofObservation .empty).checked
-      else
-        source.read field
+      match state.find? field with
+      | some completion => completion.numberCell
+      | none =>
+          if run.targetFields.contains field then
+            (NumericDependencyCell.ofObservation .empty).checked
+          else
+            source.read field
   }
 
 /-- Evaluate one family-tagged table through its matching consumer context and retain its typed completion. -/
