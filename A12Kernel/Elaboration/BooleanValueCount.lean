@@ -272,6 +272,23 @@ structure CheckedBooleanValueCountSource (model : FlatModel) where
   uniqueDirectOperands :
     firstDuplicateDirectBooleanValueCountField? (first :: rest) = none
 
+/-- The exact declaration and repetition shape of the measured `True` checked computation. -/
+def measuredTrueValueCountStarredGroupShape
+    (starred : CheckedStarredGroupSource model)
+    (group : CheckedBooleanValueCountGroup model true) : Bool :=
+  starred.path.axes.length == 1 &&
+    group.fields.map (·.policy.kind) ==
+      [FieldKind.boolean, FieldKind.confirm]
+
+/-- The measured `True` computation form with one repeatable axis and exactly Boolean then Confirm in recursive declaration order. The source equality excludes fixed groups and the separately admitted terminal-presence shape from this computation carrier. -/
+structure CheckedTrueValueCountStarredGroupSource (model : FlatModel) where
+  starredSource : CheckedStarredGroupSource model
+  group : CheckedBooleanValueCountGroup model true
+  sourceOwned : group.source = .starred starredSource
+  measuredShape :
+    measuredTrueValueCountStarredGroupShape starredSource group = true
+  modelWellFormed : model.validate.isOk = true
+
 namespace CheckedBooleanValueCountSource
 
 def operands (checked : CheckedBooleanValueCountSource model) :
@@ -313,6 +330,31 @@ def elaborateBooleanValueCountSource (model : FlatModel)
   else
     throw .incoherentCore
 
+/-- Resolve the measured `NumberOfValueInFields(True In Group*)` computation shape without widening fixed groups, terminal-presence stars, mixed lists, or the `False` overload. -/
+def elaborateTrueValueCountStarredGroupSource (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceStarGroupPath) :
+    Except BooleanValueCountElabError
+      (CheckedTrueValueCountStarredGroupSource model) := do
+  let starred ← elaborateStarredGroupSource model declaringGroup authored
+    |>.mapError fun error => .shape (.starredGroup error)
+  let operand ←
+    certifyBooleanValueCountGroup model true (.starred starred)
+  match operand with
+  | .group group =>
+      match hSource : group.source with
+      | .starred source =>
+          if hMeasured :
+              measuredTrueValueCountStarredGroupShape source group = true then
+            pure {
+              starredSource := source
+              group
+              sourceOwned := hSource
+              measuredShape := hMeasured
+              modelWellFormed := source.modelWellFormed }
+          else throw .incoherentCore
+      | .fixed _ | .starredPresence _ => throw .incoherentCore
+  | .field _ | .star _ => throw .incoherentCore
+
 /-- The fixed storage token selected by an authored Boolean constant. -/
 def booleanValueCountToken (expected : Bool) : String :=
   if expected then "true" else "false"
@@ -352,6 +394,48 @@ def evaluateDirectAt? (checked : CheckedBooleanValueCountSource model)
       hasHaving := false })
 
 end CheckedBooleanValueCountSource
+
+namespace CheckedTrueValueCountStarredGroupSource
+
+def scaleSummary
+    (_checked : CheckedTrueValueCountStarredGroupSource model) :
+    NumericScaleSummary :=
+  NumericScaleSummary.field 0
+
+def referencesField
+    (checked : CheckedTrueValueCountStarredGroupSource model)
+    (field : FieldId) : Bool :=
+  checked.group.referencesField field
+
+/-- Recover the established full-validation carrier for the same sole starred group. -/
+def toCheckedBooleanValueCountSource
+    (checked : CheckedTrueValueCountStarredGroupSource model) :
+    CheckedBooleanValueCountSource model :=
+  { expected := true
+    first := .group checked.group
+    rest := []
+    modelWellFormed := checked.modelWellFormed
+    requiredMultiplicity := by rfl
+    uniqueDirectOperands := by rfl }
+
+/-- Checked computation selects the in-capacity addressed cells before projecting their canonical Boolean/Confirm tokens. -/
+def evaluateCheckedDocumentComputation
+    (checked : CheckedTrueValueCountStarredGroupSource model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError NumericOperand := do
+  let core ← document.resolveCheckedGroupEntityOperandCore outer
+    checked.group.source.boundLevelCount checked.group.fields
+  let resolved : ResolvedValueListSide .token := {
+    cells := core.inCapacityAddressedCells.map fun addressed =>
+      booleanValueCountCellAt .computation addressed.cell
+    hasUninstantiatedTail := core.hasUninstantiatedTail
+    hasHaving := core.hasHaving
+    hasNonRelevant := core.hasNonRelevant }
+  let side := (ResolvedValueCountSide.empty : ResolvedValueCountSide .token)
+    |>.appendResolved resolved
+  pure (evalValueCountAggregate (booleanValueCountToken true) side)
+
+end CheckedTrueValueCountStarredGroupSource
 
 namespace CheckedBooleanValueCountOperand
 

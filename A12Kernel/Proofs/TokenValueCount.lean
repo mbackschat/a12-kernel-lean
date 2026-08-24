@@ -64,6 +64,26 @@ theorem checkedTokenValueCountGroup_checkedComputation_usesCapacityProjection
       pure (evalValueCountAggregate checked.expected side)) := by
   rfl
 
+/-- The checked `True` starred-group computation specializes the shared in-capacity addressed
+    projection before applying canonical Boolean/Confirm token classification. -/
+theorem checkedTrueValueCountStarredGroup_checkedComputation_usesCapacityProjection
+    (checked : CheckedTrueValueCountStarredGroupSource model)
+    (document : CheckedDocument model) (outer : Env) :
+    checked.evaluateCheckedDocumentComputation document outer = (do
+      let core ← document.resolveCheckedGroupEntityOperandCore outer
+        checked.group.source.boundLevelCount checked.group.fields
+      let resolved : ResolvedValueListSide .token := {
+        cells := core.inCapacityAddressedCells.map fun addressed =>
+          booleanValueCountCellAt .computation addressed.cell
+        hasUninstantiatedTail := core.hasUninstantiatedTail
+        hasHaving := core.hasHaving
+        hasNonRelevant := core.hasNonRelevant }
+      let side :=
+        (ResolvedValueCountSide.empty : ResolvedValueCountSide .token)
+          |>.appendResolved resolved
+      pure (evalValueCountAggregate (booleanValueCountToken true) side)) := by
+  rfl
+
 /-- A retained Boolean/Confirm group omits no descendant: every declaration in the recursive
     subtree is present in its certified expansion. -/
 theorem checkedBooleanValueCountGroup_expansion_complete
