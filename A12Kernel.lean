@@ -192,6 +192,7 @@ import A12Kernel.Elaboration.AddressedNumberField
 import A12Kernel.Elaboration.CurrentRepetitionComputation
 import A12Kernel.Elaboration.CurrentRepetitionNumberToString
 import A12Kernel.Elaboration.CurrentRepetitionStringToNumber
+import A12Kernel.Elaboration.CurrentRepetitionAlternatingChain
 import A12Kernel.Elaboration.AddressedNumberAbs
 import A12Kernel.Elaboration.AddressedNumberRound
 import A12Kernel.Elaboration.AddressedNumberExtremum
