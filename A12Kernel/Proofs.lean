@@ -61,6 +61,7 @@ import A12Kernel.Proofs.FullDateComputationApplication
 import A12Kernel.Proofs.DateTimeComputationApplication
 import A12Kernel.Proofs.FullDateComputation
 import A12Kernel.Proofs.DateTimeComputation
+import A12Kernel.Proofs.DateFromDateTime
 import A12Kernel.Proofs.Correlation
 import A12Kernel.Proofs.SingleGroupElaboration
 import A12Kernel.Proofs.CorrelationElaboration

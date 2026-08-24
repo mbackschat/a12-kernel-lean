@@ -181,4 +181,87 @@ example :
         (clockField.toTemporalField?.get (by native_decide))) = false := by
   native_decide
 
+/-! ## Checked computation carrier
+
+This internally closed carrier composes the checked extraction above with the existing full-Date target
+and result application. External computation correspondence remains pending. -/
+
+private def prepared? :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler (model)).toOption
+
+private def momentRawAt (year : Int) (month day hour minute second : Nat) : RawCell :=
+  match momentAt berlin year month day hour minute second with
+  | some value => .parsed (.temporal value)
+  | none => .rejected .malformed
+
+private def dateRawAt (year : Int) (month day : Nat) : RawCell :=
+  match momentAt berlin year month day 0 0 0 with
+  | some value =>
+      match dateFromDateTime? berlin value with
+      | some date => .parsed (.temporal (.date date))
+      | none => .rejected .malformed
+  | none => .rejected .malformed
+
+private def computationInput
+    (sourceStored targetStored : String) (sourceRaw targetRaw : RawCell) : DocumentData := {
+  instantiatedRows := []
+  cells := [
+    { address := { field := momentField.id, path := [] }
+      stored := sourceStored
+      raw := sourceRaw },
+    { address := { field := dateField.id, path := [] }
+      stored := targetStored
+      raw := targetRaw }
+  ] }
+
+private def checkedComputationInput? (data : DocumentData) :
+    Option (CheckedDocument model) := do
+  let prepared ← prepared?
+  (checkDocument prepared "en_US" data).toOption
+
+private def computation? : Option (CheckedDateFromDateTimeComputation model) :=
+  (elaborateDateFromDateTimeComputation model momentField.id dateField.id).toOption
+
+private def destinationWith (state : FullDateTargetState) : FullDateComputationDestination :=
+  fun field => if field == dateField.id then state else .absent
+
+/- The source label's date reaches the declaration-owned target and the ordinary full-Date result and
+application channels. The checked operand retains the extracted midnight, not the source instant. -/
+example : (do
+    let input ← checkedComputationInput?
+      (computationInput "2024-06-15T00:30:00" "2024-06-14"
+        (momentRawAt 2024 6 15 0 30 0) (dateRawAt 2024 6 14))
+    let operation ← computation?
+    let sourceValue ← momentAt berlin 2024 6 15 0 30 0
+    let midnight ← label 2024 6 15 0 0 0 |>.bind berlin.resolveLocal?
+    let operand ← operation.evaluateOperand input |>.toOption
+    let view ← operation.executeResult input ([] : List FormalCause) |>.toOption
+    let applied ← view.applyTo
+      (destinationWith (.presentValue ⟨"2024-06-14", by decide⟩)) |>.toOption
+    pure (operand, sourceValue.instant == midnight,
+      view.withoutErrors.map (·.value.text), view.withChanges.map (·.value.text),
+      applied dateField.id)) =
+    some (.value { epochMillis := 1718402400000 }, false,
+      ["2024-06-15"], ["2024-06-15"],
+      .presentValue ⟨"2024-06-15", by decide⟩) := by
+  native_decide
+
+/- Computation-phase absence and formal invalidity remain different target outcomes while both clear a
+filled destination through the shared full-Date result projection. -/
+example : (do
+    let operation ← computation?
+    let emptyInput ← checkedComputationInput?
+      (computationInput "" "2024-06-14" .presentEmpty (dateRawAt 2024 6 14))
+    let invalidInput ← checkedComputationInput?
+      (computationInput "bad" "2024-06-14" (.rejected .malformed)
+        (dateRawAt 2024 6 14))
+    let emptyOutcome ← operation.evaluateOutcome emptyInput |>.toOption
+    let invalidOutcome ← operation.evaluateOutcome invalidInput |>.toOption
+    let emptyView ← operation.executeResult emptyInput ([] : List FormalCause) |>.toOption
+    let invalidView ← operation.executeResult invalidInput ([] : List FormalCause) |>.toOption
+    pure (emptyOutcome, invalidOutcome, emptyView.cleared, invalidView.cleared)) =
+    some (.noValue, .poison .malformed, [dateField.id], [dateField.id]) := by
+  native_decide
+
 end A12Kernel.Conformance.DateFromDateTime

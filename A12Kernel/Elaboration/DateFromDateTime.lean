@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.TemporalTargetPolicy
+import A12Kernel.Elaboration.FullDateComputationApplication
 import A12Kernel.Semantics.DateFromDateTime
 
 /-! # Checked `DateFromDateTime`
@@ -88,5 +89,74 @@ def extract? (checked : CheckedDateFromDateTime model)
   dateFromDateTime? checked.profile value
 
 end CheckedDateFromDateTime
+
+/-! ## Checked computation carrier -/
+
+/-- Static refusal before one bounded `DateFromDateTime` computation can execute. The source and target
+certificates retain their existing finer diagnostics rather than introducing another mapping. -/
+inductive DateFromDateTimeComputationElabError where
+  | source (error : DateFromDateTimeElabError)
+  | target (error : FullDateTargetElabError)
+  deriving Repr, DecidableEq
+
+/-- One checked extraction paired with the existing declaration-owned full-Date target. -/
+structure CheckedDateFromDateTimeComputation (model : FlatModel) where
+  source : CheckedDateFromDateTime model
+  target : CheckedFullDateTarget model
+
+/-- Resolve one nonrepeatable complete-DateTime source and one full-Date target in the same model. -/
+def elaborateDateFromDateTimeComputation
+    (model : FlatModel) (sourceField targetField : FieldId) :
+    Except DateFromDateTimeComputationElabError
+      (CheckedDateFromDateTimeComputation model) := do
+  let source ← elaborateDateFromDateTime model sourceField |>.mapError .source
+  let target ← elaborateFullDateTarget model targetField |>.mapError .target
+  pure { source, target }
+
+/-- Structural failure outside the rich full-Date target result domain. -/
+inductive DateFromDateTimeComputationFault where
+  | document (error : CheckedDocumentError)
+  | sourceValueKind (source : FieldId)
+  | sourceExtractionUnavailable (source : FieldId)
+  | target (error : FullDateTargetEvaluationFault)
+  deriving Repr, DecidableEq
+
+namespace CheckedDateFromDateTimeComputation
+
+/-- Read the source once at computation phase, preserving clean absence and formal poison before
+projecting a present DateTime label to its model-zone Date midnight. -/
+def evaluateOperand (operation : CheckedDateFromDateTimeComputation model)
+    (input : CheckedDocument model) :
+    Except DateFromDateTimeComputationFault TemporalComputationResult :=
+  match input.read { field := operation.source.source.id, path := [] } with
+  | .error error => .error (.document error)
+  | .ok cell =>
+      match observeCell .computation cell with
+      | .empty => pure .noValue
+      | .poison cause | .unknown cause => pure (.poison cause)
+      | .value (.temporal value) =>
+          match operation.source.extract? value with
+          | some date => pure (.value date.instant)
+          | none => throw (.sourceExtractionUnavailable operation.source.source.id)
+      | .value _ => throw (.sourceValueKind operation.source.source.id)
+
+/-- Execute the extracted Date through the existing declaration-owned target policy. -/
+def evaluateOutcome (operation : CheckedDateFromDateTimeComputation model)
+    (input : CheckedDocument model) :
+    Except DateFromDateTimeComputationFault FullDateTargetOutcome :=
+  match operation.evaluateOperand input with
+  | .error error => .error error
+  | .ok result => operation.target.evaluate result |>.mapError .target
+
+/-- Project the checked target outcome into the ordinary full-Date computation result collections. -/
+def executeResult (operation : CheckedDateFromDateTimeComputation model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    Except DateFromDateTimeComputationFault
+      (FullDateComputationRunView ResidualMessage) := do
+  let outcome ← operation.evaluateOutcome input
+  pure (FullDateComputationRunView.fromOutcomes input residualMessages
+    [(operation.target.checked.target.id, outcome)])
+
+end CheckedDateFromDateTimeComputation
 
 end A12Kernel
