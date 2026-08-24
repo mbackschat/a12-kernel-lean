@@ -570,6 +570,16 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `syntax-claim`: the operand is a bare path; `DateFromDateTime([Moment])` is `MVK_UNEXPECTED_TOKEN` at the bracket. `Day(DateFromDateTime(Moment))` is a parse failure, the same narrower-operand-grammar limit already recorded for `ValueAsDate`. Incidental but needed to author the rest: condition equality is `==`, not `=`; the operator catalog's `keyword` column is the authority and `=` is `MVK_UNEXPECTED_TOKEN`.
 - `persistence`: both separator rules were persisted with `rule add` and the model left `valid: true` under `model check` before the runtime probe ran, so the probe observed a kernel-consistent model rather than a candidate.
 
+<a id="src-date-from-datetime-computation"></a>
+#### `DateFromDateTime` scalar computation reaches the full-Date target channels, measured locally 2026-08-24
+
+- `revision`: clean a12-dmkits `cd43c249a88874bf5688a45060e208a0dcd20782`, dmtool `0.13.0`, kernel `30.8.1` built and runtime; the artifact records `producer.source.state: CLEAN`, and the sibling worktree was empty before and after every command.
+- `route`: source-shipped dmtool authored and persisted one computation from complete DateTime `/Appointment/ScheduledAt` to full Date `/Appointment/OnSiteDate`; `computation add --dry-run` and the persisted add both returned `KERNEL_CONFIRMED`, and `model check` remained valid. `:adapter:kernelProbe` observed `validateFull` plus `compute` over four documents on dynamic Groovy and generated Java. Request SHA-256 `e5990bd5bb43f86c837fdffa9ce7f47afbccd0b466cd6da6a5b2a9b3506d9ab3`, persisted-model SHA-256 `0bd9f2b0f1840c657b0bc61d25c155854d7f94a032c8bc1a3d2317ed2deb9c44`, and artifact SHA-256 `6d88a465bf8e67befdb57f41f92151a7c1d75d65cded4a0d83c7c92625240bdf`; all stayed in session scratch rather than under `evidence/`.
+- `value-claim`: a declared `Europe/Berlin` source of `2024-06-15T00:30:00` computes stored Date `2024-06-15`, and a midday source computes the same date. The target started at `2024-06-14`, so both outcomes are visible changes rather than source-identical omissions. This closes the scalar target presentation against a UTC-day projection as well as a no-op account.
+- `no-value-claim`: a present-empty source clears the prefilled target with `errored: false`; malformed source text also clears it, while `datumFormatFalsch` remains visible in both full validation and `formalErrorsInOperands`. Thus clean no-value and reached formal poison remain distinct source outcomes even though the public target action is a clear in both rows.
+- `agreement`: both Kernel strategies agree on every message and computation channel, and read-only `dmtool model compute` produces the same two values and two clears on the interpreter route.
+- `assurance-limit`: this is an exact local observation, not `L` or `C`: no maintained peer test owns the computation matrix, and the artifact is not retained through a typed local projection. It changes no canonical clause and requests no a12-dmkits reconciliation.
+
 <a id="src-value-as-date-locus"></a>
 #### Where a partial-Date `ValueAsDate` operand may be read, measured locally 2026-08-23
 
