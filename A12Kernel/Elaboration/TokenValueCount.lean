@@ -23,6 +23,11 @@ structure SurfaceTokenValueCountStarredGroupValidationSource where
   group : SurfaceStarGroupPath
   deriving Repr, DecidableEq
 
+/-- The measured full-validation authoring form with one fixed nonrepeatable path group as the whole value-count operand. Keeping the ordinary group path exact excludes the separately unmeasured `RuleGroup` form. -/
+structure SurfaceTokenValueCountFixedGroupValidationSource where
+  group : SurfaceGroupPath
+  deriving Repr, DecidableEq
+
 /-- String accepts every decoded literal; Enumeration requires membership in its exact selected stored/category domain. The gate reads one declaration beside the operand resolved from it, which is what lets a direct slot, a starred slot, and one member of a group expansion share it. -/
 def FlatFieldDecl.allowsTokenValueCountLiteral (declaration : FlatFieldDecl)
     (operand : FlatTextFieldOperand) (expected : String) : Bool :=
@@ -149,6 +154,17 @@ def elaborateTokenValueCountStarredGroupValidationSource (model : FlatModel)
     |>.mapError fun error => .source (.group error)
   let source ← assembleTokenEntitySource starred.modelWellFormed
       (.group group) []
+    |>.mapError .source
+  finishTokenValueCountSource expected source
+
+/-- Resolve the measured full-validation-only form with one fixed nonrepeatable path group through the common token entity-list gates. -/
+def elaborateTokenValueCountFixedGroupValidationSource (model : FlatModel)
+    (declaringGroup : GroupPath) (expected : String)
+    (authored : SurfaceTokenValueCountFixedGroupValidationSource) :
+    Except TokenValueCountElabError (CheckedTokenValueCountSource model) := do
+  let source ← elaborateTokenEntitySource model declaringGroup {
+    first := .group (.path authored.group)
+    rest := [] }
     |>.mapError .source
   finishTokenValueCountSource expected source
 

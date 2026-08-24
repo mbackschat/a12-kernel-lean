@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.TokenValueCount
 
 /-! # Checked starred String-group value-count conformance
 
-The maintained Kernel differential admits one terminal repeatable starred String group as the whole operand list and reaches matches across every expanded declaration and instantiated row. The explicit two-star source is the same-fixture control. Fixed groups are unrepresented, and a star above a nonrepeatable terminal remains refused.
+The maintained Kernel differential admits one terminal repeatable starred String group as the whole operand list and reaches matches across every expanded declaration and instantiated row. The explicit two-star source is the same-fixture control. A separate Kernel admission row admits one fixed nonrepeatable String group; its checked runtime remains internal. A star above a nonrepeatable terminal remains refused.
 -/
 
 namespace A12Kernel
@@ -50,24 +50,72 @@ private def document? : Option (CheckedDocument model) :=
       { address := { field := 31, path := [2] }, stored := "X",
         raw := .parsed (.str "X") }] }).toOption
 
-private def evaluate?
-    (checked? : Option (CheckedTokenValueCountSource model)) :
+private def evaluate? {candidate : FlatModel}
+    (document? : Option (CheckedDocument candidate))
+    (checked? : Option (CheckedTokenValueCountSource candidate)) :
     Option NumericOperand := do
   let checked ← checked?
   let document ← document?
   (checked.evaluateCheckedDocumentValidation document []).toOption
 
 private def groupResult : Option NumericOperand :=
-  evaluate? (elaborateTokenValueCountStarredGroupValidationSource
+  evaluate? document? (elaborateTokenValueCountStarredGroupValidationSource
     model ["Order"] "X" groupSource).toOption
 
 private def explicitResult : Option NumericOperand :=
-  evaluate? (elaborateTokenValueCountSource model ["Order"] "X"
+  evaluate? document? (elaborateTokenValueCountSource model ["Order"] "X"
     explicitSource).toOption
 
 example :
     groupResult = some (.value 2 .fixed) ∧
       explicitResult = some (.value 2 .fixed) := by
+  native_decide
+
+/-! ## Fixed group authoring -/
+
+private def fixedModel : FlatModel :=
+  { fields := [
+      { id := 40, groupPath := ["Order", "Contact"], name := "Email",
+        policy := { kind := .string } },
+      { id := 41, groupPath := ["Order", "Contact"], name := "Phone",
+        policy := { kind := .string } }] }
+
+private def fixedPrepared :
+    PreparedFlatStringContext fixedModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler fixedModel).toOption.get (by native_decide)
+
+private def fixedSource : SurfaceTokenValueCountFixedGroupValidationSource :=
+  { group := {
+      base := .absolute
+      groups := ["Order", "Contact"] } }
+
+private def fixedExplicitSource : SurfaceTokenValueCountSource :=
+  { first := .field (.direct {
+      base := .absolute, groups := ["Order", "Contact"], field := "Email" })
+    rest := [.field (.direct {
+      base := .absolute, groups := ["Order", "Contact"], field := "Phone" })] }
+
+private def fixedDocument? : Option (CheckedDocument fixedModel) :=
+  (checkDocument fixedPrepared "en_US" {
+    instantiatedRows := []
+    cells := [
+      { address := { field := 40, path := [] }, stored := "X",
+        raw := .parsed (.str "X") },
+      { address := { field := 41, path := [] }, stored := "X",
+        raw := .parsed (.str "X") }] }).toOption
+
+private def fixedResult : Option NumericOperand :=
+  evaluate? fixedDocument? (elaborateTokenValueCountFixedGroupValidationSource
+    fixedModel ["Order"] "X" fixedSource).toOption
+
+private def fixedExplicitResult : Option NumericOperand :=
+  evaluate? fixedDocument? (elaborateTokenValueCountSource fixedModel ["Order"] "X"
+    fixedExplicitSource).toOption
+
+example :
+    fixedResult = some (.value 2 .fixed) ∧
+      fixedExplicitResult = some (.value 2 .fixed) := by
   native_decide
 
 private def nonrepeatableTerminalModel : FlatModel :=

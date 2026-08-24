@@ -1099,8 +1099,19 @@ a12-dmkits `06b84701969979a2e5a2b63de7445a6a1d521473` measures what a **cleared*
 - `claim`: a starred repeatable String group is admitted as the sole `NumberOfValueInFields` operand, and the typed surface renders that exact group form.
 - `claim`: with one `"X"` under declaration `A` in row 1 and one under declaration `B` in row 2, `NumberOfValueInFields("X" In Lines*) >= 2` fires; the explicit `Lines*/A, Lines*/B` control fires on the same fixture.
 - `separator`: the internal Lean case locks an exact count of two against the explicit two-star control; an empty, first-row-only, or single-declaration traversal would return a different exact count.
-- `limit`: the external row establishes at least two matches, not the internal exact count of two. It covers one terminal starred group, two direct String declarations, two instantiated rows, full validation, stored projection, and one `>= 2` comparison. Lean's treatment of the sole authored group slot as already-many is internal because the upstream fixtures do not distinguish authored-slot arity from expansion-counting arity. Fixed groups are explicitly outside the authoring law, while nested groups, Enumeration/category projection, other literals and comparisons, computation, partial validation, malformed cells, messages, and references remain unmeasured.
+- `limit`: the external row establishes at least two matches, not the internal exact count of two. It covers one terminal starred group, two direct String declarations, two instantiated rows, full validation, stored projection, and one `>= 2` comparison. Lean's treatment of the sole authored group slot as already-many is internal because the upstream fixtures do not distinguish authored-slot arity from expansion-counting arity. This starred-group law explicitly excludes fixed groups; their later separate static admission is owned by [the fixed-group checkpoint](#src-token-value-count-fixed-group-admission). Nested groups, Enumeration/category projection, other literals and comparisons, computation, partial validation, malformed cells, messages, and references remain unmeasured here.
 - `sync`: this is inbound calibration already committed in a12-dmkits. It closes the starred-group authoring erasure in Lean and creates no outbound ledger request.
+
+<a id="src-token-value-count-fixed-group-admission"></a>
+#### Token fixed-group value-count admission
+
+- `revision`: clean a12-dmkits `3a4025bbfdbd925d7f4c23e519f15ce0e2461b21`; `d510684807738aac614e0d596ba6871b4715832a` added the exact fixed-group admission and explicit-field control rows.
+- `route`: the targeted `GroupOperandCarrierAdmissionLawsTest` run passed at the clean revision and rechecked every matrix row through the Kernel consistency oracle.
+- `test`: [`GroupOperandCarrierAdmissionLawsTest`](../../a12-rulekit/src/test/java/io/github/mbackschat/a12/dm/rulekit/validate/laws/GroupOperandCarrierAdmissionLawsTest.java).
+- `claim`: a fixed nonrepeatable String group is admitted as the sole `NumberOfValueInFields("x" In Contact)` operand, beside an admitted explicit `Contact/Email, Contact/Phone` control.
+- `separator`: the fixed group is the only variable between the admitted group row and its two-direct-field control; either refusing ordinary groups or erasing the group form fails the admission row.
+- `limit`: this establishes static admission only. The group expands to two String declarations, so this row does not distinguish authored-slot arity from expansion-counting arity and does not establish any runtime count. `RuleGroup`, a fixed group inside repeatable scope, other declaration kinds and literals, computation, partial validation, messages, and references remain outside this observation.
+- `sync`: this is inbound calibration already committed in a12-dmkits. It removes Lean's stale fixed-group authoring refusal and creates no outbound ledger request.
 
 <a id="src-temporal-field-values-not-unique-group-runtime"></a>
 #### Temporal field-values-not-unique group runtime

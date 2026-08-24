@@ -72,13 +72,13 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `missing`: make Number directional missingness per cell before admitting a group whose declarations disagree on signedness.
 - `missing`: decide Enumeration/category `NumberOfValueInFields` literal admission over a starred group independently of the current all-expanded-declarations local choice; the measured all-String group does not discriminate that gate.
 - `prerequisite`: legacy raw-`Document` readers must expose instantiated-row topology before they can enumerate the operand-bounded group extent.
-- `baseline`: [Number group aggregates](IMPLEMENTATION-MAP.md#cap-number-group-aggregates) owns checked-document full-validation and computation execution; [token group expansion](IMPLEMENTATION-MAP.md#cap-token-group-expansion) owns checked-document full validation, full-validation-only starred token value-count authoring, and partial token value-list execution; [Boolean/Confirm group value count](IMPLEMENTATION-MAP.md#cap-boolean-confirm-group-value-count) owns checked-document full-validation execution.
+- `baseline`: [Number group aggregates](IMPLEMENTATION-MAP.md#cap-number-group-aggregates) owns checked-document full-validation and computation execution; [token group expansion](IMPLEMENTATION-MAP.md#cap-token-group-expansion) owns checked-document full validation, full-validation-only starred and fixed token value-count authoring, and partial token value-list execution; [Boolean/Confirm group value count](IMPLEMENTATION-MAP.md#cap-boolean-confirm-group-value-count) owns checked-document full-validation execution.
 - `evidence-needed`: measure each refused route and isolate any declared-tail effect from the independently measured no-row and instantiated-empty prefixes before representing omitted capacity.
 - `discriminator`: vary rule depth, operand depth, instantiated rows, and signedness independently while keeping the recursive declaration expansion fixed.
 - `consumer`: Execute needs exact operand-bounded extent and fillability; Analyze needs encounter order and the distinction between authored slots and reached cells.
 - `reopen-when`: a coherent group-runtime batch is selected.
 - `review`: `StarAddressingError.unsupportedGroupOperand` remains the shared refusal for the still-open token computation and non-value-list partial routes, Boolean routes, and raw-document routes; the two checked-document closures do not yet warrant relocating it.
-- `route-state`: verified for checked-document Number combiner computation, full-validation starred token value count, and partial token value-list evaluation; discovery-required for the remaining routes.
+- `route-state`: verified for checked-document Number combiner computation, full-validation starred token value count runtime, fixed token value-count static admission, and partial token value-list evaluation; discovery-required for the remaining routes.
 
 #### SG5 family completion
 
