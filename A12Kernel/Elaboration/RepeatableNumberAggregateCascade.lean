@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.AddressedNumberField
+import A12Kernel.Elaboration.AddressedNumberBinary
 import A12Kernel.Elaboration.NumericComputation.Target
 import A12Kernel.Semantics.NumericDependency
 
@@ -6,9 +7,57 @@ import A12Kernel.Semantics.NumericDependency
 
 namespace A12Kernel
 
+/-- The exact row-local producer identity needed by Analyze. -/
+inductive RepeatableNumberAggregateProducerKind where
+  | direct
+  | binary (operation : NumericArithmeticOp)
+  deriving Repr, DecidableEq
+
+/-- One completed row-local producer admitted by this fixed aggregate route. -/
+inductive CheckedRepeatableNumberAggregateProducer (model : FlatModel) where
+  | direct (operation : CheckedAddressedNumberField model)
+  | binary (operation : CheckedAddressedNumberBinary model)
+
+namespace CheckedRepeatableNumberAggregateProducer
+
+def kind : CheckedRepeatableNumberAggregateProducer model →
+    RepeatableNumberAggregateProducerKind
+  | .direct _ => .direct
+  | .binary operation => .binary operation.op
+
+def targetField : CheckedRepeatableNumberAggregateProducer model → FieldId
+  | .direct operation => operation.placement.targetField
+  | .binary operation => operation.pair.left.placement.targetField
+
+def targetDeclaration : CheckedRepeatableNumberAggregateProducer model →
+    FlatFieldDecl
+  | .direct operation => operation.placement.targetDeclaration
+  | .binary operation => operation.pair.left.placement.targetDeclaration
+
+def declaringGroup : CheckedRepeatableNumberAggregateProducer model → GroupPath
+  | .direct operation => operation.placement.declaringGroup
+  | .binary operation => operation.pair.left.placement.declaringGroup
+
+def sourceFields : CheckedRepeatableNumberAggregateProducer model → List FieldId
+  | .direct operation => [operation.placement.sourceDeclaration.id]
+  | .binary operation => [
+      operation.pair.left.placement.sourceDeclaration.id,
+      operation.pair.right.placement.sourceDeclaration.id]
+
+def execute (producer : CheckedRepeatableNumberAggregateProducer model)
+    (input : CheckedDocument model) :
+    Except AddressedNumericLeafFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  match producer with
+  | .direct operation => operation.execute input
+  | .binary operation => operation.execute input
+
+end CheckedRepeatableNumberAggregateProducer
+
 /-- Fail-closed errors for one row-local Number computation followed by one root aggregate over that exact target. -/
 inductive RepeatableNumberAggregateCascadeElabError where
   | row (cause : AddressedNumberFieldElabError)
+  | binary (cause : AddressedNumberBinaryElabError)
   | aggregate (cause : NumericComputationElabError)
   | incoherentAggregate
   | dependency (expected actual : FieldId)
@@ -18,10 +67,10 @@ inductive RepeatableNumberAggregateCascadeElabError where
   | cycle (field : FieldId)
   deriving Repr, DecidableEq
 
-/-- One checked one-level direct Number computation followed by one nonrepeatable `Sum`, `MinValue`, `MaxValue`, or distinct-count computation over its sole plain-star target. This is a fixed two-stage route, not a scheduler. -/
+/-- One checked one-level Number producer followed by one nonrepeatable `Sum`, `MinValue`, `MaxValue`, or distinct-count computation over its sole plain-star target. This is a fixed two-stage route, not a scheduler. -/
 structure CheckedRepeatableNumberAggregateCascade (model : FlatModel) where
   private mk ::
-  row : CheckedAddressedNumberField model
+  row : CheckedRepeatableNumberAggregateProducer model
   aggregate : CheckedNumberEntitySource model
   star : CheckedStarNumberSource model
   total : CheckedNumericTargetComputationOperation model
@@ -31,27 +80,21 @@ structure CheckedRepeatableNumberAggregateCascade (model : FlatModel) where
       .atom (.numeric (.aggregate operation aggregate))
   plainStar : aggregate.first = .star star
   soleOperand : aggregate.rest = []
-  dependency : star.field.id = row.placement.targetField
+  dependency : star.field.id = row.targetField
   sameGroup :
-    star.source.declaration.groupPath = row.placement.declaringGroup
+    star.source.declaration.groupPath = row.declaringGroup
   sameScope :
     star.source.declaration.repeatableScope =
-      row.placement.targetDeclaration.repeatableScope
-  oneLevel : row.placement.targetDeclaration.repeatableScope.length = 1
-  noCycle :
-    row.placement.sourceDeclaration.id ≠ total.operation.core.target.id
+      row.targetDeclaration.repeatableScope
+  oneLevel : row.targetDeclaration.repeatableScope.length = 1
+  noCycle : row.sourceFields.contains total.operation.core.target.id = false
 
-/-- Check only the exact plain-star aggregate route and its two supplied-order field edges. -/
-def checkRepeatableNumberAggregateCascade
-    (model : FlatModel)
-    (rowDeclaringGroup : GroupPath) (rowTarget : FieldId)
-    (rowSource : SurfaceFieldPath)
+private def finishRepeatableNumberAggregateCascade
+    (model : FlatModel) (row : CheckedRepeatableNumberAggregateProducer model)
     (aggregateDeclaringGroup : GroupPath) (aggregateTarget : FieldId)
     (aggregateSource : SurfaceStarFieldPath) (operation : NumericAggregateOp) :
     Except RepeatableNumberAggregateCascadeElabError
       (CheckedRepeatableNumberAggregateCascade model) := do
-  let row ← checkAddressedNumberField model rowDeclaringGroup
-      rowTarget rowSource |>.mapError .row
   let expression : AuthoredNumericExpr SurfaceNumericComputationAtom :=
     .atom (.numeric (.aggregate operation {
       first := .star aggregateSource
@@ -66,17 +109,15 @@ def checkRepeatableNumberAggregateCascade
         match hFirst : aggregate.first with
         | .star star =>
             if hRest : aggregate.rest = [] then
-              if hDependency : star.field.id = row.placement.targetField then
+              if hDependency : star.field.id = row.targetField then
                 if hGroup : star.source.declaration.groupPath =
-                    row.placement.declaringGroup then
+                    row.declaringGroup then
                   if hScope : star.source.declaration.repeatableScope =
-                      row.placement.targetDeclaration.repeatableScope then
+                      row.targetDeclaration.repeatableScope then
                     if hOneLevel :
-                        row.placement.targetDeclaration.repeatableScope.length = 1 then
-                      if hCycle : row.placement.sourceDeclaration.id =
-                          total.operation.core.target.id then
-                        throw (.cycle total.operation.core.target.id)
-                      else
+                        row.targetDeclaration.repeatableScope.length = 1 then
+                      if hNoCycle : row.sourceFields.contains
+                          total.operation.core.target.id = false then
                         pure {
                           row, aggregate, star, total, operation
                           expressionOwned := hOperation ▸ hExpression
@@ -86,27 +127,57 @@ def checkRepeatableNumberAggregateCascade
                           sameGroup := hGroup
                           sameScope := hScope
                           oneLevel := hOneLevel
-                          noCycle := hCycle
+                          noCycle := hNoCycle
                         }
+                      else throw (.cycle total.operation.core.target.id)
                     else
                       throw (.unsupportedScope
-                        row.placement.targetDeclaration.repeatableScope)
+                        row.targetDeclaration.repeatableScope)
                   else
                     throw (.scopeMismatch
-                      row.placement.targetDeclaration.repeatableScope
+                      row.targetDeclaration.repeatableScope
                       star.source.declaration.repeatableScope)
                 else
-                  throw (.groupMismatch row.placement.declaringGroup
+                  throw (.groupMismatch row.declaringGroup
                     star.source.declaration.groupPath)
               else
-                throw (.dependency row.placement.targetField star.field.id)
+                throw (.dependency row.targetField star.field.id)
             else throw .incoherentAggregate
         | _ => throw .incoherentAggregate
       else throw .incoherentAggregate
   | _ => throw .incoherentAggregate
 
-/-- The exact two field edges and the one-level row scope exposed to Analyze. -/
+/-- Check the exact direct-assignment producer followed by a sole plain-star aggregate. -/
+def checkRepeatableNumberAggregateCascade
+    (model : FlatModel)
+    (rowDeclaringGroup : GroupPath) (rowTarget : FieldId)
+    (rowSource : SurfaceFieldPath)
+    (aggregateDeclaringGroup : GroupPath) (aggregateTarget : FieldId)
+    (aggregateSource : SurfaceStarFieldPath) (operation : NumericAggregateOp) :
+    Except RepeatableNumberAggregateCascadeElabError
+      (CheckedRepeatableNumberAggregateCascade model) := do
+  let row ← checkAddressedNumberField model rowDeclaringGroup
+      rowTarget rowSource |>.mapError .row
+  finishRepeatableNumberAggregateCascade model (.direct row)
+    aggregateDeclaringGroup aggregateTarget aggregateSource operation
+
+/-- Check the exact direct-field binary producer followed by a sole plain-star aggregate. -/
+def checkRepeatableNumberBinaryAggregateCascade
+    (model : FlatModel)
+    (rowDeclaringGroup : GroupPath) (rowTarget : FieldId)
+    (leftSource rightSource : SurfaceFieldPath) (rowOperation : NumericArithmeticOp)
+    (aggregateDeclaringGroup : GroupPath) (aggregateTarget : FieldId)
+    (aggregateSource : SurfaceStarFieldPath) (operation : NumericAggregateOp) :
+    Except RepeatableNumberAggregateCascadeElabError
+      (CheckedRepeatableNumberAggregateCascade model) := do
+  let row ← checkAddressedNumberBinary model rowDeclaringGroup rowTarget
+      leftSource rightSource rowOperation |>.mapError .binary
+  finishRepeatableNumberAggregateCascade model (.binary row)
+    aggregateDeclaringGroup aggregateTarget aggregateSource operation
+
+/-- The exact two dependency stages and the one-level row scope exposed to Analyze. -/
 structure RepeatableNumberAggregateCascadeAnalysis where
+  producer : RepeatableNumberAggregateProducerKind
   operation : NumericAggregateOp
   repeatableScope : List RepeatableLevel
   fieldDependencies : List (FieldId × List FieldId)
@@ -128,13 +199,13 @@ namespace CheckedRepeatableNumberAggregateCascade
 
 def analyze (plan : CheckedRepeatableNumberAggregateCascade model) :
     RepeatableNumberAggregateCascadeAnalysis := {
+  producer := plan.row.kind
   operation := plan.operation
-  repeatableScope := plan.row.placement.targetDeclaration.repeatableScope
+  repeatableScope := plan.row.targetDeclaration.repeatableScope
   fieldDependencies := [
-    (plan.row.placement.targetField,
-      [plan.row.placement.sourceDeclaration.id]),
+    (plan.row.targetField, plan.row.sourceFields),
     (plan.total.operation.core.target.id,
-      [plan.row.placement.targetField])]
+      [plan.row.targetField])]
 }
 
 private def readAfterRows (input : CheckedDocument model)

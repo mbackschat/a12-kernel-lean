@@ -7,10 +7,10 @@ namespace A12Kernel.Conformance.RepeatableNumberAggregateCascade
 open A12Kernel
 
 private def number (id : FieldId) (name : String) (groupPath : GroupPath)
-    (scope : List RepeatableLevel) : FlatFieldDecl := {
+    (scope : List RepeatableLevel) (scale : Nat := 2) : FlatFieldDecl := {
   id, name, groupPath, repeatableScope := scope
-  policy := { kind := .number { scale := 2, signed := true } }
-  numericTargetConstraints := { minFractionalDigits := 2 }
+  policy := { kind := .number { scale, signed := true } }
+  numericTargetConstraints := { minFractionalDigits := scale }
 }
 
 private def best := number 1 "Best" ["Shop"] []
@@ -74,6 +74,34 @@ private def plan? (op : NumericAggregateOp)
     ["Shop", "Pricing"] helper.id rowSource
     ["Shop"] best.id aggregateSource op).toOption
 
+private def binaryTotal := number 11 "Total" ["Order"] []
+private def quantity := number 12 "Qty" ["Order", "Lines"] [30] 0
+private def unitPrice := number 13 "Price" ["Order", "Lines"] [30]
+private def amount := number 14 "Amount" ["Order", "Lines"] [30]
+
+private def binaryModel : FlatModel := {
+  fields := [binaryTotal, quantity, unitPrice, amount]
+  repeatableGroups := [{
+    level := 30
+    path := ["Order", "Lines"]
+    repeatability := some 3
+  }]
+}
+
+private def binaryStar (field : String) : SurfaceStarFieldPath := {
+  base := .absolute
+  groups := [
+    { name := "Order" },
+    { name := "Lines", starred := true }]
+  field
+}
+
+private def binaryPlan? :
+    Option (CheckedRepeatableNumberAggregateCascade binaryModel) :=
+  (checkRepeatableNumberBinaryAggregateCascade binaryModel
+    ["Order", "Lines"] amount.id (bare "Qty") (bare "Price") .multiply
+    ["Order"] binaryTotal.id (binaryStar "Amount") .sum).toOption
+
 private def decimalCell (field : FieldId) (path : List Nat)
     (stored : String) (unscaled : Int) : ClassifiedCellInput := {
   address := { field, path }
@@ -85,6 +113,20 @@ private def decimalCell (field : FieldId) (path : List Nat)
 private def invalidPrice : ClassifiedCellInput := {
   address := { field := price.id, path := [2] }
   stored := "5.5"
+  raw := .rejected .declaredConstraint
+}
+
+private def quantityCell (row : Nat) (stored : String)
+    (value : Int) : ClassifiedCellInput := {
+  address := { field := quantity.id, path := [row] }
+  stored
+  raw := .parsed (.num value)
+  numericDecimal := some { unscaled := value, scale := 0 }
+}
+
+private def invalidUnitPrice : ClassifiedCellInput := {
+  address := { field := unitPrice.id, path := [2] }
+  stored := "5.123"
   raw := .rejected .declaredConstraint
 }
 
@@ -112,16 +154,73 @@ private def summary? (op : NumericAggregateOp)
   pure (outcomes.rows.map fun row => (row.targetField, row.outcome),
     outcomes.aggregate.targetField, outcomes.aggregate.outcome)
 
+private def binaryInput? (secondPrice : ClassifiedCellInput) :
+    Option (CheckedDocument binaryModel) :=
+  (checkDocument
+    ((prepareFlatStringContext { now := { epochMillis := 0 } }
+      builtinStringPatternCompiler binaryModel).toOption.get
+        (by native_decide)) "en_US" {
+      instantiatedRows := [
+        { group := 30, path := [1] },
+        { group := 30, path := [2] }]
+      cells := [
+        quantityCell 1 "2" 2,
+        decimalCell unitPrice.id [1] "10.00" 1000,
+        quantityCell 2 "3" 3,
+        secondPrice,
+        decimalCell amount.id [1] "1.00" 100,
+        decimalCell amount.id [2] "1.00" 100,
+        decimalCell binaryTotal.id [] "99.99" 9999]
+    }).toOption
+
+private def binarySummary? (secondPrice : ClassifiedCellInput) :
+    Option (RepeatableNumberAggregateCascadeAnalysis ×
+      List (CellAddr × NumericTargetOutcome) × NumericTargetOutcome) := do
+  let plan <- binaryPlan?
+  let input <- binaryInput? secondPrice
+  let outcomes <- (plan.execute { now := { epochMillis := 0 } } input).toOption
+  pure (plan.analyze,
+    outcomes.rows.map fun row => (row.targetField, row.outcome),
+    outcomes.aggregate.outcome)
+
 /- Analyze preserves both real field edges and the repeatable scope. -/
 example :
     (plan? .maximum).map CheckedRepeatableNumberAggregateCascade.analyze =
       some {
+        producer := .direct
         operation := .maximum
         repeatableScope := [10]
         fieldDependencies := [
           (helper.id, [price.id]),
           (best.id, [helper.id])]
       } := by
+  native_decide
+
+/- Binary producer identity, ordered dependencies, fresh values, and poison all cross the same aggregate boundary. -/
+example :
+    binarySummary? (decimalCell unitPrice.id [2] "20.00" 2000) = some (
+      {
+        producer := .binary .multiply
+        operation := .sum
+        repeatableScope := [30]
+        fieldDependencies := [
+          (amount.id, [quantity.id, unitPrice.id]),
+          (binaryTotal.id, [amount.id])]
+      },
+      [
+        ({ field := amount.id, path := [1] },
+          .accepted { unscaled := 2000, scale := 2 }),
+        ({ field := amount.id, path := [2] },
+          .accepted { unscaled := 6000, scale := 2 })],
+      .accepted { unscaled := 8000, scale := 2 }) ∧
+    (binarySummary? invalidUnitPrice).map (fun result =>
+      (result.2.1, result.2.2)) = some (
+        [
+          ({ field := amount.id, path := [1] },
+            .accepted { unscaled := 2000, scale := 2 }),
+          ({ field := amount.id, path := [2] },
+            .inheritedPoison .declaredConstraint)],
+        .inheritedPoison .computedDependency) := by
   native_decide
 
 /- The aggregate reads freshly computed row values, not either stale Helper seed. -/
@@ -160,6 +259,15 @@ example :
         ["Shop", "Pricing"] helper.id (parent "Best")
         ["Shop"] best.id (star "Helper") .maximum with
       | .error (.cycle field) => field == best.id
+      | _ => false) = true := by
+  native_decide
+
+/- Either binary source may not read the later aggregate target. -/
+example :
+    (match checkRepeatableNumberBinaryAggregateCascade binaryModel
+        ["Order", "Lines"] amount.id (bare "Qty") (parent "Total") .add
+        ["Order"] binaryTotal.id (binaryStar "Amount") .sum with
+      | .error (.cycle field) => field == binaryTotal.id
       | _ => false) = true := by
   native_decide
 

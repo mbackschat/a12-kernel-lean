@@ -9,14 +9,14 @@ namespace A12Kernel
 theorem checkedRepeatableNumberAggregateCascade_analyze
     (plan : CheckedRepeatableNumberAggregateCascade model) :
     plan.analyze = {
+      producer := plan.row.kind
       operation := plan.operation
       repeatableScope :=
-        plan.row.placement.targetDeclaration.repeatableScope
+        plan.row.targetDeclaration.repeatableScope
       fieldDependencies := [
-        (plan.row.placement.targetField,
-          [plan.row.placement.sourceDeclaration.id]),
+        (plan.row.targetField, plan.row.sourceFields),
         (plan.total.operation.core.target.id,
-          [plan.row.placement.targetField])]
+          [plan.row.targetField])]
     } := by
   rfl
 
