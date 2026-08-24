@@ -3,7 +3,7 @@ import A12Kernel.Semantics.GroupPresence
 
 /-! # Checked group-star consumers
 
-This capsule resolves a starred group path through the shared model-derived topology. A terminal repeatable group retains the established structural-row interpretation used by the two legal group predicates and `NumberOfFilledGroups`. A nonrepeatable terminal retains its exact group path so checked validation can derive the existing descendant-content/error product once per topology-produced environment. Partial group relevance, filters, computation's ordered scan, and whole-rule orchestration remain outside.
+This capsule resolves a starred group path through the shared model-derived topology. A terminal repeatable group retains the established structural-row interpretation used by the two legal group predicates and `NumberOfFilledGroups`; partial numeric counting applies the local reduced-universal group-path account that reproduces the measured fifth outcome pattern. A nonrepeatable terminal retains its exact group path so checked validation can derive the existing descendant-content/error product once per topology-produced environment. Partial predicate relevance, filters, computation's ordered scan, and whole-rule orchestration remain outside.
 -/
 
 namespace A12Kernel
@@ -32,6 +32,12 @@ structure CheckedStarredGroupSource (model : FlatModel) where
   ancestryOwned : path.axes.map (·.level) = model.repeatableScopeForGroupPath group.path
   firstStarWithin : path.firstStar < path.axes.length
   pathValid : path.validate.isOk = true
+
+/-- Partial starred-group counting distinguishes an unavailable group extent from the exact in-capacity structural row count. -/
+inductive PartialValidationFilledGroupCountResult where
+  | nonRelevant
+  | evaluated (count : FilledGroupCount)
+  deriving Repr, DecidableEq
 
 /-- One nonrepeatable terminal group reached through a shared checked star plan. Its concrete presence remains the existing descendant-derived group product, not structural row count. -/
 structure CheckedStarredGroupPresenceSource (model : FlatModel) where
@@ -171,6 +177,12 @@ def StarredGroupFillQuantifier.evalCount (operator : StarredGroupFillQuantifier)
 
 namespace CheckedStarredGroupSource
 
+/-- Whether the normalized identifiers for this starred group establish its complete reduced-universal extent in the current rule-iteration row. The group path is deliberately the target, so descendant field identifiers do not project upward into coverage. -/
+def allRowsRelevant (checked : CheckedStarredGroupSource model)
+    (scope : ValidationRelevanceScope) (outer : Env) : Bool :=
+  scope.coversAggregateExtent model checked.group.path
+    checked.path.bindingScope checked.path.reopenedScope outer
+
 /-- Recheck the declaring group and model-owned facts carried by one resolved starred group source at a generic checked-core boundary. -/
 def wellFormedBool (checked : CheckedStarredGroupSource model)
     (rowGroup : GroupPath) : Bool :=
@@ -209,6 +221,16 @@ def evaluateFull (checked : CheckedStarredGroupSource model)
 def numberOfFilledGroups (checked : CheckedStarredGroupSource model)
     (document : Document) (outer : Env) : Except StarAddressingError FilledGroupCount := do
   pure (.value (← checked.inCapacityRowCount document outer))
+
+/-- Count the starred group in partial validation only after its group-path extent is known. The gate precedes topology resolution. -/
+def evaluatePartialNumberOfFilledGroups
+    (checked : CheckedStarredGroupSource model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope) :
+    Except StarAddressingError PartialValidationFilledGroupCountResult :=
+  if checked.allRowsRelevant scope outer then do
+    pure (.evaluated (← checked.numberOfFilledGroups document outer))
+  else
+    pure .nonRelevant
 
 end CheckedStarredGroupSource
 

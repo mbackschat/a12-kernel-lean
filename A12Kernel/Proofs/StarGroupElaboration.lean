@@ -29,6 +29,24 @@ theorem checkedStarredGroupSource_wellFormed_declaringGroup
   simp [CheckedStarredGroupSource.wellFormedBool] at valid
   exact valid.1.1.1.1
 
+/-- Full validation always supplies complete relevance for a starred group count. -/
+@[simp] theorem checkedStarredGroupSource_allRowsRelevant_full
+    (checked : CheckedStarredGroupSource model) (outer : Env) :
+    checked.allRowsRelevant .full outer = true := by
+  rfl
+
+/-- Partial starred-group count relevance is reduced-universal over identifiers that project onto the group operand path in the current iteration subtree. -/
+theorem checkedStarredGroupSource_allRowsRelevant_partialSet_iff
+    (checked : CheckedStarredGroupSource model)
+    (entities : List RelevantEntityPattern) (outer : Env) :
+    let retained := ValidationRelevanceScope.aggregateExtentPatterns entities model
+      checked.group.path checked.path.bindingScope outer
+    checked.allRowsRelevant (.partialSet entities) outer = true ↔
+      retained ≠ [] ∧ ∀ entity ∈ retained,
+        entity.wildcardsLevels model checked.path.reopenedScope = true := by
+  simp [CheckedStarredGroupSource.allRowsRelevant,
+    ValidationRelevanceScope.coversAggregateExtent]
+
 /-- Checked nonrepeatable-terminal lowering retains the model-derived outer-to-inner repeatable ancestry. -/
 @[simp] theorem checkedStarredGroupPresenceSource_ancestry
     (checked : CheckedStarredGroupPresenceSource model) :

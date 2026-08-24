@@ -485,7 +485,7 @@ example :
         some (.unknown .declaredConstraint) := by
   native_decide
 
-/- Until its own extent gate is measured, partial `NumberOfValueInFields` retains the pre-existing one-covering-entity boundary rather than inheriting a correction established only for the four combiner aggregates. -/
+/- Token `NumberOfValueInFields` shares the numeric overload's existential value-list extent internally: a covering wildcard stays decisive beside a concrete group sibling, while filtered rules skip before relevance. The partial token overload's Kernel correspondence remains source-generalized from the shared runtime loop rather than independently matrix-measured. -/
 example :
     let cells : RawCell × RawCell × RawCell :=
       ((.parsed (.str "A")), (.parsed (.str "B")), (.parsed (.str "A")))

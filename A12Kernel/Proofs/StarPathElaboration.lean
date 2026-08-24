@@ -55,15 +55,6 @@ theorem checkedStarFieldPath_valueListExtentRelevant_partialSet_iff
   simp [CheckedStarFieldPath.valueListExtentRelevant,
     ValidationRelevanceScope.coversValueListExtent]
 
-/-- The compatibility boundary retained by unmeasured count consumers remains exactly existential over one target-or-ancestor identifier whose named repeatable prefixes are wildcarded. -/
-theorem checkedStarFieldPath_singleEntityExtentRelevant_partialSet_iff
-    (checked : CheckedStarFieldPath model) (entities : List RelevantEntityPattern) :
-    checked.singleEntityExtentRelevant (.partialSet entities) = true ↔
-      ∃ entity ∈ entities,
-        entity.coversSingleEntityExtent model checked.declaration.path = true := by
-  simp [CheckedStarFieldPath.singleEntityExtentRelevant,
-    ValidationRelevanceScope.coversSingleEntityExtent]
-
 /-- Full validation makes every concrete instance of a checked star relevant. -/
 @[simp] theorem checkedStarFieldPath_cellRelevant_full
     (checked : CheckedStarFieldPath model) (environment : Env) :

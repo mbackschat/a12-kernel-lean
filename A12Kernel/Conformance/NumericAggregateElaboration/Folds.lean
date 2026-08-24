@@ -478,7 +478,7 @@ example :
         some (.unknown .declaredConstraint) := by
   native_decide
 
-/- Until its own extent gate is measured, partial `NumberOfValueInFields` retains the pre-existing one-covering-entity boundary rather than inheriting a correction established only for the four combiner aggregates. -/
+/- Partial `NumberOfValueInFields` uses the measured existential value-list extent: a covering wildcard stays decisive beside a concrete group sibling, while filtered rules still skip before relevance. -/
 example :
     let plain := aggregateSource (.star aggregateStar) []
     let filtered := aggregateSource

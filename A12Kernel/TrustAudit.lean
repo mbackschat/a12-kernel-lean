@@ -1262,7 +1262,6 @@ run_cmd do
 #print axioms A12Kernel.checkedStarFieldPath_allRowsRelevant_partialSet_iff
 #print axioms A12Kernel.checkedStarFieldPath_valueListExtentRelevant_full
 #print axioms A12Kernel.checkedStarFieldPath_valueListExtentRelevant_partialSet_iff
-#print axioms A12Kernel.checkedStarFieldPath_singleEntityExtentRelevant_partialSet_iff
 #print axioms A12Kernel.validationRelevanceScope_groupRelevance_full
 #print axioms A12Kernel.validationRelevanceScope_groupRelevance_empty
 #print axioms A12Kernel.checkedStarNumberSource_ancestry
@@ -1529,6 +1528,8 @@ run_cmd do
 #print axioms A12Kernel.checkedStarredGroupSource_ancestry
 #print axioms A12Kernel.checkedStarredGroupSource_wellFormed
 #print axioms A12Kernel.checkedStarredGroupSource_wellFormed_declaringGroup
+#print axioms A12Kernel.checkedStarredGroupSource_allRowsRelevant_full
+#print axioms A12Kernel.checkedStarredGroupSource_allRowsRelevant_partialSet_iff
 #print axioms A12Kernel.checkedStarredGroupPresenceSource_ancestry
 #print axioms A12Kernel.checkedStarredGroupPresenceSource_wellFormed
 #print axioms A12Kernel.checkedStarredGroupPresenceSource_wellFormed_declaringGroup

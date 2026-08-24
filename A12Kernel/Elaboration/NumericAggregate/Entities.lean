@@ -319,7 +319,7 @@ private def resolvedPartialViewAggregateSide
   | .group slot =>
       .error (.addressing (.addressing (.unsupportedGroupOperand slot.groupPath)))
 
-/-- Resolve one partial `NumberOfValueInFields` slot without importing the combiner family's newly measured universal gate. The one-covering-identifier star boundary is retained until this count operator is measured independently. -/
+/-- Resolve one partial `NumberOfValueInFields` slot through the local existential value-list account matching the measured outcome pattern. -/
 def resolvedCheckedDocumentPartialValueCountSide
     (checked : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env)
@@ -340,7 +340,7 @@ def resolvedCheckedDocumentPartialValueCountSide
       let resolved ←
         (source.source.path.resolve document.source.toDocument outer)
           |>.mapError .addressing
-      if source.source.singleEntityExtentRelevant scope then do
+      if source.source.valueListExtentRelevant scope outer then do
         match ← resolvedCheckedDocumentSide document .validation source.field
             resolved.environments resolved.domain.hasOpenTail false with
         | .inl side => pure (.inl side)
@@ -371,7 +371,7 @@ def resolvedPartialAggregateSide (checked : CheckedNumberEntityOperand model)
   | .starHaving _ => pure (.inr .skippedHaving)
   | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
-/-- Resolve one raw-document partial `NumberOfValueInFields` slot through its retained one-covering-identifier boundary. This preserves the unmeasured count family while the four combiner aggregates use `resolvedPartialAggregateSide`. -/
+/-- Resolve one raw-document partial `NumberOfValueInFields` slot through the local existential value-list account matching the measured outcome pattern. -/
 def resolvedPartialValueCountSide (checked : CheckedNumberEntityOperand model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (direct : FlatContext) (starRead : Env → FieldId → RawCell) :
@@ -386,7 +386,7 @@ def resolvedPartialValueCountSide (checked : CheckedNumberEntityOperand model)
         pure (.inr .nonRelevant)
   | .star source => do
       let resolved ← source.source.path.resolve document outer
-      if source.source.singleEntityExtentRelevant scope then
+      if source.source.valueListExtentRelevant scope outer then
         pure (.inl (resolved.toResolvedSide (source.valueListCell starRead)))
       else
         pure (.inr .nonRelevant)

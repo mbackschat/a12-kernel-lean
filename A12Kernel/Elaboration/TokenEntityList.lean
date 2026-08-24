@@ -513,7 +513,7 @@ def resolvedPartialValidationSide
   else
     pure (.inr ())
 
-/-- Preserve the pre-existing one-covering-identifier boundary for the still-unmeasured token `NumberOfValueInFields` partial route. -/
+/-- Resolve token `NumberOfValueInFields` through the same local existential value-list account as its numeric overload. -/
 def resolvedPartialValueCountSide
     (checked : CheckedTokenStarSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
@@ -522,7 +522,7 @@ def resolvedPartialValueCountSide
     Except StarAddressingError
       (Sum (ResolvedValueListSide .token) Unit) := do
   let resolved ← checked.source.path.resolve document outer
-  if checked.source.singleEntityExtentRelevant scope then
+  if checked.source.valueListExtentRelevant scope outer then
     pure (.inl (resolved.toResolvedSide
       (checked.valueListCellAt .validation read)))
   else

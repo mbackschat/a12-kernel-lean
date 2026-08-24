@@ -79,26 +79,8 @@ private def cellPrefixMatches (model : FlatModel) (environment : Env) :
           currentMatches && cellPrefixMatches model environment path segments indices
   | _, _, _ => false
 
-private def repeatablePrefixesWildcarded (model : FlatModel) :
-    GroupPath → List String → List RelevanceIndex → Bool
-  | _, [], [] => true
-  | pathPrefix, segment :: segments, index :: indices =>
-      let path := pathPrefix ++ [segment]
-      let wildcarded :=
-        !model.repeatableGroups.any (fun group => group.path == path) ||
-          index == .all
-      wildcarded &&
-        repeatablePrefixesWildcarded model path segments indices
-  | _, _, _ => false
-
-/-- Whether one caller identifier is the target or an ancestor and wildcards every repeatable level it names. This structural predicate preserves the pre-existing boundary of still-unmeasured count consumers; it is neither the combiner aggregate gate nor the starred value-list gate. -/
-def coversSingleEntityExtent (entity : RelevantEntityPattern)
-    (model : FlatModel) (targetPath : List String) : Bool :=
-  entity.path.isPrefixOf targetPath &&
-    repeatablePrefixesWildcarded model [] entity.path entity.indices
-
-/-- Expand one target field's relevant identifier. An ancestor group contributes the target field while retaining its own coordinates and wildcarding every deeper segment. Malformed index arity never becomes coverage. -/
-def projectOntoField? (entity : RelevantEntityPattern)
+/-- Expand one target path's relevant identifier. An ancestor contributes the target while retaining its own coordinates and wildcarding every deeper segment. A descendant never projects upward, and malformed index arity never becomes coverage. -/
+def projectOntoTarget? (entity : RelevantEntityPattern)
     (targetPath : List String) : Option RelevantEntityPattern :=
   if entity.indices.length != entity.path.length ||
       !entity.path.isPrefixOf targetPath then
@@ -143,7 +125,7 @@ private def matchesBoundSubtreeAt (entity : RelevantEntityPattern)
         matchesBoundSubtreeAt entity model boundLevels outer path segments indices
   | _, _, _ => false
 
-/-- Whether one normalized target-field identifier can belong to the current rule-iteration subtree. Concrete disagreement at a level above the first star removes it; wildcard or exact agreement retains it. -/
+/-- Whether one normalized target identifier can belong to the current rule-iteration subtree. Concrete disagreement at a level above the first star removes it; wildcard or exact agreement retains it. -/
 def matchesBoundSubtree (entity : RelevantEntityPattern)
     (model : FlatModel) (boundLevels : List RepeatableLevel)
     (outer : Env) : Bool :=
@@ -163,7 +145,7 @@ private def wildcardsLevelsAt (entity : RelevantEntityPattern)
       wildcardHere && wildcardsLevelsAt entity model levels path segments indices
   | _, _, _ => false
 
-/-- Whether one normalized target-field identifier wildcards every repeatable level reopened by the operand's first star. -/
+/-- Whether one normalized target identifier wildcards every repeatable level reopened by the operand's first star. -/
 def wildcardsLevels (entity : RelevantEntityPattern)
     (model : FlatModel) (levels : List RepeatableLevel) : Bool :=
   wildcardsLevelsAt entity model levels [] entity.path entity.indices
@@ -172,13 +154,13 @@ def wildcardsLevels (entity : RelevantEntityPattern)
 def coversValueListExtent (entity : RelevantEntityPattern)
     (model : FlatModel) (targetPath : List String)
     (boundLevels reopenedLevels : List RepeatableLevel) (outer : Env) : Bool :=
-  match entity.projectOntoField? targetPath with
+  match entity.projectOntoTarget? targetPath with
   | none => false
   | some projected =>
       projected.matchesBoundSubtree model boundLevels outer &&
         projected.wildcardsLevels model reopenedLevels
 
-/-- Remove exact duplicates and every narrower target-field identifier encompassed by another retained wildcard identifier. -/
+/-- Remove exact duplicates and every narrower target identifier encompassed by another retained wildcard identifier. -/
 def reduceWildcardDominance (entities : List RelevantEntityPattern) :
     List RelevantEntityPattern :=
   let unique := entities.eraseDups
@@ -231,20 +213,12 @@ def withGlobals (scope : ValidationRelevanceScope)
         (model.fields.filter (·.isGlobal)).map fun declaration =>
           RelevantEntityPattern.allInstances declaration.path)
 
-/-- Preserve one covering-identifier boundary for count operators whose own partial extent law remains unmeasured. This predicate carries no correspondence claim for those operators. -/
-def coversSingleEntityExtent (scope : ValidationRelevanceScope)
-    (model : FlatModel) (targetPath : List String) : Bool :=
-  match scope with
-  | .full => true
-  | .partialSet entities => entities.any fun entity =>
-      entity.coversSingleEntityExtent model targetPath
-
-/-- Prepare the all-rows aggregate's field-specific identifier set: expand ancestor groups, retain the current iteration subtree, then remove wildcard-dominated siblings. -/
+/-- Prepare one all-rows operand's target-specific identifier set: expand ancestors, retain the current iteration subtree, then remove wildcard-dominated siblings. -/
 def aggregateExtentPatterns (entities : List RelevantEntityPattern)
     (model : FlatModel) (targetPath : List String)
     (boundLevels : List RepeatableLevel) (outer : Env) :
     List RelevantEntityPattern :=
-  ((entities.filterMap fun entity => entity.projectOntoField? targetPath).filter
+  ((entities.filterMap fun entity => entity.projectOntoTarget? targetPath).filter
     fun entity => entity.matchesBoundSubtree model boundLevels outer)
     |> RelevantEntityPattern.reduceWildcardDominance
 
@@ -293,7 +267,7 @@ def coversFieldAtBoundLevels (scope : ValidationRelevanceScope)
       match scope with
       | .full => true
       | .partialSet entities => entities.any fun entity =>
-          match entity.projectOntoField? declaration.path with
+          match entity.projectOntoTarget? declaration.path with
           | none => false
           | some projected =>
               projected.matchesBoundSubtree model boundLevels environment
@@ -374,11 +348,6 @@ def valueListExtentRelevant (checked : CheckedStarFieldPath model)
     (scope : ValidationRelevanceScope) (outer : Env) : Bool :=
   scope.coversValueListExtent model checked.declaration.path
     checked.bindingScope checked.reopenedScope outer
-
-/-- The pre-existing one-covering-identifier boundary retained only by count consumers whose partial extent law has not been measured. -/
-def singleEntityExtentRelevant (checked : CheckedStarFieldPath model)
-    (scope : ValidationRelevanceScope) : Bool :=
-  scope.coversSingleEntityExtent model checked.declaration.path
 
 /-- Whether one topology-produced leaf environment lies under any over-capacity repeatable ancestor. This structural check is independent of the terminal field kind. -/
 def environmentOverLimit (checked : CheckedStarFieldPath model)
