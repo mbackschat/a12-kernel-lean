@@ -1074,8 +1074,21 @@ a12-dmkits `06b84701969979a2e5a2b63de7445a6a1d521473` measures what a **cleared*
 - `claim`: starred `Sum(Charges*)` reaches Fee, Tax, and every instantiated nested Extras/Surcharge row; the separating multi-row fixture computes `7.5` across two Charges rows and three nested Extras rows.
 - `claim`: a malformed three-fraction Amount clears the computation target, while an empty group computes the Sum identity `0`.
 - `separator`: the second nested Extras row and the nested row under the second Charges row distinguish complete recursive expansion from a single-coordinate or first-row traversal.
-- `limit`: the test authors only starred group operands. Fixed group computation, Number value-count computation, partial validation, raw-`Document` execution, mixed signedness, and the computation result's internal fillability metadata remain unmeasured.
+- `limit`: this retained test authors only starred group operands. Fixed group computation, partial validation, raw-`Document` execution, mixed signedness, and the computation result's internal fillability metadata remain unmeasured; the later [Number group value-count checkpoint](#src-number-group-value-count-computation-capacity) owns that separate computation family.
 - `sync`: the outcomes match the existing recursive group-extent, aggregate computation, poison, and empty-selection clauses, so no outbound correction follows.
+
+<a id="src-number-group-value-count-computation-capacity"></a>
+#### Number group value-count computation capacity
+
+- `revision`: clean a12-dmkits `cd43c249a88874bf5688a45060e208a0dcd20782` with source-shipped dmtool `0.13.0`.
+- `route`: structured dmtool authoring persisted `NumberOfValueInFields(10 In Lines*)` as the direct computation of a scale-0 Number target; the source-shipped `:adapter:kernelProbe` task observed `compute` and `validateFull` on dynamic Groovy and generated Java, and read-only `dmtool model compute` independently exercised the a12-dmkits interpreter over the same eight documents.
+- `kernel`: 30.8.1 built and runtime; both Kernel strategies agree on every reported runtime channel, and the interpreter returns the same eight computation outcomes.
+- `claim`: the two in-capacity rows expand across both Number declarations, producing exact counts `2`, `1`, `0`, and `0` for two matches, one match, two instantiated empty rows, and no rows; an in-capacity malformed cell after an earlier match clears the target.
+- `claim`: a third row beyond declared capacity contributes neither a matching value nor malformed-content poison. An over-capacity match alone leaves count `0`, one in-capacity match plus an over-capacity match leaves count `1`, and one in-capacity match plus over-capacity malformed content also leaves count `1`.
+- `separator`: the two malformed rows isolate capacity selection from content classification. The same malformed spelling clears when it is in capacity and remains unread when it is over capacity, while the Kernel artifact still reports the independent over-repetition findings in messages and `formalErrorsInOperands`.
+- `integrity`: request SHA-256 `85cab649cc39f5c69c7f9e5c962f0833a1fd1360946e9b1895670fccc7d383e5`; model SHA-256 `fc94e1392a1543049c4473b55b048721ead9ab68559992046791ef196f4a0b42`; artifact SHA-256 `398bfe23884d6ed5a1661b8c09159de30aa1034750044e8918ca30f5dcf71b23`; producer source state `CLEAN`.
+- `limit`: this establishes one terminal single-level starred Number group, two scale-0 declarations, declared capacity two, direct checked-document computation, and exact value/clear outcomes. Internal fillability, fixed groups, validation, plain starred fields, filters, nested repetition, mixed signedness, token and Boolean groups, and raw-`Document` routes remain outside the measurement.
+- `sync`: pending [`SPEC-2026-08-24-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-24-03--numberofvalueinfields-group-computation-excludes-over-capacity-cells-before-content-classification); the current a12-dmkits interpreter already matches, so peer reconciliation is expected to need retained coverage and canonical prose rather than an evaluator change.
 
 <a id="src-token-group-partial-runtime"></a>
 #### Token group partial-validation runtime

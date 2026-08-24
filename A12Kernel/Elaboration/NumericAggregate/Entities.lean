@@ -252,6 +252,19 @@ def resolvedCheckedDocumentComputationAggregateSide
       let resolved ← checked.resolveCheckedValidationOperand document outer
       pure (.inl (resolved.valueListSideAt .computation))
 
+/-- Resolve one computation value-count slot. A checked Number group excludes cells beneath a declared-capacity violation before the count classifies their content; every other operand keeps the established computation aggregate route. -/
+def resolvedCheckedDocumentValueCountComputationSide
+    (checked : CheckedNumberEntityOperand model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError
+      (Sum (ResolvedValueListSide .number) NumericOperand) :=
+  match checked with
+  | .group _ => do
+      let resolved ← checked.resolveCheckedValidationOperand document outer
+      pure (.inl (resolved.inCapacityValueListSideAt .computation))
+  | .field _ | .star _ | .starHaving _ =>
+      checked.resolvedCheckedDocumentComputationAggregateSide document outer
+
 /-- Resolve one unfiltered partial-validation slot from the checked document. Direct nonrelevance precedes its cell query; star topology precedes the established all-rows gate; a local filter remains a rule-level skip. -/
 def resolvedCheckedDocumentPartialAggregateSide
     (checked : CheckedNumberEntityOperand model)
@@ -579,13 +592,13 @@ def evaluateCheckedDocumentValueCountValidation
   checked.evaluateValueCountWith expected fun operand =>
     operand.resolvedCheckedDocumentValidationAggregateSide document outer
 
-/-- Evaluate computation-phase numeric value count through the same resolver and its one-kept-successor filter traversal. -/
+/-- Evaluate computation-phase numeric value count through its selected capacity-aware group resolver and the established one-kept-successor filter traversal. -/
 def evaluateCheckedDocumentValueCountComputation
     (checked : CheckedNumberEntitySource model)
     (expected : Rat) (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError NumericOperand :=
   checked.evaluateValueCountWith expected fun operand =>
-    operand.resolvedCheckedDocumentComputationAggregateSide document outer
+    operand.resolvedCheckedDocumentValueCountComputationSide document outer
 
 /-- Run the common partial value-count fold over a raw or checked-document operand resolver. -/
 def evaluatePartialValueCountWith

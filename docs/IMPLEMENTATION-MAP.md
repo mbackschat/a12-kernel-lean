@@ -692,18 +692,18 @@ These stable names help when a query crosses numbered clauses. Their capability 
 - `state`: partial.
 - `boundary`: the Number carrier retains the authored group and a certified complete recursive Number expansion with uniform signedness.
 - `boundary`: full validation resolves the operand-bounded `(row × field)` extent from model repeatability, binding only levels above the operand from the outer environment.
-- `boundary`: checked-document computation reuses that rich group projection and changes only cached-cell observation to computation phase; starred `Sum`, extrema, and distinct count are Kernel-calibrated on this route.
-- `boundary`: `FieldValuesNotUnique`, `Sum`, extrema, distinct count, and the locally represented Number value count share the resolver; expansion-kind diagnostics remain keyed by operator.
+- `boundary`: checked-document computation resolves one shared rich group operand. Starred `Sum`, extrema, and distinct count retain its complete checked-cell projection, while Number value count selects its in-capacity projection before computation-phase content classification.
+- `boundary`: `FieldValuesNotUnique`, `Sum`, extrema, distinct count, and Number value count share the checked operand resolver; ordinary aggregates and value count deliberately select different projections, and expansion-kind diagnostics remain keyed by operator.
 - `limit`: non-Number, empty, and mixed-signedness expansions fail locally without inventing a Kernel class.
 - `boundary`: the resolver emits cells declaration-major in stable model declaration order, with each declaration's canonical row order inside it.
 - `limit`: Kernel correspondence for that order remains open on Number consumers; [token group expansion](#cap-token-group-expansion) owns the separately calibrated fixed and direct-single-star `FirstFilledValue` fragments.
 - `limit`: only instantiated rows are enumerated and `hasUninstantiatedTail` is false; correspondence for a declared but uninstantiated tail is open.
-- `limit`: fixed-group computation and Number value-count computation are internally executable but remain `external evidence pending`; partial validation and raw-`Document` group routes remain refused.
+- `limit`: fixed-group computation, Number value-count validation, and Number group routes outside the measured checked computation remain `external evidence pending`; partial validation and raw-`Document` group routes remain refused.
 - `owner`: [`NumberEntityList.lean`](../A12Kernel/Elaboration/NumberEntityList.lean), [`CheckedStarDocument.lean`](../A12Kernel/Elaboration/CheckedStarDocument.lean), and [`NumericAggregate/Entities.lean`](../A12Kernel/Elaboration/NumericAggregate/Entities.lean).
 - `case`: [group extent and admission cases](../A12Kernel/Conformance/FieldEntityGroupOperand.lean) and [checked computation cases](../A12Kernel/Conformance/NumberEntityGroupComputation.lean).
-- `proof`: [`checkedNumberEntityGroup_expansion_complete`](../A12Kernel/Proofs/NumberEntityList.lean) and [`checkedNumberEntityGroup_checkedComputationAggregate_usesRichProjection`](../A12Kernel/Proofs/NumericAggregateElaboration.lean).
-- `assurance`: E/P closed for retention, full-validation extent, and checked-computation resolver delegation; L Kernel-locks starred combiner computation while the wider routes remain partial; C/X/Q none.
-- `source`: [group runtime and reference correction](SOURCES.md#src-group-runtime-and-reference), [group runtime differential](SOURCES.md#src-field-values-not-unique-group-runtime), and [Number group computation runtime](SOURCES.md#src-number-group-computation-runtime).
+- `proof`: [`checkedNumberEntityGroup_expansion_complete`](../A12Kernel/Proofs/NumberEntityList.lean), [`checkedNumberEntityGroup_checkedComputationAggregate_usesRichProjection`](../A12Kernel/Proofs/NumericAggregateElaboration.lean), and [`checkedNumberEntityGroup_checkedComputationValueCount_usesCapacityProjection`](../A12Kernel/Proofs/NumericAggregateElaboration.lean).
+- `assurance`: E/P closed for retention, full-validation extent, checked-computation resolver delegation, ordinary rich projection, and value-count capacity projection; L Kernel-locks starred combiner computation and starred group value-count values, poison, empty identity, and over-capacity exclusion while the wider routes remain partial; C/X/Q none.
+- `source`: [group runtime and reference correction](SOURCES.md#src-group-runtime-and-reference), [group runtime differential](SOURCES.md#src-field-values-not-unique-group-runtime), [Number group computation runtime](SOURCES.md#src-number-group-computation-runtime), and [Number group value-count capacity](SOURCES.md#src-number-group-value-count-computation-capacity).
 - `remains`: [group runtime](SEMANTICS-GAPS.md#gap-sg5-number-token-group-runtime).
 
 <a id="cap-token-group-expansion"></a>

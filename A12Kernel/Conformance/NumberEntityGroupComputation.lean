@@ -2,10 +2,11 @@ import A12Kernel.Elaboration.NumericAggregate.Entities
 
 /-! # Checked Number group computation
 
-Checked-document computation over a starred Number group reuses the same recursive, operand-bounded
-extent as full validation, then projects each cached cell at computation phase. These cases
-specialize the retained Kernel computation matrix while keeping fixed groups, partial validation,
-and raw-document routes outside this capsule.
+Checked-document computation over a starred Number group expands the same recursive, operand-bounded
+source at computation phase. Ordinary aggregates retain the complete checked projection, while
+`NumberOfValueInFields` excludes cells beneath a declared-capacity violation before classifying
+their content. These cases specialize the retained Kernel computation matrix while keeping fixed
+groups, partial validation, and raw-document routes outside this capsule.
 -/
 
 namespace A12Kernel.Conformance.NumberEntityGroupComputation
@@ -25,12 +26,15 @@ private def model : FlatModel :=
       numberField 1 ["Invoice", "Lines"] "Amount" [10],
       numberField 2 ["Invoice", "Charges"] "Fee" [20],
       numberField 3 ["Invoice", "Charges"] "Tax" [20],
-      numberField 4 ["Invoice", "Charges", "Extras"] "Surcharge" [20, 30]]
+      numberField 4 ["Invoice", "Charges", "Extras"] "Surcharge" [20, 30],
+      numberField 5 ["Invoice", "Limited"] "A" [40],
+      numberField 6 ["Invoice", "Limited"] "B" [40]]
     repeatableGroups := [
       { level := 10, path := ["Invoice", "Lines"], repeatability := some 10 },
       { level := 20, path := ["Invoice", "Charges"], repeatability := some 10 },
       { level := 30, path := ["Invoice", "Charges", "Extras"],
-        repeatability := some 10 }] }
+        repeatability := some 10 },
+      { level := 40, path := ["Invoice", "Limited"], repeatability := some 2 }] }
 
 private def starredGroup (groups : List SurfaceStarGroupSegment) :
     SurfaceFieldEntityOperand :=
@@ -47,6 +51,9 @@ private def linesSource? : Option (CheckedNumberEntitySource model) :=
 
 private def chargesSource? : Option (CheckedNumberEntitySource model) :=
   source? [{ name := "Invoice" }, { name := "Charges", starred := true }]
+
+private def limitedSource? : Option (CheckedNumberEntitySource model) :=
+  source? [{ name := "Invoice" }, { name := "Limited", starred := true }]
 
 private def prepared :
     PreparedFlatStringContext model builtinStringPatternCompiler :=
@@ -99,10 +106,78 @@ example :
         some (.value 2 .fixed) := by
   native_decide
 
-/- The shared computation resolver also makes the local Number value-count representation executable;
-   Kernel correspondence for that literal admission and route remains unmeasured. -/
+/- The measured computation route counts every matching declaration-row pair. -/
 example :
     valueCount? linesSource? 10 lineRows lineCells = some (.value 2 .fixed) := by
+  native_decide
+
+private def limitedRows : List RowAddr :=
+  [{ group := 40, path := [1] },
+    { group := 40, path := [2] }]
+
+/- A group value count reaches every declaration in every in-capacity row. -/
+example :
+    valueCount? limitedSource? 10 limitedRows [
+        cell 5 [1] 10, cell 6 [1] 11,
+        cell 5 [2] 12, cell 6 [2] 10] = some (.value 2 .fixed) := by
+  native_decide
+
+example :
+    valueCount? limitedSource? 10 limitedRows [
+      cell 5 [1] 10, cell 6 [1] 11,
+      cell 5 [2] 12, cell 6 [2] 13] = some (.value 1 .fixed) := by
+  native_decide
+
+/- Empty cells retain growth internally, while an absent extent supplies the exact identity. -/
+example :
+    valueCount? limitedSource? 10 limitedRows [] = some (.value 0 .growOnly) := by
+  native_decide
+
+example :
+    valueCount? limitedSource? 10 [] [] = some (.value 0 .fixed) := by
+  native_decide
+
+/- A malformed reached cell poisons the count. -/
+example :
+    valueCount? limitedSource? 10 limitedRows [
+      cell 5 [1] 10, cell 6 [1] 11,
+      cell 5 [2] 12, malformedCell 6 [2]] = some (.unknown .malformed) := by
+  native_decide
+
+/- An over-capacity match stays outside the computation domain. -/
+example :
+    valueCount? limitedSource? 10
+      (limitedRows ++ [{ group := 40, path := [3] }]) [
+        cell 5 [1] 11, cell 6 [1] 12,
+        cell 5 [2] 13, cell 6 [2] 14,
+        cell 5 [3] 10, cell 6 [3] 15] = some (.value 0 .fixed) := by
+  native_decide
+
+/- Excluding the over-capacity row preserves a reached in-capacity match. -/
+example :
+    valueCount? limitedSource? 10
+      (limitedRows ++ [{ group := 40, path := [3] }]) [
+        cell 5 [1] 10, cell 6 [1] 12,
+        cell 5 [2] 13, cell 6 [2] 14,
+        cell 5 [3] 10, cell 6 [3] 15] = some (.value 1 .fixed) := by
+  native_decide
+
+/- Over-capacity malformed content remains outside the computation domain too. -/
+example :
+    valueCount? limitedSource? 10
+      (limitedRows ++ [{ group := 40, path := [3] }]) [
+        cell 5 [1] 10, cell 6 [1] 12,
+        cell 5 [2] 13, cell 6 [2] 14,
+        malformedCell 5 [3], cell 6 [3] 15] = some (.value 1 .fixed) := by
+  native_decide
+
+/- The value-count specialization does not narrow the project's ordinary group aggregate account. -/
+example :
+    aggregate? limitedSource? .sum
+      (limitedRows ++ [{ group := 40, path := [3] }]) [
+        cell 5 [1] 10, cell 6 [1] 12,
+        cell 5 [2] 13, cell 6 [2] 14,
+        cell 5 [3] 10, cell 6 [3] 15] = some (.unknown .overRepetition) := by
   native_decide
 
 private def chargeRows : List RowAddr :=

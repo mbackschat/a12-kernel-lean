@@ -202,6 +202,18 @@ theorem checkedNumberEntityGroup_checkedComputationAggregate_usesRichProjection
       pure (.inl (resolved.valueListSideAt .computation))) := by
   rfl
 
+/-- A checked Number group value count narrows its computation domain to in-capacity cells without changing the ordinary group aggregate projection. -/
+theorem checkedNumberEntityGroup_checkedComputationValueCount_usesCapacityProjection
+    (group : CheckedNumberEntityGroup model)
+    (document : CheckedDocument model) (outer : Env) :
+    (CheckedNumberEntityOperand.group group).resolvedCheckedDocumentValueCountComputationSide
+        document outer = (do
+      let resolved ←
+        (CheckedNumberEntityOperand.group group).resolveCheckedValidationOperand
+          document outer
+      pure (.inl (resolved.inCapacityValueListSideAt .computation))) := by
+  rfl
+
 /-- A relevant direct partial aggregate slot delegates to the same declaration-owned side, while a nonrelevant one is rejected before its checked value is inspected. -/
 theorem checkedNumberEntityField_partialAggregate_relevance
     (source : CheckedNumberEntityField model)
