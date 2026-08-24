@@ -12,9 +12,9 @@ is refused, the Kernel demanding the asterisk. A **starred** operand is refused
 cannot express it. A fourth, already recorded in the spec, is the group-scope operand's own refusal.
 
 Only the direct-comparison carrier was measured; the shift and difference carriers keep the
-nonrepeatable locus, because in this family a locus verdict does not transfer between carriers. What a
-bound operand's per-row *cell read* does is not modelled anywhere yet: the family consumes stored text
-directly, so no route resolves a row's cell for it. -/
+nonrepeatable locus, because in this family a locus verdict does not transfer between carriers. The
+per-row read below is this project's composed account: it reads the cell's stored text at the bound row
+and delegates classification to the existing measured partial-Date owner. -/
 
 namespace A12Kernel.Conformance.ValueAsDateLocus
 
@@ -85,8 +85,7 @@ example :
   native_decide
 
 /- A bound operand still evaluates through the one existing raw route: admission changed, meaning did
-not. The per-row *read* is not modelled here — the family takes stored text directly, so nothing yet
-resolves a row's cell for it. -/
+not. The addressed route below supplies that same evaluator with the bound row's checked stored text. -/
 example :
     let expected := (date? 2024 6 15).get (by native_decide)
     let checked := (elaborateValueAsDateComparisonIn rowModel [10] 0 .firstDay
