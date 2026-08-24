@@ -50,6 +50,20 @@ theorem checkedTokenValueCount_partialHaving_skips
   simp [CheckedTokenValueCountSource.evaluatePartialValidation, filtered]
   rfl
 
+/-- A checked token-group value count excludes over-capacity cells before computation classifies their declaration-owned token projections. -/
+theorem checkedTokenValueCountGroup_checkedComputation_usesCapacityProjection
+    (checked : CheckedTokenValueCountGroupSource model)
+    (document : CheckedDocument model) (outer : Env) :
+    checked.evaluateCheckedDocumentComputation document outer = (do
+      let resolved ← (CheckedTokenEntityOperand.group checked.group)
+        |>.resolveCheckedValidationOperand document outer
+      let side :=
+        (ResolvedValueCountSide.empty : ResolvedValueCountSide .token)
+          |>.appendResolved
+            (resolved.inCapacityValueListSideAt .computation)
+      pure (evalValueCountAggregate checked.expected side)) := by
+  rfl
+
 /-- A retained Boolean/Confirm group omits no descendant: every declaration in the recursive
     subtree is present in its certified expansion. -/
 theorem checkedBooleanValueCountGroup_expansion_complete

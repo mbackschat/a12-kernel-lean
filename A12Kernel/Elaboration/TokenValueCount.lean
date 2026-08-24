@@ -18,10 +18,14 @@ abbrev SurfaceTokenValueCountOperand :=
 abbrev SurfaceTokenValueCountSource :=
   SurfaceProjectedTokenEntitySource
 
-/-- The measured full-validation authoring form with one terminal repeatable starred group as the whole value-count operand. This separate carrier does not widen the computation or projected value-list surfaces. -/
+/-- The measured full-validation authoring form with one terminal repeatable starred group as the whole value-count operand. -/
 structure SurfaceTokenValueCountStarredGroupValidationSource where
   group : SurfaceStarGroupPath
   deriving Repr, DecidableEq
+
+/-- The same measured surface is now admitted by checked computation without replacing the established validation constructor namespace. -/
+abbrev SurfaceTokenValueCountStarredGroupSource :=
+  SurfaceTokenValueCountStarredGroupValidationSource
 
 /-- The measured full-validation authoring form with one fixed nonrepeatable path group as the whole value-count operand. Keeping the ordinary group path exact excludes the separately unmeasured `RuleGroup` form. -/
 structure SurfaceTokenValueCountFixedGroupValidationSource where
@@ -108,6 +112,16 @@ structure CheckedTokenValueCountSource (model : FlatModel) where
   source : CheckedTokenEntitySource model
   expectedAllowed : source.allowsValueCountLiteral expected = true
 
+/-- One checked whole-group token count. The dedicated carrier proves that runtime owns exactly one group extent, so its computation projection can narrow capacity without widening direct, star, or filtered computation. -/
+structure CheckedTokenValueCountGroupSource (model : FlatModel) where
+  expected : String
+  starredSource : CheckedStarredGroupSource model
+  group : CheckedTokenEntityGroup model
+  sourceOwned : group.source = .starred starredSource
+  modelWellFormed : model.validate.isOk = true
+  expectedAllowed :
+    (CheckedTokenEntityOperand.group group).allowsValueCountLiteral expected = true
+
 namespace CheckedTokenValueCountSource
 
 /-- Every typed value count has the kernel's fixed integral result scale. -/
@@ -120,6 +134,34 @@ def referencesField (checked : CheckedTokenValueCountSource model)
   checked.source.referencesField field
 
 end CheckedTokenValueCountSource
+
+namespace CheckedTokenValueCountGroupSource
+
+def scaleSummary (_checked : CheckedTokenValueCountGroupSource model) :
+    NumericScaleSummary :=
+  NumericScaleSummary.field 0
+
+def referencesField (checked : CheckedTokenValueCountGroupSource model)
+    (field : FieldId) : Bool :=
+  checked.group.referencesField field
+
+/-- Recover the established general checked source for validation consumers without exposing group computation on its direct, starred-field, or filtered variants. -/
+def toCheckedTokenValueCountSource
+    (checked : CheckedTokenValueCountGroupSource model) :
+    CheckedTokenValueCountSource model :=
+  let source : CheckedTokenEntitySource model := {
+    first := .group checked.group
+    rest := []
+    modelWellFormed := checked.modelWellFormed
+    requiredMultiplicity := by rfl
+    uniqueDirectOperands := by rfl }
+  { expected := checked.expected
+    source
+    expectedAllowed := by
+      simpa [source, CheckedTokenEntitySource.allowsValueCountLiteral,
+        CheckedTokenEntitySource.operands] using checked.expectedAllowed }
+
+end CheckedTokenValueCountGroupSource
 
 /-- Retain a decoded literal beside a checked token source after certifying every selected String/Enumeration domain. -/
 private def finishTokenValueCountSource (expected : String)
@@ -143,19 +185,61 @@ def elaborateTokenValueCountSource (model : FlatModel)
     |>.mapError .source
   finishTokenValueCountSource expected source
 
-/-- Resolve the measured full-validation-only form with one terminal repeatable starred group, using the common stored-projection group certification and token-list assembly without admitting that form on broader carriers. -/
+private theorem certifiedStarredTokenEntityGroup_source
+    (starred : CheckedStarredGroupSource model)
+    (group : CheckedTokenEntityGroup model)
+    (certified : certifyTokenEntityGroup model (.starred starred) = .ok group) :
+    group.source = .starred starred := by
+  unfold certifyTokenEntityGroup at certified
+  split at certified
+  · split at certified
+    · contradiction
+    · cases certified
+      rfl
+  · contradiction
+
+private def certifyStarredTokenValueCountGroup
+    (model : FlatModel) (starred : CheckedStarredGroupSource model) :
+    Except TokenEntityGroupError
+      { group : CheckedTokenEntityGroup model //
+        group.source = .starred starred } :=
+  match certified : certifyTokenEntityGroup model (.starred starred) with
+  | .error error => .error error
+  | .ok group =>
+      .ok ⟨group,
+        certifiedStarredTokenEntityGroup_source starred group certified⟩
+
+/-- Resolve the measured form with one terminal repeatable starred group and retain the exact whole-group carrier used by validation and computation. -/
+def elaborateTokenValueCountStarredGroupSource (model : FlatModel)
+    (declaringGroup : GroupPath) (expected : String)
+    (authored : SurfaceTokenValueCountStarredGroupSource) :
+    Except TokenValueCountElabError
+      (CheckedTokenValueCountGroupSource model) := do
+  let starred ← elaborateStarredGroupSource model declaringGroup authored.group
+    |>.mapError fun error => .source (.shape (.starredGroup error))
+  let checkedGroup ← certifyStarredTokenValueCountGroup model starred
+    |>.mapError fun error => .source (.group error)
+  let group := checkedGroup.1
+  if hAllowed : CheckedTokenEntityOperand.allowsValueCountLiteral
+      (.group group) expected = true then
+    pure {
+      expected
+      starredSource := starred
+      group
+      sourceOwned := checkedGroup.2
+      modelWellFormed := starred.modelWellFormed
+      expectedAllowed := hAllowed }
+  else
+    throw (.literalOutsideEnumerationDomain group.groupPath expected)
+
+/-- Compatibility entry point preserving the established general checked validation carrier. -/
 def elaborateTokenValueCountStarredGroupValidationSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : String)
     (authored : SurfaceTokenValueCountStarredGroupValidationSource) :
-    Except TokenValueCountElabError (CheckedTokenValueCountSource model) := do
-  let starred ← elaborateStarredGroupSource model declaringGroup authored.group
-    |>.mapError fun error => .source (.shape (.starredGroup error))
-  let group ← certifyTokenEntityGroup model (.starred starred)
-    |>.mapError fun error => .source (.group error)
-  let source ← assembleTokenEntitySource starred.modelWellFormed
-      (.group group) []
-    |>.mapError .source
-  finishTokenValueCountSource expected source
+    Except TokenValueCountElabError (CheckedTokenValueCountSource model) :=
+  (elaborateTokenValueCountStarredGroupSource
+    model declaringGroup expected authored).map
+      CheckedTokenValueCountGroupSource.toCheckedTokenValueCountSource
 
 /-- Resolve the measured full-validation-only form with one fixed nonrepeatable path group through the common token entity-list gates. -/
 def elaborateTokenValueCountFixedGroupValidationSource (model : FlatModel)
@@ -167,6 +251,32 @@ def elaborateTokenValueCountFixedGroupValidationSource (model : FlatModel)
     rest := [] }
     |>.mapError .source
   finishTokenValueCountSource expected source
+
+namespace CheckedTokenValueCountGroupSource
+
+/-- Full validation classifies the complete formal group extent through each declaration's retained token projection. -/
+def evaluateCheckedDocumentValidation
+    (checked : CheckedTokenValueCountGroupSource model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError NumericOperand := do
+  let resolved ← (CheckedTokenEntityOperand.group checked.group)
+    |>.resolveCheckedValidationOperand document outer
+  let side := (ResolvedValueCountSide.empty : ResolvedValueCountSide .token)
+    |>.appendResolved (resolved.valueListSideAt .validation)
+  pure (evalValueCountAggregate checked.expected side)
+
+/-- Computation excludes cells beneath a declared-capacity violation before classifying group content, leaving their structural findings on the checked document. -/
+def evaluateCheckedDocumentComputation
+    (checked : CheckedTokenValueCountGroupSource model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError NumericOperand := do
+  let resolved ← (CheckedTokenEntityOperand.group checked.group)
+    |>.resolveCheckedValidationOperand document outer
+  let side := (ResolvedValueCountSide.empty : ResolvedValueCountSide .token)
+    |>.appendResolved (resolved.inCapacityValueListSideAt .computation)
+  pure (evalValueCountAggregate checked.expected side)
+
+end CheckedTokenValueCountGroupSource
 
 namespace CheckedTokenEntityOperand
 

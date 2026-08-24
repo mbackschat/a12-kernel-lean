@@ -453,6 +453,18 @@ def valueListSideAt (resolved : ResolvedCheckedTokenEntityOperand model)
     hasHaving := resolved.hasHaving
     hasNonRelevant := resolved.hasNonRelevant }
 
+/-- Project away cells beneath a declared-capacity violation while preserving each reached declaration's exact token projection. -/
+def inCapacityValueListSideAt
+    (resolved : ResolvedCheckedTokenEntityOperand model)
+    (phase : Phase) : ResolvedValueListSide .token :=
+  { cells := (resolved.projectedCells.filter fun (_, addressed) =>
+      !addressed.cell.findings.contains .overRepetition).map
+        fun (operand, addressed) =>
+          operand.checkedValueListCellAt phase addressed.cell
+    hasUninstantiatedTail := resolved.hasUninstantiatedTail
+    hasHaving := resolved.hasHaving
+    hasNonRelevant := resolved.hasNonRelevant }
+
 end ResolvedCheckedTokenEntityOperand
 
 namespace CheckedTokenField
