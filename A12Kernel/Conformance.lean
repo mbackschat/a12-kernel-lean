@@ -42,6 +42,7 @@ import A12Kernel.Conformance.TimeInput
 import A12Kernel.Conformance.DateTimeInput
 import A12Kernel.Conformance.DateFromDateTime
 import A12Kernel.Conformance.FilledFieldCount
+import A12Kernel.Conformance.FilledFieldGroupCount
 import A12Kernel.Conformance.ValueAsDate
 import A12Kernel.Conformance.ValueAsDateLocus
 import A12Kernel.Conformance.TimeConstruction

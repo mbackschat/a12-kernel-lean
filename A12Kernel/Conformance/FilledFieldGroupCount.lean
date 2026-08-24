@@ -1,0 +1,102 @@
+import A12Kernel.Elaboration.FilledFieldGroupCount
+
+/-! # Checked group-scope `NumberOfFilledFields` conformance
+
+The fixed-group rows distinguish filled, present-empty, and absent descendants. The starred rows distinguish whole-extent expansion from a per-row or row-1 read and lock the empty-group zero.
+-/
+
+namespace A12Kernel
+
+private def fixedModel : FlatModel :=
+  { fields := [
+      { id := 1, groupPath := ["Order", "Contact"], name := "Street",
+        policy := { kind := .string } },
+      { id := 2, groupPath := ["Order", "Contact"], name := "City",
+        policy := { kind := .string } }] }
+
+private def fixedPrepared :
+    PreparedFlatStringContext fixedModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler fixedModel).toOption.get (by native_decide)
+
+private def fixedSource : SurfaceFilledFieldCountFixedGroupValidationSource :=
+  { group := { base := .absolute, groups := ["Order", "Contact"] } }
+
+private def fixedChecked? : Option (CheckedFilledFieldCountGroupSource fixedModel) :=
+  (elaborateFilledFieldCountFixedGroupValidationSource
+    fixedModel ["Order"] fixedSource).toOption
+
+private def fixedRootError? : Option FilledFieldCountGroupElabError :=
+  match elaborateFilledFieldCountFixedGroupValidationSource fixedModel ["Order"] {
+      group := { base := .absolute, groups := ["Order"] } } with
+  | .ok _ => none
+  | .error error => some error
+
+example : fixedRootError? = some (.rootGroup ["Order"]) := by
+  native_decide
+
+private def fixedCount (cells : List ClassifiedCellInput) : Option FilledFieldCount := do
+  let checked ← fixedChecked?
+  let document ← (checkDocument fixedPrepared "en_US" {
+    instantiatedRows := []
+    cells }).toOption
+  (checked.evaluateCheckedDocumentValidation document []).toOption
+
+private def cell (field : FieldId) (path : List Nat)
+    (stored : String) : ClassifiedCellInput :=
+  { address := { field, path }
+    stored
+    raw := .parsed (.str stored) }
+
+example :
+    fixedCount [cell 1 [] "s"] = some (.value 1) ∧
+    fixedCount [cell 1 [] "s", cell 2 [] "c"] = some (.value 2) ∧
+    fixedCount [] = some (.value 0) := by
+  native_decide
+
+private def starredModel : FlatModel :=
+  { fields := [
+      { id := 10, groupPath := ["Order", "Lines"], name := "A",
+        policy := { kind := .string }, repeatableScope := [10] },
+      { id := 11, groupPath := ["Order", "Lines"], name := "B",
+        policy := { kind := .string }, repeatableScope := [10] }]
+    repeatableGroups := [{
+      level := 10, path := ["Order", "Lines"], repeatability := some 10 }] }
+
+private def starredPrepared :
+    PreparedFlatStringContext starredModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler starredModel).toOption.get (by native_decide)
+
+private def starredSource : SurfaceFilledFieldCountStarredGroupValidationSource :=
+  { group := {
+      base := .absolute
+      groups := [{ name := "Order" }, { name := "Lines", starred := true }] } }
+
+private def starredChecked? :
+    Option (CheckedFilledFieldCountGroupSource starredModel) :=
+  (elaborateFilledFieldCountStarredGroupValidationSource
+    starredModel ["Order"] starredSource).toOption
+
+private def starredCount (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) : Option FilledFieldCount := do
+  let checked ← starredChecked?
+  let document ← (checkDocument starredPrepared "en_US" {
+    instantiatedRows := rows
+    cells }).toOption
+  (checked.evaluateCheckedDocumentValidation document []).toOption
+
+private def twoRows : List RowAddr := [
+  { group := 10, path := [1] }, { group := 10, path := [2] }]
+
+private def fourFilled : List ClassifiedCellInput := [
+  cell 10 [1] "a1", cell 11 [1] "b1",
+  cell 10 [2] "a2", cell 11 [2] "b2"]
+
+example :
+    starredCount twoRows fourFilled = some (.value 4) ∧
+    starredCount [] [] = some (.value 0) ∧
+    starredCount twoRows [cell 10 [2] "a2"] = some (.value 1) := by
+  native_decide
+
+end A12Kernel

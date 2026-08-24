@@ -1113,6 +1113,19 @@ a12-dmkits `06b84701969979a2e5a2b63de7445a6a1d521473` measures what a **cleared*
 - `limit`: this establishes static admission only. The group expands to two String declarations, so this row does not distinguish authored-slot arity from expansion-counting arity and does not establish any runtime count. `RuleGroup`, a fixed group inside repeatable scope, other declaration kinds and literals, computation, partial validation, messages, and references remain outside this observation.
 - `sync`: this is inbound calibration already committed in a12-dmkits. It removes Lean's stale fixed-group authoring refusal and creates no outbound ledger request.
 
+<a id="src-filled-field-group-runtime"></a>
+#### Filled-field group-count runtime
+
+- `revision`: clean a12-dmkits `3a4025bbfdbd925d7f4c23e519f15ce0e2461b21`; `b4da1c04c7c11c60b51d8fffee4a74b1dbe00d34` added the retained fixed-group rows and `d3f0f42e34ff0800f92dc54e8b9384b5c6ab98d7` added the retained terminal-starred-group rows.
+- `route`: the targeted `MultiFieldAggregateDiffTest` and `GroupStarFilledFieldsDiffTest` runs passed together at the clean revision against Kernel 30.8.1. The fixed rows compare dynamic Groovy with the a12-dmkits interpreter; the starred rows compare dynamic Groovy, generated Java, and the interpreter.
+- `test`: [`MultiFieldAggregateDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/MultiFieldAggregateDiffTest.kt) and [`GroupStarFilledFieldsDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/GroupStarFilledFieldsDiffTest.kt).
+- `fixed-claim`: a fixed nonrepeatable group containing two String declarations satisfies `NumberOfFilledFields(group) >= 1` when either one or both descendants are filled; a present-empty or absent group does not satisfy the same comparison.
+- `starred-claim`: a terminal repeatable group containing two String declarations spans both instantiated rows. Four filled descendants across two rows satisfy `>= 3` and do not satisfy `>= 5`; a cell filled only in row 2 satisfies `>= 1`; no group row does not satisfy `>= 1`.
+- `separator`: the four-cell fixture distinguishes the complete starred extent from a per-row, row-1-only, or unexpanded group read, and the row-2-only fixture independently rejects the row-1 traversal.
+- `internal`: Lean returns the exact fixed counts `0`, `1`, and `2` and starred counts `0`, `1`, and `4`. The retained external comparisons establish the stated threshold outcomes and whole-extent separator, but they do not by themselves establish every exact count or distinguish zero from unavailability in the empty rows.
+- `limit`: full validation only, one fixed ordinary group and one terminal starred repeatable group, two direct String descendants, and at most two rows. Mixed operands, nested groups, formal-invalid descendants, partial validation, computation, raw-`Document` execution, messages, and references remain outside. The later polarity comparisons at `b4da1c04c7c11c60b51d8fffee4a74b1dbe00d34` and `ca71ac0527acba7b1e0e502333be9ae43b10bf18` compare engines without asserting an expected message type, so they do not discharge comparison movement or polarity.
+- `sync`: this is inbound calibration already committed in a12-dmkits and agrees with the canonical recursive group-extent and filled-field-count clauses, so no outbound ledger request follows.
+
 <a id="src-temporal-field-values-not-unique-group-runtime"></a>
 #### Temporal field-values-not-unique group runtime
 
