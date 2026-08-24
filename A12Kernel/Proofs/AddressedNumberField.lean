@@ -55,4 +55,15 @@ theorem checkedAddressedNumberField_sound
       operation.toCheckedAddressedNumberSource with ⟨placement, certified⟩
   exact ⟨placement, certified, operation.sameScale⟩
 
+@[simp]
+theorem checkedAddressedNumberPair_evaluateAtEnvironmentWithRead_left_poison (pair : CheckedAddressedNumberPair model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (combine : NumericComputationResult → NumericComputationResult → NumericComputationResult)
+    (environment : Env) (cause : FormalCause)
+    (leftPoison : pair.left.evaluateAtEnvironmentWithRead read environment =
+      .ok (.poison cause)) :
+    pair.evaluateAtEnvironmentWithRead read combine environment = .ok (.poison cause) := by
+  rw [CheckedAddressedNumberPair.evaluateAtEnvironmentWithRead, leftPoison]
+  simp only [Bind.bind, Except.bind, Pure.pure, Except.pure]
+
 end A12Kernel

@@ -47,11 +47,20 @@ private def combine (operation : CheckedAddressedNumberBinary model)
     (fun leftValue rightValue => .value (operation.op.eval leftValue rightValue))
     left right
 
+/-- Execute both ordered operands through a caller-supplied exact-address view. -/
+def executeWithRead (operation : CheckedAddressedNumberBinary model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except AddressedNumberBinaryFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  operation.pair.executeWithRead input read operation.combine
+
+/-- Execute both ordered operands against the immutable checked document. -/
 def execute (operation : CheckedAddressedNumberBinary model)
     (input : CheckedDocument model) :
     Except AddressedNumberBinaryFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  operation.pair.executeWith input operation.combine
+  operation.executeWithRead input input.read
 
 def executeResult
     (operation : CheckedAddressedNumberBinary model)

@@ -1040,6 +1040,7 @@ run_cmd do
 #print axioms A12Kernel.checkedRepeatableNumberAggregateRunCascade_analyze
 #print axioms A12Kernel.checkedRepeatableNumberAggregateMixedRun_analyze
 #print axioms A12Kernel.checkedRepeatableNumberAggregateRowCascade_analyze
+#print axioms A12Kernel.checkedRepeatableNumberAggregateBinaryRowCascade_analyze
 #print axioms A12Kernel.repeatableNumberAggregateCascade_read_completed
 #print axioms A12Kernel.repeatableNumberAggregateCascade_read_input
 #print axioms A12Kernel.repeatableNumberAggregateRowCascade_read_completed
@@ -1794,6 +1795,7 @@ run_cmd do
 #print axioms A12Kernel.checkedAddressedNumberField_sound
 #print axioms A12Kernel.checkedAddressedNumberAbs_sound
 #print axioms A12Kernel.checkedAddressedNumberSource_sound
+#print axioms A12Kernel.checkedAddressedNumberPair_evaluateAtEnvironmentWithRead_left_poison
 #print axioms A12Kernel.checkedAddressedNumberRound_sound
 #print axioms A12Kernel.checkedAddressedNumberArithmeticChild_sourceCertified
 #print axioms A12Kernel.checkedAddressedNumberExtremumLeaf_sourceCertified

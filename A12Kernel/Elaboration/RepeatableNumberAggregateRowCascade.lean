@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.RepeatableNumberAggregateCascade
 import A12Kernel.Elaboration.CurrentRepetitionComputation
 import A12Kernel.Elaboration.CurrentRepetitionNumberToString
+import A12Kernel.Elaboration.AddressedNumberBinary
 
 /-! # Aggregate completion into bounded repeatable scalar consumers -/
 
@@ -329,5 +330,114 @@ def execute
   pure { cascade, suffix }
 
 end CheckedRepeatableNumberAggregateNumberToStringRowChain
+
+inductive RepeatableNumberAggregateBinaryRowCascadeElabError where
+  | suffix (cause : AddressedNumberBinaryElabError)
+  | duplicateTarget (field : FieldId)
+  | missingAggregateDependency (expected : FieldId)
+  | cycle (field : FieldId)
+  deriving Repr, DecidableEq
+
+/-- One checked aggregate prefix followed by one ordered direct-field binary Number operation at every suffix row. -/
+structure CheckedRepeatableNumberAggregateBinaryRowCascade
+    (model : FlatModel) where
+  private mk ::
+  cascade : CheckedRepeatableNumberAggregateCascade model
+  suffix : CheckedAddressedNumberBinary model
+  distinctFromRows :
+    suffix.pair.left.placement.targetField ≠ cascade.row.targetField
+  distinctFromAggregate :
+    suffix.pair.left.placement.targetField ≠
+      cascade.total.operation.core.target.id
+  noBackEdge :
+    (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies).contains
+      suffix.pair.left.placement.targetField = false
+  aggregateDependency :
+    (suffix.pair.left.placement.sourceDeclaration.id ==
+        cascade.total.operation.core.target.id ||
+      suffix.pair.right.placement.sourceDeclaration.id ==
+        cascade.total.operation.core.target.id) = true
+
+/-- Compose the checked aggregate with an ordered addressed binary suffix that reads the aggregate on at least one side and owns a later target. -/
+def checkRepeatableNumberAggregateBinaryRowCascade
+    (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (suffixDeclaringGroup : GroupPath) (suffixTarget : FieldId)
+    (leftSource rightSource : SurfaceFieldPath)
+    (operation : NumericArithmeticOp) :
+    Except RepeatableNumberAggregateBinaryRowCascadeElabError
+      (CheckedRepeatableNumberAggregateBinaryRowCascade model) := do
+  if suffixTarget == cascade.total.operation.core.target.id then
+    throw (.duplicateTarget suffixTarget)
+  let suffix ← checkAddressedNumberBinary model suffixDeclaringGroup
+    suffixTarget leftSource rightSource operation |>.mapError .suffix
+  let actualTarget := suffix.pair.left.placement.targetField
+  if hRows : actualTarget ≠ cascade.row.targetField then
+    if hAggregate : actualTarget ≠ cascade.total.operation.core.target.id then
+      if hBackEdge :
+          (cascade.row.sourceFields ++
+            cascade.consumer.fieldDependencies).contains actualTarget = false then
+        if hDependency :
+            (suffix.pair.left.placement.sourceDeclaration.id ==
+                cascade.total.operation.core.target.id ||
+              suffix.pair.right.placement.sourceDeclaration.id ==
+                cascade.total.operation.core.target.id) = true then
+          pure {
+            cascade, suffix
+            distinctFromRows := hRows
+            distinctFromAggregate := hAggregate
+            noBackEdge := hBackEdge
+            aggregateDependency := hDependency
+          }
+        else throw (.missingAggregateDependency
+          cascade.total.operation.core.target.id)
+      else throw (.cycle actualTarget)
+    else throw (.duplicateTarget actualTarget)
+  else throw (.duplicateTarget actualTarget)
+
+structure RepeatableNumberAggregateBinaryRowCascadeAnalysis where
+  cascade : RepeatableNumberAggregateCascadeAnalysis
+  suffixOperation : NumericArithmeticOp
+  suffixTarget : FieldId
+  repeatableScope : List RepeatableLevel
+  fieldDependencies : List (FieldId × List FieldId)
+  deriving Repr, DecidableEq
+
+structure RepeatableNumberAggregateBinaryRowCascadeOutcomes where
+  cascade : RepeatableNumberAggregateCascadeOutcomes
+  suffix : List (SourcedNumericTargetOutcome CellAddr)
+  deriving Repr, DecidableEq
+
+inductive RepeatableNumberAggregateBinaryRowCascadeFault where
+  | cascade (cause : RepeatableNumberAggregateCascadeFault)
+  | suffix (cause : AddressedNumberBinaryFault)
+  deriving Repr, DecidableEq
+
+namespace CheckedRepeatableNumberAggregateBinaryRowCascade
+
+def analyze (plan : CheckedRepeatableNumberAggregateBinaryRowCascade model) :
+    RepeatableNumberAggregateBinaryRowCascadeAnalysis := {
+  cascade := plan.cascade.analyze
+  suffixOperation := plan.suffix.op
+  suffixTarget := plan.suffix.pair.left.placement.targetField
+  repeatableScope :=
+    plan.suffix.pair.left.placement.targetDeclaration.repeatableScope
+  fieldDependencies := plan.cascade.analyze.fieldDependencies ++ [
+    (plan.suffix.pair.left.placement.targetField,
+      [plan.suffix.pair.left.placement.sourceDeclaration.id,
+        plan.suffix.pair.right.placement.sourceDeclaration.id].eraseDups)]
+}
+
+/-- Execute the aggregate prefix, expose its completion only at the exact root address, and preserve the binary suffix's authored operand order at every row. -/
+def execute (plan : CheckedRepeatableNumberAggregateBinaryRowCascade model)
+    (world : World) (input : CheckedDocument model) :
+    Except RepeatableNumberAggregateBinaryRowCascadeFault
+      RepeatableNumberAggregateBinaryRowCascadeOutcomes := do
+  let cascade ← plan.cascade.execute world input |>.mapError .cascade
+  let suffix ← plan.suffix.executeWithRead input
+    (plan.cascade.readCompletion cascade.aggregate.outcome input)
+    |>.mapError .suffix
+  pure { cascade, suffix }
+
+end CheckedRepeatableNumberAggregateBinaryRowCascade
 
 end A12Kernel

@@ -136,20 +136,42 @@ end CheckedAddressedNumberSource
 
 namespace CheckedAddressedNumberPair
 
-/-- Evaluate both sources at one already-certified row environment in authored order, each at its own repeatable scope. A left poison prevents the right source from being reached; the caller supplies the scalar operation over reached outcomes. -/
+/-- Evaluate both sources through a caller-supplied exact-address view in authored order, each at its own repeatable scope. A left poison prevents the right source from being reached; the caller supplies the scalar operation over reached outcomes. -/
+def evaluateAtEnvironmentWithRead
+    (pair : CheckedAddressedNumberPair model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (combine : NumericComputationResult → NumericComputationResult →
+      NumericComputationResult)
+    (environment : Env) :
+  Except AddressedNumericLeafFault NumericComputationResult := do
+  let leftResult ← pair.left.evaluateAtEnvironmentWithRead read environment
+  match leftResult with
+  | .poison cause => pure (.poison cause)
+  | .value _ | .domainFailure =>
+      let rightResult ← pair.right.evaluateAtEnvironmentWithRead read environment
+      pure (combine leftResult rightResult)
+
+/-- Evaluate both sources against the immutable checked document. -/
 def evaluateAtEnvironment
     (pair : CheckedAddressedNumberPair model)
     (input : CheckedDocument model)
     (combine : NumericComputationResult → NumericComputationResult →
       NumericComputationResult)
     (environment : Env) :
-    Except AddressedNumericLeafFault NumericComputationResult := do
-  let leftResult ← pair.left.evaluateAtEnvironment input environment
-  match leftResult with
-  | .poison cause => pure (.poison cause)
-  | .value _ | .domainFailure =>
-      let rightResult ← pair.right.evaluateAtEnvironment input environment
-      pure (combine leftResult rightResult)
+    Except AddressedNumericLeafFault NumericComputationResult :=
+  pair.evaluateAtEnvironmentWithRead input.read combine environment
+
+/-- Execute two direct Number sources through a caller-supplied exact-address view and the ordinary target checker. -/
+def executeWithRead
+    (pair : CheckedAddressedNumberPair model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (combine : NumericComputationResult → NumericComputationResult →
+      NumericComputationResult) :
+    Except AddressedNumericLeafFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  pair.left.placement.executeAtEnvironment input
+    (pair.evaluateAtEnvironmentWithRead read combine)
 
 /-- Execute two direct Number sources in authored order at the same row environment through the ordinary target checker. A left poison prevents the right source from being reached. -/
 def executeWith
@@ -159,8 +181,7 @@ def executeWith
       NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  pair.left.placement.executeAtEnvironment input
-    (pair.evaluateAtEnvironment input combine)
+  pair.executeWithRead input input.read combine
 
 /-- Execute two direct Number sources through the same target's warning-suppressed checker. -/
 def executeWithScaleWarningSuppressed

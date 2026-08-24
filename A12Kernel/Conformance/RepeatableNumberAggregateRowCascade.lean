@@ -101,6 +101,36 @@ private def numberToStringChain? :
   let suffix ← numberToStringRowChain?
   (checkRepeatableNumberAggregateNumberToStringRowChain cascade suffix).toOption
 
+private def binaryRowPlan? (left right : SurfaceFieldPath) :
+    Option (CheckedRepeatableNumberAggregateBinaryRowCascade model) := do
+  let cascade ← cascade?
+  (checkRepeatableNumberAggregateBinaryRowCascade cascade
+    ["Order", "Lines"] allocation.id left right .subtract).toOption
+
+private def aggregateLeftBinaryPlan? :
+    Option (CheckedRepeatableNumberAggregateBinaryRowCascade model) :=
+  binaryRowPlan? (parent "Total") (bare "Price")
+
+private def aggregateRightBinaryPlan? :
+    Option (CheckedRepeatableNumberAggregateBinaryRowCascade model) :=
+  binaryRowPlan? (bare "Price") (parent "Total")
+
+private def binaryPlanError?
+    (cascadePlan? : Option (CheckedRepeatableNumberAggregateCascade model))
+    (target : FieldId) (left right : SurfaceFieldPath) :
+    Option RepeatableNumberAggregateBinaryRowCascadeElabError := do
+  let cascadePlan ← cascadePlan?
+  match checkRepeatableNumberAggregateBinaryRowCascade cascadePlan
+      ["Order", "Lines"] target left right .subtract with
+  | .error cause => some cause
+  | .ok _ => none
+
+private def backEdgeCascade? :
+    Option (CheckedRepeatableNumberAggregateCascade model) :=
+  (checkRepeatableNumberBinaryAggregateCascade model
+    ["Order", "Lines"] amount.id (bare "Allocation") (bare "Price") .add
+    ["Order"] total.id (star "Amount") .sum).toOption
+
 private def decimalCell (field : FieldId) (path : List Nat)
     (stored : String) (unscaled : Int) : ClassifiedCellInput := {
   address := { field, path }
@@ -212,6 +242,26 @@ private def numberToStringChainSummary? (secondPrice : ClassifiedCellInput) :
         stringTarget := row.string.targetField
         stringOutcome := row.string.outcome })
 
+private def binarySummary?
+    (plan? : Option (CheckedRepeatableNumberAggregateBinaryRowCascade model))
+    (secondPrice : ClassifiedCellInput) :
+    Option (NumericTargetOutcome × List (CellAddr × NumericTargetOutcome)) := do
+  let plan ← plan?
+  let input ← input? secondPrice
+  let outcomes ← (plan.execute { now := { epochMillis := 0 } } input).toOption
+  pure (outcomes.cascade.aggregate.outcome,
+    outcomes.suffix.map fun row => (row.targetField, row.outcome))
+
+private def binaryAnalysis?
+    (plan? : Option (CheckedRepeatableNumberAggregateBinaryRowCascade model)) :
+    Option (NumericArithmeticOp × FieldId × List RepeatableLevel ×
+      FieldId × List FieldId) := do
+  let plan ← plan?
+  let analysis := plan.analyze
+  let dependency ← analysis.fieldDependencies.getLast?
+  pure (analysis.suffixOperation, analysis.suffixTarget,
+    analysis.repeatableScope, dependency)
+
 /- Fresh aggregate state reaches every suffix row; reached aggregate poison does too. -/
 example :
     summary? (decimalCell price.id [2] "20.00" 2000) = some (
@@ -250,6 +300,64 @@ example :
             .inheritedPoison .computedDependency),
           ({ field := allocation.id, path := [2] },
             .inheritedPoison .computedDependency)]) := by
+  native_decide
+
+/- The binary suffix must own a later target, read the aggregate on at least one side, and stay absent from prefix reads. -/
+example :
+    binaryPlanError? cascade? allocation.id (bare "Price")
+        (parent "Other") = some (.missingAggregateDependency total.id) ∧
+    binaryPlanError? cascade? total.id (parent "Total")
+        (bare "Price") = some (.duplicateTarget total.id) ∧
+    binaryPlanError? cascade? amount.id (parent "Total")
+        (bare "Price") = some (.duplicateTarget amount.id) ∧
+    binaryPlanError? backEdgeCascade? allocation.id (parent "Total")
+        (bare "Price") = some (.cycle allocation.id) := by
+  native_decide
+
+/- Analyze retains the suffix operation, target scope, and authored dependency order. -/
+example :
+    binaryAnalysis? aggregateLeftBinaryPlan? =
+      some (.subtract, allocation.id, [30], allocation.id,
+        [total.id, price.id]) := by
+  native_decide
+
+example :
+    binaryAnalysis? aggregateRightBinaryPlan? =
+      some (.subtract, allocation.id, [30], allocation.id,
+        [price.id, total.id]) := by
+  native_decide
+
+/- Authored operand order controls clean subtraction. -/
+example :
+    let cleanPrice := decimalCell price.id [2] "20.00" 2000
+    [binarySummary? aggregateLeftBinaryPlan? cleanPrice,
+      binarySummary? aggregateRightBinaryPlan? cleanPrice] = [
+        some (.accepted { unscaled := 8000, scale := 2 }, [
+          ({ field := allocation.id, path := [1] },
+            .accepted { unscaled := 7000, scale := 2 }),
+          ({ field := allocation.id, path := [2] },
+            .accepted { unscaled := 6000, scale := 2 })]),
+        some (.accepted { unscaled := 8000, scale := 2 }, [
+          ({ field := allocation.id, path := [1] },
+            .accepted { unscaled := -7000, scale := 2 }),
+          ({ field := allocation.id, path := [2] },
+            .accepted { unscaled := -6000, scale := 2 })])] := by
+  native_decide
+
+/- A row-local left poison short-circuits the fresh aggregate read; reversing the operands reaches aggregate poison first. -/
+example :
+    [binarySummary? aggregateLeftBinaryPlan? invalidPrice,
+      binarySummary? aggregateRightBinaryPlan? invalidPrice] = [
+        some (.inheritedPoison .computedDependency, [
+          ({ field := allocation.id, path := [1] },
+            .inheritedPoison .computedDependency),
+          ({ field := allocation.id, path := [2] },
+            .inheritedPoison .computedDependency)]),
+        some (.inheritedPoison .computedDependency, [
+          ({ field := allocation.id, path := [1] },
+            .inheritedPoison .computedDependency),
+          ({ field := allocation.id, path := [2] },
+            .inheritedPoison .declaredConstraint)])] := by
   native_decide
 
 /- The typed suffix reuses the direct Number admission boundary before entering its checked String edge. -/

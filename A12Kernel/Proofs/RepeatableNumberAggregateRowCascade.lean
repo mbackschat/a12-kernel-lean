@@ -67,4 +67,20 @@ theorem checkedRepeatableNumberAggregateNumberToStringRowChain_analyze
     } := by
   rfl
 
+@[simp]
+theorem checkedRepeatableNumberAggregateBinaryRowCascade_analyze
+    (plan : CheckedRepeatableNumberAggregateBinaryRowCascade model) :
+    plan.analyze = {
+      cascade := plan.cascade.analyze
+      suffixOperation := plan.suffix.op
+      suffixTarget := plan.suffix.pair.left.placement.targetField
+      repeatableScope :=
+        plan.suffix.pair.left.placement.targetDeclaration.repeatableScope
+      fieldDependencies := plan.cascade.analyze.fieldDependencies ++ [
+        (plan.suffix.pair.left.placement.targetField,
+          [plan.suffix.pair.left.placement.sourceDeclaration.id,
+            plan.suffix.pair.right.placement.sourceDeclaration.id].eraseDups)]
+    } := by
+  rfl
+
 end A12Kernel
