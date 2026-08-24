@@ -4,7 +4,7 @@ import A12Kernel.Semantics.NumericDependency
 
 /-! # Checked nonrepeatable Number computation runs
 
-This capsule executes a finite scalar Number plan in its certified supplied order under one caller-supplied evaluation `World`. Pending computed targets hide stored document content, completed targets expose their typed dependency cells, and every ordinary input delegates to the immutable checked document. The run retains rich target outcomes only; result projection, application, messages, validation, repeatable activation, and heterogeneous scheduling remain separate.
+This capsule executes a finite scalar Number plan in its certified supplied order under one caller-supplied evaluation `World`. Every completed state entry exposes its typed dependency cell, including a seed produced by an earlier checked phase; a target owned by this run reads empty only while it remains pending, and every other input delegates to the immutable checked document. The run retains rich target outcomes only; result projection, application, messages, validation, repeatable activation, and heterogeneous scheduling remain separate.
 -/
 
 namespace A12Kernel
@@ -67,19 +67,18 @@ def targetFields (run : CheckedNumericComputationRun model) :
     List FieldId :=
   run.tables.map (·.targetField)
 
-/-- Hide pending computed targets, expose completed Number outcomes, and delegate every non-target read to the checked document. -/
+/-- Expose every completed Number outcome, hide pending targets owned by this run, and delegate every other read to the checked document. A completed seed from an earlier checked phase therefore remains visible to this supplied-order suffix. -/
 def readPolicy (run : CheckedNumericComputationRun model)
     (state : NumericComputationRunState) (input : CheckedDocument model) :
     ScalarComputationContext where
   read field :=
-    if run.targetFields.contains field then
-      match state.find? field with
-      | some completion =>
-          (NumericDependencyCell.ofOutcome completion.outcome).checked
-      | none =>
+    match state.find? field with
+    | some completion =>
+        (NumericDependencyCell.ofOutcome completion.outcome).checked
+    | none =>
+      if run.targetFields.contains field then
           (NumericDependencyCell.ofObservation .empty).checked
-    else
-      input.flatContext.read field
+      else input.flatContext.read field
 
 /-- Evaluate one checked table through the current overlay and retain its complete target outcome. -/
 def evaluateTable (run : CheckedNumericComputationRun model)

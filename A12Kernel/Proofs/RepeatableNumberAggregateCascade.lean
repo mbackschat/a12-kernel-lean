@@ -34,4 +34,20 @@ theorem checkedRepeatableNumberAggregateScalarCascade_analyze
     } := by
   rfl
 
+/-- Analyze retains the supplied scalar target order and every computed-target edge against the aggregate-prefixed candidate order. -/
+@[simp]
+theorem checkedRepeatableNumberAggregateRunCascade_analyze
+    (plan : CheckedRepeatableNumberAggregateRunCascade model) :
+    plan.analyze =
+      let candidates :=
+        plan.cascade.total.operation.core.target.id :: plan.run.targetFields
+      {
+        cascade := plan.cascade.analyze
+        scalarTargets := plan.run.targetFields
+        computedDependencies := plan.run.tables.map fun table =>
+          (table.targetField,
+            candidates.filter fun field => table.referencesField field)
+      } := by
+  rfl
+
 end A12Kernel

@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.AddressedNumberField
 import A12Kernel.Elaboration.AddressedNumberBinary
 import A12Kernel.Elaboration.NumericComputation.Target
+import A12Kernel.Elaboration.NumericComputation.Run
 import A12Kernel.Semantics.NumericDependency
 
 /-! # Repeatable Number to aggregate cascade -/
@@ -494,5 +495,113 @@ def execute (plan : CheckedRepeatableNumberAggregateScalarCascade model)
   }
 
 end CheckedRepeatableNumberAggregateScalarCascade
+
+/-- Fail-closed errors for composing a checked aggregate prefix with one existing finite scalar Number run. -/
+inductive RepeatableNumberAggregateRunCascadeElabError where
+  | duplicateTarget (field : FieldId)
+  | missingAggregateDependency (field : FieldId)
+  | cycle (field : FieldId)
+  | incoherentRun
+  deriving Repr, DecidableEq
+
+/-- One checked row-to-aggregate prefix followed by an existing finite supplied-order scalar Number run seeded with the aggregate completion. -/
+structure CheckedRepeatableNumberAggregateRunCascade (model : FlatModel) where
+  private mk ::
+  cascade : CheckedRepeatableNumberAggregateCascade model
+  run : CheckedNumericComputationRun model
+  distinctTargets : run.targetFields.all (fun field =>
+    field != cascade.row.targetField &&
+      field != cascade.total.operation.core.target.id) = true
+  noBackEdge : run.targetFields.all (fun field =>
+    !(cascade.row.sourceFields ++
+      cascade.consumer.fieldDependencies).contains field) = true
+  aggregateDependency : run.tables.any (fun table =>
+    table.referencesField cascade.total.operation.core.target.id) = true
+
+/-- Compose an already-checked aggregate prefix and scalar run without introducing another schedule. The run must consume the aggregate, own disjoint targets, and remain absent from both earlier dependency sets. -/
+def checkRepeatableNumberAggregateRunCascade
+    (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (run : CheckedNumericComputationRun model) :
+    Except RepeatableNumberAggregateRunCascadeElabError
+      (CheckedRepeatableNumberAggregateRunCascade model) := do
+  if hDistinct : run.targetFields.all (fun field =>
+      field != cascade.row.targetField &&
+        field != cascade.total.operation.core.target.id) = true then
+    if hBackEdge : run.targetFields.all (fun field =>
+        !(cascade.row.sourceFields ++
+          cascade.consumer.fieldDependencies).contains field) = true then
+      if hDependency : run.tables.any (fun table =>
+          table.referencesField
+            cascade.total.operation.core.target.id) = true then
+        pure {
+          cascade := cascade
+          run := run
+          distinctTargets := hDistinct
+          noBackEdge := hBackEdge
+          aggregateDependency := hDependency }
+      else throw (.missingAggregateDependency
+        cascade.total.operation.core.target.id)
+    else
+      match run.targetFields.find? fun field =>
+          (cascade.row.sourceFields ++
+            cascade.consumer.fieldDependencies).contains field with
+      | some field => throw (.cycle field)
+      | none => throw .incoherentRun
+  else
+    match run.targetFields.find? fun field =>
+        field == cascade.row.targetField ||
+          field == cascade.total.operation.core.target.id with
+    | some field => throw (.duplicateTarget field)
+    | none => throw .incoherentRun
+
+/-- The checked prefix plus the scalar run's supplied target order and computed-target edges. -/
+structure RepeatableNumberAggregateRunCascadeAnalysis where
+  cascade : RepeatableNumberAggregateCascadeAnalysis
+  scalarTargets : List FieldId
+  computedDependencies : List (FieldId × List FieldId)
+  deriving Repr, DecidableEq
+
+/-- Rich prefix outcomes plus the rich scalar run outcomes in supplied order. -/
+structure RepeatableNumberAggregateRunCascadeOutcomes where
+  cascade : RepeatableNumberAggregateCascadeOutcomes
+  scalars : List (FieldId × NumericTargetOutcome)
+  deriving Repr, DecidableEq
+
+inductive RepeatableNumberAggregateRunCascadeFault where
+  | cascade (cause : RepeatableNumberAggregateCascadeFault)
+  | run (cause : NumericComputationRunFault)
+  deriving Repr, DecidableEq
+
+namespace CheckedRepeatableNumberAggregateRunCascade
+
+def analyze (plan : CheckedRepeatableNumberAggregateRunCascade model) :
+    RepeatableNumberAggregateRunCascadeAnalysis :=
+  let candidates :=
+    plan.cascade.total.operation.core.target.id :: plan.run.targetFields
+  {
+    cascade := plan.cascade.analyze
+    scalarTargets := plan.run.targetFields
+    computedDependencies := plan.run.tables.map fun table =>
+      (table.targetField,
+        candidates.filter fun field => table.referencesField field)
+  }
+
+/-- Execute the prefix, seed its aggregate as one completed Number state entry, and reuse the existing supplied-order scalar executor unchanged. -/
+def execute (plan : CheckedRepeatableNumberAggregateRunCascade model)
+    (world : World) (input : CheckedDocument model) :
+    Except RepeatableNumberAggregateRunCascadeFault
+      RepeatableNumberAggregateRunCascadeOutcomes := do
+  let cascade ← plan.cascade.execute world input |>.mapError .cascade
+  let initial : NumericComputationRunState := {
+    completed := [{
+      targetField := plan.cascade.total.operation.core.target.id
+      outcome := cascade.aggregate.outcome
+    }]
+  }
+  let final ← plan.run.executeTables world input plan.run.tables initial
+    |>.mapError .run
+  pure { cascade, scalars := final.outcomes.drop 1 }
+
+end CheckedRepeatableNumberAggregateRunCascade
 
 end A12Kernel

@@ -77,6 +77,8 @@ private def plan? (op : NumericAggregateOp)
 private def binaryTotal := number 11 "Total" ["Order"] []
 private def doubled := number 17 "Doubled" ["Order"] []
 private def otherRoot := number 18 "Other" ["Order"] []
+private def tripled := number 19 "Tripled" ["Order"] []
+private def gate := number 20 "Gate" ["Order"] []
 private def quantity := number 12 "Qty" ["Order", "Lines"] [30] 0
 private def unitPrice := number 13 "Price" ["Order", "Lines"] [30]
 private def amount := number 14 "Amount" ["Order", "Lines"] [30]
@@ -84,8 +86,8 @@ private def commission := number 15 "Commission" ["Order", "Lines"] [30]
 private def limit := number 16 "Limit" ["Order", "Lines"] [30]
 
 private def binaryModel : FlatModel := {
-  fields := [binaryTotal, doubled, otherRoot, quantity, unitPrice, amount,
-    commission, limit]
+  fields := [binaryTotal, doubled, otherRoot, tripled, gate, quantity,
+    unitPrice, amount, commission, limit]
   repeatableGroups := [{
     level := 30
     path := ["Order", "Lines"]
@@ -131,6 +133,44 @@ private def aggregateScalarPlan? :
   let cascade ← binaryPlan?
   (checkRepeatableNumberAggregateScalarCascade cascade ["Order"] doubled.id
     (bare "Total") (bare "Total") .add).toOption
+
+private def rootNumber (field : String) :
+    AuthoredNumericExpr SurfaceNumericComputationAtom :=
+  .atom (.numeric (.field (bare field)))
+
+private def scalarTable? (target : FieldId)
+    (alternatives : List
+      (ComputationCondition ×
+        AuthoredNumericExpr SurfaceNumericComputationAtom)) :
+    Option (CheckedNumericComputationTable binaryModel) := do
+  let checked ← alternatives.mapM fun (precondition, expression) => do
+    let operation ← (elaborateCompleteNumericTargetComputationOperation
+      binaryModel ["Order"] target expression).toOption
+    pure ({ precondition, operation } :
+      ComputationAlternative
+        (CheckedNumericTargetComputationOperation binaryModel))
+  (certifyNumericComputationTable checked).toOption
+
+private def singletonRun? (target : FieldId)
+    (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
+    Option (CheckedNumericComputationRun binaryModel) := do
+  let table ← scalarTable? target [(.fieldNotFilled gate.id, expression)]
+  (certifyNumericComputationRun [table]).toOption
+
+private def aggregateRunPlan? :
+    Option (CheckedRepeatableNumberAggregateRunCascade binaryModel) := do
+  let cascade ← binaryPlan?
+  let doubledTable ← scalarTable? doubled.id [
+    (.fieldFilled gate.id,
+      .binary .add (rootNumber "Total") (rootNumber "Other")),
+    (.fieldNotFilled gate.id,
+      .binary .add (rootNumber "Total") (rootNumber "Total"))]
+  let tripledTable ← scalarTable? tripled.id [
+    (.fieldFilled binaryTotal.id,
+      .binary .add (rootNumber "Doubled") (rootNumber "Total"))]
+  let run ← (certifyNumericComputationRun
+    [doubledTable, tripledTable]).toOption
+  (checkRepeatableNumberAggregateRunCascade cascade run).toOption
 
 private def decimalCell (field : FieldId) (path : List Nat)
     (stored : String) (unscaled : Int) : ClassifiedCellInput := {
@@ -202,7 +242,8 @@ private def binaryInput? (secondPrice : ClassifiedCellInput) :
         decimalCell amount.id [2] "1.00" 100,
         decimalCell binaryTotal.id [] "99.99" 9999,
         decimalCell doubled.id [] "1.00" 100,
-        decimalCell otherRoot.id [] "4.00" 400]
+        decimalCell otherRoot.id [] "4.00" 400,
+        decimalCell tripled.id [] "2.00" 200]
     }).toOption
 
 private def binarySummary? (secondPrice : ClassifiedCellInput) :
@@ -226,6 +267,14 @@ private def aggregateScalarSummary? (secondPrice : ClassifiedCellInput) :
     outcomes.cascade.rows.map fun row => (row.targetField, row.outcome),
     outcomes.cascade.aggregate.outcome,
     outcomes.scalar.outcome)
+
+private def aggregateRunSummary? (secondPrice : ClassifiedCellInput) :
+    Option (RepeatableNumberAggregateRunCascadeAnalysis ×
+      NumericTargetOutcome × List (FieldId × NumericTargetOutcome)) := do
+  let plan ← aggregateRunPlan?
+  let input ← binaryInput? secondPrice
+  let outcomes ← (plan.execute { now := { epochMillis := 0 } } input).toOption
+  pure (plan.analyze, outcomes.cascade.aggregate.outcome, outcomes.scalars)
 
 private def filteredBinaryInput? (secondPrice : ClassifiedCellInput) :
     Option (CheckedDocument binaryModel) :=
@@ -333,6 +382,64 @@ example :
       (result.2.2.1, result.2.2.2)) = some (
         .inheritedPoison .computedDependency,
         .inheritedPoison .computedDependency) := by
+  native_decide
+
+/- A finite checked scalar run consumes the seeded aggregate completion, preserves its own supplied dependency order, and reaches poison through either a guard or an operation. -/
+example :
+    aggregateRunSummary?
+        (decimalCell unitPrice.id [2] "20.00" 2000) = some (
+      {
+        cascade := {
+          producer := .binary .multiply
+          consumer := .plain
+          operation := .sum
+          repeatableScope := [30]
+          fieldDependencies := [
+            (amount.id, [quantity.id, unitPrice.id]),
+            (binaryTotal.id, [amount.id])]
+        }
+        scalarTargets := [doubled.id, tripled.id]
+        computedDependencies := [
+          (doubled.id, [binaryTotal.id]),
+          (tripled.id, [binaryTotal.id, doubled.id])]
+      },
+      .accepted { unscaled := 8000, scale := 2 },
+      [
+        (doubled.id, .accepted { unscaled := 16000, scale := 2 }),
+        (tripled.id, .accepted { unscaled := 24000, scale := 2 })]) ∧
+    (aggregateRunSummary? invalidUnitPrice).map (fun result => result.2.2) =
+      some [
+        (doubled.id, .inheritedPoison .computedDependency),
+        (tripled.id, .inheritedPoison .computedDependency)] := by
+  native_decide
+
+/- A finite suffix must consume the aggregate, must not reuse either prefix target, and cannot feed one of its targets back into the prefix. -/
+example :
+    (match binaryPlan?, singletonRun? doubled.id
+        (.binary .add (rootNumber "Other") (rootNumber "Other")) with
+      | some cascade, some run =>
+          match checkRepeatableNumberAggregateRunCascade cascade run with
+          | .error (.missingAggregateDependency field) =>
+              field == binaryTotal.id
+          | _ => false
+      | _, _ => false) = true ∧
+    (match binaryPlan?, singletonRun? binaryTotal.id
+        (.binary .add (rootNumber "Other") (rootNumber "Other")) with
+      | some cascade, some run =>
+          match checkRepeatableNumberAggregateRunCascade cascade run with
+          | .error (.duplicateTarget field) => field == binaryTotal.id
+          | _ => false
+      | _, _ => false) = true ∧
+    (match checkRepeatableNumberBinaryAggregateCascade binaryModel
+        ["Order", "Lines"] amount.id (parent "Tripled") (bare "Price") .add
+        ["Order"] binaryTotal.id (binaryStar "Amount") .sum,
+        singletonRun? tripled.id
+          (.binary .add (rootNumber "Total") (rootNumber "Total")) with
+      | .ok cascade, some run =>
+          match checkRepeatableNumberAggregateRunCascade cascade run with
+          | .error (.cycle field) => field == tripled.id
+          | _ => false
+      | _, _ => false) = true := by
   native_decide
 
 /- The third stage must read the aggregate, own a new target, and remain absent from both earlier stages. -/

@@ -17,19 +17,19 @@ theorem numericComputationRun_read_completed
     (run : CheckedNumericComputationRun model)
     (state : NumericComputationRunState) (input : CheckedDocument model)
     (field : FieldId) (completion : NumericComputationRunCompletion)
-    (target : field ∈ run.targetFields)
     (found : state.find? field = some completion) :
     (run.readPolicy state input).read field =
       (NumericDependencyCell.ofOutcome completion.outcome).checked := by
-  simp [CheckedNumericComputationRun.readPolicy, target, found]
+  simp [CheckedNumericComputationRun.readPolicy, found]
 
 theorem numericComputationRun_read_input
     (run : CheckedNumericComputationRun model)
     (state : NumericComputationRunState) (input : CheckedDocument model)
-    (field : FieldId) (ordinary : field ∉ run.targetFields) :
+    (field : FieldId) (ordinary : field ∉ run.targetFields)
+    (pending : state.find? field = none) :
     (run.readPolicy state input).read field =
       input.flatContext.read field := by
-  simp [CheckedNumericComputationRun.readPolicy, ordinary]
+  simp [CheckedNumericComputationRun.readPolicy, ordinary, pending]
 
 /-- Successful atomic evaluation retains exactly the checked table's target. -/
 theorem numericComputationRun_evaluateTable_target

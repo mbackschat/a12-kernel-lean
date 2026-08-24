@@ -1037,6 +1037,7 @@ run_cmd do
 #print axioms A12Kernel.checkedCurrentRepetitionAlternatingChain_analyze
 #print axioms A12Kernel.checkedRepeatableNumberAggregateCascade_analyze
 #print axioms A12Kernel.checkedRepeatableNumberAggregateScalarCascade_analyze
+#print axioms A12Kernel.checkedRepeatableNumberAggregateRunCascade_analyze
 #print axioms A12Kernel.concreteFieldPointer_exact
 #print axioms A12Kernel.reopenedFieldPointer_notExact
 #print axioms A12Kernel.reopenedFieldPointer_arity
