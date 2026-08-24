@@ -43,11 +43,20 @@ private def combine (left right : NumericComputationResult) :
       NumericComputationResult.ofArithmetic (divideNumeric leftValue rightValue))
     left right
 
+/-- Execute both ordered operands through a caller-supplied exact-address view and the certified warning-suppressed target checker. -/
+def executeWithRead (operation : CheckedAddressedNumberDivision model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except AddressedNumberDivisionFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  operation.pair.executeWithReadScaleWarningSuppressed input read combine
+
+/-- Execute both ordered operands against the immutable checked document. -/
 def execute (operation : CheckedAddressedNumberDivision model)
     (input : CheckedDocument model) :
     Except AddressedNumberDivisionFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  operation.pair.executeWithScaleWarningSuppressed input combine
+  operation.executeWithRead input input.read
 
 def executeResult
     (operation : CheckedAddressedNumberDivision model)

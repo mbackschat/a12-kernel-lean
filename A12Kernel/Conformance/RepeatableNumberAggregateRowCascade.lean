@@ -125,6 +125,24 @@ private def binaryPlanError?
   | .error cause => some cause
   | .ok _ => none
 
+private def divisionRowPlan? (left right : SurfaceFieldPath)
+    (suppression : Bool := true) :
+    Option (CheckedRepeatableNumberAggregateDivisionRowCascade model) := do
+  let cascade ← cascade?
+  (checkRepeatableNumberAggregateDivisionRowCascade cascade
+    ["Order", "Lines"] allocation.id left right suppression).toOption
+
+private def divisionPlanError?
+    (cascadePlan? : Option (CheckedRepeatableNumberAggregateCascade model))
+    (target : FieldId) (left right : SurfaceFieldPath)
+    (suppression : Bool := true) :
+    Option RepeatableNumberAggregateDivisionRowCascadeElabError := do
+  let cascadePlan ← cascadePlan?
+  match checkRepeatableNumberAggregateDivisionRowCascade cascadePlan
+      ["Order", "Lines"] target left right suppression with
+  | .error cause => some cause
+  | .ok _ => none
+
 private def backEdgeCascade? :
     Option (CheckedRepeatableNumberAggregateCascade model) :=
   (checkRepeatableNumberBinaryAggregateCascade model
@@ -262,6 +280,22 @@ private def binaryAnalysis?
   pure (analysis.suffixOperation, analysis.suffixTarget,
     analysis.repeatableScope, dependency)
 
+private def divisionSummary? (left right : SurfaceFieldPath)
+    (secondPrice : ClassifiedCellInput) :
+    Option (NumericTargetOutcome × List (CellAddr × NumericTargetOutcome)) := do
+  let plan ← divisionRowPlan? left right
+  let input ← input? secondPrice
+  let outcomes ← (plan.execute { now := { epochMillis := 0 } } input).toOption
+  pure (outcomes.cascade.aggregate.outcome,
+    outcomes.suffix.map fun row => (row.targetField, row.outcome))
+
+private def divisionAnalysis? (left right : SurfaceFieldPath) :
+    Option (FieldId × List RepeatableLevel × FieldId × List FieldId) := do
+  let plan ← divisionRowPlan? left right
+  let analysis := plan.analyze
+  let dependency ← analysis.fieldDependencies.getLast?
+  pure (analysis.suffixTarget, analysis.repeatableScope, dependency)
+
 /- Fresh aggregate state reaches every suffix row; reached aggregate poison does too. -/
 example :
     summary? (decimalCell price.id [2] "20.00" 2000) = some (
@@ -348,6 +382,59 @@ example :
 example :
     [binarySummary? aggregateLeftBinaryPlan? invalidPrice,
       binarySummary? aggregateRightBinaryPlan? invalidPrice] = [
+        some (.inheritedPoison .computedDependency, [
+          ({ field := allocation.id, path := [1] },
+            .inheritedPoison .computedDependency),
+          ({ field := allocation.id, path := [2] },
+            .inheritedPoison .computedDependency)]),
+        some (.inheritedPoison .computedDependency, [
+          ({ field := allocation.id, path := [1] },
+            .inheritedPoison .computedDependency),
+          ({ field := allocation.id, path := [2] },
+            .inheritedPoison .declaredConstraint)])] := by
+      native_decide
+
+/- Division retains its warning-suppression gate plus the shared aggregate-suffix target, dependency, and back-edge gates. -/
+example :
+    divisionPlanError? cascade? allocation.id (parent "Total")
+        (bare "Price") false = some (.suffix .scaleSuppressionRequired) ∧
+    divisionPlanError? cascade? allocation.id (bare "Price")
+        (parent "Other") = some (.missingAggregateDependency total.id) ∧
+    divisionPlanError? cascade? total.id (parent "Total")
+        (bare "Price") = some (.duplicateTarget total.id) ∧
+    divisionPlanError? cascade? amount.id (parent "Total")
+        (bare "Price") = some (.duplicateTarget amount.id) ∧
+    divisionPlanError? backEdgeCascade? allocation.id (parent "Total")
+        (bare "Price") = some (.cycle allocation.id) := by
+  native_decide
+
+/- Analyze retains explicit suppression and authored dependency order. -/
+example :
+    (divisionRowPlan? (parent "Total") (bare "Price")).map
+        (·.analyze.suffixScaleWarningSuppressed) = some true ∧
+    [divisionAnalysis? (parent "Total") (bare "Price"),
+      divisionAnalysis? (bare "Price") (parent "Total")] = [
+        some (allocation.id, [30], allocation.id, [total.id, price.id]),
+        some (allocation.id, [30], allocation.id, [price.id, total.id])] := by
+  native_decide
+
+/- Fresh aggregate completion, authored division order, suppressed scale mismatch, and left-poison nonreach remain distinct. -/
+example :
+    let cleanPrice := decimalCell price.id [2] "20.00" 2000
+    [divisionSummary? (parent "Total") (bare "Price") cleanPrice,
+      divisionSummary? (bare "Price") (parent "Total") cleanPrice,
+      divisionSummary? (parent "Total") (bare "Price") invalidPrice,
+      divisionSummary? (bare "Price") (parent "Total") invalidPrice] = [
+        some (.accepted { unscaled := 8000, scale := 2 }, [
+          ({ field := allocation.id, path := [1] },
+            .accepted { unscaled := 800, scale := 2 }),
+          ({ field := allocation.id, path := [2] },
+            .accepted { unscaled := 400, scale := 2 })]),
+        some (.accepted { unscaled := 8000, scale := 2 }, [
+          ({ field := allocation.id, path := [1] },
+            .rejected { unscaled := 125, scale := 3 } .suppressedScaleMismatch),
+          ({ field := allocation.id, path := [2] },
+            .accepted { unscaled := 25, scale := 2 })]),
         some (.inheritedPoison .computedDependency, [
           ({ field := allocation.id, path := [1] },
             .inheritedPoison .computedDependency),

@@ -183,7 +183,19 @@ def executeWith
       (List (SourcedNumericTargetOutcome CellAddr)) :=
   pair.executeWithRead input input.read combine
 
-/-- Execute two direct Number sources through the same target's warning-suppressed checker. -/
+/-- Execute two direct Number sources through a caller-supplied exact-address view and the same target's warning-suppressed checker. -/
+def executeWithReadScaleWarningSuppressed
+    (pair : CheckedAddressedNumberPair model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (combine : NumericComputationResult → NumericComputationResult →
+      NumericComputationResult) :
+    Except AddressedNumericLeafFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  pair.left.placement.executeAtEnvironmentScaleWarningSuppressed input
+    (pair.evaluateAtEnvironmentWithRead read combine)
+
+/-- Execute two direct Number sources against the immutable checked document through the same target's warning-suppressed checker. -/
 def executeWithScaleWarningSuppressed
     (pair : CheckedAddressedNumberPair model)
     (input : CheckedDocument model)
@@ -191,8 +203,7 @@ def executeWithScaleWarningSuppressed
       NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  pair.left.placement.executeAtEnvironmentScaleWarningSuppressed input
-    (pair.evaluateAtEnvironment input combine)
+  pair.executeWithReadScaleWarningSuppressed input input.read combine
 
 private def resultFromOutcomes
     (outcomes : List (SourcedNumericTargetOutcome CellAddr))

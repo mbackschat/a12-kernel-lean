@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.RepeatableNumberAggregateCascade
 import A12Kernel.Elaboration.CurrentRepetitionComputation
 import A12Kernel.Elaboration.CurrentRepetitionNumberToString
 import A12Kernel.Elaboration.AddressedNumberBinary
+import A12Kernel.Elaboration.AddressedNumberDivision
 
 /-! # Aggregate completion into bounded repeatable scalar consumers -/
 
@@ -331,12 +332,68 @@ def execute
 
 end CheckedRepeatableNumberAggregateNumberToStringRowChain
 
+private inductive RepeatableNumberAggregatePairRowSuffixElabError where
+  | duplicateTarget (field : FieldId)
+  | missingAggregateDependency (expected : FieldId)
+  | cycle (field : FieldId)
+  deriving Repr, DecidableEq
+
+private structure RepeatableNumberAggregatePairRowSuffixCertificate
+    (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (pair : CheckedAddressedNumberPair model) : Type where
+  distinctFromRows : pair.left.placement.targetField ≠ cascade.row.targetField
+  distinctFromAggregate : pair.left.placement.targetField ≠
+    cascade.total.operation.core.target.id
+  noBackEdge :
+    (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies).contains
+      pair.left.placement.targetField = false
+  aggregateDependency :
+    (pair.left.placement.sourceDeclaration.id ==
+        cascade.total.operation.core.target.id ||
+      pair.right.placement.sourceDeclaration.id ==
+        cascade.total.operation.core.target.id) = true
+
+private def certifyRepeatableNumberAggregatePairRowSuffix
+    (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (pair : CheckedAddressedNumberPair model) :
+    Except RepeatableNumberAggregatePairRowSuffixElabError
+      (RepeatableNumberAggregatePairRowSuffixCertificate cascade pair) := do
+  let target := pair.left.placement.targetField
+  if hRows : target ≠ cascade.row.targetField then
+    if hAggregate : target ≠ cascade.total.operation.core.target.id then
+      if hBackEdge :
+          (cascade.row.sourceFields ++
+            cascade.consumer.fieldDependencies).contains target = false then
+        if hDependency :
+            (pair.left.placement.sourceDeclaration.id ==
+                cascade.total.operation.core.target.id ||
+              pair.right.placement.sourceDeclaration.id ==
+                cascade.total.operation.core.target.id) = true then
+          pure {
+            distinctFromRows := hRows
+            distinctFromAggregate := hAggregate
+            noBackEdge := hBackEdge
+            aggregateDependency := hDependency
+          }
+        else throw (.missingAggregateDependency
+          cascade.total.operation.core.target.id)
+      else throw (.cycle target)
+    else throw (.duplicateTarget target)
+  else throw (.duplicateTarget target)
+
 inductive RepeatableNumberAggregateBinaryRowCascadeElabError where
   | suffix (cause : AddressedNumberBinaryElabError)
   | duplicateTarget (field : FieldId)
   | missingAggregateDependency (expected : FieldId)
   | cycle (field : FieldId)
   deriving Repr, DecidableEq
+
+private def pairSuffixErrorToBinary :
+    RepeatableNumberAggregatePairRowSuffixElabError →
+      RepeatableNumberAggregateBinaryRowCascadeElabError
+  | .duplicateTarget field => .duplicateTarget field
+  | .missingAggregateDependency expected => .missingAggregateDependency expected
+  | .cycle field => .cycle field
 
 /-- One checked aggregate prefix followed by one ordered direct-field binary Number operation at every suffix row. -/
 structure CheckedRepeatableNumberAggregateBinaryRowCascade
@@ -370,29 +427,15 @@ def checkRepeatableNumberAggregateBinaryRowCascade
     throw (.duplicateTarget suffixTarget)
   let suffix ← checkAddressedNumberBinary model suffixDeclaringGroup
     suffixTarget leftSource rightSource operation |>.mapError .suffix
-  let actualTarget := suffix.pair.left.placement.targetField
-  if hRows : actualTarget ≠ cascade.row.targetField then
-    if hAggregate : actualTarget ≠ cascade.total.operation.core.target.id then
-      if hBackEdge :
-          (cascade.row.sourceFields ++
-            cascade.consumer.fieldDependencies).contains actualTarget = false then
-        if hDependency :
-            (suffix.pair.left.placement.sourceDeclaration.id ==
-                cascade.total.operation.core.target.id ||
-              suffix.pair.right.placement.sourceDeclaration.id ==
-                cascade.total.operation.core.target.id) = true then
-          pure {
-            cascade, suffix
-            distinctFromRows := hRows
-            distinctFromAggregate := hAggregate
-            noBackEdge := hBackEdge
-            aggregateDependency := hDependency
-          }
-        else throw (.missingAggregateDependency
-          cascade.total.operation.core.target.id)
-      else throw (.cycle actualTarget)
-    else throw (.duplicateTarget actualTarget)
-  else throw (.duplicateTarget actualTarget)
+  let certificate ← certifyRepeatableNumberAggregatePairRowSuffix cascade suffix.pair
+    |>.mapError pairSuffixErrorToBinary
+  pure {
+    cascade, suffix
+    distinctFromRows := certificate.distinctFromRows
+    distinctFromAggregate := certificate.distinctFromAggregate
+    noBackEdge := certificate.noBackEdge
+    aggregateDependency := certificate.aggregateDependency
+  }
 
 structure RepeatableNumberAggregateBinaryRowCascadeAnalysis where
   cascade : RepeatableNumberAggregateCascadeAnalysis
@@ -439,5 +482,108 @@ def execute (plan : CheckedRepeatableNumberAggregateBinaryRowCascade model)
   pure { cascade, suffix }
 
 end CheckedRepeatableNumberAggregateBinaryRowCascade
+
+inductive RepeatableNumberAggregateDivisionRowCascadeElabError where
+  | suffix (cause : AddressedNumberDivisionElabError)
+  | duplicateTarget (field : FieldId)
+  | missingAggregateDependency (expected : FieldId)
+  | cycle (field : FieldId)
+  deriving Repr, DecidableEq
+
+private def pairSuffixErrorToDivision :
+    RepeatableNumberAggregatePairRowSuffixElabError →
+      RepeatableNumberAggregateDivisionRowCascadeElabError
+  | .duplicateTarget field => .duplicateTarget field
+  | .missingAggregateDependency expected => .missingAggregateDependency expected
+  | .cycle field => .cycle field
+
+/-- One checked aggregate prefix followed by one ordered direct-field division at every repeatable suffix row. -/
+structure CheckedRepeatableNumberAggregateDivisionRowCascade
+    (model : FlatModel) where
+  private mk ::
+  cascade : CheckedRepeatableNumberAggregateCascade model
+  suffix : CheckedAddressedNumberDivision model
+  distinctFromRows :
+    suffix.pair.left.placement.targetField ≠ cascade.row.targetField
+  distinctFromAggregate :
+    suffix.pair.left.placement.targetField ≠
+      cascade.total.operation.core.target.id
+  noBackEdge :
+    (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies).contains
+      suffix.pair.left.placement.targetField = false
+  aggregateDependency :
+    (suffix.pair.left.placement.sourceDeclaration.id ==
+        cascade.total.operation.core.target.id ||
+      suffix.pair.right.placement.sourceDeclaration.id ==
+        cascade.total.operation.core.target.id) = true
+
+/-- Compose the checked aggregate with a warning-suppressed addressed division that reads the aggregate on at least one side and owns a later target. -/
+def checkRepeatableNumberAggregateDivisionRowCascade
+    (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (suffixDeclaringGroup : GroupPath) (suffixTarget : FieldId)
+    (leftSource rightSource : SurfaceFieldPath)
+    (suppressExactScaleWarning : Bool) :
+    Except RepeatableNumberAggregateDivisionRowCascadeElabError
+      (CheckedRepeatableNumberAggregateDivisionRowCascade model) := do
+  if suffixTarget == cascade.total.operation.core.target.id then
+    throw (.duplicateTarget suffixTarget)
+  let suffix ← checkAddressedNumberDivision model suffixDeclaringGroup
+    suffixTarget leftSource rightSource suppressExactScaleWarning
+      |>.mapError .suffix
+  let certificate ← certifyRepeatableNumberAggregatePairRowSuffix cascade suffix.pair
+    |>.mapError pairSuffixErrorToDivision
+  pure {
+    cascade, suffix
+    distinctFromRows := certificate.distinctFromRows
+    distinctFromAggregate := certificate.distinctFromAggregate
+    noBackEdge := certificate.noBackEdge
+    aggregateDependency := certificate.aggregateDependency
+  }
+
+structure RepeatableNumberAggregateDivisionRowCascadeAnalysis where
+  cascade : RepeatableNumberAggregateCascadeAnalysis
+  suffixScaleWarningSuppressed : Bool
+  suffixTarget : FieldId
+  repeatableScope : List RepeatableLevel
+  fieldDependencies : List (FieldId × List FieldId)
+  deriving Repr, DecidableEq
+
+structure RepeatableNumberAggregateDivisionRowCascadeOutcomes where
+  cascade : RepeatableNumberAggregateCascadeOutcomes
+  suffix : List (SourcedNumericTargetOutcome CellAddr)
+  deriving Repr, DecidableEq
+
+inductive RepeatableNumberAggregateDivisionRowCascadeFault where
+  | cascade (cause : RepeatableNumberAggregateCascadeFault)
+  | suffix (cause : AddressedNumberDivisionFault)
+  deriving Repr, DecidableEq
+
+namespace CheckedRepeatableNumberAggregateDivisionRowCascade
+
+def analyze (plan : CheckedRepeatableNumberAggregateDivisionRowCascade model) :
+    RepeatableNumberAggregateDivisionRowCascadeAnalysis := {
+  cascade := plan.cascade.analyze
+  suffixScaleWarningSuppressed := plan.suffix.suppressExactScaleWarning
+  suffixTarget := plan.suffix.pair.left.placement.targetField
+  repeatableScope :=
+    plan.suffix.pair.left.placement.targetDeclaration.repeatableScope
+  fieldDependencies := plan.cascade.analyze.fieldDependencies ++ [
+    (plan.suffix.pair.left.placement.targetField,
+      [plan.suffix.pair.left.placement.sourceDeclaration.id,
+        plan.suffix.pair.right.placement.sourceDeclaration.id].eraseDups)]
+}
+
+/-- Execute the aggregate prefix, expose its completion only at the exact root address, and preserve the division suffix's authored operand order and warning-suppressed target check. -/
+def execute (plan : CheckedRepeatableNumberAggregateDivisionRowCascade model)
+    (world : World) (input : CheckedDocument model) :
+    Except RepeatableNumberAggregateDivisionRowCascadeFault
+      RepeatableNumberAggregateDivisionRowCascadeOutcomes := do
+  let cascade ← plan.cascade.execute world input |>.mapError .cascade
+  let suffix ← plan.suffix.executeWithRead input
+    (plan.cascade.readCompletion cascade.aggregate.outcome input)
+    |>.mapError .suffix
+  pure { cascade, suffix }
+
+end CheckedRepeatableNumberAggregateDivisionRowCascade
 
 end A12Kernel
