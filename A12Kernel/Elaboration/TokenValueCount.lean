@@ -18,6 +18,11 @@ abbrev SurfaceTokenValueCountOperand :=
 abbrev SurfaceTokenValueCountSource :=
   SurfaceProjectedTokenEntitySource
 
+/-- The measured full-validation authoring form with one terminal repeatable starred group as the whole value-count operand. This separate carrier does not widen the computation or projected value-list surfaces. -/
+structure SurfaceTokenValueCountStarredGroupValidationSource where
+  group : SurfaceStarGroupPath
+  deriving Repr, DecidableEq
+
 /-- String accepts every decoded literal; Enumeration requires membership in its exact selected stored/category domain. The gate reads one declaration beside the operand resolved from it, which is what lets a direct slot, a starred slot, and one member of a group expansion share it. -/
 def FlatFieldDecl.allowsTokenValueCountLiteral (declaration : FlatFieldDecl)
     (operand : FlatTextFieldOperand) (expected : String) : Bool :=
@@ -56,7 +61,7 @@ def path : CheckedTokenEntityOperand model → List String
   | .star source => source.source.declaration.path
   | .group source => source.groupPath
 
-/-- A group slot admits the literal only when **every** expanded declaration does, which is the same all-slots rule the whole list already applies one level up. No retained observation covers a group operand on this operator, so the uniform reading is the representation's choice rather than a measured Kernel gate. -/
+/-- A group slot admits the literal only when **every** expanded declaration does, which is the same all-slots rule the whole list already applies one level up. The measured starred String group does not discriminate this gate because every String literal is admitted; applying it to Enumeration declarations remains the representation's internally executable choice. -/
 def allowsValueCountLiteral (checked : CheckedTokenEntityOperand model)
     (expected : String) : Bool :=
   match checked with
@@ -111,13 +116,10 @@ def referencesField (checked : CheckedTokenValueCountSource model)
 
 end CheckedTokenValueCountSource
 
-/-- Resolve the projection-bearing entity-list shape, certify String/Enumeration membership, and reject the first selected-domain mismatch in authored order. -/
-def elaborateTokenValueCountSource (model : FlatModel)
-    (declaringGroup : GroupPath) (expected : String)
-    (authored : SurfaceTokenValueCountSource) :
+/-- Retain a decoded literal beside a checked token source after certifying every selected String/Enumeration domain. -/
+private def finishTokenValueCountSource (expected : String)
+    (source : CheckedTokenEntitySource model) :
     Except TokenValueCountElabError (CheckedTokenValueCountSource model) := do
-  let source ← elaborateProjectedTokenEntitySource model declaringGroup authored
-    |>.mapError .source
   if hAllowed : source.allowsValueCountLiteral expected = true then
     pure { expected, source, expectedAllowed := hAllowed }
   else
@@ -126,6 +128,29 @@ def elaborateTokenValueCountSource (model : FlatModel)
     | some operand =>
         throw (.literalOutsideEnumerationDomain operand.path expected)
     | none => throw .incoherentCore
+
+/-- Resolve the projection-bearing entity-list shape, certify String/Enumeration membership, and reject the first selected-domain mismatch in authored order. -/
+def elaborateTokenValueCountSource (model : FlatModel)
+    (declaringGroup : GroupPath) (expected : String)
+    (authored : SurfaceTokenValueCountSource) :
+    Except TokenValueCountElabError (CheckedTokenValueCountSource model) := do
+  let source ← elaborateProjectedTokenEntitySource model declaringGroup authored
+    |>.mapError .source
+  finishTokenValueCountSource expected source
+
+/-- Resolve the measured full-validation-only form with one terminal repeatable starred group, using the common stored-projection group certification and token-list assembly without admitting that form on broader carriers. -/
+def elaborateTokenValueCountStarredGroupValidationSource (model : FlatModel)
+    (declaringGroup : GroupPath) (expected : String)
+    (authored : SurfaceTokenValueCountStarredGroupValidationSource) :
+    Except TokenValueCountElabError (CheckedTokenValueCountSource model) := do
+  let starred ← elaborateStarredGroupSource model declaringGroup authored.group
+    |>.mapError fun error => .source (.shape (.starredGroup error))
+  let group ← certifyTokenEntityGroup model (.starred starred)
+    |>.mapError fun error => .source (.group error)
+  let source ← assembleTokenEntitySource starred.modelWellFormed
+      (.group group) []
+    |>.mapError .source
+  finishTokenValueCountSource expected source
 
 namespace CheckedTokenEntityOperand
 

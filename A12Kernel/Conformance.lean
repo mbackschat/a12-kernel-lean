@@ -195,6 +195,7 @@ import A12Kernel.Conformance.NumberValuesNotUnique
 import A12Kernel.Conformance.TokenValuesNotUnique
 import A12Kernel.Conformance.TemporalValuesNotUnique
 import A12Kernel.Conformance.TokenValueCount
+import A12Kernel.Conformance.TokenGroupValueCount
 import A12Kernel.Conformance.RepetitionNotUnique
 import A12Kernel.Conformance.RepetitionNotUniqueElaboration
 import A12Kernel.Conformance.RepetitionNotUniqueValidationRule

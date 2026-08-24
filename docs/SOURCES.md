@@ -1090,6 +1090,18 @@ a12-dmkits `06b84701969979a2e5a2b63de7445a6a1d521473` measures what a **cleared*
 - `limit`: external evidence covers one starred repeatable group, two direct String declarations, two instantiated rows, the fields side of `No`, group-versus-explicit equivalence within each relevance shape, and disagreement between the two shapes. Exact orientation, reached-cell selection, fixed groups, nested declarations, Enumeration projection, other quantifiers, computation, raw-`Document` routes, messages, and references remain unmeasured.
 - `sync`: the measured equivalences and shape disagreement are consistent with the existing partial value-list extent and group expansion clauses, so no outbound correction follows.
 
+<a id="src-token-value-count-group-runtime"></a>
+#### Token group value-count runtime
+
+- `revision`: clean a12-dmkits `3a4025bbfdbd925d7f4c23e519f15ce0e2461b21`; `73d44245a0f43a8279d0c1b450c108ab8b924d22` last changed the retained runtime differential and `66457109c32d98c2bfc016c92acc7d4c8000983f` owns the typed starred-group authoring law.
+- `route`: the targeted `GroupStarValueInFieldsDiffTest` run passed at the clean revision, with dynamic Groovy, generated Java, and the a12-dmkits interpreter agreeing against Kernel 30.8.1; the source-level law separately checks Kernel admission and exact typed rendering.
+- `test`: [`GroupStarValueInFieldsDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/GroupStarValueInFieldsDiffTest.kt) and [`ValueInFieldsGroupOperandLawsTest`](../../a12-rulekit/src/test/java/io/github/mbackschat/a12/dm/rulekit/validate/laws/ValueInFieldsGroupOperandLawsTest.java).
+- `claim`: a starred repeatable String group is admitted as the sole `NumberOfValueInFields` operand, and the typed surface renders that exact group form.
+- `claim`: with one `"X"` under declaration `A` in row 1 and one under declaration `B` in row 2, `NumberOfValueInFields("X" In Lines*) >= 2` fires; the explicit `Lines*/A, Lines*/B` control fires on the same fixture.
+- `separator`: the internal Lean case locks an exact count of two against the explicit two-star control; an empty, first-row-only, or single-declaration traversal would return a different exact count.
+- `limit`: the external row establishes at least two matches, not the internal exact count of two. It covers one terminal starred group, two direct String declarations, two instantiated rows, full validation, stored projection, and one `>= 2` comparison. Lean's treatment of the sole authored group slot as already-many is internal because the upstream fixtures do not distinguish authored-slot arity from expansion-counting arity. Fixed groups are explicitly outside the authoring law, while nested groups, Enumeration/category projection, other literals and comparisons, computation, partial validation, malformed cells, messages, and references remain unmeasured.
+- `sync`: this is inbound calibration already committed in a12-dmkits. It closes the starred-group authoring erasure in Lean and creates no outbound ledger request.
+
 <a id="src-temporal-field-values-not-unique-group-runtime"></a>
 #### Temporal field-values-not-unique group runtime
 
