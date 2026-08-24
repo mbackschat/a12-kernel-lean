@@ -80,6 +80,18 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `review`: `StarAddressingError.unsupportedGroupOperand` remains the shared refusal for the still-open token computation and non-value-list partial routes, Boolean routes, and raw-document routes; the two checked-document closures do not yet warrant relocating it.
 - `route-state`: verified for checked-document Number combiner computation, full-validation starred token value count runtime, fixed token value-count static admission, partial token value-list evaluation, and the full-validation plain-star filled-field count's over-capacity boundary; discovery-required for the remaining routes.
 
+<a id="gap-sg5-count-partial-extent"></a>
+#### Count partial-validation extent
+
+- `state`: blocked
+- `missing`: select the exact starred-extent gate independently for `NumberOfFilledFields`, `NumberOfFilledGroups`, and `NumberOfValueInFields`; none may inherit the four-`Combiner` aggregate gate or the value-list quantifier gate from a shared implementation alone.
+- `baseline`: the checked-document full-validation count folds are executable; numeric and token `NumberOfValueInFields` retain the earlier one-covering-identifier partial boundary; the other two partial routes remain absent. a12-dmkits currently applies the reduced-universal aggregate gate to all three through a generic function preflight, but its maintained denominator never measured them.
+- `evidence-needed`: [EXP-2026-08-24-01](A12-DMKITS-SPEC-SYNC-LEDGER.md#exp-2026-08-24-01--which-partial-validation-extent-gate-do-the-three-non-combiner-count-loops-use) requests one exact nine-selection firing matrix plus inert-fixture controls on both Kernel strategies and the independent interpreter. The local Kernel runtime probe cannot express `validatePart`.
+- `discriminator`: distinguish reduced-universal wildcard coverage, existential wildcard coverage, complete concrete enumeration, and one-relevant-witness evaluation using a wildcard beside unrelated concrete group rows, both concrete rows with no wildcard, and each concrete row alone.
+- `blocked-on`: `EXP-2026-08-24-01`; the result changes the selection function and its laws, so no partial count implementation may choose an account before the handback is reviewed.
+- `consumer`: Execute must distinguish an exact count from an unavailable extent; Analyze must preserve which relevance fact discharged that extent without reconstructing a12-dmkits internals.
+- `reopen-when`: the experiment handback provides exact per-operator Kernel positives and controls at a reviewed a12-dmkits revision.
+
 #### SG5 family completion
 
 - Completion gate: every legal numeric operator and authoring region is checked and executable where the Kernel permits it; illegal shapes fail at the correct static layer, and target rendering/application and fillability retain their separators.
