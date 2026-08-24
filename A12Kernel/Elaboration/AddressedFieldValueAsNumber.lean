@@ -74,12 +74,20 @@ private def evaluateSource
   operation.placement.evaluateSourceAtom sourceCell
     (.fieldValueAsNumber operation.source)
 
-/-- Execute the certified conversion through the shared addressed placement. -/
+/-- Execute the certified conversion through a caller-supplied exact-address view while target iteration and source-relative classification remain owned by the immutable document. -/
+def executeWithRead (operation : CheckedAddressedFieldValueAsNumber model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except AddressedFieldValueAsNumberFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  operation.placement.executeWithRead input read operation.evaluateSource
+
+/-- Execute the certified conversion through the immutable checked document. -/
 def execute (operation : CheckedAddressedFieldValueAsNumber model)
     (input : CheckedDocument model) :
     Except AddressedFieldValueAsNumberFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  operation.placement.executeWith input operation.evaluateSource
+  operation.executeWithRead input input.read
 
 /-- Classify the addressed rich outcomes against the immutable source document without collapsing their exact row keys. -/
 def executeResult

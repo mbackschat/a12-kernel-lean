@@ -323,9 +323,10 @@ def executeAtEnvironmentScaleWarningSuppressed
       (List (SourcedNumericTargetOutcome CellAddr)) :=
   placement.target.executeAtEnvironmentScaleWarningSuppressed input evaluate
 
-/-- Execute one source-cell evaluator through the shared path-indexed target owner. -/
-def executeWith (placement : CheckedAddressedNumericPlacement model)
+/-- Execute one source-cell evaluator through a caller-supplied exact-address view and the shared path-indexed target owner. -/
+def executeWithRead (placement : CheckedAddressedNumericPlacement model)
     (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (evaluate : CheckedCell →
       Except NumericComputationFault NumericComputationResult) :
     Except AddressedNumericLeafFault
@@ -338,9 +339,17 @@ def executeWith (placement : CheckedAddressedNumericPlacement model)
       field := placement.sourceDeclaration.id
       path := sourcePath
     }
-    let sourceCell ←
-      (input.read sourceAddress).mapError .sourceRead
+    let sourceCell ← (read sourceAddress).mapError .sourceRead
     (evaluate sourceCell).mapError .evaluation
+
+/-- Execute one source-cell evaluator through the immutable checked document. -/
+def executeWith (placement : CheckedAddressedNumericPlacement model)
+    (input : CheckedDocument model)
+    (evaluate : CheckedCell →
+      Except NumericComputationFault NumericComputationResult) :
+    Except AddressedNumericLeafFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  placement.executeWithRead input input.read evaluate
 
 /-- Classify shared addressed outcomes against the immutable source document without collapsing their exact row keys. -/
 def executeResultWith

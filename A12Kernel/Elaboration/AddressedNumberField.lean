@@ -227,8 +227,7 @@ def executeWithRead (operation : CheckedAddressedNumberField model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedNumberFieldFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  operation.placement.target.executeAtEnvironment input
-    (operation.toCheckedAddressedNumberSource.evaluateAtEnvironmentWithRead read)
+  operation.placement.executeWithRead input read operation.evaluateSource
 
 /-- Execute the certified direct Number read through the shared addressed placement. -/
 def execute (operation : CheckedAddressedNumberField model)
