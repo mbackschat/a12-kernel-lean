@@ -229,6 +229,22 @@ def checkRepeatableNumberAggregateCascade
   finishRepeatableNumberAggregateCascade model (.direct row)
     aggregateDeclaringGroup aggregateTarget (.star aggregateSource) operation
 
+/-- Check a direct-assignment producer followed by a sole filtered star whose filter depends on that producer. The aggregate value field may be a different Number in the same one-level row scope. -/
+def checkRepeatableNumberFilteredAggregateCascade
+    (model : FlatModel)
+    (rowDeclaringGroup : GroupPath) (rowTarget : FieldId)
+    (rowSource : SurfaceFieldPath)
+    (aggregateDeclaringGroup : GroupPath) (aggregateTarget : FieldId)
+    (aggregateSource : SurfaceStarFieldPath) (having : SurfaceCorrelatedHaving)
+    (operation : NumericAggregateOp) :
+    Except RepeatableNumberAggregateCascadeElabError
+      (CheckedRepeatableNumberAggregateCascade model) := do
+  let row ← checkAddressedNumberField model rowDeclaringGroup
+      rowTarget rowSource |>.mapError .row
+  finishRepeatableNumberAggregateCascade model (.direct row)
+    aggregateDeclaringGroup aggregateTarget
+    (.starHaving aggregateSource having) operation
+
 /-- Check the exact direct-field binary producer followed by a sole plain-star aggregate. -/
 def checkRepeatableNumberBinaryAggregateCascade
     (model : FlatModel)

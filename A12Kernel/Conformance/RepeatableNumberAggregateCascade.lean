@@ -128,6 +128,13 @@ private def filteredBinaryPlan? :
     ["Order"] binaryTotal.id (binaryStar "Commission")
     amountUnderLimit .sum).toOption
 
+private def filteredDirectPlan? :
+    Option (CheckedRepeatableNumberAggregateCascade binaryModel) :=
+  (checkRepeatableNumberFilteredAggregateCascade binaryModel
+    ["Order", "Lines"] amount.id (bare "Price")
+    ["Order"] binaryTotal.id (binaryStar "Commission")
+    amountUnderLimit .sum).toOption
+
 private def aggregateScalarPlan? :
     Option (CheckedRepeatableNumberAggregateScalarCascade binaryModel) := do
   let cascade ← binaryPlan?
@@ -303,6 +310,16 @@ private def filteredBinarySummary? (secondPrice : ClassifiedCellInput) :
     Option (RepeatableNumberAggregateCascadeAnalysis ×
       List (CellAddr × NumericTargetOutcome) × NumericTargetOutcome) := do
   let plan <- filteredBinaryPlan?
+  let input <- filteredBinaryInput? secondPrice
+  let outcomes <- (plan.execute { now := { epochMillis := 0 } } input).toOption
+  pure (plan.analyze,
+    outcomes.rows.map fun row => (row.targetField, row.outcome),
+    outcomes.aggregate.outcome)
+
+private def filteredDirectSummary? (secondPrice : ClassifiedCellInput) :
+    Option (RepeatableNumberAggregateCascadeAnalysis ×
+      List (CellAddr × NumericTargetOutcome) × NumericTargetOutcome) := do
+  let plan <- filteredDirectPlan?
   let input <- filteredBinaryInput? secondPrice
   let outcomes <- (plan.execute { now := { epochMillis := 0 } } input).toOption
   pure (plan.analyze,
@@ -506,6 +523,35 @@ example :
         [commission.id, amount.id, limit.id, unitPrice.id])) := by
   native_decide
 
+/- A direct producer is also available to `Having`: fresh Price values keep both Commission rows, while stale Amount seeds would keep only the second. -/
+example :
+    filteredDirectSummary?
+        (decimalCell unitPrice.id [2] "20.00" 2000) = some (
+      {
+        producer := .direct
+        consumer := .filtered
+        operation := .sum
+        repeatableScope := [30]
+        fieldDependencies := [
+          (amount.id, [unitPrice.id]),
+          (binaryTotal.id, [commission.id, amount.id, limit.id])]
+      },
+      [
+        ({ field := amount.id, path := [1] },
+          .accepted { unscaled := 1000, scale := 2 }),
+        ({ field := amount.id, path := [2] },
+          .accepted { unscaled := 2000, scale := 2 })],
+      .accepted { unscaled := 1800, scale := 2 }) ∧
+    (filteredDirectSummary? invalidUnitPrice).map (fun result =>
+      (result.2.1, result.2.2)) = some (
+        [
+          ({ field := amount.id, path := [1] },
+            .accepted { unscaled := 1000, scale := 2 }),
+          ({ field := amount.id, path := [2] },
+            .inheritedPoison .declaredConstraint)],
+        .inheritedPoison .computedDependency) := by
+  native_decide
+
 /- The aggregate reads freshly computed row values, not either stale Helper seed. -/
 example :
     summary? .maximum (decimalCell price.id [2] "3.10" 310) = some (
@@ -566,6 +612,13 @@ example :
     (match checkRepeatableNumberBinaryFilteredAggregateCascade binaryModel
         ["Order", "Lines"] amount.id (bare "Qty") (bare "Price") .multiply
         ["Order"] binaryTotal.id (binaryStar "Amount")
+        (.compareNumbers .less
+          (innerNumber "Commission") (innerNumber "Limit")) .sum with
+      | .error (.missingFilterDependency field) => field == amount.id
+      | _ => false) = true ∧
+    (match checkRepeatableNumberFilteredAggregateCascade binaryModel
+        ["Order", "Lines"] amount.id (bare "Price")
+        ["Order"] binaryTotal.id (binaryStar "Commission")
         (.compareNumbers .less
           (innerNumber "Commission") (innerNumber "Limit")) .sum with
       | .error (.missingFilterDependency field) => field == amount.id
