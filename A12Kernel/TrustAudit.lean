@@ -1285,6 +1285,7 @@ run_cmd do
 #print axioms A12Kernel.enumerationTextFieldComparison_projectionRef
 #print axioms A12Kernel.textFieldComparison_projectionRef_stored
 #print axioms A12Kernel.checkedTokenEntityGroup_projections_stored
+#print axioms A12Kernel.checkedTokenEntityGroup_partialExtentRelevant_iff
 #print axioms A12Kernel.resolvedCheckedTokenEntityOperand_valueListSideAt_cells
 #print axioms A12Kernel.resolvedCheckedTokenEntityValueList_evaluate_delegates
 #print axioms A12Kernel.valueListNo_match_before_nonRelevantOperand

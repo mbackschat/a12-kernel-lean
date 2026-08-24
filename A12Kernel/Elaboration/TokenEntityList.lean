@@ -430,14 +430,15 @@ private def ofCore (source : CheckedTokenEntityOperand model)
 
 /-- A group slot reaches only instantiated rows through the model's own repeatability, so it has no star topology, no filter, and no omitted tail. -/
 private def ofGroupCells (source : CheckedTokenEntityOperand model)
-    (cells : List (FlatTextFieldOperand × CheckedAddressedCell)) :
+    (cells : List (FlatTextFieldOperand × CheckedAddressedCell))
+    (hasNonRelevant : Bool := false) :
     ResolvedCheckedTokenEntityOperand model :=
   { source
     projectedCells := cells
     topology := none
     hasUninstantiatedTail := false
     hasHaving := false
-    hasNonRelevant := false }
+    hasNonRelevant }
 
 def addressedCells (resolved : ResolvedCheckedTokenEntityOperand model) :
     List CheckedAddressedCell :=
@@ -554,7 +555,7 @@ def resolveCheckedValidationOperand
 
 /-- Resolve one partial-validation token operand without collapsing nonrelevance into a semantic cell. Filtered rules remain suppressed by the owning whole-source gate.
 
-    A group slot refuses here rather than resolving. Partial validation masks by relevance scope, and no retained observation says whether a group operand's extent is masked per expanded declaration, per reached row, or not at all; refusing keeps the unmeasured choice out of the representation. -/
+    A group slot retains relevant concrete cells per expanded declaration and records complete extent only when every expanded declaration has one covering wildcard identifier. -/
 def resolveCheckedPartialValidationOperand
     (source : CheckedTokenEntityOperand model)
     (document : CheckedDocument model) (outer : Env)
@@ -577,8 +578,10 @@ def resolveCheckedPartialValidationOperand
             starSource.source.resolveCheckedPartialValidationEntityOperandCore
               document outer scope
           pure (.ofCore source starSource.operand core)
-  | .group slot =>
-      .error (.addressing (.unsupportedGroupOperand slot.groupPath))
+  | .group slot => do
+      let (cells, hasNonRelevant) ←
+        slot.resolveCheckedPartialValidationCells document outer scope
+      pure (.ofGroupCells source cells hasNonRelevant)
 
 /-- Resolve one direct or starred token slot for full validation through the shared declaration-owned classifier.
 

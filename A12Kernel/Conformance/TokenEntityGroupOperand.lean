@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.TokenFirstFilledValue
+import A12Kernel.Elaboration.TokenEntityValueList
 import A12Kernel.Elaboration.TokenValuesNotUnique
 import A12Kernel.Elaboration.ValidationCondition.Reference
 
@@ -15,7 +16,8 @@ once through the declaration that stored each, and once through the first expand
 operand, which is what a per-operand accessor would silently do. The two answers differ.
 
 The rest fixes the boundary this carrier actually reached: the whole `(row × field)` extent under
-full validation, and refusals on every route that cannot enumerate the group's instantiated rows.
+full and partial checked-document validation, and refusals on legacy routes that cannot enumerate
+the group's instantiated rows.
 -/
 
 namespace A12Kernel.Conformance.TokenEntityGroupOperand
@@ -379,30 +381,55 @@ example :
       some (.fired .value) := by
   native_decide
 
-/-! ## Every route that cannot enumerate the rows refuses rather than answering empty
+/-! ## Checked partial validation masks the extent; legacy routes still refuse
 
 An empty stream reads as "the group contributed no values", which is a wrong answer rather than a
-missing one. Partial validation additionally has no measured account of how relevance masks a group
-extent. The direct control matters: the same routes serve an ordinary field slot on the same
-model. -/
+missing one. The checked document can enumerate the group and retain partial nonrelevance separately;
+the raw routes below still cannot. The direct control matters: both boundaries serve an ordinary
+field slot on the same model. -/
 
-private def partialResolves (operand : SurfaceFieldEntityOperand) : Bool :=
-  match elaborateTokenEntitySource probeModel ["Form"]
-      { first := operand, rest := [field "Other"] } with
-  | .error _ => false
-  | .ok checked =>
-      match checkDocument prepared "en_US"
-          { instantiatedRows := rows,
-            cells := [str 1 [] "Z", str 2 [1] "X", str 2 [2] "Z",
-              str 9 [] "L", str 10 [] "M"] } with
-      | .error _ => false
-      | .ok document =>
-          (checked.first.resolveCheckedPartialValidationOperand document []
-            .full).toOption.isSome
+private def starRowsScope (wildcard : Bool) : ValidationRelevanceScope :=
+  if wildcard then
+    .partialSet [
+      { path := ["Form", "StarRows"], indices := [.all, .all] },
+      { path := ["Form", "Loose"], indices := [.all, .all] },
+      { path := ["Form", "Other"], indices := [.all, .all] }]
+  else
+    .partialSet [
+      { path := ["Form", "StarRows"], indices := [.all, .concrete 1] },
+      { path := ["Form", "StarRows"], indices := [.all, .concrete 2] },
+      { path := ["Form", "Loose"], indices := [.all, .all] },
+      { path := ["Form", "Other"], indices := [.all, .all] }]
 
-example : partialResolves (field "Loose") = true := by native_decide
+private def partialGroupSnapshot (scope : ValidationRelevanceScope) :
+    Option (Nat × Bool × Verdict) := do
+  let groupOperand := starredGroup [
+    { name := "Form" }, { name := "StarRows", starred := true }]
+  let checked ← (elaborateTokenEntityValueListSource probeModel ["Form"] {
+    quantifier := .no
+    fields := { first := groupOperand, rest := [] }
+    values := { first := field "Loose", rest := [field "Other"] } }).toOption
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 40, path := [1] }, { group := 40, path := [2] }]
+    cells := [str 22 [1] "A", str 23 [1] "B",
+      str 22 [2] "C", str 23 [2] "D",
+      str 9 [] "X", str 10 [] "Y"] }).toOption
+  let resolved ←
+    (checked.fields.first.resolveCheckedPartialValidationOperand
+      document [] scope).toOption
+  let .evaluated verdict ← (checked.evaluatePartial document [] scope).toOption
+    | none
+  pure (resolved.addressedCells.length, resolved.hasNonRelevant, verdict)
 
-example : partialResolves (group ["Form", "Bag"]) = false := by native_decide
+/- Both relevance shapes select the same instantiated cells, but only the wildcard covers the
+   complete starred extent. -/
+example :
+    partialGroupSnapshot (starRowsScope true) =
+        some (4, false, .fired .value) ∧
+      partialGroupSnapshot (starRowsScope false) =
+        some (4, true, .unknown) := by
+  native_decide
 
 /-- Every raw-`Document` arm the token slot reaches, in one list so the claim covers the class
     rather than the one arm that happened to get a case. Order: full validation, partial validation,

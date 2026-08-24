@@ -1077,6 +1077,19 @@ a12-dmkits `06b84701969979a2e5a2b63de7445a6a1d521473` measures what a **cleared*
 - `limit`: the test authors only starred group operands. Fixed group computation, Number value-count computation, partial validation, raw-`Document` execution, mixed signedness, and the computation result's internal fillability metadata remain unmeasured.
 - `sync`: the outcomes match the existing recursive group-extent, aggregate computation, poison, and empty-selection clauses, so no outbound correction follows.
 
+<a id="src-token-group-partial-runtime"></a>
+#### Token group partial-validation runtime
+
+- `revision`: clean a12-dmkits `3a4025bbfdbd925d7f4c23e519f15ce0e2461b21`; `9958d69809aa360bb81d35d7de3cebec6dd15d97` added the retained group-specific differential and `726dca09020d78132ee12a9771e2d6a882716160` owns a separate one-field wildcard-versus-concrete orientation case.
+- `route`: targeted runs of both retained adapter tests passed at the clean revision, with dynamic Groovy, generated Java, and the a12-dmkits interpreter agreeing against Kernel 30.8.1.
+- `test`: [`PartialValidationGroupOperandDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/PartialValidationGroupOperandDiffTest.kt) and [`PartialValidationValueListDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/PartialValidationValueListDiffTest.kt).
+- `claim`: partial `NoFieldValueIncludedInValueList(Items* In "A")` over a starred group containing two String declarations matches its explicit `Tag*` plus `Note*` expansion under both wildcard-group relevance and concrete rows 1 and 2.
+- `claim`: the wildcard-group and concrete-row relevance shapes produce different results in that group fixture.
+- `control`: the separate one-field explicit-star case hardcodes wildcard relevance as firing and concrete-row relevance as silent, but it does not discharge that orientation for the two-declaration group fixture.
+- `unverified`: the exact two-declaration group result orientation and the claim that both relevance shapes reach the same cells are not externally measured. Lean locks the chosen wildcard-fired, concrete-unknown account and equal reached-cell counts only as internal executable semantics.
+- `limit`: external evidence covers one starred repeatable group, two direct String declarations, two instantiated rows, the fields side of `No`, group-versus-explicit equivalence within each relevance shape, and disagreement between the two shapes. Exact orientation, reached-cell selection, fixed groups, nested declarations, Enumeration projection, other quantifiers, computation, raw-`Document` routes, messages, and references remain unmeasured.
+- `sync`: the measured equivalences and shape disagreement are consistent with the existing partial value-list extent and group expansion clauses, so no outbound correction follows.
+
 <a id="src-temporal-field-values-not-unique-group-runtime"></a>
 #### Temporal field-values-not-unique group runtime
 

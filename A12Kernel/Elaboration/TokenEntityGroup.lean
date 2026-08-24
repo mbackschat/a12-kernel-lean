@@ -120,6 +120,30 @@ def resolveCheckedValidationCells (group : CheckedTokenEntityGroup model)
     group.source.boundLevelCount
     (group.slots.map fun slot => (slot.declaration, slot.operand))
 
+/-- A token group has complete partial value-list extent only when every declaration in its certified expansion has one covering relevant identifier across the levels the group operand reopens. -/
+def partialExtentRelevant (group : CheckedTokenEntityGroup model)
+    (scope : ValidationRelevanceScope) (outer : Env) : Bool :=
+  group.slots.all fun slot =>
+    scope.coversValueListExtent model slot.declaration.path
+      (slot.declaration.repeatableScope.take group.source.boundLevelCount)
+      (slot.declaration.repeatableScope.drop group.source.boundLevelCount)
+      outer
+
+/-- Resolve the same declaration-paired group extent for partial validation, retaining only relevant concrete cells and recording incomplete extent separately from the cell domain. -/
+def resolveCheckedPartialValidationCells
+    (group : CheckedTokenEntityGroup model)
+    (document : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope) :
+    Except CheckedAddressingError
+      (List (FlatTextFieldOperand × CheckedAddressedCell) × Bool) := do
+  let paired ← document.resolveCheckedGroupEntityOperandPairs outer
+    group.source.boundLevelCount
+    (group.slots.map fun slot => (slot.declaration, slot))
+  let relevant := paired.filter fun pair =>
+    scope.coversCell model pair.1.declaration.path pair.2.environment
+  pure (relevant.map fun pair => (pair.1.operand, pair.2),
+    !group.partialExtentRelevant scope outer)
+
 end CheckedTokenEntityGroup
 
 end A12Kernel

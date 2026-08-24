@@ -89,6 +89,18 @@ theorem checkedTokenEntityGroup_projections_stored
   simp only [Function.comp_apply, operandOwned]
   exact textFieldComparison_projectionRef_stored comparison
 
+/-- Complete partial relevance for one group slot means complete value-list extent for every declaration in its certified recursive expansion, at the levels the authored group operand reopens. -/
+theorem checkedTokenEntityGroup_partialExtentRelevant_iff
+    (group : CheckedTokenEntityGroup model)
+    (scope : ValidationRelevanceScope) (outer : Env) :
+    group.partialExtentRelevant scope outer = true ↔
+      ∀ slot ∈ group.slots,
+        scope.coversValueListExtent model slot.declaration.path
+          (slot.declaration.repeatableScope.take group.source.boundLevelCount)
+          (slot.declaration.repeatableScope.drop group.source.boundLevelCount)
+          outer = true := by
+  simp [CheckedTokenEntityGroup.partialExtentRelevant]
+
 /-- Each reached cell is projected through the operand paired with it in the resolving walk: a field-denoting slot's one certified operand, or, for a group, the declaration that actually stored the cell. -/
 theorem resolvedCheckedTokenEntityOperand_valueListSideAt_cells
     (resolved : ResolvedCheckedTokenEntityOperand model) (phase : Phase) :
