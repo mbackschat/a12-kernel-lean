@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.CurrentRepetitionComputation
 
-/-! # Exact one-row CurrentRepetition computation cascade locks -/
+/-! # CurrentRepetition computation cascade locks -/
 
 namespace A12Kernel.Conformance.CurrentRepetitionComputation
 
@@ -85,6 +85,68 @@ private def inputWithSecond? : Option (CheckedDocument model) :=
     }]
   }).toOption
 
+private def numericCell (field : FieldId) (row : Nat) (value : Int) :
+    ClassifiedCellInput := {
+  address := { field, path := [row] }
+  stored := toString value
+  raw := .parsed (.num value)
+  numericDecimal := some { unscaled := value, scale := 0 }
+}
+
+private def twoRowInput? (firstBase : ClassifiedCellInput) :
+    Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := lines.level, path := [1] },
+      { group := lines.level, path := [2] }]
+    cells := [
+      firstBase,
+      numericCell first.id 1 70,
+      numericCell second.id 1 700,
+      numericCell base.id 2 11,
+      numericCell first.id 2 110,
+      numericCell second.id 2 1100]
+  }).toOption
+
+private def twoRowOutcomes? (firstBase : ClassifiedCellInput) :
+    Option CurrentRepetitionNumberCascadeOutcomes := do
+  let plan <- plan?
+  let input <- twoRowInput? firstBase
+  plan.execute input |>.toOption
+
+private def rowOutcomes? (firstBase : ClassifiedCellInput) :
+    Option (List
+      (Nat × CellAddr × NumericTargetOutcome × CellAddr × NumericTargetOutcome)) :=
+  twoRowOutcomes? firstBase |>.map fun outcomes =>
+    outcomes.rows.map fun row =>
+      (row.coordinate, row.first.targetField, row.first.outcome,
+        row.second.targetField, row.second.outcome)
+
+private def encounterOrderOutcomes? :
+    Option (List
+      (Nat × CellAddr × NumericTargetOutcome × CellAddr × NumericTargetOutcome)) := do
+  let plan <- plan?
+  let input <- (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := lines.level, path := [3] },
+      { group := lines.level, path := [1] },
+      { group := lines.level, path := [2] }]
+    cells := [
+      numericCell base.id 1 7,
+      numericCell first.id 1 70,
+      numericCell second.id 1 700,
+      numericCell base.id 2 11,
+      numericCell first.id 2 110,
+      numericCell second.id 2 1100,
+      numericCell base.id 3 13,
+      numericCell first.id 3 130,
+      numericCell second.id 3 1300]
+  }).toOption
+  let outcomes <- plan.execute input |>.toOption
+  pure (outcomes.rows.map fun row =>
+    (row.coordinate, row.first.targetField, row.first.outcome,
+      row.second.targetField, row.second.outcome))
+
 private def outcome? :
     Option CurrentRepetitionNumberCascadeOutcomes := do
   let plan <- plan?
@@ -96,6 +158,13 @@ private def outcomeWithSecond? :
   let plan <- plan?
   let input <- inputWithSecond?
   plan.execute input |>.toOption
+
+private def outcomeRow? : Option CurrentRepetitionNumberCascadeRowOutcomes :=
+  outcome?.bind (·.rows.head?)
+
+private def outcomeWithSecondRow? :
+    Option CurrentRepetitionNumberCascadeRowOutcomes :=
+  outcomeWithSecond?.bind (·.rows.head?)
 
 /- Analyze retains the structural coordinate separately from the two real field edges. -/
 example :
@@ -110,7 +179,7 @@ example :
 
 /- The second outcome retains its own immutable pre-computation source state rather than the first overlay. -/
 example :
-    (outcomeWithSecond?.map fun outcomes => outcomes.second.source) =
+    (outcomeWithSecondRow?.map fun outcomes => outcomes.second.source) =
       some (.presentValue (.decimal { unscaled := 9, scale := 0 })) := by
   native_decide
 
@@ -124,7 +193,7 @@ example :
 
 /- The checked one-row cascade overlays the first exact result before the second read. -/
 example :
-    (outcome?.map fun outcomes =>
+    (outcomeRow?.map fun outcomes =>
       (outcomes.first.targetField, outcomes.first.outcome,
         outcomes.second.targetField, outcomes.second.outcome)) =
       some (
@@ -156,14 +225,68 @@ example :
       | _ => false) = true := by
   native_decide
 
-/- Multiple instantiated rows remain explicit insufficient information. -/
+/- Distinct seeded rows expose only their own newly computed first value to the dependent read. -/
 example :
-    (do
-      let plan <- plan?
-      let input <- input? 2
-      pure (match plan.execute input with
-        | .error (.rowCardinality 2) => true
-        | _ => false)) = some true := by
+    rowOutcomes? (numericCell base.id 1 7) = some [
+      (1, { field := first.id, path := [1] },
+        .accepted { unscaled := 7, scale := 0 },
+        { field := second.id, path := [1] },
+        .accepted { unscaled := 7, scale := 0 }),
+      (2, { field := first.id, path := [2] },
+        .accepted { unscaled := 11, scale := 0 },
+        { field := second.id, path := [2] },
+        .accepted { unscaled := 11, scale := 0 })] := by
+  native_decide
+
+/- A wider finite input preserves physical encounter order rather than sorting by coordinate. -/
+example :
+    encounterOrderOutcomes? = some [
+      (3, { field := first.id, path := [3] },
+        .accepted { unscaled := 13, scale := 0 },
+        { field := second.id, path := [3] },
+        .accepted { unscaled := 13, scale := 0 }),
+      (1, { field := first.id, path := [1] },
+        .accepted { unscaled := 7, scale := 0 },
+        { field := second.id, path := [1] },
+        .accepted { unscaled := 7, scale := 0 }),
+      (2, { field := first.id, path := [2] },
+        .accepted { unscaled := 11, scale := 0 },
+        { field := second.id, path := [2] },
+        .accepted { unscaled := 11, scale := 0 })] := by
+  native_decide
+
+/- Empty Number substitution stays local to its own row. -/
+example :
+    rowOutcomes? {
+      address := { field := base.id, path := [1] }
+      stored := ""
+      raw := .presentEmpty
+    } = some [
+      (1, { field := first.id, path := [1] },
+        .accepted { unscaled := 0, scale := 0 },
+        { field := second.id, path := [1] },
+        .accepted { unscaled := 0, scale := 0 }),
+      (2, { field := first.id, path := [2] },
+        .accepted { unscaled := 11, scale := 0 },
+        { field := second.id, path := [2] },
+        .accepted { unscaled := 11, scale := 0 })] := by
+  native_decide
+
+/- Reached formal poison clears only its own row and the dependent read at that address. -/
+example :
+    rowOutcomes? {
+      address := { field := base.id, path := [1] }
+      stored := "bad"
+      raw := .rejected .malformed
+    } = some [
+      (1, { field := first.id, path := [1] },
+        .inheritedPoison .malformed,
+        { field := second.id, path := [1] },
+        .inheritedPoison .computedDependency),
+      (2, { field := first.id, path := [2] },
+        .accepted { unscaled := 11, scale := 0 },
+        { field := second.id, path := [2] },
+        .accepted { unscaled := 11, scale := 0 })] := by
   native_decide
 
 /- Zero instantiated rows are the other explicit cardinality refusal. -/

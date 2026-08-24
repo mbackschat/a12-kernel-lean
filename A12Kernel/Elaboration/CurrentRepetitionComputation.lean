@@ -2,11 +2,11 @@ import A12Kernel.Elaboration.CurrentRepetition
 import A12Kernel.Elaboration.AddressedNumberField
 import A12Kernel.Semantics.NumericDependency
 
-/-! # Exact one-row CurrentRepetition Number cascade -/
+/-! # CurrentRepetition Number cascade -/
 
 namespace A12Kernel
 
-/-- Fail-closed admission errors for the maintained one-row, one-level computation shape. -/
+/-- Fail-closed admission errors for the maintained one-level computation shape. -/
 inductive CurrentRepetitionNumberCascadeElabError where
   | source (cause : CurrentRepetitionSourceElabError)
   | first (cause : AddressedNumberFieldElabError)
@@ -90,13 +90,19 @@ structure CurrentRepetitionNumberCascadeAnalysis where
   fieldDependencies : List (FieldId × List FieldId)
   deriving Repr, DecidableEq
 
-/-- Exact rich outcomes in the only admitted execution order. -/
-structure CurrentRepetitionNumberCascadeOutcomes where
+/-- Exact rich outcomes for one selected row. -/
+structure CurrentRepetitionNumberCascadeRowOutcomes where
+  coordinate : Nat
   first : SourcedNumericTargetOutcome CellAddr
   second : SourcedNumericTargetOutcome CellAddr
   deriving Repr, DecidableEq
 
-/-- Structural or leaf failures of the bounded executor. Multiple rows are explicit insufficient information. -/
+/-- Exact rich outcomes in physical row encounter order. -/
+structure CurrentRepetitionNumberCascadeOutcomes where
+  rows : List CurrentRepetitionNumberCascadeRowOutcomes
+  deriving Repr, DecidableEq
+
+/-- Structural or leaf failures of the bounded executor. An absent target row remains explicit insufficient information. -/
 inductive CurrentRepetitionNumberCascadeFault where
   | rows (cause : ActualRowEnvironmentError)
   | rowCardinality (actual : Nat)
@@ -128,37 +134,35 @@ def evaluatePositiveGuardAt
   pure (coordinate, NumericComparisonOp.greater.holds coordinate 0)
 
 private def readAfterFirst (input : CheckedDocument model)
-    (first : SourcedNumericTargetOutcome CellAddr)
+    (first : List (SourcedNumericTargetOutcome CellAddr))
     (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
-  if address == first.targetField then
-    .ok (NumericDependencyCell.ofOutcome first.outcome).checked
-  else
-    input.read address
+  match first.find? fun outcome => outcome.targetField == address with
+  | some outcome => .ok (NumericDependencyCell.ofOutcome outcome.outcome).checked
+  | none => input.read address
 
-/-- Execute the fixed positive structural guard, then expose the first exact addressed outcome only to the second direct copy. -/
+/-- Execute the fixed positive structural guard at every instantiated row, then expose each first exact addressed outcome only to the dependent read at that same address. -/
 def execute (plan : CheckedCurrentRepetitionNumberCascade model)
     (input : CheckedDocument model) :
     Except CurrentRepetitionNumberCascadeFault
       CurrentRepetitionNumberCascadeOutcomes := do
   let environments ← plan.first.placement.targetEnvironments input
     |>.mapError .rows
-  let environment ← match environments with
-    | [environment] => pure environment
-    | rows => throw (.rowCardinality rows.length)
-  let guard ← plan.evaluatePositiveGuardAt environment |>.mapError .coordinate
-  if !guard.2 then throw (.guardNotTrue guard.1)
+  if environments.isEmpty then throw (.rowCardinality 0)
+  let coordinates ← environments.mapM fun environment => do
+    let guard ← plan.evaluatePositiveGuardAt environment |>.mapError .coordinate
+    if !guard.2 then throw (.guardNotTrue guard.1)
+    pure guard.1
   let firstOutcomes ← plan.first.execute input |>.mapError .first
-  let first ← match firstOutcomes with
-    | [outcome] => pure outcome
-    | outcomes =>
-        throw (.outcomeCardinality plan.first.placement.targetField outcomes.length)
+  if firstOutcomes.length != environments.length then
+    throw (.outcomeCardinality plan.first.placement.targetField firstOutcomes.length)
   let secondOutcomes ← plan.second.executeWithRead input
-      (readAfterFirst input first) |>.mapError .second
-  let second ← match secondOutcomes with
-    | [outcome] => pure outcome
-    | outcomes =>
-        throw (.outcomeCardinality plan.second.placement.targetField outcomes.length)
-  pure { first, second }
+      (readAfterFirst input firstOutcomes) |>.mapError .second
+  if secondOutcomes.length != environments.length then
+    throw (.outcomeCardinality plan.second.placement.targetField secondOutcomes.length)
+  pure {
+    rows := (coordinates.zip (firstOutcomes.zip secondOutcomes)).map fun
+      | (coordinate, first, second) => { coordinate, first, second }
+  }
 
 end CheckedCurrentRepetitionNumberCascade
 
