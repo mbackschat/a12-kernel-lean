@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.Flat.Types
 
 /-! # Checked DateRange declaration and stored-text ingestion
 
-This capsule classifies stored DateRange text for two exact full-Date pairs plus slash-separated `yyyy`, `yyyy-MM`, `MM`, and `MM-dd`. It retains present-empty placement and four distinct formal causes. Full-Date input, year-bearing fragments, and configured fragments resolve stored-Gregorian model-zone midnight instants; fragments without a Base Year retain only their ordered component identity. Wider `SimpleDateFormat` syntax, other legal zones, JSON mapper behavior, and document traversal remain separate.
+This capsule classifies stored DateRange text for two exact full-Date pairs plus slash-separated `yyyy`, `yyyy-MM`, `MM`, and `MM-dd`. It retains present-empty placement and four distinct formal causes. Full-Date input, year-bearing fragments, and configured fragments resolve stored-Gregorian model-zone midnight instants; fragments without a Base Year retain their component identity, with a declared year interpretation admitting wrapping pairs. Wider `SimpleDateFormat` syntax, other legal zones, JSON mapper behavior, and document traversal remain separate.
 -/
 
 namespace A12Kernel
@@ -338,15 +338,19 @@ def completionYears (interpretation : Option DateRangeYearInterpretation)
 
 /-- Place a decoded yearless pair under the model's Base Year and declared year interpretation.
 
-Without a Base Year there is no anchor year to complete against, so the pair keeps its component identity and a wrapping pair keeps the order refusal under every interpretation. Under a Base Year the placement comes from `completionYears`, and an unplaceable wrapping pair is `dateRangeInvalid`. The model zone is consulted only where a completion actually happens, so an unsupported zone is not refused on the uncompleted route.
+Without a Base Year there is no anchor year to complete against, so the pair keeps its component identity. A wrapping pair is admitted only when the declaration supplies an interpretation, even though `FROM` and `TO` cannot choose concrete years on this route. Under a Base Year the placement comes from `completionYears`, and an unplaceable wrapping pair is `dateRangeInvalid`. The model zone is consulted only where a completion actually happens, so an unsupported zone is not refused on the uncompleted route.
 -/
 def resolveYearlessForModel (zoneId : String) (baseYear : Option Int)
     (interpretation : Option DateRangeYearInterpretation)
     (yearless : DateRangeCellValue) : Except DateRangeInputError RawCell :=
   match baseYear with
   | none =>
-      if yearless.wrapsYearBoundary then .ok (.rejected .dateRangeInvalid)
-      else .ok (.parsed (.dateRange yearless))
+      if yearless.wrapsYearBoundary then
+        match interpretation with
+        | none => .ok (.rejected .dateRangeInvalid)
+        | some _ => .ok (.parsed (.dateRange yearless))
+      else
+        .ok (.parsed (.dateRange yearless))
   | some year =>
       match completionYears interpretation year yearless with
       | none => .ok (.rejected .dateRangeInvalid)

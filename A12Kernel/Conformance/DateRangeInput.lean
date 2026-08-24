@@ -539,6 +539,14 @@ private def dayMonthDottedToPolicy : DateRangeDeclarationPolicy := {
   interpretationOfYear := some .anchorFinish
 }
 
+private def monthFromPolicy : DateRangeDeclarationPolicy := {
+  monthPolicy with interpretationOfYear := some .anchorStart
+}
+
+private def monthToPolicy : DateRangeDeclarationPolicy := {
+  monthPolicy with interpretationOfYear := some .anchorFinish
+}
+
 private def wrapFromBaseYear : DateRangeValue := {
   start := dateValue 1604188800000 2020 11 1
   finish := dateValue 1614470400000 2021 2 28
@@ -580,14 +588,22 @@ example :
       some (.parsed (.dateRange orderedInBaseYear)) := by
   native_decide
 
-/- Without a declared Base Year the interpretation has no anchor year to complete against, so a wrapping range keeps the order refusal and an ordered one keeps its yearless component identity. This is the deliberately scoped account: no interpretation-bearing unconfigured model was observed, so the wrapping row here carries no external evidence. -/
+/- Without a declared Base Year an interpretation admits a wrapping range but cannot place it in concrete years, so both directions retain the same yearless component identity. The month-only pair is a second measured instance of that rule. -/
 example :
     (classifyStoredDateRangeForModel "UTC" none dayMonthDottedFromPolicy
         "01.11-28.02").toOption =
-      some (.rejected .dateRangeInvalid) ∧
+      some (.parsed (.dateRange (.yearlessMonthDay
+        { month := 11, day := 1 } { month := 2, day := 28 }))) ∧
     (classifyStoredDateRangeForModel "UTC" none dayMonthDottedToPolicy
         "01.11-28.02").toOption =
-      some (.rejected .dateRangeInvalid) ∧
+      some (.parsed (.dateRange (.yearlessMonthDay
+        { month := 11, day := 1 } { month := 2, day := 28 }))) ∧
+    (classifyStoredDateRangeForModel "UTC" none monthFromPolicy
+        "11/02").toOption =
+      some (.parsed (.dateRange (.yearlessMonth 11 2))) ∧
+    (classifyStoredDateRangeForModel "UTC" none monthToPolicy
+        "11/02").toOption =
+      some (.parsed (.dateRange (.yearlessMonth 11 2))) ∧
     (classifyStoredDateRangeForModel "UTC" none dayMonthDottedFromPolicy
         "01.06-30.09").toOption =
       some (.parsed (.dateRange (.yearlessMonthDay

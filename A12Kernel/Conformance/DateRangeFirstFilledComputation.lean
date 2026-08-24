@@ -63,12 +63,33 @@ private def toTarget :=
 private def toSource :=
   rangeField 21 ["Cart", "Lines"] "ToSource" [10] "dd.MM" "-"
     (some .anchorFinish)
+private def interpretedMonthTarget :=
+  rangeField 22 ["Cart"] "InterpretedMonthTarget" [] "MM" "/"
+    (some .anchorStart)
+private def interpretedMonthSource :=
+  rangeField 23 ["Cart", "Lines"] "InterpretedMonthSource" [10] "MM" "/"
+    (some .anchorFinish)
+private def interpretedConcatenatedTarget :=
+  rangeField 24 ["Cart"] "InterpretedConcatenatedTarget" [] "MM" ""
+    (some .anchorStart)
+private def interpretedConcatenatedSource :=
+  rangeField 25 ["Cart", "Lines"] "InterpretedConcatenatedSource" [10] "MM" ""
+    (some .anchorFinish)
+private def interpretedMonthDayTarget :=
+  rangeField 26 ["Cart"] "InterpretedMonthDayTarget" [] "MM-dd" "/"
+    (some .anchorStart)
+private def interpretedMonthDaySource :=
+  rangeField 27 ["Cart", "Lines"] "InterpretedMonthDaySource" [10] "MM-dd" "/"
+    (some .anchorFinish)
 private def model : FlatModel := {
   fields := [target, source, otherFormatSource, otherSeparatorTarget,
     otherSeparatorSource, dottedTarget, dottedSource, dayMonthDottedTarget,
     dayMonthDottedSource, yearTarget, yearSource, yearMonthTarget,
     yearMonthSource, monthTarget, monthSource, monthDayTarget, monthDaySource,
-    fromTarget, fromSource, toTarget, toSource]
+    fromTarget, fromSource, toTarget, toSource, interpretedMonthTarget,
+    interpretedMonthSource, interpretedConcatenatedTarget,
+    interpretedConcatenatedSource, interpretedMonthDayTarget,
+    interpretedMonthDaySource]
   repeatableGroups := [
     { level := 10, path := ["Cart", "Lines"], repeatability := some 99 }]
   timeZoneId := "UTC"
@@ -200,6 +221,58 @@ example :
         some "CLEARED" ∧
       signatureForModel? interpretationModel toTarget fromSource [] =
         some "CLEARED" := by
+  native_decide
+
+/- With no Base Year, every interpretation-bearing yearless profile admits a wrapping selected value and presents it in the interpretation carrier's dotted day-month spelling. Month-only endpoints acquire day 01 on both sides; the declared slash or empty month spelling is not retained. -/
+example :
+    signatureForModel? model fromTarget toSource [{
+      row := 1
+      stored := "01.11-28.02"
+      raw := .parsed (.dateRange (.yearlessMonthDay
+        { month := 11, day := 1 } { month := 2, day := 28 }))
+    }] = some "VALUE|01.11-28.02" ∧
+      signatureForModel? model interpretedMonthTarget interpretedMonthSource [{
+        row := 1
+        stored := "11/02"
+        raw := .parsed (.dateRange (.yearlessMonth 11 2))
+      }] = some "VALUE|01.11-01.02" ∧
+      signatureForModel? model interpretedConcatenatedTarget
+          interpretedConcatenatedSource [{
+        row := 1
+        stored := "1102"
+        raw := .parsed (.dateRange (.yearlessMonth 11 2))
+      }] = some "VALUE|01.11-01.02" ∧
+      signatureForModel? model interpretedMonthDayTarget
+          interpretedMonthDaySource [{
+        row := 1
+        stored := "11-01/02-28"
+        raw := .parsed (.dateRange (.yearlessMonthDay
+          { month := 11, day := 1 } { month := 2, day := 28 }))
+      }] = some "VALUE|01.11-28.02" ∧
+      signatureForModel? model interpretedMonthTarget interpretedMonthSource [{
+        row := 1
+        stored := "03/10"
+        raw := .parsed (.dateRange (.yearlessMonth 3 10))
+      }] = some "VALUE|01.03-01.10" := by
+  native_decide
+
+/- Source and target interpretations have separate observable roles. An interpreted target selects the dotted carrier, while a standard month source contributes the whole finish month. A standard target keeps its declared month spelling and therefore exposes an interpreted source's wrapping pair as the ordinary inverted attempt. -/
+example :
+    signatureForModel? model interpretedMonthTarget monthSource [{
+      row := 1
+      stored := "03/10"
+      raw := .parsed (.dateRange (.yearlessMonth 3 10))
+    }] = some "VALUE|01.03-31.10" ∧
+      signatureForModel? model monthTarget interpretedMonthSource [{
+        row := 1
+        stored := "03/10"
+        raw := .parsed (.dateRange (.yearlessMonth 3 10))
+      }] = some "VALUE|03/10" ∧
+      signatureForModel? model monthTarget interpretedMonthSource [{
+        row := 1
+        stored := "11/02"
+        raw := .parsed (.dateRange (.yearlessMonth 11 2))
+      }] = some "ERRORED|11/02" := by
   native_decide
 
 /- All four fragment policies are admitted only as matching target/source pairs. -/

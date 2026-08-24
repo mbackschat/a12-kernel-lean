@@ -79,7 +79,7 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
       | none => none
   | _, _, _ => none
 
-/-- The declared date-component set one DateRange carrier exposes. Two profiles exposing the same set are mutually assignable, and the target's own spelling decides the stored text. -/
+/-- The declared date-component set one DateRange carrier exposes. Two profiles exposing the same set are mutually assignable. The DateRange evaluator owns target presentation, including the unconfigured interpretation-bearing dotted-carrier exception to ordinary target spelling. -/
 inductive DateRangeCarrierComponents where
   | yearMonthDay
   | year

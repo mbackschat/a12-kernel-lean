@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.TemporalFirstFilledStarComputation
 import A12Kernel.Elaboration.DateRangeTargetPresentation
 import A12Kernel.Elaboration.DateRangeBound
 import A12Kernel.Elaboration.FieldEntityList
+import A12Kernel.Semantics.DateRangeOverlap
 import A12Kernel.Semantics.TemporalTarget
 
 /-! # Bounded DateRange `FirstFilledValue` computations -/
@@ -301,6 +302,35 @@ def evalDateRangeFirstFilledCells :
       | .noValue => evalDateRangeFirstFilledCells remaining
       | result => result
 
+/-- Present one selected DateRange through its computation target. An interpretation-bearing yearless target uses the Kernel's dotted day-month carrier rather than its ordinary fragment spelling. The source interpretation still decides what a month-only pair denotes: a standard source spans through the finish month's yearless last day, while an interpreted source keeps day `01` at both endpoints. Exact Base-Year-completed results and interpretation-free yearless targets keep the shared target evaluator. -/
+def evaluateDateRangeFirstFilledTarget
+    (sourceInterpretation targetInterpretation :
+      Option DateRangeYearInterpretation)
+    (format : DateRangeInputFormat) :
+    DateRangeComputationResult →
+      Except DateRangeTargetEvaluationFault DateRangeTargetOutcome
+  | .value (.yearlessMonth start finish) =>
+      match targetInterpretation with
+      | some _ =>
+          let interval := match sourceInterpretation with
+            | none => YearlessInterval.ofMonthPair start finish
+            | some _ => {
+                start := { month := start, day := 1 }
+                finish := { month := finish, day := 1 }
+              }
+          .ok (.accepted
+            (DateRangeInputFormat.renderYearlessDayMonthDotted
+              interval.start interval.finish))
+      | none => format.evaluateComputationResult
+          (.value (.yearlessMonth start finish))
+  | .value (.yearlessMonthDay start finish) =>
+      match targetInterpretation with
+      | some _ => .ok (.accepted
+          (DateRangeInputFormat.renderYearlessDayMonthDotted start finish))
+      | none => format.evaluateComputationResult
+          (.value (.yearlessMonthDay start finish))
+  | result => format.evaluateComputationResult result
+
 inductive DateRangeFirstFilledComputationFault where
   | source (cause : CheckedStarDocumentError)
   | directSource (cause : DirectDateRangeFault)
@@ -317,7 +347,11 @@ private def executeWith
     Except DateRangeFirstFilledComputationFault DateRangeTargetOutcome := do
   let resolved ← shape.source.resolveCheckedField input []
     |>.mapError .source
-  format.evaluateComputationResult
+  evaluateDateRangeFirstFilledTarget
+      (shape.source.declaration.toDateRangeDeclarationPolicy?.bind
+        (·.interpretationOfYear))
+      (shape.target.toDateRangeDeclarationPolicy?.bind
+        (·.interpretationOfYear)) format
       (evalDateRangeFirstFilledCells resolved.cells)
     |>.mapError fun
       | .unresolvedEndpoint value => .unresolvedEndpoint value
