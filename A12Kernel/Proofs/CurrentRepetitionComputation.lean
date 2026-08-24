@@ -27,21 +27,38 @@ theorem checkedCurrentRepetitionNumberCascade_analyze
   rfl
 
 /-- A resolved row coordinate delegates the fixed positive guard to the shared numeric comparison owner without changing that coordinate. -/
+theorem checkedCurrentRepetitionSource_positiveGuardAt
+    (source : CheckedCurrentRepetitionSource model)
+    (environment : Env) (coordinate : Nat)
+    (found : source.coordinateAt environment = .ok coordinate) :
+    source.evaluatePositiveGuardAt environment =
+      .ok (coordinate, NumericComparisonOp.greater.holds coordinate 0) := by
+  unfold CheckedCurrentRepetitionSource.evaluatePositiveGuardAt
+  rw [found]
+  rfl
+
+/-- The shared structural guard fails closed when its exact row binding is absent. -/
+theorem checkedCurrentRepetitionSource_positiveGuard_missing
+    (source : CheckedCurrentRepetitionSource model) :
+    source.evaluatePositiveGuardAt [] =
+      .error (.missingBinding source.group.level) := by
+  rfl
+
+/-- The original same-family cascade is a specialization of the shared positive-guard law. -/
 theorem checkedCurrentRepetitionNumberCascade_positiveGuardAt
     (plan : CheckedCurrentRepetitionNumberCascade model)
     (environment : Env) (coordinate : Nat)
     (found : plan.source.coordinateAt environment = .ok coordinate) :
     plan.evaluatePositiveGuardAt environment =
       .ok (coordinate, NumericComparisonOp.greater.holds coordinate 0) := by
-  unfold CheckedCurrentRepetitionNumberCascade.evaluatePositiveGuardAt
-  rw [found]
-  rfl
+  exact checkedCurrentRepetitionSource_positiveGuardAt
+    plan.source environment coordinate found
 
 /-- The structural guard is not a total constant: without its exact row binding, evaluation fails rather than guessing a coordinate. -/
 theorem checkedCurrentRepetitionNumberCascade_positiveGuard_missing
     (plan : CheckedCurrentRepetitionNumberCascade model) :
     plan.evaluatePositiveGuardAt [] =
       .error (.missingBinding plan.source.group.level) := by
-  rfl
+  exact checkedCurrentRepetitionSource_positiveGuard_missing plan.source
 
 end A12Kernel

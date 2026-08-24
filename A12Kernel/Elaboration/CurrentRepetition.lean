@@ -47,6 +47,12 @@ def coordinateAt (source : CheckedCurrentRepetitionSource model)
     (environment : Env) : Except EnvBindingError Nat :=
   environment.bindingAt source.group.level
 
+/-- Evaluate the shared fixed positive computation guard without introducing a second condition tree. The coordinate remains available to structural-failure diagnostics. -/
+def evaluatePositiveGuardAt (source : CheckedCurrentRepetitionSource model)
+    (environment : Env) : Except EnvBindingError (Nat × Bool) := do
+  let coordinate ← source.coordinateAt environment
+  pure (coordinate, NumericComparisonOp.greater.holds coordinate 0)
+
 /-- Structural coordinates never induce a field dependency. -/
 def referencesField (_source : CheckedCurrentRepetitionSource model)
     (_field : FieldId) : Bool := false

@@ -1,0 +1,158 @@
+import A12Kernel.Elaboration.CurrentRepetitionComputation
+import A12Kernel.Elaboration.AddressedFieldValueAsString
+import A12Kernel.Semantics.HeterogeneousComputationDependency
+
+/-! # CurrentRepetition Number-to-String cascade -/
+
+namespace A12Kernel
+
+/-- Fail-closed admission errors for one maintained cross-family repeatable cascade. -/
+inductive CurrentRepetitionNumberToStringElabError where
+  | source (cause : CurrentRepetitionSourceElabError)
+  | number (cause : AddressedNumberFieldElabError)
+  | string (cause : AddressedFieldValueAsStringElabError)
+  | groupMismatch (source declaring : GroupPath)
+  | sourceScope (actual : List RepeatableLevel)
+  | numberScope (actual : List RepeatableLevel)
+  | stringScope (actual : List RepeatableLevel)
+  | dependency (expected actual : FieldId)
+  deriving Repr, DecidableEq
+
+/-- One checked `CurrentRepetition(group) > 0` guarded Number copy followed by same-row `FieldValueAsString` over that Number target. The shape is finite and carries no generic condition tree or scheduler. -/
+structure CheckedCurrentRepetitionNumberToStringCascade (model : FlatModel) where
+  private mk ::
+  source : CheckedCurrentRepetitionSource model
+  number : CheckedAddressedNumberField model
+  string : CheckedAddressedFieldValueAsString model
+  groupMatches : source.path = number.placement.declaringGroup
+  sourceScope :
+    model.repeatableScopeForGroupPath source.path = [source.group.level]
+  numberScope :
+    number.placement.targetDeclaration.repeatableScope = [source.group.level]
+  stringScope :
+    string.targetDeclaration.repeatableScope = [source.group.level]
+  dependency :
+    string.sourceDeclaration.id = number.placement.targetField
+
+/-- Check only the exact one-level cross-family cascade and its authored dependency edge. -/
+def checkCurrentRepetitionNumberToStringCascade
+    (model : FlatModel) (declaringGroup : GroupPath)
+    (group : SurfaceGroupPath)
+    (numberTarget : FieldId) (numberSource : SurfaceFieldPath)
+    (stringTarget : FieldId) (stringSource : SurfaceFieldPath) :
+    Except CurrentRepetitionNumberToStringElabError
+      (CheckedCurrentRepetitionNumberToStringCascade model) := do
+  let source ← checkCurrentRepetitionSource model declaringGroup group
+    |>.mapError .source
+  let number ←
+    checkAddressedNumberField model declaringGroup numberTarget numberSource
+      |>.mapError .number
+  let string ←
+    checkAddressedFieldValueAsString model declaringGroup stringTarget stringSource
+      |>.mapError .string
+  if hGroup : source.path = number.placement.declaringGroup then
+    if hSourceScope : model.repeatableScopeForGroupPath source.path =
+        [source.group.level] then
+      if hNumberScope : number.placement.targetDeclaration.repeatableScope =
+          [source.group.level] then
+        if hStringScope : string.targetDeclaration.repeatableScope =
+            [source.group.level] then
+          if hDependency : string.sourceDeclaration.id =
+              number.placement.targetField then
+            pure {
+              source
+              number
+              string
+              groupMatches := hGroup
+              sourceScope := hSourceScope
+              numberScope := hNumberScope
+              stringScope := hStringScope
+              dependency := hDependency
+            }
+          else
+            throw (.dependency number.placement.targetField
+              string.sourceDeclaration.id)
+        else throw (.stringScope string.targetDeclaration.repeatableScope)
+      else throw (.numberScope number.placement.targetDeclaration.repeatableScope)
+    else throw (.sourceScope (model.repeatableScopeForGroupPath source.path))
+  else throw (.groupMismatch source.path number.placement.declaringGroup)
+
+/-- Exact typed outcomes for one selected row. -/
+structure CurrentRepetitionNumberToStringRowOutcomes where
+  coordinate : Nat
+  number : SourcedNumericTargetOutcome CellAddr
+  string : SourcedStringTargetOutcome CellAddr
+  deriving Repr, DecidableEq
+
+/-- Exact typed outcomes in physical row encounter order. -/
+structure CurrentRepetitionNumberToStringOutcomes where
+  rows : List CurrentRepetitionNumberToStringRowOutcomes
+  deriving Repr, DecidableEq
+
+/-- Structural or typed leaf failures of the bounded executor. An absent target row remains explicit insufficient information. -/
+inductive CurrentRepetitionNumberToStringFault where
+  | rows (cause : ActualRowEnvironmentError)
+  | rowCardinality (actual : Nat)
+  | coordinate (cause : EnvBindingError)
+  | guardNotTrue (coordinate : Nat)
+  | number (cause : AddressedNumberFieldFault)
+  | string (cause : AddressedFieldValueAsStringFault)
+  | outcomeCardinality (target : FieldId) (actual : Nat)
+  deriving Repr, DecidableEq
+
+namespace CheckedCurrentRepetitionNumberToStringCascade
+
+/-- Keep the structural coordinate separate from both real field edges. -/
+def analyze (plan : CheckedCurrentRepetitionNumberToStringCascade model) :
+    CurrentRepetitionCascadeAnalysis := {
+  structuralGroup := plan.source.path
+  scope := [plan.source.group.level]
+  fieldDependencies := [
+    (plan.number.placement.targetField,
+      [plan.number.placement.sourceDeclaration.id]),
+    (plan.string.targetField, [plan.string.sourceDeclaration.id])]
+}
+
+/-- Evaluate the sole admitted guard through the shared checked coordinate owner. -/
+def evaluatePositiveGuardAt
+    (plan : CheckedCurrentRepetitionNumberToStringCascade model)
+    (environment : Env) : Except EnvBindingError (Nat × Bool) :=
+  plan.source.evaluatePositiveGuardAt environment
+
+private def readAfterNumber (input : CheckedDocument model)
+    (numbers : List (SourcedNumericTargetOutcome CellAddr))
+    (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
+  match numbers.find? fun outcome => outcome.targetField == address with
+  | some outcome => .ok (StringDependencyCell.ofNumericOutcome outcome.outcome).checked
+  | none => CheckedAddressedFieldValueAsString.readSource input address
+
+/-- Execute the fixed positive guard at every instantiated row, then expose each completed Number outcome only to the String conversion at that exact address. -/
+def execute (plan : CheckedCurrentRepetitionNumberToStringCascade model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    Except CurrentRepetitionNumberToStringFault
+      CurrentRepetitionNumberToStringOutcomes := do
+  let environments ← plan.number.placement.targetEnvironments input
+    |>.mapError .rows
+  if environments.isEmpty then throw (.rowCardinality 0)
+  let coordinates ← environments.mapM fun environment => do
+    let guard ← plan.evaluatePositiveGuardAt environment
+      |>.mapError .coordinate
+    if !guard.2 then throw (.guardNotTrue guard.1)
+    pure guard.1
+  let numberOutcomes ← plan.number.execute input |>.mapError .number
+  if numberOutcomes.length != environments.length then
+    throw (.outcomeCardinality plan.number.placement.targetField
+      numberOutcomes.length)
+  let stringOutcomes ← plan.string.executeWithRead patterns input
+      (readAfterNumber input numberOutcomes) |>.mapError .string
+  if stringOutcomes.length != environments.length then
+    throw (.outcomeCardinality plan.string.targetField stringOutcomes.length)
+  pure {
+    rows := (coordinates.zip (numberOutcomes.zip stringOutcomes)).map fun
+      | (coordinate, number, string) => { coordinate, number, string }
+  }
+
+end CheckedCurrentRepetitionNumberToStringCascade
+
+end A12Kernel

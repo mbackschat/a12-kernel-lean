@@ -155,10 +155,16 @@ private def stringCell (cell : CheckedCell String) : CheckedCell := {
   findings := cell.findings
 }
 
-/-- Execute one addressed instance per physical target environment and retain the exact row key for later result classification and application. -/
-def execute (operation : CheckedAddressedFieldValueAsString model)
+/-- Project the immutable Number source through the storage-regime-preserving text boundary consumed by `FieldValueAsString`. -/
+def readSource (input : CheckedDocument model) (address : CellAddr) :
+    Except CheckedDocumentError CheckedCell := do
+  pure (stringCell (← input.readNumberFormalText address))
+
+/-- Execute one addressed instance per physical target environment through a caller-supplied exact-address Number-text view and retain the exact row key. Target iteration and prior-target classification remain owned by the immutable checked document. -/
+def executeWithRead (operation : CheckedAddressedFieldValueAsString model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedFieldValueAsStringFault
       (List (SourcedStringTargetOutcome CellAddr)) := do
   let matcher ← match patterns.targetMatcher? operation.targetField with
@@ -183,12 +189,11 @@ def execute (operation : CheckedAddressedFieldValueAsString model)
       field := operation.targetField
       path
     }
-    let sourceCell ←
-      (input.readNumberFormalText sourceAddress).mapError .sourceRead
+    let sourceCell ← (read sourceAddress).mapError .sourceRead
     let context : StringComputationContext := {
       read := fun field =>
         if field == operation.sourceDeclaration.id then
-          stringCell sourceCell
+          sourceCell
         else
           malformedCheckedCell
     }
@@ -202,6 +207,14 @@ def execute (operation : CheckedAddressedFieldValueAsString model)
           matcher store
       source := input.sourceStringTargetStateAt targetAddress
     }
+
+/-- Execute through the immutable checked document's Number-text projection. -/
+def execute (operation : CheckedAddressedFieldValueAsString model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    Except AddressedFieldValueAsStringFault
+      (List (SourcedStringTargetOutcome CellAddr)) :=
+  operation.executeWithRead patterns input (readSource input)
 
 /-- Classify the addressed rich outcomes against the immutable source document without collapsing their exact row keys. -/
 def executeResult

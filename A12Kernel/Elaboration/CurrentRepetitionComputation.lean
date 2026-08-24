@@ -84,11 +84,15 @@ def checkCurrentRepetitionNumberCascade
   else throw (.groupMismatch source.path first.placement.declaringGroup)
 
 /-- The consumer-visible structural source and real field edges. Keeping these channels separate prevents group expansion from inventing computation cycles. -/
-structure CurrentRepetitionNumberCascadeAnalysis where
+structure CurrentRepetitionCascadeAnalysis where
   structuralGroup : GroupPath
   scope : List RepeatableLevel
   fieldDependencies : List (FieldId × List FieldId)
   deriving Repr, DecidableEq
+
+/-- Compatibility name for the first same-family specialization. -/
+abbrev CurrentRepetitionNumberCascadeAnalysis :=
+  CurrentRepetitionCascadeAnalysis
 
 /-- Exact rich outcomes for one selected row. -/
 structure CurrentRepetitionNumberCascadeRowOutcomes where
@@ -116,7 +120,7 @@ inductive CurrentRepetitionNumberCascadeFault where
 namespace CheckedCurrentRepetitionNumberCascade
 
 def analyze (plan : CheckedCurrentRepetitionNumberCascade model) :
-    CurrentRepetitionNumberCascadeAnalysis := {
+    CurrentRepetitionCascadeAnalysis := {
   structuralGroup := plan.source.path
   scope := [plan.source.group.level]
   fieldDependencies := [
@@ -129,9 +133,8 @@ def analyze (plan : CheckedCurrentRepetitionNumberCascade model) :
 /-- Evaluate the sole admitted computation guard without adding a second condition tree. The coordinate remains available to structural-failure diagnostics. -/
 def evaluatePositiveGuardAt
     (plan : CheckedCurrentRepetitionNumberCascade model)
-    (environment : Env) : Except EnvBindingError (Nat × Bool) := do
-  let coordinate ← plan.source.coordinateAt environment
-  pure (coordinate, NumericComparisonOp.greater.holds coordinate 0)
+    (environment : Env) : Except EnvBindingError (Nat × Bool) :=
+  plan.source.evaluatePositiveGuardAt environment
 
 private def readAfterFirst (input : CheckedDocument model)
     (first : List (SourcedNumericTargetOutcome CellAddr))
