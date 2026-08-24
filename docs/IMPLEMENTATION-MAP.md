@@ -723,14 +723,14 @@ These stable names help when a query crosses numbered clauses. Their capability 
 <a id="cap-temporal-group-uniqueness"></a>
 #### Temporal group uniqueness
 
-- `state`: partial.
-- `boundary`: temporal uniqueness retains one recursively complete group expansion with one exact declared format.
+- `state`: implemented for checked-document full validation.
+- `boundary`: temporal uniqueness retains one recursively complete group expansion with one exact declared format, resolves every declaration at every instantiated descendant row below the operand's own bound depth, and compares the resulting combined stream by exact stored text.
 - `owner`: [`TemporalValuesNotUnique.lean`](../A12Kernel/Elaboration/TemporalValuesNotUnique.lean).
 - `case`: [temporal group cases](../A12Kernel/Conformance/TemporalEntityGroupOperand.lean).
-- `proof`: [`checkedTemporalUniquenessGroup_expansion_complete`](../A12Kernel/Proofs/ValuesNotUnique.lean).
-- `assurance`: E/P closed for retention and expansion completeness; L none; C none; X none; Q none.
-- `source`: [group-carrier static admission](SOURCES.md#src-group-carrier-static-admission).
-- `remains`: [temporal group runtime](SEMANTICS-GAPS.md#gap-sg5-temporal-group-runtime).
+- `proof`: [`checkedTemporalUniquenessGroup_expansion_complete`](../A12Kernel/Proofs/ValuesNotUnique.lean) and [`checkedTemporalUniquenessGroup_resolveValidationCore`](../A12Kernel/Proofs/ValuesNotUnique.lean).
+- `assurance`: E/P closed for retention, complete expansion, shared-resolver delegation, recursive full-validation extent, explicit-field agreement, and distinct/empty controls; L locks the exact two-row group-versus-explicit matrix at clean a12-dmkits `3a4025bb`; C/X/Q none.
+- `source`: [group-carrier static admission](SOURCES.md#src-group-carrier-static-admission) and [temporal group runtime](SOURCES.md#src-temporal-field-values-not-unique-group-runtime).
+- `remains`: group-form message emission remains under [SG10](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration); external calibration beyond the exact unstarred two-row checkpoint remains pending.
 
 <a id="cap-boolean-confirm-group-value-count"></a>
 #### Boolean/Confirm group value count

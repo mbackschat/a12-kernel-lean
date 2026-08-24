@@ -156,7 +156,8 @@ def resolveValidationCore (operand : CheckedTemporalUniquenessOperand model)
   | .star path _ filter =>
       path.resolveCheckedValidationEntityOperandCore document outer filter
   | .group source =>
-      .error (.addressing (.unsupportedGroupOperand source.groupPath))
+      document.resolveCheckedGroupEntityOperandCore outer
+        source.source.boundLevelCount source.declarations
 
 end CheckedTemporalUniquenessOperand
 

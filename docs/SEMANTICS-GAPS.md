@@ -79,17 +79,6 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `review`: re-examine whether `StarAddressingError.unsupportedGroupOperand` still belongs in a Semantics error type when a second runtime route consumes it.
 - `route-state`: discovery-required
 
-<a id="gap-sg5-temporal-group-runtime"></a>
-#### Temporal group runtime
-
-- `state`: open
-- `missing`: execute the retained temporal group operand after static admission without inferring runtime identity from the explicit-field control.
-- `baseline`: [temporal group uniqueness](IMPLEMENTATION-MAP.md#cap-temporal-group-uniqueness) retains a complete expansion with one declared format.
-- `evidence-needed`: a runtime row over the temporal group expansion; the current source checkpoint establishes static admission only.
-- `discriminator`: compare the group form with its explicit-field control while placing the duplicate outside any direct-child-only or first-row-only extent.
-- `consumer`: Execute must preserve stored-text identity and the operand-bounded recursive extent.
-- `reopen-when`: the group-runtime calibration batch includes the temporal carrier.
-
 <a id="gap-sg5-boolean-group-runtime"></a>
 #### Boolean/Confirm group runtime
 
@@ -100,6 +89,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `discriminator`: compare no declared tail with one declared but uninstantiated row while every instantiated value is unchanged.
 - `consumer`: Execute must preserve growability without reconstructing the authored group.
 - `reopen-when`: the group-runtime calibration batch includes the Boolean/Confirm carrier.
+- `route-state`: discovery-required
 
 #### SG5 family completion
 

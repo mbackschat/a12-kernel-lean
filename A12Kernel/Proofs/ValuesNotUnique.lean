@@ -58,6 +58,17 @@ theorem checkedTemporalUniquenessGroup_expansion_complete
       rw [group.expansionOwned] at retained
       simpa [CheckedTemporalUniquenessGroup.fields] using retained
 
+/-- A checked temporal group executes through the shared recursive group resolver using the
+    operand's own bound depth and the exact declarations retained by its temporal certificate. -/
+theorem checkedTemporalUniquenessGroup_resolveValidationCore
+    (group : CheckedTemporalUniquenessGroup model)
+    (document : CheckedDocument model) (outer : Env) :
+    (CheckedTemporalUniquenessOperand.group group).resolveValidationCore
+        document outer =
+      document.resolveCheckedGroupEntityOperandCore outer
+        group.source.boundLevelCount group.declarations := by
+  rfl
+
 /-- **The kind gate never reports the mixing class.** This is the local half of the measured pre-emption: a Boolean or Confirm beside another category reports the kind code with the mixing code absent, so whatever the kind gate refuses, its diagnostic is never `varyingTypesNotAllowed`. The elaborator runs this scan over the whole operand list before certification, so no authored order can substitute the mixing class for the kind class. -/
 theorem firstKindGateRefusal_never_mixing
     (operands : List (ResolvedFieldEntityOperand model))
