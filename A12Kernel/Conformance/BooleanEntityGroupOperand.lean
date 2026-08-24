@@ -312,4 +312,135 @@ example :
         some (.value 1 .growOnly) := by
   native_decide
 
+/-! ## Checked `False` computation over one terminal starred Boolean group -/
+
+private def falseComputationPrepared :
+    PreparedFlatStringContext twoBooleanComputationModel
+      builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler twoBooleanComputationModel).toOption.get
+      (by native_decide)
+
+private def checkedFalseComputation? :
+    Option (CheckedFalseValueCountStarredGroupSource
+      twoBooleanComputationModel) :=
+  (elaborateFalseValueCountStarredGroupSource
+    twoBooleanComputationModel ["Probe"] computationGroup).toOption
+
+private def checkedFalseValidation? :
+    Option (CheckedBooleanValueCountSource twoBooleanComputationModel) :=
+  checkedFalseComputation?.map (·.toCheckedBooleanValueCountSource)
+
+example :
+    (checkedFalseComputation?.map fun checked =>
+      (checked.scaleSummary,
+        checked.referencesField 50,
+        checked.referencesField 51,
+        checked.referencesField 52,
+        checked.toCheckedBooleanValueCountSource.expected)) =
+      some (NumericScaleSummary.field 0, true, true, false, false) := by
+  native_decide
+
+private def peerBooleanCell (index : Nat)
+    (value : Bool) : ClassifiedCellInput :=
+  computationCell 51 index (booleanValueCountToken value) (.parsed (.bool value))
+
+private def falseComputationDocument? (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument twoBooleanComputationModel) :=
+  (checkDocument falseComputationPrepared "en_US" {
+    instantiatedRows := rows, cells }).toOption
+
+private def checkedFalseComputationResult? (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) : Option NumericOperand := do
+  let checked ← checkedFalseComputation?
+  let document ← falseComputationDocument? rows cells
+  (checked.evaluateCheckedDocumentComputation document []).toOption
+
+private def checkedFalseValidationResult? (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) : Option NumericOperand := do
+  let checked ← checkedFalseValidation?
+  let document ← falseComputationDocument? rows cells
+  (checked.evaluateCheckedDocumentValidation document []).toOption
+
+example :
+    checkedFalseComputationResult? [computationRow 1, computationRow 2] [
+      booleanCell 1 false, emptyComputationCell 51 1,
+      booleanCell 2 true, peerBooleanCell 2 false] =
+        some (.value 2 .growOnly) ∧
+    checkedFalseComputationResult? [computationRow 1, computationRow 2] [
+      booleanCell 1 false, emptyComputationCell 51 1,
+      booleanCell 2 true, peerBooleanCell 2 true] =
+        some (.value 1 .growOnly) := by
+  native_decide
+
+example :
+    checkedFalseComputationResult? [computationRow 1, computationRow 2] [
+      emptyComputationCell 50 1, emptyComputationCell 51 1,
+      emptyComputationCell 50 2, emptyComputationCell 51 2] =
+        some (.value 0 .growOnly) ∧
+    checkedFalseComputationResult? [] [] = some (.value 0 .fixed) := by
+  native_decide
+
+example :
+    checkedFalseComputationResult? [computationRow 1, computationRow 2] [
+      booleanCell 1 false, emptyComputationCell 51 1,
+      malformedBooleanCell 2, emptyComputationCell 51 2] =
+        some (.unknown .booleanToken) := by
+  native_decide
+
+example :
+    checkedFalseValidationResult? overCapacityRows [
+      booleanCell 1 true, peerBooleanCell 1 true,
+      booleanCell 2 true, peerBooleanCell 2 true,
+      booleanCell 3 false, peerBooleanCell 3 true] =
+        some (.unknown .overRepetition) := by
+  native_decide
+
+example :
+    checkedFalseComputationResult? overCapacityRows [
+      booleanCell 1 true, peerBooleanCell 1 true,
+      booleanCell 2 true, peerBooleanCell 2 true,
+      booleanCell 3 false, peerBooleanCell 3 true] =
+        some (.value 0 .fixed) ∧
+    checkedFalseComputationResult? overCapacityRows [
+      booleanCell 1 false, peerBooleanCell 1 true,
+      booleanCell 2 true, peerBooleanCell 2 true,
+      booleanCell 3 false, peerBooleanCell 3 true] =
+        some (.value 1 .fixed) ∧
+    checkedFalseComputationResult? overCapacityRows [
+      booleanCell 1 false, peerBooleanCell 1 true,
+      booleanCell 2 true, peerBooleanCell 2 true,
+      malformedBooleanCell 3, peerBooleanCell 3 true] =
+        some (.value 1 .fixed) := by
+  native_decide
+
+private def nestedTwoBooleanComputationModel : FlatModel :=
+  { nestedComputationModel with
+    fields := nestedComputationModel.fields.map fun declaration =>
+      if declaration.id == 51 then
+        { declaration with policy := { kind := .boolean } }
+      else declaration }
+
+private def nestedOuterComputationGroup : SurfaceStarGroupPath :=
+  { base := .absolute
+    groups := [{ name := "Probe", starred := true }] }
+
+private def threeBooleanComputationModel : FlatModel :=
+  { twoBooleanComputationModel with
+    fields := twoBooleanComputationModel.fields ++ [{
+      id := 52, groupPath := ["Probe", "Lines"], name := "Third",
+      policy := { kind := .boolean }, repeatableScope := [50] }] }
+
+example :
+    elaborationFailed (elaborateFalseValueCountStarredGroupSource
+      computationModel ["Probe"] computationGroup) = true ∧
+    elaborationFailed (elaborateFalseValueCountStarredGroupSource
+      nestedTwoBooleanComputationModel ["Probe"] nestedComputationGroup) = true ∧
+    elaborationFailed (elaborateFalseValueCountStarredGroupSource
+      nestedTwoBooleanComputationModel ["Probe"] nestedOuterComputationGroup) = true ∧
+    elaborationFailed (elaborateFalseValueCountStarredGroupSource
+      threeBooleanComputationModel ["Probe"] computationGroup) = true := by
+  native_decide
+
 end A12Kernel.Conformance.BooleanEntityGroupOperand

@@ -272,22 +272,33 @@ structure CheckedBooleanValueCountSource (model : FlatModel) where
   uniqueDirectOperands :
     firstDuplicateDirectBooleanValueCountField? (first :: rest) = none
 
-/-- The exact declaration and repetition shape of the measured `True` checked computation. -/
-def measuredTrueValueCountStarredGroupShape
+/-- The exact declaration and repetition shape of each measured Boolean-group computation. -/
+def measuredBooleanValueCountStarredGroupShape (expected : Bool)
     (starred : CheckedStarredGroupSource model)
-    (group : CheckedBooleanValueCountGroup model true) : Bool :=
+    (group : CheckedBooleanValueCountGroup model expected) : Bool :=
   starred.path.axes.length == 1 &&
-    group.fields.map (·.policy.kind) ==
+    (group.fields.all fun declaration =>
+      declaration.repeatableScope == starred.path.axes.map (·.level)) &&
+    group.fields.map (·.policy.kind) == if expected then
       [FieldKind.boolean, FieldKind.confirm]
+    else
+      [FieldKind.boolean, FieldKind.boolean]
 
-/-- The measured `True` computation form with one repeatable axis and exactly Boolean then Confirm in recursive declaration order. The source equality excludes fixed groups and the separately admitted terminal-presence shape from this computation carrier. -/
-structure CheckedTrueValueCountStarredGroupSource (model : FlatModel) where
+/-- A measured Boolean-group computation form with one repeatable axis and the constant-specific exact recursive declaration order. The source equality excludes fixed groups and the separately admitted terminal-presence shape from this computation carrier. -/
+structure CheckedBooleanValueCountStarredGroupSource
+    (model : FlatModel) (expected : Bool) where
   starredSource : CheckedStarredGroupSource model
-  group : CheckedBooleanValueCountGroup model true
+  group : CheckedBooleanValueCountGroup model expected
   sourceOwned : group.source = .starred starredSource
   measuredShape :
-    measuredTrueValueCountStarredGroupShape starredSource group = true
+    measuredBooleanValueCountStarredGroupShape expected starredSource group = true
   modelWellFormed : model.validate.isOk = true
+
+abbrev CheckedTrueValueCountStarredGroupSource (model : FlatModel) :=
+  CheckedBooleanValueCountStarredGroupSource model true
+
+abbrev CheckedFalseValueCountStarredGroupSource (model : FlatModel) :=
+  CheckedBooleanValueCountStarredGroupSource model false
 
 namespace CheckedBooleanValueCountSource
 
@@ -330,21 +341,22 @@ def elaborateBooleanValueCountSource (model : FlatModel)
   else
     throw .incoherentCore
 
-/-- Resolve the measured `NumberOfValueInFields(True In Group*)` computation shape without widening fixed groups, terminal-presence stars, mixed lists, or the `False` overload. -/
-def elaborateTrueValueCountStarredGroupSource (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceStarGroupPath) :
+/-- Resolve one measured Boolean-group value-count computation shape without widening fixed groups, terminal-presence stars, mixed lists, or unmeasured declarations. -/
+def elaborateBooleanValueCountStarredGroupSource (model : FlatModel)
+    (declaringGroup : GroupPath) (expected : Bool)
+    (authored : SurfaceStarGroupPath) :
     Except BooleanValueCountElabError
-      (CheckedTrueValueCountStarredGroupSource model) := do
+      (CheckedBooleanValueCountStarredGroupSource model expected) := do
   let starred ← elaborateStarredGroupSource model declaringGroup authored
     |>.mapError fun error => .shape (.starredGroup error)
   let operand ←
-    certifyBooleanValueCountGroup model true (.starred starred)
+    certifyBooleanValueCountGroup model expected (.starred starred)
   match operand with
   | .group group =>
       match hSource : group.source with
       | .starred source =>
           if hMeasured :
-              measuredTrueValueCountStarredGroupShape source group = true then
+              measuredBooleanValueCountStarredGroupShape expected source group = true then
             pure {
               starredSource := source
               group
@@ -354,6 +366,22 @@ def elaborateTrueValueCountStarredGroupSource (model : FlatModel)
           else throw .incoherentCore
       | .fixed _ | .starredPresence _ => throw .incoherentCore
   | .field _ | .star _ => throw .incoherentCore
+
+/-- Resolve the measured Boolean-then-Confirm `True` computation. -/
+def elaborateTrueValueCountStarredGroupSource (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceStarGroupPath) :
+    Except BooleanValueCountElabError
+      (CheckedTrueValueCountStarredGroupSource model) :=
+  elaborateBooleanValueCountStarredGroupSource
+    model declaringGroup true authored
+
+/-- Resolve the measured two-Boolean `False` computation. -/
+def elaborateFalseValueCountStarredGroupSource (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceStarGroupPath) :
+    Except BooleanValueCountElabError
+      (CheckedFalseValueCountStarredGroupSource model) :=
+  elaborateBooleanValueCountStarredGroupSource
+    model declaringGroup false authored
 
 /-- The fixed storage token selected by an authored Boolean constant. -/
 def booleanValueCountToken (expected : Bool) : String :=
@@ -395,23 +423,23 @@ def evaluateDirectAt? (checked : CheckedBooleanValueCountSource model)
 
 end CheckedBooleanValueCountSource
 
-namespace CheckedTrueValueCountStarredGroupSource
+namespace CheckedBooleanValueCountStarredGroupSource
 
 def scaleSummary
-    (_checked : CheckedTrueValueCountStarredGroupSource model) :
+    (_checked : CheckedBooleanValueCountStarredGroupSource model expected) :
     NumericScaleSummary :=
   NumericScaleSummary.field 0
 
 def referencesField
-    (checked : CheckedTrueValueCountStarredGroupSource model)
+    (checked : CheckedBooleanValueCountStarredGroupSource model expected)
     (field : FieldId) : Bool :=
   checked.group.referencesField field
 
 /-- Recover the established full-validation carrier for the same sole starred group. -/
 def toCheckedBooleanValueCountSource
-    (checked : CheckedTrueValueCountStarredGroupSource model) :
+    (checked : CheckedBooleanValueCountStarredGroupSource model expected) :
     CheckedBooleanValueCountSource model :=
-  { expected := true
+  { expected
     first := .group checked.group
     rest := []
     modelWellFormed := checked.modelWellFormed
@@ -420,7 +448,7 @@ def toCheckedBooleanValueCountSource
 
 /-- Checked computation selects the in-capacity addressed cells before projecting their canonical Boolean/Confirm tokens. -/
 def evaluateCheckedDocumentComputation
-    (checked : CheckedTrueValueCountStarredGroupSource model)
+    (checked : CheckedBooleanValueCountStarredGroupSource model expected)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError NumericOperand := do
   let core ← document.resolveCheckedGroupEntityOperandCore outer
@@ -433,9 +461,9 @@ def evaluateCheckedDocumentComputation
     hasNonRelevant := core.hasNonRelevant }
   let side := (ResolvedValueCountSide.empty : ResolvedValueCountSide .token)
     |>.appendResolved resolved
-  pure (evalValueCountAggregate (booleanValueCountToken true) side)
+  pure (evalValueCountAggregate (booleanValueCountToken expected) side)
 
-end CheckedTrueValueCountStarredGroupSource
+end CheckedBooleanValueCountStarredGroupSource
 
 namespace CheckedBooleanValueCountOperand
 
