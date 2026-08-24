@@ -18,8 +18,9 @@ The Number family then **retains** the admitted slot rather than lowering it int
 slots, because the wildcard gate above is exactly what makes those two forms different models.
 Under **full validation** the uniqueness carrier and all four value aggregates then read the slot's
 whole `(row × field)` extent, enumerated from the model's repeatability rather than from any star
-plan, through one resolver none of them can bypass. Computation, partial validation, and the legacy
-raw-document routes have no measured row and refuse rather than answering an empty stream.
+plan, through one resolver none of them can bypass. Checked-document computation reuses that extent;
+partial validation and the legacy raw-document routes still refuse rather than answering an empty
+stream.
 -/
 
 namespace A12Kernel.Conformance.FieldEntityGroupOperand
@@ -611,8 +612,9 @@ of both rows, `5 + 3 + 4 + 3 + 4`, and each wrong account lands on its own numbe
 direct-child-only expansion answers 5, an extent that drops the nonrepeatable direct field answers
 14, and a first-row-pinned one answers 11.
 
-Computation and partial validation over a group extent are **not** covered by any measured row, so
-they refuse, and the last two cases hold that boundary where prose alone would drift. -/
+Checked-document computation now reuses this extent and observes its cached cells at computation
+phase. External calibration covers the starred combiner route only; partial validation remains
+outside this boundary. -/
 
 private def boxCells : List ClassifiedCellInput :=
   [cell 1 [] 5, cell 2 [1] 3, cell 2 [2] 4, cell 3 [1] 3, cell 3 [2] 4]
@@ -642,14 +644,6 @@ example : boxAggregate? .maximum = some (.value 5 { canGrow := false, canShrink 
 example :
     boxAggregate? .distinctCount = some (.value 3 { canGrow := false, canShrink := false }) := by
   native_decide
-
-private def boxComputationRefused : Bool :=
-  match boxSource, boxDocument with
-  | some source, some document =>
-      (source.evaluateCheckedDocumentComputationAggregate .sum document []).toOption.isNone
-  | _, _ => true
-
-example : boxComputationRefused = true := by native_decide
 
 /-! ## The extent's depth is the operand's own, in both directions
 

@@ -233,8 +233,9 @@ def resolvedCheckedDocumentComputationAggregateSide
             hasHaving := true })
       | .terminated cause | .poison cause =>
           pure (.inr (.unknown cause))
-  | .group slot =>
-      .error (.addressing (.unsupportedGroupOperand slot.groupPath))
+  | .group _ => do
+      let resolved ← checked.resolveCheckedValidationOperand document outer
+      pure (.inl (resolved.valueListSideAt .computation))
 
 /-- Resolve one unfiltered partial-validation slot from the checked document. Direct nonrelevance precedes its cell query; star topology precedes the established all-rows gate; a local filter remains a rule-level skip. -/
 def resolvedCheckedDocumentPartialAggregateSide

@@ -173,6 +173,19 @@ theorem checkedNumberEntityOperand_checkedValidationAggregate_usesRichProjection
         | .ok () => pure (.inl side)) := by
   rfl
 
+/-- A checked Number group computation uses the same operand-bounded rich projection as validation,
+    changing only the phase at which each cached cell is observed. -/
+theorem checkedNumberEntityGroup_checkedComputationAggregate_usesRichProjection
+    (group : CheckedNumberEntityGroup model)
+    (document : CheckedDocument model) (outer : Env) :
+    (CheckedNumberEntityOperand.group group).resolvedCheckedDocumentComputationAggregateSide
+        document outer = (do
+      let resolved ←
+        (CheckedNumberEntityOperand.group group).resolveCheckedValidationOperand
+          document outer
+      pure (.inl (resolved.valueListSideAt .computation))) := by
+  rfl
+
 /-- A relevant direct partial aggregate slot delegates to the same declaration-owned side, while a nonrelevant one is rejected before its checked value is inspected. -/
 theorem checkedNumberEntityField_partialAggregate_relevance
     (source : CheckedNumberEntityField model)

@@ -1064,6 +1064,19 @@ a12-dmkits `06b84701969979a2e5a2b63de7445a6a1d521473` measures what a **cleared*
 - `limit`: the scope outcome is measured without cause attribution; the source's rejected mechanism predictions do not enter the semantic claim.
 - `limit`: these revisions asserted only firing, so they did not measure message multiplicity, anchor, or reference coordinates; later source records own those answers.
 
+<a id="src-number-group-computation-runtime"></a>
+#### Number group computation runtime
+
+- `revision`: clean a12-dmkits `3a4025bbfdbd925d7f4c23e519f15ce0e2461b21`; `19adb3e5fb5681dee8daf327be690be382e85a30` is the last revision that changed the retained test's behavior.
+- `route`: the existing targeted adapter test passed at the clean revision against Kernel 30.8.1. Every stated row compares dynamic Groovy with the a12-dmkits interpreter; Sum, extrema, recursive extent, poison, and empty identity additionally compare generated Java, while distinct count does not.
+- `test`: [`GroupStarValueAggregateDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/GroupStarValueAggregateDiffTest.kt).
+- `claim`: starred `Sum(Lines*)` computes `30.75`; `MinValue`, `MaxValue`, and `NumberOfDifferentValues` compute `10.5`, `20.25`, and `2` over the same recursively expanded Number declarations.
+- `claim`: starred `Sum(Charges*)` reaches Fee, Tax, and every instantiated nested Extras/Surcharge row; the separating multi-row fixture computes `7.5` across two Charges rows and three nested Extras rows.
+- `claim`: a malformed three-fraction Amount clears the computation target, while an empty group computes the Sum identity `0`.
+- `separator`: the second nested Extras row and the nested row under the second Charges row distinguish complete recursive expansion from a single-coordinate or first-row traversal.
+- `limit`: the test authors only starred group operands. Fixed group computation, Number value-count computation, partial validation, raw-`Document` execution, mixed signedness, and the computation result's internal fillability metadata remain unmeasured.
+- `sync`: the outcomes match the existing recursive group-extent, aggregate computation, poison, and empty-selection clauses, so no outbound correction follows.
+
 <a id="src-temporal-field-values-not-unique-group-runtime"></a>
 #### Temporal field-values-not-unique group runtime
 

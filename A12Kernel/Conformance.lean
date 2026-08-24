@@ -170,6 +170,7 @@ import A12Kernel.Conformance.DateTimeFirstFilledComputation
 import A12Kernel.Conformance.FullDateFirstFilledComputation
 import A12Kernel.Conformance.TimeFirstFilledComputation
 import A12Kernel.Conformance.FieldEntityGroupOperand
+import A12Kernel.Conformance.NumberEntityGroupComputation
 import A12Kernel.Conformance.TemporalEntityGroupOperand
 import A12Kernel.Conformance.BooleanEntityGroupOperand
 import A12Kernel.Conformance.TokenEntityGroupOperand
