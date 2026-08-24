@@ -73,6 +73,25 @@ theorem checkedBooleanValueCountGroup_expansion_complete
       rw [group.expansionOwned] at retained
       simpa [CheckedBooleanValueCountGroup.fields] using retained
 
+/-- A checked Boolean/Confirm group combines the shared recursive concrete extent with its separate
+    hierarchical tail decision before projecting cached cells into the canonical token domain. -/
+theorem checkedBooleanValueCountGroup_resolvedCheckedValidationSide
+    (group : CheckedBooleanValueCountGroup model expected)
+    (document : CheckedDocument model) (outer : Env) :
+    (CheckedBooleanValueCountOperand.group group).resolvedCheckedValidationSide
+        document outer = (do
+      let core ← document.resolveCheckedGroupEntityOperandCore outer
+        group.source.boundLevelCount group.fields
+      let hasUninstantiatedTail ←
+        group.resolveCheckedUninstantiatedTail document outer
+      pure {
+        cells := core.addressedCells.map fun addressed =>
+          booleanValueCountCellAt .validation addressed.cell
+        hasUninstantiatedTail
+        hasHaving := core.hasHaving
+        hasNonRelevant := core.hasNonRelevant }) := by
+  rfl
+
 /-- Every declaration retained by an operand admitted under `False` is Boolean; Confirm is
     admitted only by `True`. This is list-valued because a group slot owns its whole expansion. -/
 theorem checkedBooleanValueCount_false_fields_boolean

@@ -64,31 +64,19 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `reopen-when`: a source route exposes the reference coordinates for this exact admitted form.
 
 <a id="gap-sg5-number-token-group-runtime"></a>
-#### Number and token group runtime
+#### Number, token, and Boolean group runtime
 
 - `state`: open
-- `missing`: execute retained Number and token group operands through computation, partial validation, and legacy raw-`Document` routes.
+- `missing`: execute retained Number, token, and Boolean group operands through computation, partial validation, and legacy raw-`Document` routes.
 - `missing`: make Number directional missingness per cell before admitting a group whose declarations disagree on signedness.
 - `missing`: decide `NumberOfValueInFields` literal admission over a group independently of the current all-expanded-declarations local choice.
 - `prerequisite`: legacy raw-`Document` readers must expose instantiated-row topology before they can enumerate the operand-bounded group extent.
-- `baseline`: [Number group aggregates](IMPLEMENTATION-MAP.md#cap-number-group-aggregates) and [token group expansion](IMPLEMENTATION-MAP.md#cap-token-group-expansion) own full-validation execution.
+- `baseline`: [Number group aggregates](IMPLEMENTATION-MAP.md#cap-number-group-aggregates), [token group expansion](IMPLEMENTATION-MAP.md#cap-token-group-expansion), and [Boolean/Confirm group value count](IMPLEMENTATION-MAP.md#cap-boolean-confirm-group-value-count) own checked-document full-validation execution.
 - `evidence-needed`: measure each refused route and isolate any declared-tail effect from the independently measured no-row and instantiated-empty prefixes before representing omitted capacity.
 - `discriminator`: vary rule depth, operand depth, instantiated rows, and signedness independently while keeping the recursive declaration expansion fixed.
 - `consumer`: Execute needs exact operand-bounded extent and fillability; Analyze needs encounter order and the distinction between authored slots and reached cells.
 - `reopen-when`: a coherent group-runtime batch is selected.
 - `review`: re-examine whether `StarAddressingError.unsupportedGroupOperand` still belongs in a Semantics error type when a second runtime route consumes it.
-- `route-state`: discovery-required
-
-<a id="gap-sg5-boolean-group-runtime"></a>
-#### Boolean/Confirm group runtime
-
-- `state`: open
-- `missing`: execute a retained Boolean/Confirm group operand without inventing omitted-tail fillability.
-- `baseline`: [Boolean/Confirm group value count](IMPLEMENTATION-MAP.md#cap-boolean-confirm-group-value-count) retains the authored slot and complete descendant declarations.
-- `evidence-needed`: observe a declared but uninstantiated row under the group operand and measure `False` over a Boolean/Confirm group.
-- `discriminator`: compare no declared tail with one declared but uninstantiated row while every instantiated value is unchanged.
-- `consumer`: Execute must preserve growability without reconstructing the authored group.
-- `reopen-when`: the group-runtime calibration batch includes the Boolean/Confirm carrier.
 - `route-state`: discovery-required
 
 #### SG5 family completion

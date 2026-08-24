@@ -87,6 +87,35 @@ def referencesField (group : CheckedBooleanValueCountGroup model expected)
     (field : FieldId) : Bool :=
   group.fields.any (·.id == field)
 
+private def scopeHasUninstantiatedTail
+    (group : CheckedBooleanValueCountGroup model expected)
+    (document : CheckedDocument model) (outer : Env)
+    (scope : List RepeatableLevel) :
+    Except CheckedAddressingError Bool := do
+  if scope.length ≤ group.source.boundLevelCount then
+    pure false
+  else
+    let axes ← match model.repeatableAxesForScope? scope with
+      | some axes => pure axes
+      | none => throw (.document
+          (.incoherentRepeatableScope scope))
+    let topology ← (({
+      axes
+      firstStar := group.source.boundLevelCount } : StarPath).resolve
+        document.source.toDocument outer).mapError .addressing
+    pure topology.domain.hasOpenTail
+
+/-- Whether any repeatable declaration reopened by this group retains declared-but-uninstantiated
+    capacity. The shared group walk still owns concrete `(row × field)` extent; this separate query
+    preserves only the hierarchical tail bit consumed by Boolean value-count fillability. -/
+def resolveCheckedUninstantiatedTail
+    (group : CheckedBooleanValueCountGroup model expected)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError Bool := do
+  let scopes := (group.fields.map (·.repeatableScope)).eraseDups
+  let tails ← scopes.mapM (group.scopeHasUninstantiatedTail document outer)
+  pure (tails.any id)
+
 end CheckedBooleanValueCountGroup
 
 /-- One checked Boolean/Confirm entity-list operand. -/
@@ -398,18 +427,24 @@ def resolvedCheckedValidationSide
     (checked : CheckedBooleanValueCountOperand model expected)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (ResolvedValueListSide .token) := do
-  let core ← match checked with
+  let (core, hasUninstantiatedTail) ← match checked with
     | .field source =>
-        document.resolveCheckedDirectEntityOperandCore source.declaration.id
+        (document.resolveCheckedDirectEntityOperandCore source.declaration.id)
+          |>.map fun core => (core, core.hasUninstantiatedTail)
     | .star source =>
-        source.source.resolveCheckedValidationEntityOperandCore document outer
-          (source.filter.map (·.condition))
-    | .group source =>
-        .error (.addressing (.unsupportedGroupOperand source.groupPath))
+        (source.source.resolveCheckedValidationEntityOperandCore document outer
+          (source.filter.map (·.condition)))
+          |>.map fun core => (core, core.hasUninstantiatedTail)
+    | .group source => do
+        let core ← document.resolveCheckedGroupEntityOperandCore outer
+          source.source.boundLevelCount source.fields
+        let hasUninstantiatedTail ←
+          source.resolveCheckedUninstantiatedTail document outer
+        pure (core, hasUninstantiatedTail)
   pure {
     cells := core.addressedCells.map fun addressed =>
       booleanValueCountCellAt .validation addressed.cell
-    hasUninstantiatedTail := core.hasUninstantiatedTail
+    hasUninstantiatedTail
     hasHaving := core.hasHaving
     hasNonRelevant := core.hasNonRelevant }
 

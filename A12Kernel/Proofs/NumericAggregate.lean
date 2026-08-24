@@ -393,6 +393,20 @@ theorem numericValueCount_singleton_match_fixed (expected : Rat) :
     ValueListAtom.equal, NumericComparisonOp.holds,
     pure, Except.pure, NumericFillability.fixed]
 
+/-- A declared-but-uninstantiated tail preserves a singleton match while changing its count from
+    fixed to grow-only, independently of the value-list atom kind. -/
+theorem valueCount_singleton_match_tail (expected : ValueListAtom kind) :
+    evalValueCountAggregate expected {
+      cells := [{
+        cell := .present expected
+        selectedByHaving := false }]
+      hasUninstantiatedTail := true
+      hasHaving := false } =
+    .value 1 .growOnly := by
+  cases kind <;> simp [evalValueCountAggregate, scanValueCountCells,
+    ValueListAtom.equal, NumericComparisonOp.holds, pure, Except.pure,
+    NumericFillability.growOnly]
+
 /-- An empty Number field is not substituted with numeric zero; it contributes only future growth. -/
 theorem numericValueCount_empty_zero :
     evalValueCountAggregate (kind := .number) 0 {

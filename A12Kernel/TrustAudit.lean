@@ -1180,6 +1180,7 @@ run_cmd do
 #print axioms A12Kernel.numericDistinctCount_having
 #print axioms A12Kernel.numericDistinctCount_firstUnknown
 #print axioms A12Kernel.numericValueCount_singleton_match_fixed
+#print axioms A12Kernel.valueCount_singleton_match_tail
 #print axioms A12Kernel.numericValueCount_empty_zero
 #print axioms A12Kernel.numericValueCount_filtered_match
 #print axioms A12Kernel.valueCount_filtered_nonmatch
@@ -2054,6 +2055,7 @@ run_cmd do
 #print axioms A12Kernel.classifiedStoredConfirm_rejection_observes_poison
 #print axioms A12Kernel.classifyStoredConfirmText_ne_false
 #print axioms A12Kernel.checkedBooleanValueCountGroup_expansion_complete
+#print axioms A12Kernel.checkedBooleanValueCountGroup_resolvedCheckedValidationSide
 #print axioms A12Kernel.checkedBooleanValueCount_false_fields_boolean
 #print axioms A12Kernel.checkedBooleanValueCount_scaleSummary
 #print axioms A12Kernel.firstFilledBoolean_exhausted_noValue
