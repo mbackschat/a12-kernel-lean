@@ -580,6 +580,15 @@ a12-dmkits revision `ddf5dd921ee55752ca24e18174bbaed47dcfe924` is the reviewed o
 - `agreement`: both Kernel strategies agree on every message and computation channel, and read-only `dmtool model compute` produces the same two values and two clears on the interpreter route.
 - `assurance-limit`: this is an exact local observation, not `L` or `C`: no maintained peer test owns the computation matrix, and the artifact is not retained through a typed local projection. It changes no canonical clause and requests no a12-dmkits reconciliation.
 
+<a id="src-date-from-datetime-repeatable-computation"></a>
+#### `DateFromDateTime` computes exact repeatable rows, measured locally 2026-08-24
+
+- `revision`: clean a12-dmkits `cd43c249a88874bf5688a45060e208a0dcd20782`, dmtool `0.13.0`, kernel `30.8.1` built and runtime; the artifact records `producer.source.state: CLEAN`, and the sibling worktree was empty before and after every command.
+- `route`: source-shipped dmtool authored and persisted `DateFromDateTime(/Schedule/Slots/SlotStamp)` into same-group repeatable target `/Schedule/Slots/SlotDate` on the existing Schedule fixture. Dry-run and persisted authoring were `KERNEL_CONFIRMED`; assigning the same row source to root target `/Schedule/PlannedDate` was the order-only negative control and returned exactly `MVK_NO_WILDCARD`. `:adapter:kernelProbe` observed `validateFull` plus `compute` on dynamic Groovy and generated Java over two values, value beside empty, value beside malformed, and no instantiated rows. Request SHA-256 `7ddd7eaee205a5ea793201f1edd75c1c457c59ed89b15e0e008c133cb6530d09`, persisted-model SHA-256 `b891a45b5e10975d3919a7b337608df8865d47e11a6978c1f63de3c30ed87049`, and artifact SHA-256 `c0d87fe7680c4785f6accf82b22a00fcc4d15b29422669f0ca6426c5707c5780`; all stayed in session scratch rather than under `evidence/`.
+- `row-claim`: two instantiated rows independently store `2024-06-15` and `2024-06-16` from their own DateTime labels. A clean empty second source clears only the second prefilled target; a malformed second source also clears only that target while `datumFormatFalsch` points at `Schedule/Slots[2]/SlotStamp` in both validation and `formalErrorsInOperands`. No instantiated rows produce no computation outcomes.
+- `agreement`: both Kernel strategies agree on every result and pointer. Read-only `dmtool model compute` agrees on the two row-addressed values, the two row-addressed clears, and the empty result for no rows.
+- `assurance-limit`: this is exact only for one one-level same-group source/target scope. Outer-scope temporal operands, nested scopes, sibling parallel iteration, alternatives, scheduling, retained result application, and valueless-reason detail were not measured. No maintained peer test or retained typed projection owns the matrix, so it is not `L` or `C` and requests no a12-dmkits reconciliation.
+
 <a id="src-value-as-date-locus"></a>
 #### Where a partial-Date `ValueAsDate` operand may be read, measured locally 2026-08-23
 

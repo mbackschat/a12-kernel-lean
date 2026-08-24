@@ -2060,6 +2060,8 @@ run_cmd do
 #print axioms A12Kernel.dateFromDateTimeComputation_empty
 #print axioms A12Kernel.dateFromDateTimeComputation_poison
 #print axioms A12Kernel.dateFromDateTimeComputation_value
+#print axioms A12Kernel.addressedDateFromDateTime_empty
+#print axioms A12Kernel.addressedDateFromDateTime_poison
 #print axioms A12Kernel.checkedWorldTimeConstructionComputation_excludes_target
 #print axioms A12Kernel.checkedWorldTimeConstructionComputation_evaluate_value
 #print axioms A12Kernel.classifiedStoredBoolean_rejection_observes_unknown

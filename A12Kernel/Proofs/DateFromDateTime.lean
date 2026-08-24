@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.DateFromDateTime
+import A12Kernel.Elaboration.AddressedDateFromDateTime
 
 /-! # Checked `DateFromDateTime` computation laws -/
 
@@ -61,5 +61,19 @@ theorem dateFromDateTimeComputation_value
       read, observed, extracted] <;> rfl
   unfold CheckedDateFromDateTimeComputation.evaluateOutcome
   rw [operandRead]
+
+/-- A reached empty source stays clean no-value at every addressed row. -/
+theorem addressedDateFromDateTime_empty
+    (operation : CheckedAddressedDateFromDateTime model) (address : CellAddr)
+    (empty : observeCell .computation cell = .empty) :
+    operation.evaluateSourceCell address cell = .ok .noValue := by
+  simp [CheckedAddressedDateFromDateTime.evaluateSourceCell, empty] <;> rfl
+
+/-- A reached formal source failure retains its exact cause and row address. -/
+theorem addressedDateFromDateTime_poison
+    (operation : CheckedAddressedDateFromDateTime model) (address : CellAddr)
+    (poison : observeCell .computation cell = .poison cause) :
+    operation.evaluateSourceCell address cell = .ok (.poison cause) := by
+  simp [CheckedAddressedDateFromDateTime.evaluateSourceCell, poison] <;> rfl
 
 end A12Kernel
