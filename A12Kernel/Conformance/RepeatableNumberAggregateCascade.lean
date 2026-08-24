@@ -75,6 +75,8 @@ private def plan? (op : NumericAggregateOp)
     ["Shop"] best.id aggregateSource op).toOption
 
 private def binaryTotal := number 11 "Total" ["Order"] []
+private def doubled := number 17 "Doubled" ["Order"] []
+private def otherRoot := number 18 "Other" ["Order"] []
 private def quantity := number 12 "Qty" ["Order", "Lines"] [30] 0
 private def unitPrice := number 13 "Price" ["Order", "Lines"] [30]
 private def amount := number 14 "Amount" ["Order", "Lines"] [30]
@@ -82,7 +84,8 @@ private def commission := number 15 "Commission" ["Order", "Lines"] [30]
 private def limit := number 16 "Limit" ["Order", "Lines"] [30]
 
 private def binaryModel : FlatModel := {
-  fields := [binaryTotal, quantity, unitPrice, amount, commission, limit]
+  fields := [binaryTotal, doubled, otherRoot, quantity, unitPrice, amount,
+    commission, limit]
   repeatableGroups := [{
     level := 30
     path := ["Order", "Lines"]
@@ -122,6 +125,12 @@ private def filteredBinaryPlan? :
     ["Order", "Lines"] amount.id (bare "Qty") (bare "Price") .multiply
     ["Order"] binaryTotal.id (binaryStar "Commission")
     amountUnderLimit .sum).toOption
+
+private def aggregateScalarPlan? :
+    Option (CheckedRepeatableNumberAggregateScalarCascade binaryModel) := do
+  let cascade ← binaryPlan?
+  (checkRepeatableNumberAggregateScalarCascade cascade ["Order"] doubled.id
+    (bare "Total") (bare "Total") .add).toOption
 
 private def decimalCell (field : FieldId) (path : List Nat)
     (stored : String) (unscaled : Int) : ClassifiedCellInput := {
@@ -191,7 +200,9 @@ private def binaryInput? (secondPrice : ClassifiedCellInput) :
         secondPrice,
         decimalCell amount.id [1] "1.00" 100,
         decimalCell amount.id [2] "1.00" 100,
-        decimalCell binaryTotal.id [] "99.99" 9999]
+        decimalCell binaryTotal.id [] "99.99" 9999,
+        decimalCell doubled.id [] "1.00" 100,
+        decimalCell otherRoot.id [] "4.00" 400]
     }).toOption
 
 private def binarySummary? (secondPrice : ClassifiedCellInput) :
@@ -203,6 +214,18 @@ private def binarySummary? (secondPrice : ClassifiedCellInput) :
   pure (plan.analyze,
     outcomes.rows.map fun row => (row.targetField, row.outcome),
     outcomes.aggregate.outcome)
+
+private def aggregateScalarSummary? (secondPrice : ClassifiedCellInput) :
+    Option (RepeatableNumberAggregateScalarCascadeAnalysis ×
+      List (CellAddr × NumericTargetOutcome) × NumericTargetOutcome ×
+      NumericTargetOutcome) := do
+  let plan ← aggregateScalarPlan?
+  let input ← binaryInput? secondPrice
+  let outcomes ← (plan.execute { now := { epochMillis := 0 } } input).toOption
+  pure (plan.analyze,
+    outcomes.cascade.rows.map fun row => (row.targetField, row.outcome),
+    outcomes.cascade.aggregate.outcome,
+    outcomes.scalar.outcome)
 
 private def filteredBinaryInput? (secondPrice : ClassifiedCellInput) :
     Option (CheckedDocument binaryModel) :=
@@ -277,6 +300,67 @@ example :
           ({ field := amount.id, path := [2] },
             .inheritedPoison .declaredConstraint)],
         .inheritedPoison .computedDependency) := by
+  native_decide
+
+/- A later root scalar reads the fresh aggregate outcome rather than its stale seed, and cause-blind poison crosses both stage boundaries. -/
+example :
+    aggregateScalarSummary?
+        (decimalCell unitPrice.id [2] "20.00" 2000) = some (
+      {
+        cascade := {
+          producer := .binary .multiply
+          consumer := .plain
+          operation := .sum
+          repeatableScope := [30]
+          fieldDependencies := [
+            (amount.id, [quantity.id, unitPrice.id]),
+            (binaryTotal.id, [amount.id])]
+        }
+        scalarOperation := .add
+        fieldDependencies := [
+          (amount.id, [quantity.id, unitPrice.id]),
+          (binaryTotal.id, [amount.id]),
+          (doubled.id, [binaryTotal.id])]
+      },
+      [
+        ({ field := amount.id, path := [1] },
+          .accepted { unscaled := 2000, scale := 2 }),
+        ({ field := amount.id, path := [2] },
+          .accepted { unscaled := 6000, scale := 2 })],
+      .accepted { unscaled := 8000, scale := 2 },
+      .accepted { unscaled := 16000, scale := 2 }) ∧
+    (aggregateScalarSummary? invalidUnitPrice).map (fun result =>
+      (result.2.2.1, result.2.2.2)) = some (
+        .inheritedPoison .computedDependency,
+        .inheritedPoison .computedDependency) := by
+  native_decide
+
+/- The third stage must read the aggregate, own a new target, and remain absent from both earlier stages. -/
+example :
+    (match binaryPlan? with
+      | none => false
+      | some cascade =>
+          match checkRepeatableNumberAggregateScalarCascade cascade ["Order"]
+              doubled.id (bare "Other") (bare "Other") .add with
+          | .error (.missingAggregateDependency field) =>
+              field == binaryTotal.id
+          | _ => false) = true ∧
+    (match binaryPlan? with
+      | none => false
+      | some cascade =>
+          match checkRepeatableNumberAggregateScalarCascade cascade ["Order"]
+              binaryTotal.id (bare "Other") (bare "Other") .add with
+          | .error (.duplicateTarget field) => field == binaryTotal.id
+          | _ => false) = true ∧
+    (match checkRepeatableNumberBinaryAggregateCascade binaryModel
+        ["Order", "Lines"] amount.id (parent "Doubled") (bare "Price") .add
+        ["Order"] binaryTotal.id (binaryStar "Amount") .sum with
+      | .error _ => false
+      | .ok cascade =>
+          match checkRepeatableNumberAggregateScalarCascade cascade ["Order"]
+              doubled.id (bare "Total") (bare "Total") .add with
+          | .error (.cycle field) => field == doubled.id
+          | _ => false) = true := by
   native_decide
 
 /- The computed row value is read only by `Having`: stale seeds select the opposite row, while the fresh overlay keeps Commission 7 and drops Commission 11. A poisoned producer aborts the filtered aggregate even though its value field is clean. -/

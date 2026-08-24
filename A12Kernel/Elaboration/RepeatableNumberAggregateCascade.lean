@@ -335,4 +335,164 @@ def execute (plan : CheckedRepeatableNumberAggregateCascade model)
 
 end CheckedRepeatableNumberAggregateCascade
 
+/-- Fail-closed errors for extending one checked row-to-aggregate cascade with a later scalar direct-field binary computation. -/
+inductive RepeatableNumberAggregateScalarCascadeElabError where
+  | scalar (cause : NumericComputationElabError)
+  | incoherentScalar
+  | duplicateTarget (field : FieldId)
+  | missingAggregateDependency (field : FieldId)
+  | cycle (field : FieldId)
+  deriving Repr, DecidableEq
+
+/-- One checked row-to-aggregate cascade followed by one nonrepeatable direct-field binary Number computation that reads the aggregate target. This remains a fixed three-stage route rather than a scheduler. -/
+structure CheckedRepeatableNumberAggregateScalarCascade (model : FlatModel) where
+  private mk ::
+  cascade : CheckedRepeatableNumberAggregateCascade model
+  scalar : CheckedNumericTargetComputationOperation model
+  scalarOperation : NumericScaleBinaryOp
+  leftDeclaration : FlatFieldDecl
+  rightDeclaration : FlatFieldDecl
+  expressionOwned :
+    scalar.operation.core.expression =
+      .binary scalarOperation
+        (.atom (.numeric (.field leftDeclaration)))
+        (.atom (.numeric (.field rightDeclaration)))
+  aggregateDependency :
+    (leftDeclaration.id == cascade.total.operation.core.target.id ||
+      rightDeclaration.id == cascade.total.operation.core.target.id) = true
+  distinctFromRows : scalar.operation.core.target.id ≠ cascade.row.targetField
+  distinctFromAggregate :
+    scalar.operation.core.target.id ≠ cascade.total.operation.core.target.id
+  noBackEdge :
+    (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies).contains
+      scalar.operation.core.target.id = false
+
+private def certifyRepeatableNumberAggregateScalarCascade
+    (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (scalar : CheckedNumericTargetComputationOperation model)
+    (operation : NumericScaleBinaryOp) (left right : FlatFieldDecl)
+    (hExpression : scalar.operation.core.expression =
+      .binary operation
+        (.atom (.numeric (.field left)))
+        (.atom (.numeric (.field right)))) :
+    Except RepeatableNumberAggregateScalarCascadeElabError
+      (CheckedRepeatableNumberAggregateScalarCascade model) := do
+  if hRows : scalar.operation.core.target.id ≠ cascade.row.targetField then
+    if hAggregate : scalar.operation.core.target.id ≠
+        cascade.total.operation.core.target.id then
+      if hBackEdge :
+          (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies).contains
+            scalar.operation.core.target.id = false then
+        if hDependency :
+            (left.id == cascade.total.operation.core.target.id ||
+              right.id == cascade.total.operation.core.target.id) = true then
+          pure {
+            cascade, scalar, scalarOperation := operation
+            leftDeclaration := left
+            rightDeclaration := right
+            expressionOwned := hExpression
+            aggregateDependency := hDependency
+            distinctFromRows := hRows
+            distinctFromAggregate := hAggregate
+            noBackEdge := hBackEdge
+          }
+        else
+          throw (.missingAggregateDependency
+            cascade.total.operation.core.target.id)
+      else throw (.cycle scalar.operation.core.target.id)
+    else throw (.duplicateTarget scalar.operation.core.target.id)
+  else throw (.duplicateTarget scalar.operation.core.target.id)
+
+/-- Extend a checked row-to-aggregate cascade with one exact scalar direct-field binary target. The later expression must read the aggregate, and neither earlier stage may read the later target. -/
+def checkRepeatableNumberAggregateScalarCascade
+    (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (scalarDeclaringGroup : GroupPath) (scalarTarget : FieldId)
+    (leftSource rightSource : SurfaceFieldPath)
+    (operation : NumericScaleBinaryOp) :
+    Except RepeatableNumberAggregateScalarCascadeElabError
+      (CheckedRepeatableNumberAggregateScalarCascade model) := do
+  if scalarTarget == cascade.row.targetField ||
+      scalarTarget == cascade.total.operation.core.target.id then
+    throw (.duplicateTarget scalarTarget)
+  if (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies).contains
+      scalarTarget then
+    throw (.cycle scalarTarget)
+  let expression : AuthoredNumericExpr SurfaceNumericComputationAtom :=
+    .binary operation
+      (.atom (.numeric (.field leftSource)))
+      (.atom (.numeric (.field rightSource)))
+  let scalar ← elaborateCompleteNumericTargetComputationOperation model
+      scalarDeclaringGroup scalarTarget expression |>.mapError .scalar
+  match hExpression : scalar.operation.core.expression with
+  | .binary actualOperation
+      (.atom (.numeric (.field left)))
+      (.atom (.numeric (.field right))) =>
+      certifyRepeatableNumberAggregateScalarCascade cascade scalar
+        actualOperation left right hExpression
+  | _ => throw .incoherentScalar
+
+/-- The prior Analyze view plus the later scalar edge. -/
+structure RepeatableNumberAggregateScalarCascadeAnalysis where
+  cascade : RepeatableNumberAggregateCascadeAnalysis
+  scalarOperation : NumericScaleBinaryOp
+  fieldDependencies : List (FieldId × List FieldId)
+  deriving Repr, DecidableEq
+
+/-- Rich outcomes from all three fixed stages. -/
+structure RepeatableNumberAggregateScalarCascadeOutcomes where
+  cascade : RepeatableNumberAggregateCascadeOutcomes
+  scalar : SourcedNumericTargetOutcome CellAddr
+  deriving Repr, DecidableEq
+
+inductive RepeatableNumberAggregateScalarCascadeFault where
+  | cascade (cause : RepeatableNumberAggregateCascadeFault)
+  | scalar (cause : NumericComputationFault)
+  | targetCheck (cause : NumericTargetCheckFault)
+  deriving Repr, DecidableEq
+
+namespace CheckedRepeatableNumberAggregateScalarCascade
+
+def analyze (plan : CheckedRepeatableNumberAggregateScalarCascade model) :
+    RepeatableNumberAggregateScalarCascadeAnalysis := {
+  cascade := plan.cascade.analyze
+  scalarOperation := plan.scalarOperation
+  fieldDependencies := plan.cascade.analyze.fieldDependencies ++ [
+    (plan.scalar.operation.core.target.id,
+      [plan.leftDeclaration.id, plan.rightDeclaration.id].eraseDups)]
+}
+
+/-- Execute the checked row and aggregate prefix, then expose only its rich aggregate outcome through the existing cause-blind scalar dependency cell. -/
+def execute (plan : CheckedRepeatableNumberAggregateScalarCascade model)
+    (world : World) (input : CheckedDocument model) :
+    Except RepeatableNumberAggregateScalarCascadeFault
+      RepeatableNumberAggregateScalarCascadeOutcomes := do
+  let cascade ← plan.cascade.execute world input |>.mapError .cascade
+  let base := input.scalarComputationContext world
+  let aggregateField := plan.cascade.total.operation.core.target.id
+  let context : ScalarComputationContext := {
+    read := fun field =>
+      if field == aggregateField then
+        (NumericDependencyCell.ofOutcome cascade.aggregate.outcome).checked
+      else base.read field
+    world := base.world
+  }
+  let checked ← plan.scalar.evaluate context |>.mapError .scalar
+  let outcome ← match checked with
+    | .supported outcome => pure outcome
+    | .unsupported cause => throw (.targetCheck cause)
+  let target : CellAddr := {
+    field := plan.scalar.operation.core.target.id
+    path := []
+  }
+  pure {
+    cascade
+    scalar := {
+      targetField := target
+      outcome
+      source := input.numericTargetPlacementStateAt target
+    }
+  }
+
+end CheckedRepeatableNumberAggregateScalarCascade
+
 end A12Kernel

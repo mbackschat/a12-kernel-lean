@@ -21,4 +21,17 @@ theorem checkedRepeatableNumberAggregateCascade_analyze
     } := by
   rfl
 
+/-- Analyze extends the checked row-to-aggregate prefix with exactly one deduplicated scalar field edge. -/
+@[simp]
+theorem checkedRepeatableNumberAggregateScalarCascade_analyze
+    (plan : CheckedRepeatableNumberAggregateScalarCascade model) :
+    plan.analyze = {
+      cascade := plan.cascade.analyze
+      scalarOperation := plan.scalarOperation
+      fieldDependencies := plan.cascade.analyze.fieldDependencies ++ [
+        (plan.scalar.operation.core.target.id,
+          [plan.leftDeclaration.id, plan.rightDeclaration.id].eraseDups)]
+    } := by
+  rfl
+
 end A12Kernel
