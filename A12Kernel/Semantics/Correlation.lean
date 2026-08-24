@@ -3,11 +3,11 @@ import A12Kernel.Semantics.Iteration
 
 /-! # A12Kernel.Semantics.Correlation — captured outer `$` inside Having
 
-This validation-only core gives `$` its direct nested-loop meaning through explicit
-candidate and captured repetition environments. Reference origins exist only in this
-filter AST: ordinary references read the candidate environment and `$` references read
-the explicitly captured outer rule environment. The established one-group API remains
-an adapter over this shared core.
+This filter core gives `$` its direct nested-loop meaning through explicit candidate and
+captured repetition environments. Reference origins exist only in this filter AST:
+ordinary references read the candidate environment and `$` references read the explicitly
+captured outer rule environment. Validation and computation consumers select their own
+observation phase. The established one-group API remains an adapter over this shared core.
 -/
 
 namespace A12Kernel
@@ -97,11 +97,16 @@ def compareRepetitions (op : CorrelationComparisonOp)
     (left right : HavingRepetitionRef) : CorrelatedHaving :=
   .leaf (.compareRepetitions op left right)
 
+/-- Number fields read by the filter in first authored occurrence order. Repetition-only leaves contribute no field dependency. -/
+def fieldIds : CorrelatedHaving → List FieldId
+  | .leaf (.compareNumbers _ left right) =>
+      [left.field.id, right.field.id].eraseDups
+  | .leaf (.compareRepetitions _ _ _) => []
+  | .and left right | .or left right =>
+      (fieldIds left ++ fieldIds right).eraseDups
+
 def referencesField (condition : CorrelatedHaving) (field : FieldId) : Bool :=
-  condition.anyLeaf fun
-    | .compareNumbers _ left right =>
-        left.field.id == field || right.field.id == field
-    | .compareRepetitions _ _ _ => false
+  condition.fieldIds.contains field
 
 end CorrelatedHaving
 

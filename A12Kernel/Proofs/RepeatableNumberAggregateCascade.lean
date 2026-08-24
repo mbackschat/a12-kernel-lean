@@ -10,13 +10,14 @@ theorem checkedRepeatableNumberAggregateCascade_analyze
     (plan : CheckedRepeatableNumberAggregateCascade model) :
     plan.analyze = {
       producer := plan.row.kind
+      consumer := plan.consumer.kind
       operation := plan.operation
       repeatableScope :=
         plan.row.targetDeclaration.repeatableScope
       fieldDependencies := [
         (plan.row.targetField, plan.row.sourceFields),
         (plan.total.operation.core.target.id,
-          [plan.row.targetField])]
+          plan.consumer.fieldDependencies)]
     } := by
   rfl
 
