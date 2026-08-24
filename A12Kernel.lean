@@ -195,6 +195,7 @@ import A12Kernel.Elaboration.CurrentRepetitionStringToNumber
 import A12Kernel.Elaboration.CurrentRepetitionAlternatingChain
 import A12Kernel.Elaboration.RepeatableNumberAggregateCascade
 import A12Kernel.Elaboration.RepeatableNumberAggregateMixedRun
+import A12Kernel.Elaboration.RepeatableNumberAggregateRowCascade
 import A12Kernel.Elaboration.AddressedNumberAbs
 import A12Kernel.Elaboration.AddressedNumberRound
 import A12Kernel.Elaboration.AddressedNumberExtremum
