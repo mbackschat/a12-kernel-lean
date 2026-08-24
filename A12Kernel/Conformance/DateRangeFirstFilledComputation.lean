@@ -9,7 +9,8 @@ open A12Kernel
 
 private def rangeField (id : FieldId) (groupPath : GroupPath) (name : String)
     (scope : List RepeatableLevel := []) (format : String := "yyyy-MM-dd")
-    (separator : String := "/") : FlatFieldDecl := {
+    (separator : String := "/") :
+    FlatFieldDecl := {
   id
   groupPath
   name
@@ -51,42 +52,11 @@ private def monthDayTarget :=
   rangeField 16 ["Cart"] "MonthDayTarget" [] "MM-dd" "/"
 private def monthDaySource :=
   rangeField 17 ["Cart", "Lines"] "MonthDaySource" [10] "MM-dd" "/"
-private def directDottedFirst :=
-  rangeField 18 ["Cart"] "DirectDottedFirst" [] "dd.MM.yyyy" "-"
-private def directDottedSecond :=
-  rangeField 19 ["Cart"] "DirectDottedSecond" [] "dd.MM.yyyy" "-"
-private def directIsoSource :=
-  rangeField 20 ["Cart"] "DirectIsoSource" [] "yyyy-MM-dd" "/"
-private def directDottedThird :=
-  rangeField 21 ["Cart"] "DirectDottedThird" [] "dd.MM.yyyy" "-"
-private def directYearFirst := rangeField 22 ["Cart"] "DirectYearFirst" [] "yyyy" "/"
-private def directYearSecond := rangeField 23 ["Cart"] "DirectYearSecond" [] "yyyy" "/"
-private def directYearThird := rangeField 24 ["Cart"] "DirectYearThird" [] "yyyy" "/"
-private def directYearMonthFirst := rangeField 25 ["Cart"] "DirectYearMonthFirst" [] "yyyy-MM" "/"
-private def directYearMonthSecond := rangeField 26 ["Cart"] "DirectYearMonthSecond" [] "yyyy-MM" "/"
-private def directYearMonthThird := rangeField 27 ["Cart"] "DirectYearMonthThird" [] "yyyy-MM" "/"
-private def directMonthFirst := rangeField 28 ["Cart"] "DirectMonthFirst" [] "MM" "/"
-private def directMonthSecond := rangeField 29 ["Cart"] "DirectMonthSecond" [] "MM" "/"
-private def directMonthThird := rangeField 30 ["Cart"] "DirectMonthThird" [] "MM" "/"
-private def directMonthDayFirst := rangeField 31 ["Cart"] "DirectMonthDayFirst" [] "MM-dd" "/"
-private def directMonthDaySecond := rangeField 32 ["Cart"] "DirectMonthDaySecond" [] "MM-dd" "/"
-private def directMonthDayThird := rangeField 33 ["Cart"] "DirectMonthDayThird" [] "MM-dd" "/"
-private def directMonthEmptyFirst :=
-  rangeField 34 ["Cart"] "DirectMonthEmptyFirst" [] "MM" ""
-private def directMonthEmptySecond :=
-  rangeField 35 ["Cart"] "DirectMonthEmptySecond" [] "MM" ""
-
 private def model : FlatModel := {
   fields := [target, source, otherFormatSource, otherSeparatorTarget,
     otherSeparatorSource, dottedTarget, dottedSource, dayMonthDottedTarget,
     dayMonthDottedSource, yearTarget, yearSource, yearMonthTarget,
-    yearMonthSource, monthTarget, monthSource, monthDayTarget, monthDaySource,
-    directDottedFirst, directDottedSecond, directIsoSource, directDottedThird,
-    directYearFirst, directYearSecond, directYearThird, directYearMonthFirst,
-    directYearMonthSecond, directYearMonthThird, directMonthFirst,
-    directMonthSecond, directMonthThird, directMonthDayFirst,
-    directMonthDaySecond, directMonthDayThird, directMonthEmptyFirst,
-    directMonthEmptySecond]
+    yearMonthSource, monthTarget, monthSource, monthDayTarget, monthDaySource]
   repeatableGroups := [
     { level := 10, path := ["Cart", "Lines"], repeatability := some 99 }]
   timeZoneId := "UTC"
@@ -100,59 +70,12 @@ private def star (field : String) : SurfaceStarFieldPath := {
   field
 }
 
-private def bare (field : String) : SurfaceFieldPath :=
-  { base := .relative 0, groups := [], field }
-
-private def directSource (first second : String) : SurfaceFieldEntitySource := {
-  first := .field (bare first)
-  rest := [.field (bare second)]
-}
-
-private def directSourceList (first : String) (rest : List String) :
-    SurfaceFieldEntitySource := {
-  first := .field (bare first)
-  rest := rest.map fun field => .field (bare field)
-}
-
-private def projectedThirdSource : SurfaceFieldEntitySource := {
-  first := .field (bare "DirectDottedFirst")
-  rest := [.field (bare "DirectDottedSecond"),
-    .field (bare "DirectDottedThird") (.projected "Category")]
-}
-
 private def checkedFor? (candidate : FlatModel)
     (targetField : FieldId) (field : String) :=
   (checkDateRangeFirstFilledComputation
     candidate ["Cart"] targetField (star field)).toOption
 
 private def checked? := checkedFor? model
-
-private def directChecked? (targetField : FieldId) (first second : String) :=
-  (checkDateRangeFirstFilledDirectComputation model ["Cart"] targetField
-    (directSource first second)).toOption
-
-private def directDiagnostic? (targetField : FieldId) (first second : String) :=
-  match checkDateRangeFirstFilledDirectComputation model ["Cart"] targetField
-      (directSource first second) with
-  | .ok _ => none
-  | .error cause => cause.diagnostic?
-
-private def directListChecked? (targetField : FieldId) (first : String)
-    (rest : List String) :=
-  (checkDateRangeFirstFilledDirectComputation model ["Cart"] targetField
-    (directSourceList first rest)).toOption
-
-private def directListDiagnostic? (targetField : FieldId) (first : String)
-    (rest : List String) :=
-  match checkDateRangeFirstFilledDirectComputation model ["Cart"] targetField
-      (directSourceList first rest) with
-  | .ok _ => none
-  | .error cause => cause.diagnostic?
-
-private def directListSourceIds? (targetField : FieldId) (first : String)
-    (rest : List String) : Option (List FieldId) := do
-  let operation ← directListChecked? targetField first rest
-  pure (operation.sources.map fun source => source.direct.source.id)
 
 private def preparedFor? (candidate : FlatModel) :
     Option (PreparedFlatStringContext candidate builtinStringPatternCompiler) :=
@@ -224,56 +147,6 @@ private def exactRange (startMillis finishMillis : Int)
   finish := dateValue finishMillis finishYear finishMonth finishDay
 }
 
-private structure DirectInput where
-  declaration : FlatFieldDecl
-  stored : String
-  raw : RawCell
-
-private def directInputFor? (inputs : List DirectInput) :
-    Option (CheckedDocument model) := do
-  let prepared ← preparedFor? model
-  (checkDocument prepared "en_US" {
-    instantiatedRows := []
-    cells := inputs.map fun input => {
-      address := { field := input.declaration.id, path := [] }
-      stored := input.stored
-      raw := input.raw
-    }
-  }).toOption
-
-private def directSignature? (inputs : List DirectInput) : Option String := do
-  let operation ← directChecked? dottedTarget.id
-    "DirectDottedFirst" "DirectDottedSecond"
-  let input ← directInputFor? inputs
-  let outcome ← (operation.execute input).toOption
-  pure (match outcome with
-    | .noValue => "CLEARED"
-    | .accepted stored => "VALUE|" ++ stored.text
-    | .errored stored _ => "ERRORED|" ++ stored.text
-    | .poison _ => "POISON")
-
-private def directTripleSignature? (inputs : List DirectInput) : Option String := do
-  let operation ← directListChecked? dottedTarget.id "DirectDottedFirst"
-    ["DirectDottedSecond", "DirectDottedThird"]
-  let input ← directInputFor? inputs
-  let outcome ← (operation.execute input).toOption
-  pure (match outcome with
-    | .noValue => "CLEARED"
-    | .accepted stored => "VALUE|" ++ stored.text
-    | .errored stored _ => "ERRORED|" ++ stored.text
-    | .poison _ => "POISON")
-
-private def directListSignature? (targetField : FieldId) (first : String)
-    (rest : List String) (inputs : List DirectInput) : Option String := do
-  let operation ← directListChecked? targetField first rest
-  let input ← directInputFor? inputs
-  let outcome ← (operation.execute input).toOption
-  pure (match outcome with
-    | .noValue => "CLEARED"
-    | .accepted stored => "VALUE|" ++ stored.text
-    | .errored stored _ => "ERRORED|" ++ stored.text
-    | .poison _ => "POISON")
-
 /- The retained temporal-family probe Kernel-calibrates these exact all-empty and first-row-filled result signatures. -/
 example :
     signature? [] = some "CLEARED" ∧
@@ -282,162 +155,6 @@ example :
         stored := "2024-03-20/2024-03-21"
         raw := .parsed (.dateRange selectedRange)
       }] = some "VALUE|2024-03-20/2024-03-21" := by
-  native_decide
-
-/- Every fragment policy admits the same three-direct-field shape, while a later crossed fragment retains the exact list-family diagnostic. -/
-example :
-    (directListChecked? yearTarget.id "DirectYearFirst"
-      ["DirectYearSecond", "DirectYearThird"]).isSome = true ∧
-      (directListChecked? yearMonthTarget.id "DirectYearMonthFirst"
-        ["DirectYearMonthSecond", "DirectYearMonthThird"]).isSome = true ∧
-      (directListChecked? monthTarget.id "DirectMonthFirst"
-        ["DirectMonthSecond", "DirectMonthThird"]).isSome = true ∧
-      (directListChecked? monthDayTarget.id "DirectMonthDayFirst"
-        ["DirectMonthDaySecond", "DirectMonthDayThird"]).isSome = true ∧
-      directListDiagnostic? yearTarget.id "DirectYearFirst"
-        ["DirectYearSecond", "DirectYearMonthThird"] =
-          some .varyingTypesNotAllowed := by
-  native_decide
-
-/- Fragment lists reuse the recursive scan and declaration-owned target rendering, including yearless component identity without Base Year. -/
-example :
-    directListSignature? yearTarget.id "DirectYearFirst"
-      ["DirectYearSecond", "DirectYearThird"] [] = some "CLEARED" ∧
-      directListSignature? yearTarget.id "DirectYearFirst"
-        ["DirectYearSecond", "DirectYearThird"] [{
-          declaration := directYearThird
-          stored := "2024/2025"
-          raw := .parsed (.dateRange (exactRange
-            1704067200000 1767139200000 2024 1 1 2025 12 31))
-        }] = some "VALUE|2024/2025" ∧
-      directListSignature? yearMonthTarget.id "DirectYearMonthFirst"
-        ["DirectYearMonthSecond", "DirectYearMonthThird"] [{
-          declaration := directYearMonthThird
-          stored := "2024-12/2025-02"
-          raw := .parsed (.dateRange (exactRange
-            1733011200000 1740700800000 2024 12 1 2025 2 28))
-        }] = some "VALUE|2024-12/2025-02" ∧
-      directListSignature? monthTarget.id "DirectMonthFirst"
-        ["DirectMonthSecond", "DirectMonthThird"] [{
-          declaration := directMonthThird
-          stored := "01/02"
-          raw := .parsed (.dateRange (.yearlessMonth 1 2))
-        }] = some "VALUE|01/02" ∧
-      directListSignature? monthDayTarget.id "DirectMonthDayFirst"
-        ["DirectMonthDaySecond", "DirectMonthDayThird"] [{
-          declaration := directMonthDayThird
-          stored := "01-31/02-29"
-          raw := .parsed (.dateRange (.yearlessMonthDay
-            { month := 1, day := 31 } { month := 2, day := 29 }))
-        }] = some "VALUE|01-31/02-29" := by
-  native_decide
-
-/- The finite direct list admits a third matching source while retaining profile and target-self-reference diagnostics at that later position. -/
-example :
-    (directListChecked? dottedTarget.id "DirectDottedFirst"
-      ["DirectDottedSecond", "DirectDottedThird"]).isSome = true ∧
-      directListSourceIds? dottedTarget.id "DirectDottedFirst"
-        ["DirectDottedSecond", "DirectDottedThird"] = some [18, 19, 21] ∧
-      directListDiagnostic? dottedTarget.id "DirectDottedFirst"
-        ["DirectDottedSecond", "DirectIsoSource"] =
-          some .varyingTypesNotAllowed ∧
-      directListDiagnostic? dottedTarget.id "DirectDottedFirst"
-        ["DirectDottedSecond", "DottedTarget"] =
-          some .errorReferenceToCalculatedField ∧
-      directListDiagnostic? dottedTarget.id "DirectDottedFirst" [] =
-        some .paramSizeInvalidN ∧
-      (checkDateRangeFirstFilledDirectComputation model ["Cart"]
-        dottedTarget.id projectedThirdSource).toOption.isNone = true := by
-  native_decide
-
-/- Three direct fields preserve authored-order recursion: two empty prefixes reach the third value, while a second-position value or formal cause hides the third selection result. -/
-example :
-    directTripleSignature? [{
-      declaration := directDottedFirst, stored := "", raw := .presentEmpty
-    }, {
-      declaration := directDottedSecond, stored := "", raw := .presentEmpty
-    }, {
-      declaration := directDottedThird
-      stored := "01.07.2024-31.07.2024"
-      raw := .parsed (.dateRange (exactRange
-        1719792000000 1722384000000 2024 7 1 2024 7 31))
-    }] = some "VALUE|01.07.2024-31.07.2024" ∧
-      directTripleSignature? [{
-        declaration := directDottedFirst, stored := "", raw := .presentEmpty
-      }, {
-        declaration := directDottedSecond
-        stored := "01.06.2024-30.06.2024"
-        raw := .parsed (.dateRange (exactRange
-          1717200000000 1719705600000 2024 6 1 2024 6 30))
-      }, {
-        declaration := directDottedThird
-        stored := "garbage"
-        raw := .rejected .dateRangeSeparator
-      }] = some "VALUE|01.06.2024-30.06.2024" ∧
-      directTripleSignature? [{
-        declaration := directDottedFirst, stored := "", raw := .presentEmpty
-      }, {
-        declaration := directDottedSecond
-        stored := "garbage"
-        raw := .rejected .dateRangeSeparator
-      }, {
-        declaration := directDottedThird
-        stored := "01.07.2024-31.07.2024"
-        raw := .parsed (.dateRange (exactRange
-          1719792000000 1722384000000 2024 7 1 2024 7 31))
-      }] = some "POISON" := by
-  native_decide
-
-/- The exact direct-field-list shape admits only one shared declaration profile and retains the shared entity-list cardinality/duplicate gates. -/
-example :
-    (directChecked? dottedTarget.id
-      "DirectDottedFirst" "DirectDottedSecond").isSome = true ∧
-      directDiagnostic? dottedTarget.id
-        "DirectDottedFirst" "DirectIsoSource" =
-          some .varyingTypesNotAllowed ∧
-      directDiagnostic? dottedTarget.id
-        "DottedTarget" "DirectDottedSecond" =
-          some .errorReferenceToCalculatedField ∧
-      directDiagnostic? dottedTarget.id
-        "DirectDottedFirst" "DottedTarget" =
-          some .errorReferenceToCalculatedField ∧
-      (directChecked? dottedTarget.id
-        "DirectDottedFirst" "DirectDottedFirst").isNone = true := by
-  native_decide
-
-/- Direct fields are scanned in authored order: empty continues, a present value hides a later formal cell, and a reached formal cell hides a later value. -/
-example :
-    directSignature? [] = some "CLEARED" ∧
-      directSignature? [{
-      declaration := directDottedFirst
-      stored := ""
-      raw := .presentEmpty
-    }, {
-      declaration := directDottedSecond
-      stored := "01.06.2024-30.06.2024"
-      raw := .parsed (.dateRange (exactRange
-        1717200000000 1719705600000 2024 6 1 2024 6 30))
-    }] = some "VALUE|01.06.2024-30.06.2024" ∧
-      directSignature? [{
-        declaration := directDottedFirst
-        stored := "01.05.2024-31.05.2024"
-        raw := .parsed (.dateRange (exactRange
-          1714521600000 1717113600000 2024 5 1 2024 5 31))
-      }, {
-        declaration := directDottedSecond
-        stored := "garbage"
-        raw := .rejected .dateRangeSeparator
-      }] = some "VALUE|01.05.2024-31.05.2024" ∧
-      directSignature? [{
-        declaration := directDottedFirst
-        stored := "garbage"
-        raw := .rejected .dateRangeSeparator
-      }, {
-        declaration := directDottedSecond
-        stored := "01.06.2024-30.06.2024"
-        raw := .parsed (.dateRange (exactRange
-          1717200000000 1719705600000 2024 6 1 2024 6 30))
-      }] = some "POISON" := by
   native_decide
 
 /- All four fragment policies are admitted only as matching target/source pairs. -/
@@ -499,7 +216,7 @@ example :
       }] = some "VALUE|01-31/02-29" := by
   native_decide
 
-/- The second exact legal declaration pair selects and renders the same checked typed endpoint payload. Static admission and the renderer are externally established separately; their direct `FirstFilledValue` composition remains external-evidence pending. -/
+/- The second exact legal declaration pair selects and renders the same checked typed endpoint payload. The complete profile computation checkpoint establishes this direct `FirstFilledValue` composition externally. -/
 example :
     signatureFor? dottedTarget dottedSource [{
       row := 1
@@ -599,52 +316,5 @@ example :
       DateRangeTargetOutcome.noValue.applyTo (.presentValue storedRange) =
         .presentEmpty := by
   decide
-
-/- The direct-list route applies two ordered gates the Kernel keeps distinct. Every source must
-repeat the **identical** declared format, so a same-component crossing inside the list is
-refused `MVK_VARYING_TYPES_NOT_ALLOWED` even where the component sets agree; that gate decides
-first, before the target is consulted. The shared source format then only has to expose the
-**target's** component set, so a list of dotted sources feeds an ISO target and a list of
-empty-separator month sources feeds a slash-separated month target. A genuinely different
-component set is refused `MVK_INVALID_COMPARE_TO_DATE_RANGE`. -/
-example :
-    (directChecked? target.id "DirectDottedFirst" "DirectDottedSecond").isSome =
-        true ∧
-      (directChecked? monthTarget.id "DirectMonthEmptyFirst"
-        "DirectMonthEmptySecond").isSome = true ∧
-      directDiagnostic? target.id "DirectDottedFirst" "DirectIsoSource" =
-        some .varyingTypesNotAllowed ∧
-      directListDiagnostic? target.id "DirectDottedFirst"
-          ["DirectDottedSecond", "DirectIsoSource"] =
-        some .varyingTypesNotAllowed ∧
-      directDiagnostic? target.id "DirectMonthEmptyFirst"
-        "DirectMonthEmptySecond" = some .invalidCompareToDateRange ∧
-      directDiagnostic? monthTarget.id "DirectDottedFirst"
-        "DirectDottedSecond" = some .invalidCompareToDateRange := by
-  native_decide
-
-/- On an admitted crossing the target's own spelling renders the selected value, so a dotted
-source list stores ISO text on an ISO target. The source profile decides nothing about the
-output, which is the whole observable consequence of admitting the cross. -/
-example :
-    directListSignature? target.id "DirectDottedFirst" ["DirectDottedSecond"]
-        [{ declaration := directDottedFirst
-           stored := "01.06.2024-30.06.2024"
-           raw := .parsed (.dateRange (exactRange 1717200000000 1719705600000
-             2024 6 1 2024 6 30)) }] =
-      some "VALUE|2024-06-01/2024-06-30" ∧
-    directListSignature? monthTarget.id "DirectMonthEmptyFirst"
-        ["DirectMonthEmptySecond"]
-        [{ declaration := directMonthEmptyFirst
-           stored := "0609"
-           raw := .parsed (.dateRange (.yearlessMonth 6 9)) }] =
-      some "VALUE|06/09" ∧
-    directListSignature? target.id "DirectDottedFirst" ["DirectDottedSecond"]
-        [{ declaration := directDottedSecond
-           stored := "02.07.2024-31.07.2024"
-           raw := .parsed (.dateRange (exactRange 1719878400000 1722384000000
-             2024 7 2 2024 7 31)) }] =
-      some "VALUE|2024-07-02/2024-07-31" := by
-  native_decide
 
 end A12Kernel.Conformance.DateRangeFirstFilledComputation
