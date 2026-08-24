@@ -1,8 +1,28 @@
 import A12Kernel.Elaboration.RepeatableNumberAggregateCascade
+import A12Kernel.Elaboration.CurrentRepetitionComputation
 
 /-! # Aggregate completion into one repeatable Number consumer -/
 
 namespace A12Kernel
+
+namespace CheckedRepeatableNumberAggregateCascade
+
+def aggregateAddress
+    (cascade : CheckedRepeatableNumberAggregateCascade model) : CellAddr := {
+  field := cascade.total.operation.core.target.id
+  path := []
+}
+
+/-- Expose one completed aggregate only at its exact root address and delegate every other read to the immutable document. -/
+def readCompletion (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (outcome : NumericTargetOutcome) (input : CheckedDocument model)
+    (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
+  if address == cascade.aggregateAddress then
+    .ok (NumericDependencyCell.ofOutcome outcome).checked
+  else
+    input.read address
+
+end CheckedRepeatableNumberAggregateCascade
 
 inductive RepeatableNumberAggregateRowCascadeElabError where
   | suffix (cause : AddressedNumberFieldElabError)
@@ -101,19 +121,14 @@ def analyze (plan : CheckedRepeatableNumberAggregateRowCascade model) :
 }
 
 def aggregateAddress
-    (plan : CheckedRepeatableNumberAggregateRowCascade model) : CellAddr := {
-  field := plan.cascade.total.operation.core.target.id
-  path := []
-}
+    (plan : CheckedRepeatableNumberAggregateRowCascade model) : CellAddr :=
+  plan.cascade.aggregateAddress
 
 /-- Expose the completed aggregate only at its exact root address and delegate every other read to the immutable document. -/
 def readPolicy (plan : CheckedRepeatableNumberAggregateRowCascade model)
     (outcome : NumericTargetOutcome) (input : CheckedDocument model)
     (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
-  if address == plan.aggregateAddress then
-    .ok (NumericDependencyCell.ofOutcome outcome).checked
-  else
-    input.read address
+  plan.cascade.readCompletion outcome input address
 
 /-- Execute the prefix, overlay its rich aggregate outcome at the root, then reuse the existing repeatable direct-assignment executor and its target-row enumeration. -/
 def execute (plan : CheckedRepeatableNumberAggregateRowCascade model)
@@ -126,5 +141,104 @@ def execute (plan : CheckedRepeatableNumberAggregateRowCascade model)
   pure { cascade, suffix }
 
 end CheckedRepeatableNumberAggregateRowCascade
+
+inductive RepeatableNumberAggregateRowChainElabError where
+  | duplicateTarget (field : FieldId)
+  | missingAggregateDependency (expected actual : FieldId)
+  | cycle (field : FieldId)
+  | incoherentChain
+  deriving Repr, DecidableEq
+
+private def aggregateRowChainTargets
+    (suffix : CheckedCurrentRepetitionNumberCascade model) : List FieldId :=
+  [suffix.first.placement.targetField, suffix.second.placement.targetField]
+
+/-- One checked aggregate prefix followed by the existing fixed two-step repeatable Number cascade. -/
+structure CheckedRepeatableNumberAggregateRowChain (model : FlatModel) where
+  private mk ::
+  cascade : CheckedRepeatableNumberAggregateCascade model
+  suffix : CheckedCurrentRepetitionNumberCascade model
+  distinctTargets : (aggregateRowChainTargets suffix).all (fun field =>
+    field != cascade.row.targetField &&
+      field != cascade.total.operation.core.target.id) = true
+  noBackEdge : (aggregateRowChainTargets suffix).all (fun field =>
+    !(cascade.row.sourceFields ++
+      cascade.consumer.fieldDependencies).contains field) = true
+  aggregateDependency :
+    suffix.first.placement.sourceDeclaration.id =
+      cascade.total.operation.core.target.id
+
+/-- Compose the two checked phases while retaining their existing finite orders. Every suffix target must be new and absent from the prefix reads, and the first suffix operation must consume the aggregate. -/
+def checkRepeatableNumberAggregateRowChain
+    (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (suffix : CheckedCurrentRepetitionNumberCascade model) :
+    Except RepeatableNumberAggregateRowChainElabError
+      (CheckedRepeatableNumberAggregateRowChain model) := do
+  let targets := aggregateRowChainTargets suffix
+  if hDistinct : targets.all (fun field =>
+      field != cascade.row.targetField &&
+        field != cascade.total.operation.core.target.id) = true then
+    if hBackEdge : targets.all (fun field =>
+        !(cascade.row.sourceFields ++
+          cascade.consumer.fieldDependencies).contains field) = true then
+      if hDependency : suffix.first.placement.sourceDeclaration.id =
+          cascade.total.operation.core.target.id then
+        pure {
+          cascade, suffix
+          distinctTargets := hDistinct
+          noBackEdge := hBackEdge
+          aggregateDependency := hDependency
+        }
+      else throw (.missingAggregateDependency
+        cascade.total.operation.core.target.id
+        suffix.first.placement.sourceDeclaration.id)
+    else
+      match targets.find? fun field =>
+          (cascade.row.sourceFields ++
+            cascade.consumer.fieldDependencies).contains field with
+      | some field => throw (.cycle field)
+      | none => throw .incoherentChain
+  else
+    match targets.find? fun field =>
+        field == cascade.row.targetField ||
+          field == cascade.total.operation.core.target.id with
+    | some field => throw (.duplicateTarget field)
+    | none => throw .incoherentChain
+
+structure RepeatableNumberAggregateRowChainAnalysis where
+  cascade : RepeatableNumberAggregateCascadeAnalysis
+  suffix : CurrentRepetitionCascadeAnalysis
+  deriving Repr, DecidableEq
+
+structure RepeatableNumberAggregateRowChainOutcomes where
+  cascade : RepeatableNumberAggregateCascadeOutcomes
+  suffix : CurrentRepetitionNumberCascadeOutcomes
+  deriving Repr, DecidableEq
+
+inductive RepeatableNumberAggregateRowChainFault where
+  | cascade (cause : RepeatableNumberAggregateCascadeFault)
+  | suffix (cause : CurrentRepetitionNumberCascadeFault)
+  deriving Repr, DecidableEq
+
+namespace CheckedRepeatableNumberAggregateRowChain
+
+def analyze (plan : CheckedRepeatableNumberAggregateRowChain model) :
+    RepeatableNumberAggregateRowChainAnalysis := {
+  cascade := plan.cascade.analyze
+  suffix := plan.suffix.analyze
+}
+
+/-- Execute the aggregate prefix, expose its completion to the first repeatable suffix step, and reuse the existing exact-row overlay for the second step. -/
+def execute (plan : CheckedRepeatableNumberAggregateRowChain model)
+    (world : World) (input : CheckedDocument model) :
+    Except RepeatableNumberAggregateRowChainFault
+      RepeatableNumberAggregateRowChainOutcomes := do
+  let cascade ← plan.cascade.execute world input |>.mapError .cascade
+  let suffix ← plan.suffix.executeWithRead input
+    (plan.cascade.readCompletion cascade.aggregate.outcome input)
+    |>.mapError .suffix
+  pure { cascade, suffix }
+
+end CheckedRepeatableNumberAggregateRowChain
 
 end A12Kernel

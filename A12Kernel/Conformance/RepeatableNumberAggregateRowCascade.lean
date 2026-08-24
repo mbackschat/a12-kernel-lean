@@ -19,9 +19,10 @@ private def quantity := number 3 "Qty" ["Order", "Lines"] [30] 0
 private def price := number 4 "Price" ["Order", "Lines"] [30]
 private def amount := number 5 "Amount" ["Order", "Lines"] [30]
 private def allocation := number 6 "Allocation" ["Order", "Lines"] [30]
+private def final := number 7 "Final" ["Order", "Lines"] [30]
 
 private def model : FlatModel := {
-  fields := [total, other, quantity, price, amount, allocation]
+  fields := [total, other, quantity, price, amount, allocation, final]
   repeatableGroups := [{
     level := 30
     path := ["Order", "Lines"]
@@ -55,6 +56,26 @@ private def plan? : Option (CheckedRepeatableNumberAggregateRowCascade model) :=
   let cascade ← cascade?
   (checkRepeatableNumberAggregateRowCascade cascade
     ["Order", "Lines"] allocation.id (parent "Total")).toOption
+
+private def group : SurfaceGroupPath := {
+  base := .absolute
+  groups := ["Order", "Lines"]
+}
+
+private def checkedRowChain? (firstTarget : FieldId)
+    (firstSource : SurfaceFieldPath) (secondTarget : FieldId)
+    (secondSource : SurfaceFieldPath) :
+    Option (CheckedCurrentRepetitionNumberCascade model) :=
+  (checkCurrentRepetitionNumberCascade model ["Order", "Lines"] group
+    firstTarget firstSource secondTarget secondSource).toOption
+
+private def rowChain? : Option (CheckedCurrentRepetitionNumberCascade model) :=
+  checkedRowChain? allocation.id (parent "Total") final.id (bare "Allocation")
+
+private def chain? : Option (CheckedRepeatableNumberAggregateRowChain model) := do
+  let cascade ← cascade?
+  let suffix ← rowChain?
+  (checkRepeatableNumberAggregateRowChain cascade suffix).toOption
 
 private def decimalCell (field : FieldId) (path : List Nat)
     (stored : String) (unscaled : Int) : ClassifiedCellInput := {
@@ -90,7 +111,9 @@ private def input? (secondPrice : ClassifiedCellInput) : Option (CheckedDocument
       decimalCell amount.id [2] "1.00" 100,
       decimalCell total.id [] "99.99" 9999,
       decimalCell allocation.id [1] "1.00" 100,
-      decimalCell allocation.id [2] "2.00" 200]
+      decimalCell allocation.id [2] "2.00" 200,
+      decimalCell final.id [1] "3.00" 300,
+      decimalCell final.id [2] "4.00" 400]
   }).toOption
 
 private def summary? (secondPrice : ClassifiedCellInput) :
@@ -104,6 +127,28 @@ private def summary? (secondPrice : ClassifiedCellInput) :
     outcomes.cascade.rows.map fun row => (row.targetField, row.outcome),
     outcomes.cascade.aggregate.outcome,
     outcomes.suffix.map fun row => (row.targetField, row.outcome))
+
+private structure ChainRowSummary where
+  coordinate : Nat
+  firstTarget : CellAddr
+  firstOutcome : NumericTargetOutcome
+  secondTarget : CellAddr
+  secondOutcome : NumericTargetOutcome
+  deriving Repr, DecidableEq
+
+private def chainSummary? (secondPrice : ClassifiedCellInput) :
+    Option (RepeatableNumberAggregateRowChainAnalysis × NumericTargetOutcome ×
+      List ChainRowSummary) := do
+  let plan ← chain?
+  let input ← input? secondPrice
+  let outcomes ← (plan.execute { now := { epochMillis := 0 } } input).toOption
+  pure (plan.analyze, outcomes.cascade.aggregate.outcome,
+    outcomes.suffix.rows.map fun row =>
+      { coordinate := row.coordinate
+        firstTarget := row.first.targetField
+        firstOutcome := row.first.outcome
+        secondTarget := row.second.targetField
+        secondOutcome := row.second.outcome })
 
 /- Fresh aggregate state reaches every suffix row; reached aggregate poison does too. -/
 example :
@@ -143,6 +188,84 @@ example :
             .inheritedPoison .computedDependency),
           ({ field := allocation.id, path := [2] },
             .inheritedPoison .computedDependency)]) := by
+  native_decide
+
+/- The checked row chain must start from the aggregate, own two new targets, and keep both targets out of every prefix dependency. -/
+example :
+    (do
+      let cascade ← cascade?
+      let suffix ← checkedRowChain? allocation.id (parent "Other")
+        final.id (bare "Allocation")
+      match checkRepeatableNumberAggregateRowChain cascade suffix with
+      | .error (.missingAggregateDependency expected actual) =>
+          some (expected, actual)
+      | _ => none) = some (total.id, other.id) ∧
+    (do
+      let cascade ← cascade?
+      let suffix ← checkedRowChain? allocation.id (parent "Total")
+        amount.id (bare "Allocation")
+      match checkRepeatableNumberAggregateRowChain cascade suffix with
+      | .error (.duplicateTarget field) => some field
+      | _ => none) = some amount.id ∧
+    (do
+      let having := SurfaceCorrelatedHaving.and
+        (.compareNumbers .less (innerNumber "Amount") (innerNumber "Price"))
+        (.compareNumbers .less (innerNumber "Final") (innerNumber "Price"))
+      let cascade ← (checkRepeatableNumberBinaryFilteredAggregateCascade model
+        ["Order", "Lines"] amount.id (bare "Qty") (bare "Price") .multiply
+        ["Order"] total.id (star "Price") having .sum).toOption
+      let suffix ← rowChain?
+      match checkRepeatableNumberAggregateRowChain cascade suffix with
+      | .error (.cycle field) => some field
+      | _ => none) = some final.id := by
+  native_decide
+
+/- The completed aggregate enters the first repeatable suffix stage, whose exact row outcomes feed the second stage. -/
+example :
+    (chainSummary? (decimalCell price.id [2] "20.00" 2000)).map (·.1) =
+      some {
+        cascade := {
+          producer := .binary .multiply
+          consumer := .plain
+          operation := .sum
+          repeatableScope := [30]
+          fieldDependencies := [
+            (amount.id, [quantity.id, price.id]), (total.id, [amount.id])]
+        }
+        suffix := {
+          structuralGroup := ["Order", "Lines"]
+          scope := [30]
+          fieldDependencies := [
+            (allocation.id, [total.id]), (final.id, [allocation.id])]
+        }
+      } ∧
+    (chainSummary? (decimalCell price.id [2] "20.00" 2000)).map (·.2.1) =
+      some (.accepted { unscaled := 8000, scale := 2 }) ∧
+    (chainSummary? (decimalCell price.id [2] "20.00" 2000)).map (·.2.2) =
+      some [
+        { coordinate := 1
+          firstTarget := { field := allocation.id, path := [1] }
+          firstOutcome := .accepted { unscaled := 8000, scale := 2 }
+          secondTarget := { field := final.id, path := [1] }
+          secondOutcome := .accepted { unscaled := 8000, scale := 2 } },
+        { coordinate := 2
+          firstTarget := { field := allocation.id, path := [2] }
+          firstOutcome := .accepted { unscaled := 8000, scale := 2 }
+          secondTarget := { field := final.id, path := [2] }
+          secondOutcome := .accepted { unscaled := 8000, scale := 2 } }] ∧
+    (chainSummary? invalidPrice).map (·.2.1) =
+      some (.inheritedPoison .computedDependency) ∧
+    (chainSummary? invalidPrice).map (·.2.2) = some [
+      { coordinate := 1
+        firstTarget := { field := allocation.id, path := [1] }
+        firstOutcome := .inheritedPoison .computedDependency
+        secondTarget := { field := final.id, path := [1] }
+        secondOutcome := .inheritedPoison .computedDependency },
+      { coordinate := 2
+        firstTarget := { field := allocation.id, path := [2] }
+        firstOutcome := .inheritedPoison .computedDependency
+        secondTarget := { field := final.id, path := [2] }
+        secondOutcome := .inheritedPoison .computedDependency }] := by
   native_decide
 
 /- The suffix must read the aggregate, own a new target, and stay absent from prefix reads. -/

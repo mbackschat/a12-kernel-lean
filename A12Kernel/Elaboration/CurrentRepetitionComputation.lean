@@ -136,16 +136,18 @@ def evaluatePositiveGuardAt
     (environment : Env) : Except EnvBindingError (Nat × Bool) :=
   plan.source.evaluatePositiveGuardAt environment
 
-private def readAfterFirst (input : CheckedDocument model)
+private def readAfterFirst
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (first : List (SourcedNumericTargetOutcome CellAddr))
     (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
   match first.find? fun outcome => outcome.targetField == address with
   | some outcome => .ok (NumericDependencyCell.ofOutcome outcome.outcome).checked
-  | none => input.read address
+  | none => read address
 
-/-- Execute the fixed positive structural guard at every instantiated row, then expose each first exact addressed outcome only to the dependent read at that same address. -/
-def execute (plan : CheckedCurrentRepetitionNumberCascade model)
-    (input : CheckedDocument model) :
+/-- Execute the fixed positive structural guard through a caller-supplied initial read, then expose each first exact addressed outcome only to the dependent read at that same address. Target-row enumeration and prior-target classification remain owned by the immutable checked document. -/
+def executeWithRead (plan : CheckedCurrentRepetitionNumberCascade model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except CurrentRepetitionNumberCascadeFault
       CurrentRepetitionNumberCascadeOutcomes := do
   let environments ← plan.first.placement.targetEnvironments input
@@ -155,17 +157,24 @@ def execute (plan : CheckedCurrentRepetitionNumberCascade model)
     let guard ← plan.evaluatePositiveGuardAt environment |>.mapError .coordinate
     if !guard.2 then throw (.guardNotTrue guard.1)
     pure guard.1
-  let firstOutcomes ← plan.first.execute input |>.mapError .first
+  let firstOutcomes ← plan.first.executeWithRead input read |>.mapError .first
   if firstOutcomes.length != environments.length then
     throw (.outcomeCardinality plan.first.placement.targetField firstOutcomes.length)
   let secondOutcomes ← plan.second.executeWithRead input
-      (readAfterFirst input firstOutcomes) |>.mapError .second
+      (readAfterFirst read firstOutcomes) |>.mapError .second
   if secondOutcomes.length != environments.length then
     throw (.outcomeCardinality plan.second.placement.targetField secondOutcomes.length)
   pure {
     rows := (coordinates.zip (firstOutcomes.zip secondOutcomes)).map fun
       | (coordinate, first, second) => { coordinate, first, second }
   }
+
+/-- Preserve the immutable-document entry point as the specialization with no earlier completion overlay. -/
+def execute (plan : CheckedCurrentRepetitionNumberCascade model)
+    (input : CheckedDocument model) :
+    Except CurrentRepetitionNumberCascadeFault
+      CurrentRepetitionNumberCascadeOutcomes :=
+  plan.executeWithRead input input.read
 
 end CheckedCurrentRepetitionNumberCascade
 

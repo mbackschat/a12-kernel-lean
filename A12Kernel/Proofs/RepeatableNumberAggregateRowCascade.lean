@@ -5,6 +5,21 @@ import A12Kernel.Elaboration.RepeatableNumberAggregateRowCascade
 namespace A12Kernel
 
 @[simp]
+theorem repeatableNumberAggregateCascade_read_completed
+    (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (outcome : NumericTargetOutcome) (input : CheckedDocument model) :
+    cascade.readCompletion outcome input cascade.aggregateAddress =
+      .ok (NumericDependencyCell.ofOutcome outcome).checked := by
+  simp [CheckedRepeatableNumberAggregateCascade.readCompletion]
+
+theorem repeatableNumberAggregateCascade_read_input
+    (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (outcome : NumericTargetOutcome) (input : CheckedDocument model)
+    (address : CellAddr) (ordinary : address ≠ cascade.aggregateAddress) :
+    cascade.readCompletion outcome input address = input.read address := by
+  simp [CheckedRepeatableNumberAggregateCascade.readCompletion, ordinary]
+
+@[simp]
 theorem checkedRepeatableNumberAggregateRowCascade_analyze
     (plan : CheckedRepeatableNumberAggregateRowCascade model) :
     plan.analyze = {
@@ -23,13 +38,24 @@ theorem repeatableNumberAggregateRowCascade_read_completed
     (outcome : NumericTargetOutcome) (input : CheckedDocument model) :
     plan.readPolicy outcome input plan.aggregateAddress =
       .ok (NumericDependencyCell.ofOutcome outcome).checked := by
-  simp [CheckedRepeatableNumberAggregateRowCascade.readPolicy]
+  exact repeatableNumberAggregateCascade_read_completed
+    plan.cascade outcome input
 
 theorem repeatableNumberAggregateRowCascade_read_input
     (plan : CheckedRepeatableNumberAggregateRowCascade model)
     (outcome : NumericTargetOutcome) (input : CheckedDocument model)
     (address : CellAddr) (ordinary : address ≠ plan.aggregateAddress) :
     plan.readPolicy outcome input address = input.read address := by
-  simp [CheckedRepeatableNumberAggregateRowCascade.readPolicy, ordinary]
+  exact repeatableNumberAggregateCascade_read_input
+    plan.cascade outcome input address ordinary
+
+@[simp]
+theorem checkedRepeatableNumberAggregateRowChain_analyze
+    (plan : CheckedRepeatableNumberAggregateRowChain model) :
+    plan.analyze = {
+      cascade := plan.cascade.analyze
+      suffix := plan.suffix.analyze
+    } := by
+  rfl
 
 end A12Kernel
