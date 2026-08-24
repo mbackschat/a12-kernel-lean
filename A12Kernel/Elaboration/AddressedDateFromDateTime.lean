@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.DateFromDateTime
 
 /-! # Repeatable `DateFromDateTime`
 
-This bounded carrier certifies one same-group, same-scope complete DateTime source and full-Date target, enumerates only physical target rows, and retains exact source and target addresses. Outer-scope operands, nested scopes, scheduling, and result application remain separate.
+This bounded carrier certifies one target-bound complete DateTime source and full-Date target, enumerates only physical target rows, and retains exact source and target addresses. Sibling parallel iteration, scheduling, and result application remain separate.
 -/
 
 namespace A12Kernel
@@ -13,7 +13,6 @@ inductive AddressedDateFromDateTimeElabError where
   | targetOutsideDeclaringGroup (path declaringGroup : GroupPath)
   | targetNotRepeatable (path : List String)
   | source (cause : ResolveError)
-  | sourceOutsideDeclaringGroup (path declaringGroup : GroupPath)
   | sourceNotTemporal (field : FieldId)
   | sourceKind (field : FieldId) (actual : TemporalKind)
   | sourceComponents (field : FieldId) (actual : TemporalComponents)
@@ -31,13 +30,13 @@ structure CheckedAddressedDateFromDateTime (model : FlatModel) where
   sourceResolved : model.resolveFieldDeclarationUnchecked declaringGroup sourceReference = .ok sourceDeclaration
   sourceOwned : sourceDeclaration.toTemporalField? = some source
   targetInDeclaringGroup : target.checked.declaration.groupPath = declaringGroup
-  sourceInDeclaringGroup : sourceDeclaration.groupPath = declaringGroup
   targetRepeatable : target.checked.declaration.repeatableScope ≠ []
-  sameScope : sourceDeclaration.repeatableScope = target.checked.declaration.repeatableScope
+  sourceScopeBound : sourceDeclaration.repetitionBoundBy
+    target.checked.declaration.repeatableScope = true
   sourceAdmitted : model.admitsCompleteDateTimeSourceIn
     target.checked.declaration.repeatableScope source = true
 
-/-- Certify the measured same-group, same-repeatable-scope placement. -/
+/-- Certify one source whose repeatable levels the target's own scope binds. -/
 def checkAddressedDateFromDateTime
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (sourceReference : SurfaceFieldPath) :
@@ -56,36 +55,32 @@ def checkAddressedDateFromDateTime
           model.resolveFieldDeclarationUnchecked declaringGroup sourceReference with
       | .error cause => throw (.source cause)
       | .ok sourceDeclaration =>
-        if hSourceGroup : sourceDeclaration.groupPath = declaringGroup then
-          match hSource : sourceDeclaration.toTemporalField? with
-          | none => throw (.sourceNotTemporal sourceDeclaration.id)
-          | some source =>
-            if source.kind != .dateTime then
-              throw (.sourceKind source.id source.kind)
-            else if !source.components.isFullDateTime then
-              throw (.sourceComponents source.id source.components)
-            else if hScope : sourceDeclaration.repeatableScope =
-                target.checked.declaration.repeatableScope then
-              if hAdmitted : model.admitsCompleteDateTimeSourceIn
-                  target.checked.declaration.repeatableScope source then
-                pure {
-                  declaringGroup, sourceReference, sourceDeclaration, source, target
-                  sourceResolved := hResolved
-                  sourceOwned := hSource
-                  targetInDeclaringGroup := hGroup
-                  sourceInDeclaringGroup := hSourceGroup
-                  targetRepeatable := by
-                    intro empty
-                    simp [empty] at hRepeatable
-                  sameScope := hScope
-                  sourceAdmitted := hAdmitted
-                }
-              else
-                throw (.source (.repeatableReference sourceDeclaration.path))
+        match hSource : sourceDeclaration.toTemporalField? with
+        | none => throw (.sourceNotTemporal sourceDeclaration.id)
+        | some source =>
+          if source.kind != .dateTime then
+            throw (.sourceKind source.id source.kind)
+          else if !source.components.isFullDateTime then
+            throw (.sourceComponents source.id source.components)
+          else if hScope : sourceDeclaration.repetitionBoundBy
+              target.checked.declaration.repeatableScope = true then
+            if hAdmitted : model.admitsCompleteDateTimeSourceIn
+                target.checked.declaration.repeatableScope source then
+              pure {
+                declaringGroup, sourceReference, sourceDeclaration, source, target
+                sourceResolved := hResolved
+                sourceOwned := hSource
+                targetInDeclaringGroup := hGroup
+                targetRepeatable := by
+                  intro empty
+                  simp [empty] at hRepeatable
+                sourceScopeBound := hScope
+                sourceAdmitted := hAdmitted
+              }
             else
-              throw (.scopeMismatch target.checked.declaration.path sourceDeclaration.path)
-        else
-          throw (.sourceOutsideDeclaringGroup sourceDeclaration.path declaringGroup)
+              throw (.source (.repeatableReference sourceDeclaration.path))
+          else
+            throw (.scopeMismatch target.checked.declaration.path sourceDeclaration.path)
   else
     throw (.targetOutsideDeclaringGroup target.checked.declaration.path declaringGroup)
 

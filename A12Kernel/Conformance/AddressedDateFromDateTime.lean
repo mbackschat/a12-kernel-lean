@@ -19,9 +19,11 @@ private def source := temporalField 1 "SlotStamp" .dateTime TemporalComponents.n
 private def target := temporalField 2 "SlotDate" .date TemporalComponents.fullDate "yyyy-MM-dd"
 private def rootTarget : FlatFieldDecl := {
   target with id := 3, name := "PlannedDate", groupPath := ["Schedule"], repeatableScope := [] }
+private def outerSource : FlatFieldDecl := {
+  source with id := 4, name := "ScheduleStamp", groupPath := ["Schedule"], repeatableScope := [] }
 
 private def model : FlatModel := {
-  fields := [source, target, rootTarget]
+  fields := [source, target, rootTarget, outerSource]
   timeZoneId := "Europe/Berlin"
   repeatableGroups := [{
     level := 10, path := ["Schedule", "Slots"], repeatability := some 5
@@ -35,9 +37,16 @@ private def prepared : PreparedFlatStringContext model builtinStringPatternCompi
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
+private def parent (field : String) : SurfaceFieldPath :=
+  { base := .relative 1, groups := [], field }
+
 private def operation? : Option (CheckedAddressedDateFromDateTime model) :=
   (checkAddressedDateFromDateTime model ["Schedule", "Slots"] target.id
     (bare "SlotStamp")).toOption
+
+private def outerOperation? : Option (CheckedAddressedDateFromDateTime model) :=
+  (checkAddressedDateFromDateTime model ["Schedule", "Slots"] target.id
+    (parent "ScheduleStamp")).toOption
 
 private def momentAt (day hour minute : Nat) : Option TemporalValue := do
   let wall ← LocalDateTime.ofYmdHms? 2024 6 day hour minute 0
@@ -46,6 +55,9 @@ private def momentAt (day hour minute : Nat) : Option TemporalValue := do
 
 private def sourceCell (row : Nat) (stored : String) (raw : RawCell) : ClassifiedCellInput :=
   { address := { field := source.id, path := [row] }, stored, raw }
+
+private def outerCell (stored : String) (raw : RawCell) : ClassifiedCellInput :=
+  { address := { field := outerSource.id, path := [] }, stored, raw }
 
 private def input? (rowCount : Nat) (cells : List ClassifiedCellInput) :
     Option (CheckedDocument model) :=
@@ -57,6 +69,13 @@ private def input? (rowCount : Nat) (cells : List ClassifiedCellInput) :
 private def outcomes? (rowCount : Nat) (cells : List ClassifiedCellInput) :
     Option (List (CellAddr × CellAddr × FullDateTargetOutcome)) := do
   let operation ← operation?
+  let input ← input? rowCount cells
+  let outcomes ← (operation.execute input).toOption
+  pure (outcomes.map fun entry => (entry.sourceField, entry.targetField, entry.outcome))
+
+private def outerOutcomes? (rowCount : Nat) (cells : List ClassifiedCellInput) :
+    Option (List (CellAddr × CellAddr × FullDateTargetOutcome)) := do
+  let operation ← outerOperation?
   let input ← input? rowCount cells
   let outcomes ← (operation.execute input).toOption
   pure (outcomes.map fun entry => (entry.sourceField, entry.targetField, entry.outcome))
@@ -99,6 +118,26 @@ example :
   native_decide
 
 example : outcomes? 0 [] = some [] := by
+  native_decide
+
+/- A root source is read once at its own address and reaches every physical target row. -/
+example :
+    outerOperation?.isSome = true ∧
+    outerOutcomes? 2 [
+      outerCell "2024-06-15T00:30:00"
+        (.parsed (.temporal (momentAt 15 0 30 |>.get (by native_decide))))
+    ] = some [
+      ({ field := outerSource.id, path := [] }, address target.id 1, accepted "2024-06-15"),
+      ({ field := outerSource.id, path := [] }, address target.id 2, accepted "2024-06-15")
+    ] := by
+  native_decide
+
+/- A formal root failure poisons every reached row while retaining the one root source address. -/
+example :
+    outerOutcomes? 2 [outerCell "bad" (.rejected .dateFormat)] = some [
+      ({ field := outerSource.id, path := [] }, address target.id 1, .poison .dateFormat),
+      ({ field := outerSource.id, path := [] }, address target.id 2, .poison .dateFormat)
+    ] := by
   native_decide
 
 end A12Kernel.Conformance.AddressedDateFromDateTime
