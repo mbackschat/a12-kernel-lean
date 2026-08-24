@@ -73,6 +73,12 @@ def skippedHaving : ResolvedCheckedEntityOperandCore := {
   hasNonRelevant := false
 }
 
+/-- Project away cells beneath a declared-capacity violation for consumers whose selected star domain excludes over-limit rows. The checked document and base topology retain those formal cells; each consumer must opt into this narrower evaluation domain explicitly. -/
+def inCapacityAddressedCells (resolved : ResolvedCheckedEntityOperandCore) :
+    List CheckedAddressedCell :=
+  resolved.addressedCells.filter fun addressed =>
+    !addressed.cell.findings.contains .overRepetition
+
 end ResolvedCheckedEntityOperandCore
 
 namespace CheckedDocument

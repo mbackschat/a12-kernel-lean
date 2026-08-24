@@ -367,6 +367,16 @@ def valueListSideAt (resolved : ResolvedCheckedNumberEntityOperand model)
     hasHaving := resolved.core.hasHaving
     hasNonRelevant := resolved.core.hasNonRelevant }
 
+/-- The capacity-bounded star projection used by explicitly selected consumers. Other consumers keep the complete formal-cell view through `valueListSideAt`. -/
+def inCapacityValueListSideAt
+    (resolved : ResolvedCheckedNumberEntityOperand model)
+    (phase : Phase) : ResolvedValueListSide .number :=
+  { cells := resolved.core.inCapacityAddressedCells.map fun addressed =>
+      (observeCell phase addressed.cell).asNumberValueListCell
+    hasUninstantiatedTail := resolved.core.hasUninstantiatedTail
+    hasHaving := resolved.core.hasHaving
+    hasNonRelevant := resolved.core.hasNonRelevant }
+
 end ResolvedCheckedNumberEntityOperand
 
 namespace CheckedNumberEntityOperand

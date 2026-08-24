@@ -158,7 +158,7 @@ example :
         some (2, .fired .value) := by
   native_decide
 
-/- The numeric consumer shares the same row count, including the zero-row case. -/
+/- The numeric consumer agrees with the structural row count in the in-capacity zero- and one-row cases. -/
 example :
     countResultOf (absoluteSource false true true) [] = some (.value 0) ∧
     countResultOf (absoluteSource false true true) oneEmptyItem = some (.value 1) := by
@@ -176,12 +176,13 @@ example :
     countOf (relativeSource false true) nestedRows [(10, 2)] = some 1 := by
   native_decide
 
-/- Sequential over-limit rows remain instantiated structural content; their separate diagnostic does not erase them. -/
+/- Sequential over-limit rows remain instantiated structural content, while the numeric starred count excludes them from its evaluation domain. -/
 example :
     let rows := [{ group := 10, path := [1] },
       { group := 20, path := [1, 1] }, { group := 20, path := [1, 2] },
       { group := 20, path := [1, 3] }, { group := 20, path := [1, 4] }]
-    countOf (absoluteSource false true true) rows = some 4 := by
+    countOf (absoluteSource false true true) rows = some 4 ∧
+      countResultOf (absoluteSource false true true) rows = some (.value 3) := by
   native_decide
 
 /- Static and runtime topology failures remain fail-closed at their existing owners. -/

@@ -192,16 +192,23 @@ def rowCount (checked : CheckedStarredGroupSource model)
   let resolved ← checked.resolvedTopology document outer
   pure resolved.environments.length
 
+/-- Count only topology rows within every declared repeatability. Numeric starred group counts use this evaluation domain while structural group-presence predicates continue to observe every instantiated row through `rowCount`. -/
+def inCapacityRowCount (checked : CheckedStarredGroupSource model)
+    (document : Document) (outer : Env) : Except StarAddressingError Nat := do
+  let resolved ← checked.resolvedTopology document outer
+  pure (resolved.environments.countP fun environment =>
+    !StarAxes.environmentOverLimit checked.path.axes environment)
+
 /-- Evaluate either legal sole-star group predicate from the shared structural row count. -/
 def evaluateFull (checked : CheckedStarredGroupSource model)
     (operator : StarredGroupFillQuantifier) (document : Document) (outer : Env) :
     Except StarAddressingError ValidationFillOutcome := do
   pure (operator.evalCount (← checked.rowCount document outer))
 
-/-- The sole-star numeric form is always available after checked topology succeeds and counts the same concrete terminal rows. -/
+/-- The sole-star numeric form excludes over-limit rows while retaining them in the structural topology used by group-presence predicates. -/
 def numberOfFilledGroups (checked : CheckedStarredGroupSource model)
     (document : Document) (outer : Env) : Except StarAddressingError FilledGroupCount := do
-  pure (.value (← checked.rowCount document outer))
+  pure (.value (← checked.inCapacityRowCount document outer))
 
 end CheckedStarredGroupSource
 

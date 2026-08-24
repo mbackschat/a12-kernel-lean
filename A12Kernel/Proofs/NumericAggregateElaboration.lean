@@ -159,7 +159,7 @@ theorem checkedNumberEntityOperand_aggregateSide_delegates
         filteredSource.resolvedValueSide document outer filterRead starRead := by
   exact ⟨rfl, rfl, rfl⟩
 
-/-- Full-validation aggregate and value-count consumers obtain their one-operand side from the rich checked SG2 projection, then retain the established first-formal-cause terminal result. -/
+/-- Full-validation aggregate and value-count consumers obtain their one-operand side from the rich checked projection, then retain the established first-formal-cause terminal result. -/
 theorem checkedNumberEntityOperand_checkedValidationAggregate_usesRichProjection
     (checked : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env) :
@@ -168,6 +168,22 @@ theorem checkedNumberEntityOperand_checkedValidationAggregate_usesRichProjection
         let side :=
           (← checked.resolveCheckedValidationOperand document outer)
             |>.valueListSideAt .validation
+        match side.available with
+        | .error cause => pure (.inr (.unknown cause))
+        | .ok () => pure (.inl side)) := by
+  rfl
+
+/-- The selected full-validation `Sum` account narrows only a plain star to its in-capacity checked cells. -/
+theorem checkedNumberEntityOperand_checkedValidationSum_usesCapacityProjection
+    (checked : CheckedNumberEntityOperand model)
+    (document : CheckedDocument model) (outer : Env) :
+    checked.resolvedCheckedDocumentValidationSumSide document outer =
+      (do
+        let resolved ← checked.resolveCheckedValidationOperand document outer
+        let side := match checked with
+          | .star _ => resolved.inCapacityValueListSideAt .validation
+          | .field _ | .starHaving _ | .group _ =>
+              resolved.valueListSideAt .validation
         match side.available with
         | .error cause => pure (.inr (.unknown cause))
         | .ok () => pure (.inl side)) := by

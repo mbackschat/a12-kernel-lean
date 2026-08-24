@@ -198,6 +198,21 @@ def resolvedCheckedDocumentValidationAggregateSide
     | .error cause => pure (.inr (.unknown cause))
     | .ok () => pure (.inl side)
 
+/-- Resolve the selected capacity-bounded validation `Sum` slot. Only a plain star narrows its checked-cell view; every other source keeps the ordinary validation aggregate projection. -/
+def resolvedCheckedDocumentValidationSumSide
+    (checked : CheckedNumberEntityOperand model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError
+      (Sum (ResolvedValueListSide .number) NumericOperand) := do
+    let resolved ← checked.resolveCheckedValidationOperand document outer
+    let side := match checked with
+      | .star _ => resolved.inCapacityValueListSideAt .validation
+      | .field _ | .starHaving _ | .group _ =>
+          resolved.valueListSideAt .validation
+    match side.available with
+    | .error cause => pure (.inr (.unknown cause))
+    | .ok () => pure (.inl side)
+
 /-- Resolve one computation aggregate slot from the same checked document. A filtered slot retains one-kept-successor lookahead and keeps structural target/filter failure outside formal poison. -/
 def resolvedCheckedDocumentComputationAggregateSide
     (checked : CheckedNumberEntityOperand model)
@@ -437,8 +452,12 @@ def evaluateCheckedDocumentValidationAggregate
     (checked : CheckedNumberEntitySource model)
     (op : NumericAggregateOp) (document : CheckedDocument model)
     (outer : Env) : Except CheckedAddressingError NumericOperand :=
-  checked.evaluateAggregateWith op fun operand =>
-    operand.resolvedCheckedDocumentValidationAggregateSide document outer
+  match op with
+  | .sum => checked.evaluateAggregateWith .sum fun operand =>
+      operand.resolvedCheckedDocumentValidationSumSide document outer
+  | .minimum | .maximum | .distinctCount =>
+      checked.evaluateAggregateWith op fun operand =>
+        operand.resolvedCheckedDocumentValidationAggregateSide document outer
 
 /-- Evaluate computation-phase aggregate accumulation from the same checked document without changing filter or poison timing. -/
 def evaluateCheckedDocumentComputationAggregate

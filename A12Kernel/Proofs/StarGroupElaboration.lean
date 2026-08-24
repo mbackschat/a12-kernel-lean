@@ -248,15 +248,16 @@ theorem checkedStarredGroupSource_evaluateFull_of_resolved
   rw [resolution]
   rfl
 
-/-- The starred numeric count consumes that identical successful topology cardinality. -/
+/-- The starred numeric count consumes only the successful topology's in-capacity rows. -/
 theorem checkedStarredGroupSource_numberOfFilledGroups_of_resolved
     (checked : CheckedStarredGroupSource model) (document : Document)
     (outer : Env) (resolved : ResolvedStarTopology)
     (resolution : checked.resolvedTopology document outer = .ok resolved) :
     checked.numberOfFilledGroups document outer =
-      .ok (.value resolved.environments.length) := by
+      .ok (.value (resolved.environments.countP fun environment =>
+        !StarAxes.environmentOverLimit checked.path.axes environment)) := by
   unfold CheckedStarredGroupSource.numberOfFilledGroups
-    CheckedStarredGroupSource.rowCount
+    CheckedStarredGroupSource.inCapacityRowCount
   rw [resolution]
   rfl
 
