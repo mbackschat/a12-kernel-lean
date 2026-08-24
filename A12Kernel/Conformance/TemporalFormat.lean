@@ -22,6 +22,9 @@ open A12Kernel
 private def yearMonth : TemporalComponents :=
   { year := true, month := true, day := false, hour := false, minute := false, second := false }
 
+private def yearOnly : TemporalComponents :=
+  { year := true, month := false, day := false, hour := false, minute := false, second := false }
+
 private def fullDate : TemporalComponents :=
   { year := true, month := true, day := true, hour := false, minute := false, second := false }
 
@@ -44,6 +47,12 @@ private def monthDayTime : TemporalComponents :=
 example :
     TemporalComparisonOp.before.admitsFormats false yearMonth fullDate = true ∧
       temporalAggregateFormatsCompatible false yearMonth fullDate = false := by
+  decide
+
+/- A year-only endpoint is incomplete but still compares with a full Date; year presence, not completeness, is the direct gate. -/
+example :
+    TemporalComparisonOp.equal.admitsFormats false yearOnly fullDate = true ∧
+      TemporalComparisonOp.equal.admitsFormats false monthDay fullDate = false := by
   decide
 
 /- Date and DateTime may be ordered, but equality requires matching time presence. -/

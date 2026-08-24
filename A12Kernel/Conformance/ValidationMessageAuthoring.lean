@@ -226,15 +226,22 @@ example :
   native_decide
 
 /- The suffixes are alternatives: combining them is a parse failure, which the Kernel confirms. A
-**doubled** arrow is where this fragment is narrower than the Kernel: it lands in the same parse class
-here, while the Kernel reaches its category gate first and reports the first name as unknown. Both
-refuse, and this local class projects to no Kernel diagnostic, so the narrowing publishes no claim. -/
+**doubled** arrow has no single class: a declared first category reaches the trailing-syntax refusal,
+an undeclared first category stops at the category gate, and a non-Enumeration field stops at the kind
+gate. The three rows differ only in that first lookup, so they separate gate order from syntax. -/
 example :
     pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Status")
         "See $Status.value->Group$" =
       some (.invalidParameter "Status.value->Group") ∧
     pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Status")
-        "See $Status->A->B$" = some (.invalidParameter "Status->A->B") := by
+        "See $Status->Group->Group$" =
+      some (.invalidParameter "Status->Group->Group") ∧
+    pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Status")
+        "See $Status->Nope->Nope$" =
+      some (.category "Status->Nope->Nope" (.unknownCategory "Nope")) ∧
+    pathTemplateError? ["Order"] (pathAt (.relative 0) [] "Amount")
+        "See $Amount->Group->Group$" =
+      some (.categoryFieldNotEnumeration "Amount->Group->Group" amount.id) := by
   native_decide
 
 /- An unbalanced quote is a parse failure rather than a name, so a half-written escape never resolves

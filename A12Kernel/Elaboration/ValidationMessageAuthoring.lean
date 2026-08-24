@@ -18,9 +18,9 @@ language version it supports.
 A field reference may carry an Enumeration **category** suffix, `->Name`, whose three gates are the
 Kernel's own: a missing name, a field that is not an Enumeration, and a name that is not one of that
 declaration's categories. It carries neither of the value suffix's extra gates, and combining it with the value suffix is a parse failure — the two really are alternatives. A **doubled** arrow is refused
-here as one parse failure, which is a narrower account than the Kernel's: measured, the Kernel reaches
-its category gate first and reports the *first* name as unknown, so this local class is deliberately
-mapped to no Kernel diagnostic. What a category access **renders** is measured: the category
+only after the first category's kind and membership gates pass. Its diagnostic therefore depends on
+that first name: an undeclared category or a non-Enumeration field stops at its own gate, while a
+declared category reaches the trailing-syntax refusal. What a category access **renders** is measured: the category
 token the field's current stored value maps to, so the checked part carries the declaration's own
 mapping and the caller supplies only the stored token. An absent stored token renders as the empty
 string, which is measured; a token the category does not map cannot arise, because a declaration's
@@ -105,6 +105,10 @@ private inductive ParsedValidationMessagePart where
   | fieldValue (parameter : String) (reference : AuthoredFieldPath)
   | fieldCategory (parameter : String) (reference : AuthoredFieldPath)
       (category : String)
+  /-- A doubled category arrow. The first category is checked before the remaining syntax is refused,
+  so this stays distinct from an undifferentiated parse failure. -/
+  | fieldCategoryWithTrailingSyntax (parameter : String)
+      (reference : AuthoredFieldPath) (category : String)
   | baseYear (offset : Int)
   /-- Any field form above, keyed. The suffix travels so one arm serves all three. -/
   | keyed (parameter : String) (reference : AuthoredFieldPath)
@@ -299,13 +303,17 @@ private def parseParameter (profile : ValidationMessageKeywordProfile)
     | none => .error (.invalidParameter parameter)
   else
   -- The two suffixes are alternatives in the grammar, and the arrow cannot occur inside a name, so
-  -- splitting on it first is unambiguous. A doubled arrow lands in the final catch-all rather than in
-  -- the Kernel's own category gate; see the module note.
+  -- splitting on it first is unambiguous. A doubled arrow retains its first category so the semantic
+  -- gates can decide before the trailing syntax is refused.
 
   match parameter.splitOn "->" with
   | [spec, category] =>
       if category.isEmpty then .error (.missingCategoryName parameter)
       else (.fieldCategory parameter · category) <$> parseMessagePath parameter spec
+  | spec :: category :: _ =>
+      if category.isEmpty then .error (.missingCategoryName parameter)
+      else (.fieldCategoryWithTrailingSyntax parameter · category) <$>
+        parseMessagePath parameter spec
   | [_] =>
       match parameter.splitOn ".value" with
       | [spec, ""] => .fieldValue parameter <$> parseMessagePath parameter spec
@@ -517,6 +525,11 @@ private def checkMessageParts (model : FlatModel)
       pure (.fieldCategory
         (← resolveMessageCategory resolved parameter category) ::
         (← checkMessageParts model profile condition rest))
+  | .fieldCategoryWithTrailingSyntax parameter reference category :: _ => do
+      let resolved ←
+        resolveMessageReference model profile condition parameter reference
+      discard <| resolveMessageCategory resolved parameter category
+      throw (.invalidParameter parameter)
 
 def elaborateValidationMessageTemplate (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
