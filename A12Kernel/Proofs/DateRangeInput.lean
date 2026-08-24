@@ -46,12 +46,12 @@ theorem resolveYearlessForModel_ignores_interpretation_off_wrap
     resolveYearlessForModel zoneId baseYear left yearless =
       resolveYearlessForModel zoneId baseYear right yearless := by
   cases baseYear with
-  | none => simp [resolveYearlessForModel, ordered]
+  | none => simp [resolveYearlessForModel]
   | some year =>
       simp [resolveYearlessForModel,
         completionYears_ignores_interpretation_off_wrap _ _ _ ordered]
 
-/-- The standard reading refuses every wrapping yearless pair with the inverted-order cause, whether or not a Base Year is declared. The refusal is therefore a property of the absent interpretation alone, not of the completion route it would otherwise take. -/
+/-- An absent interpretation is sufficient to refuse every wrapping yearless pair with the inverted-order cause, whether or not a Base Year is declared. -/
 theorem resolveYearlessForModel_wrap_rejected_without_interpretation
     (zoneId : String) (baseYear : Option Int) (yearless : DateRangeCellValue)
     (wraps : yearless.wrapsYearBoundary = true) :
@@ -60,14 +60,5 @@ theorem resolveYearlessForModel_wrap_rejected_without_interpretation
   cases baseYear with
   | none => simp [resolveYearlessForModel, wraps]
   | some year => simp [resolveYearlessForModel, completionYears_none_of_wrap _ _ wraps]
-
-/-- In an unconfigured model a declared interpretation admits every wrapping yearless pair without manufacturing endpoint years. The direction stays in the declaration for later consumers, while stored-input classification retains the same component value under `FROM` and `TO`. -/
-theorem resolveYearlessForModel_wrap_admitted_with_interpretation_without_baseYear
-    (zoneId : String) (interpretation : DateRangeYearInterpretation)
-    (yearless : DateRangeCellValue)
-    (wraps : yearless.wrapsYearBoundary = true) :
-    resolveYearlessForModel zoneId none (some interpretation) yearless =
-      .ok (.parsed (.dateRange yearless)) := by
-  simp [resolveYearlessForModel, wraps]
 
 end A12Kernel

@@ -588,22 +588,20 @@ example :
       some (.parsed (.dateRange orderedInBaseYear)) := by
   native_decide
 
-/- Without a declared Base Year an interpretation admits a wrapping range but cannot place it in concrete years, so both directions retain the same yearless component identity. The month-only pair is a second measured instance of that rule. -/
+/- The flat classifier has no model-wide shared-format declaration-order state. It therefore keeps the former fail-closed boundary for an unconfigured wrapping interpretation and makes no Kernel-correspondence claim for this excluded branch. The two component profiles keep the unsupported boundary explicit. -/
 example :
     (classifyStoredDateRangeForModel "UTC" none dayMonthDottedFromPolicy
         "01.11-28.02").toOption =
-      some (.parsed (.dateRange (.yearlessMonthDay
-        { month := 11, day := 1 } { month := 2, day := 28 }))) ∧
+      some (.rejected .dateRangeInvalid) ∧
     (classifyStoredDateRangeForModel "UTC" none dayMonthDottedToPolicy
         "01.11-28.02").toOption =
-      some (.parsed (.dateRange (.yearlessMonthDay
-        { month := 11, day := 1 } { month := 2, day := 28 }))) ∧
+      some (.rejected .dateRangeInvalid) ∧
     (classifyStoredDateRangeForModel "UTC" none monthFromPolicy
         "11/02").toOption =
-      some (.parsed (.dateRange (.yearlessMonth 11 2))) ∧
+      some (.rejected .dateRangeInvalid) ∧
     (classifyStoredDateRangeForModel "UTC" none monthToPolicy
         "11/02").toOption =
-      some (.parsed (.dateRange (.yearlessMonth 11 2))) ∧
+      some (.rejected .dateRangeInvalid) ∧
     (classifyStoredDateRangeForModel "UTC" none dayMonthDottedFromPolicy
         "01.06-30.09").toOption =
       some (.parsed (.dateRange (.yearlessMonthDay

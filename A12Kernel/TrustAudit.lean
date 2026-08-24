@@ -521,7 +521,6 @@ run_cmd do
 #print axioms A12Kernel.dateRangeYearInterpretation_wrappingYears_span_one_boundary
 #print axioms A12Kernel.resolveYearlessForModel_ignores_interpretation_off_wrap
 #print axioms A12Kernel.resolveYearlessForModel_wrap_rejected_without_interpretation
-#print axioms A12Kernel.resolveYearlessForModel_wrap_admitted_with_interpretation_without_baseYear
 #print axioms A12Kernel.dateRangeValue_select_start
 #print axioms A12Kernel.dateRangeValue_select_finish
 #print axioms A12Kernel.directDateRange_evaluate_value
@@ -2074,9 +2073,6 @@ run_cmd do
 #print axioms A12Kernel.scanDirectDateRangeFirstFilled_empty
 #print axioms A12Kernel.scanDirectDateRangeFirstFilled_value
 #print axioms A12Kernel.scanDirectDateRangeFirstFilled_poison
-#print axioms A12Kernel.evaluateDateRangeFirstFilledTarget_interpreted_yearlessMonth
-#print axioms A12Kernel.evaluateDateRangeFirstFilledTarget_standard_yearlessMonth
-#print axioms A12Kernel.evaluateDateRangeFirstFilledTarget_interpreted_yearlessMonthDay
 #print axioms A12Kernel.dateRangeTargetAccepted_applyTo
 #print axioms A12Kernel.dateTimeFirstFilledCellAt_value
 #print axioms A12Kernel.dateTimeFirstFilledCellAt_poison
