@@ -272,26 +272,22 @@ structure CheckedBooleanValueCountSource (model : FlatModel) where
   uniqueDirectOperands :
     firstDuplicateDirectBooleanValueCountField? (first :: rest) = none
 
-/-- The exact declaration and repetition shape of each measured Boolean-group computation. -/
-def measuredBooleanValueCountStarredGroupShape (expected : Bool)
+/-- The measured one-axis Boolean-group computation shape. The group certificate already owns the constant-specific field-kind gate. -/
+def measuredBooleanValueCountStarredGroupShape
     (starred : CheckedStarredGroupSource model)
     (group : CheckedBooleanValueCountGroup model expected) : Bool :=
   starred.path.axes.length == 1 &&
     (group.fields.all fun declaration =>
-      declaration.repeatableScope == starred.path.axes.map (·.level)) &&
-    group.fields.map (·.policy.kind) == if expected then
-      [FieldKind.boolean, FieldKind.confirm]
-    else
-      [FieldKind.boolean, FieldKind.boolean]
+      declaration.repeatableScope == starred.path.axes.map (·.level))
 
-/-- A measured Boolean-group computation form with one repeatable axis and the constant-specific exact recursive declaration order. The source equality excludes fixed groups and the separately admitted terminal-presence shape from this computation carrier. -/
+/-- A measured Boolean-group computation form with one repeatable axis, no deeper repeated declaration, and the group certificate's constant-specific field kinds. The source equality excludes fixed groups and the separately admitted terminal-presence shape from this computation carrier. -/
 structure CheckedBooleanValueCountStarredGroupSource
     (model : FlatModel) (expected : Bool) where
   starredSource : CheckedStarredGroupSource model
   group : CheckedBooleanValueCountGroup model expected
   sourceOwned : group.source = .starred starredSource
   measuredShape :
-    measuredBooleanValueCountStarredGroupShape expected starredSource group = true
+    measuredBooleanValueCountStarredGroupShape starredSource group = true
   modelWellFormed : model.validate.isOk = true
 
 abbrev CheckedTrueValueCountStarredGroupSource (model : FlatModel) :=
@@ -356,7 +352,7 @@ def elaborateBooleanValueCountStarredGroupSource (model : FlatModel)
       match hSource : group.source with
       | .starred source =>
           if hMeasured :
-              measuredBooleanValueCountStarredGroupShape expected source group = true then
+              measuredBooleanValueCountStarredGroupShape source group = true then
             pure {
               starredSource := source
               group
@@ -367,7 +363,7 @@ def elaborateBooleanValueCountStarredGroupSource (model : FlatModel)
       | .fixed _ | .starredPresence _ => throw .incoherentCore
   | .field _ | .star _ => throw .incoherentCore
 
-/-- Resolve the measured Boolean-then-Confirm `True` computation. -/
+/-- Resolve a measured one-axis Boolean/Confirm `True` group computation. -/
 def elaborateTrueValueCountStarredGroupSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceStarGroupPath) :
     Except BooleanValueCountElabError
@@ -375,7 +371,7 @@ def elaborateTrueValueCountStarredGroupSource (model : FlatModel)
   elaborateBooleanValueCountStarredGroupSource
     model declaringGroup true authored
 
-/-- Resolve the measured two-Boolean `False` computation. -/
+/-- Resolve a measured one-axis Boolean-only `False` group computation. -/
 def elaborateFalseValueCountStarredGroupSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceStarGroupPath) :
     Except BooleanValueCountElabError

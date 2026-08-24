@@ -193,13 +193,47 @@ private def twoBooleanComputationModel : FlatModel :=
         { declaration with policy := { kind := .boolean } }
       else declaration }
 
+private def oneBooleanComputationModel : FlatModel :=
+  { computationModel with
+    fields := computationModel.fields.filter (·.id == 50) }
+
+private def oneConfirmComputationModel : FlatModel :=
+  { computationModel with
+    fields := computationModel.fields.filter (·.id == 51) }
+
+private def reversedComputationModel : FlatModel :=
+  { computationModel with fields := computationModel.fields.reverse }
+
+private def twoConfirmComputationModel : FlatModel :=
+  { computationModel with
+    fields := computationModel.fields.map fun declaration =>
+      if declaration.id == 50 then
+        { declaration with policy := { kind := .confirm } }
+      else declaration }
+
+private def threeMixedComputationModel : FlatModel :=
+  { computationModel with
+    fields := computationModel.fields ++ [{
+      id := 52, groupPath := ["Probe", "Lines"], name := "Peer",
+      policy := { kind := .boolean }, repeatableScope := [50] }] }
+
 private def elaborationFailed : Except ε α → Bool
   | .error _ => true
   | .ok _ => false
 
 example :
     elaborationFailed (elaborateTrueValueCountStarredGroupSource
-      twoBooleanComputationModel ["Probe"] computationGroup) = true := by
+      oneBooleanComputationModel ["Probe"] computationGroup) = false ∧
+    elaborationFailed (elaborateTrueValueCountStarredGroupSource
+      oneConfirmComputationModel ["Probe"] computationGroup) = false ∧
+    elaborationFailed (elaborateTrueValueCountStarredGroupSource
+      reversedComputationModel ["Probe"] computationGroup) = false ∧
+    elaborationFailed (elaborateTrueValueCountStarredGroupSource
+      twoBooleanComputationModel ["Probe"] computationGroup) = false ∧
+    elaborationFailed (elaborateTrueValueCountStarredGroupSource
+      twoConfirmComputationModel ["Probe"] computationGroup) = false ∧
+    elaborationFailed (elaborateTrueValueCountStarredGroupSource
+      threeMixedComputationModel ["Probe"] computationGroup) = false := by
   native_decide
 
 private def nestedComputationModel : FlatModel :=
@@ -432,15 +466,62 @@ private def threeBooleanComputationModel : FlatModel :=
       id := 52, groupPath := ["Probe", "Lines"], name := "Third",
       policy := { kind := .boolean }, repeatableScope := [50] }] }
 
+private def threeBooleanPrepared :
+    PreparedFlatStringContext threeBooleanComputationModel
+      builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler threeBooleanComputationModel).toOption.get
+      (by native_decide)
+
+private def checkedThreeFalseComputation? :
+    Option (CheckedFalseValueCountStarredGroupSource
+      threeBooleanComputationModel) :=
+  (elaborateFalseValueCountStarredGroupSource
+    threeBooleanComputationModel ["Probe"] computationGroup).toOption
+
+private def thirdBooleanCell (index : Nat)
+    (value : Bool) : ClassifiedCellInput :=
+  computationCell 52 index (booleanValueCountToken value) (.parsed (.bool value))
+
+private def malformedThirdBooleanCell (index : Nat) : ClassifiedCellInput :=
+  computationCell 52 index "bad" (.rejected .booleanToken)
+
+private def checkedThreeFalseComputationResult? (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) : Option NumericOperand := do
+  let checked ← checkedThreeFalseComputation?
+  let document ← (checkDocument threeBooleanPrepared "en_US" {
+    instantiatedRows := rows, cells }).toOption
+  (checked.evaluateCheckedDocumentComputation document []).toOption
+
+example :
+    checkedThreeFalseComputationResult?
+      [computationRow 1, computationRow 2] [
+        booleanCell 1 false, emptyComputationCell 51 1, thirdBooleanCell 1 false,
+        booleanCell 2 true, peerBooleanCell 2 false, thirdBooleanCell 2 true] =
+      some (.value 3 .growOnly) ∧
+    checkedThreeFalseComputationResult?
+      [computationRow 1, computationRow 2] [
+        booleanCell 1 false, peerBooleanCell 1 true, thirdBooleanCell 1 true,
+        booleanCell 2 true, peerBooleanCell 2 true, malformedThirdBooleanCell 2] =
+      some (.unknown .booleanToken) ∧
+    checkedThreeFalseComputationResult? overCapacityRows [
+        booleanCell 1 false, peerBooleanCell 1 true, thirdBooleanCell 1 true,
+        booleanCell 2 true, peerBooleanCell 2 true, thirdBooleanCell 2 true,
+        booleanCell 3 true, peerBooleanCell 3 true, malformedThirdBooleanCell 3] =
+      some (.value 1 .fixed) := by
+  native_decide
+
 example :
     elaborationFailed (elaborateFalseValueCountStarredGroupSource
       computationModel ["Probe"] computationGroup) = true ∧
+    elaborationFailed (elaborateFalseValueCountStarredGroupSource
+      oneBooleanComputationModel ["Probe"] computationGroup) = false ∧
     elaborationFailed (elaborateFalseValueCountStarredGroupSource
       nestedTwoBooleanComputationModel ["Probe"] nestedComputationGroup) = true ∧
     elaborationFailed (elaborateFalseValueCountStarredGroupSource
       nestedTwoBooleanComputationModel ["Probe"] nestedOuterComputationGroup) = true ∧
     elaborationFailed (elaborateFalseValueCountStarredGroupSource
-      threeBooleanComputationModel ["Probe"] computationGroup) = true := by
+      threeBooleanComputationModel ["Probe"] computationGroup) = false := by
   native_decide
 
 end A12Kernel.Conformance.BooleanEntityGroupOperand
