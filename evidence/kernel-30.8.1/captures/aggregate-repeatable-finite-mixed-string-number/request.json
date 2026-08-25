@@ -1,0 +1,80 @@
+{
+  "model": "model.dm.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "fresh-two-values-false-first-guard",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            {
+              "Candidate": 2,
+              "Produced": 4
+            },
+            {
+              "Candidate": 3,
+              "Produced": 6
+            }
+          ],
+          "Total": 99,
+          "Label": "8",
+          "Doubled": 7
+        }
+      }
+    },
+    {
+      "name": "fresh-value-plus-empty",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            {
+              "Candidate": 2,
+              "Produced": 4
+            },
+            {
+              "Produced": 6
+            }
+          ],
+          "Total": 99,
+          "Label": "8",
+          "Doubled": 7
+        }
+      }
+    },
+    {
+      "name": "aggregate-poison-crosses-both-families",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            {
+              "Candidate": 2,
+              "Produced": 4
+            },
+            {
+              "Candidate": "bad",
+              "Produced": 6
+            }
+          ],
+          "Total": 99,
+          "Label": "8",
+          "Doubled": 7
+        }
+      }
+    },
+    {
+      "name": "no-rows-root-suffix-still-runs",
+      "documentInline": {
+        "Order": {
+          "Lines": [],
+          "Total": 99,
+          "Label": "8",
+          "Doubled": 7
+        }
+      }
+    }
+  ]
+}
