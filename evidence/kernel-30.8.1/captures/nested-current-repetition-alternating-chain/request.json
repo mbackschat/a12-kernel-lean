@@ -1,0 +1,136 @@
+{
+  "model": "NestedChain_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "fresh-two-level-shared-terminal-coordinate",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            {
+              "Entries": [
+                {
+                  "Base": 7,
+                  "First": 70,
+                  "Second": "70",
+                  "Third": 700
+                },
+                {
+                  "Base": 13,
+                  "First": 130,
+                  "Second": "130",
+                  "Third": 1300
+                }
+              ]
+            },
+            {
+              "Entries": [
+                {
+                  "Base": 11,
+                  "First": 110,
+                  "Second": "110",
+                  "Third": 1100
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-leaf-stays-local",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            {
+              "Entries": [
+                {
+                  "Base": 7,
+                  "First": 70,
+                  "Second": "70",
+                  "Third": 700
+                },
+                {
+                  "Base": 13,
+                  "First": 130,
+                  "Second": "130",
+                  "Third": 1300
+                }
+              ]
+            },
+            {
+              "Entries": [
+                {
+                  "First": 110,
+                  "Second": "110",
+                  "Third": 1100
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "malformed-shared-coordinate-stays-local",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            {
+              "Entries": [
+                {
+                  "Base": 7,
+                  "First": 70,
+                  "Second": "70",
+                  "Third": 700
+                },
+                {
+                  "Base": 13,
+                  "First": 130,
+                  "Second": "130",
+                  "Third": 1300
+                }
+              ]
+            },
+            {
+              "Entries": [
+                {
+                  "Base": "bad",
+                  "First": 110,
+                  "Second": "110",
+                  "Third": 1100
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "outer-row-without-leaves-adds-no-computation-row",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            {
+              "Entries": [
+                {
+                  "Base": 7,
+                  "First": 70,
+                  "Second": "70",
+                  "Third": 700
+                }
+              ]
+            },
+            {
+              "Entries": []
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

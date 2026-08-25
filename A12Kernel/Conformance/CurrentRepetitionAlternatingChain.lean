@@ -464,6 +464,24 @@ example :
         (.accepted { unscaled := 13, scale := 0 })] := by
   native_decide
 
+/- Empty substitution remains local when another leaf under a different parent has the same terminal coordinate. -/
+example :
+    nestedRowOutcomes? {
+      address := { field := base.id, path := [2, 1] }
+      stored := ""
+      raw := .presentEmpty
+    } = some [
+      expectedNestedRow [1, 1] 1 (.accepted { unscaled := 7, scale := 0 })
+        (.accepted (stored "7" (by decide)))
+        (.accepted { unscaled := 7, scale := 0 }),
+      expectedNestedRow [2, 1] 1 (.accepted { unscaled := 0, scale := 0 })
+        (.accepted (stored "0" (by decide)))
+        (.accepted { unscaled := 0, scale := 0 }),
+      expectedNestedRow [1, 2] 2 (.accepted { unscaled := 13, scale := 0 })
+        (.accepted (stored "13" (by decide)))
+        (.accepted { unscaled := 13, scale := 0 })] := by
+  native_decide
+
 /- An invalid leaf poisons only its exact nested state chain, including beside another leaf with the same terminal coordinate. -/
 example :
     nestedRowOutcomes? {
