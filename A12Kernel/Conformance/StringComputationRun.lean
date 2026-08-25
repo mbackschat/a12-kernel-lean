@@ -31,8 +31,17 @@ private def amount : FlatFieldDecl :=
   { id := 5, groupPath := ["Form"], name := "Amount",
     policy := { kind := .number { scale := 2, signed := true } } }
 
+private def repeatableText : FlatFieldDecl :=
+  { id := 6, groupPath := ["Form", "Rows"], name := "RepeatableText",
+    policy := { kind := .string }, repeatableScope := [10] }
+
 private def model : FlatModel :=
-  { fields := [source, gate, bad, producer, consumer, amount] }
+  { fields := [source, gate, bad, producer, consumer, amount, repeatableText]
+    repeatableGroups := [{
+      level := 10
+      path := ["Form", "Rows"]
+      repeatability := some 3
+    }] }
 
 private def world : World := { now := { epochMillis := 0 } }
 
@@ -174,6 +183,53 @@ private def resultView?
 private def destinationWith (target : FieldId) (state : StringTargetState) :
     FieldId → StringTargetState :=
   fun field => if field == target then state else .absent
+
+private def changedProducerView : StringComputationRunView FormalCause :=
+  .fromSourcedOutcomes [] [{
+    targetField := producer.id
+    outcome := .accepted ⟨"NEW", by decide⟩
+    source := .absent
+  }]
+
+private def unchangedProducerView : StringComputationRunView FormalCause :=
+  .fromSourcedOutcomes [] [{
+    targetField := producer.id
+    outcome := .accepted ⟨"NEW", by decide⟩
+    source := .presentValue ⟨"NEW", by decide⟩
+  }]
+
+private def clearedProducerView : StringComputationRunView FormalCause :=
+  .fromSourcedOutcomes [] [{
+    targetField := producer.id
+    outcome := .noValue
+    source := .presentValue ⟨"SOURCE", by decide⟩
+  }]
+
+private def invalidTargetView (target : FieldId) :
+    StringComputationRunView FormalCause :=
+  .fromSourcedOutcomes [] [{
+    targetField := target
+    outcome := .accepted ⟨"NEW", by decide⟩
+    source := .absent
+  }]
+
+private def duplicateInvalidTargetView : StringComputationRunView FormalCause :=
+  .fromSourcedOutcomes [] [
+    { targetField := amount.id
+      outcome := .accepted ⟨"FIRST", by decide⟩
+      source := .absent },
+    { targetField := amount.id
+      outcome := .accepted ⟨"SECOND", by decide⟩
+      source := .absent }
+  ]
+
+private def checkedApplicationError?
+    (view : StringComputationRunView FormalCause)
+    (destination : CheckedDocument model) :
+    Option StringComputationDocumentApplicationError :=
+  match view.applyToChecked destination with
+  | .error cause => some cause
+  | .ok _ => none
 
 private def producerTable := FixtureTable.checked .producerValue
 
@@ -483,6 +539,36 @@ example : (do
       | .error fault => some fault
       | .ok _ => none)) =
       some (some (.duplicateActionTarget producer.id)) := by
+  native_decide
+
+/- Checked-destination application reuses source-classified String actions: a changed value replaces only its target, a source-unchanged value leaves a different caller destination untouched, and a retained clear creates a present-empty root target even when that destination omits it. -/
+example : (do
+    let destination ← checkedDocument [
+      cell producer.id "DEST" (.parsed (.str "DEST")),
+      cell consumer.id "KEEP" (.parsed (.str "KEEP"))]
+    let changed ← (changedProducerView.applyToChecked destination).toOption
+    let unchanged ←
+      (unchangedProducerView.applyToChecked destination).toOption
+    let emptyDestination ← checkedDocument []
+    let cleared ←
+      (clearedProducerView.applyToChecked emptyDestination).toOption
+    pure (changed producer.id, changed consumer.id,
+      unchanged producer.id, cleared producer.id)) =
+      some (.presentValue ⟨"NEW", by decide⟩,
+        .presentValue ⟨"KEEP", by decide⟩,
+        .presentValue ⟨"DEST", by decide⟩, .presentEmpty) := by
+  native_decide
+
+/- Duplicate actions fail before target-kind validation; a singleton Number target and a repeatable String target then fail at their own checked-destination gates. -/
+example : (do
+    let destination ← checkedDocument []
+    pure (checkedApplicationError? duplicateInvalidTargetView destination,
+      checkedApplicationError? (invalidTargetView amount.id) destination,
+      checkedApplicationError?
+        (invalidTargetView repeatableText.id) destination)) =
+      some (some (.duplicateActionTarget amount.id),
+        some (.nonStringTarget amount.id),
+        some (.repeatableTarget repeatableText.id)) := by
   native_decide
 
 /- The independent relation admits both orders, while field lookup erases their private completion order. -/

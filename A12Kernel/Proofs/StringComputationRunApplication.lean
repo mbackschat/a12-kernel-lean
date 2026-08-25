@@ -56,6 +56,45 @@ theorem stringComputationRun_applyTo_noActions
     StringComputationRunView.firstDuplicateStringTarget?,
     StringComputationRunView.actionTargets, noChanges, noErrors, noClears]
 
+/-- A checked-destination application with no source-classified actions preserves the exact caller-supplied root String projection. -/
+theorem stringComputationRun_applyToChecked_noActions
+    (view : StringComputationRunView ResidualMessage FieldId)
+    (destination : CheckedDocument model)
+    (noChanges : view.withChanges = [])
+    (noErrors : view.withErrors = [])
+    (noClears : view.cleared = []) :
+    view.applyToChecked destination =
+      .ok destination.sourceStringTargetState := by
+  simp [StringComputationRunView.applyToChecked,
+    StringComputationRunView.firstDuplicateActionTarget?,
+    StringComputationRunView.firstDuplicateStringTarget?,
+    StringComputationRunView.actionTargets,
+    validateStringComputationActionTargets,
+    StringComputationRunView.applyTo, noChanges, noErrors, noClears]
+
+/-- Once exact root targets are validated, checked-destination application is precisely the established source-classified String fold. -/
+theorem stringComputationRun_applyToChecked_delegates
+    (view : StringComputationRunView ResidualMessage FieldId)
+    (destination : CheckedDocument model)
+    (noDuplicate : view.firstDuplicateActionTarget? = none)
+    (valid :
+      validateStringComputationActionTargets model view.actionTargets = .ok ()) :
+    view.applyToChecked destination =
+      (view.applyTo destination.sourceStringTargetState).mapError fun
+        | .duplicateActionTarget target => .duplicateActionTarget target := by
+  simp [StringComputationRunView.applyToChecked, noDuplicate, valid,
+    StringComputationRunView.applyTo, Except.mapError,
+    Bind.bind, Except.bind]
+
+/-- Duplicate source actions fail before any target-kind or destination-state inspection. -/
+theorem stringComputationRun_applyToChecked_duplicateTarget
+    (view : StringComputationRunView ResidualMessage FieldId)
+    (destination : CheckedDocument model) (target : FieldId)
+    (duplicate : view.firstDuplicateActionTarget? = some target) :
+    view.applyToChecked destination =
+      .error (.duplicateActionTarget target) := by
+  simp [StringComputationRunView.applyToChecked, duplicate]
+
 /-- Duplicate action targets fail before any destination state is selected or changed. -/
 theorem stringComputationRun_applyTo_duplicateTarget
     [DecidableEq Target]
