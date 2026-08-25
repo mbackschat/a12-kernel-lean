@@ -1,0 +1,135 @@
+{
+  "header" : {
+    "id" : "order-clear-actions",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "order-clear-actions",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Order",
+        "name" : "Order",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Order/Lines",
+            "name" : "Lines",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Order/Lines/Candidate",
+                "name" : "Candidate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/Produced",
+                "name" : "Produced",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Order/Lines/ProducedProjection",
+                "name" : "ProducedProjection",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Produced",
+                  "computationAlternatives" : [ {
+                    "operation" : "[Candidate]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Compute the row producer."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/Label",
+                "name" : "Label",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Order/Lines/LabelProjection",
+                "name" : "LabelProjection",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Label",
+                  "computationAlternatives" : [ {
+                    "operation" : "FieldValueAsString(../Total)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Render the aggregate total in every row."
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Total",
+            "name" : "Total",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Order/TotalComputation",
+            "name" : "TotalComputation",
+            "Computation" : {
+              "computedFieldRelPath" : "../Total",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Lines*/Produced)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Calculate the produced total."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
