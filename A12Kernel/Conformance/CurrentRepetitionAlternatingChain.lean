@@ -319,13 +319,124 @@ private def nestedGroup : SurfaceGroupPath := {
   groups := nestedPath
 }
 
-/- A valid two-level model reaches and is rejected by the one-level source-scope gate. -/
+private def nestedPlan? :
+    Option (CheckedCurrentRepetitionAlternatingChain nestedModel) :=
+  (checkCurrentRepetitionAlternatingChain nestedModel nestedPath nestedGroup
+    first.id (bare "BaseNumber") second.id (bare "FirstNumber") third.id
+    (.direct (bare "SecondString"))).toOption
+
+private def nestedPrepared :
+    PreparedFlatStringContext nestedModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler nestedModel).toOption.get (by native_decide)
+
+private def nestedNumericCell (field : FieldId) (path : List Nat)
+    (value : Int) : ClassifiedCellInput := {
+  address := { field, path }
+  stored := toString value
+  raw := .parsed (.num value)
+  numericDecimal := some { unscaled := value, scale := 0 }
+}
+
+private def nestedStringCell (path : List Nat) : ClassifiedCellInput := {
+  address := { field := second.id, path }
+  stored := "old"
+  raw := .parsed (.str "old")
+}
+
+private def nestedInput? (middleBase : ClassifiedCellInput) :
+    Option (CheckedDocument nestedModel) :=
+  (checkDocument nestedPrepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 10, path := [2] },
+      { group := 20, path := [1, 1] },
+      { group := 20, path := [2, 1] },
+      { group := 20, path := [1, 2] }]
+    cells := [
+      nestedNumericCell base.id [1, 1] 7,
+      middleBase,
+      nestedNumericCell base.id [1, 2] 13,
+      nestedNumericCell first.id [1, 1] 70,
+      nestedNumericCell first.id [2, 1] 110,
+      nestedNumericCell first.id [1, 2] 130,
+      nestedStringCell [1, 1],
+      nestedStringCell [2, 1],
+      nestedStringCell [1, 2],
+      nestedNumericCell third.id [1, 1] 700,
+      nestedNumericCell third.id [2, 1] 1100,
+      nestedNumericCell third.id [1, 2] 1300]
+  }).toOption
+
+private def nestedRowOutcomes? (middleBase : ClassifiedCellInput) :
+    Option (List RowView) := do
+  let plan ← nestedPlan?
+  let input ← nestedInput? middleBase
+  let outcomes ← plan.execute nestedPrepared.patterns input |>.toOption
+  pure (outcomes.rows.map fun row => {
+    coordinate := row.coordinate
+    firstTarget := row.first.targetField
+    firstOutcome := row.first.outcome
+    secondTarget := row.second.targetField
+    secondOutcome := row.second.outcome
+    thirdTarget := row.third.targetField
+    thirdOutcome := row.third.outcome
+  })
+
+private def expectedNestedRow (path : List Nat) (coordinate : Nat)
+    (firstOutcome : NumericTargetOutcome) (secondOutcome : StringTargetOutcome)
+    (thirdOutcome : NumericTargetOutcome) : RowView := {
+  coordinate
+  firstTarget := { field := first.id, path }
+  firstOutcome
+  secondTarget := { field := second.id, path }
+  secondOutcome
+  thirdTarget := { field := third.id, path }
+  thirdOutcome
+}
+
+/- A valid two-level model retains its complete scope and all three typed field edges. -/
 example :
-    (match checkCurrentRepetitionAlternatingChain nestedModel nestedPath
-        nestedGroup first.id (bare "BaseNumber") second.id (bare "FirstNumber")
-        third.id (.direct (bare "SecondString")) with
-      | .error (.numberToString (.sourceScope [10, 20])) => true
-      | _ => false) = true := by
+    nestedPlan?.map CheckedCurrentRepetitionAlternatingChain.analyze = some {
+          structuralGroup := nestedPath
+          scope := [10, 20]
+          fieldDependencies := [
+            (first.id, [base.id]),
+            (second.id, [first.id]),
+            (third.id, [second.id])]
+        } := by
+  native_decide
+
+/- The terminal coordinate stays distinct from the complete exact address while both later steps consume fresh nested state. -/
+example :
+    nestedRowOutcomes? (nestedNumericCell base.id [2, 1] 11) = some [
+      expectedNestedRow [1, 1] 1 (.accepted { unscaled := 7, scale := 0 })
+        (.accepted (stored "7" (by decide)))
+        (.accepted { unscaled := 7, scale := 0 }),
+      expectedNestedRow [2, 1] 1 (.accepted { unscaled := 11, scale := 0 })
+        (.accepted (stored "11" (by decide)))
+        (.accepted { unscaled := 11, scale := 0 }),
+      expectedNestedRow [1, 2] 2 (.accepted { unscaled := 13, scale := 0 })
+        (.accepted (stored "13" (by decide)))
+        (.accepted { unscaled := 13, scale := 0 })] := by
+  native_decide
+
+/- An invalid leaf poisons only its exact nested state chain, including beside another leaf with the same terminal coordinate. -/
+example :
+    nestedRowOutcomes? {
+      address := { field := base.id, path := [2, 1] }
+      stored := "bad"
+      raw := .rejected .malformed
+    } = some [
+      expectedNestedRow [1, 1] 1 (.accepted { unscaled := 7, scale := 0 })
+        (.accepted (stored "7" (by decide)))
+        (.accepted { unscaled := 7, scale := 0 }),
+      expectedNestedRow [2, 1] 1 (.inheritedPoison .malformed)
+        (.poison .computedDependency)
+        (.inheritedPoison .computedDependency),
+      expectedNestedRow [1, 2] 2 (.accepted { unscaled := 13, scale := 0 })
+        (.accepted (stored "13" (by decide)))
+        (.accepted { unscaled := 13, scale := 0 })] := by
   native_decide
 
 end A12Kernel.Conformance.CurrentRepetitionAlternatingChain

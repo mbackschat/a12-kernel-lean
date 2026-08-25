@@ -23,7 +23,7 @@ structure CheckedCurrentRepetitionAlternatingChain (model : FlatModel) where
   third : CheckedAddressedFieldValueAsNumber model
   thirdScope :
     third.placement.targetDeclaration.repeatableScope =
-      [numberToString.source.group.level]
+      numberToString.source.completeScope
   dependency :
     third.placement.sourceDeclaration.id = numberToString.string.targetField
   noCycle :
@@ -48,7 +48,7 @@ def checkCurrentRepetitionAlternatingChain
       declaringGroup thirdTarget thirdSource
     |>.mapError .third
   if hThirdScope : third.placement.targetDeclaration.repeatableScope =
-      [numberToString.source.group.level] then
+      numberToString.source.completeScope then
     if hDependency : third.placement.sourceDeclaration.id =
         numberToString.string.targetField then
       if hCycle : numberToString.number.placement.sourceDeclaration.id =
@@ -97,7 +97,7 @@ namespace CheckedCurrentRepetitionAlternatingChain
 def analyze (plan : CheckedCurrentRepetitionAlternatingChain model) :
     CurrentRepetitionCascadeAnalysis := {
   structuralGroup := plan.numberToString.source.path
-  scope := [plan.numberToString.source.group.level]
+  scope := plan.numberToString.source.completeScope
   fieldDependencies := [
     (plan.numberToString.number.placement.targetField,
       [plan.numberToString.number.placement.sourceDeclaration.id]),

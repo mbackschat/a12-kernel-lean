@@ -10,7 +10,7 @@ theorem checkedCurrentRepetitionNumberToStringCascade_analyze
     (plan : CheckedCurrentRepetitionNumberToStringCascade model) :
     plan.analyze = {
       structuralGroup := plan.source.path
-      scope := [plan.source.group.level]
+      scope := plan.source.completeScope
       fieldDependencies := [
         (plan.number.placement.targetField,
           [plan.number.placement.sourceDeclaration.id]),

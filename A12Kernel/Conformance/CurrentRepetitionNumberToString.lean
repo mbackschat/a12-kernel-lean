@@ -265,12 +265,18 @@ private def nestedGroup : SurfaceGroupPath := {
   groups := nestedPath
 }
 
-/- A valid two-level model reaches and is rejected by the capsule's one-level source-scope gate. -/
+/- A valid two-level model retains its complete scope and both typed field edges. -/
 example :
-    (match checkCurrentRepetitionNumberToStringCascade nestedModel nestedPath
-        nestedGroup nestedFirst.id (bare "Base") nestedSecond.id (bare "First") with
-      | .error (.sourceScope [10, 20]) => true
-      | _ => false) = true := by
+    (checkCurrentRepetitionNumberToStringCascade nestedModel nestedPath
+      nestedGroup nestedFirst.id (bare "Base") nestedSecond.id
+      (bare "First")).toOption.map
+        CheckedCurrentRepetitionNumberToStringCascade.analyze = some {
+          structuralGroup := nestedPath
+          scope := [10, 20]
+          fieldDependencies := [
+            (nestedFirst.id, [nestedBase.id]),
+            (nestedSecond.id, [nestedFirst.id])]
+        } := by
   native_decide
 
 end A12Kernel.Conformance.CurrentRepetitionNumberToString

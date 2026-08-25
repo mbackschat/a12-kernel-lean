@@ -10,7 +10,7 @@ theorem checkedCurrentRepetitionAlternatingChain_analyze
     (plan : CheckedCurrentRepetitionAlternatingChain model) :
     plan.analyze = {
       structuralGroup := plan.numberToString.source.path
-      scope := [plan.numberToString.source.group.level]
+      scope := plan.numberToString.source.completeScope
       fieldDependencies := [
         (plan.numberToString.number.placement.targetField,
           [plan.numberToString.number.placement.sourceDeclaration.id]),

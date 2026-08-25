@@ -333,12 +333,73 @@ private def nestedGroup : SurfaceGroupPath := {
   groups := nestedPath
 }
 
-/- A valid two-level model reaches and is rejected by the capsule's one-level source-scope gate. -/
+private def nestedPlan? :
+    Option (CheckedCurrentRepetitionNumberCascade nestedModel) :=
+  (checkCurrentRepetitionNumberCascade nestedModel nestedPath nestedGroup
+    nestedFirst.id (bare "Base") nestedSecond.id (bare "First")).toOption
+
+private def nestedPrepared :
+    PreparedFlatStringContext nestedModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler nestedModel).toOption.get (by native_decide)
+
+private def nestedCell (field : FieldId) (path : List Nat) (value : Int) :
+    ClassifiedCellInput := {
+  address := { field, path }
+  stored := toString value
+  raw := .parsed (.num value)
+  numericDecimal := some { unscaled := value, scale := 0 }
+}
+
+private def nestedOutcomes? : Option (List
+    (Nat × CellAddr × NumericTargetOutcome × CellAddr × NumericTargetOutcome)) := do
+  let plan ← nestedPlan?
+  let input ← (checkDocument nestedPrepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] }, { group := 10, path := [2] },
+      { group := 20, path := [1, 1] }, { group := 20, path := [2, 1] },
+      { group := 20, path := [1, 2] }]
+    cells := [
+      nestedCell nestedBase.id [1, 1] 7,
+      nestedCell nestedBase.id [2, 1] 11,
+      nestedCell nestedBase.id [1, 2] 13,
+      nestedCell nestedFirst.id [1, 1] 70,
+      nestedCell nestedFirst.id [2, 1] 110,
+      nestedCell nestedFirst.id [1, 2] 130,
+      nestedCell nestedSecond.id [1, 1] 700,
+      nestedCell nestedSecond.id [2, 1] 1100,
+      nestedCell nestedSecond.id [1, 2] 1300]
+  }).toOption
+  let outcomes ← plan.execute input |>.toOption
+  pure (outcomes.rows.map fun row =>
+    (row.coordinate, row.first.targetField, row.first.outcome,
+      row.second.targetField, row.second.outcome))
+
+/- A valid two-level model retains its complete scope separately from the selected terminal coordinate. -/
 example :
-    (match checkCurrentRepetitionNumberCascade nestedModel nestedPath nestedGroup
-        nestedFirst.id (bare "Base") nestedSecond.id (bare "First") with
-      | .error (.sourceScope [10, 20]) => true
-      | _ => false) = true := by
+    nestedPlan?.map CheckedCurrentRepetitionNumberCascade.analyze = some {
+          structuralGroup := nestedPath
+          scope := [10, 20]
+          fieldDependencies := [
+            (nestedFirst.id, [nestedBase.id]),
+            (nestedSecond.id, [nestedFirst.id])]
+        } := by
+  native_decide
+
+/- Equal terminal coordinates under different parent rows retain distinct full addresses and fresh Number state. -/
+example : nestedOutcomes? = some [
+    (1, { field := nestedFirst.id, path := [1, 1] },
+      .accepted { unscaled := 7, scale := 0 },
+      { field := nestedSecond.id, path := [1, 1] },
+      .accepted { unscaled := 7, scale := 0 }),
+    (1, { field := nestedFirst.id, path := [2, 1] },
+      .accepted { unscaled := 11, scale := 0 },
+      { field := nestedSecond.id, path := [2, 1] },
+      .accepted { unscaled := 11, scale := 0 }),
+    (2, { field := nestedFirst.id, path := [1, 2] },
+      .accepted { unscaled := 13, scale := 0 },
+      { field := nestedSecond.id, path := [1, 2] },
+      .accepted { unscaled := 13, scale := 0 })] := by
   native_decide
 
 end A12Kernel.Conformance.CurrentRepetitionComputation

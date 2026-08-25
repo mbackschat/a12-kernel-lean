@@ -13,7 +13,6 @@ inductive CurrentRepetitionStringToNumberElabError where
   | string (cause : AddressedFieldValueAsStringElabError)
   | number (cause : AddressedFieldValueAsNumberElabError)
   | groupMismatch (source declaring : GroupPath)
-  | sourceScope (actual : List RepeatableLevel)
   | stringScope (actual : List RepeatableLevel)
   | numberScope (actual : List RepeatableLevel)
   | dependency (expected actual : FieldId)
@@ -27,18 +26,16 @@ structure CheckedCurrentRepetitionStringToNumberCascade (model : FlatModel) wher
   string : CheckedAddressedFieldValueAsString model
   number : CheckedAddressedFieldValueAsNumber model
   groupMatches : source.path = string.declaringGroup
-  sourceScope :
-    model.repeatableScopeForGroupPath source.path = [source.group.level]
   stringScope :
-    string.targetDeclaration.repeatableScope = [source.group.level]
+    string.targetDeclaration.repeatableScope = source.completeScope
   numberScope :
-    number.placement.targetDeclaration.repeatableScope = [source.group.level]
+    number.placement.targetDeclaration.repeatableScope = source.completeScope
   dependency :
     number.placement.sourceDeclaration.id = string.targetField
   noReverseDependency :
     string.sourceDeclaration.id ≠ number.placement.targetField
 
-/-- Check only the exact one-level inverse cascade and its authored dependency edge. -/
+/-- Check only the exact complete-scope inverse cascade and its authored dependency edge. -/
 def checkCurrentRepetitionStringToNumberCascade
     (model : FlatModel) (declaringGroup : GroupPath)
     (group : SurfaceGroupPath)
@@ -55,35 +52,31 @@ def checkCurrentRepetitionStringToNumberCascade
     checkAddressedFieldValueAsNumber model declaringGroup numberTarget numberSource
       |>.mapError .number
   if hGroup : source.path = string.declaringGroup then
-    if hSourceScope : model.repeatableScopeForGroupPath source.path =
-        [source.group.level] then
-      if hStringScope : string.targetDeclaration.repeatableScope =
-          [source.group.level] then
-        if hNumberScope : number.placement.targetDeclaration.repeatableScope =
-            [source.group.level] then
-          if hDependency : number.placement.sourceDeclaration.id =
-              string.targetField then
-            if hReverse : string.sourceDeclaration.id =
-                number.placement.targetField then
-              throw (.reverseDependency number.placement.targetField)
-            else
-              pure {
-                source
-                string
-                number
-                groupMatches := hGroup
-                sourceScope := hSourceScope
-                stringScope := hStringScope
-                numberScope := hNumberScope
-                dependency := hDependency
-                noReverseDependency := hReverse
-              }
+    if hStringScope : string.targetDeclaration.repeatableScope =
+        source.completeScope then
+      if hNumberScope : number.placement.targetDeclaration.repeatableScope =
+          source.completeScope then
+        if hDependency : number.placement.sourceDeclaration.id =
+            string.targetField then
+          if hReverse : string.sourceDeclaration.id =
+              number.placement.targetField then
+            throw (.reverseDependency number.placement.targetField)
           else
-            throw (.dependency string.targetField
-              number.placement.sourceDeclaration.id)
-        else throw (.numberScope number.placement.targetDeclaration.repeatableScope)
-      else throw (.stringScope string.targetDeclaration.repeatableScope)
-    else throw (.sourceScope (model.repeatableScopeForGroupPath source.path))
+            pure {
+              source
+              string
+              number
+              groupMatches := hGroup
+              stringScope := hStringScope
+              numberScope := hNumberScope
+              dependency := hDependency
+              noReverseDependency := hReverse
+            }
+        else
+          throw (.dependency string.targetField
+            number.placement.sourceDeclaration.id)
+      else throw (.numberScope number.placement.targetDeclaration.repeatableScope)
+    else throw (.stringScope string.targetDeclaration.repeatableScope)
   else throw (.groupMismatch source.path string.declaringGroup)
 
 /-- Exact typed outcomes for one selected row. -/
@@ -116,7 +109,7 @@ namespace CheckedCurrentRepetitionStringToNumberCascade
 def analyze (plan : CheckedCurrentRepetitionStringToNumberCascade model) :
     CurrentRepetitionCascadeAnalysis := {
   structuralGroup := plan.source.path
-  scope := [plan.source.group.level]
+  scope := plan.source.completeScope
   fieldDependencies := [
     (plan.string.targetField, [plan.string.sourceDeclaration.id]),
     (plan.number.placement.targetField,

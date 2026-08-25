@@ -6,13 +6,12 @@ import A12Kernel.Semantics.NumericDependency
 
 namespace A12Kernel
 
-/-- Fail-closed admission errors for the maintained one-level computation shape. -/
+/-- Fail-closed admission errors for the maintained repeatable computation shape. -/
 inductive CurrentRepetitionNumberCascadeElabError where
   | source (cause : CurrentRepetitionSourceElabError)
   | first (cause : AddressedNumberFieldElabError)
   | second (cause : AddressedNumberFieldElabError)
   | groupMismatch (source declaring : GroupPath)
-  | sourceScope (actual : List RepeatableLevel)
   | firstScope (actual : List RepeatableLevel)
   | secondScope (actual : List RepeatableLevel)
   | dependency (expected actual : FieldId)
@@ -26,18 +25,16 @@ structure CheckedCurrentRepetitionNumberCascade (model : FlatModel) where
   first : CheckedAddressedNumberField model
   second : CheckedAddressedNumberField model
   groupMatches : source.path = first.placement.declaringGroup
-  sourceScope :
-    model.repeatableScopeForGroupPath source.path = [source.group.level]
   firstScope :
-    first.placement.targetDeclaration.repeatableScope = [source.group.level]
+    first.placement.targetDeclaration.repeatableScope = source.completeScope
   secondScope :
-    second.placement.targetDeclaration.repeatableScope = [source.group.level]
+    second.placement.targetDeclaration.repeatableScope = source.completeScope
   dependency :
     second.placement.sourceDeclaration.id = first.placement.targetField
   noReverseDependency :
     first.placement.sourceDeclaration.id ≠ second.placement.targetField
 
-/-- Check only the exact maintained cascade, including its one-level source and authored dependency edge. -/
+/-- Check only the exact maintained cascade, including its complete repeatable scope and authored dependency edge. -/
 def checkCurrentRepetitionNumberCascade
     (model : FlatModel) (declaringGroup : GroupPath)
     (group : SurfaceGroupPath)
@@ -52,35 +49,31 @@ def checkCurrentRepetitionNumberCascade
   let second ← checkAddressedNumberField model declaringGroup secondTarget secondSource
     |>.mapError .second
   if hGroup : source.path = first.placement.declaringGroup then
-    if hSourceScope : model.repeatableScopeForGroupPath source.path =
-        [source.group.level] then
-      if hFirstScope : first.placement.targetDeclaration.repeatableScope =
-          [source.group.level] then
-        if hSecondScope : second.placement.targetDeclaration.repeatableScope =
-            [source.group.level] then
-          if hDependency : second.placement.sourceDeclaration.id =
-              first.placement.targetField then
-            if hReverse : first.placement.sourceDeclaration.id =
-                second.placement.targetField then
-              throw (.reverseDependency second.placement.targetField)
-            else
-              pure {
-                source
-                first
-                second
-                groupMatches := hGroup
-                sourceScope := hSourceScope
-                firstScope := hFirstScope
-                secondScope := hSecondScope
-                dependency := hDependency
-                noReverseDependency := hReverse
-              }
+    if hFirstScope : first.placement.targetDeclaration.repeatableScope =
+        source.completeScope then
+      if hSecondScope : second.placement.targetDeclaration.repeatableScope =
+          source.completeScope then
+        if hDependency : second.placement.sourceDeclaration.id =
+            first.placement.targetField then
+          if hReverse : first.placement.sourceDeclaration.id =
+              second.placement.targetField then
+            throw (.reverseDependency second.placement.targetField)
           else
-            throw (.dependency first.placement.targetField
-              second.placement.sourceDeclaration.id)
-        else throw (.secondScope second.placement.targetDeclaration.repeatableScope)
-      else throw (.firstScope first.placement.targetDeclaration.repeatableScope)
-    else throw (.sourceScope (model.repeatableScopeForGroupPath source.path))
+            pure {
+              source
+              first
+              second
+              groupMatches := hGroup
+              firstScope := hFirstScope
+              secondScope := hSecondScope
+              dependency := hDependency
+              noReverseDependency := hReverse
+            }
+        else
+          throw (.dependency first.placement.targetField
+            second.placement.sourceDeclaration.id)
+      else throw (.secondScope second.placement.targetDeclaration.repeatableScope)
+    else throw (.firstScope first.placement.targetDeclaration.repeatableScope)
   else throw (.groupMismatch source.path first.placement.declaringGroup)
 
 /-- The consumer-visible structural source and real field edges. Keeping these channels separate prevents group expansion from inventing computation cycles. -/
@@ -122,7 +115,7 @@ namespace CheckedCurrentRepetitionNumberCascade
 def analyze (plan : CheckedCurrentRepetitionNumberCascade model) :
     CurrentRepetitionCascadeAnalysis := {
   structuralGroup := plan.source.path
-  scope := [plan.source.group.level]
+  scope := plan.source.completeScope
   fieldDependencies := [
     (plan.first.placement.targetField,
       [plan.first.placement.sourceDeclaration.id]),

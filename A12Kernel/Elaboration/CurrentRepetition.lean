@@ -42,6 +42,11 @@ def checkCurrentRepetitionSource
 
 namespace CheckedCurrentRepetitionSource
 
+/-- The complete repeatable scope containing the selected structural coordinate. -/
+def completeScope (source : CheckedCurrentRepetitionSource model) :
+    List RepeatableLevel :=
+  model.repeatableScopeForGroupPath source.path
+
 /-- Read the source's exact positive coordinate from the selected row environment. -/
 def coordinateAt (source : CheckedCurrentRepetitionSource model)
     (environment : Env) : Except EnvBindingError Nat :=
