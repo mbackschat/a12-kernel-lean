@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.CurrentRepetitionStringToNumber
+import A12Kernel.Elaboration.CurrentRepetitionStringToNumberRelation
 
 /-! # CurrentRepetition String-to-Number cascade locks -/
 
@@ -122,6 +122,18 @@ private def rowOutcomes? (firstBase : ClassifiedCellInput) :
     (row.coordinate, row.string.targetField, row.string.outcome,
       row.number.targetField, row.number.outcome))
 
+private def phasedOutcomes? (firstBase : ClassifiedCellInput) :
+    Option (List Nat × List (CellAddr × StringTargetOutcome) ×
+      List (CellAddr × NumericTargetOutcome)) := do
+  let plan <- plan?
+  let input <- twoRowInput? firstBase
+  let string <- plan.executeStringPhase prepared.patterns input |>.toOption
+  let number <- plan.executeNumberPhase input string |>.toOption
+  pure (string.coordinates,
+    string.outcomes.map fun outcome =>
+      (outcome.targetField, outcome.outcome),
+    number.map fun outcome => (outcome.targetField, outcome.outcome))
+
 private def encounterOrderOutcomes? :
     Option (List
       (Nat × CellAddr × StringTargetOutcome × CellAddr × NumericTargetOutcome)) := do
@@ -166,6 +178,20 @@ example :
         .accepted (storedString "11" (by decide)),
         { field := second.id, path := [2] },
         .accepted { unscaled := 11, scale := 0 })] := by
+  native_decide
+
+/- The explicit phase boundary retains every fresh String completion before the dependent Number phase reads it, rather than re-reading stale seeded targets. -/
+example :
+    phasedOutcomes? (numericCell base.id 1 7) = some (
+      [1, 2],
+      [({ field := first.id, path := [1] },
+          .accepted (storedString "7" (by decide))),
+        ({ field := first.id, path := [2] },
+          .accepted (storedString "11" (by decide)))],
+      [({ field := second.id, path := [1] },
+          .accepted { unscaled := 7, scale := 0 }),
+        ({ field := second.id, path := [2] },
+          .accepted { unscaled := 11, scale := 0 })]) := by
   native_decide
 
 /- A wider finite input preserves physical encounter order rather than sorting by coordinate. -/
