@@ -1,0 +1,67 @@
+{
+  "model": "model.dm.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "fresh-both-orders",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            { "Candidate": 2, "Produced": 4, "Offset": 1, "TotalMinusOffset": 8, "OffsetMinusTotal": -8 },
+            { "Candidate": 3, "Produced": 6, "Offset": 4, "TotalMinusOffset": 7, "OffsetMinusTotal": -7 }
+          ],
+          "Total": 9
+        }
+      }
+    },
+    {
+      "name": "fresh-producer-empty",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            { "Candidate": 2, "Produced": 4, "Offset": 1, "TotalMinusOffset": 8, "OffsetMinusTotal": -8 },
+            { "Produced": 6, "Offset": 4, "TotalMinusOffset": 7, "OffsetMinusTotal": -7 }
+          ],
+          "Total": 9
+        }
+      }
+    },
+    {
+      "name": "aggregate-poison",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            { "Candidate": 2, "Produced": 4, "Offset": 1, "TotalMinusOffset": 8, "OffsetMinusTotal": -8 },
+            { "Candidate": "bad", "Produced": 6, "Offset": 4, "TotalMinusOffset": 7, "OffsetMinusTotal": -7 }
+          ],
+          "Total": 9
+        }
+      }
+    },
+    {
+      "name": "row-local-poison",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            { "Candidate": 2, "Produced": 4, "Offset": 1, "TotalMinusOffset": 8, "OffsetMinusTotal": -8 },
+            { "Candidate": 3, "Produced": 6, "Offset": "bad", "TotalMinusOffset": 7, "OffsetMinusTotal": -7 }
+          ],
+          "Total": 9
+        }
+      }
+    },
+    {
+      "name": "no-rows",
+      "documentInline": {
+        "Order": {
+          "Lines": [],
+          "Total": 9
+        }
+      }
+    }
+  ]
+}

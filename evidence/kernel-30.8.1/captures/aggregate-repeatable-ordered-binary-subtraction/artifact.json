@@ -1,0 +1,1054 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "975a2e78602eaf26126168cd203bd84738885322",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "model.dm.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "fresh-both-orders",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "OffsetMinusTotalComputation",
+              "field" : "Order/Lines[2]/OffsetMinusTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtract the aggregate total from the row offset.",
+              "referenced" : [
+                "Order/Lines[2]/Offset",
+                "Order/Lines[2]/OffsetMinusTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TotalMinusOffsetComputation",
+              "field" : "Order/Lines[2]/TotalMinusOffset",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtract the row offset from the aggregate total.",
+              "referenced" : [
+                "Order/Lines[2]/Offset",
+                "Order/Lines[2]/TotalMinusOffset",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/OffsetMinusTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "-4"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines/TotalMinusOffset",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              },
+              {
+                "field" : "Order/Lines[2]/OffsetMinusTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "-1"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Order/Lines[2]/TotalMinusOffset",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "OffsetMinusTotalComputation",
+              "field" : "Order/Lines[2]/OffsetMinusTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtract the aggregate total from the row offset.",
+              "referenced" : [
+                "Order/Lines[2]/Offset",
+                "Order/Lines[2]/OffsetMinusTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TotalMinusOffsetComputation",
+              "field" : "Order/Lines[2]/TotalMinusOffset",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtract the row offset from the aggregate total.",
+              "referenced" : [
+                "Order/Lines[2]/Offset",
+                "Order/Lines[2]/TotalMinusOffset",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/OffsetMinusTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "-4"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines/TotalMinusOffset",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              },
+              {
+                "field" : "Order/Lines[2]/OffsetMinusTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "-1"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Order/Lines[2]/TotalMinusOffset",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "fresh-producer-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "OffsetMinusTotalComputation",
+              "field" : "Order/Lines[2]/OffsetMinusTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtract the aggregate total from the row offset.",
+              "referenced" : [
+                "Order/Lines[2]/Offset",
+                "Order/Lines[2]/OffsetMinusTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TotalMinusOffsetComputation",
+              "field" : "Order/Lines[2]/TotalMinusOffset",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtract the row offset from the aggregate total.",
+              "referenced" : [
+                "Order/Lines[2]/Offset",
+                "Order/Lines[2]/TotalMinusOffset",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/OffsetMinusTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "-1"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines/TotalMinusOffset",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines[2]/OffsetMinusTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Lines[2]/TotalMinusOffset",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "-2"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "OffsetMinusTotalComputation",
+              "field" : "Order/Lines[2]/OffsetMinusTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtract the aggregate total from the row offset.",
+              "referenced" : [
+                "Order/Lines[2]/Offset",
+                "Order/Lines[2]/OffsetMinusTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TotalMinusOffsetComputation",
+              "field" : "Order/Lines[2]/TotalMinusOffset",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtract the row offset from the aggregate total.",
+              "referenced" : [
+                "Order/Lines[2]/Offset",
+                "Order/Lines[2]/TotalMinusOffset",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/OffsetMinusTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "-1"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines/TotalMinusOffset",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Order/Lines[2]/OffsetMinusTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Lines[2]/TotalMinusOffset",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "-2"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "aggregate-poison",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "OffsetMinusTotalComputation",
+              "field" : "Order/Lines[2]/OffsetMinusTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtract the aggregate total from the row offset.",
+              "referenced" : [
+                "Order/Lines[2]/Offset",
+                "Order/Lines[2]/OffsetMinusTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TotalMinusOffsetComputation",
+              "field" : "Order/Lines[2]/TotalMinusOffset",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtract the row offset from the aggregate total.",
+              "referenced" : [
+                "Order/Lines[2]/Offset",
+                "Order/Lines[2]/TotalMinusOffset",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines[2]/Candidate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/OffsetMinusTotal",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines/TotalMinusOffset",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/OffsetMinusTotal",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/TotalMinusOffset",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines[2]/Candidate",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Order/Lines[2]/Candidate"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "OffsetMinusTotalComputation",
+              "field" : "Order/Lines[2]/OffsetMinusTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtract the aggregate total from the row offset.",
+              "referenced" : [
+                "Order/Lines[2]/Offset",
+                "Order/Lines[2]/OffsetMinusTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TotalMinusOffsetComputation",
+              "field" : "Order/Lines[2]/TotalMinusOffset",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtract the row offset from the aggregate total.",
+              "referenced" : [
+                "Order/Lines[2]/Offset",
+                "Order/Lines[2]/TotalMinusOffset",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines[2]/Candidate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/OffsetMinusTotal",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines/TotalMinusOffset",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/OffsetMinusTotal",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/TotalMinusOffset",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines[2]/Candidate",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Order/Lines[2]/Candidate"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "row-local-poison",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines[2]/Offset",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Order/Lines[2]/Offset"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/OffsetMinusTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "-4"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines/TotalMinusOffset",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              },
+              {
+                "field" : "Order/Lines[2]/OffsetMinusTotal",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Order/Lines[2]/TotalMinusOffset",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines[2]/Offset",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Order/Lines[2]/Offset"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines[2]/Offset",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Order/Lines[2]/Offset"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/OffsetMinusTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "-4"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines/TotalMinusOffset",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              },
+              {
+                "field" : "Order/Lines[2]/OffsetMinusTotal",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Order/Lines[2]/TotalMinusOffset",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines[2]/Offset",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Order/Lines[2]/Offset"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "no-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

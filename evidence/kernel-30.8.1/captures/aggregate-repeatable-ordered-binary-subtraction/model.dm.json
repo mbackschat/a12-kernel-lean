@@ -1,0 +1,176 @@
+{
+  "header" : {
+    "id" : "order-clear-actions",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "order-clear-actions",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Order",
+        "name" : "Order",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Order/Lines",
+            "name" : "Lines",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Order/Lines/Candidate",
+                "name" : "Candidate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/Produced",
+                "name" : "Produced",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Order/Lines/ProducedProjection",
+                "name" : "ProducedProjection",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Produced",
+                  "computationAlternatives" : [ {
+                    "operation" : "[Candidate]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Compute the row producer."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/Offset",
+                "name" : "Offset",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/TotalMinusOffset",
+                "name" : "TotalMinusOffset",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/OffsetMinusTotal",
+                "name" : "OffsetMinusTotal",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Order/Lines/TotalMinusOffsetComputation",
+                "name" : "TotalMinusOffsetComputation",
+                "Computation" : {
+                  "computedFieldRelPath" : "../TotalMinusOffset",
+                  "computationAlternatives" : [ {
+                    "operation" : "[../Total] - [Offset]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Subtract the row offset from the aggregate total."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Order/Lines/OffsetMinusTotalComputation",
+                "name" : "OffsetMinusTotalComputation",
+                "Computation" : {
+                  "computedFieldRelPath" : "../OffsetMinusTotal",
+                  "computationAlternatives" : [ {
+                    "operation" : "[Offset] - [../Total]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Subtract the aggregate total from the row offset."
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Total",
+            "name" : "Total",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Order/TotalComputation",
+            "name" : "TotalComputation",
+            "Computation" : {
+              "computedFieldRelPath" : "../Total",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Lines*/Produced)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Calculate the produced total."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
