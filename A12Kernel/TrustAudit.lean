@@ -2001,8 +2001,11 @@ run_cmd do
 #print axioms A12Kernel.parallelNumericPlan_execute_owns_target_fields
 #print axioms A12Kernel.parallelNumericPlan_execute_addresses_nodup
 #print axioms A12Kernel.parallelNumericPlan_executeResult_classifies
+#print axioms A12Kernel.parallelNumericRun_failureTransition_identity
 #print axioms A12Kernel.parallelNumericRun_executeTables_trace
 #print axioms A12Kernel.parallelNumericRun_execute_trace
+#print axioms A12Kernel.parallelNumericRun_executeTables_failureTrace
+#print axioms A12Kernel.parallelNumericRun_execute_failureTrace
 #print axioms A12Kernel.firstForwardComputationDependency_none_tail
 #print axioms A12Kernel.firstForwardComputationDependency_none_suffix
 #print axioms A12Kernel.firstForwardComputationDependency_none_head

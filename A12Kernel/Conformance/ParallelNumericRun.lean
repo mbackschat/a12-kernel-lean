@@ -467,6 +467,38 @@ example :
   · exact relationEnabled _ _ (by native_decide) (by native_decide)
       (by native_decide)
 
+/- A structural table fault is only a conditional branch for this fixture: no
+current valid input witnesses one. If it occurs, the enabled table fails after
+the action-free seed's completed-target state and cannot reset that state merely
+because the seed emitted no addressed outcomes. -/
+example (error : CheckedIsolatedParallelNumericDirectRun.ExecutionError)
+    (executed :
+      relationMiddleTable.executeWithRead relationPreliminary
+        (relationPlan.readPolicy afterActionFreeSeed.runState
+          relationPreliminary.base) = .error error) :
+    afterActionFreeSeed.completedTargets = [6] ∧
+      afterActionFreeSeed.outcomes = [] ∧
+      ParallelNumericRunFailureTransition relationPlan relationPreliminary
+        afterActionFreeSeed (.table relationMiddleTable.targetField error) ∧
+      ParallelNumericRunFailureTrace relationPlan relationPreliminary
+        afterActionFreeSeed [] afterActionFreeSeed
+          (.table relationMiddleTable.targetField error) := by
+  constructor
+  · native_decide
+  constructor
+  · native_decide
+  have failed : ParallelNumericRunFailureTransition relationPlan
+      relationPreliminary afterActionFreeSeed
+        (.table relationMiddleTable.targetField error) :=
+    .fail relationMiddleTable (by
+      change relationMiddleTable ∈
+        [relationSeedTable, relationMiddleTable, relationConsumerTable]
+      simp)
+      (by native_decide)
+      (relationEnabled _ _ (by native_decide) (by native_decide)
+        (by native_decide)) error executed
+  exact ⟨failed, .failed failed⟩
+
 private def independentFirstTable :=
   (table? 4 offsetPath 6).get (by native_decide)
 
