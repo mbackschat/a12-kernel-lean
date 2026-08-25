@@ -1,0 +1,79 @@
+{
+  "model": "model.dm.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "fresh-fit-and-no-fit",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            { "Candidate": 30, "Produced": 40, "Divisor": 10, "TotalOverDivisor": 9, "DivisorOverTotal": 9 },
+            { "Candidate": 50, "Produced": 60, "Divisor": 20, "TotalOverDivisor": 7, "DivisorOverTotal": 7 }
+          ],
+          "Total": 90
+        }
+      }
+    },
+    {
+      "name": "fresh-producer-empty",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            { "Candidate": 30, "Produced": 40, "Divisor": 10, "TotalOverDivisor": 9, "DivisorOverTotal": 9 },
+            { "Produced": 60, "Divisor": 20, "TotalOverDivisor": 7, "DivisorOverTotal": 7 }
+          ],
+          "Total": 90
+        }
+      }
+    },
+    {
+      "name": "aggregate-poison",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            { "Candidate": 30, "Produced": 40, "Divisor": 10, "TotalOverDivisor": 9, "DivisorOverTotal": 9 },
+            { "Candidate": "bad", "Produced": 60, "Divisor": 20, "TotalOverDivisor": 7, "DivisorOverTotal": 7 }
+          ],
+          "Total": 90
+        }
+      }
+    },
+    {
+      "name": "row-local-poison",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            { "Candidate": 30, "Produced": 40, "Divisor": 10, "TotalOverDivisor": 9, "DivisorOverTotal": 9 },
+            { "Candidate": 50, "Produced": 60, "Divisor": "bad", "TotalOverDivisor": 7, "DivisorOverTotal": 7 }
+          ],
+          "Total": 90
+        }
+      }
+    },
+    {
+      "name": "zero-divisor-order",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            { "Candidate": 30, "Produced": 40, "Divisor": 0, "TotalOverDivisor": 9, "DivisorOverTotal": 9 },
+            { "Candidate": 50, "Produced": 60, "Divisor": 20, "TotalOverDivisor": 7, "DivisorOverTotal": 7 }
+          ],
+          "Total": 90
+        }
+      }
+    },
+    {
+      "name": "no-rows",
+      "documentInline": {
+        "Order": {
+          "Lines": [],
+          "Total": 90
+        }
+      }
+    }
+  ]
+}

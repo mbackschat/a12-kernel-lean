@@ -46,20 +46,8 @@
                   "fieldType" : {
                     "type" : "NumberType",
                     "NumberType" : {
-                      "maxFractionalDigits" : 0
-                    }
-                  }
-                }
-              }, {
-                "type" : "Field",
-                "id" : "/Order/Lines/Amount",
-                "name" : "Amount",
-                "Field" : {
-                  "fieldType" : {
-                    "type" : "NumberType",
-                    "NumberType" : {
-                      "maxFractionalDigits" : 0,
-                      "maxValue" : 9
+                      "maxFractionalDigits" : 2,
+                      "minFractionalDigits" : 2
                     }
                   }
                 }
@@ -71,7 +59,8 @@
                   "fieldType" : {
                     "type" : "NumberType",
                     "NumberType" : {
-                      "maxFractionalDigits" : 0
+                      "maxFractionalDigits" : 2,
+                      "minFractionalDigits" : 2
                     }
                   }
                 }
@@ -91,43 +80,71 @@
                 }
               }, {
                 "type" : "Field",
-                "id" : "/Order/Lines/Final",
-                "name" : "Final",
+                "id" : "/Order/Lines/Divisor",
+                "name" : "Divisor",
                 "Field" : {
                   "fieldType" : {
                     "type" : "NumberType",
                     "NumberType" : {
-                      "maxFractionalDigits" : 0
+                      "maxFractionalDigits" : 2,
+                      "minFractionalDigits" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/TotalOverDivisor",
+                "name" : "TotalOverDivisor",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2,
+                      "minFractionalDigits" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/DivisorOverTotal",
+                "name" : "DivisorOverTotal",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2,
+                      "minFractionalDigits" : 2
                     }
                   }
                 }
               }, {
                 "type" : "Computation",
-                "id" : "/Order/Lines/FinalProjection",
-                "name" : "FinalProjection",
+                "id" : "/Order/Lines/TotalOverDivisorComputation",
+                "name" : "TotalOverDivisorComputation",
                 "Computation" : {
-                  "computedFieldRelPath" : "../Final",
+                  "computedFieldRelPath" : "../TotalOverDivisor",
+                  "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
                   "computationAlternatives" : [ {
-                    "operation" : "[Amount]"
+                    "operation" : "[../Total] / [Divisor]"
                   } ],
                   "errorMessage" : [ {
                     "locale" : "en_US",
-                    "text" : "Project the row amount to the final field."
+                    "text" : "Divide the aggregate total by the row divisor."
                   } ]
                 }
               }, {
                 "type" : "Computation",
-                "id" : "/Order/Lines/AmountProjection",
-                "name" : "AmountProjection",
+                "id" : "/Order/Lines/DivisorOverTotalComputation",
+                "name" : "DivisorOverTotalComputation",
                 "Computation" : {
-                  "computedFieldRelPath" : "../Amount",
-                  "commonPrecondition" : "CurrentRepetition(/Order/Lines) > 0",
+                  "computedFieldRelPath" : "../DivisorOverTotal",
+                  "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
                   "computationAlternatives" : [ {
-                    "operation" : "[../Total]"
+                    "operation" : "[Divisor] / [../Total]"
                   } ],
                   "errorMessage" : [ {
                     "locale" : "en_US",
-                    "text" : "Project the total to every row."
+                    "text" : "Divide the row divisor by the aggregate total."
                   } ]
                 }
               } ]
@@ -140,7 +157,8 @@
               "fieldType" : {
                 "type" : "NumberType",
                 "NumberType" : {
-                  "maxFractionalDigits" : 0
+                  "maxFractionalDigits" : 2,
+                  "minFractionalDigits" : 2
                 }
               }
             }

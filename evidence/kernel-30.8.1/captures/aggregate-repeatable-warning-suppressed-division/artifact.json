@@ -1,0 +1,1446 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "975a2e78602eaf26126168cd203bd84738885322",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "model.dm.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "fresh-fit-and-no-fit",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines/Divisor",
+                "Order/Lines/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines[2]/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TotalOverDivisorComputation",
+              "field" : "Order/Lines[2]/TotalOverDivisor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the aggregate total by the row divisor.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/TotalOverDivisor",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/DivisorOverTotal",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "0.125"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30.00"
+              },
+              {
+                "field" : "Order/Lines/TotalOverDivisor",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8.00"
+              },
+              {
+                "field" : "Order/Lines[2]/DivisorOverTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0.25"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "50.00"
+              },
+              {
+                "field" : "Order/Lines[2]/TotalOverDivisor",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4.00"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "80.00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines/Divisor",
+                "Order/Lines/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines[2]/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TotalOverDivisorComputation",
+              "field" : "Order/Lines[2]/TotalOverDivisor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the aggregate total by the row divisor.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/TotalOverDivisor",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/DivisorOverTotal",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "0.125"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30.00"
+              },
+              {
+                "field" : "Order/Lines/TotalOverDivisor",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8.00"
+              },
+              {
+                "field" : "Order/Lines[2]/DivisorOverTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0.25"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "50.00"
+              },
+              {
+                "field" : "Order/Lines[2]/TotalOverDivisor",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4.00"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "80.00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "fresh-producer-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines/Divisor",
+                "Order/Lines/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines[2]/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TotalOverDivisorComputation",
+              "field" : "Order/Lines[2]/TotalOverDivisor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the aggregate total by the row divisor.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/TotalOverDivisor",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/DivisorOverTotal",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "0.3333333333333333"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30.00"
+              },
+              {
+                "field" : "Order/Lines/TotalOverDivisor",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3.00"
+              },
+              {
+                "field" : "Order/Lines[2]/DivisorOverTotal",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "0.6666666666666667"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0.00"
+              },
+              {
+                "field" : "Order/Lines[2]/TotalOverDivisor",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1.50"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30.00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines/Divisor",
+                "Order/Lines/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines[2]/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TotalOverDivisorComputation",
+              "field" : "Order/Lines[2]/TotalOverDivisor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the aggregate total by the row divisor.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/TotalOverDivisor",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/DivisorOverTotal",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "0.3333333333333333"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30.00"
+              },
+              {
+                "field" : "Order/Lines/TotalOverDivisor",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3.00"
+              },
+              {
+                "field" : "Order/Lines[2]/DivisorOverTotal",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "0.6666666666666667"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0.00"
+              },
+              {
+                "field" : "Order/Lines[2]/TotalOverDivisor",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1.50"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30.00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "aggregate-poison",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines/Divisor",
+                "Order/Lines/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines[2]/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TotalOverDivisorComputation",
+              "field" : "Order/Lines[2]/TotalOverDivisor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the aggregate total by the row divisor.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/TotalOverDivisor",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines[2]/Candidate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/DivisorOverTotal",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30.00"
+              },
+              {
+                "field" : "Order/Lines/TotalOverDivisor",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/DivisorOverTotal",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/TotalOverDivisor",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines[2]/Candidate",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+                "referenced" : [
+                  "Order/Lines[2]/Candidate"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines/Divisor",
+                "Order/Lines/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines[2]/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TotalOverDivisorComputation",
+              "field" : "Order/Lines[2]/TotalOverDivisor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the aggregate total by the row divisor.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/TotalOverDivisor",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines[2]/Candidate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/DivisorOverTotal",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30.00"
+              },
+              {
+                "field" : "Order/Lines/TotalOverDivisor",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/DivisorOverTotal",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/TotalOverDivisor",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines[2]/Candidate",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+                "referenced" : [
+                  "Order/Lines[2]/Candidate"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "row-local-poison",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines/Divisor",
+                "Order/Lines/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines[2]/Divisor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/DivisorOverTotal",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "0.125"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30.00"
+              },
+              {
+                "field" : "Order/Lines/TotalOverDivisor",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8.00"
+              },
+              {
+                "field" : "Order/Lines[2]/DivisorOverTotal",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "50.00"
+              },
+              {
+                "field" : "Order/Lines[2]/TotalOverDivisor",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "80.00"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines[2]/Divisor",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+                "referenced" : [
+                  "Order/Lines[2]/Divisor"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines/Divisor",
+                "Order/Lines/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines[2]/Divisor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/DivisorOverTotal",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "0.125"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30.00"
+              },
+              {
+                "field" : "Order/Lines/TotalOverDivisor",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8.00"
+              },
+              {
+                "field" : "Order/Lines[2]/DivisorOverTotal",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "50.00"
+              },
+              {
+                "field" : "Order/Lines[2]/TotalOverDivisor",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "80.00"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines[2]/Divisor",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only values of the format '0.00' or '-0.00' with exactly 2 decimal places are allowed.",
+                "referenced" : [
+                  "Order/Lines[2]/Divisor"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "zero-divisor-order",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines/Divisor",
+                "Order/Lines/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines[2]/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TotalOverDivisorComputation",
+              "field" : "Order/Lines[2]/TotalOverDivisor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the aggregate total by the row divisor.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/TotalOverDivisor",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/DivisorOverTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0.00"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30.00"
+              },
+              {
+                "field" : "Order/Lines/TotalOverDivisor",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/DivisorOverTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0.25"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "50.00"
+              },
+              {
+                "field" : "Order/Lines[2]/TotalOverDivisor",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4.00"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "80.00"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Order/Lines/TotalOverDivisor",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The calculated value is not valid for the field.",
+                "referenced" : [
+                  "Order/Lines/TotalOverDivisor"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines/Divisor",
+                "Order/Lines/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DivisorOverTotalComputation",
+              "field" : "Order/Lines[2]/DivisorOverTotal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the row divisor by the aggregate total.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/DivisorOverTotal",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TotalOverDivisorComputation",
+              "field" : "Order/Lines[2]/TotalOverDivisor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Divide the aggregate total by the row divisor.",
+              "referenced" : [
+                "Order/Lines[2]/Divisor",
+                "Order/Lines[2]/TotalOverDivisor",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/DivisorOverTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0.00"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30.00"
+              },
+              {
+                "field" : "Order/Lines/TotalOverDivisor",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/DivisorOverTotal",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0.25"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "50.00"
+              },
+              {
+                "field" : "Order/Lines[2]/TotalOverDivisor",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4.00"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "80.00"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Order/Lines/TotalOverDivisor",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The calculated value is not valid for the field.",
+                "referenced" : [
+                  "Order/Lines/TotalOverDivisor"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "no-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0.00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0.00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}
