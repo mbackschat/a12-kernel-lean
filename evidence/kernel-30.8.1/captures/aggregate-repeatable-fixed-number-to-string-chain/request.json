@@ -1,0 +1,55 @@
+{
+  "model": "model.dm.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "fresh-two-values",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            { "Candidate": 2, "Produced": 4, "Amount": 8, "Label": "old-a" },
+            { "Candidate": 3, "Produced": 6, "Amount": 9, "Label": "old-b" }
+          ],
+          "Total": 9
+        }
+      }
+    },
+    {
+      "name": "fresh-value-plus-empty",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            { "Candidate": 2, "Produced": 4, "Amount": 8, "Label": "old-a" },
+            { "Produced": 6, "Amount": 9, "Label": "old-b" }
+          ],
+          "Total": 9
+        }
+      }
+    },
+    {
+      "name": "fresh-malformed-second-row",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            { "Candidate": 2, "Produced": 4, "Amount": 8, "Label": "old-a" },
+            { "Candidate": "bad", "Produced": 6, "Amount": 9, "Label": "old-b" }
+          ],
+          "Total": 9
+        }
+      }
+    },
+    {
+      "name": "no-rows",
+      "documentInline": {
+        "Order": {
+          "Lines": [],
+          "Total": 9
+        }
+      }
+    }
+  ]
+}
