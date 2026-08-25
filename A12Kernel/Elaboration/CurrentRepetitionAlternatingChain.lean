@@ -121,31 +121,51 @@ private def readAfterSecond (input : CheckedDocument model)
   | some dependency => .ok dependency.2
   | none => input.read address
 
-/-- Execute the completed Number-to-String prefix, then expose each String completion only to the third step at its exact dependent address. -/
+/-- Consume the complete String phase at exact addresses and retain the third Number outcomes separately. Dependency conversion stays at this boundary. -/
+def executeThirdPhase (plan : CheckedCurrentRepetitionAlternatingChain model)
+    (input : CheckedDocument model)
+    (string : List (SourcedStringTargetOutcome CellAddr)) :
+    Except CurrentRepetitionAlternatingChainFault
+      (List (SourcedNumericTargetOutcome CellAddr)) := do
+  let dependencies ← dependencyCells string
+    |>.mapError .dependency
+  let thirdOutcomes ← plan.third.executeWithRead input
+      (readAfterSecond input dependencies) |>.mapError .third
+  if thirdOutcomes.length != string.length then
+    throw (.outcomeCardinality plan.third.placement.targetField
+      thirdOutcomes.length)
+  pure thirdOutcomes
+
+/-- Assemble the three completed typed phases without collapsing their structural coordinate or family boundaries. -/
+def assemblePhases
+    (number : CurrentRepetitionNumberToStringNumberPhase)
+    (string : List (SourcedStringTargetOutcome CellAddr))
+    (third : List (SourcedNumericTargetOutcome CellAddr)) :
+    CurrentRepetitionAlternatingChainOutcomes :=
+  let firstTwo :=
+    CheckedCurrentRepetitionNumberToStringCascade.assemblePhases number string
+  {
+    rows := (firstTwo.rows.zip third).map fun
+      | (row, third) => {
+          coordinate := row.coordinate
+          first := row.number
+          second := row.string
+          third
+        }
+  }
+
+/-- Execute all addressed Number targets, then all dependent String targets, then expose each completed String only to the third Number step at its exact address. -/
 def execute (plan : CheckedCurrentRepetitionAlternatingChain model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (input : CheckedDocument model) :
     Except CurrentRepetitionAlternatingChainFault
       CurrentRepetitionAlternatingChainOutcomes := do
-  let prefixOutcomes ← plan.numberToString.execute patterns input
+  let number ← plan.numberToString.executeNumberPhaseWithRead input input.read
     |>.mapError .numberToString
-  let dependencies ← dependencyCells
-      (prefixOutcomes.rows.map fun row => row.string)
-    |>.mapError .dependency
-  let thirdOutcomes ← plan.third.executeWithRead input
-      (readAfterSecond input dependencies) |>.mapError .third
-  if thirdOutcomes.length != prefixOutcomes.rows.length then
-    throw (.outcomeCardinality plan.third.placement.targetField
-      thirdOutcomes.length)
-  pure {
-    rows := (prefixOutcomes.rows.zip thirdOutcomes).map fun
-      | (firstTwo, third) => {
-          coordinate := firstTwo.coordinate
-          first := firstTwo.number
-          second := firstTwo.string
-          third
-        }
-  }
+  let string ← plan.numberToString.executeStringPhase patterns input number
+    |>.mapError .numberToString
+  let third ← plan.executeThirdPhase input string
+  pure (assemblePhases number string third)
 
 end CheckedCurrentRepetitionAlternatingChain
 

@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.CurrentRepetitionAlternatingChain
+import A12Kernel.Elaboration.CurrentRepetitionAlternatingChainRelation
 
 /-! # CurrentRepetition alternating Number/String chain locks -/
 
@@ -156,6 +156,30 @@ private def rowOutcomes? (firstBase : ClassifiedCellInput) :
     thirdOutcome := row.third.outcome
   })
 
+private structure PhaseView where
+  coordinates : List Nat
+  number : List (CellAddr × NumericTargetOutcome)
+  string : List (CellAddr × StringTargetOutcome)
+  third : List (CellAddr × NumericTargetOutcome)
+  deriving Repr, DecidableEq
+
+private def phasedOutcomes? (firstBase : ClassifiedCellInput) :
+    Option PhaseView := do
+  let plan <- plan?
+  let input <- twoRowInput? firstBase
+  let number <- plan.numberToString.executeNumberPhaseWithRead input input.read
+    |>.toOption
+  let string <- plan.numberToString.executeStringPhase prepared.patterns input number
+    |>.toOption
+  let third <- plan.executeThirdPhase input string |>.toOption
+  pure {
+    coordinates := number.coordinates
+    number := number.outcomes.map fun outcome =>
+      (outcome.targetField, outcome.outcome),
+    string := string.map fun outcome => (outcome.targetField, outcome.outcome)
+    third := third.map fun outcome => (outcome.targetField, outcome.outcome)
+  }
+
 private def encounterOrderOutcomes? :
     Option (List RowView) := do
   let plan <- plan?
@@ -200,6 +224,25 @@ example :
       expectedRow 2 (.accepted { unscaled := 11, scale := 0 })
         (.accepted (stored "11" (by decide)))
         (.accepted { unscaled := 11, scale := 0 })] := by
+  native_decide
+
+/- Each explicit phase retains its complete fresh predecessor before the next family reads it, rather than re-reading either stale seeded target. -/
+example :
+    phasedOutcomes? (numericCell base.id 1 7) = some {
+      coordinates := [1, 2]
+      number := [({ field := first.id, path := [1] },
+          .accepted { unscaled := 7, scale := 0 }),
+        ({ field := first.id, path := [2] },
+          .accepted { unscaled := 11, scale := 0 })]
+      string := [({ field := second.id, path := [1] },
+          .accepted (stored "7" (by decide))),
+        ({ field := second.id, path := [2] },
+          .accepted (stored "11" (by decide)))]
+      third := [({ field := third.id, path := [1] },
+          .accepted { unscaled := 7, scale := 0 }),
+        ({ field := third.id, path := [2] },
+          .accepted { unscaled := 11, scale := 0 })]
+    } := by
   native_decide
 
 /- A wider finite input preserves physical encounter order. -/
