@@ -106,6 +106,13 @@ example : numberOfFilledGroups [admittedAndErroneous, cleanFilled] = .unknown :=
 example : numberOfFilledGroups [cleanFilled, cleanEmpty] = .value 1 := by native_decide
 example : numberOfFilledGroups [state [valid] false false .partlyRelevant] = .unknown := by native_decide
 
+/- A fixed group is one declared entity, not one entity per descendant. One filled descendant makes
+   a half-filled group count as given; exhausting both declared group operands makes the count fixed. -/
+example :
+    let counted := numberOfFilledGroups [state [valid, empty] false false, cleanFilled]
+    counted = .value 2 ∧ counted.availableWithFillability? 2 = some (2, .fixed) := by
+  native_decide
+
 example : malformedOnly.activatesRelativeRequiredness = false := by native_decide
 example : (state [duplicate] false false).activatesRelativeRequiredness = true := by native_decide
 example : (state [empty] true true).activatesRelativeRequiredness = true := by native_decide

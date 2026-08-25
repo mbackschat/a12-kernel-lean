@@ -1,4 +1,5 @@
 import A12Kernel.Cell
+import A12Kernel.Semantics.NumericFillability
 
 /-! # Field-fill quantifier vocabulary and the filled-field count
 
@@ -29,6 +30,21 @@ inductive FilledFieldCount where
   | value (count : Nat)
   | unknown
   deriving Repr, DecidableEq
+
+namespace FilledFieldCount
+
+/-- Pair an available validation count with its movement against the declared entity extent. A
+    missing entity can only increase the count; exhausting the extent makes it fixed. Cause-free
+    count unavailability remains absent rather than acquiring a fabricated formal cause. -/
+def availableWithFillability? (result : FilledFieldCount)
+    (declaredExtent : Nat) : Option (Nat × NumericFillability) :=
+  match result with
+  | .unknown => none
+  | .value count =>
+      some (count,
+        if count < declaredExtent then .growOnly else .fixed)
+
+end FilledFieldCount
 
 /-- Count the filled operands of `NumberOfFilledFields` in the validation arm.
 

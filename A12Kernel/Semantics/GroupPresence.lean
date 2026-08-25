@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.Observation
+import A12Kernel.Semantics.NumericFillability
 import A12Kernel.Semantics.ValidationFillQuantifier
 
 /-! # Resolved group presence in both evaluation arms
@@ -218,6 +219,21 @@ inductive FilledGroupCount where
   | value (count : Nat)
   | unknown
   deriving Repr, DecidableEq
+
+namespace FilledGroupCount
+
+/-- Pair an available group count with its movement against the declared entity extent. Unused
+    declared entities make the count grow-only; exhausting the extent makes it fixed independently
+    of descendant cell content. Cause-free group-state unavailability remains absent. -/
+def availableWithFillability? (result : FilledGroupCount)
+    (declaredExtent : Nat) : Option (Nat × NumericFillability) :=
+  match result with
+  | .unknown => none
+  | .value count =>
+      some (count,
+        if count < declaredExtent then .growOnly else .fixed)
+
+end FilledGroupCount
 
 def numberOfFilledGroups (states : List GroupPresenceState) : FilledGroupCount :=
   if states.any (fun state => state.erroneous || !(state.relevance == .fullyRelevant)) then .unknown

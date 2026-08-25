@@ -64,6 +64,8 @@ The per-kind table is only the *default*. Several operators route an empty opera
 
 The last two rows are one design split seen from both sides, and they resolve the "min/max ignore empties" rider above: the **aggregates** `MaxValue`/`MinValue` drop empties; the **operand-list** `Min`/`Max` substitute. `0` is `Sum`'s neutral element but not min/max's, which is *why* the aggregates must drop empties where `Sum` may fold them.
 
+The count row's grow-only summary is conditional on unused declared entities. A fixed group operand expands to its direct field entities for both `NumberOfValueInFields` and `NumberOfFilledFields`; when every direct field is filled, the count has exhausted that declared extent and a firing comparison whose polarity depends on possible future growth is VALUE-typed. With one direct field still empty, the same available count remains grow-only and the corresponding firing is OMISSION-typed. Reading the valueless group path itself as one empty cell is not equivalent.
+
 ### A.3 What an all-empty selection folds to (the aggregate identities)
 
 "One operand empty" (A.2) and "the *whole* selection empty" are different questions. Each aggregate has a defined identity for the all-empty case:

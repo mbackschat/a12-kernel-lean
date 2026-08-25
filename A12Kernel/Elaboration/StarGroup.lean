@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.GroupPresence
+import A12Kernel.Semantics.NumericComparison
 
 /-! # Checked group-star consumers
 
@@ -221,6 +222,17 @@ def evaluateFull (checked : CheckedStarredGroupSource model)
 def numberOfFilledGroups (checked : CheckedStarredGroupSource model)
     (document : Document) (outer : Env) : Except StarAddressingError FilledGroupCount := do
   pure (.value (← checked.inCapacityRowCount document outer))
+
+/-- Compare the structural row count against the terminal group's declared extent when that extent
+    is retained by the checked model. A model without a finite retained extent yields `none` rather
+    than acquiring an unmeasured movement rule. -/
+def numberOfFilledGroupsOperand? (checked : CheckedStarredGroupSource model)
+    (document : Document) (outer : Env) :
+    Except StarAddressingError (Option NumericOperand) := do
+  let count ← checked.numberOfFilledGroups document outer
+  pure (checked.group.repeatability.bind fun extent =>
+    (count.availableWithFillability? extent).map fun available =>
+      .value available.1 available.2)
 
 /-- Count the starred group in partial validation only after its group-path extent is known. The gate precedes topology resolution. -/
 def evaluatePartialNumberOfFilledGroups

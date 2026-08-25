@@ -82,7 +82,9 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 ### EXP-2026-08-25-01 - Does separate-destination application pad predecessor rows and preserve address order for later validation
 
-- **Status:** pending
+- **Status:** accepted
+- **Reviewed a12-dmkits revision:** `975a2e78602eaf26126168cd203bd84738885322`, clean before and after review; the reported basis was `cd43c249a88874bf5688a45060e208a0dcd20782`, which matched the handback's starting HEAD exactly.
+- **Disposition:** observed as predicted on dynamic Groovy, generated Java, and the standalone interpreter. One-level direct-address placement materializes the complete predecessor prefix through row 3, preserves exact numeric coordinates under CLEARED-before-VALUE action processing, retains an existing row-2 sentinel, and exposes rows 1 and 3 to a later validation over the returned applied document without recomputation. The middle materialized row remains empty and does not fire. Pointer serialization differs only by engine dialect; the semantic row set agrees. No dmtool surface or interpreter change was needed.
 - **Kind:** experiment request
 - **Local revision:** resolve with the introducing-commit recipe in the ledger contract above; the introducing commit cannot name itself.
 - **a12-dmkits basis revision:** `cd43c249a88874bf5688a45060e208a0dcd20782`, with an unchanged clean worktree before and after route discovery.
@@ -209,7 +211,9 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 ### SPEC-2026-08-24-04 - `NumberOfValueInFields` group computation ignores over-capacity cell content for measured Number, String, and Boolean overloads
 
-- **Status:** pending
+- **Status:** accepted
+- **Reviewed a12-dmkits revision:** `975a2e78602eaf26126168cd203bd84738885322`, clean before and after review.
+- **Disposition:** accepted as stated. Maintained differentials now lock all four overloads against over-capacity match and malformed content, with the in-capacity malformed control preserving the capacity discriminator. The handback additionally establishes that each over-capacity group produces exactly the group-level `zuGrosseZeile` and cell-level `zuGrosseKontextnummer` findings and no scalar-format finding, and that the Boolean constant-specific kind gate inspects the group expansion: `False` refuses an expansion containing Confirm while `True` admits it.
 - **Kind:** semantic addition and correction to the shared account and local executable fragments, locally measured
 - **Supersedes:** [`SPEC-2026-08-24-03`](#spec-2026-08-24-03--numberofvalueinfields-group-computation-excludes-over-capacity-cells-before-content-classification)
 - **Local revision:** resolve with the introducing-commit recipe in the ledger contract above; the introducing commit cannot name itself.
@@ -231,7 +235,9 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 ### SPEC-2026-08-24-05 - fixed Boolean-group `NumberOfValueInFields` computation expands its direct fields
 
-- **Status:** pending
+- **Status:** accepted
+- **Reviewed a12-dmkits revision:** `975a2e78602eaf26126168cd203bd84738885322`, clean before and after review.
+- **Disposition:** confirmed and corrected in a12-dmkits. Commit `32c0ceb12` switches the existing evaluator to the already-owned both-shape group expansion, and the retained four-row matrix agrees across both Kernel strategies, the JVM/Node interpreter, and the planted expansion mutant. The wider validation audit establishes that fixed-group `NumberOfValueInFields` and `NumberOfFilledFields` derive movement from the expanded direct-field extent, while fixed and starred `NumberOfFilledGroups` count declared group entities: a half-filled fixed group is given, unused declared capacity remains uncounted even with zero rows, and a repeatable row counts structurally regardless of descendant values. Confirm malformed input retains `feldJaFalsch`; Boolean retains `feldJaNeinFalsch`.
 - **Kind:** semantic addition plus a12-dmkits interpreter correction, locally measured
 - **Local revision:** resolve with the introducing-commit recipe in the ledger contract above; the introducing commit cannot name itself.
 - **a12-dmkits basis revision:** `cd43c249a88874bf5688a45060e208a0dcd20782`, clean before and after structured authoring, persisted readback, Kernel probing, and interpreter replay.

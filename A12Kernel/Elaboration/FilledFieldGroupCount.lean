@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Elaboration.FieldEntityList
 import A12Kernel.Semantics.FieldFillQuantifier
+import A12Kernel.Semantics.NumericComparison
 
 /-! # Checked group-scope filled-field counts
 
@@ -46,6 +47,19 @@ def evaluateCheckedDocumentValidation
     checked.source.boundLevelCount checked.declarations
   pure (numberOfFilledFields (resolved.addressedCells.map fun addressed =>
     observeCell .validation addressed.cell))
+
+/-- Lift the measured fixed-group validation count against its expanded direct-field extent. The
+    starred carrier returns `none` because its movement depends on a separate declared row extent. -/
+def evaluateCheckedDocumentFixedValidationOperand?
+    (checked : CheckedFilledFieldCountGroupSource model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError (Option NumericOperand) := do
+  let count ← checked.evaluateCheckedDocumentValidation document outer
+  match checked.source with
+  | .fixed _ =>
+      pure ((count.availableWithFillability? checked.declarations.length).map
+        fun available => .value available.1 available.2)
+  | .starred _ | .starredPresence _ => pure none
 
 end CheckedFilledFieldCountGroupSource
 

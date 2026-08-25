@@ -42,6 +42,17 @@ private def fixedCount (cells : List ClassifiedCellInput) : Option FilledFieldCo
     cells }).toOption
   (checked.evaluateCheckedDocumentValidation document []).toOption
 
+private def fixedOperand (cells : List ClassifiedCellInput) : Option NumericOperand := do
+  let checked ← fixedChecked?
+  let document ← (checkDocument fixedPrepared "en_US" {
+    instantiatedRows := []
+    cells }).toOption
+  (checked.evaluateCheckedDocumentFixedValidationOperand? document []).toOption.join
+
+private def fixedVerdict (cells : List ClassifiedCellInput) : Option Verdict := do
+  let operand ← fixedOperand cells
+  pure (NumericComparisonOp.less.evalFixedRight operand 3)
+
 private def cell (field : FieldId) (path : List Nat)
     (stored : String) : ClassifiedCellInput :=
   { address := { field, path }
@@ -52,6 +63,18 @@ example :
     fixedCount [cell 1 [] "s"] = some (.value 1) ∧
     fixedCount [cell 1 [] "s", cell 2 [] "c"] = some (.value 2) ∧
     fixedCount [] = some (.value 0) := by
+  native_decide
+
+/- The declared field extent, not the group's valueless path, controls comparison movement. A
+   full fixed group therefore fires with VALUE, while the same firing with one empty direct field
+   remains OMISSION because that field can still change the count. -/
+example :
+    fixedOperand [cell 1 [] "s", cell 2 [] "c"] =
+        some (.value 2 .fixed) ∧
+      fixedOperand [cell 1 [] "s"] = some (.value 1 .growOnly) ∧
+      fixedVerdict [cell 1 [] "s", cell 2 [] "c"] =
+        some (.fired .value) ∧
+      fixedVerdict [cell 1 [] "s"] = some (.fired .omission) := by
   native_decide
 
 private def starredModel : FlatModel :=

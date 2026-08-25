@@ -559,6 +559,18 @@ private def checkedFixedFalseComputation? :
   (elaborateFalseValueCountFixedGroupSource fixedComputationModel ["Probe"]
     (fixedGroup "FalseFlags")).toOption
 
+private def checkedFixedTrueValidation? :
+    Option (CheckedBooleanValueCountSource fixedComputationModel) :=
+  (elaborateBooleanValueCountSource fixedComputationModel ["Probe"] true {
+    first := .group (fixedGroup "TrueFlags")
+    rest := [] }).toOption
+
+private def checkedFixedFalseValidation? :
+    Option (CheckedBooleanValueCountSource fixedComputationModel) :=
+  (elaborateBooleanValueCountSource fixedComputationModel ["Probe"] false {
+    first := .group (fixedGroup "FalseFlags")
+    rest := [] }).toOption
+
 private def widerFixedComputationModel : FlatModel :=
   { fixedComputationModel with
     fields := fixedComputationModel.fields ++ [
@@ -605,6 +617,19 @@ private def fixedComputationResults?
     (checkedFalse.evaluateCheckedDocumentComputation document []).toOption
   pure (trueCount.toComputationResult, falseCount.toComputationResult)
 
+private def fixedValidationResults?
+    (cells : List ClassifiedCellInput) :
+    Option (NumericOperand × NumericOperand) := do
+  let checkedTrue ← checkedFixedTrueValidation?
+  let checkedFalse ← checkedFixedFalseValidation?
+  let document ← (checkDocument fixedComputationPrepared "en_US"
+    { instantiatedRows := [], cells }).toOption
+  let trueCount ←
+    (checkedTrue.evaluateCheckedDocumentValidation document []).toOption
+  let falseCount ←
+    (checkedFalse.evaluateCheckedDocumentValidation document []).toOption
+  pure (trueCount, falseCount)
+
 example :
     checkedFixedTrueComputation?.isSome = true ∧
     checkedFixedFalseComputation?.isSome = true ∧
@@ -631,6 +656,19 @@ example :
       emptyFixedCell 60, emptyFixedCell 61,
       emptyFixedCell 62, emptyFixedCell 63] =
         some (.value 0, .value 0) := by
+  native_decide
+
+/- Full validation reads the same direct-field expansion as computation. When every declaration is
+   filled, the fixed group has no missing entity and a firing comparison is VALUE-typed. -/
+example :
+    fixedValidationResults? [
+      fixedBooleanCell 60 true, fixedConfirmCell,
+      fixedBooleanCell 62 false, fixedBooleanCell 63 false] =
+        some (.value 2 .fixed, .value 2 .fixed) ∧
+      fixedValidationResults? [
+        fixedBooleanCell 60 true,
+        fixedBooleanCell 62 false] =
+        some (.value 1 .growOnly, .value 1 .growOnly) := by
   native_decide
 
 example :

@@ -81,11 +81,9 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
       match context.groups.resolveAll groups with
       | none => .error .groupState
       | some states =>
-          match numberOfFilledGroups states with
-          | .unknown => .error .groupState
-          | .value count =>
-              .ok (.value count
-                (if count < groups.length then .growOnly else .fixed))
+          match (numberOfFilledGroups states).availableWithFillability? groups.length with
+          | none => .error .groupState
+          | some available => .ok (.value available.1 available.2)
 
 /-- Preserve the established flat-only numeric entry point. A group-count atom evaluated without resolved group state becomes explicitly unavailable. -/
 def FlatContext.resolveNumericValidationAtom (context : FlatContext)

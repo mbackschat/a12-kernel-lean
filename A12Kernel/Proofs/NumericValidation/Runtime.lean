@@ -288,7 +288,7 @@ theorem numericValidation_filledGroupCount_value
       .ok (.value count
         (if count < groups.length then .growOnly else .fixed)) := by
   simp [ValidationEvaluationContext.resolveNumericValidationAtom,
-    resolved, counted]
+    resolved, counted, FilledGroupCount.availableWithFillability?]
 
 /-- An erroneous or not-fully-relevant group makes the whole fixed count cause-free unavailable; it is never rewritten to a fabricated formal cell cause. -/
 theorem numericValidation_filledGroupCount_unknown
@@ -300,7 +300,7 @@ theorem numericValidation_filledGroupCount_unknown
     context.resolveNumericValidationAtom (.filledGroupCount groups) =
       .error .groupState := by
   simp [ValidationEvaluationContext.resolveNumericValidationAtom,
-    resolved, counted]
+    resolved, counted, FilledGroupCount.availableWithFillability?]
 
 /-- Missing checked-document group state is the same explicit cause-free unavailability as an unresolved product state. -/
 theorem numericValidation_filledGroupCount_missing

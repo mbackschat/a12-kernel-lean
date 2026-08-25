@@ -110,6 +110,12 @@ private def filledGroupCount? : Option FilledGroupCount := do
     instantiatedRows := rows
     rawCells := fun _ => none } []).toOption
 
+private def filledGroupOperand? (selectedRows : List RowAddr) : Option NumericOperand := do
+  let source ← filledGroupSource?
+  (source.numberOfFilledGroupsOperand? {
+    instantiatedRows := selectedRows
+    rawCells := fun _ => none } []).toOption.join
+
 private def relevance (path : List String) (indices : List RelevanceIndex) :
     RelevantEntityPattern :=
   { path, indices }
@@ -172,6 +178,16 @@ example :
     filledCountWith? [cell 1 10, cell 2 20, cell 3 99] =
         some (.value 2) ∧
     filledGroupCount? = some (.value 2) := by
+  native_decide
+
+/- `NumberOfFilledGroups(G*)` counts structural rows against declared capacity. Two empty rows
+   exhaust capacity and are fixed; one or no row leaves a grow-only count, while an over-limit
+   third row stays outside the numeric result domain. -/
+example :
+    filledGroupOperand? (rows.take 2) = some (.value 2 .fixed) ∧
+      filledGroupOperand? (rows.take 1) = some (.value 1 .growOnly) ∧
+      filledGroupOperand? [] = some (.value 0 .growOnly) ∧
+      filledGroupOperand? rows = some (.value 2 .fixed) := by
   native_decide
 
 /- Operators outside the measured three-consumer slice retain the complete formal-cell view rather than inheriting Sum's capacity projection. -/
