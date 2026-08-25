@@ -94,6 +94,14 @@ theorem numericComputationRun_applyToChecked_singletonClear_state
   cases destination.numericTargetPlacementStateAt target <;>
     simp [NumericTargetState.applyRetainedClear]
 
+/-- The bounded applied-document view exposes rows in exact numeric predecessor order, independently of the retained action-category order that materialized them. -/
+theorem numericComputationOneLevelApplication_rows_prefix
+    (projection : NumericComputationOneLevelApplicationProjection model) :
+    projection.rows =
+      (List.range projection.prefixExtent.2).map fun offset =>
+        { group := projection.prefixExtent.1, path := [offset + 1] } := by
+  rfl
+
 /-- Duplicate action targets fail before destination state participates. -/
 theorem numericComputationRun_applyTo_duplicateTarget
     {Target : Type} [DecidableEq Target]

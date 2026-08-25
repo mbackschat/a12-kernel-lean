@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericComputation.RunApplication
+import A12Kernel.Semantics.NumericComparison
 
 /-! # Checked Number source-target locks -/
 
@@ -42,12 +43,26 @@ private def repeatedStringTarget : FlatFieldDecl := {
     policy := { kind := .string }
 }
 
+private def repeatedCandidate : FlatFieldDecl := {
+  repeatedTarget with
+    id := 3
+    name := "Candidate"
+}
+
 private def repeatedModel : FlatModel := {
-  fields := [repeatedTarget, repeatedStringTarget]
+  fields := [repeatedTarget, repeatedStringTarget, repeatedCandidate]
   repeatableGroups := [{
     level := 10
     path := ["Order", "Lines"]
-    repeatability := some 2
+    repeatability := some 3
+  }, {
+    level := 11
+    path := ["Other"]
+    repeatability := some 1
+  }, {
+    level := 12
+    path := ["Other", "Nested"]
+    repeatability := some 1
   }]
 }
 
@@ -200,6 +215,144 @@ private def checkedApplicationMatrixHolds : Bool :=
 
 /- Checked retained-result application creates the exact addressed repeatable ancestor and target for CLEARED and VALUE, while silence and ERRORED preserve an absent destination. The projection deliberately makes no claim about unobserved predecessor padding. -/
 example : checkedApplicationMatrixHolds = true := by
+  native_decide
+
+private def topologyAddress (field : FieldId) (index : Nat) : CellAddr :=
+  { field, path := [index] }
+
+private def topologyEmptyDestination? :
+    Option (CheckedDocument repeatedModel) :=
+  repeatedDestinationWith []
+
+private def topologyPreservingDestination? :
+    Option (CheckedDocument repeatedModel) :=
+  repeatedCheckedFrom? {
+    instantiatedRows := [repeatedRow 1, repeatedRow 2]
+    cells := [{
+      address := topologyAddress 3 2
+      stored := "4"
+      raw := .parsed (.num 4)
+      numericDecimal := some { unscaled := 4, scale := 0 }
+    }]
+  }
+
+private def topologyView
+    (entries : List (SourcedNumericTargetOutcome CellAddr)) :
+    NumericComputationRunView Bool CellAddr :=
+  NumericComputationRunView.fromPartitionedSourceOutcomes [] entries
+
+private def topologyCleared (index : Nat) :
+    SourcedNumericTargetOutcome CellAddr := {
+  targetField := topologyAddress 1 index
+  outcome := .noValue
+  source := .presentValue (.decimal { unscaled := 9, scale := 0 })
+}
+
+private def topologyValue (index value : Nat) :
+    SourcedNumericTargetOutcome CellAddr := {
+  targetField := topologyAddress 1 index
+  outcome := .accepted { unscaled := Int.ofNat value, scale := 0 }
+  source := .absent
+}
+
+private def topologyError (index : Nat) :
+    SourcedNumericTargetOutcome CellAddr := {
+  targetField := topologyAddress 1 index
+  outcome := .rejected { unscaled := 8, scale := 0 } .aboveMaximum
+  source := .presentValue (.decimal { unscaled := 9, scale := 0 })
+}
+
+private def oneLevelTopologyMatrixHolds : Bool :=
+  (do
+    let empty ← topologyEmptyDestination?
+    let preserving ← topologyPreservingDestination?
+    let reverse ←
+      (topologyView [topologyCleared 3, topologyValue 1 7])
+        |>.applyToCheckedOneLevel empty 10 |>.toOption
+    let forward ←
+      (topologyView [topologyCleared 1, topologyValue 3 7])
+        |>.applyToCheckedOneLevel empty 10 |>.toOption
+    let preserved ←
+      (topologyView [topologyCleared 3, topologyValue 1 7])
+        |>.applyToCheckedOneLevel preserving 10 |>.toOption
+    let errored ←
+      (topologyView [topologyError 3])
+        |>.applyToCheckedOneLevel empty 10 |>.toOption
+    pure (
+      reverse.rows == [repeatedRow 1, repeatedRow 2, repeatedRow 3] &&
+      reverse.stateAt (topologyAddress 1 1) ==
+        NumericTargetState.presentValue
+          (.decimal { unscaled := 7, scale := 0 }) &&
+      reverse.stateAt (topologyAddress 1 2) == NumericTargetState.absent &&
+      reverse.stateAt (topologyAddress 1 3) ==
+        NumericTargetState.presentEmpty &&
+      forward.rows == [repeatedRow 1, repeatedRow 2, repeatedRow 3] &&
+      forward.stateAt (topologyAddress 1 1) ==
+        NumericTargetState.presentEmpty &&
+      forward.stateAt (topologyAddress 1 2) == NumericTargetState.absent &&
+      forward.stateAt (topologyAddress 1 3) ==
+        NumericTargetState.presentValue
+          (.decimal { unscaled := 7, scale := 0 }) &&
+      preserved.rows == [repeatedRow 1, repeatedRow 2, repeatedRow 3] &&
+      preserved.stateAt (topologyAddress 3 2) ==
+        NumericTargetState.presentValue
+          (.decimal { unscaled := 4, scale := 0 }) &&
+      errored.rows == [] &&
+      errored.stateAt (topologyAddress 1 3) == NumericTargetState.absent)
+  ).getD false
+
+/- One-level application materializes the complete predecessor prefix, keeps actions at their exact coordinates across clear-before-value processing, and preserves unrelated destination cells. -/
+example : oneLevelTopologyMatrixHolds = true := by
+  native_decide
+
+private def positiveNumberValidationRows
+    {M : FlatModel}
+    (projection : NumericComputationOneLevelApplicationProjection M)
+    (field : FieldId) : Option (List CellAddr) :=
+  projection.rows.foldlM (init := []) fun fired row => do
+    let coordinate ← match row.path with
+      | [coordinate] => some coordinate
+      | _ => none
+    let address : CellAddr := { field, path := [coordinate] }
+    match projection.stateAt address with
+    | .absent | .presentEmpty => some fired
+    | .presentValue (.decimal value) =>
+        if NumericComparisonOp.greater.evalFixedRight
+            (.value value.amount .fixed) 0 == .fired .value then
+          some (fired ++ [address])
+        else
+          some fired
+    | .presentValue .nonComputedForm => none
+
+private def laterValidationRows? : Option (List CellAddr) := do
+  let destination ← topologyEmptyDestination?
+  let applied ←
+    (topologyView [topologyValue 1 5, topologyValue 3 7])
+      |>.applyToCheckedOneLevel destination 10 |>.toOption
+  positiveNumberValidationRows applied 1
+
+/- Later validation is an explicit post-application phase: positive Amount values fire at rows one and three, while the materialized empty middle row does not. -/
+example :
+    laterValidationRows? =
+      some [topologyAddress 1 1, topologyAddress 1 3] := by
+  native_decide
+
+private def oneLevelApplicationError? (level : Nat) (index : Option Nat) :
+    Option NumericComputationDocumentApplicationError := do
+  let destination ← topologyEmptyDestination?
+  match (topologyView (index.map topologyCleared).toList)
+      |>.applyToCheckedOneLevel destination level with
+  | .error error => some error
+  | .ok _ => none
+
+/- The bounded route refuses unknown levels and over-capacity coordinates instead of extending the calibrated topology claim. -/
+example :
+    oneLevelApplicationError? 99 (some 1) =
+        some (.unknownRepeatableLevel 99) ∧
+      oneLevelApplicationError? 10 (some 4) =
+        some (.overCapacityTarget (topologyAddress 1 4) 3) ∧
+      oneLevelApplicationError? 12 none =
+        some (.unsupportedOneLevelDestination 12) := by
   native_decide
 
 private def checkedApplicationError? (address : CellAddr) :

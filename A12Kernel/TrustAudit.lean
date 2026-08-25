@@ -877,6 +877,7 @@ run_cmd do
 #print axioms A12Kernel.numericComputationRun_applyTo_noActions
 #print axioms A12Kernel.numericComputationRun_applyToChecked_noActions
 #print axioms A12Kernel.numericComputationRun_applyToChecked_singletonClear_state
+#print axioms A12Kernel.numericComputationOneLevelApplication_rows_prefix
 #print axioms A12Kernel.numericComputationRun_applyTo_duplicateTarget
 #print axioms A12Kernel.numericComputationRun_residualMessages_doNotAffectApplication
 #print axioms A12Kernel.acceptedNumericTarget_applies_exactly

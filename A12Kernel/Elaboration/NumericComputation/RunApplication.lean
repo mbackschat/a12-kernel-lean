@@ -41,6 +41,11 @@ inductive NumericComputationDocumentApplicationError where
   | nonNumericTarget (address : CellAddr)
   | invalidTargetDepth (address : CellAddr) (expected : Nat)
   | zeroTargetCoordinate (address : CellAddr)
+  | unknownRepeatableLevel (level : RepeatableLevel)
+  | unboundedRepeatableLevel (level : RepeatableLevel)
+  | invalidOneLevelScope (address : CellAddr) (expected : RepeatableLevel)
+  | overCapacityTarget (address : CellAddr) (maximum : Nat)
+  | unsupportedOneLevelDestination (level : RepeatableLevel)
   deriving Repr, DecidableEq
 
 /-- Validate one retained Number action address against the destination model and derive only its directly addressed repeatable ancestry. -/
@@ -142,6 +147,95 @@ private def applyValue
 
 end NumericComputationApplicationProjection
 
+/-- A bounded applied-document projection for one finite repetition level. It adds the normalized predecessor prefix established for direct one-level Number application while retaining exact destination and applied cell states from the generic checked projection. -/
+structure NumericComputationOneLevelApplicationProjection
+    (model : FlatModel) where
+  private mk ::
+  private applied : NumericComputationApplicationProjection model
+  private group : RepeatableGroupDecl
+  private maximum : Nat
+  private rowCount : Nat
+
+namespace NumericComputationOneLevelApplicationProjection
+
+private def rowsThrough (level : RepeatableLevel) (count : Nat) : List RowAddr :=
+  (List.range count).map fun offset => { group := level, path := [offset + 1] }
+
+private def ofApplied
+    (destination : CheckedDocument model)
+    (applied : NumericComputationApplicationProjection model)
+    (level : RepeatableLevel) :
+    Except NumericComputationDocumentApplicationError
+      (NumericComputationOneLevelApplicationProjection model) := do
+  let group ← match model.repeatableGroupAtLevel? level with
+    | some group => pure group
+    | none => throw (.unknownRepeatableLevel level)
+  if model.repeatableScopeForGroupPath group.path != [level] then
+    throw (.unsupportedOneLevelDestination level)
+  let maximum ← match group.repeatability with
+    | some maximum => pure maximum
+    | none => throw (.unboundedRepeatableLevel level)
+  let selectedRows := destination.source.instantiatedRows.filter
+    fun row => row.group == level
+  if selectedRows.any fun row => row.path.length != 1 then
+    throw (.unsupportedOneLevelDestination level)
+  if selectedRows.length > maximum then
+    throw (.unsupportedOneLevelDestination level)
+  pure { applied, group, maximum, rowCount := selectedRows.length }
+
+private def coordinateFor
+    (projection : NumericComputationOneLevelApplicationProjection model)
+    (address : CellAddr) :
+    Except NumericComputationDocumentApplicationError Nat := do
+  let declaration ←
+    (model.lookupUniqueId address.field).mapError (.targetField address)
+  match declaration.policy.kind with
+  | .number _ => pure ()
+  | _ => throw (.nonNumericTarget address)
+  if declaration.repeatableScope != [projection.group.level] then
+    throw (.invalidOneLevelScope address projection.group.level)
+  let coordinate ← match address.path with
+    | [coordinate] => pure coordinate
+    | _ => throw (.invalidTargetDepth address 1)
+  if coordinate == 0 then
+    throw (.zeroTargetCoordinate address)
+  if coordinate > projection.maximum then
+    throw (.overCapacityTarget address projection.maximum)
+  pure coordinate
+
+private def materializeAt
+    (projection : NumericComputationOneLevelApplicationProjection model)
+    (address : CellAddr) :
+    Except NumericComputationDocumentApplicationError
+      (NumericComputationOneLevelApplicationProjection model) := do
+  let coordinate ← projection.coordinateFor address
+  pure { projection with rowCount := max projection.rowCount coordinate }
+
+private def validateAt
+    (projection : NumericComputationOneLevelApplicationProjection model)
+    (address : CellAddr) :
+    Except NumericComputationDocumentApplicationError
+      (NumericComputationOneLevelApplicationProjection model) :=
+  projection.coordinateFor address |>.map fun _ => projection
+
+/-- The complete normalized predecessor prefix at the selected repetition level. -/
+def rows (projection : NumericComputationOneLevelApplicationProjection model) :
+    List RowAddr :=
+  rowsThrough projection.group.level projection.rowCount
+
+/-- The selected repetition level and materialized prefix length. -/
+def prefixExtent (projection : NumericComputationOneLevelApplicationProjection model) :
+    RepeatableLevel × Nat :=
+  (projection.group.level, projection.rowCount)
+
+/-- Read one exact Number state after application. Cells not targeted by the retained result preserve the caller-supplied destination state. -/
+def stateAt
+    (projection : NumericComputationOneLevelApplicationProjection model)
+    (address : CellAddr) : NumericTargetState :=
+  projection.applied.stateAt address
+
+end NumericComputationOneLevelApplicationProjection
+
 namespace NumericComputationRunView
 
 inductive NumericComputationRunApplicationError
@@ -210,6 +304,26 @@ def applyToChecked
             model computed.targetField
           pure (current.applyValue computed.targetField rows computed.value))
         afterErrors
+
+/-- Apply one retained Number run to a checked destination and expose the externally calibrated complete row prefix for one finite, direct repetition level. CLEARED and changed VALUE materialize their exact coordinate and every predecessor; ERRORED validates its address but does not create an absent row. Nested repetition and non-Number targets remain outside this bounded projection. -/
+def applyToCheckedOneLevel
+    (view : NumericComputationRunView ResidualMessage CellAddr)
+    (destination : CheckedDocument model)
+    (level : RepeatableLevel) :
+    Except NumericComputationDocumentApplicationError
+      (NumericComputationOneLevelApplicationProjection model) := do
+  let applied ← view.applyToChecked destination
+  let initial ←
+    NumericComputationOneLevelApplicationProjection.ofApplied
+      destination applied level
+  let afterCleared ← view.cleared.foldlM
+    (fun current address => current.materializeAt address) initial
+  let afterErrors ← view.withErrors.foldlM
+    (fun current computed => current.validateAt computed.targetField)
+    afterCleared
+  view.withChanges.foldlM
+    (fun current computed => current.materializeAt computed.targetField)
+    afterErrors
 
 end NumericComputationRunView
 
