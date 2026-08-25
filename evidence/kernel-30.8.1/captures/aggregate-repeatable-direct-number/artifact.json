@@ -17,12 +17,64 @@
   },
   "rows" : [
     {
-      "name" : "two-values",
+      "name" : "fresh-two-values",
       "enginesAgree" : true,
       "engines" : [
         {
           "engine" : "kernel-groovy-dynamic",
-          "messages" : [ ],
+          "messages" : [
+            {
+              "code" : "AmountProjection",
+              "field" : "Order/Lines/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Project the total to every row.",
+              "referenced" : [
+                "Order/Lines/Amount",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            }
+          ],
           "computations" : {
             "outcomes" : [
               {
@@ -32,10 +84,22 @@
                 "value" : "5"
               },
               {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
                 "field" : "Order/Lines[2]/Amount",
                 "cleared" : false,
                 "errored" : false,
                 "value" : "5"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
               },
               {
                 "field" : "Order/Total",
@@ -49,7 +113,59 @@
         },
         {
           "engine" : "kernel-java-static",
-          "messages" : [ ],
+          "messages" : [
+            {
+              "code" : "AmountProjection",
+              "field" : "Order/Lines/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Project the total to every row.",
+              "referenced" : [
+                "Order/Lines/Amount",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            }
+          ],
           "computations" : {
             "outcomes" : [
               {
@@ -59,10 +175,22 @@
                 "value" : "5"
               },
               {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
                 "field" : "Order/Lines[2]/Amount",
                 "cleared" : false,
                 "errored" : false,
                 "value" : "5"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
               },
               {
                 "field" : "Order/Total",
@@ -77,12 +205,67 @@
       ]
     },
     {
-      "name" : "one-value-one-empty",
+      "name" : "fresh-value-plus-empty",
       "enginesAgree" : true,
       "engines" : [
         {
           "engine" : "kernel-groovy-dynamic",
-          "messages" : [ ],
+          "messages" : [
+            {
+              "code" : "AmountProjection",
+              "field" : "Order/Lines/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Project the total to every row.",
+              "referenced" : [
+                "Order/Lines/Amount",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            }
+          ],
           "computations" : {
             "outcomes" : [
               {
@@ -90,6 +273,24 @@
                 "cleared" : false,
                 "errored" : false,
                 "value" : "2"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Amount",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
               },
               {
                 "field" : "Order/Total",
@@ -103,7 +304,62 @@
         },
         {
           "engine" : "kernel-java-static",
-          "messages" : [ ],
+          "messages" : [
+            {
+              "code" : "AmountProjection",
+              "field" : "Order/Lines/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Project the total to every row.",
+              "referenced" : [
+                "Order/Lines/Amount",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            }
+          ],
           "computations" : {
             "outcomes" : [
               {
@@ -111,6 +367,24 @@
                 "cleared" : false,
                 "errored" : false,
                 "value" : "2"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Amount",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
               },
               {
                 "field" : "Order/Total",
@@ -125,12 +399,230 @@
       ]
     },
     {
-      "name" : "empty",
+      "name" : "fresh-malformed-second-row",
       "enginesAgree" : true,
       "engines" : [
         {
           "engine" : "kernel-groovy-dynamic",
-          "messages" : [ ],
+          "messages" : [
+            {
+              "code" : "AmountProjection",
+              "field" : "Order/Lines/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Project the total to every row.",
+              "referenced" : [
+                "Order/Lines/Amount",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines[2]/Candidate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Amount",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Amount",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines[2]/Candidate",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Order/Lines[2]/Candidate"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AmountProjection",
+              "field" : "Order/Lines/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Project the total to every row.",
+              "referenced" : [
+                "Order/Lines/Amount",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute the row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines[2]/Candidate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Amount",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Amount",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines[2]/Candidate",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Order/Lines[2]/Candidate"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "no-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            }
+          ],
           "computations" : {
             "outcomes" : [
               {
@@ -145,7 +637,23 @@
         },
         {
           "engine" : "kernel-java-static",
-          "messages" : [ ],
+          "messages" : [
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            }
+          ],
           "computations" : {
             "outcomes" : [
               {

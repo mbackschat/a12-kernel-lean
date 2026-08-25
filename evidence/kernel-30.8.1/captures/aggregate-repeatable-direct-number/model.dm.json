@@ -64,18 +64,43 @@
                   }
                 }
               }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/Produced",
+                "name" : "Produced",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Order/Lines/ProducedProjection",
+                "name" : "ProducedProjection",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Produced",
+                  "computationAlternatives" : [ {
+                    "operation" : "[Candidate]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Compute the row producer."
+                  } ]
+                }
+              }, {
                 "type" : "Computation",
                 "id" : "/Order/Lines/AmountProjection",
                 "name" : "AmountProjection",
                 "Computation" : {
                   "computedFieldRelPath" : "../Amount",
-                  "commonPrecondition" : "FieldFilled(Candidate)",
                   "computationAlternatives" : [ {
                     "operation" : "[../Total]"
                   } ],
                   "errorMessage" : [ {
                     "locale" : "en_US",
-                    "text" : "Project the selected amount."
+                    "text" : "Project the total to every row."
                   } ]
                 }
               } ]
@@ -207,11 +232,11 @@
             "Computation" : {
               "computedFieldRelPath" : "../Total",
               "computationAlternatives" : [ {
-                "operation" : "Sum(Lines*/Candidate)"
+                "operation" : "Sum(Lines*/Produced)"
               } ],
               "errorMessage" : [ {
                 "locale" : "en_US",
-                "text" : "Calculate the line total."
+                "text" : "Calculate the produced total."
               } ]
             }
           } ]
