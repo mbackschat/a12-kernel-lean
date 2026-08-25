@@ -113,12 +113,12 @@ inductive RepeatableNumberAggregateCascadeElabError where
   | dependency (expected actual : FieldId)
   | groupMismatch (row aggregate : GroupPath)
   | scopeMismatch (row aggregate : List RepeatableLevel)
-  | unsupportedScope (actual : List RepeatableLevel)
+  | aggregateBindingRequired (levels : List RepeatableLevel)
   | cycle (field : FieldId)
   | missingFilterDependency (field : FieldId)
   deriving Repr, DecidableEq
 
-/-- One checked one-level Number producer followed by one nonrepeatable `Sum`, `MinValue`, `MaxValue`, or distinct-count computation whose sole star reads that producer directly or through `Having`. This is a fixed two-stage route, not a scheduler. -/
+/-- One checked repeatable Number producer followed by one nonrepeatable `Sum`, `MinValue`, `MaxValue`, or distinct-count computation whose sole star reads that producer directly or through `Having`. This is a fixed two-stage route, not a scheduler. -/
 structure CheckedRepeatableNumberAggregateCascade (model : FlatModel) where
   private mk ::
   row : CheckedRepeatableNumberAggregateProducer model
@@ -137,7 +137,7 @@ structure CheckedRepeatableNumberAggregateCascade (model : FlatModel) where
   sameScope :
     consumer.valueDeclaration.repeatableScope =
       row.targetDeclaration.repeatableScope
-  oneLevel : row.targetDeclaration.repeatableScope.length = 1
+  rootClosed : consumer.valueSource.source.bindingScope = []
   noCycle : row.sourceFields.contains total.operation.core.target.id = false
 
 structure RepeatableNumberAggregateSuffixScopeCertificate
@@ -172,7 +172,7 @@ private def certifyRepeatableNumberAggregateCascade
       if hGroup : consumer.valueDeclaration.groupPath = row.declaringGroup then
         if hScope : consumer.valueDeclaration.repeatableScope =
             row.targetDeclaration.repeatableScope then
-          if hOneLevel : row.targetDeclaration.repeatableScope.length = 1 then
+          if hRoot : consumer.valueSource.source.bindingScope = [] then
             if hNoCycle : row.sourceFields.contains
                 total.operation.core.target.id = false then
               pure {
@@ -183,12 +183,13 @@ private def certifyRepeatableNumberAggregateCascade
                 dependency := hDependency
                 sameGroup := hGroup
                 sameScope := hScope
-                oneLevel := hOneLevel
+                rootClosed := hRoot
                 noCycle := hNoCycle
               }
             else throw (.cycle total.operation.core.target.id)
           else
-            throw (.unsupportedScope row.targetDeclaration.repeatableScope)
+            throw (.aggregateBindingRequired
+              consumer.valueSource.source.bindingScope)
         else
           throw (.scopeMismatch row.targetDeclaration.repeatableScope
             consumer.valueDeclaration.repeatableScope)
@@ -245,7 +246,7 @@ def checkRepeatableNumberAggregateCascade
   finishRepeatableNumberAggregateCascade model (.direct row)
     aggregateDeclaringGroup aggregateTarget (.star aggregateSource) operation
 
-/-- Check a direct-assignment producer followed by a sole filtered star whose filter depends on that producer. The aggregate value field may be a different Number in the same one-level row scope. -/
+/-- Check a direct-assignment producer followed by a sole filtered star whose filter depends on that producer. The aggregate value field may be a different Number in the same repeatable row scope. -/
 def checkRepeatableNumberFilteredAggregateCascade
     (model : FlatModel)
     (rowDeclaringGroup : GroupPath) (rowTarget : FieldId)
@@ -275,7 +276,7 @@ def checkRepeatableNumberBinaryAggregateCascade
   finishRepeatableNumberAggregateCascade model (.binary row)
     aggregateDeclaringGroup aggregateTarget (.star aggregateSource) operation
 
-/-- Check one direct-field binary producer followed by a sole filtered star whose filter depends on that producer. The aggregate value field may be a different Number in the same one-level row scope. -/
+/-- Check one direct-field binary producer followed by a sole filtered star whose filter depends on that producer. The aggregate value field may be a different Number in the same repeatable row scope. -/
 def checkRepeatableNumberBinaryFilteredAggregateCascade
     (model : FlatModel)
     (rowDeclaringGroup : GroupPath) (rowTarget : FieldId)
@@ -291,7 +292,7 @@ def checkRepeatableNumberBinaryFilteredAggregateCascade
     aggregateDeclaringGroup aggregateTarget
     (.starHaving aggregateSource having) operation
 
-/-- The exact two dependency stages and the one-level row scope exposed to Analyze. -/
+/-- The exact two dependency stages and complete repeatable row scope exposed to Analyze. -/
 structure RepeatableNumberAggregateCascadeAnalysis where
   producer : RepeatableNumberAggregateProducerKind
   consumer : RepeatableNumberAggregateConsumerKind

@@ -61,7 +61,7 @@ private def nestedStar (field : String) : SurfaceStarFieldPath := {
   base := .absolute
   groups := [
     { name := "Shop" },
-    { name := "Pricing" },
+    { name := "Pricing", starred := true },
     { name := "Items", starred := true }]
   field
 }
@@ -625,13 +625,19 @@ example :
       | _ => false) = true := by
   native_decide
 
-/- A valid nested producer and matching star still fail at this route's one-level boundary. -/
+/- A valid nested producer and matching star retain their complete shared scope. -/
 example :
-    (match checkRepeatableNumberAggregateCascade nestedModel
-        nestedPath helper.id (bare "Price")
-        ["Shop"] best.id (nestedStar "Helper") .maximum with
-      | .error (.unsupportedScope scope) => scope == [10, 20]
-      | _ => false) = true := by
+    (checkRepeatableNumberAggregateCascade nestedModel
+      nestedPath helper.id (bare "Price")
+      ["Shop"] best.id (nestedStar "Helper") .maximum).toOption.map
+        CheckedRepeatableNumberAggregateCascade.analyze = some {
+          producer := .direct
+          consumer := .plain
+          operation := .maximum
+          repeatableScope := [10, 20]
+          fieldDependencies := [
+            (helper.id, [price.id]), (best.id, [helper.id])]
+        } := by
   native_decide
 
 end A12Kernel.Conformance.RepeatableNumberAggregateCascade
