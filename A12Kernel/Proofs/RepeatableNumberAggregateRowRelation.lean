@@ -8,20 +8,29 @@ theorem repeatableNumberAggregateRow_transition_trace
     (plan : CheckedRepeatableNumberAggregateRowCascade model)
     (world : World)
     (input : CheckedDocument model)
-    (cascadeOutcomes : RepeatableNumberAggregateCascadeOutcomes)
-    (suffixOutcomes : List (SourcedNumericTargetOutcome CellAddr))
-    (cascadeExecuted : plan.cascade.execute world input = .ok cascadeOutcomes)
-    (suffixExecuted :
-      plan.suffix.executeWithRead input
-        (plan.readPolicy cascadeOutcomes.aggregate.outcome input) =
-          .ok suffixOutcomes) :
+    (outcomes : RepeatableNumberAggregateRowCascadeOutcomes)
+    (executed : plan.execute world input = .ok outcomes) :
     RepeatableNumberAggregateRowTransition plan world input
-      {} { aggregate := some cascadeOutcomes.aggregate.outcome } ∧
+      {} { aggregate := some outcomes.cascade.aggregate.outcome } ∧
     RepeatableNumberAggregateRowTransition plan world input
-      { aggregate := some cascadeOutcomes.aggregate.outcome }
-      { aggregate := some cascadeOutcomes.aggregate.outcome,
-        suffix := some suffixOutcomes } := by
-  exact ⟨.cascade cascadeOutcomes cascadeExecuted,
-    .suffix cascadeOutcomes.aggregate.outcome suffixOutcomes suffixExecuted⟩
+      { aggregate := some outcomes.cascade.aggregate.outcome }
+      { aggregate := some outcomes.cascade.aggregate.outcome,
+        suffix := some outcomes.suffix } := by
+  unfold CheckedRepeatableNumberAggregateRowCascade.execute at executed
+  cases cascadeResult : plan.cascade.execute world input with
+  | error cause =>
+      simp [cascadeResult, Except.mapError, Bind.bind, Except.bind] at executed
+  | ok cascade =>
+      cases suffixResult : plan.suffix.executeWithRead input
+          (plan.readPolicy cascade.aggregate.outcome input) with
+      | error cause =>
+          simp [cascadeResult, suffixResult, Except.mapError,
+            Bind.bind, Except.bind] at executed
+      | ok suffix =>
+          simp [cascadeResult, suffixResult, Except.mapError,
+            Bind.bind, Except.bind] at executed
+          cases executed
+          exact ⟨.cascade cascade cascadeResult,
+            .suffix cascade.aggregate.outcome suffix suffixResult⟩
 
 end A12Kernel
