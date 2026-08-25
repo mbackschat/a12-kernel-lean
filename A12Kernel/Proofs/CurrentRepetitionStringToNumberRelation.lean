@@ -45,4 +45,48 @@ theorem currentRepetitionStringToNumber_initial_transition_has_no_number
   cases transition
   rfl
 
+/-- A failed fixed inverse cascade retains no partial Number completion, whether
+it stopped before String execution or at the dependent Number boundary. -/
+theorem currentRepetitionStringToNumber_failureTrace_has_no_number
+    (trace : CurrentRepetitionStringToNumberFailureTrace
+      plan patterns input state fault) :
+    state.number = none := by
+  cases trace <;> rfl
+
+/-- Every structural failure of the fixed inverse executor is either its initial
+String-phase failure or one Number-phase failure after the exact complete String
+phase. The trace's indexed state is the unchanged successful prefix. -/
+theorem currentRepetitionStringToNumber_execute_failure_trace
+    (plan : CheckedCurrentRepetitionStringToNumberCascade model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (fault : CurrentRepetitionStringToNumberFault)
+    (executed : plan.execute patterns input = .error fault) :
+    ∃ state,
+      CurrentRepetitionStringToNumberFailureTrace
+        plan patterns input state fault := by
+  unfold CheckedCurrentRepetitionStringToNumberCascade.execute at executed
+  cases stringResult : plan.executeStringPhase patterns input with
+  | error cause =>
+      rw [stringResult] at executed
+      change Except.error cause = Except.error fault at executed
+      cases executed
+      exact ⟨{}, .string (.string fault stringResult)⟩
+  | ok string =>
+      simp only [stringResult, Bind.bind, Except.bind] at executed
+      cases numberResult : plan.executeNumberPhase input string with
+      | error cause =>
+          rw [numberResult] at executed
+          change Except.error cause = Except.error fault at executed
+          cases executed
+          exact ⟨{ string := some string },
+            .number (.string string stringResult)
+              (.number string fault numberResult)⟩
+      | ok number =>
+          rw [numberResult] at executed
+          change Except.ok
+              (CheckedCurrentRepetitionStringToNumberCascade.assemblePhases
+                string number) = Except.error fault at executed
+          cases executed
+
 end A12Kernel

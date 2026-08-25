@@ -284,6 +284,66 @@ example :
         | _ => false)) = some true := by
   native_decide
 
+private def transitionPlan :
+    CheckedCurrentRepetitionStringToNumberCascade model :=
+  plan?.get (by native_decide)
+
+private def noRowsInput : CheckedDocument model :=
+  (checkedInput? [] []).get (by native_decide)
+
+private theorem noRowsStringPhaseFailed :
+    transitionPlan.executeStringPhase prepared.patterns noRowsInput =
+      .error (.rowCardinality 0) := by
+  rfl
+
+/- The concrete no-row fault terminates in the initial state before either
+target family completes. -/
+example :
+    CurrentRepetitionStringToNumberFailureTransition transitionPlan
+        prepared.patterns noRowsInput {} (.rowCardinality 0) ∧
+      CurrentRepetitionStringToNumberFailureTrace transitionPlan
+        prepared.patterns noRowsInput {} (.rowCardinality 0) := by
+  have failed : CurrentRepetitionStringToNumberFailureTransition transitionPlan
+      prepared.patterns noRowsInput {} (.rowCardinality 0) :=
+    .string (.rowCardinality 0) noRowsStringPhaseFailed
+  exact ⟨failed, .string failed⟩
+
+private def transitionInput : CheckedDocument model :=
+  (twoRowInput? (numericCell base.id 1 7)).get (by native_decide)
+
+private def transitionStringPhase :
+    CurrentRepetitionStringToNumberStringPhase :=
+  (transitionPlan.executeStringPhase prepared.patterns transitionInput)
+    |>.toOption |>.get (by native_decide)
+
+private theorem evaluated_to_get (evaluation : Except ε α)
+    (available : evaluation.toOption.isSome = true) :
+    evaluation = .ok (evaluation.toOption.get available) := by
+  cases evaluation with
+  | error cause => simp [Except.toOption] at available
+  | ok value => rfl
+
+private theorem transitionStringExecuted :
+    transitionPlan.executeStringPhase prepared.patterns transitionInput =
+      .ok transitionStringPhase := by
+  simpa [transitionStringPhase] using evaluated_to_get
+    (evaluation := transitionPlan.executeStringPhase
+      prepared.patterns transitionInput) (by native_decide)
+
+/- A later structural Number fault is conditional for this fixture. If it
+occurs, the trace retains the complete successful String phase and no Number
+completion instead of resetting the cascade to its initial state. -/
+example (fault : CurrentRepetitionStringToNumberFault)
+    (numberFailed :
+      transitionPlan.executeNumberPhase transitionInput transitionStringPhase =
+        .error fault) :
+    CurrentRepetitionStringToNumberFailureTrace transitionPlan
+      prepared.patterns transitionInput
+        { string := some transitionStringPhase } fault := by
+  exact .number
+    (.string transitionStringPhase transitionStringExecuted)
+    (.number transitionStringPhase fault numberFailed)
+
 private def nestedPath : GroupPath := ["Shipment", "Lines", "Entries"]
 
 private def nestedBase : FlatFieldDecl := {
