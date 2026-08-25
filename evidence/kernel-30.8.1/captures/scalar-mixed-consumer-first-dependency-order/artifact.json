@@ -1,0 +1,488 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "975a2e78602eaf26126168cd203bd84738885322",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "MixedSchedule_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "consumer-authored-first-reads-fresh-producer",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ConsumerFirst",
+              "field" : "Schedule/Consumer",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Select the independent literal or the completed producer.",
+              "referenced" : [
+                "Schedule/Consumer",
+                "Schedule/Gate",
+                "Schedule/Producer"
+              ],
+              "fillToFix" : [
+                "Schedule/Consumer",
+                "Schedule/Gate",
+                "Schedule/Producer"
+              ]
+            },
+            {
+              "code" : "ProducerSecond",
+              "field" : "Schedule/Producer",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Project the base value.",
+              "referenced" : [
+                "Schedule/Base",
+                "Schedule/Producer"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Schedule/Consumer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Schedule/Producer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ConsumerFirst",
+              "field" : "Schedule/Consumer",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Select the independent literal or the completed producer.",
+              "referenced" : [
+                "Schedule/Consumer",
+                "Schedule/Gate",
+                "Schedule/Producer"
+              ],
+              "fillToFix" : [
+                "Schedule/Consumer",
+                "Schedule/Gate",
+                "Schedule/Producer"
+              ]
+            },
+            {
+              "code" : "ProducerSecond",
+              "field" : "Schedule/Producer",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Project the base value.",
+              "referenced" : [
+                "Schedule/Base",
+                "Schedule/Producer"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Schedule/Consumer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Schedule/Producer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "unread-invalid-producer-does-not-preskip-consumer",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ConsumerFirst",
+              "field" : "Schedule/Consumer",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Select the independent literal or the completed producer.",
+              "referenced" : [
+                "Schedule/Consumer",
+                "Schedule/Gate",
+                "Schedule/Producer"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Schedule/Base",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Schedule/Base"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Schedule/Consumer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "SAFE"
+              },
+              {
+                "field" : "Schedule/Producer",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Schedule/Base",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Schedule/Base"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ConsumerFirst",
+              "field" : "Schedule/Consumer",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Select the independent literal or the completed producer.",
+              "referenced" : [
+                "Schedule/Consumer",
+                "Schedule/Gate",
+                "Schedule/Producer"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Schedule/Base",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Schedule/Base"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Schedule/Consumer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "SAFE"
+              },
+              {
+                "field" : "Schedule/Producer",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Schedule/Base",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Schedule/Base"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "reached-invalid-producer-poisons-consumer",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ConsumerFirst",
+              "field" : "Schedule/Consumer",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Select the independent literal or the completed producer.",
+              "referenced" : [
+                "Schedule/Consumer",
+                "Schedule/Gate",
+                "Schedule/Producer"
+              ],
+              "fillToFix" : [
+                "Schedule/Consumer",
+                "Schedule/Gate",
+                "Schedule/Producer"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Schedule/Base",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Schedule/Base"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Schedule/Consumer",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Schedule/Producer",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Schedule/Base",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Schedule/Base"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ConsumerFirst",
+              "field" : "Schedule/Consumer",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Select the independent literal or the completed producer.",
+              "referenced" : [
+                "Schedule/Consumer",
+                "Schedule/Gate",
+                "Schedule/Producer"
+              ],
+              "fillToFix" : [
+                "Schedule/Consumer",
+                "Schedule/Gate",
+                "Schedule/Producer"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Schedule/Base",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Schedule/Base"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Schedule/Consumer",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Schedule/Producer",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Schedule/Base",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Schedule/Base"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty-producer-remains-readable-as-zero",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ConsumerFirst",
+              "field" : "Schedule/Consumer",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Select the independent literal or the completed producer.",
+              "referenced" : [
+                "Schedule/Consumer",
+                "Schedule/Gate",
+                "Schedule/Producer"
+              ],
+              "fillToFix" : [
+                "Schedule/Consumer",
+                "Schedule/Gate",
+                "Schedule/Producer"
+              ]
+            },
+            {
+              "code" : "ProducerSecond",
+              "field" : "Schedule/Producer",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Project the base value.",
+              "referenced" : [
+                "Schedule/Base",
+                "Schedule/Producer"
+              ],
+              "fillToFix" : [
+                "Schedule/Base",
+                "Schedule/Producer"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Schedule/Consumer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Schedule/Producer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ConsumerFirst",
+              "field" : "Schedule/Consumer",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Select the independent literal or the completed producer.",
+              "referenced" : [
+                "Schedule/Consumer",
+                "Schedule/Gate",
+                "Schedule/Producer"
+              ],
+              "fillToFix" : [
+                "Schedule/Consumer",
+                "Schedule/Gate",
+                "Schedule/Producer"
+              ]
+            },
+            {
+              "code" : "ProducerSecond",
+              "field" : "Schedule/Producer",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Project the base value.",
+              "referenced" : [
+                "Schedule/Base",
+                "Schedule/Producer"
+              ],
+              "fillToFix" : [
+                "Schedule/Base",
+                "Schedule/Producer"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Schedule/Consumer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Schedule/Producer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

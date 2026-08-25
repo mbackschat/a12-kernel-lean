@@ -83,7 +83,14 @@ private def asNumber (field : String) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.fieldValueAsNumber (.direct (bare field)))
 
+private def numberField (field : String) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.field (bare field))
+
 private def holding : ComputationCondition := .fieldNotFilled gateId
+
+private def always : ComputationCondition :=
+  .or (.fieldFilled gateId) (.fieldNotFilled gateId)
 
 private def firstStringValue :=
   (stringTable? firstStringId [(holding, .literal "7")]).get
@@ -133,6 +140,17 @@ private def firstStringFromNumber :=
     .fieldValueAsString (bare "FirstNumber"))]).get
       (by native_decide)
 
+private def consumerFirst :=
+  (stringTable? secondStringId [
+    (.fieldFilled gateId, .literal "SAFE"),
+    (.fieldNotFilled gateId,
+      .fieldValueAsString (bare "FirstNumber"))]).get
+        (by native_decide)
+
+private def producerSecond :=
+  (numberTable? firstNumberId [(always,
+    numberField "InputNumber")]).get (by native_decide)
+
 private def secondNumberFromString :=
   (numberTable? secondNumberId [(holding,
     .binary .add (asNumber "FirstString")
@@ -151,6 +169,12 @@ private def numberCell (field : FieldId) (amount : Int) :
     raw := .parsed (.num amount)
     numericDecimal := some { unscaled := amount, scale := 0 } }
 
+private def malformedNumberCell (field : FieldId) :
+    ClassifiedCellInput :=
+  { address := { field, path := [] }
+    stored := "bad"
+    raw := .rejected .malformed }
+
 private def checkedDocument (cells : List ClassifiedCellInput) :
     Option (CheckedDocument model) :=
   (checkDocument prepared "en_US" { instantiatedRows := [], cells }).toOption
@@ -161,6 +185,20 @@ private def outcomes? (steps : List (CheckedScalarComputationStep model))
   let run ← (certifyScalarComputationRun steps).toOption
   let input ← checkedDocument cells
   (run.execute world prepared.patterns input).toOption
+
+private def pairTargetOrders?
+    (first second : CheckedScalarComputationStep model) :
+    Option (List FieldId × List FieldId) := do
+  let pair ← (certifyScalarComputationPair first second).toOption
+  pure (pair.authoredTargetFields, pair.executionTargetFields)
+
+private def pairOutcomes?
+    (first second : CheckedScalarComputationStep model)
+    (cells : List ClassifiedCellInput := []) :
+    Option (List ScalarComputationOutcome) := do
+  let pair ← (certifyScalarComputationPair first second).toOption
+  let input ← checkedDocument cells
+  (pair.execute world prepared.patterns input).toOption
 
 private def stringNumberString : List (CheckedScalarComputationStep model) :=
   [.string firstStringValue,
@@ -344,6 +382,69 @@ example :
     (certifyScalarComputationRun [
       .number firstNumberFromStringOnly,
       .string firstStringValue]).toOption = none := by
+  native_decide
+
+/- A two-step authored pair retains its original order for Analyze while Execute reverses only the forward dependency and therefore reads the producer's fresh completion instead of stale target state. -/
+example :
+    pairTargetOrders? (.string firstStringFromNumber)
+        (.number firstNumberValue) =
+      some ([firstStringId, firstNumberId],
+        [firstNumberId, firstStringId]) ∧
+    pairOutcomes? (.string firstStringFromNumber)
+        (.number firstNumberValue) [
+          numberCell firstNumberId 80,
+          stringCell firstStringId "8"] =
+      some [
+        .number firstNumberId
+          (.accepted { unscaled := 7, scale := 0 }),
+        .string firstStringId
+          (.accepted { text := "7", nonempty := by decide })] := by
+  native_decide
+
+/- An already backward-dependent pair and an independent pair retain supplied order; a mutual dependency is not repaired by swapping. -/
+example :
+    pairTargetOrders? (.number firstNumberValue)
+        (.string firstStringFromNumber) =
+      some ([firstNumberId, firstStringId],
+        [firstNumberId, firstStringId]) ∧
+    pairTargetOrders? (.string firstStringValue)
+        (.number firstNumberValue) =
+      some ([firstStringId, firstNumberId],
+        [firstStringId, firstNumberId]) ∧
+    (certifyScalarComputationPair
+      (.string firstStringFromNumber)
+      (.number firstNumberFromStringOnly)).toOption = none := by
+  native_decide
+
+/- The kernel-calibrated consumer-first representative reads the fresh producer, preserves an unread invalid producer behind the selected safe row, poisons a reached read, and treats empty Number input as zero. -/
+example :
+    pairOutcomes? (.string consumerFirst) (.number producerSecond) [
+      numberCell inputNumberId 7,
+      numberCell firstNumberId 80,
+      stringCell secondStringId "OLD"] =
+      some [
+        .number firstNumberId
+          (.accepted { unscaled := 7, scale := 0 }),
+        .string secondStringId
+          (.accepted { text := "7", nonempty := by decide })] ∧
+    pairOutcomes? (.string consumerFirst) (.number producerSecond) [
+      malformedNumberCell inputNumberId,
+      stringCell gateId "open"] =
+      some [
+        .number firstNumberId (.inheritedPoison .malformed),
+        .string secondStringId
+          (.accepted { text := "SAFE", nonempty := by decide })] ∧
+    pairOutcomes? (.string consumerFirst) (.number producerSecond) [
+      malformedNumberCell inputNumberId] =
+      some [
+        .number firstNumberId (.inheritedPoison .malformed),
+        .string secondStringId (.poison .computedDependency)] ∧
+    pairOutcomes? (.string consumerFirst) (.number producerSecond) =
+      some [
+        .number firstNumberId
+          (.accepted { unscaled := 0, scale := 0 }),
+        .string secondStringId
+          (.accepted { text := "0", nonempty := by decide })] := by
   native_decide
 
 private def independentSteps : List (CheckedScalarComputationStep model) :=

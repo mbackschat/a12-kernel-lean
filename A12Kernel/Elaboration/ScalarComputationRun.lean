@@ -71,11 +71,11 @@ structure CheckedScalarComputationRun (model : FlatModel) where
   dependenciesOrdered :
     firstForwardScalarComputationDependency? steps = none
 
-/-- Certify only cross-table scalar scheduling obligations. Family owners remain responsible for same-target assembly and checked table legality. -/
-def certifyScalarComputationRun
+/-- Certify a mixed scalar run while retaining the exact supplied steps for callers that add a stronger wrapper invariant. -/
+private def certifyScalarComputationRunWithSteps
     (steps : List (CheckedScalarComputationStep model)) :
     Except ScalarComputationRunPlanError
-      (CheckedScalarComputationRun model) :=
+      { run : CheckedScalarComputationRun model // run.steps = steps } :=
   match steps with
   | [] => .error .empty
   | first :: remaining =>
@@ -94,12 +94,72 @@ def certifyScalarComputationRun
               | some (consumer, dependency) =>
                   .error (.forwardDependency consumer dependency)
               | none => .ok {
-                  steps := first :: remaining
-                  nonempty := by simp
-                  scalarSteps := hScalar
-                  uniqueTargets := hDuplicate
-                  dependenciesOrdered := hForward
+                  val := {
+                    steps := first :: remaining
+                    nonempty := by simp
+                    scalarSteps := hScalar
+                    uniqueTargets := hDuplicate
+                    dependenciesOrdered := hForward
+                  }
+                  property := rfl
                 }
+
+/-- Certify only cross-table scalar scheduling obligations. Family owners remain responsible for same-target assembly and checked table legality. -/
+def certifyScalarComputationRun
+    (steps : List (CheckedScalarComputationStep model)) :
+    Except ScalarComputationRunPlanError
+      (CheckedScalarComputationRun model) :=
+  match certifyScalarComputationRunWithSteps steps with
+  | .error cause => .error cause
+  | .ok run => .ok run.1
+
+/-- Select the bounded pair's execution order without erasing its authored order. -/
+def scalarComputationPairExecutionSteps
+    (first second : CheckedScalarComputationStep model) :
+    List (CheckedScalarComputationStep model) :=
+  if first.referencesField second.targetField then
+    [second, first]
+  else
+    [first, second]
+
+/-- Exactly two authored scalar steps together with their certified dependency order. The authored order remains available to analysis consumers while execution reuses the finite checked run. -/
+structure CheckedScalarComputationPair (model : FlatModel) where
+  private mk ::
+  authoredFirst : CheckedScalarComputationStep model
+  authoredSecond : CheckedScalarComputationStep model
+  execution : CheckedScalarComputationRun model
+  executionUsesSelectedSteps :
+    execution.steps =
+      scalarComputationPairExecutionSteps authoredFirst authoredSecond
+
+/-- Certify an authored pair, moving the second step before the first exactly when the first reads the second target. This closes the bounded two-step order boundary without constructing a general scheduler. -/
+def certifyScalarComputationPair
+    (first second : CheckedScalarComputationStep model) :
+    Except ScalarComputationRunPlanError
+      (CheckedScalarComputationPair model) :=
+  match certifyScalarComputationRunWithSteps
+      (scalarComputationPairExecutionSteps first second) with
+  | .error cause => .error cause
+  | .ok execution => .ok {
+      authoredFirst := first
+      authoredSecond := second
+      execution := execution.1
+      executionUsesSelectedSteps := execution.2
+    }
+
+namespace CheckedScalarComputationPair
+
+/-- Target identities in caller-authored order for Analyze consumers. -/
+def authoredTargetFields (pair : CheckedScalarComputationPair model) :
+    List FieldId :=
+  [pair.authoredFirst.targetField, pair.authoredSecond.targetField]
+
+/-- Target identities in the certified checked execution order. -/
+def executionTargetFields (pair : CheckedScalarComputationPair model) :
+    List FieldId :=
+  pair.execution.steps.map (·.targetField)
+
+end CheckedScalarComputationPair
 
 /-- One completed rich target outcome with its family and target identity retained. -/
 inductive ScalarComputationOutcome where
@@ -236,5 +296,17 @@ def execute (run : CheckedScalarComputationRun model)
   pure state.outcomes
 
 end CheckedScalarComputationRun
+
+namespace CheckedScalarComputationPair
+
+/-- Execute the dependency-ordered pair through the existing typed mixed-run evaluator. -/
+def execute (pair : CheckedScalarComputationPair model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    Except ScalarComputationRunFault (List ScalarComputationOutcome) :=
+  pair.execution.execute world patterns input
+
+end CheckedScalarComputationPair
 
 end A12Kernel

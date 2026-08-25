@@ -117,4 +117,43 @@ theorem scalarComputationRun_evaluateNumberStep
       .ok (.number completion) := by
   simp [CheckedScalarComputationRun.evaluateStep, evaluated]
 
+/-- Analyze always sees the exact caller-authored target order. -/
+@[simp] theorem scalarComputationPair_authoredTargetFields
+    (pair : CheckedScalarComputationPair model) :
+    pair.authoredTargetFields =
+      [pair.authoredFirst.targetField, pair.authoredSecond.targetField] := by
+  rfl
+
+/-- A first-authored consumer of the second target selects producer-first execution. -/
+theorem scalarComputationPairExecutionSteps_forward
+    (first second : CheckedScalarComputationStep model)
+    (forward : first.referencesField second.targetField = true) :
+    scalarComputationPairExecutionSteps first second = [second, first] := by
+  simp [scalarComputationPairExecutionSteps, forward]
+
+/-- A pair without that forward edge preserves authored execution order. -/
+theorem scalarComputationPairExecutionSteps_preserved
+    (first second : CheckedScalarComputationStep model)
+    (forward : first.referencesField second.targetField = false) :
+    scalarComputationPairExecutionSteps first second = [first, second] := by
+  simp [scalarComputationPairExecutionSteps, forward]
+
+/-- A checked pair retains the exact selected steps, including their operations rather than only their target identities. -/
+@[simp] theorem scalarComputationPair_executionSteps
+    (pair : CheckedScalarComputationPair model) :
+    pair.execution.steps =
+      scalarComputationPairExecutionSteps
+        pair.authoredFirst pair.authoredSecond := by
+  exact pair.executionUsesSelectedSteps
+
+/-- Pair execution is exactly the established typed mixed-run execution. -/
+theorem scalarComputationPair_execute
+    (pair : CheckedScalarComputationPair model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    pair.execute world patterns input =
+      pair.execution.execute world patterns input := by
+  rfl
+
 end A12Kernel

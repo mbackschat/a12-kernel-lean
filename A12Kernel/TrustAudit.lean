@@ -1879,6 +1879,11 @@ run_cmd do
 #print axioms A12Kernel.scalarComputationRun_numberContext_world
 #print axioms A12Kernel.scalarComputationRun_evaluateStringStep
 #print axioms A12Kernel.scalarComputationRun_evaluateNumberStep
+#print axioms A12Kernel.scalarComputationPair_authoredTargetFields
+#print axioms A12Kernel.scalarComputationPairExecutionSteps_forward
+#print axioms A12Kernel.scalarComputationPairExecutionSteps_preserved
+#print axioms A12Kernel.scalarComputationPair_executionSteps
+#print axioms A12Kernel.scalarComputationPair_execute
 #print axioms A12Kernel.scalarComputationRun_evaluateStep_target
 #print axioms A12Kernel.scalarComputationRun_executeSteps_trace
 #print axioms A12Kernel.scalarComputationRun_execute_trace
