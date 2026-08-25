@@ -157,6 +157,7 @@ import A12Kernel.Proofs.AddressedStringLength
 import A12Kernel.Proofs.AddressedNumberField
 import A12Kernel.Proofs.CurrentRepetitionComputation
 import A12Kernel.Proofs.CurrentRepetitionNumberToString
+import A12Kernel.Proofs.CurrentRepetitionNumberToStringRelation
 import A12Kernel.Proofs.CurrentRepetitionStringToNumber
 import A12Kernel.Proofs.CurrentRepetitionAlternatingChain
 import A12Kernel.Proofs.RepeatableNumberAggregateCascade

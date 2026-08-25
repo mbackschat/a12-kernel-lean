@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.CurrentRepetitionNumberToString
+import A12Kernel.Elaboration.CurrentRepetitionNumberToStringRelation
 
 /-! # CurrentRepetition Number-to-String cascade locks -/
 
@@ -110,6 +110,18 @@ private def rowOutcomes? (firstBase : ClassifiedCellInput) :
     (row.coordinate, row.number.targetField, row.number.outcome,
       row.string.targetField, row.string.outcome))
 
+private def phasedOutcomes? (firstBase : ClassifiedCellInput) :
+    Option (List Nat × List (CellAddr × NumericTargetOutcome) ×
+      List (CellAddr × StringTargetOutcome)) := do
+  let plan <- plan?
+  let input <- twoRowInput? firstBase
+  let number <- plan.executeNumberPhaseWithRead input input.read |>.toOption
+  let string <- plan.executeStringPhase prepared.patterns input number |>.toOption
+  pure (number.coordinates,
+    number.outcomes.map fun outcome =>
+      (outcome.targetField, outcome.outcome),
+    string.map fun outcome => (outcome.targetField, outcome.outcome))
+
 private def encounterOrderOutcomes? :
     Option (List
       (Nat × CellAddr × NumericTargetOutcome × CellAddr × StringTargetOutcome)) := do
@@ -154,6 +166,20 @@ example :
         .accepted { unscaled := 11, scale := 0 },
         { field := second.id, path := [2] },
         .accepted (stored "11" (by decide)))] := by
+  native_decide
+
+/- The explicit phase boundary retains every Number completion before the dependent String phase reads it, rather than re-reading stale seeded targets. -/
+example :
+    phasedOutcomes? (numericCell base.id 1 7) = some (
+      [1, 2],
+      [({ field := first.id, path := [1] },
+          .accepted { unscaled := 7, scale := 0 }),
+        ({ field := first.id, path := [2] },
+          .accepted { unscaled := 11, scale := 0 })],
+      [({ field := second.id, path := [1] },
+          .accepted (stored "7" (by decide))),
+        ({ field := second.id, path := [2] },
+          .accepted (stored "11" (by decide)))]) := by
   native_decide
 
 /- A wider finite input preserves physical encounter order rather than sorting by coordinate. -/

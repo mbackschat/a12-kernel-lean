@@ -82,6 +82,13 @@ structure CurrentRepetitionNumberToStringOutcomes where
   rows : List CurrentRepetitionNumberToStringRowOutcomes
   deriving Repr, DecidableEq
 
+/-- The complete structural coordinates and Number outcomes produced before the dependent String phase begins. -/
+structure CurrentRepetitionNumberToStringNumberPhase where
+  private mk ::
+  coordinates : List Nat
+  outcomes : List (SourcedNumericTargetOutcome CellAddr)
+  deriving Repr, DecidableEq
+
 /-- Structural or typed leaf failures of the bounded executor. An absent target row remains explicit insufficient information. -/
 inductive CurrentRepetitionNumberToStringFault where
   | rows (cause : ActualRowEnvironmentError)
@@ -119,13 +126,13 @@ private def readAfterNumber (input : CheckedDocument model)
   | some outcome => .ok (StringDependencyCell.ofNumericOutcome outcome.outcome).checked
   | none => CheckedAddressedFieldValueAsString.readSource input address
 
-/-- Execute the fixed positive guard through a caller-supplied initial Number read, then expose each completed Number outcome only to the String conversion at that exact address. Target-row enumeration, String source projection, and prior-target classification remain owned by the immutable checked document. -/
-def executeWithRead (plan : CheckedCurrentRepetitionNumberToStringCascade model)
-    (patterns : PreparedFlatStringPatterns model compilePattern)
+/-- Execute the row/guard checks and complete every Number target before exposing any completion to the String consumer. -/
+def executeNumberPhaseWithRead
+    (plan : CheckedCurrentRepetitionNumberToStringCascade model)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except CurrentRepetitionNumberToStringFault
-      CurrentRepetitionNumberToStringOutcomes := do
+      CurrentRepetitionNumberToStringNumberPhase := do
   let environments ← plan.number.placement.targetEnvironments input
     |>.mapError .rows
   if environments.isEmpty then throw (.rowCardinality 0)
@@ -134,18 +141,45 @@ def executeWithRead (plan : CheckedCurrentRepetitionNumberToStringCascade model)
       |>.mapError .coordinate
     if !guard.2 then throw (.guardNotTrue guard.1)
     pure guard.1
-  let numberOutcomes ← plan.number.executeWithRead input read |>.mapError .number
-  if numberOutcomes.length != environments.length then
+  let outcomes ← plan.number.executeWithRead input read |>.mapError .number
+  if outcomes.length != environments.length then
     throw (.outcomeCardinality plan.number.placement.targetField
-      numberOutcomes.length)
-  let stringOutcomes ← plan.string.executeWithRead patterns input
-      (readAfterNumber input numberOutcomes) |>.mapError .string
-  if stringOutcomes.length != environments.length then
-    throw (.outcomeCardinality plan.string.targetField stringOutcomes.length)
-  pure {
-    rows := (coordinates.zip (numberOutcomes.zip stringOutcomes)).map fun
-      | (coordinate, number, string) => { coordinate, number, string }
-  }
+      outcomes.length)
+  pure { coordinates, outcomes }
+
+/-- Consume the complete Number phase at exact addresses and retain the dependent String outcomes separately. -/
+def executeStringPhase
+    (plan : CheckedCurrentRepetitionNumberToStringCascade model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (number : CurrentRepetitionNumberToStringNumberPhase) :
+    Except CurrentRepetitionNumberToStringFault
+      (List (SourcedStringTargetOutcome CellAddr)) := do
+  let outcomes ← plan.string.executeWithRead patterns input
+      (readAfterNumber input number.outcomes) |>.mapError .string
+  if outcomes.length != number.coordinates.length then
+    throw (.outcomeCardinality plan.string.targetField outcomes.length)
+  pure outcomes
+
+/-- Assemble completed typed phases without collapsing either family or the structural coordinate. -/
+def assemblePhases
+    (number : CurrentRepetitionNumberToStringNumberPhase)
+    (string : List (SourcedStringTargetOutcome CellAddr)) :
+    CurrentRepetitionNumberToStringOutcomes := {
+  rows := (number.coordinates.zip (number.outcomes.zip string)).map fun
+    | (coordinate, number, string) => { coordinate, number, string }
+}
+
+/-- Execute the fixed positive guard through a caller-supplied initial Number read, then expose each completed Number outcome only to the String conversion at that exact address. Target-row enumeration, String source projection, and prior-target classification remain owned by the immutable checked document. -/
+def executeWithRead (plan : CheckedCurrentRepetitionNumberToStringCascade model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except CurrentRepetitionNumberToStringFault
+      CurrentRepetitionNumberToStringOutcomes := do
+  let number ← plan.executeNumberPhaseWithRead input read
+  let string ← plan.executeStringPhase patterns input number
+  pure (assemblePhases number string)
 
 /-- Preserve the immutable-document entry point when no earlier completion feeds the Number source. -/
 def execute (plan : CheckedCurrentRepetitionNumberToStringCascade model)
