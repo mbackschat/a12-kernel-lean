@@ -207,6 +207,7 @@ import A12Kernel.Elaboration.AddressedNumericOperationConsumer
 import A12Kernel.Elaboration.NumberToStringComputationRun
 import A12Kernel.Elaboration.StringToNumberComputationRun
 import A12Kernel.Elaboration.ScalarComputationRun
+import A12Kernel.Elaboration.ScalarComputationRunRelation
 import A12Kernel.Elaboration.ScalarComputationRunResult
 import A12Kernel.Elaboration.EnumerationComputation
 import A12Kernel.Elaboration.EnumerationFirstFilledComputation

@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ScalarComputationRunResult
+import A12Kernel.Elaboration.ScalarComputationRunRelation
 
 /-! # Finite mixed scalar computation-run locks
 
@@ -344,5 +345,167 @@ example :
       .number firstNumberFromStringOnly,
       .string firstStringValue]).toOption = none := by
   native_decide
+
+private def independentSteps : List (CheckedScalarComputationStep model) :=
+  [.string firstStringValue, .number firstNumberValue]
+
+private def independentRun : CheckedScalarComputationRun model :=
+  (certifyScalarComputationRun independentSteps).toOption.get (by native_decide)
+
+private def independentInput : CheckedDocument model :=
+  (checkedDocument []).get (by native_decide)
+
+private theorem evaluated_to_get (evaluation : Except ε α)
+    (available : evaluation.toOption.isSome = true) :
+    evaluation = .ok (evaluation.toOption.get available) := by
+  cases evaluation with
+  | error cause => simp [Except.toOption] at available
+  | ok value => rfl
+
+private def stringFirst :=
+  (independentRun.evaluateStep world prepared.patterns independentInput {}
+    (.string firstStringValue)).toOption.get (by native_decide)
+private def afterString : ScalarComputationRunState := { completed := [stringFirst] }
+private def numberAfterString :=
+  (independentRun.evaluateStep world prepared.patterns independentInput
+    afterString (.number firstNumberValue)).toOption.get (by native_decide)
+private def stringThenNumber : ScalarComputationRunState :=
+  { completed := [stringFirst, numberAfterString] }
+
+private def numberFirst :=
+  (independentRun.evaluateStep world prepared.patterns independentInput {}
+    (.number firstNumberValue)).toOption.get (by native_decide)
+private def afterNumber : ScalarComputationRunState := { completed := [numberFirst] }
+private def stringAfterNumber :=
+  (independentRun.evaluateStep world prepared.patterns independentInput
+    afterNumber (.string firstStringValue)).toOption.get (by native_decide)
+private def numberThenString : ScalarComputationRunState :=
+  { completed := [numberFirst, stringAfterNumber] }
+
+private theorem stringFirst_evaluated :
+    independentRun.evaluateStep world prepared.patterns independentInput {}
+      (.string firstStringValue) = .ok stringFirst := by
+  simpa [stringFirst] using evaluated_to_get
+    (evaluation := independentRun.evaluateStep world prepared.patterns
+      independentInput {} (.string firstStringValue)) (by native_decide)
+
+private theorem numberAfterString_evaluated :
+    independentRun.evaluateStep world prepared.patterns independentInput
+      afterString (.number firstNumberValue) = .ok numberAfterString := by
+  simpa [numberAfterString] using evaluated_to_get
+    (evaluation := independentRun.evaluateStep world prepared.patterns
+      independentInput afterString (.number firstNumberValue)) (by native_decide)
+
+private theorem numberFirst_evaluated :
+    independentRun.evaluateStep world prepared.patterns independentInput {}
+      (.number firstNumberValue) = .ok numberFirst := by
+  simpa [numberFirst] using evaluated_to_get
+    (evaluation := independentRun.evaluateStep world prepared.patterns
+      independentInput {} (.number firstNumberValue)) (by native_decide)
+
+private theorem stringAfterNumber_evaluated :
+    independentRun.evaluateStep world prepared.patterns independentInput
+      afterNumber (.string firstStringValue) = .ok stringAfterNumber := by
+  simpa [stringAfterNumber] using evaluated_to_get
+    (evaluation := independentRun.evaluateStep world prepared.patterns
+      independentInput afterNumber (.string firstStringValue)) (by native_decide)
+
+private theorem independent_enabled
+    (step : CheckedScalarComputationStep model)
+    (state : ScalarComputationRunState)
+    (notString : step.referencesField firstStringId = false)
+    (notNumber : step.referencesField firstNumberId = false) :
+    ScalarComputationDependenciesEnabled independentRun step state := by
+  intro dependency member referenced
+  have targets :
+      independentRun.targetFields = [firstStringId, firstNumberId] := by
+    native_decide
+  rw [targets] at member
+  simp at member
+  rcases member with rfl | rfl
+  · rw [notString] at referenced
+    contradiction
+  · rw [notNumber] at referenced
+    contradiction
+
+/- Independent typed steps are enabled in either order, and target-indexed rich outcomes erase their private completion order. -/
+example :
+    ScalarComputationRunTransition independentRun world prepared.patterns
+        independentInput {} stringFirst.outcome afterString ∧
+    ScalarComputationRunTransition independentRun world prepared.patterns
+        independentInput afterString numberAfterString.outcome stringThenNumber ∧
+    ScalarComputationRunTransition independentRun world prepared.patterns
+        independentInput {} numberFirst.outcome afterNumber ∧
+    ScalarComputationRunTransition independentRun world prepared.patterns
+        independentInput afterNumber stringAfterNumber.outcome numberThenString ∧
+    (stringThenNumber.find? firstStringId).map (·.outcome) =
+        (numberThenString.find? firstStringId).map (·.outcome) ∧
+    (stringThenNumber.find? firstNumberId).map (·.outcome) =
+        (numberThenString.find? firstNumberId).map (·.outcome) := by
+  constructor
+  · exact .compute (.string firstStringValue) (by
+      change .string firstStringValue ∈ independentSteps
+      simp [independentSteps])
+      (by native_decide)
+      (independent_enabled _ _ (by native_decide) (by native_decide))
+      stringFirst stringFirst_evaluated
+  constructor
+  · exact .compute (.number firstNumberValue) (by
+      change .number firstNumberValue ∈ independentSteps
+      simp [independentSteps])
+      (by native_decide)
+      (independent_enabled _ _ (by native_decide) (by native_decide))
+      numberAfterString
+      numberAfterString_evaluated
+  constructor
+  · exact .compute (.number firstNumberValue) (by
+      change .number firstNumberValue ∈ independentSteps
+      simp [independentSteps])
+      (by native_decide)
+      (independent_enabled _ _ (by native_decide) (by native_decide))
+      numberFirst numberFirst_evaluated
+  constructor
+  · exact .compute (.string firstStringValue) (by
+      change .string firstStringValue ∈ independentSteps
+      simp [independentSteps])
+      (by native_decide)
+      (independent_enabled _ _ (by native_decide) (by native_decide))
+      stringAfterNumber
+      stringAfterNumber_evaluated
+  native_decide
+
+private def dependentRun : CheckedScalarComputationRun model :=
+  (certifyScalarComputationRun [
+    .string firstStringValue, .number firstNumberUnreadString])
+      |>.toOption |>.get (by native_decide)
+
+private def dependentProducer :=
+  (dependentRun.evaluateStep world prepared.patterns independentInput {}
+    (.string firstStringValue)).toOption.get (by native_decide)
+
+/- Static dependency readiness disables the Number consumer before its String producer and enables it after completion even though the consumer's first selected literal leaves its later dependency read unreached. -/
+example :
+    ¬ ScalarComputationDependenciesEnabled dependentRun
+        (.number firstNumberUnreadString) {} ∧
+      ScalarComputationDependenciesEnabled dependentRun
+        (.number firstNumberUnreadString) { completed := [dependentProducer] } := by
+  constructor
+  · intro enabled
+    have completed := enabled firstStringId (by native_decide) (by native_decide)
+    simp [ScalarComputationRunState.targetFields] at completed
+  · intro dependency member referenced
+    have targets :
+        dependentRun.targetFields = [firstStringId, firstNumberId] := by
+      native_decide
+    rw [targets] at member
+    simp at member
+    rcases member with rfl | rfl
+    · native_decide
+    · have selfExcluded :
+          CheckedScalarComputationStep.referencesField
+            (.number firstNumberUnreadString) firstNumberId = false := by
+        native_decide
+      rw [selfExcluded] at referenced
+      contradiction
 
 end A12Kernel.Conformance.ScalarComputationRun

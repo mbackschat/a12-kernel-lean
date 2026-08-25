@@ -1874,6 +1874,9 @@ run_cmd do
 #print axioms A12Kernel.scalarComputationRun_numberContext_world
 #print axioms A12Kernel.scalarComputationRun_evaluateStringStep
 #print axioms A12Kernel.scalarComputationRun_evaluateNumberStep
+#print axioms A12Kernel.scalarComputationRun_evaluateStep_target
+#print axioms A12Kernel.scalarComputationRun_executeSteps_trace
+#print axioms A12Kernel.scalarComputationRun_execute_trace
 #print axioms A12Kernel.scalarComputationOutcomePartitions_count
 #print axioms A12Kernel.scalarComputationOutcomePartitions_string_mem_iff
 #print axioms A12Kernel.scalarComputationOutcomePartitions_number_mem_iff
