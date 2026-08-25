@@ -1,0 +1,868 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "975a2e78602eaf26126168cd203bd84738885322",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "NestedChain_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "fresh-two-level-shared-terminal-coordinate",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines[2]/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base",
+                "Order/Lines[2]/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/First",
+                "Order/Lines/Entries[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines[2]/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/First",
+                "Order/Lines[2]/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines[2]/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base",
+                "Order/Lines[2]/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/First",
+                "Order/Lines/Entries[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines[2]/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/First",
+                "Order/Lines[2]/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty-leaf-stays-local",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines[2]/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base",
+                "Order/Lines[2]/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/First",
+                "Order/Lines/Entries[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines[2]/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/First",
+                "Order/Lines[2]/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines[2]/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base",
+                "Order/Lines[2]/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/First",
+                "Order/Lines/Entries[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines[2]/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/First",
+                "Order/Lines[2]/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "malformed-shared-coordinate-stays-local",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/First",
+                "Order/Lines/Entries[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines[2]/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/First",
+                "Order/Lines[2]/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines[2]/Entries/Base",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines[2]/Entries/Base",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Order/Lines[2]/Entries/Base"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/First",
+                "Order/Lines/Entries[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines[2]/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/First",
+                "Order/Lines[2]/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines[2]/Entries/Base",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines[2]/Entries/Base",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Order/Lines[2]/Entries/Base"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "outer-row-without-leaves-adds-no-computation-row",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SecondProjection",
+              "field" : "Order/Lines/Entries/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Render the fresh leaf projection.",
+              "referenced" : [
+                "Order/Lines/Entries/First",
+                "Order/Lines/Entries/Second"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

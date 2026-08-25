@@ -1,0 +1,118 @@
+{
+  "header" : {
+    "id" : "NestedChain_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "NestedChain_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Order",
+        "name" : "Order",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Order/Lines",
+            "name" : "Lines",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Order/Lines/Entries",
+                "name" : "Entries",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Order/Lines/Entries/Base",
+                    "name" : "Base",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Order/Lines/Entries/First",
+                    "name" : "First",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Order/Lines/Entries/Second",
+                    "name" : "Second",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Order/Lines/Entries/FirstProjection",
+                    "name" : "FirstProjection",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../First",
+                      "computationAlternatives" : [ {
+                        "precondition" : "CurrentRepetition(/Order/Lines/Entries) > 0",
+                        "operation" : "[Base]"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Copy the leaf base at the current entry."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Order/Lines/Entries/SecondProjection",
+                    "name" : "SecondProjection",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../Second",
+                      "computationAlternatives" : [ {
+                        "operation" : "FieldValueAsString(First)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Render the fresh leaf projection."
+                      } ]
+                    }
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
