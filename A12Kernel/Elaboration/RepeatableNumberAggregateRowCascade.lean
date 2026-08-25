@@ -8,33 +8,15 @@ import A12Kernel.Elaboration.AddressedNumberDivision
 
 namespace A12Kernel
 
-namespace CheckedRepeatableNumberAggregateCascade
-
-def aggregateAddress
-    (cascade : CheckedRepeatableNumberAggregateCascade model) : CellAddr := {
-  field := cascade.total.operation.core.target.id
-  path := []
-}
-
-/-- Expose one completed aggregate only at its exact root address and delegate every other read to the immutable document. -/
-def readCompletion (cascade : CheckedRepeatableNumberAggregateCascade model)
-    (outcome : NumericTargetOutcome) (input : CheckedDocument model)
-    (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
-  if address == cascade.aggregateAddress then
-    .ok (NumericDependencyCell.ofOutcome outcome).checked
-  else
-    input.read address
-
-end CheckedRepeatableNumberAggregateCascade
-
 inductive RepeatableNumberAggregateRowCascadeElabError where
   | suffix (cause : AddressedNumberFieldElabError)
   | duplicateTarget (field : FieldId)
   | missingAggregateDependency (expected actual : FieldId)
+  | scopeMismatch (producerScope suffixScope : List RepeatableLevel)
   | cycle (field : FieldId)
   deriving Repr, DecidableEq
 
-/-- The shared static certificate for a direct Number suffix that consumes one aggregate completion. -/
+/-- The shared static certificate for a direct Number suffix that consumes one aggregate completion in the producer's exact row scope. -/
 private structure RepeatableNumberAggregateRowSuffixCertificate
     (cascade : CheckedRepeatableNumberAggregateCascade model)
     (suffix : CheckedAddressedNumberField model) : Type where
@@ -44,6 +26,8 @@ private structure RepeatableNumberAggregateRowSuffixCertificate
   noBackEdge :
     (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies).contains
       suffix.placement.targetField = false
+  sameScope : suffix.placement.targetDeclaration.repeatableScope =
+    cascade.row.targetDeclaration.repeatableScope
   aggregateDependency :
     suffix.placement.sourceDeclaration.id =
       cascade.total.operation.core.target.id
@@ -59,6 +43,8 @@ structure CheckedRepeatableNumberAggregateRowCascade (model : FlatModel) where
   noBackEdge :
     (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies).contains
       suffix.placement.targetField = false
+  sameScope : suffix.placement.targetDeclaration.repeatableScope =
+    cascade.row.targetDeclaration.repeatableScope
   aggregateDependency :
     suffix.placement.sourceDeclaration.id =
       cascade.total.operation.core.target.id
@@ -75,12 +61,17 @@ private def certifyRepeatableNumberAggregateRowSuffix
           (cascade.row.sourceFields ++
             cascade.consumer.fieldDependencies).contains
               suffix.placement.targetField = false then
+        let hScope ← certifyRepeatableNumberAggregateSuffixScope cascade
+          suffix.placement.targetDeclaration.repeatableScope
+          |>.mapError fun (producerScope, suffixScope) =>
+            .scopeMismatch producerScope suffixScope
         if hDependency : suffix.placement.sourceDeclaration.id =
             cascade.total.operation.core.target.id then
           pure {
             distinctFromRows := hRows
             distinctFromAggregate := hAggregate
             noBackEdge := hBackEdge
+            sameScope := hScope.sameScope
             aggregateDependency := hDependency
           }
         else throw (.missingAggregateDependency
@@ -90,7 +81,7 @@ private def certifyRepeatableNumberAggregateRowSuffix
     else throw (.duplicateTarget suffix.placement.targetField)
   else throw (.duplicateTarget suffix.placement.targetField)
 
-/-- Compose two already-checked execution phases without constructing a scheduler. The suffix must consume the aggregate, own a new target, and remain absent from every prefix dependency. -/
+/-- Compose two already-checked execution phases without constructing a scheduler. The suffix must consume the aggregate in the producer's exact row scope, own a new target, and remain absent from every prefix dependency. -/
 def checkRepeatableNumberAggregateRowCascade
     (cascade : CheckedRepeatableNumberAggregateCascade model)
     (suffixDeclaringGroup : GroupPath) (suffixTarget : FieldId)
@@ -111,6 +102,7 @@ def checkRepeatableNumberAggregateRowCascade
     distinctFromRows := certificate.distinctFromRows
     distinctFromAggregate := certificate.distinctFromAggregate
     noBackEdge := certificate.noBackEdge
+    sameScope := certificate.sameScope
     aggregateDependency := certificate.aggregateDependency
   }
 
@@ -168,6 +160,7 @@ end CheckedRepeatableNumberAggregateRowCascade
 inductive RepeatableNumberAggregateRowChainElabError where
   | duplicateTarget (field : FieldId)
   | missingAggregateDependency (expected actual : FieldId)
+  | scopeMismatch (producerScope suffixScope : List RepeatableLevel)
   | cycle (field : FieldId)
   | incoherentChain
   deriving Repr, DecidableEq
@@ -187,11 +180,13 @@ structure CheckedRepeatableNumberAggregateRowChain (model : FlatModel) where
   noBackEdge : (aggregateRowChainTargets suffix).all (fun field =>
     !(cascade.row.sourceFields ++
       cascade.consumer.fieldDependencies).contains field) = true
+  sameScope : suffix.first.placement.targetDeclaration.repeatableScope =
+    cascade.row.targetDeclaration.repeatableScope
   aggregateDependency :
     suffix.first.placement.sourceDeclaration.id =
       cascade.total.operation.core.target.id
 
-/-- Compose the two checked phases while retaining their existing finite orders. Every suffix target must be new and absent from the prefix reads, and the first suffix operation must consume the aggregate. -/
+/-- Compose the two checked phases while retaining their existing finite orders. The suffix stays in the producer's exact row scope, every suffix target is new and absent from the prefix reads, and the first suffix operation consumes the aggregate. -/
 def checkRepeatableNumberAggregateRowChain
     (cascade : CheckedRepeatableNumberAggregateCascade model)
     (suffix : CheckedCurrentRepetitionNumberCascade model) :
@@ -204,12 +199,17 @@ def checkRepeatableNumberAggregateRowChain
     if hBackEdge : targets.all (fun field =>
         !(cascade.row.sourceFields ++
           cascade.consumer.fieldDependencies).contains field) = true then
+      let hScope ← certifyRepeatableNumberAggregateSuffixScope cascade
+        suffix.first.placement.targetDeclaration.repeatableScope
+        |>.mapError fun (producerScope, suffixScope) =>
+          .scopeMismatch producerScope suffixScope
       if hDependency : suffix.first.placement.sourceDeclaration.id =
           cascade.total.operation.core.target.id then
         pure {
           cascade, suffix
           distinctTargets := hDistinct
           noBackEdge := hBackEdge
+          sameScope := hScope.sameScope
           aggregateDependency := hDependency
         }
       else throw (.missingAggregateDependency
@@ -278,11 +278,13 @@ structure CheckedRepeatableNumberAggregateNumberToStringRowChain
   noBackEdge :
     (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies).contains
       suffix.number.placement.targetField = false
+  sameScope : suffix.number.placement.targetDeclaration.repeatableScope =
+    cascade.row.targetDeclaration.repeatableScope
   aggregateDependency :
     suffix.number.placement.sourceDeclaration.id =
       cascade.total.operation.core.target.id
 
-/-- Reuse the checked direct-Number suffix boundary before retaining the suffix's already-checked structural and typed edge. -/
+/-- Reuse the checked direct-Number suffix boundary, including its exact producer-scope certificate, before retaining the suffix's already-checked structural and typed edge. -/
 def checkRepeatableNumberAggregateNumberToStringRowChain
     (cascade : CheckedRepeatableNumberAggregateCascade model)
     (suffix : CheckedCurrentRepetitionNumberToStringCascade model) :
@@ -295,6 +297,7 @@ def checkRepeatableNumberAggregateNumberToStringRowChain
     distinctFromRows := certificate.distinctFromRows
     distinctFromAggregate := certificate.distinctFromAggregate
     noBackEdge := certificate.noBackEdge
+    sameScope := certificate.sameScope
     aggregateDependency := certificate.aggregateDependency
   }
 
@@ -335,6 +338,7 @@ end CheckedRepeatableNumberAggregateNumberToStringRowChain
 private inductive RepeatableNumberAggregatePairRowSuffixElabError where
   | duplicateTarget (field : FieldId)
   | missingAggregateDependency (expected : FieldId)
+  | scopeMismatch (producerScope suffixScope : List RepeatableLevel)
   | cycle (field : FieldId)
   deriving Repr, DecidableEq
 
@@ -347,6 +351,8 @@ private structure RepeatableNumberAggregatePairRowSuffixCertificate
   noBackEdge :
     (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies).contains
       pair.left.placement.targetField = false
+  sameScope : pair.left.placement.targetDeclaration.repeatableScope =
+    cascade.row.targetDeclaration.repeatableScope
   aggregateDependency :
     (pair.left.placement.sourceDeclaration.id ==
         cascade.total.operation.core.target.id ||
@@ -364,6 +370,10 @@ private def certifyRepeatableNumberAggregatePairRowSuffix
       if hBackEdge :
           (cascade.row.sourceFields ++
             cascade.consumer.fieldDependencies).contains target = false then
+        let hScope ← certifyRepeatableNumberAggregateSuffixScope cascade
+          pair.left.placement.targetDeclaration.repeatableScope
+          |>.mapError fun (producerScope, suffixScope) =>
+            .scopeMismatch producerScope suffixScope
         if hDependency :
             (pair.left.placement.sourceDeclaration.id ==
                 cascade.total.operation.core.target.id ||
@@ -373,6 +383,7 @@ private def certifyRepeatableNumberAggregatePairRowSuffix
             distinctFromRows := hRows
             distinctFromAggregate := hAggregate
             noBackEdge := hBackEdge
+            sameScope := hScope.sameScope
             aggregateDependency := hDependency
           }
         else throw (.missingAggregateDependency
@@ -385,6 +396,7 @@ inductive RepeatableNumberAggregateBinaryRowCascadeElabError where
   | suffix (cause : AddressedNumberBinaryElabError)
   | duplicateTarget (field : FieldId)
   | missingAggregateDependency (expected : FieldId)
+  | scopeMismatch (producerScope suffixScope : List RepeatableLevel)
   | cycle (field : FieldId)
   deriving Repr, DecidableEq
 
@@ -393,6 +405,8 @@ private def pairSuffixErrorToBinary :
       RepeatableNumberAggregateBinaryRowCascadeElabError
   | .duplicateTarget field => .duplicateTarget field
   | .missingAggregateDependency expected => .missingAggregateDependency expected
+  | .scopeMismatch producerScope suffixScope =>
+      .scopeMismatch producerScope suffixScope
   | .cycle field => .cycle field
 
 /-- One checked aggregate prefix followed by one ordered direct-field binary Number operation at every suffix row. -/
@@ -409,13 +423,16 @@ structure CheckedRepeatableNumberAggregateBinaryRowCascade
   noBackEdge :
     (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies).contains
       suffix.pair.left.placement.targetField = false
+  sameScope :
+    suffix.pair.left.placement.targetDeclaration.repeatableScope =
+      cascade.row.targetDeclaration.repeatableScope
   aggregateDependency :
     (suffix.pair.left.placement.sourceDeclaration.id ==
         cascade.total.operation.core.target.id ||
       suffix.pair.right.placement.sourceDeclaration.id ==
         cascade.total.operation.core.target.id) = true
 
-/-- Compose the checked aggregate with an ordered addressed binary suffix that reads the aggregate on at least one side and owns a later target. -/
+/-- Compose the checked aggregate with an ordered addressed binary suffix in the producer's exact row scope that reads the aggregate on at least one side and owns a later target. -/
 def checkRepeatableNumberAggregateBinaryRowCascade
     (cascade : CheckedRepeatableNumberAggregateCascade model)
     (suffixDeclaringGroup : GroupPath) (suffixTarget : FieldId)
@@ -434,6 +451,7 @@ def checkRepeatableNumberAggregateBinaryRowCascade
     distinctFromRows := certificate.distinctFromRows
     distinctFromAggregate := certificate.distinctFromAggregate
     noBackEdge := certificate.noBackEdge
+    sameScope := certificate.sameScope
     aggregateDependency := certificate.aggregateDependency
   }
 
@@ -487,6 +505,7 @@ inductive RepeatableNumberAggregateDivisionRowCascadeElabError where
   | suffix (cause : AddressedNumberDivisionElabError)
   | duplicateTarget (field : FieldId)
   | missingAggregateDependency (expected : FieldId)
+  | scopeMismatch (producerScope suffixScope : List RepeatableLevel)
   | cycle (field : FieldId)
   deriving Repr, DecidableEq
 
@@ -495,6 +514,8 @@ private def pairSuffixErrorToDivision :
       RepeatableNumberAggregateDivisionRowCascadeElabError
   | .duplicateTarget field => .duplicateTarget field
   | .missingAggregateDependency expected => .missingAggregateDependency expected
+  | .scopeMismatch producerScope suffixScope =>
+      .scopeMismatch producerScope suffixScope
   | .cycle field => .cycle field
 
 /-- One checked aggregate prefix followed by one ordered direct-field division at every repeatable suffix row. -/
@@ -511,13 +532,16 @@ structure CheckedRepeatableNumberAggregateDivisionRowCascade
   noBackEdge :
     (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies).contains
       suffix.pair.left.placement.targetField = false
+  sameScope :
+    suffix.pair.left.placement.targetDeclaration.repeatableScope =
+      cascade.row.targetDeclaration.repeatableScope
   aggregateDependency :
     (suffix.pair.left.placement.sourceDeclaration.id ==
         cascade.total.operation.core.target.id ||
       suffix.pair.right.placement.sourceDeclaration.id ==
         cascade.total.operation.core.target.id) = true
 
-/-- Compose the checked aggregate with a warning-suppressed addressed division that reads the aggregate on at least one side and owns a later target. -/
+/-- Compose the checked aggregate with a warning-suppressed addressed division in the producer's exact row scope that reads the aggregate on at least one side and owns a later target. -/
 def checkRepeatableNumberAggregateDivisionRowCascade
     (cascade : CheckedRepeatableNumberAggregateCascade model)
     (suffixDeclaringGroup : GroupPath) (suffixTarget : FieldId)
@@ -537,6 +561,7 @@ def checkRepeatableNumberAggregateDivisionRowCascade
     distinctFromRows := certificate.distinctFromRows
     distinctFromAggregate := certificate.distinctFromAggregate
     noBackEdge := certificate.noBackEdge
+    sameScope := certificate.sameScope
     aggregateDependency := certificate.aggregateDependency
   }
 

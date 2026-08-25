@@ -140,6 +140,22 @@ structure CheckedRepeatableNumberAggregateCascade (model : FlatModel) where
   oneLevel : row.targetDeclaration.repeatableScope.length = 1
   noCycle : row.sourceFields.contains total.operation.core.target.id = false
 
+structure RepeatableNumberAggregateSuffixScopeCertificate
+    (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (suffixScope : List RepeatableLevel) : Type where
+  sameScope : suffixScope = cascade.row.targetDeclaration.repeatableScope
+
+/-- Certify that a bounded suffix stays in the aggregate producer's exact row scope. -/
+def certifyRepeatableNumberAggregateSuffixScope
+    (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (suffixScope : List RepeatableLevel) :
+    Except (List RepeatableLevel × List RepeatableLevel)
+      (RepeatableNumberAggregateSuffixScopeCertificate cascade suffixScope) :=
+  if hScope : suffixScope = cascade.row.targetDeclaration.repeatableScope then
+    .ok { sameScope := hScope }
+  else
+    .error (cascade.row.targetDeclaration.repeatableScope, suffixScope)
+
 private def certifyRepeatableNumberAggregateCascade
     (row : CheckedRepeatableNumberAggregateProducer model)
     (aggregate : CheckedNumberEntitySource model)
@@ -297,6 +313,22 @@ inductive RepeatableNumberAggregateCascadeFault where
   deriving Repr, DecidableEq
 
 namespace CheckedRepeatableNumberAggregateCascade
+
+/-- The exact root address owned by the aggregate target. -/
+def aggregateAddress
+    (cascade : CheckedRepeatableNumberAggregateCascade model) : CellAddr := {
+  field := cascade.total.operation.core.target.id
+  path := []
+}
+
+/-- Expose one completed aggregate through the Number dependency boundary only at its exact root address. -/
+def readCompletion (cascade : CheckedRepeatableNumberAggregateCascade model)
+    (outcome : NumericTargetOutcome) (input : CheckedDocument model)
+    (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
+  if address == cascade.aggregateAddress then
+    .ok (NumericDependencyCell.ofOutcome outcome).checked
+  else
+    input.read address
 
 def analyze (plan : CheckedRepeatableNumberAggregateCascade model) :
     RepeatableNumberAggregateCascadeAnalysis := {

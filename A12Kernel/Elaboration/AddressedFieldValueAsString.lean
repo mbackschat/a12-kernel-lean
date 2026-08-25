@@ -2,9 +2,9 @@ import A12Kernel.Elaboration.StringComputationRunApplication
 
 /-! # Repeatable `FieldValueAsString`
 
-This capsule admits one ordinary repeatable String target whose sole expression is `FieldValueAsString` over a Number declaration in the same repeatable scope. Execution enumerates physically instantiated target environments, reads the Number through the checked document's storage-regime-preserving text boundary, and retains the exact target address through result classification and application.
+This capsule admits one ordinary repeatable String target whose sole expression is `FieldValueAsString` over a Number declaration whose repetition scope is bound by the target. Execution enumerates physically instantiated target environments, reads the Number at its own scope through the checked document's storage-regime-preserving text boundary, and retains the exact target address through result classification and application.
 
-Other String expressions, cross-scope reads, guards, cascades, and scheduling remain separate.
+Other String expressions, sibling or deeper reads, guards, cascades, and scheduling remain separate.
 -/
 
 namespace A12Kernel
