@@ -1,0 +1,33 @@
+{
+  "model": "model.dm.json",
+  "locale": "en_US",
+  "observe": ["validateFull", "compute"],
+  "rows": [
+    {
+      "name": "two-values",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            { "Candidate": 2 },
+            { "Candidate": 3 }
+          ]
+        }
+      }
+    },
+    {
+      "name": "one-value-one-empty",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            { "Candidate": 2 },
+            {}
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "documentInline": { "Order": { "Lines": [] } }
+    }
+  ]
+}

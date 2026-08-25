@@ -1,0 +1,164 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "975a2e78602eaf26126168cd203bd84738885322",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "model.dm.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "two-values",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Amount",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Order/Lines[2]/Amount",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Amount",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Order/Lines[2]/Amount",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "one-value-one-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Amount",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Amount",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}
