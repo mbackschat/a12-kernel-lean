@@ -164,6 +164,7 @@ import A12Kernel.Proofs.RepeatableNumberAggregateMixedRun
 import A12Kernel.Proofs.RepeatableNumberAggregateMixedRunRelation
 import A12Kernel.Proofs.RepeatableNumberAggregateRowCascade
 import A12Kernel.Proofs.RepeatableNumberAggregateRowChainRelation
+import A12Kernel.Proofs.RepeatableNumberAggregateNumberToStringRelation
 import A12Kernel.Proofs.RepeatableNumberAggregateStringRowCascade
 import A12Kernel.Proofs.AddressedNumberAbs
 import A12Kernel.Proofs.AddressedNumberRound
