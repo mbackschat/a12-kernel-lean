@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ParallelNumericRun
+import A12Kernel.Elaboration.ParallelNumericRunRelation
 import A12Kernel.Conformance.ParallelNumericAlternativeTable
 
 /-! # Parallel Number run-plan and overlay locks -/
@@ -380,5 +381,124 @@ example :
           { unscaled := 0, scale := 0 })
       ], []) := by
   native_decide
+
+private def relationSeedTable :=
+  (table? 6 seedPath 8).get (by native_decide)
+
+private def relationMiddleTable :=
+  (table? 4 offsetPath 6).get (by native_decide)
+
+private def relationConsumerTable :=
+  (table? 2 inputPath 4).get (by native_decide)
+
+private def relationPlan : CheckedParallelNumericPlan model :=
+  (certifyParallelNumericPlan [
+    relationSeedTable, relationMiddleTable, relationConsumerTable])
+      |>.toOption |>.get (by native_decide)
+
+private def relationPreliminary : CheckedIndexPreliminary model :=
+  (preliminaryFor (invalidIndexCell 5 [2])).get (by native_decide)
+
+private def relationSeedOutcomes : List ParallelNumericDirectOutcome :=
+  (relationSeedTable.executeWithRead relationPreliminary
+    (relationPlan.readPolicy
+      ({} : ParallelNumericTransitionState).runState relationPreliminary.base))
+      |>.toOption |>.get (by native_decide)
+
+private def afterActionFreeSeed : ParallelNumericTransitionState :=
+  { completedTargets := [6], outcomes := relationSeedOutcomes }
+
+private theorem evaluated_to_get (evaluation : Except ε α)
+    (available : evaluation.toOption.isSome = true) :
+    evaluation = .ok (evaluation.toOption.get available) := by
+  cases evaluation with
+  | error cause => simp [Except.toOption] at available
+  | ok value => rfl
+
+private theorem relationSeedExecuted :
+    relationSeedTable.executeWithRead relationPreliminary
+      (relationPlan.readPolicy
+        ({} : ParallelNumericTransitionState).runState relationPreliminary.base) =
+        .ok relationSeedOutcomes := by
+  simpa [relationSeedOutcomes] using evaluated_to_get
+    (evaluation := relationSeedTable.executeWithRead relationPreliminary
+      (relationPlan.readPolicy
+        ({} : ParallelNumericTransitionState).runState relationPreliminary.base))
+    (by native_decide)
+
+private theorem relationEnabled
+    (table : CheckedParallelNumericAlternativeTable model)
+    (state : ParallelNumericTransitionState)
+    (onSeed : table.referencesField 6 = true → 6 ∈ state.completedTargets)
+    (onMiddle : table.referencesField 4 = true → 4 ∈ state.completedTargets)
+    (onConsumer : table.referencesField 2 = true → 2 ∈ state.completedTargets) :
+    ParallelNumericDependenciesEnabled relationPlan table state := by
+  intro dependency member referenced
+  have targets : relationPlan.targetFields = [6, 4, 2] := by native_decide
+  rw [targets] at member
+  simp at member
+  rcases member with rfl | rfl | rfl
+  · exact onSeed referenced
+  · exact onMiddle referenced
+  · exact onConsumer referenced
+
+/- A structurally action-free producer still completes its table target and thereby enables the dependent batch; completion cannot be inferred from emitted rows. -/
+example :
+    ¬ ParallelNumericDependenciesEnabled relationPlan relationMiddleTable {} ∧
+    ParallelNumericRunTransition relationPlan relationPreliminary {}
+        (6, relationSeedOutcomes) afterActionFreeSeed ∧
+      relationSeedOutcomes = [] ∧
+        ParallelNumericDependenciesEnabled relationPlan relationMiddleTable
+          afterActionFreeSeed := by
+  constructor
+  · intro enabled
+    have completed := enabled 6 (by native_decide) (by native_decide)
+    simp at completed
+  constructor
+  · exact .compute relationSeedTable (by
+      change relationSeedTable ∈
+        [relationSeedTable, relationMiddleTable, relationConsumerTable]
+      simp)
+      (by native_decide)
+      (relationEnabled _ _ (by native_decide) (by native_decide)
+        (by native_decide)) relationSeedOutcomes relationSeedExecuted
+  constructor
+  · native_decide
+  · exact relationEnabled _ _ (by native_decide) (by native_decide)
+      (by native_decide)
+
+private def independentFirstTable :=
+  (table? 4 offsetPath 6).get (by native_decide)
+
+private def independentSecondTable :=
+  (table? 2 offsetPath 6).get (by native_decide)
+
+private def independentRelationPlan : CheckedParallelNumericPlan model :=
+  (certifyParallelNumericPlan [independentFirstTable, independentSecondTable])
+    |>.toOption |>.get (by native_decide)
+
+private theorem independentRelationEnabled
+    (table : CheckedParallelNumericAlternativeTable model)
+    (notFirst : table.referencesField 4 = false)
+    (notSecond : table.referencesField 2 = false) :
+    ParallelNumericDependenciesEnabled independentRelationPlan table {} := by
+  intro dependency member referenced
+  have targets : independentRelationPlan.targetFields = [4, 2] := by native_decide
+  rw [targets] at member
+  simp at member
+  rcases member with rfl | rfl
+  · rw [notFirst] at referenced
+    contradiction
+  · rw [notSecond] at referenced
+    contradiction
+
+/- Both independent plan members are enabled in the empty relation state, so supplied list position does not become a dependency edge. -/
+example :
+    ParallelNumericDependenciesEnabled independentRelationPlan
+        independentFirstTable {} ∧
+      ParallelNumericDependenciesEnabled independentRelationPlan
+        independentSecondTable {} := by
+  exact ⟨independentRelationEnabled _ (by native_decide) (by native_decide),
+    independentRelationEnabled _ (by native_decide) (by native_decide)⟩
 
 end A12Kernel.Conformance.ParallelNumericRun

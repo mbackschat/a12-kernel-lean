@@ -222,5 +222,6 @@ import A12Kernel.Proofs.SemanticIndexDateRange
 import A12Kernel.Proofs.SemanticIndexElaboration
 import A12Kernel.Proofs.CustomCondition
 import A12Kernel.Proofs.ParallelNumericRun
+import A12Kernel.Proofs.ParallelNumericRunRelation
 
 /-! Trusted theorem root for the currently supported semantic fragment. -/
