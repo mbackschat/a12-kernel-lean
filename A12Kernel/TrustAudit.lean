@@ -1900,8 +1900,11 @@ run_cmd do
 #print axioms A12Kernel.scalarComputationPair_executionSteps
 #print axioms A12Kernel.scalarComputationPair_execute
 #print axioms A12Kernel.scalarComputationRun_evaluateStep_target
+#print axioms A12Kernel.scalarComputationRun_failureTransition_identity
 #print axioms A12Kernel.scalarComputationRun_executeSteps_trace
 #print axioms A12Kernel.scalarComputationRun_execute_trace
+#print axioms A12Kernel.scalarComputationRun_executeSteps_failureTrace
+#print axioms A12Kernel.scalarComputationRun_execute_failureTrace
 #print axioms A12Kernel.scalarComputationOutcomePartitions_count
 #print axioms A12Kernel.scalarComputationOutcomePartitions_string_mem_iff
 #print axioms A12Kernel.scalarComputationOutcomePartitions_number_mem_iff

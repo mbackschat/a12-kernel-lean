@@ -640,4 +640,51 @@ example :
       rw [selfExcluded] at referenced
       contradiction
 
+private def failingStringRun : CheckedScalarComputationRun model :=
+  (certifyScalarComputationRun [.string firstStringValue])
+    |>.toOption |>.get (by native_decide)
+
+private def missingStringPatternFault : ScalarComputationRunFault :=
+  .string (.evaluation firstStringId
+    (.targetPatternUnavailable firstStringId))
+
+private theorem failingString_evaluated :
+    failingStringRun.evaluateStep world missingPatterns independentInput {}
+      (.string firstStringValue) = .error missingStringPatternFault := by
+  rfl
+
+/- A structural failure is a terminal transition of its enabled typed step and leaves the successful-prefix state unchanged. -/
+example :
+    ScalarComputationRunFailureTransition failingStringRun world
+        missingPatterns independentInput {} missingStringPatternFault ∧
+      ScalarComputationRunFailureTrace failingStringRun world
+        missingPatterns independentInput {} [] {} missingStringPatternFault := by
+  have member :
+      CheckedScalarComputationStep.string firstStringValue ∈
+        failingStringRun.steps := by
+    change CheckedScalarComputationStep.string firstStringValue ∈
+      [CheckedScalarComputationStep.string firstStringValue]
+    simp
+  have pending : firstStringId ∉ ({} : ScalarComputationRunState).targetFields := by
+    simp [ScalarComputationRunState.targetFields]
+  have enabled : ScalarComputationDependenciesEnabled failingStringRun
+      (.string firstStringValue) {} := by
+    intro dependency dependencyMember referenced
+    have onlyTarget : failingStringRun.targetFields = [firstStringId] := by
+      native_decide
+    rw [onlyTarget] at dependencyMember
+    simp at dependencyMember
+    subst dependency
+    have selfExcluded :
+        CheckedScalarComputationStep.referencesField
+          (.string firstStringValue) firstStringId = false := by
+      native_decide
+    rw [selfExcluded] at referenced
+    contradiction
+  have failed : ScalarComputationRunFailureTransition failingStringRun world
+      missingPatterns independentInput {} missingStringPatternFault :=
+    .fail (.string firstStringValue) member pending enabled
+      failingString_evaluated
+  exact ⟨failed, .failed failed⟩
+
 end A12Kernel.Conformance.ScalarComputationRun

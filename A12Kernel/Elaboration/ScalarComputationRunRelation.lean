@@ -43,6 +43,22 @@ inductive ScalarComputationRunTransition
         completion.outcome
         { completed := state.completed ++ [completion] }
 
+/-- One independently chosen enabled mixed scalar step whose structural evaluation fault terminates execution without advancing completed state. Rich rejected or cleared target outcomes remain successful transitions rather than failures here. -/
+inductive ScalarComputationRunFailureTransition
+    (run : CheckedScalarComputationRun model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    ScalarComputationRunState → ScalarComputationRunFault → Prop where
+  | fail
+      (step : CheckedScalarComputationStep model)
+      (member : step ∈ run.steps)
+      (pending : step.targetField ∉ state.targetFields)
+      (enabled : ScalarComputationDependenciesEnabled run step state)
+      (evaluated :
+        run.evaluateStep world patterns input state step = .error fault) :
+      ScalarComputationRunFailureTransition run world patterns input state fault
+
 /-- Finite closure used to relate successful fixed execution to independent transitions. -/
 inductive ScalarComputationRunTrace
     (run : CheckedScalarComputationRun model)
@@ -59,5 +75,26 @@ inductive ScalarComputationRunTrace
         next outcomes final) :
       ScalarComputationRunTrace run world patterns input state
         (outcome :: outcomes) final
+
+/-- A finite successful prefix followed by one enabled structural failure at the unchanged terminal state. -/
+inductive ScalarComputationRunFailureTrace
+    (run : CheckedScalarComputationRun model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    ScalarComputationRunState → List ScalarComputationOutcome →
+      ScalarComputationRunState → ScalarComputationRunFault → Prop where
+  | failed
+      (failure : ScalarComputationRunFailureTransition run world patterns input
+        state fault) :
+      ScalarComputationRunFailureTrace run world patterns input
+        state [] state fault
+  | cons
+      (step : ScalarComputationRunTransition run world patterns input
+        state outcome next)
+      (rest : ScalarComputationRunFailureTrace run world patterns input
+        next outcomes final fault) :
+      ScalarComputationRunFailureTrace run world patterns input
+        state (outcome :: outcomes) final fault
 
 end A12Kernel

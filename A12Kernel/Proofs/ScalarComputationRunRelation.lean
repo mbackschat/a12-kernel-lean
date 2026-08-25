@@ -151,6 +151,18 @@ private theorem scalarComputationRun_step_ready
       rw [notReferenced] at referenced
       contradiction
 
+/-- A structural failure transition preserves the selected step's exact target identity and scalar family. -/
+theorem scalarComputationRun_failureTransition_identity
+    (failure : ScalarComputationRunFailureTransition run world patterns input
+      state fault) :
+    ∃ step ∈ run.steps,
+      fault.target = step.targetField ∧ fault.targetKind = step.targetKind := by
+  cases failure with
+  | fail step member pending enabled evaluated =>
+      exact ⟨step, member,
+        scalarComputationRun_evaluateStep_faultIdentity
+          run world patterns input state step fault evaluated⟩
+
 /-- Successful fixed-order suffix execution is admitted by the mixed transition relation and carries exactly the newly appended rich outcomes. -/
 theorem scalarComputationRun_executeSteps_trace
     (run : CheckedScalarComputationRun model)
@@ -233,5 +245,105 @@ theorem scalarComputationRun_execute_trace
         simpa [ScalarComputationRunState.outcomes] using labelsEqual
       rw [labelsResult, resultOutcomes] at trace
       exact ⟨result, trace, resultOutcomes⟩
+
+/-- A failing fixed-order suffix is exactly a successful mixed-transition prefix followed by the enabled step whose structural fault stopped execution. -/
+theorem scalarComputationRun_executeSteps_failureTrace
+    (run : CheckedScalarComputationRun model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (earlier remaining : List (CheckedScalarComputationStep model))
+    (state : ScalarComputationRunState)
+    (fault : ScalarComputationRunFault)
+    (split : run.steps = earlier ++ remaining)
+    (stateTargets : state.targetFields = earlier.map (·.targetField))
+    (executed :
+      run.executeSteps world patterns input remaining state = .error fault) :
+    ∃ outcomes final,
+      ScalarComputationRunFailureTrace run world patterns input
+        state outcomes final fault ∧
+        state.outcomes ++ outcomes = final.outcomes := by
+  induction remaining generalizing earlier state fault with
+  | nil =>
+      simp only [CheckedScalarComputationRun.executeSteps] at executed
+      cases executed
+  | cons step remaining inductionHypothesis =>
+      cases evaluated : run.evaluateStep world patterns input state step with
+      | error cause =>
+          rw [CheckedScalarComputationRun.executeSteps, evaluated] at executed
+          change Except.error cause = Except.error fault at executed
+          cases executed
+          have ready := scalarComputationRun_step_ready
+            run earlier remaining step split state stateTargets
+          refine ⟨[], state, .failed (.fail step ?_ ready.1 ready.2 evaluated),
+            by simp⟩
+          rw [split]
+          simp
+      | ok completion =>
+          have remainingExecuted :
+              run.executeSteps world patterns input remaining {
+                completed := state.completed ++ [completion]
+              } = .error fault := by
+            rw [CheckedScalarComputationRun.executeSteps, evaluated] at executed
+            change run.executeSteps world patterns input remaining {
+              completed := state.completed ++ [completion]
+            } = .error fault at executed
+            exact executed
+          have target := scalarComputationRun_evaluateStep_target
+            run world patterns input state step completion evaluated
+          have ready := scalarComputationRun_step_ready
+            run earlier remaining step split state stateTargets
+          let next : ScalarComputationRunState :=
+            { completed := state.completed ++ [completion] }
+          have nextTargets :
+              next.targetFields =
+                (earlier ++ [step]).map (·.targetField) := by
+            have stateTargets' :
+                state.completed.map (·.targetField) =
+                  earlier.map (·.targetField) := by
+              simpa [ScalarComputationRunState.targetFields] using stateTargets
+            simp [next, ScalarComputationRunState.targetFields,
+              List.map_append, stateTargets', target]
+          have nextSplit :
+              run.steps = (earlier ++ [step]) ++ remaining := by
+            simpa [List.append_assoc] using split
+          obtain ⟨outcomes, final, trace, appended⟩ :=
+            inductionHypothesis (earlier ++ [step]) next fault
+              nextSplit nextTargets (by simpa [next] using remainingExecuted)
+          refine ⟨completion.outcome :: outcomes, final,
+            .cons (.compute step ?_ ready.1 ready.2 completion evaluated) trace,
+            ?_⟩
+          · rw [split]
+            simp
+          · simpa [next, ScalarComputationRunState.outcomes,
+              List.append_assoc] using appended
+
+/-- Every failing fixed mixed execution has one exact successful prefix and then one enabled family-preserving structural failure; no later step is admitted by that trace. -/
+theorem scalarComputationRun_execute_failureTrace
+    (run : CheckedScalarComputationRun model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (fault : ScalarComputationRunFault)
+    (executed : run.execute world patterns input = .error fault) :
+    ∃ outcomes final,
+      ScalarComputationRunFailureTrace run world patterns input
+        {} outcomes final fault ∧
+        final.outcomes = outcomes := by
+  cases runResult : run.executeSteps world patterns input run.steps {} with
+  | error cause =>
+      rw [CheckedScalarComputationRun.execute, runResult] at executed
+      change Except.error cause = Except.error fault at executed
+      cases executed
+      obtain ⟨outcomes, final, trace, appended⟩ :=
+        scalarComputationRun_executeSteps_failureTrace
+          run world patterns input [] run.steps {} fault (by simp)
+            (by simp [ScalarComputationRunState.targetFields]) runResult
+      exact ⟨outcomes, final, trace, by
+        simpa [ScalarComputationRunState.outcomes] using appended.symm⟩
+  | ok state =>
+      rw [CheckedScalarComputationRun.execute, runResult] at executed
+      change Except.ok state.outcomes = Except.error fault at executed
+      cases executed
 
 end A12Kernel
