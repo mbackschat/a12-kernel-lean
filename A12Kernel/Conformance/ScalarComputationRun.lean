@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.ScalarComputationRunRelation
 
 /-! # Finite mixed scalar computation-run locks
 
-The matrix alternates checked String and Number tables in both directions. It separates typed completed overlays from stale source state, ordinary input reads, reached poison, an unread dependency, and the supplied-order plan gates.
+The matrix alternates checked String and Number tables in both directions. It separates typed completed overlays from stale source state, ordinary input reads, reached poison, an unread dependency, structural-fault family and target attribution, and the supplied-order plan gates.
 -/
 
 namespace A12Kernel.Conformance.ScalarComputationRun
@@ -186,6 +186,22 @@ private def outcomes? (steps : List (CheckedScalarComputationStep model))
   let input ← checkedDocument cells
   (run.execute world prepared.patterns input).toOption
 
+private def fault?
+    (steps : List (CheckedScalarComputationStep model))
+    (patterns : PreparedFlatStringPatterns model builtinStringPatternCompiler) :
+    Option ScalarComputationRunFault := do
+  let run ← (certifyScalarComputationRun steps).toOption
+  let input ← checkedDocument []
+  match run.execute world patterns input with
+  | .error fault => some fault
+  | .ok _ => none
+
+private def missingPatterns :
+    PreparedFlatStringPatterns model builtinStringPatternCompiler := {
+  fields := []
+  modelWellFormed := by native_decide
+}
+
 private def pairTargetOrders?
     (first second : CheckedScalarComputationStep model) :
     Option (List FieldId × List FieldId) := do
@@ -266,6 +282,21 @@ example :
         .string firstStringId (.accepted { text := "7", nonempty := by decide }),
         .number secondNumberId
           (.accepted { unscaled := 9, scale := 0 })] := by
+  native_decide
+
+/- A structural fault in the later String step retains that step's family and target rather than inheriting the run's first target. The same run with its complete prepared-pattern set is the positive control. -/
+example :
+    fault? [.number firstNumberValue, .string firstStringValue]
+        missingPatterns =
+      some (.string (.evaluation firstStringId
+        (.targetPatternUnavailable firstStringId))) ∧
+    (fault? [.number firstNumberValue, .string firstStringValue]
+      missingPatterns).map ScalarComputationRunFault.target =
+        some firstStringId ∧
+    (fault? [.number firstNumberValue, .string firstStringValue]
+      missingPatterns).map ScalarComputationRunFault.targetKind = some .string ∧
+    fault? [.number firstNumberValue, .string firstStringValue]
+        prepared.patterns = none := by
   native_decide
 
 /- Each family result owner independently classifies the same successful mixed run relative to the immutable source. -/

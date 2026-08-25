@@ -1,8 +1,10 @@
 import A12Kernel.Elaboration.ScalarComputationRun
+import A12Kernel.Proofs.NumericComputationRun
+import A12Kernel.Proofs.StringComputationRun
 
 /-! # Finite mixed scalar computation-run laws
 
-These laws expose consumer-specific pending/completed/input reads and prove that atomic evaluation retains the selected table's family rather than lowering to a common outcome.
+These laws expose consumer-specific pending/completed/input reads and prove that atomic success or structural failure retains the selected table's family and target rather than lowering to a common result.
 -/
 
 namespace A12Kernel
@@ -116,6 +118,107 @@ theorem scalarComputationRun_evaluateNumberStep
     run.evaluateStep world patterns input state (.number table) =
       .ok (.number completion) := by
   simp [CheckedScalarComputationRun.evaluateStep, evaluated]
+
+/-- Atomic mixed evaluation preserves both the selected family's constructor and its own failing target. -/
+theorem scalarComputationRun_evaluateStep_faultIdentity
+    (run : CheckedScalarComputationRun model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (state : ScalarComputationRunState)
+    (step : CheckedScalarComputationStep model)
+    (fault : ScalarComputationRunFault)
+    (evaluated :
+      run.evaluateStep world patterns input state step = .error fault) :
+    fault.target = step.targetField ∧ fault.targetKind = step.targetKind := by
+  cases step with
+  | string table =>
+      cases result : table.evaluateCompletion patterns
+          (run.stringContext state input) with
+      | error cause =>
+          simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
+          subst fault
+          constructor
+          · exact stringComputationTable_evaluateCompletion_faultTarget
+              table patterns (run.stringContext state input) cause result
+          · rfl
+      | ok completion =>
+          simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
+  | number table =>
+      cases result : table.evaluateCompletion
+          (run.numberContext world state input) with
+      | error cause =>
+          simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
+          subst fault
+          constructor
+          · exact numericComputationTable_evaluateCompletion_faultTarget
+              table (run.numberContext world state input) cause result
+          · rfl
+      | ok completion =>
+          simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
+
+/-- A failing mixed suffix attributes its structural fault to one of the exact typed steps it was given. -/
+private theorem scalarComputationRun_executeSteps_faultTarget
+    (run : CheckedScalarComputationRun model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (steps : List (CheckedScalarComputationStep model))
+    (state : ScalarComputationRunState)
+    (fault : ScalarComputationRunFault)
+    (executed :
+      run.executeSteps world patterns input steps state = .error fault) :
+    fault.target ∈ steps.map (·.targetField) := by
+  induction steps generalizing state with
+  | nil =>
+      simp only [CheckedScalarComputationRun.executeSteps] at executed
+      cases executed
+  | cons step remaining inductionHypothesis =>
+      cases evaluation : run.evaluateStep world patterns input state step with
+      | error cause =>
+          rw [CheckedScalarComputationRun.executeSteps, evaluation] at executed
+          change Except.error cause = Except.error fault at executed
+          cases executed
+          have target := (scalarComputationRun_evaluateStep_faultIdentity
+            run world patterns input state step fault evaluation
+          ).1
+          simp [target]
+      | ok completion =>
+          have remainingExecuted :
+              run.executeSteps world patterns input remaining {
+                completed := state.completed ++ [completion]
+              } = .error fault := by
+            rw [CheckedScalarComputationRun.executeSteps, evaluation] at executed
+            change run.executeSteps world patterns input remaining {
+              completed := state.completed ++ [completion]
+            } = .error fault at executed
+            exact executed
+          have remainingFault := inductionHypothesis
+            (state := { completed := state.completed ++ [completion] })
+            remainingExecuted
+          simp [remainingFault]
+
+/-- A public failing mixed run names one of its own checked targets without erasing the String-or-Number fault constructor. -/
+theorem scalarComputationRun_execute_faultTarget
+    (run : CheckedScalarComputationRun model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (fault : ScalarComputationRunFault)
+    (executed : run.execute world patterns input = .error fault) :
+    fault.target ∈ run.targetFields := by
+  cases result : run.executeSteps world patterns input run.steps {} with
+  | error cause =>
+      rw [CheckedScalarComputationRun.execute, result] at executed
+      change Except.error cause = Except.error fault at executed
+      cases executed
+      simpa [CheckedScalarComputationRun.targetFields] using
+        scalarComputationRun_executeSteps_faultTarget
+          run world patterns input run.steps {} fault result
+  | ok state =>
+      rw [CheckedScalarComputationRun.execute, result] at executed
+      change Except.ok state.outcomes = Except.error fault at executed
+      cases executed
 
 /-- Analyze always sees the exact caller-authored target order. -/
 @[simp] theorem scalarComputationPair_authoredTargetFields

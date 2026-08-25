@@ -848,6 +848,7 @@ run_cmd do
 #print axioms A12Kernel.numericComputationRun_read_pending
 #print axioms A12Kernel.numericComputationRun_read_completed
 #print axioms A12Kernel.numericComputationRun_read_input
+#print axioms A12Kernel.numericComputationTable_evaluateCompletion_faultTarget
 #print axioms A12Kernel.numericComputationRun_execute_targetOrder
 #print axioms A12Kernel.numericComputationRun_execute_targetsUnique
 #print axioms A12Kernel.numericComputationRun_evaluateTable_target
@@ -1776,6 +1777,9 @@ run_cmd do
 #print axioms A12Kernel.stringComputationRun_read_pending
 #print axioms A12Kernel.stringComputationRun_read_completed
 #print axioms A12Kernel.stringComputationRun_read_input
+#print axioms A12Kernel.stringComputationTable_evaluateCompletion_faultTarget
+#print axioms A12Kernel.stringComputationRun_evaluateTable_faultTarget
+#print axioms A12Kernel.stringComputationRun_execute_faultTarget
 #print axioms A12Kernel.fieldId_firstDuplicate_none_iff_nodup
 #print axioms A12Kernel.checkedStringComputationTable_excludes_target
 #print axioms A12Kernel.stringComputationRun_evaluateTable_target
@@ -1882,6 +1886,8 @@ run_cmd do
 #print axioms A12Kernel.scalarComputationRun_numberContext_world
 #print axioms A12Kernel.scalarComputationRun_evaluateStringStep
 #print axioms A12Kernel.scalarComputationRun_evaluateNumberStep
+#print axioms A12Kernel.scalarComputationRun_evaluateStep_faultIdentity
+#print axioms A12Kernel.scalarComputationRun_execute_faultTarget
 #print axioms A12Kernel.scalarComputationPair_authoredTargetFields
 #print axioms A12Kernel.scalarComputationPairExecutionSteps_forward
 #print axioms A12Kernel.scalarComputationPairExecutionSteps_preserved

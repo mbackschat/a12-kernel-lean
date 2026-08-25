@@ -218,6 +218,19 @@ inductive ScalarComputationRunFault where
   | number (cause : NumericComputationRunFault)
   deriving Repr, DecidableEq
 
+namespace ScalarComputationRunFault
+
+/-- Project the target retained by the fault's original computation family. -/
+def target : ScalarComputationRunFault → FieldId
+  | .string cause => cause.target
+  | .number cause => cause.target
+
+def targetKind : ScalarComputationRunFault → SurfaceScalarKind
+  | .string _ => .string
+  | .number _ => .number
+
+end ScalarComputationRunFault
+
 namespace CheckedScalarComputationRun
 
 def targetFields (run : CheckedScalarComputationRun model) :

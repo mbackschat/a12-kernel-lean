@@ -38,6 +38,14 @@ inductive StringComputationRunFault where
   | dependency (target : FieldId) (fault : StringDependencyFault)
   deriving Repr, DecidableEq
 
+namespace StringComputationRunFault
+
+/-- The target of the checked table whose evaluation or dependency conversion failed. -/
+def target : StringComputationRunFault → FieldId
+  | .evaluation target _ | .dependency target _ => target
+
+end StringComputationRunFault
+
 namespace CheckedStringComputationTable
 
 /-- Evaluate one checked String table against an explicit context and retain the dependency cell required by any later step. Homogeneous and heterogeneous runs share this atomic boundary. -/

@@ -31,6 +31,27 @@ theorem numericComputationRun_read_input
       input.flatContext.read field := by
   simp [CheckedNumericComputationRun.readPolicy, ordinary, pending]
 
+/-- Atomic Number-table evaluation attributes either structural fault to the checked target independently of the surrounding run policy. -/
+theorem numericComputationTable_evaluateCompletion_faultTarget
+    (table : CheckedNumericComputationTable model)
+    (context : ScalarComputationContext)
+    (fault : NumericComputationRunFault)
+    (evaluated : table.evaluateCompletion context = .error fault) :
+    fault.target = table.targetField := by
+  cases result : table.evaluate context with
+  | error cause =>
+      simp [CheckedNumericComputationTable.evaluateCompletion, result] at evaluated
+      subst fault
+      rfl
+  | ok checked =>
+      cases checked with
+      | unsupported cause =>
+          simp [CheckedNumericComputationTable.evaluateCompletion, result] at evaluated
+          subst fault
+          rfl
+      | supported outcome =>
+          simp [CheckedNumericComputationTable.evaluateCompletion, result] at evaluated
+
 /-- Successful atomic evaluation retains exactly the checked table's target. -/
 theorem numericComputationRun_evaluateTable_target
     (run : CheckedNumericComputationRun model)
@@ -67,23 +88,8 @@ theorem numericComputationRun_evaluateTable_faultTarget
     (evaluated :
       run.evaluateTable world input state table = .error fault) :
     fault.target = table.targetField := by
-  cases result :
-      table.evaluate ((run.readPolicy state input).withWorld world) with
-  | error cause =>
-      simp [CheckedNumericComputationRun.evaluateTable,
-        CheckedNumericComputationTable.evaluateCompletion, result] at evaluated
-      cases evaluated
-      rfl
-  | ok checked =>
-      cases checked with
-      | unsupported cause =>
-          simp [CheckedNumericComputationRun.evaluateTable,
-            CheckedNumericComputationTable.evaluateCompletion, result] at evaluated
-          cases evaluated
-          rfl
-      | supported outcome =>
-          simp [CheckedNumericComputationRun.evaluateTable,
-            CheckedNumericComputationTable.evaluateCompletion, result] at evaluated
+  exact numericComputationTable_evaluateCompletion_faultTarget
+    table ((run.readPolicy state input).withWorld world) fault evaluated
 
 /-- A failing suffix attributes its fault to one of the tables it was given, never to an unrelated field. -/
 private theorem numericComputationRun_executeTables_faultTarget
