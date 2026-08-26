@@ -109,6 +109,7 @@ inductive RepeatableNumberAggregateCascadeElabError where
   | division (cause : AddressedNumberDivisionElabError)
   | stringLength (cause : AddressedStringLengthElabError)
   | fieldValueAsNumber (cause : AddressedFieldValueAsNumberElabError)
+  | rangeAsNumber (cause : AddressedRangeAsNumberElabError)
   | aggregate (cause : NumericComputationElabError)
   | incoherentAggregate
   | dependency (expected actual : FieldId)
@@ -429,6 +430,21 @@ def checkRepeatableFieldValueAsNumberStarListAggregateCascade
   let row ← checkAddressedFieldValueAsNumber model rowDeclaringGroup
       rowTarget rowSource |>.mapError .fieldValueAsNumber
   finishRepeatableNumberAggregateCascade model (.fieldValueAsNumber row)
+    aggregateDeclaringGroup aggregateTarget aggregateSource operation
+
+/-- Range-as-Number-producer counterpart of the checked star-list aggregate route. -/
+def checkRepeatableRangeAsNumberStarListAggregateCascade
+    (model : FlatModel)
+    (rowDeclaringGroup : GroupPath) (rowTarget : FieldId)
+    (rowSource : SurfaceFieldPath) (start finish : Nat)
+    (aggregateDeclaringGroup : GroupPath) (aggregateTarget : FieldId)
+    (aggregateSource : SurfaceNumberEntitySource)
+    (operation : NumericAggregateOp) :
+    Except RepeatableNumberAggregateCascadeElabError
+      (CheckedRepeatableNumberAggregateCascade model) := do
+  let row ← checkAddressedRangeAsNumber model rowDeclaringGroup
+      rowTarget rowSource start finish |>.mapError .rangeAsNumber
+  finishRepeatableNumberAggregateCascade model (.rangeAsNumber row)
     aggregateDeclaringGroup aggregateTarget aggregateSource operation
 
 /-- Check the exact direct-assignment producer followed by a sole plain-star aggregate. -/
