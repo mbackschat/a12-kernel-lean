@@ -353,12 +353,13 @@ private def readAfterRows (input : CheckedDocument model)
       | some row => (NumericDependencyCell.ofOutcome row.outcome).checked
       | none => addressed.cell
 
-/-- Execute the row computation first, then expose every rich row outcome through its exact address to the later aggregate traversal. -/
-def execute (plan : CheckedRepeatableNumberAggregateCascade model)
-    (world : World) (input : CheckedDocument model) :
+/-- Evaluate the aggregate phase against the exact completed row overlay. -/
+def executeAggregateAfterRows
+    (plan : CheckedRepeatableNumberAggregateCascade model)
+    (world : World) (input : CheckedDocument model)
+    (rows : List (SourcedNumericTargetOutcome CellAddr)) :
     Except RepeatableNumberAggregateCascadeFault
-      RepeatableNumberAggregateCascadeOutcomes := do
-  let rows ← plan.row.execute input |>.mapError .row
+      (SourcedNumericTargetOutcome CellAddr) := do
   let read := readAfterRows input rows
   let checked ← plan.total.evaluateIn {
       scalar := input.scalarComputationContext world
@@ -375,13 +376,19 @@ def execute (plan : CheckedRepeatableNumberAggregateCascade model)
     path := []
   }
   pure {
-    rows
-    aggregate := {
-      targetField := target
-      outcome
-      source := input.numericTargetPlacementStateAt target
-    }
+    targetField := target
+    outcome
+    source := input.numericTargetPlacementStateAt target
   }
+
+/-- Execute the row computation first, then expose every rich row outcome through its exact address to the later aggregate traversal. -/
+def execute (plan : CheckedRepeatableNumberAggregateCascade model)
+    (world : World) (input : CheckedDocument model) :
+    Except RepeatableNumberAggregateCascadeFault
+      RepeatableNumberAggregateCascadeOutcomes := do
+  let rows ← plan.row.execute input |>.mapError .row
+  let aggregate ← plan.executeAggregateAfterRows world input rows
+  pure { rows, aggregate }
 
 end CheckedRepeatableNumberAggregateCascade
 
