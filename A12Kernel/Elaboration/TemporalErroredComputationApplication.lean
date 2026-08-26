@@ -36,6 +36,33 @@ def applyTo
       let afterErrors := view.withErrors.foldl applyError afterCleared
       .ok (view.withChanges.foldl applyChanged afterErrors)
 
+/-- Validate one exact action target against a family predicate and the shared nonrepeatable application boundary. -/
+def validateNonrepeatableActionTarget
+    (model : FlatModel) (target : FieldId)
+    (acceptsKind : FieldKind → Bool)
+    (targetFieldError : FieldId → ResolveError → ApplicationError)
+    (wrongKindError repeatableError : FieldId → ApplicationError) :
+    Except ApplicationError Unit := do
+  let declaration ←
+    (model.lookupUniqueId target).mapError (targetFieldError target)
+  if !acceptsKind declaration.policy.kind then
+    throw (wrongKindError target)
+  if !declaration.repeatableScope.isEmpty then
+    throw (repeatableError target)
+
+/-- Validate every exact action target before the destination projection participates. -/
+def validateNonrepeatableActionTargets
+    (model : FlatModel) (acceptsKind : FieldKind → Bool)
+    (targetFieldError : FieldId → ResolveError → ApplicationError)
+    (wrongKindError repeatableError : FieldId → ApplicationError) :
+    List FieldId → Except ApplicationError Unit
+  | [] => pure ()
+  | target :: remaining => do
+      validateNonrepeatableActionTarget model target acceptsKind
+        targetFieldError wrongKindError repeatableError
+      validateNonrepeatableActionTargets model acceptsKind
+        targetFieldError wrongKindError repeatableError remaining
+
 end TemporalErroredComputationRunView
 
 /-- Exact caller-supplied target-state projection needed by the nonrepeatable FullDate fragment. -/
@@ -64,6 +91,9 @@ namespace FullDateComputationRunView
 
 inductive FullDateComputationRunApplicationError where
   | duplicateActionTarget (field : FieldId)
+  | targetField (field : FieldId) (cause : ResolveError)
+  | nonFullDateTarget (field : FieldId)
+  | repeatableTarget (field : FieldId)
   deriving Repr, DecidableEq
 
 def actionTargets (view : FullDateComputationRunView ResidualMessage) :
@@ -85,6 +115,28 @@ def applyTo (view : FullDateComputationRunView ResidualMessage)
       (.errored computed.attempted computed.cause))
     (fun current computed => current.applyOutcome computed.targetField
       (.accepted computed.value))
+
+private def acceptsActionKind : FieldKind → Bool
+  | .temporal .date components => components == TemporalComponents.fullDate
+  | _ => false
+
+def validateActionTargets (model : FlatModel) (targets : List FieldId) :
+    Except FullDateComputationRunApplicationError Unit :=
+  TemporalErroredComputationRunView.validateNonrepeatableActionTargets
+    model acceptsActionKind FullDateComputationRunApplicationError.targetField
+    FullDateComputationRunApplicationError.nonFullDateTarget
+    FullDateComputationRunApplicationError.repeatableTarget targets
+
+/-- Apply one retained nonrepeatable FullDate result to the exact root Date-state projection of a separately supplied checked destination. The retained result is not model-indexed, so source/destination model compatibility remains a caller precondition. -/
+def applyToChecked (view : FullDateComputationRunView ResidualMessage)
+    (destination : CheckedDocument model) :
+    Except FullDateComputationRunApplicationError
+      FullDateComputationDestination :=
+  match FieldId.firstDuplicate? view.actionTargets with
+  | some duplicate => .error (.duplicateActionTarget duplicate)
+  | none => do
+      validateActionTargets model view.actionTargets
+      view.applyTo destination.sourceFullDateTargetState
 
 end FullDateComputationRunView
 
@@ -141,22 +193,21 @@ def applyTo (view : DateRangeComputationRunView ResidualMessage)
 
 /-- Validate one retained action against the nonrepeatable DateRange target boundary represented by this result. -/
 def validateActionTarget (model : FlatModel) (target : FieldId) :
-    Except DateRangeComputationRunApplicationError Unit := do
-  let declaration ←
-    (model.lookupUniqueId target).mapError (.targetField target)
-  match declaration.policy.kind with
-  | .dateRange => pure ()
-  | _ => throw (.nonDateRangeTarget target)
-  if !declaration.repeatableScope.isEmpty then
-    throw (.repeatableTarget target)
+    Except DateRangeComputationRunApplicationError Unit :=
+  TemporalErroredComputationRunView.validateNonrepeatableActionTarget
+    model target (· == .dateRange)
+    DateRangeComputationRunApplicationError.targetField
+    DateRangeComputationRunApplicationError.nonDateRangeTarget
+    DateRangeComputationRunApplicationError.repeatableTarget
 
 /-- Validate every unique DateRange action target before reading the destination projection. -/
 def validateActionTargets (model : FlatModel) : List FieldId →
-    Except DateRangeComputationRunApplicationError Unit
-  | [] => pure ()
-  | target :: remaining => do
-      validateActionTarget model target
-      validateActionTargets model remaining
+    Except DateRangeComputationRunApplicationError Unit :=
+  TemporalErroredComputationRunView.validateNonrepeatableActionTargets
+    model (· == .dateRange)
+    DateRangeComputationRunApplicationError.targetField
+    DateRangeComputationRunApplicationError.nonDateRangeTarget
+    DateRangeComputationRunApplicationError.repeatableTarget
 
 /-- Apply one retained nonrepeatable DateRange result to a separately supplied checked destination. The returned function is the exact root DateRange-state projection, not a reconstructed document. The retained result is not model-indexed, so source/destination model compatibility remains a caller precondition. -/
 def applyToChecked (view : DateRangeComputationRunView ResidualMessage)

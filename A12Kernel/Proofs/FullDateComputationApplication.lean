@@ -69,6 +69,18 @@ theorem fullDateComputationRun_applyTo_duplicateTarget
     TemporalErroredComputationRunView.applyTo,
     duplicate']
 
+/-- A checked FullDate application with admitted unique targets delegates exactly to the established target-state fold over the checked document's source projection. -/
+theorem fullDateComputationRun_applyToChecked_delegates
+    (view : FullDateComputationRunView ResidualMessage)
+    (destination : CheckedDocument model)
+    (unique : FieldId.firstDuplicate? view.actionTargets = none)
+    (valid : FullDateComputationRunView.validateActionTargets model
+      view.actionTargets = .ok ()) :
+    view.applyToChecked destination =
+      view.applyTo destination.sourceFullDateTargetState := by
+  simp [FullDateComputationRunView.applyToChecked, unique, valid]
+  rfl
+
 /-- A source-unchanged accepted Date is not applied to a different destination. -/
 theorem fullDateComputationRun_unchanged_notApplied
     (input : CheckedDocument model) (messages : List ResidualMessage)
