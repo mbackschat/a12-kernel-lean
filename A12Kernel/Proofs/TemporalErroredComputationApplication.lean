@@ -37,4 +37,16 @@ theorem dateRangeComputationDestination_applyRetainedClear_other
     temporalComputationDestination_applyRetainedClear_other
       destination target other different
 
+/-- A checked DateRange application with admitted unique targets delegates exactly to the established target-state fold over the checked document's source projection. -/
+theorem dateRangeComputationRunView_applyToChecked_eq_applyTo
+    (view : DateRangeComputationRunView ResidualMessage)
+    (destination : CheckedDocument model)
+    (unique : FieldId.firstDuplicate? view.actionTargets = none)
+    (valid : DateRangeComputationRunView.validateActionTargets model
+      view.actionTargets = .ok ()) :
+    view.applyToChecked destination =
+      view.applyTo destination.sourceDateRangeTargetState := by
+  simp [DateRangeComputationRunView.applyToChecked, unique, valid]
+  rfl
+
 end A12Kernel

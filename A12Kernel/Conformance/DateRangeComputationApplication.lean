@@ -18,9 +18,29 @@ private def target := rangeField 1 "Window"
 private def other := rangeField 2 "Other"
 private def errorTarget := rangeField 3 "Rejected"
 private def changeTarget := rangeField 4 "Changed"
+private def stringTarget : FlatFieldDecl := {
+  id := 5
+  groupPath := ["Order"]
+  name := "Label"
+  policy := { kind := .string }
+}
+private def repeatedTarget : FlatFieldDecl := {
+  id := 6
+  groupPath := ["Order", "Lines"]
+  name := "RepeatedWindow"
+  repeatableScope := [10]
+  policy := { kind := .dateRange }
+  dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" }
+}
 
 private def model : FlatModel := {
-  fields := [target, other, errorTarget, changeTarget]
+  fields := [target, other, errorTarget, changeTarget, stringTarget,
+    repeatedTarget]
+  repeatableGroups := [{
+    level := 10
+    path := ["Order", "Lines"]
+    repeatability := some 3
+  }]
   timeZoneId := "UTC"
 }
 
@@ -51,6 +71,9 @@ private def view? (input : DocumentData)
     Option (DateRangeComputationRunView FormalCause) := do
   let checked ← (checkDocument prepared "en_US" input).toOption
   pure (DateRangeComputationRunView.fromOutcomes checked messages outcomes)
+
+private def checked? (input : DocumentData) : Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" input).toOption
 
 private def destination
     (targetState otherState : TemporalTargetState StoredDateRange) :
@@ -155,6 +178,47 @@ example : (do
       | .error error => some error
       | .ok _ => none)) =
       some (some (.duplicateActionTarget target.id)) := by
+  native_decide
+
+/- Checked application starts from the separately supplied document's exact DateRange placement and preserves unrelated fields without reconstructing a document. -/
+example : (do
+    let view ← view? (source [(target.id, oldValue)])
+      [(target.id, .accepted nextValue)]
+    let checked ← checked? (source [(target.id, oldValue),
+      (other.id, nextValue)])
+    let applied ← view.applyToChecked checked |>.toOption
+    pure (applied target.id, applied other.id)) =
+      some (.presentValue nextValue, .presentValue nextValue) := by
+  native_decide
+
+/- Checked application rejects an unknown field, the wrong target kind, and a repeatable DateRange target at the exact root boundary. -/
+example : (do
+    let checked ← checked? (source [])
+    let unknown ← view? (source []) [(99, .accepted nextValue)]
+    let wrongKind ← view? (source [])
+      [(stringTarget.id, .accepted nextValue)]
+    let repeated ← view? (source [])
+      [(repeatedTarget.id, .accepted nextValue)]
+    pure (
+      match unknown.applyToChecked checked with
+      | .error (.targetField field _) => field == 99
+      | _ => false,
+      match wrongKind.applyToChecked checked with
+      | .error (.nonDateRangeTarget field) => field == stringTarget.id
+      | _ => false,
+      match repeated.applyToChecked checked with
+      | .error (.repeatableTarget field) => field == repeatedTarget.id
+      | _ => false)) = some (true, true, true) := by
+  native_decide
+
+/- Duplicate actions fail before checked target validation. -/
+example : (do
+    let checked ← checked? (source [])
+    let view ← view? (source [])
+      [(99, .accepted nextValue), (99, .errored oldValue .inverted)]
+    pure (match view.applyToChecked checked with
+      | .error (.duplicateActionTarget field) => field == 99
+      | _ => false)) = some true := by
   native_decide
 
 end A12Kernel.Conformance.DateRangeComputationApplication

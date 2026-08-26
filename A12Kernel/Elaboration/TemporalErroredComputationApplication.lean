@@ -114,6 +114,9 @@ namespace DateRangeComputationRunView
 
 inductive DateRangeComputationRunApplicationError where
   | duplicateActionTarget (field : FieldId)
+  | targetField (field : FieldId) (cause : ResolveError)
+  | nonDateRangeTarget (field : FieldId)
+  | repeatableTarget (field : FieldId)
   deriving Repr, DecidableEq
 
 def actionTargets (view : DateRangeComputationRunView ResidualMessage) :
@@ -135,6 +138,36 @@ def applyTo (view : DateRangeComputationRunView ResidualMessage)
       (.errored computed.attempted computed.cause))
     (fun current computed => current.applyOutcome computed.targetField
       (.accepted computed.value))
+
+/-- Validate one retained action against the nonrepeatable DateRange target boundary represented by this result. -/
+def validateActionTarget (model : FlatModel) (target : FieldId) :
+    Except DateRangeComputationRunApplicationError Unit := do
+  let declaration ←
+    (model.lookupUniqueId target).mapError (.targetField target)
+  match declaration.policy.kind with
+  | .dateRange => pure ()
+  | _ => throw (.nonDateRangeTarget target)
+  if !declaration.repeatableScope.isEmpty then
+    throw (.repeatableTarget target)
+
+/-- Validate every unique DateRange action target before reading the destination projection. -/
+def validateActionTargets (model : FlatModel) : List FieldId →
+    Except DateRangeComputationRunApplicationError Unit
+  | [] => pure ()
+  | target :: remaining => do
+      validateActionTarget model target
+      validateActionTargets model remaining
+
+/-- Apply one retained nonrepeatable DateRange result to a separately supplied checked destination. The returned function is the exact root DateRange-state projection, not a reconstructed document. The retained result is not model-indexed, so source/destination model compatibility remains a caller precondition. -/
+def applyToChecked (view : DateRangeComputationRunView ResidualMessage)
+    (destination : CheckedDocument model) :
+    Except DateRangeComputationRunApplicationError
+      DateRangeComputationDestination :=
+  match FieldId.firstDuplicate? view.actionTargets with
+  | some duplicate => .error (.duplicateActionTarget duplicate)
+  | none => do
+      validateActionTargets model view.actionTargets
+      view.applyTo destination.sourceDateRangeTargetState
 
 end DateRangeComputationRunView
 

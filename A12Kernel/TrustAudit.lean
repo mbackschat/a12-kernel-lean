@@ -363,6 +363,7 @@ run_cmd do
 #print axioms A12Kernel.temporalComputationDestination_applyRetainedClear_same
 #print axioms A12Kernel.temporalComputationDestination_applyRetainedClear_other
 #print axioms A12Kernel.dateRangeComputationDestination_applyRetainedClear_other
+#print axioms A12Kernel.dateRangeComputationRunView_applyToChecked_eq_applyTo
 #print axioms A12Kernel.fullDateComputation_field_empty
 #print axioms A12Kernel.fullDateComputation_field_poison
 #print axioms A12Kernel.fullDateComputation_field_value
