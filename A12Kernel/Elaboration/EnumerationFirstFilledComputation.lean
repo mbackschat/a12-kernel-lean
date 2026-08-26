@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.EnumerationComputation
+import A12Kernel.Elaboration.EnumerationComputationResult
 import A12Kernel.Elaboration.FieldEntityList
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Elaboration.StarEnumerationValueList
@@ -429,6 +429,21 @@ def evaluate (operation : CheckedEnumerationFirstFilledComputationOperation mode
   let selected ← operation.source.evaluate document outer directRead
     filterRead starRead
   pure selected.asComputationResult.asExactStringTargetOutcome
+
+/-- Execute the existing checked first-filled scan over the immutable source topology and caller-supplied computation overlay, then classify its exact token against that immutable source target through the established model-certified Enumeration result. Structural star-addressing failure remains outside the result. -/
+def executeResult
+    (operation : CheckedEnumerationFirstFilledComputationOperation model)
+    (input : CheckedDocument model) (outer : Env)
+    (directRead : RawFlatContext)
+    (filterRead : Env → FieldId → CheckedCell)
+    (starRead : Env → FieldId → RawCell)
+    (residualMessages : List ResidualMessage) :
+    Except StarAddressingError
+      (EnumerationComputationRunView model ResidualMessage) := do
+  let selected ← operation.source.evaluate input.source.toDocument outer
+    directRead filterRead starRead
+  pure (EnumerationComputationRunView.fromTokenResult operation.target input
+    residualMessages selected.asComputationResult)
 
 end CheckedEnumerationFirstFilledComputationOperation
 

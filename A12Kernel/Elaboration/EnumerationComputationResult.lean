@@ -15,6 +15,24 @@ structure EnumerationComputationRunView (model : FlatModel)
   target : CheckedEnumerationComputationTarget model
   string : StringComputationRunView ResidualMessage
 
+namespace EnumerationComputationRunView
+
+/-- Classify one exact-token result against the immutable source target retained by the same model-certified Enumeration operation. Static target compatibility remains owned by the checked operation that supplies the token result. -/
+def fromTokenResult (target : CheckedEnumerationComputationTarget model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage)
+    (result : TokenComputationResult) :
+    EnumerationComputationRunView model ResidualMessage :=
+  {
+    target
+    string := StringComputationRunView.fromSourcedOutcomes residualMessages [{
+      targetField := target.field
+      outcome := result.asExactStringTargetOutcome
+      source := input.sourceStringTargetState target.field
+    }]
+  }
+
+end EnumerationComputationRunView
+
 namespace CheckedEnumerationComputationOperation
 
 /-- Execute one checked ordinary Enumeration source and classify its exact token relative to the immutable source target. -/
@@ -22,17 +40,8 @@ def executeResult (operation : CheckedEnumerationComputationOperation model)
     (input : CheckedDocument model)
     (residualMessages : List ResidualMessage) :
     EnumerationComputationRunView model ResidualMessage :=
-  let outcome :=
-    (operation.source.evaluate input.flatContext).asExactStringTargetOutcome
-  let string := StringComputationRunView.fromSourcedOutcomes residualMessages [{
-    targetField := operation.target.field
-    outcome
-    source := input.sourceStringTargetState operation.target.field
-  }]
-  {
-    target := operation.target
-    string
-  }
+  EnumerationComputationRunView.fromTokenResult operation.target input
+    residualMessages (operation.source.evaluate input.flatContext)
 
 end CheckedEnumerationComputationOperation
 

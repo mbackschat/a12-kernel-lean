@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.EnumerationFirstFilledComputation
+import A12Kernel.Elaboration.EnumerationComputationResult
 
 /-! # Checked Enumeration-target `FirstFilledValue` locks -/
 
@@ -102,6 +103,25 @@ private def model : FlatModel :=
     }]
   }
 
+private def prepared :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption.get (by native_decide)
+
+private def placedToken (field : FlatFieldDecl) (token : String) :
+    ClassifiedCellInput := {
+  address := { field := field.id, path := [] }
+  stored := token
+  raw := .parsed (.enum token)
+}
+
+private def checkedInput? (targetToken : Option String)
+    (otherToken : String := "A") : Option (CheckedDocument model) :=
+  checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := (targetToken.map (placedToken target)).toList ++
+      [placedToken compatible2 otherToken]
+  } |>.toOption
+
 private def directPath (name : String) : SurfaceFieldPath :=
   { base := .absolute, groups := ["Form"], field := name }
 
@@ -203,6 +223,47 @@ private def outcomeOf (authored : SurfaceEnumerationFirstFilledSource)
       | .error _ => none
       | .ok outcome => some outcome
 
+private def resultOperation? :
+    Option (CheckedEnumerationFirstFilledComputationOperation model) :=
+  (elaborateEnumerationFirstFilledComputation model ["Form"] target.id
+    (source (direct "Compatible") [category "Projected" "Target"])).toOption
+
+private def result? (input : CheckedDocument model)
+    (directContext : RawFlatContext) (rowRead : Env → FieldId → RawCell)
+    (residualMessages : List FormalCause := []) :
+    Option (EnumerationComputationRunView model FormalCause) := do
+  let operation ← resultOperation?
+  operation.executeResult input [] directContext emptyFilterRead rowRead
+    residualMessages |>.toOption
+
+private structure ResultApplicationSummary where
+  targetField : FieldId
+  changes : List (FieldId × String)
+  errors : List (FieldId × StringTargetError)
+  cleared : List FieldId
+  residual : List FormalCause
+  targetState : StringTargetState
+  otherState : StringTargetState
+  deriving Repr, DecidableEq
+
+private def resultApplicationSummary? (input destination : CheckedDocument model)
+    (directContext : RawFlatContext) (rowRead : Env → FieldId → RawCell)
+    (residualMessages : List FormalCause := []) :
+    Option ResultApplicationSummary := do
+  let result ← result? input directContext rowRead residualMessages
+  let applied ← result.applyToChecked destination |>.toOption
+  pure {
+    targetField := result.target.field
+    changes := result.string.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    errors := result.string.withErrors.map fun item =>
+      (item.targetField, item.cause)
+    cleared := result.string.cleared
+    residual := result.string.formalErrorsInOperands
+    targetState := applied target.id
+    otherState := applied compatible2.id
+  }
+
 /- Direct stored/category operands preserve authored order and exact projected tokens. -/
 example :
     outcomeOf (source (direct "Compatible") [category "Projected" "Target"]) []
@@ -276,6 +337,73 @@ example :
         (starRead .empty .empty .empty)
         (filterRead [.rejected .malformed, number 1] [number 1, number 1]) =
       some (.accepted { text := "A", nonempty := by decide }) := by
+  native_decide
+
+/- A selected token enters the certified Enumeration result, retains residual messages, and applies only to its target in a separate same-model destination. -/
+example : (do
+    let input ← checkedInput? (some "A")
+    let destination ← checkedInput? (some "A") "B"
+    resultApplicationSummary? input destination
+      (directRead (.parsed (.enum "B")) .empty)
+      (starRead .empty .empty .empty) [.malformed]) = some {
+        targetField := target.id
+        changes := [(target.id, "B")]
+        errors := []
+        cleared := []
+        residual := [.malformed]
+        targetState := .presentValue ⟨"B", by decide⟩
+        otherState := .presentValue ⟨"B", by decide⟩
+      } := by
+  native_decide
+
+/- Source-relative unchanged classification remains inert against a destination carrying a different token. -/
+example : (do
+    let input ← checkedInput? (some "B")
+    let destination ← checkedInput? (some "A") "B"
+    resultApplicationSummary? input destination
+      (directRead (.parsed (.enum "B")) .empty)
+      (starRead .empty .empty .empty)) = some {
+        targetField := target.id
+        changes := []
+        errors := []
+        cleared := []
+        residual := []
+        targetState := .presentValue ⟨"A", by decide⟩
+        otherState := .presentValue ⟨"B", by decide⟩
+      } := by
+  native_decide
+
+/- Exhaustion clears a source-filled target, and retained clearing materializes an absent destination target as present-empty. -/
+example : (do
+    let input ← checkedInput? (some "A")
+    let destination ← checkedInput? none "B"
+    resultApplicationSummary? input destination
+      (directRead .empty .empty) (starRead .empty .empty .empty)) = some {
+        targetField := target.id
+        changes := []
+        errors := []
+        cleared := [target.id]
+        residual := []
+        targetState := .presentEmpty
+        otherState := .presentValue ⟨"B", by decide⟩
+      } := by
+  native_decide
+
+/- A reached formal source error remains cause-blind poison at the result boundary and clears the target instead of falling through to a later token or creating a target error. -/
+example : (do
+    let input ← checkedInput? (some "A")
+    let destination ← checkedInput? (some "B") "A"
+    resultApplicationSummary? input destination
+      (directRead (.rejected .declaredConstraint) (.parsed (.enum "X")))
+      (starRead .empty .empty .empty)) = some {
+        targetField := target.id
+        changes := []
+        errors := []
+        cleared := [target.id]
+        residual := []
+        targetState := .presentEmpty
+        otherState := .presentValue ⟨"A", by decide⟩
+      } := by
   native_decide
 
 /- Whole-domain containment and direct display compatibility are independent per-source gates; categories bypass the latter. -/

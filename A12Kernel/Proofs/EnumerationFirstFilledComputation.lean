@@ -30,4 +30,22 @@ theorem checkedEnumerationFirstFilled_evaluate
       pure selected.asComputationResult.asExactStringTargetOutcome) := by
   rfl
 
+/-- Successful first-filled execution delegates its exact token result to the shared model-certified Enumeration result constructor. -/
+theorem checkedEnumerationFirstFilled_executeResult_projects
+    (operation : CheckedEnumerationFirstFilledComputationOperation model)
+    (input : CheckedDocument model) (outer : Env)
+    (directRead : RawFlatContext)
+    (filterRead : Env → FieldId → CheckedCell)
+    (starRead : Env → FieldId → RawCell)
+    (residualMessages : List ResidualMessage)
+    (selected : FirstFilledTokenResult)
+    (evaluated : operation.source.evaluate input.source.toDocument outer
+      directRead filterRead starRead = .ok selected) :
+    operation.executeResult input outer directRead filterRead starRead
+        residualMessages =
+      .ok (EnumerationComputationRunView.fromTokenResult operation.target input
+        residualMessages selected.asComputationResult) := by
+  rw [CheckedEnumerationFirstFilledComputationOperation.executeResult, evaluated]
+  rfl
+
 end A12Kernel
