@@ -98,13 +98,17 @@ private theorem checkedScalarComputationStep_excludes_target
   | string table => exact checkedStringComputationTable_excludes_target table
   | number table => exact checkedNumericComputationTable_excludes_target table
 
-private theorem scalarComputationRun_step_ready
+private theorem scalarComputationRun_step_ready_after_seed
     (run : CheckedScalarComputationRun model)
+    (seedTargets : List FieldId)
     (earlier remaining : List (CheckedScalarComputationStep model))
     (step : CheckedScalarComputationStep model)
     (split : run.steps = earlier ++ step :: remaining)
+    (seedDisjoint :
+      ∀ target ∈ seedTargets, target ∉ run.targetFields)
     (state : ScalarComputationRunState)
-    (stateTargets : state.targetFields = earlier.map (·.targetField)) :
+    (stateTargets :
+      state.targetFields = seedTargets ++ earlier.map (·.targetField)) :
     step.targetField ∉ state.targetFields ∧
       ScalarComputationDependenciesEnabled run step state := by
   have unique : (run.steps.map (·.targetField)).Nodup :=
@@ -118,8 +122,16 @@ private theorem scalarComputationRun_step_ready
     have cross := (List.nodup_append.mp combined).2.2
       step.targetField member step.targetField (by simp)
     exact cross rfl
+  have stepMember : step.targetField ∈ run.targetFields := by
+    change step.targetField ∈ run.steps.map (·.targetField)
+    rw [split]
+    simp
+  have notSeed : step.targetField ∉ seedTargets := by
+    intro member
+    exact seedDisjoint step.targetField member stepMember
   constructor
-  · simpa [stateTargets] using notEarlier
+  · rw [stateTargets]
+    simp [notSeed, notEarlier]
   · intro dependency dependencyMember referenced
     change dependency ∈ run.steps.map (·.targetField) at dependencyMember
     have located :
@@ -129,7 +141,7 @@ private theorem scalarComputationRun_step_ready
       simpa [split, List.map_append] using dependencyMember
     rcases located with inEarlier | same | inRemaining
     · rw [stateTargets]
-      exact inEarlier
+      exact List.mem_append_right seedTargets inEarlier
     · subst dependency
       rw [checkedScalarComputationStep_excludes_target] at referenced
       contradiction
@@ -150,6 +162,18 @@ private theorem scalarComputationRun_step_ready
           step remaining orderedSuffix dependencyStep dependencyStepMember
       rw [notReferenced] at referenced
       contradiction
+
+private theorem scalarComputationRun_step_ready
+    (run : CheckedScalarComputationRun model)
+    (earlier remaining : List (CheckedScalarComputationStep model))
+    (step : CheckedScalarComputationStep model)
+    (split : run.steps = earlier ++ step :: remaining)
+    (state : ScalarComputationRunState)
+    (stateTargets : state.targetFields = earlier.map (·.targetField)) :
+    step.targetField ∉ state.targetFields ∧
+      ScalarComputationDependenciesEnabled run step state := by
+  simpa using scalarComputationRun_step_ready_after_seed
+    run [] earlier remaining step split (by simp) state stateTargets
 
 /-- A structural failure transition preserves the selected step's exact target identity and scalar family. -/
 theorem scalarComputationRun_failureTransition_identity
@@ -246,17 +270,24 @@ theorem scalarComputationRun_execute_trace
       rw [labelsResult, resultOutcomes] at trace
       exact ⟨result, trace, resultOutcomes⟩
 
-/-- A failing fixed-order suffix is exactly a successful mixed-transition prefix followed by the enabled step whose structural fault stopped execution. -/
-theorem scalarComputationRun_executeSteps_failureTrace
+/-- A failing fixed-order suffix after disjoint external seed completions is
+exactly a successful mixed-transition prefix followed by the enabled step whose
+structural fault stopped execution. Seed completions remain in state but outside
+the returned suffix-outcome list. -/
+theorem scalarComputationRun_executeSteps_seeded_failureTrace
     (run : CheckedScalarComputationRun model)
     (world : World)
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (input : CheckedDocument model)
+    (seedTargets : List FieldId)
     (earlier remaining : List (CheckedScalarComputationStep model))
     (state : ScalarComputationRunState)
     (fault : ScalarComputationRunFault)
+    (seedDisjoint :
+      ∀ target ∈ seedTargets, target ∉ run.targetFields)
     (split : run.steps = earlier ++ remaining)
-    (stateTargets : state.targetFields = earlier.map (·.targetField))
+    (stateTargets :
+      state.targetFields = seedTargets ++ earlier.map (·.targetField))
     (executed :
       run.executeSteps world patterns input remaining state = .error fault) :
     ∃ outcomes final,
@@ -273,8 +304,9 @@ theorem scalarComputationRun_executeSteps_failureTrace
           rw [CheckedScalarComputationRun.executeSteps, evaluated] at executed
           change Except.error cause = Except.error fault at executed
           cases executed
-          have ready := scalarComputationRun_step_ready
-            run earlier remaining step split state stateTargets
+          have ready := scalarComputationRun_step_ready_after_seed
+            run seedTargets earlier remaining step split seedDisjoint state
+              stateTargets
           refine ⟨[], state, .failed (.fail step ?_ ready.1 ready.2 evaluated),
             by simp⟩
           rw [split]
@@ -291,19 +323,21 @@ theorem scalarComputationRun_executeSteps_failureTrace
             exact executed
           have target := scalarComputationRun_evaluateStep_target
             run world patterns input state step completion evaluated
-          have ready := scalarComputationRun_step_ready
-            run earlier remaining step split state stateTargets
+          have ready := scalarComputationRun_step_ready_after_seed
+            run seedTargets earlier remaining step split seedDisjoint state
+              stateTargets
           let next : ScalarComputationRunState :=
             { completed := state.completed ++ [completion] }
           have nextTargets :
               next.targetFields =
-                (earlier ++ [step]).map (·.targetField) := by
+                seedTargets ++
+                  (earlier ++ [step]).map (·.targetField) := by
             have stateTargets' :
                 state.completed.map (·.targetField) =
-                  earlier.map (·.targetField) := by
+                  seedTargets ++ earlier.map (·.targetField) := by
               simpa [ScalarComputationRunState.targetFields] using stateTargets
             simp [next, ScalarComputationRunState.targetFields,
-              List.map_append, stateTargets', target]
+              List.map_append, stateTargets', target, List.append_assoc]
           have nextSplit :
               run.steps = (earlier ++ [step]) ++ remaining := by
             simpa [List.append_assoc] using split
@@ -317,6 +351,27 @@ theorem scalarComputationRun_executeSteps_failureTrace
             simp
           · simpa [next, ScalarComputationRunState.outcomes,
               List.append_assoc] using appended
+
+/-- The ordinary unseeded failure trace is the empty-seed specialization. -/
+theorem scalarComputationRun_executeSteps_failureTrace
+    (run : CheckedScalarComputationRun model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (earlier remaining : List (CheckedScalarComputationStep model))
+    (state : ScalarComputationRunState)
+    (fault : ScalarComputationRunFault)
+    (split : run.steps = earlier ++ remaining)
+    (stateTargets : state.targetFields = earlier.map (·.targetField))
+    (executed :
+      run.executeSteps world patterns input remaining state = .error fault) :
+    ∃ outcomes final,
+      ScalarComputationRunFailureTrace run world patterns input
+        state outcomes final fault ∧
+        state.outcomes ++ outcomes = final.outcomes := by
+  simpa using scalarComputationRun_executeSteps_seeded_failureTrace
+    run world patterns input [] earlier remaining state fault (by simp) split
+      stateTargets executed
 
 /-- Every failing fixed mixed execution has one exact successful prefix and then one enabled family-preserving structural failure; no later step is admitted by that trace. -/
 theorem scalarComputationRun_execute_failureTrace

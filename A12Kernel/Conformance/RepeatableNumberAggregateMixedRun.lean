@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.RepeatableNumberAggregateMixedRun
+import A12Kernel.Elaboration.RepeatableNumberAggregateMixedRunRelation
 
 /-! # Aggregate-seeded mixed scalar-run locks -/
 
@@ -106,6 +106,35 @@ private def plan? : Option (CheckedRepeatableNumberAggregateMixedRun model) := d
   let cascade ← prefix?
   let run ← mixedRun?
   (checkRepeatableNumberAggregateMixedRun cascade run).toOption
+
+private def seededNumberTable? :
+    Option (CheckedNumericComputationTable model) := do
+  let operation ← (elaborateCompleteNumericTargetComputationOperation
+    model ["Order"] doubled.id (rootNumber "Total")).toOption
+  (certifyNumericComputationTable [{
+    precondition := .fieldNotFilled gate.id
+    operation
+  }]).toOption
+
+private def seededFailingRun? : Option (CheckedScalarComputationRun model) := do
+  let number ← seededNumberTable?
+  let string ← stringTable? label.id [
+    (.fieldNotFilled gate.id, .fieldValueAsString (bare "Total"))]
+  (certifyScalarComputationRun [.number number, .string string]).toOption
+
+private def seededFailingPlan? :
+    Option (CheckedRepeatableNumberAggregateMixedRun model) := do
+  let cascade ← prefix?
+  let run ← seededFailingRun?
+  (checkRepeatableNumberAggregateMixedRun cascade run).toOption
+
+/- Adversarial fail-closed input: normal preparation compiles every effective
+model-owned String pattern, so it cannot omit Label this way. -/
+private def missingPatternMatchers :
+    PreparedFlatStringPatterns model builtinStringPatternCompiler := {
+  fields := []
+  modelWellFormed := by native_decide
+}
 
 private def numberCell (field : FieldId) (path : List Nat) (value : Int) :
     ClassifiedCellInput := {
@@ -253,5 +282,66 @@ example :
           | _ => false
       | _, _ => false) = true := by
   native_decide
+
+private def seededFailure? : Option RepeatableNumberAggregateMixedRunFault := do
+  let plan ← seededFailingPlan?
+  let input ← input? (numberCell quantity.id [2] 3)
+  match plan.execute world missingPatternMatchers input with
+  | .error fault => some fault
+  | .ok _ => none
+
+/- The aggregate seed and first Number suffix step complete before the missing
+String matcher terminates the public composite executor. -/
+example :
+    seededFailure? = some (.run (.string (.evaluation label.id
+      (.targetPatternUnavailable label.id)))) := by
+  native_decide
+
+private def transitionPlan : CheckedRepeatableNumberAggregateMixedRun model :=
+  seededFailingPlan?.get (by native_decide)
+
+private def transitionInput : CheckedDocument model :=
+  (input? (numberCell quantity.id [2] 3)).get (by native_decide)
+
+private def transitionCascade : RepeatableNumberAggregateCascadeOutcomes :=
+  (transitionPlan.cascade.execute world transitionInput).toOption.get
+    (by native_decide)
+
+private theorem evaluated_to_get (evaluation : Except ε α)
+    (available : evaluation.toOption.isSome = true) :
+    evaluation = .ok (evaluation.toOption.get available) := by
+  cases evaluation with
+  | error cause => simp [Except.toOption] at available
+  | ok value => rfl
+
+private theorem transitionCascadeExecuted :
+    transitionPlan.cascade.execute world transitionInput =
+      .ok transitionCascade := by
+  simpa [transitionCascade] using evaluated_to_get
+    (evaluation := transitionPlan.cascade.execute world transitionInput)
+    (by native_decide)
+
+private def transitionSeed : ScalarComputationRunState := {
+  completed := [.number {
+    targetField := transitionPlan.cascade.total.operation.core.target.id
+    outcome := transitionCascade.aggregate.outcome
+  }]
+}
+
+/- A seeded scalar failure trace lifts to the composite state without counting
+the aggregate seed as a suffix outcome. -/
+example (outcomes : List ScalarComputationOutcome)
+    (final : ScalarComputationRunState)
+    (fault : ScalarComputationRunFault)
+    (failure : ScalarComputationRunFailureTrace transitionPlan.run world
+      missingPatternMatchers transitionInput transitionSeed outcomes final
+      fault) :
+    RepeatableNumberAggregateMixedRunFailureTrace transitionPlan world
+      missingPatternMatchers transitionInput
+      { aggregate := some transitionCascade.aggregate.outcome,
+        scalars := final.outcomes.drop 1 }
+      (.run fault) := by
+  exact .suffix transitionCascade outcomes final fault
+    (.cascade transitionCascade transitionCascadeExecuted) failure
 
 end A12Kernel.Conformance.RepeatableNumberAggregateMixedRun
