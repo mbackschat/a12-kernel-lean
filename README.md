@@ -71,7 +71,7 @@ The project considers ten consumer tasks: **Execute, Translate, Transform, Compi
 This is an active formal-semantics project, not a complete A12 interpreter or a qualified production release.
 
 <!-- github-publish-stats:start -->
-**Verified at publication:** **1,487 trusted theorem roots**, **32,108 audited declarations**, and **309 trusted modules** in the mechanized theory.
+**Verified at publication:** **2,122 trusted theorem roots**, **60,353 audited declarations**, and **530 trusted modules** in the mechanized theory.
 <!-- github-publish-stats:end -->
 
 - The internal theory already covers substantial validation, computation, numeric, String, Enumeration, Date/DateTime, repeatable, addressing, message, checked-document, and dependency behavior, with coverage varying independently across execution, proof, kernel evidence, public exposure, and consumer qualification.
@@ -156,13 +156,13 @@ Semantic changes use red/green TDD and close as small executable capsules with f
 
 The clean-room boundary is a licensing constraint: learn behavior from the kernel, then write original Lean and independent semantic prose. Never link, call, ship, or transcribe kernel implementation code. Every behavioral change to [`spec/`](spec/) must be reconciled through the [`a12-dmkits spec-sync ledger`](docs/A12-DMKITS-SPEC-SYNC-LEDGER.md), which also carries experiment requests asking the peer to run a specific probe rather than reconcile a correction.
 
-Immediately before publishing committed source to GitHub, refresh the README's verified theory statistics:
+Immediately before every push to GitHub, refresh the README's verified theory statistics:
 
 ```sh
 ./scripts/prepare-github-publish.sh --update
 ```
 
-Review and commit any resulting README change, then push explicitly. The script runs the trust audit and updates only the marked statistics line; it never commits, tags, pushes, publishes a release, or distributes binaries. GitHub CI runs its `--check` mode so published statistics cannot silently drift from the trusted Lean closure.
+Review and commit any resulting README change, then push explicitly. Run this before every push, even when earlier commits in the batch already passed their ordinary Tier gate. The script runs the trust audit and updates only the marked statistics line; it never commits, tags, pushes, publishes a release, or distributes binaries. GitHub CI runs its `--check` mode so published statistics cannot silently drift from the trusted Lean closure.
 
 ## License
 

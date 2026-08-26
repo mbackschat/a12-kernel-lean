@@ -282,6 +282,14 @@ git diff --check
 git status --short
 ```
 
+Immediately before every explicit push, run the existing publication updater:
+
+```sh
+./scripts/prepare-github-publish.sh --update
+```
+
+Review and commit any resulting README statistics change before pushing. This push gate is mandatory even when every commit in the outgoing batch already passed its proportional Tier gate, because only the outgoing repository tip determines the published theorem, declaration, and module counts. The updater includes the trust audit, so do not rerun `check-lean-trust.sh` solely for this pre-push step. GitHub CI keeps `--check` as a fail-closed backstop rather than the first place stale publication statistics should be discovered.
+
 Run `./scripts/check-spec-sync.sh` even when the change is documentation-only. It is git-only and cheap, so the expensive-rung exemption above never applies to it, and a behavioral `spec/` edit normally lands as a `docs(spec)` commit that skips every Lean rung. It replaces the former scoped status line: instead of printing the two paths for an author to compare, it fails when a `spec/*.md` change carries neither the synchronization ledger nor [`SOURCES.md`](SOURCES.md), and its message states the three classifications. Declare an exempt spelling, formatting, link, or navigation-only change with `A12_SPEC_CHANGE_IS_NONBEHAVIORAL=1`, which records the claim in the run rather than silencing the gate.
 
 When `check-spec-sync.sh` reports a behavioral `spec/` change, classify its synchronization direction before committing. A locally originated delta that still needs a12-dmkits reconciliation must also list the synchronization ledger. An inbound correction already committed and reviewed in a12-dmkits must instead list [`SOURCES.md`](SOURCES.md) with the exact source revision and evidence routes and must not create an outbound ledger entry merely to echo the finding back to its origin. If an inbound result answers an existing pending or handed-off entry, update that same entry. Pure spelling, formatting, link, or navigation-only spec changes are exempt. A ledger-only status receipt may legitimately list only the ledger. Add only the focused replay or producer-bundle check owned by a Tier 2 calibration family. `lake test` already replays every retained non-public compact observation, while `checkReferenceProcess` owns the public evidence associations and current shipment process integrity; do not invent another family-independent gate.

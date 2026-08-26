@@ -103,6 +103,8 @@ Commit each completed coherent unit of work before reporting completion unless t
 
 Keep those commits local: never run `git push`, create or update a remote branch or tag, publish a release, or otherwise send repository state to GitHub or another remote unless the user explicitly asks for that remote action in the current request. Earlier permission or a standing instruction to continue does not authorize a later push.
 
+Immediately before every authorized push, run `./scripts/prepare-github-publish.sh --update`. Review and commit any resulting README statistics change before pushing; never push first and rely on GitHub CI's `--check` mode to report the stale publication artifact afterward. The updater already runs the trust audit, so do not add a redundant trust pass solely for this pre-push step.
+
 ## ⚠️ HARD RULE — discharge a claim before stating it, or flag it and surface it
 
 A statement that later probing falsifies is worse than no statement: it enters `spec/`, ships to the peer, and costs a reconciliation round. **Every claim leaving this repository — in `spec/`, a ledger entry, a docstring, a finding, or a reply to the user — is either discharged by the method its claim class requires, or explicitly marked unverified.** Confidence, plausibility, and "the peer said so" are not discharge. Prior effort spent reasoning toward a claim is not discharge either. **Marking a ledger entry `accepted` is a claim-leaving act**, not merely a reading: it writes the handback's account into `spec/` and into an immutable receipt in one step. Classify each claim a handback asserts and discharge it by its own class before accepting; a handback that supplies an *outcome* has not discharged a claim about a *mechanism* ([`LF84`](docs/LEAN-FINDINGS.md)).
