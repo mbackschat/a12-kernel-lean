@@ -78,6 +78,16 @@ def referencesField (source : CheckedAddressedEnumerationSource model scope)
   | .literal _ => false
   | .field _ _ _ operand _ _ _ _ _ _ _ _ _ => operand.field.id == field
 
+def directlyReferencesStoredField
+    (source : CheckedAddressedEnumerationSource model scope)
+    (field : FieldId) : Bool :=
+  source.referencesField field && match source with
+    | .literal _ => false
+    | .field _ _ _ operand _ _ _ _ _ _ _ _ _ =>
+        match operand.projectionRef with
+        | .stored => true
+        | .category _ => false
+
 def allowedFor (target : CheckedEnumerationProjection) :
     CheckedAddressedEnumerationSource model scope → Bool
   | .literal token => target.declaration.literalAllowed target.projection token
@@ -248,8 +258,10 @@ private def fieldResult (operand : FlatEnumerationOperand) (cell : CheckedCell) 
   | .present token => .value token
   | .unknown cause => .poison cause
 
-private def evaluateAt (operation : CheckedAddressedEnumerationComputation model)
-    (input : CheckedDocument model) (environment : Env) :
+private def evaluateAtWithRead
+    (operation : CheckedAddressedEnumerationComputation model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
     Except AddressedEnumerationComputationFault
       AddressedEnumerationComputationOutcome := do
   let targetPath ←
@@ -260,7 +272,7 @@ private def evaluateAt (operation : CheckedAddressedEnumerationComputation model
     | .field _ _ declaration operand _ _ _ _ _ _ _ _ _ => do
       let sourcePath ← environment.pathForScope declaration.repeatableScope
         |>.mapError .environment
-      let cell ← input.read { field := declaration.id, path := sourcePath }
+      let cell ← read { field := declaration.id, path := sourcePath }
         |>.mapError .sourceRead
       pure (fieldResult operand cell)
   pure {
@@ -268,15 +280,23 @@ private def evaluateAt (operation : CheckedAddressedEnumerationComputation model
     result
   }
 
-/-- Execute once per physically instantiated target row in document order. -/
-def execute (operation : CheckedAddressedEnumerationComputation model)
-    (input : CheckedDocument model) :
+/-- Execute once per physically instantiated target row while reading through one caller-supplied transient overlay. Target-row ownership remains with the immutable checked input. -/
+def executeWithRead (operation : CheckedAddressedEnumerationComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedEnumerationComputationFault
       (List AddressedEnumerationComputationOutcome) := do
   let environments ← input.actualRowEnvironments
       operation.target.declaration.repeatableScope
     |>.mapError .targetRows
-  environments.mapM (operation.evaluateAt input)
+  environments.mapM (operation.evaluateAtWithRead read)
+
+/-- Execute once per physically instantiated target row in document order against the immutable input. -/
+def execute (operation : CheckedAddressedEnumerationComputation model)
+    (input : CheckedDocument model) :
+    Except AddressedEnumerationComputationFault
+      (List AddressedEnumerationComputationOutcome) :=
+  operation.executeWithRead input input.read
 
 /-- Execute and classify each exact target address against the immutable source target state. -/
 def executeResult (operation : CheckedAddressedEnumerationComputation model)
