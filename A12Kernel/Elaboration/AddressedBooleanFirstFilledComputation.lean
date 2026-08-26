@@ -1,8 +1,9 @@
 import A12Kernel.Elaboration.BooleanFirstFilledComputation
+import A12Kernel.Elaboration.AddressedFirstFilledStar
 
 /-! # Exact-address repeatable Boolean `FirstFilledValue`
 
-This capsule binds one repeatable Boolean target to a one-axis starred Boolean source. Repeatable levels above the star are supplied by each physical target environment, so a sibling source extent stays correlated to its enclosing row. Result classification and application reuse the typed Boolean channels without reconstructing a document or running validation.
+This capsule binds one repeatable Boolean target to a one-axis starred Boolean source with a nonempty outer binding prefix. Those levels are supplied by each physical target environment, so a sibling source extent stays correlated to its enclosing row. Result classification and application reuse the typed Boolean channels without reconstructing a document or running validation.
 -/
 
 namespace A12Kernel
@@ -22,69 +23,112 @@ inductive AddressedBooleanFirstFilledComputationElabError where
 /-- One repeatable Boolean target and one checked single-reopened-axis Boolean source tied to the same validated model. -/
 structure CheckedAddressedBooleanFirstFilledComputation (model : FlatModel) where
   private mk ::
-  declaringGroup : GroupPath
-  targetField : FieldId
-  target : FlatFieldDecl
-  source : CheckedStarFieldPath model
-  targetOwned : model.lookupUniqueId targetField = .ok target
-  targetInDeclaringGroup : target.groupPath = declaringGroup
-  targetBoolean : target.policy.kind = .boolean
-  targetRepeatable : target.repeatableScope ≠ []
-  sourceBoolean : source.declaration.policy.kind = .boolean
-  sourceSingleReopenedAxis : source.reopenedScope.length = 1
-  sourceBindingBound :
-    source.bindingScope.all target.repeatableScope.contains = true
-  targetNotReferenced : source.declaration.id ≠ targetField
+  checkedTarget : CheckedAddressedFirstFilledTarget model
+  checkedSource : CheckedStarFieldPath model
+  placement : CheckedAddressedFirstFilledStarPlacement model
+    checkedTarget checkedSource
+  targetBoolean : checkedTarget.declaration.policy.kind = .boolean
+  sourceBoolean : checkedSource.declaration.policy.kind = .boolean
 
-/-- Check the target first, then certify one Boolean star whose outer binding scope is available at every target row. -/
+namespace CheckedAddressedBooleanFirstFilledComputation
+
+def declaringGroup
+    (operation : CheckedAddressedBooleanFirstFilledComputation model) : GroupPath :=
+  operation.checkedTarget.declaringGroup
+
+def targetField
+    (operation : CheckedAddressedBooleanFirstFilledComputation model) : FieldId :=
+  operation.checkedTarget.targetField
+
+def target
+    (operation : CheckedAddressedBooleanFirstFilledComputation model) : FlatFieldDecl :=
+  operation.checkedTarget.declaration
+
+def source
+    (operation : CheckedAddressedBooleanFirstFilledComputation model) :
+    CheckedStarFieldPath model :=
+  operation.checkedSource
+
+theorem targetOwned
+    (operation : CheckedAddressedBooleanFirstFilledComputation model) :
+    model.lookupUniqueId operation.targetField = .ok operation.target :=
+  operation.checkedTarget.owned
+
+theorem targetInDeclaringGroup
+    (operation : CheckedAddressedBooleanFirstFilledComputation model) :
+    operation.target.groupPath = operation.declaringGroup :=
+  operation.checkedTarget.inDeclaringGroup
+
+theorem targetRepeatable
+    (operation : CheckedAddressedBooleanFirstFilledComputation model) :
+    operation.target.repeatableScope ≠ [] :=
+  operation.checkedTarget.repeatable
+
+theorem sourceSingleReopenedAxis
+    (operation : CheckedAddressedBooleanFirstFilledComputation model) :
+    operation.source.reopenedScope.length = 1 :=
+  operation.placement.sourceSingleReopenedAxis
+
+theorem sourceBindingBound
+    (operation : CheckedAddressedBooleanFirstFilledComputation model) :
+    operation.source.bindingScope.all operation.target.repeatableScope.contains = true :=
+  operation.placement.sourceBindingBound
+
+theorem sourceBindingNonempty
+    (operation : CheckedAddressedBooleanFirstFilledComputation model) :
+    operation.source.bindingScope ≠ [] :=
+  operation.placement.sourceBindingNonempty
+
+theorem targetNotReferenced
+    (operation : CheckedAddressedBooleanFirstFilledComputation model) :
+    operation.source.declaration.id ≠ operation.targetField :=
+  operation.placement.targetNotReferenced
+
+end CheckedAddressedBooleanFirstFilledComputation
+
+private def mapAddressedBooleanTargetError :
+    AddressedFirstFilledTargetElabError →
+      AddressedBooleanFirstFilledComputationElabError
+  | .target cause => .target cause
+  | .targetOutsideDeclaringGroup path declaringGroup =>
+      .targetOutsideDeclaringGroup path declaringGroup
+  | .targetNotRepeatable path => .targetNotRepeatable path
+
+private def mapAddressedBooleanStarPlacementError :
+    AddressedFirstFilledStarPlacementElabError →
+      AddressedBooleanFirstFilledComputationElabError
+  | .sourceShape path => .sourceShape path
+  | .sourceScope path => .sourceScope path
+  | .targetSelfReference field => .targetSelfReference field
+
+/-- Check the target first, then certify one Boolean star with a nonempty outer binding scope available at every target row. -/
 def checkAddressedBooleanFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) :
     Except AddressedBooleanFirstFilledComputationElabError
       (CheckedAddressedBooleanFirstFilledComputation model) :=
-  match hTarget : model.lookupUniqueId targetField with
-  | .error cause => .error (.target cause)
-  | .ok target => do
-    if hGroup : target.groupPath = declaringGroup then
-      if hRepeatable : target.repeatableScope.isEmpty then
-        throw (.targetNotRepeatable target.path)
-      else if hTargetKind : target.policy.kind = .boolean then
-        let source ← elaborateStarFieldPath model declaringGroup authored
-          |>.mapError .source
-        if hSourceKind : source.declaration.policy.kind = .boolean then
-          if hShape : source.reopenedScope.length = 1 then
-            if hScope :
-                source.bindingScope.all target.repeatableScope.contains = true then
-              if hSelf : source.declaration.id = targetField then
-                throw (.targetSelfReference targetField)
-              else
-                pure {
-                  declaringGroup
-                  targetField
-                  target
-                  source
-                  targetOwned := hTarget
-                  targetInDeclaringGroup := hGroup
-                  targetBoolean := hTargetKind
-                  targetRepeatable := by
-                    intro empty
-                    simp [empty] at hRepeatable
-                  sourceBoolean := hSourceKind
-                  sourceSingleReopenedAxis := hShape
-                  sourceBindingBound := hScope
-                  targetNotReferenced := hSelf
-                }
-            else
-              throw (.sourceScope source.declaration.path)
-          else
-            throw (.sourceShape source.declaration.path)
-        else
-          throw (.sourceKind source.declaration.path
-            source.declaration.policy.kind.surfaceKind)
+  do
+    let target ← checkAddressedFirstFilledTarget model declaringGroup targetField
+      |>.mapError mapAddressedBooleanTargetError
+    if hTargetKind : target.declaration.policy.kind = .boolean then
+      let source ← elaborateStarFieldPath model declaringGroup authored
+        |>.mapError .source
+      if hSourceKind : source.declaration.policy.kind = .boolean then
+        let placement ← checkAddressedFirstFilledStarPlacement target source
+          |>.mapError mapAddressedBooleanStarPlacementError
+        pure {
+          checkedTarget := target
+          checkedSource := source
+          placement
+          targetBoolean := hTargetKind
+          sourceBoolean := hSourceKind
+        }
       else
-        throw (.targetKind target.path target.policy.kind.surfaceKind)
+        throw (.sourceKind source.declaration.path
+          source.declaration.policy.kind.surfaceKind)
     else
-      throw (.targetOutsideDeclaringGroup target.path declaringGroup)
+      throw (.targetKind target.declaration.path
+        target.declaration.policy.kind.surfaceKind)
 
 inductive AddressedBooleanFirstFilledComputationFault where
   | targetRows (cause : ActualRowEnvironmentError)

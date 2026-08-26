@@ -32,16 +32,20 @@ private def nestedSource := booleanField 6 "NestedDecision"
 private def unboundTarget := booleanField 7 "UnboundSelected"
   ["OtherTasks"] [50]
 
+private def rootSource := booleanField 8 "GlobalDecision"
+  ["GlobalChoices"] [60]
+
 private def model : FlatModel := {
   fields := [source, target, unrelated, fixedTarget, confirmSource, nestedSource,
-    unboundTarget]
+    unboundTarget, rootSource]
   repeatableGroups := [
     { level := 10, path := ["Projects"], repeatability := some 4 },
     { level := 20, path := ["Projects", "Choices"], repeatability := some 3 },
     { level := 30, path := ["Projects", "Tasks"], repeatability := some 3 },
     { level := 40, path := ["Projects", "Choices", "Details"],
       repeatability := some 3 },
-    { level := 50, path := ["OtherTasks"], repeatability := some 3 }]
+    { level := 50, path := ["OtherTasks"], repeatability := some 3 },
+    { level := 60, path := ["GlobalChoices"], repeatability := some 3 }]
 }
 
 private def siblingStar (field : String) : SurfaceStarFieldPath := {
@@ -70,6 +74,12 @@ private def absoluteSiblingStar : SurfaceStarFieldPath := {
     { name := "Projects" },
     { name := "Choices", starred := true }]
   field := source.name
+}
+
+private def rootStar : SurfaceStarFieldPath := {
+  base := .absolute
+  groups := [{ name := "GlobalChoices", starred := true }]
+  field := rootSource.name
 }
 
 private def operation? :
@@ -106,6 +116,9 @@ example :
     elabError? (checkAddressedBooleanFirstFilledComputation model
       ["OtherTasks"] unboundTarget.id absoluteSiblingStar) =
         some (.sourceScope source.path) ∧
+    elabError? (checkAddressedBooleanFirstFilledComputation model
+      ["Projects", "Tasks"] target.id rootStar) =
+        some (.sourceScope rootSource.path) ∧
     elabError? (checkAddressedBooleanFirstFilledComputation model
       ["Projects", "Tasks"] target.id selfStar) =
         some (.targetSelfReference target.id) := by

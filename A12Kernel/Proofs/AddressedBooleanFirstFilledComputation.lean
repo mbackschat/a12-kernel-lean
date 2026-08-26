@@ -4,15 +4,16 @@ import A12Kernel.Elaboration.AddressedBooleanFirstFilledComputation
 
 namespace A12Kernel
 
-/-- The checked source has exactly one reopened star axis, and every outer binding it needs is supplied by the target scope. -/
+/-- The checked source has exactly one reopened star axis and a nonempty outer prefix supplied by the target scope. -/
 theorem checkedAddressedBooleanFirstFilled_source_bounded
     (operation : CheckedAddressedBooleanFirstFilledComputation model) :
     operation.source.declaration.policy.kind = .boolean ∧
       operation.source.reopenedScope.length = 1 ∧
+      operation.source.bindingScope ≠ [] ∧
       operation.source.bindingScope.all
         operation.target.repeatableScope.contains = true :=
   ⟨operation.sourceBoolean, operation.sourceSingleReopenedAxis,
-    operation.sourceBindingBound⟩
+    operation.sourceBindingNonempty, operation.sourceBindingBound⟩
 
 /-- Addressed result construction retains the checked operation and classifies every outcome against its exact immutable target state. -/
 theorem checkedAddressedBooleanFirstFilled_executeResult_projects
