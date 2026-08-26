@@ -74,6 +74,14 @@ private def leafOnlyNestedStar (field : String) : SurfaceStarFieldPath := {
   field
 }
 
+private def innerNumber (field : String) : SurfaceHavingNumberRef := {
+  origin := .inner
+  field := { base := .absolute, groups := nestedPath, field }
+}
+
+private def priceBelowHelper : SurfaceCorrelatedHaving :=
+  .compareNumbers .less (innerNumber "Price") (innerNumber "Helper")
+
 private def cascade? : Option (CheckedRepeatableNumberAggregateCascade model) :=
   (checkRepeatableNumberAggregateCascade model
     nestedPath helper.id (bare "Price")
@@ -221,6 +229,12 @@ example :
         nestedPath helper.id (bare "Price")
         ["Shop"] best.id (nestedStar "Helper")
           (leafOnlyNestedStar "Price") [] .maximum with
+      | .error (.aggregateBindingRequired levels) => levels == [10]
+      | _ => false) = true ∧
+    (match checkRepeatableNumberMixedAggregateCascade model
+        nestedPath helper.id (bare "Price")
+        ["Shop"] best.id (leafOnlyNestedStar "Price")
+          (nestedStar "Helper") priceBelowHelper .filteredThenPlain .maximum with
       | .error (.aggregateBindingRequired levels) => levels == [10]
       | _ => false) = true := by
   native_decide

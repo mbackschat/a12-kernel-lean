@@ -1,0 +1,164 @@
+{
+  "header" : {
+    "id" : "Sg4NumberRun_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Sg4NumberRun_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Order",
+        "name" : "Order",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Order/Lines",
+            "name" : "Lines",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Order/Lines/Candidate",
+                "name" : "Candidate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/Produced",
+                "name" : "Produced",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Order/Lines/ProducedProjection",
+                "name" : "ProducedProjection",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Produced",
+                  "computationAlternatives" : [ {
+                    "operation" : "[Candidate]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Compute each row producer."
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Total",
+            "name" : "Total",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Doubled",
+            "name" : "Doubled",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Tripled",
+            "name" : "Tripled",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Order/DoubledComputation",
+            "name" : "DoubledComputation",
+            "Computation" : {
+              "computedFieldRelPath" : "../Doubled",
+              "computationAlternatives" : [ {
+                "operation" : "[Total] + [Total]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Double the fresh aggregate."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Order/TripledComputation",
+            "name" : "TripledComputation",
+            "Computation" : {
+              "computedFieldRelPath" : "../Tripled",
+              "computationAlternatives" : [ {
+                "operation" : "[Doubled] + [Total]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Extend the aggregate suffix."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Order/TotalComputation",
+            "name" : "TotalComputation",
+            "Computation" : {
+              "computedFieldRelPath" : "../Total",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Lines*/Produced Having [Lines/Candidate] < [Lines/Produced], Lines*/Candidate)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Calculate the filtered produced and candidate total."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

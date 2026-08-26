@@ -59,6 +59,26 @@ private def otherStar (field : String) : SurfaceStarFieldPath := {
   field
 }
 
+private def innerNumber (field : String) : SurfaceHavingNumberRef := {
+  origin := .inner
+  field := { base := .absolute, groups := ["Order", "Lines"], field }
+}
+
+private def otherInnerNumber (field : String) : SurfaceHavingNumberRef := {
+  origin := .inner
+  field := { base := .absolute, groups := ["Order", "OtherLines"], field }
+}
+
+private def candidateBelowProduced : SurfaceCorrelatedHaving :=
+  .compareNumbers .less (innerNumber "Candidate") (innerNumber "Produced")
+
+private def candidateBelowUnit : SurfaceCorrelatedHaving :=
+  .compareNumbers .less (innerNumber "Candidate") (innerNumber "Unit")
+
+private def foreignBelowItself : SurfaceCorrelatedHaving :=
+  .compareNumbers .less (otherInnerNumber "Foreign")
+    (otherInnerNumber "Foreign")
+
 private def rootNumber (field : String) :
     AuthoredNumericExpr SurfaceNumericComputationAtom :=
   .atom (.numeric (.field (bare field)))
@@ -109,6 +129,28 @@ private def thirdOperandPlan? :
       [star "Produced"] .sum).toOption
   let run ← suffixRun?
   (checkRepeatableNumberAggregateRunCascade cascade run).toOption
+
+private def mixedCascade?
+    (order : RepeatableNumberAggregateMixedOperandOrder) :
+    Option (CheckedRepeatableNumberAggregateCascade model) :=
+  (checkRepeatableNumberMixedAggregateCascade model
+    ["Order", "Lines"] produced.id (bare "Candidate")
+    ["Order"] total.id (star "Candidate") (star "Produced")
+    candidateBelowProduced order .sum).toOption
+
+private def mixedPlan?
+    (order : RepeatableNumberAggregateMixedOperandOrder) :
+    Option (CheckedRepeatableNumberAggregateRunCascade model) := do
+  let cascade ← mixedCascade? order
+  let run ← suffixRun?
+  (checkRepeatableNumberAggregateRunCascade cascade run).toOption
+
+private def binaryMixedPlan? :
+    Option (CheckedRepeatableNumberAggregateCascade model) :=
+  (checkRepeatableNumberBinaryMixedAggregateCascade model
+    ["Order", "Lines"] produced.id (bare "Candidate") (bare "Unit") .add
+    ["Order"] total.id (star "Candidate") (star "Produced")
+    candidateBelowProduced .plainThenFiltered .sum).toOption
 
 private def cell (field : FieldId) (path : List Nat) (value : Int) :
     ClassifiedCellInput := {
@@ -180,6 +222,21 @@ private def thirdOperandSnapshot?
     (input : Option (CheckedDocument model)) : Option Snapshot :=
   snapshotFor? thirdOperandPlan? input
 
+private def mixedSnapshot?
+    (order : RepeatableNumberAggregateMixedOperandOrder)
+    (input : Option (CheckedDocument model)) : Option Snapshot :=
+  snapshotFor? (mixedPlan? order) input
+
+private def mixedMatrix?
+    (order : RepeatableNumberAggregateMixedOperandOrder) :
+    Option (List Snapshot) :=
+  [
+    inputWithRows? (some (cell candidate.id [2] (-3))),
+    inputWithRows? none,
+    inputWithRows? (some malformedCandidate),
+    noRowsInput?
+  ].mapM (mixedSnapshot? order)
+
 private def accepted (value : Int) : NumericTargetOutcome :=
   .accepted { unscaled := value, scale := 0 }
 
@@ -210,6 +267,95 @@ example :
       aggregate := accepted 0
       suffix := [(doubled.id, accepted 0), (tripled.id, accepted 0)]
     } := by
+  native_decide
+
+/- Each filtered wildcard owns only its own filter, while both authored orders read the completed producer overlay. The two Analyze views retain their different first-occurrence dependency order. -/
+example :
+    (mixedCascade? .plainThenFiltered).map
+        CheckedRepeatableNumberAggregateCascade.analyze =
+      some {
+        producer := .direct
+        consumer := .mixed
+        operation := .sum
+        repeatableScope := [10]
+        fieldDependencies := [
+          (produced.id, [candidate.id]),
+          (total.id, [candidate.id, produced.id])]
+      } ∧
+    (mixedCascade? .filteredThenPlain).map
+        CheckedRepeatableNumberAggregateCascade.analyze =
+      some {
+        producer := .direct
+        consumer := .mixed
+        operation := .sum
+        repeatableScope := [10]
+        fieldDependencies := [
+          (produced.id, [candidate.id]),
+          (total.id, [produced.id, candidate.id])]
+      } ∧
+    binaryMixedPlan?.map CheckedRepeatableNumberAggregateCascade.analyze =
+      some {
+        producer := .binary .add
+        consumer := .mixed
+        operation := .sum
+        repeatableScope := [10]
+        fieldDependencies := [
+          (produced.id, [candidate.id, unit.id]),
+          (total.id, [candidate.id, produced.id])]
+      } := by
+  native_decide
+
+/- The retained Kernel matrix separates completed filter state from stale stored `Produced` values, empty substitution, reached malformed poison, and the no-row identity. -/
+example :
+    let expected : List Snapshot := [
+      {
+        rows := [accepted 2, accepted (-3)]
+        aggregate := accepted (-1)
+        suffix := [(doubled.id, accepted (-2)), (tripled.id, accepted (-3))]
+      },
+      {
+        rows := [accepted 2, accepted 0]
+        aggregate := accepted 2
+        suffix := [(doubled.id, accepted 4), (tripled.id, accepted 6)]
+      },
+      {
+        rows := [accepted 2, .inheritedPoison .malformed]
+        aggregate := .inheritedPoison .malformed
+        suffix := [
+          (doubled.id, .inheritedPoison .computedDependency),
+          (tripled.id, .inheritedPoison .computedDependency)]
+      },
+      {
+        rows := []
+        aggregate := accepted 0
+        suffix := [(doubled.id, accepted 0), (tripled.id, accepted 0)]
+      }]
+    mixedMatrix? .plainThenFiltered = some expected ∧
+      mixedMatrix? .filteredThenPlain = some expected := by
+  native_decide
+
+/- A mixed consumer must read its producer either as the plain value or inside the filtered slot's `Having`. Merely aggregating the producer in that slot does not form a dependency, and every value source still belongs to the producer's exact group. -/
+example :
+    (match checkRepeatableNumberMixedAggregateCascade model
+        ["Order", "Lines"] produced.id (bare "Candidate")
+        ["Order"] total.id (star "Candidate") (star "Candidate")
+        candidateBelowUnit .plainThenFiltered .sum with
+      | .error (.missingMixedDependency field) => field == produced.id
+      | _ => false) = true ∧
+    (match checkRepeatableNumberMixedAggregateCascade model
+        ["Order", "Lines"] produced.id (bare "Candidate")
+        ["Order"] total.id (star "Candidate") (star "Produced")
+        candidateBelowUnit .filteredThenPlain .sum with
+      | .error (.missingMixedDependency field) => field == produced.id
+      | _ => false) = true ∧
+    (match checkRepeatableNumberMixedAggregateCascade model
+        ["Order", "Lines"] produced.id (bare "Candidate")
+        ["Order"] total.id (star "Produced") (otherStar "Foreign")
+        foreignBelowItself .plainThenFiltered .sum with
+      | .error (.groupMismatch producerGroup aggregateGroup) =>
+          producerGroup == ["Order", "Lines"] &&
+            aggregateGroup == ["Order", "OtherLines"]
+      | _ => false) = true := by
   native_decide
 
 /- A later aggregate operand may read the completed producer without moving it
