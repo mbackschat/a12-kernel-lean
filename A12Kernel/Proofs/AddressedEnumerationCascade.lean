@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.AddressedEnumerationCascade
+import A12Kernel.Proofs.AddressedEnumerationComputation
 
 namespace A12Kernel
 
@@ -20,5 +21,21 @@ theorem addressedEnumerationCascade_targetsDistinct
   have excludes := cascade.consumer.targetNotReferenced
   rw [same] at reads
   simp_all
+
+/-- Phase-separated cascade projection cannot invent the ordinary String target-rejection channel. -/
+theorem addressedEnumerationCascade_executeResult_hasNoTargetErrors
+    (cascade : CheckedAddressedEnumerationCascade model)
+    (input : CheckedDocument model)
+    (producerResidual consumerResidual : List ResidualMessage)
+    (outcomes : AddressedEnumerationCascadeOutcomes)
+    (executed : cascade.execute input = .ok outcomes) :
+    (cascade.executeResult input producerResidual consumerResidual).map
+      (fun view =>
+        (view.producer.withErrors, view.consumer.withErrors)) =
+      .ok ([], []) := by
+  unfold CheckedAddressedEnumerationCascade.executeResult
+  rw [executed]
+  simp [Functor.map, Except.map,
+    addressedEnumerationResults_haveNoTargetErrors]
 
 end A12Kernel

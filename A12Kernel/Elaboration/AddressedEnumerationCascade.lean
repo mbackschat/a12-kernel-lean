@@ -79,6 +79,14 @@ structure AddressedEnumerationCascadeOutcomes where
   consumer : List AddressedEnumerationComputationOutcome
   deriving Repr, DecidableEq
 
+/-- Phase-separated public result projections for one completed checked cascade. -/
+structure AddressedEnumerationCascadeRunView (model : FlatModel)
+    (ResidualMessage : Type) where
+  private mk ::
+  cascade : CheckedAddressedEnumerationCascade model
+  producer : StringComputationRunView ResidualMessage CellAddr
+  consumer : StringComputationRunView ResidualMessage CellAddr
+
 inductive AddressedEnumerationCascadeFault where
   | producer (cause : AddressedEnumerationComputationFault)
   | dependency (target : CellAddr) (cause : EnumerationDependencyFault)
@@ -113,6 +121,21 @@ def execute (cascade : CheckedAddressedEnumerationCascade model)
   let consumer ← cascade.consumer.executeWithRead input
       (readAfterProducer input dependencies) |>.mapError .consumer
   pure { producer, consumer }
+
+/-- Execute once, then classify the retained producer and consumer phases independently against immutable source-target state. -/
+def executeResult (cascade : CheckedAddressedEnumerationCascade model)
+    (input : CheckedDocument model)
+    (producerResidual consumerResidual : List ResidualMessage) :
+    Except AddressedEnumerationCascadeFault
+      (AddressedEnumerationCascadeRunView model ResidualMessage) := do
+  let outcomes ← cascade.execute input
+  pure {
+    cascade
+    producer := projectAddressedEnumerationResults input producerResidual
+      outcomes.producer
+    consumer := projectAddressedEnumerationResults input consumerResidual
+      outcomes.consumer
+  }
 
 end CheckedAddressedEnumerationCascade
 

@@ -157,6 +157,40 @@ private def categorySummary? := summarize? categoryCascade? input?
 private def deepSummary? := summarize? deepCascade? deepInput?
 private def deepCategorySummary? := summarize? deepCategoryCascade? deepInput?
 
+private structure PhaseResultSummary where
+  producerValues : List (CellAddr × String)
+  producerChanges : List (CellAddr × String)
+  producerErrors : List CellAddr
+  producerCleared : List CellAddr
+  producerResidual : List FormalCause
+  consumerValues : List (CellAddr × String)
+  consumerChanges : List (CellAddr × String)
+  consumerErrors : List CellAddr
+  consumerCleared : List CellAddr
+  consumerResidual : List FormalCause
+  deriving Repr, DecidableEq
+
+private def categoryResultSummary? : Option PhaseResultSummary := do
+  let cascade ← categoryCascade?
+  let input ← input?
+  let view ← cascade.executeResult input [.malformed] [.required] |>.toOption
+  pure {
+    producerValues := view.producer.withoutErrors.map fun entry =>
+      (entry.targetField, entry.value.text)
+    producerChanges := view.producer.withChanges.map fun entry =>
+      (entry.targetField, entry.value.text)
+    producerErrors := view.producer.withErrors.map (·.targetField)
+    producerCleared := view.producer.cleared
+    producerResidual := view.producer.formalErrorsInOperands
+    consumerValues := view.consumer.withoutErrors.map fun entry =>
+      (entry.targetField, entry.value.text)
+    consumerChanges := view.consumer.withChanges.map fun entry =>
+      (entry.targetField, entry.value.text)
+    consumerErrors := view.consumer.withErrors.map (·.targetField)
+    consumerCleared := view.consumer.cleared
+    consumerResidual := view.consumer.formalErrorsInOperands
+  }
+
 example : cascade?.isSome = true ∧ deepCascade?.isSome = true ∧
     categoryCascade?.isSome = true ∧ deepCategoryCascade?.isSome = true ∧
     planError? (operation? produced final) (operation? final produced) =
@@ -191,6 +225,21 @@ example : categorySummary? = some ([
     (address final.id 2, .noValue),
     (address final.id 3, .poison .computedDependency)
   ]) := by
+  native_decide
+
+/- The two completed phases project separately against immutable source-target state without re-executing the consumer from stale input. -/
+example : categoryResultSummary? = some {
+    producerValues := [(address produced.id 1, "A")]
+    producerChanges := [(address produced.id 1, "A")]
+    producerErrors := []
+    producerCleared := [address produced.id 2, address produced.id 3]
+    producerResidual := [.malformed]
+    consumerValues := [(address final.id 1, "B")]
+    consumerChanges := [(address final.id 1, "B")]
+    consumerErrors := []
+    consumerCleared := []
+    consumerResidual := [.required]
+  } := by
   native_decide
 
 /- One completed enclosing producer row fans out only to its own descendant targets; stale parent cells cannot leak through clean absence or dependency poison. -/

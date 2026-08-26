@@ -238,6 +238,18 @@ structure AddressedEnumerationComputationRunView (model : FlatModel)
   operation : CheckedAddressedEnumerationComputation model
   string : StringComputationRunView ResidualMessage CellAddr
 
+/-- Classify supplied exact-address Enumeration outcomes against immutable source-target state without attaching a checked operation identity. -/
+def projectAddressedEnumerationResults
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage)
+    (outcomes : List AddressedEnumerationComputationOutcome) :
+    StringComputationRunView ResidualMessage CellAddr :=
+  StringComputationRunView.fromSourcedOutcomes residualMessages
+    (outcomes.map fun entry => {
+      targetField := entry.targetField
+      outcome := entry.result.asExactStringTargetOutcome
+      source := input.sourceStringTargetStateAt entry.targetField
+    })
+
 namespace CheckedAddressedEnumerationComputation
 
 private def fieldResult (operand : FlatEnumerationOperand) (cell : CheckedCell) :
@@ -296,12 +308,7 @@ def executeResult (operation : CheckedAddressedEnumerationComputation model)
   let outcomes ← operation.execute input
   pure {
     operation
-    string := StringComputationRunView.fromSourcedOutcomes residualMessages
-      (outcomes.map fun entry => {
-        targetField := entry.targetField
-        outcome := entry.result.asExactStringTargetOutcome
-        source := input.sourceStringTargetStateAt entry.targetField
-      })
+    string := projectAddressedEnumerationResults input residualMessages outcomes
   }
 
 end CheckedAddressedEnumerationComputation

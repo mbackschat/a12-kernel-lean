@@ -41,13 +41,10 @@ private theorem addressedEnumerationResult_hasNoTargetError
 theorem addressedEnumerationResults_haveNoTargetErrors
     (outcomes : List AddressedEnumerationComputationOutcome)
     (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
-    (StringComputationRunView.fromSourcedOutcomes residualMessages
-      (outcomes.map fun entry => {
-        targetField := entry.targetField
-        outcome := entry.result.asExactStringTargetOutcome
-        source := input.sourceStringTargetStateAt entry.targetField
-      })).withErrors = [] := by
-  simp only [StringComputationRunView.fromSourcedOutcomes]
+    (projectAddressedEnumerationResults input residualMessages outcomes).withErrors =
+      [] := by
+  simp only [projectAddressedEnumerationResults,
+    StringComputationRunView.fromSourcedOutcomes]
   induction outcomes with
   | nil => rfl
   | cons head tail ih =>
@@ -63,12 +60,9 @@ theorem checkedAddressedEnumeration_executeResult_hasNoTargetErrors
       (fun view => view.string.withErrors) = .ok [] := by
   unfold CheckedAddressedEnumerationComputation.executeResult
   rw [executed]
-  change Except.ok ((StringComputationRunView.fromSourcedOutcomes residualMessages
-    (outcomes.map fun entry => {
-      targetField := entry.targetField
-      outcome := entry.result.asExactStringTargetOutcome
-      source := input.sourceStringTargetStateAt entry.targetField
-    })).withErrors) = Except.ok []
+  change Except.ok
+    ((projectAddressedEnumerationResults input residualMessages outcomes).withErrors) =
+      Except.ok []
   exact congrArg Except.ok
     (addressedEnumerationResults_haveNoTargetErrors outcomes input residualMessages)
 
