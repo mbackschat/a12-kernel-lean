@@ -25,6 +25,58 @@ private def model (zoneId : String := "UTC") : FlatModel := {
   fields := [target]
   timeZoneId := zoneId }
 
+private def other : FlatFieldDecl := {
+  target with id := 5, name := "OtherTime"
+}
+
+private def stringTarget : FlatFieldDecl := {
+  id := 6
+  groupPath := ["Order"]
+  name := "Label"
+  policy := { kind := .string }
+}
+
+private def repeatedTarget : FlatFieldDecl := {
+  target with
+  id := 7
+  groupPath := ["Order", "Lines"]
+  name := "RepeatedTime"
+  repeatableScope := [10]
+}
+
+private def incompleteTarget : FlatFieldDecl := {
+  target with
+  id := 8
+  name := "MinuteTime"
+  policy := { kind := .temporal .time {
+    TemporalComponents.time with second := false
+  } }
+}
+
+private def repeatedStringTarget : FlatFieldDecl := {
+  stringTarget with
+  id := 9
+  groupPath := ["Order", "Lines"]
+  name := "RepeatedLabel"
+  repeatableScope := [10]
+}
+
+private def applicationModel : FlatModel := {
+  fields := [target, other]
+  timeZoneId := "UTC"
+}
+
+private def validationModel : FlatModel := {
+  fields := [stringTarget, repeatedTarget, incompleteTarget,
+    repeatedStringTarget]
+  repeatableGroups := [{
+    level := 10
+    path := ["Order", "Lines"]
+    repeatability := some 3
+  }]
+  timeZoneId := "UTC"
+}
+
 private def timeTargetError? (candidate : FlatModel) :
     Option TimeTargetElabError :=
   match elaborateTimeTarget candidate 1 with
@@ -40,9 +92,15 @@ private def nextTime : StoredTime := ⟨"05:02:09", by decide⟩
 
 private def oldTime : StoredTime := ⟨"05:02:08", by decide⟩
 
-private def source (stored : String) (raw : RawCell) : DocumentData := {
+private def otherTime : StoredTime := ⟨"06:00:00", by decide⟩
+
+private def sourceAt (field : FieldId) (stored : String)
+    (raw : RawCell) : DocumentData := {
   instantiatedRows := []
-  cells := [{ address := { field := 1, path := [] }, stored, raw }] }
+  cells := [{ address := { field, path := [] }, stored, raw }] }
+
+private def source (stored : String) (raw : RawCell) : DocumentData :=
+  sourceAt 1 stored raw
 
 private def oldSource : DocumentData :=
   source oldTime.text (.parsed (.temporal
@@ -52,11 +110,20 @@ private def prepared :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler (model)).toOption.get (by native_decide)
 
+private def applicationPrepared :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler applicationModel).toOption.get
+      (by native_decide)
+
 private def view? (input : DocumentData) (outcome : TimeTargetOutcome)
     (messages : List FormalCause := []) :
     Option (TimeComputationRunView FormalCause) := do
   let checked ← (checkDocument prepared "en_US" input).toOption
   pure (TimeComputationRunView.fromOutcomes checked messages [(1, outcome)])
+
+private def checkedApplication? (input : DocumentData) :
+    Option (CheckedDocument applicationModel) :=
+  (checkDocument applicationPrepared "en_US" input).toOption
 
 private def destinationWith (state : TimeTargetState) :
     TimeComputationDestination :=
@@ -259,6 +326,68 @@ example :
         | .error error => some error
         | .ok _ => none)) =
         some (some (.duplicateActionTarget 1)) := by
+  native_decide
+
+/- Checked application keeps Time's source-identical action, starts from the separate destination, and preserves a distinct unrelated value. -/
+example : (do
+    let view ← view? oldSource (.accepted oldTime)
+    let checked ← checkedApplication? {
+      instantiatedRows := []
+      cells := (source nextTime.text (.parsed (.temporal
+        (.time { epochMillis := 0 } (clock 5 2 9 (by decide)))))).cells ++
+        (sourceAt other.id otherTime.text
+        (.parsed (.temporal
+          (.time { epochMillis := 3600000 }
+            (clock 6 0 0 (by decide)))))).cells
+    }
+    let applied ← view.applyToChecked checked |>.toOption
+    pure (applied target.id, applied other.id)) =
+      some (.presentValue oldTime, .presentValue otherTime) := by
+  native_decide
+
+/- Checked target validation retains the exact lookup cause and separates family and scope failures. -/
+example :
+    (match TimeComputationRunView.validateActionTargets
+        validationModel [99] with
+      | .error (.targetField 99 (.unknownFieldId 99)) => true
+      | _ => false) = true ∧
+    (match TimeComputationRunView.validateActionTargets
+        validationModel [stringTarget.id] with
+      | .error (.nonTimeTarget field) => field == stringTarget.id
+      | _ => false) = true ∧
+    (match TimeComputationRunView.validateActionTargets
+        validationModel [repeatedTarget.id] with
+      | .error (.repeatableTarget field) => field == repeatedTarget.id
+      | _ => false) = true := by
+  native_decide
+
+/- Time requires the complete whole-second component set. -/
+example : (match TimeComputationRunView.validateActionTargets
+    validationModel [incompleteTarget.id] with
+  | .error (.nonTimeTarget field) => field == incompleteTarget.id
+  | _ => false) = true := by
+  native_decide
+
+/- Family rejection precedes repeatable-scope rejection. -/
+example : (match TimeComputationRunView.validateActionTargets
+    validationModel [repeatedStringTarget.id] with
+  | .error (.nonTimeTarget field) => field == repeatedStringTarget.id
+  | _ => false) = true := by
+  native_decide
+
+/- Duplicate actions fail before checked target validation. -/
+example : (do
+    let sourceChecked ←
+      (checkDocument prepared "en_US"
+        { instantiatedRows := [], cells := [] }).toOption
+    let destinationChecked ← checkedApplication?
+      { instantiatedRows := [], cells := [] }
+    let view := TimeComputationRunView.fromOutcomes sourceChecked
+      ([] : List FormalCause)
+      [(99, .accepted nextTime), (99, .accepted oldTime)]
+    pure (match view.applyToChecked destinationChecked with
+      | .error (.duplicateActionTarget field) => field == 99
+      | _ => false)) = some true := by
   native_decide
 
 /- A checked mixed prefix is admitted, while a matching extractor from the Time target is rejected before execution. -/

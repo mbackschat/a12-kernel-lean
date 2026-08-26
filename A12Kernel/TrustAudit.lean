@@ -247,6 +247,7 @@ run_cmd do
 #print axioms A12Kernel.timeComputationRun_noErrorOccurred_iff
 #print axioms A12Kernel.timeComputationRun_reportsChanged
 #print axioms A12Kernel.timeComputationDestination_applyRetainedClear_same
+#print axioms A12Kernel.timeComputationRun_applyToChecked_delegates
 #print axioms A12Kernel.timeComputationRun_residualMessages_doNotAffectApplication
 #print axioms A12Kernel.partiallyKnownDateValue_resolve_full
 #print axioms A12Kernel.valueAsDate_evaluate_value

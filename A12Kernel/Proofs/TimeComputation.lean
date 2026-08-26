@@ -86,6 +86,19 @@ theorem timeComputationDestination_applyRetainedClear_same
     TemporalTargetState.applyRetainedClear]
   cases destination target <;> rfl
 
+/-- A checked Time application with admitted unique targets delegates exactly to the established value/clear fold over the checked document's source projection. -/
+theorem timeComputationRun_applyToChecked_delegates
+    (view : TimeComputationRunView ResidualMessage)
+    (destination : CheckedDocument model)
+    (unique : FieldId.firstDuplicate? view.actionTargets = none)
+    (valid : TimeComputationRunView.validateActionTargets model
+      view.actionTargets = .ok ()) :
+    view.applyToChecked destination =
+      (view.applyTo destination.sourceTimeTargetState).mapError
+        (fun | .duplicateActionTarget duplicate => TimeComputationRunView.TimeComputationCheckedApplicationError.duplicateActionTarget duplicate) := by
+  simp [TimeComputationRunView.applyToChecked, unique, valid]
+  rfl
+
 /-- Residual messages never change already-classified Time application actions. -/
 theorem timeComputationRun_residualMessages_doNotAffectApplication
     (input : CheckedDocument model)

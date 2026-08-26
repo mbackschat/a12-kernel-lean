@@ -199,6 +199,37 @@ def applyTo (view : TimeComputationRunView ResidualMessage)
     (fun current target value =>
       current.applyOutcome target (.accepted value))
 
+/-- Fail-closed errors for checked nonrepeatable Time destination projection. -/
+inductive TimeComputationCheckedApplicationError where
+  | duplicateActionTarget (field : FieldId)
+  | targetField (field : FieldId) (cause : ResolveError)
+  | nonTimeTarget (field : FieldId)
+  | repeatableTarget (field : FieldId)
+  deriving Repr, DecidableEq
+
+private def acceptsActionKind : FieldKind → Bool
+  | .temporal .time components => components == TemporalComponents.time
+  | _ => false
+
+def validateActionTargets (model : FlatModel) (targets : List FieldId) :
+    Except TimeComputationCheckedApplicationError Unit :=
+  TemporalComputationApplicationTarget.validateAllNonrepeatable
+    model acceptsActionKind
+    TimeComputationCheckedApplicationError.targetField
+    TimeComputationCheckedApplicationError.nonTimeTarget
+    TimeComputationCheckedApplicationError.repeatableTarget targets
+
+/-- Apply one retained nonrepeatable Time result to the exact root Time-state projection of a separately supplied checked destination. The retained result is not model-indexed, so source/destination model compatibility remains a caller precondition. -/
+def applyToChecked (view : TimeComputationRunView ResidualMessage)
+    (destination : CheckedDocument model) :
+    Except TimeComputationCheckedApplicationError TimeComputationDestination :=
+  match FieldId.firstDuplicate? view.actionTargets with
+  | some duplicate => .error (.duplicateActionTarget duplicate)
+  | none => do
+      validateActionTargets model view.actionTargets
+      (view.applyTo destination.sourceTimeTargetState).mapError
+        (fun | .duplicateActionTarget duplicate => .duplicateActionTarget duplicate)
+
 end TimeComputationRunView
 
 end A12Kernel
