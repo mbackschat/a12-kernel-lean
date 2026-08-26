@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedTimeFromDateTime
 
-/-! # Checked repeatable `TimeFromDateTime` placement locks -/
+/-! # Exact-address repeatable `TimeFromDateTime` execution locks -/
 
 namespace A12Kernel.Conformance.AddressedTimeFromDateTime
 
@@ -36,6 +36,11 @@ private def model : FlatModel := {
     level := 10, path := ["Schedule", "Slots"], repeatability := some 5
   }]
 }
+
+private def prepared :
+    PreparedFlatStringContext model builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption.get (by native_decide)
 
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
@@ -108,6 +113,149 @@ example :
       ["Schedule", "Slots"] target.id
       (child "Details" deepSource.name)) =
         some (.source (.scopeMismatch target.path deepSource.path)) := by
+  native_decide
+
+private def momentAt (day hour minute : Nat) : Option TemporalValue := do
+  let wall ← LocalDateTime.ofYmdHms? 2024 6 day hour minute 0
+  let instant ← ModelZone.ConcreteProfile.europeBerlin.resolveLocal? wall
+  pure (.dateTime instant wall.date.civil.parts wall.time .storedGregorian)
+
+private def sourceCell (field : FieldId) (path : List Nat)
+    (stored : String) (raw : RawCell) : ClassifiedCellInput := {
+  address := { field, path }
+  stored
+  raw
+}
+
+private def inputForRows? (rows : List Nat)
+    (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := rows.map fun index =>
+      { group := 10, path := [index] }
+    cells
+  }).toOption
+
+private def input? (rowCount : Nat) (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument model) :=
+  inputForRows? ((List.range rowCount).map fun index => index + 1) cells
+
+private def outcomeTriples?
+    (operation : CheckedAddressedTimeFromDateTime model)
+    (rowCount : Nat) (cells : List ClassifiedCellInput) :
+    Option (List (CellAddr × CellAddr × TimeTargetOutcome)) := do
+  let input ← input? rowCount cells
+  let outcomes ← operation.execute input |>.toOption
+  pure (outcomes.map fun entry =>
+    (entry.sourceField, entry.targetField, entry.outcome))
+
+private def address (field : FieldId) (path : List Nat) : CellAddr :=
+  { field, path }
+
+private def storedTime (text : String) (nonempty : text ≠ "" := by decide) :
+    StoredTime := ⟨text, nonempty⟩
+
+/- Same-scope rows retain exact addresses and the source wall clock, while clean absence and formal poison stay row-local. -/
+example : (do
+    let operation ← operation?
+    outcomeTriples? operation 3 [
+      sourceCell source.id [1] "2024-06-15T00:30:00"
+        (.parsed (.temporal (momentAt 15 0 30 |>.get (by native_decide)))),
+      sourceCell source.id [3] "bad" (.rejected .dateFormat)]) = some [
+      (address source.id [1], address target.id [1],
+        .accepted (storedTime "00:30:00")),
+      (address source.id [2], address target.id [2], .noValue),
+      (address source.id [3], address target.id [3], .poison .dateFormat)
+    ] := by
+  native_decide
+
+/- Physical target-row encounter order is observable and must not be replaced by coordinate sorting. -/
+example : (do
+    let operation ← operation?
+    let input ← inputForRows? [3, 1, 2] []
+    let outcomes ← operation.execute input |>.toOption
+    pure (outcomes.map (fun entry => entry.targetField))) = some [
+      address target.id [3], address target.id [1], address target.id [2]
+    ] := by
+  native_decide
+
+/- One root source fans out from its own address to every physical target row; no physical rows produce no outcomes. -/
+example : (do
+    let operation ← rootOperation?
+    let rows ← outcomeTriples? operation 2 [
+      sourceCell rootSource.id [] "2024-06-16T13:45:00"
+        (.parsed (.temporal (momentAt 16 13 45 |>.get (by native_decide))))]
+    let none ← outcomeTriples? operation 0 []
+    pure (rows, none)) = some ([
+      (address rootSource.id [], address target.id [1],
+        .accepted (storedTime "13:45:00")),
+      (address rootSource.id [], address target.id [2],
+        .accepted (storedTime "13:45:00"))], []) := by
+  native_decide
+
+private def nestedSource := temporalField 11 "MilestoneStamp"
+  ["Project", "Milestones"] [10]
+  .dateTime TemporalComponents.now "yyyy-MM-dd'T'HH:mm:ss"
+
+private def nestedTarget := temporalField 12 "TaskTime"
+  ["Project", "Milestones", "Tasks"] [10, 20]
+  .time TemporalComponents.time "HH:mm:ss"
+
+private def nestedModel : FlatModel := {
+  fields := [nestedSource, nestedTarget]
+  timeZoneId := "Europe/Berlin"
+  repeatableGroups := [
+    { level := 10, path := ["Project", "Milestones"], repeatability := some 5 },
+    { level := 20, path := ["Project", "Milestones", "Tasks"],
+      repeatability := some 5 }
+  ]
+}
+
+private def nestedPrepared :
+    PreparedFlatStringContext nestedModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler nestedModel).toOption.get (by native_decide)
+
+private def nestedOperation? :
+    Option (CheckedAddressedTimeFromDateTime nestedModel) :=
+  (checkAddressedTimeFromDateTime nestedModel
+    ["Project", "Milestones", "Tasks"] nestedTarget.id
+    (parent nestedSource.name)).toOption
+
+private def nestedRows : List RowAddr :=
+  [{ group := 10, path := [1] }, { group := 10, path := [2] },
+    { group := 20, path := [1, 1] }, { group := 20, path := [1, 2] },
+    { group := 20, path := [2, 1] }, { group := 20, path := [2, 2] }]
+
+private def nestedInput? (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument nestedModel) :=
+  (checkDocument nestedPrepared "en_US" {
+    instantiatedRows := nestedRows
+    cells
+  }).toOption
+
+private def nestedTriples? (cells : List ClassifiedCellInput) :
+    Option (List (CellAddr × CellAddr × TimeTargetOutcome)) := do
+  let operation ← nestedOperation?
+  let input ← nestedInput? cells
+  let outcomes ← operation.execute input |>.toOption
+  pure (outcomes.map fun entry =>
+    (entry.sourceField, entry.targetField, entry.outcome))
+
+/- Enclosing sources correlate only to their own leaves; borrowing the full target path or reading one global source cannot satisfy this matrix. -/
+example : nestedTriples? [
+    sourceCell nestedSource.id [1] "bad" (.rejected .dateFormat),
+    sourceCell nestedSource.id [2] "2024-06-16T23:45:00"
+      (.parsed (.temporal (momentAt 16 23 45 |>.get (by native_decide))))] = some [
+      (address nestedSource.id [1], address nestedTarget.id [1, 1],
+        .poison .dateFormat),
+      (address nestedSource.id [1], address nestedTarget.id [1, 2],
+        .poison .dateFormat),
+      (address nestedSource.id [2], address nestedTarget.id [2, 1],
+        .accepted (storedTime "23:45:00")),
+      (address nestedSource.id [2], address nestedTarget.id [2, 2],
+        .accepted (storedTime "23:45:00"))
+    ] := by
   native_decide
 
 end A12Kernel.Conformance.AddressedTimeFromDateTime

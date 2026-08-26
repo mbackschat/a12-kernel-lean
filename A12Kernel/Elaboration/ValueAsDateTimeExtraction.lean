@@ -364,18 +364,22 @@ def elaborateShiftedDateTimeSource
     elaborateDateTimeNumericShiftSource model sourceField amount
   pure { source with unit }
 
-/-- Read one already-certified complete-DateTime source and retain its wall clock, clean absence, or exact formal cause. Static source admission remains the caller's checked responsibility. -/
-def readTimeFromDateTimeSource (source : FlatTemporalField)
-    (phase : Phase) (input : CheckedDocument model) :
+/-- Read one already-certified complete-DateTime source at an exact address and retain its wall clock, clean absence, or exact formal cause. Static source admission and address ownership remain the caller's checked responsibilities. -/
+def readTimeFromDateTimeSourceAt (source : FlatTemporalField)
+    (address : CellAddr) (phase : Phase) (input : CheckedDocument model) :
     Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand := do
-  let cell ← input.read {
-    field := source.id
-    path := []
-  } |>.mapError .document
+  let cell ← input.read address |>.mapError .document
   match ValueAsDateTimeTimeOperand.ofDateTimeValueObservation
       (observeCell phase cell) with
   | some time => pure time
   | none => throw (.sourcePayloadMismatch source.id)
+
+/-- Scalar compatibility specialization of the exact-address complete-DateTime clock read. -/
+def readTimeFromDateTimeSource (source : FlatTemporalField)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand :=
+  readTimeFromDateTimeSourceAt source { field := source.id, path := [] }
+    phase input
 
 namespace CheckedValueAsDateTimeExtraction
 

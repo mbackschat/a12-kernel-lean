@@ -22,6 +22,7 @@ theorem timeFromDateTimeComputation_value
       operation.source.readTime .computation input =
         .ok (.value clock false) := by
     unfold CheckedDateTimeSource.readTime readTimeFromDateTimeSource
+      readTimeFromDateTimeSourceAt
     rw [read]
     simp only [Except.mapError, Bind.bind, Except.bind]
     rw [observed]
