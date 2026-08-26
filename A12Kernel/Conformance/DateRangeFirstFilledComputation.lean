@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.DateRangeFirstFilledComputation
+import A12Kernel.Elaboration.TemporalErroredComputationApplication
 import A12Kernel.Semantics.TemporalApplication
 
 /-! # Bounded DateRange `FirstFilledValue` computation locks -/
@@ -119,20 +120,42 @@ private structure SourceInput where
   stored : String
   raw : RawCell
 
+private def checkedDocumentFor? (candidate : FlatModel)
+    (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument candidate) := do
+  let prepared ← preparedFor? candidate
+  (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] }, { group := 10, path := [2] }]
+    cells
+  }).toOption
+
 private def inputFor? (candidate : FlatModel) (sourceDeclaration : FlatFieldDecl)
     (sourceInputs : List SourceInput) :
     Option (CheckedDocument candidate) := do
-  let prepared ← preparedFor? candidate
   let sourceCells := sourceInputs.map fun input => {
     address := { field := sourceDeclaration.id, path := [input.row] }
     stored := input.stored
     raw := input.raw
   }
-  (checkDocument prepared "en_US" {
-    instantiatedRows := [
-      { group := 10, path := [1] }, { group := 10, path := [2] }]
-    cells := sourceCells
-  }).toOption
+  checkedDocumentFor? candidate sourceCells
+
+private def inputWithTargetFor? (candidate : FlatModel)
+    (targetDeclaration sourceDeclaration : FlatFieldDecl)
+    (targetStored : String) (targetRaw : RawCell)
+    (sourceInputs : List SourceInput)
+    (extraCells : List ClassifiedCellInput := []) :
+    Option (CheckedDocument candidate) := do
+  let sourceCells := sourceInputs.map fun input => {
+    address := { field := sourceDeclaration.id, path := [input.row] }
+    stored := input.stored
+    raw := input.raw
+  }
+  checkedDocumentFor? candidate ([{
+    address := { field := targetDeclaration.id, path := [] }
+    stored := targetStored
+    raw := targetRaw
+  }] ++ sourceCells ++ extraCells)
 
 private def executionFor? (candidate : FlatModel)
     (targetDeclaration sourceDeclaration : FlatFieldDecl)
@@ -160,6 +183,39 @@ private def signature? := signatureFor? target source
 
 private def selectedRange := rangeValue 1710892800000 1710979200000 20 21
 
+private def seedRange := rangeValue 1710028800000 1710115200000 10 11
+
+private def selectedStored : StoredDateRange :=
+  ⟨"2024-03-20/2024-03-21", by decide⟩
+private def seedStored : StoredDateRange :=
+  ⟨"2024-03-10/2024-03-11", by decide⟩
+private def unrelatedStored : StoredDateRange :=
+  ⟨"10.03.2024-11.03.2024", by decide⟩
+
+private def runView? (targetStored : String) (targetRaw : RawCell)
+    (sourceInputs : List SourceInput)
+    (residualMessages : List FormalCause := []) :
+    Option (DateRangeComputationRunView FormalCause) := do
+  let operation ← checked? target.id "Window"
+  let input ← inputWithTargetFor? model target source
+    targetStored targetRaw sourceInputs
+  operation.executeResult input residualMessages |>.toOption
+
+private def unrelatedCell : ClassifiedCellInput := {
+  address := { field := dottedTarget.id, path := [] }
+  stored := unrelatedStored.text
+  raw := .parsed (.dateRange seedRange)
+}
+
+private def destinationFor? (includeTarget : Bool) :
+    Option (CheckedDocument model) :=
+  let targetCells := if includeTarget then [{
+    address := { field := target.id, path := [] }
+    stored := seedStored.text
+    raw := .parsed (.dateRange seedRange)
+  }] else []
+  checkedDocumentFor? model (targetCells ++ [unrelatedCell])
+
 private def exactRange (startMillis finishMillis : Int)
     (startYear startMonth startDay finishYear finishMonth finishDay : Nat) :
     DateRangeCellValue := .exact {
@@ -175,6 +231,61 @@ example :
         stored := "2024-03-20/2024-03-21"
         raw := .parsed (.dateRange selectedRange)
       }] = some "VALUE|2024-03-20/2024-03-21" := by
+  native_decide
+
+/- The checked direct-star FirstFilled operation classifies and applies its target-rendered range through the established DateRange result path while preserving unrelated destination state. -/
+example : (do
+    let view ← runView? seedStored.text (.parsed (.dateRange seedRange)) [{
+      row := 1
+      stored := selectedStored.text
+      raw := .parsed (.dateRange selectedRange)
+    }]
+    let destination ← destinationFor? true
+    let applied ← view.applyToChecked destination |>.toOption
+    pure (view.withoutErrors, view.withChanges,
+      applied target.id, applied dottedTarget.id)) =
+    some ([{ targetField := target.id, value := selectedStored }],
+      [{ targetField := target.id, value := selectedStored }],
+      .presentValue selectedStored, .presentValue unrelatedStored) := by
+  native_decide
+
+/- Change classification remains source-relative: a result equal to the source target is public but inert against a different destination target. -/
+example : (do
+    let view ← runView? selectedStored.text
+      (.parsed (.dateRange selectedRange)) [{
+        row := 1
+        stored := selectedStored.text
+        raw := .parsed (.dateRange selectedRange)
+      }]
+    let destination ← destinationFor? true
+    let applied ← view.applyToChecked destination |>.toOption
+    pure (view.withoutErrors, view.withChanges, applied target.id)) =
+    some ([{ targetField := target.id, value := selectedStored }], [],
+      .presentValue seedStored) := by
+  native_decide
+
+/- Exhaustion and a reached formal cause both retain a source-filled clear and materialize an absent destination target without disturbing unrelated state. -/
+example :
+    (do
+      let view ← runView? seedStored.text (.parsed (.dateRange seedRange)) []
+      let destination ← destinationFor? false
+      let applied ← view.applyToChecked destination |>.toOption
+      pure (view.cleared, view.noErrorOccurred,
+        applied target.id, applied dottedTarget.id)) =
+      some ([target.id], true, .presentEmpty,
+        .presentValue unrelatedStored) ∧
+    (do
+      let view ← runView? seedStored.text (.parsed (.dateRange seedRange)) [{
+        row := 1
+        stored := "XX"
+        raw := .rejected .dateRangeSeparator
+      }]
+      let destination ← destinationFor? false
+      let applied ← view.applyToChecked destination |>.toOption
+      pure (view.cleared, view.noErrorOccurred,
+        applied target.id, applied dottedTarget.id)) =
+      some ([target.id], true, .presentEmpty,
+        .presentValue unrelatedStored) := by
   native_decide
 
 /- A declared year interpretation is not part of direct-star carrier admission, so opposite interpretations cross in either direction. -/

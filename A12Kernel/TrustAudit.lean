@@ -2182,6 +2182,7 @@ run_cmd do
 #print axioms A12Kernel.dateRangeFirstFilledCellAt_value
 #print axioms A12Kernel.dateRangeFirstFilledCellAt_poison
 #print axioms A12Kernel.evalDateRangeFirstFilledCells_present_head
+#print axioms A12Kernel.dateRangeFirstFilled_executeResult_projects
 #print axioms A12Kernel.scanDirectDateRangeFirstFilled_nil
 #print axioms A12Kernel.scanDirectDateRangeFirstFilled_empty
 #print axioms A12Kernel.scanDirectDateRangeFirstFilled_value

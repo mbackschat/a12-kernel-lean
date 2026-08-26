@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.TemporalFirstFilledStarComputation
 import A12Kernel.Elaboration.DateRangeTargetPresentation
 import A12Kernel.Elaboration.DateRangeBound
 import A12Kernel.Elaboration.FieldEntityList
+import A12Kernel.Elaboration.TemporalErroredComputationApplication
 import A12Kernel.Semantics.TemporalTarget
 
 /-! # Bounded DateRange `FirstFilledValue` computations -/
@@ -309,6 +310,18 @@ inductive DateRangeFirstFilledComputationFault where
 
 namespace CheckedDateRangeFirstFilledComputation
 
+/-- Recover the exact fixed target certificate from every admitted direct-star carrier. -/
+def targetDeclaration :
+    CheckedDateRangeFirstFilledComputation model → FlatFieldDecl
+  | .isoSlash shape => shape.target
+  | .dayMonthYearDash shape => shape.target
+  | .yearFragment shape => shape.target
+  | .yearMonthFragment shape => shape.target
+  | .monthFragment shape => shape.target
+  | .monthDayFragment shape => shape.target
+  | .monthConcatenated shape => shape.target
+  | .dayMonthDotted shape => shape.target
+
 /-- Execute one checked carrier through the single document and render its exact or yearless cell through the retained target policy. -/
 private def executeWith
     (shape : CheckedTemporalFirstFilledStarComputation model carrier)
@@ -336,6 +349,16 @@ def execute (operation : CheckedDateRangeFirstFilledComputation model)
   | .monthConcatenated shape =>
       executeWith shape .yearlessMonthConcatenated input
   | .dayMonthDotted shape => executeWith shape .yearlessDayMonthDotted input
+
+/-- Execute and classify the one checked direct-star outcome against the same immutable source document. Residual messages remain already-classified opaque input. -/
+def executeResult (operation : CheckedDateRangeFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage) :
+    Except DateRangeFirstFilledComputationFault
+      (DateRangeComputationRunView ResidualMessage) := do
+  let outcome ← operation.execute input
+  pure (DateRangeComputationRunView.fromOutcomes input residualMessages
+    [(operation.targetDeclaration.id, outcome)])
 
 end CheckedDateRangeFirstFilledComputation
 
