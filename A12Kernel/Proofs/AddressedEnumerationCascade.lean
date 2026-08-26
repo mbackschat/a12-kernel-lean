@@ -12,12 +12,6 @@ theorem enumerationDependencyCell_poison_causeBlind
   cases first <;> cases second <;>
     simp_all [EnumerationDependencyCell.ofResult]
 
-theorem addressedEnumerationCascade_sameScope
-    (cascade : CheckedAddressedEnumerationCascade model) :
-    cascade.producer.target.declaration.repeatableScope =
-      cascade.consumer.target.declaration.repeatableScope := by
-  simpa using cascade.sameScope
-
 theorem addressedEnumerationCascade_targetsDistinct
     (cascade : CheckedAddressedEnumerationCascade model) :
     cascade.producer.target.field ≠ cascade.consumer.target.field := by

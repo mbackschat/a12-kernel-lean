@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.AddressedEnumerationComputation
 
 /-! # Exact-row Enumeration computation cascade
 
-This purpose-specific SG4 capsule certifies one addressed Enumeration producer followed by one same-scope consumer that reads the producer target. The producer's rich outcomes become transient Enumeration cells at exact addresses; the immutable document, public result, and applied destination remain distinct.
+This purpose-specific SG4 capsule certifies one addressed Enumeration producer followed by one scope-bound consumer that reads the producer target. The producer's rich outcomes become transient Enumeration cells at exact addresses; the immutable document, public result, and applied destination remain distinct.
 -/
 
 namespace A12Kernel
@@ -10,7 +10,6 @@ namespace A12Kernel
 inductive AddressedEnumerationCascadePlanError where
   | producerReadsConsumer
   | consumerDoesNotDirectlyReadProducer
-  | scopeMismatch
   deriving Repr, DecidableEq
 
 structure CheckedAddressedEnumerationCascade (model : FlatModel) where
@@ -21,9 +20,6 @@ structure CheckedAddressedEnumerationCascade (model : FlatModel) where
     producer.source.referencesField consumer.target.field = false
   consumerReadsProducerDirectly :
     consumer.source.directlyReferencesStoredField producer.target.field = true
-  sameScope :
-    (producer.target.declaration.repeatableScope ==
-      consumer.target.declaration.repeatableScope) = true
 
 def certifyAddressedEnumerationCascade
     (producer consumer : CheckedAddressedEnumerationComputation model) :
@@ -33,16 +29,11 @@ def certifyAddressedEnumerationCascade
       producer.source.referencesField consumer.target.field = false then
     if hForward : consumer.source.directlyReferencesStoredField
         producer.target.field = true then
-      if hScope :
-          (producer.target.declaration.repeatableScope ==
-            consumer.target.declaration.repeatableScope) = true then
-        .ok {
-          producer, consumer
-          producerDoesNotReadConsumer := hReverse
-          consumerReadsProducerDirectly := hForward
-          sameScope := hScope
-        }
-      else .error .scopeMismatch
+      .ok {
+        producer, consumer
+        producerDoesNotReadConsumer := hReverse
+        consumerReadsProducerDirectly := hForward
+      }
     else .error .consumerDoesNotDirectlyReadProducer
   else .error .producerReadsConsumer
 

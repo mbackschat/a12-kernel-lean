@@ -59,6 +59,11 @@ private def cascade? : Option (CheckedAddressedEnumerationCascade model) := do
   let consumer ← operation? final produced
   (certifyAddressedEnumerationCascade producer consumer).toOption
 
+private def deepCascade? : Option (CheckedAddressedEnumerationCascade model) := do
+  let producer ← operation? produced source
+  let consumer ← deepConsumer?
+  (certifyAddressedEnumerationCascade producer consumer).toOption
+
 private def planError? (producer? consumer? :
     Option (CheckedAddressedEnumerationComputation model)) :
     Option AddressedEnumerationCascadePlanError := do
@@ -75,6 +80,9 @@ private def prepared :
 
 private def address (field : FieldId) (row : Nat) : CellAddr :=
   { field, path := [row] }
+
+private def deepAddress (field : FieldId) (outer inner : Nat) : CellAddr :=
+  { field, path := [outer, inner] }
 
 private def cell (field : FlatFieldDecl) (row : Nat)
     (stored : String) (raw : RawCell) : ClassifiedCellInput := {
@@ -105,15 +113,38 @@ private def summary? : Option
     outcomes.producer.map fun entry => (entry.targetField, entry.result),
     outcomes.consumer.map fun entry => (entry.targetField, entry.result))
 
-example : cascade?.isSome = true ∧
+private def deepSummary? : Option
+    (List (CellAddr × TokenComputationResult) ×
+      List (CellAddr × TokenComputationResult)) := do
+  let cascade ← deepCascade?
+  let input ← (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 10, path := [2] },
+      { group := 10, path := [3] },
+      { group := 20, path := [1, 1] },
+      { group := 20, path := [1, 2] },
+      { group := 20, path := [2, 1] },
+      { group := 20, path := [3, 1] }]
+    cells := [
+      cell source 1 "A" (.parsed (.enum "A")),
+      cell source 2 "C" (.parsed (.enum "C")),
+      cell produced 1 "B" (.parsed (.enum "B")),
+      cell produced 2 "B" (.parsed (.enum "B")),
+      cell produced 3 "B" (.parsed (.enum "B"))]
+  }).toOption
+  let outcomes ← cascade.execute input |>.toOption
+  pure (
+    outcomes.producer.map fun entry => (entry.targetField, entry.result),
+    outcomes.consumer.map fun entry => (entry.targetField, entry.result))
+
+example : cascade?.isSome = true ∧ deepCascade?.isSome = true ∧
     planError? (operation? produced final) (operation? final produced) =
       some .producerReadsConsumer ∧
     planError? (operation? produced source) (operation? final source) =
       some .consumerDoesNotDirectlyReadProducer ∧
     planError? (operation? produced source) (categoryOperation? final produced) =
-      some .consumerDoesNotDirectlyReadProducer ∧
-    planError? (operation? produced source) deepConsumer? =
-      some .scopeMismatch := by
+      some .consumerDoesNotDirectlyReadProducer := by
   native_decide
 
 /- Validation-scoped required poison remains a structural dependency-conversion fault rather than being mislabeled as a reached computed dependency. -/
@@ -129,6 +160,19 @@ example : summary? = some ([
     (address final.id 1, .value "A"),
     (address final.id 2, .noValue),
     (address final.id 3, .poison .computedDependency)
+  ]) := by
+  native_decide
+
+/- One completed enclosing producer row fans out only to its own descendant targets; stale parent cells cannot leak through clean absence or dependency poison. -/
+example : deepSummary? = some ([
+    (address produced.id 1, .value "A"),
+    (address produced.id 2, .poison .declaredConstraint),
+    (address produced.id 3, .noValue)
+  ], [
+    (deepAddress deepFinal.id 1 1, .value "A"),
+    (deepAddress deepFinal.id 1 2, .value "A"),
+    (deepAddress deepFinal.id 2 1, .poison .computedDependency),
+    (deepAddress deepFinal.id 3 1, .noValue)
   ]) := by
   native_decide
 
