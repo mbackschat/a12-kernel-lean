@@ -216,6 +216,12 @@ example :
         nestedPath helper.id (bare "Price")
         ["Shop"] best.id (leafOnlyNestedStar "Helper") .maximum with
       | .error (.aggregateBindingRequired levels) => levels == [10]
+      | _ => false) = true ∧
+    (match checkRepeatableNumberMultiStarAggregateCascade model
+        nestedPath helper.id (bare "Price")
+        ["Shop"] best.id (nestedStar "Helper")
+          (leafOnlyNestedStar "Price") [] .maximum with
+      | .error (.aggregateBindingRequired levels) => levels == [10]
       | _ => false) = true := by
   native_decide
 

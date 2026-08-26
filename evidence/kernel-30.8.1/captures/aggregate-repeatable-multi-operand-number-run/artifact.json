@@ -1,0 +1,806 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "975a2e78602eaf26126168cd203bd84738885322",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "model.dm.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "fresh-second-operand-producer",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DoubledComputation",
+              "field" : "Order/Doubled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Double the fresh aggregate.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute each row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute each row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the candidate and produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Candidate",
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Candidate",
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TripledComputation",
+              "field" : "Order/Tripled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Extend the aggregate suffix.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total",
+                "Order/Tripled"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Doubled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "20"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10"
+              },
+              {
+                "field" : "Order/Tripled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DoubledComputation",
+              "field" : "Order/Doubled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Double the fresh aggregate.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute each row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute each row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the candidate and produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Candidate",
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Candidate",
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TripledComputation",
+              "field" : "Order/Tripled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Extend the aggregate suffix.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total",
+                "Order/Tripled"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Doubled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "20"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10"
+              },
+              {
+                "field" : "Order/Tripled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "30"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "fresh-value-plus-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DoubledComputation",
+              "field" : "Order/Doubled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Double the fresh aggregate.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute each row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Compute each row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the candidate and produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Candidate",
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Candidate",
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TripledComputation",
+              "field" : "Order/Tripled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Extend the aggregate suffix.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total",
+                "Order/Tripled"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Doubled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              },
+              {
+                "field" : "Order/Tripled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DoubledComputation",
+              "field" : "Order/Doubled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Double the fresh aggregate.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute each row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines[2]/Produced",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Compute each row producer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/Candidate",
+                "Order/Lines[2]/Produced"
+              ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the candidate and produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Candidate",
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Candidate",
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TripledComputation",
+              "field" : "Order/Tripled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Extend the aggregate suffix.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total",
+                "Order/Tripled"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Doubled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              },
+              {
+                "field" : "Order/Tripled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "malformed-first-operand",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DoubledComputation",
+              "field" : "Order/Doubled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Double the fresh aggregate.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute each row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TripledComputation",
+              "field" : "Order/Tripled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Extend the aggregate suffix.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total",
+                "Order/Tripled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines[2]/Candidate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Doubled",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Tripled",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines[2]/Candidate",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Order/Lines[2]/Candidate"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DoubledComputation",
+              "field" : "Order/Doubled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Double the fresh aggregate.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ProducedProjection",
+              "field" : "Order/Lines/Produced",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Compute each row producer.",
+              "referenced" : [
+                "Order/Lines/Candidate",
+                "Order/Lines/Produced"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TripledComputation",
+              "field" : "Order/Tripled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Extend the aggregate suffix.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total",
+                "Order/Tripled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines[2]/Candidate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Order/Lines[2]/Candidate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Doubled",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Order/Lines[2]/Produced",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Tripled",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines[2]/Candidate",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Order/Lines[2]/Candidate"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "no-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DoubledComputation",
+              "field" : "Order/Doubled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Double the fresh aggregate.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the candidate and produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Candidate",
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Candidate",
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TripledComputation",
+              "field" : "Order/Tripled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Extend the aggregate suffix.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total",
+                "Order/Tripled"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Doubled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Tripled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DoubledComputation",
+              "field" : "Order/Doubled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Double the fresh aggregate.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotalComputation",
+              "field" : "Order/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Calculate the candidate and produced total.",
+              "referenced" : [
+                "/Order[1]/Lines[0]/Candidate",
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[0]/Candidate",
+                "/Order[1]/Lines[0]/Produced",
+                "Order/Total"
+              ]
+            },
+            {
+              "code" : "TripledComputation",
+              "field" : "Order/Tripled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Extend the aggregate suffix.",
+              "referenced" : [
+                "Order/Doubled",
+                "Order/Total",
+                "Order/Tripled"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Doubled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Tripled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

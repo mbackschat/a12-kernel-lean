@@ -17,14 +17,22 @@ private def produced := number 2 "Produced" ["Order", "Lines"] [10]
 private def total := number 3 "Total" ["Order"] []
 private def doubled := number 4 "Doubled" ["Order"] []
 private def tripled := number 5 "Tripled" ["Order"] []
+private def foreign := number 6 "Foreign" ["Order", "OtherLines"] [11]
+private def unit := number 7 "Unit" ["Order", "Lines"] [10]
 
 private def model : FlatModel := {
-  fields := [candidate, produced, total, doubled, tripled]
-  repeatableGroups := [{
-    level := 10
-    path := ["Order", "Lines"]
-    repeatability := some 5
-  }]
+  fields := [candidate, produced, total, doubled, tripled, foreign, unit]
+  repeatableGroups := [
+    {
+      level := 10
+      path := ["Order", "Lines"]
+      repeatability := some 5
+    },
+    {
+      level := 11
+      path := ["Order", "OtherLines"]
+      repeatability := some 5
+    }]
 }
 
 private def prepared :
@@ -43,6 +51,14 @@ private def star (field : String) : SurfaceStarFieldPath := {
   field
 }
 
+private def otherStar (field : String) : SurfaceStarFieldPath := {
+  base := .absolute
+  groups := [
+    { name := "Order" },
+    { name := "OtherLines", starred := true }]
+  field
+}
+
 private def rootNumber (field : String) :
     AuthoredNumericExpr SurfaceNumericComputationAtom :=
   .atom (.numeric (.field (bare field)))
@@ -57,16 +73,41 @@ private def table? (target guard : FieldId)
     operation
   }]).toOption
 
-private def plan? : Option (CheckedRepeatableNumberAggregateRunCascade model) := do
-  let cascade ← (checkRepeatableNumberAggregateCascade model
-    ["Order", "Lines"] produced.id (bare "Candidate")
-    ["Order"] total.id (star "Produced") .sum).toOption
+private def suffixRun? : Option (CheckedNumericComputationRun model) := do
   let doubledTable ← table? doubled.id total.id
     (.binary .add (rootNumber "Total") (rootNumber "Total"))
   let tripledTable ← table? tripled.id doubled.id
     (.binary .add (rootNumber "Doubled") (rootNumber "Total"))
-  let run ← (certifyNumericComputationRun
-    [doubledTable, tripledTable]).toOption
+  (certifyNumericComputationRun [doubledTable, tripledTable]).toOption
+
+private def plan? : Option (CheckedRepeatableNumberAggregateRunCascade model) := do
+  let cascade ← (checkRepeatableNumberAggregateCascade model
+    ["Order", "Lines"] produced.id (bare "Candidate")
+    ["Order"] total.id (star "Produced") .sum).toOption
+  let run ← suffixRun?
+  (checkRepeatableNumberAggregateRunCascade cascade run).toOption
+
+private def multiPlan? :
+    Option (CheckedRepeatableNumberAggregateRunCascade model) := do
+  let cascade ← (checkRepeatableNumberMultiStarAggregateCascade model
+    ["Order", "Lines"] produced.id (bare "Candidate")
+    ["Order"] total.id (star "Candidate") (star "Produced") [] .sum).toOption
+  let run ← suffixRun?
+  (checkRepeatableNumberAggregateRunCascade cascade run).toOption
+
+private def binaryMultiPlan? :
+    Option (CheckedRepeatableNumberAggregateCascade model) :=
+  (checkRepeatableNumberBinaryMultiStarAggregateCascade model
+    ["Order", "Lines"] produced.id (bare "Candidate") (bare "Unit") .add
+    ["Order"] total.id (star "Candidate") (star "Produced") [] .sum).toOption
+
+private def thirdOperandPlan? :
+    Option (CheckedRepeatableNumberAggregateRunCascade model) := do
+  let cascade ← (checkRepeatableNumberMultiStarAggregateCascade model
+    ["Order", "Lines"] produced.id (bare "Candidate")
+    ["Order"] total.id (star "Candidate") (star "Candidate")
+      [star "Produced"] .sum).toOption
+  let run ← suffixRun?
   (checkRepeatableNumberAggregateRunCascade cascade run).toOption
 
 private def cell (field : FieldId) (path : List Nat) (value : Int) :
@@ -115,9 +156,10 @@ private structure Snapshot where
   suffix : List (FieldId × NumericTargetOutcome)
   deriving Repr, DecidableEq
 
-private def snapshot?
+private def snapshotFor?
+    (plan : Option (CheckedRepeatableNumberAggregateRunCascade model))
     (input : Option (CheckedDocument model)) : Option Snapshot := do
-  let plan ← plan?
+  let plan ← plan
   let checked ← input
   let outcomes ← (plan.execute { now := { epochMillis := 0 } } checked).toOption
   pure {
@@ -125,6 +167,18 @@ private def snapshot?
     aggregate := outcomes.cascade.aggregate.outcome
     suffix := outcomes.scalars
   }
+
+private def snapshot?
+    (input : Option (CheckedDocument model)) : Option Snapshot :=
+  snapshotFor? plan? input
+
+private def multiSnapshot?
+    (input : Option (CheckedDocument model)) : Option Snapshot :=
+  snapshotFor? multiPlan? input
+
+private def thirdOperandSnapshot?
+    (input : Option (CheckedDocument model)) : Option Snapshot :=
+  snapshotFor? thirdOperandPlan? input
 
 private def accepted (value : Int) : NumericTargetOutcome :=
   .accepted { unscaled := value, scale := 0 }
@@ -156,6 +210,78 @@ example :
       aggregate := accepted 0
       suffix := [(doubled.id, accepted 0), (tripled.id, accepted 0)]
     } := by
+  native_decide
+
+/- A later aggregate operand may read the completed producer without moving it
+ahead of the earlier direct operand in Analyze or execution. -/
+example :
+    binaryMultiPlan?.map CheckedRepeatableNumberAggregateCascade.analyze =
+      some {
+        producer := .binary .add
+        consumer := .plain
+        operation := .sum
+        repeatableScope := [10]
+        fieldDependencies := [
+          (produced.id, [candidate.id, unit.id]),
+          (total.id, [candidate.id, produced.id])]
+      } ∧
+    multiPlan?.map (fun plan => plan.cascade.analyze.fieldDependencies) =
+      some [
+        (produced.id, [candidate.id]),
+        (total.id, [candidate.id, produced.id])] ∧
+    multiSnapshot? (inputWithRows? (some (cell candidate.id [2] 3))) = some {
+      rows := [accepted 2, accepted 3]
+      aggregate := accepted 10
+      suffix := [(doubled.id, accepted 20), (tripled.id, accepted 30)]
+    } ∧
+    multiSnapshot? (inputWithRows? none) = some {
+      rows := [accepted 2, accepted 0]
+      aggregate := accepted 4
+      suffix := [(doubled.id, accepted 8), (tripled.id, accepted 12)]
+    } ∧
+    multiSnapshot? (inputWithRows? (some malformedCandidate)) = some {
+      rows := [
+        accepted 2,
+        .inheritedPoison .malformed]
+      aggregate := .inheritedPoison .malformed
+      suffix := [
+        (doubled.id, .inheritedPoison .computedDependency),
+        (tripled.id, .inheritedPoison .computedDependency)]
+    } ∧
+    multiSnapshot? noRowsInput? = some {
+      rows := []
+      aggregate := accepted 0
+      suffix := [(doubled.id, accepted 0), (tripled.id, accepted 0)]
+    } ∧
+    thirdOperandPlan?.map (fun plan =>
+        plan.cascade.analyze.fieldDependencies) =
+      some [
+        (produced.id, [candidate.id]),
+        (total.id, [candidate.id, produced.id])] ∧
+    thirdOperandSnapshot?
+        (inputWithRows? (some (cell candidate.id [2] 3))) = some {
+      rows := [accepted 2, accepted 3]
+      aggregate := accepted 15
+      suffix := [(doubled.id, accepted 30), (tripled.id, accepted 45)]
+    } := by
+  native_decide
+
+/- Every plain starred operand belongs to the producer's exact group, not just
+the operand that happens to carry the stage-forming dependency. -/
+example :
+    (match checkRepeatableNumberMultiStarAggregateCascade model
+        ["Order", "Lines"] produced.id (bare "Candidate")
+        ["Order"] total.id (star "Candidate") (star "Candidate") [] .sum with
+      | .error (.dependency expected actual) =>
+          expected == produced.id && actual == candidate.id
+      | _ => false) = true ∧
+    (match checkRepeatableNumberMultiStarAggregateCascade model
+        ["Order", "Lines"] produced.id (bare "Candidate")
+        ["Order"] total.id (star "Produced") (otherStar "Foreign") [] .sum with
+      | .error (.groupMismatch producerGroup aggregateGroup) =>
+          producerGroup == ["Order", "Lines"] &&
+            aggregateGroup == ["Order", "OtherLines"]
+      | _ => false) = true := by
   native_decide
 
 end A12Kernel.Conformance.RepeatableNumberAggregateRunCorrespondence
