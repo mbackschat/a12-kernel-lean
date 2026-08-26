@@ -41,6 +41,19 @@ theorem dateRangeFirstFilled_executeResult_projects
   rw [CheckedDateRangeFirstFilledComputation.executeResult, evaluated]
   rfl
 
+/-- Direct-list result construction retains the checked list's target and delegates every public projection to the established DateRange outcome classifier. -/
+theorem dateRangeFirstFilledDirect_executeResult_projects
+    (operation : CheckedDateRangeFirstFilledDirectComputation model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage)
+    (outcome : DateRangeTargetOutcome)
+    (evaluated : operation.execute input = .ok outcome) :
+    operation.executeResult input residualMessages =
+      .ok (DateRangeComputationRunView.fromOutcomes input residualMessages
+        [(operation.target.source.id, outcome)]) := by
+  rw [CheckedDateRangeFirstFilledDirectComputation.executeResult, evaluated]
+  rfl
+
 /-- Exhausting the checked direct source list keeps the no-value identity. -/
 theorem scanDirectDateRangeFirstFilled_nil :
     scanDirectDateRangeFirstFilled ([] :

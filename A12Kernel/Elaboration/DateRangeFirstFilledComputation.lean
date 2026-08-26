@@ -376,6 +376,17 @@ def execute (operation : CheckedDateRangeFirstFilledDirectComputation model)
   operation.target.format.evaluateComputationResult result |>.mapError fun
     | .unresolvedEndpoint value => .unresolvedEndpoint value
 
+/-- Execute and classify the one checked direct-list outcome against the same immutable source document. Residual messages remain already-classified opaque input. -/
+def executeResult
+    (operation : CheckedDateRangeFirstFilledDirectComputation model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage) :
+    Except DateRangeFirstFilledComputationFault
+      (DateRangeComputationRunView ResidualMessage) := do
+  let outcome ← operation.execute input
+  pure (DateRangeComputationRunView.fromOutcomes input residualMessages
+    [(operation.target.source.id, outcome)])
+
 end CheckedDateRangeFirstFilledDirectComputation
 
 end A12Kernel

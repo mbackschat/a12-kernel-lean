@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.DateRangeFirstFilledComputation
+import A12Kernel.Elaboration.TemporalErroredComputationApplication
 
 /-! # Direct-list DateRange FirstFilledValue computation locks -/
 
@@ -197,6 +198,102 @@ private def directListSignatureForModel? (candidate : FlatModel)
     | .poison _ => "POISON")
 
 private def directListSignature? := directListSignatureForModel? model
+
+private def selectedRange : DateRangeCellValue := exactRange
+  1717200000000 1719705600000 2024 6 1 2024 6 30
+private def seedRange : DateRangeCellValue := exactRange
+  1710028800000 1710115200000 2024 3 10 2024 3 11
+
+private def selectedStored : StoredDateRange :=
+  ⟨"2024-06-01/2024-06-30", by decide⟩
+private def seedStored : StoredDateRange :=
+  ⟨"2024-03-10/2024-03-11", by decide⟩
+private def unrelatedStored : StoredDateRange :=
+  ⟨"10.03.2024-11.03.2024", by decide⟩
+
+private def directRunView? (targetStored : String) (targetRaw : RawCell)
+    (sourceInputs : List DirectInput)
+    (residualMessages : List FormalCause := []) :
+    Option (DateRangeComputationRunView FormalCause) := do
+  let operation ← directListChecked? target.id "DirectDottedFirst"
+    ["DirectDottedSecond"]
+  let input ← directInputFor? ({
+    declaration := target
+    stored := targetStored
+    raw := targetRaw
+  } :: sourceInputs)
+  operation.executeResult input residualMessages |>.toOption
+
+private def destinationFor? (includeTarget : Bool) :
+    Option (CheckedDocument model) :=
+  let targetInputs := if includeTarget then [{
+    declaration := target
+    stored := seedStored.text
+    raw := .parsed (.dateRange seedRange)
+  }] else []
+  directInputFor? (targetInputs ++ [{
+    declaration := dottedTarget
+    stored := unrelatedStored.text
+    raw := .parsed (.dateRange seedRange)
+  }])
+
+/- The checked direct-list operation classifies its target-rendered lexical crossing and applies only the retained change to a separate checked destination while preserving unrelated state. -/
+example : (do
+    let view ← directRunView? seedStored.text
+      (.parsed (.dateRange seedRange)) [{
+        declaration := directDottedFirst
+        stored := "01.06.2024-30.06.2024"
+        raw := .parsed (.dateRange selectedRange)
+      }]
+    let destination ← destinationFor? true
+    let applied ← view.applyToChecked destination |>.toOption
+    pure (view.withoutErrors, view.withChanges,
+      applied target.id, applied dottedTarget.id)) =
+    some ([{ targetField := target.id, value := selectedStored }],
+      [{ targetField := target.id, value := selectedStored }],
+      .presentValue selectedStored, .presentValue unrelatedStored) := by
+  native_decide
+
+/- Change classification remains source-relative after direct-list target rendering: an equal source target is public but inert against a different destination target. -/
+example : (do
+    let view ← directRunView? selectedStored.text
+      (.parsed (.dateRange selectedRange)) [{
+        declaration := directDottedFirst
+        stored := "01.06.2024-30.06.2024"
+        raw := .parsed (.dateRange selectedRange)
+      }]
+    let destination ← destinationFor? true
+    let applied ← view.applyToChecked destination |>.toOption
+    pure (view.withoutErrors, view.withChanges, applied target.id)) =
+    some ([{ targetField := target.id, value := selectedStored }], [],
+      .presentValue seedStored) := by
+  native_decide
+
+/- List exhaustion and a reached formal cause both retain a source-filled clear and materialize an absent destination target without disturbing unrelated state. -/
+example :
+    (do
+      let view ← directRunView? seedStored.text
+        (.parsed (.dateRange seedRange)) []
+      let destination ← destinationFor? false
+      let applied ← view.applyToChecked destination |>.toOption
+      pure (view.cleared, view.noErrorOccurred,
+        applied target.id, applied dottedTarget.id)) =
+      some ([target.id], true, .presentEmpty,
+        .presentValue unrelatedStored) ∧
+    (do
+      let view ← directRunView? seedStored.text
+        (.parsed (.dateRange seedRange)) [{
+          declaration := directDottedFirst
+          stored := "garbage"
+          raw := .rejected .dateRangeSeparator
+        }]
+      let destination ← destinationFor? false
+      let applied ← view.applyToChecked destination |>.toOption
+      pure (view.cleared, view.noErrorOccurred,
+        applied target.id, applied dottedTarget.id)) =
+      some ([target.id], true, .presentEmpty,
+        .presentValue unrelatedStored) := by
+  native_decide
 
 /- Every fragment policy admits the same three-direct-field shape, while a later crossed fragment retains the exact list-family diagnostic. -/
 example :
