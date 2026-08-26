@@ -232,6 +232,7 @@ import A12Kernel.Conformance.CheckedEnumeration
 import A12Kernel.Conformance.EnumerationComputation
 import A12Kernel.Conformance.EnumerationComputationResult
 import A12Kernel.Conformance.AddressedEnumerationComputation
+import A12Kernel.Conformance.AddressedEnumerationFirstFilledComputation
 import A12Kernel.Conformance.EnumerationFirstFilledComputation
 import A12Kernel.Conformance.EnumerationValueList
 import A12Kernel.Conformance.EnumerationRepetitionNotUnique

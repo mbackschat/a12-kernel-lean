@@ -95,7 +95,7 @@ structure CheckedAddressedEnumerationComputation (model : FlatModel) where
   sourceAllowed : source.allowedFor target.projection = true
   targetNotReferenced : source.referencesField target.field = false
 
-private def checkAddressedEnumerationTarget
+def checkAddressedEnumerationTarget
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId) :
     Except AddressedEnumerationComputationElabError
       (CheckedAddressedEnumerationTarget model) :=

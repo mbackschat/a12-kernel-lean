@@ -156,17 +156,28 @@ theorem checkedEnumerationOperand_admitsField (model : FlatModel)
     (operand : FlatEnumerationOperand) (checked : CheckedEnumerationProjection)
     (resolved : model.checkedEnumerationOperand? operand = some checked) :
     model.admitsField (.enumeration operand.field) = true := by
-  unfold FlatModel.checkedEnumerationOperand? at resolved
+  unfold FlatModel.checkedEnumerationOperand? FlatModel.checkedEnumerationOperandIn? at resolved
   generalize lookupEq : model.lookupUniqueId operand.field.id = lookup at resolved
   cases lookup with
   | error error => simp at resolved
   | ok declaration =>
-      generalize gateEq : (declaration.repeatableScope.isEmpty &&
+      generalize gateEq : (declaration.repetitionBoundBy [] &&
         (FlatField.enumeration operand.field).matchesDecl declaration) = gate at resolved
       cases gate with
       | false => simp [gateEq] at resolved
       | true =>
-          simpa [FlatModel.admitsField, FlatField.id, lookupEq] using gateEq
+          have conjunction : declaration.repetitionBoundBy [] = true ∧
+              (FlatField.enumeration operand.field).matchesDecl declaration = true := by
+            simpa using gateEq
+          have bound := conjunction.1
+          have matching := conjunction.2
+          have scopeEmpty : declaration.repeatableScope.isEmpty = true := by
+            cases scopeEq : declaration.repeatableScope with
+            | nil => rfl
+            | cons head tail =>
+                simp [FlatFieldDecl.repetitionBoundBy, scopeEq] at bound
+          simp [FlatModel.admitsField, FlatField.id, lookupEq,
+            scopeEmpty, matching]
 
 /-- Value-reading admission strengthens, rather than replaces, ordinary String presence admission. -/
 theorem admitsStringValueField_admitsField (model : FlatModel)

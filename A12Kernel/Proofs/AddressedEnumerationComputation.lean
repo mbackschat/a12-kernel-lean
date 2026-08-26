@@ -38,7 +38,7 @@ private theorem addressedEnumerationResult_hasNoTargetError
   | noValue | poison _ =>
       rfl
 
-private theorem addressedEnumerationResults_haveNoTargetErrors
+theorem addressedEnumerationResults_haveNoTargetErrors
     (outcomes : List AddressedEnumerationComputationOutcome)
     (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
     (StringComputationRunView.fromSourcedOutcomes residualMessages

@@ -33,13 +33,14 @@ def FlatModel.directComparableFor? (model : FlatModel)
       else
         none
 
-/-- Reconstruct the proof-bearing Enumeration projection retained by a flat operand from the exact model declaration. -/
-def FlatModel.checkedEnumerationOperand? (model : FlatModel)
-    (operand : FlatEnumerationOperand) : Option CheckedEnumerationProjection :=
+/-- Reconstruct the proof-bearing Enumeration projection retained by an operand whose reading scope binds every repeatable level of the exact model declaration. -/
+def FlatModel.checkedEnumerationOperandIn? (model : FlatModel)
+    (scope : List RepeatableLevel) (operand : FlatEnumerationOperand) :
+    Option CheckedEnumerationProjection :=
   match model.lookupUniqueId operand.field.id with
   | .error _ => none
   | .ok declaration =>
-      if declaration.repeatableScope.isEmpty &&
+      if declaration.repetitionBoundBy scope &&
           (FlatField.enumeration operand.field).matchesDecl declaration then
         match declaration.policy.kind, declaration.enumeration with
         | .enumeration, some source =>
@@ -52,6 +53,11 @@ def FlatModel.checkedEnumerationOperand? (model : FlatModel)
         | _, _ => none
       else
         none
+
+/-- The scalar instance of checked Enumeration projection reconstruction. -/
+def FlatModel.checkedEnumerationOperand? (model : FlatModel)
+    (operand : FlatEnumerationOperand) : Option CheckedEnumerationProjection :=
+  model.checkedEnumerationOperandIn? [] operand
 
 def FlatModel.enumerationLiteralAllowedByAny (model : FlatModel)
     (operands : List FlatTextFieldOperand) (value : String) : Bool :=
