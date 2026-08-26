@@ -2193,6 +2193,7 @@ run_cmd do
 #print axioms A12Kernel.fullDateFirstFilledCellAt_poison
 #print axioms A12Kernel.evalFullDateFirstFilledCells_present_head
 #print axioms A12Kernel.evalFullDateFirstFilledCells_poison_head
+#print axioms A12Kernel.fullDateFirstFilled_executeResult_projects
 #print axioms A12Kernel.timeFirstFilledCellAt_value
 #print axioms A12Kernel.timeFirstFilledCellAt_poison
 #print axioms A12Kernel.booleanValueCount_confirm_empty

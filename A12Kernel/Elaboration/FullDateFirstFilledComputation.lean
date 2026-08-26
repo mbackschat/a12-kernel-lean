@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.TemporalFirstFilledStarComputation
+import A12Kernel.Elaboration.FullDateComputationApplication
 import A12Kernel.Elaboration.TemporalTargetPolicy
 
 /-! # Direct one-star full-Date `FirstFilledValue` computation -/
@@ -23,7 +24,7 @@ structure CheckedFullDateFirstFilledComputation (model : FlatModel) where
   shape : FullDateFirstFilledShape model
   targetPolicy : CheckedFullDateTarget model
 
-/-- Check the two exact bounded full-Date formats. The ISO composition is externally measured; dotted target rendering is measured separately while its direct `FirstFilledValue` composition remains pending. Wider formats, policies, operands, nesting, validation use, and application stay outside. -/
+/-- Check the two exact bounded full-Date formats. The ISO composition is externally measured; dotted target rendering is measured separately while its direct `FirstFilledValue` composition remains pending. Wider formats, policies, operands, nesting, validation use, and materialized-document reconstruction stay outside. -/
 def checkFullDateFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) :
@@ -89,6 +90,16 @@ def execute (operation : CheckedFullDateFirstFilledComputation model)
       executeWith shape targetPolicy input
   | { shape := .dotted shape, targetPolicy } =>
       executeWith shape targetPolicy input
+
+/-- Execute and classify the one checked FirstFilled outcome against the same immutable source document. Residual messages remain already-classified opaque input. -/
+def executeResult (operation : CheckedFullDateFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage) :
+    Except FullDateFirstFilledComputationFault
+      (FullDateComputationRunView ResidualMessage) := do
+  let outcome ← operation.execute input
+  pure (FullDateComputationRunView.fromOutcomes input residualMessages
+    [(operation.targetPolicy.checked.target.id, outcome)])
 
 end CheckedFullDateFirstFilledComputation
 

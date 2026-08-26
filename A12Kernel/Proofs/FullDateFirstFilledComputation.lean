@@ -35,4 +35,17 @@ theorem evalFullDateFirstFilledCells_poison_head
     evalFullDateFirstFilledCells (addressed :: remaining) = .poison cause := by
   simp [evalFullDateFirstFilledCells, selected]
 
+/-- Result construction retains the operation-owned target and delegates every public projection to the established FullDate outcome classifier. -/
+theorem fullDateFirstFilled_executeResult_projects
+    (operation : CheckedFullDateFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage)
+    (outcome : FullDateTargetOutcome)
+    (evaluated : operation.execute input = .ok outcome) :
+    operation.executeResult input residualMessages =
+      .ok (FullDateComputationRunView.fromOutcomes input residualMessages
+        [(operation.targetPolicy.checked.target.id, outcome)]) := by
+  rw [CheckedFullDateFirstFilledComputation.executeResult, evaluated]
+  rfl
+
 end A12Kernel
