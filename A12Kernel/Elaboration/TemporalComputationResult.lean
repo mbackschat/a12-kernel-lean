@@ -8,24 +8,28 @@ This capsule shares the five extensional result collections used by scalar tempo
 
 namespace A12Kernel
 
-/-- One successful non-clearing temporal instance indexed by its stored scalar kind. -/
-structure TemporalComputedInstance (kind : TemporalKind) where
-  targetField : FieldId
+/-- One successful non-clearing temporal instance indexed by its stored scalar kind and exact target-key domain. -/
+structure TemporalComputedInstance (kind : TemporalKind)
+    (Target : Type := FieldId) where
+  targetField : Target
   value : StoredTemporalText kind
   deriving Repr, DecidableEq
 
 /-- Successful Time instance. -/
-abbrev TimeComputedInstance := TemporalComputedInstance .time
+abbrev TimeComputedInstance :=
+  TemporalComputedInstance .time FieldId
 
 /-- Successful full-Date instance. -/
-abbrev FullDateComputedInstance := TemporalComputedInstance .date
+abbrev FullDateComputedInstance (Target : Type := FieldId) :=
+  TemporalComputedInstance .date Target
 
 /-- Successful DateTime instance. -/
-abbrev DateTimeComputedInstance := TemporalComputedInstance .dateTime
+abbrev DateTimeComputedInstance :=
+  TemporalComputedInstance .dateTime FieldId
 
 /-- One computed full-Date instance whose exact attempted text failed target checking. -/
-structure FullDateComputedError where
-  targetField : FieldId
+structure FullDateComputedError (Target : Type := FieldId) where
+  targetField : Target
   attempted : StoredDate
   cause : FullDateTargetError
   deriving Repr, DecidableEq
@@ -89,12 +93,13 @@ end DateRangeTargetOutcome
 
 namespace CheckedDocument
 
-/-- Recover exact nonrepeatable source placement and construct a family-owned stored identity only for nonempty text. -/
-def sourceNonemptyStoredTargetState (input : CheckedDocument model)
-    (field : FieldId) (makeStored : (text : String) → text ≠ "" → Stored) :
+/-- Recover exact addressed source placement and construct a family-owned stored identity only for nonempty text. -/
+def sourceNonemptyStoredTargetStateAt (input : CheckedDocument model)
+    (address : CellAddr)
+    (makeStored : (text : String) → text ≠ "" → Stored) :
     TemporalTargetState Stored :=
   match input.source.cells.find? fun cell =>
-      cell.address == ({ field, path := [] } : CellAddr) with
+      cell.address == address with
   | none => .absent
   | some cell =>
       if empty : cell.stored = "" then
@@ -102,16 +107,32 @@ def sourceNonemptyStoredTargetState (input : CheckedDocument model)
       else
         .presentValue (makeStored cell.stored empty)
 
+/-- Nonrepeatable compatibility projection through the exact addressed owner. -/
+def sourceNonemptyStoredTargetState (input : CheckedDocument model)
+    (field : FieldId) (makeStored : (text : String) → text ≠ "" → Stored) :
+    TemporalTargetState Stored :=
+  sourceNonemptyStoredTargetStateAt input { field, path := [] } makeStored
+
+/-- Recover exact addressed source placement and opaque stored temporal text at one kind-indexed target. -/
+def sourceTemporalTargetStateAt (input : CheckedDocument model)
+    (address : CellAddr) : TemporalTargetState (StoredTemporalText kind) :=
+  sourceNonemptyStoredTargetStateAt input address fun text nonempty =>
+    { text, nonempty }
+
 /-- Recover exact nonrepeatable source placement and opaque stored temporal text at one kind-indexed target. -/
 def sourceTemporalTargetState (input : CheckedDocument model)
     (field : FieldId) : TemporalTargetState (StoredTemporalText kind) :=
-  sourceNonemptyStoredTargetState input field fun text nonempty =>
-    { text, nonempty }
+  sourceTemporalTargetStateAt input { field, path := [] }
+
+/-- Recover exact addressed source placement and stored Date text without reparsing it. -/
+def sourceFullDateTargetStateAt (input : CheckedDocument model)
+    (address : CellAddr) : FullDateTargetState :=
+  sourceTemporalTargetStateAt input address
 
 /-- Recover exact nonrepeatable source placement and stored Date text without reparsing it. -/
 def sourceFullDateTargetState (input : CheckedDocument model)
     (field : FieldId) : FullDateTargetState :=
-  sourceTemporalTargetState input field
+  sourceFullDateTargetStateAt input { field, path := [] }
 
 /-- Recover exact nonrepeatable source placement and opaque stored Time text. -/
 def sourceTimeTargetState (input : CheckedDocument model)
@@ -133,47 +154,50 @@ end CheckedDocument
 
 /-- Five extensional V2 result collections parameterized by the family-specific success and error payloads. List order is not public. -/
 structure TemporalComputationRunView
-    (ComputedInstance ComputedError ResidualMessage : Type) where
+    (ComputedInstance ComputedError ResidualMessage : Type)
+    (Target : Type := FieldId) where
   private mk ::
   withoutErrors : List ComputedInstance
   withChanges : List ComputedInstance
   withErrors : List ComputedError
-  cleared : List FieldId
+  cleared : List Target
   formalErrorsInOperands : List ResidualMessage
   deriving Repr, DecidableEq
 
 /-- Time specialization of the shared temporal result collections. -/
 abbrev TimeComputationRunView (ResidualMessage : Type) :=
   TemporalComputationRunView
-    TimeComputedInstance TimeComputedError ResidualMessage
+    TimeComputedInstance TimeComputedError ResidualMessage FieldId
 
 /-- Full-Date specialization of the shared temporal result collections. -/
-abbrev FullDateComputationRunView (ResidualMessage : Type) :=
+abbrev FullDateComputationRunView (ResidualMessage : Type)
+    (Target : Type := FieldId) :=
   TemporalComputationRunView
-    FullDateComputedInstance FullDateComputedError ResidualMessage
+    (FullDateComputedInstance Target) (FullDateComputedError Target)
+    ResidualMessage Target
 
 /-- DateTime specialization of the shared temporal result collections. -/
 abbrev DateTimeComputationRunView (ResidualMessage : Type) :=
   TemporalComputationRunView
-    DateTimeComputedInstance DateTimeComputedError ResidualMessage
+    DateTimeComputedInstance DateTimeComputedError ResidualMessage FieldId
 
 /-- DateRange specialization of the shared five result collections. -/
 abbrev DateRangeComputationRunView (ResidualMessage : Type) :=
   TemporalComputationRunView
-    DateRangeComputedInstance DateRangeComputedError ResidualMessage
+    DateRangeComputedInstance DateRangeComputedError ResidualMessage FieldId
 
 namespace TemporalComputationRunView
 
 /-- The public error predicate observes exactly computed-instance errors and residual messages. -/
 def noErrorOccurred
-    (view : TemporalComputationRunView Instance Error ResidualMessage) :
+    (view : TemporalComputationRunView Instance Error ResidualMessage Target) :
     Bool :=
   view.withErrors.isEmpty && view.formalErrorsInOperands.isEmpty
 
 /-- Order-independent equality of the five public collections. -/
 def ExtensionalEq
     (left right :
-      TemporalComputationRunView Instance Error ResidualMessage) : Prop :=
+      TemporalComputationRunView Instance Error ResidualMessage Target) : Prop :=
   left.withoutErrors.Perm right.withoutErrors ∧
     left.withChanges.Perm right.withChanges ∧
     left.withErrors.Perm right.withErrors ∧
@@ -181,15 +205,15 @@ def ExtensionalEq
     left.formalErrorsInOperands.Perm right.formalErrorsInOperands
 
 /-- Shared value/clear projection for target families with no target-local error branch. -/
-def fromValueOutcomes
+def fromValueOutcomes {Target : Type}
     (successfulInstance? :
-      FieldId × Outcome → Option (TemporalComputedInstance kind))
-    (sourceValueChanged : TemporalComputedInstance kind → Bool)
-    (shouldClear : FieldId × Outcome → Bool)
+      Target × Outcome → Option (TemporalComputedInstance kind Target))
+    (sourceValueChanged : TemporalComputedInstance kind Target → Bool)
+    (shouldClear : Target × Outcome → Bool)
     (residualMessages : List ResidualMessage)
-    (outcomes : List (FieldId × Outcome)) :
+    (outcomes : List (Target × Outcome)) :
     TemporalComputationRunView
-      (TemporalComputedInstance kind) Error ResidualMessage :=
+      (TemporalComputedInstance kind Target) Error ResidualMessage Target :=
   let withoutErrors := outcomes.filterMap successfulInstance?
   {
     withoutErrors
@@ -200,14 +224,15 @@ def fromValueOutcomes
   }
 
 /-- Shared five-channel projection for temporal families whose rich outcome distinguishes accepted values from target-rejected attempts. -/
-def fromErrorOutcomes
-    (successfulInstance? : FieldId × Outcome → Option ComputedInstance)
-    (computedError? : FieldId × Outcome → Option ComputedError)
+def fromErrorOutcomes {Target : Type}
+    (successfulInstance? : Target × Outcome → Option ComputedInstance)
+    (computedError? : Target × Outcome → Option ComputedError)
     (sourceValueChanged : ComputedInstance → Bool)
-    (shouldClear : FieldId × Outcome → Bool)
+    (shouldClear : Target × Outcome → Bool)
     (residualMessages : List ResidualMessage)
-    (outcomes : List (FieldId × Outcome)) :
-    TemporalComputationRunView ComputedInstance ComputedError ResidualMessage :=
+    (outcomes : List (Target × Outcome)) :
+    TemporalComputationRunView ComputedInstance ComputedError ResidualMessage
+      Target :=
   let withoutErrors := outcomes.filterMap successfulInstance?
   {
     withoutErrors
@@ -254,36 +279,53 @@ end TimeComputationRunView
 
 namespace FullDateComputationRunView
 
-def successfulInstance? :
-    FieldId × FullDateTargetOutcome → Option FullDateComputedInstance
+def successfulInstance? {Target : Type} :
+    Target × FullDateTargetOutcome → Option (FullDateComputedInstance Target)
   | (targetField, .accepted value) => some { targetField, value }
   | _ => none
 
-def computedError? :
-    FieldId × FullDateTargetOutcome → Option FullDateComputedError
+def computedError? {Target : Type} :
+    Target × FullDateTargetOutcome → Option (FullDateComputedError Target)
   | (targetField, .errored attempted cause) =>
       some { targetField, attempted, cause }
   | _ => none
 
-def sourceValueChanged (input : CheckedDocument model)
-    (computed : FullDateComputedInstance) : Bool :=
-  (input.sourceFullDateTargetState computed.targetField).storedValue !=
+def sourceValueChangedAt (sourceState : Target → FullDateTargetState)
+    (computed : FullDateComputedInstance Target) : Bool :=
+  (sourceState computed.targetField).storedValue !=
     some computed.value
 
+/-- Nonrepeatable compatibility specialization of exact-key source-relative change classification. -/
+def sourceValueChanged (input : CheckedDocument model)
+    (computed : FullDateComputedInstance) : Bool :=
+  sourceValueChangedAt input.sourceFullDateTargetState computed
+
 /-- A source-filled target is publicly cleared exactly when no computed-data instance was produced. -/
+def shouldClearAt (sourceState : Target → FullDateTargetState)
+    (entry : Target × FullDateTargetOutcome) : Bool :=
+  !entry.2.hasComputedInstance &&
+    (sourceState entry.1).storedValue.isSome
+
+/-- Nonrepeatable compatibility specialization of exact-key clearing classification. -/
 def shouldClear (input : CheckedDocument model)
     (entry : FieldId × FullDateTargetOutcome) : Bool :=
-  !entry.2.hasComputedInstance &&
-    (input.sourceFullDateTargetState entry.1).storedValue.isSome
+  shouldClearAt input.sourceFullDateTargetState entry
+
+/-- Build all five FullDate projections over an exact caller-selected target-key domain and immutable source-state projection. -/
+def fromOutcomesAt (sourceState : Target → FullDateTargetState)
+    (residualMessages : List ResidualMessage)
+    (outcomes : List (Target × FullDateTargetOutcome)) :
+    FullDateComputationRunView ResidualMessage Target :=
+  TemporalComputationRunView.fromErrorOutcomes successfulInstance?
+    computedError? (sourceValueChangedAt sourceState) (shouldClearAt sourceState)
+    residualMessages outcomes
 
 /-- Build all five public projections from rich outcomes and an already-classified residual channel. -/
 def fromOutcomes (input : CheckedDocument model)
     (residualMessages : List ResidualMessage)
     (outcomes : List (FieldId × FullDateTargetOutcome)) :
     FullDateComputationRunView ResidualMessage :=
-  TemporalComputationRunView.fromErrorOutcomes successfulInstance?
-    computedError? (sourceValueChanged input) (shouldClear input)
-    residualMessages outcomes
+  fromOutcomesAt input.sourceFullDateTargetState residualMessages outcomes
 
 /-- The public error predicate observes exactly computed-instance errors and residual messages. -/
 def noErrorOccurred (view : FullDateComputationRunView ResidualMessage) : Bool :=

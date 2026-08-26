@@ -6,16 +6,18 @@ import A12Kernel.Proofs.FullDateApplication
 namespace A12Kernel
 
 theorem fullDateComputationDestination_update_same
-    (destination : FullDateComputationDestination)
-    (target : FieldId) (state : FullDateTargetState) :
+    {Target : Type} [DecidableEq Target]
+    (destination : FullDateComputationDestination Target)
+    (target : Target) (state : FullDateTargetState) :
     destination.update target state target = state := by
   simpa [FullDateComputationDestination.update] using
     temporalComputationDestination_update_same destination target state
 
 /-- One action delegates exactly to the one-target full-Date transition. -/
 theorem fullDateComputationDestination_applyOutcome_same
-    (destination : FullDateComputationDestination)
-    (target : FieldId) (outcome : FullDateTargetOutcome) :
+    {Target : Type} [DecidableEq Target]
+    (destination : FullDateComputationDestination Target)
+    (target : Target) (outcome : FullDateTargetOutcome) :
     destination.applyOutcome target outcome target =
       outcome.applyTo (destination target) := by
   simp [FullDateComputationDestination.applyOutcome,
@@ -23,16 +25,18 @@ theorem fullDateComputationDestination_applyOutcome_same
 
 /-- A retained clear creates a present-empty destination target even when that target was absent. -/
 theorem fullDateComputationDestination_applyRetainedClear_same
-    (destination : FullDateComputationDestination)
-    (target : FieldId) :
+    {Target : Type} [DecidableEq Target]
+    (destination : FullDateComputationDestination Target)
+    (target : Target) :
     destination.applyRetainedClear target target = .presentEmpty := by
   simpa [FullDateComputationDestination.applyRetainedClear] using
     temporalComputationDestination_applyRetainedClear_same destination target
 
 /-- One action preserves every other destination field. -/
 theorem fullDateComputationDestination_applyOutcome_other
-    (destination : FullDateComputationDestination)
-    (target other : FieldId) (outcome : FullDateTargetOutcome)
+    {Target : Type} [DecidableEq Target]
+    (destination : FullDateComputationDestination Target)
+    (target other : Target) (outcome : FullDateTargetOutcome)
     (different : other ≠ target) :
     destination.applyOutcome target outcome other = destination other := by
   simp [FullDateComputationDestination.applyOutcome,
@@ -41,8 +45,9 @@ theorem fullDateComputationDestination_applyOutcome_other
 
 /-- Unchanged successes and residual messages alone cannot mutate the destination. -/
 theorem fullDateComputationRun_applyTo_noActions
-    (view : FullDateComputationRunView ResidualMessage)
-    (destination : FullDateComputationDestination)
+    {Target : Type} [DecidableEq Target]
+    (view : FullDateComputationRunView ResidualMessage Target)
+    (destination : FullDateComputationDestination Target)
     (noChanges : view.withChanges = [])
     (noErrors : view.withErrors = [])
     (noClears : view.cleared = []) :
@@ -51,23 +56,24 @@ theorem fullDateComputationRun_applyTo_noActions
     noChanges, noErrors, noClears,
     TemporalErroredComputationRunView.applyTo,
     TemporalErroredComputationRunView.actionTargets,
-    FieldId.firstDuplicate?]
+    TemporalErroredComputationRunView.firstDuplicateTarget?]
 
 /-- Duplicate action targets fail before destination state participates. -/
 theorem fullDateComputationRun_applyTo_duplicateTarget
-    (view : FullDateComputationRunView ResidualMessage)
-    (destination : FullDateComputationDestination) (field : FieldId)
-    (duplicate : FieldId.firstDuplicate? view.actionTargets = some field) :
+    {Target : Type} [DecidableEq Target]
+    (view : FullDateComputationRunView ResidualMessage Target)
+    (destination : FullDateComputationDestination Target) (field : Target)
+    (duplicate :
+      TemporalErroredComputationRunView.firstDuplicateTarget?
+        view.actionTargets = some field) :
     view.applyTo destination = .error (.duplicateActionTarget field) := by
-  have duplicate' :
-      FieldId.firstDuplicate?
-        (TemporalErroredComputationRunView.actionTargets view
-          (fun computed => computed.targetField)
-          (fun computed => computed.targetField)) = some field := by
-    simpa [FullDateComputationRunView.actionTargets] using duplicate
-  simp [FullDateComputationRunView.applyTo,
-    TemporalErroredComputationRunView.applyTo,
-    duplicate']
+  unfold FullDateComputationRunView.applyTo
+  unfold TemporalErroredComputationRunView.applyTo
+  rw [show TemporalErroredComputationRunView.firstDuplicateTarget?
+      (TemporalErroredComputationRunView.actionTargets view
+        (fun computed => computed.targetField)
+        (fun computed => computed.targetField)) = some field by
+    simpa [FullDateComputationRunView.actionTargets] using duplicate]
 
 /-- A checked FullDate application with admitted unique targets delegates exactly to the established target-state fold over the checked document's source projection. -/
 theorem fullDateComputationRun_applyToChecked_delegates
@@ -94,13 +100,14 @@ theorem fullDateComputationRun_unchanged_notApplied
     TemporalErroredComputationRunView.applyTo,
     TemporalErroredComputationRunView.actionTargets,
     FullDateComputationRunView.fromOutcomes,
+    FullDateComputationRunView.fromOutcomesAt,
     TemporalComputationRunView.fromErrorOutcomes,
     FullDateComputationRunView.successfulInstance?,
     FullDateComputationRunView.computedError?,
-    FullDateComputationRunView.shouldClear,
+    FullDateComputationRunView.shouldClearAt,
     FullDateTargetOutcome.hasComputedInstance,
-    FullDateComputationRunView.sourceValueChanged, unchanged,
-    FieldId.firstDuplicate?]
+    FullDateComputationRunView.sourceValueChangedAt, unchanged,
+    TemporalErroredComputationRunView.firstDuplicateTarget?]
 
 /-- A source-changed accepted Date applies the existing one-target write. -/
 theorem fullDateComputationRun_changed_applies
@@ -116,13 +123,14 @@ theorem fullDateComputationRun_changed_applies
     TemporalErroredComputationRunView.applyTo,
     TemporalErroredComputationRunView.actionTargets,
     FullDateComputationRunView.fromOutcomes,
+    FullDateComputationRunView.fromOutcomesAt,
     TemporalComputationRunView.fromErrorOutcomes,
     FullDateComputationRunView.successfulInstance?,
     FullDateComputationRunView.computedError?,
-    FullDateComputationRunView.shouldClear,
+    FullDateComputationRunView.shouldClearAt,
     FullDateTargetOutcome.hasComputedInstance,
-    FullDateComputationRunView.sourceValueChanged, changed,
-    FieldId.firstDuplicate?]
+    FullDateComputationRunView.sourceValueChangedAt, changed,
+    TemporalErroredComputationRunView.firstDuplicateTarget?]
 
 /-- A target error applies the exact rejected-attempt clear transition and is not also a public clear. -/
 theorem fullDateComputationRun_error_applies
@@ -136,12 +144,13 @@ theorem fullDateComputationRun_error_applies
     TemporalErroredComputationRunView.applyTo,
     TemporalErroredComputationRunView.actionTargets,
     FullDateComputationRunView.fromOutcomes,
+    FullDateComputationRunView.fromOutcomesAt,
     TemporalComputationRunView.fromErrorOutcomes,
     FullDateComputationRunView.successfulInstance?,
     FullDateComputationRunView.computedError?,
-    FullDateComputationRunView.shouldClear,
+    FullDateComputationRunView.shouldClearAt,
     FullDateTargetOutcome.hasComputedInstance,
-    FieldId.firstDuplicate?]
+    TemporalErroredComputationRunView.firstDuplicateTarget?]
 
 /-- A source-filled quiet no-value mints a retained clear action that creates or retains a present-empty destination target. -/
 theorem fullDateComputationRun_cleared_applies
@@ -156,12 +165,13 @@ theorem fullDateComputationRun_cleared_applies
     TemporalErroredComputationRunView.applyTo,
     TemporalErroredComputationRunView.actionTargets,
     FullDateComputationRunView.fromOutcomes,
+    FullDateComputationRunView.fromOutcomesAt,
     TemporalComputationRunView.fromErrorOutcomes,
     FullDateComputationRunView.successfulInstance?,
     FullDateComputationRunView.computedError?,
-    FullDateComputationRunView.shouldClear,
+    FullDateComputationRunView.shouldClearAt,
     FullDateTargetOutcome.hasComputedInstance, sourceFilled,
-    FieldId.firstDuplicate?]
+    TemporalErroredComputationRunView.firstDuplicateTarget?]
 
 /-- Residual messages affect error status but never the already-classified application actions. -/
 theorem fullDateComputationRun_residualMessages_doNotAffectApplication

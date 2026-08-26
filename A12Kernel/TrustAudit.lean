@@ -339,6 +339,9 @@ run_cmd do
 #print axioms A12Kernel.equal_fullDate_delta_does_not_imply_equal_exact_application
 #print axioms A12Kernel.equal_fullDate_application_does_not_imply_equal_delta
 #print axioms A12Kernel.fullDateComputationRun_shouldClear_iff
+#print axioms A12Kernel.sourceFullDateTargetState_eq_at_root
+#print axioms A12Kernel.fullDateComputationRun_fromOutcomes_eq_fromOutcomesAt
+#print axioms A12Kernel.fullDateComputationRun_fromOutcomesAt_withChanges_subset
 #print axioms A12Kernel.fullDateComputationRun_withChanges_subset
 #print axioms A12Kernel.fullDateComputationRun_cleared_iff
 #print axioms A12Kernel.fullDateComputationRun_formalErrors_exact
@@ -2168,6 +2171,8 @@ run_cmd do
 #print axioms A12Kernel.dateFromDateTimeComputation_empty
 #print axioms A12Kernel.dateFromDateTimeComputation_poison
 #print axioms A12Kernel.dateFromDateTimeComputation_value
+#print axioms A12Kernel.checkedAddressedDateFromDateTime_executeResult_projects
+#print axioms A12Kernel.addressedDateFromDateTimeRun_applyToChecked_delegates
 #print axioms A12Kernel.addressedDateFromDateTime_empty
 #print axioms A12Kernel.addressedDateFromDateTime_poison
 #print axioms A12Kernel.checkedWorldTimeConstructionComputation_excludes_target

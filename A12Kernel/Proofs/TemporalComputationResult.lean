@@ -6,12 +6,12 @@ namespace A12Kernel
 
 /-- Every changed success produced by the shared projection is retained in its complete successful collection. -/
 theorem temporalComputationRun_fromErrorOutcomes_withChanges_subset
-    (successfulInstance? : FieldId × Outcome → Option ComputedInstance)
-    (computedError? : FieldId × Outcome → Option ComputedError)
+    (successfulInstance? : Target × Outcome → Option ComputedInstance)
+    (computedError? : Target × Outcome → Option ComputedError)
     (sourceValueChanged : ComputedInstance → Bool)
-    (shouldClear : FieldId × Outcome → Bool)
+    (shouldClear : Target × Outcome → Bool)
     (messages : List ResidualMessage)
-    (outcomes : List (FieldId × Outcome))
+    (outcomes : List (Target × Outcome))
     (computed : ComputedInstance)
     (member : computed ∈
       (TemporalComputationRunView.fromErrorOutcomes successfulInstance?

@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.AddressedDateFromDateTime
+import A12Kernel.Elaboration.FullDateComputationApplication
 
 /-! # Repeatable `DateFromDateTime` locks
 
@@ -84,6 +85,60 @@ private def address (field : FieldId) (row : Nat) : CellAddr := { field, path :=
 
 private def accepted (text : String) (nonempty : text ≠ "" := by decide) : FullDateTargetOutcome := .accepted { text, nonempty }
 
+private def dateAt (day : Nat) : Value :=
+  match momentAt day 0 0 with
+  | some (.dateTime instant parts _ basis) =>
+      .temporal (.date { instant, parts, basis })
+  | _ => .temporal (.date {
+      instant := { epochMillis := 0 }
+      parts := { year := 2024, month := 6, day }
+      basis := .storedGregorian
+    })
+
+private def targetCell (row : Nat) (stored : String) (day : Nat) :
+    ClassifiedCellInput := {
+  address := address target.id row
+  stored
+  raw := .parsed (dateAt day)
+}
+
+private def rootTargetCell (stored : String) (day : Nat) :
+    ClassifiedCellInput := {
+  address := { field := rootTarget.id, path := [] }
+  stored
+  raw := .parsed (dateAt day)
+}
+
+private structure ResultApplicationSummary where
+  values : List (CellAddr × String)
+  changes : List (CellAddr × String)
+  errors : List CellAddr
+  cleared : List CellAddr
+  residual : List FormalCause
+  row1 : FullDateTargetState
+  row2 : FullDateTargetState
+  unrelated : FullDateTargetState
+  deriving Repr, DecidableEq
+
+private def resultApplicationSummary? (input destination : CheckedDocument model)
+    (residualMessages : List FormalCause := []) :
+    Option ResultApplicationSummary := do
+  let operation ← operation?
+  let result ← operation.executeResult input residualMessages |>.toOption
+  let applied ← result.applyToChecked destination |>.toOption
+  pure {
+    values := result.fullDate.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    changes := result.fullDate.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    errors := result.fullDate.withErrors.map (·.targetField)
+    cleared := result.fullDate.cleared
+    residual := result.fullDate.formalErrorsInOperands
+    row1 := applied (address target.id 1)
+    row2 := applied (address target.id 2)
+    unrelated := applied { field := rootTarget.id, path := [] }
+  }
+
 /- The same-scope operation is admitted. The scalar carrier is the measured missing-wildcard control. -/
 example : operation?.isSome = true ∧
     (match elaborateDateFromDateTimeComputation model source.id rootTarget.id with
@@ -118,6 +173,52 @@ example :
   native_decide
 
 example : outcomes? 0 [] = some [] := by
+  native_decide
+
+/- Exact row keys keep source-relative unchanged and changed actions distinct even when both rows share one target field ID. -/
+example : (do
+    let input ← input? 2 [
+      sourceCell 1 "2024-06-15T00:30:00"
+        (.parsed (.temporal (momentAt 15 0 30 |>.get (by native_decide)))),
+      sourceCell 2 "2024-06-16T13:45:00"
+        (.parsed (.temporal (momentAt 16 13 45 |>.get (by native_decide)))),
+      targetCell 1 "2024-06-15" 15,
+      targetCell 2 "2024-06-01" 1]
+    let destination ← input? 2 [
+      targetCell 1 "2024-06-10" 10,
+      targetCell 2 "2024-06-11" 11,
+      rootTargetCell "2024-06-20" 20]
+    resultApplicationSummary? input destination [.malformed]) = some {
+      values := [
+        (address target.id 1, "2024-06-15"),
+        (address target.id 2, "2024-06-16")]
+      changes := [(address target.id 2, "2024-06-16")]
+      errors := []
+      cleared := []
+      residual := [.malformed]
+      row1 := .presentValue ⟨"2024-06-10", by decide⟩
+      row2 := .presentValue ⟨"2024-06-16", by decide⟩
+      unrelated := .presentValue ⟨"2024-06-20", by decide⟩
+    } := by
+  native_decide
+
+/- Row-local exhaustion and poison both become retained clears when their immutable source targets were filled, and they materialize exact absent destination states without claiming row topology. -/
+example : (do
+    let input ← input? 2 [
+      sourceCell 2 "bad" (.rejected .dateFormat),
+      targetCell 1 "2024-06-05" 5,
+      targetCell 2 "2024-06-06" 6]
+    let destination ← input? 2 [rootTargetCell "2024-06-20" 20]
+    resultApplicationSummary? input destination) = some {
+      values := []
+      changes := []
+      errors := []
+      cleared := [address target.id 1, address target.id 2]
+      residual := []
+      row1 := .presentEmpty
+      row2 := .presentEmpty
+      unrelated := .presentValue ⟨"2024-06-20", by decide⟩
+    } := by
   native_decide
 
 /- A root source is read once at its own address and reaches every physical target row. -/

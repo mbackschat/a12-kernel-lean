@@ -74,22 +74,24 @@ def toDeltaPrior :
 
 end TemporalTargetState
 
-/-- Exact caller-supplied field projection used by date-bearing and scalar temporal whole-result application. -/
-abbrev TemporalComputationDestination (Stored : Type) :=
-  FieldId → TemporalTargetState Stored
+/-- Exact caller-supplied target-key projection used by date-bearing and scalar temporal whole-result application. Scalar callers retain the `FieldId` default; addressed callers select `CellAddr` explicitly. -/
+abbrev TemporalComputationDestination (Stored : Type)
+    (Target : Type := FieldId) :=
+  Target → TemporalTargetState Stored
 
 namespace TemporalComputationDestination
 
 /-- Replace one temporal target projection while preserving every other field. -/
-def update (destination : TemporalComputationDestination Stored)
-    (target : FieldId) (state : TemporalTargetState Stored) :
-    TemporalComputationDestination Stored :=
-  fun field => if field == target then state else destination field
+def update {Target : Type} [DecidableEq Target]
+    (destination : TemporalComputationDestination Stored Target)
+    (target : Target) (state : TemporalTargetState Stored) :
+    TemporalComputationDestination Stored Target :=
+  fun candidate => if candidate = target then state else destination candidate
 
 /-- Apply one source-classified CLEARED action without reclassifying it against the destination. -/
-def applyRetainedClear
-    (destination : TemporalComputationDestination Stored)
-    (target : FieldId) : TemporalComputationDestination Stored :=
+def applyRetainedClear {Target : Type} [DecidableEq Target]
+    (destination : TemporalComputationDestination Stored Target)
+    (target : Target) : TemporalComputationDestination Stored Target :=
   destination.update target (destination target).applyRetainedClear
 
 end TemporalComputationDestination

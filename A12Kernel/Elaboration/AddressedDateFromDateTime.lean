@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.DateFromDateTime
 
 /-! # Repeatable `DateFromDateTime`
 
-This bounded carrier certifies one target-bound complete DateTime source and full-Date target, enumerates only physical target rows, and retains exact source and target addresses. Sibling parallel iteration, scheduling, and result application remain separate.
+This bounded carrier certifies one target-bound complete DateTime source and full-Date target, enumerates only physical target rows, and retains exact source and target addresses. Its result and cell-state application reuse the common FullDate channels; sibling parallel iteration, scheduling, row reconstruction, and document materialization remain separate.
 -/
 
 namespace A12Kernel
@@ -100,6 +100,28 @@ structure AddressedDateFromDateTimeOutcome where
   outcome : FullDateTargetOutcome
   deriving Repr, DecidableEq
 
+/-- One checked addressed extraction result backed by the common FullDate channels over exact cell addresses. Retaining the checked operation ties every action to its admitted target declaration and row scope. -/
+structure AddressedDateFromDateTimeRunView (model : FlatModel)
+    (ResidualMessage : Type) where
+  private mk ::
+  operation : CheckedAddressedDateFromDateTime model
+  fullDate : FullDateComputationRunView ResidualMessage CellAddr
+
+namespace AddressedDateFromDateTimeRunView
+
+/-- Classify executed row outcomes against immutable source state at each exact target address. -/
+private def fromOutcomes (operation : CheckedAddressedDateFromDateTime model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage)
+    (outcomes : List AddressedDateFromDateTimeOutcome) :
+    AddressedDateFromDateTimeRunView model ResidualMessage := {
+  operation
+  fullDate := FullDateComputationRunView.fromOutcomesAt
+    input.sourceFullDateTargetStateAt residualMessages
+    (outcomes.map fun entry => (entry.targetField, entry.outcome))
+}
+
+end AddressedDateFromDateTimeRunView
+
 namespace CheckedAddressedDateFromDateTime
 
 /-- Classify one reached source cell without losing clean absence or formal poison. -/
@@ -144,6 +166,28 @@ def execute (operation : CheckedAddressedDateFromDateTime model)
       |>.mapError .targetRows
   environments.mapM (operation.evaluateAtEnvironment input)
 
+/-- Execute every physical target row and classify each rich FullDate outcome against the immutable source state at that exact target address. -/
+def executeResult (operation : CheckedAddressedDateFromDateTime model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage) :
+    Except AddressedDateFromDateTimeFault
+      (AddressedDateFromDateTimeRunView model ResidualMessage) := do
+  let outcomes ← operation.execute input
+  pure (AddressedDateFromDateTimeRunView.fromOutcomes operation input
+    residualMessages outcomes)
+
 end CheckedAddressedDateFromDateTime
+
+namespace AddressedDateFromDateTimeRunView
+
+/-- Apply retained source-relative actions to exact FullDate cell-state projections from a separately supplied checked document of the same model. The result does not reconstruct rows or a document. -/
+def applyToChecked
+    (view : AddressedDateFromDateTimeRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    Except (FullDateComputationRunView.FullDateComputationRunApplicationError
+      CellAddr) (FullDateComputationDestination CellAddr) :=
+  view.fullDate.applyTo destination.sourceFullDateTargetStateAt
+
+end AddressedDateFromDateTimeRunView
 
 end A12Kernel

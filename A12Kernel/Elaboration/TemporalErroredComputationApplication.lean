@@ -10,25 +10,35 @@ namespace A12Kernel
 namespace TemporalErroredComputationRunView
 
 /-- Targets consumed by error-bearing application; unchanged successes and residual messages are absent. -/
-def actionTargets
-    (view : TemporalComputationRunView ComputedInstance ComputedError ResidualMessage)
-    (errorTarget : ComputedError → FieldId)
-    (changedTarget : ComputedInstance → FieldId) : List FieldId :=
+def actionTargets {Target : Type}
+    (view : TemporalComputationRunView ComputedInstance ComputedError
+      ResidualMessage Target)
+    (errorTarget : ComputedError → Target)
+    (changedTarget : ComputedInstance → Target) : List Target :=
   view.cleared ++ view.withErrors.map errorTarget ++
     view.withChanges.map changedTarget
 
+/-- Locate the first repeated exact temporal target key in encounter order. -/
+def firstDuplicateTarget? {Target : Type} [DecidableEq Target] :
+    List Target → Option Target
+  | [] => none
+  | target :: remaining =>
+      if target ∈ remaining then some target
+      else firstDuplicateTarget? remaining
+
 /-- Apply retained clears, rejected attempts, then source-relative changed successes. Duplicate targets fail before destination lookup. -/
-def applyTo
-    (view : TemporalComputationRunView ComputedInstance ComputedError ResidualMessage)
+def applyTo {Target : Type} [DecidableEq Target]
+    (view : TemporalComputationRunView ComputedInstance ComputedError
+      ResidualMessage Target)
     (destination : Destination)
-    (errorTarget : ComputedError → FieldId)
-    (changedTarget : ComputedInstance → FieldId)
-    (duplicateError : FieldId → ApplicationError)
-    (applyRetainedClear : Destination → FieldId → Destination)
+    (errorTarget : ComputedError → Target)
+    (changedTarget : ComputedInstance → Target)
+    (duplicateError : Target → ApplicationError)
+    (applyRetainedClear : Destination → Target → Destination)
     (applyError : Destination → ComputedError → Destination)
     (applyChanged : Destination → ComputedInstance → Destination) :
     Except ApplicationError Destination :=
-  match FieldId.firstDuplicate?
+  match firstDuplicateTarget?
       (actionTargets view errorTarget changedTarget) with
   | some duplicate => .error (duplicateError duplicate)
   | none =>
@@ -38,47 +48,53 @@ def applyTo
 
 end TemporalErroredComputationRunView
 
-/-- Exact caller-supplied target-state projection needed by the nonrepeatable FullDate fragment. -/
-abbrev FullDateComputationDestination :=
-  TemporalComputationDestination StoredDate
+/-- Exact caller-supplied target-state projection shared by root and addressed FullDate fragments. -/
+abbrev FullDateComputationDestination (Target : Type := FieldId) :=
+  TemporalComputationDestination StoredDate Target
 
 namespace FullDateComputationDestination
 
-def update (destination : FullDateComputationDestination)
-    (target : FieldId) (state : FullDateTargetState) :
-    FullDateComputationDestination :=
+def update {Target : Type} [DecidableEq Target]
+    (destination : FullDateComputationDestination Target)
+    (target : Target) (state : FullDateTargetState) :
+    FullDateComputationDestination Target :=
   TemporalComputationDestination.update destination target state
 
-def applyOutcome (destination : FullDateComputationDestination)
-    (target : FieldId) (outcome : FullDateTargetOutcome) :
-    FullDateComputationDestination :=
+def applyOutcome {Target : Type} [DecidableEq Target]
+    (destination : FullDateComputationDestination Target)
+    (target : Target) (outcome : FullDateTargetOutcome) :
+    FullDateComputationDestination Target :=
   destination.update target (outcome.applyTo (destination target))
 
-def applyRetainedClear (destination : FullDateComputationDestination)
-    (target : FieldId) : FullDateComputationDestination :=
+def applyRetainedClear {Target : Type} [DecidableEq Target]
+    (destination : FullDateComputationDestination Target)
+    (target : Target) : FullDateComputationDestination Target :=
   TemporalComputationDestination.applyRetainedClear destination target
 
 end FullDateComputationDestination
 
 namespace FullDateComputationRunView
 
-inductive FullDateComputationRunApplicationError where
-  | duplicateActionTarget (field : FieldId)
-  | targetField (field : FieldId) (cause : ResolveError)
-  | nonFullDateTarget (field : FieldId)
-  | repeatableTarget (field : FieldId)
+inductive FullDateComputationRunApplicationError
+    (Target : Type := FieldId) where
+  | duplicateActionTarget (field : Target)
+  | targetField (field : Target) (cause : ResolveError)
+  | nonFullDateTarget (field : Target)
+  | repeatableTarget (field : Target)
   deriving Repr, DecidableEq
 
-def actionTargets (view : FullDateComputationRunView ResidualMessage) :
-    List FieldId :=
+def actionTargets {Target : Type}
+    (view : FullDateComputationRunView ResidualMessage Target) :
+    List Target :=
   TemporalErroredComputationRunView.actionTargets view
     (fun computed => computed.targetField)
     (fun computed => computed.targetField)
 
-def applyTo (view : FullDateComputationRunView ResidualMessage)
-    (destination : FullDateComputationDestination) :
-    Except FullDateComputationRunApplicationError
-      FullDateComputationDestination :=
+def applyTo {Target : Type} [DecidableEq Target]
+    (view : FullDateComputationRunView ResidualMessage Target)
+    (destination : FullDateComputationDestination Target) :
+    Except (FullDateComputationRunApplicationError Target)
+      (FullDateComputationDestination Target) :=
   TemporalErroredComputationRunView.applyTo view destination
     (fun computed => computed.targetField)
     (fun computed => computed.targetField)

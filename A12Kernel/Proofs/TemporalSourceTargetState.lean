@@ -10,7 +10,8 @@ theorem sourceNonemptyStoredTargetState_absent
     (absent : input.source.cells.find? (fun cell =>
       cell.address == ({ field, path := [] } : CellAddr)) = none) :
     input.sourceNonemptyStoredTargetState field makeStored = .absent := by
-  simp [CheckedDocument.sourceNonemptyStoredTargetState, absent]
+  simp [CheckedDocument.sourceNonemptyStoredTargetState,
+    CheckedDocument.sourceNonemptyStoredTargetStateAt, absent]
 
 theorem sourceNonemptyStoredTargetState_empty
     (input : CheckedDocument model) (field : FieldId)
@@ -20,7 +21,8 @@ theorem sourceNonemptyStoredTargetState_empty
       candidate.address == ({ field, path := [] } : CellAddr)) = some cell)
     (empty : cell.stored = "") :
     input.sourceNonemptyStoredTargetState field makeStored = .presentEmpty := by
-  simp [CheckedDocument.sourceNonemptyStoredTargetState, found, empty]
+  simp [CheckedDocument.sourceNonemptyStoredTargetState,
+    CheckedDocument.sourceNonemptyStoredTargetStateAt, found, empty]
 
 theorem sourceNonemptyStoredTargetState_nonempty
     (input : CheckedDocument model) (field : FieldId)
@@ -31,7 +33,8 @@ theorem sourceNonemptyStoredTargetState_nonempty
     (nonempty : cell.stored ≠ "") :
     input.sourceNonemptyStoredTargetState field makeStored =
       .presentValue (makeStored cell.stored nonempty) := by
-  simp [CheckedDocument.sourceNonemptyStoredTargetState, found, nonempty]
+  simp [CheckedDocument.sourceNonemptyStoredTargetState,
+    CheckedDocument.sourceNonemptyStoredTargetStateAt, found, nonempty]
 
 theorem sourceDateRangeTargetState_nonempty
     (input : CheckedDocument model) (field : FieldId)

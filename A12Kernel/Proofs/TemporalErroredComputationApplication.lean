@@ -5,14 +5,16 @@ import A12Kernel.Elaboration.TemporalErroredComputationApplication
 namespace A12Kernel
 
 theorem temporalComputationDestination_update_same
-    (destination : TemporalComputationDestination Stored)
-    (target : FieldId) (state : TemporalTargetState Stored) :
+    {Target : Type} [DecidableEq Target]
+    (destination : TemporalComputationDestination Stored Target)
+    (target : Target) (state : TemporalTargetState Stored) :
     TemporalComputationDestination.update destination target state target = state := by
   simp [TemporalComputationDestination.update]
 
 theorem temporalComputationDestination_applyRetainedClear_same
-    (destination : TemporalComputationDestination Stored)
-    (target : FieldId) :
+    {Target : Type} [DecidableEq Target]
+    (destination : TemporalComputationDestination Stored Target)
+    (target : Target) :
     TemporalComputationDestination.applyRetainedClear destination target target =
       .presentEmpty := by
   simp [TemporalComputationDestination.applyRetainedClear,
@@ -21,8 +23,9 @@ theorem temporalComputationDestination_applyRetainedClear_same
   cases destination target <;> rfl
 
 theorem temporalComputationDestination_applyRetainedClear_other
-    (destination : TemporalComputationDestination Stored)
-    (target other : FieldId) (different : other ≠ target) :
+    {Target : Type} [DecidableEq Target]
+    (destination : TemporalComputationDestination Stored Target)
+    (target other : Target) (different : other ≠ target) :
     TemporalComputationDestination.applyRetainedClear destination target other =
       destination other := by
   simp [TemporalComputationDestination.applyRetainedClear,
