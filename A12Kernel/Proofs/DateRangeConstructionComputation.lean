@@ -197,4 +197,17 @@ theorem checkedDateRangeConstructionComputation_execute_value
     dateRangeConstructionTarget_evaluateComputationResult_value
       operation.format range resolved projectsRange ordered]
 
+/-- Rich construction result projection retains the checked target identity and delegates all five channels to the established DateRange classifier. -/
+theorem checkedDateRangeConstructionComputation_executeResult_projects
+    (operation : CheckedDateRangeConstructionComputation model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage)
+    (result : DateRangeConstructionComputationResult)
+    (evaluated : operation.execute input = .ok result) :
+    operation.executeResult input residualMessages =
+      .ok (DateRangeComputationRunView.fromOutcomes input residualMessages
+        [(operation.target.source.id, result.outcome)]) := by
+  rw [CheckedDateRangeConstructionComputation.executeResult, evaluated]
+  rfl
+
 end A12Kernel

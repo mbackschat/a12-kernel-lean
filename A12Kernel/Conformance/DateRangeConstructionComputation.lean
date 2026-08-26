@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.DateRangeConstructionComputation
+import A12Kernel.Elaboration.TemporalErroredComputationApplication
 
 /-! # Checked DateRange construction computation locks -/
 
@@ -200,7 +201,9 @@ private def inputCell (field : FlatFieldDecl) (stored : String)
 private def checkedInputForModel? (candidate : FlatModel)
     (startField finishField : FlatFieldDecl)
     (startStored finishStored : String)
-    (startRaw finishRaw : RawCell) : Option (CheckedDocument candidate) := do
+    (startRaw finishRaw : RawCell)
+    (extraCells : List ClassifiedCellInput := []) :
+    Option (CheckedDocument candidate) := do
   let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler candidate).toOption
   (checkDocument prepared "en_US" {
@@ -208,10 +211,15 @@ private def checkedInputForModel? (candidate : FlatModel)
     cells := [
       inputCell startField startStored startRaw,
       inputCell finishField finishStored finishRaw
-    ]
+    ] ++ extraCells
   }).toOption
 
-private def checkedInputFor? := checkedInputForModel? model
+private def checkedInputFor? (startField finishField : FlatFieldDecl)
+    (startStored finishStored : String) (startRaw finishRaw : RawCell)
+    (extraCells : List ClassifiedCellInput := []) :
+    Option (CheckedDocument model) :=
+  checkedInputForModel? model startField finishField startStored finishStored
+    startRaw finishRaw extraCells
 
 private def operationForModel? (candidate : FlatModel)
     (target start finish : FlatFieldDecl) :=
@@ -253,6 +261,40 @@ private def executeUnconfiguredMonth? :=
 
 private def executeUnconfiguredMonthDay? :=
   executeForModel? unconfiguredModel monthDayTarget monthDayStart monthDayFinish
+
+private def exactRange (first last : DateValue) : DateRangeValue := {
+  start := first
+  finish := last
+}
+
+private def priorStartValue := dateValue 1704067200000 2024 1 1
+private def priorFinishValue := dateValue 1706659200000 2024 1 31
+private def priorRange := exactRange priorStartValue priorFinishValue
+private def expectedRange := exactRange startValue finishValue
+
+private def priorStored : StoredDateRange := {
+  text := "01.01.2024-31.01.2024"
+  nonempty := by decide
+}
+
+private def resultView? (targetStored : String) (targetRaw : RawCell)
+    (startStored finishStored : String) (startRaw finishRaw : RawCell)
+    (residualMessages : List FormalCause := []) :
+    Option (DateRangeComputationRunView FormalCause) := do
+  let input ← checkedInputFor? start finish startStored finishStored
+    startRaw finishRaw [inputCell target targetStored targetRaw]
+  let operation ← operation?
+  operation.executeResult input residualMessages |>.toOption
+
+private def destinationFor? (includeTarget : Bool) :
+    Option (CheckedDocument model) :=
+  let targetCells := if includeTarget then
+    [inputCell target priorStored.text (.parsed (.dateRange priorRange))]
+  else []
+  checkedInputFor? start finish "" "" .presentEmpty .presentEmpty
+    (targetCells ++
+      [inputCell isoTarget expectedIsoStored.text
+        (.parsed (.dateRange expectedRange))])
 
 /- Full-Date constructions and every matching fragment profile reach their targets, including the two component-only profiles without Base Year. -/
 example :
@@ -542,6 +584,59 @@ example :
       } ∧
     (DateRangeTargetOutcome.errored expectedInvertedStored .inverted).applyTo
         (.presentValue expectedStored) = .presentEmpty := by
+  native_decide
+
+/- Rich construction execution classifies an accepted value against the immutable source, then applies only that retained change to a separate destination. -/
+example : (do
+    let view ← resultView? priorStored.text (.parsed (.dateRange priorRange))
+      "2024-06-01" "2024-06-30"
+      (.parsed (.temporal (.date startValue)))
+      (.parsed (.temporal (.date finishValue)))
+    let destination ← destinationFor? true
+    let applied ← view.applyToChecked destination |>.toOption
+    pure (view.withoutErrors, view.withChanges, view.withErrors,
+      applied target.id, applied isoTarget.id)) =
+    some ([{ targetField := target.id, value := expectedStored }],
+      [{ targetField := target.id, value := expectedStored }], [],
+      .presentValue expectedStored, .presentValue expectedIsoStored) := by
+  native_decide
+
+/- Change classification remains source-relative: an accepted result equal to the source target is inert against a different destination. -/
+example : (do
+    let view ← resultView? expectedStored.text
+      (.parsed (.dateRange expectedRange)) "2024-06-01" "2024-06-30"
+      (.parsed (.temporal (.date startValue)))
+      (.parsed (.temporal (.date finishValue)))
+    let destination ← destinationFor? true
+    let applied ← view.applyToChecked destination |>.toOption
+    pure (view.withoutErrors, view.withChanges, applied target.id)) =
+    some ([{ targetField := target.id, value := expectedStored }], [],
+      .presentValue priorStored) := by
+  native_decide
+
+/- No-value clears a source-filled target and materializes an absent destination target, while target rejection retains the attempted value in the computed-error channel. -/
+example :
+    (do
+      let view ← resultView? priorStored.text (.parsed (.dateRange priorRange))
+        "" "2024-06-30" .presentEmpty
+        (.parsed (.temporal (.date finishValue)))
+      let destination ← destinationFor? false
+      let applied ← view.applyToChecked destination |>.toOption
+      pure (view.cleared, applied target.id, applied isoTarget.id)) =
+      some ([target.id], .presentEmpty, .presentValue expectedIsoStored) ∧
+    (do
+      let view ← resultView? priorStored.text (.parsed (.dateRange priorRange))
+        "2024-06-30" "2024-06-01"
+        (.parsed (.temporal (.date finishValue)))
+        (.parsed (.temporal (.date startValue)))
+      let destination ← destinationFor? true
+      let applied ← view.applyToChecked destination |>.toOption
+      pure (view.withErrors, view.noErrorOccurred, applied target.id)) =
+      some ([{
+        targetField := target.id
+        attempted := expectedInvertedStored
+        cause := .inverted
+      }], false, .presentEmpty) := by
   native_decide
 
 private def executeUnconfiguredMonthEmpty? :=

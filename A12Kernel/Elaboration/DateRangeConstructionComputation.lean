@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.DateRangeConstructionComparison
 import A12Kernel.Elaboration.DateRangeTargetPresentation
-import A12Kernel.Semantics.TemporalApplication
+import A12Kernel.Elaboration.TemporalComputationResult
 
 /-! # Checked direct DateRange construction computation -/
 
@@ -132,6 +132,16 @@ def execute (operation : CheckedDateRangeConstructionComputation model)
       construction.asComputationResult
     |>.mapError .target
   pure { construction, outcome }
+
+/-- Execute and classify one rich direct-construction outcome against the same immutable source document. Endpoint observations remain available from `execute`; this result projection reuses the shared DateRange carrier without a second construction representation. -/
+def executeResult (operation : CheckedDateRangeConstructionComputation model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage) :
+    Except DateRangeConstructionComputationFault
+      (DateRangeComputationRunView ResidualMessage) := do
+  let result ← operation.execute input
+  pure (DateRangeComputationRunView.fromOutcomes input residualMessages
+    [(operation.target.source.id, result.outcome)])
 
 end CheckedDateRangeConstructionComputation
 
