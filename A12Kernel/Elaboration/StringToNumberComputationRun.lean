@@ -1,5 +1,4 @@
-import A12Kernel.Elaboration.NumericComputation.RunResult
-import A12Kernel.Elaboration.StringComputationRunResult
+import A12Kernel.Elaboration.StringNumberComputationRunView
 
 /-! # One checked String-to-Number computation run
 
@@ -119,13 +118,10 @@ def execute (run : CheckedStringToNumberComputationRun model)
 
 end CheckedStringToNumberComputationRun
 
-/-- Family-preserving public result for the bounded heterogeneous run. -/
-structure StringToNumberComputationRunView
-    (StringResidual NumberPayload : Type) (Target : Type := FieldId) where
-  string : StringComputationRunView StringResidual Target
-  number :
-    NumericComputationRunView (ComputationFormalMessage NumberPayload) Target
-  deriving Repr, DecidableEq
+/-- Direction-specific compatibility name for the shared family-preserving result. -/
+abbrev StringToNumberComputationRunView
+    (StringResidual NumberPayload : Type) (Target : Type := FieldId) :=
+  StringNumberComputationRunView StringResidual NumberPayload Target
 
 inductive StringToNumberComputationRunResultFault where
   | execution (cause : StringToNumberComputationRunFault)

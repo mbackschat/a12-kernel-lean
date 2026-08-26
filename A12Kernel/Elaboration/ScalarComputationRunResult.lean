@@ -1,6 +1,5 @@
 import A12Kernel.Elaboration.ScalarComputationRun
-import A12Kernel.Elaboration.NumericComputation.RunResult
-import A12Kernel.Elaboration.StringComputationRunResult
+import A12Kernel.Elaboration.StringNumberComputationRunView
 
 /-! # Family-preserving result for a finite mixed scalar run
 
@@ -35,13 +34,10 @@ def ofOutcomes : List ScalarComputationOutcome →
 
 end ScalarComputationOutcomePartitions
 
-/-- Public mixed result with both established family views retained separately. -/
-structure ScalarComputationRunView
-    (StringResidual NumberPayload : Type) where
-  string : StringComputationRunView StringResidual
-  number :
-    NumericComputationRunView (ComputationFormalMessage NumberPayload)
-  deriving Repr, DecidableEq
+/-- Scalar-run compatibility name for the shared family-preserving result. -/
+abbrev ScalarComputationRunView
+    (StringResidual NumberPayload : Type) (Target : Type := FieldId) :=
+  StringNumberComputationRunView StringResidual NumberPayload Target
 
 inductive ScalarComputationRunResultFault where
   | execution (cause : ScalarComputationRunFault)

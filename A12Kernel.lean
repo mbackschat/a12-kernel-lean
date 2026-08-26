@@ -217,6 +217,7 @@ import A12Kernel.Elaboration.AddressedNumberBinary
 import A12Kernel.Elaboration.AddressedNumberDivision
 import A12Kernel.Elaboration.AddressedNumberPower
 import A12Kernel.Elaboration.AddressedNumericOperationConsumer
+import A12Kernel.Elaboration.StringNumberComputationRunView
 import A12Kernel.Elaboration.NumberToStringComputationRun
 import A12Kernel.Elaboration.StringToNumberComputationRun
 import A12Kernel.Elaboration.ScalarComputationRun
