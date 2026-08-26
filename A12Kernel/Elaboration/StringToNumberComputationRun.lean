@@ -121,10 +121,10 @@ end CheckedStringToNumberComputationRun
 
 /-- Family-preserving public result for the bounded heterogeneous run. -/
 structure StringToNumberComputationRunView
-    (StringResidual NumberPayload : Type) where
-  string : StringComputationRunView StringResidual
+    (StringResidual NumberPayload : Type) (Target : Type := FieldId) where
+  string : StringComputationRunView StringResidual Target
   number :
-    NumericComputationRunView (ComputationFormalMessage NumberPayload)
+    NumericComputationRunView (ComputationFormalMessage NumberPayload) Target
   deriving Repr, DecidableEq
 
 inductive StringToNumberComputationRunResultFault where

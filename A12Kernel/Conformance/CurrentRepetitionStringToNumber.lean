@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CurrentRepetitionStringToNumberRelation
+import A12Kernel.Elaboration.NumericComputation.RunApplication
 
 /-! # CurrentRepetition String-to-Number cascade locks -/
 
@@ -94,6 +95,13 @@ private def stringCell (row : Nat) (value : String) :
   raw := .parsed (.str value)
 }
 
+private def otherStringCell (row : Nat) (value : String) :
+    ClassifiedCellInput := {
+  address := { field := otherString.id, path := [row] }
+  stored := value
+  raw := .parsed (.str value)
+}
+
 private def checkedInput? (rows : List Nat)
     (cells : List ClassifiedCellInput) : Option (CheckedDocument model) :=
   (checkDocument prepared "en_US" {
@@ -133,6 +141,83 @@ private def phasedOutcomes? (firstBase : ClassifiedCellInput) :
     string.outcomes.map fun outcome =>
       (outcome.targetField, outcome.outcome),
     number.map fun outcome => (outcome.targetField, outcome.outcome))
+
+private def resultView? (input : CheckedDocument model) :
+    Option (StringToNumberComputationRunView Unit Unit CellAddr) := do
+  let plan ← plan?
+  plan.executeResult prepared.patterns input (fun _ => ()) []
+    ([] : List Unit) |>.toOption
+
+private def twoRowInputWithTargets? (firstBase : ClassifiedCellInput)
+    (firstString : String) (firstNumber : Int)
+    (secondString : String) (secondNumber : Int) :
+    Option (CheckedDocument model) :=
+  checkedInput? [1, 2] [
+    firstBase,
+    stringCell 1 firstString,
+    numericCell second.id 1 firstNumber,
+    otherStringCell 1 "KEEP",
+    numericCell base.id 2 11,
+    stringCell 2 secondString,
+    numericCell second.id 2 secondNumber]
+
+private structure ResultApplicationSummary where
+  stringChanges : List (CellAddr × String)
+  numberChanges : List (CellAddr × StoredNumber)
+  baseAtFirst : NumericTargetState
+  stringAtFirst : StringTargetState
+  stringAtSecond : StringTargetState
+  otherStringAtFirst : StringTargetState
+  numberAtFirst : NumericTargetState
+  numberAtSecond : NumericTargetState
+  deriving Repr, DecidableEq
+
+private def resultApplicationSummary? (input destination : CheckedDocument model) :
+    Option ResultApplicationSummary := do
+  let view ← resultView? input
+  let stringApplied ←
+    view.string.applyToCheckedOneLevel destination lines.level |>.toOption
+  let numberApplied ← view.number.applyToChecked destination |>.toOption
+  pure {
+    stringChanges := view.string.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    numberChanges := view.number.withChanges.map fun item =>
+      (item.targetField, item.value)
+    baseAtFirst := numberApplied.stateAt { field := base.id, path := [1] }
+    stringAtFirst := stringApplied.stateAt { field := first.id, path := [1] }
+    stringAtSecond := stringApplied.stateAt { field := first.id, path := [2] }
+    otherStringAtFirst :=
+      stringApplied.stateAt { field := otherString.id, path := [1] }
+    numberAtFirst := numberApplied.stateAt { field := second.id, path := [1] }
+    numberAtSecond := numberApplied.stateAt { field := second.id, path := [2] }
+  }
+
+private structure FailureApplicationSummary where
+  stringErrors : List (CellAddr × StringTargetError)
+  stringCleared : List CellAddr
+  numberCleared : List CellAddr
+  stringAtFirst : StringTargetState
+  stringAtSecond : StringTargetState
+  numberAtFirst : NumericTargetState
+  numberAtSecond : NumericTargetState
+  deriving Repr, DecidableEq
+
+private def failureApplicationSummary? (input : CheckedDocument model) :
+    Option FailureApplicationSummary := do
+  let view ← resultView? input
+  let stringApplied ←
+    view.string.applyToCheckedOneLevel input lines.level |>.toOption
+  let numberApplied ← view.number.applyToChecked input |>.toOption
+  pure {
+    stringErrors := view.string.withErrors.map fun item =>
+      (item.targetField, item.cause)
+    stringCleared := view.string.cleared
+    numberCleared := view.number.cleared
+    stringAtFirst := stringApplied.stateAt { field := first.id, path := [1] }
+    stringAtSecond := stringApplied.stateAt { field := first.id, path := [2] }
+    numberAtFirst := numberApplied.stateAt { field := second.id, path := [1] }
+    numberAtSecond := numberApplied.stateAt { field := second.id, path := [2] }
+  }
 
 private def encounterOrderOutcomes? :
     Option (List
@@ -254,6 +339,87 @@ example :
         .accepted (storedString "11" (by decide)),
         { field := second.id, path := [2] },
         .accepted { unscaled := 11, scale := 0 })] := by
+  native_decide
+
+/- Both addressed families project their changed rows and apply independently through the established String and Number checked-document carriers. -/
+example : (do
+    let input ← twoRowInput? (numericCell base.id 1 7)
+    let destination ← twoRowInputWithTargets?
+      (numericCell base.id 1 99) "dest1" 700 "dest2" 1100
+    resultApplicationSummary? input destination) = some {
+      stringChanges := [
+        ({ field := first.id, path := [1] }, "7"),
+        ({ field := first.id, path := [2] }, "11")]
+      numberChanges := [
+        ({ field := second.id, path := [1] },
+          { unscaled := 7, scale := 0 }),
+        ({ field := second.id, path := [2] },
+          { unscaled := 11, scale := 0 })]
+      baseAtFirst :=
+        .presentValue (.decimal { unscaled := 99, scale := 0 })
+      stringAtFirst := .presentValue (storedString "7" (by decide))
+      stringAtSecond := .presentValue (storedString "11" (by decide))
+      otherStringAtFirst := .presentValue (storedString "KEEP" (by decide))
+      numberAtFirst :=
+        .presentValue (.decimal { unscaled := 7, scale := 0 })
+      numberAtSecond :=
+        .presentValue (.decimal { unscaled := 11, scale := 0 })
+    } := by
+  native_decide
+
+/- Both phase results classify against immutable pre-computation source state, so source-identical successes stay inert against a different destination. -/
+example : (do
+    let input ← twoRowInputWithTargets?
+      (numericCell base.id 1 7) "7" 7 "11" 11
+    let destination ← twoRowInputWithTargets?
+      (numericCell base.id 1 99) "dest1" 700 "dest2" 1100
+    resultApplicationSummary? input destination) = some {
+      stringChanges := []
+      numberChanges := []
+      baseAtFirst :=
+        .presentValue (.decimal { unscaled := 99, scale := 0 })
+      stringAtFirst := .presentValue (storedString "dest1" (by decide))
+      stringAtSecond := .presentValue (storedString "dest2" (by decide))
+      otherStringAtFirst := .presentValue (storedString "KEEP" (by decide))
+      numberAtFirst :=
+        .presentValue (.decimal { unscaled := 700, scale := 0 })
+      numberAtSecond :=
+        .presentValue (.decimal { unscaled := 1100, scale := 0 })
+    } := by
+  native_decide
+
+/- Reached producer poison clears both source-filled phase targets at row one while row-two successes remain changed and applicable. -/
+example : (do
+    let input ← twoRowInput? {
+      address := { field := base.id, path := [1] }
+      stored := "bad"
+      raw := .rejected .malformed
+    }
+    failureApplicationSummary? input) = some {
+      stringErrors := []
+      stringCleared := [{ field := first.id, path := [1] }]
+      numberCleared := [{ field := second.id, path := [1] }]
+      stringAtFirst := .presentEmpty
+      stringAtSecond := .presentValue (storedString "11" (by decide))
+      numberAtFirst := .presentEmpty
+      numberAtSecond :=
+        .presentValue (.decimal { unscaled := 11, scale := 0 })
+    } := by
+  native_decide
+
+/- A producer target rejection remains a String ERRORED instance rather than CLEARED, while its dependent Number poison clears the source-filled Number target. Both established applications clear the existing row-one destination values. -/
+example : (do
+    let input ← twoRowInput? (numericCell base.id 1 (-5))
+    failureApplicationSummary? input) = some {
+      stringErrors := [({ field := first.id, path := [1] }, .pattern)]
+      stringCleared := []
+      numberCleared := [{ field := second.id, path := [1] }]
+      stringAtFirst := .presentEmpty
+      stringAtSecond := .presentValue (storedString "11" (by decide))
+      numberAtFirst := .presentEmpty
+      numberAtSecond :=
+        .presentValue (.decimal { unscaled := 11, scale := 0 })
+    } := by
   native_decide
 
 /- Wrong structural group, bypassed dependency, and reverse dependency fail before execution. -/

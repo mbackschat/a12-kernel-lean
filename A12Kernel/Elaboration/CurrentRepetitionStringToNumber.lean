@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.CurrentRepetitionComputation
 import A12Kernel.Elaboration.AddressedFieldValueAsString
 import A12Kernel.Elaboration.AddressedFieldValueAsNumber
+import A12Kernel.Elaboration.StringToNumberComputationRun
 import A12Kernel.Semantics.StringCascade
 
 /-! # CurrentRepetition String-to-Number cascade -/
@@ -195,6 +196,25 @@ def execute (plan : CheckedCurrentRepetitionStringToNumberCascade model)
   let string ← plan.executeStringPhase patterns input
   let number ← plan.executeNumberPhase input string
   pure (assemblePhases string number)
+
+/-- Execute the fixed cascade and project its already-sourced addressed phases through the existing family-preserving String-to-Number view. Each child carrier remains independently applicable, and its collections are extensional, so this boundary makes no mixed-document or result-order claim. -/
+def executeResult (plan : CheckedCurrentRepetitionStringToNumberCascade model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (stringResidualMessages : List StringResidual) :
+    Except CurrentRepetitionStringToNumberFault
+      (StringToNumberComputationRunView
+        StringResidual NumberPayload CellAddr) := do
+  let outcomes ← plan.execute patterns input
+  pure {
+    string := StringComputationRunView.fromSourcedOutcomes
+      stringResidualMessages (outcomes.rows.map (·.string))
+    number := NumericComputationRunView.fromSourceOutcomesWithMessages
+      MessagePointer.ofCellAddr numberPayloadAt numberMessages
+      (outcomes.rows.map (·.number))
+  }
 
 end CheckedCurrentRepetitionStringToNumberCascade
 
