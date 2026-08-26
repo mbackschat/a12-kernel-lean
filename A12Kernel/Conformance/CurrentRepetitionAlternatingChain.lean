@@ -342,6 +342,120 @@ example :
         | _ => false)) = some true := by
   native_decide
 
+private def transitionPlan : CheckedCurrentRepetitionAlternatingChain model :=
+  plan?.get (by native_decide)
+
+private def transitionNoRowsInput : CheckedDocument model :=
+  (checkedInput? [] []).get (by native_decide)
+
+private theorem transitionNoRowsNumberFailed :
+    transitionPlan.numberToString.executeNumberPhaseWithRead
+        transitionNoRowsInput transitionNoRowsInput.read =
+      .error (.rowCardinality 0) := by
+  rfl
+
+/- The concrete no-row fault terminates in the initial state before any target
+family completes. -/
+example :
+    CurrentRepetitionAlternatingChainFailureTransition transitionPlan
+        prepared.patterns transitionNoRowsInput {}
+        (.numberToString (.rowCardinality 0)) ∧
+      CurrentRepetitionAlternatingChainFailureTrace transitionPlan
+        prepared.patterns transitionNoRowsInput {}
+        (.numberToString (.rowCardinality 0)) := by
+  have failed : CurrentRepetitionAlternatingChainFailureTransition
+      transitionPlan prepared.patterns transitionNoRowsInput {}
+      (.numberToString (.rowCardinality 0)) :=
+    .number (.rowCardinality 0) transitionNoRowsNumberFailed
+  exact ⟨failed, .number failed⟩
+
+private def transitionInput : CheckedDocument model :=
+  (twoRowInput? (numericCell base.id 1 7)).get (by native_decide)
+
+private def transitionNumberPhase :
+    CurrentRepetitionNumberToStringNumberPhase :=
+  (transitionPlan.numberToString.executeNumberPhaseWithRead transitionInput
+    transitionInput.read).toOption.get (by native_decide)
+
+private theorem evaluated_to_get (evaluation : Except ε α)
+    (available : evaluation.toOption.isSome = true) :
+    evaluation = .ok (evaluation.toOption.get available) := by
+  cases evaluation with
+  | error cause => simp [Except.toOption] at available
+  | ok value => rfl
+
+private theorem transitionNumberExecuted :
+    transitionPlan.numberToString.executeNumberPhaseWithRead transitionInput
+      transitionInput.read = .ok transitionNumberPhase := by
+  simpa [transitionNumberPhase] using evaluated_to_get
+    (evaluation :=
+      transitionPlan.numberToString.executeNumberPhaseWithRead transitionInput
+        transitionInput.read) (by native_decide)
+
+private def missingPatternMatchers :
+    PreparedFlatStringPatterns model builtinStringPatternCompiler := {
+  fields := []
+  modelWellFormed := by native_decide
+}
+
+private theorem transitionStringFailed :
+    transitionPlan.numberToString.executeStringPhase missingPatternMatchers
+        transitionInput transitionNumberPhase =
+      .error (.string (.evaluation
+        (.targetPatternUnavailable second.id))) := by
+  rfl
+
+private theorem transitionExecutionFailed :
+    transitionPlan.execute missingPatternMatchers transitionInput =
+      .error (.numberToString (.string (.evaluation
+        (.targetPatternUnavailable second.id)))) := by
+  unfold CheckedCurrentRepetitionAlternatingChain.execute
+  rw [transitionNumberExecuted]
+  simp only [Except.mapError, Bind.bind, Except.bind, transitionStringFailed]
+
+/- The concrete missing-matcher fault retains the exact successful Number phase
+instead of resetting the alternating chain to its initial state. -/
+example :
+    CurrentRepetitionAlternatingChainFailureTrace transitionPlan
+      missingPatternMatchers transitionInput
+      { number := some transitionNumberPhase }
+      (.numberToString (.string (.evaluation
+        (.targetPatternUnavailable second.id)))) := by
+  exact .string
+    (.number transitionNumberPhase transitionNumberExecuted)
+    (.string transitionNumberPhase _ transitionStringFailed)
+
+private def transitionStringPhase :
+    List (SourcedStringTargetOutcome CellAddr) :=
+  (transitionPlan.numberToString.executeStringPhase prepared.patterns
+    transitionInput transitionNumberPhase).toOption.get (by native_decide)
+
+private theorem transitionStringExecuted :
+    transitionPlan.numberToString.executeStringPhase prepared.patterns
+        transitionInput transitionNumberPhase = .ok transitionStringPhase := by
+  simpa [transitionStringPhase] using evaluated_to_get
+    (evaluation := transitionPlan.numberToString.executeStringPhase
+      prepared.patterns transitionInput transitionNumberPhase)
+    (by native_decide)
+
+/- A terminal structural Number fault is conditional for this fixture. If it
+occurs, the trace retains both exact successful prefix phases and no terminal
+Number completion. -/
+example (fault : CurrentRepetitionAlternatingChainFault)
+    (thirdFailed :
+      transitionPlan.executeThirdPhase transitionInput transitionStringPhase =
+        .error fault) :
+    CurrentRepetitionAlternatingChainFailureTrace transitionPlan
+      prepared.patterns transitionInput
+      { number := some transitionNumberPhase,
+        string := some transitionStringPhase }
+      fault := by
+  exact .third
+    (.number transitionNumberPhase transitionNumberExecuted)
+    (.string transitionNumberPhase transitionStringPhase
+      transitionStringExecuted)
+    (.third transitionNumberPhase transitionStringPhase fault thirdFailed)
+
 private def nestedPath : GroupPath := ["Shipment", "Lines", "Entries"]
 
 private def nestedModel : FlatModel := {

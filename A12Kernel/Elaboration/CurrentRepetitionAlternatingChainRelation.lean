@@ -44,4 +44,67 @@ inductive CurrentRepetitionAlternatingChainTransition
         { number := some number, string := some string }
         { number := some number, string := some string, third := some outcomes }
 
+/-- One structural phase fault of the fixed alternating chain. The failed phase
+does not advance state; rich typed outcomes remain successful phase results. -/
+inductive CurrentRepetitionAlternatingChainFailureTransition
+    (plan : CheckedCurrentRepetitionAlternatingChain model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    CurrentRepetitionAlternatingChainState →
+      CurrentRepetitionAlternatingChainFault → Prop where
+  | number
+      (fault : CurrentRepetitionNumberToStringFault)
+      (executed :
+        plan.numberToString.executeNumberPhaseWithRead input input.read =
+          .error fault) :
+      CurrentRepetitionAlternatingChainFailureTransition plan patterns input
+        {} (.numberToString fault)
+  | string
+      (number : CurrentRepetitionNumberToStringNumberPhase)
+      (fault : CurrentRepetitionNumberToStringFault)
+      (executed : plan.numberToString.executeStringPhase patterns input number =
+        .error fault) :
+      CurrentRepetitionAlternatingChainFailureTransition plan patterns input
+        { number := some number } (.numberToString fault)
+  | third
+      (number : CurrentRepetitionNumberToStringNumberPhase)
+      (string : List (SourcedStringTargetOutcome CellAddr))
+      (fault : CurrentRepetitionAlternatingChainFault)
+      (executed : plan.executeThirdPhase input string = .error fault) :
+      CurrentRepetitionAlternatingChainFailureTransition plan patterns input
+        { number := some number, string := some string } fault
+
+/-- The fixed alternating chain fails before any completion, after its exact
+Number phase, or after its exact Number and String prefix. -/
+inductive CurrentRepetitionAlternatingChainFailureTrace
+    (plan : CheckedCurrentRepetitionAlternatingChain model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    CurrentRepetitionAlternatingChainState →
+      CurrentRepetitionAlternatingChainFault → Prop where
+  | number
+      (failure : CurrentRepetitionAlternatingChainFailureTransition
+        plan patterns input {} fault) :
+      CurrentRepetitionAlternatingChainFailureTrace
+        plan patterns input {} fault
+  | string
+      (numberSuccess : CurrentRepetitionAlternatingChainTransition
+        plan patterns input {} { number := some number })
+      (failure : CurrentRepetitionAlternatingChainFailureTransition
+        plan patterns input { number := some number } fault) :
+      CurrentRepetitionAlternatingChainFailureTrace plan patterns input
+        { number := some number } fault
+  | third
+      (numberSuccess : CurrentRepetitionAlternatingChainTransition
+        plan patterns input {} { number := some number })
+      (stringSuccess : CurrentRepetitionAlternatingChainTransition
+        plan patterns input
+        { number := some number }
+        { number := some number, string := some string })
+      (failure : CurrentRepetitionAlternatingChainFailureTransition
+        plan patterns input
+        { number := some number, string := some string } fault) :
+      CurrentRepetitionAlternatingChainFailureTrace plan patterns input
+        { number := some number, string := some string } fault
+
 end A12Kernel
