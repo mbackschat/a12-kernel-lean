@@ -53,6 +53,38 @@ def applyTo (view : DateTimeComputationRunView ResidualMessage)
     (fun current target value =>
       current.applyOutcome target (.accepted value))
 
+/-- Fail-closed errors for checked nonrepeatable DateTime destination projection. -/
+inductive DateTimeComputationCheckedApplicationError where
+  | duplicateActionTarget (field : FieldId)
+  | targetField (field : FieldId) (cause : ResolveError)
+  | nonDateTimeTarget (field : FieldId)
+  | repeatableTarget (field : FieldId)
+  deriving Repr, DecidableEq
+
+private def acceptsActionKind : FieldKind → Bool
+  | .temporal .dateTime components => components == TemporalComponents.now
+  | _ => false
+
+def validateActionTargets (model : FlatModel) (targets : List FieldId) :
+    Except DateTimeComputationCheckedApplicationError Unit :=
+  TemporalComputationApplicationTarget.validateAllNonrepeatable
+    model acceptsActionKind
+    DateTimeComputationCheckedApplicationError.targetField
+    DateTimeComputationCheckedApplicationError.nonDateTimeTarget
+    DateTimeComputationCheckedApplicationError.repeatableTarget targets
+
+/-- Apply one retained nonrepeatable DateTime result to the exact root DateTime-state projection of a separately supplied checked destination. The retained result is not model-indexed, so source/destination model compatibility remains a caller precondition. -/
+def applyToChecked (view : DateTimeComputationRunView ResidualMessage)
+    (destination : CheckedDocument model) :
+    Except DateTimeComputationCheckedApplicationError
+      DateTimeComputationDestination :=
+  match FieldId.firstDuplicate? view.actionTargets with
+  | some duplicate => .error (.duplicateActionTarget duplicate)
+  | none => do
+      validateActionTargets model view.actionTargets
+      (view.applyTo destination.sourceDateTimeTargetState).mapError
+        (fun | .duplicateActionTarget duplicate => .duplicateActionTarget duplicate)
+
 end DateTimeComputationRunView
 
 end A12Kernel

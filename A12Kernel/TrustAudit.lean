@@ -318,6 +318,7 @@ run_cmd do
 #print axioms A12Kernel.dateTimeComputationDestination_applyOutcome_other
 #print axioms A12Kernel.dateTimeComputationRun_applyTo_noActions
 #print axioms A12Kernel.dateTimeComputationRun_applyTo_duplicateTarget
+#print axioms A12Kernel.dateTimeComputationRun_applyToChecked_delegates
 #print axioms A12Kernel.dateTimeComputationRun_unchanged_notApplied
 #print axioms A12Kernel.dateTimeComputationRun_changed_applies
 #print axioms A12Kernel.dateTimeComputationRun_cleared_applies

@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.TemporalComputationResult
+import A12Kernel.Elaboration.TemporalValueComputationApplication
 
 /-! # Error-bearing temporal whole-result application
 
@@ -35,33 +35,6 @@ def applyTo
       let afterCleared := view.cleared.foldl applyRetainedClear destination
       let afterErrors := view.withErrors.foldl applyError afterCleared
       .ok (view.withChanges.foldl applyChanged afterErrors)
-
-/-- Validate one exact action target against a family predicate and the shared nonrepeatable application boundary. -/
-def validateNonrepeatableActionTarget
-    (model : FlatModel) (target : FieldId)
-    (acceptsKind : FieldKind → Bool)
-    (targetFieldError : FieldId → ResolveError → ApplicationError)
-    (wrongKindError repeatableError : FieldId → ApplicationError) :
-    Except ApplicationError Unit := do
-  let declaration ←
-    (model.lookupUniqueId target).mapError (targetFieldError target)
-  if !acceptsKind declaration.policy.kind then
-    throw (wrongKindError target)
-  if !declaration.repeatableScope.isEmpty then
-    throw (repeatableError target)
-
-/-- Validate every exact action target before the destination projection participates. -/
-def validateNonrepeatableActionTargets
-    (model : FlatModel) (acceptsKind : FieldKind → Bool)
-    (targetFieldError : FieldId → ResolveError → ApplicationError)
-    (wrongKindError repeatableError : FieldId → ApplicationError) :
-    List FieldId → Except ApplicationError Unit
-  | [] => pure ()
-  | target :: remaining => do
-      validateNonrepeatableActionTarget model target acceptsKind
-        targetFieldError wrongKindError repeatableError
-      validateNonrepeatableActionTargets model acceptsKind
-        targetFieldError wrongKindError repeatableError remaining
 
 end TemporalErroredComputationRunView
 
@@ -122,7 +95,7 @@ private def acceptsActionKind : FieldKind → Bool
 
 def validateActionTargets (model : FlatModel) (targets : List FieldId) :
     Except FullDateComputationRunApplicationError Unit :=
-  TemporalErroredComputationRunView.validateNonrepeatableActionTargets
+  TemporalComputationApplicationTarget.validateAllNonrepeatable
     model acceptsActionKind FullDateComputationRunApplicationError.targetField
     FullDateComputationRunApplicationError.nonFullDateTarget
     FullDateComputationRunApplicationError.repeatableTarget targets
@@ -194,7 +167,7 @@ def applyTo (view : DateRangeComputationRunView ResidualMessage)
 /-- Validate one retained action against the nonrepeatable DateRange target boundary represented by this result. -/
 def validateActionTarget (model : FlatModel) (target : FieldId) :
     Except DateRangeComputationRunApplicationError Unit :=
-  TemporalErroredComputationRunView.validateNonrepeatableActionTarget
+  TemporalComputationApplicationTarget.validateNonrepeatable
     model target (· == .dateRange)
     DateRangeComputationRunApplicationError.targetField
     DateRangeComputationRunApplicationError.nonDateRangeTarget
@@ -203,7 +176,7 @@ def validateActionTarget (model : FlatModel) (target : FieldId) :
 /-- Validate every unique DateRange action target before reading the destination projection. -/
 def validateActionTargets (model : FlatModel) : List FieldId →
     Except DateRangeComputationRunApplicationError Unit :=
-  TemporalErroredComputationRunView.validateNonrepeatableActionTargets
+  TemporalComputationApplicationTarget.validateAllNonrepeatable
     model (· == .dateRange)
     DateRangeComputationRunApplicationError.targetField
     DateRangeComputationRunApplicationError.nonDateRangeTarget

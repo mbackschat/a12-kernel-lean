@@ -69,6 +69,19 @@ theorem dateTimeComputationRun_applyTo_duplicateTarget
     TemporalValueComputationRunView.applyTo,
     duplicate']
 
+/-- A checked DateTime application with admitted unique targets delegates exactly to the established value/clear fold over the checked document's source projection. -/
+theorem dateTimeComputationRun_applyToChecked_delegates
+    (view : DateTimeComputationRunView ResidualMessage)
+    (destination : CheckedDocument model)
+    (unique : FieldId.firstDuplicate? view.actionTargets = none)
+    (valid : DateTimeComputationRunView.validateActionTargets model
+      view.actionTargets = .ok ()) :
+    view.applyToChecked destination =
+      (view.applyTo destination.sourceDateTimeTargetState).mapError
+        (fun | .duplicateActionTarget duplicate => DateTimeComputationRunView.DateTimeComputationCheckedApplicationError.duplicateActionTarget duplicate) := by
+  simp [DateTimeComputationRunView.applyToChecked, unique, valid]
+  rfl
+
 /-- A source-unchanged accepted DateTime is not applied to a different destination. -/
 theorem dateTimeComputationRun_unchanged_notApplied
     (input : CheckedDocument model) (messages : List ResidualMessage)

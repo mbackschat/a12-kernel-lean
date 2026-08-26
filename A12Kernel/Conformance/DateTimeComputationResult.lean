@@ -13,7 +13,53 @@ private def target : FlatFieldDecl := {
   policy := {
     kind := .temporal .dateTime TemporalComponents.now } }
 
-private def model : FlatModel := { fields := [target] }
+private def other : FlatFieldDecl := {
+  target with id := 2, name := "OtherAt"
+}
+
+private def stringTarget : FlatFieldDecl := {
+  id := 3
+  groupPath := ["Order"]
+  name := "Label"
+  policy := { kind := .string }
+}
+
+private def repeatedTarget : FlatFieldDecl := {
+  target with
+  id := 4
+  groupPath := ["Order", "Lines"]
+  name := "RepeatedAt"
+  repeatableScope := [10]
+}
+
+private def incompleteTarget : FlatFieldDecl := {
+  target with
+  id := 5
+  name := "MinuteAt"
+  policy := { kind := .temporal .dateTime {
+    TemporalComponents.now with second := false
+  } }
+}
+
+private def repeatedStringTarget : FlatFieldDecl := {
+  stringTarget with
+  id := 6
+  groupPath := ["Order", "Lines"]
+  name := "RepeatedLabel"
+  repeatableScope := [10]
+}
+
+private def model : FlatModel := { fields := [target, other] }
+
+private def validationModel : FlatModel := {
+  fields := [stringTarget, repeatedTarget, incompleteTarget,
+    repeatedStringTarget]
+  repeatableGroups := [{
+    level := 10
+    path := ["Order", "Lines"]
+    repeatability := some 3
+  }]
+}
 
 private def prepared :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
@@ -25,12 +71,19 @@ private def oldValue : StoredDateTime :=
 private def nextValue : StoredDateTime :=
   ⟨"23.06.2025T10:00:00", by decide⟩
 
-private def source (stored : String) (raw : RawCell) : DocumentData := {
+private def otherValue : StoredDateTime :=
+  ⟨"23.06.2025T11:00:00", by decide⟩
+
+private def sourceAt (field : FieldId) (stored : String)
+    (raw : RawCell) : DocumentData := {
   instantiatedRows := []
   cells := [{
-    address := { field := target.id, path := [] }
+    address := { field, path := [] }
     stored
     raw }] }
+
+private def source (stored : String) (raw : RawCell) : DocumentData :=
+  sourceAt target.id stored raw
 
 private def oldSource : DocumentData :=
   source oldValue.text (.parsed (.temporal
@@ -46,6 +99,9 @@ private def view? (input : DocumentData)
   let checked ← (checkDocument prepared "en_US" input).toOption
   pure (DateTimeComputationRunView.fromOutcomes checked messages
     [(target.id, outcome)])
+
+private def checked? (input : DocumentData) : Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" input).toOption
 
 private def sourceState? (input : DocumentData) :
     Option DateTimeTargetState := do
@@ -138,6 +194,65 @@ example : (do
       | .error error => some error
       | .ok _ => none)) =
         some (some (.duplicateActionTarget target.id)) := by
+  native_decide
+
+/- Checked application starts from the separately supplied document's exact DateTime placement and preserves a distinct unrelated value. -/
+example : (do
+    let view ← view? oldSource (.accepted nextValue)
+    let checked ← checked? {
+      instantiatedRows := []
+      cells := oldSource.cells ++ (sourceAt other.id otherValue.text
+        (.parsed (.temporal
+          (.dateTime { epochMillis := 7200000 }
+            { year := 2025, month := 6, day := 23 }
+            { hour := 11, minute := 0, second := 0, valid := by decide }
+            .storedGregorian)))).cells
+    }
+    let applied ← view.applyToChecked checked |>.toOption
+    pure (applied target.id, applied other.id)) =
+      some (.presentValue nextValue, .presentValue otherValue) := by
+  native_decide
+
+/- Checked target validation retains the exact lookup cause and separates family and scope failures. -/
+example :
+    (match DateTimeComputationRunView.validateActionTargets
+        validationModel [99] with
+      | .error (.targetField 99 (.unknownFieldId 99)) => true
+      | _ => false) = true ∧
+    (match DateTimeComputationRunView.validateActionTargets
+        validationModel [stringTarget.id] with
+      | .error (.nonDateTimeTarget field) => field == stringTarget.id
+      | _ => false) = true ∧
+    (match DateTimeComputationRunView.validateActionTargets
+        validationModel [repeatedTarget.id] with
+      | .error (.repeatableTarget field) => field == repeatedTarget.id
+      | _ => false) = true := by
+  native_decide
+
+/- DateTime requires the complete whole-second component set. -/
+example : (match DateTimeComputationRunView.validateActionTargets
+    validationModel [incompleteTarget.id] with
+  | .error (.nonDateTimeTarget field) => field == incompleteTarget.id
+  | _ => false) = true := by
+  native_decide
+
+/- Family rejection precedes repeatable-scope rejection. -/
+example : (match DateTimeComputationRunView.validateActionTargets
+    validationModel [repeatedStringTarget.id] with
+  | .error (.nonDateTimeTarget field) => field == repeatedStringTarget.id
+  | _ => false) = true := by
+  native_decide
+
+/- Duplicate actions fail before checked target validation. -/
+example : (do
+    let checked ← checked? { instantiatedRows := [], cells := [] }
+    let empty ← checked? { instantiatedRows := [], cells := [] }
+    let view := DateTimeComputationRunView.fromOutcomes empty
+      ([] : List FormalCause)
+      [(99, .accepted nextValue), (99, .accepted oldValue)]
+    pure (match view.applyToChecked checked with
+      | .error (.duplicateActionTarget field) => field == 99
+      | _ => false)) = some true := by
   native_decide
 
 end A12Kernel.Conformance.DateTimeComputationResult

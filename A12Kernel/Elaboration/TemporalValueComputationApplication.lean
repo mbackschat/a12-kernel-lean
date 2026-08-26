@@ -9,6 +9,37 @@ inductive TemporalValueComputationApplicationError where
   | duplicateActionTarget (field : FieldId)
   deriving Repr, DecidableEq
 
+namespace TemporalComputationApplicationTarget
+
+/-- Validate one exact action target against a family predicate and the shared nonrepeatable application boundary. -/
+def validateNonrepeatable
+    (model : FlatModel) (target : FieldId)
+    (acceptsKind : FieldKind → Bool)
+    (targetFieldError : FieldId → ResolveError → ApplicationError)
+    (wrongKindError repeatableError : FieldId → ApplicationError) :
+    Except ApplicationError Unit := do
+  let declaration ←
+    (model.lookupUniqueId target).mapError (targetFieldError target)
+  if !acceptsKind declaration.policy.kind then
+    throw (wrongKindError target)
+  if !declaration.repeatableScope.isEmpty then
+    throw (repeatableError target)
+
+/-- Validate every exact action target before the destination projection participates. -/
+def validateAllNonrepeatable
+    (model : FlatModel) (acceptsKind : FieldKind → Bool)
+    (targetFieldError : FieldId → ResolveError → ApplicationError)
+    (wrongKindError repeatableError : FieldId → ApplicationError) :
+    List FieldId → Except ApplicationError Unit
+  | [] => pure ()
+  | target :: remaining => do
+      validateNonrepeatable model target acceptsKind
+        targetFieldError wrongKindError repeatableError
+      validateAllNonrepeatable model acceptsKind
+        targetFieldError wrongKindError repeatableError remaining
+
+end TemporalComputationApplicationTarget
+
 namespace TemporalValueComputationRunView
 
 /-- Targets consumed by value/clear application; unchanged successes and residual messages are absent. -/
