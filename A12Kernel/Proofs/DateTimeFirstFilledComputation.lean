@@ -17,4 +17,17 @@ theorem dateTimeFirstFilledCellAt_poison (addressed : CheckedAddressedCell) (cau
     dateTimeFirstFilledCellAt addressed = .poison cause := by
   simp [dateTimeFirstFilledCellAt, observed]
 
+/-- Result construction retains the operation-owned target and delegates every public projection to the established DateTime outcome classifier. -/
+theorem dateTimeFirstFilled_executeResult_projects
+    (operation : CheckedDateTimeFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage)
+    (outcome : DateTimeTargetOutcome)
+    (evaluated : operation.execute input = .ok outcome) :
+    operation.executeResult input residualMessages =
+      .ok (DateTimeComputationRunView.fromOutcomes input residualMessages
+        [(operation.targetPolicy.checked.target.id, outcome)]) := by
+  rw [CheckedDateTimeFirstFilledComputation.executeResult, evaluated]
+  rfl
+
 end A12Kernel

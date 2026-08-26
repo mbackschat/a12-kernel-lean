@@ -2189,6 +2189,7 @@ run_cmd do
 #print axioms A12Kernel.dateRangeTargetAccepted_applyTo
 #print axioms A12Kernel.dateTimeFirstFilledCellAt_value
 #print axioms A12Kernel.dateTimeFirstFilledCellAt_poison
+#print axioms A12Kernel.dateTimeFirstFilled_executeResult_projects
 #print axioms A12Kernel.fullDateFirstFilledCellAt_value
 #print axioms A12Kernel.fullDateFirstFilledCellAt_poison
 #print axioms A12Kernel.evalFullDateFirstFilledCells_present_head

@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.TemporalFirstFilledStarComputation
+import A12Kernel.Elaboration.DateTimeComputationApplication
 import A12Kernel.Elaboration.TemporalTargetPolicy
 
 /-! # Direct one-star DateTime `FirstFilledValue` computation -/
@@ -16,7 +17,7 @@ structure CheckedDateTimeFirstFilledComputation (model : FlatModel) where
   shape : CheckedTemporalFirstFilledStarComputation model .dateTimeIso
   targetPolicy : CheckedDateTimeTarget model
 
-/-- Check the bounded DateTime computation shape. Alternate formats, operands, nesting, validation use, and application remain outside this boundary. -/
+/-- Check the bounded DateTime computation shape. Alternate formats, operands, nesting, validation use, and materialized-document reconstruction remain outside this boundary. -/
 def checkDateTimeFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) :
@@ -53,6 +54,16 @@ def execute (operation : CheckedDateTimeFirstFilledComputation model) (input : C
     Except DateTimeFirstFilledComputationFault DateTimeTargetOutcome := do
   let resolved ← operation.shape.source.resolveCheckedField input [] |>.mapError .source
   operation.targetPolicy.evaluate (evalDateTimeFirstFilledCells resolved.cells) |>.mapError .target
+
+/-- Execute and classify the one checked FirstFilled outcome against the same immutable source document. Residual messages remain already-classified opaque input. -/
+def executeResult (operation : CheckedDateTimeFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage) :
+    Except DateTimeFirstFilledComputationFault
+      (DateTimeComputationRunView ResidualMessage) := do
+  let outcome ← operation.execute input
+  pure (DateTimeComputationRunView.fromOutcomes input residualMessages
+    [(operation.targetPolicy.checked.target.id, outcome)])
 
 end CheckedDateTimeFirstFilledComputation
 

@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.DateTimeComputationApplication
 import A12Kernel.Elaboration.DateTimeFirstFilledComputation
 
 /-! # Direct one-star DateTime `FirstFilledValue` computation locks -/
@@ -89,20 +90,31 @@ private def selectedInput (row : Nat) : SourceInput := {
 private def malformedInput (row : Nat) : SourceInput :=
   { row, stored := "XX", raw := .rejected .malformed }
 
-private def input? (sourceInputs : List SourceInput) : Option (CheckedDocument model) :=
+private def checkedDocument? (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := [{ group := 10, path := [1] }, { group := 10, path := [2] }]
+    cells
+  }).toOption
+
+private def inputWithTarget? (targetStored : String) (targetRaw : RawCell)
+    (sourceInputs : List SourceInput) : Option (CheckedDocument model) :=
   let sourceCells := sourceInputs.map fun input => {
     address := { field := source.id, path := [input.row] }
     stored := input.stored
     raw := input.raw
   }
-  (checkDocument prepared "en_US" {
-    instantiatedRows := [{ group := 10, path := [1] }, { group := 10, path := [2] }]
-    cells := [{
-      address := { field := target.id, path := [] }
-      stored := "2000-01-01T12:34:56"
-      raw := .parsed (dateTimeValue 946730096000 { year := 2000, month := 1, day := 1 } (clock 12 34 56 (by decide)))
-    }] ++ sourceCells
-  }).toOption
+  checkedDocument? ([{
+    address := { field := target.id, path := [] }
+    stored := targetStored
+    raw := targetRaw
+  }] ++ sourceCells)
+
+private def input? (sourceInputs : List SourceInput) : Option (CheckedDocument model) :=
+  inputWithTarget? "2000-01-01T12:34:56"
+    (.parsed (dateTimeValue 946730096000
+      { year := 2000, month := 1, day := 1 }
+      (clock 12 34 56 (by decide)))) sourceInputs
 
 private def outcome? (sourceInputs : List SourceInput) : Option DateTimeTargetOutcome := do
   let operation ← checked? target.id (star "Moment")
@@ -116,11 +128,97 @@ private def signature? (sourceInputs : List SourceInput) : Option String := do
     | .accepted stored => "VALUE|" ++ stored.text
     | .poison _ => "POISON")
 
+private def runView? (targetStored : String) (targetRaw : RawCell)
+    (sourceInputs : List SourceInput)
+    (residualMessages : List FormalCause := []) :
+    Option (DateTimeComputationRunView FormalCause) := do
+  let operation ← checked? target.id (star "Moment")
+  let input ← inputWithTarget? targetStored targetRaw sourceInputs
+  operation.executeResult input residualMessages |>.toOption
+
+private def selectedValue : StoredDateTime :=
+  ⟨"2024-03-20T10:11:12", by decide⟩
+private def seedValue : StoredDateTime :=
+  ⟨"2000-01-01T12:34:56", by decide⟩
+private def otherValue : StoredDateTime :=
+  ⟨"2024-04-01T06:00:00", by decide⟩
+
+private def otherCell : ClassifiedCellInput := {
+  address := { field := otherGroupTarget.id, path := [] }
+  stored := otherValue.text
+  raw := .parsed (dateTimeValue 1711951200000
+    { year := 2024, month := 4, day := 1 }
+    (clock 6 0 0 (by decide)))
+}
+
+private def destinationFor? (includeTarget : Bool) :
+    Option (CheckedDocument model) :=
+  let targetCells := if includeTarget then [{
+    address := { field := target.id, path := [] }
+    stored := seedValue.text
+    raw := .parsed (dateTimeValue 946730096000
+      { year := 2000, month := 1, day := 1 }
+      (clock 12 34 56 (by decide)))
+  }] else []
+  checkedDocument? (targetCells ++ [otherCell])
+
 /- The retained temporal-family probe calibrates CLEARED, a filled VALUE, and leading-empty continuation for this carrier using a different filled literal; the exact `2024-03-20T10:11:12` bytes here remain internal. -/
 example :
     signature? [] = some "CLEARED" ∧
       signature? [selectedInput 1] = some "VALUE|2024-03-20T10:11:12" ∧
       signature? [selectedInput 2] = some "VALUE|2024-03-20T10:11:12" := by
+  native_decide
+
+/- The checked FirstFilled operation classifies and applies its model-zone-rendered instant through the established DateTime result path while preserving unrelated destination state. -/
+example : (do
+    let view ← runView? seedValue.text
+      (.parsed (dateTimeValue 946730096000
+        { year := 2000, month := 1, day := 1 }
+        (clock 12 34 56 (by decide)))) [selectedInput 1]
+    let destination ← destinationFor? true
+    let applied ← view.applyToChecked destination |>.toOption
+    pure (view.withoutErrors, view.withChanges,
+      applied target.id, applied otherGroupTarget.id)) =
+    some ([{ targetField := target.id, value := selectedValue }],
+      [{ targetField := target.id, value := selectedValue }],
+      .presentValue selectedValue, .presentValue otherValue) := by
+  native_decide
+
+/- Change classification remains source-relative: a result equal to the source target is public but inert against a different destination target. -/
+example : (do
+    let view ← runView? selectedValue.text
+      (.parsed (dateTimeValue 1710929472000
+        { year := 2024, month := 3, day := 20 }
+        (clock 10 11 12 (by decide)))) [selectedInput 1]
+    let destination ← destinationFor? true
+    let applied ← view.applyToChecked destination |>.toOption
+    pure (view.withoutErrors, view.withChanges, applied target.id)) =
+    some ([{ targetField := target.id, value := selectedValue }], [],
+      .presentValue seedValue) := by
+  native_decide
+
+/- Exhaustion and a reached formal cause both retain a source-filled clear and materialize an absent destination target without disturbing unrelated state. -/
+example :
+    (do
+      let view ← runView? seedValue.text
+        (.parsed (dateTimeValue 946730096000
+          { year := 2000, month := 1, day := 1 }
+          (clock 12 34 56 (by decide)))) []
+      let destination ← destinationFor? false
+      let applied ← view.applyToChecked destination |>.toOption
+      pure (view.cleared, view.noErrorOccurred,
+        applied target.id, applied otherGroupTarget.id)) =
+      some ([target.id], true, .presentEmpty, .presentValue otherValue) ∧
+    (do
+      let view ← runView? seedValue.text
+        (.parsed (dateTimeValue 946730096000
+          { year := 2000, month := 1, day := 1 }
+          (clock 12 34 56 (by decide)))) [malformedInput 1]
+      let destination ← destinationFor? false
+      let applied ← view.applyToChecked destination |>.toOption
+      pure (view.cleared, view.noErrorOccurred,
+        applied target.id, applied otherGroupTarget.id)) =
+      some ([target.id], true, .presentEmpty, .presentValue otherValue) := by
   native_decide
 
 /- The typed adapter retains the exact instant rather than source text or a supplied wall label; this mechanism separator is internal. -/
