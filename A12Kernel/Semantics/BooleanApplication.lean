@@ -1,9 +1,9 @@
 import A12Kernel.Semantics.ScalarText
 import A12Kernel.Document
 
-/-! # Exact one-target Boolean application
+/-! # Typed Boolean target-state application
 
-This capsule retains typed Boolean identity while preserving absent, present-empty, and formally invalid nonempty placement. It owns only an already-classified fixed-target state transition; document traversal, repeatable addressing, scheduling, and validation remain separate.
+This module retains typed Boolean identity while preserving absent, present-empty, and formally invalid nonempty placement. Its target-polymorphic state transition serves both fixed field identifiers and exact repeatable cell addresses; document traversal, scheduling, row reconstruction, and validation remain separate.
 -/
 
 namespace A12Kernel
@@ -34,25 +34,29 @@ def applyRetainedClear : BooleanTargetState → BooleanTargetState
 
 end BooleanTargetState
 
-/-- Exact caller-supplied Boolean field-state projection. -/
-abbrev BooleanComputationDestination := FieldId → BooleanTargetState
+/-- Exact caller-supplied Boolean target-state projection. -/
+abbrev BooleanComputationDestination (Target : Type := FieldId) :=
+  Target → BooleanTargetState
 
 namespace BooleanComputationDestination
 
 /-- Replace one Boolean target state while preserving every other projection. -/
-def update (destination : BooleanComputationDestination)
-    (target : FieldId) (state : BooleanTargetState) :
-    BooleanComputationDestination :=
-  fun candidate => if candidate == target then state else destination candidate
+def update [DecidableEq Target]
+    (destination : BooleanComputationDestination Target)
+    (target : Target) (state : BooleanTargetState) :
+    BooleanComputationDestination Target :=
+  fun candidate => if candidate = target then state else destination candidate
 
 /-- Apply one retained source-classified clear. -/
-def applyRetainedClear (destination : BooleanComputationDestination)
-    (target : FieldId) : BooleanComputationDestination :=
+def applyRetainedClear [DecidableEq Target]
+    (destination : BooleanComputationDestination Target)
+    (target : Target) : BooleanComputationDestination Target :=
   destination.update target (destination target).applyRetainedClear
 
 /-- Apply one changed typed Boolean value. -/
-def applyValue (destination : BooleanComputationDestination)
-    (target : FieldId) (value : Bool) : BooleanComputationDestination :=
+def applyValue [DecidableEq Target]
+    (destination : BooleanComputationDestination Target)
+    (target : Target) (value : Bool) : BooleanComputationDestination Target :=
   destination.update target (.presentValue value)
 
 end BooleanComputationDestination

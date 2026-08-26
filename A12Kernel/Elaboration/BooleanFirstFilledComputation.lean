@@ -3,7 +3,10 @@ import A12Kernel.Elaboration.FirstFilledStarSource
 import A12Kernel.Semantics.BooleanApplication
 import A12Kernel.Semantics.FirstFilledValue
 
-/-! # Direct one-star Boolean `FirstFilledValue` computation -/
+/-! # Typed Boolean `FirstFilledValue` result and fixed computation
+
+This module owns the fixed direct one-star Boolean computation and the target-polymorphic typed result/application fold shared with exact-address repeatable Boolean carriers.
+-/
 
 namespace A12Kernel
 
@@ -73,9 +76,9 @@ def booleanFirstFilledCellAt (cell : CheckedCell) : FirstFilledBooleanCell :=
   | .value _ => .unknown .malformed
   | .unknown cause | .poison cause => .unknown cause
 
-/-- One successful Boolean computed instance with a typed payload. -/
-structure BooleanComputedInstance where
-  targetField : FieldId
+/-- One successful Boolean computed instance with a typed payload and caller-owned target identity. -/
+structure BooleanComputedInstance (Target : Type := FieldId) where
+  targetField : Target
   value : Bool
   deriving Repr, DecidableEq
 
@@ -83,24 +86,28 @@ structure BooleanComputedInstance where
 inductive BooleanComputedError
   deriving Repr, DecidableEq
 
+/-- The shared typed Boolean result and action channels over one caller-owned target identity. -/
+structure BooleanComputationRunView (ResidualMessage Target : Type) where
+  withoutErrors : List (BooleanComputedInstance Target)
+  withChanges : List (BooleanComputedInstance Target)
+  withErrors : List BooleanComputedError
+  cleared : List Target
+  formalErrorsInOperands : List ResidualMessage
+
 /-- Five extensional result collections for one model-certified Boolean `FirstFilledValue` computation. Retaining the checked operation makes every possible action target-owned. -/
 structure BooleanFirstFilledComputationRunView (model : FlatModel)
     (ResidualMessage : Type) where
   private mk ::
   operation : CheckedBooleanFirstFilledComputation model
-  withoutErrors : List BooleanComputedInstance
-  withChanges : List BooleanComputedInstance
-  withErrors : List BooleanComputedError
-  cleared : List FieldId
-  formalErrorsInOperands : List ResidualMessage
+  boolean : BooleanComputationRunView ResidualMessage FieldId
 
 namespace CheckedDocument
 
-/-- Recover exact fixed Boolean target placement and typed identity from the immutable source. -/
-def sourceBooleanTargetState (input : CheckedDocument model)
-    (field : FieldId) : BooleanTargetState :=
+/-- Recover exact Boolean target placement and typed identity from the immutable source. -/
+def sourceBooleanTargetStateAt (input : CheckedDocument model)
+    (address : CellAddr) : BooleanTargetState :=
   match input.source.cells.find? fun cell =>
-      cell.address == ({ field, path := [] } : CellAddr) with
+      cell.address == address with
   | none => .absent
   | some cell =>
       if cell.stored.isEmpty then
@@ -110,44 +117,98 @@ def sourceBooleanTargetState (input : CheckedDocument model)
         | .parsed (.bool value) => .presentValue value
         | _ => .presentInvalid cell.stored
 
+/-- The fixed-target specialization of exact Boolean source-state recovery. -/
+def sourceBooleanTargetState (input : CheckedDocument model)
+    (field : FieldId) : BooleanTargetState :=
+  input.sourceBooleanTargetStateAt { field, path := [] }
+
 end CheckedDocument
 
-namespace BooleanFirstFilledComputationRunView
+namespace BooleanComputationRunView
 
 /-- The public Boolean result is error-free exactly when both error channels are empty. -/
 def noErrorOccurred
-    (view : BooleanFirstFilledComputationRunView model ResidualMessage) : Bool :=
+    (view : BooleanComputationRunView ResidualMessage Target) : Bool :=
   view.withErrors.isEmpty && view.formalErrorsInOperands.isEmpty
 
-/-- Build the five Boolean result collections from one checked outcome and its exact immutable source placement. -/
+/-- Classify ordered Boolean outcomes against their exact immutable source target states. -/
+def fromSourcedOutcomes (residualMessages : List ResidualMessage)
+    (outcomes : List (Target × FirstFilledBooleanComputationResult ×
+      BooleanTargetState)) : BooleanComputationRunView ResidualMessage Target :=
+  outcomes.foldr (fun (target, outcome, source) view =>
+    match outcome with
+    | .value value =>
+        let computed : BooleanComputedInstance Target := {
+          targetField := target, value
+        }
+        { view with
+          withoutErrors := computed :: view.withoutErrors
+          withChanges := if source.value? == some value then
+              view.withChanges
+            else
+              computed :: view.withChanges }
+    | .noValue | .poison _ =>
+        { view with
+          cleared := if source.isFilled then target :: view.cleared
+            else view.cleared }) {
+    withoutErrors := []
+    withChanges := []
+    withErrors := []
+    cleared := []
+    formalErrorsInOperands := residualMessages
+  }
+
+/-- Targets consumed by the retained Boolean actions. -/
+def actionTargets
+    (view : BooleanComputationRunView ResidualMessage Target) : List Target :=
+  view.cleared ++ view.withChanges.map (·.targetField)
+
+/-- Apply retained Boolean clears and changed values in result-channel order. -/
+def applyTo [DecidableEq Target]
+    (view : BooleanComputationRunView ResidualMessage Target)
+    (initial : BooleanComputationDestination Target) :
+    BooleanComputationDestination Target :=
+  let afterClears := view.cleared.foldl
+    BooleanComputationDestination.applyRetainedClear initial
+  view.withChanges.foldl
+    (fun current computed => current.applyValue
+      computed.targetField computed.value) afterClears
+
+end BooleanComputationRunView
+
+namespace BooleanFirstFilledComputationRunView
+
+def withoutErrors (view : BooleanFirstFilledComputationRunView model ResidualMessage) :=
+  view.boolean.withoutErrors
+
+def withChanges (view : BooleanFirstFilledComputationRunView model ResidualMessage) :=
+  view.boolean.withChanges
+
+def withErrors (view : BooleanFirstFilledComputationRunView model ResidualMessage) :=
+  view.boolean.withErrors
+
+def cleared (view : BooleanFirstFilledComputationRunView model ResidualMessage) :=
+  view.boolean.cleared
+
+def formalErrorsInOperands
+    (view : BooleanFirstFilledComputationRunView model ResidualMessage) :=
+  view.boolean.formalErrorsInOperands
+
+/-- The fixed result's public error predicate delegates to the shared typed channels. -/
+def noErrorOccurred
+    (view : BooleanFirstFilledComputationRunView model ResidualMessage) : Bool :=
+  view.boolean.noErrorOccurred
+
+/-- Build the fixed Boolean result from the shared exact-target classifier. -/
 def fromOutcome (operation : CheckedBooleanFirstFilledComputation model)
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
-    FirstFilledBooleanComputationResult →
-      BooleanFirstFilledComputationRunView model ResidualMessage
-  | .value value =>
-      let computed : BooleanComputedInstance := {
-        targetField := operation.target.id
-        value
-      }
-      {
-        operation
-        withoutErrors := [computed]
-        withChanges := if (input.sourceBooleanTargetState
-          operation.target.id).value? == some value then [] else [computed]
-        withErrors := []
-        cleared := []
-        formalErrorsInOperands := residualMessages
-      }
-  | .noValue | .poison _ =>
-      {
-        operation
-        withoutErrors := []
-        withChanges := []
-        withErrors := []
-        cleared := if (input.sourceBooleanTargetState
-          operation.target.id).isFilled then [operation.target.id] else []
-        formalErrorsInOperands := residualMessages
-      }
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage)
+    (outcome : FirstFilledBooleanComputationResult) :
+    BooleanFirstFilledComputationRunView model ResidualMessage := {
+  operation
+  boolean := BooleanComputationRunView.fromSourcedOutcomes residualMessages [(
+    operation.target.id, outcome,
+    input.sourceBooleanTargetState operation.target.id)]
+}
 
 end BooleanFirstFilledComputationRunView
 
@@ -179,18 +240,13 @@ namespace BooleanFirstFilledComputationRunView
 def actionTargets
     (view : BooleanFirstFilledComputationRunView model ResidualMessage) :
     List FieldId :=
-  view.cleared ++ view.withChanges.map (·.targetField)
+  view.boolean.actionTargets
 
 /-- Apply source-classified Boolean actions to a separately supplied checked document of the same certified model. Unchanged successes and residual messages are inert. -/
 def applyToChecked
     (view : BooleanFirstFilledComputationRunView model ResidualMessage)
     (destination : CheckedDocument model) : BooleanComputationDestination :=
-  let initial := destination.sourceBooleanTargetState
-  let afterClears := view.cleared.foldl
-    BooleanComputationDestination.applyRetainedClear initial
-  view.withChanges.foldl
-    (fun current computed => current.applyValue
-      computed.targetField computed.value) afterClears
+  view.boolean.applyTo destination.sourceBooleanTargetState
 
 end BooleanFirstFilledComputationRunView
 

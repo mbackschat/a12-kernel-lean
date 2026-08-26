@@ -155,6 +155,7 @@ import A12Kernel.Elaboration.NumericStar
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Elaboration.BooleanFirstFilledComputation
+import A12Kernel.Elaboration.AddressedBooleanFirstFilledComputation
 import A12Kernel.Elaboration.ExactTokenComputationResult
 import A12Kernel.Elaboration.CustomFirstFilledComputation
 import A12Kernel.Elaboration.TemporalFirstFilledStarComputation
