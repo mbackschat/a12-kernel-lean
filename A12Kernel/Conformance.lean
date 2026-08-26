@@ -127,6 +127,7 @@ import A12Kernel.Conformance.StringComputationElaboration
 import A12Kernel.Conformance.ComputationTargetDiagnosticConsumer
 import A12Kernel.Conformance.StringComputationTable
 import A12Kernel.Conformance.StringComputationRun
+import A12Kernel.Conformance.StringComputationRepeatableApplication
 import A12Kernel.Conformance.AddressedFieldValueAsString
 import A12Kernel.Conformance.AddressedFieldValueAsNumber
 import A12Kernel.Conformance.AddressedRangeAsNumber

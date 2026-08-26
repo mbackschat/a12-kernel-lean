@@ -1818,6 +1818,7 @@ run_cmd do
 #print axioms A12Kernel.stringComputationRun_applyToChecked_noActions
 #print axioms A12Kernel.stringComputationRun_applyToChecked_delegates
 #print axioms A12Kernel.stringComputationRun_applyToChecked_duplicateTarget
+#print axioms A12Kernel.stringComputationOneLevelApplication_rows_prefix
 #print axioms A12Kernel.stringComputationRun_applyTo_duplicateTarget
 #print axioms A12Kernel.stringComputationRun_unchanged_notApplied
 #print axioms A12Kernel.stringComputationRun_changed_applies

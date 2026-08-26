@@ -95,6 +95,14 @@ theorem stringComputationRun_applyToChecked_duplicateTarget
       .error (.duplicateActionTarget target) := by
   simp [StringComputationRunView.applyToChecked, duplicate]
 
+/-- The bounded repeatable String application exposes exactly the complete predecessor prefix carried by its selected level and extent. -/
+theorem stringComputationOneLevelApplication_rows_prefix
+    (projection : StringComputationOneLevelApplicationProjection model) :
+    projection.rows =
+      (List.range projection.prefixExtent.2).map fun offset =>
+        { group := projection.prefixExtent.1, path := [offset + 1] } := by
+  rfl
+
 /-- Duplicate action targets fail before any destination state is selected or changed. -/
 theorem stringComputationRun_applyTo_duplicateTarget
     [DecidableEq Target]

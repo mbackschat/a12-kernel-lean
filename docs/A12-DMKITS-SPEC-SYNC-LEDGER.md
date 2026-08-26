@@ -96,6 +96,24 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Local disposition:** the canonical Lean specification now states the locally measured two-level rule, and Lean implements exactly one direct finite two-level Number projection with parent-scoped inner extents, exact retained states, ERRORED non-creation, and explicit later positive-value validation. Number topology beyond two levels, repeatable String, general later-rule execution, transport reconstruction, and pointer rendering remain outside the result domain. Peer reconciliation and retained a12-dmkits coverage are non-blocking; until accepted, the implementation-map evidence status names the local three-engine observation rather than a maintained peer lock.
 - **Acceptance:** a maintained a12-dmkits test locks the topology, action-order, destination-preservation, ERRORED, and later-validation controls on both Kernel strategies and the standalone interpreter; canonical peer prose states the parent-scoped padding rule; the handback supplies the exact committed revision and per-surface disposition.
 
+<a id="spec-2026-08-26-02"></a>
+<a id="spec-2026-08-26-02--one-level-separate-destination-string-application-uses-the-complete-predecessor-prefix"></a>
+
+### SPEC-2026-08-26-02 - One-level separate-destination String application uses the complete predecessor prefix
+
+- **Status:** pending
+- **Kind:** semantic addition, locally originated and locally measured
+- **Local revision:** resolve with the introducing-commit recipe in the ledger contract above; the introducing commit cannot name itself.
+- **a12-dmkits basis revision:** `975a2e78602eaf26126168cd203bd84738885322`, clean before and after the local probe.
+- **Kernel behavior:** 30.8.1, observed on dynamic Groovy and generated Java and triangulated through the standalone interpreter.
+- **Canonical clauses:** [`01-data-model.md` §4.3](../spec/01-data-model.md#43-the-compute--apply--validate-flow) and [`09-computations.md` §3.3](../spec/09-computations.md#33-what-compute-reports).
+- **Local observation:** an authorized external temporary test source extended the maintained `SeparateDestinationTopologyDiffTest` route without changing a12-dmkits. A kernel-admitted `/Order/Lines/Label := [Source]` String computation with a common `FieldFilled(Source)` precondition was applied to a separate compatible destination, projected as a complete row extent, and followed by ordinary `Length(Label) > 0` validation without recomputation. Both Kernel strategies and the standalone interpreter matched every prediction.
+- **Topology and action controls:** a changed String VALUE at row 1 and source-classified CLEARED action at row 3 produce rows 1–3 with VALUE, absent, and present-empty Label states. Reversing the action classes retains their exact row addresses rather than appending in action-class order. An existing row-2 source sentinel remains at row 2. An ERRORED action at row 3 against an empty destination leaves the row extent empty. These controls match the established one-level Number topology without collapsing String target state into the numeric result domain.
+- **Later-validation control:** changed String values `"A"` and `"CCC"` at rows 1 and 3 are applied to an empty destination. Both Kernel strategies then report `LABEL_PRESENT` exactly at `/Order[1]/Lines[1]/Label` and `/Order[1]/Lines[3]/Label`; the standalone interpreter reports the same semantic addresses in its repetition-one-eliding pointer dialect. The padded empty row 2 does not fire.
+- **Requested a12-dmkits reconciliation:** extend the existing maintained separate-destination topology family and canonical peer prose with this bounded String sibling. Reuse the current `DocumentV2`, retained-result accessors, and existing String computation support. Add no command, schema, artifact format, generic topology harness, or public API.
+- **Local disposition:** Lean now implements one finite direct repeatable String application projection with exact VALUE/CLEARED state, destination preservation, ERRORED non-creation, normalized predecessor rows, and an explicit later String-row decision. Two-level String placement, other target families, general later-rule execution, transport reconstruction, and pointer rendering remain outside the result domain. Peer reconciliation and retained coverage are non-blocking.
+- **Acceptance:** a maintained a12-dmkits test locks the String topology, action-order, destination-preservation, ERRORED non-creation, and later-validation controls on both Kernel strategies and the standalone interpreter; canonical peer prose states that the one-level predecessor rule applies to direct Number and String targets; the handback supplies the exact committed revision and per-surface disposition.
+
 <a id="exp-2026-08-25-01"></a>
 <a id="exp-2026-08-25-01--does-separate-destination-application-pad-predecessor-rows-and-preserve-address-order-for-later-validation"></a>
 
