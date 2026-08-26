@@ -225,6 +225,7 @@ import A12Kernel.Elaboration.ScalarComputationRunRelation
 import A12Kernel.Elaboration.ScalarComputationRunResult
 import A12Kernel.Elaboration.EnumerationComputation
 import A12Kernel.Elaboration.EnumerationComputationResult
+import A12Kernel.Elaboration.AddressedEnumerationComputation
 import A12Kernel.Elaboration.EnumerationFirstFilledComputation
 import A12Kernel.Elaboration.NumericValidation
 import A12Kernel.Elaboration.ValidationCondition
