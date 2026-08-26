@@ -191,6 +191,42 @@ private def categoryResultSummary? : Option PhaseResultSummary := do
     consumerResidual := view.consumer.formalErrorsInOperands
   }
 
+private structure CascadeApplicationSummary where
+  produced1 : StringTargetState
+  produced2 : StringTargetState
+  produced3 : StringTargetState
+  final1 : StringTargetState
+  final2 : StringTargetState
+  source1 : StringTargetState
+  deriving Repr, DecidableEq
+
+private def applicationSummary? : Option CascadeApplicationSummary := do
+  let cascade ← categoryCascade?
+  let input ← input?
+  let view ← cascade.executeResult input
+    ([] : List FormalCause) ([] : List FormalCause) |>.toOption
+  let destination ← (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 10, path := [2] },
+      { group := 10, path := [3] }]
+    cells := [
+      cell produced 1 "B" (.parsed (.enum "B")),
+      cell produced 2 "A" (.parsed (.enum "A")),
+      cell final 1 "A" (.parsed (.enum "A")),
+      cell final 2 "A" (.parsed (.enum "A")),
+      cell source 1 "B" (.parsed (.enum "B"))]
+  }).toOption
+  let applied ← view.applyToChecked destination |>.toOption
+  pure {
+    produced1 := applied (address produced.id 1)
+    produced2 := applied (address produced.id 2)
+    produced3 := applied (address produced.id 3)
+    final1 := applied (address final.id 1)
+    final2 := applied (address final.id 2)
+    source1 := applied (address source.id 1)
+  }
+
 example : cascade?.isSome = true ∧ deepCascade?.isSome = true ∧
     categoryCascade?.isSome = true ∧ deepCategoryCascade?.isSome = true ∧
     planError? (operation? produced final) (operation? final produced) =
@@ -239,6 +275,17 @@ example : categoryResultSummary? = some {
     consumerErrors := []
     consumerCleared := []
     consumerResidual := [.required]
+  } := by
+  native_decide
+
+/- Producer and consumer actions fold onto one separate destination while inert and unrelated cells survive and a retained clear can materialize absent state. -/
+example : applicationSummary? = some {
+    produced1 := .presentValue ⟨"A", by decide⟩
+    produced2 := .presentEmpty
+    produced3 := .presentEmpty
+    final1 := .presentValue ⟨"B", by decide⟩
+    final2 := .presentValue ⟨"A", by decide⟩
+    source1 := .presentValue ⟨"B", by decide⟩
   } := by
   native_decide
 

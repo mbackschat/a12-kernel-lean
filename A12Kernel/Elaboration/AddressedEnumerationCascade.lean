@@ -139,4 +139,17 @@ def executeResult (cascade : CheckedAddressedEnumerationCascade model)
 
 end CheckedAddressedEnumerationCascade
 
+namespace AddressedEnumerationCascadeRunView
+
+/-- Apply producer actions and then consumer actions to one separately supplied same-model destination projection. -/
+def applyToChecked
+    (view : AddressedEnumerationCascadeRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    Except (StringComputationRunView.StringComputationRunApplicationError CellAddr)
+      (StringComputationDestination CellAddr) := do
+  let afterProducer ← view.producer.applyTo destination.sourceStringTargetStateAt
+  view.consumer.applyTo afterProducer
+
+end AddressedEnumerationCascadeRunView
+
 end A12Kernel

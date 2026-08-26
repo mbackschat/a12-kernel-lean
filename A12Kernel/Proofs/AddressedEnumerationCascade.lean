@@ -38,4 +38,14 @@ theorem addressedEnumerationCascade_executeResult_hasNoTargetErrors
   simp [Functor.map, Except.map,
     addressedEnumerationResults_haveNoTargetErrors]
 
+/-- Combined cascade application delegates to the two established result folds in phase order. -/
+theorem addressedEnumerationCascadeRun_applyToChecked_delegates
+    (view : AddressedEnumerationCascadeRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    view.applyToChecked destination = (do
+      let afterProducer ←
+        view.producer.applyTo destination.sourceStringTargetStateAt
+      view.consumer.applyTo afterProducer) := by
+  rfl
+
 end A12Kernel
