@@ -257,6 +257,117 @@ example :
         | _ => false)) = some true := by
   native_decide
 
+private def transitionPlan :
+    CheckedCurrentRepetitionNumberToStringCascade model :=
+  plan?.get (by native_decide)
+
+private def transitionNoRowsInput : CheckedDocument model :=
+  (checkedInput? [] []).get (by native_decide)
+
+private theorem transitionNoRowsNumberFailed :
+    transitionPlan.executeNumberPhaseWithRead transitionNoRowsInput
+        transitionNoRowsInput.read = .error (.rowCardinality 0) := by
+  rfl
+
+/- The concrete no-row fault terminates in the initial state before either
+target family completes. -/
+example :
+    CurrentRepetitionNumberToStringFailureTransition transitionPlan
+        prepared.patterns transitionNoRowsInput transitionNoRowsInput.read {}
+        (.rowCardinality 0) ∧
+      CurrentRepetitionNumberToStringFailureTrace transitionPlan
+        prepared.patterns transitionNoRowsInput transitionNoRowsInput.read {}
+        (.rowCardinality 0) := by
+  have failed : CurrentRepetitionNumberToStringFailureTransition transitionPlan
+      prepared.patterns transitionNoRowsInput transitionNoRowsInput.read {}
+      (.rowCardinality 0) :=
+    .number (.rowCardinality 0) transitionNoRowsNumberFailed
+  exact ⟨failed, .number failed⟩
+
+private def patternSecond : FlatFieldDecl :=
+  { second with stringPatternSource := some "[0-9]+" }
+
+private def patternModel : FlatModel := {
+  fields := [base, first, patternSecond]
+  repeatableGroups := [lines, other]
+}
+
+private def patternPlan? :
+    Option (CheckedCurrentRepetitionNumberToStringCascade patternModel) :=
+  (checkCurrentRepetitionNumberToStringCascade patternModel lines.path group
+    first.id (bare "Base") patternSecond.id (bare "First")).toOption
+
+private def patternPrepared :
+    PreparedFlatStringContext patternModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler patternModel).toOption.get (by native_decide)
+
+private def patternInput? : Option (CheckedDocument patternModel) :=
+  (checkDocument patternPrepared "en_US" {
+    instantiatedRows := [{ group := lines.level, path := [1] }]
+    cells := [numericCell base.id 1 7]
+  }).toOption
+
+private def patternTransitionPlan :
+    CheckedCurrentRepetitionNumberToStringCascade patternModel :=
+  patternPlan?.get (by native_decide)
+
+private def patternTransitionInput : CheckedDocument patternModel :=
+  patternInput?.get (by native_decide)
+
+private def missingPatternMatchers :
+    PreparedFlatStringPatterns patternModel builtinStringPatternCompiler := {
+  fields := []
+  modelWellFormed := by native_decide
+}
+
+private def transitionNumberPhase :
+    CurrentRepetitionNumberToStringNumberPhase :=
+  (patternTransitionPlan.executeNumberPhaseWithRead patternTransitionInput
+    patternTransitionInput.read).toOption.get (by native_decide)
+
+private theorem evaluated_to_get (evaluation : Except ε α)
+    (available : evaluation.toOption.isSome = true) :
+    evaluation = .ok (evaluation.toOption.get available) := by
+  cases evaluation with
+  | error cause => simp [Except.toOption] at available
+  | ok value => rfl
+
+private theorem transitionNumberExecuted :
+    patternTransitionPlan.executeNumberPhaseWithRead patternTransitionInput
+      patternTransitionInput.read = .ok transitionNumberPhase := by
+  simpa [transitionNumberPhase] using evaluated_to_get
+    (evaluation := patternTransitionPlan.executeNumberPhaseWithRead
+      patternTransitionInput patternTransitionInput.read) (by native_decide)
+
+private theorem transitionStringFailed :
+    patternTransitionPlan.executeStringPhase missingPatternMatchers
+        patternTransitionInput transitionNumberPhase =
+      .error (.string (.evaluation
+        (.targetPatternUnavailable patternSecond.id))) := by
+  rfl
+
+private theorem transitionExecutionFailed :
+    patternTransitionPlan.executeWithRead missingPatternMatchers
+        patternTransitionInput patternTransitionInput.read =
+      .error (.string (.evaluation
+        (.targetPatternUnavailable patternSecond.id))) := by
+  unfold CheckedCurrentRepetitionNumberToStringCascade.executeWithRead
+  rw [transitionNumberExecuted]
+  simp only [Bind.bind, Except.bind, transitionStringFailed]
+
+/- A missing required target matcher fails only after the exact Number phase has
+completed, so the terminal trace retains that phase and no String completion. -/
+example :
+    CurrentRepetitionNumberToStringFailureTrace patternTransitionPlan
+      missingPatternMatchers patternTransitionInput patternTransitionInput.read
+      { number := some transitionNumberPhase }
+      (.string (.evaluation
+        (.targetPatternUnavailable patternSecond.id))) := by
+  exact .string
+    (.number transitionNumberPhase transitionNumberExecuted)
+    (.string transitionNumberPhase _ transitionStringFailed)
+
 private def nestedPath : GroupPath := ["Shipment", "Lines", "Entries"]
 
 private def nestedBase : FlatFieldDecl := {

@@ -34,4 +34,48 @@ inductive CurrentRepetitionNumberToStringTransition
         { number := some number }
         { number := some number, string := some outcomes }
 
+/-- One structural phase fault of the fixed repeatable cascade. The failed
+phase does not advance state; rich Number and String outcomes remain successful
+phase results rather than entering this relation. -/
+inductive CurrentRepetitionNumberToStringFailureTransition
+    (plan : CheckedCurrentRepetitionNumberToStringCascade model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    CurrentRepetitionNumberToStringState →
+      CurrentRepetitionNumberToStringFault → Prop where
+  | number
+      (fault : CurrentRepetitionNumberToStringFault)
+      (executed : plan.executeNumberPhaseWithRead input read = .error fault) :
+      CurrentRepetitionNumberToStringFailureTransition
+        plan patterns input read {} fault
+  | string
+      (number : CurrentRepetitionNumberToStringNumberPhase)
+      (fault : CurrentRepetitionNumberToStringFault)
+      (executed : plan.executeStringPhase patterns input number = .error fault) :
+      CurrentRepetitionNumberToStringFailureTransition plan patterns input read
+        { number := some number } fault
+
+/-- The fixed cascade either fails before any phase completes or after its exact
+complete Number phase. The indexed state is the unchanged successful prefix. -/
+inductive CurrentRepetitionNumberToStringFailureTrace
+    (plan : CheckedCurrentRepetitionNumberToStringCascade model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    CurrentRepetitionNumberToStringState →
+      CurrentRepetitionNumberToStringFault → Prop where
+  | number
+      (failure : CurrentRepetitionNumberToStringFailureTransition
+        plan patterns input read {} fault) :
+      CurrentRepetitionNumberToStringFailureTrace
+        plan patterns input read {} fault
+  | string
+      (success : CurrentRepetitionNumberToStringTransition
+        plan patterns input read {} { number := some number })
+      (failure : CurrentRepetitionNumberToStringFailureTransition
+        plan patterns input read { number := some number } fault) :
+      CurrentRepetitionNumberToStringFailureTrace plan patterns input read
+        { number := some number } fault
+
 end A12Kernel
