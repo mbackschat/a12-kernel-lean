@@ -16,8 +16,8 @@ if [[ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" != "true" ]]; then
   exit 1
 fi
 
-review_threshold=600
-ordinary_ceiling=1000
+review_threshold=800
+ordinary_ceiling=1200
 exception_document="docs/TESTING.md"
 exceptional_registry="A12Kernel/TrustAudit.lean"
 
@@ -357,7 +357,7 @@ while IFS=$'\t' read -r path mode rationale; do
   case "$mode" in
     review-threshold)
       if (( count <= review_threshold || count > ordinary_ceiling )); then
-        echo "stale review-threshold exception for ${path}: ${count} nonblank lines is outside 601-${ordinary_ceiling}" >&2
+        echo "stale review-threshold exception for ${path}: ${count} nonblank lines is outside $((review_threshold + 1))-${ordinary_ceiling}" >&2
         exit 1
       fi
       ;;

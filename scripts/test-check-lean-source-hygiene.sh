@@ -83,14 +83,14 @@ expect_failure() {
 }
 
 over_ceiling="$(new_fixture over-ceiling)"
-write_nonblank_lines "$over_ceiling/A12Kernel/Oversized.lean" 1001
+write_nonblank_lines "$over_ceiling/A12Kernel/Oversized.lean" 1201
 track_fixture "$over_ceiling"
-expect_failure "$over_ceiling" "A12Kernel/Oversized.lean: 1001 nonblank lines exceeds the ordinary hard ceiling of 1000"
+expect_failure "$over_ceiling" "A12Kernel/Oversized.lean: 1201 nonblank lines exceeds the ordinary hard ceiling of 1200"
 
 unreviewed="$(new_fixture unreviewed)"
-write_nonblank_lines "$unreviewed/A12Kernel/NeedsReview.lean" 601
+write_nonblank_lines "$unreviewed/A12Kernel/NeedsReview.lean" 801
 track_fixture "$unreviewed"
-expect_failure "$unreviewed" "A12Kernel/NeedsReview.lean: 601 nonblank lines requires an exact reviewed exception"
+expect_failure "$unreviewed" "A12Kernel/NeedsReview.lean: 801 nonblank lines requires an exact reviewed exception"
 
 umbrella="$(new_fixture umbrella)"
 printf '%s\n' 'import A12Kernel.Basic' 'def executableContent := 1' > "$umbrella/A12Kernel.lean"
@@ -104,14 +104,14 @@ track_fixture "$stale"
 expect_failure "$stale" "stale source-hygiene exception path is not a tracked Lean file: A12Kernel/Missing.lean"
 
 unauthorized="$(new_fixture unauthorized-exception)"
-write_nonblank_lines "$unauthorized/A12Kernel/OtherAudit.lean" 1001
+write_nonblank_lines "$unauthorized/A12Kernel/OtherAudit.lean" 1201
 write_testing_doc "$unauthorized/docs/TESTING.md" \
   'A12Kernel/OtherAudit.lean | exceptional-ceiling | unauthorized registry'
 track_fixture "$unauthorized"
 expect_failure "$unauthorized" "only A12Kernel/TrustAudit.lean may use the exceptional-ceiling mode"
 
 duplicate="$(new_fixture duplicate-exception)"
-write_nonblank_lines "$duplicate/A12Kernel/Reviewed.lean" 601
+write_nonblank_lines "$duplicate/A12Kernel/Reviewed.lean" 801
 write_testing_doc "$duplicate/docs/TESTING.md" \
   'A12Kernel/Reviewed.lean | review-threshold | first rationale' \
   'A12Kernel/Reviewed.lean | review-threshold | second rationale'
@@ -119,29 +119,29 @@ track_fixture "$duplicate"
 expect_failure "$duplicate" "duplicate source-hygiene exception path: A12Kernel/Reviewed.lean"
 
 malformed_registry="$(new_fixture malformed-registry)"
-write_registry_lines "$malformed_registry/A12Kernel/TrustAudit.lean" 1001
+write_registry_lines "$malformed_registry/A12Kernel/TrustAudit.lean" 1201
 printf '%s\n' 'example : True := by trivial' >> "$malformed_registry/A12Kernel/TrustAudit.lean"
 write_testing_doc "$malformed_registry/docs/TESTING.md" \
   'A12Kernel/TrustAudit.lean | exceptional-ceiling | single-session theorem-root registry'
 track_fixture "$malformed_registry"
-expect_failure "$malformed_registry" "A12Kernel/TrustAudit.lean:1002: exceptional registry contains semantic or fixture declaration"
+expect_failure "$malformed_registry" "A12Kernel/TrustAudit.lean:1202: exceptional registry contains semantic or fixture declaration"
 
 green="$(new_fixture green)"
-write_nonblank_lines "$green/A12Kernel/Ordinary.lean" 600
-write_nonblank_lines "$green/A12Kernel/Reviewed.lean" 601
-write_registry_lines "$green/A12Kernel/TrustAudit.lean" 1001
+write_nonblank_lines "$green/A12Kernel/Ordinary.lean" 800
+write_nonblank_lines "$green/A12Kernel/Reviewed.lean" 801
+write_registry_lines "$green/A12Kernel/TrustAudit.lean" 1201
 write_testing_doc "$green/docs/TESTING.md" \
   'A12Kernel/Reviewed.lean | review-threshold | cohesive reviewed owner' \
   'A12Kernel/TrustAudit.lean | exceptional-ceiling | single-session theorem-root registry'
 mkdir -p "$green/.lake/build"
-write_nonblank_lines "$green/.lake/build/Generated.lean" 1200
+write_nonblank_lines "$green/.lake/build/Generated.lean" 1400
 track_fixture "$green"
 if ! output="$(cd "$green" && ./scripts/check-lean-source-hygiene.sh 2>&1)"; then
   printf '%s\n' "$output" >&2
   echo "source-hygiene self-test expected the valid fixture to pass" >&2
   exit 1
 fi
-if [[ "$output" != "Lean source hygiene passed: 5 tracked files; largest ordinary file 601 nonblank lines; 2 reviewed exceptions" ]]; then
+if [[ "$output" != "Lean source hygiene passed: 5 tracked files; largest ordinary file 801 nonblank lines; 2 reviewed exceptions" ]]; then
   printf 'unexpected source-hygiene success summary: %s\n' "$output" >&2
   exit 1
 fi
