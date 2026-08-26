@@ -37,8 +37,13 @@ private def nestedSource : FlatFieldDecl := {
     repeatableScope := [10, 20]
 }
 
+private def unrelated : FlatFieldDecl := {
+  target with id := 6, name := "Unrelated"
+}
+
 private def model : FlatModel := {
-  fields := [target, source, confirmSource, repeatedTarget, nestedSource]
+  fields := [target, source, confirmSource, repeatedTarget, nestedSource,
+    unrelated]
   repeatableGroups := [
     { level := 10, path := ["Review", "Rows"], repeatability := some 4 },
     { level := 20, path := ["Review", "Rows", "Details"], repeatability := some 3 }]
@@ -88,6 +93,26 @@ private def result? (sourceStored : Option String) :
   let input ← input? sourceStored
   operation.execute input |>.toOption
 
+private def document? (targetStored sourceStored : Option String)
+    (unrelatedStored : String := "false") : Option (CheckedDocument model) :=
+  let placed (field : FlatFieldDecl) (stored : String)
+      (path : List Nat := []) : ClassifiedCellInput := {
+    address := { field := field.id, path }
+    stored
+    raw := classifyStoredBooleanText stored
+  }
+  checkDocument prepared "en_US" {
+    instantiatedRows := [{ group := 10, path := [1] }]
+    cells := (targetStored.map (placed target)).toList ++
+      (sourceStored.map (fun stored => placed source stored [1])).toList ++
+      [placed unrelated unrelatedStored]
+  } |>.toOption
+
+private def resultView? (input : CheckedDocument model)
+    (residualMessages : List FormalCause := []) := do
+  let operation ← checked? target.id (star "Approved")
+  operation.executeResult input residualMessages |>.toOption
+
 /- The externally measured empty selection clears a seeded false target, while a filled true source preserves true. -/
 example :
     result? none = some .noValue ∧
@@ -100,6 +125,62 @@ example : result? (some "false") = some (.value false) := by
 
 /- A reached malformed Boolean poisons rather than clearing; this internal branch is not externally calibrated by the source case. -/
 example : result? (some "TRUE") = some (.poison .booleanToken) := by
+  native_decide
+
+/- Typed source equality determines the changed subset before application; an unchanged success remains inert against a different destination. -/
+example : (do
+    let input ← document? (some "true") (some "true")
+    let destination ← document? (some "false") none
+    let result ← resultView? input
+    let applied := result.applyToChecked destination
+    pure (result.withoutErrors, result.withChanges, result.withErrors,
+      applied target.id, applied unrelated.id)) =
+  some ([{ targetField := target.id, value := true }], [], [],
+    .presentValue false, .presentValue false) := by
+  native_decide
+
+/- A changed Boolean value overwrites only the exact checked target. -/
+example : (do
+    let input ← document? (some "false") (some "true")
+    let destination ← document? (some "false") none
+    let result ← resultView? input
+    let applied := result.applyToChecked destination
+    pure (result.withChanges, applied target.id, applied unrelated.id)) =
+  some ([{ targetField := target.id, value := true }],
+    .presentValue true, .presentValue false) := by
+  native_decide
+
+/- Exhaustion clears a source-filled target and materializes an absent destination target; an absent source target mints no action. -/
+example : (do
+    let filledInput ← document? (some "false") none
+    let absentInput ← document? none none
+    let destination ← document? none none
+    let filledResult ← resultView? filledInput
+    let absentResult ← resultView? absentInput
+    pure (filledResult.cleared,
+      (filledResult.applyToChecked destination) target.id,
+      absentResult.cleared,
+      (absentResult.applyToChecked destination) target.id)) =
+  some ([target.id], .presentEmpty, [], .absent) := by
+  native_decide
+
+/- Reached formal poison has no computed-error payload and applies through the source-filled clear action. -/
+example : (do
+    let input ← document? (some "false") (some "TRUE")
+    let destination ← document? (some "true") none
+    let result ← resultView? input
+    let applied := result.applyToChecked destination
+    pure (result.withoutErrors, result.withErrors, result.cleared,
+      applied target.id, applied unrelated.id)) =
+  some ([], [], [target.id], .presentEmpty, .presentValue false) := by
+  native_decide
+
+/- The independently supplied residual channel is retained and solely controls the Boolean result's error predicate. -/
+example : (do
+    let input ← document? (some "true") (some "true")
+    let result ← resultView? input [.malformed]
+    pure (result.formalErrorsInOperands, result.noErrorOccurred)) =
+  some ([.malformed], false) := by
   native_decide
 
 /- The checked boundary admits only a fixed Boolean target and one direct single-level starred Boolean source. -/

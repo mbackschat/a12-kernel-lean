@@ -16,4 +16,16 @@ theorem firstFilledBoolean_false_is_value
       .value false := by
   rfl
 
+/-- Checked execution delegates the supplied outcome to the Boolean result classifier without changing its target or residual channel. -/
+theorem checkedBooleanFirstFilledComputation_executeResult_projects
+    (operation : CheckedBooleanFirstFilledComputation model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage)
+    (outcome : FirstFilledBooleanComputationResult)
+    (evaluated : operation.execute input = .ok outcome) :
+    operation.executeResult input residualMessages =
+      .ok (BooleanFirstFilledComputationRunView.fromOutcome operation input
+        residualMessages outcome) := by
+  rw [CheckedBooleanFirstFilledComputation.executeResult, evaluated]
+  rfl
+
 end A12Kernel
