@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CurrentRepetitionComputation
+import A12Kernel.Elaboration.NumericComputation.RunApplication
 
 /-! # CurrentRepetition computation cascade locks -/
 
@@ -93,6 +94,16 @@ private def numericCell (field : FieldId) (row : Nat) (value : Int) :
   numericDecimal := some { unscaled := value, scale := 0 }
 }
 
+private def oneRowInputWithTargets? (baseValue firstValue secondValue : Int) :
+    Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := [{ group := lines.level, path := [1] }]
+    cells := [
+      numericCell base.id 1 baseValue,
+      numericCell first.id 1 firstValue,
+      numericCell second.id 1 secondValue]
+  }).toOption
+
 private def twoRowInput? (firstBase : ClassifiedCellInput) :
     Option (CheckedDocument model) :=
   (checkDocument prepared "en_US" {
@@ -107,6 +118,12 @@ private def twoRowInput? (firstBase : ClassifiedCellInput) :
       numericCell first.id 2 110,
       numericCell second.id 2 1100]
   }).toOption
+
+private def resultView? (input : CheckedDocument model) :
+    Option (NumericComputationRunView
+      (ComputationFormalMessage Unit) CellAddr) := do
+  let plan ← plan?
+  plan.executeResult input (fun _ => ()) [] |>.toOption
 
 private def twoRowOutcomes? (firstBase : ClassifiedCellInput) :
     Option CurrentRepetitionNumberCascadeOutcomes := do
@@ -201,6 +218,70 @@ example :
         .accepted { unscaled := 7, scale := 0 },
         { field := second.id, path := [1] },
         .accepted { unscaled := 7, scale := 0 }) := by
+  native_decide
+
+/- The fixed cascade projects both addressed successes through the established Numeric result and applies only their retained changes to a separate destination. -/
+example : (do
+    let input ← input? 1
+    let view ← resultView? input
+    let destination ← oneRowInputWithTargets? 99 70 700
+    let applied ← view.applyToChecked destination |>.toOption
+    pure (view.withoutErrors, view.withChanges,
+      applied.stateAt { field := base.id, path := [1] },
+      applied.stateAt { field := first.id, path := [1] },
+      applied.stateAt { field := second.id, path := [1] })) =
+    some ([
+      { targetField := { field := first.id, path := [1] },
+        value := { unscaled := 7, scale := 0 } },
+      { targetField := { field := second.id, path := [1] },
+        value := { unscaled := 7, scale := 0 } }], [
+      { targetField := { field := first.id, path := [1] },
+        value := { unscaled := 7, scale := 0 } },
+      { targetField := { field := second.id, path := [1] },
+        value := { unscaled := 7, scale := 0 } }],
+      .presentValue (.decimal { unscaled := 99, scale := 0 }),
+      .presentValue (.decimal { unscaled := 7, scale := 0 }),
+      .presentValue (.decimal { unscaled := 7, scale := 0 })) := by
+  native_decide
+
+/- Both phase results classify against their pre-computation source states, so source-identical successes remain inert against a different destination. -/
+example : (do
+    let input ← oneRowInputWithTargets? 7 7 7
+    let view ← resultView? input
+    let destination ← oneRowInputWithTargets? 99 70 700
+    let applied ← view.applyToChecked destination |>.toOption
+    pure (view.withoutErrors, view.withChanges,
+      applied.stateAt { field := first.id, path := [1] },
+      applied.stateAt { field := second.id, path := [1] })) =
+    some ([
+      { targetField := { field := first.id, path := [1] },
+        value := { unscaled := 7, scale := 0 } },
+      { targetField := { field := second.id, path := [1] },
+        value := { unscaled := 7, scale := 0 } }], [],
+      .presentValue (.decimal { unscaled := 70, scale := 0 }),
+      .presentValue (.decimal { unscaled := 700, scale := 0 })) := by
+  native_decide
+
+/- Reached poison clears both source-filled phase targets at its exact row while later-row successes stay changed and apply independently. -/
+example : (do
+    let input ← twoRowInput? {
+      address := { field := base.id, path := [1] }
+      stored := "bad"
+      raw := .rejected .malformed
+    }
+    let view ← resultView? input
+    let applied ← view.applyToChecked input |>.toOption
+    pure (view.cleared, view.withErrors,
+      applied.stateAt { field := first.id, path := [1] },
+      applied.stateAt { field := second.id, path := [1] },
+      applied.stateAt { field := first.id, path := [2] },
+      applied.stateAt { field := second.id, path := [2] })) =
+    some ([
+      { field := first.id, path := [1] },
+      { field := second.id, path := [1] }], [],
+      .presentEmpty, .presentEmpty,
+      .presentValue (.decimal { unscaled := 11, scale := 0 }),
+      .presentValue (.decimal { unscaled := 11, scale := 0 })) := by
   native_decide
 
 /- Cross-group structural sources and reverse field edges fail before execution. -/

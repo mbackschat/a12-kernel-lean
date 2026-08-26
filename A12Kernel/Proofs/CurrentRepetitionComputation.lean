@@ -61,4 +61,19 @@ theorem checkedCurrentRepetitionNumberCascade_positiveGuard_missing
       .error (.missingBinding plan.source.group.level) := by
   exact checkedCurrentRepetitionSource_positiveGuard_missing plan.source
 
+/-- Fixed-cascade result construction delegates its already-sourced addressed outcomes to the established extensional Numeric carrier. -/
+theorem checkedCurrentRepetitionNumberCascade_executeResult_projects
+    (plan : CheckedCurrentRepetitionNumberCascade model)
+    (input : CheckedDocument model)
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload))
+    (outcomes : CurrentRepetitionNumberCascadeOutcomes)
+    (evaluated : plan.execute input = .ok outcomes) :
+    plan.executeResult input payloadAt supplied =
+      .ok (NumericComputationRunView.fromSourceOutcomesWithMessages
+        MessagePointer.ofCellAddr payloadAt supplied
+        (outcomes.rows.flatMap fun row => [row.first, row.second])) := by
+  rw [CheckedCurrentRepetitionNumberCascade.executeResult, evaluated]
+  rfl
+
 end A12Kernel

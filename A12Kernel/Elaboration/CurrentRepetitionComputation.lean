@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.CurrentRepetition
 import A12Kernel.Elaboration.AddressedNumberField
+import A12Kernel.Elaboration.NumericComputation.RunResult
 import A12Kernel.Semantics.NumericDependency
 
 /-! # CurrentRepetition Number cascade -/
@@ -168,6 +169,19 @@ def execute (plan : CheckedCurrentRepetitionNumberCascade model)
     Except CurrentRepetitionNumberCascadeFault
       CurrentRepetitionNumberCascadeOutcomes :=
   plan.executeWithRead input input.read
+
+/-- Execute the fixed cascade and project both exact addressed phase outcomes through the established Numeric result carrier. The carrier's collections are extensional, so pairing the two outcomes per retained row makes no public phase-order claim. -/
+def executeResult (plan : CheckedCurrentRepetitionNumberCascade model)
+    (input : CheckedDocument model)
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload)) :
+    Except CurrentRepetitionNumberCascadeFault
+      (NumericComputationRunView
+        (ComputationFormalMessage Payload) CellAddr) := do
+  let outcomes ← plan.execute input
+  let sourced := outcomes.rows.flatMap fun row => [row.first, row.second]
+  pure (NumericComputationRunView.fromSourceOutcomesWithMessages
+    MessagePointer.ofCellAddr payloadAt supplied sourced)
 
 end CheckedCurrentRepetitionNumberCascade
 
