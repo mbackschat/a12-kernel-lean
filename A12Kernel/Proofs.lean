@@ -59,6 +59,7 @@ import A12Kernel.Proofs.TemporalSourceTargetState
 import A12Kernel.Proofs.TemporalComputationResult
 import A12Kernel.Proofs.FullDateComputationResult
 import A12Kernel.Proofs.DateTimeComputationResult
+import A12Kernel.Proofs.TemporalErroredComputationApplication
 import A12Kernel.Proofs.FullDateComputationApplication
 import A12Kernel.Proofs.DateTimeComputationApplication
 import A12Kernel.Proofs.FullDateComputation

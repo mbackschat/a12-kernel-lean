@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.FullDateComputationApplication
+import A12Kernel.Proofs.TemporalErroredComputationApplication
 import A12Kernel.Proofs.FullDateApplication
 
 /-! # Full-Date whole-result application laws -/
@@ -9,8 +9,8 @@ theorem fullDateComputationDestination_update_same
     (destination : FullDateComputationDestination)
     (target : FieldId) (state : FullDateTargetState) :
     destination.update target state target = state := by
-  simp [FullDateComputationDestination.update,
-    TemporalComputationDestination.update]
+  simpa [FullDateComputationDestination.update] using
+    temporalComputationDestination_update_same destination target state
 
 /-- One action delegates exactly to the one-target full-Date transition. -/
 theorem fullDateComputationDestination_applyOutcome_same
@@ -26,11 +26,8 @@ theorem fullDateComputationDestination_applyRetainedClear_same
     (destination : FullDateComputationDestination)
     (target : FieldId) :
     destination.applyRetainedClear target target = .presentEmpty := by
-  simp [FullDateComputationDestination.applyRetainedClear,
-    TemporalComputationDestination.applyRetainedClear,
-    TemporalComputationDestination.update,
-    TemporalTargetState.applyRetainedClear]
-  cases destination target <;> rfl
+  simpa [FullDateComputationDestination.applyRetainedClear] using
+    temporalComputationDestination_applyRetainedClear_same destination target
 
 /-- One action preserves every other destination field. -/
 theorem fullDateComputationDestination_applyOutcome_other
@@ -51,7 +48,9 @@ theorem fullDateComputationRun_applyTo_noActions
     (noClears : view.cleared = []) :
     view.applyTo destination = .ok destination := by
   simp [FullDateComputationRunView.applyTo,
-    FullDateComputationRunView.actionTargets, noChanges, noErrors, noClears,
+    noChanges, noErrors, noClears,
+    TemporalErroredComputationRunView.applyTo,
+    TemporalErroredComputationRunView.actionTargets,
     FieldId.firstDuplicate?]
 
 /-- Duplicate action targets fail before destination state participates. -/
@@ -60,7 +59,15 @@ theorem fullDateComputationRun_applyTo_duplicateTarget
     (destination : FullDateComputationDestination) (field : FieldId)
     (duplicate : FieldId.firstDuplicate? view.actionTargets = some field) :
     view.applyTo destination = .error (.duplicateActionTarget field) := by
-  simp [FullDateComputationRunView.applyTo, duplicate]
+  have duplicate' :
+      FieldId.firstDuplicate?
+        (TemporalErroredComputationRunView.actionTargets view
+          (fun computed => computed.targetField)
+          (fun computed => computed.targetField)) = some field := by
+    simpa [FullDateComputationRunView.actionTargets] using duplicate
+  simp [FullDateComputationRunView.applyTo,
+    TemporalErroredComputationRunView.applyTo,
+    duplicate']
 
 /-- A source-unchanged accepted Date is not applied to a different destination. -/
 theorem fullDateComputationRun_unchanged_notApplied
@@ -72,7 +79,8 @@ theorem fullDateComputationRun_unchanged_notApplied
     (FullDateComputationRunView.fromOutcomes input messages
       [(target, .accepted value)]).applyTo destination = .ok destination := by
   simp [FullDateComputationRunView.applyTo,
-    FullDateComputationRunView.actionTargets,
+    TemporalErroredComputationRunView.applyTo,
+    TemporalErroredComputationRunView.actionTargets,
     FullDateComputationRunView.fromOutcomes,
     TemporalComputationRunView.fromErrorOutcomes,
     FullDateComputationRunView.successfulInstance?,
@@ -93,7 +101,8 @@ theorem fullDateComputationRun_changed_applies
       [(target, .accepted value)]).applyTo destination =
         .ok (destination.applyOutcome target (.accepted value)) := by
   simp [FullDateComputationRunView.applyTo,
-    FullDateComputationRunView.actionTargets,
+    TemporalErroredComputationRunView.applyTo,
+    TemporalErroredComputationRunView.actionTargets,
     FullDateComputationRunView.fromOutcomes,
     TemporalComputationRunView.fromErrorOutcomes,
     FullDateComputationRunView.successfulInstance?,
@@ -112,7 +121,8 @@ theorem fullDateComputationRun_error_applies
       [(target, .errored attempted cause)]).applyTo destination =
         .ok (destination.applyOutcome target (.errored attempted cause)) := by
   simp [FullDateComputationRunView.applyTo,
-    FullDateComputationRunView.actionTargets,
+    TemporalErroredComputationRunView.applyTo,
+    TemporalErroredComputationRunView.actionTargets,
     FullDateComputationRunView.fromOutcomes,
     TemporalComputationRunView.fromErrorOutcomes,
     FullDateComputationRunView.successfulInstance?,
@@ -131,7 +141,8 @@ theorem fullDateComputationRun_cleared_applies
       [(target, .noValue)]).applyTo destination =
         .ok (destination.applyRetainedClear target) := by
   simp [FullDateComputationRunView.applyTo,
-    FullDateComputationRunView.actionTargets,
+    TemporalErroredComputationRunView.applyTo,
+    TemporalErroredComputationRunView.actionTargets,
     FullDateComputationRunView.fromOutcomes,
     TemporalComputationRunView.fromErrorOutcomes,
     FullDateComputationRunView.successfulInstance?,
