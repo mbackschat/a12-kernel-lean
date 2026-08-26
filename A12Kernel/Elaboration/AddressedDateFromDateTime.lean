@@ -12,29 +12,18 @@ inductive AddressedDateFromDateTimeElabError where
   | target (cause : FullDateTargetElabError)
   | targetOutsideDeclaringGroup (path declaringGroup : GroupPath)
   | targetNotRepeatable (path : List String)
-  | source (cause : ResolveError)
-  | sourceNotTemporal (field : FieldId)
-  | sourceKind (field : FieldId) (actual : TemporalKind)
-  | sourceComponents (field : FieldId) (actual : TemporalComponents)
-  | scopeMismatch (target source : List String)
+  | source (cause : BoundCompleteDateTimeSourceElabError)
   deriving Repr, DecidableEq
 
 /-- One exact repeatable extraction certified against a validated model. -/
 structure CheckedAddressedDateFromDateTime (model : FlatModel) where
   private mk ::
   declaringGroup : GroupPath
-  sourceReference : SurfaceFieldPath
-  sourceDeclaration : FlatFieldDecl
-  source : FlatTemporalField
   target : CheckedFullDateTarget model
-  sourceResolved : model.resolveFieldDeclarationUnchecked declaringGroup sourceReference = .ok sourceDeclaration
-  sourceOwned : sourceDeclaration.toTemporalField? = some source
+  sourceBinding : CheckedBoundCompleteDateTimeSource model declaringGroup
+    target.checked.declaration.repeatableScope
   targetInDeclaringGroup : target.checked.declaration.groupPath = declaringGroup
   targetRepeatable : target.checked.declaration.repeatableScope ≠ []
-  sourceScopeBound : sourceDeclaration.repetitionBoundBy
-    target.checked.declaration.repeatableScope = true
-  sourceAdmitted : model.admitsCompleteDateTimeSourceIn
-    target.checked.declaration.repeatableScope source = true
 
 /-- Certify one source whose repeatable levels the target's own scope binds. -/
 def checkAddressedDateFromDateTime
@@ -51,36 +40,17 @@ def checkAddressedDateFromDateTime
     if hRepeatable : target.checked.declaration.repeatableScope.isEmpty then
       throw (.targetNotRepeatable target.checked.declaration.path)
     else
-      match hResolved :
-          model.resolveFieldDeclarationUnchecked declaringGroup sourceReference with
-      | .error cause => throw (.source cause)
-      | .ok sourceDeclaration =>
-        match hSource : sourceDeclaration.toTemporalField? with
-        | none => throw (.sourceNotTemporal sourceDeclaration.id)
-        | some source =>
-          if source.kind != .dateTime then
-            throw (.sourceKind source.id source.kind)
-          else if !source.components.isFullDateTime then
-            throw (.sourceComponents source.id source.components)
-          else if hScope : sourceDeclaration.repetitionBoundBy
-              target.checked.declaration.repeatableScope = true then
-            if hAdmitted : model.admitsCompleteDateTimeSourceIn
-                target.checked.declaration.repeatableScope source then
-              pure {
-                declaringGroup, sourceReference, sourceDeclaration, source, target
-                sourceResolved := hResolved
-                sourceOwned := hSource
-                targetInDeclaringGroup := hGroup
-                targetRepeatable := by
-                  intro empty
-                  simp [empty] at hRepeatable
-                sourceScopeBound := hScope
-                sourceAdmitted := hAdmitted
-              }
-            else
-              throw (.source (.repeatableReference sourceDeclaration.path))
-          else
-            throw (.scopeMismatch target.checked.declaration.path sourceDeclaration.path)
+      let sourceBinding ← checkBoundCompleteDateTimeSource model declaringGroup
+        target.checked.declaration.path
+        target.checked.declaration.repeatableScope sourceReference
+        |>.mapError .source
+      pure {
+        declaringGroup, target, sourceBinding
+        targetInDeclaringGroup := hGroup
+        targetRepeatable := by
+          intro empty
+          simp [empty] at hRepeatable
+      }
   else
     throw (.targetOutsideDeclaringGroup target.checked.declaration.path declaringGroup)
 
@@ -142,12 +112,15 @@ private def evaluateAtEnvironment
     (input : CheckedDocument model) (environment : Env) :
     Except AddressedDateFromDateTimeFault AddressedDateFromDateTimeOutcome := do
   let sourcePath ←
-    (environment.pathForScope operation.sourceDeclaration.repeatableScope)
+    (environment.pathForScope
+      operation.sourceBinding.sourceDeclaration.repeatableScope)
       |>.mapError .environment
   let targetPath ←
     (environment.pathForScope operation.target.checked.declaration.repeatableScope)
       |>.mapError .environment
-  let sourceAddress : CellAddr := { field := operation.source.id, path := sourcePath }
+  let sourceAddress : CellAddr := {
+    field := operation.sourceBinding.source.id, path := sourcePath
+  }
   let targetAddress : CellAddr := {
     field := operation.target.checked.target.id, path := targetPath
   }

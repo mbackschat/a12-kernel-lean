@@ -41,6 +41,64 @@ def FlatModel.admitsCompleteDateTimeSource
     (model : FlatModel) (source : FlatTemporalField) : Bool :=
   model.admitsCompleteDateTimeSourceIn [] source
 
+/-- Static refusal while resolving one complete-DateTime source at a caller-selected reading scope. -/
+inductive BoundCompleteDateTimeSourceElabError where
+  | source (error : ResolveError)
+  | sourceNotTemporal (field : FieldId)
+  | sourceKind (field : FieldId) (actual : TemporalKind)
+  | sourceComponents (field : FieldId) (actual : TemporalComponents)
+  | scopeMismatch (reading source : List String)
+  deriving Repr, DecidableEq
+
+/-- One resolved complete-DateTime source whose repetition is bound by an exact caller-selected reading scope. -/
+structure CheckedBoundCompleteDateTimeSource (model : FlatModel)
+    (declaringGroup : GroupPath) (readingScope : List RepeatableLevel) where
+  private mk ::
+  sourceReference : SurfaceFieldPath
+  sourceDeclaration : FlatFieldDecl
+  source : FlatTemporalField
+  sourceResolved :
+    model.resolveFieldDeclarationUnchecked declaringGroup sourceReference =
+      .ok sourceDeclaration
+  sourceOwned : sourceDeclaration.toTemporalField? = some source
+  sourceScopeBound : sourceDeclaration.repetitionBoundBy readingScope = true
+  sourceAdmitted :
+    model.admitsCompleteDateTimeSourceIn readingScope source = true
+
+/-- Resolve and certify one complete-DateTime source against the reading scope that will supply its concrete repetition environment. -/
+def checkBoundCompleteDateTimeSource
+    (model : FlatModel) (declaringGroup : GroupPath)
+    (readingPath : List String) (readingScope : List RepeatableLevel)
+    (sourceReference : SurfaceFieldPath) :
+    Except BoundCompleteDateTimeSourceElabError
+      (CheckedBoundCompleteDateTimeSource model declaringGroup readingScope) :=
+  match hResolved :
+      model.resolveFieldDeclarationUnchecked declaringGroup sourceReference with
+  | .error cause => .error (.source cause)
+  | .ok sourceDeclaration =>
+      match hSource : sourceDeclaration.toTemporalField? with
+      | none => .error (.sourceNotTemporal sourceDeclaration.id)
+      | some source =>
+          if source.kind != .dateTime then
+            .error (.sourceKind source.id source.kind)
+          else if !source.components.isFullDateTime then
+            .error (.sourceComponents source.id source.components)
+          else if hScope :
+              sourceDeclaration.repetitionBoundBy readingScope = true then
+            if hAdmitted :
+                model.admitsCompleteDateTimeSourceIn readingScope source then
+              .ok {
+                sourceReference, sourceDeclaration, source
+                sourceResolved := hResolved
+                sourceOwned := hSource
+                sourceScopeBound := hScope
+                sourceAdmitted := hAdmitted
+              }
+            else
+              .error (.source (.repeatableReference sourceDeclaration.path))
+          else
+            .error (.scopeMismatch readingPath sourceDeclaration.path)
+
 /-- Static refusal before a `DateFromDateTime` read is admitted. The Kernel reports one class,
 `MVK_WRONG_DATE_FORMAT_FOR_OP`, for every source shape below; the arms are split finer here so a
 consumer can say *which* requirement failed while still mapping them all to that one code. -/
