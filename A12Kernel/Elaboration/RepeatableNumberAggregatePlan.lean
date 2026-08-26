@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.AddressedNumberField
 import A12Kernel.Elaboration.AddressedNumberBinary
 import A12Kernel.Elaboration.AddressedNumberAbs
 import A12Kernel.Elaboration.AddressedNumberRound
+import A12Kernel.Elaboration.AddressedNumberExtremum
 import A12Kernel.Elaboration.NumericComputation.Target
 
 /-! # Checked repeatable Number to aggregate plans -/
@@ -14,6 +15,7 @@ inductive RepeatableNumberAggregateProducerKind where
   | binary (operation : NumericArithmeticOp)
   | abs
   | round (mode : DecimalRoundingMode) (places : RoundingPlaces)
+  | extremum (operation : NumericExtremumOp)
   deriving Repr, DecidableEq
 
 /-- One completed row-local producer admitted by this fixed aggregate route. -/
@@ -22,6 +24,7 @@ inductive CheckedRepeatableNumberAggregateProducer (model : FlatModel) where
   | binary (operation : CheckedAddressedNumberBinary model)
   | abs (operation : CheckedAddressedNumberAbs model)
   | round (operation : CheckedAddressedNumberRound model)
+  | extremum (operation : CheckedAddressedNumberExtremum model)
 
 namespace CheckedRepeatableNumberAggregateProducer
 
@@ -31,12 +34,14 @@ def kind : CheckedRepeatableNumberAggregateProducer model →
   | .binary operation => .binary operation.op
   | .abs _ => .abs
   | .round operation => .round operation.mode operation.places
+  | .extremum operation => .extremum operation.op
 
 def targetField : CheckedRepeatableNumberAggregateProducer model → FieldId
   | .direct operation => operation.placement.targetField
   | .binary operation => operation.pair.left.placement.targetField
   | .abs operation => operation.numberSource.placement.targetField
   | .round operation => operation.numberSource.placement.targetField
+  | .extremum operation => operation.target.targetField
 
 def targetDeclaration : CheckedRepeatableNumberAggregateProducer model →
     FlatFieldDecl
@@ -44,12 +49,14 @@ def targetDeclaration : CheckedRepeatableNumberAggregateProducer model →
   | .binary operation => operation.pair.left.placement.targetDeclaration
   | .abs operation => operation.numberSource.placement.targetDeclaration
   | .round operation => operation.numberSource.placement.targetDeclaration
+  | .extremum operation => operation.target.targetDeclaration
 
 def declaringGroup : CheckedRepeatableNumberAggregateProducer model → GroupPath
   | .direct operation => operation.placement.declaringGroup
   | .binary operation => operation.pair.left.placement.declaringGroup
   | .abs operation => operation.numberSource.placement.declaringGroup
   | .round operation => operation.numberSource.placement.declaringGroup
+  | .extremum operation => operation.target.declaringGroup
 
 def sourceFields : CheckedRepeatableNumberAggregateProducer model → List FieldId
   | .direct operation => [operation.placement.sourceDeclaration.id]
@@ -58,6 +65,7 @@ def sourceFields : CheckedRepeatableNumberAggregateProducer model → List Field
       operation.pair.right.placement.sourceDeclaration.id]
   | .abs operation => [operation.numberSource.placement.sourceDeclaration.id]
   | .round operation => [operation.numberSource.placement.sourceDeclaration.id]
+  | .extremum operation => operation.sourceFields
 
 def execute (producer : CheckedRepeatableNumberAggregateProducer model)
     (input : CheckedDocument model) :
@@ -68,6 +76,7 @@ def execute (producer : CheckedRepeatableNumberAggregateProducer model)
   | .binary operation => operation.execute input
   | .abs operation => operation.execute input
   | .round operation => operation.execute input
+  | .extremum operation => operation.execute input
 
 end CheckedRepeatableNumberAggregateProducer
 
@@ -170,6 +179,7 @@ inductive RepeatableNumberAggregateCascadeElabError where
   | binary (cause : AddressedNumberBinaryElabError)
   | abs (cause : AddressedNumberAbsElabError)
   | round (cause : AddressedNumberRoundElabError)
+  | extremum (cause : AddressedNumberExtremumElabError)
   | aggregate (cause : NumericComputationElabError)
   | incoherentAggregate
   | dependency (expected actual : FieldId)
@@ -411,6 +421,23 @@ def checkRepeatableNumberRoundStarListAggregateCascade
   let row ← checkAddressedNumberRound model rowDeclaringGroup
       rowTarget rowSource mode places |>.mapError .round
   finishRepeatableNumberAggregateCascade model (.round row)
+    aggregateDeclaringGroup aggregateTarget aggregateSource operation
+
+/-- Operand-list-extremum-producer counterpart of the checked star-list aggregate route. -/
+def checkRepeatableNumberExtremumStarListAggregateCascade
+    (model : FlatModel)
+    (rowDeclaringGroup : GroupPath) (rowTarget : FieldId)
+    (firstOperand : SurfaceAddressedNumberExtremumOperand)
+    (restOperands : List SurfaceAddressedNumberExtremumOperand)
+    (rowOperation : NumericExtremumOp)
+    (aggregateDeclaringGroup : GroupPath) (aggregateTarget : FieldId)
+    (aggregateSource : SurfaceNumberEntitySource)
+    (operation : NumericAggregateOp) :
+    Except RepeatableNumberAggregateCascadeElabError
+      (CheckedRepeatableNumberAggregateCascade model) := do
+  let row ← checkAddressedNumberExtremumOperands model rowDeclaringGroup
+      rowTarget firstOperand restOperands rowOperation |>.mapError .extremum
+  finishRepeatableNumberAggregateCascade model (.extremum row)
     aggregateDeclaringGroup aggregateTarget aggregateSource operation
 
 /-- Check the exact direct-assignment producer followed by a sole plain-star aggregate. -/
