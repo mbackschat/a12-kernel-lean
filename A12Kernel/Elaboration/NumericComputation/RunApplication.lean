@@ -46,6 +46,10 @@ inductive NumericComputationDocumentApplicationError where
   | invalidOneLevelScope (address : CellAddr) (expected : RepeatableLevel)
   | overCapacityTarget (address : CellAddr) (maximum : Nat)
   | unsupportedOneLevelDestination (level : RepeatableLevel)
+  | invalidTwoLevelScope (address : CellAddr)
+      (outer inner : RepeatableLevel)
+  | unsupportedTwoLevelDestination
+      (outer inner : RepeatableLevel)
   deriving Repr, DecidableEq
 
 /-- Validate one retained Number action address against the destination model and derive only its directly addressed repeatable ancestry. -/
@@ -236,6 +240,160 @@ def stateAt
 
 end NumericComputationOneLevelApplicationProjection
 
+/-- A bounded applied-document projection for two finite direct repetition levels. Each inner prefix belongs only to its concrete outer coordinate; padding an outer predecessor never invents an inner row. -/
+structure NumericComputationTwoLevelApplicationProjection
+    (model : FlatModel) where
+  private mk ::
+  private applied : NumericComputationApplicationProjection model
+  private outerGroup : RepeatableGroupDecl
+  private innerGroup : RepeatableGroupDecl
+  private maximumOuter : Nat
+  private maximumInner : Nat
+  private outerRowCount : Nat
+  private innerRowCount : Nat → Nat
+
+namespace NumericComputationTwoLevelApplicationProjection
+
+private def selectedRows
+    (destination : CheckedDocument model) (level : RepeatableLevel) :
+    List RowAddr :=
+  destination.source.instantiatedRows.filter fun row => row.group == level
+
+private def countInnerRows (rows : List RowAddr) (outer : Nat) : Nat :=
+  rows.countP fun row => match row.path with
+    | candidate :: _ => candidate == outer
+    | [] => false
+
+private def ofApplied
+    (destination : CheckedDocument model)
+    (applied : NumericComputationApplicationProjection model)
+    (outer inner : RepeatableLevel) :
+    Except NumericComputationDocumentApplicationError
+      (NumericComputationTwoLevelApplicationProjection model) := do
+  let outerGroup ← match model.repeatableGroupAtLevel? outer with
+    | some group => pure group
+    | none => throw (.unknownRepeatableLevel outer)
+  let innerGroup ← match model.repeatableGroupAtLevel? inner with
+    | some group => pure group
+    | none => throw (.unknownRepeatableLevel inner)
+  if model.repeatableScopeForGroupPath outerGroup.path != [outer] then
+    throw (.unsupportedTwoLevelDestination outer inner)
+  if model.repeatableScopeForGroupPath innerGroup.path != [outer, inner] then
+    throw (.unsupportedTwoLevelDestination outer inner)
+  let maximumOuter ← match outerGroup.repeatability with
+    | some maximum => pure maximum
+    | none => throw (.unboundedRepeatableLevel outer)
+  let maximumInner ← match innerGroup.repeatability with
+    | some maximum => pure maximum
+    | none => throw (.unboundedRepeatableLevel inner)
+  let outerRows := selectedRows destination outer
+  let innerRows := selectedRows destination inner
+  if outerRows.any fun row => match row.path with
+      | [coordinate] => coordinate > maximumOuter
+      | _ => true then
+    throw (.unsupportedTwoLevelDestination outer inner)
+  if innerRows.any fun row => match row.path with
+      | [_, coordinate] => coordinate > maximumInner
+      | _ => true then
+    throw (.unsupportedTwoLevelDestination outer inner)
+  pure {
+    applied, outerGroup, innerGroup, maximumOuter, maximumInner
+    outerRowCount := outerRows.length
+    innerRowCount := countInnerRows innerRows
+  }
+
+private def coordinatesFor
+    (projection : NumericComputationTwoLevelApplicationProjection model)
+    (address : CellAddr) :
+    Except NumericComputationDocumentApplicationError (Nat × Nat) := do
+  let declaration ←
+    (model.lookupUniqueId address.field).mapError (.targetField address)
+  match declaration.policy.kind with
+  | .number _ => pure ()
+  | _ => throw (.nonNumericTarget address)
+  if declaration.repeatableScope !=
+      [projection.outerGroup.level, projection.innerGroup.level] then
+    throw (.invalidTwoLevelScope address
+      projection.outerGroup.level projection.innerGroup.level)
+  let (outer, inner) ← match address.path with
+    | [outer, inner] => pure (outer, inner)
+    | _ => throw (.invalidTargetDepth address 2)
+  if outer == 0 || inner == 0 then
+    throw (.zeroTargetCoordinate address)
+  if outer > projection.maximumOuter then
+    throw (.overCapacityTarget address projection.maximumOuter)
+  if inner > projection.maximumInner then
+    throw (.overCapacityTarget address projection.maximumInner)
+  pure (outer, inner)
+
+private def materializeAt
+    (projection : NumericComputationTwoLevelApplicationProjection model)
+    (address : CellAddr) :
+    Except NumericComputationDocumentApplicationError
+      (NumericComputationTwoLevelApplicationProjection model) := do
+  let (outer, inner) ← projection.coordinatesFor address
+  pure {
+    projection with
+    outerRowCount := max projection.outerRowCount outer
+    innerRowCount := fun candidate =>
+      if candidate == outer then max (projection.innerRowCount candidate) inner
+      else projection.innerRowCount candidate
+  }
+
+private def validateAt
+    (projection : NumericComputationTwoLevelApplicationProjection model)
+    (address : CellAddr) :
+    Except NumericComputationDocumentApplicationError
+      (NumericComputationTwoLevelApplicationProjection model) :=
+  projection.coordinatesFor address |>.map fun _ => projection
+
+/-- The selected outer and inner repetition levels. -/
+def levels
+    (projection : NumericComputationTwoLevelApplicationProjection model) :
+    RepeatableLevel × RepeatableLevel :=
+  (projection.outerGroup.level, projection.innerGroup.level)
+
+/-- The normalized outer prefix length. -/
+def outerExtent
+    (projection : NumericComputationTwoLevelApplicationProjection model) : Nat :=
+  projection.outerRowCount
+
+/-- The normalized inner prefix length below one concrete outer coordinate. -/
+def innerExtentAt
+    (projection : NumericComputationTwoLevelApplicationProjection model)
+    (outer : Nat) : Nat :=
+  projection.innerRowCount outer
+
+/-- The complete normalized outer predecessor prefix. -/
+def outerRows
+    (projection : NumericComputationTwoLevelApplicationProjection model) :
+    List RowAddr :=
+  (List.range projection.outerExtent).map fun offset =>
+    { group := projection.outerGroup.level, path := [offset + 1] }
+
+/-- The complete inner predecessor prefix scoped to one concrete outer coordinate. -/
+def innerRowsAt
+    (projection : NumericComputationTwoLevelApplicationProjection model)
+    (outer : Nat) : List RowAddr :=
+  (List.range (projection.innerExtentAt outer)).map fun offset =>
+    { group := projection.innerGroup.level, path := [outer, offset + 1] }
+
+/-- Every concrete inner row in outer-coordinate order. Synthetic outer predecessors with no addressed inner row contribute nothing. -/
+def leafRows
+    (projection : NumericComputationTwoLevelApplicationProjection model) :
+    List RowAddr :=
+  projection.outerRows.flatMap fun row => match row.path with
+    | [outer] => projection.innerRowsAt outer
+    | _ => []
+
+/-- Read one exact Number state after application. -/
+def stateAt
+    (projection : NumericComputationTwoLevelApplicationProjection model)
+    (address : CellAddr) : NumericTargetState :=
+  projection.applied.stateAt address
+
+end NumericComputationTwoLevelApplicationProjection
+
 namespace NumericComputationRunView
 
 inductive NumericComputationRunApplicationError
@@ -305,6 +463,20 @@ def applyToChecked
           pure (current.applyValue computed.targetField rows computed.value))
         afterErrors
 
+private def applyCheckedTopologyActions
+    (view : NumericComputationRunView ResidualMessage CellAddr)
+    (initial : Projection)
+    (materialize validate : Projection → CellAddr →
+      Except NumericComputationDocumentApplicationError Projection) :
+    Except NumericComputationDocumentApplicationError Projection := do
+  let afterCleared ← view.cleared.foldlM materialize initial
+  let afterErrors ← view.withErrors.foldlM
+    (fun current computed => validate current computed.targetField)
+    afterCleared
+  view.withChanges.foldlM
+    (fun current computed => materialize current computed.targetField)
+    afterErrors
+
 /-- Apply one retained Number run to a checked destination and expose the externally calibrated complete row prefix for one finite, direct repetition level. CLEARED and changed VALUE materialize their exact coordinate and every predecessor; ERRORED validates its address but does not create an absent row. Nested repetition and non-Number targets remain outside this bounded projection. -/
 def applyToCheckedOneLevel
     (view : NumericComputationRunView ResidualMessage CellAddr)
@@ -316,14 +488,24 @@ def applyToCheckedOneLevel
   let initial ←
     NumericComputationOneLevelApplicationProjection.ofApplied
       destination applied level
-  let afterCleared ← view.cleared.foldlM
-    (fun current address => current.materializeAt address) initial
-  let afterErrors ← view.withErrors.foldlM
-    (fun current computed => current.validateAt computed.targetField)
-    afterCleared
-  view.withChanges.foldlM
-    (fun current computed => current.materializeAt computed.targetField)
-    afterErrors
+  applyCheckedTopologyActions view initial
+    NumericComputationOneLevelApplicationProjection.materializeAt
+    NumericComputationOneLevelApplicationProjection.validateAt
+
+/-- Apply one retained Number run to a checked destination and expose the externally calibrated scoped predecessor topology for exactly two finite, direct repetition levels. CLEARED and changed VALUE materialize both exact coordinates and their local predecessors; ERRORED validates without creating absent rows. -/
+def applyToCheckedTwoLevel
+    (view : NumericComputationRunView ResidualMessage CellAddr)
+    (destination : CheckedDocument model)
+    (outer inner : RepeatableLevel) :
+    Except NumericComputationDocumentApplicationError
+      (NumericComputationTwoLevelApplicationProjection model) := do
+  let applied ← view.applyToChecked destination
+  let initial ←
+    NumericComputationTwoLevelApplicationProjection.ofApplied
+      destination applied outer inner
+  applyCheckedTopologyActions view initial
+    NumericComputationTwoLevelApplicationProjection.materializeAt
+    NumericComputationTwoLevelApplicationProjection.validateAt
 
 end NumericComputationRunView
 

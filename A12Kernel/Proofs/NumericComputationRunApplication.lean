@@ -102,6 +102,21 @@ theorem numericComputationOneLevelApplication_rows_prefix
         { group := projection.prefixExtent.1, path := [offset + 1] } := by
   rfl
 
+/-- Every two-level applied leaf is emitted in outer order from the predecessor prefix local to that exact outer coordinate. -/
+theorem numericComputationTwoLevelApplication_leafRows_scopedPrefix
+    (projection : NumericComputationTwoLevelApplicationProjection model) :
+    projection.leafRows =
+      (List.range projection.outerExtent).flatMap fun outerOffset =>
+        (List.range (projection.innerExtentAt (outerOffset + 1))).map
+          fun innerOffset => {
+            group := projection.levels.2
+            path := [outerOffset + 1, innerOffset + 1]
+          } := by
+  simp [NumericComputationTwoLevelApplicationProjection.leafRows,
+    NumericComputationTwoLevelApplicationProjection.outerRows,
+    NumericComputationTwoLevelApplicationProjection.innerRowsAt,
+    NumericComputationTwoLevelApplicationProjection.levels, List.flatMap_map]
+
 /-- Duplicate action targets fail before destination state participates. -/
 theorem numericComputationRun_applyTo_duplicateTarget
     {Target : Type} [DecidableEq Target]
