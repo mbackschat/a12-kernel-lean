@@ -1,46 +1,10 @@
 import A12Kernel.Elaboration.EnumerationComputationResult
+import A12Kernel.Proofs.ExactTokenComputationResult
+import A12Kernel.Proofs.StringComputationRunApplication
 
 /-! # Ordinary Enumeration computation result and application laws -/
 
 namespace A12Kernel
-
-private theorem oneTargetStringResult_actionsOwned
-    (target : FieldId) (outcome : StringTargetOutcome)
-    (source : StringTargetState) (residualMessages : List ResidualMessage) :
-    (StringComputationRunView.fromSourcedOutcomes residualMessages [{
-      targetField := target
-      outcome
-      source
-    }]).actionTargets.all (· == target) = true := by
-  cases outcome with
-  | accepted value =>
-      cases source with
-      | absent | presentEmpty =>
-          simp [StringComputationRunView.actionTargets,
-            StringComputationRunView.fromSourcedOutcomes,
-            StringComputationRunView.changedInstance?,
-            StringComputationRunView.successfulInstance?,
-            StringComputationRunView.computedError?,
-            StringComputationRunView.shouldClear,
-            StringTargetState.storedValue]
-      | presentValue prior =>
-          by_cases same : prior = value <;>
-            simp [StringComputationRunView.actionTargets,
-              StringComputationRunView.fromSourcedOutcomes,
-              StringComputationRunView.changedInstance?,
-              StringComputationRunView.successfulInstance?,
-              StringComputationRunView.computedError?,
-              StringComputationRunView.shouldClear,
-              StringTargetState.storedValue, same]
-  | noValue | errored _ _ | poison _ =>
-      cases source <;>
-        simp [StringComputationRunView.actionTargets,
-          StringComputationRunView.fromSourcedOutcomes,
-          StringComputationRunView.changedInstance?,
-          StringComputationRunView.successfulInstance?,
-          StringComputationRunView.computedError?,
-          StringComputationRunView.shouldClear,
-          StringTargetOutcome.hasComputedInstance]
 
 /-- Result construction retains the exact model-certified Enumeration target. -/
 theorem checkedEnumerationComputation_executeResult_target
@@ -54,27 +18,7 @@ theorem checkedEnumerationComputation_executeResult_hasNoTargetErrors
     (operation : CheckedEnumerationComputationOperation model)
     (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
     (operation.executeResult input residualMessages).string.withErrors = [] := by
-  cases evaluated : operation.source.evaluate input.flatContext with
-  | value token =>
-      by_cases empty : token = ""
-      · simp [CheckedEnumerationComputationOperation.executeResult, evaluated,
-          TokenComputationResult.asEnumerationTargetOutcome, empty,
-          StringComputationRunView.fromSourcedOutcomes,
-          StringComputationRunView.computedError?]
-      · simp [CheckedEnumerationComputationOperation.executeResult, evaluated,
-          TokenComputationResult.asEnumerationTargetOutcome, empty,
-          StringComputationRunView.fromSourcedOutcomes,
-          StringComputationRunView.computedError?]
-  | noValue =>
-      simp [CheckedEnumerationComputationOperation.executeResult, evaluated,
-        TokenComputationResult.asEnumerationTargetOutcome,
-        StringComputationRunView.fromSourcedOutcomes,
-        StringComputationRunView.computedError?]
-  | poison cause =>
-      simp [CheckedEnumerationComputationOperation.executeResult, evaluated,
-        TokenComputationResult.asEnumerationTargetOutcome,
-        StringComputationRunView.fromSourcedOutcomes,
-        StringComputationRunView.computedError?]
+  apply exactTokenStringResult_hasNoTargetErrors
 
 /-- Every retained action from ordinary Enumeration result construction names its exact certified target. -/
 theorem checkedEnumerationComputation_executeResult_actionsOwned

@@ -1489,9 +1489,10 @@ run_cmd do
 #print axioms A12Kernel.checkedEnumeration_stored_rejected
 #print axioms A12Kernel.checkedEnumeration_evalRaw_present
 #print axioms A12Kernel.checkedEnumeration_evalRaw_outOfDomain
-#print axioms A12Kernel.nonemptyToken_asEnumerationTargetOutcome
-#print axioms A12Kernel.noValue_asEnumerationTargetOutcome
-#print axioms A12Kernel.poisonedToken_asEnumerationTargetOutcome
+#print axioms A12Kernel.nonemptyToken_asExactStringTargetOutcome
+#print axioms A12Kernel.noValue_asExactStringTargetOutcome
+#print axioms A12Kernel.poisonedToken_asExactStringTargetOutcome
+#print axioms A12Kernel.exactTokenStringResult_hasNoTargetErrors
 #print axioms A12Kernel.enumerationCompatibility_coversSelectedDomain
 #print axioms A12Kernel.checkedEnumerationComputation_source_allowed
 #print axioms A12Kernel.checkedEnumerationComputationTarget_field_exact
@@ -1829,6 +1830,7 @@ run_cmd do
 #print axioms A12Kernel.stringComputationRun_formalErrors_exact
 #print axioms A12Kernel.stringComputationRun_noErrorOccurred_iff
 #print axioms A12Kernel.stringComputationRun_fromOutcomes_permutation
+#print axioms A12Kernel.oneTargetStringResult_actionsOwned
 #print axioms A12Kernel.stringComputationDestination_update_same
 #print axioms A12Kernel.stringComputationDestination_applyOutcome_same
 #print axioms A12Kernel.stringComputationDestination_applyRetainedClear_same
@@ -2171,6 +2173,10 @@ run_cmd do
 #print axioms A12Kernel.firstFilledBoolean_false_is_value
 #print axioms A12Kernel.customFirstFilledCellAt_value
 #print axioms A12Kernel.customFirstFilledCellAt_registeredRejection
+#print axioms A12Kernel.checkedCustomFirstFilledComputation_executeResult_operation
+#print axioms A12Kernel.checkedCustomFirstFilledComputation_executeResult_hasNoTargetErrors
+#print axioms A12Kernel.checkedCustomFirstFilledComputation_executeResult_actionsOwned
+#print axioms A12Kernel.customFirstFilledComputationRun_applyToChecked_delegates
 #print axioms A12Kernel.dateFragmentFirstFilledCellAt_value
 #print axioms A12Kernel.dateFragmentFirstFilledCellAt_poison
 #print axioms A12Kernel.dateRangeFirstFilledCellAt_value

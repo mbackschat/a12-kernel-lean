@@ -428,7 +428,7 @@ def evaluate (operation : CheckedEnumerationFirstFilledComputationOperation mode
     Except StarAddressingError StringTargetOutcome := do
   let selected ← operation.source.evaluate document outer directRead
     filterRead starRead
-  pure selected.asComputationResult.asEnumerationTargetOutcome
+  pure selected.asComputationResult.asExactStringTargetOutcome
 
 end CheckedEnumerationFirstFilledComputationOperation
 

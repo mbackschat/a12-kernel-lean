@@ -27,7 +27,7 @@ theorem checkedEnumerationFirstFilled_evaluate
     operation.evaluate document outer directRead filterRead starRead = (do
       let selected ←
         operation.source.evaluate document outer directRead filterRead starRead
-      pure selected.asComputationResult.asEnumerationTargetOutcome) := by
+      pure selected.asComputationResult.asExactStringTargetOutcome) := by
   rfl
 
 end A12Kernel

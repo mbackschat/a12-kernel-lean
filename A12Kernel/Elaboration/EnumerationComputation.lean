@@ -1,7 +1,7 @@
 import A12Kernel.Elaboration.Flat.Context
 import A12Kernel.Elaboration.StaticDiagnostic
+import A12Kernel.Elaboration.ExactTokenComputationResult
 import A12Kernel.Semantics.FirstFilledValue
-import A12Kernel.Semantics.StringComputation
 
 /-! # Checked ordinary Enumeration computation targets
 
@@ -64,20 +64,6 @@ def evaluate (context : FlatContext) :
       | .unknown cause => .poison cause
 
 end CheckedEnumerationComputationSource
-
-namespace TokenComputationResult
-
-/-- Project an exact-token computation into the common String-shaped target result. Static Enumeration compatibility makes an out-of-domain value unrepresentable; the empty check defensively preserves the common root-store rule. -/
-def asEnumerationTargetOutcome : TokenComputationResult → StringTargetOutcome
-  | .value token =>
-      if nonempty : token ≠ "" then
-        .accepted { text := token, nonempty }
-      else
-        .noValue
-  | .noValue => .noValue
-  | .poison cause => .poison cause
-
-end TokenComputationResult
 
 inductive EnumerationComputationElabError where
   | resolve (error : ResolveError)
@@ -219,7 +205,7 @@ namespace CheckedEnumerationComputationOperation
 /-- Use the exact model-owned checked context, then project the shared token computation result into the common String-shaped target result. -/
 def evaluate (operation : CheckedEnumerationComputationOperation model)
     (raw : RawFlatContext) : StringTargetOutcome :=
-  (operation.source.evaluate (model.checkContext raw)).asEnumerationTargetOutcome
+  (operation.source.evaluate (model.checkContext raw)).asExactStringTargetOutcome
 
 end CheckedEnumerationComputationOperation
 

@@ -8,6 +8,46 @@ These laws connect the generic exact-target fold to the one-target String owner 
 
 namespace A12Kernel
 
+/-- Every action projected from one sourced target outcome retains that exact target key. -/
+theorem oneTargetStringResult_actionsOwned
+    (target : Target) [DecidableEq Target]
+    (outcome : StringTargetOutcome) (source : StringTargetState)
+    (residualMessages : List ResidualMessage) :
+    (StringComputationRunView.fromSourcedOutcomes residualMessages [{
+      targetField := target
+      outcome
+      source
+    }]).actionTargets.all (· == target) = true := by
+  cases outcome with
+  | accepted value =>
+      cases source with
+      | absent | presentEmpty =>
+          simp [StringComputationRunView.actionTargets,
+            StringComputationRunView.fromSourcedOutcomes,
+            StringComputationRunView.changedInstance?,
+            StringComputationRunView.successfulInstance?,
+            StringComputationRunView.computedError?,
+            StringComputationRunView.shouldClear,
+            StringTargetState.storedValue]
+      | presentValue prior =>
+          by_cases same : prior = value <;>
+            simp [StringComputationRunView.actionTargets,
+              StringComputationRunView.fromSourcedOutcomes,
+              StringComputationRunView.changedInstance?,
+              StringComputationRunView.successfulInstance?,
+              StringComputationRunView.computedError?,
+              StringComputationRunView.shouldClear,
+              StringTargetState.storedValue, same]
+  | noValue | errored _ _ | poison _ =>
+      cases source <;>
+        simp [StringComputationRunView.actionTargets,
+          StringComputationRunView.fromSourcedOutcomes,
+          StringComputationRunView.changedInstance?,
+          StringComputationRunView.successfulInstance?,
+          StringComputationRunView.computedError?,
+          StringComputationRunView.shouldClear,
+          StringTargetOutcome.hasComputedInstance]
+
 /-- Updating one destination target yields exactly the supplied state there. -/
 theorem stringComputationDestination_update_same
     [DecidableEq Target] (destination : StringComputationDestination Target)

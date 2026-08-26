@@ -10,24 +10,6 @@ theorem checkedEnumerationComputationTarget_field_exact
     target.field = target.targetOperand.field.id := by
   rfl
 
-/-- A nonempty exact token becomes the common accepted String-shaped target payload without rewriting its stored identity. -/
-theorem nonemptyToken_asEnumerationTargetOutcome
-    (token : String) (nonempty : token ≠ "") :
-    (TokenComputationResult.value token).asEnumerationTargetOutcome =
-      .accepted { text := token, nonempty } := by
-  simp [TokenComputationResult.asEnumerationTargetOutcome, nonempty]
-
-/-- Clean absence remains no-value at the Enumeration target rather than manufacturing an empty stored token. -/
-theorem noValue_asEnumerationTargetOutcome :
-    TokenComputationResult.noValue.asEnumerationTargetOutcome = .noValue := by
-  rfl
-
-/-- Formal unavailability retains its exact cause through the Enumeration target projection. -/
-theorem poisonedToken_asEnumerationTargetOutcome (cause : FormalCause) :
-    (TokenComputationResult.poison cause).asEnumerationTargetOutcome =
-      .poison cause := by
-  rfl
-
 /-- Compatibility certifies the whole selected source domain, not merely the runtime token that happened to be read. -/
 theorem enumerationCompatibility_coversSelectedDomain
     (source target : CheckedEnumerationProjection)
@@ -54,7 +36,7 @@ theorem checkedEnumerationComputation_evaluate
     (operation : CheckedEnumerationComputationOperation model)
     (raw : RawFlatContext) :
     operation.evaluate raw =
-      (operation.source.evaluate (model.checkContext raw)).asEnumerationTargetOutcome := by
+      (operation.source.evaluate (model.checkContext raw)).asExactStringTargetOutcome := by
   rfl
 
 end A12Kernel

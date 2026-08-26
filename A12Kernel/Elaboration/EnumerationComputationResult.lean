@@ -23,7 +23,7 @@ def executeResult (operation : CheckedEnumerationComputationOperation model)
     (residualMessages : List ResidualMessage) :
     EnumerationComputationRunView model ResidualMessage :=
   let outcome :=
-    (operation.source.evaluate input.flatContext).asEnumerationTargetOutcome
+    (operation.source.evaluate input.flatContext).asExactStringTargetOutcome
   let string := StringComputationRunView.fromSourcedOutcomes residualMessages [{
     targetField := operation.target.field
     outcome

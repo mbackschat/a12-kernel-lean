@@ -31,9 +31,11 @@ private def repeatedTarget :=
   customField 5 ["Review", "Rows"] "RepeatedTarget" [10]
 private def nestedSource :=
   customField 6 ["Review", "Rows", "Details"] "NestedCode" [10, 20]
+private def unrelated := customField 7 ["Review"] "Unrelated"
 
 private def model : FlatModel := {
-  fields := [target, source, ordinary, other, repeatedTarget, nestedSource]
+  fields := [target, source, ordinary, other, repeatedTarget, nestedSource,
+    unrelated]
   repeatableGroups := [
     { level := 10, path := ["Review", "Rows"], repeatability := some 4 },
     { level := 20, path := ["Review", "Rows", "Details"],
@@ -97,6 +99,25 @@ private def result? (sourceStored : Option String) :
   let input ← input? sourceStored
   operation.execute input |>.toOption
 
+private def document? (targetStored sourceStored : Option String)
+    (unrelatedStored : String := "KEEP") : Option (CheckedDocument model) :=
+  let placed (field : FlatFieldDecl) (stored : String)
+      (path : List Nat := []) : ClassifiedCellInput := {
+    address := { field := field.id, path }
+    stored
+    raw := RawCell.parsed (.str stored)
+  }
+  checkDocument prepared "en_US" {
+    instantiatedRows := [{ group := 10, path := [1] }]
+    cells := (targetStored.map (placed target)).toList ++
+      (sourceStored.map (fun stored => placed source stored [1])).toList ++
+      [placed unrelated unrelatedStored]
+  } |>.toOption
+
+private def resultView? (input : CheckedDocument model) := do
+  let operation ← checked? target.id (star "Code")
+  operation.executeResult input ([] : List FormalCause) |>.toOption
+
 /- The externally measured empty selection clears a seeded target, while the filled source preserves its exact bytes. -/
 example :
     result? none = some .noValue ∧
@@ -116,6 +137,54 @@ example :
       (checked? target.id (star "OtherCode")).isNone = true ∧
       (checked? repeatedTarget.id (star "Code")).isNone = true ∧
       (checked? target.id nestedStar).isNone = true := by
+  native_decide
+
+/- A source-relative unchanged token remains inert against a different destination value. -/
+example : (do
+    let input ← document? (some "A7") (some "A7")
+    let destination ← document? (some "OLD") none
+    let result ← resultView? input
+    let applied ← result.applyToChecked destination |>.toOption
+    pure (result.string.withChanges, applied target.id,
+      applied unrelated.id)) =
+  some ([], .presentValue ⟨"OLD", by decide⟩,
+    .presentValue ⟨"KEEP", by decide⟩) := by
+  native_decide
+
+/- A changed accepted token overwrites only the checked Custom target. -/
+example : (do
+    let input ← document? (some "SEED") (some "A7")
+    let destination ← document? (some "OLD") none
+    let result ← resultView? input
+    let applied ← result.applyToChecked destination |>.toOption
+    pure (result.string.withErrors, applied target.id,
+      applied unrelated.id)) =
+  some ([], .presentValue ⟨"A7", by decide⟩,
+    .presentValue ⟨"KEEP", by decide⟩) := by
+  native_decide
+
+/- Exhaustion clears a source-filled target and its retained action materializes an absent destination target. -/
+example : (do
+    let input ← document? (some "SEED") none
+    let destination ← document? none none
+    let result ← resultView? input
+    let applied ← result.applyToChecked destination |>.toOption
+    pure (result.string.cleared, applied target.id,
+      applied unrelated.id)) =
+  some ([target.id], .presentEmpty,
+    .presentValue ⟨"KEEP", by decide⟩) := by
+  native_decide
+
+/- A reached registered rejection stays cause-blind poison in the result channels and clears only the target on application. -/
+example : (do
+    let input ← document? (some "SEED") (some "BAD")
+    let destination ← document? (some "OLD") none
+    let result ← resultView? input
+    let applied ← result.applyToChecked destination |>.toOption
+    pure (result.string.withoutErrors, result.string.withErrors,
+      result.string.cleared, applied target.id, applied unrelated.id)) =
+  some ([], [], [target.id], .presentEmpty,
+    .presentValue ⟨"KEEP", by decide⟩) := by
   native_decide
 
 end A12Kernel.Conformance.CustomFirstFilledComputation

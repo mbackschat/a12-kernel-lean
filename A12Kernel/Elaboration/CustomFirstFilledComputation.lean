@@ -1,5 +1,7 @@
 import A12Kernel.Elaboration.CheckedStarDocument
+import A12Kernel.Elaboration.ExactTokenComputationResult
 import A12Kernel.Elaboration.FirstFilledStarSource
+import A12Kernel.Elaboration.StringComputationRunApplication
 import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Direct one-star Custom `FirstFilledValue` computation -/
@@ -76,6 +78,13 @@ def customFirstFilledCellAt (cell : CheckedCell) : ValueListCell .token :=
   | .value _ => .unknown .malformed
   | .unknown cause | .poison cause => .unknown cause
 
+/-- One checked Custom `FirstFilledValue` result backed by the common String-shaped public channels. Retaining the private checked operation keeps every action tied to its exact admitted target and Custom declaration. -/
+structure CustomFirstFilledComputationRunView (model : FlatModel)
+    (ResidualMessage : Type) where
+  private mk ::
+  operation : CheckedCustomFirstFilledComputation model
+  string : StringComputationRunView ResidualMessage
+
 namespace CheckedCustomFirstFilledComputation
 
 /-- Execute the checked source over immutable rows without resampling its registered validator. -/
@@ -90,6 +99,35 @@ def execute (operation : CheckedCustomFirstFilledComputation model)
   }
   pure (evalFirstFilledToken side).asComputationResult
 
+/-- Execute one checked Custom selection and classify its exact token relative to the immutable source target. The matching Custom declaration makes a separately rejected target outcome unreachable. -/
+def executeResult (operation : CheckedCustomFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage) :
+    Except CheckedStarDocumentError
+      (CustomFirstFilledComputationRunView model ResidualMessage) := do
+  let result ← operation.execute input
+  let string := StringComputationRunView.fromSourcedOutcomes residualMessages [{
+    targetField := operation.target.id
+    outcome := result.asExactStringTargetOutcome
+    source := input.sourceStringTargetState operation.target.id
+  }]
+  pure {
+    operation
+    string
+  }
+
 end CheckedCustomFirstFilledComputation
+
+namespace CustomFirstFilledComputationRunView
+
+/-- Apply retained source-relative Custom actions to a separately supplied checked document of the same model. The result is the exact root text-state projection and does not resample the registered validator or run implicit validation. -/
+def applyToChecked
+    (view : CustomFirstFilledComputationRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    Except (StringComputationRunView.StringComputationRunApplicationError FieldId)
+      (StringComputationDestination FieldId) :=
+  view.string.applyTo destination.sourceStringTargetState
+
+end CustomFirstFilledComputationRunView
 
 end A12Kernel
