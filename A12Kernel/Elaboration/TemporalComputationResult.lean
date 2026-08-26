@@ -15,9 +15,9 @@ structure TemporalComputedInstance (kind : TemporalKind)
   value : StoredTemporalText kind
   deriving Repr, DecidableEq
 
-/-- Successful Time instance. -/
-abbrev TimeComputedInstance :=
-  TemporalComputedInstance .time FieldId
+/-- Successful Time instance over an exact caller-selected target-key domain. -/
+abbrev TimeComputedInstance (Target : Type := FieldId) :=
+  TemporalComputedInstance .time Target
 
 /-- Successful full-Date instance. -/
 abbrev FullDateComputedInstance (Target : Type := FieldId) :=
@@ -134,10 +134,15 @@ def sourceFullDateTargetState (input : CheckedDocument model)
     (field : FieldId) : FullDateTargetState :=
   sourceFullDateTargetStateAt input { field, path := [] }
 
+/-- Recover exact addressed source placement and opaque stored Time text. -/
+def sourceTimeTargetStateAt (input : CheckedDocument model)
+    (address : CellAddr) : TimeTargetState :=
+  sourceTemporalTargetStateAt input address
+
 /-- Recover exact nonrepeatable source placement and opaque stored Time text. -/
 def sourceTimeTargetState (input : CheckedDocument model)
     (field : FieldId) : TimeTargetState :=
-  sourceTemporalTargetState input field
+  sourceTimeTargetStateAt input { field, path := [] }
 
 /-- Recover exact nonrepeatable source placement and stored DateTime text without reparsing it. -/
 def sourceDateTimeTargetState (input : CheckedDocument model)
@@ -164,10 +169,11 @@ structure TemporalComputationRunView
   formalErrorsInOperands : List ResidualMessage
   deriving Repr, DecidableEq
 
-/-- Time specialization of the shared temporal result collections. -/
-abbrev TimeComputationRunView (ResidualMessage : Type) :=
+/-- Time specialization of the shared temporal result collections over an exact caller-selected target-key domain. -/
+abbrev TimeComputationRunView (ResidualMessage : Type)
+    (Target : Type := FieldId) :=
   TemporalComputationRunView
-    TimeComputedInstance TimeComputedError ResidualMessage FieldId
+    (TimeComputedInstance Target) TimeComputedError ResidualMessage Target
 
 /-- Full-Date specialization of the shared temporal result collections. -/
 abbrev FullDateComputationRunView (ResidualMessage : Type)
@@ -247,32 +253,45 @@ end TemporalComputationRunView
 namespace TimeComputationRunView
 
 /-- Project one accepted Time outcome into a computed instance. -/
-def successfulInstance? :
-    FieldId × TimeTargetOutcome → Option TimeComputedInstance
+def successfulInstance? {Target : Type} :
+    Target × TimeTargetOutcome → Option (TimeComputedInstance Target)
   | (targetField, .accepted value) => some { targetField, value }
   | _ => none
 
 /-- Kernel 30.8.1 reports every clean computed Time in the changed subset, including a clock text equal to the source. The causal implementation detail is deliberately not modeled. -/
-def reportsChanged (_computed : TimeComputedInstance) : Bool :=
+def reportsChanged (_computed : TimeComputedInstance Target) : Bool :=
   true
 
 /-- A source-filled Time target is cleared exactly when no computed-data instance was produced. -/
+def shouldClearAt (sourceState : Target → TimeTargetState)
+    (entry : Target × TimeTargetOutcome) : Bool :=
+  !entry.2.hasComputedInstance &&
+    (sourceState entry.1).storedValue.isSome
+
+/-- Nonrepeatable compatibility specialization of exact-key clearing classification. -/
 def shouldClear (input : CheckedDocument model)
     (entry : FieldId × TimeTargetOutcome) : Bool :=
-  !entry.2.hasComputedInstance &&
-    (input.sourceTimeTargetState entry.1).storedValue.isSome
+  shouldClearAt input.sourceTimeTargetState entry
 
-/-- Build the five public Time projections from rich outcomes and an already-classified residual channel. -/
+/-- Build the five public Time projections over an exact caller-selected target-key domain and immutable source-state projection. -/
+def fromOutcomesAt (sourceState : Target → TimeTargetState)
+    (residualMessages : List ResidualMessage)
+    (outcomes : List (Target × TimeTargetOutcome)) :
+    TimeComputationRunView ResidualMessage Target :=
+  TemporalComputationRunView.fromValueOutcomes
+    successfulInstance? reportsChanged (shouldClearAt sourceState)
+    residualMessages outcomes
+
+/-- Build the five public scalar Time projections from rich outcomes and an already-classified residual channel. -/
 def fromOutcomes (input : CheckedDocument model)
     (residualMessages : List ResidualMessage)
     (outcomes : List (FieldId × TimeTargetOutcome)) :
     TimeComputationRunView ResidualMessage :=
-  TemporalComputationRunView.fromValueOutcomes
-    successfulInstance? reportsChanged (shouldClear input)
-    residualMessages outcomes
+  fromOutcomesAt input.sourceTimeTargetState residualMessages outcomes
 
 /-- Time reports an error exactly when the supplied residual channel is nonempty. -/
-def noErrorOccurred (view : TimeComputationRunView ResidualMessage) : Bool :=
+def noErrorOccurred
+    (view : TimeComputationRunView ResidualMessage Target) : Bool :=
   TemporalComputationRunView.noErrorOccurred view
 
 end TimeComputationRunView

@@ -5,11 +5,20 @@ import A12Kernel.Elaboration.TemporalComputationResult
 namespace A12Kernel
 
 /-- Structural failure shared by temporal target families whose public actions are only clears and changed values. -/
-inductive TemporalValueComputationApplicationError where
-  | duplicateActionTarget (field : FieldId)
+inductive TemporalValueComputationApplicationError
+    (Target : Type := FieldId) where
+  | duplicateActionTarget (field : Target)
   deriving Repr, DecidableEq
 
 namespace TemporalComputationApplicationTarget
+
+/-- Locate the first repeated exact temporal target key in encounter order. -/
+def firstDuplicate? {Target : Type} [DecidableEq Target] :
+    List Target → Option Target
+  | [] => none
+  | target :: remaining =>
+      if target ∈ remaining then some target
+      else firstDuplicate? remaining
 
 /-- Validate one exact action target against a family predicate and the shared nonrepeatable application boundary. -/
 def validateNonrepeatable
@@ -43,22 +52,23 @@ end TemporalComputationApplicationTarget
 namespace TemporalValueComputationRunView
 
 /-- Targets consumed by value/clear application; unchanged successes and residual messages are absent. -/
-def actionTargets
+def actionTargets {Target : Type}
     (view : TemporalComputationRunView
-      (TemporalComputedInstance kind) Error ResidualMessage) :
-    List FieldId :=
+      (TemporalComputedInstance kind Target) Error ResidualMessage Target) :
+    List Target :=
   view.cleared ++ view.withChanges.map (·.targetField)
 
 /-- Apply source-classified retained clears before changed values. The two callbacks are deliberately distinct: a retained clear is an action, not a direct no-value outcome re-evaluated against the destination. -/
-def applyTo
+def applyTo {Target : Type} [DecidableEq Target]
     (view : TemporalComputationRunView
-      (TemporalComputedInstance kind) Error ResidualMessage)
+      (TemporalComputedInstance kind Target) Error ResidualMessage Target)
     (destination : Destination)
-    (applyRetainedClear : Destination → FieldId → Destination)
+    (applyRetainedClear : Destination → Target → Destination)
     (applyAccepted :
-      Destination → FieldId → StoredTemporalText kind → Destination) :
-    Except TemporalValueComputationApplicationError Destination :=
-  match FieldId.firstDuplicate? (actionTargets view) with
+      Destination → Target → StoredTemporalText kind → Destination) :
+    Except (TemporalValueComputationApplicationError Target) Destination :=
+  match TemporalComputationApplicationTarget.firstDuplicate?
+      (actionTargets view) with
   | some duplicate => .error (.duplicateActionTarget duplicate)
   | none =>
       let afterCleared := view.cleared.foldl

@@ -60,7 +60,7 @@ theorem checkedWorldTimeConstructionComputation_evaluate_value
 
 /-- Time has no target-local error branch, so only residual messages affect the public error predicate. -/
 theorem timeComputationRun_noErrorOccurred_iff
-    (view : TimeComputationRunView ResidualMessage) :
+    (view : TimeComputationRunView ResidualMessage Target) :
     view.noErrorOccurred = true ↔
       view.formalErrorsInOperands = [] := by
   have noComputedErrors : view.withErrors = [] := by
@@ -72,13 +72,14 @@ theorem timeComputationRun_noErrorOccurred_iff
 
 /-- Every successful Time instance enters the kernel's source-relative changed subset, even when its stored clock text equals the source. -/
 @[simp] theorem timeComputationRun_reportsChanged
-    (computed : TimeComputedInstance) :
+    (computed : TimeComputedInstance Target) :
     TimeComputationRunView.reportsChanged computed = true := rfl
 
 /-- A retained Time clear creates a present-empty destination target even when that target was absent. -/
 theorem timeComputationDestination_applyRetainedClear_same
-    (destination : TimeComputationDestination)
-    (target : FieldId) :
+    {Target : Type} [DecidableEq Target]
+    (destination : TimeComputationDestination Target)
+    (target : Target) :
     destination.applyRetainedClear target target = .presentEmpty := by
   simp [TimeComputationDestination.applyRetainedClear,
     TemporalComputationDestination.applyRetainedClear,

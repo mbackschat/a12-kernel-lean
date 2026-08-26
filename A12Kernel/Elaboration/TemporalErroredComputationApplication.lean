@@ -18,13 +18,10 @@ def actionTargets {Target : Type}
   view.cleared ++ view.withErrors.map errorTarget ++
     view.withChanges.map changedTarget
 
-/-- Locate the first repeated exact temporal target key in encounter order. -/
-def firstDuplicateTarget? {Target : Type} [DecidableEq Target] :
-    List Target → Option Target
-  | [] => none
-  | target :: remaining =>
-      if target ∈ remaining then some target
-      else firstDuplicateTarget? remaining
+/-- Source-compatible alias for the shared exact temporal target-key duplicate scan. -/
+def firstDuplicateTarget? {Target : Type} [DecidableEq Target]
+    (targets : List Target) : Option Target :=
+  TemporalComputationApplicationTarget.firstDuplicate? targets
 
 /-- Apply retained clears, rejected attempts, then source-relative changed successes. Duplicate targets fail before destination lookup. -/
 def applyTo {Target : Type} [DecidableEq Target]
@@ -38,7 +35,7 @@ def applyTo {Target : Type} [DecidableEq Target]
     (applyError : Destination → ComputedError → Destination)
     (applyChanged : Destination → ComputedInstance → Destination) :
     Except ApplicationError Destination :=
-  match firstDuplicateTarget?
+  match TemporalComputationApplicationTarget.firstDuplicate?
       (actionTargets view errorTarget changedTarget) with
   | some duplicate => .error (duplicateError duplicate)
   | none =>

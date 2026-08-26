@@ -162,22 +162,24 @@ def executeResult
 
 end CheckedWorldTimeConstructionComputation
 
-/-- Exact caller-supplied Time destination. -/
-abbrev TimeComputationDestination :=
-  TemporalComputationDestination StoredTime
+/-- Exact caller-supplied Time destination over a scalar or addressed target-key domain. -/
+abbrev TimeComputationDestination (Target : Type := FieldId) :=
+  TemporalComputationDestination StoredTime Target
 
 namespace TimeComputationDestination
 
 /-- Specialize the existing one-target transition at one Time field. -/
-def applyOutcome (destination : TimeComputationDestination)
-    (target : FieldId) (outcome : TimeTargetOutcome) :
-    TimeComputationDestination :=
+def applyOutcome {Target : Type} [DecidableEq Target]
+    (destination : TimeComputationDestination Target)
+    (target : Target) (outcome : TimeTargetOutcome) :
+    TimeComputationDestination Target :=
   TemporalComputationDestination.update destination target
     (outcome.applyTo (destination target))
 
 /-- Apply one source-classified CLEARED action without reclassifying it against the destination. -/
-def applyRetainedClear (destination : TimeComputationDestination)
-    (target : FieldId) : TimeComputationDestination :=
+def applyRetainedClear {Target : Type} [DecidableEq Target]
+    (destination : TimeComputationDestination Target)
+    (target : Target) : TimeComputationDestination Target :=
   TemporalComputationDestination.applyRetainedClear destination target
 
 end TimeComputationDestination
@@ -185,15 +187,17 @@ end TimeComputationDestination
 namespace TimeComputationRunView
 
 /-- Targets consumed by Time application; unchanged successes and residual messages are absent. -/
-def actionTargets (view : TimeComputationRunView ResidualMessage) :
-    List FieldId :=
+def actionTargets {Target : Type}
+    (view : TimeComputationRunView ResidualMessage Target) :
+    List Target :=
   TemporalValueComputationRunView.actionTargets view
 
 /-- Apply clears before changed values; unchanged successes and residual messages never mutate the destination. -/
-def applyTo (view : TimeComputationRunView ResidualMessage)
-    (destination : TimeComputationDestination) :
-    Except TemporalValueComputationApplicationError
-      TimeComputationDestination :=
+def applyTo {Target : Type} [DecidableEq Target]
+    (view : TimeComputationRunView ResidualMessage Target)
+    (destination : TimeComputationDestination Target) :
+    Except (TemporalValueComputationApplicationError Target)
+      (TimeComputationDestination Target) :=
   TemporalValueComputationRunView.applyTo view destination
     TimeComputationDestination.applyRetainedClear
     (fun current target value =>

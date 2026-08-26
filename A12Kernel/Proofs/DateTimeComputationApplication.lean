@@ -52,16 +52,17 @@ theorem dateTimeComputationRun_applyTo_noActions
   simp [DateTimeComputationRunView.applyTo,
     TemporalValueComputationRunView.applyTo,
     TemporalValueComputationRunView.actionTargets, noChanges, noClears,
-    FieldId.firstDuplicate?]
+    TemporalComputationApplicationTarget.firstDuplicate?]
 
 /-- Duplicate action targets fail before destination state participates. -/
 theorem dateTimeComputationRun_applyTo_duplicateTarget
     (view : DateTimeComputationRunView ResidualMessage)
     (destination : DateTimeComputationDestination) (field : FieldId)
-    (duplicate : FieldId.firstDuplicate? view.actionTargets = some field) :
+    (duplicate : TemporalComputationApplicationTarget.firstDuplicate?
+      view.actionTargets = some field) :
     view.applyTo destination = .error (.duplicateActionTarget field) := by
   have duplicate' :
-      FieldId.firstDuplicate?
+      TemporalComputationApplicationTarget.firstDuplicate?
         (TemporalValueComputationRunView.actionTargets view) =
           some field := by
     simpa [DateTimeComputationRunView.actionTargets] using duplicate
@@ -100,7 +101,7 @@ theorem dateTimeComputationRun_unchanged_notApplied
     DateTimeComputationRunView.shouldClear,
     DateTimeTargetOutcome.hasComputedInstance,
     DateTimeComputationRunView.sourceValueChanged, unchanged,
-    FieldId.firstDuplicate?]
+    TemporalComputationApplicationTarget.firstDuplicate?]
 
 /-- A source-changed accepted DateTime applies the existing one-target write. -/
 theorem dateTimeComputationRun_changed_applies
@@ -121,7 +122,7 @@ theorem dateTimeComputationRun_changed_applies
     DateTimeComputationRunView.shouldClear,
     DateTimeTargetOutcome.hasComputedInstance,
     DateTimeComputationRunView.sourceValueChanged, changed,
-    FieldId.firstDuplicate?]
+    TemporalComputationApplicationTarget.firstDuplicate?]
 
 /-- A source-filled quiet no-value mints a retained clear action that creates or retains a present-empty destination target. -/
 theorem dateTimeComputationRun_cleared_applies
@@ -140,7 +141,7 @@ theorem dateTimeComputationRun_cleared_applies
     DateTimeComputationRunView.successfulInstance?,
     DateTimeComputationRunView.shouldClear,
     DateTimeTargetOutcome.hasComputedInstance, sourceFilled,
-    FieldId.firstDuplicate?]
+    TemporalComputationApplicationTarget.firstDuplicate?]
 
 /-- Residual messages affect error status but never the already-classified application actions. -/
 theorem dateTimeComputationRun_residualMessages_doNotAffectApplication

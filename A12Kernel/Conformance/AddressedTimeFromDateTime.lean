@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.AddressedTimeFromDateTime
 
-/-! # Exact-address repeatable `TimeFromDateTime` execution locks -/
+/-! # Exact-address repeatable `TimeFromDateTime` result and application locks -/
 
 namespace A12Kernel.Conformance.AddressedTimeFromDateTime
 
@@ -125,6 +125,13 @@ private def sourceCell (field : FieldId) (path : List Nat)
   address := { field, path }
   stored
   raw
+}
+
+private def timeCell (field : FieldId) (path : List Nat)
+    (stored : String) (time : TimeOfDay) : ClassifiedCellInput := {
+  address := { field, path }
+  stored
+  raw := .parsed (.temporal (.time { epochMillis := 0 } time))
 }
 
 private def inputForRows? (rows : List Nat)
@@ -256,6 +263,76 @@ example : nestedTriples? [
       (address nestedSource.id [2], address nestedTarget.id [2, 2],
         .accepted (storedTime "23:45:00"))
     ] := by
+  native_decide
+
+private structure ResultApplicationSummary where
+  values : List (CellAddr × String)
+  changes : List (CellAddr × String)
+  cleared : List CellAddr
+  row1 : TimeTargetState
+  row2 : TimeTargetState
+  unrelatedState : TimeTargetState
+  deriving Repr, DecidableEq
+
+private def resultApplicationSummary? : Option ResultApplicationSummary := do
+  let operation ← operation?
+  let input ← input? 2 [
+    sourceCell source.id [1] "2024-06-15T00:30:00"
+      (.parsed (.temporal (momentAt 15 0 30 |>.get (by native_decide)))),
+    sourceCell source.id [2] "2024-06-16T13:45:00"
+      (.parsed (.temporal (momentAt 16 13 45 |>.get (by native_decide)))),
+    timeCell target.id [1] "00:30:00" ⟨0, 30, 0, by decide⟩,
+    timeCell target.id [2] "07:15:00" ⟨7, 15, 0, by decide⟩]
+  let destination ← input? 2 [
+    timeCell target.id [1] "06:00:00" ⟨6, 0, 0, by decide⟩,
+    timeCell rootTime.id [] "08:45:00" ⟨8, 45, 0, by decide⟩]
+  let result ← operation.executeResult input ([] : List FormalCause) |>.toOption
+  let applied ← result.applyToChecked destination |>.toOption
+  pure {
+    values := result.time.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    changes := result.time.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    cleared := result.time.cleared
+    row1 := applied (address target.id [1])
+    row2 := applied (address target.id [2])
+    unrelatedState := applied (address rootTime.id [])
+  }
+
+/- Exact keys preserve Time's source-identical changed action, materialize the absent destination cell, and preserve unrelated state. -/
+example : resultApplicationSummary? = some {
+    values := [
+      (address target.id [1], "00:30:00"),
+      (address target.id [2], "13:45:00")]
+    changes := [
+      (address target.id [1], "00:30:00"),
+      (address target.id [2], "13:45:00")]
+    cleared := []
+    row1 := .presentValue (storedTime "00:30:00")
+    row2 := .presentValue (storedTime "13:45:00")
+    unrelatedState := .presentValue (storedTime "08:45:00")
+  } := by
+  native_decide
+
+private def clearedApplicationSummary? :
+    Option (List CellAddr × List FormalCause × Bool ×
+      TimeTargetState × TimeTargetState) := do
+  let operation ← operation?
+  let input ← input? 2 [
+    timeCell target.id [1] "06:00:00" ⟨6, 0, 0, by decide⟩,
+    sourceCell source.id [2] "bad" (.rejected .dateFormat),
+    timeCell target.id [2] "07:15:00" ⟨7, 15, 0, by decide⟩]
+  let destination ← input? 2 []
+  let result ← operation.executeResult input [.dateFormat] |>.toOption
+  let applied ← result.applyToChecked destination |>.toOption
+  pure (result.time.cleared, result.time.formalErrorsInOperands,
+    result.time.noErrorOccurred,
+    applied (address target.id [1]), applied (address target.id [2]))
+
+/- Exact target-state lookup classifies absent-source and poisoned rows as retained clears at their own filled addresses, then applies both to an empty destination. -/
+example : clearedApplicationSummary? = some (
+    [address target.id [1], address target.id [2]],
+    [.dateFormat], false, .presentEmpty, .presentEmpty) := by
   native_decide
 
 end A12Kernel.Conformance.AddressedTimeFromDateTime

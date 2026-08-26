@@ -1,8 +1,8 @@
 import A12Kernel.Elaboration.TimeFromDateTimeComputation
 
-/-! # Exact-address repeatable `TimeFromDateTime` execution
+/-! # Exact-address repeatable `TimeFromDateTime`
 
-This capsule specializes the checked repeatable placement and physical target-row environment to the existing wall-clock extractor and Time target. It retains source and target addresses without adding result projection, application, scheduling, validation, pointer rendering, or document reconstruction.
+This capsule specializes the checked repeatable placement and physical target-row environment to the existing wall-clock extractor, Time target, exact-key result channels, and Time application fold. It retains source and target addresses without reconstructing a document or claiming scheduler, validation, or pointer-rendering behavior.
 -/
 
 namespace A12Kernel
@@ -15,7 +15,7 @@ inductive AddressedTimeFromDateTimeElabError where
   | source (cause : BoundCompleteDateTimeSourceElabError)
   deriving Repr, DecidableEq
 
-/-- One repeatable Time extraction placement certified against a validated model. -/
+/-- One exact repeatable Time extraction certified against a validated model. -/
 structure CheckedAddressedTimeFromDateTime (model : FlatModel) where
   private mk ::
   declaringGroup : GroupPath
@@ -69,6 +69,27 @@ structure AddressedTimeFromDateTimeOutcome where
   outcome : TimeTargetOutcome
   deriving Repr, DecidableEq
 
+/-- One checked addressed Time result backed by the common Time channels over exact cell addresses. -/
+structure AddressedTimeFromDateTimeRunView (model : FlatModel)
+    (ResidualMessage : Type) where
+  private mk ::
+  operation : CheckedAddressedTimeFromDateTime model
+  time : TimeComputationRunView ResidualMessage CellAddr
+
+namespace AddressedTimeFromDateTimeRunView
+
+private def fromOutcomes (operation : CheckedAddressedTimeFromDateTime model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage)
+    (outcomes : List AddressedTimeFromDateTimeOutcome) :
+    AddressedTimeFromDateTimeRunView model ResidualMessage := {
+  operation
+  time := TimeComputationRunView.fromOutcomesAt
+    input.sourceTimeTargetStateAt residualMessages
+    (outcomes.map fun entry => (entry.targetField, entry.outcome))
+}
+
+end AddressedTimeFromDateTimeRunView
+
 namespace CheckedAddressedTimeFromDateTime
 
 private def evaluateAtEnvironment
@@ -104,6 +125,28 @@ def execute (operation : CheckedAddressedTimeFromDateTime model)
       |>.mapError .targetRows
   environments.mapM (operation.evaluateAtEnvironment input)
 
+/-- Execute every physical target row and classify each rich Time outcome against immutable source state at that exact target address. -/
+def executeResult (operation : CheckedAddressedTimeFromDateTime model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage) :
+    Except AddressedTimeFromDateTimeFault
+      (AddressedTimeFromDateTimeRunView model ResidualMessage) := do
+  let outcomes ← operation.execute input
+  pure (AddressedTimeFromDateTimeRunView.fromOutcomes operation input
+    residualMessages outcomes)
+
 end CheckedAddressedTimeFromDateTime
+
+namespace AddressedTimeFromDateTimeRunView
+
+/-- Apply retained source-relative Time actions to exact cell-state projections from a separately supplied checked document of the same model. -/
+def applyToChecked
+    (view : AddressedTimeFromDateTimeRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    Except (TemporalValueComputationApplicationError CellAddr)
+      (TimeComputationDestination CellAddr) :=
+  view.time.applyTo destination.sourceTimeTargetStateAt
+
+end AddressedTimeFromDateTimeRunView
 
 end A12Kernel
