@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.IndexedDateRangeConstructionComputation
+import A12Kernel.Elaboration.TemporalErroredComputationApplication
 
 /-! # String-keyed DateRange construction computation locks -/
 
@@ -33,6 +34,10 @@ private def target : FlatFieldDecl := {
   dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" }
 }
 
+private def unrelatedTarget : FlatFieldDecl := {
+  target with id := 7, name := "UnrelatedCoverage"
+}
+
 private def selector (id : FieldId) (name : String) : FlatFieldDecl := {
   id
   groupPath := ["Order"]
@@ -51,7 +56,8 @@ private def items : RepeatableGroupDecl := {
 }
 
 private def model : FlatModel := {
-  fields := [index, start, finish, target, startSelector, finishSelector]
+  fields := [index, start, finish, target, startSelector, finishSelector,
+    unrelatedTarget]
   repeatableGroups := [items]
   timeZoneId := "UTC"
 }
@@ -100,10 +106,15 @@ private def data (duplicate emptyStart : Bool) : DocumentData :=
   dataWithSelectors duplicate emptyStart "sku1" "sku2"
     (.parsed (.str "sku1")) (.parsed (.str "sku2"))
 
-private def preliminary? (source : DocumentData) : Option (CheckedIndexPreliminary model) := do
+private def checkedDocument? (source : DocumentData) :
+    Option (CheckedDocument model) := do
   let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler model).toOption
-  let checked ← (checkDocument prepared "en_US" source).toOption
+  (checkDocument prepared "en_US" source).toOption
+
+private def preliminary? (source : DocumentData) :
+    Option (CheckedIndexPreliminary model) := do
+  let checked ← checkedDocument? source
   checked.applyFullIndexPreliminary.toOption
 
 private def operation? (startKey finishKey : String) :=
@@ -135,6 +146,67 @@ private def expected : StoredDateRange := {
   text := "2024-01-01/2024-02-29"
   nonempty := by decide
 }
+
+private def exactDateValue (epochMillis : Int) (year : Int)
+    (month day : Nat) : DateValue := {
+  instant := { epochMillis }
+  parts := { year, month, day }
+  basis := .storedGregorian
+}
+
+private def expectedRange : DateRangeValue := {
+  start := exactDateValue 1704067200000 2024 1 1
+  finish := exactDateValue 1709164800000 2024 2 29
+}
+
+private def priorStored : StoredDateRange := {
+  text := "2023-12-01/2023-12-31"
+  nonempty := by decide
+}
+
+private def priorRange : DateRangeValue := {
+  start := exactDateValue 1701388800000 2023 12 1
+  finish := exactDateValue 1703980800000 2023 12 31
+}
+
+private def unrelatedStored : StoredDateRange := {
+  text := "2024-03-01/2024-03-31"
+  nonempty := by decide
+}
+
+private def invertedStored : StoredDateRange := {
+  text := "2024-02-01/2024-01-31"
+  nonempty := by decide
+}
+
+private def unrelatedRange : DateRangeValue := {
+  start := exactDateValue 1709251200000 2024 3 1
+  finish := exactDateValue 1711843200000 2024 3 31
+}
+
+private def withTarget (source : DocumentData) (stored : StoredDateRange)
+    (range : DateRangeValue) : DocumentData := {
+  source with cells := source.cells ++
+    [directCell target.id stored.text (.parsed (.dateRange range))]
+}
+
+private def resultView? (startKey finishKey : String) (source : DocumentData)
+    (targetStored : StoredDateRange) (targetRange : DateRangeValue)
+    (residualMessages : List FormalCause := []) :
+    Option (DateRangeComputationRunView FormalCause) := do
+  let operation ← operation? startKey finishKey
+  let preliminary ← preliminary? (withTarget source targetStored targetRange)
+  operation.executeResult preliminary residualMessages |>.toOption
+
+private def destination? (includeTarget : Bool) :
+    Option (CheckedDocument model) :=
+  let targetCells := if includeTarget then
+    [directCell target.id priorStored.text (.parsed (.dateRange priorRange))]
+  else []
+  let source := data false false
+  checkedDocument? { source with cells := source.cells ++ targetCells ++ [
+    directCell unrelatedTarget.id unrelatedStored.text
+      (.parsed (.dateRange unrelatedRange))] }
 
 /- Exact literal keys may select different rows; the rich result retains both concrete addresses. -/
 example : (execute? "sku1" "sku2" (data false false)).map (fun result =>
@@ -254,6 +326,52 @@ example : (execute? "sku1" "sku1" (data true false)).map (fun result =>
     (result.start.address, result.finish.address, result.outcome,
       result.outcome.applyTo (.presentValue expected))) =
   some (none, none, .poison .duplicateIndex, .presentEmpty) := by
+  native_decide
+
+/- Indexed rich execution classifies the direct target against its immutable source, then applies only the retained accepted change to a separate destination. -/
+example : (do
+    let view ← resultView? "sku1" "sku2" (data false false)
+      priorStored priorRange
+    let destination ← destination? true
+    let applied ← view.applyToChecked destination |>.toOption
+    pure (view.withoutErrors, view.withChanges, view.withErrors,
+      applied target.id, applied unrelatedTarget.id)) =
+    some ([{ targetField := target.id, value := expected }],
+      [{ targetField := target.id, value := expected }], [],
+      .presentValue expected, .presentValue unrelatedStored) := by
+  native_decide
+
+/- Change classification is source-relative: an accepted value equal to the source target remains inert against a different destination. -/
+example : (do
+    let view ← resultView? "sku1" "sku2" (data false false)
+      expected expectedRange
+    let destination ← destination? true
+    let applied ← view.applyToChecked destination |>.toOption
+    pure (view.withoutErrors, view.withChanges, applied target.id)) =
+    some ([{ targetField := target.id, value := expected }], [],
+      .presentValue priorStored) := by
+  native_decide
+
+/- Clean no-selection clears a source-filled target and materializes an absent destination target; reversed keyed endpoints retain their attempted range as a computed error. -/
+example :
+    (do
+      let view ← resultView? "missing" "sku2" (data false false)
+        priorStored priorRange
+      let destination ← destination? false
+      let applied ← view.applyToChecked destination |>.toOption
+      pure (view.cleared, applied target.id, applied unrelatedTarget.id)) =
+      some ([target.id], .presentEmpty, .presentValue unrelatedStored) ∧
+    (do
+      let view ← resultView? "sku2" "sku1" (data false false)
+        priorStored priorRange
+      let destination ← destination? true
+      let applied ← view.applyToChecked destination |>.toOption
+      pure (view.withErrors, view.noErrorOccurred, applied target.id)) =
+      some ([{
+        targetField := target.id
+        attempted := invertedStored
+        cause := .inverted
+      }], false, .presentEmpty) := by
   native_decide
 
 /- This first checked profile refuses partial Date components, a non-String index, nested repeatable scope, and endpoints from different indexed groups. -/

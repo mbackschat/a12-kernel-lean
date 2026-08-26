@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.CheckedIndexColumn
 import A12Kernel.Elaboration.DateRangeConstructionComputation
+import A12Kernel.Elaboration.TemporalComputationResult
 
 /-! # Checked String-keyed DateRange construction computation
 
@@ -274,6 +275,17 @@ def execute (operation : CheckedIndexedDateRangeConstructionComputation model)
   let outcome ← operation.format.evaluateComputationResult
       construction.asComputationResult |>.mapError .target
   pure { start, finish, outcome }
+
+/-- Execute and classify one rich indexed-construction outcome against the immutable checked document underlying its preliminary index. Key and address observations remain available from `execute`; this projection reuses the shared DateRange result carrier. -/
+def executeResult
+    (operation : CheckedIndexedDateRangeConstructionComputation model)
+    (preliminary : CheckedIndexPreliminary model)
+    (residualMessages : List ResidualMessage) :
+    Except IndexedDateRangeConstructionComputationFault
+      (DateRangeComputationRunView ResidualMessage) := do
+  let result ← operation.execute preliminary
+  pure (DateRangeComputationRunView.fromOutcomes preliminary.base
+    residualMessages [(operation.target.source.id, result.outcome)])
 
 end CheckedIndexedDateRangeConstructionComputation
 

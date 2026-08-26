@@ -16,4 +16,17 @@ theorem checkedIndexedDateRangeConstructionComputation_admitted
   ⟨operation.start.keyOwned, operation.finish.keyOwned, operation.sameGroup,
     operation.targetOwnedByGroup, operation.profileOwned⟩
 
+/-- Rich indexed-construction result projection retains the checked target identity and delegates all five channels to the established DateRange classifier. -/
+theorem checkedIndexedDateRangeConstructionComputation_executeResult_projects
+    (operation : CheckedIndexedDateRangeConstructionComputation model)
+    (preliminary : CheckedIndexPreliminary model)
+    (residualMessages : List ResidualMessage)
+    (result : IndexedDateRangeConstructionComputationResult)
+    (evaluated : operation.execute preliminary = .ok result) :
+    operation.executeResult preliminary residualMessages =
+      .ok (DateRangeComputationRunView.fromOutcomes preliminary.base
+        residualMessages [(operation.target.source.id, result.outcome)]) := by
+  rw [CheckedIndexedDateRangeConstructionComputation.executeResult, evaluated]
+  rfl
+
 end A12Kernel
