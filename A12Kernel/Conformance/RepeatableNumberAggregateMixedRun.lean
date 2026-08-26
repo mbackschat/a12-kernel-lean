@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.RepeatableNumberAggregateMixedRunRelation
+import A12Kernel.Proofs.RepeatableNumberAggregateMixedRunRelation
 
 /-! # Aggregate-seeded mixed scalar-run locks -/
 
@@ -173,6 +173,31 @@ private def summary? (secondQuantity : ClassifiedCellInput) := do
   let outcomes ← (plan.execute world prepared.patterns input).toOption
   pure (plan.analyze, outcomes.cascade.aggregate.outcome, outcomes.scalars)
 
+private theorem evaluated_to_get (evaluation : Except ε α)
+    (available : evaluation.toOption.isSome = true) :
+    evaluation = .ok (evaluation.toOption.get available) := by
+  cases evaluation with
+  | error cause => simp [Except.toOption] at available
+  | ok value => rfl
+
+private def successfulPlan : CheckedRepeatableNumberAggregateMixedRun model :=
+  plan?.get (by native_decide)
+
+private def successfulInput : CheckedDocument model :=
+  (input? (numberCell quantity.id [2] 3)).get (by native_decide)
+
+private def successfulOutcomes : RepeatableNumberAggregateMixedRunOutcomes :=
+  (successfulPlan.execute world prepared.patterns successfulInput).toOption.get
+    (by native_decide)
+
+private theorem successfulExecuted :
+    successfulPlan.execute world prepared.patterns successfulInput =
+      .ok successfulOutcomes := by
+  simpa [successfulOutcomes] using evaluated_to_get
+    (evaluation := successfulPlan.execute world prepared.patterns
+      successfulInput)
+    (by native_decide)
+
 private structure ResultSummary where
   aggregate : NumericTargetOutcome
   stringWithoutErrors : List (FieldId × String)
@@ -224,6 +249,23 @@ example :
         .string label.id (.accepted { text := "5", nonempty := by decide }),
         .number doubled.id (.accepted { unscaled := 10, scale := 0 })]) := by
   native_decide
+
+/- A successful aggregate seed stays outside the exact typed scalar labels. -/
+example :
+    ∃ final,
+      ScalarComputationRunTrace successfulPlan.run world prepared.patterns
+        successfulInput
+        { completed := [.number {
+            targetField :=
+              successfulPlan.cascade.total.operation.core.target.id
+            outcome := successfulOutcomes.cascade.aggregate.outcome
+          }] }
+        successfulOutcomes.scalars final := by
+  obtain ⟨final, _cascade, _suffix, trace⟩ :=
+    repeatableNumberAggregateMixedRun_execute_scalar_trace
+      successfulPlan world prepared.patterns successfulInput
+        successfulOutcomes successfulExecuted
+  exact ⟨final, trace⟩
 
 /- Reached aggregate poison crosses Number-to-String and then String-to-Number as cause-blind dependency poison. -/
 example :
@@ -306,13 +348,6 @@ private def transitionInput : CheckedDocument model :=
 private def transitionCascade : RepeatableNumberAggregateCascadeOutcomes :=
   (transitionPlan.cascade.execute world transitionInput).toOption.get
     (by native_decide)
-
-private theorem evaluated_to_get (evaluation : Except ε α)
-    (available : evaluation.toOption.isSome = true) :
-    evaluation = .ok (evaluation.toOption.get available) := by
-  cases evaluation with
-  | error cause => simp [Except.toOption] at available
-  | ok value => rfl
 
 private theorem transitionCascadeExecuted :
     transitionPlan.cascade.execute world transitionInput =

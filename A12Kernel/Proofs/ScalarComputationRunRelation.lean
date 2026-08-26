@@ -163,18 +163,6 @@ private theorem scalarComputationRun_step_ready_after_seed
       rw [notReferenced] at referenced
       contradiction
 
-private theorem scalarComputationRun_step_ready
-    (run : CheckedScalarComputationRun model)
-    (earlier remaining : List (CheckedScalarComputationStep model))
-    (step : CheckedScalarComputationStep model)
-    (split : run.steps = earlier ++ step :: remaining)
-    (state : ScalarComputationRunState)
-    (stateTargets : state.targetFields = earlier.map (·.targetField)) :
-    step.targetField ∉ state.targetFields ∧
-      ScalarComputationDependenciesEnabled run step state := by
-  simpa using scalarComputationRun_step_ready_after_seed
-    run [] earlier remaining step split (by simp) state stateTargets
-
 /-- A structural failure transition preserves the selected step's exact target identity and scalar family. -/
 theorem scalarComputationRun_failureTransition_identity
     (failure : ScalarComputationRunFailureTransition run world patterns input
@@ -187,16 +175,22 @@ theorem scalarComputationRun_failureTransition_identity
         scalarComputationRun_evaluateStep_faultIdentity
           run world patterns input state step fault evaluated⟩
 
-/-- Successful fixed-order suffix execution is admitted by the mixed transition relation and carries exactly the newly appended rich outcomes. -/
-theorem scalarComputationRun_executeSteps_trace
+/-- Successful fixed-order suffix execution after disjoint external seed
+completions is admitted by the mixed transition relation and carries exactly
+the newly appended rich outcomes. -/
+theorem scalarComputationRun_executeSteps_seeded_trace
     (run : CheckedScalarComputationRun model)
     (world : World)
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (input : CheckedDocument model)
+    (seedTargets : List FieldId)
     (earlier remaining : List (CheckedScalarComputationStep model))
     (state result : ScalarComputationRunState)
+    (seedDisjoint :
+      ∀ target ∈ seedTargets, target ∉ run.targetFields)
     (split : run.steps = earlier ++ remaining)
-    (stateTargets : state.targetFields = earlier.map (·.targetField))
+    (stateTargets :
+      state.targetFields = seedTargets ++ earlier.map (·.targetField))
     (executed :
       run.executeSteps world patterns input remaining state = .ok result) :
     ∃ outcomes,
@@ -215,19 +209,21 @@ theorem scalarComputationRun_executeSteps_trace
           simp [CheckedScalarComputationRun.executeSteps, evaluated] at executed
           have target := scalarComputationRun_evaluateStep_target
             run world patterns input state step completion evaluated
-          have ready := scalarComputationRun_step_ready
-            run earlier remaining step split state stateTargets
+          have ready := scalarComputationRun_step_ready_after_seed
+            run seedTargets earlier remaining step split seedDisjoint state
+              stateTargets
           let next : ScalarComputationRunState :=
             { completed := state.completed ++ [completion] }
           have nextTargets :
               next.targetFields =
-                (earlier ++ [step]).map (·.targetField) := by
+                seedTargets ++
+                  (earlier ++ [step]).map (·.targetField) := by
             have stateTargets' :
                 state.completed.map (·.targetField) =
-                  earlier.map (·.targetField) := by
+                  seedTargets ++ earlier.map (·.targetField) := by
               simpa [ScalarComputationRunState.targetFields] using stateTargets
             simp [next, ScalarComputationRunState.targetFields,
-              List.map_append, stateTargets', target]
+              List.map_append, stateTargets', target, List.append_assoc]
           have nextSplit :
               run.steps = (earlier ++ [step]) ++ remaining := by
             simpa [List.append_assoc] using split
@@ -241,6 +237,25 @@ theorem scalarComputationRun_executeSteps_trace
             simp
           · simpa [next, ScalarComputationRunState.outcomes,
               List.append_assoc] using appended
+
+/-- The ordinary successful trace is the empty-seed specialization. -/
+theorem scalarComputationRun_executeSteps_trace
+    (run : CheckedScalarComputationRun model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (earlier remaining : List (CheckedScalarComputationStep model))
+    (state result : ScalarComputationRunState)
+    (split : run.steps = earlier ++ remaining)
+    (stateTargets : state.targetFields = earlier.map (·.targetField))
+    (executed :
+      run.executeSteps world patterns input remaining state = .ok result) :
+    ∃ outcomes,
+      ScalarComputationRunTrace run world patterns input state outcomes result ∧
+        state.outcomes ++ outcomes = result.outcomes := by
+  simpa using scalarComputationRun_executeSteps_seeded_trace
+    run world patterns input [] earlier remaining state result (by simp) split
+      stateTargets executed
 
 /-- Every successful fixed mixed execution has a non-self-justifying transition trace with exactly its returned outcomes. -/
 theorem scalarComputationRun_execute_trace

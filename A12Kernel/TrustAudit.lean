@@ -1054,6 +1054,7 @@ run_cmd do
 #print axioms A12Kernel.checkedRepeatableNumberAggregateRunCascade_analyze
 #print axioms A12Kernel.checkedRepeatableNumberAggregateMixedRun_analyze
 #print axioms A12Kernel.checkedRepeatableNumberAggregateMixedRun_executeResult_routesSuffixFamilies
+#print axioms A12Kernel.repeatableNumberAggregateMixedRun_execute_scalar_trace
 #print axioms A12Kernel.repeatableNumberAggregateMixedRun_transition_trace
 #print axioms A12Kernel.repeatableNumberAggregateMixedRun_execute_failure_trace
 #print axioms A12Kernel.checkedRepeatableNumberAggregateRowCascade_analyze
@@ -1910,6 +1911,7 @@ run_cmd do
 #print axioms A12Kernel.scalarComputationRun_failureTransition_identity
 #print axioms A12Kernel.scalarComputationRun_executeSteps_trace
 #print axioms A12Kernel.scalarComputationRun_execute_trace
+#print axioms A12Kernel.scalarComputationRun_executeSteps_seeded_trace
 #print axioms A12Kernel.scalarComputationRun_executeSteps_seeded_failureTrace
 #print axioms A12Kernel.scalarComputationRun_executeSteps_failureTrace
 #print axioms A12Kernel.scalarComputationRun_execute_failureTrace
