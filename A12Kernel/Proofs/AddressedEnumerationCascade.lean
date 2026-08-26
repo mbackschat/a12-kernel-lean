@@ -16,8 +16,7 @@ theorem addressedEnumerationCascade_targetsDistinct
     (cascade : CheckedAddressedEnumerationCascade model) :
     cascade.producer.target.field ≠ cascade.consumer.target.field := by
   intro same
-  have reads := cascade.consumerReadsProducerDirectly
-  simp only [CheckedAddressedEnumerationSource.directlyReferencesStoredField, Bool.and_eq_true] at reads
+  have reads := cascade.consumerReadsProducer
   have excludes := cascade.consumer.targetNotReferenced
   rw [same] at reads
   simp_all

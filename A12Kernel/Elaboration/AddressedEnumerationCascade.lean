@@ -9,7 +9,7 @@ namespace A12Kernel
 
 inductive AddressedEnumerationCascadePlanError where
   | producerReadsConsumer
-  | consumerDoesNotDirectlyReadProducer
+  | consumerDoesNotReadProducer
   deriving Repr, DecidableEq
 
 structure CheckedAddressedEnumerationCascade (model : FlatModel) where
@@ -18,8 +18,8 @@ structure CheckedAddressedEnumerationCascade (model : FlatModel) where
   consumer : CheckedAddressedEnumerationComputation model
   producerDoesNotReadConsumer :
     producer.source.referencesField consumer.target.field = false
-  consumerReadsProducerDirectly :
-    consumer.source.directlyReferencesStoredField producer.target.field = true
+  consumerReadsProducer :
+    consumer.source.referencesField producer.target.field = true
 
 def certifyAddressedEnumerationCascade
     (producer consumer : CheckedAddressedEnumerationComputation model) :
@@ -27,14 +27,13 @@ def certifyAddressedEnumerationCascade
       (CheckedAddressedEnumerationCascade model) :=
   if hReverse :
       producer.source.referencesField consumer.target.field = false then
-    if hForward : consumer.source.directlyReferencesStoredField
-        producer.target.field = true then
+    if hForward : consumer.source.referencesField producer.target.field = true then
       .ok {
         producer, consumer
         producerDoesNotReadConsumer := hReverse
-        consumerReadsProducerDirectly := hForward
+        consumerReadsProducer := hForward
       }
-    else .error .consumerDoesNotDirectlyReadProducer
+    else .error .consumerDoesNotReadProducer
   else .error .producerReadsConsumer
 
 structure EnumerationDependencyCell where

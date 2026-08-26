@@ -6,7 +6,7 @@ open A12Kernel
 
 private def domain : EnumerationDeclaration := {
   storedTokens := ["A", "B"]
-  categories := [{ name := "Choice", tokens := ["A", "B"] }]
+  categories := [{ name := "Choice", tokens := ["B", "A"] }]
 }
 
 private def enumerationField (id : FieldId) (name : String) : FlatFieldDecl := {
@@ -54,6 +54,13 @@ private def deepConsumer? :
     deepFinal.id (.field (.direct
       { base := .relative 1, groups := [], field := produced.name }))).toOption
 
+private def deepCategoryConsumer? :
+    Option (CheckedAddressedEnumerationComputation model) :=
+  (checkAddressedEnumerationComputation model ["Form", "Rows", "Details"]
+    deepFinal.id (.field (.category
+      { base := .relative 1, groups := [], field := produced.name }
+      "Choice"))).toOption
+
 private def cascade? : Option (CheckedAddressedEnumerationCascade model) := do
   let producer ← operation? produced source
   let consumer ← operation? final produced
@@ -62,6 +69,17 @@ private def cascade? : Option (CheckedAddressedEnumerationCascade model) := do
 private def deepCascade? : Option (CheckedAddressedEnumerationCascade model) := do
   let producer ← operation? produced source
   let consumer ← deepConsumer?
+  (certifyAddressedEnumerationCascade producer consumer).toOption
+
+private def categoryCascade? : Option (CheckedAddressedEnumerationCascade model) := do
+  let producer ← operation? produced source
+  let consumer ← categoryOperation? final produced
+  (certifyAddressedEnumerationCascade producer consumer).toOption
+
+private def deepCategoryCascade? :
+    Option (CheckedAddressedEnumerationCascade model) := do
+  let producer ← operation? produced source
+  let consumer ← deepCategoryConsumer?
   (certifyAddressedEnumerationCascade producer consumer).toOption
 
 private def planError? (producer? consumer? :
@@ -103,21 +121,8 @@ private def input? : Option (CheckedDocument model) :=
       cell produced 3 "B" (.parsed (.enum "B"))]
   }).toOption
 
-private def summary? : Option
-    (List (CellAddr × TokenComputationResult) ×
-      List (CellAddr × TokenComputationResult)) := do
-  let cascade ← cascade?
-  let input ← input?
-  let outcomes ← cascade.execute input |>.toOption
-  pure (
-    outcomes.producer.map fun entry => (entry.targetField, entry.result),
-    outcomes.consumer.map fun entry => (entry.targetField, entry.result))
-
-private def deepSummary? : Option
-    (List (CellAddr × TokenComputationResult) ×
-      List (CellAddr × TokenComputationResult)) := do
-  let cascade ← deepCascade?
-  let input ← (checkDocument prepared "en_US" {
+private def deepInput? : Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
     instantiatedRows := [
       { group := 10, path := [1] },
       { group := 10, path := [2] },
@@ -133,18 +138,31 @@ private def deepSummary? : Option
       cell produced 2 "B" (.parsed (.enum "B")),
       cell produced 3 "B" (.parsed (.enum "B"))]
   }).toOption
+
+private abbrev CascadeSummary :=
+  List (CellAddr × TokenComputationResult) ×
+    List (CellAddr × TokenComputationResult)
+
+private def summarize? (cascade? : Option (CheckedAddressedEnumerationCascade model))
+    (input? : Option (CheckedDocument model)) : Option CascadeSummary := do
+  let cascade ← cascade?
+  let input ← input?
   let outcomes ← cascade.execute input |>.toOption
   pure (
     outcomes.producer.map fun entry => (entry.targetField, entry.result),
     outcomes.consumer.map fun entry => (entry.targetField, entry.result))
 
+private def summary? := summarize? cascade? input?
+private def categorySummary? := summarize? categoryCascade? input?
+private def deepSummary? := summarize? deepCascade? deepInput?
+private def deepCategorySummary? := summarize? deepCategoryCascade? deepInput?
+
 example : cascade?.isSome = true ∧ deepCascade?.isSome = true ∧
+    categoryCascade?.isSome = true ∧ deepCategoryCascade?.isSome = true ∧
     planError? (operation? produced final) (operation? final produced) =
       some .producerReadsConsumer ∧
     planError? (operation? produced source) (operation? final source) =
-      some .consumerDoesNotDirectlyReadProducer ∧
-    planError? (operation? produced source) (categoryOperation? final produced) =
-      some .consumerDoesNotDirectlyReadProducer := by
+      some .consumerDoesNotReadProducer := by
   native_decide
 
 /- Validation-scoped required poison remains a structural dependency-conversion fault rather than being mislabeled as a reached computed dependency. -/
@@ -163,6 +181,18 @@ example : summary? = some ([
   ]) := by
   native_decide
 
+/- A non-identity category mapping is applied to the completed producer token rather than to the stale stored producer cell. -/
+example : categorySummary? = some ([
+    (address produced.id 1, .value "A"),
+    (address produced.id 2, .noValue),
+    (address produced.id 3, .poison .declaredConstraint)
+  ], [
+    (address final.id 1, .value "B"),
+    (address final.id 2, .noValue),
+    (address final.id 3, .poison .computedDependency)
+  ]) := by
+  native_decide
+
 /- One completed enclosing producer row fans out only to its own descendant targets; stale parent cells cannot leak through clean absence or dependency poison. -/
 example : deepSummary? = some ([
     (address produced.id 1, .value "A"),
@@ -171,6 +201,15 @@ example : deepSummary? = some ([
   ], [
     (deepAddress deepFinal.id 1 1, .value "A"),
     (deepAddress deepFinal.id 1 2, .value "A"),
+    (deepAddress deepFinal.id 2 1, .poison .computedDependency),
+    (deepAddress deepFinal.id 3 1, .noValue)
+  ]) ∧ deepCategorySummary? = some ([
+    (address produced.id 1, .value "A"),
+    (address produced.id 2, .poison .declaredConstraint),
+    (address produced.id 3, .noValue)
+  ], [
+    (deepAddress deepFinal.id 1 1, .value "B"),
+    (deepAddress deepFinal.id 1 2, .value "B"),
     (deepAddress deepFinal.id 2 1, .poison .computedDependency),
     (deepAddress deepFinal.id 3 1, .noValue)
   ]) := by

@@ -78,16 +78,6 @@ def referencesField (source : CheckedAddressedEnumerationSource model scope)
   | .literal _ => false
   | .field _ _ _ operand _ _ _ _ _ _ _ _ _ => operand.field.id == field
 
-def directlyReferencesStoredField
-    (source : CheckedAddressedEnumerationSource model scope)
-    (field : FieldId) : Bool :=
-  source.referencesField field && match source with
-    | .literal _ => false
-    | .field _ _ _ operand _ _ _ _ _ _ _ _ _ =>
-        match operand.projectionRef with
-        | .stored => true
-        | .category _ => false
-
 def allowedFor (target : CheckedEnumerationProjection) :
     CheckedAddressedEnumerationSource model scope → Bool
   | .literal token => target.declaration.literalAllowed target.projection token
