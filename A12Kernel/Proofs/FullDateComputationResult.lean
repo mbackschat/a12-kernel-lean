@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.TemporalComputationResult
+import A12Kernel.Proofs.TemporalComputationResult
 
 /-! # Full-Date computation result-view laws -/
 
@@ -23,7 +23,12 @@ theorem fullDateComputationRun_withChanges_subset
     computed ∈
       (FullDateComputationRunView.fromOutcomes input messages outcomes).withoutErrors := by
   simpa [FullDateComputationRunView.fromOutcomes] using
-    (List.mem_filter.mp member).1
+    temporalComputationRun_fromErrorOutcomes_withChanges_subset
+      FullDateComputationRunView.successfulInstance?
+      FullDateComputationRunView.computedError?
+      (FullDateComputationRunView.sourceValueChanged input)
+      (FullDateComputationRunView.shouldClear input)
+      messages outcomes computed member
 
 /-- The clear collection is precisely the source-filled, no-instance projection. -/
 theorem fullDateComputationRun_cleared_iff
@@ -33,7 +38,8 @@ theorem fullDateComputationRun_cleared_iff
         (FullDateComputationRunView.fromOutcomes input messages outcomes).cleared ↔
       ∃ outcome, (field, outcome) ∈ outcomes ∧
         FullDateComputationRunView.shouldClear input (field, outcome) = true := by
-  simp [FullDateComputationRunView.fromOutcomes]
+  simp [FullDateComputationRunView.fromOutcomes,
+    TemporalComputationRunView.fromErrorOutcomes]
 
 /-- Result construction retains the supplied residual channel exactly. -/
 theorem fullDateComputationRun_formalErrors_exact
@@ -62,7 +68,8 @@ theorem fullDateComputationRun_fromOutcomes_permutation
       (FullDateComputationRunView.fromOutcomes input firstMessages firstOutcomes)
       (FullDateComputationRunView.fromOutcomes input secondMessages secondOutcomes) := by
   simp only [FullDateComputationRunView.ExtensionalEq,
-    FullDateComputationRunView.fromOutcomes]
+    FullDateComputationRunView.fromOutcomes,
+    TemporalComputationRunView.fromErrorOutcomes]
   exact ⟨
     outcomesPermutation.filterMap _,
     (outcomesPermutation.filterMap _).filter _,

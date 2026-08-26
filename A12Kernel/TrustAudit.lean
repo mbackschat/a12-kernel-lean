@@ -357,6 +357,8 @@ run_cmd do
 #print axioms A12Kernel.sourceNonemptyStoredTargetState_empty
 #print axioms A12Kernel.sourceNonemptyStoredTargetState_nonempty
 #print axioms A12Kernel.sourceDateRangeTargetState_nonempty
+#print axioms A12Kernel.temporalComputationRun_fromErrorOutcomes_withChanges_subset
+#print axioms A12Kernel.dateRangeComputationRun_shouldClear_iff
 #print axioms A12Kernel.fullDateComputation_field_empty
 #print axioms A12Kernel.fullDateComputation_field_poison
 #print axioms A12Kernel.fullDateComputation_field_value

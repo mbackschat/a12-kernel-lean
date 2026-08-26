@@ -30,6 +30,19 @@ structure FullDateComputedError where
   cause : FullDateTargetError
   deriving Repr, DecidableEq
 
+/-- One successful DateRange instance retaining its exact target-owned spelling. -/
+structure DateRangeComputedInstance where
+  targetField : FieldId
+  value : StoredDateRange
+  deriving Repr, DecidableEq
+
+/-- One DateRange instance whose exact rendered attempt failed target checking. -/
+structure DateRangeComputedError where
+  targetField : FieldId
+  attempted : StoredDateRange
+  cause : DateRangeTargetError
+  deriving Repr, DecidableEq
+
 /-- The bounded DateTime target has no target-local rejection outcome, so its computed-error collection is uninhabited. -/
 inductive DateTimeComputedError
   deriving Repr, DecidableEq
@@ -64,6 +77,15 @@ def hasComputedInstance : DateTimeTargetOutcome → Bool
   | .noValue | .poison _ => false
 
 end DateTimeTargetOutcome
+
+namespace DateRangeTargetOutcome
+
+/-- Whether the DateRange outcome produced a computed-data instance. A rejected attempt counts; quiet no-value and poison do not. -/
+def hasComputedInstance : DateRangeTargetOutcome → Bool
+  | .accepted _ | .errored _ _ => true
+  | .noValue | .poison _ => false
+
+end DateRangeTargetOutcome
 
 namespace CheckedDocument
 
@@ -135,6 +157,11 @@ abbrev DateTimeComputationRunView (ResidualMessage : Type) :=
   TemporalComputationRunView
     DateTimeComputedInstance DateTimeComputedError ResidualMessage
 
+/-- DateRange specialization of the shared five result collections. -/
+abbrev DateRangeComputationRunView (ResidualMessage : Type) :=
+  TemporalComputationRunView
+    DateRangeComputedInstance DateRangeComputedError ResidualMessage
+
 namespace TemporalComputationRunView
 
 /-- The public error predicate observes exactly computed-instance errors and residual messages. -/
@@ -168,6 +195,24 @@ def fromValueOutcomes
     withoutErrors
     withChanges := withoutErrors.filter sourceValueChanged
     withErrors := []
+    cleared := (outcomes.filter shouldClear).map Prod.fst
+    formalErrorsInOperands := residualMessages
+  }
+
+/-- Shared five-channel projection for temporal families whose rich outcome distinguishes accepted values from target-rejected attempts. -/
+def fromErrorOutcomes
+    (successfulInstance? : FieldId × Outcome → Option ComputedInstance)
+    (computedError? : FieldId × Outcome → Option ComputedError)
+    (sourceValueChanged : ComputedInstance → Bool)
+    (shouldClear : FieldId × Outcome → Bool)
+    (residualMessages : List ResidualMessage)
+    (outcomes : List (FieldId × Outcome)) :
+    TemporalComputationRunView ComputedInstance ComputedError ResidualMessage :=
+  let withoutErrors := outcomes.filterMap successfulInstance?
+  {
+    withoutErrors
+    withChanges := withoutErrors.filter sourceValueChanged
+    withErrors := outcomes.filterMap computedError?
     cleared := (outcomes.filter shouldClear).map Prod.fst
     formalErrorsInOperands := residualMessages
   }
@@ -236,14 +281,9 @@ def fromOutcomes (input : CheckedDocument model)
     (residualMessages : List ResidualMessage)
     (outcomes : List (FieldId × FullDateTargetOutcome)) :
     FullDateComputationRunView ResidualMessage :=
-  let withoutErrors := outcomes.filterMap successfulInstance?
-  {
-    withoutErrors
-    withChanges := withoutErrors.filter (sourceValueChanged input)
-    withErrors := outcomes.filterMap computedError?
-    cleared := (outcomes.filter (shouldClear input)).map Prod.fst
-    formalErrorsInOperands := residualMessages
-  }
+  TemporalComputationRunView.fromErrorOutcomes successfulInstance?
+    computedError? (sourceValueChanged input) (shouldClear input)
+    residualMessages outcomes
 
 /-- The public error predicate observes exactly computed-instance errors and residual messages. -/
 def noErrorOccurred (view : FullDateComputationRunView ResidualMessage) : Bool :=
@@ -293,5 +333,47 @@ def ExtensionalEq
   TemporalComputationRunView.ExtensionalEq left right
 
 end DateTimeComputationRunView
+
+namespace DateRangeComputationRunView
+
+def successfulInstance? :
+    FieldId × DateRangeTargetOutcome → Option DateRangeComputedInstance
+  | (targetField, .accepted value) => some { targetField, value }
+  | _ => none
+
+def computedError? :
+    FieldId × DateRangeTargetOutcome → Option DateRangeComputedError
+  | (targetField, .errored attempted cause) =>
+      some { targetField, attempted, cause }
+  | _ => none
+
+def sourceValueChanged (input : CheckedDocument model)
+    (computed : DateRangeComputedInstance) : Bool :=
+  (input.sourceDateRangeTargetState computed.targetField).storedValue !=
+    some computed.value
+
+def shouldClear (input : CheckedDocument model)
+    (entry : FieldId × DateRangeTargetOutcome) : Bool :=
+  !entry.2.hasComputedInstance &&
+    (input.sourceDateRangeTargetState entry.1).storedValue.isSome
+
+/-- Build all five public DateRange projections from rich outcomes and an independently classified residual channel. -/
+def fromOutcomes (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage)
+    (outcomes : List (FieldId × DateRangeTargetOutcome)) :
+    DateRangeComputationRunView ResidualMessage :=
+  TemporalComputationRunView.fromErrorOutcomes successfulInstance?
+    computedError? (sourceValueChanged input) (shouldClear input)
+    residualMessages outcomes
+
+def noErrorOccurred
+    (view : DateRangeComputationRunView ResidualMessage) : Bool :=
+  TemporalComputationRunView.noErrorOccurred view
+
+def ExtensionalEq
+    (left right : DateRangeComputationRunView ResidualMessage) : Prop :=
+  TemporalComputationRunView.ExtensionalEq left right
+
+end DateRangeComputationRunView
 
 end A12Kernel
