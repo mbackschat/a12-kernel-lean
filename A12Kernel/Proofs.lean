@@ -35,6 +35,7 @@ import A12Kernel.Proofs.TimeAggregate
 import A12Kernel.Proofs.TemporalFormat
 import A12Kernel.Proofs.TemporalTargetPolicy
 import A12Kernel.Proofs.TimeComputation
+import A12Kernel.Proofs.TimeFromDateTimeComputation
 import A12Kernel.Proofs.TimeInput
 import A12Kernel.Proofs.DateTimeInput
 import A12Kernel.Proofs.ValueAsDate

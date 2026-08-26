@@ -364,20 +364,26 @@ def elaborateShiftedDateTimeSource
     elaborateDateTimeNumericShiftSource model sourceField amount
   pure { source with unit }
 
-namespace CheckedValueAsDateTimeExtraction
-
-/-- Read the certified scalar DateTime source once and retain its wall clock, empty state, or exact formal cause. The reference semantics uses a linear immutable document lookup and adds no second zone conversion. -/
-def readTime (checked : CheckedValueAsDateTimeExtraction model)
+/-- Read one already-certified complete-DateTime source and retain its wall clock, clean absence, or exact formal cause. Static source admission remains the caller's checked responsibility. -/
+def readTimeFromDateTimeSource (source : FlatTemporalField)
     (phase : Phase) (input : CheckedDocument model) :
     Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand := do
   let cell ← input.read {
-    field := checked.source.id
+    field := source.id
     path := []
   } |>.mapError .document
   match ValueAsDateTimeTimeOperand.ofDateTimeValueObservation
       (observeCell phase cell) with
   | some time => pure time
-  | none => throw (.sourcePayloadMismatch checked.source.id)
+  | none => throw (.sourcePayloadMismatch source.id)
+
+namespace CheckedValueAsDateTimeExtraction
+
+/-- Read the certified scalar DateTime source once and retain its wall clock, empty state, or exact formal cause. The reference semantics uses a linear immutable document lookup and adds no second zone conversion. -/
+def readTime (checked : CheckedValueAsDateTimeExtraction model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand :=
+  readTimeFromDateTimeSource checked.source phase input
 
 /-- Check the bounded partial-Date source, then evaluate `TimeFromDateTime` only when generated left-to-right argument evaluation reaches it. -/
 def evaluateRaw (checked : CheckedValueAsDateTimeExtraction model)

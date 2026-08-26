@@ -87,6 +87,7 @@ import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Elaboration.FullDateInput
 import A12Kernel.Elaboration.PartialDateInput
 import A12Kernel.Elaboration.TimeComputation
+import A12Kernel.Elaboration.TimeFromDateTimeComputation
 import A12Kernel.Elaboration.TemporalShiftAmount
 import A12Kernel.Elaboration.ValueAsDate
 import A12Kernel.Elaboration.ValueAsDateDayDifference
