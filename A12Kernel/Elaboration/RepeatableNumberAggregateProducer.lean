@@ -4,6 +4,7 @@ import A12Kernel.Elaboration.AddressedNumberAbs
 import A12Kernel.Elaboration.AddressedNumberRound
 import A12Kernel.Elaboration.AddressedNumberExtremum
 import A12Kernel.Elaboration.AddressedNumberPower
+import A12Kernel.Elaboration.AddressedNumberDivision
 
 /-! # Checked repeatable Number aggregate row producers -/
 
@@ -17,6 +18,7 @@ inductive RepeatableNumberAggregateProducerKind where
   | round (mode : DecimalRoundingMode) (places : RoundingPlaces)
   | extremum (operation : NumericExtremumOp)
   | power
+  | division
   deriving Repr, DecidableEq
 
 /-- One completed row-local producer admitted by the fixed aggregate route. -/
@@ -27,6 +29,7 @@ inductive CheckedRepeatableNumberAggregateProducer (model : FlatModel) where
   | round (operation : CheckedAddressedNumberRound model)
   | extremum (operation : CheckedAddressedNumberExtremum model)
   | power (operation : CheckedAddressedNumberPower model)
+  | division (operation : CheckedAddressedNumberDivision model)
 
 namespace CheckedRepeatableNumberAggregateProducer
 
@@ -38,6 +41,7 @@ def kind : CheckedRepeatableNumberAggregateProducer model →
   | .round operation => .round operation.mode operation.places
   | .extremum operation => .extremum operation.op
   | .power _ => .power
+  | .division _ => .division
 
 def targetField : CheckedRepeatableNumberAggregateProducer model → FieldId
   | .direct operation => operation.placement.targetField
@@ -46,6 +50,7 @@ def targetField : CheckedRepeatableNumberAggregateProducer model → FieldId
   | .round operation => operation.numberSource.placement.targetField
   | .extremum operation => operation.target.targetField
   | .power operation => operation.pair.left.placement.targetField
+  | .division operation => operation.pair.left.placement.targetField
 
 def targetDeclaration : CheckedRepeatableNumberAggregateProducer model →
     FlatFieldDecl
@@ -55,6 +60,7 @@ def targetDeclaration : CheckedRepeatableNumberAggregateProducer model →
   | .round operation => operation.numberSource.placement.targetDeclaration
   | .extremum operation => operation.target.targetDeclaration
   | .power operation => operation.pair.left.placement.targetDeclaration
+  | .division operation => operation.pair.left.placement.targetDeclaration
 
 def declaringGroup : CheckedRepeatableNumberAggregateProducer model → GroupPath
   | .direct operation => operation.placement.declaringGroup
@@ -63,6 +69,7 @@ def declaringGroup : CheckedRepeatableNumberAggregateProducer model → GroupPat
   | .round operation => operation.numberSource.placement.declaringGroup
   | .extremum operation => operation.target.declaringGroup
   | .power operation => operation.pair.left.placement.declaringGroup
+  | .division operation => operation.pair.left.placement.declaringGroup
 
 def sourceFields : CheckedRepeatableNumberAggregateProducer model → List FieldId
   | .direct operation => [operation.placement.sourceDeclaration.id]
@@ -73,6 +80,9 @@ def sourceFields : CheckedRepeatableNumberAggregateProducer model → List Field
   | .round operation => [operation.numberSource.placement.sourceDeclaration.id]
   | .extremum operation => operation.sourceFields
   | .power operation => [
+      operation.pair.left.placement.sourceDeclaration.id,
+      operation.pair.right.placement.sourceDeclaration.id]
+  | .division operation => [
       operation.pair.left.placement.sourceDeclaration.id,
       operation.pair.right.placement.sourceDeclaration.id]
 
@@ -87,6 +97,7 @@ def execute (producer : CheckedRepeatableNumberAggregateProducer model)
   | .round operation => operation.execute input
   | .extremum operation => operation.execute input
   | .power operation => operation.execute input
+  | .division operation => operation.execute input
 
 end CheckedRepeatableNumberAggregateProducer
 

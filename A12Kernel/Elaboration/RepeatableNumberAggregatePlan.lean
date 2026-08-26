@@ -106,6 +106,7 @@ inductive RepeatableNumberAggregateCascadeElabError where
   | round (cause : AddressedNumberRoundElabError)
   | extremum (cause : AddressedNumberExtremumElabError)
   | power (cause : AddressedNumberPowerElabError)
+  | division (cause : AddressedNumberDivisionElabError)
   | aggregate (cause : NumericComputationElabError)
   | incoherentAggregate
   | dependency (expected actual : FieldId)
@@ -380,6 +381,22 @@ def checkRepeatableNumberPowerStarListAggregateCascade
   let row ← checkAddressedNumberPower model rowDeclaringGroup rowTarget
       baseSource exponentSource suppressExactScaleWarning |>.mapError .power
   finishRepeatableNumberAggregateCascade model (.power row)
+    aggregateDeclaringGroup aggregateTarget aggregateSource operation
+
+/-- Warning-suppressed-division-producer counterpart of the checked star-list aggregate route. -/
+def checkRepeatableNumberDivisionStarListAggregateCascade
+    (model : FlatModel)
+    (rowDeclaringGroup : GroupPath) (rowTarget : FieldId)
+    (leftSource rightSource : SurfaceFieldPath)
+    (suppressExactScaleWarning : Bool)
+    (aggregateDeclaringGroup : GroupPath) (aggregateTarget : FieldId)
+    (aggregateSource : SurfaceNumberEntitySource)
+    (operation : NumericAggregateOp) :
+    Except RepeatableNumberAggregateCascadeElabError
+      (CheckedRepeatableNumberAggregateCascade model) := do
+  let row ← checkAddressedNumberDivision model rowDeclaringGroup rowTarget
+      leftSource rightSource suppressExactScaleWarning |>.mapError .division
+  finishRepeatableNumberAggregateCascade model (.division row)
     aggregateDeclaringGroup aggregateTarget aggregateSource operation
 
 /-- Check the exact direct-assignment producer followed by a sole plain-star aggregate. -/
