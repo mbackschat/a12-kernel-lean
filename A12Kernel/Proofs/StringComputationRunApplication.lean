@@ -103,6 +103,21 @@ theorem stringComputationOneLevelApplication_rows_prefix
         { group := projection.prefixExtent.1, path := [offset + 1] } := by
   rfl
 
+/-- Every two-level applied String leaf is emitted in outer order from the predecessor prefix local to that exact outer coordinate. -/
+theorem stringComputationTwoLevelApplication_leafRows_scopedPrefix
+    (projection : StringComputationTwoLevelApplicationProjection model) :
+    projection.leafRows =
+      (List.range projection.outerExtent).flatMap fun outerOffset =>
+        (List.range (projection.innerExtentAt (outerOffset + 1))).map
+          fun innerOffset => {
+            group := projection.levels.2
+            path := [outerOffset + 1, innerOffset + 1]
+          } := by
+  simp [StringComputationTwoLevelApplicationProjection.leafRows,
+    StringComputationTwoLevelApplicationProjection.outerRows,
+    StringComputationTwoLevelApplicationProjection.innerRowsAt,
+    StringComputationTwoLevelApplicationProjection.levels, List.flatMap_map]
+
 /-- Duplicate action targets fail before any destination state is selected or changed. -/
 theorem stringComputationRun_applyTo_duplicateTarget
     [DecidableEq Target]
