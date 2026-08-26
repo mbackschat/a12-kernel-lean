@@ -9,7 +9,7 @@ Pay only for the narrowest rung that can answer the current question:
 1. **Red/green loop:** build the focused semantic-family Lake target, for example `lake build A12Kernel.Conformance.NumericValidation.Comparison`, not its import-only `A12Kernel.Conformance.NumericValidation` umbrella. This refreshes changed imported modules before checking the consumer; direct `lake env lean` elaboration may otherwise read an older built dependency. Stay on this rung while changing the capsule. If the smallest target is an umbrella or a legacy file containing unrelated families, extract the family being changed before extending it; focused compilation is part of the module-boundary acceptance criterion.
 2. **Integrated semantic check:** run `lake build` once after the focused modules are green. This checks the complete library, proof root, conformance root, and default executable targets.
 3. **Retained evidence:** run `lake test` once for a completed Tier 1 semantic capsule. Add a family-specific replay only when the capsule belongs to an active Tier 2 calibration batch.
-4. **Pre-commit trust and hygiene:** run `./scripts/check-lean-trust.sh`, `git diff --check`, `./scripts/check-spec-sync.sh`, and the full status check once after the integrated diff is stable. A successful trust audit emits one summary line; a failure preserves the underlying Lean diagnostics.
+4. **Pre-commit trust and hygiene:** run `./scripts/check-lean-trust.sh`, `git diff --check`, `./scripts/check-spec-sync.sh`, and the full status check once after the integrated diff is stable. The trust audit invokes both source and documentation hygiene guards. A successful trust audit emits one summary line; a failure preserves the underlying diagnostics.
 5. **Public-process checks:** run `checkReferenceProcess`, `checkBoundedProcess`, and candidate self-tests only when the public process, shipment, or process machinery changed, or before a release.
 
 Do not restart at a more expensive rung after a documentation-only edit unless that document is itself consumed by the corresponding gate.
@@ -31,6 +31,12 @@ The marked entries below are the exact machine-read reviewed-exception map. `rev
 <!-- lean-source-hygiene-exception: A12Kernel/Conformance/CurrentRepetitionAlternatingChain.lean | review-threshold | The cohesive fixed alternating Number/String chain shares private model, plan, pattern, checked-document, phase, transition, and nested fixtures across execution and retained result/application cases; splitting it would expose or duplicate those fixtures without isolating a useful narrower build target. -->
 <!-- lean-source-hygiene-exception: A12Kernel/TrustAudit.lean | exceptional-ceiling | The exhaustive theorem-root presentation and environment audit remain one Lean session to avoid repeated process startup and duplicate environment loading; this file contains only audit-driver setup and registry commands, never semantics or conformance fixtures. -->
 <!-- lean-source-hygiene-exceptions:end -->
+
+### Documentation-hygiene gate
+
+[`check-doc-hygiene.sh`](../scripts/check-doc-hygiene.sh) guards the implementation and source hubs, their bounded family shards, and the open gap index. It rejects physical claim lines above 1,000 characters, records above 80 physical lines, semicolon-packed omnibus claims, exact revisions or hashes copied into status owners, completed or correction chronology introduced as an open-gap bullet, generic hub links labelled as source checkpoints, files above 200,000 bytes, capability/source records above 24,000 bytes, SG blocks above 12,000 bytes, legacy wide capability tables, duplicate detailed anchors, and shard anchors missing or unlinked from their compatibility hub. The hard ceilings are failure boundaries, not writing targets; the 500-character soft claim ceiling and one-claim-per-bullet rule remain the authoring standard in [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md#bounded-detailed-records).
+
+The trust audit invokes this guard. The pre-push publication updater and CI both invoke that audit, so documentation hygiene is checked locally before publication and again remotely without a duplicate workflow step. Fix the owning record instead of adding path or line exceptions.
 
 ## Default assurance cadence
 

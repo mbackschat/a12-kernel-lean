@@ -11,8 +11,8 @@ Before editing documentation, classify each changed fact:
 | Fact | Sole owner |
 |---|---|
 | Kernel behavior and static legality | the relevant project-owned [`spec/`](../spec/) clause |
-| Reusable source or measurement checkpoint, revision, route, and source-level claim limit | [`SOURCES.md`](SOURCES.md) |
-| Implemented fragment, proof/non-law state, and external-evidence status | [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) |
+| Reusable source or measurement checkpoint, revision, route, and source-level claim limit | the [`SOURCES.md`](SOURCES.md) hub and its bounded [`sources/`](sources/) records |
+| Implemented fragment, proof/non-law state, and external-evidence status | the [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) hub and its bounded [`implementation/`](implementation/) records |
 | Retained observation, artifact identity, projection, replay, and empirical claim limit | [`EVIDENCE.md`](EVIDENCE.md) |
 | Open semantic obligation, prerequisite, discriminator, verified change route, route limit, or reopening trigger | [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) |
 | Persisted handoff action, oracle, stop condition, baseline, blocker, probe trigger, and resume command | [`PLAN.md`](PLAN.md) |
@@ -50,8 +50,8 @@ The capsule closure assessment in [`TESTING.md`](TESTING.md#same-context-capsule
 ## Same-change triggers
 
 - Change [`ARCHITECTURE.md`](ARCHITECTURE.md) only for a representation or semantic-ownership boundary, dependency direction, composition invariant, or adopted/rejected encoding alternative. A new module or a wider implemented family is not by itself architecture.
-- Change [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) when executable, proof, non-law, protocol, or evidence support changes.
-- Change [`SOURCES.md`](SOURCES.md) only when a reusable provenance checkpoint, authoritative source locus, or drill route changes. Capsule-specific source narratives and review chronology stay in working context and Git history.
+- Change the [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owner when executable, proof, non-law, protocol, or evidence support changes. Edit the matching shard record; change the hub only when its summary or stable entry set changes.
+- Change the [`SOURCES.md`](SOURCES.md) owner only when a reusable provenance checkpoint, authoritative source locus, or drill route changes. Edit the matching shard record; change the hub only when its navigation or stable entry set changes. Capsule-specific source narratives and review chronology stay in working context and Git history.
 - Change [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) only when the open set, prerequisite, discriminator, consumer consequence, evidence need, verified change route, route limit, or reopening trigger changes. Delete a completed entry; never append a shipped-status narrative.
 - Change [`PLAN.md`](PLAN.md) only when a resumption state must survive the current session, a blocker must outlive it, or a consumer-probe trigger changes. Completed-unit narratives, broad backlog, in-session selection, and durable findings do not belong there.
 - Change [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) only for a durable non-obvious lesson or a visible correction to an existing finding.
@@ -84,7 +84,7 @@ Capability implementation kits may repeat the minimum semantics and procedure re
 
 Document size is a symptom, not the ownership test. Consolidate before extending a live non-ledger document when it has acquired a second lifecycle, repeats another owner's detailed inventory, contains completed chronology in a current-state section, or requires readers to reconcile several descriptions of the same fact.
 
-**Live-map usability invariant:** after consolidation, a new agent must be able to answer “what exists, where is its primary owner, how certain is it, and what remains?” from the current documentation without Git archaeology. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) therefore keeps capability-level lookup records with the implemented boundary, narrowest useful owner, internal and external assurance, and a link to the live remainder. Git history may replace chronology and superseded reasoning; it may not replace a current capability, assurance distinction, source route, or open obligation. A smaller file that forces broad repository search or historical reconstruction is a failed consolidation.
+**Live-map usability invariant:** after consolidation, a new agent must be able to answer “what exists, where is its primary owner, how certain is it, and what remains?” from the current documentation without Git archaeology. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) therefore keeps stable compatibility entries that route to capability-level shard records with the implemented boundary, narrowest useful owner, internal and external assurance, and a link to the live remainder. Git history may replace chronology and superseded reasoning; it may not replace a current capability, assurance distinction, source route, or open obligation. A smaller file that forces broad repository search or historical reconstruction is a failed consolidation.
 
 The safe consolidation order is harvest, redirect, delete:
 
@@ -108,8 +108,11 @@ Detailed capability, gap, plan, and provenance records use keyed bullets instead
 - Record identifiers use the local prefixes `cap-`, `gap-`, and `src-`; they are anchors, not entries in a global registry.
 - Every bullet carries one semantic claim. Keys are short, lower-case, and backtick-delimited; a key may repeat for independent claims of the same class.
 - A claim line has a soft ceiling of 500 characters. Split by semantic claim, never by visual width.
-- One record must be understandable in a window of at most 80 lines including its heading.
+- One record must be understandable in a window of at most 80 physical lines including its anchor and heading.
+- One detailed capability or source record must stay below 24,000 bytes, and one SG block below 12,000 bytes. Split at a semantic sub-capability before crossing the bound.
+- One operational hub or shard must stay below 200,000 bytes. Create a family shard and retain a stable compatibility entry in the hub before crossing the bound.
 - Links target the narrowest stable owner or record anchor. Record text states current truth only; Git owns chronology unless an intentional historical owner applies.
+- A link labelled “source checkpoint” targets a specific `src-` anchor. Use “source registry” for an intentional hub-level link when no narrower reusable checkpoint exists.
 
 `PLAN.md` is stricter than the other operational owners: its state and verified baseline describe only the current resumable position. The baseline names the current committed Lean state and its applicable gate, never an exact commit identifier, branch distance, repository count, or sibling revision. Git and the source owner already answer those exact-identity questions; embedding them forces a redundant post-commit refresh.
 
@@ -122,6 +125,8 @@ Do not patch and later revert `PLAN.md` around an uninterrupted capsule. At a cl
 When handed-off selected work relies on an external source, the selected gap's evidence field and the plan's oracle link to one keyed `src-` checkpoint. During uninterrupted work, the selected gap and working context carry that route without a Plan edit. Exact revisions, source routes, measured claims, and claim limits remain only in the source record. If the selected legacy checkpoint has no stable keyed record, convert only that checkpoint during route discovery before semantic edits.
 
 The 500-character threshold is an agent-efficiency guard, not a readability target. Review an over-limit line for multiple claims and choose the representation that makes retrieval and mutation cheapest. Prefer a semantic split; an indivisible claim may stay on one line or use a structured continuation when that is more efficient for agents.
+
+The executable [`documentation-hygiene guard`](../scripts/check-doc-hygiene.sh) applies these limits to the implementation and source hubs, every shard, and `SEMANTICS-GAPS.md`. It also rejects records above 80 physical lines, semicolon-packed omnibus claims, exact revision/hash identities outside provenance owners, completed or correction chronology introduced as an open-gap bullet, generic hub links labelled as source checkpoints, wide legacy capability tables, duplicate detailed anchors, and a shard anchor missing or unlinked from its hub. There are no path or line exceptions: split or consolidate the record at its semantic boundary.
 
 ### Verified implementation routes
 
@@ -155,9 +160,11 @@ Query converted records directly:
 rg -n '^<a id="cap-' docs/IMPLEMENTATION-MAP.md
 rg -n '^<a id="gap-' docs/SEMANTICS-GAPS.md
 rg -n '^<a id="src-' docs/SOURCES.md
+rg -n '^<a id="cap-' docs/implementation
+rg -n '^<a id="src-' docs/sources
 rg -n '^- `state`:|^- `blocked-on`:|^- `reopen-when`:' docs/SEMANTICS-GAPS.md
 rg -n '^- `route-state`:|^- `(red|green|supporting)-locus`:|^- `route-limit`:' docs/SEMANTICS-GAPS.md
-rg -n '^- `assurance`:|^- `remains`:' docs/IMPLEMENTATION-MAP.md
+rg -n '^- `assurance`:|^- `remains`:' docs/implementation
 ```
 
-Existing unconverted sections remain valid and create no migration backlog. Independently selected work may convert only the exact legacy capability, gap, plan, or source record it must read or mutate, without another user decision. Do not convert neighboring records, a whole section, or the repository merely for consistency; broader consolidation remains separately approved governance work.
+The hubs are compatibility and navigation owners, not generated copies of their shards. A new capability or checkpoint adds one stable hub entry and one detailed shard record in the same change. Existing work updates only the detailed record unless its stable identity or summary changes.
