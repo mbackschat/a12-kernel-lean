@@ -1,4 +1,6 @@
 import A12Kernel.Elaboration.TemporalFirstFilledStarComputation
+import A12Kernel.Elaboration.ExactTokenComputationResult
+import A12Kernel.Elaboration.StringComputationRunApplication
 import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Direct one-star DateFragment `FirstFilledValue` computation -/
@@ -21,7 +23,7 @@ inductive CheckedDateFragmentFirstFilledComputation (model : FlatModel) where
       (shape :
         CheckedTemporalFirstFilledStarComputation model .monthDayFragment)
 
-/-- Check the four exact admitted DateFragment formats. Direct runtime calibration remains exact only for `MM`; wider operands, nesting, validation use, and target application stay outside. -/
+/-- Check the four exact admitted DateFragment formats. Direct runtime calibration remains exact only for `MM`; wider operands, nesting, and validation use stay outside. -/
 def checkDateFragmentFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) :
@@ -55,6 +57,21 @@ def dateFragmentFirstFilledCellAt
   | .empty, _ => .empty
   | .unknown cause, _ | .poison cause, _ => .unknown cause
 
+/-- The exact fixed target retained by any admitted DateFragment carrier. -/
+def CheckedDateFragmentFirstFilledComputation.targetField :
+    CheckedDateFragmentFirstFilledComputation model → FieldId
+  | .month shape => shape.target.id
+  | .year shape => shape.target.id
+  | .yearMonth shape => shape.target.id
+  | .monthDay shape => shape.target.id
+
+/-- One checked DateFragment `FirstFilledValue` result backed by the common exact-text channels. Retaining the operation ties every action to the exact admitted fragment target and declaration profile. -/
+structure DateFragmentFirstFilledComputationRunView (model : FlatModel)
+    (ResidualMessage : Type) where
+  private mk ::
+  operation : CheckedDateFragmentFirstFilledComputation model
+  string : StringComputationRunView ResidualMessage
+
 namespace CheckedDateFragmentFirstFilledComputation
 
 /-- Execute one checked source over immutable rows and retain only the value/clear/poison token boundary. -/
@@ -80,6 +97,33 @@ def execute (operation : CheckedDateFragmentFirstFilledComputation model)
   | .yearMonth shape => executeWith shape input
   | .monthDay shape => executeWith shape input
 
+/-- Execute one checked DateFragment selection and classify its exact stored token relative to the immutable source target. This internal result boundary does not claim that the Kernel copies rather than rerenders the selected fragment. -/
+def executeResult (operation : CheckedDateFragmentFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage) :
+    Except CheckedStarDocumentError
+      (DateFragmentFirstFilledComputationRunView model ResidualMessage) := do
+  let result ← operation.execute input
+  let targetField := operation.targetField
+  let string := StringComputationRunView.fromSourcedOutcomes residualMessages [{
+    targetField
+    outcome := result.asExactStringTargetOutcome
+    source := input.sourceStringTargetState targetField
+  }]
+  pure { operation, string }
+
 end CheckedDateFragmentFirstFilledComputation
+
+namespace DateFragmentFirstFilledComputationRunView
+
+/-- Apply retained source-relative fragment actions to a separately supplied checked document of the same model. The result is an exact root text-state projection, not a reconstructed document or implicit validation pass. -/
+def applyToChecked
+    (view : DateFragmentFirstFilledComputationRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    Except (StringComputationRunView.StringComputationRunApplicationError FieldId)
+      (StringComputationDestination FieldId) :=
+  view.string.applyTo destination.sourceStringTargetState
+
+end DateFragmentFirstFilledComputationRunView
 
 end A12Kernel

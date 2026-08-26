@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.DateFragmentFirstFilledComputation
+import A12Kernel.Elaboration.StringComputationRunApplication
 
 /-! # Direct one-star DateFragment `FirstFilledValue` computation locks -/
 
@@ -135,6 +136,56 @@ private def resultFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
 
 private def result? := resultFor? target source
 
+private def rootFragmentCell (declaration : FlatFieldDecl)
+    (stored : String) (month : Nat) : ClassifiedCellInput := {
+  address := { field := declaration.id, path := [] }
+  stored
+  raw := .parsed (dateValue 2000 month 1)
+}
+
+private def destinationFor? (targetInput : Option (String × Nat))
+    (otherInput : String × Nat := ("04", 4)) :
+    Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := (targetInput.map fun (stored, month) =>
+      rootFragmentCell target stored month).toList ++
+      [rootFragmentCell otherGroupTarget otherInput.1 otherInput.2]
+  }).toOption
+
+private structure ResultApplicationSummary where
+  targetField : FieldId
+  values : List (FieldId × String)
+  changes : List (FieldId × String)
+  hasTargetErrors : Bool
+  cleared : List FieldId
+  residual : List FormalCause
+  targetState : StringTargetState
+  otherState : StringTargetState
+  deriving Repr, DecidableEq
+
+private def resultApplicationSummary?
+    (sourceInput : Option (String × RawCell))
+    (destination : CheckedDocument model)
+    (residualMessages : List FormalCause := []) :
+    Option ResultApplicationSummary := do
+  let operation ← checked? target.id (star source.name)
+  let input ← inputFor? target source sourceInput
+  let result ← operation.executeResult input residualMessages |>.toOption
+  let applied ← result.applyToChecked destination |>.toOption
+  pure {
+    targetField := result.operation.targetField
+    values := result.string.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    changes := result.string.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    hasTargetErrors := !result.string.withErrors.isEmpty
+    cleared := result.string.cleared
+    residual := result.string.formalErrorsInOperands
+    targetState := applied target.id
+    otherState := applied otherGroupTarget.id
+  }
+
 /- The externally measured empty selection clears a seeded target, while the filled source yields the measured `MM` token. -/
 example :
     result? none = some .noValue ∧
@@ -159,6 +210,70 @@ example :
 example :
     result? (some ("XX", .rejected .malformed)) =
       some (.poison .malformed) := by
+  native_decide
+
+/- A selected exact token is source-relative changed, retains residual messages, and applies only to its certified target in a separate same-model destination. -/
+example : (do
+    let destination ← destinationFor? (some ("03", 3))
+    resultApplicationSummary?
+      (some ("06", .parsed (dateValue 2000 6 1)))
+      destination [.malformed]) = some {
+        targetField := target.id
+        values := [(target.id, "06")]
+        changes := [(target.id, "06")]
+        hasTargetErrors := false
+        cleared := []
+        residual := [.malformed]
+        targetState := .presentValue ⟨"06", by decide⟩
+        otherState := .presentValue ⟨"04", by decide⟩
+      } := by
+  native_decide
+
+/- Source-identical selection remains inert against a destination carrying a different token. -/
+example : (do
+    let destination ← destinationFor? (some ("03", 3))
+    resultApplicationSummary?
+      (some ("01", .parsed (dateValue 2000 1 1))) destination) = some {
+        targetField := target.id
+        values := [(target.id, "01")]
+        changes := []
+        hasTargetErrors := false
+        cleared := []
+        residual := []
+        targetState := .presentValue ⟨"03", by decide⟩
+        otherState := .presentValue ⟨"04", by decide⟩
+      } := by
+  native_decide
+
+/- Exhaustion clears a source-filled target and retained clearing materializes an absent destination target as present-empty. -/
+example : (do
+    let destination ← destinationFor? none
+    resultApplicationSummary? none destination) = some {
+        targetField := target.id
+        values := []
+        changes := []
+        hasTargetErrors := false
+        cleared := [target.id]
+        residual := []
+        targetState := .presentEmpty
+        otherState := .presentValue ⟨"04", by decide⟩
+      } := by
+  native_decide
+
+/- Reached source poison is cause-blind at the result boundary and clears without manufacturing a target error. -/
+example : (do
+    let destination ← destinationFor? (some ("03", 3))
+    resultApplicationSummary?
+      (some ("XX", .rejected .malformed)) destination) = some {
+        targetField := target.id
+        values := []
+        changes := []
+        hasTargetErrors := false
+        cleared := [target.id]
+        residual := []
+        targetState := .presentEmpty
+        otherState := .presentValue ⟨"04", by decide⟩
+      } := by
   native_decide
 
 /- The checked boundary admits every measured legal DateFragment policy only when target and direct single-level starred source match exactly. -/
