@@ -108,6 +108,7 @@ inductive RepeatableNumberAggregateCascadeElabError where
   | power (cause : AddressedNumberPowerElabError)
   | division (cause : AddressedNumberDivisionElabError)
   | stringLength (cause : AddressedStringLengthElabError)
+  | fieldValueAsNumber (cause : AddressedFieldValueAsNumberElabError)
   | aggregate (cause : NumericComputationElabError)
   | incoherentAggregate
   | dependency (expected actual : FieldId)
@@ -413,6 +414,21 @@ def checkRepeatableStringLengthStarListAggregateCascade
   let row ← checkAddressedStringLength model rowDeclaringGroup
       rowTarget rowSource |>.mapError .stringLength
   finishRepeatableNumberAggregateCascade model (.stringLength row)
+    aggregateDeclaringGroup aggregateTarget aggregateSource operation
+
+/-- Field-value-as-Number-producer counterpart of the checked star-list aggregate route. -/
+def checkRepeatableFieldValueAsNumberStarListAggregateCascade
+    (model : FlatModel)
+    (rowDeclaringGroup : GroupPath) (rowTarget : FieldId)
+    (rowSource : SurfaceTextFieldOperand)
+    (aggregateDeclaringGroup : GroupPath) (aggregateTarget : FieldId)
+    (aggregateSource : SurfaceNumberEntitySource)
+    (operation : NumericAggregateOp) :
+    Except RepeatableNumberAggregateCascadeElabError
+      (CheckedRepeatableNumberAggregateCascade model) := do
+  let row ← checkAddressedFieldValueAsNumber model rowDeclaringGroup
+      rowTarget rowSource |>.mapError .fieldValueAsNumber
+  finishRepeatableNumberAggregateCascade model (.fieldValueAsNumber row)
     aggregateDeclaringGroup aggregateTarget aggregateSource operation
 
 /-- Check the exact direct-assignment producer followed by a sole plain-star aggregate. -/
