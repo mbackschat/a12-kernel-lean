@@ -9,7 +9,7 @@ theorem checkedDocument_addressedCell_field_error
     (failed : model.lookupUniqueId field = .error cause) :
     checked.addressedCell environment field =
       .error (.field field cause) := by
-  unfold CheckedDocument.addressedCell
+  unfold CheckedDocument.addressedCell CheckedDocument.cellAddress
   rw [failed]
   simp only [Except.mapError, bind, Except.bind]
 
@@ -23,7 +23,7 @@ theorem checkedDocument_addressedCell_environment_error
       environment.pathForScope declaration.repeatableScope = .error cause) :
     checked.addressedCell environment field =
       .error (.environment cause) := by
-  unfold CheckedDocument.addressedCell
+  unfold CheckedDocument.addressedCell CheckedDocument.cellAddress
   rw [lookup]
   simp only [Except.mapError, bind, Except.bind]
   rw [failed]

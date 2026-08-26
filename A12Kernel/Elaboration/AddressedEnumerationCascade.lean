@@ -74,6 +74,29 @@ def ofResult :
 
 end EnumerationDependencyCell
 
+structure EnumerationDependencyProjectionError where
+  target : CellAddr
+  cause : EnumerationDependencyFault
+  deriving Repr, DecidableEq
+
+/-- Convert completed exact-token outcomes to the cause-blind cells observed by a later computation. -/
+def projectEnumerationDependencyCells
+    (outcomes : List AddressedEnumerationComputationOutcome) :
+    Except EnumerationDependencyProjectionError
+      (List (CellAddr × CheckedCell)) :=
+  outcomes.mapM fun outcome => do
+    let dependency ← EnumerationDependencyCell.ofResult outcome.result
+      |>.mapError fun cause => { target := outcome.targetField, cause }
+    pure (outcome.targetField, dependency.checked)
+
+/-- Read from a completed exact-address dependency overlay before falling back to the immutable checked input. -/
+def readAfterEnumerationDependencies (input : CheckedDocument model)
+    (dependencies : List (CellAddr × CheckedCell))
+    (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
+  match dependencies.find? fun dependency => dependency.1 == address with
+  | some dependency => .ok dependency.2
+  | none => input.read address
+
 structure AddressedEnumerationCascadeOutcomes where
   producer : List AddressedEnumerationComputationOutcome
   consumer : List AddressedEnumerationComputationOutcome
@@ -95,31 +118,16 @@ inductive AddressedEnumerationCascadeFault where
 
 namespace CheckedAddressedEnumerationCascade
 
-private def dependencyCells
-    (outcomes : List AddressedEnumerationComputationOutcome) :
-    Except AddressedEnumerationCascadeFault
-      (List (CellAddr × CheckedCell)) :=
-  outcomes.mapM fun outcome => do
-    let dependency ← EnumerationDependencyCell.ofResult outcome.result
-      |>.mapError (.dependency outcome.targetField)
-    pure (outcome.targetField, dependency.checked)
-
-private def readAfterProducer (input : CheckedDocument model)
-    (dependencies : List (CellAddr × CheckedCell))
-    (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
-  match dependencies.find? fun dependency => dependency.1 == address with
-  | some dependency => .ok dependency.2
-  | none => input.read address
-
 /-- Complete every producer row, expose only its transient exact-address cells, then execute every consumer row. -/
 def execute (cascade : CheckedAddressedEnumerationCascade model)
     (input : CheckedDocument model) :
     Except AddressedEnumerationCascadeFault
       AddressedEnumerationCascadeOutcomes := do
   let producer ← cascade.producer.execute input |>.mapError .producer
-  let dependencies ← dependencyCells producer
+  let dependencies ← projectEnumerationDependencyCells producer
+    |>.mapError fun error => .dependency error.target error.cause
   let consumer ← cascade.consumer.executeWithRead input
-      (readAfterProducer input dependencies) |>.mapError .consumer
+      (readAfterEnumerationDependencies input dependencies) |>.mapError .consumer
   pure { producer, consumer }
 
 /-- Execute once, then classify the retained producer and consumer phases independently against immutable source-target state. -/

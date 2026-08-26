@@ -83,16 +83,30 @@ end ResolvedCheckedEntityOperandCore
 
 namespace CheckedDocument
 
-/-- Read one model-owned field instance from a complete environment. The declaration selects its named repeatable scope; environment order and unrelated deeper bindings cannot change the address. -/
-def addressedCell (checked : CheckedDocument model)
+/-- Resolve one model-owned field instance to its exact address without reading its cell. -/
+def cellAddress (_checked : CheckedDocument model)
     (environment : Env) (field : FieldId) :
-    Except CheckedAddressingError CheckedAddressedCell := do
+    Except CheckedAddressingError CellAddr := do
   let declaration ←
     (model.lookupUniqueId field).mapError (.field field)
   let path ←
     (environment.pathForScope declaration.repeatableScope)
       |>.mapError .environment
-  let address : CellAddr := { field, path }
+  pure { field, path }
+
+/-- Read one model-owned field instance through a caller-supplied exact-address view. -/
+def checkedCellWithRead (checked : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) (field : FieldId) :
+    Except CheckedAddressingError CheckedCell := do
+  let address ← checked.cellAddress environment field
+  read address |>.mapError .document
+
+/-- Read one model-owned field instance from a complete environment. The declaration selects its named repeatable scope; environment order and unrelated deeper bindings cannot change the address. -/
+def addressedCell (checked : CheckedDocument model)
+    (environment : Env) (field : FieldId) :
+    Except CheckedAddressingError CheckedAddressedCell := do
+  let address ← checked.cellAddress environment field
   let cell ← (checked.read address).mapError .document
   pure {
     environment
@@ -136,12 +150,18 @@ def validationAddressedCell (checked : CheckedDocument model)
         cell := (checkAdmittedRawCell .empty).withOverRepetitionIf overLimit
       }
 
-/-- Correlation reads from the same immutable checked input and preserve field/address failures separately from semantic UNKNOWN or computation poison. -/
-def resolvingCorrelationContext (checked : CheckedDocument model) :
+/-- Correlation reads through one caller-supplied exact-address view and preserve field/address failures separately from semantic UNKNOWN or computation poison. -/
+def resolvingCorrelationContextWithRead (checked : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     ResolvingCorrelationContext CheckedAddressingError where
   read environment field :=
-    (checked.addressedCell environment field).map (·.cell)
+    checked.checkedCellWithRead read environment field
   bindingError := .environment
+
+/-- Correlation reads from the same immutable checked input. -/
+def resolvingCorrelationContext (checked : CheckedDocument model) :
+    ResolvingCorrelationContext CheckedAddressingError :=
+  checked.resolvingCorrelationContextWithRead checked.read
 
 /-- Resolve one direct entity-list occurrence through the same model-owned address query as every starred occurrence. -/
 def resolveCheckedDirectEntityOperandCoreAt

@@ -234,6 +234,7 @@ import A12Kernel.Proofs.EnumerationComputationResult
 import A12Kernel.Proofs.AddressedEnumerationComputation
 import A12Kernel.Proofs.AddressedEnumerationCascade
 import A12Kernel.Proofs.AddressedEnumerationFirstFilledComputation
+import A12Kernel.Proofs.AddressedEnumerationFirstFilledJoin
 import A12Kernel.Proofs.EnumerationFirstFilledComputation
 import A12Kernel.Proofs.EnumerationValueList
 import A12Kernel.Proofs.FlatNumberValueList

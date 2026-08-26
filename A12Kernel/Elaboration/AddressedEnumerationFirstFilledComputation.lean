@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.EnumerationFirstFilledComputation
 
 This capsule composes the established checked Enumeration first-filled source with one exact repeatable Enumeration target. Each physical target row supplies the outer environment for its own lazy source scan, and the resulting token, no-value, or poison stays attached to that row through the shared Enumeration result and cell-state application fold.
 
-Scheduling, computed-source overlays, row reconstruction, and later validation remain separate.
+Scheduling and overlay construction, row reconstruction, and later validation remain separate. A caller may supply an already-constructed exact-address read view.
 -/
 
 namespace A12Kernel
@@ -73,30 +73,42 @@ structure AddressedEnumerationFirstFilledComputationRunView (model : FlatModel)
 
 namespace CheckedAddressedEnumerationFirstFilledComputation
 
-private def evaluateAt
+private def evaluateAtWithRead
     (operation : CheckedAddressedEnumerationFirstFilledComputation model)
-    (input : CheckedDocument model) (environment : Env) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
     Except AddressedEnumerationFirstFilledComputationFault
       AddressedEnumerationComputationOutcome := do
   let targetPath ←
     environment.pathForScope operation.target.declaration.repeatableScope
       |>.mapError .targetEnvironment
-  let selected ← operation.source.evaluateCheckedDocument input environment
+  let selected ←
+    operation.source.evaluateCheckedDocumentWithRead input read environment
     |>.mapError .source
   pure {
     targetField := { field := operation.target.field, path := targetPath }
     result := selected.asComputationResult
   }
 
-/-- Execute one lazy first-filled scan per physical target row in document order. -/
-def execute (operation : CheckedAddressedEnumerationFirstFilledComputation model)
-    (input : CheckedDocument model) :
+/-- Execute one lazy first-filled scan per physical target row through a caller-supplied exact-address view. -/
+def executeWithRead
+    (operation : CheckedAddressedEnumerationFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedEnumerationFirstFilledComputationFault
       (List AddressedEnumerationComputationOutcome) := do
   let environments ← input.actualRowEnvironments
       operation.target.declaration.repeatableScope
     |>.mapError .targetRows
-  environments.mapM (operation.evaluateAt input)
+  environments.mapM (operation.evaluateAtWithRead input read)
+
+/-- Execute one lazy first-filled scan per physical target row in document order. -/
+def execute (operation : CheckedAddressedEnumerationFirstFilledComputation model)
+    (input : CheckedDocument model) :
+    Except AddressedEnumerationFirstFilledComputationFault
+      (List AddressedEnumerationComputationOutcome) :=
+  operation.executeWithRead input input.read
 
 /-- Classify exact row outcomes against the immutable source target state through the shared model-certified Enumeration result. -/
 def executeResult

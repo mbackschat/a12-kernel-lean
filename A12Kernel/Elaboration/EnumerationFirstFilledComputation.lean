@@ -423,28 +423,31 @@ def evaluate (source : CheckedEnumerationFirstFilledSource model [])
     filterRead starRead source.operands {}
 
 private def checkedDirectCellAt (document : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (environment : Env) (operand : FlatEnumerationOperand) :
     Except CheckedAddressingError (ValueListCell .token) := do
-  let addressed ← document.addressedCell environment operand.field.id
+  let cell ← document.checkedCellWithRead read environment operand.field.id
   pure ((FlatTextFieldOperand.enumeration operand).checkedValueListCellAt
-    .computation addressed.cell)
+    .computation cell)
 
 private def checkedStarCellAt (document : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (environment : Env) (source : CheckedStarEnumerationSource model) :
     Except CheckedAddressingError (ValueListCell .token) := do
-  let addressed ←
-    document.addressedCell environment source.source.declaration.id
+  let cell ← document.checkedCellWithRead read environment
+    source.source.declaration.id
   pure (source.operand.projection.asValueListCell
-    (observeCell .computation addressed.cell))
+    (observeCell .computation cell))
 
 private def scanCheckedDocumentOperand
-    (document : CheckedDocument model) (outer : Env)
+    (document : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (outer : Env)
     (state : FirstFilledScanState) :
     CheckedEnumerationFirstFilledOperand model scope →
       Except CheckedAddressingError
         (FirstFilledScanState ⊕ FirstFilledTokenResult)
   | .field _ operand _ _ => do
-      match state.step (← checkedDirectCellAt document outer operand) with
+      match state.step (← checkedDirectCellAt document read outer operand) with
       | .continue next => pure (.inl next)
       | .done result => pure (.inr result.asToken)
   | .star source => do
@@ -454,7 +457,7 @@ private def scanCheckedDocumentOperand
       match source.filter with
       | none =>
           match ← scanFirstFilledItemsResolving
-              (fun environment => checkedStarCellAt document environment source)
+              (fun environment => checkedStarCellAt document read environment source)
               resolved.environments
               (state.enterSelection resolved.environments.isEmpty
                 resolved.domain.hasOpenTail false) with
@@ -462,28 +465,38 @@ private def scanCheckedDocumentOperand
           | .inr result => pure (.inr result.asToken)
       | some having =>
           match ← scanFilteredComputationFirstFilledResolving having.condition
-              document.resolvingCorrelationContext outer
-              (fun environment => checkedStarCellAt document environment source)
+              (document.resolvingCorrelationContextWithRead read) outer
+              (fun environment => checkedStarCellAt document read environment source)
               resolved.environments resolved.domain.hasOpenTail state with
           | .inl next => pure (.inl next)
           | .inr result => pure (.inr result.asToken)
 
 private def scanCheckedDocumentOperands
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (outer : Env) :
     List (CheckedEnumerationFirstFilledOperand model scope) → FirstFilledScanState →
       Except CheckedAddressingError FirstFilledTokenResult
   | [], _ => pure .noValue
   | operand :: remaining, state => do
-      match ← scanCheckedDocumentOperand document outer state operand with
-      | .inl next => scanCheckedDocumentOperands document outer remaining next
+      match ← scanCheckedDocumentOperand document read outer state operand with
+      | .inl next =>
+          scanCheckedDocumentOperands document read outer remaining next
       | .inr result => pure result
 
-/-- Evaluate the checked Enumeration/category source against one immutable checked document. Exact addressed reads and resolving filters keep structural failure outside token poison while preserving the shared lazy first-filled scan. -/
+/-- Evaluate the checked Enumeration/category source through one exact-address read view. Exact reads and resolving filters share the view while topology remains owned by the immutable checked document. -/
+def evaluateCheckedDocumentWithRead
+    (source : CheckedEnumerationFirstFilledSource model scope)
+    (document : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (outer : Env) :
+    Except CheckedAddressingError FirstFilledTokenResult :=
+  scanCheckedDocumentOperands document read outer source.operands {}
+
+/-- Evaluate the checked Enumeration/category source against one immutable checked document. -/
 def evaluateCheckedDocument
     (source : CheckedEnumerationFirstFilledSource model scope)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError FirstFilledTokenResult :=
-  scanCheckedDocumentOperands document outer source.operands {}
+  source.evaluateCheckedDocumentWithRead document document.read outer
 
 end CheckedEnumerationFirstFilledSource
 
