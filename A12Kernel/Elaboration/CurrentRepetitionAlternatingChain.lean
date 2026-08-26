@@ -167,6 +167,25 @@ def execute (plan : CheckedCurrentRepetitionAlternatingChain model)
   let third ← plan.executeThirdPhase input string
   pure (assemblePhases number string third)
 
+/-- Execute the fixed alternating chain and project its already-sourced exact outcomes through the existing family-preserving String/Number carrier. The Number child retains both Number phases and each child remains independently applicable. Its collections are extensional, so the row-wise pairing makes no mixed-document, public phase-order, or scheduling claim. -/
+def executeResult (plan : CheckedCurrentRepetitionAlternatingChain model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (stringResidualMessages : List StringResidual) :
+    Except CurrentRepetitionAlternatingChainFault
+      (StringNumberComputationRunView
+        StringResidual NumberPayload CellAddr) := do
+  let outcomes ← plan.execute patterns input
+  pure {
+    string := StringComputationRunView.fromSourcedOutcomes
+      stringResidualMessages (outcomes.rows.map (·.second))
+    number := NumericComputationRunView.fromSourceOutcomesWithMessages
+      MessagePointer.ofCellAddr numberPayloadAt numberMessages
+      (outcomes.rows.flatMap fun row => [row.first, row.third])
+  }
+
 end CheckedCurrentRepetitionAlternatingChain
 
 end A12Kernel

@@ -21,4 +21,26 @@ theorem checkedCurrentRepetitionAlternatingChain_analyze
     } := by
   rfl
 
+/-- The alternating result delegates its exact String phase and both exact Number phases to the established family carriers. -/
+theorem checkedCurrentRepetitionAlternatingChain_executeResult_projects
+    (plan : CheckedCurrentRepetitionAlternatingChain model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (stringResidualMessages : List StringResidual)
+    (outcomes : CurrentRepetitionAlternatingChainOutcomes)
+    (evaluated : plan.execute patterns input = .ok outcomes) :
+    plan.executeResult patterns input numberPayloadAt numberMessages
+        stringResidualMessages =
+      .ok {
+        string := StringComputationRunView.fromSourcedOutcomes
+          stringResidualMessages (outcomes.rows.map (·.second))
+        number := NumericComputationRunView.fromSourceOutcomesWithMessages
+          MessagePointer.ofCellAddr numberPayloadAt numberMessages
+          (outcomes.rows.flatMap fun row => [row.first, row.third])
+      } := by
+  rw [CheckedCurrentRepetitionAlternatingChain.executeResult, evaluated]
+  rfl
+
 end A12Kernel
