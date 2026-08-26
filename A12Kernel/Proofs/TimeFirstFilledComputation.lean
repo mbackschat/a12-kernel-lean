@@ -20,4 +20,17 @@ theorem timeFirstFilledCellAt_poison
     timeFirstFilledCellAt addressed = .poison cause := by
   simp [timeFirstFilledCellAt, observed]
 
+/-- Result construction retains the operation-owned target and delegates every public projection to the established Time outcome classifier. -/
+theorem timeFirstFilled_executeResult_projects
+    (operation : CheckedTimeFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage)
+    (outcome : TimeTargetOutcome)
+    (evaluated : operation.execute input = .ok outcome) :
+    operation.executeResult input residualMessages =
+      .ok (TimeComputationRunView.fromOutcomes input residualMessages
+        [(operation.targetPolicy.checked.target.id, outcome)]) := by
+  rw [CheckedTimeFirstFilledComputation.executeResult, evaluated]
+  rfl
+
 end A12Kernel

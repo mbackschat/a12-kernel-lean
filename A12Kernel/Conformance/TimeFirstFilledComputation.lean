@@ -122,23 +122,33 @@ private def selectedInput (row : Nat) (stored : String := "10:11:12")
 private def malformedInput (row : Nat) : SourceInput :=
   { row, stored := "XX", raw := .rejected .malformed }
 
-private def input? (sourceInputs : List SourceInput) :
+private def checkedDocument? (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 10, path := [2] }]
+    cells
+  }).toOption
+
+private def inputWithTarget? (targetStored : String) (targetRaw : RawCell)
+    (sourceInputs : List SourceInput) :
     Option (CheckedDocument model) :=
   let sourceCells := sourceInputs.map fun input => {
     address := { field := source.id, path := [input.row] }
     stored := input.stored
     raw := input.raw
   }
-  (checkDocument prepared "en_US" {
-    instantiatedRows := [
-      { group := 10, path := [1] },
-      { group := 10, path := [2] }]
-    cells := [{
-      address := { field := target.id, path := [] }
-      stored := "12:34:56"
-      raw := .parsed (timeValue 45296000 seedClock)
-    }] ++ sourceCells
-  }).toOption
+  checkedDocument? ([{
+    address := { field := target.id, path := [] }
+    stored := targetStored
+    raw := targetRaw
+  }] ++ sourceCells)
+
+private def input? (sourceInputs : List SourceInput) :
+    Option (CheckedDocument model) :=
+  inputWithTarget? "12:34:56"
+    (.parsed (timeValue 45296000 seedClock)) sourceInputs
 
 private def outcome? (sourceInputs : List SourceInput) :
     Option TimeTargetOutcome := do
@@ -153,11 +163,82 @@ private def signature? (sourceInputs : List SourceInput) : Option String := do
     | .accepted stored => "VALUE|" ++ stored.text
     | .poison _ => "POISON")
 
+private def runView? (targetStored : String) (targetRaw : RawCell)
+    (sourceInputs : List SourceInput)
+    (residualMessages : List FormalCause := []) :
+    Option (TimeComputationRunView FormalCause) := do
+  let operation ← checked? target.id (star "Time")
+  let input ← inputWithTarget? targetStored targetRaw sourceInputs
+  operation.executeResult input residualMessages |>.toOption
+
+private def selectedTime : StoredTime := ⟨"10:11:12", by decide⟩
+private def seedTime : StoredTime := ⟨"12:34:56", by decide⟩
+private def otherTime : StoredTime := ⟨"06:00:00", by decide⟩
+
+private def otherCell : ClassifiedCellInput := {
+  address := { field := otherGroupTarget.id, path := [] }
+  stored := otherTime.text
+  raw := .parsed (timeValue 21600000 (clock 6 0 0 (by decide)))
+}
+
+private def destinationFor? (includeTarget : Bool) :
+    Option (CheckedDocument model) :=
+  let targetCells := if includeTarget then [{
+    address := { field := target.id, path := [] }
+    stored := seedTime.text
+    raw := .parsed (timeValue 45296000 seedClock)
+  }] else []
+  checkedDocument? (targetCells ++ [otherCell])
+
 /- The retained temporal-family probe calibrates CLEARED, a filled VALUE, and leading-empty continuation for this carrier using a different filled literal; the exact `10:11:12` bytes here remain internal. -/
 example :
     signature? [] = some "CLEARED" ∧
       signature? [selectedInput 1] = some "VALUE|10:11:12" ∧
       signature? [selectedInput 2] = some "VALUE|10:11:12" := by
+  native_decide
+
+/- The checked FirstFilled operation classifies and applies its rendered clock through the established Time result path while preserving unrelated destination state. -/
+example : (do
+    let view ← runView? seedTime.text
+      (.parsed (timeValue 45296000 seedClock)) [selectedInput 1]
+    let destination ← destinationFor? true
+    let applied ← view.applyToChecked destination |>.toOption
+    pure (view.withoutErrors, view.withChanges,
+      applied target.id, applied otherGroupTarget.id)) =
+    some ([{ targetField := target.id, value := selectedTime }],
+      [{ targetField := target.id, value := selectedTime }],
+      .presentValue selectedTime, .presentValue otherTime) := by
+  native_decide
+
+/- Time's measured source-identical rule survives composition: an accepted clock equal to the source target remains changed and overwrites a different destination target. -/
+example : (do
+    let view ← runView? selectedTime.text
+      (.parsed (timeValue 36672000 selectedClock)) [selectedInput 1]
+    let destination ← destinationFor? true
+    let applied ← view.applyToChecked destination |>.toOption
+    pure (view.withChanges, applied target.id)) =
+    some ([{ targetField := target.id, value := selectedTime }],
+      .presentValue selectedTime) := by
+  native_decide
+
+/- Exhaustion and a reached formal cause both retain a source-filled clear and materialize an absent destination target without disturbing unrelated state. -/
+example :
+    (do
+      let view ← runView? seedTime.text
+        (.parsed (timeValue 45296000 seedClock)) []
+      let destination ← destinationFor? false
+      let applied ← view.applyToChecked destination |>.toOption
+      pure (view.cleared, view.noErrorOccurred,
+        applied target.id, applied otherGroupTarget.id)) =
+      some ([target.id], true, .presentEmpty, .presentValue otherTime) ∧
+    (do
+      let view ← runView? seedTime.text
+        (.parsed (timeValue 45296000 seedClock)) [malformedInput 1]
+      let destination ← destinationFor? false
+      let applied ← view.applyToChecked destination |>.toOption
+      pure (view.cleared, view.noErrorOccurred,
+        applied target.id, applied otherGroupTarget.id)) =
+      some ([target.id], true, .presentEmpty, .presentValue otherTime) := by
   native_decide
 
 /- The typed adapter retains the parsed clock rather than the stored text or transport instant; this mechanism separator is internal. -/

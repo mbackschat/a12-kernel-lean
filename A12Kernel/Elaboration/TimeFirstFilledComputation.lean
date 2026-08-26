@@ -16,7 +16,7 @@ structure CheckedTimeFirstFilledComputation (model : FlatModel) where
   shape : CheckedTemporalFirstFilledStarComputation model .timeHms
   targetPolicy : CheckedTimeTarget model
 
-/-- Check the bounded Time computation shape. Wider formats, policies, operands, nesting, validation use, and application remain outside this boundary. -/
+/-- Check the bounded Time computation shape. Wider formats, policies, operands, nesting, validation use, and materialized-document reconstruction remain outside this boundary. -/
 def checkTimeFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) :
@@ -56,6 +56,16 @@ def execute (operation : CheckedTimeFirstFilledComputation model)
   let resolved ← operation.shape.source.resolveCheckedField input []
   pure (operation.targetPolicy.evaluate
     (evalTimeFirstFilledCells resolved.cells))
+
+/-- Execute and classify the one checked FirstFilled outcome against the same immutable source document. Residual messages remain already-classified opaque input. -/
+def executeResult (operation : CheckedTimeFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage) :
+    Except CheckedStarDocumentError
+      (TimeComputationRunView ResidualMessage) := do
+  let outcome ← operation.execute input
+  pure (TimeComputationRunView.fromOutcomes input residualMessages
+    [(operation.targetPolicy.checked.target.id, outcome)])
 
 end CheckedTimeFirstFilledComputation
 
