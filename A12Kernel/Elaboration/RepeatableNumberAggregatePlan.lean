@@ -53,91 +53,96 @@ def execute (producer : CheckedRepeatableNumberAggregateProducer model)
 
 end CheckedRepeatableNumberAggregateProducer
 
-/-- The authored order of one exact plain-star and filtered-star pair. -/
+/-- The authored order accepted by the compatibility wrapper for one exact plain-star and filtered-star pair. -/
 inductive RepeatableNumberAggregateMixedOperandOrder where
   | plainThenFiltered
   | filteredThenPlain
   deriving Repr, DecidableEq
 
-/-- Whether the later aggregate is plain, filtered, or one exact mixed pair. -/
+/-- Whether every aggregate slot is plain, every slot is filtered, or the list contains both kinds. -/
 inductive RepeatableNumberAggregateConsumerKind where
   | plain
   | filtered
   | mixed
   deriving Repr, DecidableEq
 
-/-- Either one-or-more plain starred operands, one filtered starred operand, or one exact plain/filtered pair in retained authored order. -/
-inductive CheckedRepeatableNumberAggregateConsumer (model : FlatModel) where
-  | plain (first : CheckedStarNumberSource model)
-      (rest : List (CheckedStarNumberSource model))
+/-- One checked aggregate slot at the repeatable star-list boundary. -/
+inductive CheckedRepeatableNumberAggregateOperand (model : FlatModel) where
+  | plain (source : CheckedStarNumberSource model)
   | filtered (source : CheckedStarNumberHavingSource model)
-  | mixed (plain : CheckedStarNumberSource model)
-      (filtered : CheckedStarNumberHavingSource model)
-      (order : RepeatableNumberAggregateMixedOperandOrder)
+
+namespace CheckedRepeatableNumberAggregateOperand
+
+def valueSource : CheckedRepeatableNumberAggregateOperand model →
+    CheckedStarNumberSource model
+  | .plain source => source
+  | .filtered source => source.source
+
+def isPlain : CheckedRepeatableNumberAggregateOperand model → Bool
+  | .plain _ => true
+  | .filtered _ => false
+
+def isFiltered : CheckedRepeatableNumberAggregateOperand model → Bool
+  | .plain _ => false
+  | .filtered _ => true
+
+def fieldDependencies : CheckedRepeatableNumberAggregateOperand model →
+    List FieldId
+  | .plain source => [source.field.id]
+  | .filtered source => source.source.field.id :: source.having.fieldIds
+
+/-- A plain value read forms a stage dependency. A filtered slot forms one only through its `Having`; its selected value does not stand in for that read. -/
+def referencesProducer (field : FieldId) :
+    CheckedRepeatableNumberAggregateOperand model → Bool
+  | .plain source => source.field.id == field
+  | .filtered source => source.having.referencesField field
+
+def toEntityOperand : CheckedRepeatableNumberAggregateOperand model →
+    CheckedNumberEntityOperand model
+  | .plain source => .star source
+  | .filtered source => .starHaving source
+
+end CheckedRepeatableNumberAggregateOperand
+
+/-- A checked nonempty aggregate operand list containing only plain or filtered Number stars in authored order. -/
+structure CheckedRepeatableNumberAggregateConsumer (model : FlatModel) where
+  first : CheckedRepeatableNumberAggregateOperand model
+  rest : List (CheckedRepeatableNumberAggregateOperand model)
 
 namespace CheckedRepeatableNumberAggregateConsumer
 
+def slots (consumer : CheckedRepeatableNumberAggregateConsumer model) :
+    List (CheckedRepeatableNumberAggregateOperand model) :=
+  consumer.first :: consumer.rest
+
 def kind : CheckedRepeatableNumberAggregateConsumer model →
     RepeatableNumberAggregateConsumerKind
-  | .plain _ _ => .plain
-  | .filtered _ => .filtered
-  | .mixed _ _ _ => .mixed
+  | { first := .plain _, rest } =>
+      if rest.all CheckedRepeatableNumberAggregateOperand.isPlain then
+        .plain
+      else
+        .mixed
+  | { first := .filtered _, rest } =>
+      if rest.all CheckedRepeatableNumberAggregateOperand.isFiltered then
+        .filtered
+      else
+        .mixed
 
 def valueSources : CheckedRepeatableNumberAggregateConsumer model →
     List (CheckedStarNumberSource model)
-  | .plain first rest => first :: rest
-  | .filtered source => [source.source]
-  | .mixed plainSource filteredSource
-      RepeatableNumberAggregateMixedOperandOrder.plainThenFiltered =>
-      [plainSource, filteredSource.source]
-  | .mixed plainSource filteredSource
-      RepeatableNumberAggregateMixedOperandOrder.filteredThenPlain =>
-      [filteredSource.source, plainSource]
-
-def valueField : CheckedRepeatableNumberAggregateConsumer model → FlatNumberField
-  | .plain first _ => first.field
-  | .filtered source => source.source.field
-  | .mixed plainSource _
-      RepeatableNumberAggregateMixedOperandOrder.plainThenFiltered =>
-      plainSource.field
-  | .mixed _ filteredSource
-      RepeatableNumberAggregateMixedOperandOrder.filteredThenPlain =>
-      filteredSource.source.field
+  | consumer => consumer.slots.map (·.valueSource)
 
 /-- Complete static dependencies in first authored occurrence order: the aggregate value field precedes any fields used only by `Having`. -/
 def fieldDependencies : CheckedRepeatableNumberAggregateConsumer model → List FieldId
-  | .plain first rest =>
-      (first.field.id :: rest.map (·.field.id)).eraseDups
-  | .filtered source =>
-      (source.source.field.id :: source.having.fieldIds).eraseDups
-  | .mixed plainSource filteredSource
-      RepeatableNumberAggregateMixedOperandOrder.plainThenFiltered =>
-      ([plainSource.field.id, filteredSource.source.field.id] ++
-        filteredSource.having.fieldIds).eraseDups
-  | .mixed plainSource filteredSource
-      RepeatableNumberAggregateMixedOperandOrder.filteredThenPlain =>
-      ([filteredSource.source.field.id] ++ filteredSource.having.fieldIds ++
-        [plainSource.field.id]).eraseDups
+  | consumer => (consumer.slots.flatMap (·.fieldDependencies)).eraseDups
 
-/-- The stage-forming dependency is the plain value read or, for the filtered route, a read inside `Having`. The aggregate value field cannot stand in for the latter. -/
+/-- The stage-forming dependency is any plain value read or a read inside any filtered slot's `Having`. -/
 def referencesProducer : CheckedRepeatableNumberAggregateConsumer model → FieldId → Bool
-  | .plain first rest, field =>
-      first.field.id == field || rest.any fun source => source.field.id == field
-  | .filtered source, field => source.having.referencesField field
-  | .mixed plainSource filteredSource _, field =>
-      plainSource.field.id == field ||
-        filteredSource.having.referencesField field
+  | consumer, field => consumer.slots.any (·.referencesProducer field)
 
 def operands : CheckedRepeatableNumberAggregateConsumer model →
     List (CheckedNumberEntityOperand model)
-  | .plain first rest => .star first :: rest.map .star
-  | .filtered source => [.starHaving source]
-  | .mixed plainSource filteredSource
-      RepeatableNumberAggregateMixedOperandOrder.plainThenFiltered =>
-      [.star plainSource, .starHaving filteredSource]
-  | .mixed plainSource filteredSource
-      RepeatableNumberAggregateMixedOperandOrder.filteredThenPlain =>
-      [.starHaving filteredSource, .star plainSource]
+  | consumer => consumer.slots.map (·.toEntityOperand)
 
 end CheckedRepeatableNumberAggregateConsumer
 
@@ -156,7 +161,7 @@ inductive RepeatableNumberAggregateCascadeElabError where
   | missingMixedDependency (field : FieldId)
   deriving Repr, DecidableEq
 
-/-- One checked repeatable Number producer followed by one nonrepeatable `Sum`, `MinValue`, `MaxValue`, or distinct-count computation. A plain aggregate retains one-or-more starred operands and must read the producer in at least one authored position. A sole filtered star must read it through `Having`. The mixed form admits exactly one plain star and one filtered star in either authored order, with the producer read by the plain value or the filter. This is a fixed two-stage route, not a scheduler. -/
+/-- One checked repeatable Number producer followed by one nonrepeatable `Sum`, `MinValue`, `MaxValue`, or distinct-count computation over a nonempty authored list of plain and filtered stars. A plain slot reads the producer through its value; a filtered slot does so only through `Having`. This is a fixed two-stage route, not a scheduler. -/
 structure CheckedRepeatableNumberAggregateCascade (model : FlatModel) where
   private mk ::
   row : CheckedRepeatableNumberAggregateProducer model
@@ -251,25 +256,36 @@ private def certifyRepeatableNumberAggregateCascade
             source.source.declaration.groupPath)
       | none => throw .incoherentAggregate
   else
-    match consumer with
-    | .plain _ _ => throw (.dependency row.targetField consumer.valueField.id)
-    | .filtered _ => throw (.missingFilterDependency row.targetField)
-    | .mixed _ _ _ => throw (.missingMixedDependency row.targetField)
+    match consumer.kind with
+    | .plain =>
+        throw (.dependency row.targetField consumer.first.valueSource.field.id)
+    | .filtered => throw (.missingFilterDependency row.targetField)
+    | .mixed => throw (.missingMixedDependency row.targetField)
 
-private structure CheckedPlainStarTail
+private structure CheckedRepeatableNumberAggregateTail
     (operands : List (CheckedNumberEntityOperand model)) where
-  sources : List (CheckedStarNumberSource model)
-  owned : operands = sources.map .star
+  slots : List (CheckedRepeatableNumberAggregateOperand model)
+  owned : operands = slots.map (·.toEntityOperand)
 
-private def checkedPlainStarTail? :
+private def checkedRepeatableNumberAggregateTail? :
     (operands : List (CheckedNumberEntityOperand model)) →
-      Option (CheckedPlainStarTail operands)
-  | [] => some { sources := [], owned := rfl }
+      Option (CheckedRepeatableNumberAggregateTail operands)
+  | [] => some { slots := [], owned := rfl }
   | .star source :: rest => do
-      let tail ← checkedPlainStarTail? rest
+      let tail ← checkedRepeatableNumberAggregateTail? rest
       pure {
-        sources := source :: tail.sources
-        owned := by simp [tail.owned]
+        slots := .plain source :: tail.slots
+        owned := by
+          simp [CheckedRepeatableNumberAggregateOperand.toEntityOperand,
+            tail.owned]
+      }
+  | .starHaving source :: rest => do
+      let tail ← checkedRepeatableNumberAggregateTail? rest
+      pure {
+        slots := .filtered source :: tail.slots
+        owned := by
+          simp [CheckedRepeatableNumberAggregateOperand.toEntityOperand,
+            tail.owned]
       }
   | _ :: _ => none
 
@@ -290,40 +306,61 @@ private def finishRepeatableNumberAggregateCascade
       if hOperation : actualOperation = operation then
         match hFirst : aggregate.first with
         | .star first =>
-            match hRest : aggregate.rest with
-            | [.starHaving filtered] =>
+            match checkedRepeatableNumberAggregateTail? aggregate.rest with
+            | some tail =>
                 certifyRepeatableNumberAggregateCascade row aggregate
-                  (.mixed first filtered .plainThenFiltered) total operation
+                  { first := .plain first, rest := tail.slots } total operation
                   (hOperation ▸ hExpression) (by
                     simp [CheckedRepeatableNumberAggregateConsumer.operands,
-                      hFirst, hRest])
-            | _ =>
-                match checkedPlainStarTail? aggregate.rest with
-                | some tail =>
-                    certifyRepeatableNumberAggregateCascade row aggregate
-                      (.plain first tail.sources) total operation
-                      (hOperation ▸ hExpression) (by
-                        simp [CheckedRepeatableNumberAggregateConsumer.operands,
-                          hFirst, tail.owned])
-                | none => throw .incoherentAggregate
-        | .starHaving source =>
-            match hRest : aggregate.rest with
-            | [] =>
+                      CheckedRepeatableNumberAggregateConsumer.slots,
+                      CheckedRepeatableNumberAggregateOperand.toEntityOperand,
+                      hFirst, tail.owned])
+            | none => throw .incoherentAggregate
+        | .starHaving first =>
+            match checkedRepeatableNumberAggregateTail? aggregate.rest with
+            | some tail =>
                 certifyRepeatableNumberAggregateCascade row aggregate
-                  (.filtered source) total operation
+                  { first := .filtered first, rest := tail.slots } total operation
                   (hOperation ▸ hExpression) (by
                     simp [CheckedRepeatableNumberAggregateConsumer.operands,
-                      hFirst, hRest])
-            | [.star plain] =>
-                certifyRepeatableNumberAggregateCascade row aggregate
-                  (.mixed plain source .filteredThenPlain) total operation
-                  (hOperation ▸ hExpression) (by
-                    simp [CheckedRepeatableNumberAggregateConsumer.operands,
-                      hFirst, hRest])
-            | _ => throw .incoherentAggregate
+                      CheckedRepeatableNumberAggregateConsumer.slots,
+                      CheckedRepeatableNumberAggregateOperand.toEntityOperand,
+                      hFirst, tail.owned])
+            | none => throw .incoherentAggregate
         | _ => throw .incoherentAggregate
       else throw .incoherentAggregate
   | _ => throw .incoherentAggregate
+
+/-- Check a direct row producer followed by one root aggregate whose nonempty operand list contains only plain and filtered Number stars. -/
+def checkRepeatableNumberStarListAggregateCascade
+    (model : FlatModel)
+    (rowDeclaringGroup : GroupPath) (rowTarget : FieldId)
+    (rowSource : SurfaceFieldPath)
+    (aggregateDeclaringGroup : GroupPath) (aggregateTarget : FieldId)
+    (aggregateSource : SurfaceNumberEntitySource)
+    (operation : NumericAggregateOp) :
+    Except RepeatableNumberAggregateCascadeElabError
+      (CheckedRepeatableNumberAggregateCascade model) := do
+  let row ← checkAddressedNumberField model rowDeclaringGroup
+      rowTarget rowSource |>.mapError .row
+  finishRepeatableNumberAggregateCascade model (.direct row)
+    aggregateDeclaringGroup aggregateTarget aggregateSource operation
+
+/-- Binary-producer counterpart of the checked star-list aggregate route. -/
+def checkRepeatableNumberBinaryStarListAggregateCascade
+    (model : FlatModel)
+    (rowDeclaringGroup : GroupPath) (rowTarget : FieldId)
+    (leftSource rightSource : SurfaceFieldPath)
+    (rowOperation : NumericArithmeticOp)
+    (aggregateDeclaringGroup : GroupPath) (aggregateTarget : FieldId)
+    (aggregateSource : SurfaceNumberEntitySource)
+    (operation : NumericAggregateOp) :
+    Except RepeatableNumberAggregateCascadeElabError
+      (CheckedRepeatableNumberAggregateCascade model) := do
+  let row ← checkAddressedNumberBinary model rowDeclaringGroup rowTarget
+      leftSource rightSource rowOperation |>.mapError .binary
+  finishRepeatableNumberAggregateCascade model (.binary row)
+    aggregateDeclaringGroup aggregateTarget aggregateSource operation
 
 /-- Check the exact direct-assignment producer followed by a sole plain-star aggregate. -/
 def checkRepeatableNumberAggregateCascade
@@ -333,10 +370,9 @@ def checkRepeatableNumberAggregateCascade
     (aggregateDeclaringGroup : GroupPath) (aggregateTarget : FieldId)
     (aggregateSource : SurfaceStarFieldPath) (operation : NumericAggregateOp) :
     Except RepeatableNumberAggregateCascadeElabError
-      (CheckedRepeatableNumberAggregateCascade model) := do
-  let row ← checkAddressedNumberField model rowDeclaringGroup
-      rowTarget rowSource |>.mapError .row
-  finishRepeatableNumberAggregateCascade model (.direct row)
+      (CheckedRepeatableNumberAggregateCascade model) :=
+  checkRepeatableNumberStarListAggregateCascade model
+    rowDeclaringGroup rowTarget rowSource
     aggregateDeclaringGroup aggregateTarget {
       first := .star aggregateSource
       rest := []
@@ -351,10 +387,9 @@ def checkRepeatableNumberFilteredAggregateCascade
     (aggregateSource : SurfaceStarFieldPath) (having : SurfaceCorrelatedHaving)
     (operation : NumericAggregateOp) :
     Except RepeatableNumberAggregateCascadeElabError
-      (CheckedRepeatableNumberAggregateCascade model) := do
-  let row ← checkAddressedNumberField model rowDeclaringGroup
-      rowTarget rowSource |>.mapError .row
-  finishRepeatableNumberAggregateCascade model (.direct row)
+      (CheckedRepeatableNumberAggregateCascade model) :=
+  checkRepeatableNumberStarListAggregateCascade model
+    rowDeclaringGroup rowTarget rowSource
     aggregateDeclaringGroup aggregateTarget {
       first := .starHaving aggregateSource having
       rest := []
@@ -368,10 +403,9 @@ def checkRepeatableNumberBinaryAggregateCascade
     (aggregateDeclaringGroup : GroupPath) (aggregateTarget : FieldId)
     (aggregateSource : SurfaceStarFieldPath) (operation : NumericAggregateOp) :
     Except RepeatableNumberAggregateCascadeElabError
-      (CheckedRepeatableNumberAggregateCascade model) := do
-  let row ← checkAddressedNumberBinary model rowDeclaringGroup rowTarget
-      leftSource rightSource rowOperation |>.mapError .binary
-  finishRepeatableNumberAggregateCascade model (.binary row)
+      (CheckedRepeatableNumberAggregateCascade model) :=
+  checkRepeatableNumberBinaryStarListAggregateCascade model
+    rowDeclaringGroup rowTarget leftSource rightSource rowOperation
     aggregateDeclaringGroup aggregateTarget {
       first := .star aggregateSource
       rest := []
@@ -386,10 +420,9 @@ def checkRepeatableNumberBinaryFilteredAggregateCascade
     (aggregateSource : SurfaceStarFieldPath) (having : SurfaceCorrelatedHaving)
     (operation : NumericAggregateOp) :
     Except RepeatableNumberAggregateCascadeElabError
-      (CheckedRepeatableNumberAggregateCascade model) := do
-  let row ← checkAddressedNumberBinary model rowDeclaringGroup rowTarget
-      leftSource rightSource rowOperation |>.mapError .binary
-  finishRepeatableNumberAggregateCascade model (.binary row)
+      (CheckedRepeatableNumberAggregateCascade model) :=
+  checkRepeatableNumberBinaryStarListAggregateCascade model
+    rowDeclaringGroup rowTarget leftSource rightSource rowOperation
     aggregateDeclaringGroup aggregateTarget {
       first := .starHaving aggregateSource having
       rest := []
@@ -407,10 +440,9 @@ def checkRepeatableNumberMultiStarAggregateCascade
     (aggregateRest : List SurfaceStarFieldPath)
     (operation : NumericAggregateOp) :
     Except RepeatableNumberAggregateCascadeElabError
-      (CheckedRepeatableNumberAggregateCascade model) := do
-  let row ← checkAddressedNumberField model rowDeclaringGroup
-      rowTarget rowSource |>.mapError .row
-  finishRepeatableNumberAggregateCascade model (.direct row)
+      (CheckedRepeatableNumberAggregateCascade model) :=
+  checkRepeatableNumberStarListAggregateCascade model
+    rowDeclaringGroup rowTarget rowSource
     aggregateDeclaringGroup aggregateTarget {
       first := .star aggregateFirst
       rest := .star aggregateSecond :: aggregateRest.map .star
@@ -427,10 +459,9 @@ def checkRepeatableNumberBinaryMultiStarAggregateCascade
     (aggregateRest : List SurfaceStarFieldPath)
     (operation : NumericAggregateOp) :
     Except RepeatableNumberAggregateCascadeElabError
-      (CheckedRepeatableNumberAggregateCascade model) := do
-  let row ← checkAddressedNumberBinary model rowDeclaringGroup rowTarget
-      leftSource rightSource rowOperation |>.mapError .binary
-  finishRepeatableNumberAggregateCascade model (.binary row)
+      (CheckedRepeatableNumberAggregateCascade model) :=
+  checkRepeatableNumberBinaryStarListAggregateCascade model
+    rowDeclaringGroup rowTarget leftSource rightSource rowOperation
     aggregateDeclaringGroup aggregateTarget {
       first := .star aggregateFirst
       rest := .star aggregateSecond :: aggregateRest.map .star
@@ -461,10 +492,9 @@ def checkRepeatableNumberMixedAggregateCascade
     (order : RepeatableNumberAggregateMixedOperandOrder)
     (operation : NumericAggregateOp) :
     Except RepeatableNumberAggregateCascadeElabError
-      (CheckedRepeatableNumberAggregateCascade model) := do
-  let row ← checkAddressedNumberField model rowDeclaringGroup
-      rowTarget rowSource |>.mapError .row
-  finishRepeatableNumberAggregateCascade model (.direct row)
+      (CheckedRepeatableNumberAggregateCascade model) :=
+  checkRepeatableNumberStarListAggregateCascade model
+    rowDeclaringGroup rowTarget rowSource
     aggregateDeclaringGroup aggregateTarget
     (mixedAggregateSource plainSource filteredSource having order) operation
 
@@ -480,10 +510,9 @@ def checkRepeatableNumberBinaryMixedAggregateCascade
     (order : RepeatableNumberAggregateMixedOperandOrder)
     (operation : NumericAggregateOp) :
     Except RepeatableNumberAggregateCascadeElabError
-      (CheckedRepeatableNumberAggregateCascade model) := do
-  let row ← checkAddressedNumberBinary model rowDeclaringGroup rowTarget
-      leftSource rightSource rowOperation |>.mapError .binary
-  finishRepeatableNumberAggregateCascade model (.binary row)
+      (CheckedRepeatableNumberAggregateCascade model) :=
+  checkRepeatableNumberBinaryStarListAggregateCascade model
+    rowDeclaringGroup rowTarget leftSource rightSource rowOperation
     aggregateDeclaringGroup aggregateTarget
     (mixedAggregateSource plainSource filteredSource having order) operation
 

@@ -152,6 +152,43 @@ private def binaryMixedPlan? :
     ["Order"] total.id (star "Candidate") (star "Produced")
     candidateBelowProduced .plainThenFiltered .sum).toOption
 
+private def widerMixedSource : SurfaceNumberEntitySource := {
+  first := .star (star "Candidate")
+  rest := [
+    .starHaving (star "Produced") candidateBelowProduced,
+    .star (star "Candidate")]
+}
+
+private def binaryWiderMixedSource : SurfaceNumberEntitySource := {
+  first := .star (star "Candidate")
+  rest := [
+    .starHaving (star "Produced") candidateBelowProduced,
+    .star (star "Unit")]
+}
+
+private def widerMixedPlan? :
+    Option (CheckedRepeatableNumberAggregateRunCascade model) := do
+  let cascade ← (checkRepeatableNumberStarListAggregateCascade model
+    ["Order", "Lines"] produced.id (bare "Candidate")
+    ["Order"] total.id widerMixedSource .sum).toOption
+  let run ← suffixRun?
+  (checkRepeatableNumberAggregateRunCascade cascade run).toOption
+
+private def binaryWiderCascade? :
+    Option (CheckedRepeatableNumberAggregateCascade model) :=
+  (checkRepeatableNumberBinaryStarListAggregateCascade model
+    ["Order", "Lines"] produced.id (bare "Candidate") (bare "Unit") .add
+    ["Order"] total.id binaryWiderMixedSource .sum).toOption
+
+private def twoFilteredCascade? :
+    Option (CheckedRepeatableNumberAggregateCascade model) :=
+  (checkRepeatableNumberStarListAggregateCascade model
+    ["Order", "Lines"] produced.id (bare "Candidate")
+    ["Order"] total.id {
+      first := .starHaving (star "Candidate") candidateBelowUnit
+      rest := [.starHaving (star "Produced") candidateBelowProduced]
+    } .sum).toOption
+
 private def cell (field : FieldId) (path : List Nat) (value : Int) :
     ClassifiedCellInput := {
   address := { field, path }
@@ -236,6 +273,14 @@ private def mixedMatrix?
     inputWithRows? (some malformedCandidate),
     noRowsInput?
   ].mapM (mixedSnapshot? order)
+
+private def widerMixedMatrix? : Option (List Snapshot) :=
+  [
+    inputWithRows? (some (cell candidate.id [2] (-3))),
+    inputWithRows? none,
+    inputWithRows? (some malformedCandidate),
+    noRowsInput?
+  ].mapM (snapshotFor? widerMixedPlan?)
 
 private def accepted (value : Int) : NumericTargetOutcome :=
   .accepted { unscaled := value, scale := 0 }
@@ -334,6 +379,62 @@ example :
       mixedMatrix? .filteredThenPlain = some expected := by
   native_decide
 
+/- A wider mixed list retains its middle filter and both repeated plain slots. Pair truncation, execution de-duplication, and applying the filter to the whole list all produce a different first result. -/
+example :
+    widerMixedPlan?.map (fun plan => plan.cascade.analyze) = some {
+      producer := .direct
+      consumer := .mixed
+      operation := .sum
+      repeatableScope := [10]
+      fieldDependencies := [
+        (produced.id, [candidate.id]),
+        (total.id, [candidate.id, produced.id])]
+    } ∧
+    binaryWiderCascade?.map CheckedRepeatableNumberAggregateCascade.analyze =
+      some {
+        producer := .binary .add
+        consumer := .mixed
+        operation := .sum
+        repeatableScope := [10]
+        fieldDependencies := [
+          (produced.id, [candidate.id, unit.id]),
+          (total.id, [candidate.id, produced.id, unit.id])]
+      } ∧
+    twoFilteredCascade?.map CheckedRepeatableNumberAggregateCascade.analyze =
+      some {
+        producer := .direct
+        consumer := .filtered
+        operation := .sum
+        repeatableScope := [10]
+        fieldDependencies := [
+          (produced.id, [candidate.id]),
+          (total.id, [candidate.id, unit.id, produced.id])]
+      } ∧
+    widerMixedMatrix? = some [
+      {
+        rows := [accepted 2, accepted (-3)]
+        aggregate := accepted (-2)
+        suffix := [(doubled.id, accepted (-4)), (tripled.id, accepted (-6))]
+      },
+      {
+        rows := [accepted 2, accepted 0]
+        aggregate := accepted 4
+        suffix := [(doubled.id, accepted 8), (tripled.id, accepted 12)]
+      },
+      {
+        rows := [accepted 2, .inheritedPoison .malformed]
+        aggregate := .inheritedPoison .malformed
+        suffix := [
+          (doubled.id, .inheritedPoison .computedDependency),
+          (tripled.id, .inheritedPoison .computedDependency)]
+      },
+      {
+        rows := []
+        aggregate := accepted 0
+        suffix := [(doubled.id, accepted 0), (tripled.id, accepted 0)]
+      }] := by
+  native_decide
+
 /- A mixed consumer must read its producer either as the plain value or inside the filtered slot's `Having`. Merely aggregating the producer in that slot does not form a dependency, and every value source still belongs to the producer's exact group. -/
 example :
     (match checkRepeatableNumberMixedAggregateCascade model
@@ -342,11 +443,39 @@ example :
         candidateBelowUnit .plainThenFiltered .sum with
       | .error (.missingMixedDependency field) => field == produced.id
       | _ => false) = true ∧
+    (match checkRepeatableNumberStarListAggregateCascade model
+        ["Order", "Lines"] produced.id (bare "Candidate")
+        ["Order"] total.id {
+          first := .starHaving (star "Produced") candidateBelowUnit
+          rest := [.starHaving (star "Candidate") candidateBelowUnit]
+        } .sum with
+      | .error (.missingFilterDependency field) => field == produced.id
+      | _ => false) = true ∧
     (match checkRepeatableNumberMixedAggregateCascade model
         ["Order", "Lines"] produced.id (bare "Candidate")
         ["Order"] total.id (star "Candidate") (star "Produced")
         candidateBelowUnit .filteredThenPlain .sum with
       | .error (.missingMixedDependency field) => field == produced.id
+      | _ => false) = true ∧
+    (match checkRepeatableNumberStarListAggregateCascade model
+        ["Order", "Lines"] produced.id (bare "Candidate")
+        ["Order"] total.id {
+          first := .field (bare "Doubled")
+          rest := [.field (bare "Tripled")]
+        } .sum with
+      | .error .incoherentAggregate => true
+      | _ => false) = true ∧
+    (match checkRepeatableNumberStarListAggregateCascade model
+        ["Order", "Lines"] produced.id (bare "Candidate")
+        ["Order"] total.id {
+          first := .star (star "Candidate")
+          rest := [
+            .starHaving (star "Produced") candidateBelowProduced,
+            .star (otherStar "Foreign")]
+        } .sum with
+      | .error (.groupMismatch producerGroup aggregateGroup) =>
+          producerGroup == ["Order", "Lines"] &&
+            aggregateGroup == ["Order", "OtherLines"]
       | _ => false) = true ∧
     (match checkRepeatableNumberMixedAggregateCascade model
         ["Order", "Lines"] produced.id (bare "Candidate")
