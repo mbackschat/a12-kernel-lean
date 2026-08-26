@@ -110,6 +110,7 @@ inductive RepeatableNumberAggregateCascadeElabError where
   | stringLength (cause : AddressedStringLengthElabError)
   | fieldValueAsNumber (cause : AddressedFieldValueAsNumberElabError)
   | rangeAsNumber (cause : AddressedRangeAsNumberElabError)
+  | dateRangeBoundPart (cause : AddressedDateRangeBoundPartElabError)
   | aggregate (cause : NumericComputationElabError)
   | incoherentAggregate
   | dependency (expected actual : FieldId)
@@ -445,6 +446,22 @@ def checkRepeatableRangeAsNumberStarListAggregateCascade
   let row ← checkAddressedRangeAsNumber model rowDeclaringGroup
       rowTarget rowSource start finish |>.mapError .rangeAsNumber
   finishRepeatableNumberAggregateCascade model (.rangeAsNumber row)
+    aggregateDeclaringGroup aggregateTarget aggregateSource operation
+
+/-- DateRange-endpoint-component-producer counterpart of the checked star-list aggregate route. -/
+def checkRepeatableDateRangeBoundPartStarListAggregateCascade
+    (model : FlatModel)
+    (rowDeclaringGroup : GroupPath) (rowTarget : FieldId)
+    (rowSource : SurfaceFieldPath) (bound : DateRangeBound)
+    (part : DateNumericPart)
+    (aggregateDeclaringGroup : GroupPath) (aggregateTarget : FieldId)
+    (aggregateSource : SurfaceNumberEntitySource)
+    (operation : NumericAggregateOp) :
+    Except RepeatableNumberAggregateCascadeElabError
+      (CheckedRepeatableNumberAggregateCascade model) := do
+  let row ← checkAddressedDateRangeBoundPart model rowDeclaringGroup
+      rowTarget rowSource bound part |>.mapError .dateRangeBoundPart
+  finishRepeatableNumberAggregateCascade model (.dateRangeBoundPart row)
     aggregateDeclaringGroup aggregateTarget aggregateSource operation
 
 /-- Check the exact direct-assignment producer followed by a sole plain-star aggregate. -/

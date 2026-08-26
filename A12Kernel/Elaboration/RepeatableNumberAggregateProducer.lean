@@ -8,6 +8,7 @@ import A12Kernel.Elaboration.AddressedNumberDivision
 import A12Kernel.Elaboration.AddressedStringLength
 import A12Kernel.Elaboration.AddressedFieldValueAsNumber
 import A12Kernel.Elaboration.AddressedRangeAsNumber
+import A12Kernel.Elaboration.AddressedDateRangeBoundPart
 
 /-! # Checked repeatable Number aggregate row producers -/
 
@@ -25,6 +26,7 @@ inductive RepeatableNumberAggregateProducerKind where
   | stringLength
   | fieldValueAsNumber (projection : EnumerationProjectionRef)
   | rangeAsNumber (start finish : Nat)
+  | dateRangeBoundPart (bound : DateRangeBound) (part : DateNumericPart)
   deriving Repr, DecidableEq
 
 /-- One completed row-local producer admitted by the fixed aggregate route. -/
@@ -39,6 +41,7 @@ inductive CheckedRepeatableNumberAggregateProducer (model : FlatModel) where
   | stringLength (operation : CheckedAddressedStringLength model)
   | fieldValueAsNumber (operation : CheckedAddressedFieldValueAsNumber model)
   | rangeAsNumber (operation : CheckedAddressedRangeAsNumber model)
+  | dateRangeBoundPart (operation : CheckedAddressedDateRangeBoundPart model)
 
 namespace CheckedRepeatableNumberAggregateProducer
 
@@ -56,6 +59,8 @@ def kind : CheckedRepeatableNumberAggregateProducer model →
       .fieldValueAsNumber operation.projectionRef
   | .rangeAsNumber operation =>
       .rangeAsNumber operation.start operation.finish
+  | .dateRangeBoundPart operation =>
+      .dateRangeBoundPart operation.bound operation.part
 
 def targetField : CheckedRepeatableNumberAggregateProducer model → FieldId
   | .direct operation => operation.placement.targetField
@@ -68,6 +73,7 @@ def targetField : CheckedRepeatableNumberAggregateProducer model → FieldId
   | .stringLength operation => operation.placement.targetField
   | .fieldValueAsNumber operation => operation.placement.targetField
   | .rangeAsNumber operation => operation.placement.targetField
+  | .dateRangeBoundPart operation => operation.placement.targetField
 
 def targetDeclaration : CheckedRepeatableNumberAggregateProducer model →
     FlatFieldDecl
@@ -81,6 +87,7 @@ def targetDeclaration : CheckedRepeatableNumberAggregateProducer model →
   | .stringLength operation => operation.placement.targetDeclaration
   | .fieldValueAsNumber operation => operation.placement.targetDeclaration
   | .rangeAsNumber operation => operation.placement.targetDeclaration
+  | .dateRangeBoundPart operation => operation.placement.targetDeclaration
 
 def declaringGroup : CheckedRepeatableNumberAggregateProducer model → GroupPath
   | .direct operation => operation.placement.declaringGroup
@@ -93,6 +100,7 @@ def declaringGroup : CheckedRepeatableNumberAggregateProducer model → GroupPat
   | .stringLength operation => operation.placement.declaringGroup
   | .fieldValueAsNumber operation => operation.placement.declaringGroup
   | .rangeAsNumber operation => operation.placement.declaringGroup
+  | .dateRangeBoundPart operation => operation.placement.declaringGroup
 
 def sourceFields : CheckedRepeatableNumberAggregateProducer model → List FieldId
   | .direct operation => [operation.placement.sourceDeclaration.id]
@@ -112,6 +120,8 @@ def sourceFields : CheckedRepeatableNumberAggregateProducer model → List Field
   | .fieldValueAsNumber operation =>
       [operation.placement.sourceDeclaration.id]
   | .rangeAsNumber operation => [operation.placement.sourceDeclaration.id]
+  | .dateRangeBoundPart operation =>
+      [operation.placement.sourceDeclaration.id]
 
 def execute (producer : CheckedRepeatableNumberAggregateProducer model)
     (input : CheckedDocument model) :
@@ -128,6 +138,7 @@ def execute (producer : CheckedRepeatableNumberAggregateProducer model)
   | .stringLength operation => operation.execute input
   | .fieldValueAsNumber operation => operation.execute input
   | .rangeAsNumber operation => operation.execute input
+  | .dateRangeBoundPart operation => operation.execute input
 
 end CheckedRepeatableNumberAggregateProducer
 
