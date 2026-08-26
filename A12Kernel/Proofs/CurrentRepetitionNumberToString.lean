@@ -18,4 +18,26 @@ theorem checkedCurrentRepetitionNumberToStringCascade_analyze
     } := by
   rfl
 
+/-- The fixed cross-family result delegates each already-sourced phase to its established family carrier. -/
+theorem checkedCurrentRepetitionNumberToStringCascade_executeResult_projects
+    (plan : CheckedCurrentRepetitionNumberToStringCascade model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (stringResidualMessages : List StringResidual)
+    (outcomes : CurrentRepetitionNumberToStringOutcomes)
+    (evaluated : plan.execute patterns input = .ok outcomes) :
+    plan.executeResult patterns input numberPayloadAt numberMessages
+        stringResidualMessages =
+      .ok {
+        number := NumericComputationRunView.fromSourceOutcomesWithMessages
+          MessagePointer.ofCellAddr numberPayloadAt numberMessages
+          (outcomes.rows.map (·.number))
+        string := StringComputationRunView.fromSourcedOutcomes
+          stringResidualMessages (outcomes.rows.map (·.string))
+      } := by
+  rw [CheckedCurrentRepetitionNumberToStringCascade.executeResult, evaluated]
+  rfl
+
 end A12Kernel
