@@ -67,9 +67,10 @@ end DateTimeTargetOutcome
 
 namespace CheckedDocument
 
-/-- Recover exact nonrepeatable source placement and opaque stored temporal text at one kind-indexed target. -/
-def sourceTemporalTargetState (input : CheckedDocument model)
-    (field : FieldId) : TemporalTargetState (StoredTemporalText kind) :=
+/-- Recover exact nonrepeatable source placement and construct a family-owned stored identity only for nonempty text. -/
+def sourceNonemptyStoredTargetState (input : CheckedDocument model)
+    (field : FieldId) (makeStored : (text : String) → text ≠ "" → Stored) :
+    TemporalTargetState Stored :=
   match input.source.cells.find? fun cell =>
       cell.address == ({ field, path := [] } : CellAddr) with
   | none => .absent
@@ -77,7 +78,13 @@ def sourceTemporalTargetState (input : CheckedDocument model)
       if empty : cell.stored = "" then
         .presentEmpty
       else
-        .presentValue { text := cell.stored, nonempty := empty }
+        .presentValue (makeStored cell.stored empty)
+
+/-- Recover exact nonrepeatable source placement and opaque stored temporal text at one kind-indexed target. -/
+def sourceTemporalTargetState (input : CheckedDocument model)
+    (field : FieldId) : TemporalTargetState (StoredTemporalText kind) :=
+  sourceNonemptyStoredTargetState input field fun text nonempty =>
+    { text, nonempty }
 
 /-- Recover exact nonrepeatable source placement and stored Date text without reparsing it. -/
 def sourceFullDateTargetState (input : CheckedDocument model)
@@ -93,6 +100,12 @@ def sourceTimeTargetState (input : CheckedDocument model)
 def sourceDateTimeTargetState (input : CheckedDocument model)
     (field : FieldId) : DateTimeTargetState :=
   sourceTemporalTargetState input field
+
+/-- Recover exact nonrepeatable source placement and stored DateRange text without reparsing it. -/
+def sourceDateRangeTargetState (input : CheckedDocument model)
+    (field : FieldId) : TemporalTargetState StoredDateRange :=
+  sourceNonemptyStoredTargetState input field fun text nonempty =>
+    { text, nonempty }
 
 end CheckedDocument
 

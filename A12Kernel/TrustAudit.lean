@@ -353,6 +353,10 @@ run_cmd do
 #print axioms A12Kernel.fullDateComputationRun_error_applies
 #print axioms A12Kernel.fullDateComputationRun_cleared_applies
 #print axioms A12Kernel.fullDateComputationRun_residualMessages_doNotAffectApplication
+#print axioms A12Kernel.sourceNonemptyStoredTargetState_absent
+#print axioms A12Kernel.sourceNonemptyStoredTargetState_empty
+#print axioms A12Kernel.sourceNonemptyStoredTargetState_nonempty
+#print axioms A12Kernel.sourceDateRangeTargetState_nonempty
 #print axioms A12Kernel.fullDateComputation_field_empty
 #print axioms A12Kernel.fullDateComputation_field_poison
 #print axioms A12Kernel.fullDateComputation_field_value
