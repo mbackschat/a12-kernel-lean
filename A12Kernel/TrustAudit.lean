@@ -856,6 +856,7 @@ run_cmd do
 #print axioms A12Kernel.numericComputationRun_execute_faultTarget
 #print axioms A12Kernel.numericComputationRunStep_target_mem
 #print axioms A12Kernel.checkedNumericComputationTable_excludes_target
+#print axioms A12Kernel.numericComputationRun_executeTables_seeded_trace
 #print axioms A12Kernel.numericComputationRun_executeTables_trace
 #print axioms A12Kernel.numericComputationRun_execute_trace
 #print axioms A12Kernel.messagePointer_toCellAddr_ofCellAddr
@@ -1052,6 +1053,7 @@ run_cmd do
 #print axioms A12Kernel.checkedRepeatableNumberAggregateCascade_analyze
 #print axioms A12Kernel.checkedRepeatableNumberAggregateScalarCascade_analyze
 #print axioms A12Kernel.checkedRepeatableNumberAggregateRunCascade_analyze
+#print axioms A12Kernel.repeatableNumberAggregateRunCascade_execute_trace
 #print axioms A12Kernel.checkedRepeatableNumberAggregateMixedRun_analyze
 #print axioms A12Kernel.checkedRepeatableNumberAggregateMixedRun_executeResult_routesSuffixFamilies
 #print axioms A12Kernel.repeatableNumberAggregateMixedRun_execute_scalar_trace

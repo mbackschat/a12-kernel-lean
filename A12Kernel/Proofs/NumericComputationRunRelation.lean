@@ -62,14 +62,17 @@ theorem checkedNumericComputationTable_excludes_target
     CheckedNumericComputationTable.checkedAlternatives,
     checkedNumericComputationAlternative_excludes_target]
 
-private theorem numericComputationRun_table_ready
+private theorem numericComputationRun_table_ready_after_seed
     (run : CheckedNumericComputationRun model)
+    (seedTargets : List FieldId)
     (earlier remaining : List (CheckedNumericComputationTable model))
     (table : CheckedNumericComputationTable model)
     (split : run.tables = earlier ++ table :: remaining)
+    (seedDisjoint :
+      ∀ target ∈ seedTargets, target ∉ run.targetFields)
     (state : NumericComputationRunState)
     (stateTargets :
-      state.targetFields = earlier.map (·.targetField)) :
+      state.targetFields = seedTargets ++ earlier.map (·.targetField)) :
     table.targetField ∉ state.targetFields ∧
       NumericComputationDependenciesEnabled run table state := by
   have unique : (run.tables.map (·.targetField)).Nodup :=
@@ -83,14 +86,23 @@ private theorem numericComputationRun_table_ready
     have cross := (List.nodup_append.mp combined).2.2
       table.targetField member table.targetField (by simp)
     exact cross rfl
+  have tableMember : table.targetField ∈ run.targetFields := by
+    change table.targetField ∈ run.tables.map (·.targetField)
+    rw [split]
+    simp
+  have notSeed : table.targetField ∉ seedTargets := by
+    intro member
+    exact seedDisjoint table.targetField member tableMember
   constructor
-  · simpa [stateTargets] using notEarlier
+  · rw [stateTargets]
+    simp [notSeed, notEarlier]
   · intro dependency dependencyMember referenced
     rw [split] at dependencyMember
     simp only [List.mem_append, List.mem_cons] at dependencyMember
     rcases dependencyMember with inEarlier | same | inRemaining
     · rw [stateTargets]
-      exact List.mem_map.mpr ⟨dependency, inEarlier, rfl⟩
+      exact List.mem_append_right seedTargets
+        (List.mem_map.mpr ⟨dependency, inEarlier, rfl⟩)
     · subst dependency
       rw [checkedNumericComputationTable_excludes_target] at referenced
       contradiction
@@ -118,14 +130,20 @@ private theorem numericComputationRun_table_ready
       rw [notReferenced] at referenced
       contradiction
 
-/-- Successful fixed-order suffix execution is a trace of independently enabled steps with exactly the newly appended labels. -/
-theorem numericComputationRun_executeTables_trace
+/-- Successful fixed-order suffix execution after disjoint external seed
+completions is a trace of independently enabled steps with exactly the newly
+appended labels. -/
+theorem numericComputationRun_executeTables_seeded_trace
     (run : CheckedNumericComputationRun model)
     (world : World) (input : CheckedDocument model)
+    (seedTargets : List FieldId)
     (earlier remaining : List (CheckedNumericComputationTable model))
     (state result : NumericComputationRunState)
+    (seedDisjoint :
+      ∀ target ∈ seedTargets, target ∉ run.targetFields)
     (split : run.tables = earlier ++ remaining)
-    (stateTargets : state.targetFields = earlier.map (·.targetField))
+    (stateTargets :
+      state.targetFields = seedTargets ++ earlier.map (·.targetField))
     (executed :
       run.executeTables world input remaining state = .ok result) :
     ∃ labels,
@@ -144,19 +162,21 @@ theorem numericComputationRun_executeTables_trace
           simp [CheckedNumericComputationRun.executeTables, evaluated] at executed
           have target := numericComputationRun_evaluateTable_target
             run world input state table completion evaluated
-          have ready := numericComputationRun_table_ready
-            run earlier remaining table split state stateTargets
+          have ready := numericComputationRun_table_ready_after_seed
+            run seedTargets earlier remaining table split seedDisjoint state
+              stateTargets
           let next : NumericComputationRunState :=
             { completed := state.completed ++ [completion] }
           have nextTargets :
               next.targetFields =
-                (earlier ++ [table]).map (·.targetField) := by
+                seedTargets ++
+                  (earlier ++ [table]).map (·.targetField) := by
             have stateTargets' :
                 state.completed.map (·.targetField) =
-                  earlier.map (·.targetField) := by
+                  seedTargets ++ earlier.map (·.targetField) := by
               simpa [NumericComputationRunState.targetFields] using stateTargets
             simp [next, NumericComputationRunState.targetFields,
-              List.map_append, stateTargets', target]
+              List.map_append, stateTargets', target, List.append_assoc]
           have nextSplit :
               run.tables = (earlier ++ [table]) ++ remaining := by
             simpa [List.append_assoc] using split
@@ -170,6 +190,23 @@ theorem numericComputationRun_executeTables_trace
             simp
           · simpa [next, NumericComputationRunState.outcomes,
               List.append_assoc] using outcomes
+
+/-- The ordinary successful trace is the empty-seed specialization. -/
+theorem numericComputationRun_executeTables_trace
+    (run : CheckedNumericComputationRun model)
+    (world : World) (input : CheckedDocument model)
+    (earlier remaining : List (CheckedNumericComputationTable model))
+    (state result : NumericComputationRunState)
+    (split : run.tables = earlier ++ remaining)
+    (stateTargets : state.targetFields = earlier.map (·.targetField))
+    (executed :
+      run.executeTables world input remaining state = .ok result) :
+    ∃ labels,
+      NumericComputationRunTrace run world input state labels result ∧
+        state.outcomes ++ labels = result.outcomes := by
+  simpa using numericComputationRun_executeTables_seeded_trace
+    run world input [] earlier remaining state result (by simp) split
+      stateTargets executed
 
 /-- Successful fixed execution therefore has a non-self-justifying relation trace carrying exactly its returned labels. -/
 theorem numericComputationRun_execute_trace

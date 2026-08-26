@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.RepeatableNumberAggregateCascade
+import A12Kernel.Proofs.RepeatableNumberAggregateCascade
 
 /-! # Repeatable Number to aggregate cascade locks -/
 
@@ -429,6 +429,20 @@ example :
         (doubled.id, .inheritedPoison .computedDependency),
         (tripled.id, .inheritedPoison .computedDependency)] := by
   native_decide
+
+/- The retained aggregate completion stays outside the successful Number suffix labels. -/
+example (plan : CheckedRepeatableNumberAggregateRunCascade binaryModel)
+    (world : World) (input : CheckedDocument binaryModel)
+    (outcomes : RepeatableNumberAggregateRunCascadeOutcomes) (executed : plan.execute world input = .ok outcomes) :
+    ∃ final,
+      NumericComputationRunTrace plan.run world input
+        { completed := [{
+            targetField := plan.cascade.total.operation.core.target.id
+            outcome := outcomes.cascade.aggregate.outcome
+          }] }
+        outcomes.scalars final :=
+  repeatableNumberAggregateRunCascade_execute_trace
+    plan world input outcomes executed
 
 /- A finite suffix must consume the aggregate, must not reuse either prefix target, and cannot feed one of its targets back into the prefix. -/
 example :
