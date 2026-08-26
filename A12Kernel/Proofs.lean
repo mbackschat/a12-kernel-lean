@@ -225,6 +225,7 @@ import A12Kernel.Proofs.EnumerationComparability
 import A12Kernel.Proofs.EnumerationElaboration
 import A12Kernel.Proofs.CheckedEnumeration
 import A12Kernel.Proofs.EnumerationComputation
+import A12Kernel.Proofs.EnumerationComputationResult
 import A12Kernel.Proofs.EnumerationFirstFilledComputation
 import A12Kernel.Proofs.EnumerationValueList
 import A12Kernel.Proofs.FlatNumberValueList

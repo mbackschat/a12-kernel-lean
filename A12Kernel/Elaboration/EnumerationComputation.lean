@@ -108,12 +108,20 @@ end EnumerationComputationElabError
 
 /-- The exact ordinary closed-Enumeration target shared by every checked source form. -/
 structure CheckedEnumerationComputationTarget (model : FlatModel) where
-  field : FieldId
+  private mk ::
   path : List String
   targetOperand : FlatEnumerationOperand
   projection : CheckedEnumerationProjection
   targetOwned : model.checkedEnumerationOperand? targetOperand = some projection
   modelWellFormed : model.validate.isOk = true
+
+namespace CheckedEnumerationComputationTarget
+
+/-- The computation target is definitionally the exact field certified by its model-owned Enumeration operand. -/
+def field (target : CheckedEnumerationComputationTarget model) : FieldId :=
+  target.targetOperand.field.id
+
+end CheckedEnumerationComputationTarget
 
 /-- Resolve and certify an ordinary nonrepeatable closed-Enumeration computation target once. -/
 def elaborateEnumerationComputationTarget
@@ -139,7 +147,6 @@ def elaborateEnumerationComputationTarget
           | none => throw .incoherentCore
           | some projection =>
               pure {
-                field := targetField
                 path := targetDeclaration.path
                 targetOperand
                 projection

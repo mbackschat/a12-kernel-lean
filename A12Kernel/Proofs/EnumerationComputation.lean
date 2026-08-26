@@ -4,6 +4,12 @@ import A12Kernel.Elaboration.EnumerationComputation
 
 namespace A12Kernel
 
+/-- A checked Enumeration computation target cannot name a field other than the exact model-owned operand that certifies its domain. -/
+theorem checkedEnumerationComputationTarget_field_exact
+    (target : CheckedEnumerationComputationTarget model) :
+    target.field = target.targetOperand.field.id := by
+  rfl
+
 /-- A nonempty exact token becomes the common accepted String-shaped target payload without rewriting its stored identity. -/
 theorem nonemptyToken_asEnumerationTargetOutcome
     (token : String) (nonempty : token ≠ "") :
