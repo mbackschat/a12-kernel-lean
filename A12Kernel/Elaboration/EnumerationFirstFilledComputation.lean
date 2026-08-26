@@ -85,11 +85,17 @@ def projection : CheckedEnumerationFirstFilledOperand model scope →
   | .field _ _ projection _ => projection
   | .star source => source.operand
 
+/-- Fields owned by one source slot in read order. A filtered star inventories its selected Enumeration field before fields read only by `Having`. -/
+def fieldDependencies : CheckedEnumerationFirstFilledOperand model scope →
+    List FieldId
+  | .field _ source _ _ => [source.field.id]
+  | .star source =>
+      source.source.declaration.id ::
+        (source.filter.map (fun having => having.condition.fieldIds)).getD []
+
 def referencesField (operand : CheckedEnumerationFirstFilledOperand model scope)
     (field : FieldId) : Bool :=
-  match operand with
-  | .field _ source _ _ => source.field.id == field
-  | .star source => source.source.declaration.id == field
+  operand.fieldDependencies.contains field
 
 private def isStoredDirect : CheckedEnumerationFirstFilledOperand model scope → Bool
   | .field _ source _ _ =>
@@ -150,9 +156,14 @@ def operands (source : CheckedEnumerationFirstFilledSource model scope) :
     List (CheckedEnumerationFirstFilledOperand model scope) :=
   source.first :: source.rest
 
+/-- Complete checked-plan field inventory in first authored occurrence order. Runtime may stop before later operands or filter reads. -/
+def fieldDependencies (source : CheckedEnumerationFirstFilledSource model scope) :
+    List FieldId :=
+  (source.operands.flatMap (fun operand => operand.fieldDependencies)).eraseDups
+
 def referencesField (source : CheckedEnumerationFirstFilledSource model scope)
     (field : FieldId) : Bool :=
-  source.operands.any (fun operand => operand.referencesField field)
+  source.fieldDependencies.contains field
 
 def allowedFor (source : CheckedEnumerationFirstFilledSource model scope)
     (target : CheckedEnumerationProjection) : Bool :=

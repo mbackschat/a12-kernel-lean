@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.AddressedNumericLeaf
+import A12Kernel.Semantics.NumericDependency
 
 /-! # Repeatable direct Number-field computation -/
 
@@ -102,6 +103,15 @@ def checkAddressedNumberField
         numberSource.source.info.scale)
 
 abbrev AddressedNumberFieldFault := AddressedNumericLeafFault
+
+/-- Read completed Number outcomes at their exact addresses before falling back to the immutable checked input. The dependency cell deliberately exposes only value, clean emptiness, or cause-blind poison. -/
+def readAfterNumericDependencies (input : CheckedDocument model)
+    (dependencies : List (SourcedNumericTargetOutcome CellAddr))
+    (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
+  match dependencies.find? fun dependency => dependency.targetField == address with
+  | some dependency =>
+      .ok (NumericDependencyCell.ofOutcome dependency.outcome).checked
+  | none => input.read address
 
 namespace CheckedAddressedNumberSource
 

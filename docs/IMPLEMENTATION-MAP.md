@@ -247,6 +247,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Exact-row Enumeration dependency cascade](implementation/strings-and-enumerations.md#cap-exact-row-enumeration-dependency-cascade)
 <a id="cap-two-producer-enumeration-firstfilledvalue-join"></a>
 - [Two-producer Enumeration `FirstFilledValue` join](implementation/strings-and-enumerations.md#cap-two-producer-enumeration-firstfilledvalue-join)
+<a id="cap-number-dependency-in-enumeration-having"></a>
+- [Computed Number dependency inside Enumeration `Having`](implementation/strings-and-enumerations.md#cap-number-dependency-in-enumeration-having)
 
 #### Repetition and path capabilities
 

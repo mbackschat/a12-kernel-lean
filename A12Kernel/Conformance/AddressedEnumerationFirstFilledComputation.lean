@@ -216,6 +216,15 @@ private def nestedApplicationSummary? (input destination : CheckedDocument model
     row21 := applied { field := nestedTarget.id, path := [2, 1] }
   }
 
+/- A filtered Enumeration source inventories both its selected token field and the Number fields read only by `Having`. -/
+example :
+    filteredOperation?.map (fun operation => [
+      operation.source.referencesField source.id,
+      operation.source.referencesField gate.id,
+      operation.source.referencesField limit.id]) =
+      some [true, true, true] := by
+  native_decide
+
 /- The repeatable target accepts a child-star source, while root targets, incompatible projections, and a target read through a reopened star remain excluded. -/
 example : operation?.isSome = true ∧ filteredOperation?.isSome = true ∧
     errorOf rootTarget.id ["Form"] (firstFilled (absoluteStar "Source" true)) =

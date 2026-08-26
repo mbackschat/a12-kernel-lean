@@ -51,12 +51,12 @@ def analyze (plan : CheckedRepeatableNumberAggregateCascade model) :
 private def readAfterRows (input : CheckedDocument model)
     (rows : List (SourcedNumericTargetOutcome CellAddr))
     (environment : Env) (field : FieldId) : CheckedCell :=
-  match input.addressedCell environment field with
+  match input.cellAddress environment field with
   | .error _ => malformedCheckedCell
-  | .ok addressed =>
-      match rows.find? fun row => row.targetField == addressed.address with
-      | some row => (NumericDependencyCell.ofOutcome row.outcome).checked
-      | none => addressed.cell
+  | .ok address =>
+      match readAfterNumericDependencies input rows address with
+      | .ok cell => cell
+      | .error _ => malformedCheckedCell
 
 /-- Evaluate the aggregate phase against the exact completed row overlay. -/
 def executeAggregateAfterRows
