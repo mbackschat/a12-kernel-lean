@@ -107,12 +107,7 @@ def executeResult
   let outcomes ← operation.execute input
   pure {
     operation
-    string := StringComputationRunView.fromSourcedOutcomes residualMessages
-      (outcomes.map fun entry => {
-        targetField := entry.targetField
-        outcome := entry.result.asExactStringTargetOutcome
-        source := input.sourceStringTargetStateAt entry.targetField
-      })
+    string := projectAddressedTokenResults input residualMessages outcomes
   }
 
 end CheckedAddressedEnumerationFirstFilledComputation

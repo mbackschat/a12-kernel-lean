@@ -1502,6 +1502,7 @@ run_cmd do
 #print axioms A12Kernel.noValue_asExactStringTargetOutcome
 #print axioms A12Kernel.poisonedToken_asExactStringTargetOutcome
 #print axioms A12Kernel.exactTokenStringResult_hasNoTargetErrors
+#print axioms A12Kernel.addressedTokenResults_haveNoTargetErrors
 #print axioms A12Kernel.enumerationCompatibility_coversSelectedDomain
 #print axioms A12Kernel.checkedEnumerationComputation_source_allowed
 #print axioms A12Kernel.checkedEnumerationComputationTarget_field_exact

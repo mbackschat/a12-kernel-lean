@@ -1,5 +1,6 @@
 import A12Kernel.Semantics.FirstFilledValue
 import A12Kernel.Semantics.StringComputation
+import A12Kernel.Elaboration.StringComputationRunResult
 
 /-! # Exact-token computation target projection
 
@@ -21,5 +22,23 @@ def asExactStringTargetOutcome : TokenComputationResult → StringTargetOutcome
   | .poison cause => .poison cause
 
 end TokenComputationResult
+
+/-- One exact-address token result before source-relative String classification. -/
+structure AddressedTokenComputationOutcome where
+  targetField : CellAddr
+  result : TokenComputationResult
+  deriving Repr, DecidableEq
+
+/-- Classify exact-address token outcomes against immutable source target state. -/
+def projectAddressedTokenResults
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage)
+    (outcomes : List AddressedTokenComputationOutcome) :
+    StringComputationRunView ResidualMessage CellAddr :=
+  StringComputationRunView.fromSourcedOutcomes residualMessages
+    (outcomes.map fun entry => {
+      targetField := entry.targetField
+      outcome := entry.result.asExactStringTargetOutcome
+      source := input.sourceStringTargetStateAt entry.targetField
+    })
 
 end A12Kernel

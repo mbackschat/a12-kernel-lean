@@ -32,12 +32,7 @@ theorem checkedAddressedEnumerationFirstFilled_executeResult_projects
     (outcomes : List AddressedEnumerationComputationOutcome)
     (executed : operation.execute input = .ok outcomes) :
     (operation.executeResult input residualMessages).map (fun view => view.string) =
-      .ok (StringComputationRunView.fromSourcedOutcomes residualMessages
-        (outcomes.map fun entry => {
-          targetField := entry.targetField
-          outcome := entry.result.asExactStringTargetOutcome
-          source := input.sourceStringTargetStateAt entry.targetField
-        })) := by
+      .ok (projectAddressedTokenResults input residualMessages outcomes) := by
   rw [CheckedAddressedEnumerationFirstFilledComputation.executeResult, executed]
   rfl
 
@@ -51,14 +46,11 @@ theorem checkedAddressedEnumerationFirstFilled_executeResult_hasNoTargetErrors
       (fun view => view.string.withErrors) = .ok [] := by
   unfold CheckedAddressedEnumerationFirstFilledComputation.executeResult
   rw [executed]
-  change Except.ok ((StringComputationRunView.fromSourcedOutcomes residualMessages
-    (outcomes.map fun entry => {
-      targetField := entry.targetField
-      outcome := entry.result.asExactStringTargetOutcome
-      source := input.sourceStringTargetStateAt entry.targetField
-    })).withErrors) = Except.ok []
+  change Except.ok
+    ((projectAddressedTokenResults input residualMessages outcomes).withErrors) =
+      Except.ok []
   exact congrArg Except.ok
-    (addressedEnumerationResults_haveNoTargetErrors outcomes input residualMessages)
+    (addressedTokenResults_haveNoTargetErrors outcomes input residualMessages)
 
 /-- Exact-address checked application delegates to the established source-classified String fold. -/
 theorem addressedEnumerationFirstFilledRun_applyToChecked_delegates

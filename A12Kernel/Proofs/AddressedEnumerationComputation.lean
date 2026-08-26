@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.AddressedEnumerationComputation
+import A12Kernel.Proofs.ExactTokenComputationResult
 
 /-! # Repeatable Enumeration computation laws -/
 
@@ -22,33 +23,12 @@ theorem checkedAddressedEnumeration_excludes_target_reference
     operation.source.referencesField operation.target.field = false :=
   operation.targetNotReferenced
 
-private theorem addressedEnumerationResult_hasNoTargetError
-    (entry : AddressedEnumerationComputationOutcome)
-    (input : CheckedDocument model) :
-    StringComputationRunView.computedError? {
-      targetField := entry.targetField
-      outcome := entry.result.asExactStringTargetOutcome
-      source := input.sourceStringTargetStateAt entry.targetField
-    } = none := by
-  cases entry.result with
-  | value token =>
-      by_cases empty : token = "" <;>
-        simp [TokenComputationResult.asExactStringTargetOutcome, empty,
-          StringComputationRunView.computedError?]
-  | noValue | poison _ =>
-      rfl
-
 theorem addressedEnumerationResults_haveNoTargetErrors
     (outcomes : List AddressedEnumerationComputationOutcome)
     (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
     (projectAddressedEnumerationResults input residualMessages outcomes).withErrors =
       [] := by
-  simp only [projectAddressedEnumerationResults,
-    StringComputationRunView.fromSourcedOutcomes]
-  induction outcomes with
-  | nil => rfl
-  | cons head tail ih =>
-      simp [addressedEnumerationResult_hasNoTargetError, ih]
+  exact addressedTokenResults_haveNoTargetErrors outcomes input residualMessages
 
 /-- Successful addressed execution cannot create the ordinary String target-rejection channel because the checked Enumeration domain gate precedes runtime. -/
 theorem checkedAddressedEnumeration_executeResult_hasNoTargetErrors

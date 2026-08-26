@@ -43,4 +43,32 @@ theorem exactTokenStringResult_hasNoTargetErrors
         StringComputationRunView.fromSourcedOutcomes,
         StringComputationRunView.computedError?]
 
+private theorem addressedTokenResult_hasNoTargetError
+    (entry : AddressedTokenComputationOutcome)
+    (input : CheckedDocument model) :
+    StringComputationRunView.computedError? {
+      targetField := entry.targetField
+      outcome := entry.result.asExactStringTargetOutcome
+      source := input.sourceStringTargetStateAt entry.targetField
+    } = none := by
+  cases entry.result with
+  | value token =>
+      by_cases empty : token = "" <;>
+        simp [TokenComputationResult.asExactStringTargetOutcome, empty,
+          StringComputationRunView.computedError?]
+  | noValue | poison _ =>
+      rfl
+
+/-- A list of exact-address token outcomes cannot create the ordinary String target-rejection channel. -/
+theorem addressedTokenResults_haveNoTargetErrors
+    (outcomes : List AddressedTokenComputationOutcome)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    (projectAddressedTokenResults input residualMessages outcomes).withErrors = [] := by
+  simp only [projectAddressedTokenResults,
+    StringComputationRunView.fromSourcedOutcomes]
+  induction outcomes with
+  | nil => rfl
+  | cons head tail ih =>
+      simp [addressedTokenResult_hasNoTargetError, ih]
+
 end A12Kernel

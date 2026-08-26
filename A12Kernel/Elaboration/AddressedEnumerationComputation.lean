@@ -225,11 +225,8 @@ inductive AddressedEnumerationComputationFault where
   | sourceRead (cause : CheckedDocumentError)
   deriving Repr, DecidableEq
 
-/-- One row-local rich result before source-relative public classification. -/
-structure AddressedEnumerationComputationOutcome where
-  targetField : CellAddr
-  result : TokenComputationResult
-  deriving Repr, DecidableEq
+/-- Enumeration's public name for the shared exact-address token outcome. -/
+abbrev AddressedEnumerationComputationOutcome := AddressedTokenComputationOutcome
 
 /-- One checked addressed Enumeration result backed by the common String channels. -/
 structure AddressedEnumerationComputationRunView (model : FlatModel)
@@ -243,12 +240,7 @@ def projectAddressedEnumerationResults
     (input : CheckedDocument model) (residualMessages : List ResidualMessage)
     (outcomes : List AddressedEnumerationComputationOutcome) :
     StringComputationRunView ResidualMessage CellAddr :=
-  StringComputationRunView.fromSourcedOutcomes residualMessages
-    (outcomes.map fun entry => {
-      targetField := entry.targetField
-      outcome := entry.result.asExactStringTargetOutcome
-      source := input.sourceStringTargetStateAt entry.targetField
-    })
+  projectAddressedTokenResults input residualMessages outcomes
 
 namespace CheckedAddressedEnumerationComputation
 
