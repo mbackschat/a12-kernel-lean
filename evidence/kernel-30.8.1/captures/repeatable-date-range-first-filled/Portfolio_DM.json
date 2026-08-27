@@ -1,0 +1,104 @@
+{
+  "header" : {
+    "id" : "Portfolio_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Portfolio_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Portfolio",
+        "name" : "Portfolio",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Portfolio/Projects",
+            "name" : "Projects",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Portfolio/Projects/Choices",
+                "name" : "Choices",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Portfolio/Projects/Choices/Window",
+                    "name" : "Window",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateRangeType",
+                        "DateRangeType" : {
+                          "format" : "yyyy-MM-dd",
+                          "rangeSeparator" : "/"
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Portfolio/Projects/Tasks",
+                "name" : "Tasks",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Portfolio/Projects/Tasks/SelectedWindow",
+                    "name" : "SelectedWindow",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateRangeType",
+                        "DateRangeType" : {
+                          "format" : "yyyy-MM-dd",
+                          "rangeSeparator" : "/"
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Portfolio/Projects/Tasks/SelectedWindowComp",
+                    "name" : "SelectedWindowComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../SelectedWindow",
+                      "computationAlternatives" : [ {
+                        "operation" : "FirstFilledValue(../Choices*/Window)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Selected window differs."
+                      } ]
+                    }
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

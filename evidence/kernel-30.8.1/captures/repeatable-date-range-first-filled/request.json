@@ -1,0 +1,43 @@
+{
+  "model": "Portfolio_DM.json",
+  "locale": "en_US",
+  "observe": ["validateFull", "compute"],
+  "rows": [
+    {
+      "name": "parent-local-and-clear",
+      "documentInline": {
+        "Portfolio": {
+          "Projects": [
+            {
+              "Choices": [{}, {"Window": "2024-06-01/2024-06-30"}],
+              "Tasks": [{}, {"SelectedWindow": "1999-01-01/1999-01-02"}]
+            },
+            {
+              "Choices": [{"Window": "2024-07-01/2024-07-31"}],
+              "Tasks": [{}, {}]
+            },
+            {
+              "Tasks": [{"SelectedWindow": "1999-01-01/1999-01-02"}]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "malformed-before-value",
+      "documentInline": {
+        "Portfolio": {
+          "Projects": [
+            {
+              "Choices": [
+                {"Window": "malformed"},
+                {"Window": "2024-08-01/2024-08-31"}
+              ],
+              "Tasks": [{"SelectedWindow": "1999-01-01/1999-01-02"}]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

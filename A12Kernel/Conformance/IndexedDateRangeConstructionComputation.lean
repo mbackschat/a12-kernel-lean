@@ -334,11 +334,14 @@ example : (do
       priorStored priorRange
     let destination ← destination? true
     let applied ← view.applyToChecked destination |>.toOption
-    pure (view.withoutErrors, view.withChanges, view.withErrors,
-      applied target.id, applied unrelatedTarget.id)) =
-    some ([{ targetField := target.id, value := expected }],
-      [{ targetField := target.id, value := expected }], [],
-      .presentValue expected, .presentValue unrelatedStored) := by
+    pure ((view.withoutErrors, view.withChanges, view.withErrors),
+      (applied target.id, applied unrelatedTarget.id))) =
+    some ((([{ targetField := target.id, value := expected }] :
+        List DateRangeComputedInstance),
+      ([{ targetField := target.id, value := expected }] :
+        List DateRangeComputedInstance),
+      ([] : List DateRangeComputedError)),
+      (.presentValue expected, .presentValue unrelatedStored)) := by
   native_decide
 
 /- Change classification is source-relative: an accepted value equal to the source target remains inert against a different destination. -/
@@ -348,7 +351,9 @@ example : (do
     let destination ← destination? true
     let applied ← view.applyToChecked destination |>.toOption
     pure (view.withoutErrors, view.withChanges, applied target.id)) =
-    some ([{ targetField := target.id, value := expected }], [],
+    some (([{ targetField := target.id, value := expected }] :
+        List DateRangeComputedInstance),
+      ([] : List DateRangeComputedInstance),
       .presentValue priorStored) := by
   native_decide
 

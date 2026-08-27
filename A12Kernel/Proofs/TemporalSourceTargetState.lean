@@ -44,9 +44,8 @@ theorem sourceDateRangeTargetState_nonempty
     (nonempty : cell.stored ≠ "") :
     input.sourceDateRangeTargetState field =
       .presentValue ({ text := cell.stored, nonempty } : StoredDateRange) := by
-  simpa [CheckedDocument.sourceDateRangeTargetState] using
-    sourceNonemptyStoredTargetState_nonempty input field
-      (fun text proof => ({ text, nonempty := proof } : StoredDateRange))
-      cell found nonempty
+  simp [CheckedDocument.sourceDateRangeTargetState,
+    CheckedDocument.sourceDateRangeTargetStateAt,
+    CheckedDocument.sourceNonemptyStoredTargetStateAt, found, nonempty]
 
 end A12Kernel

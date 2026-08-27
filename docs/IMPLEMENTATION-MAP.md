@@ -323,6 +323,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Exact-address repeatable Boolean `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-boolean-firstfilledvalue-result-application)
 <a id="cap-exact-address-repeatable-custom-firstfilledvalue-result-application"></a>
 - [Exact-address repeatable Custom `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-custom-firstfilledvalue-result-application)
+<a id="cap-exact-address-repeatable-daterange-firstfilledvalue-result-application"></a>
+- [Exact-address repeatable DateRange `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-daterange-firstfilledvalue-result-application)
 <a id="cap-nonrepeatable-daterange-source-placement"></a>
 - [Nonrepeatable DateRange source placement](implementation/computations.md#cap-nonrepeatable-daterange-source-placement)
 <a id="cap-exact-address-repeatable-time-result-application"></a>

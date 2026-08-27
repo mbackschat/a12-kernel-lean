@@ -126,47 +126,53 @@ def applyToChecked (view : FullDateComputationRunView ResidualMessage)
 
 end FullDateComputationRunView
 
-/-- Exact caller-supplied target-state projection needed by the nonrepeatable DateRange fragment. -/
-abbrev DateRangeComputationDestination :=
-  TemporalComputationDestination StoredDateRange
+/-- Exact caller-supplied target-state projection shared by scalar and addressed DateRange fragments. -/
+abbrev DateRangeComputationDestination (Target : Type := FieldId) :=
+  TemporalComputationDestination StoredDateRange Target
 
 namespace DateRangeComputationDestination
 
-def update (destination : DateRangeComputationDestination)
-    (target : FieldId) (state : TemporalTargetState StoredDateRange) :
-    DateRangeComputationDestination :=
+def update {Target : Type} [DecidableEq Target]
+    (destination : DateRangeComputationDestination Target)
+    (target : Target) (state : TemporalTargetState StoredDateRange) :
+    DateRangeComputationDestination Target :=
   TemporalComputationDestination.update destination target state
 
-def applyOutcome (destination : DateRangeComputationDestination)
-    (target : FieldId) (outcome : DateRangeTargetOutcome) :
-    DateRangeComputationDestination :=
+def applyOutcome {Target : Type} [DecidableEq Target]
+    (destination : DateRangeComputationDestination Target)
+    (target : Target) (outcome : DateRangeTargetOutcome) :
+    DateRangeComputationDestination Target :=
   destination.update target (outcome.applyTo (destination target))
 
-def applyRetainedClear (destination : DateRangeComputationDestination)
-    (target : FieldId) : DateRangeComputationDestination :=
+def applyRetainedClear {Target : Type} [DecidableEq Target]
+    (destination : DateRangeComputationDestination Target)
+    (target : Target) : DateRangeComputationDestination Target :=
   TemporalComputationDestination.applyRetainedClear destination target
 
 end DateRangeComputationDestination
 
 namespace DateRangeComputationRunView
 
-inductive DateRangeComputationRunApplicationError where
-  | duplicateActionTarget (field : FieldId)
-  | targetField (field : FieldId) (cause : ResolveError)
-  | nonDateRangeTarget (field : FieldId)
-  | repeatableTarget (field : FieldId)
+inductive DateRangeComputationRunApplicationError
+    (Target : Type := FieldId) where
+  | duplicateActionTarget (field : Target)
+  | targetField (field : Target) (cause : ResolveError)
+  | nonDateRangeTarget (field : Target)
+  | repeatableTarget (field : Target)
   deriving Repr, DecidableEq
 
-def actionTargets (view : DateRangeComputationRunView ResidualMessage) :
-    List FieldId :=
+def actionTargets {Target : Type}
+    (view : DateRangeComputationRunView ResidualMessage Target) :
+    List Target :=
   TemporalErroredComputationRunView.actionTargets view
     (fun computed => computed.targetField)
     (fun computed => computed.targetField)
 
-def applyTo (view : DateRangeComputationRunView ResidualMessage)
-    (destination : DateRangeComputationDestination) :
-    Except DateRangeComputationRunApplicationError
-      DateRangeComputationDestination :=
+def applyTo {Target : Type} [DecidableEq Target]
+    (view : DateRangeComputationRunView ResidualMessage Target)
+    (destination : DateRangeComputationDestination Target) :
+    Except (DateRangeComputationRunApplicationError Target)
+      (DateRangeComputationDestination Target) :=
   TemporalErroredComputationRunView.applyTo view destination
     (fun computed => computed.targetField)
     (fun computed => computed.targetField)

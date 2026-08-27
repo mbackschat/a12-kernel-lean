@@ -31,6 +31,7 @@ theorem dateRangeComputationRun_shouldClear_iff
     DateRangeComputationRunView.shouldClear input (field, outcome) = true ↔
       outcome.hasComputedInstance = false ∧
         (input.sourceDateRangeTargetState field).storedValue.isSome = true := by
-  simp [DateRangeComputationRunView.shouldClear]
+  simp [DateRangeComputationRunView.shouldClear,
+    DateRangeComputationRunView.shouldClearAt]
 
 end A12Kernel

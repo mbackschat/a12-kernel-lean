@@ -77,6 +77,26 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 
 **The producer side now discloses its rewrites, which is what this project asked for.** The 2026-08-12 handbacks name the rebase, list the branch SHAs that no longer exist as reachable objects and must not be cited, and give revisions read off `main` as the last step before sending. Every revision they cite resolved from `main` when checked here on 2026-08-12: `06b84701`, `b99e43e1`, `4b244b84`, `73bc4a04`, and `ae567007`. A handback dated 2026-08-12 or later is therefore discharged against its own cited revision, while an earlier one still needs the maintained-owner route above. The reverse error is now on record too: `2bffcb10` was reported dead from here and resolves fine, which the 2026-08-10 boundary already predicted for it, so a reachability measurement taken against a stale checkout is itself a claim with a date on it.
 
+<a id="spec-2026-08-27-01"></a>
+<a id="spec-2026-08-27-01--a-sibling-star-computation-may-target-a-repeatable-group-and-stays-parent-local"></a>
+
+### SPEC-2026-08-27-01 - A sibling-star computation may target a repeatable group and stays parent-local
+
+- **Status:** pending
+- **Kind:** semantic correction, locally originated and locally measured
+- **Local revision:** resolve with the introducing-commit recipe in the ledger contract above; the introducing commit cannot name itself.
+- **a12-dmkits basis revision:** `25e048ea73e10bd58c6950b1d6104dd5809535df`, clean before and after the local probe.
+- **Kernel behavior:** 30.8.1, admitted by computation dry-run and observed through `:adapter:kernelProbe` on dynamic Groovy and generated Java, which agree on every message, formal operand finding, exact result address, value, and clear.
+- **Canonical clause:** [`09-computations.md` §6](../spec/09-computations.md#6-the-implicit-validation-rule-precisely), correcting the blanket statement that a cross-group computation into a repeatable target is codegen-rejected.
+- **Delta:** a repeatable target under one sibling group may consume a starred DateRange field under another sibling group when both sit below the same enclosing repeatable parent. `FirstFilledValue(../Choices*/Window)` into `Tasks/SelectedWindow` is kernel-admitted without a synthetic iteration guard. The operation runs once per physical task row and binds the starred choices to that task's enclosing project, not to the whole document: two task rows below project 1 both receive June, while two below project 2 both receive July.
+- **Generated-rule control:** the implicit validation rule remains anchored at the exact repeated target. A stale second task below project 1 reports the computation's own message at `Portfolio/Projects/Tasks[2]/SelectedWindow`; matching, absent, and cleared targets do not report it. A third project with one stale task and no choices returns a cleared computation outcome, preserving the established cleared-versus-stored no-message rule.
+- **Formal-input control:** malformed first choice text appears in both `validateFull` and `formalErrorsInOperands`, and its dependent task target returns cleared despite a later valid choice. This records the public channels only and makes no unsupported claim that the target outcome carries the operand cause.
+- **Basis:** retained model, request, and artifact at the [repeatable DateRange checkpoint](SOURCES.md#src-date-range-repeatable-first-filled), produced from the clean peer revision above. The matrix separates parent-local correlation from a global scan, exact target identity from a scalar field result, and clearing from stale-value preservation.
+- **Requested a12-dmkits reconciliation:** correct the canonical peer prose that currently implies or states the blanket repeatable cross-group rejection, and retain this bounded sibling-star matrix in the existing computation differential family. Reuse current model builders, runtime engines, and result projection; add no command, schema, artifact format, generic scheduler, or public API.
+- **Scope limit:** one exact DateRange profile, one sibling-star axis under one enclosing repeatable level, `Europe/Berlin`, and no computed-source dependency. Wider profiles, cross-spelling rendering, index-joined parallel iteration, root/global-star sources, target-local error, materialized application, later validation, and pointer-dialect normalization remain separate.
+- **Compatibility:** the old clause causes a wrong rejection of a legal model. A consumer that admits the syntax but scans globally instead produces wrong values for every later parent, and a scalar target key aliases distinct task rows.
+- **Acceptance:** canonical peer prose removes the blanket rejection and states the bounded parent-local sibling-star route; a maintained peer case locks admission, two-parent correlation, multiple exact target rows, empty-source clearing, malformed-source clearing, and the generated-rule exact target message on both Kernel strategies, with the independent interpreter included where its supported semantics agree.
+
 <a id="spec-2026-08-26-01"></a>
 <a id="spec-2026-08-26-01--two-level-separate-destination-application-scopes-inner-predecessor-padding-to-the-addressed-outer-row"></a>
 

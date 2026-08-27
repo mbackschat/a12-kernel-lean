@@ -34,15 +34,15 @@ structure FullDateComputedError (Target : Type := FieldId) where
   cause : FullDateTargetError
   deriving Repr, DecidableEq
 
-/-- One successful DateRange instance retaining its exact target-owned spelling. -/
-structure DateRangeComputedInstance where
-  targetField : FieldId
+/-- One successful DateRange instance retaining its exact target-owned spelling and caller-selected target key. -/
+structure DateRangeComputedInstance (Target : Type := FieldId) where
+  targetField : Target
   value : StoredDateRange
   deriving Repr, DecidableEq
 
 /-- One DateRange instance whose exact rendered attempt failed target checking. -/
-structure DateRangeComputedError where
-  targetField : FieldId
+structure DateRangeComputedError (Target : Type := FieldId) where
+  targetField : Target
   attempted : StoredDateRange
   cause : DateRangeTargetError
   deriving Repr, DecidableEq
@@ -149,11 +149,16 @@ def sourceDateTimeTargetState (input : CheckedDocument model)
     (field : FieldId) : DateTimeTargetState :=
   sourceTemporalTargetState input field
 
+/-- Recover exact addressed source placement and stored DateRange text without reparsing it. -/
+def sourceDateRangeTargetStateAt (input : CheckedDocument model)
+    (address : CellAddr) : TemporalTargetState StoredDateRange :=
+  sourceNonemptyStoredTargetStateAt input address fun text nonempty =>
+    { text, nonempty }
+
 /-- Recover exact nonrepeatable source placement and stored DateRange text without reparsing it. -/
 def sourceDateRangeTargetState (input : CheckedDocument model)
     (field : FieldId) : TemporalTargetState StoredDateRange :=
-  sourceNonemptyStoredTargetState input field fun text nonempty =>
-    { text, nonempty }
+  sourceDateRangeTargetStateAt input { field, path := [] }
 
 end CheckedDocument
 
@@ -187,10 +192,12 @@ abbrev DateTimeComputationRunView (ResidualMessage : Type) :=
   TemporalComputationRunView
     DateTimeComputedInstance DateTimeComputedError ResidualMessage FieldId
 
-/-- DateRange specialization of the shared five result collections. -/
-abbrev DateRangeComputationRunView (ResidualMessage : Type) :=
+/-- DateRange specialization of the shared five result collections over an exact caller-selected target-key domain. -/
+abbrev DateRangeComputationRunView (ResidualMessage : Type)
+    (Target : Type := FieldId) :=
   TemporalComputationRunView
-    DateRangeComputedInstance DateRangeComputedError ResidualMessage FieldId
+    (DateRangeComputedInstance Target) (DateRangeComputedError Target)
+    ResidualMessage Target
 
 namespace TemporalComputationRunView
 
@@ -397,42 +404,59 @@ end DateTimeComputationRunView
 
 namespace DateRangeComputationRunView
 
-def successfulInstance? :
-    FieldId × DateRangeTargetOutcome → Option DateRangeComputedInstance
+def successfulInstance? {Target : Type} :
+    Target × DateRangeTargetOutcome → Option (DateRangeComputedInstance Target)
   | (targetField, .accepted value) => some { targetField, value }
   | _ => none
 
-def computedError? :
-    FieldId × DateRangeTargetOutcome → Option DateRangeComputedError
+def computedError? {Target : Type} :
+    Target × DateRangeTargetOutcome → Option (DateRangeComputedError Target)
   | (targetField, .errored attempted cause) =>
       some { targetField, attempted, cause }
   | _ => none
 
+def sourceValueChangedAt
+    (sourceState : Target → TemporalTargetState StoredDateRange)
+    (computed : DateRangeComputedInstance Target) : Bool :=
+  (sourceState computed.targetField).storedValue !=
+    some computed.value
+
 def sourceValueChanged (input : CheckedDocument model)
     (computed : DateRangeComputedInstance) : Bool :=
-  (input.sourceDateRangeTargetState computed.targetField).storedValue !=
-    some computed.value
+  sourceValueChangedAt input.sourceDateRangeTargetState computed
+
+def shouldClearAt (sourceState : Target → TemporalTargetState StoredDateRange)
+    (entry : Target × DateRangeTargetOutcome) : Bool :=
+  !entry.2.hasComputedInstance &&
+    (sourceState entry.1).storedValue.isSome
 
 def shouldClear (input : CheckedDocument model)
     (entry : FieldId × DateRangeTargetOutcome) : Bool :=
-  !entry.2.hasComputedInstance &&
-    (input.sourceDateRangeTargetState entry.1).storedValue.isSome
+  shouldClearAt input.sourceDateRangeTargetState entry
+
+/-- Build all five DateRange projections over an exact caller-selected target-key domain and immutable source-state projection. -/
+def fromOutcomesAt
+    (sourceState : Target → TemporalTargetState StoredDateRange)
+    (residualMessages : List ResidualMessage)
+    (outcomes : List (Target × DateRangeTargetOutcome)) :
+    DateRangeComputationRunView ResidualMessage Target :=
+  TemporalComputationRunView.fromErrorOutcomes successfulInstance?
+    computedError? (sourceValueChangedAt sourceState) (shouldClearAt sourceState)
+    residualMessages outcomes
 
 /-- Build all five public DateRange projections from rich outcomes and an independently classified residual channel. -/
 def fromOutcomes (input : CheckedDocument model)
     (residualMessages : List ResidualMessage)
     (outcomes : List (FieldId × DateRangeTargetOutcome)) :
     DateRangeComputationRunView ResidualMessage :=
-  TemporalComputationRunView.fromErrorOutcomes successfulInstance?
-    computedError? (sourceValueChanged input) (shouldClear input)
-    residualMessages outcomes
+  fromOutcomesAt input.sourceDateRangeTargetState residualMessages outcomes
 
 def noErrorOccurred
-    (view : DateRangeComputationRunView ResidualMessage) : Bool :=
+    (view : DateRangeComputationRunView ResidualMessage Target) : Bool :=
   TemporalComputationRunView.noErrorOccurred view
 
 def ExtensionalEq
-    (left right : DateRangeComputationRunView ResidualMessage) : Prop :=
+    (left right : DateRangeComputationRunView ResidualMessage Target) : Prop :=
   TemporalComputationRunView.ExtensionalEq left right
 
 end DateRangeComputationRunView

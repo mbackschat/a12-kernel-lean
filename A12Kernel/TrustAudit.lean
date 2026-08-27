@@ -2265,6 +2265,8 @@ run_cmd do
 #print axioms A12Kernel.evalDateRangeFirstFilledCells_present_head
 #print axioms A12Kernel.dateRangeFirstFilled_executeResult_projects
 #print axioms A12Kernel.dateRangeFirstFilledDirect_executeResult_projects
+#print axioms A12Kernel.addressedDateRangeFirstFilled_executeResult_projects
+#print axioms A12Kernel.addressedDateRangeFirstFilledRun_applyToChecked_delegates
 #print axioms A12Kernel.scanDirectDateRangeFirstFilled_nil
 #print axioms A12Kernel.scanDirectDateRangeFirstFilled_empty
 #print axioms A12Kernel.scanDirectDateRangeFirstFilled_value

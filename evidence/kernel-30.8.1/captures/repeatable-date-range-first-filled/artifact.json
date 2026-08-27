@@ -1,0 +1,216 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "25e048ea73e10bd58c6950b1d6104dd5809535df",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Portfolio_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "parent-local-and-clear",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SelectedWindowComp",
+              "field" : "Portfolio/Projects/Tasks[2]/SelectedWindow",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Selected window differs.",
+              "referenced" : [
+                "/Portfolio[1]/Projects[1]/Choices[0]/Window",
+                "Portfolio/Projects/Tasks[2]/SelectedWindow"
+              ],
+              "fillToFix" : [
+                "/Portfolio[1]/Projects[1]/Choices[0]/Window",
+                "Portfolio/Projects/Tasks[2]/SelectedWindow"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Portfolio/Projects/Tasks/SelectedWindow",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01/2024-06-30"
+              },
+              {
+                "field" : "Portfolio/Projects/Tasks[2]/SelectedWindow",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01/2024-06-30"
+              },
+              {
+                "field" : "Portfolio/Projects[2]/Tasks/SelectedWindow",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-07-01/2024-07-31"
+              },
+              {
+                "field" : "Portfolio/Projects[2]/Tasks[2]/SelectedWindow",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-07-01/2024-07-31"
+              },
+              {
+                "field" : "Portfolio/Projects[3]/Tasks/SelectedWindow",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SelectedWindowComp",
+              "field" : "Portfolio/Projects/Tasks[2]/SelectedWindow",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Selected window differs.",
+              "referenced" : [
+                "/Portfolio[1]/Projects[1]/Choices[0]/Window",
+                "Portfolio/Projects/Tasks[2]/SelectedWindow"
+              ],
+              "fillToFix" : [
+                "/Portfolio[1]/Projects[1]/Choices[0]/Window",
+                "Portfolio/Projects/Tasks[2]/SelectedWindow"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Portfolio/Projects/Tasks/SelectedWindow",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01/2024-06-30"
+              },
+              {
+                "field" : "Portfolio/Projects/Tasks[2]/SelectedWindow",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01/2024-06-30"
+              },
+              {
+                "field" : "Portfolio/Projects[2]/Tasks/SelectedWindow",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-07-01/2024-07-31"
+              },
+              {
+                "field" : "Portfolio/Projects[2]/Tasks[2]/SelectedWindow",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-07-01/2024-07-31"
+              },
+              {
+                "field" : "Portfolio/Projects[3]/Tasks/SelectedWindow",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "malformed-before-value",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumBereichTrennerFehlt",
+              "field" : "Portfolio/Projects/Choices/Window",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Portfolio/Projects/Choices/Window"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Portfolio/Projects/Tasks/SelectedWindow",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumBereichTrennerFehlt",
+                "field" : "Portfolio/Projects/Choices/Window",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Portfolio/Projects/Choices/Window"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumBereichTrennerFehlt",
+              "field" : "Portfolio/Projects/Choices/Window",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+              "referenced" : [
+                "Portfolio/Projects/Choices/Window"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Portfolio/Projects/Tasks/SelectedWindow",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumBereichTrennerFehlt",
+                "field" : "Portfolio/Projects/Choices/Window",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only date ranges in the format YYYY-MM-DD/YYYY-MM-DD are allowed.",
+                "referenced" : [
+                  "Portfolio/Projects/Choices/Window"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

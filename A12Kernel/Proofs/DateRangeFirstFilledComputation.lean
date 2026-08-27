@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.DateRangeFirstFilledComputation
+import A12Kernel.Elaboration.AddressedDateRangeFirstFilledComputation
 import A12Kernel.Semantics.TemporalApplication
 
 /-! # Bounded DateRange `FirstFilledValue` computation laws -/
@@ -52,6 +53,32 @@ theorem dateRangeFirstFilledDirect_executeResult_projects
       .ok (DateRangeComputationRunView.fromOutcomes input residualMessages
         [(operation.target.source.id, outcome)]) := by
   rw [CheckedDateRangeFirstFilledDirectComputation.executeResult, evaluated]
+  rfl
+
+/-- Addressed result construction retains the checked operation and classifies every executed outcome under its exact target address. -/
+theorem addressedDateRangeFirstFilled_executeResult_projects
+    (operation : CheckedAddressedDateRangeFirstFilledComputation model)
+    (input : CheckedDocument model) (messages : List ResidualMessage)
+    (outcomes : List AddressedDateRangeFirstFilledComputationOutcome)
+    (view : AddressedDateRangeFirstFilledComputationRunView model ResidualMessage)
+    (executed : operation.execute input = .ok outcomes)
+    (produced : operation.executeResult input messages = .ok view) :
+    view.operation = operation ∧
+      view.dateRange = DateRangeComputationRunView.fromOutcomesAt
+        input.sourceDateRangeTargetStateAt messages
+        (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
+  rw [CheckedAddressedDateRangeFirstFilledComputation.executeResult,
+    executed] at produced
+  simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
+  subst view
+  exact ⟨rfl, rfl⟩
+
+/-- Addressed application is exactly the common DateRange fold over the separately supplied document's exact cell-state projection. -/
+theorem addressedDateRangeFirstFilledRun_applyToChecked_delegates
+    (view : AddressedDateRangeFirstFilledComputationRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    view.applyToChecked destination =
+      view.dateRange.applyTo destination.sourceDateRangeTargetStateAt := by
   rfl
 
 /-- Exhausting the checked direct source list keeps the no-value identity. -/
