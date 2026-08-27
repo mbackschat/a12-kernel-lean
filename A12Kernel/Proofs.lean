@@ -242,6 +242,7 @@ import A12Kernel.Proofs.CheckedEnumeration
 import A12Kernel.Proofs.EnumerationComputation
 import A12Kernel.Proofs.EnumerationComputationResult
 import A12Kernel.Proofs.AddressedEnumerationComputation
+import A12Kernel.Proofs.AddressedEnumerationFormalInput
 import A12Kernel.Proofs.AddressedEnumerationCascade
 import A12Kernel.Proofs.AddressedEnumerationFirstFilledComputation
 import A12Kernel.Proofs.AddressedEnumerationFirstFilledJoin

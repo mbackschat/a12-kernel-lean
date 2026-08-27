@@ -2209,6 +2209,7 @@ run_cmd do
 #print axioms A12Kernel.checkedAddressedEnumeration_source_allowed
 #print axioms A12Kernel.checkedAddressedEnumeration_excludes_target_reference
 #print axioms A12Kernel.checkedAddressedEnumeration_executeResult_hasNoTargetErrors
+#print axioms A12Kernel.addressedEnumeration_executeResultWithFormalInputs_exact
 #print axioms A12Kernel.addressedEnumerationResults_haveNoTargetErrors
 #print axioms A12Kernel.enumerationDependencyCell_poison_causeBlind
 #print axioms A12Kernel.addressedEnumerationCascade_targetsDistinct
