@@ -354,6 +354,15 @@ a12-dmkits revision `112169fa4ce71d9b45c0b276e0406e275f70354d` closes that struc
 
 This reopens dmtool for purpose-specific suppressed-computation probes; the maintained a12-dmkits differentials remain the owner of the broader division/power runtime matrices and kernel-strategy agreement.
 
+<a id="src-number-repeatable-first-filled"></a>
+#### Sibling-star Number `FirstFilledValue` target admission, measured locally 2026-08-27
+
+- `revision`: clean a12-dmkits `25e048ea73e10bd58c6950b1d6104dd5809535df`, dmtool `0.13.0`, kernel `30.8.1` built and runtime. The source-matched launcher was prepared in this session, and the sibling worktree was empty before and after the probe.
+- `route`: a disposable structured dmtool model declared repeatable `Outer`, with sibling repeatable `SourceLines` and `TargetLines` below each outer row. Source `Candidate` and computed target `Result` were both scale-0 Number fields. The structured computation writer persisted `FirstFilledValue(/Probe/Outer/SourceLines*/Candidate)` and read it back canonically as `FirstFilledValue(../SourceLines*/Candidate)`.
+- `static-claim`: computation dry-run, persisted add, structured read-back, and terminal `model check` all admit the sibling-star operation with `verification: KERNEL_CONFIRMED`. Changing only the operation to `FirstFilledValue(../SourceLines/Candidate)` is refused with `MVK_NO_WILDCARD`, `verification: KERNEL_CONFIRMED`, and `written:false`, separating the reopened source axis from an unstarred sibling read.
+- `limit`: static legality only for one scale-0 Number source/target pair and one sibling-star axis below one shared repeatable parent. The probe does not establish a general Kernel scale law, parent-local runtime correlation, Number zero identity, poison timing, target rejection, exact result addresses, source-relative result partitions, separate-destination application, generated-message behavior, or pointer rendering. Those executable reference decisions remain external evidence pending.
+- `sync`: locally originated and carried by pending outbound reconciliation entry [`SPEC-2026-08-27-01`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-27-01--a-sibling-star-computation-may-target-a-repeatable-group-and-stays-parent-local), which already owns the same sibling-star topology.
+
 <a id="src-computed-target-reference"></a>
 #### Computed-target reference source route
 

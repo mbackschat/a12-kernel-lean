@@ -204,11 +204,12 @@ def checkAddressedNumericPlacement
         .error (.targetOutsideDeclaringGroup
           targetDeclaration.path declaringGroup)
 
-/-- Shared execution faults for one checked addressed numeric leaf. -/
+/-- Shared execution faults for one checked addressed numeric operation. Direct leaves use `sourceRead`; resolved repeatable sources retain their wider addressing failures separately. -/
 inductive AddressedNumericLeafFault where
   | targetRows (cause : ActualRowEnvironmentError)
   | environment (cause : EnvBindingError)
   | sourceRead (cause : CheckedDocumentError)
+  | sourceAddressing (cause : CheckedAddressingError)
   | evaluation (cause : NumericComputationFault)
   | targetCheck (cause : NumericTargetCheckFault)
   deriving Repr, DecidableEq

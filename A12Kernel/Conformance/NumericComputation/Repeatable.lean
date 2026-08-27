@@ -1,4 +1,5 @@
 import A12Kernel.Conformance.NumericComputation.Support
+import A12Kernel.Elaboration.AddressedNumberFirstFilledComputation
 
 /-! # Numeric-computation repeatable locks -/
 
@@ -306,6 +307,197 @@ example :
       checkedErrorOf (surfaceAggregate .sum "Source" ["Target"]) =
         some (.targetSelfReference targetId) := by
   native_decide
+
+namespace AddressedFirstFilled
+
+private def field (id : FieldId) (name : String) (groupPath : GroupPath)
+    (scope : List RepeatableLevel) (scale : Nat := 0) : FlatFieldDecl := {
+  id, name, groupPath, repeatableScope := scope
+  policy := { kind := .number { scale, signed := true } }
+}
+
+private def source := field 101 "Candidate" ["Parents", "Choices"] [100, 110]
+private def target : FlatFieldDecl := {
+  field 102 "Result" ["Parents", "Tasks"] [100, 120] with
+  numericTargetConstraints := { maximum := some 9 }
+}
+private def scaledSource := field 103 "Scaled" ["Parents", "Choices"] [100, 110] 2
+private def wrongSource : FlatFieldDecl := {
+  id := 104, name := "Wrong", groupPath := ["Parents", "Choices"]
+  repeatableScope := [100, 110], policy := { kind := .string }
+}
+private def unrelated := field 105 "Unrelated" ["Summary"] []
+private def targetDescendantSource := field 106 "NestedCandidate"
+  ["Parents", "Tasks", "Details"] [100, 120, 130]
+
+private def addressedModel : FlatModel := {
+  fields := [source, target, scaledSource, wrongSource, unrelated,
+    targetDescendantSource]
+  repeatableGroups := [
+    { level := 100, path := ["Parents"], repeatability := some 4 },
+    { level := 110, path := ["Parents", "Choices"], repeatability := some 3 },
+    { level := 120, path := ["Parents", "Tasks"], repeatability := some 3 },
+    { level := 130, path := ["Parents", "Tasks", "Details"],
+      repeatability := some 3 }]
+}
+
+private def siblingStar (name : String) : SurfaceStarFieldPath := {
+  base := .relative 1
+  groups := [{ name := "Choices", starred := true }]
+  field := name
+}
+
+private def targetDescendantStar : SurfaceStarFieldPath := {
+  base := .relative 0
+  groups := [{ name := "Details", starred := true }]
+  field := targetDescendantSource.name
+}
+
+private def operation? :
+    Option (CheckedAddressedNumberFirstFilledComputation addressedModel) :=
+  (checkAddressedNumberFirstFilledComputation addressedModel
+    ["Parents", "Tasks"] target.id (siblingStar source.name)).toOption
+
+private def elabError? (checked :
+    Except AddressedNumberFirstFilledComputationElabError
+      (CheckedAddressedNumberFirstFilledComputation addressedModel)) :
+    Option AddressedNumberFirstFilledComputationElabError :=
+  match checked with
+  | .error cause => some cause
+  | .ok _ => none
+
+/- One sibling star is admitted, while the Number-kind and exact-scale gates remain explicit. Shared placement controls already lock shape, scope, and self-reference. -/
+example :
+    operation?.isSome = true ∧
+    elabError? (checkAddressedNumberFirstFilledComputation addressedModel
+      ["Parents", "Tasks"] target.id (siblingStar wrongSource.name)) =
+        some (.source (.fieldNotNumber wrongSource.path)) ∧
+    elabError? (checkAddressedNumberFirstFilledComputation addressedModel
+      ["Parents", "Tasks"] target.id (siblingStar scaledSource.name)) =
+        some (.scaleMismatch 0 2) ∧
+    elabError? (checkAddressedNumberFirstFilledComputation addressedModel
+      ["Parents", "Tasks"] target.id targetDescendantStar) =
+        some (.placement (.sourceScope targetDescendantSource.path)) := by
+  native_decide
+
+private def prepared :
+    PreparedFlatStringContext addressedModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler addressedModel).toOption.get (by native_decide)
+
+private def rows : List RowAddr :=
+  [{ group := 100, path := [1] }, { group := 100, path := [2] },
+    { group := 100, path := [3] }, { group := 100, path := [4] },
+    { group := 110, path := [1, 1] }, { group := 110, path := [1, 2] },
+    { group := 110, path := [1, 3] }, { group := 110, path := [2, 1] },
+    { group := 110, path := [4, 1] },
+    { group := 120, path := [2, 1] }, { group := 120, path := [1, 2] },
+    { group := 120, path := [3, 1] }, { group := 120, path := [4, 1] },
+    { group := 120, path := [1, 1] }]
+
+private def cell (id : FieldId) (path : List Nat)
+    (stored : String) (raw : RawCell) : ClassifiedCellInput :=
+  { address := { field := id, path }, stored, raw }
+
+private def decimalCell (id : FieldId) (path : List Nat) (stored : String)
+    (unscaled : Int) : ClassifiedCellInput := {
+  address := { field := id, path }
+  stored
+  raw := .parsed (.num unscaled)
+  numericDecimal := some { unscaled, scale := 0 }
+}
+
+private def document? (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument addressedModel) :=
+  (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
+
+private def input? : Option (CheckedDocument addressedModel) :=
+  document? [
+    cell source.id [1, 1] "" .presentEmpty,
+    cell source.id [1, 2] "5" (.parsed (.num 5)),
+    cell source.id [1, 3] "bad-tail" (.rejected .malformed),
+    cell source.id [2, 1] "bad" (.rejected .malformed),
+    cell source.id [4, 1] "12" (.parsed (.num 12)),
+    decimalCell target.id [1, 1] "5" 5,
+    decimalCell target.id [1, 2] "2" 2,
+    decimalCell target.id [2, 1] "8" 8,
+    decimalCell target.id [4, 1] "1" 1,
+    decimalCell unrelated.id [] "7" 7]
+
+private def addr (id : FieldId) (path : List Nat) : CellAddr := { field := id, path }
+private def stored (unscaled : Int) : StoredNumber := { unscaled, scale := 0 }
+
+private def outcomes? : Option (List (CellAddr × NumericTargetOutcome)) := do
+  let operation ← operation?
+  let input ← input?
+  let outcomes ← operation.execute input |>.toOption
+  pure (outcomes.map fun entry => (entry.targetField, entry.outcome))
+
+/- Target rows scan only their enclosing parent's source extent. Empty exhaustion is zero, a malformed prefix poisons, the selected value hides its malformed tail, and target rejection follows selection. -/
+example : outcomes? = some [
+    (addr target.id [2, 1], .inheritedPoison .malformed),
+    (addr target.id [1, 2], .accepted (stored 5)),
+    (addr target.id [3, 1], .accepted (stored 0)),
+    (addr target.id [4, 1], .rejected (stored 12) .aboveMaximum),
+    (addr target.id [1, 1], .accepted (stored 5))
+  ] := by
+  native_decide
+
+private structure Summary where
+  values : List (NumericComputedInstance CellAddr)
+  changes : List (NumericComputedInstance CellAddr)
+  errors : List (NumericComputedError CellAddr)
+  cleared : List CellAddr
+  states : List NumericTargetState
+  deriving Repr, DecidableEq
+
+private def summary? : Option Summary := do
+  let operation ← operation?
+  let input ← input?
+  let destination ← document? [
+    decimalCell target.id [1, 1] "9" 9,
+    decimalCell target.id [3, 1] "7" 7,
+    decimalCell target.id [4, 1] "6" 6,
+    decimalCell unrelated.id [] "4" 4]
+  let result ← operation.executeResult input (fun _ => ()) [] |>.toOption
+  let applied ← result.applyToChecked destination |>.toOption
+  let addresses :=
+    [[1, 1], [1, 2], [2, 1], [3, 1], [4, 1]].map (addr target.id) ++
+      [addr unrelated.id []]
+  pure {
+    values := result.numeric.withoutErrors
+    changes := result.numeric.withChanges
+    errors := result.numeric.withErrors
+    cleared := result.numeric.cleared
+    states := addresses.map applied.stateAt
+  }
+
+/- Classification uses immutable exact source state. Separate-destination application changes only retained actions, so the unchanged target and unrelated Number remain the destination's values. -/
+example : summary? = some {
+    values := [
+      { targetField := addr target.id [1, 2], value := stored 5 },
+      { targetField := addr target.id [3, 1], value := stored 0 },
+      { targetField := addr target.id [1, 1], value := stored 5 }]
+    changes := [
+      { targetField := addr target.id [1, 2], value := stored 5 },
+      { targetField := addr target.id [3, 1], value := stored 0 }]
+    errors := [{
+      targetField := addr target.id [4, 1]
+      attempted := stored 12
+      cause := .aboveMaximum
+    }]
+    cleared := [addr target.id [2, 1]]
+    states := [
+      .presentValue (.decimal (stored 9)),
+      .presentValue (.decimal (stored 5)),
+      .presentEmpty,
+      .presentValue (.decimal (stored 0)),
+      .presentEmpty,
+      .presentValue (.decimal (stored 4))]
+  } := by
+  native_decide
+
+end AddressedFirstFilled
 
 
 end A12Kernel.Conformance.NumericComputation.Repeatable
