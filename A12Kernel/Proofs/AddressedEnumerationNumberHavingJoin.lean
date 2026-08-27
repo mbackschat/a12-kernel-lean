@@ -125,4 +125,52 @@ theorem addressedEnumerationNumberHavingJoinRun_applyEnumerations_delegates
       view.consumer.applyTo afterProducer) := by
   rfl
 
+/-- The checked serial route fixes `FieldValueAsNumber` on the completed Enumeration target rather than any stale sibling field. -/
+theorem addressedEnumerationToNumberHavingCascade_numberDependency
+    (plan : CheckedAddressedEnumerationToNumberHavingCascade model) :
+    plan.numberProducer.placement.sourceDeclaration.id =
+      plan.enumerationProducer.target.field :=
+  plan.enumerationNumberDependency
+
+/-- Analyze retains the conversion projection and all three exact dependency inventories. -/
+@[simp]
+theorem addressedEnumerationToNumberHavingCascade_analyze
+    (plan : CheckedAddressedEnumerationToNumberHavingCascade model) :
+    plan.analyze = {
+      enumerationProducerTarget := plan.enumerationProducer.target.field
+      numberProjection := plan.numberProducer.projectionRef
+      numberProducerTarget := plan.numberProducer.placement.targetField
+      consumerTarget := plan.consumer.target.field
+      fieldDependencies := [
+        (plan.enumerationProducer.target.field, [plan.enumerationSourceField]),
+        (plan.numberProducer.placement.targetField,
+          [plan.numberProducer.placement.sourceDeclaration.id]),
+        (plan.consumer.target.field,
+          plan.consumer.source.fieldDependencies)]
+    } := by
+  rfl
+
+/-- Execution delegates exactly through the Enumeration overlay, the dependent Number conversion, and the combined final read view. -/
+theorem addressedEnumerationToNumberHavingCascade_execute_delegates
+    (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
+    (input : CheckedDocument model) :
+    plan.execute input = (do
+      let enumerationProducer ← plan.enumerationProducer.execute input |>.mapError
+        AddressedEnumerationToNumberHavingCascadeFault.enumerationProducer
+      let enumerationDependencies ←
+        projectEnumerationDependencyCells enumerationProducer |>.mapError
+          (fun error =>
+            AddressedEnumerationToNumberHavingCascadeFault.enumerationDependency
+              error.target error.cause)
+      let enumerationRead :=
+        readAfterEnumerationDependencies input enumerationDependencies
+      let numberProducer ← plan.numberProducer.executeWithRead input enumerationRead
+        |>.mapError AddressedEnumerationToNumberHavingCascadeFault.numberProducer
+      let read := readAfterEnumerationDependenciesWith enumerationDependencies
+        (readAfterNumericDependencies input numberProducer)
+      let consumer ← plan.consumer.executeWithRead input read |>.mapError
+        AddressedEnumerationToNumberHavingCascadeFault.consumer
+      pure { enumerationProducer, numberProducer, consumer }) := by
+  rfl
+
 end A12Kernel

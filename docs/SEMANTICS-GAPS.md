@@ -27,7 +27,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `baseline`: [§11](IMPLEMENTATION-MAP.md#11--calculations-and-formal-checking) owns the bounded fixed and repeatable execution, result, application, and purpose-specific transition families. [`ARCHITECTURE.md`](ARCHITECTURE.md#whole-model-computation-execution-keeps-definition-activation-result-application-and-validation-separate) owns the required phase separation.
 - `remaining`: Number and String nesting beyond two direct finite levels, plus wider multi-step calibration.
 - `remaining`: serial computed-source Enumeration chains beyond three stages.
-- `remaining`: more than two sibling producers, wider computed-source forms, and filter producers beyond the existing addressed Number-result union.
+- `remaining`: more than two sibling producers, computed-source forms beyond the exact Enumeration-to-`FieldValueAsNumber`-to-filtered-Enumeration chain, and filter producers beyond the existing addressed Number-result union.
 - `remaining`: repeatable or wider-policy temporal targets and other target families beyond the bounded Boolean, Custom, Enumeration, `DateFromDateTime`, and `TimeFromDateTime` carriers.
 - `remaining`: materialized document topology, general later-rule execution, transport reconstruction, and pointer-dialect rendering.
 - `remaining`: concrete reachability and Kernel scheduling correspondence for structural-failure arms that currently have only conditional internal laws.

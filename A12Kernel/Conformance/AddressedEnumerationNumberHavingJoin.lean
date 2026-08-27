@@ -22,14 +22,23 @@ private def numberField (id : FieldId) (name : String)
 private def target := enumerationField 1 "Target" ["Form", "Rows"] [10]
 private def directChoice := enumerationField 2 "DirectChoice" ["Form", "Rows"] [10]
 private def rawChoice := enumerationField 3 "RawChoice" ["Form", "Rows", "Items"] [10, 20]
-private def computedChoice := enumerationField 4 "ComputedChoice" ["Form", "Rows", "Items"] [10, 20]
+private def computedChoice : FlatFieldDecl := {
+  enumerationField 4 "ComputedChoice" ["Form", "Rows", "Items"] [10, 20] with
+  enumeration := some {
+    storedTokens := ["A", "B"]
+    categories := [{ name := "Numeric", tokens := ["1", "2"] }]
+  }
+}
+private def otherChoice : FlatFieldDecl := {
+  computedChoice with id := 8, name := "OtherChoice"
+}
 private def limit := numberField 5 "Limit" ["Form", "Rows"] [10]
 private def rawGate := numberField 6 "RawGate" ["Form", "Rows", "Items"] [10, 20]
 private def computedGate := numberField 7 "ComputedGate" ["Form", "Rows", "Items"] [10, 20]
 
 private def model : FlatModel := {
   fields := [target, directChoice, rawChoice, computedChoice, limit, rawGate,
-    computedGate]
+    computedGate, otherChoice]
   repeatableGroups := [
     { level := 10, path := ["Form", "Rows"], repeatability := some 5 },
     { level := 20, path := ["Form", "Rows", "Items"], repeatability := some 2 }]
@@ -229,6 +238,108 @@ example : summary? = some {
     ({ field := target.id, path := [3] }, .noValue),
     ({ field := target.id, path := [4] }, .poison .computedDependency),
     ({ field := target.id, path := [5] }, .poison .computedDependency)]
+} := by
+  native_decide
+
+private def dependentNumberProducer? (sourceName := "ComputedChoice") :
+    Option (CheckedAddressedFieldValueAsNumber model) :=
+  (checkAddressedFieldValueAsNumber model ["Form", "Rows", "Items"]
+    computedGate.id (.category (bare sourceName) "Numeric")).toOption
+
+private def serialPlan? :
+    Option (CheckedAddressedEnumerationToNumberHavingCascade model) := do
+  let enumerationProducer ← enumerationProducer?
+  let numberProducer ← dependentNumberProducer?
+  let consumer ← consumer? (source "ComputedChoice" (having "ComputedGate"))
+  (checkAddressedEnumerationToNumberHavingCascade enumerationProducer
+    numberProducer consumer).toOption
+
+private def serialError?
+    (enumerationProducer := enumerationProducer?)
+    (numberProducer := dependentNumberProducer? "OtherChoice") :
+    Option AddressedEnumerationToNumberHavingCascadeElabError := do
+  let enumerationProducer ← enumerationProducer
+  let numberProducer ← numberProducer
+  let consumer ← consumer? (source "ComputedChoice" (having "ComputedGate"))
+  match checkAddressedEnumerationToNumberHavingCascade enumerationProducer
+      numberProducer consumer with
+  | .ok _ => none
+  | .error cause => some cause
+
+private def serialInput? : Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := [1, 2, 3].flatMap fun index =>
+      [row 10 [index], row 20 [index, 1]]
+    cells := [
+      numericCell limit [1] "1" 1,
+      numericCell limit [2] "1" 1,
+      numericCell limit [3] "1" 1,
+      cell directChoice [3] "A" (.parsed (.enum "A")),
+      cell rawChoice [1, 1] "A" (.parsed (.enum "A")),
+      cell rawChoice [2, 1] "C" (.parsed (.enum "C")),
+      cell rawChoice [3, 1] "C" (.parsed (.enum "C")),
+      cell computedChoice [1, 1] "B" (.parsed (.enum "B")),
+      cell computedChoice [2, 1] "A" (.parsed (.enum "A")),
+      cell computedChoice [3, 1] "A" (.parsed (.enum "A")),
+      numericCell computedGate [1, 1] "2" 2,
+      numericCell computedGate [2, 1] "1" 1,
+      numericCell computedGate [3, 1] "1" 1]
+  }).toOption
+
+private structure SerialSummary where
+  analysis : AddressedEnumerationToNumberHavingCascadeAnalysis
+  enumerationProducer : List (CellAddr × TokenComputationResult)
+  numberProducer : List (CellAddr × NumericDependencyObservation)
+  consumer : List (CellAddr × TokenComputationResult)
+  deriving Repr, DecidableEq
+
+private def serialSummary? : Option SerialSummary := do
+  let plan ← serialPlan?
+  let input ← serialInput?
+  let outcomes ← plan.execute input |>.toOption
+  pure {
+    analysis := plan.analyze
+    enumerationProducer := outcomes.enumerationProducer.map fun item =>
+      (item.targetField, item.result)
+    numberProducer := outcomes.numberProducer.map fun item =>
+      (item.targetField, item.outcome.dependencyObservation)
+    consumer := outcomes.consumer.map fun item =>
+      (item.targetField, item.result)
+  }
+
+/- The serial plan exposes both exact producer edges. Fresh Enumeration state reaches category conversion and the final selected value, reached poison crosses both boundaries cause-blind, and the direct prefix hides the completed poison. -/
+example : serialPlan?.isSome = true ∧
+    serialError? = some .missingEnumerationNumberDependency ∧
+    serialError? (enumerationProducer := enumerationProducer?
+      (absolute ["Form", "Rows"] "Target")) =
+        some .enumerationProducerReadsConsumer ∧
+    serialSummary? = some {
+  analysis := {
+    enumerationProducerTarget := computedChoice.id
+    numberProjection := .category "Numeric"
+    numberProducerTarget := computedGate.id
+    consumerTarget := target.id
+    fieldDependencies := [
+      (computedChoice.id, [rawChoice.id]),
+      (computedGate.id, [computedChoice.id]),
+      (target.id, [directChoice.id, computedChoice.id, computedGate.id,
+        limit.id])]
+  }
+  enumerationProducer := [
+    ({ field := computedChoice.id, path := [1, 1] }, .value "A"),
+    ({ field := computedChoice.id, path := [2, 1] },
+      .poison .declaredConstraint),
+    ({ field := computedChoice.id, path := [3, 1] },
+      .poison .declaredConstraint)]
+  numberProducer := [
+    ({ field := computedGate.id, path := [1, 1] },
+      .value { unscaled := 1, scale := 0 }),
+    ({ field := computedGate.id, path := [2, 1] }, .poisoned),
+    ({ field := computedGate.id, path := [3, 1] }, .poisoned)]
+  consumer := [
+    ({ field := target.id, path := [1] }, .value "A"),
+    ({ field := target.id, path := [2] }, .poison .computedDependency),
+    ({ field := target.id, path := [3] }, .value "A")]
 } := by
   native_decide
 

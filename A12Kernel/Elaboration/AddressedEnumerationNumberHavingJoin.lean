@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.AddressedEnumerationCascade
 import A12Kernel.Elaboration.AddressedNumberEnumerationHavingCascade
+import A12Kernel.Elaboration.AddressedFieldValueAsNumber
 
 /-! # Computed Enumeration value plus Number `Having`
 
@@ -175,5 +176,134 @@ def applyEnumerationsToChecked
   view.consumer.applyTo afterProducer
 
 end AddressedEnumerationNumberHavingJoinRunView
+
+inductive AddressedEnumerationToNumberHavingCascadeElabError where
+  | enumerationProducerReadsConsumer
+  | enumerationProducerSourceShape
+  | missingEnumerationNumberDependency
+  | consumerSourceShape
+  | missingEnumerationValueDependency
+  | missingNumberFilterDependency
+  deriving Repr, DecidableEq
+
+/-- One direct Enumeration producer, one exact textual-to-Number dependent producer, and one filtered Enumeration consumer. -/
+structure CheckedAddressedEnumerationToNumberHavingCascade (model : FlatModel) where
+  private mk ::
+  enumerationProducer : CheckedAddressedEnumerationComputation model
+  numberProducer : CheckedAddressedFieldValueAsNumber model
+  consumer : CheckedAddressedEnumerationFirstFilledComputation model
+  enumerationSourceField : FieldId
+  sourceShape : DirectThenFilteredEnumerationSourceShape
+  enumerationDoesNotReadConsumer :
+    enumerationProducer.source.referencesField consumer.target.field = false
+  enumerationSourceDirect :
+    directAddressedEnumerationSourceField? enumerationProducer.source =
+      some enumerationSourceField
+  enumerationNumberDependency :
+    numberProducer.placement.sourceDeclaration.id =
+      enumerationProducer.target.field
+  consumerSourceShape :
+    directThenFilteredEnumerationSourceShape? consumer.source = some sourceShape
+  enumerationValueDependency :
+    sourceShape.starredField = enumerationProducer.target.field
+  numberFilterDependency :
+    sourceShape.havingDependencies.contains
+      numberProducer.placement.targetField = true
+
+/-- Certify the two serial producer edges and both final lazy-consumer edges. -/
+def checkAddressedEnumerationToNumberHavingCascade
+    (enumerationProducer : CheckedAddressedEnumerationComputation model)
+    (numberProducer : CheckedAddressedFieldValueAsNumber model)
+    (consumer : CheckedAddressedEnumerationFirstFilledComputation model) :
+    Except AddressedEnumerationToNumberHavingCascadeElabError
+      (CheckedAddressedEnumerationToNumberHavingCascade model) :=
+  if hReverse : enumerationProducer.source.referencesField consumer.target.field =
+      false then
+    match hEnumerationSource :
+        directAddressedEnumerationSourceField? enumerationProducer.source with
+    | none => .error .enumerationProducerSourceShape
+    | some enumerationSourceField =>
+      if hNumber : numberProducer.placement.sourceDeclaration.id =
+          enumerationProducer.target.field then
+        match hShape :
+            directThenFilteredEnumerationSourceShape? consumer.source with
+        | none => .error .consumerSourceShape
+        | some shape =>
+          if hValue : shape.starredField = enumerationProducer.target.field then
+            if hFilter : shape.havingDependencies.contains
+                numberProducer.placement.targetField = true then
+              .ok {
+                enumerationProducer, numberProducer, consumer
+                enumerationSourceField, sourceShape := shape
+                enumerationDoesNotReadConsumer := hReverse
+                enumerationSourceDirect := hEnumerationSource
+                enumerationNumberDependency := hNumber
+                consumerSourceShape := hShape
+                enumerationValueDependency := hValue
+                numberFilterDependency := hFilter
+              }
+            else .error .missingNumberFilterDependency
+          else .error .missingEnumerationValueDependency
+      else .error .missingEnumerationNumberDependency
+  else .error .enumerationProducerReadsConsumer
+
+structure AddressedEnumerationToNumberHavingCascadeAnalysis where
+  enumerationProducerTarget : FieldId
+  numberProjection : EnumerationProjectionRef
+  numberProducerTarget : FieldId
+  consumerTarget : FieldId
+  fieldDependencies : List (FieldId × List FieldId)
+  deriving Repr, DecidableEq
+
+structure AddressedEnumerationToNumberHavingCascadeOutcomes where
+  enumerationProducer : List AddressedEnumerationComputationOutcome
+  numberProducer : List (SourcedNumericTargetOutcome CellAddr)
+  consumer : List AddressedEnumerationComputationOutcome
+  deriving Repr, DecidableEq
+
+inductive AddressedEnumerationToNumberHavingCascadeFault where
+  | enumerationProducer (cause : AddressedEnumerationComputationFault)
+  | enumerationDependency (target : CellAddr)
+      (cause : EnumerationDependencyFault)
+  | numberProducer (cause : AddressedFieldValueAsNumberFault)
+  | consumer (cause : AddressedEnumerationFirstFilledComputationFault)
+  deriving Repr, DecidableEq
+
+namespace CheckedAddressedEnumerationToNumberHavingCascade
+
+/-- Expose the exact three targets, conversion identity, and ordered source inventories without turning them into a generic schedule. -/
+def analyze (plan : CheckedAddressedEnumerationToNumberHavingCascade model) :
+    AddressedEnumerationToNumberHavingCascadeAnalysis := {
+  enumerationProducerTarget := plan.enumerationProducer.target.field
+  numberProjection := plan.numberProducer.projectionRef
+  numberProducerTarget := plan.numberProducer.placement.targetField
+  consumerTarget := plan.consumer.target.field
+  fieldDependencies := [
+    (plan.enumerationProducer.target.field, [plan.enumerationSourceField]),
+    (plan.numberProducer.placement.targetField,
+      [plan.numberProducer.placement.sourceDeclaration.id]),
+    (plan.consumer.target.field, plan.consumer.source.fieldDependencies)]
+}
+
+/-- Complete Enumeration, convert its exact produced cells to Number, then expose both overlays to the lazy filtered consumer. -/
+def execute (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
+    (input : CheckedDocument model) :
+    Except AddressedEnumerationToNumberHavingCascadeFault
+      AddressedEnumerationToNumberHavingCascadeOutcomes := do
+  let enumerationProducer ← plan.enumerationProducer.execute input
+    |>.mapError .enumerationProducer
+  let enumerationDependencies ←
+    projectEnumerationDependencyCells enumerationProducer
+      |>.mapError fun error => .enumerationDependency error.target error.cause
+  let enumerationRead :=
+    readAfterEnumerationDependencies input enumerationDependencies
+  let numberProducer ← plan.numberProducer.executeWithRead input enumerationRead
+    |>.mapError .numberProducer
+  let read := readAfterEnumerationDependenciesWith enumerationDependencies
+    (readAfterNumericDependencies input numberProducer)
+  let consumer ← plan.consumer.executeWithRead input read |>.mapError .consumer
+  pure { enumerationProducer, numberProducer, consumer }
+
+end CheckedAddressedEnumerationToNumberHavingCascade
 
 end A12Kernel
