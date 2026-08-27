@@ -4,35 +4,47 @@ import A12Kernel.Elaboration.AddressedNumberFirstFilledComputation
 
 namespace A12Kernel
 
-/-- The checked operation retains one model-owned Number target, one model-owned Number star, the bounded sibling placement, and exact source/target scale. -/
+/-- The checked operation retains one model-owned Number target and a nonempty authored list whose every operand is a model-owned Number star with bounded sibling placement and exact source/target scale. -/
 theorem checkedAddressedNumberFirstFilled_sound
     (operation : CheckedAddressedNumberFirstFilledComputation model) :
     model.validate.isOk = true ∧
       model.lookupUniqueId operation.targetField =
         .ok operation.targetDeclaration ∧
-      operation.source.source.declaration.toNumberField? =
-        some operation.source.field ∧
-      operation.source.source.reopenedScope.length = 1 ∧
-      operation.source.source.bindingScope ≠ [] ∧
-      operation.source.source.bindingScope.isPrefixOf
-        operation.targetDeclaration.repeatableScope = true ∧
-      operation.source.source.bindingScope ≠
-        operation.targetDeclaration.repeatableScope ∧
-      operation.source.source.reopenedScope.all (fun level =>
-        !operation.targetDeclaration.repeatableScope.contains level) = true ∧
-      operation.source.source.bindingScope.all
-        operation.targetDeclaration.repeatableScope.contains = true ∧
-      operation.source.source.declaration.id ≠ operation.targetField ∧
-      exactNumericScaleComparisonAllowedWithSuppression false
-        (NumericScaleSummary.field operation.target.targetPolicy.info.scale)
-        (NumericScaleSummary.field operation.source.field.info.scale) = true := by
-  exact ⟨operation.target.modelWellFormed, operation.placement.targetOwned,
-    operation.source.fieldOwned, operation.sourceSingleReopenedAxis,
-    operation.sourceBindingNonempty, operation.placement.sourceBindingPrefix,
-    operation.placement.sourceBindingStrict,
-    operation.placement.sourceReopenedOutsideTarget,
-    operation.sourceBindingBound,
-    operation.targetNotReferenced, operation.targetAdmitted⟩
+      operation.targetDeclaration.groupPath = operation.declaringGroup ∧
+      operation.targetDeclaration.toNumericTargetPolicy? =
+        some operation.target.targetPolicy ∧
+      operation.operands ≠ [] ∧
+      ∀ operand ∈ operation.operands,
+        operand.source.source.declaration.toNumberField? =
+          some operand.source.field ∧
+        operand.source.source.reopenedScope.length = 1 ∧
+        operand.source.source.bindingScope ≠ [] ∧
+        operand.source.source.bindingScope.isPrefixOf
+          operation.targetDeclaration.repeatableScope = true ∧
+        operand.source.source.bindingScope ≠
+          operation.targetDeclaration.repeatableScope ∧
+        operand.source.source.reopenedScope.all (fun level =>
+          !operation.targetDeclaration.repeatableScope.contains level) = true ∧
+        operand.source.source.bindingScope.all
+          operation.targetDeclaration.repeatableScope.contains = true ∧
+        operand.source.source.declaration.id ≠ operation.targetField ∧
+        exactNumericScaleComparisonAllowedWithSuppression false
+          (NumericScaleSummary.field operation.target.targetPolicy.info.scale)
+          (NumericScaleSummary.field operand.source.field.info.scale) = true := by
+  refine ⟨operation.target.modelWellFormed, operation.target.targetOwned,
+    operation.target.targetInDeclaringGroup, operation.target.targetPolicyOwned,
+    ?_, ?_⟩
+  · simp [CheckedAddressedNumberFirstFilledComputation.operands]
+  · intro operand _
+    exact ⟨operand.source.fieldOwned,
+      operand.placement.sourceSingleReopenedAxis,
+      operand.placement.sourceBindingNonempty,
+      operand.placement.sourceBindingPrefix,
+      operand.placement.sourceBindingStrict,
+      operand.placement.sourceReopenedOutsideTarget,
+      operand.placement.sourceBindingBound,
+      operand.placement.targetNotReferenced,
+      operand.targetAdmitted⟩
 
 /-- Addressed result construction retains the checked operation and delegates every source-relative public partition to the shared exact Number result owner. -/
 theorem checkedAddressedNumberFirstFilled_executeResult_projects

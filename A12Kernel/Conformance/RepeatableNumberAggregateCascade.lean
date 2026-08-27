@@ -644,6 +644,8 @@ namespace FirstFilledProducer
 
 private def candidate := number 31 "Candidate"
   ["Parents", "Choices"] [100, 110] 0
+private def fallback := number 35 "Fallback"
+  ["Parents", "Fallbacks"] [100, 115] 0
 private def produced := number 32 "Produced"
   ["Parents", "Tasks"] [100, 120] 0
 private def total := number 33 "Total" ["Summary"] [] 0
@@ -651,19 +653,24 @@ private def scaledCandidate := number 34 "ScaledCandidate"
   ["Parents", "Choices"] [100, 110] 1
 
 private def firstFilledModel : FlatModel := {
-  fields := [candidate, produced, total, scaledCandidate]
+  fields := [candidate, fallback, produced, total, scaledCandidate]
   repeatableGroups := [
     { level := 100, path := ["Parents"], repeatability := some 3 },
     { level := 110, path := ["Parents", "Choices"], repeatability := some 3 },
+    { level := 115, path := ["Parents", "Fallbacks"], repeatability := some 3 },
     { level := 120, path := ["Parents", "Tasks"], repeatability := some 3 }]
 }
 
-private def siblingStar (field : String := candidate.name) :
+private def siblingStarIn (group : String) (field : String) :
     SurfaceStarFieldPath := {
   base := .relative 1
-  groups := [{ name := "Choices", starred := true }]
+  groups := [{ name := group, starred := true }]
   field
 }
+
+private def siblingStar (field : String := candidate.name) :
+    SurfaceStarFieldPath :=
+  siblingStarIn "Choices" field
 
 private def producedStar : SurfaceStarFieldPath := {
   base := .absolute
@@ -679,6 +686,13 @@ private def firstFilledPlan? :
     ["Parents", "Tasks"] produced.id siblingStar
     ["Summary"] total.id producedStar .sum).toOption
 
+private def multiFirstFilledPlan? :
+    Option (CheckedRepeatableNumberAggregateCascade firstFilledModel) :=
+  (checkRepeatableNumberFirstFilledListAggregateCascade firstFilledModel
+    ["Parents", "Tasks"] produced.id siblingStar
+      [siblingStarIn "Fallbacks" fallback.name]
+    ["Summary"] total.id producedStar .sum).toOption
+
 private def firstFilledPrepared :
     PreparedFlatStringContext firstFilledModel builtinStringPatternCompiler :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
@@ -692,6 +706,8 @@ private def firstFilledRows : List RowAddr := [
   { group := 110, path := [1, 1] },
   { group := 110, path := [1, 2] },
   { group := 110, path := [2, 1] },
+  { group := 115, path := [1, 1] },
+  { group := 115, path := [3, 1] },
   { group := 120, path := [1, 1] },
   { group := 120, path := [1, 2] },
   { group := 120, path := [2, 1] },
@@ -719,6 +735,9 @@ private def firstFilledInput? (malformedSecond : Bool) :
       else
         firstFilledCell candidate.id [2, 1] "7" (.parsed (.num 7))
           (some { unscaled := 7, scale := 0 }),
+      firstFilledCell fallback.id [1, 1] "bad" (.rejected .malformed),
+      firstFilledCell fallback.id [3, 1] "4" (.parsed (.num 4))
+        (some { unscaled := 4, scale := 0 }),
       firstFilledCell produced.id [1, 1] "90" (.parsed (.num 90))
         (some { unscaled := 90, scale := 0 }),
       firstFilledCell produced.id [1, 2] "91" (.parsed (.num 91))
@@ -733,6 +752,14 @@ private def firstFilledInput? (malformedSecond : Bool) :
 
 private def firstFilledSummary? (malformedSecond : Bool) := do
   let plan ← firstFilledPlan?
+  let input ← firstFilledInput? malformedSecond
+  let outcomes ← (plan.execute { now := { epochMillis := 0 } } input).toOption
+  pure (plan.analyze, outcomes.rows.map fun
+      (row : SourcedNumericTargetOutcome CellAddr) => row.outcome,
+    outcomes.aggregate.outcome)
+
+private def multiFirstFilledSummary? (malformedSecond : Bool) := do
+  let plan ← multiFirstFilledPlan?
   let input ← firstFilledInput? malformedSecond
   let outcomes ← (plan.execute { now := { epochMillis := 0 } } input).toOption
   pure (plan.analyze, outcomes.rows.map fun
@@ -761,6 +788,24 @@ example :
       (result.2.1, result.2.2)) = some (
         [firstFilledAccepted 5, firstFilledAccepted 5,
           .inheritedPoison .malformed, firstFilledAccepted 0],
+        .inheritedPoison .computedDependency) ∧
+    multiFirstFilledSummary? false = some (
+      {
+        producer := .firstFilled
+        consumer := .plain
+        operation := .sum
+        repeatableScope := [100, 120]
+        fieldDependencies := [
+          (produced.id, [candidate.id, fallback.id]),
+          (total.id, [produced.id])]
+      },
+      [firstFilledAccepted 5, firstFilledAccepted 5,
+        firstFilledAccepted 7, firstFilledAccepted 4],
+      firstFilledAccepted 21) ∧
+    (multiFirstFilledSummary? true).map (fun result =>
+      (result.2.1, result.2.2)) = some (
+        [firstFilledAccepted 5, firstFilledAccepted 5,
+          .inheritedPoison .malformed, firstFilledAccepted 4],
         .inheritedPoison .computedDependency) := by
   native_decide
 
@@ -769,7 +814,7 @@ example :
     (match checkRepeatableNumberFirstFilledAggregateCascade
         firstFilledModel ["Parents", "Tasks"] produced.id
         (siblingStar scaledCandidate.name) ["Summary"] 999 producedStar .sum with
-      | .error (.firstFilled (.scaleMismatch 0 1)) => true
+      | .error (.firstFilled (.operand 0 (.scaleMismatch 0 1))) => true
       | _ => false) = true := by
   native_decide
 

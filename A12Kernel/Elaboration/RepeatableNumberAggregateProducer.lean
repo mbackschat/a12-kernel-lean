@@ -135,7 +135,7 @@ def sourceFields : CheckedRepeatableNumberAggregateProducer model → List Field
   | .rangeAsNumber operation => [operation.placement.sourceDeclaration.id]
   | .dateRangeBoundPart operation =>
       [operation.placement.sourceDeclaration.id]
-  | .firstFilled operation => [operation.source.source.declaration.id]
+  | .firstFilled operation => operation.sourceFields
 
 def execute (producer : CheckedRepeatableNumberAggregateProducer model)
     (input : CheckedDocument model) :

@@ -317,6 +317,7 @@ private def field (id : FieldId) (name : String) (groupPath : GroupPath)
 }
 
 private def source := field 101 "Candidate" ["Parents", "Choices"] [100, 110]
+private def fallback := field 107 "Fallback" ["Parents", "Fallbacks"] [100, 115]
 private def target : FlatFieldDecl := {
   field 102 "Result" ["Parents", "Tasks"] [100, 120] with
   numericTargetConstraints := { maximum := some 9 }
@@ -331,21 +332,25 @@ private def targetDescendantSource := field 106 "NestedCandidate"
   ["Parents", "Tasks", "Details"] [100, 120, 130]
 
 private def addressedModel : FlatModel := {
-  fields := [source, target, scaledSource, wrongSource, unrelated,
+  fields := [source, fallback, target, scaledSource, wrongSource, unrelated,
     targetDescendantSource]
   repeatableGroups := [
     { level := 100, path := ["Parents"], repeatability := some 4 },
     { level := 110, path := ["Parents", "Choices"], repeatability := some 3 },
+    { level := 115, path := ["Parents", "Fallbacks"], repeatability := some 3 },
     { level := 120, path := ["Parents", "Tasks"], repeatability := some 3 },
     { level := 130, path := ["Parents", "Tasks", "Details"],
       repeatability := some 3 }]
 }
 
-private def siblingStar (name : String) : SurfaceStarFieldPath := {
+private def siblingStarIn (group name : String) : SurfaceStarFieldPath := {
   base := .relative 1
-  groups := [{ name := "Choices", starred := true }]
+  groups := [{ name := group, starred := true }]
   field := name
 }
+
+private def siblingStar (name : String) : SurfaceStarFieldPath :=
+  siblingStarIn "Choices" name
 
 private def targetDescendantStar : SurfaceStarFieldPath := {
   base := .relative 0
@@ -358,6 +363,12 @@ private def operation? :
   (checkAddressedNumberFirstFilledComputation addressedModel
     ["Parents", "Tasks"] target.id (siblingStar source.name)).toOption
 
+private def multiOperation? :
+    Option (CheckedAddressedNumberFirstFilledComputation addressedModel) :=
+  (checkAddressedNumberFirstFilledComputation addressedModel
+    ["Parents", "Tasks"] target.id (siblingStar source.name)
+      [siblingStarIn "Fallbacks" fallback.name]).toOption
+
 private def elabError? (checked :
     Except AddressedNumberFirstFilledComputationElabError
       (CheckedAddressedNumberFirstFilledComputation addressedModel)) :
@@ -366,18 +377,20 @@ private def elabError? (checked :
   | .error cause => some cause
   | .ok _ => none
 
-/- One sibling star is admitted, while the Number-kind and exact-scale gates remain explicit. Shared placement controls already lock shape, scope, and self-reference. -/
+/- One or more sibling stars are admitted in authored order. Every operand retains its own Number-kind, placement, and exact-scale gate. -/
 example :
-    operation?.isSome = true ∧
+    operation?.isSome = true ∧ multiOperation?.isSome = true ∧
     elabError? (checkAddressedNumberFirstFilledComputation addressedModel
       ["Parents", "Tasks"] target.id (siblingStar wrongSource.name)) =
-        some (.source (.fieldNotNumber wrongSource.path)) ∧
+        some (.operand 0 (.source (.fieldNotNumber wrongSource.path))) ∧
     elabError? (checkAddressedNumberFirstFilledComputation addressedModel
-      ["Parents", "Tasks"] target.id (siblingStar scaledSource.name)) =
-        some (.scaleMismatch 0 2) ∧
+      ["Parents", "Tasks"] target.id (siblingStar source.name)
+        [siblingStar scaledSource.name]) =
+        some (.operand 1 (.scaleMismatch 0 2)) ∧
     elabError? (checkAddressedNumberFirstFilledComputation addressedModel
       ["Parents", "Tasks"] target.id targetDescendantStar) =
-        some (.placement (.sourceScope targetDescendantSource.path)) := by
+        some (.operand 0
+          (.placement (.sourceScope targetDescendantSource.path))) := by
   native_decide
 
 private def prepared :
@@ -391,6 +404,8 @@ private def rows : List RowAddr :=
     { group := 110, path := [1, 1] }, { group := 110, path := [1, 2] },
     { group := 110, path := [1, 3] }, { group := 110, path := [2, 1] },
     { group := 110, path := [4, 1] },
+    { group := 115, path := [1, 1] }, { group := 115, path := [2, 1] },
+    { group := 115, path := [2, 2] }, { group := 115, path := [4, 1] },
     { group := 120, path := [2, 1] }, { group := 120, path := [1, 2] },
     { group := 120, path := [3, 1] }, { group := 120, path := [4, 1] },
     { group := 120, path := [1, 1] }]
@@ -424,6 +439,22 @@ private def input? : Option (CheckedDocument addressedModel) :=
     decimalCell target.id [4, 1] "1" 1,
     decimalCell unrelated.id [] "7" 7]
 
+private def multiInput? : Option (CheckedDocument addressedModel) :=
+  document? [
+    cell source.id [1, 1] "" .presentEmpty,
+    cell source.id [1, 2] "5" (.parsed (.num 5)),
+    cell source.id [1, 3] "bad-tail" (.rejected .malformed),
+    cell source.id [4, 1] "12" (.parsed (.num 12)),
+    cell fallback.id [1, 1] "bad-later" (.rejected .malformed),
+    cell fallback.id [2, 1] "7" (.parsed (.num 7)),
+    cell fallback.id [2, 2] "bad-tail" (.rejected .malformed),
+    cell fallback.id [4, 1] "6" (.parsed (.num 6)),
+    decimalCell target.id [1, 1] "5" 5,
+    decimalCell target.id [1, 2] "2" 2,
+    decimalCell target.id [2, 1] "8" 8,
+    decimalCell target.id [4, 1] "1" 1,
+    decimalCell unrelated.id [] "7" 7]
+
 private def addr (id : FieldId) (path : List Nat) : CellAddr := { field := id, path }
 private def stored (unscaled : Int) : StoredNumber := { unscaled, scale := 0 }
 
@@ -433,9 +464,25 @@ private def outcomes? : Option (List (CellAddr × NumericTargetOutcome)) := do
   let outcomes ← operation.execute input |>.toOption
   pure (outcomes.map fun entry => (entry.targetField, entry.outcome))
 
+private def multiOutcomes? : Option (List (CellAddr × NumericTargetOutcome)) := do
+  let operation ← multiOperation?
+  let input ← multiInput?
+  let outcomes ← operation.execute input |>.toOption
+  pure (outcomes.map fun entry => (entry.targetField, entry.outcome))
+
 /- Target rows scan only their enclosing parent's source extent. Empty exhaustion is zero, a malformed prefix poisons, the selected value hides its malformed tail, and target rejection follows selection. -/
 example : outcomes? = some [
     (addr target.id [2, 1], .inheritedPoison .malformed),
+    (addr target.id [1, 2], .accepted (stored 5)),
+    (addr target.id [3, 1], .accepted (stored 0)),
+    (addr target.id [4, 1], .rejected (stored 12) .aboveMaximum),
+    (addr target.id [1, 1], .accepted (stored 5))
+  ] := by
+  native_decide
+
+/- Authored source extents exhaust left to right inside each enclosing parent. A selected value hides poison in both remaining cells and later operands; a later parent can fall through to its own second extent, and total exhaustion remains Number zero. -/
+example : multiOutcomes? = some [
+    (addr target.id [2, 1], .accepted (stored 7)),
     (addr target.id [1, 2], .accepted (stored 5)),
     (addr target.id [3, 1], .accepted (stored 0)),
     (addr target.id [4, 1], .rejected (stored 12) .aboveMaximum),

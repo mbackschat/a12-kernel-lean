@@ -360,7 +360,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-addressed-numeric-binary"></a>
 - [Addressed numeric binary computation](sources/cross-layer-routes.md#src-addressed-numeric-binary)
 <a id="src-number-repeatable-first-filled"></a>
-- [Sibling-star Number `FirstFilledValue` target admission, measured locally 2026-08-27](sources/cross-layer-routes.md#src-number-repeatable-first-filled)
+- [Sibling-star Number `FirstFilledValue` target admission and ordered runtime, measured locally 2026-08-27](sources/cross-layer-routes.md#src-number-repeatable-first-filled)
 <a id="src-computed-target-reference"></a>
 - [Computed-target reference source route](sources/cross-layer-routes.md#src-computed-target-reference)
 <a id="src-temporal-construction-route"></a>
