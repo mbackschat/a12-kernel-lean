@@ -322,9 +322,11 @@ def resolveNumericValidationAtom
     Except NumericValidationElabError NumericValidationAtom :=
   resolveNumericAtom model rowGroup surface
 
-/-- Resolve and certify one standalone same-group numeric operation. Comparison-only data-dependency and cross-side scale rules do not apply to an operation-valued consumer. -/
-def elaborateNumericValidationExpression
+private def elaborateNumericValidationExpressionWith
     (model : FlatModel) (rowGroup : GroupPath)
+    (scope : NumericOperandScope)
+    (resolveAtom : SurfaceNumericAtom →
+      Except NumericValidationElabError NumericValidationAtom)
     (surface : AuthoredNumericExpr SurfaceNumericAtom) :
     Except NumericValidationElabError
       (CheckedNumericValidationExpression model) := do
@@ -333,8 +335,7 @@ def elaborateNumericValidationExpression
   | .ok () =>
       if !GroupPath.isValid rowGroup then
         throw (.resolve (.invalidRuleGroup rowGroup))
-      let core ← surface.mapM
-        (resolveNumericValidationAtom model rowGroup)
+      let core ← surface.mapM resolveAtom
       if !core.isAdmittedResolvedNumericOperation then
         throw .unsupportedExpression
       match core.numericOperationAuthoringCheck with
@@ -344,9 +345,10 @@ def elaborateNumericValidationExpression
         throw .unsupportedExpression
       if hCore :
           NumericValidationExpression.wellFormedInBool
-            core model rowGroup .sameGroup = true then
+            core model rowGroup scope = true then
         pure {
           rowGroup
+          operandScope := scope
           core
           modelWellFormed := by
             rw [hModel]
@@ -355,6 +357,24 @@ def elaborateNumericValidationExpression
         }
       else
         throw .incoherentCore
+
+/-- Resolve and certify one standalone same-group numeric operation. Comparison-only data-dependency and cross-side scale rules do not apply to an operation-valued consumer. -/
+def elaborateNumericValidationExpression
+    (model : FlatModel) (rowGroup : GroupPath)
+    (surface : AuthoredNumericExpr SurfaceNumericAtom) :
+    Except NumericValidationElabError
+      (CheckedNumericValidationExpression model) :=
+  elaborateNumericValidationExpressionWith model rowGroup .sameGroup
+    (resolveNumericValidationAtom model rowGroup) surface
+
+/-- Resolve one standalone numeric operation at a repeatable authoring group. Each direct field may live at that group or an outer scope, while runtime addressing remains a consumer responsibility. -/
+def elaborateRepeatableNumericValidationExpression
+    (model : FlatModel) (rowGroup : GroupPath)
+    (surface : AuthoredNumericExpr SurfaceNumericAtom) :
+    Except NumericValidationElabError
+      (CheckedNumericValidationExpression model) :=
+  elaborateNumericValidationExpressionWith model rowGroup .sameGroupAddressed
+    (resolveAddressedNumericAtom model rowGroup) surface
 
 private def elaborateNumericComparisonWith
     (model : FlatModel) (rowGroup : GroupPath)

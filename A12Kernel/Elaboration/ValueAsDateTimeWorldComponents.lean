@@ -26,24 +26,33 @@ inductive CheckedWorldTimeComponent (model : FlatModel) where
 abbrev CheckedWorldTimeComponents (model : FlatModel) :=
   TimeComponentPrefix (CheckedWorldTimeComponent model)
 
+/-- Check the shared dynamic `Now` shift and exact component token before choosing a scalar or addressed carrier. -/
+def elaborateCheckedNowShiftedTimeExtractor
+    (model : FlatModel) (position : TimeComponentPosition)
+    (part : TimeNumericPart) (unit : DateTimeSubdayUnit)
+    (amount : CheckedTemporalShiftAmount model) :
+    Except TimeComponentsElabError (CheckedNowShiftedTimeExtractor model) := do
+  if hPosition : position.extractor = part then
+    let source ←
+      elaborateShiftedNowDateTimeSource model unit amount
+        |>.mapError .shifted
+    pure {
+      position
+      part
+      source
+      positionMatches := hPosition
+    }
+  else
+    throw (.extractorMismatch position part)
+
 /-- Check one matching component extractor over the shared dynamic `Now` shift. -/
 def elaborateNowShiftedTimeExtractor
     (model : FlatModel) (position : TimeComponentPosition)
     (part : TimeNumericPart) (unit : DateTimeSubdayUnit)
     (amount : CheckedTemporalShiftAmount model) :
-    Except TimeComponentsElabError (CheckedWorldTimeComponent model) := do
-  if hPosition : position.extractor = part then
-    let source ←
-      elaborateShiftedNowDateTimeSource model unit amount
-        |>.mapError .shifted
-    pure (.shiftedNowExtractor {
-      position
-      part
-      source
-      positionMatches := hPosition
-    })
-  else
-    throw (.extractorMismatch position part)
+    Except TimeComponentsElabError (CheckedWorldTimeComponent model) :=
+  .shiftedNowExtractor <$> elaborateCheckedNowShiftedTimeExtractor
+    model position part unit amount
 
 /-- Check a matching component extractor over one literal shift of dynamic `Now`. -/
 def elaborateNowShiftedTimeExtractorLiteral

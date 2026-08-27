@@ -5,6 +5,17 @@ import A12Kernel.Proofs.ValueAsDate
 
 namespace A12Kernel
 
+/-- An addressed temporal expression delegates its exact row resolution to the shared checked numeric evaluator; the temporal boundary only interprets the returned arithmetic state. -/
+@[simp] theorem checkedTemporalShiftAmount_readAddressed_expression
+    (checked : CheckedNumericValidationExpression model)
+    (direct : NumericValidationExpression.usesOnlyDirectNumberFields
+      checked.core = true)
+    (phase : Phase) (context : AddressedValidationEvaluationContext model) :
+    (CheckedTemporalShiftAmount.expression checked direct).readAddressed
+        phase context =
+      checked.evalAddressedDirectNumbersAt phase context := by
+  rfl
+
 /-- A present DateTime projects exactly its retained wall clock; neither exact instant identity nor the Date half enters the result. -/
 @[simp] theorem timeFromDateTime_projects_clock
     (instant : Instant) (date : DateParts) (clock : TimeOfDay)

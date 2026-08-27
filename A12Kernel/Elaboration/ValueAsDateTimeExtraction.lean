@@ -87,6 +87,21 @@ def ofShiftedNumericOperand? (profile : ModelZone.ConcreteProfile)
         .value shifted shiftedInstant
           (fillability.canGrow || fillability.canShrink)
 
+/-- Interpret one already-resolved numeric shift amount without coupling exact-instant arithmetic to scalar or addressed field resolution. -/
+def ofShiftedArithmetic (profile : ModelZone.ConcreteProfile)
+    (unit : DateTimeSubdayUnit) (instant : Instant) :
+    Except NumericValidationUnavailable NumericArithmeticOutcome →
+      Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult
+  | .error (.formal cause) => pure (.unavailable cause)
+  | .error cause => throw (.amountExpressionUnavailable cause)
+  | .ok .notEvaluated => pure (.noValue false)
+  | .ok (NumericArithmeticOutcome.value amount fillability) =>
+      let shifted := instant.shift unit (temporalShiftAmountToInt32 amount)
+      match ofShiftedNumericOperand? profile unit instant
+          (.value amount fillability) with
+      | some result => pure result
+      | none => throw (.shiftedInstantOutsideProfile shifted)
+
 end ValueAsDateTimeResult
 
 namespace ValueAsDateTimeTimeOperand
@@ -124,18 +139,8 @@ def CheckedTemporalShiftAmount.readShiftedDateTime
     (profile : ModelZone.ConcreteProfile)
     (unit : DateTimeSubdayUnit) (instant : Instant) :
     Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult := do
-  match ← amount.read phase input |>.mapError .document with
-  | .error (.formal cause) => pure (.unavailable cause)
-  | .error unavailable =>
-      throw (.amountExpressionUnavailable unavailable)
-  | .ok .notEvaluated => pure (.noValue false)
-  | .ok (.value value fillability) =>
-      let shifted := instant.shift unit
-        (temporalShiftAmountToInt32 value)
-      match ValueAsDateTimeResult.ofShiftedNumericOperand?
-          profile unit instant (.value value fillability) with
-      | some result => pure result
-      | none => throw (.shiftedInstantOutsideProfile shifted)
+  let resolved ← amount.read phase input |>.mapError .document
+  ValueAsDateTimeResult.ofShiftedArithmetic profile unit instant resolved
 
 /-- Specialize exact DateTime shifting to the authored wall-clock extraction result. -/
 def CheckedTemporalShiftAmount.readShiftedTime
@@ -162,6 +167,15 @@ def elaborateValueAsDateTimeExpressionShiftAmount
     Except ValueAsDateTimeExtractionElabError
       (CheckedTemporalShiftAmount model) :=
   elaborateTemporalExpressionShiftAmount model rowGroup surface
+    |>.mapError ValueAsDateTimeExtractionElabError.ofTemporalShiftAmount
+
+/-- Resolve a numeric shift expression at a repeatable authoring group while retaining the direct-Number-only temporal operand certificate. -/
+def elaborateValueAsDateTimeRepeatableExpressionShiftAmount
+    (model : FlatModel) (rowGroup : GroupPath)
+    (surface : AuthoredNumericExpr SurfaceNumericAtom) :
+    Except ValueAsDateTimeExtractionElabError
+      (CheckedTemporalShiftAmount model) :=
+  elaborateRepeatableTemporalExpressionShiftAmount model rowGroup surface
     |>.mapError ValueAsDateTimeExtractionElabError.ofTemporalShiftAmount
 
 /-- One checked complete-DateTime field and its exact model-zone profile. -/

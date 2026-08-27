@@ -282,6 +282,7 @@ run_cmd do
 #print axioms A12Kernel.timeConstruction_nonRelevant_precedes_missing
 #print axioms A12Kernel.timeComponentPrefix_evaluateWith_empty
 #print axioms A12Kernel.elaborateTimeLiteral_ok_iff
+#print axioms A12Kernel.checkedTemporalShiftAmount_readAddressed_expression
 #print axioms A12Kernel.timeFromDateTime_projects_clock
 #print axioms A12Kernel.valueAsDateTimeExtraction_evaluateRaw_date_unavailable
 #print axioms A12Kernel.valueAsDateTimeShiftExtraction_evaluateRaw_date_unavailable

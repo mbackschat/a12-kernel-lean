@@ -490,6 +490,7 @@ inductive AddressedTimeConstructionFault where
   | targetRows (cause : ActualRowEnvironmentError)
   | targetEnvironment (cause : EnvBindingError)
   | sourceEnvironment (field : FieldId) (cause : EnvBindingError)
+  | amountAddressing (cause : CheckedAddressingError)
   | component (cause : TimeComponentsFault)
   deriving Repr, DecidableEq
 

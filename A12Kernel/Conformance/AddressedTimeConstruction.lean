@@ -742,15 +742,34 @@ private def worldExpressionComponents : SurfaceAddressedWorldTimeComponents :=
     (.addressed (.extractor .second
       (absolute ["Order", "Projects", "Tasks"] "RowStamp")))
 
+private def worldRowShiftAmount : AuthoredNumericExpr SurfaceNumericAtom :=
+  .binary .add
+    (.atom (.field (absolute ["Order", "Projects", "Tasks"] "RowSecond")))
+    (.binary .add
+      (.atom (.field (absolute ["Order"] "RootHour")))
+      (.atom (.field (absolute ["Order", "Projects", "Tasks"] "RowSecond"))))
+
+private def worldRowExpressionComponents : SurfaceAddressedWorldTimeComponents :=
+  .second
+    (.shiftedNowRowExpression .hour .hours worldRowShiftAmount)
+    (.addressed (.string
+      (absolute ["Order", "Projects"] "ProjectMinuteText")))
+    (.addressed (.extractor .second
+      (absolute ["Order", "Projects", "Tasks"] "RowStamp")))
+
 private def worldOperation? (components := worldComponents) :
     Option (CheckedAddressedWorldTimeConstructionComputation model) :=
   (checkAddressedWorldTimeConstructionComputation model
     ["Order", "Projects", "Tasks"] target.id components).toOption
 
-private def worldInput? (includeAmount := false) := document? [
+private def worldInput? (includeAmount := false) (includeRowAmounts := false) := document? [
     outerRow 1, outerRow 2,
     innerRow 1 1, innerRow 1 2, innerRow 2 1] (
-  (if includeAmount then [numberCell rootHour.id [] 1] else []) ++ [
+  (if includeAmount then [numberCell rootHour.id [] 1] else []) ++
+  (if includeRowAmounts then [
+    numberCell rowSecond.id [1, 1] 1,
+    numberCell rowSecond.id [1, 2] 2,
+    numberCell rowSecond.id [2, 1] 3] else []) ++ [
     stringCell projectMinuteText.id [1] "02" (.parsed (.str "02")),
     stringCell projectMinuteText.id [2] "04" (.parsed (.str "04")),
     temporalCell rowStamp.id [1, 1] "2024-06-01T00:00:09"
@@ -763,9 +782,10 @@ private def worldInput? (includeAmount := false) := document? [
     timeCell [1, 2] "12:34:56" (clock 12 34 56 (by decide))])
 
 private def worldResult? (world : World)
-    (components := worldComponents) (includeAmount := false) := do
+    (components := worldComponents) (includeAmount := false)
+    (includeRowAmounts := false) := do
   let operation ← worldOperation? components
-  let input ← worldInput? includeAmount
+  let input ← worldInput? includeAmount includeRowAmounts
   let view ← operation.executeResult world input ([] : List FormalCause) |>.toOption
   let destination ← emptyDestination?
   let applied ← view.applyToChecked destination |>.toOption
@@ -792,6 +812,68 @@ example :
         (address target.id [1, 1], "06:02:09"),
         (address target.id [1, 2], "06:02:10"),
         (address target.id [2, 1], "06:04:09")] := by
+  native_decide
+
+/- An addressed amount expression resolves leaf and outer Number atoms at each target row while retaining authored duplicates. -/
+example :
+    (worldOperation? worldRowExpressionComponents).map (·.fieldDependencies) =
+      some [rowSecond.id, rootHour.id, rowSecond.id,
+        projectMinuteText.id, rowStamp.id] ∧
+    (worldResult? { now := { epochMillis := 18000000 } }
+      worldRowExpressionComponents true true).map (fun result => result.2.1) = some [
+        (address target.id [1, 1], "08:02:09"),
+        (address target.id [1, 2], "10:02:10"),
+        (address target.id [2, 1], "12:04:09")] := by
+  native_decide
+
+/- Row-local missing and formal amounts stay distinct, while no physical target row reaches the addressed expression. -/
+example :
+    (do
+      let operation ← worldOperation? worldRowExpressionComponents
+      let input ← document? [outerRow 1, innerRow 1 1, innerRow 1 2] [
+        numberCell rootHour.id [] 1,
+        rejectedNumberCell rowSecond.id [1, 2],
+        stringCell projectMinuteText.id [1] "02" (.parsed (.str "02")),
+        temporalCell rowStamp.id [1, 1] "2024-06-01T00:00:09"
+          (dateTimeValue 0 0 9 (by decide)),
+        temporalCell rowStamp.id [1, 2] "2024-06-01T00:00:10"
+          (dateTimeValue 0 0 10 (by decide))]
+      let outcomes ← operation.execute
+        { now := { epochMillis := 18000000 } } input |>.toOption
+      pure (outcomes.map summarizeOutcome)) = some [
+          { target := address target.id [1, 1], value := none,
+            noValue := true, poison := none },
+          { target := address target.id [1, 2], value := none,
+            noValue := false, poison := some .declaredConstraint }] ∧
+    (do
+      let operation ← worldOperation? worldRowExpressionComponents
+      let input ← document? [] []
+      operation.execute { now := { epochMillis := 18000000 } } input |>.toOption) =
+        some [] := by
+  native_decide
+
+/- Computation-phase addressed expressions ignore a required-only finding just like their scalar amount sibling; validation still exposes it. -/
+example :
+    let requiredEmpty : CheckedCell := { rawPresent := false, parsed := none, findings := [.required] }
+    let rootValue : CheckedCell := { rawPresent := true, parsed := some (.num 1), findings := [] }
+    let document : Document := { instantiatedRows := [], rawCells := fun _ => none }
+    let evaluate (phase : Phase) := do
+      let amount ← (elaborateValueAsDateTimeRepeatableExpressionShiftAmount
+        model ["Order", "Projects", "Tasks"] worldRowShiftAmount).toOption
+      amount.readAddressed phase {
+        scalar := {
+          fields := { read := fun field =>
+            if field == rootHour.id then rootValue else requiredEmpty }
+          groups := GroupPresenceContext.unavailable
+        }
+        outer := [(10, 1), (20, 1)], input := .legacy document (fun _ _ => requiredEmpty)
+      } |>.toOption
+    (match evaluate .computation with
+      | some (.ok (.value value .growOnly)) => value == 1
+      | _ => false) &&
+    (match evaluate .validation with
+      | some (.error (.formal .required)) => true
+      | _ => false) = true := by
   native_decide
 
 /- A dynamic numeric amount remains the first authored dependency. -/

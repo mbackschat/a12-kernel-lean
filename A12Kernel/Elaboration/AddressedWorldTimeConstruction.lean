@@ -19,6 +19,9 @@ inductive SurfaceAddressedWorldTimeComponent where
   | shiftedNowExpression (amountGroup : GroupPath) (part : TimeNumericPart)
       (unit : DateTimeSubdayUnit)
       (amount : AuthoredNumericExpr SurfaceNumericAtom)
+  | shiftedNowRowExpression (part : TimeNumericPart)
+      (unit : DateTimeSubdayUnit)
+      (amount : AuthoredNumericExpr SurfaceNumericAtom)
   deriving Repr, DecidableEq
 
 /-- A zero-through-three repeatable prefix that may mix addressed and world-dependent components. -/
@@ -30,6 +33,7 @@ inductive CheckedAddressedWorldTimeComponent (model : FlatModel)
     (targetScope : List RepeatableLevel) where
   | addressed (checked : CheckedAddressedTimeComponent model targetScope)
   | world (checked : CheckedWorldTimeComponent model)
+  | rowWorld (checked : CheckedNowShiftedTimeExtractor model)
 
 abbrev CheckedAddressedWorldTimeComponents (model : FlatModel)
     (targetScope : List RepeatableLevel) :=
@@ -43,11 +47,31 @@ def referencesField
   match component with
   | .addressed checked => checked.referencesField field
   | .world checked => checked.referencesField field
+  | .rowWorld checked => checked.source.amount.referencesField field
 
 def fieldDependencies :
     CheckedAddressedWorldTimeComponent model targetScope → List FieldId
   | .addressed checked => checked.fieldDependencies
   | .world checked => checked.fieldDependencies
+  | .rowWorld checked => checked.source.amount.fieldDependencies
+
+private def readAddressedNowShifted
+    (checked : CheckedNowShiftedTimeExtractor model)
+    (world : World) (input : CheckedDocument model) (environment : Env) :
+    Except AddressedTimeConstructionFault TimeConstructionComponent := do
+  let amount ← checked.source.amount.readAddressed .computation {
+      scalar := {
+        fields := input.flatContext.withWorld world
+        groups := GroupPresenceContext.unavailable
+      }
+      outer := environment
+      input := .checked input
+    } |>.mapError .amountAddressing
+  let shifted ← ValueAsDateTimeResult.ofShiftedArithmetic checked.source.profile
+    checked.source.unit world.now amount
+      |>.mapError (fun cause => .component (.shifted cause))
+  pure (ValueAsDateTimeTimeOperand.extractComponent
+    shifted.asTimeOperand checked.part)
 
 def read (checked : CheckedAddressedWorldTimeComponent model targetScope)
     (world : World) (input : CheckedDocument model) (environment : Env) :
@@ -56,6 +80,8 @@ def read (checked : CheckedAddressedWorldTimeComponent model targetScope)
   | .addressed component => component.read input environment
   | .world component =>
       component.read .computation world input |>.mapError .component
+  | .rowWorld component =>
+      readAddressedNowShifted component world input environment
 
 end CheckedAddressedWorldTimeComponent
 
@@ -112,6 +138,14 @@ private def checkComponent
       let checked ← elaborateNowShiftedTimeExtractorExpression model amountGroup
         position part unit amount |>.mapError .shifted
       pure (.world checked)
+  | .shiftedNowRowExpression part unit amount => do
+      let checkedAmount ←
+        elaborateValueAsDateTimeRepeatableExpressionShiftAmount
+          model declaringGroup amount
+          |>.mapError (fun cause => .shifted (.shifted cause))
+      let checked ← elaborateCheckedNowShiftedTimeExtractor model position
+        part unit checkedAmount |>.mapError .shifted
+      pure (.rowWorld checked)
 
 private def checkComponents
     (model : FlatModel) (declaringGroup : GroupPath)

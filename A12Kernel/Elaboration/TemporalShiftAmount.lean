@@ -4,10 +4,12 @@ import A12Kernel.Elaboration.NumericValidation.Evaluation
 /-! # Checked temporal shift amounts
 
 This module owns the numeric operand boundary shared by checked Date and DateTime shifts.
-It admits authored literals, ordinary nonrepeatable Number fields, and checked same-group
-numeric expressions over only those fields. Evaluation retains directional fillability,
-exact formal causes, arithmetic domain failure, and structural document failure; temporal
-consumers decide how those distinctions affect their own result domains.
+It admits authored literals, ordinary nonrepeatable Number fields, and checked numeric
+expressions over direct Number fields. Scalar consumers retain the ordinary same-group
+boundary; addressed consumers may bind direct fields at the expression group or an outer
+scope. Evaluation retains directional fillability, exact formal causes, arithmetic domain
+failure, and structural document failure; temporal consumers decide how those distinctions
+affect their own result domains.
 -/
 
 namespace A12Kernel
@@ -49,7 +51,7 @@ def NumericValidationExpression.usesOnlyDirectNumberFields
     | .field _ => true
     | _ => false) expression
 
-/-- One statically checked temporal shift amount. Expressions reuse the shared numeric carrier and retain a certificate that every atom has the direct-Number interpretation audited for this consumer boundary. -/
+/-- One statically checked temporal shift amount. Expressions reuse the shared numeric carrier, including its retained scalar or addressed scope, and certify that every atom has the direct-Number interpretation audited for this consumer boundary. -/
 inductive CheckedTemporalShiftAmount (model : FlatModel) where
   | literal (amount : Rat)
   | field (source : FlatNumberField)
@@ -71,6 +73,7 @@ def referencesField (amount : CheckedTemporalShiftAmount model)
   | .expression checked _ =>
       checked.core.anyAtom (·.referencesField model field)
 
+/-- Retain every direct Number atom in exact authored tree order, including duplicates. -/
 private def directNumberFieldDependencies :
     NumericValidationExpression → List FieldId
   | .atom (.field source) => [source.id]
@@ -86,7 +89,7 @@ def fieldDependencies : CheckedTemporalShiftAmount model → List FieldId
   | .field source _ => [source.id]
   | .expression checked _ => directNumberFieldDependencies checked.core
 
-/-- Evaluate a checked amount after its temporal source has been reached. Document failure stays structural; numeric missingness, formal causes, and arithmetic domain failure remain in the shared numeric result. -/
+/-- Evaluate a scalar checked amount after its temporal source has been reached. Document failure stays structural; numeric missingness, formal causes, and arithmetic domain failure remain in the shared numeric result. -/
 def read (amount : CheckedTemporalShiftAmount model)
     (phase : Phase) (input : CheckedDocument model) :
     Except CheckedDocumentError
@@ -106,6 +109,19 @@ def read (amount : CheckedTemporalShiftAmount model)
             (input.flatContext.resolveNumberComparisonOperandAt phase source)
               |>.toValidationArithmetic
         | _ => .error .groupState)
+
+/-- Evaluate one checked amount at an exact repeatable environment. Nonrepeatable fields use the supplied scalar view, while expression fields resolve at their own model-certified scope. -/
+def readAddressed (amount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (context : AddressedValidationEvaluationContext model) :
+    Except CheckedAddressingError
+      (Except NumericValidationUnavailable NumericArithmeticOutcome) :=
+  match amount with
+  | .literal value => pure (.ok (.value value .fixed))
+  | .field source _ =>
+      pure ((context.scalar.fields.resolveNumberComparisonOperandAt phase source)
+        |>.toValidationArithmetic)
+  | .expression checked _ =>
+      checked.evalAddressedDirectNumbersAt phase context
 
 end CheckedTemporalShiftAmount
 
@@ -141,6 +157,21 @@ def elaborateTemporalExpressionShiftAmount
     Except TemporalShiftAmountElabError
       (CheckedTemporalShiftAmount model) := do
   let checked ← elaborateNumericValidationExpression model rowGroup surface
+    |>.mapError .expression
+  if hDirect :
+      NumericValidationExpression.usesOnlyDirectNumberFields
+        checked.core = true then
+    pure (.expression checked hDirect)
+  else
+    throw .expressionNotDirectNumber
+
+/-- Resolve one checked numeric operation at a repeatable authoring group and retain only direct Number atoms for temporal shifting. -/
+def elaborateRepeatableTemporalExpressionShiftAmount
+    (model : FlatModel) (rowGroup : GroupPath)
+    (surface : AuthoredNumericExpr SurfaceNumericAtom) :
+    Except TemporalShiftAmountElabError
+      (CheckedTemporalShiftAmount model) := do
+  let checked ← elaborateRepeatableNumericValidationExpression model rowGroup surface
     |>.mapError .expression
   if hDirect :
       NumericValidationExpression.usesOnlyDirectNumberFields
