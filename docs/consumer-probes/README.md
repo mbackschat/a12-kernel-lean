@@ -27,7 +27,7 @@ Retained Kernel evidence separately bounds correspondence to A12 Kernel 30.8.1. 
 | [Compile](COMPILE.md) | designed | Specialized finite condition evaluator with exhaustive refinement |
 | [Analyze](ANALYZE.md) | designed | SMT-backed presence reachability with SAT replay and bounded UNSAT classification |
 | [Verify](VERIFY.md) | green | Proof-bearing same-field contradiction certificate and counterexample boundary |
-| [Synthesize](SYNTHESIZE.md) | designed | SMT-produced presence witness replayed through Lean semantics |
+| [Synthesize](SYNTHESIZE.md) | green | SMT-produced presence witness replayed through Lean semantics |
 | [Qualify](QUALIFY.md) | green | Four independent DateTime consumer mutations and restoration |
 | [Explain](EXPLAIN.md) | designed | Structured source-first poison trace checked against Lean events |
 | [Govern](GOVERN.md) | designed | Impact and compatibility decision for the calendar-day handover correction |
