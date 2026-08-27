@@ -282,8 +282,8 @@ def sourceValueChanged (input : CheckedDocument model)
     (computed : TimeComputedInstance) : Bool :=
   sourceValueChangedAt input.sourceTimeTargetState computed
 
-/-- Kernel 30.8.1 reports every clean `Time(...)` construction in the changed subset, including a clock text equal to the source. The operation boundary is retained without modeling a causal implementation detail. -/
-def constructionReportsChanged
+/-- Kernel 30.8.1 reports every clean scalar `Time(...)` construction in the changed subset, including a clock text equal to the source. The operation boundary is retained without modeling a causal implementation detail. -/
+def scalarConstructionReportsChanged
     (_computed : TimeComputedInstance Target) : Bool :=
   true
 
@@ -315,21 +315,21 @@ def fromOutcomes (input : CheckedDocument model)
     TimeComputationRunView ResidualMessage :=
   fromOutcomesAt input.sourceTimeTargetState residualMessages outcomes
 
-/-- Build the five `Time(...)` construction projections over an exact target-key domain, preserving the constructor-only always-changed rule. -/
-def fromConstructionOutcomesAt (sourceState : Target → TimeTargetState)
+/-- Build the five scalar `Time(...)` construction projections, preserving the scalar constructor's always-changed rule. -/
+def fromScalarConstructionOutcomesAt (sourceState : Target → TimeTargetState)
     (residualMessages : List ResidualMessage)
     (outcomes : List (Target × TimeTargetOutcome)) :
     TimeComputationRunView ResidualMessage Target :=
   TemporalComputationRunView.fromValueOutcomes
-    successfulInstance? constructionReportsChanged
+    successfulInstance? scalarConstructionReportsChanged
     (shouldClearAt sourceState) residualMessages outcomes
 
 /-- Build the five scalar `Time(...)` construction projections from rich outcomes and an already-classified residual channel. -/
-def fromConstructionOutcomes (input : CheckedDocument model)
+def fromScalarConstructionOutcomes (input : CheckedDocument model)
     (residualMessages : List ResidualMessage)
     (outcomes : List (FieldId × TimeTargetOutcome)) :
     TimeComputationRunView ResidualMessage :=
-  fromConstructionOutcomesAt input.sourceTimeTargetState residualMessages
+  fromScalarConstructionOutcomesAt input.sourceTimeTargetState residualMessages
     outcomes
 
 /-- Time reports an error exactly when the supplied residual channel is nonempty. -/

@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.StarPath
 
 /-! # Shared exact-address first-filled star placement
@@ -7,46 +8,17 @@ This module owns the carrier-neutral placement certificates shared by exact-addr
 
 namespace A12Kernel
 
-inductive AddressedFirstFilledTargetElabError where
-  | target (cause : ResolveError)
-  | targetOutsideDeclaringGroup (path declaringGroup : GroupPath)
-  | targetNotRepeatable (path : List String)
-  deriving Repr, DecidableEq
+/-- Compatibility name for first-filled consumers of the shared repeatable-target error. -/
+abbrev AddressedFirstFilledTargetElabError :=
+  AddressedRepeatableTargetElabError
 
-/-- One model-owned repeatable target in its declaring group, before any carrier-specific admission. -/
-structure CheckedAddressedFirstFilledTarget (model : FlatModel) where
-  private mk ::
-  declaringGroup : GroupPath
-  targetField : FieldId
-  declaration : FlatFieldDecl
-  owned : model.lookupUniqueId targetField = .ok declaration
-  inDeclaringGroup : declaration.groupPath = declaringGroup
-  repeatable : declaration.repeatableScope ≠ []
+/-- Compatibility name for first-filled consumers of the shared repeatable-target certificate. -/
+abbrev CheckedAddressedFirstFilledTarget :=
+  CheckedAddressedRepeatableTarget
 
-/-- Check the carrier-neutral target placement before a computation checks its own target kind. -/
-def checkAddressedFirstFilledTarget
-    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId) :
-    Except AddressedFirstFilledTargetElabError
-      (CheckedAddressedFirstFilledTarget model) :=
-  match hTarget : model.lookupUniqueId targetField with
-  | .error cause => .error (.target cause)
-  | .ok declaration => do
-    if hGroup : declaration.groupPath = declaringGroup then
-      if hRepeatable : declaration.repeatableScope.isEmpty then
-        throw (.targetNotRepeatable declaration.path)
-      else
-        pure {
-          declaringGroup
-          targetField
-          declaration
-          owned := hTarget
-          inDeclaringGroup := hGroup
-          repeatable := by
-            intro empty
-            simp [empty] at hRepeatable
-        }
-    else
-      throw (.targetOutsideDeclaringGroup declaration.path declaringGroup)
+/-- Compatibility entry point for existing first-filled consumers. -/
+abbrev checkAddressedFirstFilledTarget :=
+  checkAddressedRepeatableTarget
 
 inductive AddressedFirstFilledStarPlacementElabError where
   | sourceShape (path : List String)

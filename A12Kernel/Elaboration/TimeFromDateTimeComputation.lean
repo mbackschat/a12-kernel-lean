@@ -30,7 +30,7 @@ def elaborateTimeFromDateTimeComputation
 
 namespace ValueAsDateTimeTimeOperand
 
-/-- Forget constructor-only omission provenance while retaining the extracted clock and exact formal cause. -/
+/-- Forget construction-only omission provenance while retaining the extracted clock and exact formal cause. -/
 def asTimeComputationResult :
     ValueAsDateTimeTimeOperand → TimeComputationResult
   | .value time _ => .value time

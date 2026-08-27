@@ -120,7 +120,7 @@ private def constructionView? (input : DocumentData)
     (messages : List FormalCause := []) :
     Option (TimeComputationRunView FormalCause) := do
   let checked ← (checkDocument prepared "en_US" input).toOption
-  pure (TimeComputationRunView.fromConstructionOutcomes checked messages
+  pure (TimeComputationRunView.fromScalarConstructionOutcomes checked messages
     [(1, outcome)])
 
 private def checkedApplication? (input : DocumentData) :
@@ -411,7 +411,7 @@ example :
           [{ targetField := 1, value := ⟨"05:00:00", by decide⟩ }]) := by
   native_decide
 
-/- Checked `Time(...)` execution selects the constructor-only policy, so a source-identical clock remains changed. -/
+/- Checked nonrepeatable `Time(...)` execution selects the scalar-construction policy, so a source-identical clock remains changed. -/
 example :
     (executionView? (.second
       (.constant "05") (.constant "02") (.constant "08"))
@@ -529,7 +529,7 @@ example :
           .presentValue ⟨"06:00:00", by decide⟩) := by
   native_decide
 
-/- World-aware `Time(...)` execution selects the same constructor-only policy for a source-identical clock. -/
+/- World-aware nonrepeatable `Time(...)` execution selects the same scalar-construction policy for a source-identical clock. -/
 example :
     (do
       let operation ← worldLiteralOperation?
@@ -540,6 +540,156 @@ example :
         { now := { epochMillis := 18000000 } } sourceInput
       pure view.withChanges) =
       some [{ targetField := 1, value := ⟨"05:00:00", by decide⟩ }] := by
+  native_decide
+
+private def addressedConstructionModel : FlatModel := {
+  fields := [repeatedTarget, other]
+  repeatableGroups := [{
+    level := 10
+    path := ["Order", "Lines"]
+    repeatability := some 3
+  }] }
+
+private def addressedConstructionPrepared :
+    PreparedFlatStringContext addressedConstructionModel
+      builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler addressedConstructionModel).toOption.get
+      (by native_decide)
+
+private def addressedConstructionOperation? :=
+  (checkAddressedTimeConstantConstructionComputation
+    addressedConstructionModel ["Order", "Lines"] repeatedTarget.id
+    (.second "5" "2" "9")).toOption
+
+private def addressedConstructionOutcome?
+    (components : SurfaceAddressedTimeConstantComponents) := do
+  let operation ← (checkAddressedTimeConstantConstructionComputation
+    addressedConstructionModel ["Order", "Lines"] repeatedTarget.id
+    components).toOption
+  pure operation.evaluateOutcome
+
+/- The addressed checker retains the canonical zero-through-three constant prefix and separates all three position gates. -/
+example :
+    addressedConstructionOutcome? .empty =
+      some (.accepted ⟨"00:00:00", by decide⟩) ∧
+    addressedConstructionOutcome? (.hour "10") =
+      some (.accepted ⟨"10:00:00", by decide⟩) ∧
+    addressedConstructionOutcome? (.minute "5" "24") =
+      some (.accepted ⟨"05:24:00", by decide⟩) ∧
+    addressedConstructionOutcome? (.second "5" "2" "24") =
+      some (.accepted ⟨"05:02:24", by decide⟩) ∧
+    (match checkAddressedTimeConstantConstructionComputation
+        addressedConstructionModel ["Order", "Lines"] repeatedTarget.id
+        (.hour "24") with
+      | .error (.component (.constantNotAdmitted .hour "24")) => true
+      | _ => false) = true ∧
+    (match checkAddressedTimeConstantConstructionComputation
+        addressedConstructionModel ["Order", "Lines"] repeatedTarget.id
+        (.minute "5" "60") with
+      | .error (.component (.constantNotAdmitted .minute "60")) => true
+      | _ => false) = true ∧
+    (match checkAddressedTimeConstantConstructionComputation
+        addressedConstructionModel ["Order", "Lines"] repeatedTarget.id
+        (.second "5" "2" "60") with
+      | .error (.component (.constantNotAdmitted .second "60")) => true
+      | _ => false) = true := by
+  native_decide
+
+private def addressedConstructionDocument?
+    (rows : List RowAddr) (cells : List ClassifiedCellInput) :=
+  (checkDocument addressedConstructionPrepared "en_US"
+    { instantiatedRows := rows, cells }).toOption
+
+private def addressedConstructionInput? :=
+  addressedConstructionDocument? [
+    { group := 10, path := [1] }, { group := 10, path := [2] },
+    { group := 10, path := [3] }] [
+    { address := { field := repeatedTarget.id, path := [1] }
+      stored := nextTime.text
+      raw := .parsed (.temporal (.time { epochMillis := 0 }
+        (clock 5 2 9 (by decide)))) },
+    { address := { field := repeatedTarget.id, path := [2] }
+      stored := oldTime.text
+      raw := .parsed (.temporal (.time { epochMillis := 0 }
+        (clock 5 2 8 (by decide)))) },
+    { address := { field := other.id, path := [] }
+      stored := otherTime.text
+      raw := .parsed (.temporal (.time { epochMillis := 0 }
+        (clock 6 0 0 (by decide)))) }]
+
+/- Repeatable construction keeps every exact success but uses ordinary row-local source equality for the change projection and separate-destination application. -/
+example : (do
+    let operation ← addressedConstructionOperation?
+    let input ← addressedConstructionInput?
+    let result ← operation.executeResult input ([] : List FormalCause)
+      |>.toOption
+    let destination ← addressedConstructionDocument? [
+      { group := 10, path := [1] }, { group := 10, path := [2] },
+      { group := 10, path := [3] }] []
+    let applied ← result.applyToChecked destination |>.toOption
+    pure (
+      result.time.withoutErrors.map (fun item => item.targetField),
+      result.time.withChanges.map (fun item => item.targetField),
+      applied { field := repeatedTarget.id, path := [1] },
+      applied { field := repeatedTarget.id, path := [2] },
+      applied { field := repeatedTarget.id, path := [3] })) = some (
+        [{ field := repeatedTarget.id, path := [1] },
+          { field := repeatedTarget.id, path := [2] },
+          { field := repeatedTarget.id, path := [3] }],
+        [{ field := repeatedTarget.id, path := [2] },
+          { field := repeatedTarget.id, path := [3] }],
+        .absent, .presentValue nextTime, .presentValue nextTime) := by
+  native_decide
+
+/- With no physical target row, the addressed constructor produces no result or action. -/
+example : (do
+    let operation ← addressedConstructionOperation?
+    let input ← addressedConstructionDocument? [] []
+    operation.execute input |>.toOption) = some [] := by
+  native_decide
+
+private def nestedAddressedConstructionTarget : FlatFieldDecl := {
+  repeatedTarget with
+  id := 10
+  groupPath := ["Order", "Projects", "Tasks"]
+  repeatableScope := [10, 20]
+}
+
+private def nestedAddressedConstructionModel : FlatModel := {
+  fields := [nestedAddressedConstructionTarget]
+  repeatableGroups := [
+    { level := 10, path := ["Order", "Projects"], repeatability := some 3 },
+    { level := 20, path := ["Order", "Projects", "Tasks"],
+      repeatability := some 3 }
+  ]
+}
+
+private def nestedAddressedConstructionPrepared :
+    PreparedFlatStringContext nestedAddressedConstructionModel
+      builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler nestedAddressedConstructionModel).toOption.get
+      (by native_decide)
+
+/- Physical target rows retain their complete nested coordinates and encounter order rather than sorting or truncating paths. -/
+example : (do
+    let operation ← (checkAddressedTimeConstantConstructionComputation
+      nestedAddressedConstructionModel ["Order", "Projects", "Tasks"]
+      nestedAddressedConstructionTarget.id (.hour "5")).toOption
+    let input ← (checkDocument nestedAddressedConstructionPrepared "en_US" {
+      instantiatedRows := [
+        { group := 10, path := [1] },
+        { group := 20, path := [1, 3] }, { group := 20, path := [1, 1] },
+        { group := 20, path := [1, 2] }]
+      cells := []
+    }).toOption
+    let outcomes ← operation.execute input |>.toOption
+    pure (outcomes.map (fun entry => entry.targetField))) = some [
+      { field := nestedAddressedConstructionTarget.id, path := [1, 3] },
+      { field := nestedAddressedConstructionTarget.id, path := [1, 1] },
+      { field := nestedAddressedConstructionTarget.id, path := [1, 2] }
+    ] := by
   native_decide
 
 end A12Kernel.Conformance.TimeComputation

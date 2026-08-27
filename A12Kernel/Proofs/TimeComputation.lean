@@ -90,10 +90,36 @@ theorem timeComputationRun_sourceValueChangedAt_different
       true := by
   simp [TimeComputationRunView.sourceValueChangedAt, different]
 
-/-- Every successful `Time(...)` construction enters the changed subset, even when its stored clock text equals the source. -/
-@[simp] theorem timeConstructionRun_reportsChanged
+/-- Every successful scalar `Time(...)` construction enters the changed subset, even when its stored clock text equals the source. -/
+@[simp] theorem scalarTimeConstructionRun_reportsChanged
     (computed : TimeComputedInstance Target) :
-    TimeComputationRunView.constructionReportsChanged computed = true := rfl
+    TimeComputationRunView.scalarConstructionReportsChanged computed = true := rfl
+
+/-- Repeatable constant construction retains the operation and delegates exact row outcomes to ordinary source-relative Time classification. -/
+theorem addressedTimeConstantConstruction_executeResult_projects
+    (operation : CheckedAddressedTimeConstantConstructionComputation model)
+    (input : CheckedDocument model) (messages : List ResidualMessage)
+    (outcomes : List AddressedTimeConstantConstructionOutcome)
+    (view : AddressedTimeConstantConstructionRunView model ResidualMessage)
+    (executed : operation.execute input = .ok outcomes)
+    (produced : operation.executeResult input messages = .ok view) :
+    view.operation = operation ∧
+      view.time = TimeComputationRunView.fromOutcomesAt
+        input.sourceTimeTargetStateAt messages
+        (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
+  rw [CheckedAddressedTimeConstantConstructionComputation.executeResult,
+    executed] at produced
+  simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
+  subst view
+  exact ⟨rfl, rfl⟩
+
+/-- Repeatable constant construction applies exactly the ordinary Time action fold to a separately supplied same-model destination. -/
+theorem addressedTimeConstantConstruction_applyToChecked_delegates
+    (view : AddressedTimeConstantConstructionRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    view.applyToChecked destination =
+      view.time.applyTo destination.sourceTimeTargetStateAt := by
+  rfl
 
 /-- A retained Time clear creates a present-empty destination target even when that target was absent. -/
 theorem timeComputationDestination_applyRetainedClear_same
