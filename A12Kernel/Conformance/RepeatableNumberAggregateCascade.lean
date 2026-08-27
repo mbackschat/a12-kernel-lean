@@ -640,4 +640,139 @@ example :
         } := by
   native_decide
 
+namespace FirstFilledProducer
+
+private def candidate := number 31 "Candidate"
+  ["Parents", "Choices"] [100, 110] 0
+private def produced := number 32 "Produced"
+  ["Parents", "Tasks"] [100, 120] 0
+private def total := number 33 "Total" ["Summary"] [] 0
+private def scaledCandidate := number 34 "ScaledCandidate"
+  ["Parents", "Choices"] [100, 110] 1
+
+private def firstFilledModel : FlatModel := {
+  fields := [candidate, produced, total, scaledCandidate]
+  repeatableGroups := [
+    { level := 100, path := ["Parents"], repeatability := some 3 },
+    { level := 110, path := ["Parents", "Choices"], repeatability := some 3 },
+    { level := 120, path := ["Parents", "Tasks"], repeatability := some 3 }]
+}
+
+private def siblingStar (field : String := candidate.name) :
+    SurfaceStarFieldPath := {
+  base := .relative 1
+  groups := [{ name := "Choices", starred := true }]
+  field
+}
+
+private def producedStar : SurfaceStarFieldPath := {
+  base := .absolute
+  groups := [
+    { name := "Parents", starred := true },
+    { name := "Tasks", starred := true }]
+  field := produced.name
+}
+
+private def firstFilledPlan? :
+    Option (CheckedRepeatableNumberAggregateCascade firstFilledModel) :=
+  (checkRepeatableNumberFirstFilledAggregateCascade firstFilledModel
+    ["Parents", "Tasks"] produced.id siblingStar
+    ["Summary"] total.id producedStar .sum).toOption
+
+private def firstFilledPrepared :
+    PreparedFlatStringContext firstFilledModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler firstFilledModel).toOption.get
+      (by native_decide)
+
+private def firstFilledRows : List RowAddr := [
+  { group := 100, path := [1] },
+  { group := 100, path := [2] },
+  { group := 100, path := [3] },
+  { group := 110, path := [1, 1] },
+  { group := 110, path := [1, 2] },
+  { group := 110, path := [2, 1] },
+  { group := 120, path := [1, 1] },
+  { group := 120, path := [1, 2] },
+  { group := 120, path := [2, 1] },
+  { group := 120, path := [3, 1] }]
+
+private def firstFilledCell (field : FieldId) (path : List Nat)
+    (stored : String) (raw : RawCell)
+    (numericDecimal : Option NumericInputDecimal := none) : ClassifiedCellInput := {
+  address := { field, path }
+  stored
+  raw
+  numericDecimal
+}
+
+private def firstFilledInput? (malformedSecond : Bool) :
+    Option (CheckedDocument firstFilledModel) :=
+  (checkDocument firstFilledPrepared "en_US" {
+    instantiatedRows := firstFilledRows
+    cells := [
+      firstFilledCell candidate.id [1, 1] "" .presentEmpty,
+      firstFilledCell candidate.id [1, 2] "5" (.parsed (.num 5))
+        (some { unscaled := 5, scale := 0 }),
+      if malformedSecond then
+        firstFilledCell candidate.id [2, 1] "bad" (.rejected .malformed)
+      else
+        firstFilledCell candidate.id [2, 1] "7" (.parsed (.num 7))
+          (some { unscaled := 7, scale := 0 }),
+      firstFilledCell produced.id [1, 1] "90" (.parsed (.num 90))
+        (some { unscaled := 90, scale := 0 }),
+      firstFilledCell produced.id [1, 2] "91" (.parsed (.num 91))
+        (some { unscaled := 91, scale := 0 }),
+      firstFilledCell produced.id [2, 1] "92" (.parsed (.num 92))
+        (some { unscaled := 92, scale := 0 }),
+      firstFilledCell produced.id [3, 1] "93" (.parsed (.num 93))
+        (some { unscaled := 93, scale := 0 }),
+      firstFilledCell total.id [] "99" (.parsed (.num 99))
+        (some { unscaled := 99, scale := 0 })]
+  }).toOption
+
+private def firstFilledSummary? (malformedSecond : Bool) := do
+  let plan ← firstFilledPlan?
+  let input ← firstFilledInput? malformedSecond
+  let outcomes ← (plan.execute { now := { epochMillis := 0 } } input).toOption
+  pure (plan.analyze, outcomes.rows.map fun
+      (row : SourcedNumericTargetOutcome CellAddr) => row.outcome,
+    outcomes.aggregate.outcome)
+
+private def firstFilledAccepted (value : Int) : NumericTargetOutcome :=
+  .accepted { unscaled := value, scale := 0 }
+
+/- Parent-local sibling scans replace stale row targets before aggregation, retain exhausted Number zero, and propagate reached malformed state only through the aggregate dependency. -/
+example :
+    firstFilledSummary? false = some (
+      {
+        producer := .firstFilled
+        consumer := .plain
+        operation := .sum
+        repeatableScope := [100, 120]
+        fieldDependencies := [
+          (produced.id, [candidate.id]),
+          (total.id, [produced.id])]
+      },
+      [firstFilledAccepted 5, firstFilledAccepted 5,
+        firstFilledAccepted 7, firstFilledAccepted 0],
+      firstFilledAccepted 17) ∧
+    (firstFilledSummary? true).map (fun result =>
+      (result.2.1, result.2.2)) = some (
+        [firstFilledAccepted 5, firstFilledAccepted 5,
+          .inheritedPoison .malformed, firstFilledAccepted 0],
+        .inheritedPoison .computedDependency) := by
+  native_decide
+
+/- Producer admission failures retain the sibling-star operation tag at the aggregate boundary. -/
+example :
+    (match checkRepeatableNumberFirstFilledAggregateCascade
+        firstFilledModel ["Parents", "Tasks"] produced.id
+        (siblingStar scaledCandidate.name) ["Summary"] 999 producedStar .sum with
+      | .error (.firstFilled (.scaleMismatch 0 1)) => true
+      | _ => false) = true := by
+  native_decide
+
+end FirstFilledProducer
+
 end A12Kernel.Conformance.RepeatableNumberAggregateCascade

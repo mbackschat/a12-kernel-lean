@@ -98,7 +98,7 @@ def operands : CheckedRepeatableNumberAggregateConsumer model →
 
 end CheckedRepeatableNumberAggregateConsumer
 
-/-- Fail-closed errors for one row-local Number computation followed by one root aggregate that reads it directly or through its filter. -/
+/-- Fail-closed errors for one repeatable Number-result computation followed by one root aggregate that reads it directly or through its filter. -/
 inductive RepeatableNumberAggregateCascadeElabError where
   | row (cause : AddressedNumberFieldElabError)
   | binary (cause : AddressedNumberBinaryElabError)
@@ -111,6 +111,7 @@ inductive RepeatableNumberAggregateCascadeElabError where
   | fieldValueAsNumber (cause : AddressedFieldValueAsNumberElabError)
   | rangeAsNumber (cause : AddressedRangeAsNumberElabError)
   | dateRangeBoundPart (cause : AddressedDateRangeBoundPartElabError)
+  | firstFilled (cause : AddressedNumberFirstFilledComputationElabError)
   | aggregate (cause : NumericComputationElabError)
   | incoherentAggregate
   | dependency (expected actual : FieldId)
@@ -463,6 +464,24 @@ def checkRepeatableDateRangeBoundPartStarListAggregateCascade
       rowTarget rowSource bound part |>.mapError .dateRangeBoundPart
   finishRepeatableNumberAggregateCascade model (.dateRangeBoundPart row)
     aggregateDeclaringGroup aggregateTarget aggregateSource operation
+
+/-- Sibling-star Number `FirstFilledValue` producer followed by one sole plain-star root aggregate. -/
+def checkRepeatableNumberFirstFilledAggregateCascade
+    (model : FlatModel)
+    (rowDeclaringGroup : GroupPath) (rowTarget : FieldId)
+    (rowSource : SurfaceStarFieldPath)
+    (aggregateDeclaringGroup : GroupPath) (aggregateTarget : FieldId)
+    (aggregateSource : SurfaceStarFieldPath)
+    (operation : NumericAggregateOp) :
+    Except RepeatableNumberAggregateCascadeElabError
+      (CheckedRepeatableNumberAggregateCascade model) := do
+  let row ← checkAddressedNumberFirstFilledComputation model
+      rowDeclaringGroup rowTarget rowSource |>.mapError .firstFilled
+  finishRepeatableNumberAggregateCascade model (.firstFilled row)
+    aggregateDeclaringGroup aggregateTarget {
+      first := .star aggregateSource
+      rest := []
+    } operation
 
 /-- Check the exact direct-assignment producer followed by a sole plain-star aggregate. -/
 def checkRepeatableNumberAggregateCascade
