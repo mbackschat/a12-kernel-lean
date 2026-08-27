@@ -146,26 +146,42 @@ def applyResultAmount (checked : CheckedDateTimeDayShift model)
 
 /-- Classify one reached DateTime cell before reading its numeric amount. A formal
     source stops; an empty source still reaches the amount and remains not-given. -/
-def evaluateCell (checked : CheckedDateTimeDayShift model)
-    (phase : Phase) (input : CheckedDocument model)
-    (cell : CheckedCell) :
-    Except DateTimeDayShiftFault ValueAsDateTimeResult := do
-  match observeCell phase cell with
+def evaluateObservation (profile : ModelZone.ConcreteProfile)
+    (sourceField : FieldId) (observation : CellObservation Value)
+    (readAmount : Unit →
+      Except Fault
+        (Except NumericValidationUnavailable NumericArithmeticOutcome))
+    (mapFault : DateTimeDayShiftFault → Fault) :
+    Except Fault ValueAsDateTimeResult := do
+  match observation with
   | .empty =>
-      match ← checked.amount.read phase input |>.mapError .document with
+      match ← readAmount () with
       | .error (.formal cause) => pure (.unavailable cause)
-      | .error unavailable => throw (.amountUnavailable unavailable)
+      | .error unavailable => throw (mapFault (.amountUnavailable unavailable))
       | .ok _ => pure (.noValue true)
   | .unknown cause | .poison cause => pure (.unavailable cause)
   | .value (.temporal (.dateTime instant _ _ _)) =>
-      match checked.profile.localDateTime? instant with
-      | none => throw (.sourceOutsideProfile instant)
+      match profile.localDateTime? instant with
+      | none => throw (mapFault (.sourceOutsideProfile instant))
       | some sourceLocal =>
-          match ← checked.amount.read phase input |>.mapError .document with
+          match ← readAmount () with
           | .error (.formal cause) => pure (.unavailable cause)
-          | .error unavailable => throw (.amountUnavailable unavailable)
-          | .ok outcome => checked.applyAmount sourceLocal instant outcome
-  | .value _ => throw (.sourcePayloadMismatch checked.source.id)
+          | .error unavailable => throw (mapFault (.amountUnavailable unavailable))
+          | .ok outcome =>
+              applyProfileAmount profile sourceLocal instant outcome
+                |>.mapError mapFault
+  | .value _ => throw (mapFault (.sourcePayloadMismatch sourceField))
+
+/-- Classify one reached DateTime cell before reading its numeric amount. A formal
+    source stops; an empty source still reaches the amount and remains not-given. -/
+def evaluateCell (checked : CheckedDateTimeDayShift model)
+    (phase : Phase) (input : CheckedDocument model)
+    (cell : CheckedCell) :
+    Except DateTimeDayShiftFault ValueAsDateTimeResult :=
+  evaluateObservation checked.profile checked.source.id
+    (observeCell phase cell)
+    (fun _ => checked.amount.read phase input |>.mapError .document)
+    id
 
 /-- Read the checked DateTime before its numeric amount, then delegate the reached cell
     to the source-before-amount classifier. -/

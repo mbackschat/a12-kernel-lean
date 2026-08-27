@@ -5,6 +5,44 @@ import A12Kernel.Proofs.BerlinLegacyCalendarArithmetic
 
 namespace A12Kernel
 
+/-- A source-side unknown result decides the shared calendar-day observation before any amount reader can run. -/
+@[simp] theorem dateTimeDayShiftObservation_unknown
+    (profile : ModelZone.ConcreteProfile) (sourceField : FieldId)
+    (readAmount : Unit →
+      Except Fault
+        (Except NumericValidationUnavailable NumericArithmeticOutcome))
+    (mapFault : DateTimeDayShiftFault → Fault) (cause : FormalCause) :
+    CheckedDateTimeDayShift.evaluateObservation profile sourceField
+        (.unknown cause) readAmount mapFault =
+      .ok (.unavailable cause) := by
+  rfl
+
+/-- Source-side poison likewise decides the shared calendar-day observation before any amount reader can run. -/
+@[simp] theorem dateTimeDayShiftObservation_poison
+    (profile : ModelZone.ConcreteProfile) (sourceField : FieldId)
+    (readAmount : Unit →
+      Except Fault
+        (Except NumericValidationUnavailable NumericArithmeticOutcome))
+    (mapFault : DateTimeDayShiftFault → Fault) (cause : FormalCause) :
+    CheckedDateTimeDayShift.evaluateObservation profile sourceField
+        (.poison cause) readAmount mapFault =
+      .ok (.unavailable cause) := by
+  rfl
+
+/-- An empty source reaches the caller-supplied amount reader, whose formal cause remains the shared result. -/
+theorem dateTimeDayShiftObservation_empty_formal
+    (profile : ModelZone.ConcreteProfile) (sourceField : FieldId)
+    (readAmount : Unit →
+      Except Fault
+        (Except NumericValidationUnavailable NumericArithmeticOutcome))
+    (mapFault : DateTimeDayShiftFault → Fault) (cause : FormalCause)
+    (amount : readAmount () = .ok (.error (.formal cause))) :
+    CheckedDateTimeDayShift.evaluateObservation profile sourceField
+        .empty readAmount mapFault =
+      .ok (.unavailable cause) := by
+  rw [CheckedDateTimeDayShift.evaluateObservation, amount]
+  rfl
+
 /-- A reached exact zero amount preserves the already selected DateTime instant under
     both admitted profiles; an ambiguous Berlin label is never re-resolved. -/
 @[simp] theorem checkedDateTimeDayShift_applyAmount_zero
@@ -35,8 +73,8 @@ theorem checkedDateTimeDayShift_source_unavailable
   have cellResult :
       checked.evaluateCell phase input cell =
         .ok (.unavailable cause) := by
-    simp [CheckedDateTimeDayShift.evaluateCell, observed,
-      pure, Except.pure]
+    rw [CheckedDateTimeDayShift.evaluateCell, observed]
+    exact dateTimeDayShiftObservation_unknown _ _ _ _ _
   simp [CheckedDateTimeDayShift.evaluate, read, cellResult,
     Except.mapError, bind, Except.bind]
 
@@ -56,8 +94,10 @@ theorem checkedDateTimeDayShift_empty_reaches_amount
   have cellResult :
       checked.evaluateCell phase input cell =
         .ok (.unavailable cause) := by
-    simp [CheckedDateTimeDayShift.evaluateCell, observed, amount,
-      Except.mapError, bind, Except.bind, pure, Except.pure]
+    rw [CheckedDateTimeDayShift.evaluateCell, observed]
+    apply dateTimeDayShiftObservation_empty_formal
+    rw [amount]
+    rfl
   simp [CheckedDateTimeDayShift.evaluate, read, cellResult,
     Except.mapError, bind, Except.bind]
 

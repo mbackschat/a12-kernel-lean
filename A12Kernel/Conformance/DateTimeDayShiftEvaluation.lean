@@ -56,6 +56,14 @@ private def compositionInput?
     cells
   } |>.toOption
 
+/- The carrier-neutral calendar-day observation must stop on its DateTime source before invoking any caller-supplied amount route. -/
+example :
+    CheckedDateTimeDayShift.evaluateObservation
+        .europeBerlin source.id (.unknown .malformed)
+        (fun _ => .ok (.ok .notEvaluated)) id =
+      .ok (.unavailable .malformed) := by
+  rfl
+
 private def document? (checkedModel : FlatModel)
     (instant : Instant) (localDateTime : LocalDateTime) :
     Option (CheckedDocument checkedModel) := do
