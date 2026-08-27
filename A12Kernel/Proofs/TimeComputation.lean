@@ -141,6 +141,20 @@ theorem checkedAddressedWorldTimeConstructionComputation_excludes_target
     operation.referencesField operation.checkedTarget.targetField = false :=
   operation.targetNotReferenced
 
+/-- A bound field-backed shift reads its complete DateTime source within the target row's certified scope. -/
+theorem checkedAddressedShiftedTimeExtractor_source_bounded
+    (checked : CheckedAddressedShiftedTimeExtractor model targetScope) :
+    checked.source.sourceDeclaration.repetitionBoundBy targetScope = true :=
+  checked.source.sourceScopeBound
+
+/-- Analysis retains the nested source before every authored amount dependency. -/
+@[simp] theorem addressedShiftedTimeComponent_fieldDependencies
+    (checked : CheckedAddressedShiftedTimeExtractor model targetScope) :
+    CheckedAddressedWorldTimeComponent.fieldDependencies
+        (.shiftedField checked) =
+      checked.source.source.id :: checked.amount.fieldDependencies := by
+  rfl
+
 /-- World-aware repeatable construction retains the operation and delegates exact row outcomes to ordinary source-relative Time classification. -/
 theorem addressedWorldTimeConstruction_executeResult_projects
     (operation : CheckedAddressedWorldTimeConstructionComputation model)

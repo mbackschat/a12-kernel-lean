@@ -25,6 +25,31 @@ namespace A12Kernel
         some (.value clock false) := by
   rfl
 
+/-- A reached formal DateTime source decides before the caller-selected scalar or addressed amount thunk is evaluated. -/
+theorem shiftedDateTimeObservation_unavailable_hides_amount
+    (profile : ModelZone.ConcreteProfile) (unit : DateTimeSubdayUnit)
+    (sourceField : FieldId) (cause : FormalCause)
+    (readAmount : Unit → Except Fault
+      (Except NumericValidationUnavailable NumericArithmeticOutcome))
+    (mapFault : ValueAsDateTimeExtractionFault → Fault) :
+    ValueAsDateTimeResult.evaluateShiftedDateTimeObservation
+        profile unit sourceField (.poison cause) readAmount mapFault =
+      .ok (.unavailable cause) := by
+  rfl
+
+/-- A cause-free empty DateTime source still reaches a formal amount and preserves that amount's exact cause. -/
+theorem shiftedDateTimeObservation_empty_reaches_formal_amount
+    (profile : ModelZone.ConcreteProfile) (unit : DateTimeSubdayUnit)
+    (sourceField : FieldId) (cause : FormalCause)
+    (readAmount : Unit → Except Fault
+      (Except NumericValidationUnavailable NumericArithmeticOutcome))
+    (mapFault : ValueAsDateTimeExtractionFault → Fault)
+    (read : readAmount () = .ok (.error (.formal cause))) :
+    ValueAsDateTimeResult.evaluateShiftedDateTimeObservation
+        profile unit sourceField .empty readAmount mapFault =
+      .ok (.unavailable cause) := by
+  simp [ValueAsDateTimeResult.evaluateShiftedDateTimeObservation, read]
+
 /-- Generated Date-before-Time evaluation does not read the checked DateTime extraction source after the partial-Date source has already failed formally. -/
 theorem valueAsDateTimeExtraction_evaluateRaw_date_unavailable
     (checked : CheckedValueAsDateTimeExtraction model)

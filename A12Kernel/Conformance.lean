@@ -39,6 +39,7 @@ import A12Kernel.Conformance.TemporalFormat
 import A12Kernel.Conformance.TemporalTargetPolicy
 import A12Kernel.Conformance.TimeComputation
 import A12Kernel.Conformance.AddressedTimeConstruction
+import A12Kernel.Conformance.AddressedShiftedTimeConstruction
 import A12Kernel.Conformance.TimeFromDateTimeComputation
 import A12Kernel.Conformance.AddressedTimeFromDateTime
 import A12Kernel.Conformance.TimeInput

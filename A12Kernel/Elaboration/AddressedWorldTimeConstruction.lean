@@ -2,11 +2,12 @@ import A12Kernel.Elaboration.TimeComputation
 
 /-! # World-backed repeatable `Time(...)` construction
 
-This capsule composes the existing target-bound Time components with the existing dynamic
-`Now` extractor inside one repeatable prefix. It retains authored dependency order, reads
-addressed sources at their own bound scopes, takes `World` explicitly, executes physical
-target rows only, and delegates result and application to the established addressed Time
-boundary. Other nested temporal sources and external repeatable calibration remain separate.
+This capsule composes the existing target-bound Time components with shifted dynamic `Now`
+and bound complete-DateTime extractors inside one repeatable prefix. It retains authored
+dependency order, reads addressed sources at their own bound scopes, takes `World` explicitly,
+executes physical target rows only, and delegates result and application to the established
+addressed Time boundary. Wider nested temporal sources and external repeatable calibration
+remain separate.
 -/
 
 namespace A12Kernel
@@ -22,18 +23,35 @@ inductive SurfaceAddressedWorldTimeComponent where
   | shiftedNowRowExpression (part : TimeNumericPart)
       (unit : DateTimeSubdayUnit)
       (amount : AuthoredNumericExpr SurfaceNumericAtom)
+  | shiftedDateTimeRowExpression (source : SurfaceFieldPath)
+      (part : TimeNumericPart) (unit : DateTimeSubdayUnit)
+      (amount : AuthoredNumericExpr SurfaceNumericAtom)
   deriving Repr, DecidableEq
 
 /-- A zero-through-three repeatable prefix that may mix addressed and world-dependent components. -/
 abbrev SurfaceAddressedWorldTimeComponents :=
   TimeComponentPrefix SurfaceAddressedWorldTimeComponent
 
-/-- One checked repeatable component that retains either its target-bound source or explicit world dependency. -/
+/-- One complete-DateTime source bound by the repeatable target row, shifted by a target-group numeric expression before extracting one matching Time component. -/
+structure CheckedAddressedShiftedTimeExtractor (model : FlatModel)
+    (targetScope : List RepeatableLevel) where
+  position : TimeComponentPosition
+  part : TimeNumericPart
+  declaringGroup : GroupPath
+  source : CheckedBoundCompleteDateTimeSource model declaringGroup targetScope
+  profile : ModelZone.ConcreteProfile
+  profileMatches : ModelZone.ConcreteProfile.ofId? model.timeZoneId = some profile
+  unit : DateTimeSubdayUnit
+  amount : CheckedTemporalShiftAmount model
+  positionMatches : position.extractor = part
+
+/-- One checked repeatable component that retains either its target-bound source, explicit world dependency, or bound nested DateTime expression. -/
 inductive CheckedAddressedWorldTimeComponent (model : FlatModel)
     (targetScope : List RepeatableLevel) where
   | addressed (checked : CheckedAddressedTimeComponent model targetScope)
   | world (checked : CheckedWorldTimeComponent model)
   | rowWorld (checked : CheckedNowShiftedTimeExtractor model)
+  | shiftedField (checked : CheckedAddressedShiftedTimeExtractor model targetScope)
 
 abbrev CheckedAddressedWorldTimeComponents (model : FlatModel)
     (targetScope : List RepeatableLevel) :=
@@ -48,12 +66,16 @@ def referencesField
   | .addressed checked => checked.referencesField field
   | .world checked => checked.referencesField field
   | .rowWorld checked => checked.source.amount.referencesField field
+  | .shiftedField checked =>
+      checked.source.source.id == field || checked.amount.referencesField field
 
 def fieldDependencies :
     CheckedAddressedWorldTimeComponent model targetScope → List FieldId
   | .addressed checked => checked.fieldDependencies
   | .world checked => checked.fieldDependencies
   | .rowWorld checked => checked.source.amount.fieldDependencies
+  | .shiftedField checked =>
+      checked.source.source.id :: checked.amount.fieldDependencies
 
 private def readAddressedNowShifted
     (checked : CheckedNowShiftedTimeExtractor model)
@@ -73,6 +95,30 @@ private def readAddressedNowShifted
   pure (ValueAsDateTimeTimeOperand.extractComponent
     shifted.asTimeOperand checked.part)
 
+private def readAddressedShiftedField
+    (checked : CheckedAddressedShiftedTimeExtractor model targetScope)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedTimeConstructionFault TimeConstructionComponent := do
+  let path ← environment.pathForScope
+    checked.source.sourceDeclaration.repeatableScope
+    |>.mapError (.sourceEnvironment checked.source.source.id)
+  let cell ← input.read { field := checked.source.source.id, path }
+    |>.mapError (fun cause => .component (.document cause))
+  let shifted ← ValueAsDateTimeResult.evaluateShiftedDateTimeObservation
+    checked.profile checked.unit checked.source.source.id
+    (observeCell .computation cell) (fun _ =>
+      checked.amount.readAddressed .computation {
+          scalar := {
+            fields := input.flatContext
+            groups := GroupPresenceContext.unavailable
+          }
+          outer := environment
+          input := .checked input
+        } |>.mapError .amountAddressing)
+      (fun cause => .component (.shifted cause))
+  pure (ValueAsDateTimeTimeOperand.extractComponent
+    shifted.asTimeOperand checked.part)
+
 def read (checked : CheckedAddressedWorldTimeComponent model targetScope)
     (world : World) (input : CheckedDocument model) (environment : Env) :
     Except AddressedTimeConstructionFault TimeConstructionComponent :=
@@ -82,6 +128,8 @@ def read (checked : CheckedAddressedWorldTimeComponent model targetScope)
       component.read .computation world input |>.mapError .component
   | .rowWorld component =>
       readAddressedNowShifted component world input environment
+  | .shiftedField component =>
+      readAddressedShiftedField component input environment
 
 end CheckedAddressedWorldTimeComponent
 
@@ -120,6 +168,53 @@ inductive AddressedWorldTimeConstructionElabError where
   | component (cause : AddressedWorldTimeConstructionComponentElabError)
   deriving Repr, DecidableEq
 
+private def mapBoundShiftedDateTimeSourceError :
+    BoundCompleteDateTimeSourceElabError →
+      AddressedWorldTimeConstructionComponentElabError
+  | .source cause => .shifted (.shifted (.source cause))
+  | .sourceNotTemporal field =>
+      .shifted (.shifted (.sourceNotTemporal field))
+  | .sourceKind field actual =>
+      .shifted (.shifted (.sourceKind field actual))
+  | .sourceComponents field actual =>
+      .shifted (.shifted (.sourceComponents field actual))
+  | .scopeMismatch target source => .addressed (.sourceScope target source)
+
+private def checkShiftedDateTimeRowExtractor
+    (model : FlatModel) (declaringGroup : GroupPath)
+    (targetScope : List RepeatableLevel)
+    (targetPath : List String) (position : TimeComponentPosition)
+    (reference : SurfaceFieldPath) (part : TimeNumericPart)
+    (unit : DateTimeSubdayUnit)
+    (amount : AuthoredNumericExpr SurfaceNumericAtom) :
+    Except AddressedWorldTimeConstructionComponentElabError
+      (CheckedAddressedShiftedTimeExtractor model targetScope) := do
+  if hPosition : position.extractor = part then
+    let source ← checkBoundCompleteDateTimeSource model declaringGroup
+      targetPath targetScope reference
+        |>.mapError mapBoundShiftedDateTimeSourceError
+    match hProfile : ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+    | some profile =>
+      let checkedAmount ←
+        elaborateValueAsDateTimeRepeatableExpressionShiftAmount
+          model declaringGroup amount
+          |>.mapError (fun cause => .shifted (.shifted cause))
+      pure {
+        position
+        part
+        declaringGroup
+        source
+        profile
+        profileMatches := hProfile
+        unit
+        amount := checkedAmount
+        positionMatches := hPosition
+      }
+    | none => throw (.shifted (.shifted
+        (.unsupportedZone model.timeZoneId)))
+  else
+    throw (.shifted (.extractorMismatch position part))
+
 private def checkComponent
     (model : FlatModel) (declaringGroup : GroupPath)
     (targetField : FieldId) (targetScope : List RepeatableLevel)
@@ -146,6 +241,9 @@ private def checkComponent
       let checked ← elaborateCheckedNowShiftedTimeExtractor model position
         part unit checkedAmount |>.mapError .shifted
       pure (.rowWorld checked)
+  | .shiftedDateTimeRowExpression source part unit amount =>
+      .shiftedField <$> checkShiftedDateTimeRowExtractor model declaringGroup
+        targetScope targetPath position source part unit amount
 
 private def checkComponents
     (model : FlatModel) (declaringGroup : GroupPath)

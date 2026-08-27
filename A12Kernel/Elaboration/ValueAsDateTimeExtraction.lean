@@ -102,6 +102,29 @@ def ofShiftedArithmetic (profile : ModelZone.ConcreteProfile)
       | some result => pure result
       | none => throw (.shiftedInstantOutsideProfile shifted)
 
+/-- Evaluate a phase-classified complete-DateTime source before its amount through one caller-selected scalar or addressed read channel. The thunk preserves the source-before-amount short circuit across both placements. -/
+def evaluateShiftedDateTimeObservation
+    (profile : ModelZone.ConcreteProfile) (unit : DateTimeSubdayUnit)
+    (sourceField : FieldId) (observation : CellObservation Value)
+    (readAmount : Unit → Except Fault
+      (Except NumericValidationUnavailable NumericArithmeticOutcome))
+    (mapFault : ValueAsDateTimeExtractionFault → Fault) :
+    Except Fault ValueAsDateTimeResult :=
+  match observation with
+  | .empty =>
+      match readAmount () with
+      | .error error => .error error
+      | .ok (.error (.formal cause)) => .ok (.unavailable cause)
+      | .ok (.error reason) => .error (mapFault (.amountExpressionUnavailable reason))
+      | .ok (.ok _) => .ok (.noValue true)
+  | .unknown cause | .poison cause => .ok (.unavailable cause)
+  | .value (.temporal (.dateTime instant _ _ _)) =>
+      match readAmount () with
+      | .error error => .error error
+      | .ok resolved =>
+          (ofShiftedArithmetic profile unit instant resolved).mapError mapFault
+  | .value _ => .error (mapFault (.sourcePayloadMismatch sourceField))
+
 end ValueAsDateTimeResult
 
 namespace ValueAsDateTimeTimeOperand
@@ -237,6 +260,7 @@ def applyShiftedAmount (profile : ModelZone.ConcreteProfile)
       | .noValue notGiven | .value _ _ notGiven => pure (.noValue notGiven)
       | .nonRelevant => pure .nonRelevant
       | .unavailable cause => pure (.unavailable cause)
+
   | .value amount fillability =>
       match source with
       | .noValue notGiven =>
@@ -285,18 +309,9 @@ def evaluate (checked : CheckedShiftedDateTimeSource model)
     field := checked.source.id
     path := []
   } |>.mapError .document
-  match observeCell phase cell with
-  | .empty =>
-      match ← checked.amount.read phase input |>.mapError .document with
-      | .error (.formal cause) => pure (.unavailable cause)
-      | .error unavailable =>
-          throw (.amountExpressionUnavailable unavailable)
-      | .ok _ => pure (.noValue true)
-  | .unknown cause | .poison cause => pure (.unavailable cause)
-  | .value (.temporal (.dateTime instant _ _ _)) =>
-      checked.amount.readShiftedDateTime phase input
-        checked.profile checked.unit instant
-  | .value _ => throw (.sourcePayloadMismatch checked.source.id)
+  ValueAsDateTimeResult.evaluateShiftedDateTimeObservation
+    checked.profile checked.unit checked.source.id (observeCell phase cell)
+    (fun _ => checked.amount.read phase input |>.mapError .document) id
 
 /-- Specialize the whole shifted value to the existing wall-clock extraction result. -/
 def readTime (checked : CheckedShiftedDateTimeSource model)
