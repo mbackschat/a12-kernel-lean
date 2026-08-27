@@ -113,8 +113,19 @@ structure CheckedTimeStringField (model : FlatModel) where
   source : FlatStringField
   admitted : model.admitsTimeStringField source = true
 
-/-- Exact field-backed extractor admission. The selected temporal half and constructor
-    position are both static obligations. -/
+/-- Placement-neutral field-backed extractor admission. The selected temporal half and constructor position are static obligations; placement is certified separately. -/
+def FlatModel.admitsTimeExtractorComponentField (model : FlatModel)
+    (position : TimeComponentPosition) (part : TimeNumericPart)
+    (source : FlatTemporalField) : Bool :=
+  match model.lookupUniqueId source.id with
+  | .error _ => false
+  | .ok declaration =>
+      declaration.toTemporalField? == some source &&
+        (source.kind == .time || source.kind == .dateTime) &&
+        part.admittedBy source.components &&
+        position.extractor == part
+
+/-- Scalar specialization of the shared extractor-component policy gate. -/
 def FlatModel.admitsTimeExtractorField (model : FlatModel)
     (position : TimeComponentPosition) (part : TimeNumericPart)
     (source : FlatTemporalField) : Bool :=
@@ -122,10 +133,7 @@ def FlatModel.admitsTimeExtractorField (model : FlatModel)
   | .error _ => false
   | .ok declaration =>
       declaration.repeatableScope.isEmpty &&
-        declaration.toTemporalField? == some source &&
-        (source.kind == .time || source.kind == .dateTime) &&
-        part.admittedBy source.components &&
-        position.extractor == part
+        model.admitsTimeExtractorComponentField position part source
 
 /-- One ordinary Time or DateTime field under its matching extraction token. -/
 structure CheckedTimeExtractorField (model : FlatModel) where
@@ -399,16 +407,22 @@ private def componentOfNumericOperand (field : FieldId) :
           throw (.nonIntegralPayload field amount)
   | .unknown cause => pure (.unavailable cause)
 
-/-- Project the selected clock component. Empty temporal input follows the extractor's
-    symmetric numeric-zero rule; formal unavailability retains its exact cause. -/
+/-- Project a selected clock component without imposing placement. Empty temporal input follows the extractor's symmetric numeric-zero rule; formal unavailability retains its exact cause. -/
+def classifyTimeExtractorComponent (field : FieldId) (kind : TemporalKind)
+    (part : TimeNumericPart)
+    (observation : CellObservation Value) :
+    Except TimeComponentsFault TimeConstructionComponent :=
+  match clockObservation? kind observation with
+  | some projected =>
+      componentOfNumericOperand field (part.fromTimeObservation projected)
+  | none => throw (.payloadKind field)
+
+/-- Scalar specialization of the shared temporal-extractor classifier. -/
 def classify (checked : CheckedTimeExtractorField model)
     (observation : CellObservation Value) :
     Except TimeComponentsFault TimeConstructionComponent :=
-  match clockObservation? checked.source.kind observation with
-  | some projected =>
-      componentOfNumericOperand checked.source.id
-        (checked.part.fromTimeObservation projected)
-  | none => throw (.payloadKind checked.source.id)
+  classifyTimeExtractorComponent checked.source.id checked.source.kind
+    checked.part observation
 
 /-- Read one certified scalar temporal source through the immutable checked document. -/
 def read (checked : CheckedTimeExtractorField model)

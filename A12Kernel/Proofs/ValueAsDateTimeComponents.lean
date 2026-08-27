@@ -27,7 +27,7 @@ theorem checkedTimeExtractorField_position_matches
     checked.position.extractor = checked.part := by
   have admitted := checked.admitted
   unfold FlatModel.admitsTimeExtractorField at admitted
-  split at admitted <;> simp_all
+  split at admitted <;> simp_all [FlatModel.admitsTimeExtractorComponentField]
 
 /-- A nested temporal expression that produces no DateTime value still follows the
     runtime extractor's numeric-zero rule; only not-given provenance keeps the enclosing

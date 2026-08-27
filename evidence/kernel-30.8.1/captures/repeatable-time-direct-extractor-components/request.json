@@ -1,0 +1,89 @@
+{
+  "model": "model.json",
+  "locale": "en_US",
+  "observe": ["validateFull", "compute"],
+  "rows": [
+    {
+      "name": "extractor-correlation",
+      "documentInline": {
+        "TimeProbe": {
+          "RootStamp": "2024-06-15T05:11:12",
+          "Projects": [
+            {
+              "ParentTime": "12:02:34",
+              "Choices": [],
+              "Tasks": [
+                {"RowStamp": "2024-06-15T08:07:09", "SelectedTime": "05:02:09"},
+                {"RowStamp": "2024-06-15T08:07:10", "SelectedTime": "00:00:00"}
+              ]
+            },
+            {
+              "ParentTime": "12:04:34",
+              "Choices": [],
+              "Tasks": [
+                {"RowStamp": "2024-06-15T08:07:09", "SelectedTime": "00:00:00"}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "extractor-missing-and-malformed",
+      "documentInline": {
+        "TimeProbe": {
+          "RootStamp": "2024-06-15T05:11:12",
+          "Projects": [
+            {
+              "Choices": [],
+              "Tasks": [
+                {"RowStamp": "2024-06-15T08:07:09", "SelectedTime": "12:34:56"}
+              ]
+            },
+            {
+              "ParentTime": "12:02:34",
+              "Choices": [],
+              "Tasks": [
+                {"SelectedTime": "12:34:56"},
+                {"RowStamp": "bad", "SelectedTime": "12:34:56"},
+                {"RowStamp": "2024-06-15T08:07:09", "SelectedTime": "12:34:56"}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "extractor-later-formal-after-missing",
+      "documentInline": {
+        "TimeProbe": {
+          "Projects": [
+            {
+              "ParentTime": "12:02:34",
+              "Choices": [],
+              "Tasks": [
+                {"RowStamp": "bad", "SelectedTime": "12:34:56"},
+                {"RowStamp": "2024-06-15T08:07:09", "SelectedTime": "12:34:56"}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "extractor-no-target-rows",
+      "documentInline": {
+        "TimeProbe": {
+          "RootStamp": "2024-06-15T05:11:12",
+          "Projects": [
+            {
+              "ParentTime": "12:02:34",
+              "Choices": [],
+              "Tasks": []
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

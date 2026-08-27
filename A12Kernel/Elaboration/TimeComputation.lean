@@ -6,7 +6,7 @@ import A12Kernel.Semantics.TimeConstruction
 
 /-! # Checked `Time(...)` target execution
 
-This capsule certifies and executes bounded `Time(...)` prefixes through an exact `HH:mm:ss` target. Nonrepeatable prefixes may read checked document or world-dependent components and use scalar result/application. A repeatable prefix admits constants plus Number or checked digit-String fields at any scope bound by the target row, executes at every physical target row, and retains exact-address result/application. The clock remains zone-free; the runtime's 1970 date is only a transport representation. Wider formats, extractor-backed repeatable components, scheduling, and message construction remain separate.
+This capsule certifies and executes bounded `Time(...)` prefixes through an exact `HH:mm:ss` target. Nonrepeatable prefixes may read checked document or world-dependent components and use scalar result/application. A repeatable prefix admits constants, Number fields, checked digit-String fields, and matching direct Time or DateTime extractors at any scope bound by the target row, executes at every physical target row, and retains exact-address result/application. The clock remains zone-free; the runtime's 1970 date is only a transport representation. Wider formats, nested extractor expressions, world-backed repeatable components, scheduling, and message construction remain separate.
 -/
 
 namespace A12Kernel
@@ -74,9 +74,10 @@ inductive SurfaceAddressedTimeComponent where
   | constant (source : String)
   | number (source : SurfaceFieldPath)
   | string (source : SurfaceFieldPath)
+  | extractor (part : TimeNumericPart) (source : SurfaceFieldPath)
   deriving Repr, DecidableEq
 
-/-- A zero-through-three repeatable component prefix over quoted constants, Number fields, and checked digit-String fields. -/
+/-- A zero-through-three repeatable component prefix over quoted constants and checked Number, digit-String, or direct temporal-extractor fields. -/
 abbrev SurfaceAddressedTimeComponents :=
   TimeComponentPrefix SurfaceAddressedTimeComponent
 
@@ -108,12 +109,27 @@ structure CheckedAddressedTimeStringField (model : FlatModel)
   scopeBound : declaration.repetitionBoundBy targetScope = true
   admitted : model.admitsTimeStringComponentField source = true
 
+/-- One temporal extractor whose token, declaration, and repetition scope are certified for the target row. -/
+structure CheckedAddressedTimeExtractorField (model : FlatModel) (targetScope : List RepeatableLevel) where
+  position : TimeComponentPosition
+  part : TimeNumericPart
+  declaringGroup : GroupPath
+  reference : SurfaceFieldPath
+  declaration : FlatFieldDecl
+  source : FlatTemporalField
+  resolved : model.resolveFieldDeclarationUnchecked declaringGroup reference =
+    .ok declaration
+  sourceTemporal : declaration.toTemporalField? = some source
+  scopeBound : declaration.repetitionBoundBy targetScope = true
+  admitted : model.admitsTimeExtractorComponentField position part source = true
+
 /-- One checked repeatable component retaining its decoded constant or exact addressed field source. -/
 inductive CheckedAddressedTimeComponent (model : FlatModel)
     (targetScope : List RepeatableLevel) where
   | constant (value : Int)
   | number (checked : CheckedAddressedTimeNumberField model targetScope)
   | string (checked : CheckedAddressedTimeStringField model targetScope)
+  | extractor (checked : CheckedAddressedTimeExtractorField model targetScope)
 
 namespace CheckedAddressedTimeComponent
 
@@ -123,12 +139,14 @@ def referencesField (component : CheckedAddressedTimeComponent model targetScope
   | .constant _ => false
   | .number checked => checked.source.id == field
   | .string checked => checked.source.id == field
+  | .extractor checked => checked.source.id == field
 
 def fieldDependencies :
     CheckedAddressedTimeComponent model targetScope → List FieldId
   | .constant _ => []
   | .number checked => [checked.source.id]
   | .string checked => [checked.source.id]
+  | .extractor checked => [checked.source.id]
 
 end CheckedAddressedTimeComponent
 
@@ -162,6 +180,8 @@ inductive AddressedTimeConstructionComponentElabError where
   | declarationNotAdmitted (position : TimeComponentPosition)
       (path : List String)
   | constantNotAdmitted (position : TimeComponentPosition) (source : String)
+  | extractorMismatch (position : TimeComponentPosition)
+      (actual : TimeNumericPart)
   deriving Repr, DecidableEq
 
 inductive AddressedTimeConstructionElabError where
@@ -253,6 +273,38 @@ private def checkAddressedTimeComponent
               throw (.declarationNotAdmitted position declaration.path)
         else
           throw (.sourceScope targetPath declaration.path)
+  | .extractor part reference =>
+      if position.extractor != part then
+        throw (.extractorMismatch position part)
+      else match hResolved :
+          model.resolveFieldDeclarationUnchecked declaringGroup reference with
+      | .error cause => throw (.source position cause)
+      | .ok declaration =>
+        if declaration.id == targetField then
+          throw (.targetSelfReference targetField)
+        else if hScope : declaration.repetitionBoundBy targetScope = true then
+          match hTemporal : declaration.toTemporalField? with
+          | none => throw (.sourceKind position declaration.path
+              declaration.policy.kind.surfaceKind)
+          | some source =>
+            if hAdmitted : model.admitsTimeExtractorComponentField
+                position part source = true then
+              pure (.extractor {
+                position
+                part
+                declaringGroup
+                reference
+                declaration
+                source
+                resolved := hResolved
+                sourceTemporal := hTemporal
+                scopeBound := hScope
+                admitted := hAdmitted
+              })
+            else
+              throw (.declarationNotAdmitted position declaration.path)
+        else
+          throw (.sourceScope targetPath declaration.path)
 
 private def checkAddressedTimeComponents
     (model : FlatModel) (declaringGroup : GroupPath)
@@ -288,7 +340,7 @@ structure CheckedAddressedTimeConstructionComputation
   targetNotReferenced :
     components.referencesField checkedTarget.targetField = false
 
-/-- Check target placement and exact Time policy before resolving each constant, Number, or String component in authored order. -/
+/-- Check target placement and exact Time policy before resolving each constant, Number, String, or direct temporal-extractor component in authored order. -/
 def checkAddressedTimeConstructionComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceAddressedTimeComponents) :
@@ -474,6 +526,21 @@ def read (checked : CheckedAddressedTimeStringField model targetScope)
 
 end CheckedAddressedTimeStringField
 
+namespace CheckedAddressedTimeExtractorField
+
+def read (checked : CheckedAddressedTimeExtractorField model targetScope)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedTimeConstructionFault TimeConstructionComponent := do
+  let path ← environment.pathForScope checked.declaration.repeatableScope
+    |>.mapError (.sourceEnvironment checked.source.id)
+  let cell ← input.read { field := checked.source.id, path }
+    |>.mapError (fun cause => .component (.document cause))
+  CheckedTimeExtractorField.classifyTimeExtractorComponent checked.source.id
+    checked.source.kind checked.part (observeCell .computation cell)
+      |>.mapError .component
+
+end CheckedAddressedTimeExtractorField
+
 namespace CheckedAddressedTimeComponent
 
 def read (checked : CheckedAddressedTimeComponent model targetScope)
@@ -483,6 +550,7 @@ def read (checked : CheckedAddressedTimeComponent model targetScope)
   | .constant value => pure (.value value)
   | .number field => field.read input environment
   | .string field => field.read input environment
+  | .extractor field => field.read input environment
 
 end CheckedAddressedTimeComponent
 

@@ -46,6 +46,20 @@ private def projectMinuteText :=
 private def rowSecondText :=
   stringComponent 9 "RowSecondText" ["Order", "Projects", "Tasks"] [10, 20]
 
+private def temporalComponent (id : FieldId) (name : String)
+    (groupPath : GroupPath) (scope : List RepeatableLevel)
+    (kind : TemporalKind) (components : TemporalComponents) (format : String) : FlatFieldDecl := {
+  id, name, groupPath, repeatableScope := scope
+  policy := { kind := .temporal kind components }
+  temporalTargetPolicy := some { format }
+}
+
+private def rootStamp := temporalComponent 10 "RootStamp" ["Order"] [] .dateTime TemporalComponents.now "yyyy-MM-dd'T'HH:mm:ss"
+
+private def projectTime := temporalComponent 11 "ProjectTime" ["Order", "Projects"] [10] .time TemporalComponents.time "HH:mm:ss"
+
+private def rowStamp := temporalComponent 12 "RowStamp" ["Order", "Projects", "Tasks"] [10, 20] .dateTime TemporalComponents.now "yyyy-MM-dd'T'HH:mm:ss"
+
 private def target : FlatFieldDecl := {
   id := 4
   name := "SelectedTime"
@@ -68,7 +82,7 @@ private def siblingHour :=
 
 private def model : FlatModel := {
   fields := [rootHour, projectMinute, rowSecond, target, textSource, siblingHour,
-    rootHourText, projectMinuteText, rowSecondText]
+    rootHourText, projectMinuteText, rowSecondText, rootStamp, projectTime, rowStamp]
   repeatableGroups := [
     { level := 10, path := ["Order", "Projects"], repeatability := some 3 },
     { level := 20, path := ["Order", "Projects", "Tasks"], repeatability := some 3 },
@@ -101,6 +115,18 @@ private def stringOperation? :
   (checkAddressedTimeConstructionComputation model
     ["Order", "Projects", "Tasks"] target.id stringComponents).toOption
 
+private def extractorComponents : SurfaceAddressedTimeComponents :=
+  .second
+    (.extractor .hour (absolute ["Order"] "RootStamp"))
+    (.extractor .minute (absolute ["Order", "Projects"] "ProjectTime"))
+    (.extractor .second
+      (absolute ["Order", "Projects", "Tasks"] "RowStamp"))
+
+private def extractorOperation? :
+    Option (CheckedAddressedTimeConstructionComputation model) :=
+  (checkAddressedTimeConstructionComputation model
+    ["Order", "Projects", "Tasks"] target.id extractorComponents).toOption
+
 private def typedMix? :
     Option (CheckedAddressedTimeConstructionComputation model) :=
   (checkAddressedTimeConstructionComputation model
@@ -109,6 +135,17 @@ private def typedMix? :
       (.number (absolute ["Order"] "RootHour"))
       (.string (absolute ["Order", "Projects"] "ProjectMinuteText"))
       (.constant "9")))
+    |>.toOption
+
+private def extractorMix? :
+    Option (CheckedAddressedTimeConstructionComputation model) :=
+  (checkAddressedTimeConstructionComputation model
+    ["Order", "Projects", "Tasks"] target.id
+    (.second
+      (.number (absolute ["Order"] "RootHour"))
+      (.string (absolute ["Order", "Projects"] "ProjectMinuteText"))
+      (.extractor .second
+        (absolute ["Order", "Projects", "Tasks"] "RowStamp"))))
     |>.toOption
 
 private def staticError? (components : SurfaceAddressedTimeComponents) :
@@ -168,6 +205,16 @@ private def timeCell (path : List Nat) (stored : String)
   stored
   raw := .parsed (.temporal (.time { epochMillis := 0 } value))
 }
+
+private def temporalCell (field : FieldId) (path : List Nat)
+    (stored : String) (value : TemporalValue) : ClassifiedCellInput := {
+  address := address field path, stored, raw := .parsed (.temporal value) }
+
+private def dateTimeValue (hour minute second : Nat) (valid : hour < 24 ∧ minute < 60 ∧ second < 60) : TemporalValue :=
+  .dateTime { epochMillis := 0 } { year := 2024, month := 6, day := 1 } (clock hour minute second valid) .storedGregorian
+
+private def timeValue (hour minute second : Nat) (valid : hour < 24 ∧ minute < 60 ∧ second < 60) : TemporalValue :=
+  .time { epochMillis := 0 } (clock hour minute second valid)
 
 private def prepared : PreparedFlatStringContext model
     builtinStringPatternCompiler :=
@@ -334,6 +381,72 @@ private def stringCorrelationInput? := document? [
 private def stringCorrelationResult? : Option CorrelationSummary :=
   correlationResultFor? stringOperation? stringCorrelationInput?
 
+private def extractorCorrelationInput? := document? [
+    outerRow 1, outerRow 2,
+    innerRow 1 1, innerRow 1 2, innerRow 2 1] [
+  temporalCell rootStamp.id [] "2024-06-01T05:00:00"
+    (dateTimeValue 5 0 0 (by decide)),
+  temporalCell projectTime.id [1] "00:02:00" (timeValue 0 2 0 (by decide)),
+  temporalCell projectTime.id [2] "00:04:00" (timeValue 0 4 0 (by decide)),
+  temporalCell rowStamp.id [1, 1] "2024-06-01T00:00:09"
+    (dateTimeValue 0 0 9 (by decide)),
+  temporalCell rowStamp.id [1, 2] "2024-06-01T00:00:10"
+    (dateTimeValue 0 0 10 (by decide)),
+  temporalCell rowStamp.id [2, 1] "2024-06-01T00:00:09"
+    (dateTimeValue 0 0 9 (by decide)),
+  timeCell [1, 1] "05:02:09" (clock 5 2 9 (by decide)),
+  timeCell [1, 2] "12:34:56" (clock 12 34 56 (by decide))]
+
+private def extractorCorrelationResult? : Option CorrelationSummary :=
+  correlationResultFor? extractorOperation? extractorCorrelationInput?
+
+private def extractorFailureInput? := document? [
+    outerRow 1, outerRow 2,
+    innerRow 1 1, innerRow 2 1, innerRow 2 2, innerRow 2 3] [
+  temporalCell rootStamp.id [] "2024-06-01T05:00:00"
+    (dateTimeValue 5 0 0 (by decide)),
+  temporalCell projectTime.id [2] "00:02:00" (timeValue 0 2 0 (by decide)),
+  temporalCell rowStamp.id [1, 1] "2024-06-01T00:00:09"
+    (dateTimeValue 0 0 9 (by decide)),
+  { address := address rowStamp.id [2, 2], stored := "bad",
+    raw := .rejected .dateFormat },
+  temporalCell rowStamp.id [2, 3] "2024-06-01T00:00:09"
+    (dateTimeValue 0 0 9 (by decide)),
+  timeCell [1, 1] "12:34:56" (clock 12 34 56 (by decide)),
+  timeCell [2, 1] "12:34:56" (clock 12 34 56 (by decide)),
+  timeCell [2, 2] "12:34:56" (clock 12 34 56 (by decide)),
+  timeCell [2, 3] "12:34:56" (clock 12 34 56 (by decide))]
+
+private def extractorFailureOutcomes? : Option (List OutcomeSummary) := do
+  let operation ← extractorOperation?
+  let input ← extractorFailureInput?
+  let outcomes ← operation.execute input |>.toOption
+  pure (outcomes.map summarizeOutcome)
+
+private def earlierMissingExtractorInput? := document? [
+    outerRow 1, innerRow 1 1, innerRow 1 2] [
+  temporalCell projectTime.id [1] "00:02:00" (timeValue 0 2 0 (by decide)),
+  { address := address rowStamp.id [1, 1], stored := "bad",
+    raw := .rejected .dateFormat },
+  temporalCell rowStamp.id [1, 2] "2024-06-01T00:00:09"
+    (dateTimeValue 0 0 9 (by decide)),
+  timeCell [1, 1] "12:34:56" (clock 12 34 56 (by decide)),
+  timeCell [1, 2] "12:34:56" (clock 12 34 56 (by decide))]
+
+private def earlierMissingExtractorOutcomes? : Option (List OutcomeSummary) := do
+  let operation ← extractorOperation?
+  let input ← earlierMissingExtractorInput?
+  let outcomes ← operation.execute input |>.toOption
+  pure (outcomes.map summarizeOutcome)
+
+private def noTargetRowsExtractorOutcomes? : Option (List OutcomeSummary) := do
+  let operation ← extractorOperation?
+  let input ← document? [] [
+    temporalCell rootStamp.id [] "2024-06-01T05:00:00"
+      (dateTimeValue 5 0 0 (by decide))]
+  let outcomes ← operation.execute input |>.toOption
+  pure (outcomes.map summarizeOutcome)
+
 private def stringFailureInput? := document? [
     outerRow 1, outerRow 2,
     innerRow 1 1, innerRow 2 1, innerRow 2 2, innerRow 2 3] [
@@ -398,6 +511,21 @@ example : constantFieldMix?.map (·.fieldDependencies) =
 example : stringOperation?.isSome = true ∧
     typedMix?.map (·.fieldDependencies) =
       some [rootHour.id, projectMinuteText.id] := by
+  native_decide
+
+/- Direct Time and DateTime extractors retain their root, enclosing-parent, and leaf scopes, and may mix with Number and String components without changing authored dependency order. -/
+example : extractorOperation?.isSome = true ∧
+    extractorMix?.map (·.fieldDependencies) =
+      some [rootHour.id, projectMinuteText.id, rowStamp.id] := by
+  native_decide
+
+/- Extractor tokens are position-specific, and non-temporal sources fail at the source-kind gate. -/
+example : staticError? (.hour (.extractor .minute
+      (absolute ["Order"] "RootStamp"))) =
+      some (.component (.extractorMismatch .hour .minute)) ∧
+    staticError? (.hour (.extractor .hour
+      (absolute ["Order"] "TextSource"))) =
+      some (.component (.sourceKind .hour textSource.path .string)) := by
   native_decide
 
 /- The String gate is independent of component position once placement is bound. -/
@@ -483,6 +611,27 @@ example : stringCorrelationResult? = some ({
   } : CorrelationSummary) := by
   native_decide
 
+/- Direct temporal extractors project typed clocks at their own bound scopes while preserving exact target identity, ordinary source equality, and retained-action application. -/
+example : extractorCorrelationResult? = some ({
+    dependencies := [rootStamp.id, projectTime.id, rowStamp.id]
+    successes := [
+      (address target.id [1, 1], "05:02:09"),
+      (address target.id [1, 2], "05:02:10"),
+      (address target.id [2, 1], "05:04:09")
+    ]
+    changes := [
+      (address target.id [1, 2], "05:02:10"),
+      (address target.id [2, 1], "05:04:09")
+    ]
+    cleared := []
+    applied := [
+      (false, none),
+      (true, some "05:02:10"),
+      (true, some "05:04:09")
+    ]
+  } : CorrelationSummary) := by
+  native_decide
+
 /- Missing parent and leaf components remain incomplete, formal invalidity remains poison, and only the clean row succeeds. Result application consumes all three retained clears before the one changed value. -/
 example : missingResult? = some ({
     outcomes := [
@@ -550,6 +699,28 @@ example : earlierMissingStringOutcomes? = some [
     { target := address target.id [1, 2], value := none,
       noValue := true, poison := none }
   ] := by
+  native_decide
+
+/- Missing parent and leaf extractors remain incomplete, a reached malformed temporal source remains poison, and the clean sibling succeeds. -/
+example : extractorFailureOutcomes? = some [
+    { target := address target.id [1, 1], value := none,
+      noValue := true, poison := none },
+    { target := address target.id [2, 1], value := none,
+      noValue := true, poison := none },
+    { target := address target.id [2, 2], value := none,
+      noValue := false, poison := some .dateFormat },
+    { target := address target.id [2, 3], value := some "05:02:09",
+      noValue := false, poison := none }
+  ] := by
+  native_decide
+
+/- An earlier missing extractor does not hide a later reached formal failure; no physical target rows trigger any read. -/
+example : earlierMissingExtractorOutcomes? = some [
+      { target := address target.id [1, 1], value := none,
+        noValue := false, poison := some .dateFormat },
+      { target := address target.id [1, 2], value := none,
+        noValue := true, poison := none }
+    ] ∧ noTargetRowsExtractorOutcomes? = some [] := by
   native_decide
 
 end A12Kernel.Conformance.AddressedTimeConstruction

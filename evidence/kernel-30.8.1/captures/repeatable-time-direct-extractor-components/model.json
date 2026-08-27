@@ -1,0 +1,217 @@
+{
+  "header" : {
+    "id" : "TimeFirstFilledProbe_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "TimeFirstFilledProbe_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/TimeProbe",
+        "name" : "TimeProbe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/TimeProbe/Projects",
+            "name" : "Projects",
+            "Group" : {
+              "repeatability" : 4,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/TimeProbe/Projects/Choices",
+                "name" : "Choices",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/TimeProbe/Projects/Choices/SourceTime",
+                    "name" : "SourceTime",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "TimeType",
+                        "TimeType" : {
+                          "format" : "HH:mm:ss"
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/TimeProbe/Projects/Tasks",
+                "name" : "Tasks",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/TimeProbe/Projects/Tasks/SelectedTime",
+                    "name" : "SelectedTime",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "TimeType",
+                        "TimeType" : {
+                          "format" : "HH:mm:ss"
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/TimeProbe/Projects/Tasks/RowHour",
+                    "name" : "RowHour",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0,
+                          "minValue" : 0,
+                          "maxValue" : 23
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/TimeProbe/Projects/Tasks/RowMinute",
+                    "name" : "RowMinute",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0,
+                          "minValue" : 0,
+                          "maxValue" : 59
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/TimeProbe/Projects/Tasks/RowSecond",
+                    "name" : "RowSecond",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType",
+                        "StringType" : {
+                          "errorMessage" : [ {
+                            "locale" : "en_US",
+                            "text" : "Use decimal digits only."
+                          } ],
+                          "maxLength" : 2,
+                          "pattern" : "[0-9]+"
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/TimeProbe/Projects/Tasks/RowStamp",
+                    "name" : "RowStamp",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateTimeType",
+                        "DateTimeType" : {
+                          "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/TimeProbe/Projects/Tasks/SelectedTimeComp",
+                    "name" : "SelectedTimeComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../SelectedTime",
+                      "computationAlternatives" : [ {
+                        "operation" : "Time(HoursFromTime(/TimeProbe/RootStamp), MinutesFromTime(../ParentTime), SecondsFromTime(RowStamp))"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "computed time differs"
+                      } ]
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/TimeProbe/Projects/ParentMinute",
+                "name" : "ParentMinute",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Use decimal digits only."
+                      } ],
+                      "maxLength" : 2,
+                      "pattern" : "[0-9]+"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/TimeProbe/Projects/ParentTime",
+                "name" : "ParentTime",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TimeType",
+                    "TimeType" : {
+                      "format" : "HH:mm:ss"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/TimeProbe/RootHour",
+            "name" : "RootHour",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Use decimal digits only."
+                  } ],
+                  "maxLength" : 2,
+                  "pattern" : "[0-9]+"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/TimeProbe/RootStamp",
+            "name" : "RootStamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

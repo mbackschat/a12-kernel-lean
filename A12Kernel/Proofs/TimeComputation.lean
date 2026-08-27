@@ -101,6 +101,14 @@ theorem checkedAddressedTimeConstructionComputation_excludes_target
     operation.referencesField operation.checkedTarget.targetField = false :=
   operation.targetNotReferenced
 
+/-- A checked addressed extractor retains exactly the token selected by its constructor position. -/
+theorem checkedAddressedTimeExtractorField_position_matches
+    (checked : CheckedAddressedTimeExtractorField model targetScope) :
+    checked.position.extractor = checked.part := by
+  have admitted := checked.admitted
+  unfold FlatModel.admitsTimeExtractorComponentField at admitted
+  split at admitted <;> simp_all
+
 /-- Repeatable construction retains the operation and delegates exact row outcomes to ordinary source-relative Time classification. -/
 theorem addressedTimeConstruction_executeResult_projects
     (operation : CheckedAddressedTimeConstructionComputation model)
