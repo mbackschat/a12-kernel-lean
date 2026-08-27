@@ -22,7 +22,7 @@ Retained Kernel evidence separately bounds correspondence to A12 Kernel 30.8.1. 
 | Consumer type | Current status | First concrete task |
 |---|---|---|
 | [Execute](EXECUTE.md) | green | Exact-address DateTime calendar-day execution and application |
-| [Translate](TRANSLATE.md) | designed | Computed-target refusal to exact external diagnostic or typed local refusal |
+| [Translate](TRANSLATE.md) | green | Computed-target refusal to exact external diagnostic or typed local refusal |
 | [Transform](TRANSFORM.md) | designed | Checked numeric-operation identity and unsafe nonidentity boundary |
 | [Compile](COMPILE.md) | designed | Specialized finite condition evaluator with exhaustive refinement |
 | [Analyze](ANALYZE.md) | green; cycle probe amber | SMT-backed presence reachability plus bounded computation-cycle analysis |
