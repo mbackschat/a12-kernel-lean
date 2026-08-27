@@ -95,27 +95,33 @@ theorem timeComputationRun_sourceValueChangedAt_different
     (computed : TimeComputedInstance Target) :
     TimeComputationRunView.scalarConstructionReportsChanged computed = true := rfl
 
-/-- Repeatable constant construction retains the operation and delegates exact row outcomes to ordinary source-relative Time classification. -/
-theorem addressedTimeConstantConstruction_executeResult_projects
-    (operation : CheckedAddressedTimeConstantConstructionComputation model)
+/-- The repeatable construction certificate excludes its target from every addressed Number dependency. -/
+theorem checkedAddressedTimeConstructionComputation_excludes_target
+    (operation : CheckedAddressedTimeConstructionComputation model) :
+    operation.referencesField operation.checkedTarget.targetField = false :=
+  operation.targetNotReferenced
+
+/-- Repeatable construction retains the operation and delegates exact row outcomes to ordinary source-relative Time classification. -/
+theorem addressedTimeConstruction_executeResult_projects
+    (operation : CheckedAddressedTimeConstructionComputation model)
     (input : CheckedDocument model) (messages : List ResidualMessage)
-    (outcomes : List AddressedTimeConstantConstructionOutcome)
-    (view : AddressedTimeConstantConstructionRunView model ResidualMessage)
+    (outcomes : List AddressedTimeConstructionOutcome)
+    (view : AddressedTimeConstructionRunView model ResidualMessage)
     (executed : operation.execute input = .ok outcomes)
     (produced : operation.executeResult input messages = .ok view) :
     view.operation = operation ∧
       view.time = TimeComputationRunView.fromOutcomesAt
         input.sourceTimeTargetStateAt messages
         (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
-  rw [CheckedAddressedTimeConstantConstructionComputation.executeResult,
+  rw [CheckedAddressedTimeConstructionComputation.executeResult,
     executed] at produced
   simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
   subst view
   exact ⟨rfl, rfl⟩
 
-/-- Repeatable constant construction applies exactly the ordinary Time action fold to a separately supplied same-model destination. -/
-theorem addressedTimeConstantConstruction_applyToChecked_delegates
-    (view : AddressedTimeConstantConstructionRunView model ResidualMessage)
+/-- Repeatable construction applies exactly the ordinary Time action fold to a separately supplied same-model destination. -/
+theorem addressedTimeConstruction_applyToChecked_delegates
+    (view : AddressedTimeConstructionRunView model ResidualMessage)
     (destination : CheckedDocument model) :
     view.applyToChecked destination =
       view.time.applyTo destination.sourceTimeTargetStateAt := by

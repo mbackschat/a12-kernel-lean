@@ -133,6 +133,28 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Compatibility:** treating every `Time(...)` construction as always changed overwrites a different destination clock for a source-identical repeatable row. Treating every construction as ordinary equality loses the independently measured nonrepeatable write. A correct implementation must retain placement in the classification policy.
 - **Acceptance:** canonical peer prose states the nonrepeatable-versus-repeatable split without a causal claim; maintained Kernel cases lock the changed-action and generated-message matrix above on both strategies and keep the nonrepeatable source-identical positive control; any complete-success claim is asserted only if the selected peer result owner exposes it; the handback supplies the exact reviewed revision and per-surface disposition.
 
+<a id="spec-2026-08-27-04"></a>
+<a id="spec-2026-08-27-04--repeatable-number-backed-time-construction-reads-each-component-at-its-own-bound-scope"></a>
+
+### SPEC-2026-08-27-04 - Repeatable Number-backed `Time(...)` construction reads each component at its own bound scope
+
+- **Status:** pending
+- **Kind:** semantic extension, locally originated and locally measured
+- **Local revision:** resolve with the introducing-commit recipe in the ledger contract above; the introducing commit cannot name itself.
+- **a12-dmkits basis revision:** `25e048ea73e10bd58c6950b1d6104dd5809535df`, clean before and after structured authoring, the runtime probe, and the byte-identical retained replay.
+- **Kernel behavior:** 30.8.1. The persisted operation `Time(/TimeProbe/RootHour, ../ParentMinute, RowSecond)` is admitted on a two-level repeatable whole-second Time target. Dynamic Groovy and generated Java agree on root fan-out, enclosing-parent correlation, leaf-local reads, source-identical omission, exact changed values, missing-component clearing, later reached formal invalidity, and no-target-row exhaustion.
+- **Canonical clause:** [`09-computations.md` §§5 and 6](../spec/09-computations.md#5-where-a-computation-runs--scope-and-the-parallel-join), specializing the ordinary target-bound operand rule to a repeatable `Time(...)` component prefix.
+- **Delta:** each admitted Number component reads at its declaration's own repetition scope inside the current physical target environment. Root Hour `5` reaches every task, parent Minutes `2` and `4` reach only their own leaves, and row Seconds `9`, `10`, and `9` produce exact `05:02:09`, `05:02:10`, and `05:04:09`.
+- **Delta:** a missing parent or row component clears only the affected stale target. A malformed row component remains in `formalErrorsInOperands` even when the earlier root component is missing, while its clean sibling has no formal entry; both rows clear.
+- **Delta:** a source-identical row is absent from the changed projection, and no physical target rows produce no computation outcome or message. The runtime artifact does not expose the complete successful collection or materialized application.
+- **Basis:** retained model, request, and byte-identically reproduced artifact at the [repeatable Number-component checkpoint](SOURCES.md#src-time-repeatable-number-components). The artifact itself records the exact clean producer revision, dmtool version, Kernel versions, and agreement of both strategies.
+- **Requested a12-dmkits reconciliation:** extend the existing repeatable Time-construction owner, not the harness. Retain a checked component source with its exact declaration and bound repetition scope, read each source at that scope inside the target row, and reuse the existing Time construction, result, and application owners.
+- **Requested a12-dmkits reconciliation:** add the smallest maintained static and runtime matrix for one root/enclosing/leaf three-Number prefix, two parents with distinct Minutes, two sibling leaves with distinct Seconds, source-identical/stale/missing/malformed/no-row controls, and exact changed and formal channels on both Kernel strategies plus the independent interpreter. State complete-success or application behavior only where the selected peer result surface exposes it. Add no command, schema, artifact format, protocol, or public API.
+- **Scope limit:** one full three-Number prefix, one `HH:mm:ss` target below two finite repeatable levels, root/enclosing/leaf sources, two parents and at most three leaves, missing components, one malformed leaf, and no-row execution.
+- **Scope limit:** repeatable constant/Number mixing, String and extractor components, world-dependent components, preconditions, alternatives, materialized topology, later validation execution, pointer normalization, and generic scheduling remain outside the retained Kernel denominator.
+- **Compatibility:** reading every component at the leaf path loses root and enclosing values; reading an enclosing component globally leaks one parent's value into another; converting a missing component to fixed zero manufactures a clock; stopping after an earlier missing component drops a later reached formal error; and iterating declared capacity invents target outcomes where no physical row exists.
+- **Acceptance:** canonical peer prose and maintained cases state the own-scope read rule and scope limits, both Kernel strategies plus the interpreter agree on the exact matrix above, complete-success and application claims remain limited to exposed channels, existing Time construction/result owners remain singular, and the handback supplies the exact reviewed revision plus per-surface disposition.
+
 <a id="spec-2026-08-26-01"></a>
 <a id="spec-2026-08-26-01--two-level-separate-destination-application-scopes-inner-predecessor-padding-to-the-addressed-outer-row"></a>
 

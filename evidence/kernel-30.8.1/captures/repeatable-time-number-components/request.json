@@ -1,0 +1,88 @@
+{
+  "model": "model.json",
+  "locale": "en_US",
+  "observe": ["validateFull", "compute"],
+  "rows": [
+    {
+      "name": "root-parent-row-correlation",
+      "documentInline": {
+        "TimeProbe": {
+          "RootHour": 5,
+          "Projects": [
+            {
+              "ParentMinute": 2,
+              "Choices": [],
+              "Tasks": [
+                {"RowSecond": 9, "SelectedTime": "05:02:09"},
+                {"RowSecond": 10, "SelectedTime": "00:00:00"}
+              ]
+            },
+            {
+              "ParentMinute": 4,
+              "Choices": [],
+              "Tasks": [
+                {"RowSecond": 9, "SelectedTime": "00:00:00"}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "missing-parent-and-leaf",
+      "documentInline": {
+        "TimeProbe": {
+          "RootHour": 5,
+          "Projects": [
+            {
+              "Choices": [],
+              "Tasks": [
+                {"RowSecond": 9, "SelectedTime": "12:34:56"}
+              ]
+            },
+            {
+              "ParentMinute": 2,
+              "Choices": [],
+              "Tasks": [
+                {"SelectedTime": "12:34:56"},
+                {"RowSecond": 9, "SelectedTime": "12:34:56"}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "later-formal-dominates-missing",
+      "documentInline": {
+        "TimeProbe": {
+          "Projects": [
+            {
+              "ParentMinute": 2,
+              "Choices": [],
+              "Tasks": [
+                {"RowSecond": "bad", "SelectedTime": "12:34:56"},
+                {"RowSecond": 9, "SelectedTime": "12:34:56"}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "no-target-rows",
+      "documentInline": {
+        "TimeProbe": {
+          "RootHour": 5,
+          "Projects": [
+            {
+              "ParentMinute": 2,
+              "Choices": [],
+              "Tasks": []
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

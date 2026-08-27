@@ -52,22 +52,28 @@ def extractor : TimeComponentPosition → TimeNumericPart
 
 end TimeComponentPosition
 
-/-- Exact Number declaration gate used by one `Time(...)` component position. The
-    two-character alternative is the declaration's complete stored-length bound, not its
-    integer-digit cap. -/
-def FlatModel.admitsTimeNumberField (model : FlatModel)
+/-- Exact Number declaration gate shared by scalar and addressed `Time(...)` component positions. Placement is certified separately, so this predicate owns only kind and numeric policy. The two-character alternative is the declaration's complete stored-length bound, not its integer-digit cap. -/
+def FlatModel.admitsTimeNumberComponentField (model : FlatModel)
     (position : TimeComponentPosition) (source : FlatNumberField) : Bool :=
   match model.lookupUniqueId source.id with
   | .error _ => false
   | .ok declaration =>
       let constraints := declaration.numericTargetConstraints
-      declaration.repeatableScope.isEmpty &&
-        declaration.toNumberField? == some source &&
+      declaration.toNumberField? == some source &&
         source.info.scale == 0 &&
         constraints.minFractionalDigits == 0 &&
         (constraints.maxStoredLength == some 2 ||
           constraints.maximum == some position.maximum) &&
         declaration.numberDomainNonnegative source
+
+/-- Scalar specialization of the shared Number-component policy gate. -/
+def FlatModel.admitsTimeNumberField (model : FlatModel)
+    (position : TimeComponentPosition) (source : FlatNumberField) : Bool :=
+  match model.lookupUniqueId source.id with
+  | .error _ => false
+  | .ok declaration =>
+      declaration.repeatableScope.isEmpty &&
+        model.admitsTimeNumberComponentField position source
 
 /-- One ordinary Number field whose declaration carries the exact component certificate. -/
 structure CheckedTimeNumberField (model : FlatModel) where
@@ -297,9 +303,8 @@ inductive TimeComponentsFault where
 
 namespace CheckedTimeNumberField
 
-/-- Project one checked Number cell to the constructor component domain without applying
-    arithmetic truncation or accepting a mismatched runtime payload. -/
-def classify (checked : CheckedTimeNumberField model)
+/-- Project one checked Number cell to the constructor component domain without applying arithmetic truncation or accepting a mismatched runtime payload. The classifier is placement-neutral; scalar and addressed readers supply the exact field identity. -/
+def classifyTimeNumberComponent (field : FieldId)
     (observation : CellObservation Value) :
     Except TimeComponentsFault TimeConstructionComponent :=
   match observation with
@@ -309,8 +314,14 @@ def classify (checked : CheckedTimeNumberField model)
       if value.den = 1 then
         pure (.value value.num)
       else
-        throw (.nonIntegralPayload checked.source.id value)
-  | .value _ => throw (.payloadKind checked.source.id)
+        throw (.nonIntegralPayload field value)
+  | .value _ => throw (.payloadKind field)
+
+/-- Scalar specialization of the shared Number-component classifier. -/
+def classify (checked : CheckedTimeNumberField model)
+    (observation : CellObservation Value) :
+    Except TimeComponentsFault TimeConstructionComponent :=
+  classifyTimeNumberComponent checked.source.id observation
 
 /-- Read one certified scalar component through the immutable checked document. -/
 def read (checked : CheckedTimeNumberField model)

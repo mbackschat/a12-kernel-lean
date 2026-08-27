@@ -6,7 +6,7 @@ import A12Kernel.Semantics.TimeConstruction
 
 /-! # Checked `Time(...)` target execution
 
-This capsule certifies and executes bounded `Time(...)` prefixes through an exact `HH:mm:ss` target. Nonrepeatable prefixes may read checked document or world-dependent components and use scalar result/application. A repeatable prefix currently admits constants only, executes at every physical target row, and retains exact-address result/application. The clock remains zone-free; the runtime's 1970 date is only a transport representation. Wider formats, field-backed repeatable components, scheduling, and message construction remain separate.
+This capsule certifies and executes bounded `Time(...)` prefixes through an exact `HH:mm:ss` target. Nonrepeatable prefixes may read checked document or world-dependent components and use scalar result/application. A repeatable prefix admits constants and Number fields at any scope bound by the target row, executes at every physical target row, and retains exact-address result/application. The clock remains zone-free; the runtime's 1970 date is only a transport representation. Wider formats, String and extractor-backed repeatable components, scheduling, and message construction remain separate.
 -/
 
 namespace A12Kernel
@@ -66,70 +66,223 @@ structure CheckedWorldTimeConstructionComputation (model : FlatModel) where
   targetNotReferenced :
     components.referencesField target.checked.target.id = false
 
-/-- Constant-only component syntax for one repeatable `Time(...)` target. Field-backed components require a separate addressed operand certificate. -/
+/-- Compatibility surface for the retained constant-only repeatable `Time(...)` route. -/
 abbrev SurfaceAddressedTimeConstantComponents := TimeComponentPrefix String
 
-/-- Position-checked constants for one repeatable `Time(...)` target. -/
-abbrev CheckedAddressedTimeConstantComponents := TimeComponentPrefix Int
+/-- One repeatable `Time(...)` component whose field form is resolved relative to the computation group. -/
+inductive SurfaceAddressedTimeComponent where
+  | constant (source : String)
+  | number (source : SurfaceFieldPath)
+  deriving Repr, DecidableEq
 
-inductive AddressedTimeConstantConstructionElabError where
+/-- A zero-through-three repeatable component prefix over quoted constants and Number fields. -/
+abbrev SurfaceAddressedTimeComponents :=
+  TimeComponentPrefix SurfaceAddressedTimeComponent
+
+/-- One Number component whose declaration policy and repetition scope are certified for the target row. -/
+structure CheckedAddressedTimeNumberField (model : FlatModel)
+    (targetScope : List RepeatableLevel) where
+  position : TimeComponentPosition
+  declaringGroup : GroupPath
+  reference : SurfaceFieldPath
+  declaration : FlatFieldDecl
+  source : FlatNumberField
+  resolved : model.resolveFieldDeclarationUnchecked declaringGroup reference =
+    .ok declaration
+  sourceNumber : declaration.toNumberField? = some source
+  scopeBound : declaration.repetitionBoundBy targetScope = true
+  admitted : model.admitsTimeNumberComponentField position source = true
+
+/-- One checked repeatable component retaining either its decoded constant or exact addressed Number source. -/
+inductive CheckedAddressedTimeComponent (model : FlatModel)
+    (targetScope : List RepeatableLevel) where
+  | constant (value : Int)
+  | number (checked : CheckedAddressedTimeNumberField model targetScope)
+
+namespace CheckedAddressedTimeComponent
+
+def referencesField (component : CheckedAddressedTimeComponent model targetScope)
+    (field : FieldId) : Bool :=
+  match component with
+  | .constant _ => false
+  | .number checked => checked.source.id == field
+
+def fieldDependencies :
+    CheckedAddressedTimeComponent model targetScope → List FieldId
+  | .constant _ => []
+  | .number checked => [checked.source.id]
+
+end CheckedAddressedTimeComponent
+
+abbrev CheckedAddressedTimeComponents (model : FlatModel)
+    (targetScope : List RepeatableLevel) :=
+  TimeComponentPrefix (CheckedAddressedTimeComponent model targetScope)
+
+namespace CheckedAddressedTimeComponents
+
+def referencesField (components : CheckedAddressedTimeComponents model targetScope)
+    (field : FieldId) : Bool :=
+  components.referencesFieldWith CheckedAddressedTimeComponent.referencesField field
+
+def fieldDependencies : CheckedAddressedTimeComponents model targetScope →
+    List FieldId
+  | .empty => []
+  | .hour hour => hour.fieldDependencies
+  | .minute hour minute =>
+      hour.fieldDependencies ++ minute.fieldDependencies
+  | .second hour minute second =>
+      hour.fieldDependencies ++ minute.fieldDependencies ++ second.fieldDependencies
+
+end CheckedAddressedTimeComponents
+
+inductive AddressedTimeConstructionComponentElabError where
+  | source (position : TimeComponentPosition) (cause : ResolveError)
+  | sourceKind (position : TimeComponentPosition) (path : List String)
+      (actual : SurfaceScalarKind)
+  | sourceScope (target source : List String)
+  | targetSelfReference (field : FieldId)
+  | declarationNotAdmitted (position : TimeComponentPosition)
+      (path : List String)
+  | constantNotAdmitted (position : TimeComponentPosition) (source : String)
+  deriving Repr, DecidableEq
+
+inductive AddressedTimeConstructionElabError where
   | target (cause : ResolveError)
   | targetOutsideDeclaringGroup (path declaringGroup : GroupPath)
   | targetNotRepeatable (path : List String)
   | targetPolicy (cause : TimeTargetElabError)
-  | component (cause : TimeComponentsElabError)
+  | component (cause : AddressedTimeConstructionComponentElabError)
   deriving Repr, DecidableEq
 
 private def mapAddressedTimeConstructionTargetError :
     AddressedRepeatableTargetElabError →
-      AddressedTimeConstantConstructionElabError
+      AddressedTimeConstructionElabError
   | .target cause => .target cause
   | .targetOutsideDeclaringGroup path declaringGroup =>
       .targetOutsideDeclaringGroup path declaringGroup
   | .targetNotRepeatable path => .targetNotRepeatable path
 
 private def decodeAddressedTimeConstant (position : TimeComponentPosition)
-    (source : String) : Except TimeComponentsElabError Int :=
+    (source : String) : Except AddressedTimeConstructionComponentElabError Int :=
   match position.decodeConstant? source with
   | some value => pure value
   | none => throw (.constantNotAdmitted position source)
 
-private def checkAddressedTimeConstantComponents :
-    SurfaceAddressedTimeConstantComponents →
-      Except TimeComponentsElabError CheckedAddressedTimeConstantComponents
-  | .empty => pure .empty
-  | .hour hour => .hour <$> decodeAddressedTimeConstant .hour hour
-  | .minute hour minute =>
-      .minute <$> decodeAddressedTimeConstant .hour hour <*>
-        decodeAddressedTimeConstant .minute minute
-  | .second hour minute second =>
-      .second <$> decodeAddressedTimeConstant .hour hour <*>
-        decodeAddressedTimeConstant .minute minute <*>
-        decodeAddressedTimeConstant .second second
+private def checkAddressedTimeComponent
+    (model : FlatModel) (declaringGroup : GroupPath)
+    (targetField : FieldId) (targetScope : List RepeatableLevel)
+    (targetPath : List String) (position : TimeComponentPosition) :
+    SurfaceAddressedTimeComponent →
+      Except AddressedTimeConstructionComponentElabError
+        (CheckedAddressedTimeComponent model targetScope)
+  | .constant source =>
+      .constant <$> decodeAddressedTimeConstant position source
+  | .number reference =>
+      match hResolved :
+          model.resolveFieldDeclarationUnchecked declaringGroup reference with
+      | .error cause => throw (.source position cause)
+      | .ok declaration =>
+        if declaration.id == targetField then
+          throw (.targetSelfReference targetField)
+        else if hScope : declaration.repetitionBoundBy targetScope = true then
+          match hNumber : declaration.toNumberField? with
+          | none => throw (.sourceKind position declaration.path
+              declaration.policy.kind.surfaceKind)
+          | some source =>
+            if hAdmitted :
+                model.admitsTimeNumberComponentField position source = true then
+              pure (.number {
+                position
+                declaringGroup
+                reference
+                declaration
+                source
+                resolved := hResolved
+                sourceNumber := hNumber
+                scopeBound := hScope
+                admitted := hAdmitted
+              })
+            else
+              throw (.declarationNotAdmitted position declaration.path)
+        else
+          throw (.sourceScope targetPath declaration.path)
 
-/-- One repeatable complete-Time target and a zero-through-three constant component prefix. -/
-structure CheckedAddressedTimeConstantConstructionComputation
+private def checkAddressedTimeComponents
+    (model : FlatModel) (declaringGroup : GroupPath)
+    (targetField : FieldId) (targetScope : List RepeatableLevel)
+    (targetPath : List String) : SurfaceAddressedTimeComponents →
+      Except AddressedTimeConstructionComponentElabError
+        (CheckedAddressedTimeComponents model targetScope)
+  | .empty => pure .empty
+  | .hour hour =>
+      .hour <$> checkAddressedTimeComponent model declaringGroup targetField
+        targetScope targetPath .hour hour
+  | .minute hour minute =>
+      .minute <$> checkAddressedTimeComponent model declaringGroup targetField
+        targetScope targetPath .hour hour <*>
+        checkAddressedTimeComponent model declaringGroup targetField
+          targetScope targetPath .minute minute
+  | .second hour minute second =>
+      .second <$> checkAddressedTimeComponent model declaringGroup targetField
+        targetScope targetPath .hour hour <*>
+        checkAddressedTimeComponent model declaringGroup targetField
+          targetScope targetPath .minute minute <*>
+        checkAddressedTimeComponent model declaringGroup targetField
+          targetScope targetPath .second second
+
+/-- One repeatable complete-Time target and a zero-through-three addressed component prefix. -/
+structure CheckedAddressedTimeConstructionComputation
     (model : FlatModel) where
   private mk ::
   checkedTarget : CheckedAddressedRepeatableTarget model
   target : CheckedTimeTarget model
-  components : CheckedAddressedTimeConstantComponents
+  components : CheckedAddressedTimeComponents model
+    checkedTarget.declaration.repeatableScope
+  targetNotReferenced :
+    components.referencesField checkedTarget.targetField = false
 
-/-- Check target placement and exact Time policy before decoding each constant in authored component order. -/
-def checkAddressedTimeConstantConstructionComputation
+/-- Check target placement and exact Time policy before resolving each constant or Number component in authored order. -/
+def checkAddressedTimeConstructionComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceAddressedTimeConstantComponents) :
-    Except AddressedTimeConstantConstructionElabError
-      (CheckedAddressedTimeConstantConstructionComputation model) := do
+    (authored : SurfaceAddressedTimeComponents) :
+    Except AddressedTimeConstructionElabError
+      (CheckedAddressedTimeConstructionComputation model) := do
   let checkedTarget ←
     checkAddressedRepeatableTarget model declaringGroup targetField
       |>.mapError mapAddressedTimeConstructionTargetError
   let target ← elaborateTimeTargetIn model
     checkedTarget.declaration.repeatableScope targetField
       |>.mapError .targetPolicy
-  let components ←
-    checkAddressedTimeConstantComponents authored |>.mapError .component
-  pure { checkedTarget, target, components }
+  let components ← checkAddressedTimeComponents model declaringGroup targetField
+    checkedTarget.declaration.repeatableScope checkedTarget.declaration.path authored
+      |>.mapError .component
+  if hReference : components.referencesField checkedTarget.targetField = true then
+    throw (.component (.targetSelfReference checkedTarget.targetField))
+  else
+    pure {
+      checkedTarget
+      target
+      components
+      targetNotReferenced := by simpa using hReference
+    }
+
+private def liftAddressedTimeConstants :
+    SurfaceAddressedTimeConstantComponents → SurfaceAddressedTimeComponents
+  | .empty => .empty
+  | .hour hour => .hour (.constant hour)
+  | .minute hour minute =>
+      .minute (.constant hour) (.constant minute)
+  | .second hour minute second =>
+      .second (.constant hour) (.constant minute) (.constant second)
+
+/-- Check target placement and exact Time policy before decoding each constant in authored component order. -/
+def checkAddressedTimeConstantConstructionComputation
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (authored : SurfaceAddressedTimeConstantComponents) :
+    Except AddressedTimeConstructionElabError
+      (CheckedAddressedTimeConstructionComputation model) :=
+  checkAddressedTimeConstructionComputation model declaringGroup targetField
+    (liftAddressedTimeConstants authored)
 
 /-- Pair an already-checked world-aware component prefix with its exact Time target and reject every static or dynamic dependency on that target. -/
 def certifyWorldTimeConstructionComputation
@@ -228,74 +381,108 @@ def executeResult
 
 end CheckedWorldTimeConstructionComputation
 
-namespace CheckedAddressedTimeConstantComponents
-
-/-- Evaluate an already-decoded constant prefix. Every omitted trailing component is the constructor-owned zero. -/
-def evaluate : CheckedAddressedTimeConstantComponents → TimeConstructionResult
-  | .empty => TimeConstructionArity.zero.evaluate .empty .empty .empty
-  | .hour hour =>
-      TimeConstructionArity.hour.evaluate (.value hour) .empty .empty
-  | .minute hour minute =>
-      TimeConstructionArity.minute.evaluate
-        (.value hour) (.value minute) .empty
-  | .second hour minute second =>
-      TimeConstructionArity.second.evaluate
-        (.value hour) (.value minute) (.value second)
-
-end CheckedAddressedTimeConstantComponents
-
-inductive AddressedTimeConstantConstructionFault where
+inductive AddressedTimeConstructionFault where
   | targetRows (cause : ActualRowEnvironmentError)
   | targetEnvironment (cause : EnvBindingError)
+  | sourceEnvironment (field : FieldId) (cause : EnvBindingError)
+  | component (cause : TimeComponentsFault)
   deriving Repr, DecidableEq
 
-structure AddressedTimeConstantConstructionOutcome where
+structure AddressedTimeConstructionOutcome where
   targetField : CellAddr
   outcome : TimeTargetOutcome
   deriving Repr, DecidableEq
 
-structure AddressedTimeConstantConstructionRunView (model : FlatModel)
+structure AddressedTimeConstructionRunView (model : FlatModel)
     (ResidualMessage : Type) where
   private mk ::
-  operation : CheckedAddressedTimeConstantConstructionComputation model
+  operation : CheckedAddressedTimeConstructionComputation model
   time : TimeComputationRunView ResidualMessage CellAddr
 
-namespace CheckedAddressedTimeConstantConstructionComputation
+namespace CheckedAddressedTimeNumberField
+
+def read (checked : CheckedAddressedTimeNumberField model targetScope)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedTimeConstructionFault TimeConstructionComponent := do
+  let path ← environment.pathForScope checked.declaration.repeatableScope
+    |>.mapError (.sourceEnvironment checked.source.id)
+  let cell ← input.read { field := checked.source.id, path }
+    |>.mapError (fun cause => .component (.document cause))
+  CheckedTimeNumberField.classifyTimeNumberComponent checked.source.id
+    (observeCell .computation cell) |>.mapError .component
+
+end CheckedAddressedTimeNumberField
+
+namespace CheckedAddressedTimeComponent
+
+def read (checked : CheckedAddressedTimeComponent model targetScope)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedTimeConstructionFault TimeConstructionComponent :=
+  match checked with
+  | .constant value => pure (.value value)
+  | .number field => field.read input environment
+
+end CheckedAddressedTimeComponent
+
+namespace CheckedAddressedTimeComponents
+
+def evaluate (checked : CheckedAddressedTimeComponents model targetScope)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedTimeConstructionFault TimeConstructionResult :=
+  checked.evaluateWith fun component => component.read input environment
+
+end CheckedAddressedTimeComponents
+
+namespace CheckedAddressedTimeConstructionComputation
+
+/-- Exact authored-order Number dependencies for scheduling and analysis. Constants contribute no edge. -/
+def fieldDependencies
+    (operation : CheckedAddressedTimeConstructionComputation model) :
+    List FieldId :=
+  operation.components.fieldDependencies
+
+/-- Whether the addressed constructor reads one exact Number declaration. -/
+def referencesField
+    (operation : CheckedAddressedTimeConstructionComputation model)
+    (field : FieldId) : Bool :=
+  operation.components.referencesField field
 
 def evaluateOutcome
-    (operation : CheckedAddressedTimeConstantConstructionComputation model) :
-    TimeTargetOutcome :=
-  operation.target.evaluate operation.components.evaluate.asTimeComputationResult
+    (operation : CheckedAddressedTimeConstructionComputation model)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedTimeConstructionFault TimeTargetOutcome := do
+  let result ← operation.components.evaluate input environment
+  pure (operation.target.evaluate result.asTimeComputationResult)
 
 private def evaluateAt
-    (operation : CheckedAddressedTimeConstantConstructionComputation model)
-    (environment : Env) :
-    Except AddressedTimeConstantConstructionFault
-      AddressedTimeConstantConstructionOutcome := do
+    (operation : CheckedAddressedTimeConstructionComputation model)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedTimeConstructionFault AddressedTimeConstructionOutcome := do
   let path ← environment.pathForScope
     operation.checkedTarget.declaration.repeatableScope
       |>.mapError .targetEnvironment
+  let outcome ← operation.evaluateOutcome input environment
   pure {
     targetField := { field := operation.checkedTarget.targetField, path }
-    outcome := operation.evaluateOutcome }
+    outcome }
 
-/-- Execute the constant construction once at every physical target row in document order. -/
+/-- Execute the checked construction once at every physical target row in document order. Each field component reads at its own bound scope inside that row. -/
 def execute
-    (operation : CheckedAddressedTimeConstantConstructionComputation model)
+    (operation : CheckedAddressedTimeConstructionComputation model)
     (input : CheckedDocument model) :
-    Except AddressedTimeConstantConstructionFault
-      (List AddressedTimeConstantConstructionOutcome) := do
+    Except AddressedTimeConstructionFault
+      (List AddressedTimeConstructionOutcome) := do
   let environments ← input.actualRowEnvironments
     operation.checkedTarget.declaration.repeatableScope
       |>.mapError .targetRows
-  environments.mapM operation.evaluateAt
+  environments.mapM (operation.evaluateAt input)
 
 /-- Classify exact row outcomes by ordinary immutable-source clock equality. The scalar constructor's always-changed exception does not cross this repeatable boundary. -/
 def executeResult
-    (operation : CheckedAddressedTimeConstantConstructionComputation model)
+    (operation : CheckedAddressedTimeConstructionComputation model)
     (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
-    Except AddressedTimeConstantConstructionFault
-      (AddressedTimeConstantConstructionRunView model ResidualMessage) := do
+    Except AddressedTimeConstructionFault
+      (AddressedTimeConstructionRunView model ResidualMessage) := do
   let outcomes ← operation.execute input
   pure {
     operation
@@ -303,7 +490,7 @@ def executeResult
       input.sourceTimeTargetStateAt residualMessages
       (outcomes.map fun entry => (entry.targetField, entry.outcome)) }
 
-end CheckedAddressedTimeConstantConstructionComputation
+end CheckedAddressedTimeConstructionComputation
 
 /-- Exact caller-supplied Time destination over a scalar or addressed target-key domain. -/
 abbrev TimeComputationDestination (Target : Type := FieldId) :=
@@ -379,16 +566,16 @@ def applyToChecked (view : TimeComputationRunView ResidualMessage)
 
 end TimeComputationRunView
 
-namespace AddressedTimeConstantConstructionRunView
+namespace AddressedTimeConstructionRunView
 
 /-- Apply only retained row-local changes to a separate same-model destination projection. -/
 def applyToChecked
-    (view : AddressedTimeConstantConstructionRunView model ResidualMessage)
+    (view : AddressedTimeConstructionRunView model ResidualMessage)
     (destination : CheckedDocument model) :
     Except (TemporalValueComputationApplicationError CellAddr)
       (TimeComputationDestination CellAddr) :=
   view.time.applyTo destination.sourceTimeTargetStateAt
 
-end AddressedTimeConstantConstructionRunView
+end AddressedTimeConstructionRunView
 
 end A12Kernel

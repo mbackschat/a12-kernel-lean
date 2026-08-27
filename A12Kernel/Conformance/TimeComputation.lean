@@ -563,11 +563,17 @@ private def addressedConstructionOperation? :=
     (.second "5" "2" "9")).toOption
 
 private def addressedConstructionOutcome?
-    (components : SurfaceAddressedTimeConstantComponents) := do
+    (components : SurfaceAddressedTimeConstantComponents) :
+    Option TimeTargetOutcome := do
   let operation ← (checkAddressedTimeConstantConstructionComputation
     addressedConstructionModel ["Order", "Lines"] repeatedTarget.id
     components).toOption
-  pure operation.evaluateOutcome
+  let input ← (checkDocument addressedConstructionPrepared "en_US" {
+    instantiatedRows := [{ group := 10, path := [1] }]
+    cells := []
+  }).toOption
+  let outcomes ← operation.execute input |>.toOption
+  outcomes.head?.map AddressedTimeConstructionOutcome.outcome
 
 /- The addressed checker retains the canonical zero-through-three constant prefix and separates all three position gates. -/
 example :
