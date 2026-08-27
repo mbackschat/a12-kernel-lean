@@ -201,6 +201,99 @@ def elaborateValueAsDateTimeRepeatableExpressionShiftAmount
   elaborateRepeatableTemporalExpressionShiftAmount model rowGroup surface
     |>.mapError ValueAsDateTimeExtractionElabError.ofTemporalShiftAmount
 
+/-- Static refusal while composing a target-bound complete-DateTime source with an addressed direct-Number shift amount. -/
+inductive AddressedDateTimeShiftElabError where
+  | source (cause : BoundCompleteDateTimeSourceElabError)
+  | amount (cause : ValueAsDateTimeExtractionElabError)
+  | unsupportedZone (zoneId : String)
+  deriving Repr, DecidableEq
+
+/-- One complete-DateTime source and direct-Number amount whose scopes are both bound by a caller-selected repeatable reading environment. -/
+structure CheckedAddressedDateTimeShift (model : FlatModel)
+    (declaringGroup : GroupPath) (readingScope : List RepeatableLevel) where
+  source : CheckedBoundCompleteDateTimeSource model declaringGroup readingScope
+  profile : ModelZone.ConcreteProfile
+  profileMatches : ModelZone.ConcreteProfile.ofId? model.timeZoneId = some profile
+  unit : DateTimeSubdayUnit
+  amount : CheckedTemporalShiftAmount model
+
+/-- Certify one addressed complete-DateTime shift without coupling it to a Time extractor or DateTime target. -/
+def elaborateAddressedDateTimeShift
+    (model : FlatModel) (declaringGroup readingPath : GroupPath)
+    (readingScope : List RepeatableLevel) (sourceReference : SurfaceFieldPath)
+    (unit : DateTimeSubdayUnit)
+    (amount : AuthoredNumericExpr SurfaceNumericAtom) :
+    Except AddressedDateTimeShiftElabError
+      (CheckedAddressedDateTimeShift model declaringGroup readingScope) := do
+  let source ← checkBoundCompleteDateTimeSource model declaringGroup
+    readingPath readingScope sourceReference |>.mapError .source
+  match hProfile : ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+  | some profile =>
+      let checkedAmount ←
+        elaborateValueAsDateTimeRepeatableExpressionShiftAmount
+          model declaringGroup amount |>.mapError .amount
+      pure {
+        source
+        profile
+        profileMatches := hProfile
+        unit
+        amount := checkedAmount
+      }
+  | none => throw (.unsupportedZone model.timeZoneId)
+
+/-- Structural addressed-shift failure outside the reason-bearing DateTime result. -/
+inductive AddressedDateTimeShiftFault where
+  | environment (cause : EnvBindingError)
+  | document (cause : CheckedDocumentError)
+  | amountAddressing (cause : CheckedAddressingError)
+  | semantic (cause : ValueAsDateTimeExtractionFault)
+  deriving Repr, DecidableEq
+
+/-- One addressed shift result retaining the exact source cell used at this reading environment. -/
+structure AddressedDateTimeShiftEvaluation where
+  sourceField : CellAddr
+  result : ValueAsDateTimeResult
+  deriving Repr, DecidableEq
+
+namespace CheckedAddressedDateTimeShift
+
+def referencesField
+    (checked : CheckedAddressedDateTimeShift model declaringGroup readingScope)
+    (field : FieldId) : Bool :=
+  checked.source.source.id == field || checked.amount.referencesField field
+
+def fieldDependencies
+    (checked : CheckedAddressedDateTimeShift model declaringGroup readingScope) :
+    List FieldId :=
+  checked.source.source.id :: checked.amount.fieldDependencies
+
+/-- Evaluate the source before the addressed amount at one exact repeatable environment. -/
+def evaluateAt
+    (checked : CheckedAddressedDateTimeShift model declaringGroup readingScope)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedDateTimeShiftFault AddressedDateTimeShiftEvaluation := do
+  let sourcePath ← environment.pathForScope
+    checked.source.sourceDeclaration.repeatableScope |>.mapError .environment
+  let sourceField : CellAddr := {
+    field := checked.source.source.id, path := sourcePath
+  }
+  let cell ← input.read sourceField |>.mapError .document
+  let result ← ValueAsDateTimeResult.evaluateShiftedDateTimeObservation
+    checked.profile checked.unit checked.source.source.id
+    (observeCell .computation cell) (fun _ =>
+      checked.amount.readAddressed .computation {
+          scalar := {
+            fields := input.flatContext
+            groups := GroupPresenceContext.unavailable
+          }
+          outer := environment
+          input := .checked input
+        } |>.mapError .amountAddressing)
+      (fun cause => .semantic cause)
+  pure { sourceField, result }
+
+end CheckedAddressedDateTimeShift
+
 /-- One checked complete-DateTime field and its exact model-zone profile. -/
 structure CheckedDateTimeSource (model : FlatModel) where
   source : FlatTemporalField
