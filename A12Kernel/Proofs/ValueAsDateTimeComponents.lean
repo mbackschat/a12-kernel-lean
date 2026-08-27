@@ -17,7 +17,8 @@ namespace A12Kernel
     (checked : CheckedTimeStringField model) (text : String) (amount : Nat)
     (parsed : parseAsciiNatural? text = some amount) :
     checked.classify (.value (.str text)) = .ok (.value amount) := by
-  simp [CheckedTimeStringField.classify, parsed]
+  simp [CheckedTimeStringField.classify,
+    CheckedTimeStringField.classifyTimeStringComponent, parsed]
   rfl
 
 /-- A checked extractor cannot retain a token from another constructor position. -/

@@ -86,19 +86,26 @@ structure CheckedTimeNumberField (model : FlatModel) where
 def isTimeComponentDigitPattern (source : String) : Bool :=
   isTemporalComponentDigitPattern 2 source
 
-/-- Exact pattern-backed String declaration gate used by every `Time(...)` position.
-    Extensible-enumeration admission is deliberately not represented here. -/
+/-- Placement-neutral pattern-backed String declaration gate shared by scalar and addressed `Time(...)` components. Extensible-enumeration admission is deliberately not represented here. -/
+def FlatModel.admitsTimeStringComponentField (model : FlatModel)
+    (source : FlatStringField) : Bool :=
+  match model.lookupUniqueId source.id with
+  | .error _ => false
+  | .ok declaration =>
+      declaration.toStringValueField? == some source &&
+        declaration.customType.isNone &&
+        declaration.enumeration.isNone &&
+        declaration.stringPolicy.maxLength == some 2 &&
+        declaration.stringPatternSource.any isTimeComponentDigitPattern
+
+/-- Scalar specialization of the shared String-component policy gate. -/
 def FlatModel.admitsTimeStringField (model : FlatModel)
     (source : FlatStringField) : Bool :=
   match model.lookupUniqueId source.id with
   | .error _ => false
   | .ok declaration =>
       declaration.repeatableScope.isEmpty &&
-        declaration.toStringValueField? == some source &&
-        declaration.customType.isNone &&
-        declaration.enumeration.isNone &&
-        declaration.stringPolicy.maxLength == some 2 &&
-        declaration.stringPatternSource.any isTimeComponentDigitPattern
+        model.admitsTimeStringComponentField source
 
 /-- One ordinary checked String field under the recognized digit-pattern subset. -/
 structure CheckedTimeStringField (model : FlatModel) where
@@ -337,9 +344,8 @@ end CheckedTimeNumberField
 
 namespace CheckedTimeStringField
 
-/-- Convert one already checked digit String through the existing ASCII-natural parser.
-    Pattern and maximum-length checking happened when the document was constructed. -/
-def classify (checked : CheckedTimeStringField model)
+/-- Convert one already checked digit String through the existing ASCII-natural parser. Pattern and maximum-length checking happened when the document was constructed. The classifier is placement-neutral; scalar and addressed readers supply the exact field identity. -/
+def classifyTimeStringComponent (field : FieldId)
     (observation : CellObservation Value) :
     Except TimeComponentsFault TimeConstructionComponent :=
   match observation with
@@ -348,8 +354,14 @@ def classify (checked : CheckedTimeStringField model)
   | .value (.str value) =>
       match parseAsciiNatural? value with
       | some amount => pure (.value amount)
-      | none => throw (.stringNotConvertible checked.source.id value)
-  | .value _ => throw (.payloadKind checked.source.id)
+      | none => throw (.stringNotConvertible field value)
+  | .value _ => throw (.payloadKind field)
+
+/-- Scalar specialization of the shared String-component classifier. -/
+def classify (checked : CheckedTimeStringField model)
+    (observation : CellObservation Value) :
+    Except TimeComponentsFault TimeConstructionComponent :=
+  classifyTimeStringComponent checked.source.id observation
 
 /-- Read one certified scalar String component through the immutable checked document. -/
 def read (checked : CheckedTimeStringField model)

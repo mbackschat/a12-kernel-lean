@@ -243,6 +243,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Repeatable constant `Time(...)` construction result classification, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-time-repeatable-constant-construction)
 <a id="src-time-repeatable-number-components"></a>
 - [Repeatable Number-backed `Time(...)` construction across root, enclosing, and leaf scopes, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-time-repeatable-number-components)
+<a id="src-time-repeatable-string-components"></a>
+- [Repeatable digit-String-backed `Time(...)` construction across root, enclosing, and leaf scopes, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-time-repeatable-string-components)
 <a id="src-datetime-component-sibling-parallel-refusal"></a>
 - [Sibling-parallel refusal for DateTime component extractors, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-datetime-component-sibling-parallel-refusal)
 <a id="src-date-range-unconfigured-interpretation-first-filled-star"></a>

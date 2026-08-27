@@ -1,0 +1,107 @@
+{
+  "model": "model.json",
+  "locale": "en_US",
+  "observe": ["validateFull", "compute"],
+  "rows": [
+    {
+      "name": "leading-zero-correlation",
+      "documentInline": {
+        "TimeProbe": {
+          "RootHour": "05",
+          "Projects": [
+            {
+              "ParentMinute": "02",
+              "Choices": [],
+              "Tasks": [
+                {"RowSecond": "09", "SelectedTime": "05:02:09"},
+                {"RowSecond": "10", "SelectedTime": "00:00:00"}
+              ]
+            },
+            {
+              "ParentMinute": "04",
+              "Choices": [],
+              "Tasks": [
+                {"RowSecond": "09", "SelectedTime": "00:00:00"}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "missing-and-malformed",
+      "documentInline": {
+        "TimeProbe": {
+          "RootHour": "05",
+          "Projects": [
+            {
+              "Choices": [],
+              "Tasks": [
+                {"RowSecond": "09", "SelectedTime": "12:34:56"}
+              ]
+            },
+            {
+              "ParentMinute": "02",
+              "Choices": [],
+              "Tasks": [
+                {"SelectedTime": "12:34:56"},
+                {"RowSecond": "xx", "SelectedTime": "12:34:56"},
+                {"RowSecond": "09", "SelectedTime": "12:34:56"}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "valid-pattern-impossible-clock",
+      "documentInline": {
+        "TimeProbe": {
+          "RootHour": "05",
+          "Projects": [
+            {
+              "ParentMinute": "02",
+              "Choices": [],
+              "Tasks": [
+                {"RowSecond": "99", "SelectedTime": "12:34:56"},
+                {"RowSecond": "09", "SelectedTime": "12:34:56"}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "later-formal-dominates-earlier-missing",
+      "documentInline": {
+        "TimeProbe": {
+          "Projects": [
+            {
+              "ParentMinute": "02",
+              "Choices": [],
+              "Tasks": [
+                {"RowSecond": "xx", "SelectedTime": "12:34:56"},
+                {"RowSecond": "09", "SelectedTime": "12:34:56"}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "no-target-rows",
+      "documentInline": {
+        "TimeProbe": {
+          "RootHour": "05",
+          "Projects": [
+            {
+              "ParentMinute": "02",
+              "Choices": [],
+              "Tasks": []
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

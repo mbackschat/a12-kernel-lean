@@ -95,7 +95,7 @@ theorem timeComputationRun_sourceValueChangedAt_different
     (computed : TimeComputedInstance Target) :
     TimeComputationRunView.scalarConstructionReportsChanged computed = true := rfl
 
-/-- The repeatable construction certificate excludes its target from every addressed Number dependency. -/
+/-- The repeatable construction certificate excludes its target from every addressed field dependency. -/
 theorem checkedAddressedTimeConstructionComputation_excludes_target
     (operation : CheckedAddressedTimeConstructionComputation model) :
     operation.referencesField operation.checkedTarget.targetField = false :=

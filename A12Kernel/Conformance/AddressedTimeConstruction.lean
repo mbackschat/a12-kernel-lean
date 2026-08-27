@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.TimeComputation
 
-/-! # Repeatable Number-backed `Time(...)` construction locks -/
+/-! # Repeatable field-backed `Time(...)` construction locks -/
 
 namespace A12Kernel.Conformance.AddressedTimeConstruction
 
@@ -26,6 +26,26 @@ private def projectMinute :=
 private def rowSecond :=
   numberComponent 3 "RowSecond" ["Order", "Projects", "Tasks"] [10, 20] 59
 
+private def stringComponent (id : FieldId) (name : String)
+    (groupPath : GroupPath) (scope : List RepeatableLevel) : FlatFieldDecl := {
+  id
+  name
+  groupPath
+  repeatableScope := scope
+  policy := { kind := .string }
+  stringPolicy := { maxLength := some 2 }
+  stringPatternSource := some "[0-9]+"
+}
+
+private def rootHourText :=
+  stringComponent 7 "RootHourText" ["Order"] []
+
+private def projectMinuteText :=
+  stringComponent 8 "ProjectMinuteText" ["Order", "Projects"] [10]
+
+private def rowSecondText :=
+  stringComponent 9 "RowSecondText" ["Order", "Projects", "Tasks"] [10, 20]
+
 private def target : FlatFieldDecl := {
   id := 4
   name := "SelectedTime"
@@ -40,13 +60,15 @@ private def textSource : FlatFieldDecl := {
   name := "TextSource"
   groupPath := ["Order"]
   policy := { kind := .string }
+  stringPolicy := { maxLength := some 2 }
 }
 
 private def siblingHour :=
   numberComponent 6 "SiblingHour" ["Order", "OtherRows"] [30] 23
 
 private def model : FlatModel := {
-  fields := [rootHour, projectMinute, rowSecond, target, textSource, siblingHour]
+  fields := [rootHour, projectMinute, rowSecond, target, textSource, siblingHour,
+    rootHourText, projectMinuteText, rowSecondText]
   repeatableGroups := [
     { level := 10, path := ["Order", "Projects"], repeatability := some 3 },
     { level := 20, path := ["Order", "Projects", "Tasks"], repeatability := some 3 },
@@ -67,6 +89,27 @@ private def mixedOperation? :
     Option (CheckedAddressedTimeConstructionComputation model) :=
   (checkAddressedTimeConstructionComputation model
     ["Order", "Projects", "Tasks"] target.id mixedComponents).toOption
+
+private def stringComponents : SurfaceAddressedTimeComponents :=
+  .second
+    (.string (absolute ["Order"] "RootHourText"))
+    (.string (absolute ["Order", "Projects"] "ProjectMinuteText"))
+    (.string (absolute ["Order", "Projects", "Tasks"] "RowSecondText"))
+
+private def stringOperation? :
+    Option (CheckedAddressedTimeConstructionComputation model) :=
+  (checkAddressedTimeConstructionComputation model
+    ["Order", "Projects", "Tasks"] target.id stringComponents).toOption
+
+private def typedMix? :
+    Option (CheckedAddressedTimeConstructionComputation model) :=
+  (checkAddressedTimeConstructionComputation model
+    ["Order", "Projects", "Tasks"] target.id
+    (.second
+      (.number (absolute ["Order"] "RootHour"))
+      (.string (absolute ["Order", "Projects"] "ProjectMinuteText"))
+      (.constant "9")))
+    |>.toOption
 
 private def staticError? (components : SurfaceAddressedTimeComponents) :
     Option AddressedTimeConstructionElabError :=
@@ -110,6 +153,13 @@ private def rejectedNumberCell (field : FieldId) (path : List Nat) :
   address := address field path
   stored := "60"
   raw := .rejected .declaredConstraint
+}
+
+private def stringCell (field : FieldId) (path : List Nat)
+    (stored : String) (raw : RawCell) : ClassifiedCellInput := {
+  address := address field path
+  stored
+  raw
 }
 
 private def timeCell (path : List Nat) (stored : String)
@@ -190,9 +240,11 @@ private structure MissingSummary where
   applied : List (Bool × Option String)
   deriving Repr, DecidableEq
 
-private def correlationResult? : Option CorrelationSummary := do
-  let operation ← mixedOperation?
-  let input ← correlationInput?
+private def correlationResultFor?
+    (operation? : Option (CheckedAddressedTimeConstructionComputation model))
+    (input? : Option (CheckedDocument model)) : Option CorrelationSummary := do
+  let operation ← operation?
+  let input ← input?
   let view ← operation.executeResult input ([] : List FormalCause) |>.toOption
   let destination ← emptyDestination?
   let applied ← view.applyToChecked destination |>.toOption
@@ -212,6 +264,9 @@ private def correlationResult? : Option CorrelationSummary := do
       summarizeState (applied (address target.id [2, 1]))
     ]
   }
+
+private def correlationResult? : Option CorrelationSummary :=
+  correlationResultFor? mixedOperation? correlationInput?
 
 private def missingInput? := document? [
     outerRow 1, outerRow 2,
@@ -264,6 +319,72 @@ private def earlierMissingOutcomes? : Option (List OutcomeSummary) := do
   let outcomes ← operation.execute input |>.toOption
   pure (outcomes.map summarizeOutcome)
 
+private def stringCorrelationInput? := document? [
+    outerRow 1, outerRow 2,
+    innerRow 1 1, innerRow 1 2, innerRow 2 1] [
+  stringCell rootHourText.id [] "05" (.parsed (.str "05")),
+  stringCell projectMinuteText.id [1] "02" (.parsed (.str "02")),
+  stringCell projectMinuteText.id [2] "04" (.parsed (.str "04")),
+  stringCell rowSecondText.id [1, 1] "09" (.parsed (.str "09")),
+  stringCell rowSecondText.id [1, 2] "10" (.parsed (.str "10")),
+  stringCell rowSecondText.id [2, 1] "09" (.parsed (.str "09")),
+  timeCell [1, 1] "05:02:09" (clock 5 2 9 (by decide)),
+  timeCell [1, 2] "12:34:56" (clock 12 34 56 (by decide))]
+
+private def stringCorrelationResult? : Option CorrelationSummary :=
+  correlationResultFor? stringOperation? stringCorrelationInput?
+
+private def stringFailureInput? := document? [
+    outerRow 1, outerRow 2,
+    innerRow 1 1, innerRow 2 1, innerRow 2 2, innerRow 2 3] [
+  stringCell rootHourText.id [] "05" (.parsed (.str "05")),
+  stringCell projectMinuteText.id [2] "02" (.parsed (.str "02")),
+  stringCell rowSecondText.id [1, 1] "09" (.parsed (.str "09")),
+  stringCell rowSecondText.id [2, 2] "xx" (.rejected .declaredConstraint),
+  stringCell rowSecondText.id [2, 3] "09" (.parsed (.str "09")),
+  timeCell [1, 1] "12:34:56" (clock 12 34 56 (by decide)),
+  timeCell [2, 1] "12:34:56" (clock 12 34 56 (by decide)),
+  timeCell [2, 2] "12:34:56" (clock 12 34 56 (by decide)),
+  timeCell [2, 3] "12:34:56" (clock 12 34 56 (by decide))]
+
+private def stringFailureOutcomes? : Option (List OutcomeSummary) := do
+  let operation ← stringOperation?
+  let input ← stringFailureInput?
+  let outcomes ← operation.execute input |>.toOption
+  pure (outcomes.map summarizeOutcome)
+
+private def impossibleStringInput? := document? [
+    outerRow 1, innerRow 1 1, innerRow 1 2] [
+  stringCell rootHourText.id [] "05" (.parsed (.str "05")),
+  stringCell projectMinuteText.id [1] "02" (.parsed (.str "02")),
+  stringCell rowSecondText.id [1, 1] "99" (.parsed (.str "99")),
+  stringCell rowSecondText.id [1, 2] "09" (.parsed (.str "09")),
+  timeCell [1, 1] "12:34:56" (clock 12 34 56 (by decide)),
+  timeCell [1, 2] "12:34:56" (clock 12 34 56 (by decide))]
+
+private def impossibleStringResult? :
+    Option (List OutcomeSummary × List CellAddr × List CellAddr) := do
+  let operation ← stringOperation?
+  let input ← impossibleStringInput?
+  let outcomes ← operation.execute input |>.toOption
+  let view ← operation.executeResult input ([] : List FormalCause) |>.toOption
+  pure (outcomes.map summarizeOutcome, view.time.cleared,
+    view.time.withChanges.map (·.targetField))
+
+private def earlierMissingStringInput? := document? [
+    outerRow 1, innerRow 1 1, innerRow 1 2] [
+  stringCell projectMinuteText.id [1] "02" (.parsed (.str "02")),
+  stringCell rowSecondText.id [1, 1] "xx" (.rejected .declaredConstraint),
+  stringCell rowSecondText.id [1, 2] "09" (.parsed (.str "09")),
+  timeCell [1, 1] "12:34:56" (clock 12 34 56 (by decide)),
+  timeCell [1, 2] "12:34:56" (clock 12 34 56 (by decide))]
+
+private def earlierMissingStringOutcomes? : Option (List OutcomeSummary) := do
+  let operation ← stringOperation?
+  let input ← earlierMissingStringInput?
+  let outcomes ← operation.execute input |>.toOption
+  pure (outcomes.map summarizeOutcome)
+
 /- Root, enclosing, and row-local Number components are admitted together at the repeatable target. -/
 example : mixedOperation?.isSome = true := by
   native_decide
@@ -271,6 +392,17 @@ example : mixedOperation?.isSome = true := by
 /- Constants and Number fields may share one prefix, retaining only the field dependencies in authored order. -/
 example : constantFieldMix?.map (·.fieldDependencies) =
     some [rootHour.id, rowSecond.id] := by
+  native_decide
+
+/- String fields at root, enclosing-parent, and leaf scopes are admitted together, and may mix with Number fields and constants without losing authored dependency order. -/
+example : stringOperation?.isSome = true ∧
+    typedMix?.map (·.fieldDependencies) =
+      some [rootHour.id, projectMinuteText.id] := by
+  native_decide
+
+/- The String gate is independent of component position once placement is bound. -/
+example : staticError? (.hour (.string
+    (absolute ["Order", "Projects", "Tasks"] "RowSecondText"))) = none := by
   native_decide
 
 /- The target cannot re-enter its own component prefix, even before the target's non-Number kind would be inspected. -/
@@ -283,6 +415,18 @@ example : staticError? (.hour (.number
 example : staticError? (.hour (.number
     (absolute ["Order"] "TextSource"))) =
     some (.component (.sourceKind .hour textSource.path .string)) := by
+  native_decide
+
+/- A String component retains the same scalar-kind refusal before its declaration policy is inspected. -/
+example : staticError? (.minute (.constant "0") (.string
+    (absolute ["Order", "Projects"] "ProjectMinute"))) =
+    some (.component (.sourceKind .minute projectMinute.path .number)) := by
+  native_decide
+
+/- A maximum-length-only String without a recognized digit pattern remains outside this component subset. -/
+example : staticError? (.hour (.string
+    (absolute ["Order"] "TextSource"))) =
+    some (.component (.declarationNotAdmitted .hour textSource.path)) := by
   native_decide
 
 /- A source in a sibling repetition tree is not bound by the target row environment. -/
@@ -300,6 +444,27 @@ example : staticError? (.hour (.number
 /- Each component reads at its own bound scope inside the current target row. Exact results preserve nested target identity, ordinary source equality, and retained-action application. -/
 example : correlationResult? = some ({
     dependencies := [rootHour.id, projectMinute.id, rowSecond.id]
+    successes := [
+      (address target.id [1, 1], "05:02:09"),
+      (address target.id [1, 2], "05:02:10"),
+      (address target.id [2, 1], "05:04:09")
+    ]
+    changes := [
+      (address target.id [1, 2], "05:02:10"),
+      (address target.id [2, 1], "05:04:09")
+    ]
+    cleared := []
+    applied := [
+      (false, none),
+      (true, some "05:02:10"),
+      (true, some "05:04:09")
+    ]
+  } : CorrelationSummary) := by
+  native_decide
+
+/- Leading-zero String components convert to numeric clock parts while retaining each source's own repetition scope and the ordinary exact-address result/application partitions. -/
+example : stringCorrelationResult? = some ({
+    dependencies := [rootHourText.id, projectMinuteText.id, rowSecondText.id]
     successes := [
       (address target.id [1, 1], "05:02:09"),
       (address target.id [1, 2], "05:02:10"),
@@ -349,6 +514,37 @@ example : missingResult? = some ({
 
 /- An earlier missing component does not hide a later reached formal failure; the clean sibling remains ordinary incomplete. -/
 example : earlierMissingOutcomes? = some [
+    { target := address target.id [1, 1], value := none,
+      noValue := false, poison := some .declaredConstraint },
+    { target := address target.id [1, 2], value := none,
+      noValue := true, poison := none }
+  ] := by
+  native_decide
+
+/- Missing String components stay incomplete, a reached pattern failure stays poison, and the clean sibling still succeeds. -/
+example : stringFailureOutcomes? = some [
+    { target := address target.id [1, 1], value := none,
+      noValue := true, poison := none },
+    { target := address target.id [2, 1], value := none,
+      noValue := true, poison := none },
+    { target := address target.id [2, 2], value := none,
+      noValue := false, poison := some .declaredConstraint },
+    { target := address target.id [2, 3], value := some "05:02:09",
+      noValue := false, poison := none }
+  ] := by
+  native_decide
+
+/- A two-digit String declaration does not impose a position maximum: `99` is statically valid input but yields an unreal clock, so only its source-filled target is cleared. -/
+example : impossibleStringResult? = some ([
+      { target := address target.id [1, 1], value := none,
+        noValue := true, poison := none },
+      { target := address target.id [1, 2], value := some "05:02:09",
+        noValue := false, poison := none }
+    ], [address target.id [1, 1]], [address target.id [1, 2]]) := by
+  native_decide
+
+/- An earlier missing String component does not hide a later reached pattern failure; a clean sibling remains ordinary incomplete. -/
+example : earlierMissingStringOutcomes? = some [
     { target := address target.id [1, 1], value := none,
       noValue := false, poison := some .declaredConstraint },
     { target := address target.id [1, 2], value := none,

@@ -1,0 +1,458 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "25e048ea73e10bd58c6950b1d6104dd5809535df",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "model.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "leading-zero-correlation",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SelectedTimeComp",
+              "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "computed time differs",
+              "referenced" : [
+                "TimeProbe/Projects/ParentMinute",
+                "TimeProbe/Projects/Tasks[2]/RowSecond",
+                "TimeProbe/Projects/Tasks[2]/SelectedTime",
+                "TimeProbe/RootHour"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SelectedTimeComp",
+              "field" : "TimeProbe/Projects[2]/Tasks/SelectedTime",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "computed time differs",
+              "referenced" : [
+                "TimeProbe/Projects[2]/ParentMinute",
+                "TimeProbe/Projects[2]/Tasks/RowSecond",
+                "TimeProbe/Projects[2]/Tasks/SelectedTime",
+                "TimeProbe/RootHour"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05:02:10"
+              },
+              {
+                "field" : "TimeProbe/Projects[2]/Tasks/SelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05:04:09"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SelectedTimeComp",
+              "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "computed time differs",
+              "referenced" : [
+                "TimeProbe/Projects/ParentMinute",
+                "TimeProbe/Projects/Tasks[2]/RowSecond",
+                "TimeProbe/Projects/Tasks[2]/SelectedTime",
+                "TimeProbe/RootHour"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SelectedTimeComp",
+              "field" : "TimeProbe/Projects[2]/Tasks/SelectedTime",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "computed time differs",
+              "referenced" : [
+                "TimeProbe/Projects[2]/ParentMinute",
+                "TimeProbe/Projects[2]/Tasks/RowSecond",
+                "TimeProbe/Projects[2]/Tasks/SelectedTime",
+                "TimeProbe/RootHour"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05:02:10"
+              },
+              {
+                "field" : "TimeProbe/Projects[2]/Tasks/SelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05:04:09"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "missing-and-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SelectedTimeComp",
+              "field" : "TimeProbe/Projects[2]/Tasks[3]/SelectedTime",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "computed time differs",
+              "referenced" : [
+                "TimeProbe/Projects[2]/ParentMinute",
+                "TimeProbe/Projects[2]/Tasks[3]/RowSecond",
+                "TimeProbe/Projects[2]/Tasks[3]/SelectedTime",
+                "TimeProbe/RootHour"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringFalschesMuster",
+              "field" : "TimeProbe/Projects[2]/Tasks[2]/RowSecond",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Use decimal digits only.",
+              "referenced" : [
+                "TimeProbe/Projects[2]/Tasks[2]/RowSecond"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/Projects/Tasks/SelectedTime",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "TimeProbe/Projects[2]/Tasks/SelectedTime",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "TimeProbe/Projects[2]/Tasks[2]/SelectedTime",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "TimeProbe/Projects[2]/Tasks[3]/SelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05:02:09"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringFalschesMuster",
+                "field" : "TimeProbe/Projects[2]/Tasks[2]/RowSecond",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Use decimal digits only.",
+                "referenced" : [
+                  "TimeProbe/Projects[2]/Tasks[2]/RowSecond"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SelectedTimeComp",
+              "field" : "TimeProbe/Projects[2]/Tasks[3]/SelectedTime",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "computed time differs",
+              "referenced" : [
+                "TimeProbe/Projects[2]/ParentMinute",
+                "TimeProbe/Projects[2]/Tasks[3]/RowSecond",
+                "TimeProbe/Projects[2]/Tasks[3]/SelectedTime",
+                "TimeProbe/RootHour"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringFalschesMuster",
+              "field" : "TimeProbe/Projects[2]/Tasks[2]/RowSecond",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Use decimal digits only.",
+              "referenced" : [
+                "TimeProbe/Projects[2]/Tasks[2]/RowSecond"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/Projects/Tasks/SelectedTime",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "TimeProbe/Projects[2]/Tasks/SelectedTime",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "TimeProbe/Projects[2]/Tasks[2]/SelectedTime",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "TimeProbe/Projects[2]/Tasks[3]/SelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05:02:09"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringFalschesMuster",
+                "field" : "TimeProbe/Projects[2]/Tasks[2]/RowSecond",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Use decimal digits only.",
+                "referenced" : [
+                  "TimeProbe/Projects[2]/Tasks[2]/RowSecond"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "valid-pattern-impossible-clock",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SelectedTimeComp",
+              "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "computed time differs",
+              "referenced" : [
+                "TimeProbe/Projects/ParentMinute",
+                "TimeProbe/Projects/Tasks[2]/RowSecond",
+                "TimeProbe/Projects/Tasks[2]/SelectedTime",
+                "TimeProbe/RootHour"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/Projects/Tasks/SelectedTime",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05:02:09"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SelectedTimeComp",
+              "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "computed time differs",
+              "referenced" : [
+                "TimeProbe/Projects/ParentMinute",
+                "TimeProbe/Projects/Tasks[2]/RowSecond",
+                "TimeProbe/Projects/Tasks[2]/SelectedTime",
+                "TimeProbe/RootHour"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/Projects/Tasks/SelectedTime",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05:02:09"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "later-formal-dominates-earlier-missing",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "stringFalschesMuster",
+              "field" : "TimeProbe/Projects/Tasks/RowSecond",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Use decimal digits only.",
+              "referenced" : [
+                "TimeProbe/Projects/Tasks/RowSecond"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/Projects/Tasks/SelectedTime",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringFalschesMuster",
+                "field" : "TimeProbe/Projects/Tasks/RowSecond",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Use decimal digits only.",
+                "referenced" : [
+                  "TimeProbe/Projects/Tasks/RowSecond"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "stringFalschesMuster",
+              "field" : "TimeProbe/Projects/Tasks/RowSecond",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Use decimal digits only.",
+              "referenced" : [
+                "TimeProbe/Projects/Tasks/RowSecond"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/Projects/Tasks/SelectedTime",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringFalschesMuster",
+                "field" : "TimeProbe/Projects/Tasks/RowSecond",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Use decimal digits only.",
+                "referenced" : [
+                  "TimeProbe/Projects/Tasks/RowSecond"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "no-target-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}
