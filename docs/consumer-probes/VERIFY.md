@@ -1,6 +1,6 @@
 # Verify consumer lab
 
-- `status`: designed
+- `status`: green
 - `contract`: an artifact plus an independently stated claim produces a checked certificate, replayed counterexample, or explicit inconclusive result.
 - `authority`: the dependent [presence contradiction witness](../../A12Kernel/Elaboration/Flat/PresenceContradiction.lean) and its [universal never-fires theorem](../../A12Kernel/Proofs/FlatPresenceContradiction.lean).
 
@@ -14,4 +14,4 @@ This probe tests certificate checking, not output equality. Wrong accounts are t
 
 | Run | Status | Current result |
 |---|---|---|
-| `verify-presence-certificate-01` | designed | Awaiting isolated certificate producer and temporary Lean checker. |
+| `verify-presence-certificate-01` | green | A cold consumer emitted both valid operand-order certificates and four invalid controls: different fields, `Or`, an extra wrapper, and a bare analyzer flag. Its 61-line standard-library structural guard separated all six in 110 seconds, but remained explicitly untrusted. A disposable Lean checker then resolved the claimed model path against a checked model, reconstructed each exact condition, invoked the proof-bearing analyzer, accepted only the two valid certificates, and rejected all four controls. No repository schema, verifier, dependency, or shipment was retained. |
