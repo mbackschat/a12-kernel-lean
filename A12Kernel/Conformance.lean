@@ -47,6 +47,7 @@ import A12Kernel.Conformance.TimeInput
 import A12Kernel.Conformance.DateTimeInput
 import A12Kernel.Conformance.DateFromDateTime
 import A12Kernel.Conformance.AddressedDateFromDateTime
+import A12Kernel.Conformance.AddressedDateFromDateTimeFormalInput
 import A12Kernel.Conformance.FilledFieldCount
 import A12Kernel.Conformance.FilledFieldGroupCount
 import A12Kernel.Conformance.FilledFieldStarCount
