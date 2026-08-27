@@ -213,4 +213,117 @@ example : (do
       ({ field := target.id, path := [1] }, .poison .computedDependency)] := by
   native_decide
 
+private def numericCell (field : FlatFieldDecl) (path : List Nat)
+    (stored : String) (value : Int) : ClassifiedCellInput := {
+  address := { field := field.id, path }
+  stored
+  raw := .parsed (.num value)
+  numericDecimal := some { unscaled := value, scale := 0 }
+}
+
+private structure ResultApplicationSummary where
+  numberValues : List (CellAddr × StoredNumber)
+  numberChanges : List (CellAddr × StoredNumber)
+  numberCleared : List CellAddr
+  enumerationValues : List (CellAddr × String)
+  enumerationChanges : List (CellAddr × String)
+  enumerationCleared : List CellAddr
+  enumerationErrorTargets : List CellAddr
+  gate11 : NumericTargetState
+  gate12 : NumericTargetState
+  gate21 : NumericTargetState
+  gate22 : NumericTargetState
+  target1 : StringTargetState
+  target2 : StringTargetState
+  deriving Repr, DecidableEq
+
+private def resultApplicationSummary? (input destination : CheckedDocument model) :
+    Option ResultApplicationSummary := do
+  let plan ← plan?
+  let view ← plan.executeResult input (fun _ => ()) []
+    ([] : List Unit) |>.toOption
+  let numberApplied ← view.number.applyToChecked destination |>.toOption
+  let enumerationApplied ←
+    view.enumeration.applyToChecked destination |>.toOption
+  pure {
+    numberValues := view.number.withoutErrors.map fun item =>
+      (item.targetField, item.value)
+    numberChanges := view.number.withChanges.map fun item =>
+      (item.targetField, item.value)
+    numberCleared := view.number.cleared
+    enumerationValues := view.enumeration.string.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    enumerationChanges := view.enumeration.string.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    enumerationCleared := view.enumeration.string.cleared
+    enumerationErrorTargets := view.enumeration.string.withErrors.map
+      (fun item => item.targetField)
+    gate11 := numberApplied.stateAt { field := computedGate.id, path := [1, 1] }
+    gate12 := numberApplied.stateAt { field := computedGate.id, path := [1, 2] }
+    gate21 := numberApplied.stateAt { field := computedGate.id, path := [2, 1] }
+    gate22 := numberApplied.stateAt { field := computedGate.id, path := [2, 2] }
+    target1 := enumerationApplied { field := target.id, path := [1] }
+    target2 := enumerationApplied { field := target.id, path := [2] }
+  }
+
+private def resultInput? : Option (CheckedDocument model) :=
+  document? rows [
+    cell directChoice [1] "A" (.parsed (.enum "A")),
+    numericCell limit [1] "1" 1,
+    numericCell limit [2] "2" 2,
+    cell rawGate [1, 1] "bad" (.rejected .malformed),
+    numericCell rawGate [1, 2] "0" 0,
+    numericCell rawGate [2, 1] "1" 1,
+    numericCell rawGate [2, 2] "2" 2,
+    numericCell computedGate [1, 1] "9" 9,
+    numericCell computedGate [2, 1] "1" 1,
+    numericCell computedGate [2, 2] "1" 1,
+    cell choice [1, 1] "B" (.parsed (.enum "B")),
+    cell choice [2, 1] "A" (.parsed (.enum "A")),
+    cell choice [2, 2] "B" (.parsed (.enum "B")),
+    cell target [1] "A" (.parsed (.enum "A")),
+    cell target [2] "A" (.parsed (.enum "A"))]
+
+private def resultDestination? : Option (CheckedDocument model) :=
+  document? rows [
+    numericCell computedGate [1, 1] "7" 7,
+    numericCell computedGate [1, 2] "8" 8,
+    numericCell computedGate [2, 1] "8" 8,
+    numericCell computedGate [2, 2] "8" 8,
+    cell target [1] "B" (.parsed (.enum "B")),
+    cell target [2] "A" (.parsed (.enum "A"))]
+
+/- Both sourced phases classify independently and apply through their existing family owners. Source-identical successes remain inert against a different destination. -/
+example : (do
+    let input ← resultInput?
+    let destination ← resultDestination?
+    resultApplicationSummary? input destination) = some {
+      numberValues := [
+        ({ field := computedGate.id, path := [1, 2] },
+          { unscaled := 0, scale := 0 }),
+        ({ field := computedGate.id, path := [2, 1] },
+          { unscaled := 1, scale := 0 }),
+        ({ field := computedGate.id, path := [2, 2] },
+          { unscaled := 2, scale := 0 })]
+      numberChanges := [
+        ({ field := computedGate.id, path := [1, 2] },
+          { unscaled := 0, scale := 0 }),
+        ({ field := computedGate.id, path := [2, 2] },
+          { unscaled := 2, scale := 0 })]
+      numberCleared := [{ field := computedGate.id, path := [1, 1] }]
+      enumerationValues := [
+        ({ field := target.id, path := [1] }, "A"),
+        ({ field := target.id, path := [2] }, "B")]
+      enumerationChanges := [({ field := target.id, path := [2] }, "B")]
+      enumerationCleared := []
+      enumerationErrorTargets := []
+      gate11 := .presentEmpty
+      gate12 := .presentValue (.decimal { unscaled := 0, scale := 0 })
+      gate21 := .presentValue (.decimal { unscaled := 8, scale := 0 })
+      gate22 := .presentValue (.decimal { unscaled := 2, scale := 0 })
+      target1 := .presentValue ⟨"B", by decide⟩
+      target2 := .presentValue ⟨"B", by decide⟩
+    } := by
+  native_decide
+
 end A12Kernel.Conformance.AddressedNumberEnumerationHavingCascade

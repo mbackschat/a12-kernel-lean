@@ -33,7 +33,10 @@ theorem checkedAddressedEnumerationFirstFilled_executeResult_projects
     (executed : operation.execute input = .ok outcomes) :
     (operation.executeResult input residualMessages).map (fun view => view.string) =
       .ok (projectAddressedTokenResults input residualMessages outcomes) := by
-  rw [CheckedAddressedEnumerationFirstFilledComputation.executeResult, executed]
+  change operation.executeWithRead input input.read = .ok outcomes at executed
+  unfold CheckedAddressedEnumerationFirstFilledComputation.executeResult
+  unfold CheckedAddressedEnumerationFirstFilledComputation.executeResultWithRead
+  rw [executed]
   rfl
 
 /-- Whole-domain admission leaves no runtime Enumeration target-rejection channel. -/
@@ -44,7 +47,9 @@ theorem checkedAddressedEnumerationFirstFilled_executeResult_hasNoTargetErrors
     (executed : operation.execute input = .ok outcomes) :
     (operation.executeResult input residualMessages).map
       (fun view => view.string.withErrors) = .ok [] := by
+  change operation.executeWithRead input input.read = .ok outcomes at executed
   unfold CheckedAddressedEnumerationFirstFilledComputation.executeResult
+  unfold CheckedAddressedEnumerationFirstFilledComputation.executeResultWithRead
   rw [executed]
   change Except.ok
     ((projectAddressedTokenResults input residualMessages outcomes).withErrors) =

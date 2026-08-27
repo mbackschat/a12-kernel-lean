@@ -110,17 +110,27 @@ def execute (operation : CheckedAddressedEnumerationFirstFilledComputation model
       (List AddressedEnumerationComputationOutcome) :=
   operation.executeWithRead input input.read
 
+/-- Execute through one caller-supplied exact-address view and classify the resulting rows while retaining the checked Enumeration operation that produced them. -/
+def executeResultWithRead
+    (operation : CheckedAddressedEnumerationFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (residualMessages : List ResidualMessage) :
+    Except AddressedEnumerationFirstFilledComputationFault
+      (AddressedEnumerationFirstFilledComputationRunView model ResidualMessage) := do
+  let outcomes ← operation.executeWithRead input read
+  pure {
+    operation
+    string := projectAddressedTokenResults input residualMessages outcomes
+  }
+
 /-- Classify exact row outcomes against the immutable source target state through the shared model-certified Enumeration result. -/
 def executeResult
     (operation : CheckedAddressedEnumerationFirstFilledComputation model)
     (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
     Except AddressedEnumerationFirstFilledComputationFault
-      (AddressedEnumerationFirstFilledComputationRunView model ResidualMessage) := do
-  let outcomes ← operation.execute input
-  pure {
-    operation
-    string := projectAddressedTokenResults input residualMessages outcomes
-  }
+      (AddressedEnumerationFirstFilledComputationRunView model ResidualMessage) :=
+  operation.executeResultWithRead input input.read residualMessages
 
 end CheckedAddressedEnumerationFirstFilledComputation
 

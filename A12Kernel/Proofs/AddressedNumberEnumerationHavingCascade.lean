@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.AddressedNumberEnumerationHavingCascade
+import A12Kernel.Proofs.AddressedEnumerationComputation
 
 /-! # Number dependency inside Enumeration `Having` laws -/
 
@@ -36,6 +37,41 @@ theorem addressedNumberEnumerationHavingCascade_execute_delegates
           (readAfterNumericDependencies input producer) |>.mapError
             AddressedNumberEnumerationHavingCascadeFault.consumer
       pure { producer, consumer }) := by
+  rfl
+
+/-- Result projection reuses the two established family owners over the exact already-sourced phases. -/
+theorem addressedNumberEnumerationHavingCascade_executeResult_projects
+    (plan : CheckedAddressedNumberEnumerationHavingCascade model)
+    (input : CheckedDocument model)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (stringResidualMessages : List StringResidual)
+    (producer : List (SourcedNumericTargetOutcome CellAddr))
+    (enumeration : AddressedEnumerationFirstFilledComputationRunView
+      model StringResidual)
+    (producerExecuted : plan.producer.execute input = .ok producer)
+    (enumerationExecuted : plan.consumer.executeResultWithRead input
+      (readAfterNumericDependencies input producer) stringResidualMessages =
+        .ok enumeration) :
+    plan.executeResult input numberPayloadAt numberMessages
+      stringResidualMessages = .ok {
+        number := NumericComputationRunView.fromSourceOutcomesWithMessages
+          MessagePointer.ofCellAddr numberPayloadAt numberMessages producer
+        enumeration
+  } := by
+  unfold CheckedAddressedNumberEnumerationHavingCascade.executeResult
+  rw [producerExecuted]
+  change (do
+    let result ← plan.consumer.executeResultWithRead input
+        (readAfterNumericDependencies input producer) stringResidualMessages
+      |>.mapError AddressedNumberEnumerationHavingCascadeFault.consumer
+    pure ({
+      number := NumericComputationRunView.fromSourceOutcomesWithMessages
+        MessagePointer.ofCellAddr numberPayloadAt numberMessages producer
+      enumeration := result
+    } : AddressedNumberEnumerationHavingCascadeRunView
+      model NumberPayload StringResidual)) = _
+  rw [enumerationExecuted]
   rfl
 
 end A12Kernel

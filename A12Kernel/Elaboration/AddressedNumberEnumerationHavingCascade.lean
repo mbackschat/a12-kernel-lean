@@ -66,6 +66,14 @@ structure AddressedNumberEnumerationHavingCascadeOutcomes where
   consumer : List AddressedEnumerationComputationOutcome
   deriving Repr, DecidableEq
 
+/-- Family-preserving result over exact addresses. Its children apply independently; this route does not define a mixed document merge. -/
+structure AddressedNumberEnumerationHavingCascadeRunView
+    (model : FlatModel) (NumberPayload StringResidual : Type) where
+  number : NumericComputationRunView
+    (ComputationFormalMessage NumberPayload) CellAddr
+  enumeration : AddressedEnumerationFirstFilledComputationRunView
+    model StringResidual
+
 inductive AddressedNumberEnumerationHavingCascadeFault where
   | producer (cause : AddressedNumberFieldFault)
   | consumer (cause : AddressedEnumerationFirstFilledComputationFault)
@@ -93,6 +101,25 @@ def execute (plan : CheckedAddressedNumberEnumerationHavingCascade model)
   let consumer ← plan.consumer.executeWithRead input
       (readAfterNumericDependencies input producer) |>.mapError .consumer
   pure { producer, consumer }
+
+/-- Execute once and project the two already-sourced phases through their established family result owners. -/
+def executeResult (plan : CheckedAddressedNumberEnumerationHavingCascade model)
+    (input : CheckedDocument model)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (stringResidualMessages : List StringResidual) :
+    Except AddressedNumberEnumerationHavingCascadeFault
+      (AddressedNumberEnumerationHavingCascadeRunView
+        model NumberPayload StringResidual) := do
+  let producer ← plan.producer.execute input |>.mapError .producer
+  let enumeration ← plan.consumer.executeResultWithRead input
+      (readAfterNumericDependencies input producer) stringResidualMessages
+    |>.mapError .consumer
+  pure {
+    number := NumericComputationRunView.fromSourceOutcomesWithMessages
+      MessagePointer.ofCellAddr numberPayloadAt numberMessages producer
+    enumeration
+  }
 
 end CheckedAddressedNumberEnumerationHavingCascade
 
