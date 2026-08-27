@@ -35,9 +35,12 @@ private def unboundTarget := booleanField 7 "UnboundSelected"
 private def rootSource := booleanField 8 "GlobalDecision"
   ["GlobalChoices"] [60]
 
+private def peerSource := booleanField 9 "PeerDecision"
+  ["Projects", "Tasks"] [10, 30]
+
 private def model : FlatModel := {
   fields := [source, target, unrelated, fixedTarget, confirmSource, nestedSource,
-    unboundTarget, rootSource]
+    unboundTarget, rootSource, peerSource]
   repeatableGroups := [
     { level := 10, path := ["Projects"], repeatability := some 4 },
     { level := 20, path := ["Projects", "Choices"], repeatability := some 3 },
@@ -66,6 +69,12 @@ private def selfStar : SurfaceStarFieldPath := {
   base := .relative 1
   groups := [{ name := "Tasks", starred := true }]
   field := target.name
+}
+
+private def peerStar : SurfaceStarFieldPath := {
+  base := .relative 1
+  groups := [{ name := "Tasks", starred := true }]
+  field := peerSource.name
 }
 
 private def absoluteSiblingStar : SurfaceStarFieldPath := {
@@ -119,6 +128,9 @@ example :
     elabError? (checkAddressedBooleanFirstFilledComputation model
       ["Projects", "Tasks"] target.id rootStar) =
         some (.sourceScope rootSource.path) ∧
+    elabError? (checkAddressedBooleanFirstFilledComputation model
+      ["Projects", "Tasks"] target.id peerStar) =
+        some (.sourceScope peerSource.path) ∧
     elabError? (checkAddressedBooleanFirstFilledComputation model
       ["Projects", "Tasks"] target.id selfStar) =
         some (.targetSelfReference target.id) := by
