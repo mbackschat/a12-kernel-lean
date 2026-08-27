@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.DateTimeSubdayShiftComputation
 import A12Kernel.Elaboration.AddressedRepeatableTarget
+import A12Kernel.Elaboration.ComputationFormalInput
 
 /-! # Exact-address repeatable DateTime sub-day shifts
 
@@ -58,6 +59,12 @@ inductive AddressedDateTimeSubdayShiftComputationFault where
   | target (cause : DateTimeTargetEvaluationFault)
   deriving Repr, DecidableEq
 
+/-- Failure while composing direct formal-input collection with addressed sub-day execution. -/
+inductive AddressedDateTimeSubdayShiftCheckedResultFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | execution (cause : AddressedDateTimeSubdayShiftComputationFault)
+  deriving Repr, DecidableEq
+
 /-- One exact source/target-address pair and its declaration-rendered DateTime outcome. -/
 structure AddressedDateTimeSubdayShiftComputationOutcome where
   sourceField : CellAddr
@@ -78,6 +85,14 @@ def fieldDependencies
     (operation : CheckedAddressedDateTimeSubdayShiftComputation model) :
     List FieldId :=
   operation.shift.fieldDependencies
+
+/-- Bind this checked operation's direct dependencies and computed target to the shared eager inventory. -/
+def formalInputPlan
+    (operation : CheckedAddressedDateTimeSubdayShiftComputation model) :
+    Except ComputationFormalInputPlanError
+      (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputPlan model operation.fieldDependencies
+    [operation.checkedTarget.targetField]
 
 def referencesField
     (operation : CheckedAddressedDateTimeSubdayShiftComputation model)
@@ -168,6 +183,16 @@ def executeResult
       (AddressedDateTimeSubdayShiftComputationRunView model ResidualMessage) := do
   let outcomes ← operation.execute input
   pure (operation.resultFromOutcomes input residualMessages outcomes)
+
+/-- Collect direct formal-input findings eagerly, then execute and project the addressed result. Duplicate authored dependencies do not duplicate one checked placement. -/
+def executeResultWithFormalInputs
+    (operation : CheckedAddressedDateTimeSubdayShiftComputation model)
+    (input : CheckedDocument model) :
+    Except AddressedDateTimeSubdayShiftCheckedResultFault
+      (AddressedDateTimeSubdayShiftComputationRunView model
+        ComputationFormalInputFinding) := do
+  let plan ← operation.formalInputPlan |>.mapError .formalInput
+  operation.executeResult input (plan.findings input) |>.mapError .execution
 
 end CheckedAddressedDateTimeSubdayShiftComputation
 

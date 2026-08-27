@@ -162,6 +162,35 @@ example :
       ] := by
   native_decide
 
+/- Eager collection sees every selected checked placement once even when source-first runtime evaluation reads neither duplicated amount dependency. Two row placements prevent field-level de-duplication, while computed and unrelated fields remain excluded. -/
+example :
+    (do
+      let operation ← operation?
+      let input ← document? [
+          row 10 [1], row 20 [1, 1], row 20 [1, 2]] [
+        cell target.id [1, 1] "bad" (.rejected .dateFormat),
+        cell unrelated.id [] "bad" (.rejected .dateFormat),
+        cell rootAmount.id [] "bad" (.rejected .malformed),
+        cell rowAmount.id [1, 1] "bad" (.rejected .malformed),
+        cell rowAmount.id [1, 2] "bad" (.rejected .malformed),
+        cell source.id [1] "bad" (.rejected .dateFormat)]
+      let result ← operation.executeResultWithFormalInputs input |>.toOption
+      let findings := result.dateTime.formalErrorsInOperands
+      pure (
+        findings.length,
+        [findings.contains {
+            address := address rootAmount.id [], cause := .malformed },
+          findings.contains {
+            address := address rowAmount.id [1, 1], cause := .malformed },
+          findings.contains {
+            address := address rowAmount.id [1, 2], cause := .malformed },
+          findings.contains {
+            address := address source.id [1], cause := .dateFormat },
+          findings.any fun finding => finding.address.field == target.id,
+          findings.any fun finding => finding.address.field == unrelated.id])) =
+      some (4, [true, true, true, true, false, false]) := by
+  native_decide
+
 /- No physical target row reaches the malformed amount. -/
 example :
     (do

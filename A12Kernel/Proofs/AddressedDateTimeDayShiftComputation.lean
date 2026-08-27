@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.AddressedDateTimeDayShiftComputation
+import A12Kernel.Proofs.ComputationFormalInput
 
 /-! # Exact-address repeatable DateTime calendar-day shift laws -/
 
@@ -47,6 +48,28 @@ theorem addressedDateTimeDayShiftComputation_executeResult_projects
   simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
   subst view
   exact ⟨rfl, rfl⟩
+
+/-- The composed result's formal-input channel is exactly the eager checked-plan inventory. -/
+theorem addressedDateTimeDayShiftComputation_executeResultWithFormalInputs_exact
+    (operation : CheckedAddressedDateTimeDayShiftComputation model)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (outcomes : List AddressedDateTimeDayShiftComputationOutcome)
+    (view : AddressedDateTimeDayShiftComputationRunView model
+      ComputationFormalInputFinding)
+    (planned : operation.formalInputPlan = .ok plan)
+    (executed : operation.execute input = .ok outcomes)
+    (produced : operation.executeResultWithFormalInputs input = .ok view) :
+    view.dateTime.formalErrorsInOperands = plan.findings input := by
+  rw [CheckedAddressedDateTimeDayShiftComputation.executeResultWithFormalInputs,
+    planned] at produced
+  simp only [bind, Except.bind, Except.mapError] at produced
+  rw [CheckedAddressedDateTimeDayShiftComputation.executeResult,
+    executed] at produced
+  simp only [bind, Except.bind, pure, Except.pure,
+    Except.ok.injEq] at produced
+  subst view
+  rfl
 
 /-- Exact-address application delegates to the common DateTime action fold. -/
 theorem addressedDateTimeDayShiftComputation_applyToChecked_delegates

@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.DateTimeComputationApplication
 import A12Kernel.Elaboration.DateTimeDayShiftEvaluation
 import A12Kernel.Elaboration.AddressedRepeatableTarget
+import A12Kernel.Elaboration.ComputationFormalInput
 
 /-! # Exact-address repeatable DateTime calendar-day shifts
 
@@ -80,6 +81,12 @@ inductive AddressedDateTimeDayShiftComputationFault where
   | target (cause : DateTimeTargetEvaluationFault)
   deriving Repr, DecidableEq
 
+/-- Failure while composing direct formal-input collection with addressed calendar-day execution. -/
+inductive AddressedDateTimeDayShiftCheckedResultFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | execution (cause : AddressedDateTimeDayShiftComputationFault)
+  deriving Repr, DecidableEq
+
 /-- One exact source/target-address pair and its declaration-rendered DateTime outcome. -/
 structure AddressedDateTimeDayShiftComputationOutcome where
   sourceField : CellAddr
@@ -105,6 +112,14 @@ def fieldDependencies
     (operation : CheckedAddressedDateTimeDayShiftComputation model) :
     List FieldId :=
   operation.source.source.id :: operation.amount.fieldDependencies
+
+/-- Bind this checked operation's direct dependencies and computed target to the shared eager inventory. -/
+def formalInputPlan
+    (operation : CheckedAddressedDateTimeDayShiftComputation model) :
+    Except ComputationFormalInputPlanError
+      (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputPlan model operation.fieldDependencies
+    [operation.checkedTarget.targetField]
 
 private def classifyAt
     (operation : CheckedAddressedDateTimeDayShiftComputation model)
@@ -184,6 +199,16 @@ def executeResult
       (AddressedDateTimeDayShiftComputationRunView model ResidualMessage) := do
   let outcomes ← operation.execute input
   pure (operation.resultFromOutcomes input residualMessages outcomes)
+
+/-- Collect direct formal-input findings eagerly, then execute and project the addressed result. Runtime short circuiting does not remove an already inventoried operand finding. -/
+def executeResultWithFormalInputs
+    (operation : CheckedAddressedDateTimeDayShiftComputation model)
+    (input : CheckedDocument model) :
+    Except AddressedDateTimeDayShiftCheckedResultFault
+      (AddressedDateTimeDayShiftComputationRunView model
+        ComputationFormalInputFinding) := do
+  let plan ← operation.formalInputPlan |>.mapError .formalInput
+  operation.executeResult input (plan.findings input) |>.mapError .execution
 
 end CheckedAddressedDateTimeDayShiftComputation
 

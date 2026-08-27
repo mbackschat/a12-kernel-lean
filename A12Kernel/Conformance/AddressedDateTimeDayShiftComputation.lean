@@ -156,6 +156,28 @@ example :
       ] := by
   native_decide
 
+/- The checked-plan inventory is eager rather than a runtime trace: it retains the hidden malformed amount and source, while the computed target and unrelated field remain outside the operand set. -/
+example :
+    (do
+      let operation ← operation?
+      let input ← document? [row 10 [1], row 20 [1, 1]] [
+        cell target.id [1, 1] "bad" (.rejected .dateFormat),
+        cell unrelated.id [] "bad" (.rejected .dateFormat),
+        cell amount.id [1, 1] "bad" (.rejected .malformed),
+        cell source.id [1] "bad" (.rejected .dateFormat)]
+      let result ← operation.executeResultWithFormalInputs input |>.toOption
+      let findings := result.dateTime.formalErrorsInOperands
+      pure (
+        findings.length,
+        findings.contains {
+          address := address amount.id [1, 1], cause := .malformed },
+        findings.contains {
+          address := address source.id [1], cause := .dateFormat },
+        findings.any fun finding => finding.address.field == target.id,
+        findings.any fun finding => finding.address.field == unrelated.id)) =
+      some (2, true, true, false, false) := by
+  native_decide
+
 example : (do
     let operation ← operation?
     let input ← document? [] []
