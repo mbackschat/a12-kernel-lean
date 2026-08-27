@@ -249,6 +249,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Two-producer Enumeration `FirstFilledValue` join](implementation/strings-and-enumerations.md#cap-two-producer-enumeration-firstfilledvalue-join)
 <a id="cap-number-dependency-in-enumeration-having"></a>
 - [Computed Number dependency inside Enumeration `Having`](implementation/strings-and-enumerations.md#cap-number-dependency-in-enumeration-having)
+<a id="cap-computed-enumeration-number-having-join"></a>
+- [Computed Enumeration value plus Number `Having` join](implementation/strings-and-enumerations.md#cap-computed-enumeration-number-having-join)
 
 #### Repetition and path capabilities
 

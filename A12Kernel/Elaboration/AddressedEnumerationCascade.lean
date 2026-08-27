@@ -89,13 +89,20 @@ def projectEnumerationDependencyCells
       |>.mapError fun cause => { target := outcome.targetField, cause }
     pure (outcome.targetField, dependency.checked)
 
-/-- Read from a completed exact-address dependency overlay before falling back to the immutable checked input. -/
-def readAfterEnumerationDependencies (input : CheckedDocument model)
+/-- Read from a completed exact-address Enumeration overlay before falling back to one caller-supplied checked-cell view. -/
+def readAfterEnumerationDependenciesWith
     (dependencies : List (CellAddr × CheckedCell))
+    (fallback : CellAddr → Except CheckedDocumentError CheckedCell)
     (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
   match dependencies.find? fun dependency => dependency.1 == address with
   | some dependency => .ok dependency.2
-  | none => input.read address
+  | none => fallback address
+
+/-- Read from a completed exact-address dependency overlay before falling back to the immutable checked input. -/
+def readAfterEnumerationDependencies (input : CheckedDocument model)
+    (dependencies : List (CellAddr × CheckedCell)) :
+    CellAddr → Except CheckedDocumentError CheckedCell :=
+  readAfterEnumerationDependenciesWith dependencies input.read
 
 structure AddressedEnumerationCascadeOutcomes where
   producer : List AddressedEnumerationComputationOutcome

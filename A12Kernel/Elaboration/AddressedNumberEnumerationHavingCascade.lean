@@ -8,14 +8,31 @@ This bounded SG4 route runs one repeatable direct Number computation before one 
 
 namespace A12Kernel
 
-/-- Filter-only dependencies for the exact direct-then-filtered-star consumer shape. -/
+structure DirectThenFilteredEnumerationSourceShape where
+  directField : FieldId
+  starredField : FieldId
+  havingDependencies : List FieldId
+  deriving Repr, DecidableEq
+
+/-- Static identities for the exact direct-then-filtered-star consumer shape. -/
+def directThenFilteredEnumerationSourceShape?
+    (source : CheckedEnumerationFirstFilledSource model scope) :
+    Option DirectThenFilteredEnumerationSourceShape :=
+  match source.first, source.rest with
+  | .field _ direct _ _, [.star star] =>
+      star.filter.map fun having => {
+        directField := direct.field.id
+        starredField := star.source.declaration.id
+        havingDependencies := having.condition.fieldIds
+      }
+  | _, _ => none
+
+/-- Filter-only specialization retained by the one-producer Number route. -/
 def directThenFilteredEnumerationHavingDependencies?
     (source : CheckedEnumerationFirstFilledSource model scope) :
     Option (List FieldId) :=
-  match source.first, source.rest with
-  | .field .., [.star star] =>
-      star.filter.map (fun having => having.condition.fieldIds)
-  | _, _ => none
+  (directThenFilteredEnumerationSourceShape? source).map
+    (fun shape => shape.havingDependencies)
 
 inductive AddressedNumberEnumerationHavingCascadeElabError where
   | consumerSourceShape
