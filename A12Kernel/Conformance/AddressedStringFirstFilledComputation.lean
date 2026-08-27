@@ -259,4 +259,61 @@ example : (do
       (address target.id [5, 1], .poison .malformed)] := by
   native_decide
 
+private structure ResultApplicationSummary where
+  values : List (CellAddr × String)
+  changes : List (CellAddr × String)
+  errors : List (CellAddr × String × StringTargetError)
+  cleared : List CellAddr
+  residual : List FormalCause
+  applied : List StringTargetState
+  unrelatedState : StringTargetState
+  deriving Repr, DecidableEq
+
+private def resultApplicationSummary? : Option ResultApplicationSummary := do
+  let operation ← operation?
+  let input ← input?
+  let destination ← document? [
+    cell target.id [1, 1] "A", cell target.id [2, 1] "A",
+    cell target.id [3, 1] "A", cell target.id [4, 1] "A",
+    cell target.id [5, 1] "A", cell target.id [6, 1] "A",
+    cell fixedTarget.id [] "KEEP"]
+  let result ← operation.executeResult prepared.patterns input
+    ([.malformed] : List FormalCause) |>.toOption
+  let applied ← result.applyToChecked destination |>.toOption
+  let targetAt := fun row => address target.id [row, 1]
+  pure {
+    values := result.string.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    changes := result.string.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    errors := result.string.withErrors.map fun item =>
+      (item.targetField, item.attempted.text, item.cause)
+    cleared := result.string.cleared
+    residual := result.string.formalErrorsInOperands
+    applied := [1, 2, 3, 4, 5, 6].map fun row => applied (targetAt row)
+    unrelatedState := applied (address fixedTarget.id [])
+  }
+
+/- Result classification stays relative to the immutable source, while application changes only retained exact-address actions in a separate destination. -/
+example : resultApplicationSummary? = some {
+    values := [
+      (address target.id [1, 1], "AA"),
+      (address target.id [6, 1], "AAA")]
+    changes := [(address target.id [6, 1], "AAA")]
+    errors := [
+      (address target.id [2, 1], "AB", .pattern),
+      (address target.id [4, 1], "AAAA", .tooLong)]
+    cleared := [address target.id [3, 1], address target.id [5, 1]]
+    residual := [.malformed]
+    applied := [
+      .presentValue ⟨"A", by decide⟩,
+      .presentEmpty,
+      .presentEmpty,
+      .presentEmpty,
+      .presentEmpty,
+      .presentValue ⟨"AAA", by decide⟩]
+    unrelatedState := .presentValue ⟨"KEEP", by decide⟩
+  } := by
+  native_decide
+
 end A12Kernel.Conformance.AddressedStringFirstFilledComputation

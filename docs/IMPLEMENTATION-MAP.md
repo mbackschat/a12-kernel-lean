@@ -321,8 +321,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Result and application](implementation/computations.md#cap-result-and-application)
 <a id="cap-fixed-string-firstfilledvalue-result-application"></a>
 - [Fixed ordinary String `FirstFilledValue` result/application](implementation/computations.md#cap-fixed-string-firstfilledvalue-result-application)
-<a id="cap-exact-address-repeatable-string-firstfilledvalue-execution"></a>
-- [Exact-address repeatable ordinary String `FirstFilledValue` execution](implementation/computations.md#cap-exact-address-repeatable-string-firstfilledvalue-execution)
+<a id="cap-exact-address-repeatable-string-firstfilledvalue-result-application"></a>
+- [Exact-address repeatable ordinary String `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-string-firstfilledvalue-result-application)
 <a id="cap-exact-address-repeatable-boolean-firstfilledvalue-result-application"></a>
 - [Exact-address repeatable Boolean `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-boolean-firstfilledvalue-result-application)
 <a id="cap-exact-address-repeatable-custom-firstfilledvalue-result-application"></a>

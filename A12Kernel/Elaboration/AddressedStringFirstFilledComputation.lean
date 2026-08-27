@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.AddressedFirstFilledStar
+import A12Kernel.Elaboration.StringComputationRunApplication
 import A12Kernel.Elaboration.StringFirstFilledComputation
 
 /-! # Exact-address repeatable ordinary String `FirstFilledValue`
@@ -120,6 +121,13 @@ structure AddressedStringFirstFilledComputationOutcome where
   outcome : StringTargetOutcome
   deriving Repr, DecidableEq
 
+/-- One addressed ordinary String result retaining its exact checked operation. -/
+structure AddressedStringFirstFilledComputationRunView (model : FlatModel)
+    (ResidualMessage : Type) where
+  private mk ::
+  operation : CheckedAddressedStringFirstFilledComputation model
+  string : StringComputationRunView ResidualMessage CellAddr
+
 namespace CheckedAddressedStringFirstFilledComputation
 
 private def evaluateAt
@@ -154,6 +162,36 @@ def execute
     |>.mapError .targetRows
   environments.mapM (operation.evaluateAt matcher input)
 
+/-- Classify every exact rich outcome against the immutable source target at that same address. -/
+def executeResult
+    (operation : CheckedAddressedStringFirstFilledComputation model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    Except AddressedStringFirstFilledComputationFault
+      (AddressedStringFirstFilledComputationRunView model ResidualMessage) := do
+  let outcomes ← operation.execute patterns input
+  pure {
+    operation
+    string := StringComputationRunView.fromSourcedOutcomes residualMessages
+      (outcomes.map fun entry => {
+        targetField := entry.targetField
+        outcome := entry.outcome
+        source := input.sourceStringTargetStateAt entry.targetField
+      })
+  }
+
 end CheckedAddressedStringFirstFilledComputation
+
+namespace AddressedStringFirstFilledComputationRunView
+
+/-- Apply retained exact-address actions to a separate same-model destination projection without reclassifying them. -/
+def applyToChecked
+    (view : AddressedStringFirstFilledComputationRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    Except (StringComputationRunView.StringComputationRunApplicationError
+      CellAddr) (StringComputationDestination CellAddr) :=
+  view.string.applyTo destination.sourceStringTargetStateAt
+
+end AddressedStringFirstFilledComputationRunView
 
 end A12Kernel
