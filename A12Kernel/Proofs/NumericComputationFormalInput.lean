@@ -43,4 +43,20 @@ theorem checkedNumericComputationRun_formalInputOperations_targets_exact
       run.tables.map (·.targetField) := by
   simp [CheckedNumericComputationRun.formalInputOperations]
 
+/-- Whole-call composition projects the eager checked-plan findings exactly and preserves the independently classified numeric result. -/
+theorem checkedNumericComputationRun_executeResultWithFormalInputs_exact
+    (run : CheckedNumericComputationRun model)
+    (world : World) (input : CheckedDocument model)
+    (inputPlan : CheckedComputationFormalInputPlan model)
+    (numeric : NumericComputationRunView (ComputationFormalMessage Unit))
+    (planned : run.formalInputPlan = .ok inputPlan)
+    (executed : run.executeResult world input (fun _ => ()) [] = .ok numeric) :
+    (run.executeResultWithFormalInputs world input).map (fun view =>
+      (view.formalErrorsInOperands, view.numeric)) =
+      .ok (inputPlan.findings input, numeric) := by
+  rw [CheckedNumericComputationRun.executeResultWithFormalInputs, planned]
+  simp only [bind, Except.bind, Except.mapError]
+  rw [executed]
+  rfl
+
 end A12Kernel

@@ -1,9 +1,21 @@
 import A12Kernel.Elaboration.ComputationFormalInput
-import A12Kernel.Elaboration.NumericComputation.RunPlan
+import A12Kernel.Elaboration.NumericComputation.RunResult
 
 /-! # Checked numeric-computation formal inputs -/
 
 namespace A12Kernel
+
+/-- One completed checked scalar Number run paired with its call-global raw formal-input inventory. The numeric result keeps its independently rendered target messages. -/
+structure NumericComputationFormalInputRunView (model : FlatModel) where
+  private mk ::
+  numeric : NumericComputationRunView (ComputationFormalMessage Unit)
+  formalErrorsInOperands : List ComputationFormalInputFinding
+
+/-- Failure while composing the checked scalar run's direct-field inventory with execution and source-relative result projection. -/
+inductive NumericComputationFormalInputRunFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | execution (cause : NumericComputationRunResultFault)
+  deriving Repr, DecidableEq
 
 namespace CheckedNumericComputationOperation
 
@@ -53,6 +65,19 @@ def formalInputPlan (run : CheckedNumericComputationRun model) :
     Except ComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) :=
   checkComputationFormalInputOperations model run.formalInputOperations
+
+/-- Check the call-global inventory before execution, then project its raw findings on success without copying them into the rendered numeric message channel. -/
+def executeResultWithFormalInputs (run : CheckedNumericComputationRun model)
+    (world : World) (input : CheckedDocument model) :
+    Except NumericComputationFormalInputRunFault
+      (NumericComputationFormalInputRunView model) := do
+  let inputPlan ← run.formalInputPlan |>.mapError .formalInput
+  let numeric ← run.executeResult world input (fun _ => ()) []
+    |>.mapError .execution
+  pure {
+    numeric
+    formalErrorsInOperands := inputPlan.findings input
+  }
 
 end CheckedNumericComputationRun
 

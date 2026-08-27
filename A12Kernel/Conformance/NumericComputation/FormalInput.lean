@@ -53,9 +53,10 @@ private abbrev NumericRow := ComputationAlternative
   (CheckedNumericTargetComputationOperation model)
 
 private def rowFor? (targetField : FieldId) (guard : ComputationCondition)
-    (expression : AuthoredNumericExpr SurfaceNumericAtom) : Option NumericRow := do
+    (expression : AuthoredNumericExpr SurfaceNumericAtom)
+    (suppressExactScaleWarning : Bool := false) : Option NumericRow := do
   let operation ← (elaborateNumericTargetComputationOperation model ["Root"]
-    targetField expression).toOption
+    targetField expression suppressExactScaleWarning).toOption
   pure { precondition := guard, operation }
 
 private def table? : Option (CheckedNumericComputationTable model) := do
@@ -79,6 +80,22 @@ private def run? : Option (CheckedNumericComputationRun model) := do
   let first ← table?
   let later ← laterTable?
   (certifyNumericComputationRun [first, later]).toOption
+
+private def domainFailureExpression : AuthoredNumericExpr SurfaceNumericAtom :=
+  .binary .divide
+    (.literal { value := 1, authoredScale := 0 })
+    (.literal { value := 0, authoredScale := 0 })
+
+private def domainFailureRow? : Option NumericRow :=
+  rowFor? target.id (.fieldNotFilled unrelated.id) domainFailureExpression true
+
+private def domainFailureTable? : Option (CheckedNumericComputationTable model) := do
+  let row ← domainFailureRow?
+  (certifyNumericComputationTable [row]).toOption
+
+private def domainFailureRun? : Option (CheckedNumericComputationRun model) := do
+  let checked ← domainFailureTable?
+  (certifyNumericComputationRun [checked]).toOption
 
 private def rejected (field : FieldId) : ClassifiedCellInput := {
   address := { field, path := [] }
@@ -107,6 +124,12 @@ private def tableInput? : Option (CheckedDocument model) :=
       rejected target.id, rejected unrelated.id, rejected firstGuard.id,
       rejected secondGuard.id, rejected directSource.id,
       rejected laterTarget.id, rejected laterSource.id]
+  }).toOption
+
+private def emptyInput? : Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := []
   }).toOption
 
 /- A fixed group-count dependency expands both operand groups to every declared member field.
@@ -202,6 +225,46 @@ example :
           { address := { field := laterSource.id, path := [] },
             cause := .declaredConstraint }
         ]) := by
+  native_decide
+
+/- Whole-call execution retains eager raw operand findings outside the numeric
+   result's rendered target-message channel. -/
+example :
+    (do
+      let run ← run?
+      let input ← tableInput?
+      let view ← (run.executeResultWithFormalInputs
+        { now := { epochMillis := 0 } } input).toOption
+      pure (
+        view.formalErrorsInOperands.map fun finding =>
+          (finding.address.field, finding.cause),
+        view.numeric.formalErrorsInOperands.map
+          (fun message => message.errorCode))) =
+      some ([
+          (detailsAmount.id, FormalCause.declaredConstraint),
+          (detailsCode.id, FormalCause.declaredConstraint),
+          (preferencesChoice.id, FormalCause.declaredConstraint),
+          (preferencesScore.id, FormalCause.declaredConstraint),
+          (firstGuard.id, FormalCause.declaredConstraint),
+          (secondGuard.id, FormalCause.declaredConstraint),
+          (directSource.id, FormalCause.declaredConstraint),
+          (laterSource.id, FormalCause.declaredConstraint)
+        ], []) := by
+  native_decide
+
+/- A target-derived value-less computation diagnostic remains in the numeric
+   result even when the call-global raw formal-input inventory is empty. -/
+example :
+    (do
+      let run ← domainFailureRun?
+      let input ← emptyInput?
+      let view ← (run.executeResultWithFormalInputs
+        { now := { epochMillis := 0 } } input).toOption
+      pure (view.formalErrorsInOperands,
+        view.numeric.formalErrorsInOperands.map
+          (fun message => message.errorCode),
+        view.numeric.noErrorOccurred)) =
+      some ([], [berechnungsWertFehler], false) := by
   native_decide
 
 end A12Kernel.Conformance.NumericComputation.FormalInput
