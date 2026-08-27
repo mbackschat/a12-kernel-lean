@@ -267,10 +267,10 @@ def fieldDependencies
     List FieldId :=
   checked.source.source.id :: checked.amount.fieldDependencies
 
-/-- Evaluate the source before the addressed amount at one exact repeatable environment. -/
-def evaluateAt
+private def evaluateAtUsing
     (checked : CheckedAddressedDateTimeShift model declaringGroup readingScope)
-    (input : CheckedDocument model) (environment : Env) :
+    (input : CheckedDocument model) (environment : Env)
+    (amountInput : AddressedValidationInput model) :
     Except AddressedDateTimeShiftFault AddressedDateTimeShiftEvaluation := do
   let sourcePath ← environment.pathForScope
     checked.source.sourceDeclaration.repeatableScope |>.mapError .environment
@@ -287,10 +287,26 @@ def evaluateAt
             groups := GroupPresenceContext.unavailable
           }
           outer := environment
-          input := .checked input
+          input := amountInput
         } |>.mapError .amountAddressing)
       (fun cause => .semantic cause)
   pure { sourceField, result }
+
+/-- Evaluate the immutable source before an amount read through one caller-supplied addressed view. The read can expose completed computation targets without making them source cells or applied document state. -/
+def evaluateAtWithAmountRead
+    (checked : CheckedAddressedDateTimeShift model declaringGroup readingScope)
+    (input : CheckedDocument model) (environment : Env)
+    (amountRead : Env → FieldId →
+      Except CheckedAddressingError (Option CheckedCell)) :
+    Except AddressedDateTimeShiftFault AddressedDateTimeShiftEvaluation :=
+  checked.evaluateAtUsing input environment (.partialView input amountRead)
+
+/-- Evaluate the source before the addressed amount at one exact repeatable environment. -/
+def evaluateAt
+    (checked : CheckedAddressedDateTimeShift model declaringGroup readingScope)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedDateTimeShiftFault AddressedDateTimeShiftEvaluation :=
+  checked.evaluateAtUsing input environment (.checked input)
 
 end CheckedAddressedDateTimeShift
 

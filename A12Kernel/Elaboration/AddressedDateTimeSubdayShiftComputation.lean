@@ -84,15 +84,14 @@ def referencesField
     (field : FieldId) : Bool :=
   operation.shift.referencesField field
 
-private def evaluateAt
+private def classifyAt
     (operation : CheckedAddressedDateTimeSubdayShiftComputation model)
-    (input : CheckedDocument model) (environment : Env) :
+    (environment : Env) (shifted : AddressedDateTimeShiftEvaluation) :
     Except AddressedDateTimeSubdayShiftComputationFault
       AddressedDateTimeSubdayShiftComputationOutcome := do
   let targetPath ← environment.pathForScope
     operation.checkedTarget.declaration.repeatableScope
       |>.mapError .targetEnvironment
-  let shifted ← operation.shift.evaluateAt input environment |>.mapError .shift
   let outcome ← operation.targetPolicy.evaluate
     shifted.result.asTemporalComputationResult |>.mapError .target
   pure {
@@ -103,6 +102,40 @@ private def evaluateAt
     }
     outcome
   }
+
+private def evaluateAt
+    (operation : CheckedAddressedDateTimeSubdayShiftComputation model)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedDateTimeSubdayShiftComputationFault
+      AddressedDateTimeSubdayShiftComputationOutcome := do
+  let shifted ← operation.shift.evaluateAt input environment |>.mapError .shift
+  operation.classifyAt environment shifted
+
+/-- Evaluate one exact target row with the immutable DateTime source and a caller-supplied addressed amount view. -/
+def evaluateAtWithAmountRead
+    (operation : CheckedAddressedDateTimeSubdayShiftComputation model)
+    (input : CheckedDocument model) (environment : Env)
+    (amountRead : Env → FieldId →
+      Except CheckedAddressingError (Option CheckedCell)) :
+    Except AddressedDateTimeSubdayShiftComputationFault
+      AddressedDateTimeSubdayShiftComputationOutcome := do
+  let shifted ← operation.shift.evaluateAtWithAmountRead input environment amountRead
+    |>.mapError .shift
+  operation.classifyAt environment shifted
+
+/-- Execute every physical target row while numeric amounts read through one transient addressed view. -/
+def executeWithAmountRead
+    (operation : CheckedAddressedDateTimeSubdayShiftComputation model)
+    (input : CheckedDocument model)
+    (amountRead : Env → FieldId →
+      Except CheckedAddressingError (Option CheckedCell)) :
+    Except AddressedDateTimeSubdayShiftComputationFault
+      (List AddressedDateTimeSubdayShiftComputationOutcome) := do
+  let environments ← input.actualRowEnvironments
+    operation.checkedTarget.declaration.repeatableScope
+      |>.mapError .targetRows
+  environments.mapM fun environment =>
+    operation.evaluateAtWithAmountRead input environment amountRead
 
 /-- Execute once per physically instantiated target row in document order. -/
 def execute
@@ -115,6 +148,18 @@ def execute
       |>.mapError .targetRows
   environments.mapM (operation.evaluateAt input)
 
+/-- Classify already-executed exact row outcomes against immutable source target state. -/
+def resultFromOutcomes
+    (operation : CheckedAddressedDateTimeSubdayShiftComputation model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage)
+    (outcomes : List AddressedDateTimeSubdayShiftComputationOutcome) :
+    AddressedDateTimeSubdayShiftComputationRunView model ResidualMessage := {
+  operation
+  dateTime := DateTimeComputationRunView.fromOutcomesAt
+    input.sourceDateTimeTargetStateAt residualMessages
+    (outcomes.map fun entry => (entry.targetField, entry.outcome))
+}
+
 /-- Classify exact row outcomes against immutable source target state through the common DateTime result owner. -/
 def executeResult
     (operation : CheckedAddressedDateTimeSubdayShiftComputation model)
@@ -122,12 +167,7 @@ def executeResult
     Except AddressedDateTimeSubdayShiftComputationFault
       (AddressedDateTimeSubdayShiftComputationRunView model ResidualMessage) := do
   let outcomes ← operation.execute input
-  pure {
-    operation
-    dateTime := DateTimeComputationRunView.fromOutcomesAt
-      input.sourceDateTimeTargetStateAt residualMessages
-      (outcomes.map fun entry => (entry.targetField, entry.outcome))
-  }
+  pure (operation.resultFromOutcomes input residualMessages outcomes)
 
 end CheckedAddressedDateTimeSubdayShiftComputation
 
