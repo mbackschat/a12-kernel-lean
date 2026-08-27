@@ -239,6 +239,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Checked sibling-star FULL Date target admission, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-full-date-repeatable-first-filled)
 <a id="src-time-repeatable-first-filled"></a>
 - [Sibling-star Time `FirstFilledValue` target admission, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-time-repeatable-first-filled)
+<a id="src-datetime-component-sibling-parallel-refusal"></a>
+- [Sibling-parallel refusal for DateTime component extractors, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-datetime-component-sibling-parallel-refusal)
 <a id="src-date-range-unconfigured-interpretation-first-filled-star"></a>
 - [Unconfigured interpreted DateRange declaration-order discriminator, corrected 2026-08-24](sources/temporal-and-message-probes.md#src-date-range-unconfigured-interpretation-first-filled-star)
 <a id="src-date-range-unconfigured-bound"></a>
