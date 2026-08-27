@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CurrentRepetitionAlternatingEnumerationHaving
+import A12Kernel.Elaboration.NumericComputation.RunApplication
 
 /-! # Four-stage CurrentRepetition Number/String/Number/Enumeration locks -/
 
@@ -127,7 +128,8 @@ private def cell (field : FlatFieldDecl) (path : List Nat)
 private def storedString (text : String) (nonempty : text ≠ "") : StoredString :=
   { text, nonempty }
 
-private def input? (poisoned : Bool) (direct : Option String := none) :
+private def input? (poisoned : Bool) (direct : Option String := none)
+    (targetValue : Option String := none) :
     Option (CheckedDocument model) :=
   let rows := if poisoned then [1] else [1, 2]
   let bases := if poisoned then [12] else [1, 2]
@@ -141,10 +143,12 @@ private def input? (poisoned : Bool) (direct : Option String := none) :
       (.parsed (.enum (if row == 1 then "A" else "B")))]
   let directCell := direct.toList.map fun token =>
     cell directChoice [1] token (.parsed (.enum token))
+  let targetCell := targetValue.toList.map fun token =>
+    cell target [1] token (.parsed (.enum token))
   (checkDocument prepared "en_US" {
     instantiatedRows := [{ group := 10, path := [1] }] ++
       rows.map fun row => { group := 20, path := [1, row] }
-    cells := [numericCell limit [1] 1] ++ directCell ++ repeated
+    cells := [numericCell limit [1] 1] ++ directCell ++ targetCell ++ repeated
   }).toOption
 
 private structure Summary where
@@ -239,6 +243,135 @@ example : poisonSummary? = some {
   reachedConsumer := [
     ({ field := target.id, path := [1] }, .poison .computedDependency)]
   hiddenConsumer := [({ field := target.id, path := [1] }, .value "B")]
+} := by
+  native_decide
+
+private structure ResultApplicationSummary where
+  numberChanges : List (CellAddr × StoredNumber)
+  stringChanges : List (CellAddr × String)
+  consumerChanges : List (CellAddr × String)
+  numberFirstAtOne : NumericTargetState
+  numberThirdAtTwo : NumericTargetState
+  stringSecondAtOne : StringTargetState
+  stringSecondAtTwo : StringTargetState
+  consumerAtOne : StringTargetState
+  directAtOne : StringTargetState
+  chainResidual : List Nat
+  consumerResidual : List Nat
+  deriving Repr, DecidableEq
+
+private def resultApplicationSummary? : Option ResultApplicationSummary := do
+  let plan ← plan?
+  let input ← input? false
+  let destination ← input? false (some "B") (some "B")
+  let view ← plan.executeResult prepared.patterns input (fun _ => ()) []
+    [11] [22] |>.toOption
+  let numberApplied ← view.chain.number.applyToChecked destination |>.toOption
+  let stringsApplied ← view.applyStringsToChecked destination |>.toOption
+  pure {
+    numberChanges := view.chain.number.withChanges.map fun item =>
+      (item.targetField, item.value)
+    stringChanges := view.chain.string.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    consumerChanges := view.consumer.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    numberFirstAtOne := numberApplied.stateAt { field := first.id, path := [1, 1] }
+    numberThirdAtTwo := numberApplied.stateAt { field := third.id, path := [1, 2] }
+    stringSecondAtOne := stringsApplied { field := second.id, path := [1, 1] }
+    stringSecondAtTwo := stringsApplied { field := second.id, path := [1, 2] }
+    consumerAtOne := stringsApplied { field := target.id, path := [1] }
+    directAtOne := stringsApplied { field := directChoice.id, path := [1] }
+    chainResidual := view.chain.string.formalErrorsInOperands
+    consumerResidual := view.consumer.formalErrorsInOperands
+  }
+
+/- One execution projects all four phases against the immutable source and applies the family carriers independently to a conflicting destination. -/
+example : resultApplicationSummary? = some {
+  numberChanges := [
+    ({ field := first.id, path := [1, 1] }, { unscaled := 1, scale := 0 }),
+    ({ field := third.id, path := [1, 1] }, { unscaled := 1, scale := 0 }),
+    ({ field := first.id, path := [1, 2] }, { unscaled := 2, scale := 0 }),
+    ({ field := third.id, path := [1, 2] }, { unscaled := 2, scale := 0 })]
+  stringChanges := [
+    ({ field := second.id, path := [1, 1] }, "1"),
+    ({ field := second.id, path := [1, 2] }, "2")]
+  consumerChanges := [({ field := target.id, path := [1] }, "A")]
+  numberFirstAtOne :=
+    .presentValue (.decimal { unscaled := 1, scale := 0 })
+  numberThirdAtTwo :=
+    .presentValue (.decimal { unscaled := 2, scale := 0 })
+  stringSecondAtOne := .presentValue (storedString "1" (by decide))
+  stringSecondAtTwo := .presentValue (storedString "2" (by decide))
+  consumerAtOne := .presentValue (storedString "A" (by decide))
+  directAtOne := .presentValue (storedString "B" (by decide))
+  chainResidual := [11]
+  consumerResidual := [22]
+} := by
+  native_decide
+
+private structure PoisonResultApplicationSummary where
+  numberChanges : List (CellAddr × StoredNumber)
+  numberCleared : List CellAddr
+  stringErrors : List (CellAddr × StringTargetError)
+  consumerCleared : List CellAddr
+  reachedFirst : NumericTargetState
+  reachedSecond : StringTargetState
+  reachedThird : NumericTargetState
+  reachedConsumer : StringTargetState
+  hiddenConsumerValues : List (CellAddr × String)
+  hiddenConsumerChanges : List (CellAddr × String)
+  hiddenConsumerCleared : List CellAddr
+  hiddenConsumerAtDestination : StringTargetState
+  deriving Repr, DecidableEq
+
+private def poisonResultApplicationSummary? :
+    Option PoisonResultApplicationSummary := do
+  let plan ← plan?
+  let reachedInput ← input? true none (some "A")
+  let reached ← plan.executeResult prepared.patterns reachedInput
+    (fun _ => ()) [] ([] : List Unit) [] |>.toOption
+  let reachedNumber ← reached.chain.number.applyToChecked reachedInput |>.toOption
+  let reachedStrings ← reached.applyStringsToChecked reachedInput |>.toOption
+  let hiddenInput ← input? true (some "B") (some "B")
+  let hiddenDestination ← input? true none (some "A")
+  let hidden ← plan.executeResult prepared.patterns hiddenInput
+    (fun _ => ()) [] ([] : List Unit) [] |>.toOption
+  let hiddenStrings ← hidden.applyStringsToChecked hiddenDestination |>.toOption
+  pure {
+    numberChanges := reached.chain.number.withChanges.map fun item =>
+      (item.targetField, item.value)
+    numberCleared := reached.chain.number.cleared
+    stringErrors := reached.chain.string.withErrors.map fun item =>
+      (item.targetField, item.cause)
+    consumerCleared := reached.consumer.cleared
+    reachedFirst := reachedNumber.stateAt { field := first.id, path := [1, 1] }
+    reachedSecond := reachedStrings { field := second.id, path := [1, 1] }
+    reachedThird := reachedNumber.stateAt { field := third.id, path := [1, 1] }
+    reachedConsumer := reachedStrings { field := target.id, path := [1] }
+    hiddenConsumerValues := hidden.consumer.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    hiddenConsumerChanges := hidden.consumer.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    hiddenConsumerCleared := hidden.consumer.cleared
+    hiddenConsumerAtDestination := hiddenStrings { field := target.id, path := [1] }
+  }
+
+/- Reached poison clears source-filled targets on application, while a source-identical direct result remains inert against a conflicting destination. -/
+example : poisonResultApplicationSummary? = some {
+  numberChanges := [
+    ({ field := first.id, path := [1, 1] }, { unscaled := 12, scale := 0 })]
+  numberCleared := [{ field := third.id, path := [1, 1] }]
+  stringErrors := [({ field := second.id, path := [1, 1] }, .tooLong)]
+  consumerCleared := [{ field := target.id, path := [1] }]
+  reachedFirst := .presentValue (.decimal { unscaled := 12, scale := 0 })
+  reachedSecond := .presentEmpty
+  reachedThird := .presentEmpty
+  reachedConsumer := .presentEmpty
+  hiddenConsumerValues := [({ field := target.id, path := [1] }, "B")]
+  hiddenConsumerChanges := []
+  hiddenConsumerCleared := []
+  hiddenConsumerAtDestination :=
+    .presentValue (storedString "A" (by decide))
 } := by
   native_decide
 

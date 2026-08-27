@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.CurrentRepetitionAlternatingChain
 import A12Kernel.Elaboration.AddressedNumberEnumerationHavingCascade
+import A12Kernel.Elaboration.StringComputationRunApplication
 
 /-! # Four-stage CurrentRepetition Number/String/Number/Enumeration route
 
@@ -59,6 +60,14 @@ structure CurrentRepetitionAlternatingEnumerationHavingOutcomes where
   consumer : List AddressedEnumerationComputationOutcome
   deriving Repr, DecidableEq
 
+/-- Family-preserving source-relative results for the exact four-computation route. -/
+structure CurrentRepetitionAlternatingEnumerationHavingRunView
+    (model : FlatModel) (NumberPayload StringResidual : Type) where
+  private mk ::
+  plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model
+  chain : StringNumberComputationRunView StringResidual NumberPayload CellAddr
+  consumer : StringComputationRunView StringResidual CellAddr
+
 inductive CurrentRepetitionAlternatingEnumerationHavingFault where
   | chain (cause : CurrentRepetitionAlternatingChainFault)
   | consumer (cause : AddressedEnumerationFirstFilledComputationFault)
@@ -89,6 +98,47 @@ def execute (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model)
       (readAfterNumericDependencies input numberOutcomes) |>.mapError .consumer
   pure { chain, consumer }
 
+/-- Execute once and classify the alternating prefix and final Enumeration phase against the same immutable source. -/
+def executeResult
+    (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (chainStringResidualMessages consumerResidualMessages :
+      List StringResidual) :
+    Except CurrentRepetitionAlternatingEnumerationHavingFault
+      (CurrentRepetitionAlternatingEnumerationHavingRunView
+        model NumberPayload StringResidual) := do
+  let outcomes ← plan.execute patterns input
+  pure {
+    plan
+    chain := {
+      string := StringComputationRunView.fromSourcedOutcomes
+        chainStringResidualMessages (outcomes.chain.rows.map (·.second))
+      number := NumericComputationRunView.fromSourceOutcomesWithMessages
+        MessagePointer.ofCellAddr numberPayloadAt numberMessages
+        (outcomes.chain.rows.flatMap fun row => [row.first, row.third])
+    }
+    consumer := projectAddressedEnumerationResults input
+      consumerResidualMessages outcomes.consumer
+  }
+
 end CheckedCurrentRepetitionAlternatingEnumerationHaving
+
+namespace CurrentRepetitionAlternatingEnumerationHavingRunView
+
+/-- Apply the middle String phase and final Enumeration phase in checked order to one separately supplied same-model destination projection. -/
+def applyStringsToChecked
+    (view : CurrentRepetitionAlternatingEnumerationHavingRunView
+      model NumberPayload StringResidual)
+    (destination : CheckedDocument model) :
+    Except (StringComputationRunView.StringComputationRunApplicationError CellAddr)
+      (StringComputationDestination CellAddr) := do
+  let afterChain ← view.chain.string.applyTo
+    destination.sourceStringTargetStateAt
+  view.consumer.applyTo afterChain
+
+end CurrentRepetitionAlternatingEnumerationHavingRunView
 
 end A12Kernel
