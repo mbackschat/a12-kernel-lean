@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.AddressedNumberField
 import A12Kernel.Elaboration.AddressedDateTimeSubdayShiftComputation
+import A12Kernel.Elaboration.ComputationFormalInput
 
 /-! # Repeatable Number-to-DateTime shift cascade
 
@@ -52,9 +53,22 @@ structure AddressedNumberDateTimeShiftCascadeRunView
   dateTime : AddressedDateTimeSubdayShiftComputationRunView
     model DateTimeResidual
 
+/-- One completed cross-family run paired with its call-global direct-field formal-input inventory. -/
+structure AddressedNumberDateTimeShiftFormalInputRunView (model : FlatModel) where
+  private mk ::
+  phases : AddressedNumberDateTimeShiftCascadeRunView
+    model Unit ComputationFormalInputFinding
+  formalErrorsInOperands : List ComputationFormalInputFinding
+
 inductive AddressedNumberDateTimeShiftCascadeFault where
   | producer (cause : AddressedNumberFieldFault)
   | consumer (cause : AddressedDateTimeSubdayShiftComputationFault)
+  deriving Repr, DecidableEq
+
+/-- Failure while composing the checked call-global inventory with cross-family execution. -/
+inductive AddressedNumberDateTimeShiftCheckedResultFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | execution (cause : AddressedNumberDateTimeShiftCascadeFault)
   deriving Repr, DecidableEq
 
 namespace CheckedAddressedNumberDateTimeShiftCascade
@@ -114,6 +128,26 @@ def executeResult (plan : CheckedAddressedNumberDateTimeShiftCascade model)
       MessagePointer.ofCellAddr numberPayloadAt numberMessages outcomes.producer
     dateTime := plan.consumer.resultFromOutcomes input
       dateTimeResidualMessages outcomes.consumer
+  }
+
+/-- Bind both analyzed family operations to one call-global direct-field inventory. -/
+def formalInputPlan (plan : CheckedAddressedNumberDateTimeShiftCascade model) :
+    Except ComputationFormalInputPlanError
+      (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputOperations model plan.analyze.fieldDependencies
+
+/-- Collect the global inventory eagerly, then execute both typed phases without supplied residuals. Number may still derive its established value-less target messages from its own outcomes. -/
+def executeResultWithFormalInputs
+    (plan : CheckedAddressedNumberDateTimeShiftCascade model)
+    (input : CheckedDocument model) :
+    Except AddressedNumberDateTimeShiftCheckedResultFault
+      (AddressedNumberDateTimeShiftFormalInputRunView model) := do
+  let inputPlan ← plan.formalInputPlan |>.mapError .formalInput
+  let phases ← plan.executeResult input (fun _ => ()) [] []
+    |>.mapError .execution
+  pure {
+    phases
+    formalErrorsInOperands := inputPlan.findings input
   }
 
 end CheckedAddressedNumberDateTimeShiftCascade

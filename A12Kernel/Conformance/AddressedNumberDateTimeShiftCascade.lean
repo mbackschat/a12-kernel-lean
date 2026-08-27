@@ -269,6 +269,31 @@ example : resultApplicationSummary? = some {
   } := by
   native_decide
 
+/- One cross-family call retains exact direct Number and DateTime source findings globally. For this value-producing Number fixture neither typed phase adds an independently owned residual. -/
+example :
+    (do
+      let plan ← plan?
+      let input ← input?
+      let view ← plan.executeResultWithFormalInputs input |>.toOption
+      let findings := view.formalErrorsInOperands
+      pure (findings.length,
+        [findings.contains {
+            address := address baseHours.id [2]
+            cause := .malformed
+          },
+          findings.contains {
+            address := address sourceStamp.id [2, 1]
+            cause := .dateFormat
+          },
+          findings.any fun finding =>
+            finding.address.field == computedHours.id,
+          findings.any fun finding =>
+            finding.address.field == targetStamp.id],
+        view.phases.number.formalErrorsInOperands,
+        view.phases.dateTime.dateTime.formalErrorsInOperands)) =
+      some (2, [true, true, false, false], [], []) := by
+  native_decide
+
 /- Analyze retains both typed phases, the outer-to-inner edge, and authored source-first DateTime dependencies. -/
 example : plan?.map CheckedAddressedNumberDateTimeShiftCascade.analyze = some {
     targetFields := [computedHours.id, targetStamp.id]

@@ -2331,6 +2331,7 @@ run_cmd do
 #print axioms A12Kernel.addressedNumberDateTimeShiftCascade_amountRead_completed
 #print axioms A12Kernel.addressedNumberDateTimeShiftCascade_amountRead_hides_stale
 #print axioms A12Kernel.addressedNumberDateTimeShiftCascade_executeResult_projects
+#print axioms A12Kernel.addressedNumberDateTimeShift_executeResultWithFormalInputs_exact
 #print axioms A12Kernel.fullDateFirstFilledCellAt_value
 #print axioms A12Kernel.fullDateFirstFilledCellAt_poison
 #print axioms A12Kernel.evalFullDateFirstFilledCells_present_head

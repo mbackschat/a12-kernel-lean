@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.AddressedNumberDateTimeShiftCascade
+import A12Kernel.Proofs.ComputationFormalInput
 
 /-! # Repeatable Number-to-DateTime shift cascade laws -/
 
@@ -101,5 +102,27 @@ theorem addressedNumberDateTimeShiftCascade_executeResult_projects
   simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
   subst view
   exact ⟨rfl, rfl, rfl⟩
+
+/-- Checked cross-family formal inputs remain call-global while DateTime receives no copied residuals; Number retains its independently derived-message semantics. -/
+theorem addressedNumberDateTimeShift_executeResultWithFormalInputs_exact
+    (plan : CheckedAddressedNumberDateTimeShiftCascade model)
+    (input : CheckedDocument model)
+    (inputPlan : CheckedComputationFormalInputPlan model)
+    (outcomes : AddressedNumberDateTimeShiftCascadeOutcomes)
+    (view : AddressedNumberDateTimeShiftFormalInputRunView model)
+    (planned : plan.formalInputPlan = .ok inputPlan)
+    (executed : plan.execute input = .ok outcomes)
+    (produced : plan.executeResultWithFormalInputs input = .ok view) :
+    view.formalErrorsInOperands = inputPlan.findings input ∧
+      view.phases.dateTime.dateTime.formalErrorsInOperands = [] := by
+  rw [CheckedAddressedNumberDateTimeShiftCascade.executeResultWithFormalInputs,
+    planned] at produced
+  simp only [bind, Except.bind, Except.mapError] at produced
+  rw [CheckedAddressedNumberDateTimeShiftCascade.executeResult,
+    executed] at produced
+  simp only [bind, Except.bind, pure, Except.pure,
+    Except.ok.injEq] at produced
+  subst view
+  exact ⟨rfl, rfl⟩
 
 end A12Kernel
