@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.AddressedEnumerationComputation
+import A12Kernel.Elaboration.ComputationFormalInput
 
 /-! # Exact-row Enumeration computation cascade
 
@@ -238,12 +239,25 @@ structure AddressedEnumerationThreeStageCascadeRunView (model : FlatModel)
   second : StringComputationRunView ResidualMessage CellAddr
   third : StringComputationRunView ResidualMessage CellAddr
 
+/-- One completed three-stage run paired with the call-global direct-field formal-input inventory. -/
+structure AddressedEnumerationThreeStageFormalInputRunView (model : FlatModel) where
+  private mk ::
+  phases : AddressedEnumerationThreeStageCascadeRunView model
+    ComputationFormalInputFinding
+  formalErrorsInOperands : List ComputationFormalInputFinding
+
 inductive AddressedEnumerationThreeStageCascadeFault where
   | first (cause : AddressedEnumerationComputationFault)
   | firstDependency (target : CellAddr) (cause : EnumerationDependencyFault)
   | second (cause : AddressedEnumerationComputationFault)
   | secondDependency (target : CellAddr) (cause : EnumerationDependencyFault)
   | third (cause : AddressedEnumerationComputationFault)
+  deriving Repr, DecidableEq
+
+/-- Failure while composing the checked call-global inventory with three-stage execution. -/
+inductive AddressedEnumerationThreeStageCheckedResultFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | execution (cause : AddressedEnumerationThreeStageCascadeFault)
   deriving Repr, DecidableEq
 
 namespace CheckedAddressedEnumerationThreeStageCascade
@@ -289,6 +303,28 @@ def executeResult (plan : CheckedAddressedEnumerationThreeStageCascade model)
     first := projectAddressedEnumerationResults input firstResidual outcomes.first
     second := projectAddressedEnumerationResults input secondResidual outcomes.second
     third := projectAddressedEnumerationResults input thirdResidual outcomes.third
+  }
+
+/-- Bind every analyzed operation to one call-global direct-field inventory. -/
+def formalInputPlan
+    (plan : CheckedAddressedEnumerationThreeStageCascade model) :
+    Except ComputationFormalInputPlanError
+      (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputOperations model plan.analyze.fieldDependencies
+
+/-- Collect the global inventory eagerly, then execute the three phases with no duplicated phase residuals. -/
+def executeResultWithFormalInputs
+    (plan : CheckedAddressedEnumerationThreeStageCascade model)
+    (input : CheckedDocument model) :
+    Except AddressedEnumerationThreeStageCheckedResultFault
+      (AddressedEnumerationThreeStageFormalInputRunView model) := do
+  let inputPlan ← plan.formalInputPlan |>.mapError .formalInput
+  let noResidual := ([] : List ComputationFormalInputFinding)
+  let phases ← plan.executeResult input noResidual noResidual noResidual
+    |>.mapError .execution
+  pure {
+    phases
+    formalErrorsInOperands := inputPlan.findings input
   }
 
 end CheckedAddressedEnumerationThreeStageCascade

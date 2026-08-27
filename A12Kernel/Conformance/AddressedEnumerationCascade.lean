@@ -21,6 +21,7 @@ private def source := enumerationField 1 "Source"
 private def produced := enumerationField 2 "Produced"
 private def final := enumerationField 3 "Final"
 private def terminal := enumerationField 5 "Terminal"
+private def unrelated := enumerationField 6 "Unrelated"
 private def deepFinal : FlatFieldDecl := {
   final with
   id := 4
@@ -30,7 +31,7 @@ private def deepFinal : FlatFieldDecl := {
 }
 
 private def model : FlatModel := {
-  fields := [source, produced, final, deepFinal, terminal]
+  fields := [source, produced, final, deepFinal, terminal, unrelated]
   repeatableGroups := [
     { level := 10, path := ["Form", "Rows"], repeatability := some 3 },
     { level := 20, path := ["Form", "Rows", "Details"], repeatability := some 2 }]
@@ -127,6 +128,17 @@ private def input? : Option (CheckedDocument model) :=
       cell produced 1 "B" (.parsed (.enum "B")),
       cell produced 2 "B" (.parsed (.enum "B")),
       cell produced 3 "B" (.parsed (.enum "B"))]
+  }).toOption
+
+private def formalInputDocument? : Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := [{ group := 10, path := [1] }]
+    cells := [
+      cell source 1 "C" (.parsed (.enum "C")),
+      cell produced 1 "C" (.parsed (.enum "C")),
+      cell final 1 "C" (.parsed (.enum "C")),
+      cell terminal 1 "C" (.parsed (.enum "C")),
+      cell unrelated 1 "C" (.parsed (.enum "C"))]
   }).toOption
 
 private def deepInput? : Option (CheckedDocument model) :=
@@ -417,6 +429,21 @@ example : threeStageResultApplicationSummary? = some {
     (address terminal.id 2, .presentEmpty),
     (address source.id 1, .presentValue ⟨"B", by decide⟩)]
 } := by
+  native_decide
+
+/- The whole three-stage call reports one direct-source formal finding globally, not once per phase or for computed and unrelated fields. -/
+example :
+    (do
+      let plan ← threeStageCascade?
+      let input ← formalInputDocument?
+      let view ← plan.executeResultWithFormalInputs input |>.toOption
+      pure (view.formalErrorsInOperands,
+        view.phases.first.formalErrorsInOperands,
+        view.phases.second.formalErrorsInOperands,
+        view.phases.third.formalErrorsInOperands)) = some ([{
+          address := address source.id 1
+          cause := .declaredConstraint
+        }], [], [], []) := by
   native_decide
 
 /- Validation-scoped required poison remains a structural dependency-conversion fault rather than being mislabeled as a reached computed dependency. -/

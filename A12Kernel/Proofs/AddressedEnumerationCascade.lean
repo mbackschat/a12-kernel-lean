@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.AddressedEnumerationCascade
 import A12Kernel.Proofs.AddressedEnumerationComputation
+import A12Kernel.Proofs.ComputationFormalInput
 
 namespace A12Kernel
 
@@ -133,6 +134,30 @@ theorem addressedEnumerationThreeStageCascade_executeResult_hasNoTargetErrors
   rw [addressedEnumerationResults_haveNoTargetErrors,
     addressedEnumerationResults_haveNoTargetErrors,
     addressedEnumerationResults_haveNoTargetErrors]
+
+/-- Checked three-stage formal inputs remain call-global and are never duplicated into phase residual channels. -/
+theorem addressedEnumerationThreeStage_executeResultWithFormalInputs_exact
+    (plan : CheckedAddressedEnumerationThreeStageCascade model)
+    (input : CheckedDocument model)
+    (inputPlan : CheckedComputationFormalInputPlan model)
+    (outcomes : AddressedEnumerationThreeStageCascadeOutcomes)
+    (view : AddressedEnumerationThreeStageFormalInputRunView model)
+    (planned : plan.formalInputPlan = .ok inputPlan)
+    (executed : plan.execute input = .ok outcomes)
+    (produced : plan.executeResultWithFormalInputs input = .ok view) :
+    view.formalErrorsInOperands = inputPlan.findings input ∧
+      view.phases.first.formalErrorsInOperands = [] ∧
+      view.phases.second.formalErrorsInOperands = [] ∧
+      view.phases.third.formalErrorsInOperands = [] := by
+  rw [CheckedAddressedEnumerationThreeStageCascade.executeResultWithFormalInputs,
+    planned] at produced
+  simp only [bind, Except.bind, Except.mapError] at produced
+  rw [CheckedAddressedEnumerationThreeStageCascade.executeResult,
+    executed] at produced
+  simp only [bind, Except.bind, pure, Except.pure,
+    Except.ok.injEq] at produced
+  subst view
+  exact ⟨rfl, rfl, rfl, rfl⟩
 
 /-- Three-stage application delegates to the three result folds in phase order. -/
 theorem addressedEnumerationThreeStageCascadeRun_applyToChecked_delegates
