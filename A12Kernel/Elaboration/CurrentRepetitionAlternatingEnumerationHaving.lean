@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.CurrentRepetitionAlternatingChain
 import A12Kernel.Elaboration.AddressedNumberEnumerationHavingCascade
+import A12Kernel.Elaboration.ComputationFormalInput
 import A12Kernel.Elaboration.StringComputationRunApplication
 
 /-! # Four-stage CurrentRepetition Number/String/Number/Enumeration route
@@ -68,9 +69,23 @@ structure CurrentRepetitionAlternatingEnumerationHavingRunView
   chain : StringNumberComputationRunView StringResidual NumberPayload CellAddr
   consumer : StringComputationRunView StringResidual CellAddr
 
+/-- One completed four-stage run paired with its call-global direct-field formal-input inventory. -/
+structure CurrentRepetitionAlternatingEnumerationHavingFormalInputRunView
+    (model : FlatModel) where
+  private mk ::
+  phases : CurrentRepetitionAlternatingEnumerationHavingRunView
+    model Unit ComputationFormalInputFinding
+  formalErrorsInOperands : List ComputationFormalInputFinding
+
 inductive CurrentRepetitionAlternatingEnumerationHavingFault where
   | chain (cause : CurrentRepetitionAlternatingChainFault)
   | consumer (cause : AddressedEnumerationFirstFilledComputationFault)
+  deriving Repr, DecidableEq
+
+/-- Failure while composing the checked call-global inventory with four-stage execution. -/
+inductive CurrentRepetitionAlternatingEnumerationHavingCheckedResultFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | execution (cause : CurrentRepetitionAlternatingEnumerationHavingFault)
   deriving Repr, DecidableEq
 
 namespace CheckedCurrentRepetitionAlternatingEnumerationHaving
@@ -122,6 +137,28 @@ def executeResult
     }
     consumer := projectAddressedEnumerationResults input
       consumerResidualMessages outcomes.consumer
+  }
+
+/-- Bind the complete four-operation Analyze inventory to one checked direct-field plan. -/
+def formalInputPlan
+    (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model) :
+    Except ComputationFormalInputPlanError
+      (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputOperations model plan.analyze.fieldDependencies
+
+/-- Collect the global inventory eagerly, then execute all four phases without supplied family residuals. Number retains its independently derived target-message semantics. -/
+def executeResultWithFormalInputs
+    (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    Except CurrentRepetitionAlternatingEnumerationHavingCheckedResultFault
+      (CurrentRepetitionAlternatingEnumerationHavingFormalInputRunView model) := do
+  let inputPlan ← plan.formalInputPlan |>.mapError .formalInput
+  let phases ← plan.executeResult patterns input (fun _ => ()) [] [] []
+    |>.mapError .execution
+  pure {
+    phases
+    formalErrorsInOperands := inputPlan.findings input
   }
 
 end CheckedCurrentRepetitionAlternatingEnumerationHaving

@@ -34,6 +34,7 @@ private def target := enumerationField 5 "Target" ["Shipment", "Rows"] [10]
 private def directChoice := enumerationField 6 "DirectChoice" ["Shipment", "Rows"] [10]
 private def choice := enumerationField 7 "Choice" ["Shipment", "Rows", "Lines"] [10, 20]
 private def limit := numberField 8 "Limit" ["Shipment", "Rows"] [10]
+private def unrelated := numberField 9 "Unrelated" ["Shipment", "Rows"] [10]
 
 private def rows : RepeatableGroupDecl := {
   level := 10, path := ["Shipment", "Rows"], repeatability := some 1
@@ -44,7 +45,8 @@ private def lines : RepeatableGroupDecl := {
 }
 
 private def model : FlatModel := {
-  fields := [base, first, second, third, target, directChoice, choice, limit]
+  fields := [base, first, second, third, target, directChoice, choice, limit,
+    unrelated]
   repeatableGroups := [rows, lines]
 }
 
@@ -149,6 +151,24 @@ private def input? (poisoned : Bool) (direct : Option String := none)
     instantiatedRows := [{ group := 10, path := [1] }] ++
       rows.map fun row => { group := 20, path := [1, row] }
     cells := [numericCell limit [1] 1] ++ directCell ++ targetCell ++ repeated
+  }).toOption
+
+private def formalInputDocument? : Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 20, path := [1, 1] },
+      { group := 20, path := [1, 2] }]
+    cells := [
+      cell base [1, 1] "bad-base" (.rejected .malformed),
+      cell directChoice [1] "bad-direct" (.rejected .declaredConstraint),
+      cell choice [1, 2] "bad-choice" (.rejected .declaredConstraint),
+      cell limit [1] "bad-limit" (.rejected .malformed),
+      cell first [1, 1] "bad-first" (.rejected .malformed),
+      cell second [1, 1] "bad-second" (.rejected .malformed),
+      cell third [1, 1] "bad-third" (.rejected .malformed),
+      cell target [1] "bad-target" (.rejected .declaredConstraint),
+      cell unrelated [1] "bad-unrelated" (.rejected .malformed)]
   }).toOption
 
 private structure Summary where
@@ -307,6 +327,27 @@ example : resultApplicationSummary? = some {
   chainResidual := [11]
   consumerResidual := [22]
 } := by
+  native_decide
+
+/- The whole four-stage call inventories direct and filter inputs at their exact nested placements while excluding every computed target and the unrelated field. -/
+example :
+    (do
+      let plan ← plan?
+      let input ← formalInputDocument?
+      let view ← plan.executeResultWithFormalInputs prepared.patterns input
+        |>.toOption
+      pure (view.formalErrorsInOperands,
+        view.phases.chain.number.formalErrorsInOperands,
+        view.phases.chain.string.formalErrorsInOperands,
+        view.phases.consumer.formalErrorsInOperands)) = some ([
+          { address := { field := base.id, path := [1, 1] }
+            cause := .malformed },
+          { address := { field := directChoice.id, path := [1] }
+            cause := .declaredConstraint },
+          { address := { field := choice.id, path := [1, 2] }
+            cause := .declaredConstraint },
+          { address := { field := limit.id, path := [1] }
+            cause := .malformed }], [], [], []) := by
   native_decide
 
 private structure PoisonResultApplicationSummary where

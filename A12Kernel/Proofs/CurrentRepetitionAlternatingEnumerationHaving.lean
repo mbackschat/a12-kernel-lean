@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.CurrentRepetitionAlternatingEnumerationHaving
 import A12Kernel.Proofs.AddressedEnumerationComputation
+import A12Kernel.Proofs.ComputationFormalInput
 
 /-! # Four-stage CurrentRepetition Number/String/Number/Enumeration laws -/
 
@@ -87,6 +88,31 @@ theorem currentRepetitionAlternatingEnumerationHaving_executeResult_hasNoConsume
   change Except.ok (projectAddressedEnumerationResults input
     consumerResidualMessages outcomes.consumer).withErrors = Except.ok []
   rw [addressedEnumerationResults_haveNoTargetErrors]
+
+/-- Checked direct and `Having` filter inputs remain call-global while both String-shaped phases receive no copied residuals; Number retains its independently derived-message semantics. -/
+theorem currentRepetitionAlternatingEnumerationHaving_executeResultWithFormalInputs_exact
+    (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (inputPlan : CheckedComputationFormalInputPlan model)
+    (outcomes : CurrentRepetitionAlternatingEnumerationHavingOutcomes)
+    (view : CurrentRepetitionAlternatingEnumerationHavingFormalInputRunView model)
+    (planned : plan.formalInputPlan = .ok inputPlan)
+    (executed : plan.execute patterns input = .ok outcomes)
+    (produced : plan.executeResultWithFormalInputs patterns input = .ok view) :
+    view.formalErrorsInOperands = inputPlan.findings input ∧
+      view.phases.chain.string.formalErrorsInOperands = [] ∧
+      view.phases.consumer.formalErrorsInOperands = [] := by
+  rw [
+    CheckedCurrentRepetitionAlternatingEnumerationHaving.executeResultWithFormalInputs,
+    planned] at produced
+  simp only [bind, Except.bind, Except.mapError] at produced
+  rw [CheckedCurrentRepetitionAlternatingEnumerationHaving.executeResult,
+    executed] at produced
+  simp only [bind, Except.bind, pure, Except.pure,
+    Except.ok.injEq] at produced
+  subst view
+  exact ⟨rfl, rfl, rfl⟩
 
 /-- Same-family application delegates to the completed middle String and final Enumeration folds in checked phase order. -/
 theorem currentRepetitionAlternatingEnumerationHavingRun_applyStrings_delegates
