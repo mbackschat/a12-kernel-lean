@@ -25,6 +25,13 @@ inductive TemporalFirstFilledStarCarrier where
   | dateRangeDayMonthDotted
   deriving Repr, DecidableEq
 
+/-- Whether one shared temporal first-filled carrier is one of the four exact DateFragment profiles. -/
+def TemporalFirstFilledStarCarrier.isDateFragment :
+    TemporalFirstFilledStarCarrier → Bool
+  | .monthFragment | .yearFragment | .yearMonthFragment |
+      .monthDayFragment => true
+  | _ => false
+
 /-- Classify only the completed temporal declaration profiles. Date profiles with optional pre-1900 checking remain outside until checked temporal input represents that declaration-owned source check. -/
 def FlatFieldDecl.temporalFirstFilledStarCarrier?
     (declaration : FlatFieldDecl) : Option TemporalFirstFilledStarCarrier :=

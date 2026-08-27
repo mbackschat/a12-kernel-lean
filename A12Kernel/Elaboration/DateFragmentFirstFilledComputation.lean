@@ -74,18 +74,23 @@ structure DateFragmentFirstFilledComputationRunView (model : FlatModel)
 
 namespace CheckedDateFragmentFirstFilledComputation
 
+/-- Evaluate the shared checked DateFragment token scan after a caller has resolved its own scalar or addressed source environment. -/
+def evalResolvedDateFragmentFirstFilled
+    (resolved : ResolvedCheckedStarField) : TokenComputationResult :=
+  let side : ResolvedValueListSide .token := {
+    cells := resolved.cells.map dateFragmentFirstFilledCellAt
+    hasUninstantiatedTail := resolved.topology.domain.hasOpenTail
+    hasHaving := false
+  }
+  (evalFirstFilledToken side).asComputationResult
+
 /-- Execute one checked source over immutable rows and retain only the value/clear/poison token boundary. -/
 private def executeWith
     (shape : CheckedTemporalFirstFilledStarComputation model carrier)
     (input : CheckedDocument model) :
     Except CheckedStarDocumentError TokenComputationResult := do
   let resolved ← shape.source.resolveCheckedField input []
-  let side : ResolvedValueListSide .token := {
-    cells := resolved.cells.map dateFragmentFirstFilledCellAt
-    hasUninstantiatedTail := resolved.topology.domain.hasOpenTail
-    hasHaving := false
-  }
-  pure (evalFirstFilledToken side).asComputationResult
+  pure (evalResolvedDateFragmentFirstFilled resolved)
 
 /-- Execute every admitted DateFragment policy through the same checked document and exact-token scan. -/
 def execute (operation : CheckedDateFragmentFirstFilledComputation model)

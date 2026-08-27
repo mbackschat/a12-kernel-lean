@@ -181,6 +181,7 @@ import A12Kernel.Conformance.AddressedBooleanFirstFilledComputation
 import A12Kernel.Conformance.CustomFirstFilledComputation
 import A12Kernel.Conformance.AddressedCustomFirstFilledComputation
 import A12Kernel.Conformance.DateFragmentFirstFilledComputation
+import A12Kernel.Conformance.AddressedDateFragmentFirstFilledComputation
 import A12Kernel.Conformance.DateRangeInput
 import A12Kernel.Conformance.DateRangeBound
 import A12Kernel.Conformance.DateRangeBoundComponent
