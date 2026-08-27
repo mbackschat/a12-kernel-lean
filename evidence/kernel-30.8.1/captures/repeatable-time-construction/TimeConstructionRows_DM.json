@@ -1,0 +1,102 @@
+{
+  "header" : {
+    "id" : "TimeFirstFilledProbe_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "TimeFirstFilledProbe_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/TimeProbe",
+        "name" : "TimeProbe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/TimeProbe/Projects",
+            "name" : "Projects",
+            "Group" : {
+              "repeatability" : 4,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/TimeProbe/Projects/Choices",
+                "name" : "Choices",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/TimeProbe/Projects/Choices/SourceTime",
+                    "name" : "SourceTime",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "TimeType",
+                        "TimeType" : {
+                          "format" : "HH:mm:ss"
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/TimeProbe/Projects/Tasks",
+                "name" : "Tasks",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/TimeProbe/Projects/Tasks/SelectedTime",
+                    "name" : "SelectedTime",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "TimeType",
+                        "TimeType" : {
+                          "format" : "HH:mm:ss"
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/TimeProbe/Projects/Tasks/SelectedTimeComp",
+                    "name" : "SelectedTimeComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../SelectedTime",
+                      "computationAlternatives" : [ {
+                        "operation" : "Time(\"5\", \"2\", \"9\")"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "computed time differs"
+                      } ]
+                    }
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

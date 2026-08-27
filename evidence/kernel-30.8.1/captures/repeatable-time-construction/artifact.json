@@ -1,0 +1,150 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "25e048ea73e10bd58c6950b1d6104dd5809535df",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "TimeConstructionRows_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "exact-address-construction-actions",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SelectedTimeComp",
+              "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "computed time differs",
+              "referenced" : [
+                "TimeProbe/Projects/Tasks[2]/SelectedTime"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05:02:09"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SelectedTimeComp",
+              "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "computed time differs",
+              "referenced" : [
+                "TimeProbe/Projects/Tasks[2]/SelectedTime"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05:02:09"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "absent-and-present-empty-targets",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/Projects/Tasks/SelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05:02:09"
+              },
+              {
+                "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05:02:09"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/Projects/Tasks/SelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05:02:09"
+              },
+              {
+                "field" : "TimeProbe/Projects/Tasks[2]/SelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05:02:09"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "no-target-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

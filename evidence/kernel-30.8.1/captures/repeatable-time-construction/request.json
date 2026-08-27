@@ -1,0 +1,58 @@
+{
+  "model": "TimeConstructionRows_DM.json",
+  "locale": "en_US",
+  "observe": ["validateFull", "compute"],
+  "rows": [
+    {
+      "name": "exact-address-construction-actions",
+      "documentInline": {
+        "TimeProbe": {
+          "Projects": [
+            {
+              "Choices": [],
+              "Tasks": [
+                {"SelectedTime": "05:02:09"},
+                {"SelectedTime": "12:34:56"}
+              ]
+            },
+            {
+              "Choices": [],
+              "Tasks": [
+                {"SelectedTime": "05:02:09"}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "absent-and-present-empty-targets",
+      "documentInline": {
+        "TimeProbe": {
+          "Projects": [
+            {
+              "Choices": [],
+              "Tasks": [
+                {},
+                {"SelectedTime": null}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "no-target-rows",
+      "documentInline": {
+        "TimeProbe": {
+          "Projects": [
+            {
+              "Choices": [],
+              "Tasks": []
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
