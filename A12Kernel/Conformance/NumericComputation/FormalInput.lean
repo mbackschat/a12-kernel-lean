@@ -22,10 +22,13 @@ private def unrelated := numberField 5 ["Root"] "Unrelated"
 private def firstGuard := numberField 6 ["Root"] "FirstGuard"
 private def secondGuard := numberField 7 ["Root"] "SecondGuard"
 private def directSource := numberField 8 ["Root"] "DirectSource"
+private def laterTarget := numberField 9 ["Root"] "LaterTarget"
+private def laterSource := numberField 10 ["Root"] "LaterSource"
 
 private def model : FlatModel := {
   fields := [detailsAmount, detailsCode, preferencesChoice, preferencesScore,
-    target, unrelated, firstGuard, secondGuard, directSource]
+    target, unrelated, firstGuard, secondGuard, directSource, laterTarget,
+    laterSource]
 }
 
 private def surfaceGroup (path : GroupPath) : SurfaceGroupReference :=
@@ -49,16 +52,33 @@ private def surfaceDirectExpression : AuthoredNumericExpr SurfaceNumericAtom :=
 private abbrev NumericRow := ComputationAlternative
   (CheckedNumericTargetComputationOperation model)
 
-private def row? (guard : ComputationCondition)
+private def rowFor? (targetField : FieldId) (guard : ComputationCondition)
     (expression : AuthoredNumericExpr SurfaceNumericAtom) : Option NumericRow := do
   let operation ← (elaborateNumericTargetComputationOperation model ["Root"]
-    target.id expression).toOption
+    targetField expression).toOption
   pure { precondition := guard, operation }
 
 private def table? : Option (CheckedNumericComputationTable model) := do
-  let first ← row? (.fieldFilled firstGuard.id) surfaceExpression
-  let second ← row? (.fieldNotFilled secondGuard.id) surfaceDirectExpression
+  let first ← rowFor? target.id (.fieldFilled firstGuard.id) surfaceExpression
+  let second ← rowFor? target.id (.fieldNotFilled secondGuard.id)
+    surfaceDirectExpression
   (certifyNumericComputationTable [first, second]).toOption
+
+private def laterExpression : AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.field {
+    base := .absolute
+    groups := ["Root"]
+    field := laterSource.name
+  })
+
+private def laterTable? : Option (CheckedNumericComputationTable model) := do
+  let row ← rowFor? laterTarget.id (.fieldFilled target.id) laterExpression
+  (certifyNumericComputationTable [row]).toOption
+
+private def run? : Option (CheckedNumericComputationRun model) := do
+  let first ← table?
+  let later ← laterTable?
+  (certifyNumericComputationRun [first, later]).toOption
 
 private def rejected (field : FieldId) : ClassifiedCellInput := {
   address := { field, path := [] }
@@ -85,7 +105,8 @@ private def tableInput? : Option (CheckedDocument model) :=
     cells := [rejected detailsAmount.id, rejected detailsCode.id,
       rejected preferencesChoice.id, rejected preferencesScore.id,
       rejected target.id, rejected unrelated.id, rejected firstGuard.id,
-      rejected secondGuard.id, rejected directSource.id]
+      rejected secondGuard.id, rejected directSource.id,
+      rejected laterTarget.id, rejected laterSource.id]
   }).toOption
 
 /- A fixed group-count dependency expands both operand groups to every declared member field.
@@ -141,6 +162,44 @@ example :
           { address := { field := secondGuard.id, path := [] },
             cause := .declaredConstraint },
           { address := { field := directSource.id, path := [] },
+            cause := .declaredConstraint }
+        ]) := by
+  native_decide
+
+/- The checked run supplies every table to one call-global plan. Its later table reads the first computed target, so that target remains visible in the raw operand union but joins every computed target in the finding exclusion set. -/
+example :
+    (do
+      let run ← run?
+      let plan ← run.formalInputPlan.toOption
+      let input ← tableInput?
+      pure (run.formalInputOperations, plan.operandFields,
+        plan.computedFields, plan.findings input)) =
+      some ([
+          (target.id, [detailsAmount.id, detailsCode.id,
+            preferencesChoice.id, preferencesScore.id, firstGuard.id,
+            secondGuard.id, directSource.id]),
+          (laterTarget.id, [target.id, laterSource.id])
+        ],
+        [detailsAmount.id, detailsCode.id, preferencesChoice.id,
+          preferencesScore.id, firstGuard.id, secondGuard.id,
+          directSource.id, target.id, laterSource.id],
+        [target.id, laterTarget.id],
+        [
+          { address := { field := detailsAmount.id, path := [] },
+            cause := .declaredConstraint },
+          { address := { field := detailsCode.id, path := [] },
+            cause := .declaredConstraint },
+          { address := { field := preferencesChoice.id, path := [] },
+            cause := .declaredConstraint },
+          { address := { field := preferencesScore.id, path := [] },
+            cause := .declaredConstraint },
+          { address := { field := firstGuard.id, path := [] },
+            cause := .declaredConstraint },
+          { address := { field := secondGuard.id, path := [] },
+            cause := .declaredConstraint },
+          { address := { field := directSource.id, path := [] },
+            cause := .declaredConstraint },
+          { address := { field := laterSource.id, path := [] },
             cause := .declaredConstraint }
         ]) := by
   native_decide

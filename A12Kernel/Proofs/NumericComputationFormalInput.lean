@@ -36,4 +36,11 @@ theorem checkedNumericComputationTable_fieldDependencies_exact
   · rintro ⟨declaration, member, equality, referenced⟩
     exact ⟨declaration, by simpa using And.intro member referenced, equality⟩
 
+/-- The run projection contributes every checked target exactly in run order, so global formal-input exclusion cannot silently omit an intermediate or terminal computed field. -/
+theorem checkedNumericComputationRun_formalInputOperations_targets_exact
+    (run : CheckedNumericComputationRun model) :
+    run.formalInputOperations.map Prod.fst =
+      run.tables.map (·.targetField) := by
+  simp [CheckedNumericComputationRun.formalInputOperations]
+
 end A12Kernel

@@ -41,4 +41,19 @@ def formalInputPlan (table : CheckedNumericComputationTable model) :
 
 end CheckedNumericComputationTable
 
+namespace CheckedNumericComputationRun
+
+/-- Project every certified table to the shared `(target, raw dependencies)` formal-input shape in checked run order. -/
+def formalInputOperations (run : CheckedNumericComputationRun model) :
+    List (FieldId × List FieldId) :=
+  run.tables.map fun table => (table.targetField, table.fieldDependencies)
+
+/-- Build one call-global formal-input plan from every table and every computed target in the checked scalar run. -/
+def formalInputPlan (run : CheckedNumericComputationRun model) :
+    Except ComputationFormalInputPlanError
+      (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputOperations model run.formalInputOperations
+
+end CheckedNumericComputationRun
+
 end A12Kernel
