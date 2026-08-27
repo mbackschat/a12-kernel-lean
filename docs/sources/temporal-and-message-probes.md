@@ -381,6 +381,15 @@
 - `limit`: one complete DateTime format, one sibling-star axis under one enclosing repeatable level, `Europe/Berlin`, at most two source and two target rows per parent, no target-local rejected attempt, and no computed-source dependency. Other formats and zones, root or global stars, multi-axis sources, materialized document topology, later validation execution, and pointer rendering remain unmeasured on this route.
 - `sync`: this is the complete DateTime sibling of the DateRange route and widens pending outbound reconciliation entry [`SPEC-2026-08-27-01`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-27-01--a-sibling-star-computation-may-target-a-repeatable-group-and-stays-parent-local) without adding another peer request.
 
+<a id="src-full-date-repeatable-first-filled"></a>
+#### Checked sibling-star FULL Date target admission, measured locally 2026-08-27
+
+- `revision`: clean a12-dmkits `25e048ea73e10bd58c6950b1d6104dd5809535df`, dmtool `0.13.0`, kernel `30.8.1` built and runtime. The sibling worktree was empty before and after the probe.
+- `route`: a disposable dmtool-authored UTC model declared repeatable `Projects`, with sibling repeatable `Choices` and `Tasks` below each project. Source `/FullDateParentProbe_DM/Projects/Choices/PromiseDate` was FULL ISO Date without the pre-1900 check; computed target `/FullDateParentProbe_DM/Projects/Tasks/SelectedDate` was FULL ISO Date with `rejectBefore1900=true`. Structured field reads confirmed both policies.
+- `static-claim`: source-matched `computation add --dry-run` and the persisted add admitted `FirstFilledValue(../Choices*/PromiseDate)` on the repeatable checked target with `verification: KERNEL_CONFIRMED` and no diagnostics. Structured read-back retained the exact target and operation, and terminal `model check` reported `valid:true` with Kernel verification. This is a positive authorability witness for the exact policy and topology, not an inference from a scalar computation or an adjacent format.
+- `limit`: static legality only, for one sibling-star axis below one shared repeatable parent. The probe did not establish a Kernel runtime result, parent-local correlation, generated-message behavior, dotted format, a checked source, or any wider target policy. Lean reuses the already established target check to expose exact `before1900` errors internally; that runtime composition remains external evidence pending.
+- `sync`: locally originated. It corrects the narrower direct-star target-policy statement only for this addressed ISO route and creates outbound reconciliation entry [`SPEC-2026-08-27-02`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-27-02--a-repeatable-full-date-firstfilledvalue-target-may-enable-the-pre-1900-check).
+
 <a id="src-date-range-unconfigured-interpretation-first-filled-star"></a>
 #### Unconfigured interpreted DateRange declaration-order discriminator, corrected 2026-08-24
 

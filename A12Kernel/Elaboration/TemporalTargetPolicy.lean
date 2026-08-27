@@ -196,13 +196,21 @@ def toFullDateTarget
 
 end CheckedTemporalTargetPolicy
 
+/-- Resolve and refine one model-owned full-Date target whose repetition scope is bound by the caller's reading environment. -/
+def elaborateFullDateTargetIn
+    (model : FlatModel) (scope : List RepeatableLevel)
+    (targetField : FieldId) :
+    Except FullDateTargetElabError (CheckedFullDateTarget model) := do
+  let checked ←
+    elaborateTemporalTargetPolicyIn model scope targetField
+      |>.mapError .targetPolicy
+  checked.toFullDateTarget
+
 /-- Resolve and refine one model-owned nonrepeatable full-Date target. -/
 def elaborateFullDateTarget
     (model : FlatModel) (targetField : FieldId) :
-    Except FullDateTargetElabError (CheckedFullDateTarget model) := do
-  let checked ←
-    elaborateTemporalTargetPolicy model targetField |>.mapError .targetPolicy
-  checked.toFullDateTarget
+    Except FullDateTargetElabError (CheckedFullDateTarget model) :=
+  elaborateFullDateTargetIn model [] targetField
 
 /-- Runtime refusal when an exact result instant has no post-floor local Date in the selected concrete profile. -/
 inductive FullDateTargetEvaluationFault where

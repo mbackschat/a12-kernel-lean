@@ -97,6 +97,24 @@ The consequence for this ledger is narrow and unchanged in kind. A provenance cl
 - **Compatibility:** the old clause causes a wrong rejection of a legal model. A consumer that admits the syntax but scans globally instead produces wrong values for every later parent, and a scalar target key aliases distinct task rows.
 - **Acceptance:** canonical peer prose removes the blanket rejection and states the bounded parent-local sibling-star route for both carriers; maintained peer cases lock admission, two-parent correlation, multiple exact target rows, empty-source clearing, malformed-source clearing, and the generated-rule exact target message on both Kernel strategies, with the independent interpreter included where its supported semantics agree. Any stronger DateTime exact-instant versus text-copying claim needs its own external discriminator.
 
+<a id="spec-2026-08-27-02"></a>
+<a id="spec-2026-08-27-02--a-repeatable-full-date-firstfilledvalue-target-may-enable-the-pre-1900-check"></a>
+
+### SPEC-2026-08-27-02 - A repeatable FULL Date `FirstFilledValue` target may enable the pre-1900 check
+
+- **Status:** pending
+- **Kind:** semantic correction, locally originated and statically measured
+- **Local revision:** resolve with the introducing-commit recipe in the ledger contract above; the introducing commit cannot name itself.
+- **a12-dmkits basis revision:** `25e048ea73e10bd58c6950b1d6104dd5809535df`, clean before and after the local probe.
+- **Kernel behavior:** 30.8.1 static admission only. Source-matched dry-run and persisted computation add returned `KERNEL_CONFIRMED` with no diagnostics; structured read-back retained the exact operation and terminal `model check` returned `valid:true` with Kernel verification.
+- **Canonical clause:** [`09-computations.md` §§6 and 3](../spec/09-computations.md#6-the-implicit-validation-rule-precisely), separating this addressed target policy from the narrower direct-star subset.
+- **Delta:** a repeatable FULL ISO Date target with `rejectBefore1900=true` is statically admitted for `FirstFilledValue(../Choices*/PromiseDate)` when the sibling starred source is FULL ISO Date with that check disabled. The source and target sit in sibling repeatable groups below one shared repeatable parent. This does not establish a checked source, the dotted format, direct-star admission, runtime output, or a general policy-insensitive family gate.
+- **Basis:** the exact model shape, structured field-policy reads, revision, and claim limit are retained at the [checked repeatable FULL Date checkpoint](SOURCES.md#src-full-date-repeatable-first-filled). The dry-run is a positive authorability witness and makes no Kernel runtime claim.
+- **Requested a12-dmkits reconciliation:** retain the exact static admission in the existing repeatable temporal computation family, then measure one pre-1900 source value against a stale target on both Kernel strategies. Report the computation action, attempted stored Date if exposed, error status, formal operand channel, and exact repeated target address. Include an ordinary post-1900 value and malformed source as value and source-poison controls. Reuse the existing sibling-star model builder and runtime probe route; add no command, schema, artifact format, or public API.
+- **Scope limit:** FULL ISO Date only, one sibling-star axis below one shared repeatable parent, checked target and unchecked source, static admission measured. Parent-local runtime correlation is inherited only by the executable reference account until the requested Kernel matrix closes it.
+- **Compatibility:** rejecting every checked FULL Date target refuses a Kernel-legal model. Collapsing target rejection into source poison or clearing loses the exact computed-instance error channel needed by Execute, Analyze, and Explain consumers.
+- **Acceptance:** maintained peer coverage locks static admission and the three runtime controls on both Kernel strategies, canonical peer prose distinguishes target policy from source policy, and the handback names the exact committed revision and any public-output limitation.
+
 <a id="spec-2026-08-26-01"></a>
 <a id="spec-2026-08-26-01--two-level-separate-destination-application-scopes-inner-predecessor-padding-to-the-addressed-outer-row"></a>
 

@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.FullDateFirstFilledComputation
+import A12Kernel.Elaboration.AddressedFullDateFirstFilledComputation
 
-/-! # Direct one-star full-Date `FirstFilledValue` computation laws -/
+/-! # Direct and exact-address full-Date `FirstFilledValue` computation laws -/
 
 namespace A12Kernel
 
@@ -46,6 +47,32 @@ theorem fullDateFirstFilled_executeResult_projects
       .ok (FullDateComputationRunView.fromOutcomes input residualMessages
         [(operation.targetPolicy.checked.target.id, outcome)]) := by
   rw [CheckedFullDateFirstFilledComputation.executeResult, evaluated]
+  rfl
+
+/-- Addressed result construction retains the checked operation and classifies every executed outcome under its exact target address. -/
+theorem addressedFullDateFirstFilled_executeResult_projects
+    (operation : CheckedAddressedFullDateFirstFilledComputation model)
+    (input : CheckedDocument model) (messages : List ResidualMessage)
+    (outcomes : List AddressedFullDateFirstFilledComputationOutcome)
+    (view : AddressedFullDateFirstFilledComputationRunView model ResidualMessage)
+    (executed : operation.execute input = .ok outcomes)
+    (produced : operation.executeResult input messages = .ok view) :
+    view.operation = operation ∧
+      view.fullDate = FullDateComputationRunView.fromOutcomesAt
+        input.sourceFullDateTargetStateAt messages
+        (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
+  rw [CheckedAddressedFullDateFirstFilledComputation.executeResult,
+    executed] at produced
+  simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
+  subst view
+  exact ⟨rfl, rfl⟩
+
+/-- Addressed application is exactly the common FullDate fold over the separately supplied document's exact cell-state projection. -/
+theorem addressedFullDateFirstFilledRun_applyToChecked_delegates
+    (view : AddressedFullDateFirstFilledComputationRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    view.applyToChecked destination =
+      view.fullDate.applyTo destination.sourceFullDateTargetStateAt := by
   rfl
 
 end A12Kernel
