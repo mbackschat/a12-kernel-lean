@@ -233,6 +233,18 @@ An instantiated outer row without concrete Entries contributes no computation ou
 
 It does not establish private kernel phase order or outcome emission order; the Number-only and String-to-Number nested chains, wider depths and profiles, application, and generic scheduling remain unmeasured.
 
+At clean a12-dmkits revision `25e048ea73e10bd58c6950b1d6104dd5809535df`, source-shipped dmtool `0.13.0` extends that exact two-level alternating model with an outer Enumeration computation read back as `FirstFilledValue(DirectChoice, Entries*/Choice Having [Entries/Third] == [$Limit] And [Entries/First] == [$Limit])`. Whole-model checking is `KERNEL_CONFIRMED`.
+
+In the fresh document, stale inner targets `130/"130"/1300`, `70/"70"/700`, and `130/"130"/1300` become `13/"13"/13`, `7/"7"/7`, and `13/"13"/13`. Outer Limits `7` and `13` select `A` and `B` from their respective rows, separating both completed Number overlays from stale reads and the captured outer Limit by exact outer coordinate.
+
+The first outer row deliberately carries an earlier foreign `13/A` candidate while the second carries its own `13/B` candidate. The second Target remains `B`, separating parent-local inner scanning from a global scan that would have selected the earlier `A`.
+
+Both kernel strategies agree on three controls. A malformed Base clears First, Second, Third, and the reached outer Target and reports only `zahlHatUngueltigeZeichen` on Base. Adding direct `B` leaves the same three prefix targets cleared but returns `B` from the lazy final consumer. An absent Base computes `0`, `"0"`, and `0`, then selects `A` under outer Limit `0` without a formal operand error.
+
+The exact bundle is retained under [`nested-current-repetition-alternating-enumeration-having`](../../evidence/kernel-30.8.1/captures/nested-current-repetition-alternating-enumeration-having/); SHA-256 values are request `589866c9e669c3ccb40436bf512d41492790261628616ec016480811532180ea`, model `7a1abca8d05d6a1f3ad64334d37191ff72eda5577a780eedff077ae53bea2604`, and artifact `f15e4afee676d737846403c416ab5e636f145b74dd4fd0bf10cbea95d0cb4312`.
+
+This closes final addressed outcome, parent-local selection, and formal-operand correspondence only for the named four-computation route. It does not establish a middle String target-error branch, unchanged public result partitions, separate-destination application, private phase or emission order, structural-failure scheduling, wider chains, or generic scheduling.
+
 <a id="src-scalar-mixed-consumer-first-dependency-order"></a>
 #### Consumer-first mixed scalar dependency order, measured locally 2026-08-25
 

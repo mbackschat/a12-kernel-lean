@@ -1,0 +1,756 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "25e048ea73e10bd58c6950b1d6104dd5809535df",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FourStage_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "fresh-both-number-overlays-and-outer-correlation",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines[2]/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base",
+                "Order/Lines[2]/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ThirdComp",
+              "field" : "Order/Lines/Entries/Third",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Third must match the calculated value.",
+              "referenced" : [
+                "Order/Lines/Entries/Second",
+                "Order/Lines/Entries/Third"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ThirdComp",
+              "field" : "Order/Lines/Entries[2]/Third",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Third must match the calculated value.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Second",
+                "Order/Lines/Entries[2]/Third"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ThirdComp",
+              "field" : "Order/Lines[2]/Entries/Third",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Third must match the calculated value.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Second",
+                "Order/Lines[2]/Entries/Third"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13"
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13"
+              },
+              {
+                "field" : "Order/Lines[2]/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries[2]/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Base",
+                "Order/Lines/Entries[2]/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines[2]/Entries/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Base",
+                "Order/Lines[2]/Entries/First"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ThirdComp",
+              "field" : "Order/Lines/Entries/Third",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Third must match the calculated value.",
+              "referenced" : [
+                "Order/Lines/Entries/Second",
+                "Order/Lines/Entries/Third"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ThirdComp",
+              "field" : "Order/Lines/Entries[2]/Third",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Third must match the calculated value.",
+              "referenced" : [
+                "Order/Lines/Entries[2]/Second",
+                "Order/Lines/Entries[2]/Third"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ThirdComp",
+              "field" : "Order/Lines[2]/Entries/Third",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Third must match the calculated value.",
+              "referenced" : [
+                "Order/Lines[2]/Entries/Second",
+                "Order/Lines[2]/Entries/Third"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13"
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Entries[2]/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Order/Lines/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13"
+              },
+              {
+                "field" : "Order/Lines[2]/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13"
+              },
+              {
+                "field" : "Order/Lines[2]/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "reached-malformed-prefix-poisons-final-filter",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ThirdComp",
+              "field" : "Order/Lines/Entries/Third",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Third must match the calculated value.",
+              "referenced" : [
+                "Order/Lines/Entries/Second",
+                "Order/Lines/Entries/Third"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines/Entries/Base",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Order/Lines/Entries/Base"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Target",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines/Entries/Base",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Order/Lines/Entries/Base"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ThirdComp",
+              "field" : "Order/Lines/Entries/Third",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Third must match the calculated value.",
+              "referenced" : [
+                "Order/Lines/Entries/Second",
+                "Order/Lines/Entries/Third"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines/Entries/Base",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Order/Lines/Entries/Base"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Target",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines/Entries/Base",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Order/Lines/Entries/Base"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "direct-prefix-hides-completed-malformed-chain",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TargetComp",
+              "field" : "Order/Lines/Target",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Target must match the selected fresh entry.",
+              "referenced" : [
+                "/Order[1]/Lines[1]/Entries[0]/Choice",
+                "/Order[1]/Lines[1]/Entries[0]/First",
+                "/Order[1]/Lines[1]/Entries[0]/Third",
+                "Order/Lines/DirectChoice",
+                "Order/Lines/Limit",
+                "Order/Lines/Target"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ThirdComp",
+              "field" : "Order/Lines/Entries/Third",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Third must match the calculated value.",
+              "referenced" : [
+                "Order/Lines/Entries/Second",
+                "Order/Lines/Entries/Third"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines/Entries/Base",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Order/Lines/Entries/Base"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines/Entries/Base",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Order/Lines/Entries/Base"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TargetComp",
+              "field" : "Order/Lines/Target",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Target must match the selected fresh entry.",
+              "referenced" : [
+                "/Order[1]/Lines[1]/Entries[0]/Choice",
+                "/Order[1]/Lines[1]/Entries[0]/First",
+                "/Order[1]/Lines[1]/Entries[0]/Third",
+                "Order/Lines/DirectChoice",
+                "Order/Lines/Limit",
+                "Order/Lines/Target"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ThirdComp",
+              "field" : "Order/Lines/Entries/Third",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Third must match the calculated value.",
+              "referenced" : [
+                "Order/Lines/Entries/Second",
+                "Order/Lines/Entries/Third"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Order/Lines/Entries/Base",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Order/Lines/Entries/Base"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Order/Lines/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Order/Lines/Entries/Base",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Order/Lines/Entries/Base"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty-base-zero-reaches-final-filter",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ]
+            },
+            {
+              "code" : "ThirdComp",
+              "field" : "Order/Lines/Entries/Third",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Third must match the calculated value.",
+              "referenced" : [
+                "Order/Lines/Entries/Second",
+                "Order/Lines/Entries/Third"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Lines/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FirstProjection",
+              "field" : "Order/Lines/Entries/First",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Copy the leaf base at the current entry.",
+              "referenced" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ],
+              "fillToFix" : [
+                "Order/Lines/Entries/Base",
+                "Order/Lines/Entries/First"
+              ]
+            },
+            {
+              "code" : "ThirdComp",
+              "field" : "Order/Lines/Entries/Third",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Third must match the calculated value.",
+              "referenced" : [
+                "Order/Lines/Entries/Second",
+                "Order/Lines/Entries/Third"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Order/Lines/Entries/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Lines/Entries/Second",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Lines/Entries/Third",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Order/Lines/Target",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

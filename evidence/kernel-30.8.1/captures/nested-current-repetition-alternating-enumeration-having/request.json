@@ -1,0 +1,118 @@
+{
+  "model": "FourStage_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "fresh-both-number-overlays-and-outer-correlation",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            {
+              "Target": "B",
+              "Limit": 7,
+              "Entries": [
+                {
+                  "Base": 13,
+                  "First": 130,
+                  "Second": "130",
+                  "Third": 1300,
+                  "Choice": "A"
+                },
+                {
+                  "Base": 7,
+                  "First": 70,
+                  "Second": "70",
+                  "Third": 700,
+                  "Choice": "A"
+                }
+              ]
+            },
+            {
+              "Target": "A",
+              "Limit": 13,
+              "Entries": [
+                {
+                  "Base": 13,
+                  "First": 130,
+                  "Second": "130",
+                  "Third": 1300,
+                  "Choice": "B"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "reached-malformed-prefix-poisons-final-filter",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            {
+              "Target": "A",
+              "Limit": 7,
+              "Entries": [
+                {
+                  "Base": "bad",
+                  "First": 70,
+                  "Second": "70",
+                  "Third": 700,
+                  "Choice": "A"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "direct-prefix-hides-completed-malformed-chain",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            {
+              "DirectChoice": "B",
+              "Target": "A",
+              "Limit": 7,
+              "Entries": [
+                {
+                  "Base": "bad",
+                  "First": 70,
+                  "Second": "70",
+                  "Third": 700,
+                  "Choice": "A"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-base-zero-reaches-final-filter",
+      "documentInline": {
+        "Order": {
+          "Lines": [
+            {
+              "Target": "B",
+              "Limit": 0,
+              "Entries": [
+                {
+                  "First": 70,
+                  "Second": "70",
+                  "Third": 700,
+                  "Choice": "A"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

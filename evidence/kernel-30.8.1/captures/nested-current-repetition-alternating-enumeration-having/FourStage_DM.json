@@ -1,0 +1,226 @@
+{
+  "header" : {
+    "id" : "NestedChain_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "NestedChain_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Order",
+        "name" : "Order",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Order/Lines",
+            "name" : "Lines",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Order/Lines/Entries",
+                "name" : "Entries",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Order/Lines/Entries/Base",
+                    "name" : "Base",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Order/Lines/Entries/First",
+                    "name" : "First",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Order/Lines/Entries/Second",
+                    "name" : "Second",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType",
+                        "StringType" : {
+                          "errorMessage" : [ {
+                            "locale" : "en_US",
+                            "text" : "Use decimal digits only."
+                          } ],
+                          "maxLength" : 15,
+                          "pattern" : "[0-9]+"
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Order/Lines/Entries/FirstProjection",
+                    "name" : "FirstProjection",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../First",
+                      "computationAlternatives" : [ {
+                        "precondition" : "CurrentRepetition(/Order/Lines/Entries) > 0",
+                        "operation" : "[Base]"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Copy the leaf base at the current entry."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Order/Lines/Entries/SecondProjection",
+                    "name" : "SecondProjection",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../Second",
+                      "computationAlternatives" : [ {
+                        "operation" : "FieldValueAsString(First)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Render the fresh leaf projection."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Order/Lines/Entries/Third",
+                    "name" : "Third",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Order/Lines/Entries/ThirdComp",
+                    "name" : "ThirdComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../Third",
+                      "computationAlternatives" : [ {
+                        "operation" : "FieldValueAsNumber(Second)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Third must match the calculated value."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Order/Lines/Entries/Choice",
+                    "name" : "Choice",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "EnumerationType",
+                        "EnumerationType" : {
+                          "values" : [ {
+                            "value" : "A"
+                          }, {
+                            "value" : "B"
+                          } ]
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/DirectChoice",
+                "name" : "DirectChoice",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "A"
+                      }, {
+                        "value" : "B"
+                      } ]
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/Target",
+                "name" : "Target",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "A"
+                      }, {
+                        "value" : "B"
+                      } ]
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/Limit",
+                "name" : "Limit",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Order/Lines/TargetComp",
+                "name" : "TargetComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Target",
+                  "computationAlternatives" : [ {
+                    "operation" : "FirstFilledValue(DirectChoice, Entries*/Choice Having ([Entries/Third] == [$Limit] And [Entries/First] == [$Limit]))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Target must match the selected fresh entry."
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
