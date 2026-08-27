@@ -41,6 +41,14 @@ def checkComputationFormalInputPlan (model : FlatModel)
     computedFields := computed
   }
 
+/-- Build the direct-field union and computed-target exclusion set from ordered `(target, dependencies)` operation analyses. -/
+def checkComputationFormalInputOperations (model : FlatModel)
+    (operations : List (FieldId × List FieldId)) :
+    Except ComputationFormalInputPlanError
+      (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputPlan model
+    (operations.flatMap Prod.snd) (operations.map Prod.fst)
+
 namespace CheckedComputationFormalInputPlan
 
 /-- Whether one declaration belongs to the checked operand union after computed-target exclusion. -/
