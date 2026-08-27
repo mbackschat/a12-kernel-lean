@@ -26,7 +26,9 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `missing`: compose authored tables, dependency order, poison and clearing, repeatable targets, rich result projections, exact application, and later validation without collapsing checked definition, transient state, dependency outcomes, public results, source-relative deltas, or applied document state.
 - `baseline`: [§11](IMPLEMENTATION-MAP.md#11--calculations-and-formal-checking) owns the bounded fixed and repeatable execution, result, application, and purpose-specific transition families. [`ARCHITECTURE.md`](ARCHITECTURE.md#whole-model-computation-execution-keeps-definition-activation-result-application-and-validation-separate) owns the required phase separation.
 - `remaining`: Number and String nesting beyond two direct finite levels, plus wider multi-step calibration.
-- `remaining`: computed-source Enumeration beyond the [exact one-producer filtered cascade](implementation/strings-and-enumerations.md#cap-number-dependency-in-enumeration-having), [two-producer ordered join](implementation/strings-and-enumerations.md#cap-two-producer-enumeration-firstfilledvalue-join), and [computed Enumeration value plus Number filter join](implementation/strings-and-enumerations.md#cap-computed-enumeration-number-having-join): longer chains, more than two sibling producers, wider computed-source forms, and wider filter producer families.
+- `remaining`: computed-source Enumeration now includes [fixed three-stage serial execution](implementation/strings-and-enumerations.md#cap-exact-row-enumeration-dependency-cascade), the [two-producer ordered join](implementation/strings-and-enumerations.md#cap-two-producer-enumeration-firstfilledvalue-join), and the [computed Enumeration plus Number filter join](implementation/strings-and-enumerations.md#cap-computed-enumeration-number-having-join).
+- `remaining`: add result/application for the fixed three-stage route and serial chains beyond three stages.
+- `remaining`: more than two sibling producers, wider computed-source forms, and wider filter producer families.
 - `remaining`: repeatable or wider-policy temporal targets and other target families beyond the bounded Boolean, Custom, Enumeration, `DateFromDateTime`, and `TimeFromDateTime` carriers.
 - `remaining`: materialized document topology, general later-rule execution, transport reconstruction, and pointer-dialect rendering.
 - `remaining`: concrete reachability and Kernel scheduling correspondence for structural-failure arms that currently have only conditional internal laws.
@@ -38,8 +40,12 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `consumer`: Execute, Compile, Analyze, and Explain must distinguish checked definition, transient activation, cause-blind dependency invalidity, rich family outcomes, source-relative results, application, and validation.
 - `forbidden`: do not use deltas, applied state, or public result collections as the dependency overlay. Do not introduce a generic graph, state machine, cross-family trace framework, or registry.
 - `entry-gate`: the bounded carriers listed in [§11](IMPLEMENTATION-MAP.md#11--calculations-and-formal-checking) satisfy the local entry gate. Reopen only one selected remaining family with a verified route.
+- `route-state`: verified
+- `red-locus`: [`Conformance/AddressedEnumerationCascade.lean`](../A12Kernel/Conformance/AddressedEnumerationCascade.lean) owns the existing two-stage exact-row matrix and the first missing three-stage API guard.
+- `green-locus`: [`Elaboration/AddressedEnumerationCascade.lean`](../A12Kernel/Elaboration/AddressedEnumerationCascade.lean) owns checked Enumeration dependency projection, transient exact-address reads, phase results, and application.
+- `supporting-locus`: [`Proofs/AddressedEnumerationCascade.lean`](../A12Kernel/Proofs/AddressedEnumerationCascade.lean) owns the existing cascade target, projection, and application laws.
+- `route-limit`: Select only result projection and application for the fixed three-stage serial Enumeration cascade. Arbitrary-length scheduling, sibling widening, document reconstruction, later validation, and Kernel correspondence remain outside this route.
 - `completion-gate`: an executable checked scheduler is deterministic for fixed checked inputs and sound against an independently meaningful relation where one is justified. Result and application laws preserve every named public partition, and validation remains separate.
-- `route-state`: discovery-required
 
 ## Semantic-family gaps
 

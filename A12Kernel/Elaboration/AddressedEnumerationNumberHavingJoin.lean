@@ -19,8 +19,7 @@ inductive AddressedEnumerationNumberHavingJoinElabError where
 /-- The source identity of the exact direct-field Enumeration producer admitted by this route. -/
 def directAddressedEnumerationSourceField? :
     CheckedAddressedEnumerationSource model scope → Option FieldId
-  | .literal _ => none
-  | .field _ _ declaration _ _ _ _ _ _ _ _ _ _ => some declaration.id
+  | source => source.fieldDependencies.head?
 
 /-- Two independent typed producers and one exact filtered Enumeration consumer. -/
 structure CheckedAddressedEnumerationNumberHavingJoin (model : FlatModel) where

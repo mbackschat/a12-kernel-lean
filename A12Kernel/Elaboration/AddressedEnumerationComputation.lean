@@ -78,6 +78,12 @@ def referencesField (source : CheckedAddressedEnumerationSource model scope)
   | .literal _ => false
   | .field _ _ _ operand _ _ _ _ _ _ _ _ _ => operand.field.id == field
 
+/-- The complete field inventory of this literal-or-single-field source. -/
+def fieldDependencies :
+    CheckedAddressedEnumerationSource model scope → List FieldId
+  | .literal _ => []
+  | .field _ _ declaration _ _ _ _ _ _ _ _ _ _ => [declaration.id]
+
 def allowedFor (target : CheckedEnumerationProjection) :
     CheckedAddressedEnumerationSource model scope → Bool
   | .literal token => target.declaration.literalAllowed target.projection token

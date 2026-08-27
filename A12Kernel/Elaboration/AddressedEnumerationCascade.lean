@@ -167,4 +167,107 @@ def applyToChecked
 
 end AddressedEnumerationCascadeRunView
 
+inductive AddressedEnumerationThreeStageCascadePlanError where
+  | firstToSecond (cause : AddressedEnumerationCascadePlanError)
+  | firstAndThirdTargetsSame
+  | firstReadsThird
+  | thirdDoesNotReadSecond
+  deriving Repr, DecidableEq
+
+/-- Exactly three serial addressed Enumeration computations with distinct targets and no reverse edge from the first stage to the third. -/
+structure CheckedAddressedEnumerationThreeStageCascade (model : FlatModel) where
+  private mk ::
+  first : CheckedAddressedEnumerationComputation model
+  second : CheckedAddressedEnumerationComputation model
+  third : CheckedAddressedEnumerationComputation model
+  firstDoesNotReadSecond :
+    first.source.referencesField second.target.field = false
+  secondReadsFirst :
+    second.source.referencesField first.target.field = true
+  firstAndThirdTargetsDistinct : first.target.field ≠ third.target.field
+  firstDoesNotReadThird :
+    first.source.referencesField third.target.field = false
+  thirdReadsSecond :
+    third.source.referencesField second.target.field = true
+
+/-- Certify the two adjacent dependency edges and the remaining nonadjacent cycle boundary. -/
+def certifyAddressedEnumerationThreeStageCascade
+    (first second third : CheckedAddressedEnumerationComputation model) :
+    Except AddressedEnumerationThreeStageCascadePlanError
+      (CheckedAddressedEnumerationThreeStageCascade model) :=
+  if hFirstSecond :
+      first.source.referencesField second.target.field = false then
+    if hSecondFirst :
+        second.source.referencesField first.target.field = true then
+      if hDistinct : first.target.field ≠ third.target.field then
+        if hFirstThird :
+            first.source.referencesField third.target.field = false then
+          if hThirdSecond :
+              third.source.referencesField second.target.field = true then
+            .ok {
+              first, second, third
+              firstDoesNotReadSecond := hFirstSecond
+              secondReadsFirst := hSecondFirst
+              firstAndThirdTargetsDistinct := hDistinct
+              firstDoesNotReadThird := hFirstThird
+              thirdReadsSecond := hThirdSecond
+            }
+          else .error .thirdDoesNotReadSecond
+        else .error .firstReadsThird
+      else .error .firstAndThirdTargetsSame
+    else .error (.firstToSecond .consumerDoesNotReadProducer)
+  else .error (.firstToSecond .producerReadsConsumer)
+
+structure AddressedEnumerationThreeStageCascadeAnalysis where
+  targetFields : List FieldId
+  fieldDependencies : List (FieldId × List FieldId)
+  deriving Repr, DecidableEq
+
+structure AddressedEnumerationThreeStageCascadeOutcomes where
+  first : List AddressedEnumerationComputationOutcome
+  second : List AddressedEnumerationComputationOutcome
+  third : List AddressedEnumerationComputationOutcome
+  deriving Repr, DecidableEq
+
+inductive AddressedEnumerationThreeStageCascadeFault where
+  | first (cause : AddressedEnumerationComputationFault)
+  | firstDependency (target : CellAddr) (cause : EnumerationDependencyFault)
+  | second (cause : AddressedEnumerationComputationFault)
+  | secondDependency (target : CellAddr) (cause : EnumerationDependencyFault)
+  | third (cause : AddressedEnumerationComputationFault)
+  deriving Repr, DecidableEq
+
+namespace CheckedAddressedEnumerationThreeStageCascade
+
+/-- Expose the exact ordered target and direct dependency inventories of the fixed chain. -/
+def analyze (plan : CheckedAddressedEnumerationThreeStageCascade model) :
+    AddressedEnumerationThreeStageCascadeAnalysis := {
+  targetFields := [plan.first.target.field, plan.second.target.field,
+    plan.third.target.field]
+  fieldDependencies := [
+    (plan.first.target.field, plan.first.source.fieldDependencies),
+    (plan.second.target.field, plan.second.source.fieldDependencies),
+    (plan.third.target.field, plan.third.source.fieldDependencies)]
+}
+
+/-- Accumulate the first two exact-address dependency overlays before executing the third stage. -/
+def execute (plan : CheckedAddressedEnumerationThreeStageCascade model)
+    (input : CheckedDocument model) :
+    Except AddressedEnumerationThreeStageCascadeFault
+      AddressedEnumerationThreeStageCascadeOutcomes := do
+  let first ← plan.first.execute input |>.mapError .first
+  let firstDependencies ← projectEnumerationDependencyCells first
+    |>.mapError fun error => .firstDependency error.target error.cause
+  let readAfterFirst := readAfterEnumerationDependencies input firstDependencies
+  let second ← plan.second.executeWithRead input readAfterFirst
+    |>.mapError .second
+  let secondDependencies ← projectEnumerationDependencyCells second
+    |>.mapError fun error => .secondDependency error.target error.cause
+  let readAfterSecond := readAfterEnumerationDependenciesWith secondDependencies
+    readAfterFirst
+  let third ← plan.third.executeWithRead input readAfterSecond |>.mapError .third
+  pure { first, second, third }
+
+end CheckedAddressedEnumerationThreeStageCascade
+
 end A12Kernel

@@ -48,4 +48,50 @@ theorem addressedEnumerationCascadeRun_applyToChecked_delegates
       view.consumer.applyTo afterProducer) := by
   rfl
 
+/-- The fixed three-stage certificate keeps every target identity distinct. -/
+theorem addressedEnumerationThreeStageCascade_targetsPairwiseDistinct
+    (plan : CheckedAddressedEnumerationThreeStageCascade model) :
+    plan.first.target.field ≠ plan.second.target.field ∧
+      plan.first.target.field ≠ plan.third.target.field ∧
+      plan.second.target.field ≠ plan.third.target.field := by
+  have firstSecond :
+      plan.first.target.field ≠ plan.second.target.field := by
+    intro same
+    have reads := plan.secondReadsFirst
+    have excludes := plan.second.targetNotReferenced
+    rw [same] at reads
+    simp_all
+  have secondThird :
+      plan.second.target.field ≠ plan.third.target.field := by
+    intro same
+    have reads := plan.thirdReadsSecond
+    have excludes := plan.third.targetNotReferenced
+    rw [same] at reads
+    simp_all
+  exact ⟨firstSecond, plan.firstAndThirdTargetsDistinct, secondThird⟩
+
+/-- Three-stage execution is exactly two accumulated dependency projections followed by the terminal read. -/
+theorem addressedEnumerationThreeStageCascade_execute_delegates
+    (plan : CheckedAddressedEnumerationThreeStageCascade model)
+    (input : CheckedDocument model) :
+    plan.execute input = (do
+      let first ← plan.first.execute input
+        |>.mapError AddressedEnumerationThreeStageCascadeFault.first
+      let firstDependencies ← projectEnumerationDependencyCells first
+        |>.mapError fun error =>
+          .firstDependency error.target error.cause
+      let readAfterFirst :=
+        readAfterEnumerationDependencies input firstDependencies
+      let second ← plan.second.executeWithRead input readAfterFirst
+        |>.mapError AddressedEnumerationThreeStageCascadeFault.second
+      let secondDependencies ← projectEnumerationDependencyCells second
+        |>.mapError fun error =>
+          .secondDependency error.target error.cause
+      let readAfterSecond := readAfterEnumerationDependenciesWith
+        secondDependencies readAfterFirst
+      let third ← plan.third.executeWithRead input readAfterSecond
+        |>.mapError AddressedEnumerationThreeStageCascadeFault.third
+      pure { first, second, third }) := by
+  rfl
+
 end A12Kernel

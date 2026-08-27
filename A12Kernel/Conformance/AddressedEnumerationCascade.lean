@@ -20,6 +20,7 @@ private def enumerationField (id : FieldId) (name : String) : FlatFieldDecl := {
 private def source := enumerationField 1 "Source"
 private def produced := enumerationField 2 "Produced"
 private def final := enumerationField 3 "Final"
+private def terminal := enumerationField 5 "Terminal"
 private def deepFinal : FlatFieldDecl := {
   final with
   id := 4
@@ -29,7 +30,7 @@ private def deepFinal : FlatFieldDecl := {
 }
 
 private def model : FlatModel := {
-  fields := [source, produced, final, deepFinal]
+  fields := [source, produced, final, deepFinal, terminal]
   repeatableGroups := [
     { level := 10, path := ["Form", "Rows"], repeatability := some 3 },
     { level := 20, path := ["Form", "Rows", "Details"], repeatability := some 2 }]
@@ -81,6 +82,13 @@ private def deepCategoryCascade? :
   let producer ← operation? produced source
   let consumer ← deepCategoryConsumer?
   (certifyAddressedEnumerationCascade producer consumer).toOption
+
+private def threeStageCascade? :
+    Option (CheckedAddressedEnumerationThreeStageCascade model) := do
+  let first ← operation? produced source
+  let second ← categoryOperation? final produced
+  let third ← operation? terminal final
+  (certifyAddressedEnumerationThreeStageCascade first second third).toOption
 
 private def planError? (producer? consumer? :
     Option (CheckedAddressedEnumerationComputation model)) :
@@ -227,12 +235,101 @@ private def applicationSummary? : Option CascadeApplicationSummary := do
     source1 := applied (address source.id 1)
   }
 
+private def threeStageError?
+    (first? second? third? :
+      Option (CheckedAddressedEnumerationComputation model)) :
+    Option AddressedEnumerationThreeStageCascadePlanError := do
+  let first ← first?
+  let second ← second?
+  let third ← third?
+  match certifyAddressedEnumerationThreeStageCascade first second third with
+  | .ok _ => none
+  | .error cause => some cause
+
+private def threeStageInput? : Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 10, path := [2] },
+      { group := 10, path := [3] }]
+    cells := [
+      cell source 1 "A" (.parsed (.enum "A")),
+      cell source 3 "C" (.parsed (.enum "C")),
+      cell produced 1 "B" (.parsed (.enum "B")),
+      cell produced 2 "B" (.parsed (.enum "B")),
+      cell produced 3 "B" (.parsed (.enum "B")),
+      cell final 1 "A" (.parsed (.enum "A")),
+      cell final 2 "A" (.parsed (.enum "A")),
+      cell final 3 "A" (.parsed (.enum "A")),
+      cell terminal 1 "B" (.parsed (.enum "B")),
+      cell terminal 2 "A" (.parsed (.enum "A")),
+      cell terminal 3 "A" (.parsed (.enum "A"))]
+  }).toOption
+
+private structure ThreeStageExecutionSummary where
+  analysis : AddressedEnumerationThreeStageCascadeAnalysis
+  first : List (CellAddr × TokenComputationResult)
+  second : List (CellAddr × TokenComputationResult)
+  third : List (CellAddr × TokenComputationResult)
+  deriving Repr, DecidableEq
+
+private def threeStageExecutionSummary? : Option ThreeStageExecutionSummary := do
+  let plan ← threeStageCascade?
+  let input ← threeStageInput?
+  let outcomes ← plan.execute input |>.toOption
+  pure {
+    analysis := plan.analyze
+    first := outcomes.first.map fun item => (item.targetField, item.result)
+    second := outcomes.second.map fun item => (item.targetField, item.result)
+    third := outcomes.third.map fun item => (item.targetField, item.result)
+  }
+
 example : cascade?.isSome = true ∧ deepCascade?.isSome = true ∧
     categoryCascade?.isSome = true ∧ deepCategoryCascade?.isSome = true ∧
     planError? (operation? produced final) (operation? final produced) =
       some .producerReadsConsumer ∧
     planError? (operation? produced source) (operation? final source) =
       some .consumerDoesNotReadProducer := by
+  native_decide
+
+example : threeStageCascade?.isSome = true ∧
+    threeStageError? (operation? produced final) (operation? final produced)
+      (operation? terminal final) =
+        some (.firstToSecond .producerReadsConsumer) ∧
+    threeStageError? (operation? produced source) (operation? final source)
+      (operation? terminal final) =
+        some (.firstToSecond .consumerDoesNotReadProducer) ∧
+    threeStageError? (operation? produced source) (operation? final produced)
+      (operation? produced final) = some .firstAndThirdTargetsSame ∧
+    threeStageError? (operation? produced terminal) (operation? final produced)
+      (operation? terminal final) = some .firstReadsThird ∧
+    threeStageError? (operation? produced source) (operation? final produced)
+      (operation? terminal source) =
+        some .thirdDoesNotReadSecond := by
+  native_decide
+
+/- Fresh phase overlays beat contradictory stored target cells at both edges; clean absence stays clean, while poison becomes cause-blind and remains poison across the second edge. -/
+example : threeStageExecutionSummary? = some {
+  analysis := {
+    targetFields := [produced.id, final.id, terminal.id]
+    fieldDependencies := [
+      (produced.id, [source.id]),
+      (final.id, [produced.id]),
+      (terminal.id, [final.id])]
+  }
+  first := [
+    (address produced.id 1, .value "A"),
+    (address produced.id 2, .noValue),
+    (address produced.id 3, .poison .declaredConstraint)]
+  second := [
+    (address final.id 1, .value "B"),
+    (address final.id 2, .noValue),
+    (address final.id 3, .poison .computedDependency)]
+  third := [
+    (address terminal.id 1, .value "B"),
+    (address terminal.id 2, .noValue),
+    (address terminal.id 3, .poison .computedDependency)]
+} := by
   native_decide
 
 /- Validation-scoped required poison remains a structural dependency-conversion fault rather than being mislabeled as a reached computed dependency. -/
