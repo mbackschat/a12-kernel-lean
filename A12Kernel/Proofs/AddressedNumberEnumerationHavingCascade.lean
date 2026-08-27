@@ -8,7 +8,7 @@ namespace A12Kernel
 /-- The checked route retains the exact filter-only dependency that makes the consumer a later stage. -/
 theorem addressedNumberEnumerationHavingCascade_filterDependency
     (plan : CheckedAddressedNumberEnumerationHavingCascade model) :
-    plan.havingDependencies.contains plan.producer.placement.targetField = true :=
+    plan.havingDependencies.contains plan.producer.targetField = true :=
   plan.filterDependency
 
 /-- Analyze exposes the producer edge and complete downstream checked-plan inventory without adding runtime reachability. -/
@@ -16,11 +16,11 @@ theorem addressedNumberEnumerationHavingCascade_filterDependency
 theorem addressedNumberEnumerationHavingCascade_analyze
     (plan : CheckedAddressedNumberEnumerationHavingCascade model) :
     plan.analyze = {
-      producerTarget := plan.producer.placement.targetField
+      producerKind := plan.producer.kind
+      producerTarget := plan.producer.targetField
       consumerTarget := plan.consumer.target.field
       fieldDependencies := [
-        (plan.producer.placement.targetField,
-          [plan.producer.placement.sourceDeclaration.id]),
+        (plan.producer.targetField, plan.producer.sourceFields),
         (plan.consumer.target.field,
           plan.consumer.source.fieldDependencies)]
     } := by

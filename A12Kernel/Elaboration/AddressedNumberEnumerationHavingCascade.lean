@@ -1,9 +1,10 @@
 import A12Kernel.Elaboration.AddressedNumberField
 import A12Kernel.Elaboration.AddressedEnumerationFirstFilledComputation
+import A12Kernel.Elaboration.RepeatableNumberAggregateProducer
 
 /-! # Computed Number dependency inside Enumeration `Having`
 
-This bounded SG4 route runs one repeatable direct Number computation before one repeatable Enumeration `FirstFilledValue` whose exact source shape is a direct field followed by a filtered star. The completed Number cells form a transient exact-address read overlay. Runtime still follows first-filled reachability, so the direct prefix can hide a poisoned dependency used only by the later `Having`.
+This bounded SG4 route runs one checked addressed Number-result producer before one repeatable Enumeration `FirstFilledValue` whose exact source shape is a direct field followed by a filtered star. The completed Number cells form a transient exact-address read overlay. Runtime still follows first-filled reachability, so the direct prefix can hide a poisoned dependency used only by the later `Having`.
 -/
 
 namespace A12Kernel
@@ -39,21 +40,21 @@ inductive AddressedNumberEnumerationHavingCascadeElabError where
   | missingFilterDependency (field : FieldId)
   deriving Repr, DecidableEq
 
-/-- One checked direct Number producer followed by one exact mixed Enumeration consumer whose filter reads that producer. -/
+/-- One checked addressed Number-result producer followed by one exact mixed Enumeration consumer whose filter reads that producer. -/
 structure CheckedAddressedNumberEnumerationHavingCascade (model : FlatModel) where
   private mk ::
-  producer : CheckedAddressedNumberField model
+  producer : CheckedAddressedNumberProducer model
   consumer : CheckedAddressedEnumerationFirstFilledComputation model
   havingDependencies : List FieldId
   consumerSourceShape :
     directThenFilteredEnumerationHavingDependencies? consumer.source =
       some havingDependencies
   filterDependency :
-    havingDependencies.contains producer.placement.targetField = true
+    havingDependencies.contains producer.targetField = true
 
 /-- Certify the exact mixed source shape and the Number edge that makes it a two-stage route. -/
 def checkAddressedNumberEnumerationHavingCascade
-    (producer : CheckedAddressedNumberField model)
+    (producer : CheckedAddressedNumberProducer model)
     (consumer : CheckedAddressedEnumerationFirstFilledComputation model) :
     Except AddressedNumberEnumerationHavingCascadeElabError
       (CheckedAddressedNumberEnumerationHavingCascade model) :=
@@ -62,7 +63,7 @@ def checkAddressedNumberEnumerationHavingCascade
   | none => .error .consumerSourceShape
   | some dependencies =>
       if hDependency :
-          dependencies.contains producer.placement.targetField = true then
+          dependencies.contains producer.targetField = true then
         .ok {
           producer, consumer
           havingDependencies := dependencies
@@ -70,9 +71,10 @@ def checkAddressedNumberEnumerationHavingCascade
           filterDependency := hDependency
         }
       else
-        .error (.missingFilterDependency producer.placement.targetField)
+        .error (.missingFilterDependency producer.targetField)
 
 structure AddressedNumberEnumerationHavingCascadeAnalysis where
+  producerKind : AddressedNumberProducerKind
   producerTarget : FieldId
   consumerTarget : FieldId
   fieldDependencies : List (FieldId × List FieldId)
@@ -92,7 +94,7 @@ structure AddressedNumberEnumerationHavingCascadeRunView
     model StringResidual
 
 inductive AddressedNumberEnumerationHavingCascadeFault where
-  | producer (cause : AddressedNumberFieldFault)
+  | producer (cause : AddressedNumericLeafFault)
   | consumer (cause : AddressedEnumerationFirstFilledComputationFault)
   deriving Repr, DecidableEq
 
@@ -101,11 +103,11 @@ namespace CheckedAddressedNumberEnumerationHavingCascade
 /-- Expose both checked static edges without treating their ordered field inventories as a runtime trace. -/
 def analyze (plan : CheckedAddressedNumberEnumerationHavingCascade model) :
     AddressedNumberEnumerationHavingCascadeAnalysis := {
-  producerTarget := plan.producer.placement.targetField
+  producerKind := plan.producer.kind
+  producerTarget := plan.producer.targetField
   consumerTarget := plan.consumer.target.field
   fieldDependencies := [
-    (plan.producer.placement.targetField,
-      [plan.producer.placement.sourceDeclaration.id]),
+    (plan.producer.targetField, plan.producer.sourceFields),
     (plan.consumer.target.field, plan.consumer.source.fieldDependencies)]
 }
 

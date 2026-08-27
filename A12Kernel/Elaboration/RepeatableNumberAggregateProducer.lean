@@ -10,11 +10,11 @@ import A12Kernel.Elaboration.AddressedFieldValueAsNumber
 import A12Kernel.Elaboration.AddressedRangeAsNumber
 import A12Kernel.Elaboration.AddressedDateRangeBoundPart
 
-/-! # Checked repeatable Number aggregate row producers -/
+/-! # Checked repeatable Number-result row producers -/
 
 namespace A12Kernel
 
-/-- The exact row-local producer identity needed by Analyze. -/
+/-- The exact row-local producer identity shared by bounded SG4 Analyze views. -/
 inductive RepeatableNumberAggregateProducerKind where
   | direct
   | binary (operation : NumericArithmeticOp)
@@ -29,7 +29,10 @@ inductive RepeatableNumberAggregateProducerKind where
   | dateRangeBoundPart (bound : DateRangeBound) (part : DateNumericPart)
   deriving Repr, DecidableEq
 
-/-- One completed row-local producer admitted by the fixed aggregate route. -/
+/-- Consumer-neutral name for the established producer identity. -/
+abbrev AddressedNumberProducerKind := RepeatableNumberAggregateProducerKind
+
+/-- One completed row-local producer admitted by bounded Number-result compositions. -/
 inductive CheckedRepeatableNumberAggregateProducer (model : FlatModel) where
   | direct (operation : CheckedAddressedNumberField model)
   | binary (operation : CheckedAddressedNumberBinary model)
@@ -42,6 +45,9 @@ inductive CheckedRepeatableNumberAggregateProducer (model : FlatModel) where
   | fieldValueAsNumber (operation : CheckedAddressedFieldValueAsNumber model)
   | rangeAsNumber (operation : CheckedAddressedRangeAsNumber model)
   | dateRangeBoundPart (operation : CheckedAddressedDateRangeBoundPart model)
+
+/-- Consumer-neutral name for the established checked producer union. -/
+abbrev CheckedAddressedNumberProducer := CheckedRepeatableNumberAggregateProducer
 
 namespace CheckedRepeatableNumberAggregateProducer
 

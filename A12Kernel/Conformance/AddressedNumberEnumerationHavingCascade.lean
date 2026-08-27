@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.AddressedNumberEnumerationHavingCascade
+import A12Kernel.Elaboration.RepeatableNumberAggregateProducer
 
 /-! # Number dependency inside Enumeration `Having` locks -/
 
@@ -19,15 +20,23 @@ private def numberField (id : FieldId) (name : String)
   policy := { kind := .number { scale := 0, signed := false } }
 }
 
+private def stringField (id : FieldId) (name : String)
+    (groupPath : GroupPath) (scope : List RepeatableLevel) : FlatFieldDecl := {
+  id, name, groupPath, repeatableScope := scope
+  policy := { kind := .string }
+  stringPolicy := { lineBreaksPermitted := true, maxLength := some 6 }
+}
+
 private def target := enumerationField 1 "Target" ["Form", "Rows"] [10]
 private def directChoice := enumerationField 2 "DirectChoice" ["Form", "Rows"] [10]
 private def choice := enumerationField 3 "Choice" ["Form", "Rows", "Items"] [10, 20]
 private def limit := numberField 4 "Limit" ["Form", "Rows"] [10]
 private def computedGate := numberField 5 "ComputedGate" ["Form", "Rows", "Items"] [10, 20]
 private def rawGate := numberField 6 "RawGate" ["Form", "Rows", "Items"] [10, 20]
+private def text := stringField 7 "Text" ["Form", "Rows", "Items"] [10, 20]
 
 private def model : FlatModel := {
-  fields := [target, directChoice, choice, limit, computedGate, rawGate]
+  fields := [target, directChoice, choice, limit, computedGate, rawGate, text]
   repeatableGroups := [{
     level := 10
     path := ["Form", "Rows"]
@@ -92,13 +101,24 @@ private def consumer? (having : SurfaceCorrelatedHaving) :
 private def plan? : Option (CheckedAddressedNumberEnumerationHavingCascade model) := do
   let producer ← producer?
   let consumer ← consumer? selectedByComputedGate
-  (checkAddressedNumberEnumerationHavingCascade producer consumer).toOption
+  (checkAddressedNumberEnumerationHavingCascade (.direct producer) consumer).toOption
+
+private def stringLengthProducer? : Option (CheckedAddressedStringLength model) :=
+  (checkAddressedStringLength model ["Form", "Rows", "Items"]
+    computedGate.id (bare "Text")).toOption
+
+private def stringLengthPlan? :
+    Option (CheckedAddressedNumberEnumerationHavingCascade model) := do
+  let producer ← stringLengthProducer?
+  let consumer ← consumer? selectedByComputedGate
+  (checkAddressedNumberEnumerationHavingCascade
+    (.stringLength producer) consumer).toOption
 
 private def planError? (having : SurfaceCorrelatedHaving) :
     Option AddressedNumberEnumerationHavingCascadeElabError := do
   let producer ← producer?
   let consumer ← consumer? having
-  match checkAddressedNumberEnumerationHavingCascade producer consumer with
+  match checkAddressedNumberEnumerationHavingCascade (.direct producer) consumer with
   | .ok _ => none
   | .error cause => some cause
 
@@ -108,7 +128,7 @@ private def shapeError? :
   let consumer ←
     (checkAddressedEnumerationFirstFilledComputation model ["Form", "Rows"]
       target.id singleFilteredSource).toOption
-  match checkAddressedNumberEnumerationHavingCascade producer consumer with
+  match checkAddressedNumberEnumerationHavingCascade (.direct producer) consumer with
   | .ok _ => none
   | .error cause => some cause
 
@@ -152,9 +172,21 @@ private def summary? (input : CheckedDocument model) : Option Summary := do
       (outcome.targetField, outcome.result)
   }
 
+private def stringLengthSummary? (input : CheckedDocument model) : Option Summary := do
+  let plan ← stringLengthPlan?
+  let outcomes ← plan.execute input |>.toOption
+  pure {
+    analysis := plan.analyze
+    numbers := outcomes.producer.map fun outcome =>
+      (outcome.targetField, outcome.outcome.dependencyObservation)
+    enumerations := outcomes.consumer.map fun outcome =>
+      (outcome.targetField, outcome.result)
+  }
+
 /- The plan owns the complete checked dependency inventory and refuses both a filter without the producer edge and a broader source shape. -/
 example :
     plan?.map CheckedAddressedNumberEnumerationHavingCascade.analyze = some {
+      producerKind := .direct
       producerTarget := computedGate.id
       consumerTarget := target.id
       fieldDependencies := [
@@ -184,6 +216,7 @@ example : (do
       cell choice [2, 2] "B" (.parsed (.enum "B"))]
     summary? input) = some {
       analysis := {
+        producerKind := .direct
         producerTarget := computedGate.id
         consumerTarget := target.id
         fieldDependencies := [
@@ -211,6 +244,52 @@ example : (do
     let result ← summary? input
     pure result.enumerations) = some [
       ({ field := target.id, path := [1] }, .poison .computedDependency)] := by
+  native_decide
+
+/- The already checked UTF-16 String-length producer supplies the filter dependency through the same Number overlay. Fresh length 2 defeats reversed stale gates, a reached malformed String becomes cause-blind dependency poison, and the direct prefix hides that same completed poison. -/
+example : (do
+    let fresh ← document? [row 10 [1], row 20 [1, 1], row 20 [1, 2]] [
+      cell limit [1] "2" (.parsed (.num 2)),
+      cell text [1, 1] "😀" (.parsed (.str "😀")),
+      cell text [1, 2] "X" (.parsed (.str "X")),
+      cell computedGate [1, 1] "0" (.parsed (.num 0)),
+      cell computedGate [1, 2] "2" (.parsed (.num 2)),
+      cell choice [1, 1] "B" (.parsed (.enum "B")),
+      cell choice [1, 2] "A" (.parsed (.enum "A"))]
+    let poisoned ← document? [row 10 [1], row 20 [1, 1]] [
+      cell limit [1] "2" (.parsed (.num 2)),
+      cell text [1, 1] "bad" (.rejected .malformed),
+      cell computedGate [1, 1] "2" (.parsed (.num 2)),
+      cell choice [1, 1] "A" (.parsed (.enum "A"))]
+    let hidden ← document? [row 10 [1], row 20 [1, 1]] [
+      cell directChoice [1] "A" (.parsed (.enum "A")),
+      cell limit [1] "2" (.parsed (.num 2)),
+      cell text [1, 1] "bad" (.rejected .malformed),
+      cell computedGate [1, 1] "2" (.parsed (.num 2)),
+      cell choice [1, 1] "B" (.parsed (.enum "B"))]
+    let freshSummary ← stringLengthSummary? fresh
+    let poisonedSummary ← stringLengthSummary? poisoned
+    let hiddenSummary ← stringLengthSummary? hidden
+    pure (freshSummary, poisonedSummary.enumerations,
+      hiddenSummary.enumerations)) = some ({
+      analysis := {
+        producerKind := .stringLength
+        producerTarget := computedGate.id
+        consumerTarget := target.id
+        fieldDependencies := [
+          (computedGate.id, [text.id]),
+          (target.id, [directChoice.id, choice.id, computedGate.id, limit.id])]
+      }
+      numbers := [
+        ({ field := computedGate.id, path := [1, 1] },
+          .value { unscaled := 2, scale := 0 }),
+        ({ field := computedGate.id, path := [1, 2] },
+          .value { unscaled := 1, scale := 0 })]
+      enumerations := [
+        ({ field := target.id, path := [1] }, .value "B")]
+    }, [
+      ({ field := target.id, path := [1] }, .poison .computedDependency)], [
+      ({ field := target.id, path := [1] }, .value "A")]) := by
   native_decide
 
 private def numericCell (field : FlatFieldDecl) (path : List Nat)
