@@ -261,6 +261,16 @@ structure AddressedEnumerationToNumberHavingCascadeOutcomes where
   consumer : List AddressedEnumerationComputationOutcome
   deriving Repr, DecidableEq
 
+/-- Three source-relative public result phases tied to the checked serial cascade that produced them. -/
+structure AddressedEnumerationToNumberHavingCascadeRunView
+    (model : FlatModel) (NumberPayload StringResidual : Type) where
+  private mk ::
+  plan : CheckedAddressedEnumerationToNumberHavingCascade model
+  enumerationProducer : StringComputationRunView StringResidual CellAddr
+  number : NumericComputationRunView
+    (ComputationFormalMessage NumberPayload) CellAddr
+  consumer : StringComputationRunView StringResidual CellAddr
+
 inductive AddressedEnumerationToNumberHavingCascadeFault where
   | enumerationProducer (cause : AddressedEnumerationComputationFault)
   | enumerationDependency (target : CellAddr)
@@ -304,6 +314,43 @@ def execute (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
   let consumer ← plan.consumer.executeWithRead input read |>.mapError .consumer
   pure { enumerationProducer, numberProducer, consumer }
 
+/-- Execute once, then classify all three retained phases against the immutable source document. -/
+def executeResult (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
+    (input : CheckedDocument model)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (enumerationProducerResidualMessages consumerResidualMessages :
+      List StringResidual) :
+    Except AddressedEnumerationToNumberHavingCascadeFault
+      (AddressedEnumerationToNumberHavingCascadeRunView
+        model NumberPayload StringResidual) := do
+  let outcomes ← plan.execute input
+  pure {
+    plan
+    enumerationProducer := projectAddressedEnumerationResults input
+      enumerationProducerResidualMessages outcomes.enumerationProducer
+    number := NumericComputationRunView.fromSourceOutcomesWithMessages
+      MessagePointer.ofCellAddr numberPayloadAt numberMessages
+      outcomes.numberProducer
+    consumer := projectAddressedEnumerationResults input consumerResidualMessages
+      outcomes.consumer
+  }
+
 end CheckedAddressedEnumerationToNumberHavingCascade
+
+namespace AddressedEnumerationToNumberHavingCascadeRunView
+
+/-- Apply the two Enumeration phases in their established phase order to one separately supplied same-model destination. -/
+def applyEnumerationsToChecked
+    (view : AddressedEnumerationToNumberHavingCascadeRunView
+      model NumberPayload StringResidual)
+    (destination : CheckedDocument model) :
+    Except (StringComputationRunView.StringComputationRunApplicationError CellAddr)
+      (StringComputationDestination CellAddr) := do
+  let afterProducer ← view.enumerationProducer.applyTo
+    destination.sourceStringTargetStateAt
+  view.consumer.applyTo afterProducer
+
+end AddressedEnumerationToNumberHavingCascadeRunView
 
 end A12Kernel

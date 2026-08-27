@@ -173,4 +173,66 @@ theorem addressedEnumerationToNumberHavingCascade_execute_delegates
       pure { enumerationProducer, numberProducer, consumer }) := by
   rfl
 
+/-- Result projection classifies the three already-executed serial phases without recomputation. -/
+theorem addressedEnumerationToNumberHavingCascade_executeResult_projects
+    (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
+    (input : CheckedDocument model)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (enumerationProducerResidualMessages consumerResidualMessages :
+      List StringResidual)
+    (outcomes : AddressedEnumerationToNumberHavingCascadeOutcomes)
+    (executed : plan.execute input = .ok outcomes) :
+    (plan.executeResult input numberPayloadAt numberMessages
+      enumerationProducerResidualMessages consumerResidualMessages).map
+      (fun view =>
+        (view.enumerationProducer, view.number, view.consumer)) = .ok (
+      projectAddressedEnumerationResults input enumerationProducerResidualMessages
+        outcomes.enumerationProducer,
+      NumericComputationRunView.fromSourceOutcomesWithMessages
+        MessagePointer.ofCellAddr numberPayloadAt numberMessages
+        outcomes.numberProducer,
+      projectAddressedEnumerationResults input consumerResidualMessages
+        outcomes.consumer) := by
+  unfold CheckedAddressedEnumerationToNumberHavingCascade.executeResult
+  rw [executed]
+  rfl
+
+/-- Neither statically compatible Enumeration phase can invent a target-rejection entry. -/
+theorem addressedEnumerationToNumberHavingCascade_executeResult_hasNoEnumerationErrors
+    (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
+    (input : CheckedDocument model)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (enumerationProducerResidualMessages consumerResidualMessages :
+      List StringResidual)
+    (outcomes : AddressedEnumerationToNumberHavingCascadeOutcomes)
+    (executed : plan.execute input = .ok outcomes) :
+    (plan.executeResult input numberPayloadAt numberMessages
+      enumerationProducerResidualMessages consumerResidualMessages).map
+      (fun view =>
+        (view.enumerationProducer.withErrors, view.consumer.withErrors)) =
+      .ok ([], []) := by
+  unfold CheckedAddressedEnumerationToNumberHavingCascade.executeResult
+  rw [executed]
+  change Except.ok (
+    (projectAddressedEnumerationResults input
+      enumerationProducerResidualMessages
+      outcomes.enumerationProducer).withErrors,
+    (projectAddressedEnumerationResults input consumerResidualMessages
+      outcomes.consumer).withErrors) = Except.ok ([], [])
+  rw [addressedEnumerationResults_haveNoTargetErrors,
+    addressedEnumerationResults_haveNoTargetErrors]
+
+/-- Enumeration application delegates to the serial producer and consumer result folds in phase order. -/
+theorem addressedEnumerationToNumberHavingCascadeRun_applyEnumerations_delegates
+    (view : AddressedEnumerationToNumberHavingCascadeRunView
+      model NumberPayload StringResidual)
+    (destination : CheckedDocument model) :
+    view.applyEnumerationsToChecked destination = (do
+      let afterProducer ← view.enumerationProducer.applyTo
+        destination.sourceStringTargetStateAt
+      view.consumer.applyTo afterProducer) := by
+  rfl
+
 end A12Kernel

@@ -266,15 +266,20 @@ private def serialError?
   | .ok _ => none
   | .error cause => some cause
 
+private def serialRows : List RowAddr :=
+  [1, 2, 3].flatMap fun index =>
+    [row 10 [index], row 20 [index, 1]]
+
 private def serialInput? : Option (CheckedDocument model) :=
   (checkDocument prepared "en_US" {
-    instantiatedRows := [1, 2, 3].flatMap fun index =>
-      [row 10 [index], row 20 [index, 1]]
+    instantiatedRows := serialRows
     cells := [
       numericCell limit [1] "1" 1,
       numericCell limit [2] "1" 1,
       numericCell limit [3] "1" 1,
       cell directChoice [3] "A" (.parsed (.enum "A")),
+      cell target [2] "B" (.parsed (.enum "B")),
+      cell target [3] "A" (.parsed (.enum "A")),
       cell rawChoice [1, 1] "A" (.parsed (.enum "A")),
       cell rawChoice [2, 1] "C" (.parsed (.enum "C")),
       cell rawChoice [3, 1] "C" (.parsed (.enum "C")),
@@ -340,6 +345,119 @@ example : serialPlan?.isSome = true ∧
     ({ field := target.id, path := [1] }, .value "A"),
     ({ field := target.id, path := [2] }, .poison .computedDependency),
     ({ field := target.id, path := [3] }, .value "A")]
+} := by
+  native_decide
+
+private structure SerialResultApplicationSummary where
+  enumerationProducerValues : List (CellAddr × String)
+  enumerationProducerChanges : List (CellAddr × String)
+  enumerationProducerCleared : List CellAddr
+  enumerationProducerMessages : List Nat
+  numberValues : List (CellAddr × StoredNumber)
+  numberChanges : List (CellAddr × StoredNumber)
+  numberCleared : List CellAddr
+  consumerValues : List (CellAddr × String)
+  consumerChanges : List (CellAddr × String)
+  consumerCleared : List CellAddr
+  consumerMessages : List Nat
+  numberApplied : List (CellAddr × NumericTargetState)
+  enumerationApplied : List (CellAddr × StringTargetState)
+  deriving Repr, DecidableEq
+
+private def serialResultDestination? : Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" { instantiatedRows := serialRows, cells := [
+    numericCell computedGate [1, 1] "8" 8,
+    numericCell computedGate [2, 1] "8" 8,
+    numericCell computedGate [3, 1] "8" 8,
+    cell computedChoice [1, 1] "B" (.parsed (.enum "B")),
+    cell computedChoice [2, 1] "B" (.parsed (.enum "B")),
+    cell computedChoice [3, 1] "B" (.parsed (.enum "B")),
+    cell target [1] "B" (.parsed (.enum "B")),
+    cell target [2] "A" (.parsed (.enum "A")),
+    cell target [3] "B" (.parsed (.enum "B"))] }).toOption
+
+private def serialResultApplicationSummary? :
+    Option SerialResultApplicationSummary := do
+  let plan ← serialPlan?
+  let input ← serialInput?
+  let destination ← serialResultDestination?
+  let view ← plan.executeResult input (fun _ => ()) [] [11] [22] |>.toOption
+  let numberApplied ← view.number.applyToChecked destination |>.toOption
+  let enumerationApplied ← view.applyEnumerationsToChecked destination |>.toOption
+  let numberAddresses := [1, 2, 3].map fun outer =>
+    ({ field := computedGate.id, path := [outer, 1] } : CellAddr)
+  let enumerationAddresses := [
+    ({ field := computedChoice.id, path := [1, 1] } : CellAddr),
+    { field := computedChoice.id, path := [2, 1] },
+    { field := computedChoice.id, path := [3, 1] },
+    { field := target.id, path := [1] },
+    { field := target.id, path := [2] },
+    { field := target.id, path := [3] }]
+  pure {
+    enumerationProducerValues := view.enumerationProducer.withoutErrors.map
+      fun item => (item.targetField, item.value.text)
+    enumerationProducerChanges := view.enumerationProducer.withChanges.map
+      fun item => (item.targetField, item.value.text)
+    enumerationProducerCleared := view.enumerationProducer.cleared
+    enumerationProducerMessages :=
+      view.enumerationProducer.formalErrorsInOperands
+    numberValues := view.number.withoutErrors.map fun item =>
+      (item.targetField, item.value)
+    numberChanges := view.number.withChanges.map fun item =>
+      (item.targetField, item.value)
+    numberCleared := view.number.cleared
+    consumerValues := view.consumer.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    consumerChanges := view.consumer.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    consumerCleared := view.consumer.cleared
+    consumerMessages := view.consumer.formalErrorsInOperands
+    numberApplied := numberAddresses.map fun address =>
+      (address, numberApplied.stateAt address)
+    enumerationApplied := enumerationAddresses.map fun address =>
+      (address, enumerationApplied address)
+  }
+
+/- The serial phases classify against the immutable source and apply separately to a different destination. The source-identical final success remains inert against a conflicting destination value. -/
+example : serialResultApplicationSummary? = some {
+  enumerationProducerValues := [
+    ({ field := computedChoice.id, path := [1, 1] }, "A")]
+  enumerationProducerChanges := [
+    ({ field := computedChoice.id, path := [1, 1] }, "A")]
+  enumerationProducerCleared := [
+    { field := computedChoice.id, path := [2, 1] },
+    { field := computedChoice.id, path := [3, 1] }]
+  enumerationProducerMessages := [11]
+  numberValues := [
+    ({ field := computedGate.id, path := [1, 1] },
+      { unscaled := 1, scale := 0 })]
+  numberChanges := [
+    ({ field := computedGate.id, path := [1, 1] },
+      { unscaled := 1, scale := 0 })]
+  numberCleared := [
+    { field := computedGate.id, path := [2, 1] },
+    { field := computedGate.id, path := [3, 1] }]
+  consumerValues := [
+    ({ field := target.id, path := [1] }, "A"),
+    ({ field := target.id, path := [3] }, "A")]
+  consumerChanges := [({ field := target.id, path := [1] }, "A")]
+  consumerCleared := [{ field := target.id, path := [2] }]
+  consumerMessages := [22]
+  numberApplied := [
+    ({ field := computedGate.id, path := [1, 1] },
+      .presentValue (.decimal { unscaled := 1, scale := 0 })),
+    ({ field := computedGate.id, path := [2, 1] }, .presentEmpty),
+    ({ field := computedGate.id, path := [3, 1] }, .presentEmpty)]
+  enumerationApplied := [
+    ({ field := computedChoice.id, path := [1, 1] },
+      .presentValue ⟨"A", by decide⟩),
+    ({ field := computedChoice.id, path := [2, 1] }, .presentEmpty),
+    ({ field := computedChoice.id, path := [3, 1] }, .presentEmpty),
+    ({ field := target.id, path := [1] },
+      .presentValue ⟨"A", by decide⟩),
+    ({ field := target.id, path := [2] }, .presentEmpty),
+    ({ field := target.id, path := [3] },
+      .presentValue ⟨"B", by decide⟩)]
 } := by
   native_decide
 
