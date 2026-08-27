@@ -1,6 +1,6 @@
 # Govern consumer lab
 
-- `status`: designed
+- `status`: green
 - `contract`: versioned semantic artifacts and evidence produce an impact, compatibility, or release decision under an explicit policy.
 - `authority`: Git-owned change identity, the corrected [calendar-day clause](../../spec/05-dates-and-time.md#5-time-zones-and-the-sub-day-difference), its [Lean capability](../implementation/computations.md#cap-exact-address-repeatable-datetime-day-shift), and the [Execute](EXECUTE.md) and [Qualify](QUALIFY.md) lab results.
 
@@ -14,4 +14,4 @@ Lean and Git can check cited semantic outputs, owners, and changed artifacts. Th
 
 | Run | Status | Current result |
 |---|---|---|
-| `govern-day-handover-01` | designed | Awaiting isolated impact decision and owner-by-owner reconciliation. |
+| `govern-day-handover-01` | green | A cold reader classified `74dd315f` to `4815cc90` as a language-neutral handover correction and internal consumer-compatibility event, not a Lean semantic or public compatibility change. Root reconciliation confirmed an identical `A12Kernel` tree and exactly two changed documentation blobs. Only the adjacent spring-gap member of the bounded DateTime day-shift capability, `execute-datetime-day-01`, and `qualify-datetime-day-01` were invalidated; their fresh `-02` runs replace them. Kernel evidence remains pending and no protocol, shipment, release, or stable capability key changes. All four wrong impact accounts were killed. The read-only analysis took about three minutes and added no dependency or guessed identity. |

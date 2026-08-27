@@ -30,6 +30,6 @@ Retained Kernel evidence separately bounds correspondence to A12 Kernel 30.8.1. 
 | [Synthesize](SYNTHESIZE.md) | green | SMT-produced presence witness replayed through Lean semantics |
 | [Qualify](QUALIFY.md) | green | Four independent DateTime consumer mutations and restoration |
 | [Explain](EXPLAIN.md) | designed | Structured source-first poison trace checked against Lean events |
-| [Govern](GOVERN.md) | designed | Impact and compatibility decision for the calendar-day handover correction |
+| [Govern](GOVERN.md) | green | Impact and compatibility decision for the calendar-day handover correction |
 
 The user-facing potential and consolidated results remain in [`USE-CASES.md`](../USE-CASES.md). General shipment and qualification contracts remain in [`IMPLEMENTER-GUIDE.md`](../IMPLEMENTER-GUIDE.md). Implemented E/P/L/C/X/Q status remains in [`IMPLEMENTATION-MAP.md`](../IMPLEMENTATION-MAP.md).
