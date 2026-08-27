@@ -87,6 +87,11 @@ def referencesField (checked : CheckedWorldTimeComponent model)
   | .shiftedNowExtractor source =>
       source.source.amount.referencesField field
 
+/-- Exact authored-order field dependencies of one world-aware component. -/
+def fieldDependencies : CheckedWorldTimeComponent model → List FieldId
+  | .static component => component.fieldDependencies
+  | .shiftedNowExtractor source => source.source.amount.fieldDependencies
+
 /-- Read a static component without consulting `World`, or the dynamic component with it. -/
 def read (checked : CheckedWorldTimeComponent model)
     (phase : Phase) (world : World) (input : CheckedDocument model) :
@@ -103,6 +108,14 @@ namespace CheckedWorldTimeComponents
 def referencesField (checked : CheckedWorldTimeComponents model)
     (field : FieldId) : Bool :=
   checked.referencesFieldWith CheckedWorldTimeComponent.referencesField field
+
+/-- Exact authored-order field dependencies of a world-aware component prefix. -/
+def fieldDependencies : CheckedWorldTimeComponents model → List FieldId
+  | .empty => []
+  | .hour hour => hour.fieldDependencies
+  | .minute hour minute => hour.fieldDependencies ++ minute.fieldDependencies
+  | .second hour minute second =>
+      hour.fieldDependencies ++ minute.fieldDependencies ++ second.fieldDependencies
 
 /-- Evaluate one checked prefix against the immutable document and explicit world. -/
 def evaluate (checked : CheckedWorldTimeComponents model)

@@ -498,6 +498,12 @@ example :
           .accepted ⟨"06:00:00", by decide⟩) := by
   native_decide
 
+/- Scalar and repeatable world-aware plans share the authored dependency projection. -/
+example :
+    worldLiteralOperation?.map (·.fieldDependencies) = some [] ∧
+      worldFieldOperation?.map (·.fieldDependencies) = some [2] := by
+  native_decide
+
 /- An empty amount keeps the enclosing Time incomplete, while a reached formal amount remains exact poison. -/
 example :
     (do

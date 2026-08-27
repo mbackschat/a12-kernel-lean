@@ -206,7 +206,8 @@ private def decodeAddressedTimeConstant (position : TimeComponentPosition)
   | some value => pure value
   | none => throw (.constantNotAdmitted position source)
 
-private def checkAddressedTimeComponent
+/-- Check one addressed component independently so a second carrier can compose it without duplicating declaration or placement rules. -/
+def checkAddressedTimeComponent
     (model : FlatModel) (declaringGroup : GroupPath)
     (targetField : FieldId) (targetScope : List RepeatableLevel)
     (targetPath : List String) (position : TimeComponentPosition) :
@@ -452,6 +453,11 @@ def executeResult
 end CheckedTimeConstructionComputation
 
 namespace CheckedWorldTimeConstructionComputation
+
+/-- Exact authored-order dependencies of the world-aware scalar prefix. -/
+def fieldDependencies
+    (operation : CheckedWorldTimeConstructionComputation model) : List FieldId :=
+  operation.components.fieldDependencies
 
 /-- Evaluate the checked world-aware component prefix in generated computation-phase order against the caller-supplied world. -/
 def evaluateConstruction

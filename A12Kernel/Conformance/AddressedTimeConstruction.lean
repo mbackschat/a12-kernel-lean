@@ -1,6 +1,6 @@
-import A12Kernel.Elaboration.TimeComputation
+import A12Kernel.Elaboration.AddressedWorldTimeConstruction
 
-/-! # Repeatable field-backed `Time(...)` construction locks -/
+/-! # Repeatable addressed `Time(...)` construction locks -/
 
 namespace A12Kernel.Conformance.AddressedTimeConstruction
 
@@ -721,6 +721,106 @@ example : earlierMissingExtractorOutcomes? = some [
       { target := address target.id [1, 2], value := none,
         noValue := true, poison := none }
     ] ∧ noTargetRowsExtractorOutcomes? = some [] := by
+  native_decide
+
+private def worldComponents : SurfaceAddressedWorldTimeComponents :=
+  .second
+    (.shiftedNowLiteral .hour .hours 0)
+    (.addressed (.string
+      (absolute ["Order", "Projects"] "ProjectMinuteText")))
+    (.addressed (.extractor .second
+      (absolute ["Order", "Projects", "Tasks"] "RowStamp")))
+
+private def worldExpressionComponents : SurfaceAddressedWorldTimeComponents :=
+  .second
+    (.shiftedNowExpression ["Order"] .hour .hours
+      (.binary .add
+        (.atom (.field (absolute ["Order"] "RootHour")))
+        (.atom (.field (absolute ["Order"] "RootHour")))))
+    (.addressed (.string
+      (absolute ["Order", "Projects"] "ProjectMinuteText")))
+    (.addressed (.extractor .second
+      (absolute ["Order", "Projects", "Tasks"] "RowStamp")))
+
+private def worldOperation? (components := worldComponents) :
+    Option (CheckedAddressedWorldTimeConstructionComputation model) :=
+  (checkAddressedWorldTimeConstructionComputation model
+    ["Order", "Projects", "Tasks"] target.id components).toOption
+
+private def worldInput? (includeAmount := false) := document? [
+    outerRow 1, outerRow 2,
+    innerRow 1 1, innerRow 1 2, innerRow 2 1] (
+  (if includeAmount then [numberCell rootHour.id [] 1] else []) ++ [
+    stringCell projectMinuteText.id [1] "02" (.parsed (.str "02")),
+    stringCell projectMinuteText.id [2] "04" (.parsed (.str "04")),
+    temporalCell rowStamp.id [1, 1] "2024-06-01T00:00:09"
+      (dateTimeValue 0 0 9 (by decide)),
+    temporalCell rowStamp.id [1, 2] "2024-06-01T00:00:10"
+      (dateTimeValue 0 0 10 (by decide)),
+    temporalCell rowStamp.id [2, 1] "2024-06-01T00:00:09"
+      (dateTimeValue 0 0 9 (by decide)),
+    timeCell [1, 1] "05:02:09" (clock 5 2 9 (by decide)),
+    timeCell [1, 2] "12:34:56" (clock 12 34 56 (by decide))])
+
+private def worldResult? (world : World)
+    (components := worldComponents) (includeAmount := false) := do
+  let operation ← worldOperation? components
+  let input ← worldInput? includeAmount
+  let view ← operation.executeResult world input ([] : List FormalCause) |>.toOption
+  let destination ← emptyDestination?
+  let applied ← view.applyToChecked destination |>.toOption
+  pure (
+    operation.fieldDependencies,
+    view.time.withoutErrors.map fun (item : TimeComputedInstance CellAddr) =>
+      (item.targetField, item.value.text),
+    view.time.withChanges.map fun (item : TimeComputedInstance CellAddr) =>
+      item.targetField,
+    [[1, 1], [1, 2], [2, 1]].map fun path =>
+      (applied (address target.id path)).storedValue.map StoredTemporalText.text)
+
+/- The explicit world is sampled by the nested Hour component for every physical target row, while the enclosing String and leaf DateTime extractor retain their own scopes. A changed world changes every computed Hour without changing row identity. -/
+example :
+    worldResult? { now := { epochMillis := 18000000 } } = some (
+      [projectMinuteText.id, rowStamp.id],
+      [(address target.id [1, 1], "05:02:09"),
+        (address target.id [1, 2], "05:02:10"),
+        (address target.id [2, 1], "05:04:09")],
+      [address target.id [1, 2], address target.id [2, 1]],
+      [none, some "05:02:10", some "05:04:09"]) ∧
+    (worldResult? { now := { epochMillis := 21600000 } }).map
+      (fun result => result.2.1) = some [
+        (address target.id [1, 1], "06:02:09"),
+        (address target.id [1, 2], "06:02:10"),
+        (address target.id [2, 1], "06:04:09")] := by
+  native_decide
+
+/- A dynamic numeric amount remains the first authored dependency. -/
+example :
+    (worldOperation? worldExpressionComponents).map (·.fieldDependencies) =
+      some [rootHour.id, rootHour.id, projectMinuteText.id, rowStamp.id] ∧
+    (worldResult? { now := { epochMillis := 18000000 } }
+      worldExpressionComponents true).map (fun result => result.2.1) = some [
+        (address target.id [1, 1], "07:02:09"),
+        (address target.id [1, 2], "07:02:10"),
+        (address target.id [2, 1], "07:04:09")] := by
+  native_decide
+
+/- A wrong dynamic extractor token is refused at its own constructor position. -/
+example :
+    (match checkAddressedWorldTimeConstructionComputation model
+        ["Order", "Projects", "Tasks"] target.id
+        (.hour (.shiftedNowLiteral .minute .hours 0)) with
+      | .error (.component (.shifted (.extractorMismatch .hour .minute))) => true
+      | _ => false) = true := by
+  native_decide
+
+/- No physical target row reaches even a malformed dynamic shift amount. -/
+example :
+    (do
+      let operation ← worldOperation? worldExpressionComponents
+      let input ← document? [] [rejectedNumberCell rootHour.id []]
+      operation.execute { now := { epochMillis := 18000000 } } input |>.toOption) =
+        some [] := by
   native_decide
 
 end A12Kernel.Conformance.AddressedTimeConstruction

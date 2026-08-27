@@ -71,6 +71,21 @@ def referencesField (amount : CheckedTemporalShiftAmount model)
   | .expression checked _ =>
       checked.core.anyAtom (·.referencesField model field)
 
+private def directNumberFieldDependencies :
+    NumericValidationExpression → List FieldId
+  | .atom (.field source) => [source.id]
+  | .atom _ | .literal _ => []
+  | .group body | .abs body | .extremumCall _ body | .round _ _ body =>
+      directNumberFieldDependencies body
+  | .binary _ left right | .power left right | .extremum _ left right =>
+      directNumberFieldDependencies left ++ directNumberFieldDependencies right
+
+/-- Exact authored-order field dependencies of this checked amount. The expression constructor's certificate makes every omitted atom arm unreachable. -/
+def fieldDependencies : CheckedTemporalShiftAmount model → List FieldId
+  | .literal _ => []
+  | .field source _ => [source.id]
+  | .expression checked _ => directNumberFieldDependencies checked.core
+
 /-- Evaluate a checked amount after its temporal source has been reached. Document failure stays structural; numeric missingness, formal causes, and arithmetic domain failure remain in the shared numeric result. -/
 def read (amount : CheckedTemporalShiftAmount model)
     (phase : Phase) (input : CheckedDocument model) :

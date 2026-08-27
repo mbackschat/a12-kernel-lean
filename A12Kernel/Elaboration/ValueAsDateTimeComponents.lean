@@ -476,6 +476,15 @@ def referencesField (checked : CheckedTimeComponent model)
       checked.source.source.id == field ||
         checked.source.amount.referencesField field
 
+/-- Exact authored-order field dependencies of one checked component. -/
+def fieldDependencies : CheckedTimeComponent model → List FieldId
+  | .number checked => [checked.source.id]
+  | .string checked => [checked.source.id]
+  | .constant _ => []
+  | .extractor checked => [checked.source.id]
+  | .shiftedExtractor checked =>
+      checked.source.source.id :: checked.source.amount.fieldDependencies
+
 /-- Execute exactly the statically selected component branch. -/
 def read (checked : CheckedTimeComponent model)
     (phase : Phase) (input : CheckedDocument model) :

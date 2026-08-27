@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.TimeComputation
+import A12Kernel.Elaboration.AddressedWorldTimeConstruction
 
 /-! # Checked Time target laws -/
 
@@ -130,6 +130,39 @@ theorem addressedTimeConstruction_executeResult_projects
 /-- Repeatable construction applies exactly the ordinary Time action fold to a separately supplied same-model destination. -/
 theorem addressedTimeConstruction_applyToChecked_delegates
     (view : AddressedTimeConstructionRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    view.applyToChecked destination =
+      view.time.applyTo destination.sourceTimeTargetStateAt := by
+  rfl
+
+/-- The mixed addressed/world construction certificate excludes its target from every addressed source and dynamic amount dependency. -/
+theorem checkedAddressedWorldTimeConstructionComputation_excludes_target
+    (operation : CheckedAddressedWorldTimeConstructionComputation model) :
+    operation.referencesField operation.checkedTarget.targetField = false :=
+  operation.targetNotReferenced
+
+/-- World-aware repeatable construction retains the operation and delegates exact row outcomes to ordinary source-relative Time classification. -/
+theorem addressedWorldTimeConstruction_executeResult_projects
+    (operation : CheckedAddressedWorldTimeConstructionComputation model)
+    (world : World) (input : CheckedDocument model)
+    (messages : List ResidualMessage)
+    (outcomes : List AddressedTimeConstructionOutcome)
+    (view : AddressedWorldTimeConstructionRunView model ResidualMessage)
+    (executed : operation.execute world input = .ok outcomes)
+    (produced : operation.executeResult world input messages = .ok view) :
+    view.operation = operation ∧
+      view.time = TimeComputationRunView.fromOutcomesAt
+        input.sourceTimeTargetStateAt messages
+        (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
+  rw [CheckedAddressedWorldTimeConstructionComputation.executeResult,
+    executed] at produced
+  simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
+  subst view
+  exact ⟨rfl, rfl⟩
+
+/-- World-aware repeatable construction applies exactly the ordinary Time action fold to a separately supplied same-model destination. -/
+theorem addressedWorldTimeConstruction_applyToChecked_delegates
+    (view : AddressedWorldTimeConstructionRunView model ResidualMessage)
     (destination : CheckedDocument model) :
     view.applyToChecked destination =
       view.time.applyTo destination.sourceTimeTargetStateAt := by
