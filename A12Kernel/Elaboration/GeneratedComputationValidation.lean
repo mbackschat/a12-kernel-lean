@@ -531,4 +531,68 @@ def assembleGeneratedNumericOperationRule (model : FlatModel)
     alternatives := .singleton { operation, tolerance }
     messagePlan }
 
+/-- Failure while reusing generated-table admission before binding its complete direct-field inventory. -/
+inductive GeneratedNumericComputationFormalInputPlanError where
+  | validation (cause : GeneratedComputationValidationError)
+  | formalInput (cause : ComputationFormalInputPlanError)
+  deriving Repr, DecidableEq
+
+private def optionalGeneratedGuardReferences
+    (guard : Option ComputationCondition) (field : FieldId) : Bool :=
+  match guard with
+  | none => false
+  | some condition => condition.referencesField field
+
+private def generatedNumericOperationReferences
+    (operation : CheckedNumericComputationOperation model)
+    (field : FieldId) : Bool :=
+  operation.core.expression.anyAtom
+    (CheckedNumericComputationAtom.references model field)
+
+private def generatedNumericAlternativeReferences
+    (alternative : GeneratedComputationAlternative
+      (CheckedNumericComputationOperation model))
+    (field : FieldId) : Bool :=
+  alternative.precondition.referencesField field ||
+    generatedNumericOperationReferences alternative.operation field
+
+private def generatedNumericAlternativesReference
+    (alternatives : GeneratedComputationAlternatives
+      (CheckedNumericComputationOperation model))
+    (field : FieldId) : Bool :=
+  match alternatives with
+  | .singleton alternative =>
+      optionalGeneratedGuardReferences alternative.precondition field ||
+        generatedNumericOperationReferences alternative.operation field
+  | .guarded guarded =>
+      guarded.declaredAlternatives.any fun alternative =>
+        generatedNumericAlternativeReferences alternative field
+
+namespace GeneratedComputationTable
+
+/-- Whether the common guard, any alternative guard, or any complete checked operation references one field. -/
+def referencesField (computation : GeneratedComputationTable
+    (CheckedNumericComputationOperation model)) (field : FieldId) : Bool :=
+  optionalGeneratedGuardReferences computation.commonPrecondition field ||
+    generatedNumericAlternativesReference computation.alternatives field
+
+/-- Enumerate every validated model declaration referenced anywhere in the generated numeric table. -/
+def fieldDependencies (computation : GeneratedComputationTable
+    (CheckedNumericComputationOperation model)) : List FieldId :=
+  (model.fields.filter fun declaration =>
+    computation.referencesField declaration.id).map fun declaration =>
+      declaration.id
+
+/-- Admit the generated-validation shell first, then bind its complete common, row-guard, and checked-operation dependency union to the shared target-excluding formal-input plan. -/
+def formalInputPlan (computation : GeneratedComputationTable
+    (CheckedNumericComputationOperation model)) :
+    Except GeneratedNumericComputationFormalInputPlanError
+      (CheckedComputationFormalInputPlan model) := do
+  let _ ← assembleGeneratedNumericOperationTableRule model computation
+    |>.mapError .validation
+  checkComputationFormalInputPlan model computation.fieldDependencies
+    [computation.targetField] |>.mapError .formalInput
+
+end GeneratedComputationTable
+
 end A12Kernel

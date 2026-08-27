@@ -8,6 +8,23 @@ These laws cover the singleton/guarded table split, declaration-order recovery, 
 
 namespace A12Kernel
 
+/-- The generated numeric table inventory is exactly the validated model declarations referenced by its common guard, alternative guards, or checked operations. -/
+theorem generatedNumericOperationTable_fieldDependencies_exact
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model))
+    (field : FieldId) :
+    field ∈ computation.fieldDependencies ↔
+      ∃ declaration ∈ model.fields,
+        declaration.id = field ∧
+          computation.referencesField declaration.id = true := by
+  rw [GeneratedComputationTable.fieldDependencies, List.mem_map]
+  constructor
+  · rintro ⟨declaration, member, equality⟩
+    rw [List.mem_filter] at member
+    exact ⟨declaration, member.1, equality, member.2⟩
+  · rintro ⟨declaration, member, equality, referenced⟩
+    exact ⟨declaration, by simpa using And.intro member referenced, equality⟩
+
 /-- The generated-validation twin preserves the checked String-length source exactly instead of reconstructing scale-erasing flat syntax. -/
 theorem numericComputationAtom_stringLength_toValidationAtom
     (model : FlatModel) (source : FlatStringField) :

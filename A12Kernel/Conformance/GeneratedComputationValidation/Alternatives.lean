@@ -9,6 +9,55 @@ open A12Kernel.Conformance.GeneratedComputationValidation.Support.Core
 open A12Kernel.Conformance.GeneratedComputationValidation.Support.Repeatable
 open A12Kernel.Conformance.GeneratedComputationValidation.Support.CrossGroup
 
+private def formalInputTable? : Option (GeneratedComputationTable
+    (CheckedNumericComputationOperation crossGroupModel)) := do
+  let first ← crossGroupNumberOperation.toOption
+  let second ← crossGroupDatePartOperation.toOption
+  pure {
+    targetField := crossGroupTarget.id
+    name := "computedFormalInputs"
+    commonPrecondition := some (.fieldFilled crossGroupOtherTarget.id)
+    alternatives := .guarded {
+      first := {
+        precondition := .fieldFilled crossGroupSource.id
+        operation := first }
+      second := {
+        precondition := .fieldNotFilled crossGroupExtra.id
+        operation := second } }
+    messagePlan
+  }
+
+private def formalInputPrepared : PreparedFlatStringContext crossGroupModel
+    builtinStringPatternCompiler :=
+  (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler
+    crossGroupModel).toOption.get (by native_decide)
+
+private def rejectedInput (field : FieldId) : ClassifiedCellInput := {
+  address := { field, path := [] }
+  stored := "x"
+  raw := .rejected .malformed
+}
+
+private def formalInputDocument? : Option (CheckedDocument crossGroupModel) :=
+  (checkDocument formalInputPrepared "en_US" {
+    instantiatedRows := []
+    cells := [
+      rejectedInput crossGroupSource.id,
+      rejectedInput crossGroupDate.id,
+      rejectedInput crossGroupExtra.id,
+      rejectedInput crossGroupTarget.id,
+      rejectedInput crossGroupOtherTarget.id,
+      rejectedInput crossGroupDateTime.id]
+  }).toOption
+
+private def invalidCommonFormalInputError? :
+    Option GeneratedNumericComputationFormalInputPlanError := do
+  let table ← formalInputTable?
+  match { table with
+      commonPrecondition := some (.fieldFilled 999) }.formalInputPlan with
+  | .error error => some error
+  | .ok _ => none
+
 /- Semantic desugaring derives the checked condition's row group from the resolved computation target declaration. -/
 example : generatedRowGroupOf bothHoldingDifferent = some ["Form"] := by
   native_decide
@@ -131,6 +180,39 @@ example :
         .selected (literal 1) ∧
       outcomeOf candidate (bothFilled (.parsed (.num 1))) =
         some (.fired (expectedMessage .value)) := by
+  native_decide
+
+/- The admitted generated table contributes its common guard, every row guard,
+   and every checked operation to one target-excluding formal-input plan. -/
+example :
+    (do
+      let table ← formalInputTable?
+      let plan ← table.formalInputPlan.toOption
+      let input ← formalInputDocument?
+      pure (table.fieldDependencies, plan.operandFields,
+        plan.computedFields, plan.findings input)) =
+      some ([crossGroupSource.id, crossGroupDate.id, crossGroupExtra.id,
+          crossGroupOtherTarget.id],
+        [crossGroupSource.id, crossGroupDate.id, crossGroupExtra.id,
+          crossGroupOtherTarget.id],
+        [crossGroupTarget.id],
+        [
+          { address := { field := crossGroupSource.id, path := [] },
+            cause := .malformed },
+          { address := { field := crossGroupDate.id, path := [] },
+            cause := .malformed },
+          { address := { field := crossGroupExtra.id, path := [] },
+            cause := .malformed },
+          { address := { field := crossGroupOtherTarget.id, path := [] },
+            cause := .malformed }
+        ]) := by
+  native_decide
+
+/- Formal-input projection cannot silently erase an unknown common guard: the
+   existing generated-table admission boundary rejects it first. -/
+example :
+    invalidCommonFormalInputError? = some
+      (.validation (.resolve (.unknownFieldId 999))) := by
   native_decide
 
 /- A malformed common guard preserves the phase split before any alternative-specific guard contributes. -/
