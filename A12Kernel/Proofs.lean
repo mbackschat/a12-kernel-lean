@@ -199,6 +199,7 @@ import A12Kernel.Proofs.AddressedBooleanFirstFilledComputation
 import A12Kernel.Proofs.ExactTokenComputationResult
 import A12Kernel.Proofs.CustomFirstFilledComputation
 import A12Kernel.Proofs.AddressedCustomFirstFilledComputation
+import A12Kernel.Proofs.StringFirstFilledComputation
 import A12Kernel.Proofs.DateFragmentFirstFilledComputation
 import A12Kernel.Proofs.DateRangeFirstFilledComputation
 import A12Kernel.Proofs.DateTimeFirstFilledComputation
