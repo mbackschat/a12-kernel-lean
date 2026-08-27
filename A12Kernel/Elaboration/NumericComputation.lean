@@ -6,6 +6,7 @@ import A12Kernel.Elaboration.NumericComputation.RunRelation
 import A12Kernel.Elaboration.NumericComputation.SourceTarget
 import A12Kernel.Elaboration.NumericComputation.RunResult
 import A12Kernel.Elaboration.NumericComputation.RunApplication
+import A12Kernel.Elaboration.NumericComputation.FormalInput
 
 /-! # Checked numeric computation expressions
 
