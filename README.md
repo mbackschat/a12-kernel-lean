@@ -71,7 +71,7 @@ The project considers ten consumer tasks: **Execute, Translate, Transform, Compi
 This is an active formal-semantics project, not a complete A12 interpreter or a qualified production release.
 
 <!-- github-publish-stats:start -->
-**Verified at publication:** **2,216 trusted theorem roots**, **63,299 audited declarations**, and **561 trusted modules** in the mechanized theory.
+**Verified at publication:** **2,221 trusted theorem roots**, **63,528 audited declarations**, and **561 trusted modules** in the mechanized theory.
 <!-- github-publish-stats:end -->
 
 - The internal theory already covers substantial validation, computation, numeric, String, Enumeration, Date/DateTime, repeatable, addressing, message, checked-document, and dependency behavior, with coverage varying independently across execution, proof, kernel evidence, public exposure, and consumer qualification.
