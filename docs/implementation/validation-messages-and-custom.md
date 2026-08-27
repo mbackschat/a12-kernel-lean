@@ -39,7 +39,7 @@
 
 - `boundary`: Proof-bearing exact-shape analysis that detects a bounded contradictory presence pattern without claiming general satisfiability
 - `owner`: [`Flat/PresenceContradiction.lean`](../../A12Kernel/Elaboration/Flat/PresenceContradiction.lean)
-- `assurance`: E/P/Q closed for the named Analyze task; no kernel-evidence claim
+- `assurance`: E/P/Q closed for cold Analyze, Verify, and Synthesize tasks over the exact presence fragment. Lean independently certifies the same-field contradiction and replays the different-field witness; raw SMT UNSAT remains bounded solver output rather than proof. No kernel-evidence claim
 - `remains`: Wider analysis requires a new consumer hypothesis
 
 

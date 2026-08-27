@@ -60,7 +60,7 @@
 
 - `boundary`: Parametric tree shape with family-specific leaves and decisive left-to-right folds
 - `owner`: [`Condition.lean`](../../A12Kernel/Semantics/Condition.lean)
-- `assurance`: E/P closed for stated folds; computation ordering has L locks in the inventory above
+- `assurance`: E/P closed for stated folds; computation ordering has L locks in the inventory above; Q includes a cold finite Compile consumer whose specialized conjunction plan was exhaustively reconciled with the Lean evaluator
 - `remains`: New leaf families remain clause-owned
 
 
