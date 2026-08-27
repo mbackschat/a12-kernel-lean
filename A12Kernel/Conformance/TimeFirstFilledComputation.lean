@@ -210,15 +210,14 @@ example : (do
       .presentValue selectedTime, .presentValue otherTime) := by
   native_decide
 
-/- Time's measured source-identical rule survives composition: an accepted clock equal to the source target remains changed and overwrites a different destination target. -/
+/- A source-identical selected clock produces no changed action and therefore preserves a different destination target. -/
 example : (do
     let view ← runView? selectedTime.text
       (.parsed (timeValue 36672000 selectedClock)) [selectedInput 1]
     let destination ← destinationFor? true
     let applied ← view.applyToChecked destination |>.toOption
     pure (view.withChanges, applied target.id)) =
-    some ([{ targetField := target.id, value := selectedTime }],
-      .presentValue selectedTime) := by
+    some ([], .presentValue seedTime) := by
   native_decide
 
 /- Exhaustion and a reached formal cause both retain a source-filled clear and materialize an absent destination target without disturbing unrelated state. -/

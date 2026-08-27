@@ -185,20 +185,19 @@ private def resultApplicationSummary? : Option ResultApplicationSummary := do
     unrelatedState := applied (address unrelated.id [])
   }
 
-/- Time retains every accepted result as a changed action, including source-identical input, while clean exhaustion and poison clear only source-filled exact targets in a separate destination. -/
+/- Accepted values are retained, source-identical input produces no changed action, and clean exhaustion or poison clears only source-filled exact targets in a separate destination. -/
 example : resultApplicationSummary? = some {
     values := [
       (address target.id [1, 1], "10:11:12"),
       (address target.id [1, 2], "10:11:12"),
       (address target.id [2, 1], "13:14:15")]
     changes := [
-      (address target.id [1, 1], "10:11:12"),
       (address target.id [1, 2], "10:11:12"),
       (address target.id [2, 1], "13:14:15")]
     cleared := [address target.id [3, 1], address target.id [4, 1]]
     residual := [.dateFormat]
     noError := false
-    row11 := .presentValue (stored "10:11:12")
+    row11 := .presentValue (stored "07:00:00")
     row12 := .presentValue (stored "10:11:12")
     row21 := .presentValue (stored "13:14:15")
     row31 := .presentEmpty

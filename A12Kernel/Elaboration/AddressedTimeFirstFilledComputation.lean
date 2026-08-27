@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.AddressedFirstFilledStar
 
 /-! # Exact-address repeatable Time `FirstFilledValue`
 
-This capsule binds one repeatable whole-second Time target to a sibling one-axis starred Time source. Every target row supplies the shared outer prefix, selection stays parent-local in the clock domain, and result classification retains Time's source-identical changed-action rule under exact cell addresses. Application remains a target-state projection and does not reconstruct a document or run validation.
+This capsule binds one repeatable whole-second Time target to a sibling one-axis starred Time source. Every target row supplies the shared outer prefix, selection stays parent-local in the clock domain, and result classification compares the accepted clock with immutable source state under exact cell addresses. Application remains a target-state projection and does not reconstruct a document or run validation.
 -/
 
 namespace A12Kernel

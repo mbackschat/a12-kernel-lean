@@ -1,0 +1,124 @@
+{
+  "header" : {
+    "id" : "TimeResultPolicyScalar_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "TimeResultPolicyScalar_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/TimeProbe",
+        "name" : "TimeProbe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/TimeProbe/SourceStamp",
+            "name" : "SourceStamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/TimeProbe/ProjectedTime",
+            "name" : "ProjectedTime",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/TimeProbe/ProjectedTimeComp",
+            "name" : "ProjectedTimeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ProjectedTime",
+              "computationAlternatives" : [ {
+                "operation" : "TimeFromDateTime(/TimeProbe/SourceStamp)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "projected time differs"
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/TimeProbe/ScalarChoices",
+            "name" : "ScalarChoices",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/TimeProbe/ScalarChoices/ScalarSourceTime",
+                "name" : "ScalarSourceTime",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TimeType",
+                    "TimeType" : {
+                      "format" : "HH:mm:ss"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/TimeProbe/ScalarSelectedTime",
+            "name" : "ScalarSelectedTime",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/TimeProbe/ScalarSelectedTimeComp",
+            "name" : "ScalarSelectedTimeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ScalarSelectedTime",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(/TimeProbe/ScalarChoices*/ScalarSourceTime)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "selected scalar time differs"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

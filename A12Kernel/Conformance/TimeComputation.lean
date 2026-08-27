@@ -115,11 +115,13 @@ private def applicationPrepared :=
     builtinStringPatternCompiler applicationModel).toOption.get
       (by native_decide)
 
-private def view? (input : DocumentData) (outcome : TimeTargetOutcome)
+private def constructionView? (input : DocumentData)
+    (outcome : TimeTargetOutcome)
     (messages : List FormalCause := []) :
     Option (TimeComputationRunView FormalCause) := do
   let checked ← (checkDocument prepared "en_US" input).toOption
-  pure (TimeComputationRunView.fromOutcomes checked messages [(1, outcome)])
+  pure (TimeComputationRunView.fromConstructionOutcomes checked messages
+    [(1, outcome)])
 
 private def checkedApplication? (input : DocumentData) :
     Option (CheckedDocument applicationModel) :=
@@ -261,13 +263,13 @@ example :
         .poison .malformed := by
   native_decide
 
-/- Kernel 30.8.1 reports every clean computed Time in the changed subset, including source-identical text. -/
+/- Kernel 30.8.1 reports every clean `Time(...)` construction in the changed subset, including source-identical text. -/
 example :
-    (view? oldSource (.accepted oldTime)).map
+    (constructionView? oldSource (.accepted oldTime)).map
         (fun view => (view.withoutErrors, view.withChanges)) =
       some ([{ targetField := 1, value := oldTime }],
         [{ targetField := 1, value := oldTime }]) ∧
-    (view? oldSource (.accepted nextTime)).map
+    (constructionView? oldSource (.accepted nextTime)).map
         (fun view => (view.withoutErrors, view.withChanges)) =
       some ([{ targetField := 1, value := nextTime }],
         [{ targetField := 1, value := nextTime }]) := by
@@ -275,13 +277,14 @@ example :
 
 /- Quiet no-value and poison clear only a source-filled target and manufacture no target-local error. -/
 example :
-    (view? oldSource .noValue).map
+    (constructionView? oldSource .noValue).map
         (fun view => (view.cleared, view.withErrors)) = some ([1], []) ∧
-      (view? { instantiatedRows := [], cells := [] } .noValue).map
+      (constructionView? { instantiatedRows := [], cells := [] }
+        .noValue).map
         (·.cleared) = some [] ∧
-      (view? (source "" .presentEmpty) .noValue).map
+      (constructionView? (source "" .presentEmpty) .noValue).map
         (·.cleared) = some [] ∧
-      (view? oldSource (.poison .malformed)).map
+      (constructionView? oldSource (.poison .malformed)).map
         (fun view => (view.cleared, view.noErrorOccurred)) =
           some ([1], true) := by
   native_decide
@@ -289,25 +292,25 @@ example :
 /- Application writes changed text, applies a retained clear to filled or absent destinations, and ignores residual messages. -/
 example :
     (do
-      let view ← view? oldSource (.accepted nextTime) [.malformed]
+      let view ← constructionView? oldSource (.accepted nextTime) [.malformed]
       let applied ← view.applyTo (destinationWith .absent) |>.toOption
       pure (applied 1, view.noErrorOccurred)) =
         some (.presentValue nextTime, false) ∧
       (do
-        let view ← view? oldSource .noValue
+        let view ← constructionView? oldSource .noValue
         let applied ← view.applyTo
           (destinationWith (.presentValue nextTime)) |>.toOption
         pure (applied 1)) = some .presentEmpty ∧
       (do
-        let view ← view? oldSource .noValue
+        let view ← constructionView? oldSource .noValue
         let applied ← view.applyTo (destinationWith .absent) |>.toOption
         pure (applied 1)) = some .presentEmpty := by
   native_decide
 
-/- Source-identical Time remains an application action and overwrites a different destination clock. -/
+/- A source-identical `Time(...)` construction remains an application action and overwrites a different destination clock. -/
 example :
     (do
-      let view ← view? oldSource (.accepted oldTime)
+      let view ← constructionView? oldSource (.accepted oldTime)
       let applied ←
         view.applyTo (destinationWith (.presentValue nextTime)) |>.toOption
       pure (view.withChanges, applied 1)) =
@@ -328,9 +331,9 @@ example :
         some (some (.duplicateActionTarget 1)) := by
   native_decide
 
-/- Checked application keeps Time's source-identical action, starts from the separate destination, and preserves a distinct unrelated value. -/
+/- Checked application keeps the constructor's source-identical action, starts from the separate destination, and preserves a distinct unrelated value. -/
 example : (do
-    let view ← view? oldSource (.accepted oldTime)
+    let view ← constructionView? oldSource (.accepted oldTime)
     let checked ← checkedApplication? {
       instantiatedRows := []
       cells := (source nextTime.text (.parsed (.temporal
@@ -406,6 +409,15 @@ example :
       (fun view => (view.withoutErrors, view.withChanges)) =
         some ([{ targetField := 1, value := ⟨"05:00:00", by decide⟩ }],
           [{ targetField := 1, value := ⟨"05:00:00", by decide⟩ }]) := by
+  native_decide
+
+/- Checked `Time(...)` execution selects the constructor-only policy, so a source-identical clock remains changed. -/
+example :
+    (executionView? (.second
+      (.constant "05") (.constant "02") (.constant "08"))
+      oldSource).map (fun view => (view.withoutErrors, view.withChanges)) =
+      some ([{ targetField := 1, value := oldTime }],
+        [{ targetField := 1, value := oldTime }]) := by
   native_decide
 
 /- The complete prefix reads in generated order; the first reached formal cause wins and clears a source-filled target without manufacturing an error. -/
@@ -515,6 +527,19 @@ example :
       pure (view.withChanges, applied 1)) =
         some ([{ targetField := 1, value := ⟨"06:00:00", by decide⟩ }],
           .presentValue ⟨"06:00:00", by decide⟩) := by
+  native_decide
+
+/- World-aware `Time(...)` execution selects the same constructor-only policy for a source-identical clock. -/
+example :
+    (do
+      let operation ← worldLiteralOperation?
+      let sourceClock := clock 5 0 0 (by decide)
+      let sourceInput := source "05:00:00" (.parsed (.temporal
+        (.time { epochMillis := 18000000 } sourceClock)))
+      let view ← worldView? operation
+        { now := { epochMillis := 18000000 } } sourceInput
+      pure view.withChanges) =
+      some [{ targetField := 1, value := ⟨"05:00:00", by decide⟩ }] := by
   native_decide
 
 end A12Kernel.Conformance.TimeComputation

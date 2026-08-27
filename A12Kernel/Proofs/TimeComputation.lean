@@ -70,10 +70,30 @@ theorem timeComputationRun_noErrorOccurred_iff
   simp [TimeComputationRunView.noErrorOccurred,
     TemporalComputationRunView.noErrorOccurred, noComputedErrors]
 
-/-- Every successful Time instance enters the kernel's source-relative changed subset, even when its stored clock text equals the source. -/
-@[simp] theorem timeComputationRun_reportsChanged
+/-- An ordinary successful Time instance equal to its immutable source target produces no changed action. -/
+theorem timeComputationRun_sourceValueChangedAt_identical
+    (sourceState : Target → TimeTargetState)
+    (computed : TimeComputedInstance Target)
+    (identical : (sourceState computed.targetField).storedValue =
+      some computed.value) :
+    TimeComputationRunView.sourceValueChangedAt sourceState computed =
+      false := by
+  simp [TimeComputationRunView.sourceValueChangedAt, identical]
+
+/-- An ordinary successful Time instance different from its immutable source target produces a changed action. -/
+theorem timeComputationRun_sourceValueChangedAt_different
+    (sourceState : Target → TimeTargetState)
+    (computed : TimeComputedInstance Target)
+    (different : (sourceState computed.targetField).storedValue ≠
+      some computed.value) :
+    TimeComputationRunView.sourceValueChangedAt sourceState computed =
+      true := by
+  simp [TimeComputationRunView.sourceValueChangedAt, different]
+
+/-- Every successful `Time(...)` construction enters the changed subset, even when its stored clock text equals the source. -/
+@[simp] theorem timeConstructionRun_reportsChanged
     (computed : TimeComputedInstance Target) :
-    TimeComputationRunView.reportsChanged computed = true := rfl
+    TimeComputationRunView.constructionReportsChanged computed = true := rfl
 
 /-- A retained Time clear creates a present-empty destination target even when that target was absent. -/
 theorem timeComputationDestination_applyRetainedClear_same

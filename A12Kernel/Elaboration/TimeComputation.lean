@@ -128,7 +128,7 @@ def executeResult
     (residualMessages : List ResidualMessage) :
     Except TimeComponentsFault (TimeComputationRunView ResidualMessage) := do
   let outcome ← operation.evaluateOutcome input
-  pure (TimeComputationRunView.fromOutcomes input residualMessages
+  pure (TimeComputationRunView.fromConstructionOutcomes input residualMessages
     [(operation.target.checked.target.id, outcome)])
 
 end CheckedTimeConstructionComputation
@@ -157,7 +157,7 @@ def executeResult
     (residualMessages : List ResidualMessage) :
     Except TimeComponentsFault (TimeComputationRunView ResidualMessage) := do
   let outcome ← operation.evaluateOutcome world input
-  pure (TimeComputationRunView.fromOutcomes input residualMessages
+  pure (TimeComputationRunView.fromConstructionOutcomes input residualMessages
     [(operation.target.checked.target.id, outcome)])
 
 end CheckedWorldTimeConstructionComputation

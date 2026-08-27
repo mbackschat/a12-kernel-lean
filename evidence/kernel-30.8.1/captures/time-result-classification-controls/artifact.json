@@ -1,0 +1,188 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "25e048ea73e10bd58c6950b1d6104dd5809535df",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "TimeResultPolicyScalar_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "time-from-datetime-source-identical-target",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "time-from-datetime-changed-target",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ProjectedTimeComp",
+              "field" : "TimeProbe/ProjectedTime",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "projected time differs",
+              "referenced" : [
+                "TimeProbe/ProjectedTime",
+                "TimeProbe/SourceStamp"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/ProjectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10:30:45"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ProjectedTimeComp",
+              "field" : "TimeProbe/ProjectedTime",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "projected time differs",
+              "referenced" : [
+                "TimeProbe/ProjectedTime",
+                "TimeProbe/SourceStamp"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/ProjectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10:30:45"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "firstfilled-source-identical-target",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "firstfilled-changed-target",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ScalarSelectedTimeComp",
+              "field" : "TimeProbe/ScalarSelectedTime",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "selected scalar time differs",
+              "referenced" : [
+                "/TimeProbe[1]/ScalarChoices[0]/ScalarSourceTime",
+                "TimeProbe/ScalarSelectedTime"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/ScalarSelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10:11:12"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ScalarSelectedTimeComp",
+              "field" : "TimeProbe/ScalarSelectedTime",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "selected scalar time differs",
+              "referenced" : [
+                "/TimeProbe[1]/ScalarChoices[0]/ScalarSourceTime",
+                "TimeProbe/ScalarSelectedTime"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "TimeProbe/ScalarSelectedTime",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10:11:12"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

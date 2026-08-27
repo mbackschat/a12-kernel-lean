@@ -1,0 +1,70 @@
+{
+  "model": "TimeFirstFilledProbe_DM.json",
+  "locale": "en_US",
+  "observe": ["validateFull", "compute"],
+  "rows": [
+    {
+      "name": "parent-local-selection-hides-later-poison",
+      "documentInline": {
+        "TimeProbe": {
+          "Projects": [
+            {
+              "Choices": [
+                {"SourceTime": null},
+                {"SourceTime": "10:11:12"},
+                {"SourceTime": "bad"}
+              ],
+              "Tasks": [
+                {"SelectedTime": "10:11:12"},
+                {"SelectedTime": "12:34:56"}
+              ]
+            },
+            {
+              "Choices": [
+                {"SourceTime": "13:14:15"}
+              ],
+              "Tasks": [
+                {"SelectedTime": null}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-sibling-clears-only-filled-target",
+      "documentInline": {
+        "TimeProbe": {
+          "Projects": [
+            {
+              "Choices": [],
+              "Tasks": [
+                {"SelectedTime": "12:34:56"},
+                {"SelectedTime": null}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "reached-poison-clears-only-filled-target",
+      "documentInline": {
+        "TimeProbe": {
+          "Projects": [
+            {
+              "Choices": [
+                {"SourceTime": "bad"},
+                {"SourceTime": "16:17:18"}
+              ],
+              "Tasks": [
+                {"SelectedTime": "12:34:56"},
+                {"SelectedTime": null}
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

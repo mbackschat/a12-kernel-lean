@@ -299,16 +299,15 @@ private def resultApplicationSummary? : Option ResultApplicationSummary := do
     unrelatedState := applied (address rootTime.id [])
   }
 
-/- Exact keys preserve Time's source-identical changed action, materialize the absent destination cell, and preserve unrelated state. -/
+/- Exact keys omit the source-identical action, materialize a changed absent destination cell, and preserve unrelated state. -/
 example : resultApplicationSummary? = some {
     values := [
       (address target.id [1], "00:30:00"),
       (address target.id [2], "13:45:00")]
     changes := [
-      (address target.id [1], "00:30:00"),
       (address target.id [2], "13:45:00")]
     cleared := []
-    row1 := .presentValue (storedTime "00:30:00")
+    row1 := .presentValue (storedTime "06:00:00")
     row2 := .presentValue (storedTime "13:45:00")
     unrelatedState := .presentValue (storedTime "08:45:00")
   } := by

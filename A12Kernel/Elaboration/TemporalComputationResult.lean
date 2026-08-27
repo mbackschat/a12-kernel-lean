@@ -272,8 +272,19 @@ def successfulInstance? {Target : Type} :
   | (targetField, .accepted value) => some { targetField, value }
   | _ => none
 
-/-- Kernel 30.8.1 reports every clean computed Time in the changed subset, including a clock text equal to the source. The causal implementation detail is deliberately not modeled. -/
-def reportsChanged (_computed : TimeComputedInstance Target) : Bool :=
+/-- Classify an ordinary successful Time result against the immutable source target. -/
+def sourceValueChangedAt (sourceState : Target → TimeTargetState)
+    (computed : TimeComputedInstance Target) : Bool :=
+  (sourceState computed.targetField).storedValue != some computed.value
+
+/-- Nonrepeatable compatibility specialization of exact-key source-relative change classification. -/
+def sourceValueChanged (input : CheckedDocument model)
+    (computed : TimeComputedInstance) : Bool :=
+  sourceValueChangedAt input.sourceTimeTargetState computed
+
+/-- Kernel 30.8.1 reports every clean `Time(...)` construction in the changed subset, including a clock text equal to the source. The operation boundary is retained without modeling a causal implementation detail. -/
+def constructionReportsChanged
+    (_computed : TimeComputedInstance Target) : Bool :=
   true
 
 /-- A source-filled Time target is cleared exactly when no computed-data instance was produced. -/
@@ -287,21 +298,39 @@ def shouldClear (input : CheckedDocument model)
     (entry : FieldId × TimeTargetOutcome) : Bool :=
   shouldClearAt input.sourceTimeTargetState entry
 
-/-- Build the five public Time projections over an exact caller-selected target-key domain and immutable source-state projection. -/
+/-- Build the five ordinary Time projections over an exact caller-selected target-key domain and immutable source-state projection. -/
 def fromOutcomesAt (sourceState : Target → TimeTargetState)
     (residualMessages : List ResidualMessage)
     (outcomes : List (Target × TimeTargetOutcome)) :
     TimeComputationRunView ResidualMessage Target :=
   TemporalComputationRunView.fromValueOutcomes
-    successfulInstance? reportsChanged (shouldClearAt sourceState)
+    successfulInstance? (sourceValueChangedAt sourceState)
+    (shouldClearAt sourceState)
     residualMessages outcomes
 
-/-- Build the five public scalar Time projections from rich outcomes and an already-classified residual channel. -/
+/-- Build the five ordinary scalar Time projections from rich outcomes and an already-classified residual channel. -/
 def fromOutcomes (input : CheckedDocument model)
     (residualMessages : List ResidualMessage)
     (outcomes : List (FieldId × TimeTargetOutcome)) :
     TimeComputationRunView ResidualMessage :=
   fromOutcomesAt input.sourceTimeTargetState residualMessages outcomes
+
+/-- Build the five `Time(...)` construction projections over an exact target-key domain, preserving the constructor-only always-changed rule. -/
+def fromConstructionOutcomesAt (sourceState : Target → TimeTargetState)
+    (residualMessages : List ResidualMessage)
+    (outcomes : List (Target × TimeTargetOutcome)) :
+    TimeComputationRunView ResidualMessage Target :=
+  TemporalComputationRunView.fromValueOutcomes
+    successfulInstance? constructionReportsChanged
+    (shouldClearAt sourceState) residualMessages outcomes
+
+/-- Build the five scalar `Time(...)` construction projections from rich outcomes and an already-classified residual channel. -/
+def fromConstructionOutcomes (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage)
+    (outcomes : List (FieldId × TimeTargetOutcome)) :
+    TimeComputationRunView ResidualMessage :=
+  fromConstructionOutcomesAt input.sourceTimeTargetState residualMessages
+    outcomes
 
 /-- Time reports an error exactly when the supplied residual channel is nonempty. -/
 def noErrorOccurred

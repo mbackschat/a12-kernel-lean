@@ -121,12 +121,12 @@ example : operation?.isSome = true ∧
       (.parsed (.temporal moment))] = some (.accepted extracted) := by
   native_decide
 
-/- A clean source-identical Time remains in the changed channel under the measured Time result rule. -/
+/- A clean source-identical extracted Time remains a value but produces no changed action. -/
 example : resultSummary? [
     sourceCell "2024-06-15T00:30:00" (.parsed (.temporal moment)),
     timeCell target.id extracted.text oldTarget] [.malformed] = some {
       values := [extracted.text]
-      changes := [extracted.text]
+      changes := []
       cleared := []
       residual := [.malformed]
     } := by
@@ -153,12 +153,13 @@ example :
       } := by
   native_decide
 
-/- Exact checked application starts from the separate destination and preserves unrelated Time state. -/
+/- Source-relative application preserves a different destination target when extraction produced no changed action, and also preserves unrelated Time state. -/
 example : appliedStates?
-    [sourceCell "2024-06-15T00:30:00" (.parsed (.temporal moment))]
+    [sourceCell "2024-06-15T00:30:00" (.parsed (.temporal moment)),
+      timeCell target.id extracted.text oldTarget]
     [timeCell target.id "07:15:00" differentTarget,
       timeCell other.id "08:45:00" unrelatedTarget] =
-    some (.presentValue extracted,
+    some (.presentValue ⟨"07:15:00", by decide⟩,
       .presentValue ⟨"08:45:00", by decide⟩) := by
   native_decide
 
