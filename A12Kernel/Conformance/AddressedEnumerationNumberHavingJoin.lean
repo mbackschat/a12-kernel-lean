@@ -32,7 +32,7 @@ private def model : FlatModel := {
     computedGate]
   repeatableGroups := [
     { level := 10, path := ["Form", "Rows"], repeatability := some 5 },
-    { level := 20, path := ["Form", "Rows", "Items"], repeatability := some 1 }]
+    { level := 20, path := ["Form", "Rows", "Items"], repeatability := some 2 }]
 }
 
 private def bare (name : String) : SurfaceFieldPath :=
@@ -113,30 +113,49 @@ private def cell (field : FlatFieldDecl) (path : List Nat)
     (stored : String) (raw : RawCell) : ClassifiedCellInput :=
   { address := { field := field.id, path }, stored, raw }
 
+private def numericCell (field : FlatFieldDecl) (path : List Nat)
+    (stored : String) (value : Int) : ClassifiedCellInput := {
+  address := { field := field.id, path }
+  stored
+  raw := .parsed (.num value)
+  numericDecimal := some { unscaled := value, scale := 0 }
+}
+
 private def rows : List RowAddr :=
   [1, 2, 3, 4, 5].flatMap fun index =>
-    [row 10 [index], row 20 [index, 1]]
+    [row 10 [index], row 20 [index, 1]] ++
+      if index == 4 then [row 20 [index, 2]] else []
 
 private def input? : Option (CheckedDocument model) :=
   (checkDocument prepared "en_US" { instantiatedRows := rows, cells := [
     cell directChoice [1] "A" (.parsed (.enum "A")),
-    cell limit [1] "1" (.parsed (.num 1)), cell limit [2] "2" (.parsed (.num 2)),
-    cell limit [3] "3" (.parsed (.num 3)), cell limit [4] "1" (.parsed (.num 1)),
-    cell limit [5] "1" (.parsed (.num 1)),
+    numericCell limit [1] "1" 1, numericCell limit [2] "2" 2,
+    numericCell limit [3] "3" 3, numericCell limit [4] "1" 1,
+    numericCell limit [5] "1" 1,
     cell rawGate [1, 1] "bad" (.rejected .malformed),
-    cell rawGate [2, 1] "2" (.parsed (.num 2)), cell rawGate [3, 1] "1" (.parsed (.num 1)),
-    cell rawGate [4, 1] "bad" (.rejected .malformed), cell rawGate [5, 1] "1" (.parsed (.num 1)),
-    cell computedGate [1, 1] "1" (.parsed (.num 1)), cell computedGate [2, 1] "1" (.parsed (.num 1)),
-    cell computedGate [3, 1] "3" (.parsed (.num 3)), cell computedGate [4, 1] "1" (.parsed (.num 1)),
-    cell computedGate [5, 1] "1" (.parsed (.num 1)),
+    numericCell rawGate [2, 1] "2" 2, numericCell rawGate [3, 1] "1" 1,
+    cell rawGate [4, 1] "bad" (.rejected .malformed),
+    numericCell rawGate [4, 2] "0" 0,
+    numericCell rawGate [5, 1] "1" 1,
+    numericCell computedGate [1, 1] "1" 1,
+    numericCell computedGate [2, 1] "1" 1,
+    numericCell computedGate [3, 1] "3" 3,
+    numericCell computedGate [4, 1] "1" 1,
+    numericCell computedGate [4, 2] "0" 0,
+    numericCell computedGate [5, 1] "1" 1,
     cell rawChoice [1, 1] "C" (.parsed (.enum "C")), cell rawChoice [2, 1] "B" (.parsed (.enum "B")),
     cell rawChoice [3, 1] "C" (.parsed (.enum "C")), cell rawChoice [4, 1] "B" (.parsed (.enum "B")),
     cell rawChoice [5, 1] "C" (.parsed (.enum "C")),
     cell computedChoice [1, 1] "B" (.parsed (.enum "B")),
     cell computedChoice [2, 1] "A" (.parsed (.enum "A")),
     cell computedChoice [3, 1] "A" (.parsed (.enum "A")),
-    cell computedChoice [4, 1] "A" (.parsed (.enum "A")),
-    cell computedChoice [5, 1] "A" (.parsed (.enum "A"))] }).toOption
+    cell computedChoice [4, 1] "B" (.parsed (.enum "B")),
+    cell computedChoice [4, 2] "B" (.parsed (.enum "B")),
+    cell computedChoice [5, 1] "A" (.parsed (.enum "A")),
+    cell target [1] "A" (.parsed (.enum "A")),
+    cell target [2] "A" (.parsed (.enum "A")),
+    cell target [3] "B" (.parsed (.enum "B")),
+    cell target [4] "B" (.parsed (.enum "B"))] }).toOption
 
 private structure Summary where
   analysis : AddressedEnumerationNumberHavingJoinAnalysis
@@ -190,6 +209,8 @@ example : summary? = some {
     ({ field := computedGate.id, path := [3, 1] },
       .value { unscaled := 1, scale := 0 }),
     ({ field := computedGate.id, path := [4, 1] }, .poisoned),
+    ({ field := computedGate.id, path := [4, 2] },
+      .value { unscaled := 0, scale := 0 }),
     ({ field := computedGate.id, path := [5, 1] },
       .value { unscaled := 1, scale := 0 })]
   enumerationProducer := [
@@ -199,6 +220,7 @@ example : summary? = some {
     ({ field := computedChoice.id, path := [3, 1] },
       .poison .declaredConstraint),
     ({ field := computedChoice.id, path := [4, 1] }, .value "B"),
+    ({ field := computedChoice.id, path := [4, 2] }, .noValue),
     ({ field := computedChoice.id, path := [5, 1] },
       .poison .declaredConstraint)]
   consumer := [
@@ -207,6 +229,138 @@ example : summary? = some {
     ({ field := target.id, path := [3] }, .noValue),
     ({ field := target.id, path := [4] }, .poison .computedDependency),
     ({ field := target.id, path := [5] }, .poison .computedDependency)]
+} := by
+  native_decide
+
+private structure ResultApplicationSummary where
+  numberValues : List (CellAddr × StoredNumber)
+  numberChanges : List (CellAddr × StoredNumber)
+  numberCleared : List CellAddr
+  producerValues : List (CellAddr × String)
+  producerChanges : List (CellAddr × String)
+  producerCleared : List CellAddr
+  producerMessages : List Nat
+  consumerValues : List (CellAddr × String)
+  consumerChanges : List (CellAddr × String)
+  consumerCleared : List CellAddr
+  consumerMessages : List Nat
+  numberApplied : List (CellAddr × NumericTargetState)
+  enumerationApplied : List (CellAddr × StringTargetState)
+  deriving Repr, DecidableEq
+
+private def resultDestination? : Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" { instantiatedRows := rows, cells := [
+    numericCell computedGate [1, 1] "8" 8,
+    numericCell computedGate [2, 1] "8" 8,
+    numericCell computedGate [3, 1] "8" 8,
+    numericCell computedGate [4, 1] "8" 8,
+    numericCell computedGate [4, 2] "8" 8,
+    numericCell computedGate [5, 1] "8" 8,
+    cell computedChoice [1, 1] "A" (.parsed (.enum "A")),
+    cell computedChoice [2, 1] "A" (.parsed (.enum "A")),
+    cell computedChoice [3, 1] "A" (.parsed (.enum "A")),
+    cell computedChoice [4, 1] "A" (.parsed (.enum "A")),
+    cell computedChoice [4, 2] "A" (.parsed (.enum "A")),
+    cell computedChoice [5, 1] "A" (.parsed (.enum "A")),
+    cell target [1] "B" (.parsed (.enum "B")),
+    cell target [2] "A" (.parsed (.enum "A")),
+    cell target [3] "A" (.parsed (.enum "A")),
+    cell target [4] "A" (.parsed (.enum "A")),
+    cell target [5] "B" (.parsed (.enum "B"))] }).toOption
+
+private def resultApplicationSummary? : Option ResultApplicationSummary := do
+  let plan ← plan?
+  let input ← input?
+  let destination ← resultDestination?
+  let view ← plan.executeResult input (fun _ => ()) [] [11] [22]
+    |>.toOption
+  let numberApplied ← view.number.applyToChecked destination |>.toOption
+  let enumerationApplied ← view.applyEnumerationsToChecked destination |>.toOption
+  let numberAddresses := [[1, 1], [2, 1], [5, 1]]
+    |>.map fun path => ({ field := computedGate.id, path } : CellAddr)
+  let enumerationAddresses := [
+    ({ field := computedChoice.id, path := [2, 1] } : CellAddr),
+    { field := computedChoice.id, path := [4, 1] },
+    { field := computedChoice.id, path := [4, 2] },
+    { field := target.id, path := [1] }, { field := target.id, path := [2] },
+    { field := target.id, path := [3] }]
+  pure {
+    numberValues := view.number.withoutErrors.map fun item =>
+      (item.targetField, item.value)
+    numberChanges := view.number.withChanges.map fun item =>
+      (item.targetField, item.value)
+    numberCleared := view.number.cleared
+    producerValues := view.enumerationProducer.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    producerChanges := view.enumerationProducer.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    producerCleared := view.enumerationProducer.cleared
+    producerMessages := view.enumerationProducer.formalErrorsInOperands
+    consumerValues := view.consumer.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    consumerChanges := view.consumer.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    consumerCleared := view.consumer.cleared
+    consumerMessages := view.consumer.formalErrorsInOperands
+    numberApplied := numberAddresses.map fun address =>
+      (address, numberApplied.stateAt address)
+    enumerationApplied := enumerationAddresses.map fun address =>
+      (address, enumerationApplied address)
+  }
+
+/- The three sourced phases classify independently; Number applies alone, while both Enumeration phases fold without destination-relative reclassification. -/
+example : resultApplicationSummary? = some {
+  numberValues := [
+    ({ field := computedGate.id, path := [2, 1] },
+      { unscaled := 2, scale := 0 }),
+    ({ field := computedGate.id, path := [3, 1] },
+      { unscaled := 1, scale := 0 }),
+    ({ field := computedGate.id, path := [4, 2] },
+      { unscaled := 0, scale := 0 }),
+    ({ field := computedGate.id, path := [5, 1] },
+      { unscaled := 1, scale := 0 })]
+  numberChanges := [
+    ({ field := computedGate.id, path := [2, 1] },
+      { unscaled := 2, scale := 0 }),
+    ({ field := computedGate.id, path := [3, 1] },
+      { unscaled := 1, scale := 0 })]
+  numberCleared := [
+    { field := computedGate.id, path := [1, 1] },
+    { field := computedGate.id, path := [4, 1] }]
+  producerValues := [
+    ({ field := computedChoice.id, path := [2, 1] }, "B"),
+    ({ field := computedChoice.id, path := [4, 1] }, "B")]
+  producerChanges := [
+    ({ field := computedChoice.id, path := [2, 1] }, "B")]
+  producerCleared := [
+    { field := computedChoice.id, path := [1, 1] },
+    { field := computedChoice.id, path := [3, 1] },
+    { field := computedChoice.id, path := [4, 2] },
+    { field := computedChoice.id, path := [5, 1] }]
+  producerMessages := [11]
+  consumerValues := [
+    ({ field := target.id, path := [1] }, "A"),
+    ({ field := target.id, path := [2] }, "B")]
+  consumerChanges := [({ field := target.id, path := [2] }, "B")]
+  consumerCleared := [
+    { field := target.id, path := [3] },
+    { field := target.id, path := [4] }]
+  consumerMessages := [22]
+  numberApplied := [
+    ({ field := computedGate.id, path := [1, 1] }, .presentEmpty),
+    ({ field := computedGate.id, path := [2, 1] },
+      .presentValue (.decimal { unscaled := 2, scale := 0 })),
+    ({ field := computedGate.id, path := [5, 1] },
+      .presentValue (.decimal { unscaled := 8, scale := 0 }))]
+  enumerationApplied := [
+    ({ field := computedChoice.id, path := [2, 1] },
+      .presentValue ⟨"B", by decide⟩),
+    ({ field := computedChoice.id, path := [4, 1] },
+      .presentValue ⟨"A", by decide⟩),
+    ({ field := computedChoice.id, path := [4, 2] }, .presentEmpty),
+    ({ field := target.id, path := [1] }, .presentValue ⟨"B", by decide⟩),
+    ({ field := target.id, path := [2] }, .presentValue ⟨"B", by decide⟩),
+    ({ field := target.id, path := [3] }, .presentEmpty)]
 } := by
   native_decide
 

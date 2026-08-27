@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.AddressedEnumerationNumberHavingJoin
+import A12Kernel.Proofs.AddressedEnumerationComputation
 
 /-! # Computed Enumeration value plus Number `Having` laws -/
 
@@ -60,6 +61,68 @@ theorem addressedEnumerationNumberHavingJoin_execute_delegates
       let consumer ← plan.consumer.executeWithRead input read |>.mapError
         AddressedEnumerationNumberHavingJoinFault.consumer
       pure { numberProducer, enumerationProducer, consumer }) := by
+  rfl
+
+/-- Result projection classifies the three already-executed phases without recomputation. -/
+theorem addressedEnumerationNumberHavingJoin_executeResult_projects
+    (plan : CheckedAddressedEnumerationNumberHavingJoin model)
+    (input : CheckedDocument model)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (enumerationProducerResidualMessages consumerResidualMessages :
+      List StringResidual)
+    (outcomes : AddressedEnumerationNumberHavingJoinOutcomes)
+    (executed : plan.execute input = .ok outcomes) :
+    (plan.executeResult input numberPayloadAt numberMessages
+      enumerationProducerResidualMessages consumerResidualMessages).map
+      (fun view =>
+        (view.number, view.enumerationProducer, view.consumer)) = .ok (
+      NumericComputationRunView.fromSourceOutcomesWithMessages
+        MessagePointer.ofCellAddr numberPayloadAt numberMessages
+        outcomes.numberProducer,
+      projectAddressedEnumerationResults input enumerationProducerResidualMessages
+        outcomes.enumerationProducer,
+      projectAddressedEnumerationResults input consumerResidualMessages
+        outcomes.consumer) := by
+  unfold CheckedAddressedEnumerationNumberHavingJoin.executeResult
+  rw [executed]
+  rfl
+
+/-- Neither statically compatible Enumeration phase can invent a target-rejection entry. -/
+theorem addressedEnumerationNumberHavingJoin_executeResult_hasNoEnumerationErrors
+    (plan : CheckedAddressedEnumerationNumberHavingJoin model)
+    (input : CheckedDocument model)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (enumerationProducerResidualMessages consumerResidualMessages :
+      List StringResidual)
+    (outcomes : AddressedEnumerationNumberHavingJoinOutcomes)
+    (executed : plan.execute input = .ok outcomes) :
+    (plan.executeResult input numberPayloadAt numberMessages
+      enumerationProducerResidualMessages consumerResidualMessages).map
+      (fun view =>
+        (view.enumerationProducer.withErrors, view.consumer.withErrors)) =
+      .ok ([], []) := by
+  unfold CheckedAddressedEnumerationNumberHavingJoin.executeResult
+  rw [executed]
+  change Except.ok (
+    (projectAddressedEnumerationResults input
+      enumerationProducerResidualMessages
+      outcomes.enumerationProducer).withErrors,
+    (projectAddressedEnumerationResults input consumerResidualMessages
+      outcomes.consumer).withErrors) = Except.ok ([], [])
+  rw [addressedEnumerationResults_haveNoTargetErrors,
+    addressedEnumerationResults_haveNoTargetErrors]
+
+/-- Enumeration application delegates to the producer and consumer result folds in phase order. -/
+theorem addressedEnumerationNumberHavingJoinRun_applyEnumerations_delegates
+    (view : AddressedEnumerationNumberHavingJoinRunView
+      model NumberPayload StringResidual)
+    (destination : CheckedDocument model) :
+    view.applyEnumerationsToChecked destination = (do
+      let afterProducer ← view.enumerationProducer.applyTo
+        destination.sourceStringTargetStateAt
+      view.consumer.applyTo afterProducer) := by
   rfl
 
 end A12Kernel

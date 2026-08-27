@@ -88,6 +88,16 @@ structure AddressedEnumerationNumberHavingJoinOutcomes where
   consumer : List AddressedEnumerationComputationOutcome
   deriving Repr, DecidableEq
 
+/-- Three source-relative public result phases tied to the checked join that produced them. -/
+structure AddressedEnumerationNumberHavingJoinRunView
+    (model : FlatModel) (NumberPayload StringResidual : Type) where
+  private mk ::
+  plan : CheckedAddressedEnumerationNumberHavingJoin model
+  number : NumericComputationRunView
+    (ComputationFormalMessage NumberPayload) CellAddr
+  enumerationProducer : StringComputationRunView StringResidual CellAddr
+  consumer : StringComputationRunView StringResidual CellAddr
+
 inductive AddressedEnumerationNumberHavingJoinFault where
   | numberProducer (cause : AddressedNumberFieldFault)
   | enumerationProducer (cause : AddressedEnumerationComputationFault)
@@ -128,6 +138,43 @@ def execute (plan : CheckedAddressedEnumerationNumberHavingJoin model)
   let consumer ← plan.consumer.executeWithRead input read |>.mapError .consumer
   pure { numberProducer, enumerationProducer, consumer }
 
+/-- Execute once, then classify all three retained phases against the immutable source document. -/
+def executeResult (plan : CheckedAddressedEnumerationNumberHavingJoin model)
+    (input : CheckedDocument model)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (enumerationProducerResidualMessages consumerResidualMessages :
+      List StringResidual) :
+    Except AddressedEnumerationNumberHavingJoinFault
+      (AddressedEnumerationNumberHavingJoinRunView
+        model NumberPayload StringResidual) := do
+  let outcomes ← plan.execute input
+  pure {
+    plan
+    number := NumericComputationRunView.fromSourceOutcomesWithMessages
+      MessagePointer.ofCellAddr numberPayloadAt numberMessages
+      outcomes.numberProducer
+    enumerationProducer := projectAddressedEnumerationResults input
+      enumerationProducerResidualMessages outcomes.enumerationProducer
+    consumer := projectAddressedEnumerationResults input consumerResidualMessages
+      outcomes.consumer
+  }
+
 end CheckedAddressedEnumerationNumberHavingJoin
+
+namespace AddressedEnumerationNumberHavingJoinRunView
+
+/-- Apply the two Enumeration phases in their established phase order to one separately supplied same-model destination. -/
+def applyEnumerationsToChecked
+    (view : AddressedEnumerationNumberHavingJoinRunView
+      model NumberPayload StringResidual)
+    (destination : CheckedDocument model) :
+    Except (StringComputationRunView.StringComputationRunApplicationError CellAddr)
+      (StringComputationDestination CellAddr) := do
+  let afterProducer ← view.enumerationProducer.applyTo
+    destination.sourceStringTargetStateAt
+  view.consumer.applyTo afterProducer
+
+end AddressedEnumerationNumberHavingJoinRunView
 
 end A12Kernel
