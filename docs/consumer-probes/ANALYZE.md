@@ -1,8 +1,8 @@
 # Analyze consumer lab
 
-- `status`: green for bounded presence reachability; amber for bounded computation-cycle analysis
+- `status`: green for bounded presence reachability and checked scalar numeric-table cycle analysis; amber for broader family-neutral graph reconstruction
 - `contract`: a checked artifact produces facts, witnesses, or explicit insufficient information under a named query and bound.
-- `authority`: the proof-bearing [presence contradiction analyzer](../../A12Kernel/Elaboration/Flat/PresenceContradiction.lean), its [never-fires theorem](../../A12Kernel/Proofs/FlatPresenceContradiction.lean), and checked flat-condition evaluation.
+- `authority`: the proof-bearing [presence contradiction analyzer](../../A12Kernel/Elaboration/Flat/PresenceContradiction.lean), its [never-fires theorem](../../A12Kernel/Proofs/FlatPresenceContradiction.lean), checked flat-condition evaluation, and the checked numeric [operation/table dependency projections](../../A12Kernel/Elaboration/NumericComputation/FormalInput.lean) with their [exactness theorems](../../A12Kernel/Proofs/NumericComputationFormalInput.lean).
 - `solver`: installed Z3 CLI through canonical SMT-LIB; solver output is never semantic authority.
 
 ## First probe
@@ -17,9 +17,12 @@ Analyze a disposable language-neutral computation artifact as a target-field dep
 
 This remains an Analyze probe rather than another consumer category or a public graph surface. It covers computation value dependencies only. Validation rules read a document snapshot and emit messages, so mutual validation references are not computation feedback cycles. Wrong accounts are pair-only detection, supplied-order rejection in place of cycle analysis, structural-group expansion, omitted precondition reads, and unchecked cycle paths.
 
+The checked scalar numeric-table profile derives its cycle graph from each table's raw dependency inventory before the full-call formal-input projection removes every computed target. It traverses all alternatives and expands a fixed `NumberOfFilledGroups` operand to its declared fields. The full-call noncomputed input set remains a separate result and is never reused as the cycle graph.
+
 ## Lab record
 
 | Run | Status | Current result |
 |---|---|---|
 | `analyze-smt-presence-01` | green | Z3 5.1.0 reported UNSAT for the exact same-field conjunction and SAT with `A = filled`, `B = empty` for the different-field conjunction. Root replay verified the SAT witness through checked Lean evaluation; the existing exact-shape theorem independently certifies that the same-field condition never fires, while raw solver UNSAT remains only `solverReportedUnsatWithinBounds`. All four wrong accounts separated. The disposable consumer used 53 nonblank executable lines, no repository dependency, no semantic guesses, and about 0.03 seconds of solver time. |
 | `analyze-computation-cycle-01` | amber | A cold standard-library consumer extracted labeled value dependencies, reported `A → B → A` and `A → C → B → A`, and recovered `Input, B, A` plus `Base, First, Second` for the two acyclic controls. An independently implemented guard re-extracted every edge and checked both cycle paths and topological orders. Pair-only detection, supplied-order rejection, `CurrentRepetition` descendant expansion, and omitted precondition reads were all killed. The probe took 5 minutes, used 357 nonblank executable/test lines, and added no dependency. It remains amber because current Lean owns family-specific dependency projections and supplied-order plan certificates, not a general graph reconstruction that can certify this artifact's extracted edge set; no Kernel correspondence, public graph, or new consumer category is claimed. |
+| `analyze-numeric-table-cycle-02` | green | A cold standard-library consumer recovered exact raw dependencies for three checked numeric tables, kept the full-call noncomputed input set separate, reported the labeled three-edge cycle `A → B → C → A`, and recovered dependency-first order `C, B, A` for the reversed acyclic control. A temporary Lean oracle independently fixed every raw list, the global exclusion result, both computed-edge sets, and the returned order. First-alternative-only, operation-only, no-group-expansion, post-exclusion cycle extraction, pair-only detection, and supplied-order rejection mutants all failed. The probe took 142 seconds, used 205 nonblank executable/test lines, added no dependency, and made no semantic guess. This green result is exact only for checked scalar numeric tables; common-precondition authoring, wider computation families, a reusable Lean graph certificate, Kernel correspondence, protocol, and shipment remain open. |
