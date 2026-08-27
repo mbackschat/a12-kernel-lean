@@ -1,6 +1,6 @@
 # Transform consumer lab
 
-- `status`: designed
+- `status`: green
 - `contract`: a checked A12 artifact becomes another checked A12 artifact under an explicitly named observation relation and preconditions.
 - `authority`: [addressed numeric-operation consumer laws](../../A12Kernel/Proofs/AddressedNumericOperationConsumer.lean), especially universal identity preservation of Analyze, Execute, and rich result views.
 - `handover`: the [bounded numeric-operation capability](../implementation/numeric-and-temporal.md#cap-addressed-numeric-operation-consumer) and its explicit rule that fingerprint difference is not semantic inequivalence.
@@ -15,4 +15,4 @@ Lean acceptance is universal identity preservation from the existing theorems pl
 
 | Run | Status | Current result |
 |---|---|---|
-| `transform-numeric-identity-01` | designed | Awaiting isolated implementation and Lean reconciliation. |
+| `transform-numeric-identity-01` | green | A cold standard-library consumer certified only an exact `RangeAsNumber(source, 1, 4)` identity and returned `not-certified` for an endpoint change, a Round-mode change, and ordered `Min` operand reversal. Dependency-only identity, derived-scale-only identity, mismatch-as-inequivalence, and finite-agreement-as-universal mutations were all killed. The Lean laws universally preserve Analyze, execution, and rich-result views for exact identity; conformance retains every changed parameter while making no inequivalence claim. The disposable artifact, implementation, and tests totaled 312 nonblank lines, took 148 seconds, and added no dependency or nonidentity semantic guess. |

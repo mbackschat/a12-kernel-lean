@@ -23,7 +23,7 @@ Retained Kernel evidence separately bounds correspondence to A12 Kernel 30.8.1. 
 |---|---|---|
 | [Execute](EXECUTE.md) | green | Exact-address DateTime calendar-day execution and application |
 | [Translate](TRANSLATE.md) | green | Computed-target refusal to exact external diagnostic or typed local refusal |
-| [Transform](TRANSFORM.md) | designed | Checked numeric-operation identity and unsafe nonidentity boundary |
+| [Transform](TRANSFORM.md) | green | Checked numeric-operation identity and unsafe nonidentity boundary |
 | [Compile](COMPILE.md) | green | Specialized finite condition evaluator with exhaustive refinement |
 | [Analyze](ANALYZE.md) | green; cycle probe amber | SMT-backed presence reachability plus bounded computation-cycle analysis |
 | [Verify](VERIFY.md) | green | Proof-bearing same-field contradiction certificate and counterexample boundary |
