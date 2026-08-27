@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.AddressedEnumerationComputation
 
 /-! # Exact-row Enumeration computation cascade
 
-This purpose-specific SG4 capsule certifies one addressed Enumeration producer followed by one scope-bound consumer that reads the producer target. The producer's rich outcomes become transient Enumeration cells at exact addresses; the immutable document, public result, and applied destination remain distinct.
+This purpose-specific SG4 owner certifies both one addressed Enumeration producer/consumer pair and one fixed three-stage serial extension. Completed rich outcomes become transient Enumeration cells at exact addresses for later stages; immutable input, phase results, and applied destination remain distinct.
 -/
 
 namespace A12Kernel
@@ -229,6 +229,15 @@ structure AddressedEnumerationThreeStageCascadeOutcomes where
   third : List AddressedEnumerationComputationOutcome
   deriving Repr, DecidableEq
 
+/-- Three source-relative public result phases tied to one completed fixed chain. -/
+structure AddressedEnumerationThreeStageCascadeRunView (model : FlatModel)
+    (ResidualMessage : Type) where
+  private mk ::
+  plan : CheckedAddressedEnumerationThreeStageCascade model
+  first : StringComputationRunView ResidualMessage CellAddr
+  second : StringComputationRunView ResidualMessage CellAddr
+  third : StringComputationRunView ResidualMessage CellAddr
+
 inductive AddressedEnumerationThreeStageCascadeFault where
   | first (cause : AddressedEnumerationComputationFault)
   | firstDependency (target : CellAddr) (cause : EnumerationDependencyFault)
@@ -268,6 +277,34 @@ def execute (plan : CheckedAddressedEnumerationThreeStageCascade model)
   let third ← plan.third.executeWithRead input readAfterSecond |>.mapError .third
   pure { first, second, third }
 
+/-- Execute once, then classify all three retained phases against the immutable source document. -/
+def executeResult (plan : CheckedAddressedEnumerationThreeStageCascade model)
+    (input : CheckedDocument model)
+    (firstResidual secondResidual thirdResidual : List ResidualMessage) :
+    Except AddressedEnumerationThreeStageCascadeFault
+      (AddressedEnumerationThreeStageCascadeRunView model ResidualMessage) := do
+  let outcomes ← plan.execute input
+  pure {
+    plan
+    first := projectAddressedEnumerationResults input firstResidual outcomes.first
+    second := projectAddressedEnumerationResults input secondResidual outcomes.second
+    third := projectAddressedEnumerationResults input thirdResidual outcomes.third
+  }
+
 end CheckedAddressedEnumerationThreeStageCascade
+
+namespace AddressedEnumerationThreeStageCascadeRunView
+
+/-- Apply all three retained action sets in phase order to one separately supplied same-model destination. -/
+def applyToChecked
+    (view : AddressedEnumerationThreeStageCascadeRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    Except (StringComputationRunView.StringComputationRunApplicationError CellAddr)
+      (StringComputationDestination CellAddr) := do
+  let afterFirst ← view.first.applyTo destination.sourceStringTargetStateAt
+  let afterSecond ← view.second.applyTo afterFirst
+  view.third.applyTo afterSecond
+
+end AddressedEnumerationThreeStageCascadeRunView
 
 end A12Kernel

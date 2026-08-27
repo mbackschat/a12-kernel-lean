@@ -94,4 +94,55 @@ theorem addressedEnumerationThreeStageCascade_execute_delegates
       pure { first, second, third }) := by
   rfl
 
+/-- Result projection observes the three already-executed outcome phases without recomputation. -/
+theorem addressedEnumerationThreeStageCascade_executeResult_projects
+    (plan : CheckedAddressedEnumerationThreeStageCascade model)
+    (input : CheckedDocument model)
+    (firstResidual secondResidual thirdResidual : List ResidualMessage)
+    (outcomes : AddressedEnumerationThreeStageCascadeOutcomes)
+    (executed : plan.execute input = .ok outcomes) :
+    (plan.executeResult input firstResidual secondResidual thirdResidual).map
+      (fun view => (view.first, view.second, view.third)) = .ok (
+        projectAddressedEnumerationResults input firstResidual outcomes.first,
+        projectAddressedEnumerationResults input secondResidual outcomes.second,
+        projectAddressedEnumerationResults input thirdResidual outcomes.third) := by
+  unfold CheckedAddressedEnumerationThreeStageCascade.executeResult
+  rw [executed]
+  rfl
+
+/-- Static Enumeration compatibility excludes target-rejection entries from every phase. -/
+theorem addressedEnumerationThreeStageCascade_executeResult_hasNoTargetErrors
+    (plan : CheckedAddressedEnumerationThreeStageCascade model)
+    (input : CheckedDocument model)
+    (firstResidual secondResidual thirdResidual : List ResidualMessage)
+    (outcomes : AddressedEnumerationThreeStageCascadeOutcomes)
+    (executed : plan.execute input = .ok outcomes) :
+    (plan.executeResult input firstResidual secondResidual thirdResidual).map
+      (fun view =>
+        (view.first.withErrors, view.second.withErrors,
+          view.third.withErrors)) = .ok ([], [], []) := by
+  unfold CheckedAddressedEnumerationThreeStageCascade.executeResult
+  rw [executed]
+  change Except.ok (
+    (projectAddressedEnumerationResults input firstResidual
+      outcomes.first).withErrors,
+    (projectAddressedEnumerationResults input secondResidual
+      outcomes.second).withErrors,
+    (projectAddressedEnumerationResults input thirdResidual
+      outcomes.third).withErrors) = Except.ok ([], [], [])
+  rw [addressedEnumerationResults_haveNoTargetErrors,
+    addressedEnumerationResults_haveNoTargetErrors,
+    addressedEnumerationResults_haveNoTargetErrors]
+
+/-- Three-stage application delegates to the three result folds in phase order. -/
+theorem addressedEnumerationThreeStageCascadeRun_applyToChecked_delegates
+    (view : AddressedEnumerationThreeStageCascadeRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    view.applyToChecked destination = (do
+      let afterFirst ←
+        view.first.applyTo destination.sourceStringTargetStateAt
+      let afterSecond ← view.second.applyTo afterFirst
+      view.third.applyTo afterSecond) := by
+  rfl
+
 end A12Kernel

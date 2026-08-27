@@ -284,6 +284,68 @@ private def threeStageExecutionSummary? : Option ThreeStageExecutionSummary := d
     third := outcomes.third.map fun item => (item.targetField, item.result)
   }
 
+private structure ThreeStageResultApplicationSummary where
+  firstValues : List (CellAddr × String)
+  firstChanges : List (CellAddr × String)
+  firstCleared : List CellAddr
+  firstResidual : List Nat
+  secondValues : List (CellAddr × String)
+  secondChanges : List (CellAddr × String)
+  secondCleared : List CellAddr
+  secondResidual : List Nat
+  thirdValues : List (CellAddr × String)
+  thirdChanges : List (CellAddr × String)
+  thirdCleared : List CellAddr
+  thirdResidual : List Nat
+  applied : List (CellAddr × StringTargetState)
+  deriving Repr, DecidableEq
+
+private def threeStageDestination? : Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 10, path := [2] },
+      { group := 10, path := [3] }]
+    cells := [
+      cell produced 1 "B" (.parsed (.enum "B")),
+      cell final 1 "A" (.parsed (.enum "A")),
+      cell terminal 1 "A" (.parsed (.enum "A")),
+      cell source 1 "B" (.parsed (.enum "B"))]
+  }).toOption
+
+private def threeStageResultApplicationSummary? :
+    Option ThreeStageResultApplicationSummary := do
+  let plan ← threeStageCascade?
+  let input ← threeStageInput?
+  let destination ← threeStageDestination?
+  let view ← plan.executeResult input [11] [22] [33] |>.toOption
+  let applied ← view.applyToChecked destination |>.toOption
+  let addresses := [
+    address produced.id 1, address final.id 1, address terminal.id 1,
+    address produced.id 2, address final.id 2, address terminal.id 2,
+    address source.id 1]
+  pure {
+    firstValues := view.first.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    firstChanges := view.first.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    firstCleared := view.first.cleared
+    firstResidual := view.first.formalErrorsInOperands
+    secondValues := view.second.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    secondChanges := view.second.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    secondCleared := view.second.cleared
+    secondResidual := view.second.formalErrorsInOperands
+    thirdValues := view.third.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    thirdChanges := view.third.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    thirdCleared := view.third.cleared
+    thirdResidual := view.third.formalErrorsInOperands
+    applied := addresses.map fun item => (item, applied item)
+  }
+
 example : cascade?.isSome = true ∧ deepCascade?.isSome = true ∧
     categoryCascade?.isSome = true ∧ deepCategoryCascade?.isSome = true ∧
     planError? (operation? produced final) (operation? final produced) =
@@ -329,6 +391,31 @@ example : threeStageExecutionSummary? = some {
     (address terminal.id 1, .value "B"),
     (address terminal.id 2, .noValue),
     (address terminal.id 3, .poison .computedDependency)]
+} := by
+  native_decide
+
+/- Result phases retain their own messages and source-relative actions; the third source-identical value remains inert against a differing destination. -/
+example : threeStageResultApplicationSummary? = some {
+  firstValues := [(address produced.id 1, "A")]
+  firstChanges := [(address produced.id 1, "A")]
+  firstCleared := [address produced.id 2, address produced.id 3]
+  firstResidual := [11]
+  secondValues := [(address final.id 1, "B")]
+  secondChanges := [(address final.id 1, "B")]
+  secondCleared := [address final.id 2, address final.id 3]
+  secondResidual := [22]
+  thirdValues := [(address terminal.id 1, "B")]
+  thirdChanges := []
+  thirdCleared := [address terminal.id 2, address terminal.id 3]
+  thirdResidual := [33]
+  applied := [
+    (address produced.id 1, .presentValue ⟨"A", by decide⟩),
+    (address final.id 1, .presentValue ⟨"B", by decide⟩),
+    (address terminal.id 1, .presentValue ⟨"A", by decide⟩),
+    (address produced.id 2, .presentEmpty),
+    (address final.id 2, .presentEmpty),
+    (address terminal.id 2, .presentEmpty),
+    (address source.id 1, .presentValue ⟨"B", by decide⟩)]
 } := by
   native_decide
 
