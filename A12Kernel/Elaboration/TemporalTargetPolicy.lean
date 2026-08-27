@@ -121,13 +121,21 @@ def toTimeTarget
 
 end CheckedTemporalTargetPolicy
 
+/-- Resolve and refine one model-owned complete Time target whose repetition scope is bound by the caller. -/
+def elaborateTimeTargetIn
+    (model : FlatModel) (scope : List RepeatableLevel)
+    (targetField : FieldId) :
+    Except TimeTargetElabError (CheckedTimeTarget model) := do
+  let checked ←
+    elaborateTemporalTargetPolicyIn model scope targetField
+      |>.mapError .targetPolicy
+  checked.toTimeTarget
+
 /-- Resolve and refine one model-owned nonrepeatable complete Time target. -/
 def elaborateTimeTarget
     (model : FlatModel) (targetField : FieldId) :
-    Except TimeTargetElabError (CheckedTimeTarget model) := do
-  let checked ←
-    elaborateTemporalTargetPolicy model targetField |>.mapError .targetPolicy
-  checked.toTimeTarget
+    Except TimeTargetElabError (CheckedTimeTarget model) :=
+  elaborateTimeTargetIn model [] targetField
 
 /-- Static refusal before the bounded full-Date target can execute. -/
 inductive FullDateTargetElabError where

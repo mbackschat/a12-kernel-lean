@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.TimeFirstFilledComputation
+import A12Kernel.Elaboration.AddressedTimeFirstFilledComputation
 
-/-! # Direct one-star Time `FirstFilledValue` computation laws -/
+/-! # Direct and exact-address Time `FirstFilledValue` computation laws -/
 
 namespace A12Kernel
 
@@ -31,6 +32,32 @@ theorem timeFirstFilled_executeResult_projects
       .ok (TimeComputationRunView.fromOutcomes input residualMessages
         [(operation.targetPolicy.checked.target.id, outcome)]) := by
   rw [CheckedTimeFirstFilledComputation.executeResult, evaluated]
+  rfl
+
+/-- Addressed result construction retains the checked operation and classifies every executed outcome under its exact target address. -/
+theorem addressedTimeFirstFilled_executeResult_projects
+    (operation : CheckedAddressedTimeFirstFilledComputation model)
+    (input : CheckedDocument model) (messages : List ResidualMessage)
+    (outcomes : List AddressedTimeFirstFilledComputationOutcome)
+    (view : AddressedTimeFirstFilledComputationRunView model ResidualMessage)
+    (executed : operation.execute input = .ok outcomes)
+    (produced : operation.executeResult input messages = .ok view) :
+    view.operation = operation ∧
+      view.time = TimeComputationRunView.fromOutcomesAt
+        input.sourceTimeTargetStateAt messages
+        (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
+  rw [CheckedAddressedTimeFirstFilledComputation.executeResult,
+    executed] at produced
+  simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
+  subst view
+  exact ⟨rfl, rfl⟩
+
+/-- Addressed application is exactly the common Time fold over the separately supplied document's exact cell-state projection. -/
+theorem addressedTimeFirstFilledRun_applyToChecked_delegates
+    (view : AddressedTimeFirstFilledComputationRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    view.applyToChecked destination =
+      view.time.applyTo destination.sourceTimeTargetStateAt := by
   rfl
 
 end A12Kernel

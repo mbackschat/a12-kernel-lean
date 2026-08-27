@@ -390,6 +390,15 @@
 - `limit`: static legality only, for one sibling-star axis below one shared repeatable parent. The probe did not establish a Kernel runtime result, parent-local correlation, generated-message behavior, dotted format, a checked source, or any wider target policy. Lean reuses the already established target check to expose exact `before1900` errors internally; that runtime composition remains external evidence pending.
 - `sync`: locally originated. It corrects the narrower direct-star target-policy statement only for this addressed ISO route and creates outbound reconciliation entry [`SPEC-2026-08-27-02`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-27-02--a-repeatable-full-date-firstfilledvalue-target-may-enable-the-pre-1900-check).
 
+<a id="src-time-repeatable-first-filled"></a>
+#### Sibling-star Time `FirstFilledValue` target admission, measured locally 2026-08-27
+
+- `revision`: clean a12-dmkits `25e048ea73e10bd58c6950b1d6104dd5809535df`, dmtool `0.13.0`, kernel `30.8.1` built and runtime. The sibling worktree was empty before and after the probe.
+- `route`: a disposable structured dmtool model declared repeatable `Projects`, with sibling repeatable `Choices` and `Tasks` below each project. Source `SourceTime` and computed target `SelectedTime` both used the only supported Time profile, `HH:mm:ss`.
+- `static-claim`: source-matched `computation add --dry-run` and the persisted add admitted `FirstFilledValue(../Choices*/SourceTime)` on the repeatable sibling target with `verification: KERNEL_CONFIRMED`. Structured computation read-back retained the exact operation, and terminal `model check` reported `valid:true` with Kernel verification. Removing only the star produced `FirstFilledValue(../Choices/SourceTime)` and was refused with `MVK_NO_WILDCARD`, separating the accepted reopened-axis route from an ordinary unstarred sibling read.
+- `limit`: static legality only, for the sole Time format and one sibling-star axis below one shared repeatable parent. The probe did not establish a Kernel runtime result, parent-local correlation, clock identity, exact result addresses, retained-action classification, materialized application, generated-message behavior, or pointer rendering. The executable reference account reuses the established typed Time selection and always-changed result/application semantics for those internal decisions; their addressed composition remains external evidence pending.
+- `sync`: locally originated and carried by pending outbound reconciliation entry [`SPEC-2026-08-27-01`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-27-01--a-sibling-star-computation-may-target-a-repeatable-group-and-stays-parent-local), which already owns the same temporal sibling-star topology.
+
 <a id="src-date-range-unconfigured-interpretation-first-filled-star"></a>
 #### Unconfigured interpreted DateRange declaration-order discriminator, corrected 2026-08-24
 

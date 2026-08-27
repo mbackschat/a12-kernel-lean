@@ -2287,4 +2287,6 @@ run_cmd do
 #print axioms A12Kernel.timeFirstFilledCellAt_value
 #print axioms A12Kernel.timeFirstFilledCellAt_poison
 #print axioms A12Kernel.timeFirstFilled_executeResult_projects
+#print axioms A12Kernel.addressedTimeFirstFilled_executeResult_projects
+#print axioms A12Kernel.addressedTimeFirstFilledRun_applyToChecked_delegates
 #print axioms A12Kernel.booleanValueCount_confirm_empty

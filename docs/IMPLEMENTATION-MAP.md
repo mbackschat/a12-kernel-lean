@@ -329,6 +329,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Exact-address repeatable DateTime `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-datetime-firstfilledvalue-result-application)
 <a id="cap-exact-address-repeatable-full-date-firstfilledvalue-result-application"></a>
 - [Exact-address repeatable FULL Date `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-full-date-firstfilledvalue-result-application)
+<a id="cap-exact-address-repeatable-time-firstfilledvalue-result-application"></a>
+- [Exact-address repeatable Time `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-time-firstfilledvalue-result-application)
 <a id="cap-nonrepeatable-daterange-source-placement"></a>
 - [Nonrepeatable DateRange source placement](implementation/computations.md#cap-nonrepeatable-daterange-source-placement)
 <a id="cap-exact-address-repeatable-time-result-application"></a>

@@ -33,10 +33,9 @@ def checkAddressedTimeFromDateTime
     Except AddressedTimeFromDateTimeElabError
       (CheckedAddressedTimeFromDateTime model) := do
   let targetDeclaration ← model.lookupUniqueId targetField |>.mapError .targetLookup
-  let checkedTarget ←
-    elaborateTemporalTargetPolicyIn model targetDeclaration.repeatableScope targetField
-      |>.mapError (fun cause => .target (.targetPolicy cause))
-  let target ← checkedTarget.toTimeTarget |>.mapError .target
+  let target ← elaborateTimeTargetIn model
+      targetDeclaration.repeatableScope targetField
+    |>.mapError .target
   if hGroup : target.checked.declaration.groupPath = declaringGroup then
     if hRepeatable : target.checked.declaration.repeatableScope.isEmpty then
       throw (.targetNotRepeatable target.checked.declaration.path)
