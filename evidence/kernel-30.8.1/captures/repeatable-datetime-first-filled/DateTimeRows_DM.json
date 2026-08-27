@@ -1,0 +1,102 @@
+{
+  "header" : {
+    "id" : "DateTimeRows_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "DateTimeRows_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/DateTimeRows",
+        "name" : "DateTimeRows",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/DateTimeRows/Projects",
+            "name" : "Projects",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/DateTimeRows/Projects/Choices",
+                "name" : "Choices",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/DateTimeRows/Projects/Choices/Stamp",
+                    "name" : "Stamp",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateTimeType",
+                        "DateTimeType" : {
+                          "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/DateTimeRows/Projects/Tasks",
+                "name" : "Tasks",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/DateTimeRows/Projects/Tasks/SelectedStamp",
+                    "name" : "SelectedStamp",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateTimeType",
+                        "DateTimeType" : {
+                          "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/DateTimeRows/Projects/Tasks/SelectedStampComp",
+                    "name" : "SelectedStampComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../SelectedStamp",
+                      "computationAlternatives" : [ {
+                        "operation" : "FirstFilledValue(../Choices*/Stamp)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Selected timestamp differs."
+                      } ]
+                    }
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

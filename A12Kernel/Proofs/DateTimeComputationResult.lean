@@ -12,7 +12,8 @@ theorem dateTimeComputationRun_shouldClear_iff
       outcome.hasComputedInstance = false ∧
         (input.sourceDateTimeTargetState field).storedValue.isSome =
           true := by
-  simp [DateTimeComputationRunView.shouldClear]
+  simp [DateTimeComputationRunView.shouldClear,
+    DateTimeComputationRunView.shouldClearAt]
 
 /-- Every changed DateTime success is the identical member of the complete successful collection. -/
 theorem dateTimeComputationRun_withChanges_subset
@@ -27,6 +28,7 @@ theorem dateTimeComputationRun_withChanges_subset
       (DateTimeComputationRunView.fromOutcomes
         input messages outcomes).withoutErrors := by
   simpa [DateTimeComputationRunView.fromOutcomes,
+    DateTimeComputationRunView.fromOutcomesAt,
     TemporalComputationRunView.fromValueOutcomes] using
     (List.mem_filter.mp member).1
 
@@ -43,6 +45,8 @@ theorem dateTimeComputationRun_cleared_iff
         DateTimeComputationRunView.shouldClear
           input (field, outcome) = true := by
   simp [DateTimeComputationRunView.fromOutcomes,
+    DateTimeComputationRunView.fromOutcomesAt,
+    DateTimeComputationRunView.shouldClear,
     TemporalComputationRunView.fromValueOutcomes]
 
 /-- Result construction retains the supplied residual channel exactly. -/
@@ -82,6 +86,7 @@ theorem dateTimeComputationRun_fromOutcomes_permutation
   simp only [DateTimeComputationRunView.ExtensionalEq,
     TemporalComputationRunView.ExtensionalEq,
     DateTimeComputationRunView.fromOutcomes,
+    DateTimeComputationRunView.fromOutcomesAt,
     TemporalComputationRunView.fromValueOutcomes]
   exact ⟨
     outcomesPermutation.filterMap _,

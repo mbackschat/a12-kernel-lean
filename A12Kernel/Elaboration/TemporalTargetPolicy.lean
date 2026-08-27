@@ -293,13 +293,21 @@ def toDateTimeTarget
 
 end CheckedTemporalTargetPolicy
 
+/-- Resolve and refine one model-owned complete DateTime target whose repetition scope is bound by the caller's reading environment. -/
+def elaborateDateTimeTargetIn
+    (model : FlatModel) (scope : List RepeatableLevel)
+    (targetField : FieldId) :
+    Except DateTimeTargetElabError (CheckedDateTimeTarget model) := do
+  let checked ←
+    elaborateTemporalTargetPolicyIn model scope targetField
+      |>.mapError .targetPolicy
+  checked.toDateTimeTarget
+
 /-- Resolve and refine one model-owned nonrepeatable complete DateTime target. -/
 def elaborateDateTimeTarget
     (model : FlatModel) (targetField : FieldId) :
-    Except DateTimeTargetElabError (CheckedDateTimeTarget model) := do
-  let checked ←
-    elaborateTemporalTargetPolicy model targetField |>.mapError .targetPolicy
-  checked.toDateTimeTarget
+    Except DateTimeTargetElabError (CheckedDateTimeTarget model) :=
+  elaborateDateTimeTargetIn model [] targetField
 
 /-- Runtime refusal when an exact result instant has no local DateTime label in the selected concrete profile. -/
 inductive DateTimeTargetEvaluationFault where

@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.DateTimeFirstFilledComputation
+import A12Kernel.Elaboration.AddressedDateTimeFirstFilledComputation
 
 /-! # Direct one-star DateTime `FirstFilledValue` computation laws -/
 
@@ -28,6 +29,32 @@ theorem dateTimeFirstFilled_executeResult_projects
       .ok (DateTimeComputationRunView.fromOutcomes input residualMessages
         [(operation.targetPolicy.checked.target.id, outcome)]) := by
   rw [CheckedDateTimeFirstFilledComputation.executeResult, evaluated]
+  rfl
+
+/-- Addressed result construction retains the checked operation and classifies every executed outcome under its exact target address. -/
+theorem addressedDateTimeFirstFilled_executeResult_projects
+    (operation : CheckedAddressedDateTimeFirstFilledComputation model)
+    (input : CheckedDocument model) (messages : List ResidualMessage)
+    (outcomes : List AddressedDateTimeFirstFilledComputationOutcome)
+    (view : AddressedDateTimeFirstFilledComputationRunView model ResidualMessage)
+    (executed : operation.execute input = .ok outcomes)
+    (produced : operation.executeResult input messages = .ok view) :
+    view.operation = operation ∧
+      view.dateTime = DateTimeComputationRunView.fromOutcomesAt
+        input.sourceDateTimeTargetStateAt messages
+        (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
+  rw [CheckedAddressedDateTimeFirstFilledComputation.executeResult,
+    executed] at produced
+  simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
+  subst view
+  exact ⟨rfl, rfl⟩
+
+/-- Addressed application is exactly the common DateTime fold over the separately supplied document's exact cell-state projection. -/
+theorem addressedDateTimeFirstFilledRun_applyToChecked_delegates
+    (view : AddressedDateTimeFirstFilledComputationRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    view.applyToChecked destination =
+      view.dateTime.applyTo destination.sourceDateTimeTargetStateAt := by
   rfl
 
 end A12Kernel

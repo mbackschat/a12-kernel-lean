@@ -233,6 +233,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Direct-star DateRange `FirstFilledValue` across year interpretations, measured locally 2026-08-24](sources/temporal-and-message-probes.md#src-date-range-interpretation-first-filled-star)
 <a id="src-date-range-repeatable-first-filled"></a>
 - [Sibling-star DateRange `FirstFilledValue` into exact repeatable targets, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-date-range-repeatable-first-filled)
+<a id="src-datetime-repeatable-first-filled"></a>
+- [Sibling-star DateTime `FirstFilledValue` into exact repeatable targets, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-datetime-repeatable-first-filled)
 <a id="src-date-range-unconfigured-interpretation-first-filled-star"></a>
 - [Unconfigured interpreted DateRange declaration-order discriminator, corrected 2026-08-24](sources/temporal-and-message-probes.md#src-date-range-unconfigured-interpretation-first-filled-star)
 <a id="src-date-range-unconfigured-bound"></a>

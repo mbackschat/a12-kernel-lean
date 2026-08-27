@@ -96,11 +96,12 @@ theorem dateTimeComputationRun_unchanged_notApplied
     TemporalValueComputationRunView.applyTo,
     TemporalValueComputationRunView.actionTargets,
     DateTimeComputationRunView.fromOutcomes,
+    DateTimeComputationRunView.fromOutcomesAt,
     TemporalComputationRunView.fromValueOutcomes,
     DateTimeComputationRunView.successfulInstance?,
-    DateTimeComputationRunView.shouldClear,
+    DateTimeComputationRunView.shouldClearAt,
     DateTimeTargetOutcome.hasComputedInstance,
-    DateTimeComputationRunView.sourceValueChanged, unchanged,
+    DateTimeComputationRunView.sourceValueChangedAt, unchanged,
     TemporalComputationApplicationTarget.firstDuplicate?]
 
 /-- A source-changed accepted DateTime applies the existing one-target write. -/
@@ -117,11 +118,12 @@ theorem dateTimeComputationRun_changed_applies
     TemporalValueComputationRunView.applyTo,
     TemporalValueComputationRunView.actionTargets,
     DateTimeComputationRunView.fromOutcomes,
+    DateTimeComputationRunView.fromOutcomesAt,
     TemporalComputationRunView.fromValueOutcomes,
     DateTimeComputationRunView.successfulInstance?,
-    DateTimeComputationRunView.shouldClear,
+    DateTimeComputationRunView.shouldClearAt,
     DateTimeTargetOutcome.hasComputedInstance,
-    DateTimeComputationRunView.sourceValueChanged, changed,
+    DateTimeComputationRunView.sourceValueChangedAt, changed,
     TemporalComputationApplicationTarget.firstDuplicate?]
 
 /-- A source-filled quiet no-value mints a retained clear action that creates or retains a present-empty destination target. -/
@@ -137,9 +139,10 @@ theorem dateTimeComputationRun_cleared_applies
     TemporalValueComputationRunView.applyTo,
     TemporalValueComputationRunView.actionTargets,
     DateTimeComputationRunView.fromOutcomes,
+    DateTimeComputationRunView.fromOutcomesAt,
     TemporalComputationRunView.fromValueOutcomes,
     DateTimeComputationRunView.successfulInstance?,
-    DateTimeComputationRunView.shouldClear,
+    DateTimeComputationRunView.shouldClearAt,
     DateTimeTargetOutcome.hasComputedInstance, sourceFilled,
     TemporalComputationApplicationTarget.firstDuplicate?]
 

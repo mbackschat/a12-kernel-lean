@@ -7,27 +7,30 @@ This capsule applies an already-classified DateTime result to an explicitly supp
 
 namespace A12Kernel
 
-/-- Exact caller-supplied target-state projection needed by the nonrepeatable DateTime fragment. -/
-abbrev DateTimeComputationDestination :=
-  TemporalComputationDestination StoredDateTime
+/-- Exact caller-supplied target-state projection shared by scalar and addressed DateTime fragments. -/
+abbrev DateTimeComputationDestination (Target : Type := FieldId) :=
+  TemporalComputationDestination StoredDateTime Target
 
 namespace DateTimeComputationDestination
 
 /-- Replace one target projection while preserving every other field. -/
-def update (destination : DateTimeComputationDestination)
-    (target : FieldId) (state : DateTimeTargetState) :
-    DateTimeComputationDestination :=
+def update {Target : Type} [DecidableEq Target]
+    (destination : DateTimeComputationDestination Target)
+    (target : Target) (state : DateTimeTargetState) :
+    DateTimeComputationDestination Target :=
   TemporalComputationDestination.update destination target state
 
 /-- Specialize the existing one-target transition at one field. -/
-def applyOutcome (destination : DateTimeComputationDestination)
-    (target : FieldId) (outcome : DateTimeTargetOutcome) :
-    DateTimeComputationDestination :=
+def applyOutcome {Target : Type} [DecidableEq Target]
+    (destination : DateTimeComputationDestination Target)
+    (target : Target) (outcome : DateTimeTargetOutcome) :
+    DateTimeComputationDestination Target :=
   destination.update target (outcome.applyTo (destination target))
 
 /-- Apply one source-classified CLEARED action without reclassifying it against the destination. -/
-def applyRetainedClear (destination : DateTimeComputationDestination)
-    (target : FieldId) : DateTimeComputationDestination :=
+def applyRetainedClear {Target : Type} [DecidableEq Target]
+    (destination : DateTimeComputationDestination Target)
+    (target : Target) : DateTimeComputationDestination Target :=
   TemporalComputationDestination.applyRetainedClear destination target
 
 end DateTimeComputationDestination
@@ -35,19 +38,22 @@ end DateTimeComputationDestination
 namespace DateTimeComputationRunView
 
 /-- Structural failure before any destination action is selected. -/
-abbrev DateTimeComputationRunApplicationError :=
-  TemporalValueComputationApplicationError
+abbrev DateTimeComputationRunApplicationError
+    (Target : Type := FieldId) :=
+  TemporalValueComputationApplicationError Target
 
 /-- Targets consumed by application. Successful unchanged instances and residual messages are deliberately absent. -/
-def actionTargets (view : DateTimeComputationRunView ResidualMessage) :
-    List FieldId :=
+def actionTargets {Target : Type}
+    (view : DateTimeComputationRunView ResidualMessage Target) :
+    List Target :=
   TemporalValueComputationRunView.actionTargets view
 
 /-- Apply the immutable V2 action collections in kernel order: clears, then source-relative changed successes. Duplicate targets fail before destination lookup. -/
-def applyTo (view : DateTimeComputationRunView ResidualMessage)
-    (destination : DateTimeComputationDestination) :
-    Except DateTimeComputationRunApplicationError
-      DateTimeComputationDestination :=
+def applyTo {Target : Type} [DecidableEq Target]
+    (view : DateTimeComputationRunView ResidualMessage Target)
+    (destination : DateTimeComputationDestination Target) :
+    Except (DateTimeComputationRunApplicationError Target)
+      (DateTimeComputationDestination Target) :=
   TemporalValueComputationRunView.applyTo view destination
     DateTimeComputationDestination.applyRetainedClear
     (fun current target value =>
