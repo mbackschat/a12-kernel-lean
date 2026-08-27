@@ -1,0 +1,161 @@
+{
+  "model": "model.dm.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "distinct-outer-values-reach-three-level-leaves",
+      "documentInline": {
+        "Project": {
+          "Milestones": [
+            {
+              "Phase": "M1",
+              "MilestoneStamp": "2024-06-15T00:30:00",
+              "Tasks": [
+                {
+                  "TaskId": "M1T1",
+                  "Subtasks": [
+                    { "SubtaskDate": "2024-06-14" },
+                    { "SubtaskDate": "2024-06-14" }
+                  ]
+                },
+                {
+                  "TaskId": "M1T2",
+                  "Subtasks": [
+                    { "SubtaskDate": "2024-06-14" }
+                  ]
+                }
+              ]
+            },
+            {
+              "Phase": "M2",
+              "MilestoneStamp": "2024-06-16T23:45:00",
+              "Tasks": [
+                {
+                  "TaskId": "M2T1",
+                  "Subtasks": [
+                    { "SubtaskDate": "2024-06-14" }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "malformed-first-outer-poisons-only-descendants",
+      "documentInline": {
+        "Project": {
+          "Milestones": [
+            {
+              "Phase": "M1",
+              "MilestoneStamp": "bad",
+              "Tasks": [
+                {
+                  "TaskId": "M1T1",
+                  "Subtasks": [
+                    { "SubtaskDate": "2024-06-14" },
+                    { "SubtaskDate": "2024-06-14" }
+                  ]
+                },
+                {
+                  "TaskId": "M1T2",
+                  "Subtasks": [
+                    { "SubtaskDate": "2024-06-14" }
+                  ]
+                }
+              ]
+            },
+            {
+              "Phase": "M2",
+              "MilestoneStamp": "2024-06-16T23:45:00",
+              "Tasks": [
+                {
+                  "TaskId": "M2T1",
+                  "Subtasks": [
+                    { "SubtaskDate": "2024-06-14" }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-first-outer-clears-only-descendants",
+      "documentInline": {
+        "Project": {
+          "Milestones": [
+            {
+              "Phase": "M1",
+              "MilestoneStamp": "",
+              "Tasks": [
+                {
+                  "TaskId": "M1T1",
+                  "Subtasks": [
+                    { "SubtaskDate": "2024-06-14" },
+                    { "SubtaskDate": "2024-06-14" }
+                  ]
+                },
+                {
+                  "TaskId": "M1T2",
+                  "Subtasks": [
+                    { "SubtaskDate": "2024-06-14" }
+                  ]
+                }
+              ]
+            },
+            {
+              "Phase": "M2",
+              "MilestoneStamp": "2024-06-16T23:45:00",
+              "Tasks": [
+                {
+                  "TaskId": "M2T1",
+                  "Subtasks": [
+                    { "SubtaskDate": "2024-06-14" }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ancestor-without-physical-leaf-has-no-outcome",
+      "documentInline": {
+        "Project": {
+          "Milestones": [
+            {
+              "Phase": "M1",
+              "MilestoneStamp": "2024-06-15T00:30:00",
+              "Tasks": [
+                {
+                  "TaskId": "M1T1",
+                  "Subtasks": []
+                }
+              ]
+            },
+            {
+              "Phase": "M2",
+              "MilestoneStamp": "2024-06-16T23:45:00",
+              "Tasks": [
+                {
+                  "TaskId": "M2T1",
+                  "Subtasks": [
+                    { "SubtaskDate": "2024-06-14" }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

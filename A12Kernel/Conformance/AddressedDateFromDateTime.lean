@@ -348,4 +348,111 @@ example :
     ] := by
   native_decide
 
+private def thirdLevelSource : FlatFieldDecl := {
+  source with id := 21, name := "MilestoneStamp", groupPath := ["Project", "Milestones"], repeatableScope := [10] }
+
+private def thirdLevelTarget : FlatFieldDecl := {
+  target with id := 22, name := "SubtaskDate", groupPath := ["Project", "Milestones", "Tasks", "Subtasks"], repeatableScope := [10, 20, 30] }
+
+private def thirdLevelModel : FlatModel := {
+  fields := [thirdLevelSource, thirdLevelTarget]
+  timeZoneId := "Europe/Berlin"
+  repeatableGroups := [
+    { level := 10, path := ["Project", "Milestones"], repeatability := some 5 },
+    { level := 20, path := ["Project", "Milestones", "Tasks"],
+      repeatability := some 5 },
+    { level := 30, path := ["Project", "Milestones", "Tasks", "Subtasks"],
+      repeatability := some 5 }]
+}
+
+private def thirdLevelPrepared :
+    PreparedFlatStringContext thirdLevelModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler thirdLevelModel).toOption.get (by native_decide)
+
+private def thirdLevelOperation? :
+    Option (CheckedAddressedDateFromDateTime thirdLevelModel) :=
+  (checkAddressedDateFromDateTime thirdLevelModel
+    ["Project", "Milestones", "Tasks", "Subtasks"] thirdLevelTarget.id {
+      base := .absolute, groups := ["Project", "Milestones"]
+      field := "MilestoneStamp"
+    }).toOption
+
+private def thirdLevelSourceCell (outer : Nat) (stored : String)
+    (raw : RawCell) : ClassifiedCellInput :=
+  { address := { field := thirdLevelSource.id, path := [outer] }, stored, raw }
+
+private def thirdLevelOutcomes? (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (List (CellAddr × CellAddr × FullDateTargetOutcome)) := do
+  let operation ← thirdLevelOperation?
+  let input ← (checkDocument thirdLevelPrepared "en_US" {
+    instantiatedRows := rows, cells }).toOption
+  let outcomes ← operation.execute input |>.toOption
+  pure (outcomes.map fun entry =>
+    (entry.sourceField, entry.targetField, entry.outcome))
+
+private def thirdLevelRows : List RowAddr :=
+  [{ group := 10, path := [1] }, { group := 10, path := [2] },
+    { group := 20, path := [1, 1] }, { group := 20, path := [1, 2] },
+    { group := 20, path := [2, 1] },
+    { group := 30, path := [1, 1, 1] }, { group := 30, path := [1, 1, 2] },
+    { group := 30, path := [1, 2, 1] }, { group := 30, path := [2, 1, 1] }]
+
+private def thirdLevelSourceAddress (outer : Nat) : CellAddr :=
+  { field := thirdLevelSource.id, path := [outer] }
+
+private def thirdLevelTargetAddress (outer middle inner : Nat) : CellAddr :=
+  { field := thirdLevelTarget.id, path := [outer, middle, inner] }
+
+/- A source two axes above the target keeps its own outer address while each physical leaf retains all three coordinates. -/
+example : thirdLevelOperation?.isSome = true ∧
+    thirdLevelOutcomes? thirdLevelRows [
+      thirdLevelSourceCell 1 "2024-06-15T00:30:00"
+        (.parsed (.temporal (momentAt 15 0 30 |>.get (by native_decide)))),
+      thirdLevelSourceCell 2 "2024-06-16T23:45:00"
+        (.parsed (.temporal (momentAt 16 23 45 |>.get (by native_decide))))
+    ] = some [
+      (thirdLevelSourceAddress 1, thirdLevelTargetAddress 1 1 1,
+        accepted "2024-06-15"),
+      (thirdLevelSourceAddress 1, thirdLevelTargetAddress 1 1 2,
+        accepted "2024-06-15"),
+      (thirdLevelSourceAddress 1, thirdLevelTargetAddress 1 2 1,
+        accepted "2024-06-15"),
+      (thirdLevelSourceAddress 2, thirdLevelTargetAddress 2 1 1,
+        accepted "2024-06-16")
+    ] := by
+  native_decide
+
+/- A malformed outer source poisons only its descendant leaves across two deeper axes. -/
+example : thirdLevelOutcomes? thirdLevelRows [
+    thirdLevelSourceCell 1 "bad" (.rejected .dateFormat),
+    thirdLevelSourceCell 2 "2024-06-16T23:45:00"
+      (.parsed (.temporal (momentAt 16 23 45 |>.get (by native_decide))))
+  ] = some [
+    (thirdLevelSourceAddress 1, thirdLevelTargetAddress 1 1 1,
+      .poison .dateFormat),
+    (thirdLevelSourceAddress 1, thirdLevelTargetAddress 1 1 2,
+      .poison .dateFormat),
+    (thirdLevelSourceAddress 1, thirdLevelTargetAddress 1 2 1,
+      .poison .dateFormat),
+    (thirdLevelSourceAddress 2, thirdLevelTargetAddress 2 1 1,
+      accepted "2024-06-16")
+  ] := by
+  native_decide
+
+/- Ancestor rows without a physical third-level target row produce no implicit outcomes. -/
+example : thirdLevelOutcomes?
+    [{ group := 10, path := [1] }, { group := 10, path := [2] },
+      { group := 20, path := [1, 1] }, { group := 20, path := [2, 1] },
+      { group := 30, path := [2, 1, 1] }]
+    [thirdLevelSourceCell 1 "2024-06-15T00:30:00"
+      (.parsed (.temporal (momentAt 15 0 30 |>.get (by native_decide)))),
+    thirdLevelSourceCell 2 "2024-06-16T23:45:00"
+      (.parsed (.temporal (momentAt 16 23 45 |>.get (by native_decide))))] = some [
+      (thirdLevelSourceAddress 2, thirdLevelTargetAddress 2 1 1,
+        accepted "2024-06-16")
+    ] := by
+  native_decide
+
 end A12Kernel.Conformance.AddressedDateFromDateTime

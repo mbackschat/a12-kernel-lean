@@ -1,10 +1,10 @@
 # External kernel evidence
 
-This document owns the portable evidence boundary between the external A12 kernel harness and the Lean theory. It describes the three compact bundles retained in the current checkout, the two gates that consume them, and the correspondence claims those observations do and do not support.
+This document owns the portable evidence boundary between the external A12 kernel harness and the Lean theory. It describes the three typed compact replay bundles retained in the current checkout, the two gates that consume them, and the correspondence claims those observations do and do not support. Bounded raw calibration captures may also be retained when an owning source checkpoint pins their exact bytes and claim limits; they are not replay bundles and establish neither `L` nor `C` coverage.
 
 ## Current retained inventory
 
-[`evidence/kernel-30.8.1/`](../evidence/kernel-30.8.1/) contains exactly three immutable compact bundles:
+The current typed replay estate contains exactly three immutable compact bundles:
 
 | Bundle | Exact identity | Current consumer | Retained cases |
 |---|---|---|---|
@@ -12,7 +12,7 @@ This document owns the portable evidence boundary between the external A12 kerne
 | [Root String computation](../evidence/kernel-30.8.1/captures/string-computation-v1/semantic-observations.json) | SHA-256 `2869de08fa2f36ab8c904d28e5d1629689f0155b754472a91bb21054cc19872e` | [`StringComputationProjection.lean`](../A12Kernel/Evidence/StringComputationProjection.lean) and `lake test` | 22 project-reviewed cases: 13 final-delta observations and nine checked-outcome/delta/exact-application observations |
 | [Direct String cascade](../evidence/kernel-30.8.1/captures/string-direct-cascade-v1/semantic-observations.json) | SHA-256 `1d8d253e553eba70fa990975666884833748bed9d9b2b6483f472767a9837c7a` | [`StringCascadeProjection.lean`](../A12Kernel/Evidence/StringCascadeProjection.lean) and `lake test` | Five producer-certified clean/error/delta/value-only application observations |
 
-[`ObservationBundle.lean`](../A12Kernel/Evidence/ObservationBundle.lean) is the shared operation-neutral bounded reader. Each typed projection pins its bundle's exact bytes, closed family and case shape, provenance references, typed input, observation fidelity, and semantic comparison. Raw models, case files, diagnostic drafts, runner tables, packets, receipts, and one-time binders are deliberately absent from the current checkout; their exact identities and recovery revisions live in the [validation](archived/VALIDATION-RAW-EVIDENCE.md), [root-String](archived/STRING-COMPUTATION-RAW-EVIDENCE.md), and [direct-cascade](archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md) archives.
+[`ObservationBundle.lean`](../A12Kernel/Evidence/ObservationBundle.lean) is the shared operation-neutral bounded reader. Each typed projection pins its bundle's exact bytes, closed family and case shape, provenance references, typed input, observation fidelity, and semantic comparison. Raw models, case files, diagnostic drafts, runner tables, packets, receipts, and one-time binders are absent from the compact replay estate; their exact identities and recovery revisions live in the [validation](archived/VALIDATION-RAW-EVIDENCE.md), [root-String](archived/STRING-COMPUTATION-RAW-EVIDENCE.md), and [direct-cascade](archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md) archives. A bounded raw capture directory may remain when its source checkpoint is the sole registry for its hashes, producer, observation, and exclusions. Such a directory has no typed consumer, does not run under `lake test`, and does not count as `L` or `C`.
 
 This is a deliberate assurance trade. The migrations ran the complete historical binders and compact lanes together before deleting the raw estates. Routine tests now check the accepted semantic meaning and exact compact bytes instead of repeatedly re-proving filesystem, model, runner, packet, qualification, or receipt relations. Git history is the audit archive; restoring that machinery to current `main` is not part of ordinary replay.
 

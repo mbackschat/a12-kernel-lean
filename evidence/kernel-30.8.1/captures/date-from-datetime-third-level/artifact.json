@@ -1,0 +1,482 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "25e048ea73e10bd58c6950b1d6104dd5809535df",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "model.dm.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "distinct-outer-values-reach-three-level-leaves",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones/MilestoneStamp",
+                "Project/Milestones/Tasks/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones/MilestoneStamp",
+                "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones/MilestoneStamp",
+                "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones[2]/MilestoneStamp",
+                "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-15"
+              },
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-15"
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-15"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-16"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones/MilestoneStamp",
+                "Project/Milestones/Tasks/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones/MilestoneStamp",
+                "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones/MilestoneStamp",
+                "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones[2]/MilestoneStamp",
+                "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-15"
+              },
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-15"
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-15"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-16"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "malformed-first-outer-poisons-only-descendants",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones[2]/MilestoneStamp",
+                "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Project/Milestones/MilestoneStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "referenced" : [
+                "Project/Milestones/MilestoneStamp"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-16"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Project/Milestones/MilestoneStamp",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Project/Milestones/MilestoneStamp"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones[2]/MilestoneStamp",
+                "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Project/Milestones/MilestoneStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+              "referenced" : [
+                "Project/Milestones/MilestoneStamp"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-16"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Project/Milestones/MilestoneStamp",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD'T'HH:mm:ss are allowed.",
+                "referenced" : [
+                  "Project/Milestones/MilestoneStamp"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty-first-outer-clears-only-descendants",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones[2]/MilestoneStamp",
+                "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-16"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones[2]/MilestoneStamp",
+                "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-16"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "ancestor-without-physical-leaf-has-no-outcome",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones[2]/MilestoneStamp",
+                "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-16"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones[2]/MilestoneStamp",
+                "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-16"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}
