@@ -1,4 +1,5 @@
 import A12Kernel.Conformance.GeneratedComputationValidation.Support.CrossGroup
+import A12Kernel.Conformance.NumericComputation.Support
 
 /-! # Generated-computation alternative and phase locks -/
 
@@ -57,6 +58,101 @@ private def invalidCommonFormalInputError? :
       commonPrecondition := some (.fieldFilled 999) }.formalInputPlan with
   | .error error => some error
   | .ok _ => none
+
+namespace FailedFormalInputExecution
+
+private def unsupportedCalendarOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation crossGroupModel) :=
+  elaborateNumericComputationOperation crossGroupModel ["Rules"]
+    crossGroupTarget.id (.atom (.dateDifference .months
+      (.baseYear .direct)
+      (.field (absolutePath ["Input"] "StartDate"))))
+
+private def table? : Option (GeneratedComputationTable
+    (CheckedNumericComputationOperation crossGroupModel)) := do
+  let first ← unsupportedCalendarOperation.toOption
+  let second ← crossGroupNumberOperation.toOption
+  pure {
+    targetField := crossGroupTarget.id
+    name := "failedFormalInputs"
+    alternatives := .guarded {
+      first := {
+        precondition := .fieldNotFilled crossGroupExtra.id
+        operation := first
+      }
+      second := {
+        precondition := .fieldNotFilled crossGroupSource.id
+        operation := second
+      }
+    }
+    messagePlan
+  }
+
+private def prepared : PreparedFlatStringContext crossGroupModel
+    builtinStringPatternCompiler :=
+  (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler
+    crossGroupModel).toOption.get (by native_decide)
+
+private def inputWithBasis? (basis : DateCalendarBasis) :
+    Option (CheckedDocument crossGroupModel) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := [
+      {
+        address := { field := crossGroupSource.id, path := [] }
+        stored := "x"
+        raw := .rejected .malformed
+      },
+      {
+        address := { field := crossGroupDate.id, path := [] }
+        stored := "2020-02-29"
+        raw := .parsed
+          (A12Kernel.Conformance.NumericComputation.Support.dateValue
+            2020 2 29 basis)
+      }
+    ]
+  }).toOption
+
+private def input? : Option (CheckedDocument crossGroupModel) :=
+  inputWithBasis? .legacyHybrid
+
+private def successfulInput? : Option (CheckedDocument crossGroupModel) :=
+  inputWithBasis? .storedGregorian
+
+def observed? : Option (List ComputationFormalInputFinding) := do
+  let table ← table?
+  let input ← input?
+  match table.executeNumericResultWithFormalInputs evaluationWorld input with
+  | .error (.execution findings
+      (.execution (.operation .unsupportedDateCalendar))) => some findings
+  | .error _ | .ok _ => none
+
+private structure SuccessfulObservation where
+  findings : List (FieldId × FormalCause)
+  values : List (CellAddr × StoredNumber)
+  changes : List (CellAddr × StoredNumber)
+  errorCount : Nat
+  cleared : List CellAddr
+  deriving Repr, DecidableEq
+
+def successful? : Option SuccessfulObservation := do
+  let table ← table?
+  let input ← successfulInput?
+  let view ← (table.executeNumericResultWithFormalInputs
+    evaluationWorld input).toOption
+  pure {
+    findings := view.formalErrorsInOperands.map fun finding =>
+      (finding.address.field, finding.cause),
+    values := view.numeric.withoutErrors.map fun entry =>
+      (entry.targetField, entry.value),
+    changes := view.numeric.withChanges.map fun entry =>
+      (entry.targetField, entry.value),
+    errorCount := view.numeric.withErrors.length
+    cleared := view.numeric.cleared
+  }
+
+end FailedFormalInputExecution
 
 private def generatedRuntimeContext
     (common source extra date : RawCell) : ScalarComputationContext :=
@@ -552,6 +648,27 @@ example :
           { address := { field := crossGroupOtherTarget.id, path := [] },
             cause := .malformed }
         ]) := by
+  native_decide
+
+/- Generated whole-call execution retains the call-global malformed source even
+   though first selection reaches only the legacy-calendar row that fails. -/
+example : FailedFormalInputExecution.observed? = some [{
+    address := { field := crossGroupSource.id, path := [] }
+    cause := .malformed
+  }] := by
+  native_decide
+
+/- The same admitted call on a supported calendar preserves the exact CellAddr
+   result and independently retains the unreached malformed dependency. -/
+example : FailedFormalInputExecution.successful? = some {
+    findings := [(crossGroupSource.id, FormalCause.malformed)]
+    values := [({ field := crossGroupTarget.id, path := [] },
+      { unscaled := -46, scale := 0 })]
+    changes := [({ field := crossGroupTarget.id, path := [] },
+      { unscaled := -46, scale := 0 })]
+    errorCount := 0
+    cleared := []
+  } := by
   native_decide
 
 /- Formal-input projection cannot silently erase an unknown common guard: the

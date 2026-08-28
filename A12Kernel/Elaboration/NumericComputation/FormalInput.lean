@@ -5,11 +5,25 @@ import A12Kernel.Elaboration.NumericComputation.RunResult
 
 namespace A12Kernel
 
-/-- One completed checked scalar Number run paired with its call-global raw formal-input inventory. The numeric result keeps its independently rendered target messages. -/
-structure NumericComputationFormalInputRunView (model : FlatModel) where
+/-- One completed checked Number run paired with its call-global raw formal-input inventory. The numeric result keeps its exact target identity and independently rendered target messages. -/
+structure NumericComputationFormalInputRunView (model : FlatModel)
+    (Target : Type := FieldId) where
   private mk ::
-  numeric : NumericComputationRunView (ComputationFormalMessage Unit)
+  numeric : NumericComputationRunView (ComputationFormalMessage Unit) Target
   formalErrorsInOperands : List ComputationFormalInputFinding
+
+namespace NumericComputationFormalInputRunView
+
+/-- Construct the shared whole-call view after a family-owned execution has preserved its own target identity. -/
+def of (numeric : NumericComputationRunView
+    (ComputationFormalMessage Unit) Target)
+    (formalErrorsInOperands : List ComputationFormalInputFinding) :
+    NumericComputationFormalInputRunView model Target := {
+  numeric
+  formalErrorsInOperands
+}
+
+end NumericComputationFormalInputRunView
 
 /-- Failure while composing the checked scalar run's direct-field inventory with execution and source-relative result projection. Once planning succeeds, an execution failure retains the exact eager raw findings even though no numeric result exists. -/
 inductive NumericComputationFormalInputRunFault where
@@ -76,10 +90,8 @@ def executeResultWithFormalInputs (run : CheckedNumericComputationRun model)
   let findings := inputPlan.findings input
   match run.executeResult world input (fun _ => ()) [] with
   | .error cause => .error (.execution findings cause)
-  | .ok numeric => .ok {
-      numeric
-      formalErrorsInOperands := findings
-    }
+  | .ok numeric =>
+      .ok (NumericComputationFormalInputRunView.of numeric findings)
 
 end CheckedNumericComputationRun
 

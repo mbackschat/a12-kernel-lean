@@ -172,6 +172,48 @@ theorem admittedGeneratedNumericOperationTable_executeResult_exact
   rw [supported]
   rfl
 
+/-- Generated whole-call composition preserves the exact-address public result and the admitted plan's eager raw findings on success. -/
+theorem generatedNumericOperationTable_executeResultWithFormalInputs_exact
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model))
+    (admission : AdmittedGeneratedNumericOperationTable model computation)
+    (world : World) (input : CheckedDocument model)
+    (inputPlan : CheckedComputationFormalInputPlan model)
+    (numeric : NumericComputationRunView
+      (ComputationFormalMessage Unit) CellAddr)
+    (admitted : admitGeneratedNumericOperationTable model computation =
+      .ok admission)
+    (planned : admission.formalInputPlan = .ok inputPlan)
+    (executed : admission.executeResult world input (fun _ => ()) [] =
+      .ok numeric) :
+    computation.executeNumericResultWithFormalInputs world input =
+      .ok (NumericComputationFormalInputRunView.of numeric
+        (inputPlan.findings input)) := by
+  rw [GeneratedComputationTable.executeNumericResultWithFormalInputs, admitted]
+  simp only [Except.mapError, Bind.bind, Except.bind]
+  rw [planned]
+  rw [executed]
+
+/-- After generated planning succeeds, any later failure retains the exact eager raw findings beside the unchanged failure. -/
+theorem generatedNumericOperationTable_executeResultWithFormalInputs_failure_exact
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model))
+    (admission : AdmittedGeneratedNumericOperationTable model computation)
+    (world : World) (input : CheckedDocument model)
+    (inputPlan : CheckedComputationFormalInputPlan model)
+    (fault : GeneratedNumericComputationRunResultError)
+    (admitted : admitGeneratedNumericOperationTable model computation =
+      .ok admission)
+    (planned : admission.formalInputPlan = .ok inputPlan)
+    (executed : admission.executeResult world input (fun _ => ()) [] =
+      .error fault) :
+    computation.executeNumericResultWithFormalInputs world input =
+      .error (.execution (inputPlan.findings input) fault) := by
+  rw [GeneratedComputationTable.executeNumericResultWithFormalInputs, admitted]
+  simp only [Except.mapError, Bind.bind, Except.bind]
+  rw [planned]
+  rw [executed]
+
 /-- The generated numeric table inventory is exactly the validated model declarations referenced by its common guard, alternative guards, or checked operations. -/
 theorem generatedNumericOperationTable_fieldDependencies_exact
     (computation : GeneratedComputationTable

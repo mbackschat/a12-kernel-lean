@@ -745,6 +745,14 @@ inductive GeneratedNumericComputationFormalInputPlanError where
   | formalInput (cause : ComputationFormalInputPlanError)
   deriving Repr, DecidableEq
 
+/-- Failure while composing one generated numeric table's admitted static inventory with its exact-address public result. Planning failures have no checked inventory; post-plan failures retain it. -/
+inductive GeneratedNumericComputationFormalInputRunError where
+  | validation (cause : GeneratedComputationValidationError)
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : GeneratedNumericComputationRunResultError)
+  deriving Repr
+
 private def optionalGeneratedGuardReferences
     (guard : Option ComputationCondition) (field : FieldId) : Bool :=
   match guard with
@@ -791,15 +799,45 @@ def fieldDependencies (computation : GeneratedComputationTable
     computation.referencesField declaration.id).map fun declaration =>
       declaration.id
 
+end GeneratedComputationTable
+
+namespace AdmittedGeneratedNumericOperationTable
+
+/-- Bind the already-admitted generated table's complete dependency union to the shared target-excluding inventory without repeating generated validation admission. -/
+def formalInputPlan
+    (_admission : AdmittedGeneratedNumericOperationTable model computation) :
+    Except ComputationFormalInputPlanError
+      (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputPlan model computation.fieldDependencies
+    [computation.targetField]
+
+end AdmittedGeneratedNumericOperationTable
+
+namespace GeneratedComputationTable
+
 /-- Admit the generated-validation shell first, then bind its complete common, row-guard, and checked-operation dependency union to the shared target-excluding formal-input plan. -/
 def formalInputPlan (computation : GeneratedComputationTable
     (CheckedNumericComputationOperation model)) :
     Except GeneratedNumericComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) := do
-  let _ ← assembleGeneratedNumericOperationTableRule model computation
+  let admission ← admitGeneratedNumericOperationTable model computation
     |>.mapError .validation
-  checkComputationFormalInputPlan model computation.fieldDependencies
-    [computation.targetField] |>.mapError .formalInput
+  admission.formalInputPlan |>.mapError .formalInput
+
+/-- Admit one generated table once, bind its eager raw findings, and retain them beside either its exact-address Number result or any later execution failure. -/
+def executeNumericResultWithFormalInputs (computation : GeneratedComputationTable
+    (CheckedNumericComputationOperation model))
+    (world : World) (input : CheckedDocument model) :
+    Except GeneratedNumericComputationFormalInputRunError
+      (NumericComputationFormalInputRunView model CellAddr) := do
+  let admission ← admitGeneratedNumericOperationTable model computation
+    |>.mapError .validation
+  let inputPlan ← admission.formalInputPlan |>.mapError .formalInput
+  let findings := inputPlan.findings input
+  match admission.executeResult world input (fun _ => ()) [] with
+  | .error cause => .error (.execution findings cause)
+  | .ok numeric =>
+      .ok (NumericComputationFormalInputRunView.of numeric findings)
 
 end GeneratedComputationTable
 
