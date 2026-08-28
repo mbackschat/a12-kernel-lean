@@ -24,7 +24,7 @@ Retained Kernel evidence separately bounds correspondence to A12 Kernel 30.8.1. 
 | [Execute](EXECUTE.md) | green | Exact-address DateTime application, generated numeric-table evaluation/application, and selected-preliminary execution across independent results, a direct DateTime amount, a producer overlay, and a lazy fallback |
 | [Translate](TRANSLATE.md) | green | Computed-target refusal to exact external diagnostic or typed local refusal |
 | [Transform](TRANSFORM.md) | green | Checked numeric-operation identity and unsafe nonidentity boundary |
-| [Compile](COMPILE.md) | green | Specialized finite condition, generated numeric-table, and selected-preliminary whole-call plans with exact refinement |
+| [Compile](COMPILE.md) | green | Specialized finite condition, generated numeric-table, selected-preliminary whole-call, and three selected conversion-composition plans with exact bounded refinement |
 | [Analyze](ANALYZE.md) | green; broader graph reconstruction amber | SMT-backed presence reachability plus checked numeric-table cycle analysis |
 | [Verify](VERIFY.md) | green | Proof-bearing same-field contradiction certificate and counterexample boundary |
 | [Synthesize](SYNTHESIZE.md) | green | SMT-produced presence witness replayed through Lean semantics |
