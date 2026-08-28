@@ -2,6 +2,14 @@ import A12Kernel.Elaboration.CheckedStarDocument
 
 namespace A12Kernel
 
+/-- The immutable starred-field projection is exactly the caller-view projection specialized to the checked document's base read. -/
+theorem resolveCheckedField_delegates_to_base_read
+    (source : CheckedStarFieldPath model) (checked : CheckedDocument model)
+    (outer : Env) :
+    source.resolveCheckedField checked outer =
+      source.resolveCheckedFieldWithRead checked checked.read outer := by
+  rfl
+
 /-- An unknown field remains a field-resolution failure before any environment or document read. -/
 theorem checkedDocument_addressedCell_field_error
     (checked : CheckedDocument model) (environment : Env)
@@ -9,7 +17,8 @@ theorem checkedDocument_addressedCell_field_error
     (failed : model.lookupUniqueId field = .error cause) :
     checked.addressedCell environment field =
       .error (.field field cause) := by
-  unfold CheckedDocument.addressedCell CheckedDocument.cellAddress
+  unfold CheckedDocument.addressedCell CheckedDocument.addressedCellWithRead
+    CheckedDocument.cellAddress
   rw [failed]
   simp only [Except.mapError, bind, Except.bind]
 
@@ -23,7 +32,8 @@ theorem checkedDocument_addressedCell_environment_error
       environment.pathForScope declaration.repeatableScope = .error cause) :
     checked.addressedCell environment field =
       .error (.environment cause) := by
-  unfold CheckedDocument.addressedCell CheckedDocument.cellAddress
+  unfold CheckedDocument.addressedCell CheckedDocument.addressedCellWithRead
+    CheckedDocument.cellAddress
   rw [lookup]
   simp only [Except.mapError, bind, Except.bind]
   rw [failed]
@@ -36,6 +46,7 @@ theorem resolveCheckedField_addressing_error
       source.path.resolve checked.source.toDocument outer = .error cause) :
     source.resolveCheckedField checked outer = .error (.addressing cause) := by
   unfold CheckedStarFieldPath.resolveCheckedField
+    CheckedStarFieldPath.resolveCheckedFieldWithRead
   rw [failed]
   simp only [Except.mapError, bind, Except.bind]
 
@@ -64,6 +75,7 @@ theorem resolveCheckedField_empty_topology
         projected.topology = topology ∧ projected.cells = []
     | .error _ => False := by
   unfold CheckedStarFieldPath.resolveCheckedField
+    CheckedStarFieldPath.resolveCheckedFieldWithRead
   rw [resolved]
   simp only [Except.mapError, bind, Except.bind]
   rw [empty]

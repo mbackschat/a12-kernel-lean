@@ -140,6 +140,28 @@ example : (do
       (address target.id [4, 1], .poison .dateRangeSeparator)] := by
   native_decide
 
+private def duplicateFirstChoiceRead (input : CheckedDocument model)
+    (exact : CellAddr) : Except CheckedDocumentError CheckedCell := do
+  let base ← input.read exact
+  if exact = address source.id [1, 1] then
+    pure (base.withFinding .duplicateIndex)
+  else
+    pure base
+
+/- A caller-supplied exact-address view changes only the reached leaf observations: immutable sibling topology and target-row placement stay unchanged, while an earlier poisoned empty source terminates the first project's scan before its later value. -/
+example : (do
+    let operation ← operation?
+    let input ← input?
+    let outcomes ← operation.executeWithRead input
+      (duplicateFirstChoiceRead input) |>.toOption
+    pure (outcomes.map fun entry => (entry.targetField, entry.outcome))) = some [
+      (address target.id [1, 1], .poison .duplicateIndex),
+      (address target.id [1, 2], .poison .duplicateIndex),
+      (address target.id [2, 1], .accepted (stored "2024-07-01/2024-07-31")),
+      (address target.id [3, 1], .noValue),
+      (address target.id [4, 1], .poison .dateRangeSeparator)] := by
+  native_decide
+
 private def addressedErrorView : DateRangeComputationRunView String CellAddr :=
   DateRangeComputationRunView.fromOutcomesAt (fun _ => .absent) ["residual"] [
     (address target.id [2, 1],

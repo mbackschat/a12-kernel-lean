@@ -7,9 +7,9 @@
 <a id="cap-named-environments-and-addresses"></a>
 #### Named environments and addresses
 
-- `boundary`: One-group/nested environments, physical-row enumeration, recursive validation-only implicit child row 1 below existing parents, ancestor projection, checked `CellAddr`, and a validation addressed view that reads an implicit leaf as absent without materializing topology
+- `boundary`: One-group/nested environments, physical-row enumeration, recursive validation-only implicit child row 1 below existing parents, ancestor projection, checked `CellAddr`, a validation addressed view that reads an implicit leaf as absent without materializing topology, and a one-field starred projection whose caller-supplied exact leaf read cannot replace the immutable topology, environment, address, or physical stored text
 - `owner`: [`Iteration.lean`](../../A12Kernel/Semantics/Iteration.lean), [`StarAddressing.lean`](../../A12Kernel/Semantics/StarAddressing.lean), [`CheckedDocument.lean`](../../A12Kernel/Elaboration/CheckedDocument.lean), [`CheckedStarDocument.lean`](../../A12Kernel/Elaboration/CheckedStarDocument.lean)
-- `assurance`: E/P closed for admitted scopes; implicit validation row membership and pointers kernel-locked at a12-dmkits [source registry](../SOURCES.md); relative concrete/implicit emission order is a deterministic Lean account with external order unverified; selected C/X/Q
+- `assurance`: E/P closed for admitted scopes; the immutable starred-field projection is proved to specialize the caller-view form to the checked document's base read, and executable cases separate a reached caller-view poison from unchanged sibling topology and other parent-local scans; implicit validation row membership and pointers kernel-locked at a12-dmkits [source registry](../SOURCES.md); relative concrete/implicit emission order is a deterministic Lean account with external order unverified; selected C/X/Q
 - `remains`: Wider path grammar: [SG9](../SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)
 
 <a id="cap-star-selection-and-correlation"></a>

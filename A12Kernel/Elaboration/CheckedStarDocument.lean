@@ -102,18 +102,25 @@ def checkedCellWithRead (checked : CheckedDocument model)
   let address ← checked.cellAddress environment field
   read address |>.mapError .document
 
-/-- Read one model-owned field instance from a complete environment. The declaration selects its named repeatable scope; environment order and unrelated deeper bindings cannot change the address. -/
-def addressedCell (checked : CheckedDocument model)
+/-- Retain one model-owned field instance under its exact immutable address and stored payload while observing its checked cell through a caller-supplied exact-address view. -/
+def addressedCellWithRead (checked : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (environment : Env) (field : FieldId) :
     Except CheckedAddressingError CheckedAddressedCell := do
   let address ← checked.cellAddress environment field
-  let cell ← (checked.read address).mapError .document
+  let cell ← (read address).mapError .document
   pure {
     environment
     address
     stored := checked.source.toDocument.rawCells address
     cell
   }
+
+/-- Read one model-owned field instance from a complete environment. The declaration selects its named repeatable scope; environment order and unrelated deeper bindings cannot change the address. -/
+def addressedCell (checked : CheckedDocument model)
+    (environment : Env) (field : FieldId) :
+    Except CheckedAddressingError CheckedAddressedCell :=
+  checked.addressedCellWithRead checked.read environment field
 
 /-- Read a field in a validation-produced row environment. Concrete addresses use the immutable checked document unchanged. An exact implicit nested-validation environment supplies a clean absent cell without creating physical row or stored content; an arbitrary missing environment still fails structurally. -/
 def validationAddressedCell (checked : CheckedDocument model)
@@ -241,14 +248,23 @@ private def addressedCell (source : CheckedStarFieldPath model)
     Except CheckedStarDocumentError CheckedAddressedCell :=
   checked.addressedCell environment source.declaration.id
 
-/-- Resolve the existing topology against the immutable checked document and read each concrete leaf once. No declared tail is materialized as an address, and every topology or document failure stays structural. -/
-def resolveCheckedField (source : CheckedStarFieldPath model)
-    (checked : CheckedDocument model) (outer : Env) :
+/-- Resolve topology against the immutable checked document and observe each concrete leaf once through a caller-supplied exact-address view. Exact environment, address, and physical stored payload remain owned by the immutable document. -/
+def resolveCheckedFieldWithRead (source : CheckedStarFieldPath model)
+    (checked : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (outer : Env) :
     Except CheckedStarDocumentError ResolvedCheckedStarField := do
   let topology ←
     (source.path.resolve checked.source.toDocument outer).mapError .addressing
-  let cells ← topology.environments.mapM (source.addressedCell checked)
+  let cells ← topology.environments.mapM fun environment =>
+    checked.addressedCellWithRead read environment source.declaration.id
   pure { topology, cells }
+
+/-- Resolve the existing topology against the immutable checked document and read each concrete leaf once. No declared tail is materialized as an address, and every topology or document failure stays structural. -/
+def resolveCheckedField (source : CheckedStarFieldPath model)
+    (checked : CheckedDocument model) (outer : Env) :
+    Except CheckedStarDocumentError ResolvedCheckedStarField :=
+  source.resolveCheckedFieldWithRead checked checked.read outer
 
 /-- Resolve one full-validation starred entity-list occurrence. Optional checked-filter ownership remains with the typed caller; this function owns the common filter-before-addressing projection and preserves reached failures structurally. -/
 def resolveCheckedValidationEntityOperandCore

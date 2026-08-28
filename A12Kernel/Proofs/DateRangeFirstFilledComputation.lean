@@ -55,7 +55,26 @@ theorem dateRangeFirstFilledDirect_executeResult_projects
   rw [CheckedDateRangeFirstFilledDirectComputation.executeResult, evaluated]
   rfl
 
-/-- Addressed result construction retains the checked operation and classifies every executed outcome under its exact target address. -/
+/-- Caller-view addressed result construction retains the checked operation and classifies every executed outcome under its exact target address against immutable source target state. -/
+theorem addressedDateRangeFirstFilled_executeResultWithRead_projects
+    (operation : CheckedAddressedDateRangeFirstFilledComputation model)
+    (input : CheckedDocument model) (messages : List ResidualMessage)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (outcomes : List AddressedDateRangeFirstFilledComputationOutcome)
+    (view : AddressedDateRangeFirstFilledComputationRunView model ResidualMessage)
+    (executed : operation.executeWithRead input read = .ok outcomes)
+    (produced : operation.executeResultWithRead input read messages = .ok view) :
+    view.operation = operation ∧
+      view.dateRange = DateRangeComputationRunView.fromOutcomesAt
+        input.sourceDateRangeTargetStateAt messages
+        (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
+  rw [CheckedAddressedDateRangeFirstFilledComputation.executeResultWithRead,
+    executed] at produced
+  simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
+  subst view
+  exact ⟨rfl, rfl⟩
+
+/-- Immutable addressed result construction is the base-read specialization of the caller-view projection. -/
 theorem addressedDateRangeFirstFilled_executeResult_projects
     (operation : CheckedAddressedDateRangeFirstFilledComputation model)
     (input : CheckedDocument model) (messages : List ResidualMessage)
@@ -67,11 +86,11 @@ theorem addressedDateRangeFirstFilled_executeResult_projects
       view.dateRange = DateRangeComputationRunView.fromOutcomesAt
         input.sourceDateRangeTargetStateAt messages
         (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
-  rw [CheckedAddressedDateRangeFirstFilledComputation.executeResult,
-    executed] at produced
-  simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
-  subst view
-  exact ⟨rfl, rfl⟩
+  apply addressedDateRangeFirstFilled_executeResultWithRead_projects
+    operation input messages input.read outcomes view
+  · simpa [CheckedAddressedDateRangeFirstFilledComputation.execute] using executed
+  · simpa [CheckedAddressedDateRangeFirstFilledComputation.executeResult] using
+      produced
 
 /-- Addressed application is exactly the common DateRange fold over the separately supplied document's exact cell-state projection. -/
 theorem addressedDateRangeFirstFilledRun_applyToChecked_delegates
