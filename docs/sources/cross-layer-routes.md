@@ -52,6 +52,16 @@ The new mechanism note in the 2026-08-26 handback was independently inspected at
 
 [`ImmutableRepetitionsImpl`](../../../a12-kernel/kernel-md/kernel-md-document-v2/src/main/java/com/mgmtp/a12/kernel/md/document/internal/service/implV2/immutable/ImmutableRepetitionsImpl.java) fills missing predecessor positions with empty groups during insertion. The independently retained Number and String matrices above own the observable parent-scoped and target-family-neutral consequences.
 
+<a id="src-fixed-computation-target-scope"></a>
+#### Fixed target owns cross-group computation scope
+
+- `revision`: a12-dmkits `3adf0a7a77c8ec42045e8e85586f855d85ec24ed`, Kernel `30.8.1`; later maintenance changed fixture construction but not the asserted semantic matrix.
+- `route`: [`CrossGroupConstantComputeScopeDiffTest`](../../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/CrossGroupConstantComputeScopeDiffTest.kt) runs a Number constant declared under `/Rules` and targeting `/Store/StockLevel`. Its seeded-target row compares dynamic Groovy, generated Java, and the independent interpreter; its empty-document row compares dynamic Groovy with the interpreter.
+- `route`: [`CrossGroupConstantComputeScopeTest`](../../../a12-rulekit/interpreter/src/commonTest/kotlin/io/github/mbackschat/a12/dm/interpreter/CrossGroupConstantComputeScopeTest.kt) retains the interpreter projection.
+- `claim`: computation iteration is anchored to the target's repetition scope rather than the declaration group. An all-nonrepeatable target has one implicit instance, so both an instantiated target and an empty document produce the constant value even though the separate declaration group is uninstantiated.
+- `separator`: declaration-group iteration would produce no outcome in both documents; target-owned fixed scope produces exactly one value.
+- `limit`: the runtime discriminator is one Number constant across two fixed subtrees. Generated Java is measured only for the seeded target, not the empty document. The checkpoint does not directly calibrate Boolean or Confirm constants, repeatable cross-group targets, generated validation, retained result partitions, separate-destination application, or wider operations.
+
 <a id="src-repeatable-string-application"></a>
 #### Finite one- and two-level String separate-destination application, measured locally 2026-08-26
 

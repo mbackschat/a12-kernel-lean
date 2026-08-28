@@ -2448,5 +2448,6 @@ run_cmd do
 #print axioms A12Kernel.booleanValueCount_confirm_empty
 #print axioms A12Kernel.checkBooleanConstantOperation_accepts_iff
 #print axioms A12Kernel.checkedBooleanConstantComputation_execute_exact
+#print axioms A12Kernel.checkedBooleanConstantComputation_executeResult_retains_definition
 #print axioms A12Kernel.checkedBooleanConstantComputation_executeResult_projects
 #print axioms A12Kernel.booleanConstantComputationRun_applyToChecked_delegates

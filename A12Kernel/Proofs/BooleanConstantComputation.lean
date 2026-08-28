@@ -17,6 +17,13 @@ theorem checkedBooleanConstantComputation_execute_exact
     operation.execute = .value operation.operation.operation.value := by
   rfl
 
+/-- Result construction retains the exact checked definition, including its declaration group and target-owned placement. -/
+theorem checkedBooleanConstantComputation_executeResult_retains_definition
+    (operation : CheckedBooleanConstantComputation model)
+    (input : CheckedDocument model) :
+    (operation.executeResult input).operation = operation := by
+  rfl
+
 /-- Constant result construction delegates source-relative classification to the shared Boolean result owner. -/
 theorem checkedBooleanConstantComputation_executeResult_projects
     (operation : CheckedBooleanConstantComputation model)

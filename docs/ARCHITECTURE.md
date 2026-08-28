@@ -108,7 +108,8 @@ Semantic indices and parallel iteration share checked index-column facts but not
 
 The computation boundary follows the accepted decision recorded in the archived [`A12 Lean computation execution proposal`](archived/A12-LEAN-COMPUTATION-EXECUTION-PROPOSAL.md).
 
-- A checked computation definition owns target policy, guarded alternatives, static references, and any family-specific route certificates.
+- A checked computation definition owns target policy, guarded alternatives, static references, and any family-specific route certificates. It retains the authored declaration context separately from resolved target placement whenever the checked family permits them to differ.
+- Fixed-target execution derives its single implicit instance from target placement rather than using the declaration context as an iteration source. Repeatable placement retains its separate static relation to the declaration context; the exact behavioral boundaries remain in [the computation specification](../spec/09-computations.md#1-the-ground-rules).
 - A checked plan owns execution order, target uniqueness, and the dependency restrictions established by that family. A bounded authored-pair wrapper may retain caller order separately when its exact dependency decision changes execution order. Neither form is a graph or general scheduler.
 - A transient overlay hides stored values at every computed target and exposes only completed rich outcomes at the exact address or field key. It is private execution state, not an applied document or public result.
 - Family outcomes retain no-value, accepted, rejected-with-attempt, local invalidity, and inherited poison distinctions as applicable. Dependency projection is cause-blind only where the kernel cache is cause-blind.

@@ -69,9 +69,17 @@ private def confirmTarget : FlatFieldDecl := {
   policy := { kind := .confirm }
 }
 
+private def rulesMarker : FlatFieldDecl := {
+  id := 33
+  groupPath := ["Rules"]
+  name := "Marker"
+  policy := { kind := .number { scale := 0, signed := false } }
+}
+
 private def consumerModel : FlatModel :=
   { model with fields :=
-      booleanTarget :: confirmTarget :: stringTarget :: model.fields }
+      booleanTarget :: confirmTarget :: rulesMarker :: stringTarget ::
+        model.fields }
 
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
@@ -90,10 +98,15 @@ private def stringDecision (expression : StringExpr SurfaceFieldPath) :
     (elaborateStringComputationOperation consumerModel ["Root"] stringTarget.id
       expression)
 
-private def booleanConstantDecision (target : FieldId) (value : Bool) :
+private def booleanConstantDecisionIn (declaringGroup : GroupPath)
+    (target : FieldId) (value : Bool) :
     ComputationTargetDiagnosticDecision :=
   decideBooleanConstantTargetDiagnostic
-    (checkBooleanConstantComputation consumerModel ["Root"] target value)
+    (checkBooleanConstantComputation consumerModel declaringGroup target value)
+
+private def booleanConstantDecision (target : FieldId) (value : Bool) :
+    ComputationTargetDiagnosticDecision :=
+  booleanConstantDecisionIn ["Root"] target value
 
 private def booleanConstantOperation?
     (target : FieldId) (value : Bool) : Option BooleanConstantOperation :=
@@ -126,23 +139,32 @@ example :
         some .confirmTrue := by
   native_decide
 
-/- Target resolution, declaring-group ownership, and fixed placement remain distinct local refusals with no claimed Kernel code. -/
+/- Target resolution and fixed placement remain distinct local refusals with no claimed Kernel code. A different valid fixed declaration group is accepted because target placement owns execution scope. -/
 example :
+    let invalidGroup := decideBooleanConstantTargetDiagnostic
+      (checkBooleanConstantComputation consumerModel [] booleanTarget.id true)
+    let malformedGroup := decideBooleanConstantTargetDiagnostic
+      (checkBooleanConstantComputation consumerModel ["Rules", ""]
+        booleanTarget.id true)
     let unknown := decideBooleanConstantTargetDiagnostic
       (checkBooleanConstantComputation consumerModel ["Root"] 999 true)
-    let wrongGroup := decideBooleanConstantTargetDiagnostic
-      (checkBooleanConstantComputation consumerModel ["Other"]
-        booleanTarget.id true)
+    let crossGroup := booleanConstantDecisionIn ["Rules"]
+      booleanTarget.id true
     let repeatable := decideBooleanConstantTargetDiagnostic
       (checkBooleanConstantComputation consumerModel ["Root", "Rows"]
         repeated.id true)
-    unknown = .booleanConstantRefusal (.target (.unknownFieldId 999)) ∧
-      wrongGroup = .booleanConstantRefusal
-        (.targetGroup ["Root"] ["Other"]) ∧
+    invalidGroup = .booleanConstantRefusal
+        (.target (.invalidRuleGroup [])) ∧
+      malformedGroup = .booleanConstantRefusal
+        (.target (.invalidRuleGroup ["Rules", ""])) ∧
+      unknown = .booleanConstantRefusal (.target (.unknownFieldId 999)) ∧
+      crossGroup = .accepted ∧
       repeatable = .booleanConstantRefusal
         (.targetRepeatable repeated.path) ∧
+      invalidGroup.kernelCode? = none ∧
+      malformedGroup.kernelCode? = none ∧
       unknown.kernelCode? = none ∧
-      wrongGroup.kernelCode? = none ∧
+      crossGroup.kernelCode? = none ∧
       repeatable.kernelCode? = none := by
   native_decide
 

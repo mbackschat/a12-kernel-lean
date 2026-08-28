@@ -29,6 +29,24 @@ private def model : FlatModel := {
   fields := [booleanTarget, confirmTarget, unrelated]
 }
 
+private def crossGroupTarget : FlatFieldDecl := {
+  id := 10
+  groupPath := ["Store"]
+  name := "Available"
+  policy := { kind := .boolean }
+}
+
+private def rulesMarker : FlatFieldDecl := {
+  id := 11
+  groupPath := ["Rules"]
+  name := "Marker"
+  policy := { kind := .number { scale := 0, signed := false } }
+}
+
+private def crossGroupModel : FlatModel := {
+  fields := [crossGroupTarget, rulesMarker]
+}
+
 private def prepared :
     PreparedFlatStringContext model builtinStringPatternCompiler :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
@@ -59,6 +77,34 @@ private def document? (boolean : Option Bool) (confirm : Bool)
 private def checked? (target : FieldId) (value : Bool) :
     Option (CheckedBooleanConstantComputation model) :=
   (checkBooleanConstantComputation model ["Review"] target value).toOption
+
+private def crossGroupPrepared :
+    PreparedFlatStringContext crossGroupModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler crossGroupModel).toOption.get (by native_decide)
+
+private def crossGroupDocument? : Option (CheckedDocument crossGroupModel) :=
+  checkDocument crossGroupPrepared "en_US" {
+    instantiatedRows := []
+    cells := []
+  } |>.toOption
+
+private def crossGroupChecked? :
+    Option (CheckedBooleanConstantComputation crossGroupModel) :=
+  (checkBooleanConstantComputation crossGroupModel ["Rules"]
+    crossGroupTarget.id true).toOption
+
+private def crossGroupResult? :
+    Option (BooleanConstantComputationRunView crossGroupModel) := do
+  let input ← crossGroupDocument?
+  let operation ← crossGroupChecked?
+  pure (operation.executeResult input)
+
+private def crossGroupAppliedState? (field : FieldId) :
+    Option BooleanTargetState := do
+  let result ← crossGroupResult?
+  let destination ← crossGroupDocument?
+  pure (result.applyToChecked destination field)
 
 private def result? (target : FieldId) (value : Bool)
     (boolean : Option Bool) (confirm : Bool) :
@@ -149,6 +195,21 @@ example :
     (result? confirmTarget.id true (some true) false).map
         (fun view => (view.withErrors, view.cleared,
           view.formalErrorsInOperands)) = some ([], [], []) := by
+  native_decide
+
+/- A fixed constant runs at its target scope even when another fixed group owns the computation declaration. The empty checked document still has the target's implicit nonrepeatable instance. -/
+example :
+    crossGroupChecked?.isSome = true ∧
+    crossGroupChecked?.map (fun operation =>
+      (operation.declaringGroup, operation.target.groupPath)) =
+        some (["Rules"], ["Store"]) ∧
+    crossGroupResult?.map (·.withoutErrors) =
+      some [{ targetField := crossGroupTarget.id, value := true }] ∧
+    crossGroupResult?.map (·.withChanges) =
+      some [{ targetField := crossGroupTarget.id, value := true }] ∧
+    crossGroupAppliedState? crossGroupTarget.id =
+      some (.presentValue true) ∧
+    crossGroupAppliedState? rulesMarker.id = some .absent := by
   native_decide
 
 end A12Kernel.Conformance.BooleanConstantComputation

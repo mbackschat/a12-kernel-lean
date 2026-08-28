@@ -55,7 +55,6 @@ def checkBooleanConstantOperation (targetKind : FieldKind) (value : Bool) :
 
 inductive BooleanConstantComputationElabError where
   | target (cause : ResolveError)
-  | targetGroup (actual expected : GroupPath)
   | targetRepeatable (path : List String)
   | operation (path : List String) (cause : BooleanConstantOperationElabError)
   deriving Repr, DecidableEq
@@ -65,7 +64,7 @@ namespace BooleanConstantComputationElabError
 /-- Preserve the operation's measured diagnostic without assigning Kernel identities to unmeasured target-placement failures. -/
 def diagnostic? : BooleanConstantComputationElabError → Option KernelStaticDiagnostic
   | .operation _ cause => cause.diagnostic?
-  | .target _ | .targetGroup _ _ | .targetRepeatable _ => none
+  | .target _ | .targetRepeatable _ => none
 
 end BooleanConstantComputationElabError
 
@@ -73,33 +72,30 @@ end BooleanConstantComputationElabError
 structure CheckedBooleanConstantComputation (model : FlatModel) where
   private mk ::
   target : FlatFieldDecl
-  targetGroup : GroupPath
+  declaringGroup : GroupPath
   operation : CheckedBooleanConstantOperation target.policy.kind
   targetFixed : target.repeatableScope = []
-  targetOwnedByGroup : target.groupPath = targetGroup
 
-/-- Check the measured fixed-target constant shape. Runtime evaluation, alternatives, preconditions, and repeatable targets remain outside this boundary. -/
+/-- Check one fixed target and retain the computation's declaration group separately. Target placement owns execution scope, so a fixed declaration group need not equal the fixed target group. -/
 def checkBooleanConstantComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (value : Bool) :
     Except BooleanConstantComputationElabError
       (CheckedBooleanConstantComputation model) := do
+  if !GroupPath.isValid declaringGroup then
+    throw (.target (.invalidRuleGroup declaringGroup))
   let target ← model.lookupUniqueId targetField |>.mapError .target
-  if hGroup : target.groupPath = declaringGroup then
-    if hFixed : target.repeatableScope = [] then
-      let operation ← checkBooleanConstantOperation target.policy.kind value
-        |>.mapError (.operation target.path)
-      pure {
-        target
-        targetGroup := declaringGroup
-        operation
-        targetFixed := hFixed
-        targetOwnedByGroup := hGroup
-      }
-    else
-      throw (.targetRepeatable target.path)
+  if hFixed : target.repeatableScope = [] then
+    let operation ← checkBooleanConstantOperation target.policy.kind value
+      |>.mapError (.operation target.path)
+    pure {
+      target
+      declaringGroup
+      operation
+      targetFixed := hFixed
+    }
   else
-    throw (.targetGroup target.groupPath declaringGroup)
+    throw (.targetRepeatable target.path)
 
 /-- One checked constant result retaining the target certificate beside the shared typed Boolean channels. -/
 structure BooleanConstantComputationRunView (model : FlatModel) where
