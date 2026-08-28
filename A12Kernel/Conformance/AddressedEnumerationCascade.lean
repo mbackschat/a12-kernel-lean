@@ -37,6 +37,24 @@ private def model : FlatModel := {
     { level := 20, path := ["Form", "Rows", "Details"], repeatability := some 2 }]
 }
 
+private def defaultedDomain : EnumerationDeclaration := {
+  domain with defaultStoredToken := some "B"
+}
+
+private def indexedSource : FlatFieldDecl := {
+  source with enumeration := some defaultedDomain
+}
+
+private def indexedModel : FlatModel := {
+  fields := [indexedSource, produced, final, terminal]
+  repeatableGroups := [{
+    level := 10
+    path := ["Form", "Rows"]
+    repeatability := some 3
+    indexField := some indexedSource.id
+  }]
+}
+
 private def bare (name : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field := name }
 
@@ -44,6 +62,17 @@ private def operation? (target : FlatFieldDecl) (source : FlatFieldDecl) :
     Option (CheckedAddressedEnumerationComputation model) :=
   (checkAddressedEnumerationComputation model ["Form", "Rows"] target.id
     (.field (.direct (bare source.name)))).toOption
+
+private def indexedOperation? (target : FlatFieldDecl) (source : FlatFieldDecl) :
+    Option (CheckedAddressedEnumerationComputation indexedModel) :=
+  (checkAddressedEnumerationComputation indexedModel ["Form", "Rows"] target.id
+    (.field (.direct (bare source.name)))).toOption
+
+private def indexedCategoryOperation? (target : FlatFieldDecl)
+    (source : FlatFieldDecl) :
+    Option (CheckedAddressedEnumerationComputation indexedModel) :=
+  (checkAddressedEnumerationComputation indexedModel ["Form", "Rows"] target.id
+    (.field (.category (bare source.name) "Choice"))).toOption
 
 private def categoryOperation? (target : FlatFieldDecl) (source : FlatFieldDecl) :
     Option (CheckedAddressedEnumerationComputation model) :=
@@ -91,6 +120,13 @@ private def threeStageCascade? :
   let third ← operation? terminal final
   (certifyAddressedEnumerationThreeStageCascade first second third).toOption
 
+private def indexedThreeStageCascade? :
+    Option (CheckedAddressedEnumerationThreeStageCascade indexedModel) := do
+  let first ← indexedOperation? produced indexedSource
+  let second ← indexedCategoryOperation? final produced
+  let third ← indexedOperation? terminal final
+  (certifyAddressedEnumerationThreeStageCascade first second third).toOption
+
 private def planError? (producer? consumer? :
     Option (CheckedAddressedEnumerationComputation model)) :
     Option AddressedEnumerationCascadePlanError := do
@@ -104,6 +140,11 @@ private def prepared :
     PreparedFlatStringContext model builtinStringPatternCompiler :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler model).toOption.get (by native_decide)
+
+private def indexedPrepared :
+    PreparedFlatStringContext indexedModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler indexedModel).toOption.get (by native_decide)
 
 private def address (field : FieldId) (row : Nat) : CellAddr :=
   { field, path := [row] }
@@ -139,6 +180,15 @@ private def formalInputDocument? : Option (CheckedDocument model) :=
       cell final 1 "C" (.parsed (.enum "C")),
       cell terminal 1 "C" (.parsed (.enum "C")),
       cell unrelated 1 "C" (.parsed (.enum "C"))]
+  }).toOption
+
+private def selectedDefaultInput? : Option (CheckedDocument indexedModel) :=
+  (checkDocument indexedPrepared "en_US" {
+    instantiatedRows := [{ group := 10, path := [1] }]
+    cells := [
+      cell produced 1 "A" (.parsed (.enum "A")),
+      cell final 1 "B" (.parsed (.enum "B")),
+      cell terminal 1 "B" (.parsed (.enum "B"))]
   }).toOption
 
 private def deepInput? : Option (CheckedDocument model) :=
@@ -428,6 +478,69 @@ example : threeStageResultApplicationSummary? = some {
     (address final.id 2, .presentEmpty),
     (address terminal.id 2, .presentEmpty),
     (address source.id 1, .presentValue ⟨"B", by decide⟩)]
+} := by
+  native_decide
+
+private structure SelectedDefaultCascadeSummary where
+  formalErrors : List ComputationFormalInputFinding
+  firstValues : List (CellAddr × String)
+  firstChanges : List (CellAddr × String)
+  firstCleared : List CellAddr
+  secondValues : List (CellAddr × String)
+  secondChanges : List (CellAddr × String)
+  secondCleared : List CellAddr
+  thirdValues : List (CellAddr × String)
+  thirdChanges : List (CellAddr × String)
+  thirdCleared : List CellAddr
+  phaseErrorCounts : Nat × Nat × Nat
+  phaseResidualCounts : Nat × Nat × Nat
+  deriving Repr, DecidableEq
+
+private def selectedDefaultCascadeSummary? :
+    Option SelectedDefaultCascadeSummary := do
+  let plan ← indexedThreeStageCascade?
+  let input ← selectedDefaultInput?
+  let view ← plan.executeResultWithFormalInputs input |>.toOption
+  pure {
+    formalErrors := view.formalErrorsInOperands
+    firstValues := view.phases.first.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    firstChanges := view.phases.first.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    firstCleared := view.phases.first.cleared
+    secondValues := view.phases.second.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    secondChanges := view.phases.second.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    secondCleared := view.phases.second.cleared
+    thirdValues := view.phases.third.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    thirdChanges := view.phases.third.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    thirdCleared := view.phases.third.cleared
+    phaseErrorCounts := (view.phases.first.withErrors.length,
+      view.phases.second.withErrors.length,
+      view.phases.third.withErrors.length)
+    phaseResidualCounts := (
+      view.phases.first.formalErrorsInOperands.length,
+      view.phases.second.formalErrorsInOperands.length,
+      view.phases.third.formalErrorsInOperands.length)
+  }
+
+/- A selected absent Enumeration index stages its declared default before the first phase; both later stages consume completed overlays, including the non-identity category projection. -/
+example : selectedDefaultCascadeSummary? = some {
+  formalErrors := []
+  firstValues := [(address produced.id 1, "B")]
+  firstChanges := [(address produced.id 1, "B")]
+  firstCleared := []
+  secondValues := [(address final.id 1, "A")]
+  secondChanges := [(address final.id 1, "A")]
+  secondCleared := []
+  thirdValues := [(address terminal.id 1, "A")]
+  thirdChanges := [(address terminal.id 1, "A")]
+  thirdCleared := []
+  phaseErrorCounts := (0, 0, 0)
+  phaseResidualCounts := (0, 0, 0)
 } := by
   native_decide
 

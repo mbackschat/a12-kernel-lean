@@ -257,7 +257,9 @@ inductive AddressedEnumerationThreeStageCascadeFault where
 /-- Failure while composing the checked call-global inventory with three-stage execution. -/
 inductive AddressedEnumerationThreeStageCheckedResultFault where
   | formalInput (cause : ComputationFormalInputPlanError)
-  | execution (cause : AddressedEnumerationThreeStageCascadeFault)
+  | preliminary (cause : CheckedIndexPreliminaryError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : AddressedEnumerationThreeStageCascadeFault)
   deriving Repr, DecidableEq
 
 namespace CheckedAddressedEnumerationThreeStageCascade
@@ -273,15 +275,18 @@ def analyze (plan : CheckedAddressedEnumerationThreeStageCascade model) :
     (plan.third.target.field, plan.third.source.fieldDependencies)]
 }
 
-/-- Accumulate the first two exact-address dependency overlays before executing the third stage. -/
-def execute (plan : CheckedAddressedEnumerationThreeStageCascade model)
-    (input : CheckedDocument model) :
+/-- Accumulate the first two exact-address dependency overlays over one caller-supplied fallback view before executing the third stage. -/
+def executeWithFallbackRead
+    (plan : CheckedAddressedEnumerationThreeStageCascade model)
+    (input : CheckedDocument model)
+    (fallbackRead : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedEnumerationThreeStageCascadeFault
       AddressedEnumerationThreeStageCascadeOutcomes := do
-  let first ← plan.first.execute input |>.mapError .first
+  let first ← plan.first.executeWithRead input fallbackRead |>.mapError .first
   let firstDependencies ← projectEnumerationDependencyCells first
     |>.mapError fun error => .firstDependency error.target error.cause
-  let readAfterFirst := readAfterEnumerationDependencies input firstDependencies
+  let readAfterFirst := readAfterEnumerationDependenciesWith firstDependencies
+    fallbackRead
   let second ← plan.second.executeWithRead input readAfterFirst
     |>.mapError .second
   let secondDependencies ← projectEnumerationDependencyCells second
@@ -291,19 +296,37 @@ def execute (plan : CheckedAddressedEnumerationThreeStageCascade model)
   let third ← plan.third.executeWithRead input readAfterSecond |>.mapError .third
   pure { first, second, third }
 
-/-- Execute once, then classify all three retained phases against the immutable source document. -/
-def executeResult (plan : CheckedAddressedEnumerationThreeStageCascade model)
+/-- Execute all three stages over the immutable checked document. -/
+def execute (plan : CheckedAddressedEnumerationThreeStageCascade model)
+    (input : CheckedDocument model) :
+    Except AddressedEnumerationThreeStageCascadeFault
+      AddressedEnumerationThreeStageCascadeOutcomes :=
+  plan.executeWithFallbackRead input input.read
+
+/-- Execute through one fallback view, then classify all three retained phases against the immutable source document. -/
+def executeResultWithFallbackRead
+    (plan : CheckedAddressedEnumerationThreeStageCascade model)
     (input : CheckedDocument model)
+    (fallbackRead : CellAddr → Except CheckedDocumentError CheckedCell)
     (firstResidual secondResidual thirdResidual : List ResidualMessage) :
     Except AddressedEnumerationThreeStageCascadeFault
       (AddressedEnumerationThreeStageCascadeRunView model ResidualMessage) := do
-  let outcomes ← plan.execute input
+  let outcomes ← plan.executeWithFallbackRead input fallbackRead
   pure {
     plan
     first := projectAddressedEnumerationResults input firstResidual outcomes.first
     second := projectAddressedEnumerationResults input secondResidual outcomes.second
     third := projectAddressedEnumerationResults input thirdResidual outcomes.third
   }
+
+/-- Execute once, then classify all three retained phases against the immutable source document. -/
+def executeResult (plan : CheckedAddressedEnumerationThreeStageCascade model)
+    (input : CheckedDocument model)
+    (firstResidual secondResidual thirdResidual : List ResidualMessage) :
+    Except AddressedEnumerationThreeStageCascadeFault
+      (AddressedEnumerationThreeStageCascadeRunView model ResidualMessage) :=
+  plan.executeResultWithFallbackRead input input.read firstResidual
+    secondResidual thirdResidual
 
 /-- Bind every analyzed operation to one call-global direct-field inventory. -/
 def formalInputPlan
@@ -312,20 +335,23 @@ def formalInputPlan
       (CheckedComputationFormalInputPlan model) :=
   checkComputationFormalInputOperations model plan.analyze.fieldDependencies
 
-/-- Collect the global inventory eagerly, then execute the three phases with no duplicated phase residuals. -/
+/-- Prepare the selected global inventory once, then execute all three phases through that fallback view with no duplicated phase residuals. -/
 def executeResultWithFormalInputs
     (plan : CheckedAddressedEnumerationThreeStageCascade model)
     (input : CheckedDocument model) :
     Except AddressedEnumerationThreeStageCheckedResultFault
       (AddressedEnumerationThreeStageFormalInputRunView model) := do
   let inputPlan ← plan.formalInputPlan |>.mapError .formalInput
+  let prepared ← inputPlan.prepare input |>.mapError .preliminary
   let noResidual := ([] : List ComputationFormalInputFinding)
-  let phases ← plan.executeResult input noResidual noResidual noResidual
-    |>.mapError .execution
-  pure {
-    phases
-    formalErrorsInOperands := inputPlan.findings input
-  }
+  match plan.executeResultWithFallbackRead input
+      prepared.preliminary.readComputation noResidual noResidual noResidual with
+  | .error cause =>
+      .error (.execution prepared.formalErrorsInOperands cause)
+  | .ok phases => .ok {
+      phases
+      formalErrorsInOperands := prepared.formalErrorsInOperands
+    }
 
 end CheckedAddressedEnumerationThreeStageCascade
 

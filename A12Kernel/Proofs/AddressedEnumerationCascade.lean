@@ -107,22 +107,26 @@ theorem addressedEnumerationThreeStageCascade_executeResult_projects
         projectAddressedEnumerationResults input firstResidual outcomes.first,
         projectAddressedEnumerationResults input secondResidual outcomes.second,
         projectAddressedEnumerationResults input thirdResidual outcomes.third) := by
+  change plan.executeWithFallbackRead input input.read = .ok outcomes at executed
   unfold CheckedAddressedEnumerationThreeStageCascade.executeResult
+    CheckedAddressedEnumerationThreeStageCascade.executeResultWithFallbackRead
   rw [executed]
   rfl
 
-/-- Static Enumeration compatibility excludes target-rejection entries from every phase. -/
-theorem addressedEnumerationThreeStageCascade_executeResult_hasNoTargetErrors
+/-- Static Enumeration compatibility excludes target-rejection entries from every phase under any checked fallback view. -/
+theorem addressedEnumerationThreeStageCascade_executeResultWithFallbackRead_hasNoTargetErrors
     (plan : CheckedAddressedEnumerationThreeStageCascade model)
     (input : CheckedDocument model)
+    (fallbackRead : CellAddr → Except CheckedDocumentError CheckedCell)
     (firstResidual secondResidual thirdResidual : List ResidualMessage)
     (outcomes : AddressedEnumerationThreeStageCascadeOutcomes)
-    (executed : plan.execute input = .ok outcomes) :
-    (plan.executeResult input firstResidual secondResidual thirdResidual).map
+    (executed : plan.executeWithFallbackRead input fallbackRead = .ok outcomes) :
+    (plan.executeResultWithFallbackRead input fallbackRead firstResidual
+      secondResidual thirdResidual).map
       (fun view =>
         (view.first.withErrors, view.second.withErrors,
           view.third.withErrors)) = .ok ([], [], []) := by
-  unfold CheckedAddressedEnumerationThreeStageCascade.executeResult
+  unfold CheckedAddressedEnumerationThreeStageCascade.executeResultWithFallbackRead
   rw [executed]
   change Except.ok (
     (projectAddressedEnumerationResults input firstResidual
@@ -135,29 +139,66 @@ theorem addressedEnumerationThreeStageCascade_executeResult_hasNoTargetErrors
     addressedEnumerationResults_haveNoTargetErrors,
     addressedEnumerationResults_haveNoTargetErrors]
 
+/-- Immutable three-stage execution specializes the fallback-view target-error exclusion. -/
+theorem addressedEnumerationThreeStageCascade_executeResult_hasNoTargetErrors
+    (plan : CheckedAddressedEnumerationThreeStageCascade model)
+    (input : CheckedDocument model)
+    (firstResidual secondResidual thirdResidual : List ResidualMessage)
+    (outcomes : AddressedEnumerationThreeStageCascadeOutcomes)
+    (executed : plan.execute input = .ok outcomes) :
+    (plan.executeResult input firstResidual secondResidual thirdResidual).map
+      (fun view =>
+        (view.first.withErrors, view.second.withErrors,
+          view.third.withErrors)) = .ok ([], [], []) := by
+  change plan.executeWithFallbackRead input input.read = .ok outcomes at executed
+  exact addressedEnumerationThreeStageCascade_executeResultWithFallbackRead_hasNoTargetErrors
+    plan input input.read firstResidual secondResidual thirdResidual outcomes
+    executed
+
 /-- Checked three-stage formal inputs remain call-global and are never duplicated into phase residual channels. -/
 theorem addressedEnumerationThreeStage_executeResultWithFormalInputs_exact
     (plan : CheckedAddressedEnumerationThreeStageCascade model)
     (input : CheckedDocument model)
     (inputPlan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
     (outcomes : AddressedEnumerationThreeStageCascadeOutcomes)
     (view : AddressedEnumerationThreeStageFormalInputRunView model)
     (planned : plan.formalInputPlan = .ok inputPlan)
-    (executed : plan.execute input = .ok outcomes)
+    (preparation : inputPlan.prepare input = .ok prepared)
+    (executed : plan.executeWithFallbackRead input
+      prepared.preliminary.readComputation = .ok outcomes)
     (produced : plan.executeResultWithFormalInputs input = .ok view) :
-    view.formalErrorsInOperands = inputPlan.findings input ∧
+    view.formalErrorsInOperands = prepared.formalErrorsInOperands ∧
       view.phases.first.formalErrorsInOperands = [] ∧
       view.phases.second.formalErrorsInOperands = [] ∧
       view.phases.third.formalErrorsInOperands = [] := by
   rw [CheckedAddressedEnumerationThreeStageCascade.executeResultWithFormalInputs,
     planned] at produced
-  simp only [bind, Except.bind, Except.mapError] at produced
-  rw [CheckedAddressedEnumerationThreeStageCascade.executeResult,
+  simp only [bind, Except.bind, Except.mapError, preparation] at produced
+  rw [CheckedAddressedEnumerationThreeStageCascade.executeResultWithFallbackRead,
     executed] at produced
   simp only [bind, Except.bind, pure, Except.pure,
     Except.ok.injEq] at produced
   subst view
   exact ⟨rfl, rfl, rfl, rfl⟩
+
+/-- A post-preparation three-stage execution failure retains the exact eager inventory beside the unchanged cascade fault. -/
+theorem addressedEnumerationThreeStage_executeResultWithFormalInputs_failure_exact
+    (plan : CheckedAddressedEnumerationThreeStageCascade model)
+    (input : CheckedDocument model)
+    (inputPlan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (fault : AddressedEnumerationThreeStageCascadeFault)
+    (planned : plan.formalInputPlan = .ok inputPlan)
+    (preparation : inputPlan.prepare input = .ok prepared)
+    (executed : plan.executeResultWithFallbackRead input
+      prepared.preliminary.readComputation
+      ([] : List ComputationFormalInputFinding) [] [] = .error fault) :
+    plan.executeResultWithFormalInputs input =
+      .error (.execution prepared.formalErrorsInOperands fault) := by
+  rw [CheckedAddressedEnumerationThreeStageCascade.executeResultWithFormalInputs,
+    planned]
+  simp only [bind, Except.bind, Except.mapError, preparation, executed]
 
 /-- Three-stage application delegates to the three result folds in phase order. -/
 theorem addressedEnumerationThreeStageCascadeRun_applyToChecked_delegates
