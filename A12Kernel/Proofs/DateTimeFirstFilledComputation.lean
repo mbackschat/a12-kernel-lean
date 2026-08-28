@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.DateTimeFirstFilledComputation
-import A12Kernel.Elaboration.AddressedDateTimeFirstFilledComputation
+import A12Kernel.Elaboration.AddressedDateTimeFirstFilledFormalInput
 
 /-! # Direct one-star DateTime `FirstFilledValue` computation laws -/
 
@@ -31,6 +31,13 @@ theorem dateTimeFirstFilled_executeResult_projects
   rw [CheckedDateTimeFirstFilledComputation.executeResult, evaluated]
   rfl
 
+/-- The immutable addressed executor is definitionally the caller-read route specialized to the document's checked read. -/
+theorem addressedDateTimeFirstFilled_executeWithRead_base
+    (operation : CheckedAddressedDateTimeFirstFilledComputation model)
+    (input : CheckedDocument model) :
+    operation.executeWithRead input input.read = operation.execute input := by
+  rfl
+
 /-- Addressed result construction retains the checked operation and classifies every executed outcome under its exact target address. -/
 theorem addressedDateTimeFirstFilled_executeResult_projects
     (operation : CheckedAddressedDateTimeFirstFilledComputation model)
@@ -44,10 +51,49 @@ theorem addressedDateTimeFirstFilled_executeResult_projects
         input.sourceDateTimeTargetStateAt messages
         (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
   rw [CheckedAddressedDateTimeFirstFilledComputation.executeResult,
-    executed] at produced
+    CheckedAddressedDateTimeFirstFilledComputation.executeResultWithRead]
+    at produced
+  change operation.executeWithRead input input.read = .ok outcomes at executed
+  rw [executed] at produced
   simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
   subst view
   exact ⟨rfl, rfl⟩
+
+/-- Successful whole-call composition preserves the exact prepared DateTime result, including eager findings, model-zone rendering, and source-relative actions. -/
+theorem addressedDateTimeFirstFilled_executeResultWithFormalInputs_exact
+    (operation : CheckedAddressedDateTimeFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (result : AddressedDateTimeFirstFilledComputationRunView model
+      ComputationFormalInputFinding)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResultWithRead input
+      prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands = .ok result) :
+    operation.executeResultWithFormalInputs input = .ok result := by
+  rw [CheckedAddressedDateTimeFirstFilledComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation, executed]
+
+/-- A post-preparation execution failure retains the exact eager input findings beside the unchanged addressed DateTime fault. -/
+theorem addressedDateTimeFirstFilled_executeResultWithFormalInputs_failure_exact
+    (operation : CheckedAddressedDateTimeFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (fault : AddressedDateTimeFirstFilledComputationFault)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResultWithRead input
+      prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands = .error fault) :
+    operation.executeResultWithFormalInputs input =
+      .error (.execution prepared.formalErrorsInOperands fault) := by
+  rw [CheckedAddressedDateTimeFirstFilledComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation, executed]
 
 /-- Addressed application is exactly the common DateTime fold over the separately supplied document's exact cell-state projection. -/
 theorem addressedDateTimeFirstFilledRun_applyToChecked_delegates

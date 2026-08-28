@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.AddressedDateTimeFirstFilledComputation
+import A12Kernel.Elaboration.AddressedDateTimeFirstFilledFormalInput
 
 /-! # Exact-address repeatable DateTime `FirstFilledValue` locks -/
 
@@ -39,7 +39,8 @@ private def model : FlatModel := {
     fixedTarget, unrelated]
   repeatableGroups := [
     { level := 10, path := ["Projects"], repeatability := some 4 },
-    { level := 20, path := ["Projects", "Choices"], repeatability := some 3 },
+    { level := 20, path := ["Projects", "Choices"], repeatability := some 3,
+      indexField := some source.id },
     { level := 30, path := ["Projects", "Tasks"], repeatability := some 3 }]
   timeZoneId := "Europe/Berlin"
 }
@@ -115,9 +116,15 @@ private def cell (field : FieldId) (path : List Nat) (stored : String)
 private def address (field : FieldId) (path : List Nat) : CellAddr :=
   { field, path }
 
+private def documentWithRows? (selectedRows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := selectedRows, cells }).toOption
+
 private def document? (cells : List ClassifiedCellInput) :
     Option (CheckedDocument model) :=
-  (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
+  documentWithRows? rows cells
 
 private def input? : Option (CheckedDocument model) := document? [
   cell source.id [1, 2] "2001-02-03T04:05:06"
@@ -207,6 +214,70 @@ example : resultApplicationSummary? = some {
     row31 := .presentEmpty
     row41 := .presentEmpty
     unrelatedState := .presentValue (stored "2024-04-01T06:00:00")
+  } := by
+  native_decide
+
+private def formalFinding (path : List Nat)
+    (cause : FormalCause) : ComputationFormalInputFinding := {
+  address := address source.id path
+  cause
+}
+
+private structure FormalInputSummary where
+  planOperands : List FieldId
+  planTargets : List FieldId
+  findingsExact : Bool
+  values : List (CellAddr × String)
+  changes : List (CellAddr × String)
+  errorsEmpty : Bool
+  cleared : List CellAddr
+  deriving Repr, DecidableEq
+
+private def formalInputSummary? : Option FormalInputSummary := do
+  let operation ← operation?
+  let plan ← operation.formalInputPlan.toOption
+  let input ← documentWithRows? [
+      { group := 10, path := [1] }, { group := 10, path := [2] },
+      { group := 20, path := [1, 1] },
+      { group := 20, path := [2, 1] },
+      { group := 20, path := [2, 2] },
+      { group := 30, path := [1, 1] },
+      { group := 30, path := [2, 1] }] [
+    cell source.id [1, 1] "UNRENDERED-STAMP"
+      (dateTimeValue 1717229472000 2001 2 3 4 5 6 (by decide)),
+    cell source.id [2, 1] "DUPLICATE-STORED-KEY"
+      (dateTimeValue 1719832455000 1991 2 3 4 5 6 (by decide)),
+    cell source.id [2, 2] "DUPLICATE-STORED-KEY"
+      (dateTimeValue 1722521838000 1981 2 3 4 5 6 (by decide)),
+    cell target.id [1, 1] "2000-01-01T12:34:56"
+      (dateTimeValue 946726496000 2000 1 1 12 34 56 (by decide)),
+    cell target.id [2, 1] "2000-01-01T12:34:56"
+      (dateTimeValue 946726496000 2000 1 1 12 34 56 (by decide))]
+  let result ← operation.executeResultWithFormalInputs input |>.toOption
+  let findings := result.dateTime.formalErrorsInOperands
+  pure {
+    planOperands := plan.operandFields
+    planTargets := plan.computedFields
+    findingsExact := findings.length == 2 &&
+      findings.contains (formalFinding [2, 1] .duplicateIndex) &&
+      findings.contains (formalFinding [2, 2] .duplicateIndex)
+    values := result.dateTime.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    changes := result.dateTime.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    errorsEmpty := result.dateTime.withErrors.isEmpty
+    cleared := result.dateTime.cleared
+  }
+
+/- Selected DateTime-index preparation compares stored identity, while a clean computation selects instant identity, ignores cached wall-label parts, and renders in the target's model zone. Duplicate keys poison only their reached parent-local scan. -/
+example : formalInputSummary? = some {
+    planOperands := [source.id]
+    planTargets := [target.id]
+    findingsExact := true
+    values := [(address target.id [1, 1], "2024-06-01T10:11:12")]
+    changes := [(address target.id [1, 1], "2024-06-01T10:11:12")]
+    errorsEmpty := true
+    cleared := [address target.id [2, 1]]
   } := by
   native_decide
 

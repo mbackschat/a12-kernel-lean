@@ -120,15 +120,17 @@ structure AddressedDateTimeFirstFilledComputationRunView (model : FlatModel)
 
 namespace CheckedAddressedDateTimeFirstFilledComputation
 
-private def evaluateAt
+private def evaluateAtWithRead
     (operation : CheckedAddressedDateTimeFirstFilledComputation model)
-    (input : CheckedDocument model) (environment : Env) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
     Except AddressedDateTimeFirstFilledComputationFault
       AddressedDateTimeFirstFilledComputationOutcome := do
   let targetPath ←
     environment.pathForScope operation.target.repeatableScope
       |>.mapError .targetEnvironment
-  let resolved ← operation.source.resolveCheckedField input environment
+  let resolved ← operation.source.resolveCheckedFieldWithRead input read environment
     |>.mapError .source
   let outcome ← operation.targetPolicy.evaluate
       (evalDateTimeFirstFilledCells resolved.cells)
@@ -138,29 +140,48 @@ private def evaluateAt
     outcome
   }
 
+/-- Execute one sibling-correlated DateTime scan per physical target row through a caller-supplied exact-address source view. Target topology, physical stored text, cached wall labels, and immutable target state remain unchanged. -/
+def executeWithRead
+    (operation : CheckedAddressedDateTimeFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except AddressedDateTimeFirstFilledComputationFault
+      (List AddressedDateTimeFirstFilledComputationOutcome) := do
+  let environments ← input.actualRowEnvironments operation.target.repeatableScope
+    |>.mapError .targetRows
+  environments.mapM (operation.evaluateAtWithRead input read)
+
 /-- Execute one sibling-correlated DateTime scan per physical target row in document order. -/
 def execute
     (operation : CheckedAddressedDateTimeFirstFilledComputation model)
     (input : CheckedDocument model) :
     Except AddressedDateTimeFirstFilledComputationFault
-      (List AddressedDateTimeFirstFilledComputationOutcome) := do
-  let environments ← input.actualRowEnvironments operation.target.repeatableScope
-    |>.mapError .targetRows
-  environments.mapM (operation.evaluateAt input)
+      (List AddressedDateTimeFirstFilledComputationOutcome) :=
+  operation.executeWithRead input input.read
 
-/-- Classify every exact row outcome against immutable source target state through the shared DateTime result owner. -/
-def executeResult
+/-- Classify caller-view outcomes against immutable source target state through the shared DateTime result owner. -/
+def executeResultWithRead
     (operation : CheckedAddressedDateTimeFirstFilledComputation model)
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (residualMessages : List ResidualMessage) :
     Except AddressedDateTimeFirstFilledComputationFault
       (AddressedDateTimeFirstFilledComputationRunView model ResidualMessage) := do
-  let outcomes ← operation.execute input
+  let outcomes ← operation.executeWithRead input read
   pure {
     operation
     dateTime := DateTimeComputationRunView.fromOutcomesAt
       input.sourceDateTimeTargetStateAt residualMessages
       (outcomes.map fun entry => (entry.targetField, entry.outcome))
   }
+
+/-- Classify every exact row outcome against immutable source target state through the shared DateTime result owner. -/
+def executeResult
+    (operation : CheckedAddressedDateTimeFirstFilledComputation model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    Except AddressedDateTimeFirstFilledComputationFault
+      (AddressedDateTimeFirstFilledComputationRunView model ResidualMessage) :=
+  operation.executeResultWithRead input input.read residualMessages
 
 end CheckedAddressedDateTimeFirstFilledComputation
 
