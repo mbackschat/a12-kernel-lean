@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.AddressedCustomFirstFilledComputation
+import A12Kernel.Elaboration.AddressedCustomFirstFilledFormalInput
 
 /-! # Exact-address repeatable Custom `FirstFilledValue` locks -/
 
@@ -46,7 +46,8 @@ private def model : FlatModel := {
     otherSource, nestedSource, unboundTarget, policySource, rootSource]
   repeatableGroups := [
     { level := 10, path := ["Projects"], repeatability := some 3 },
-    { level := 20, path := ["Projects", "Choices"], repeatability := some 2 },
+    { level := 20, path := ["Projects", "Choices"], repeatability := some 2,
+      indexField := some source.id },
     { level := 30, path := ["Projects", "Tasks"], repeatability := some 2 },
     { level := 40, path := ["Projects", "Choices", "Details"],
       repeatability := some 2 },
@@ -177,7 +178,9 @@ private def prepared :
 private def rows : List RowAddr :=
   [{ group := 10, path := [1] }, { group := 10, path := [2] },
     { group := 10, path := [3] },
-    { group := 20, path := [1, 1] }, { group := 20, path := [2, 1] },
+    { group := 20, path := [1, 1] },
+    { group := 20, path := [2, 1] }, { group := 20, path := [2, 2] },
+    { group := 20, path := [3, 1] },
     { group := 30, path := [2, 2] }, { group := 30, path := [1, 1] },
     { group := 30, path := [3, 2] }, { group := 30, path := [2, 1] },
     { group := 30, path := [3, 1] }, { group := 30, path := [1, 2] }]
@@ -273,6 +276,85 @@ example : resultApplicationSummary? = some {
     row31 := .presentEmpty
     row32 := .absent
     unrelatedState := .presentValue ⟨"KEEP", by decide⟩
+  } := by
+  native_decide
+
+private def formalInput? : Option (CheckedDocument model) :=
+  document? [
+    cell source.id [1, 1] "A7",
+    cell source.id [2, 1] "OK", cell source.id [2, 2] "OK",
+    cell source.id [3, 1] "BAD",
+    cell target.id [1, 1] "A7", cell target.id [1, 2] "SEED",
+    cell target.id [2, 1] "SEED", cell target.id [3, 1] "SEED"]
+
+private def preparedOutcomes? : Option (List (CellAddr × TokenComputationResult)) := do
+  let operation ← operation?
+  let input ← formalInput?
+  let plan ← operation.formalInputPlan.toOption
+  let prepared ← plan.prepare input |>.toOption
+  let outcomes ← operation.executeWithRead input
+    prepared.preliminary.readComputation |>.toOption
+  pure (outcomes.map fun outcome => (outcome.targetField, outcome.result))
+
+/- Custom preparation preserves the already-checked registered rejection, while generated duplicate poison remains a distinct prepared source outcome. -/
+example : preparedOutcomes? = some [
+    (address target.id [2, 2], .poison .duplicateIndex),
+    (address target.id [1, 1], .value "A7"),
+    (address target.id [3, 2], .poison (.registeredCustomValidation rejection)),
+    (address target.id [2, 1], .poison .duplicateIndex),
+    (address target.id [3, 1], .poison (.registeredCustomValidation rejection)),
+    (address target.id [1, 2], .value "A7")] := by
+  native_decide
+
+private def formalFinding (path : List Nat)
+    (cause : FormalCause) : ComputationFormalInputFinding := {
+  address := address source.id path
+  cause
+}
+
+private structure FormalInputSummary where
+  planOperands : List FieldId
+  planTargets : List FieldId
+  findingsExact : Bool
+  values : List (CellAddr × String)
+  changes : List (CellAddr × String)
+  errorsEmpty : Bool
+  cleared : List CellAddr
+  deriving Repr, DecidableEq
+
+private def formalInputSummary? : Option FormalInputSummary := do
+  let operation ← operation?
+  let input ← formalInput?
+  let plan ← operation.formalInputPlan.toOption
+  let result ← operation.executeResultWithFormalInputs input |>.toOption
+  let findings := result.string.formalErrorsInOperands
+  pure {
+    planOperands := plan.operandFields
+    planTargets := plan.computedFields
+    findingsExact := findings.length == 3 &&
+      findings.contains (formalFinding [3, 1]
+        (.registeredCustomValidation rejection)) &&
+      findings.contains (formalFinding [2, 1] .duplicateIndex) &&
+      findings.contains (formalFinding [2, 2] .duplicateIndex)
+    values := result.string.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    changes := result.string.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    errorsEmpty := result.string.withErrors.isEmpty
+    cleared := result.string.cleared
+  }
+
+/- The whole call retains both the pre-existing registered rejection and generated duplicates in its eager inventory, while both poison classes classify exact source-filled target clears. -/
+example : formalInputSummary? = some {
+    planOperands := [source.id]
+    planTargets := [target.id]
+    findingsExact := true
+    values := [
+      (address target.id [1, 1], "A7"),
+      (address target.id [1, 2], "A7")]
+    changes := [(address target.id [1, 2], "A7")]
+    errorsEmpty := true
+    cleared := [address target.id [2, 1], address target.id [3, 1]]
   } := by
   native_decide
 

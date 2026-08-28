@@ -152,15 +152,17 @@ structure AddressedCustomFirstFilledComputationRunView (model : FlatModel)
 
 namespace CheckedAddressedCustomFirstFilledComputation
 
-private def evaluateAt
+private def evaluateAtWithRead
     (operation : CheckedAddressedCustomFirstFilledComputation model)
-    (input : CheckedDocument model) (environment : Env) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
     Except AddressedCustomFirstFilledComputationFault
       AddressedCustomFirstFilledComputationOutcome := do
   let targetPath ←
     environment.pathForScope operation.target.repeatableScope
       |>.mapError .targetEnvironment
-  let resolved ← operation.source.resolveCheckedField input environment
+  let resolved ← operation.source.resolveCheckedFieldWithRead input read environment
     |>.mapError .source
   let side : ResolvedValueListSide .token := {
     cells := resolved.cells.map fun cell => customFirstFilledCellAt cell.cell
@@ -172,27 +174,46 @@ private def evaluateAt
     result := (evalFirstFilledToken side).asComputationResult
   }
 
+/-- Execute one sibling-correlated Custom scan per physical target row through a caller-supplied exact-address source view. Target topology, prepared Custom validation, and immutable source target state remain unchanged. -/
+def executeWithRead
+    (operation : CheckedAddressedCustomFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except AddressedCustomFirstFilledComputationFault
+      (List AddressedCustomFirstFilledComputationOutcome) := do
+  let environments ← input.actualRowEnvironments operation.target.repeatableScope
+    |>.mapError .targetRows
+  environments.mapM (operation.evaluateAtWithRead input read)
+
 /-- Execute one prepared, sibling-correlated Custom scan per physical target row in document order. -/
 def execute
     (operation : CheckedAddressedCustomFirstFilledComputation model)
     (input : CheckedDocument model) :
     Except AddressedCustomFirstFilledComputationFault
-      (List AddressedCustomFirstFilledComputationOutcome) := do
-  let environments ← input.actualRowEnvironments operation.target.repeatableScope
-    |>.mapError .targetRows
-  environments.mapM (operation.evaluateAt input)
+      (List AddressedCustomFirstFilledComputationOutcome) :=
+  operation.executeWithRead input input.read
 
-/-- Classify every exact token outcome against immutable source target state through the shared String result owner. -/
-def executeResult
+/-- Classify caller-view outcomes against immutable source target state through the shared String result owner. -/
+def executeResultWithRead
     (operation : CheckedAddressedCustomFirstFilledComputation model)
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (residualMessages : List ResidualMessage) :
     Except AddressedCustomFirstFilledComputationFault
       (AddressedCustomFirstFilledComputationRunView model ResidualMessage) := do
-  let outcomes ← operation.execute input
+  let outcomes ← operation.executeWithRead input read
   pure {
     operation
     string := projectAddressedTokenResults input residualMessages outcomes
   }
+
+/-- Classify every immutable exact token outcome against source target state through the shared String result owner. -/
+def executeResult
+    (operation : CheckedAddressedCustomFirstFilledComputation model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    Except AddressedCustomFirstFilledComputationFault
+      (AddressedCustomFirstFilledComputationRunView model ResidualMessage) :=
+  operation.executeResultWithRead input input.read residualMessages
 
 end CheckedAddressedCustomFirstFilledComputation
 
