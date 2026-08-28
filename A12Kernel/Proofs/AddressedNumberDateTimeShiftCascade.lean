@@ -98,7 +98,10 @@ theorem addressedNumberDateTimeShiftCascade_executeResult_projects
       view.dateTime = plan.consumer.resultFromOutcomes input
         dateTimeMessages outcomes.consumer := by
   rw [CheckedAddressedNumberDateTimeShiftCascade.executeResult,
-    executed] at produced
+    CheckedAddressedNumberDateTimeShiftCascade.executeResultWithProducerRead]
+    at produced
+  change plan.executeWithProducerRead input input.read = .ok outcomes at executed
+  rw [executed] at produced
   simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
   subst view
   exact ⟨rfl, rfl, rfl⟩
@@ -108,21 +111,28 @@ theorem addressedNumberDateTimeShift_executeResultWithFormalInputs_exact
     (plan : CheckedAddressedNumberDateTimeShiftCascade model)
     (input : CheckedDocument model)
     (inputPlan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
     (outcomes : AddressedNumberDateTimeShiftCascadeOutcomes)
     (view : AddressedNumberDateTimeShiftFormalInputRunView model)
     (planned : plan.formalInputPlan = .ok inputPlan)
-    (executed : plan.execute input = .ok outcomes)
+    (preparation : inputPlan.prepare input = .ok prepared)
+    (executed : plan.executeWithProducerRead input
+      prepared.preliminary.readComputation = .ok outcomes)
     (produced : plan.executeResultWithFormalInputs input = .ok view) :
-    view.formalErrorsInOperands = inputPlan.findings input ∧
+    view.formalErrorsInOperands = prepared.formalErrorsInOperands ∧
+      view.phases.number =
+        NumericComputationRunView.fromSourceOutcomesWithMessages
+          MessagePointer.ofCellAddr (fun _ => ()) [] outcomes.producer ∧
+      view.phases.dateTime = plan.consumer.resultFromOutcomes input
+        [] outcomes.consumer ∧
       view.phases.dateTime.dateTime.formalErrorsInOperands = [] := by
   rw [CheckedAddressedNumberDateTimeShiftCascade.executeResultWithFormalInputs,
     planned] at produced
-  simp only [bind, Except.bind, Except.mapError] at produced
-  rw [CheckedAddressedNumberDateTimeShiftCascade.executeResult,
+  simp only [bind, Except.bind, Except.mapError, preparation] at produced
+  rw [CheckedAddressedNumberDateTimeShiftCascade.executeResultWithProducerRead,
     executed] at produced
-  simp only [bind, Except.bind, pure, Except.pure,
-    Except.ok.injEq] at produced
+  simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
   subst view
-  exact ⟨rfl, rfl⟩
+  exact ⟨rfl, rfl, rfl, rfl⟩
 
 end A12Kernel

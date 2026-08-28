@@ -68,6 +68,7 @@ inductive AddressedNumberDateTimeShiftCascadeFault where
 /-- Failure while composing the checked call-global inventory with cross-family execution. -/
 inductive AddressedNumberDateTimeShiftCheckedResultFault where
   | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (cause : AddressedNumberDateTimeShiftCascadeFault)
   deriving Repr, DecidableEq
 
@@ -102,15 +103,45 @@ def amountRead (plan : CheckedAddressedNumberDateTimeShiftCascade model)
     (input.validationAddressedCell environment field).map
       (fun addressed => some addressed.cell)
 
-/-- Complete every Number producer row before the DateTime phase starts, then expose only the transient exact-address amount view to the source-first consumer. -/
-def execute (plan : CheckedAddressedNumberDateTimeShiftCascade model)
-    (input : CheckedDocument model) :
+/-- Complete every Number producer row through one caller-supplied source view before exposing its transient exact-address outcomes to the source-first DateTime consumer. -/
+def executeWithProducerRead
+    (plan : CheckedAddressedNumberDateTimeShiftCascade model)
+    (input : CheckedDocument model)
+    (producerRead : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedNumberDateTimeShiftCascadeFault
       AddressedNumberDateTimeShiftCascadeOutcomes := do
-  let producer ← plan.producer.execute input |>.mapError .producer
+  let producer ← plan.producer.executeWithRead input producerRead
+    |>.mapError .producer
   let consumer ← plan.consumer.executeWithAmountRead input
       (plan.amountRead input producer) |>.mapError .consumer
   pure { producer, consumer }
+
+/-- Execute both phases against the immutable checked document. -/
+def execute (plan : CheckedAddressedNumberDateTimeShiftCascade model)
+    (input : CheckedDocument model) :
+    Except AddressedNumberDateTimeShiftCascadeFault
+      AddressedNumberDateTimeShiftCascadeOutcomes :=
+  plan.executeWithProducerRead input input.read
+
+/-- Execute through one producer source view and classify both phases independently against the immutable source document. -/
+def executeResultWithProducerRead
+    (plan : CheckedAddressedNumberDateTimeShiftCascade model)
+    (input : CheckedDocument model)
+    (producerRead : CellAddr → Except CheckedDocumentError CheckedCell)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (dateTimeResidualMessages : List DateTimeResidual) :
+    Except AddressedNumberDateTimeShiftCascadeFault
+      (AddressedNumberDateTimeShiftCascadeRunView
+        model NumberPayload DateTimeResidual) := do
+  let outcomes ← plan.executeWithProducerRead input producerRead
+  pure {
+    plan
+    number := NumericComputationRunView.fromSourceOutcomesWithMessages
+      MessagePointer.ofCellAddr numberPayloadAt numberMessages outcomes.producer
+    dateTime := plan.consumer.resultFromOutcomes input
+      dateTimeResidualMessages outcomes.consumer
+  }
 
 /-- Execute once and classify the two already-sourced phases independently against the immutable source document. -/
 def executeResult (plan : CheckedAddressedNumberDateTimeShiftCascade model)
@@ -120,15 +151,9 @@ def executeResult (plan : CheckedAddressedNumberDateTimeShiftCascade model)
     (dateTimeResidualMessages : List DateTimeResidual) :
     Except AddressedNumberDateTimeShiftCascadeFault
       (AddressedNumberDateTimeShiftCascadeRunView
-        model NumberPayload DateTimeResidual) := do
-  let outcomes ← plan.execute input
-  pure {
-    plan
-    number := NumericComputationRunView.fromSourceOutcomesWithMessages
-      MessagePointer.ofCellAddr numberPayloadAt numberMessages outcomes.producer
-    dateTime := plan.consumer.resultFromOutcomes input
-      dateTimeResidualMessages outcomes.consumer
-  }
+        model NumberPayload DateTimeResidual) :=
+  plan.executeResultWithProducerRead input input.read numberPayloadAt
+    numberMessages dateTimeResidualMessages
 
 /-- Bind both analyzed family operations to one call-global direct-field inventory. -/
 def formalInputPlan (plan : CheckedAddressedNumberDateTimeShiftCascade model) :
@@ -136,18 +161,20 @@ def formalInputPlan (plan : CheckedAddressedNumberDateTimeShiftCascade model) :
       (CheckedComputationFormalInputPlan model) :=
   checkComputationFormalInputOperations model plan.analyze.fieldDependencies
 
-/-- Collect the global inventory eagerly, then execute both typed phases without supplied residuals. Number may still derive its established value-less target messages from its own outcomes. -/
+/-- Prepare the selected producer source once, then execute both typed phases while retaining the complete eager inventory. Number may still derive its established value-less target messages from its own outcomes. -/
 def executeResultWithFormalInputs
     (plan : CheckedAddressedNumberDateTimeShiftCascade model)
     (input : CheckedDocument model) :
     Except AddressedNumberDateTimeShiftCheckedResultFault
       (AddressedNumberDateTimeShiftFormalInputRunView model) := do
   let inputPlan ← plan.formalInputPlan |>.mapError .formalInput
-  let phases ← plan.executeResult input (fun _ => ()) [] []
+  let prepared ← inputPlan.prepare input |>.mapError .preliminary
+  let phases ← plan.executeResultWithProducerRead input
+    prepared.preliminary.readComputation (fun _ => ()) [] []
     |>.mapError .execution
   pure {
     phases
-    formalErrorsInOperands := inputPlan.findings input
+    formalErrorsInOperands := prepared.formalErrorsInOperands
   }
 
 end CheckedAddressedNumberDateTimeShiftCascade

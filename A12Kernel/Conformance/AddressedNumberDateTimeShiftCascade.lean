@@ -31,7 +31,8 @@ private def targetStamp :=
 private def model : FlatModel := {
   fields := [baseHours, computedHours, sourceStamp, targetStamp]
   repeatableGroups := [
-    { level := 10, path := ["Order", "Projects"], repeatability := some 3 },
+    { level := 10, path := ["Order", "Projects"], repeatability := some 3,
+      indexField := some baseHours.id },
     { level := 20, path := ["Order", "Projects", "Tasks"], repeatability := some 3 }
   ]
   timeZoneId := "UTC"
@@ -113,6 +114,16 @@ private def input? := document? [
   dateTimeCell targetStamp.id [1, 1] "1970-01-01T07:00:00" 7 (by decide),
   dateTimeCell targetStamp.id [2, 2] "1970-01-01T09:00:00" 9 (by decide)]
 
+private def duplicateProducerIndexInput? := document? [
+  numberCell baseHours.id [1] 1,
+  numberCell baseHours.id [2] 1,
+  numberCell computedHours.id [1] 9,
+  numberCell computedHours.id [2] 9,
+  cell sourceStamp.id [1, 1] "bad" (.rejected .dateFormat),
+  dateTimeCell sourceStamp.id [2, 1] "1970-01-01T05:00:00" 5 (by decide),
+  dateTimeCell targetStamp.id [1, 1] "1970-01-01T06:00:00" 6 (by decide),
+  dateTimeCell targetStamp.id [2, 1] "1970-01-01T06:00:00" 6 (by decide)]
+
 private inductive ProducerSummary where
   | empty
   | value (text : String)
@@ -140,6 +151,54 @@ private def summarizeConsumer
     | .noValue => .empty
     | .accepted value => .value value.text
     | .poison cause => .poisoned cause)
+
+private def duplicateProducerPreparedConsumer? : Option
+    (List (CellAddr × ProducerSummary) ×
+      List (CellAddr × DateTimeSummary)) := do
+  let plan ← plan?
+  let input ← duplicateProducerIndexInput?
+  let inputPlan ← plan.formalInputPlan.toOption
+  let prepared ← inputPlan.prepare input |>.toOption
+  let producer ← plan.producer.executeWithRead input
+    prepared.preliminary.readComputation |>.toOption
+  let consumer ← plan.consumer.executeWithAmountRead input
+    (plan.amountRead input producer) |>.toOption
+  pure (producer.map summarizeProducer, consumer.map summarizeConsumer)
+
+/- The selected producer source poisons before the transient overlay is built; the DateTime phase still reads its immutable source first at each row. -/
+example : duplicateProducerPreparedConsumer? = some ([
+    (address computedHours.id [1], ProducerSummary.poisoned),
+    (address computedHours.id [2], ProducerSummary.poisoned)
+  ], [
+    (address targetStamp.id [1, 1], DateTimeSummary.poisoned .dateFormat),
+    (address targetStamp.id [1, 2],
+      DateTimeSummary.poisoned .computedDependency),
+    (address targetStamp.id [2, 1],
+      DateTimeSummary.poisoned .computedDependency),
+    (address targetStamp.id [2, 2],
+      DateTimeSummary.poisoned .computedDependency)
+  ]) := by
+  native_decide
+
+private def duplicateProducerFormalInputSummary? : Option
+    (List ComputationFormalInputFinding × List CellAddr × List CellAddr) := do
+  let plan ← plan?
+  let input ← duplicateProducerIndexInput?
+  let view ← plan.executeResultWithFormalInputs input |>.toOption
+  pure (view.formalErrorsInOperands, view.phases.number.cleared,
+    view.phases.dateTime.dateTime.cleared)
+
+/- Whole-call preparation retains cached source poison before both generated duplicate-index findings, then clears both source-filled family targets. -/
+example : duplicateProducerFormalInputSummary? = some ([
+    { address := address sourceStamp.id [1, 1], cause := .dateFormat },
+    { address := address baseHours.id [1], cause := .duplicateIndex },
+    { address := address baseHours.id [2], cause := .duplicateIndex }
+  ], [
+    address computedHours.id [1], address computedHours.id [2]
+  ], [
+    address targetStamp.id [1, 1], address targetStamp.id [2, 1]
+  ]) := by
+  native_decide
 
 /- The completed outer Number phase hides stale targets and supplies exact amounts to inner DateTime rows. A formal DateTime source hides the poisoned Number dependency, while an empty source reaches it. -/
 example :
