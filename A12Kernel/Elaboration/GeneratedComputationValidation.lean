@@ -1,12 +1,11 @@
 import A12Kernel.Elaboration.NumericExpression
 import A12Kernel.Elaboration.NumericComputation
-import A12Kernel.Elaboration.NumericComputation.RunApplication
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Semantics.ComputationCondition
 
 /-! # Checked generated computation validation
 
-This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide operand policy, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared model-indexed condition and whole-rule boundary. Direct entity-list aggregates narrow to the established scalar atom; repeatable aggregates, row-paired `SumOfProducts`, and Number `FirstFilledValue` retain their exact checked sources and evaluate through the bounded addressed leaf context without flattening model certificates or row topology. Scalar runtime target completion, immutable source placement, source-relative public Number result classification, checked separate-destination application, and explicit generated validation over that applied destination are retained; wider addressed leaves, repeatable applied validation, general whole-rule orchestration, and general computation scheduling remain outside.
+This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide operand policy, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared model-indexed condition and whole-rule boundary. Direct entity-list aggregates narrow to the established scalar atom; repeatable aggregates, row-paired `SumOfProducts`, and Number `FirstFilledValue` retain their exact checked sources and evaluate through the bounded addressed leaf context without flattening model certificates or row topology. Runtime selection supports both scalar and addressed checked-expression evaluation, while target completion, immutable source placement, and source-relative public Number result classification remain separate. Applied-destination composition lives in its narrow follow-on module; general whole-rule orchestration and scheduling remain outside.
 
 Numeric, typed String/stored-Enumeration, and Boolean/Confirm value counts retain their exact checked direct/plain-star/filtered-star sources so generated validation cannot collapse per-cell provenance, discard literal-domain certificates, or merge distinct field-kind matrices.
 -/
@@ -645,18 +644,35 @@ inductive GeneratedNumericComputationRunResultError where
 
 namespace AdmittedGeneratedNumericOperationTable
 
-/-- Evaluate only the first selected operation of an already-admitted table. Target completion remains a separate projection over the retained policy. -/
-def evaluate (_admission : AdmittedGeneratedNumericOperationTable model computation)
-    (context : ScalarComputationContext) :
+/-- Preserve one first-selection decision while delegating the selected checked operation to a caller-supplied scalar or addressed evaluator. -/
+def evaluateWith
+    (_admission : AdmittedGeneratedNumericOperationTable model computation)
+    (context : ScalarComputationContext)
+    (evaluateOperation : CheckedNumericComputationOperation model →
+      Except NumericComputationFault NumericComputationResult) :
     Except GeneratedNumericComputationEvaluationError
       GeneratedNumericComputationEvaluation :=
   match computation.selectFirst context with
   | .noMatch => pure .noMatch
   | .poison cause => pure (.guardPoison cause)
   | .selected operation =>
-      operation.evaluate context
+      evaluateOperation operation
         |>.map (.evaluated operation.core.suppressExactScaleWarning)
         |>.mapError .operation
+
+/-- Evaluate only the first selected operation of an already-admitted table through the scalar compatibility boundary. Target completion remains separate. -/
+def evaluate (admission : AdmittedGeneratedNumericOperationTable model computation)
+    (context : ScalarComputationContext) :
+    Except GeneratedNumericComputationEvaluationError
+      GeneratedNumericComputationEvaluation :=
+  admission.evaluateWith context (fun operation => operation.evaluate context)
+
+/-- Reuse the same first-selection decision while evaluating the selected operation against its complete direct/repeatable checked context. -/
+def evaluateIn (admission : AdmittedGeneratedNumericOperationTable model computation)
+    (context : NumericComputationEvaluationContext) :
+    Except GeneratedNumericComputationEvaluationError
+      GeneratedNumericComputationEvaluation :=
+  admission.evaluateWith context.scalar (fun operation => operation.evaluateIn context)
 
 /-- Evaluate from one immutable checked document, complete through the admitted declaration policy, and retain the source target state used by later source-relative classification. -/
 def executeTargetResult
@@ -737,57 +753,6 @@ def executeNumericResult (computation : GeneratedComputationTable
   match admitGeneratedNumericOperationTable model computation with
   | .error cause => .error (.execution (.validation cause))
   | .ok admission => admission.executeResult world input payloadAt supplied
-
-/-- Failure while keeping generated-table admission, execution, application, and later validation as distinct observable phases. -/
-inductive AppliedValidationError where
-  | admission (cause : GeneratedComputationValidationError)
-  | execution (cause : GeneratedNumericComputationRunResultError)
-  | application (cause : NumericComputationDocumentApplicationError)
-  | validation (cause : CheckedAddressingError)
-  deriving Repr
-
-/-- The complete bounded scalar result of executing one generated Number table, applying its retained source-relative actions, and explicitly evaluating its generated validation twin over that applied destination. -/
-structure AppliedValidationView (model : FlatModel) (Payload : Type) where
-  result : NumericComputationRunView
-    (ComputationFormalMessage Payload) CellAddr
-  applied : NumericComputationApplicationProjection model
-  validation : FlatRuleOutcome
-
-/-- Execute one admitted scalar generated Number table against an immutable source, apply its retained actions to a compatible destination, then evaluate the complete generated validation twin against the applied destination under an independently supplied later world. -/
-def executeNumericAppliedValidation (computation : GeneratedComputationTable
-    (CheckedNumericComputationOperation model))
-    (executionWorld validationWorld : World)
-    (source destination : CheckedDocument model)
-    (payloadAt : CellAddr → Payload)
-    (supplied : List (ComputationFormalMessage Payload)) :
-    Except AppliedValidationError (AppliedValidationView model Payload) := do
-  let admission ←
-    (admitGeneratedNumericOperationTable model computation)
-      |>.mapError .admission
-  let result ←
-    (admission.executeResult executionWorld source payloadAt supplied)
-      |>.mapError .execution
-  let applied ← result.applyToChecked destination |>.mapError .application
-  let appliedFields : FlatContext := {
-    read := fun field =>
-      match result.validationCellAfterApplication destination [] field with
-      | .ok cell => cell
-      | .error _ => malformedCheckedCell
-    world := some validationWorld
-  }
-  let context : AddressedValidationEvaluationContext model := {
-    scalar := {
-      fields := appliedFields
-      groups := GroupPresenceContext.unavailable
-    }
-    outer := []
-    input := .partialView destination fun environment field =>
-      (result.validationCellAfterApplication destination environment field)
-        |>.map some
-  }
-  let validation ←
-    admission.rule.evalAddressedFull context true |>.mapError .validation
-  pure { result, applied, validation }
 
 end GeneratedComputationTable
 

@@ -672,6 +672,7 @@ run_cmd do
 #print axioms A12Kernel.generatedNumericComputationEvaluation_noMatch
 #print axioms A12Kernel.generatedNumericComputationEvaluation_guardPoison
 #print axioms A12Kernel.generatedNumericComputationEvaluation_selected
+#print axioms A12Kernel.admittedGeneratedNumericOperationTable_evaluateIn_selected
 #print axioms A12Kernel.generatedNumericComputationTarget_noMatch
 #print axioms A12Kernel.generatedNumericComputationTarget_guardPoison
 #print axioms A12Kernel.generatedNumericComputationTarget_unsuppressed

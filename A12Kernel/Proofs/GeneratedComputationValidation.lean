@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.GeneratedComputationValidation
+import A12Kernel.Elaboration.GeneratedComputationAppliedValidation
 import A12Kernel.Proofs.ComputationCondition
 
 /-! # Generated-computation validation laws
@@ -19,7 +19,8 @@ theorem generatedNumericComputationEvaluation_noMatch
     (selection : computation.selectFirst context = .noMatch) :
     computation.evaluateNumeric context = .ok .noMatch := by
   simp [GeneratedComputationTable.evaluateNumeric, admitted,
-    AdmittedGeneratedNumericOperationTable.evaluate, selection]
+    AdmittedGeneratedNumericOperationTable.evaluate,
+    AdmittedGeneratedNumericOperationTable.evaluateWith, selection]
   rfl
 
 /-- A poisoned generated-table guard stops before operation evaluation and retains its exact cause at the activation boundary. -/
@@ -34,7 +35,8 @@ theorem generatedNumericComputationEvaluation_guardPoison
     (selection : computation.selectFirst context = .poison cause) :
     computation.evaluateNumeric context = .ok (.guardPoison cause) := by
   simp [GeneratedComputationTable.evaluateNumeric, admitted,
-    AdmittedGeneratedNumericOperationTable.evaluate, selection]
+    AdmittedGeneratedNumericOperationTable.evaluate,
+    AdmittedGeneratedNumericOperationTable.evaluateWith, selection]
   rfl
 
 /-- Once an operation is selected, runtime evaluation delegates exactly to that operation and never re-enters the alternative scan. -/
@@ -53,7 +55,24 @@ theorem generatedNumericComputationEvaluation_selected
           .operation := by
   cases result : operation.evaluate context <;>
     simp [GeneratedComputationTable.evaluateNumeric, admitted,
-      AdmittedGeneratedNumericOperationTable.evaluate, selection, result]
+      AdmittedGeneratedNumericOperationTable.evaluate,
+      AdmittedGeneratedNumericOperationTable.evaluateWith, selection, result]
+
+/-- Addressed execution reuses the same first-selection decision and delegates only the selected operation to the complete direct/repeatable evaluator. -/
+theorem admittedGeneratedNumericOperationTable_evaluateIn_selected
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model))
+    (context : NumericComputationEvaluationContext)
+    (operation : CheckedNumericComputationOperation model)
+    (admission : AdmittedGeneratedNumericOperationTable model computation)
+    (selection : computation.selectFirst context.scalar = .selected operation) :
+    admission.evaluateIn context =
+      ((operation.evaluateIn context).map
+        (.evaluated operation.core.suppressExactScaleWarning)).mapError
+          .operation := by
+  cases result : operation.evaluateIn context <;>
+    simp [AdmittedGeneratedNumericOperationTable.evaluateIn,
+      AdmittedGeneratedNumericOperationTable.evaluateWith, selection, result]
 
 /-- Cleanly unselected generated computation completes as target no-value. -/
 theorem generatedNumericComputationTarget_noMatch

@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.GeneratedComputationAppliedValidation
 import A12Kernel.Conformance.GeneratedComputationValidation.Support.CrossGroup
 
 /-! # Generated-computation application followed by generated validation -/
