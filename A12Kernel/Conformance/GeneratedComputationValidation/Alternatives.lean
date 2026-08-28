@@ -206,6 +206,34 @@ private def policyBoundAdmissionPolicy : Option NumericTargetPolicy := do
     (admitGeneratedNumericOperationTable policyBoundModel table).toOption
   pure admission.targetPolicy
 
+private def policyBoundPrepared : PreparedFlatStringContext policyBoundModel
+    builtinStringPatternCompiler :=
+  (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler
+    policyBoundModel).toOption.get (by native_decide)
+
+private def policyBoundNumericCell (field : FieldId)
+    (value : StoredNumber) : ClassifiedCellInput := {
+  address := { field, path := [] }
+  stored := value.render
+  raw := .parsed (.num value.amount)
+  numericDecimal := some { unscaled := value.unscaled, scale := value.scale }
+}
+
+private def policyBoundDocument? (source : StoredNumber)
+    (target : Option StoredNumber) : Option (CheckedDocument policyBoundModel) :=
+  (checkDocument policyBoundPrepared "en_US" {
+    instantiatedRows := []
+    cells := policyBoundNumericCell policyBoundSource.id source ::
+      (target.map (policyBoundNumericCell policyBoundTarget.id)).toList
+  }).toOption
+
+private def policyBoundTargetExecution? (source : StoredNumber)
+    (target : Option StoredNumber) :
+    Option GeneratedNumericComputationTargetResult := do
+  let table ← policyBoundTable?
+  let input ← policyBoundDocument? source target
+  (table.executeNumericTargetResult evaluationWorld input).toOption
+
 /- Runtime evaluation preserves activation and operation phases: a false common
    guard hides malformed row inputs, common poison stops before selection, and a
    selected operand poison stays an operation result. -/
@@ -293,6 +321,30 @@ example : policyBoundAdmissionPolicy =
 
 example : policyBoundZeroResult = some (.supported (.rejected
     { unscaled := 0, scale := 0 } .zeroNotAllowed)) := by
+  native_decide
+
+/- Whole checked execution binds target completion to the exact immutable source
+   placement. An equal source is retained for later unchanged classification, an
+   absent source stays absent, and rejection does not erase the attempted value. -/
+example :
+    let seven : StoredNumber := { unscaled := 7, scale := 0 }
+    let five : StoredNumber := { unscaled := 5, scale := 0 }
+    let zero : StoredNumber := { unscaled := 0, scale := 0 }
+    policyBoundTargetExecution? seven (some seven) = some {
+        targetAddress := { field := policyBoundTarget.id, path := [] }
+        targetCheck := .supported (.accepted seven)
+        sourceState := .presentValue (.decimal seven)
+      } ∧
+      policyBoundTargetExecution? seven none = some {
+        targetAddress := { field := policyBoundTarget.id, path := [] }
+        targetCheck := .supported (.accepted seven)
+        sourceState := .absent
+      } ∧
+      policyBoundTargetExecution? zero (some five) = some {
+        targetAddress := { field := policyBoundTarget.id, path := [] }
+        targetCheck := .supported (.rejected zero .zeroNotAllowed)
+        sourceState := .presentValue (.decimal five)
+      } := by
   native_decide
 
 /- Runtime cannot bypass the generated table's existing model and guard

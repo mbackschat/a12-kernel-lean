@@ -112,6 +112,25 @@ theorem generatedNumericComputationTarget_usesDeclarationPolicy
   simp [GeneratedComputationTable.evaluateNumericTarget, admitted, executed]
   rfl
 
+/-- Checked generated execution binds target completion and source-relative classification to the same immutable input and the admission-owned scalar target address. -/
+theorem admittedGeneratedNumericOperationTable_executeTargetResult_exact
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model))
+    (admission : AdmittedGeneratedNumericOperationTable model computation)
+    (world : World) (input : CheckedDocument model)
+    (evaluation : GeneratedNumericComputationEvaluation)
+    (executed : admission.evaluate (input.scalarComputationContext world) =
+      .ok evaluation) :
+    admission.executeTargetResult world input = .ok {
+      targetAddress := { field := computation.targetField, path := [] }
+      targetCheck := evaluation.completeNumericTarget admission.targetPolicy
+      sourceState := input.numericTargetPlacementStateAt {
+        field := computation.targetField, path := [] }
+    } := by
+  unfold AdmittedGeneratedNumericOperationTable.executeTargetResult
+  rw [executed]
+  rfl
+
 /-- The generated numeric table inventory is exactly the validated model declarations referenced by its common guard, alternative guards, or checked operations. -/
 theorem generatedNumericOperationTable_fieldDependencies_exact
     (computation : GeneratedComputationTable
