@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.GeneratedComputationAppliedValidation
+import A12Kernel.Elaboration.GeneratedComputationFormalInput
 import A12Kernel.Proofs.ComputationCondition
 
 /-! # Generated-computation validation laws
@@ -150,6 +151,26 @@ theorem admittedGeneratedNumericOperationTable_executeTargetResult_exact
   rw [executed]
   rfl
 
+/-- Caller-read addressed execution always keeps the generated target identity and immutable source placement, independently of which prepared source cells drive selection or operation evaluation. -/
+theorem admittedGeneratedNumericOperationTable_executeAddressedTargetResultWithRead_source_exact
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model))
+    (admission : AdmittedGeneratedNumericOperationTable model computation)
+    (world : World) (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (result : GeneratedNumericComputationTargetResult)
+    (executed : admission.executeAddressedTargetResultWithRead world input read =
+      .ok result) :
+    result.targetAddress = { field := computation.targetField, path := [] } ∧
+      result.sourceState = input.numericTargetPlacementStateAt
+        { field := computation.targetField, path := [] } := by
+  unfold AdmittedGeneratedNumericOperationTable.executeAddressedTargetResultWithRead at executed
+  simp only [Bind.bind, Except.bind] at executed
+  split at executed
+  · contradiction
+  · cases executed
+    exact ⟨rfl, rfl⟩
+
 /-- Supported generated target completion narrows without changing target identity, outcome, or immutable source placement. -/
 @[simp] theorem generatedNumericComputationTargetResult_toSourceOutcome_supported
     (target : CellAddr) (outcome : NumericTargetOutcome)
@@ -216,39 +237,45 @@ theorem generatedNumericOperationTable_executeResultWithFormalInputs_exact
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (world : World) (input : CheckedDocument model)
     (inputPlan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
     (numeric : NumericComputationRunView
       (ComputationFormalMessage Unit) CellAddr)
     (admitted : admitGeneratedNumericOperationTable model computation =
       .ok admission)
     (planned : admission.formalInputPlan = .ok inputPlan)
-    (executed : admission.executeResult world input (fun _ => ()) [] =
-      .ok numeric) :
+    (preparation : inputPlan.prepare input = .ok prepared)
+    (executed : admission.executeAddressedResultWithRead world input
+      prepared.preliminary.readComputation (fun _ => ()) [] = .ok numeric) :
     computation.executeNumericResultWithFormalInputs world input =
       .ok (NumericComputationFormalInputRunView.of numeric
-        (inputPlan.findings input)) := by
+        prepared.formalErrorsInOperands) := by
   rw [GeneratedComputationTable.executeNumericResultWithFormalInputs, admitted]
   simp only [Except.mapError, Bind.bind, Except.bind]
   rw [planned]
+  simp only [preparation]
   rw [executed]
 
-/-- After generated planning succeeds, any later failure retains the exact eager raw findings beside the unchanged failure. -/
+/-- After generated preparation succeeds, any subsequent execution failure retains the exact eager raw findings beside the unchanged failure. -/
 theorem generatedNumericOperationTable_executeResultWithFormalInputs_failure_exact
     (computation : GeneratedComputationTable
       (CheckedNumericComputationOperation model))
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (world : World) (input : CheckedDocument model)
     (inputPlan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
     (fault : GeneratedNumericComputationRunResultError)
     (admitted : admitGeneratedNumericOperationTable model computation =
       .ok admission)
     (planned : admission.formalInputPlan = .ok inputPlan)
-    (executed : admission.executeResult world input (fun _ => ()) [] =
-      .error fault) :
+    (preparation : inputPlan.prepare input = .ok prepared)
+    (executed : admission.executeAddressedResultWithRead world input
+      prepared.preliminary.readComputation (fun _ => ()) [] = .error fault) :
     computation.executeNumericResultWithFormalInputs world input =
-      .error (.execution (inputPlan.findings input) fault) := by
+      .error (.execution prepared.formalErrorsInOperands fault) := by
   rw [GeneratedComputationTable.executeNumericResultWithFormalInputs, admitted]
   simp only [Except.mapError, Bind.bind, Except.bind]
   rw [planned]
+  simp only [preparation]
   rw [executed]
 
 /-- The generated numeric table inventory is exactly the validated model declarations referenced by its common guard, alternative guards, or checked operations. -/

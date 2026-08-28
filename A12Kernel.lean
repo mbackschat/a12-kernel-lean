@@ -155,6 +155,7 @@ import A12Kernel.Elaboration.ValidationRuleGroupOperand
 import A12Kernel.Elaboration.ValidationMessageAuthoring
 import A12Kernel.Elaboration.StringPatternMessage
 import A12Kernel.Elaboration.GeneratedComputationValidation
+import A12Kernel.Elaboration.GeneratedComputationFormalInput
 import A12Kernel.Elaboration.GeneratedComputationAppliedValidation
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.ValidationContext

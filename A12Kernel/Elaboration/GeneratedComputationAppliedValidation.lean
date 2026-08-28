@@ -8,56 +8,6 @@ This bounded composition executes one generated Number table against an immutabl
 
 namespace A12Kernel
 
-namespace AdmittedGeneratedNumericOperationTable
-
-private def checkedReadAt (input : CheckedDocument model)
-    (environment : Env) (field : FieldId) : CheckedCell :=
-  match input.checkedCellWithRead input.read environment field with
-  | .ok cell => cell
-  | .error _ => malformedCheckedCell
-
-private def evaluationContext
-    (input : CheckedDocument model) (world : World) :
-    NumericComputationEvaluationContext := {
-  scalar := input.scalarComputationContext world
-  document := input.source.toDocument
-  outer := []
-  filterRead := checkedReadAt input
-  starRead := checkedReadAt input
-}
-
-private def executeAddressedTargetResult
-    (admission : AdmittedGeneratedNumericOperationTable model computation)
-    (world : World) (input : CheckedDocument model) :
-    Except GeneratedNumericComputationEvaluationError
-      GeneratedNumericComputationTargetResult := do
-  let evaluation ← admission.evaluateIn (evaluationContext input world)
-  let targetAddress : CellAddr := {
-    field := computation.targetField
-    path := []
-  }
-  pure {
-    targetAddress
-    targetCheck := evaluation.completeNumericTarget admission.targetPolicy
-    sourceState := input.numericTargetPlacementStateAt targetAddress
-  }
-
-private def executeAddressedResult
-    (admission : AdmittedGeneratedNumericOperationTable model computation)
-    (world : World) (input : CheckedDocument model)
-    (payloadAt : CellAddr → Payload)
-    (supplied : List (ComputationFormalMessage Payload)) :
-    Except GeneratedNumericComputationRunResultError
-      (NumericComputationRunView
-        (ComputationFormalMessage Payload) CellAddr) := do
-  let completed ←
-    (admission.executeAddressedTargetResult world input).mapError .execution
-  let sourced ← completed.toSourceOutcome |>.mapError .targetCheck
-  pure (NumericComputationRunView.fromSourceOutcomesWithMessages
-    MessagePointer.ofCellAddr payloadAt supplied [sourced])
-
-end AdmittedGeneratedNumericOperationTable
-
 namespace GeneratedComputationTable
 
 /-- Failure while keeping generated-table admission, execution, application, and later validation as distinct observable phases. -/
@@ -87,7 +37,8 @@ def executeNumericAppliedValidation (computation : GeneratedComputationTable
     (admitGeneratedNumericOperationTable model computation)
       |>.mapError .admission
   let result ←
-    (admission.executeAddressedResult executionWorld source payloadAt supplied)
+    (admission.executeAddressedResultWithRead executionWorld source source.read
+      payloadAt supplied)
       |>.mapError .execution
   let applied ← result.applyToChecked destination |>.mapError .application
   let appliedFields : FlatContext := {

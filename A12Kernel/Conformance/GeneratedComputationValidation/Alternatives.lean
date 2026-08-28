@@ -1,4 +1,5 @@
 import A12Kernel.Conformance.GeneratedComputationValidation.Support.CrossGroup
+import A12Kernel.Elaboration.GeneratedComputationFormalInput
 import A12Kernel.Conformance.NumericComputation.Support
 
 /-! # Generated-computation alternative and phase locks -/
