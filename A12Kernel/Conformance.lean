@@ -43,6 +43,7 @@ import A12Kernel.Conformance.AddressedTimeConstructionFormalInput
 import A12Kernel.Conformance.AddressedShiftedTimeConstruction
 import A12Kernel.Conformance.TimeFromDateTimeComputation
 import A12Kernel.Conformance.AddressedTimeFromDateTime
+import A12Kernel.Conformance.AddressedTimeFromDateTimeFormalInput
 import A12Kernel.Conformance.TimeInput
 import A12Kernel.Conformance.DateTimeInput
 import A12Kernel.Conformance.DateFromDateTime
