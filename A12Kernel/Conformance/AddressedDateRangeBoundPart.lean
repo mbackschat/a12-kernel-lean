@@ -190,6 +190,27 @@ example :
     ] := by
   native_decide
 
+private def transientOutcomes? :
+    Option (List (CellAddr × NumericTargetOutcome)) := do
+  let operation ←
+    (checked target.id (bare "RowDates") .start .month).toOption
+  let input ← checkedDocument [
+    storedCell rowDates.id [1] "2024-06-01/2024-07-31",
+    storedCell rowDates.id [2] "2024-01-15/2024-03-15"]
+  let transient ← checkedDocument [
+    storedCell rowDates.id [1] "2024-12-01/2024-12-31",
+    storedCell rowDates.id [2] "2024-07-31/2024-06-01"]
+  let outcomes ← operation.executeWithRead input transient.read |>.toOption
+  pure (outcomes.map fun entry => (entry.targetField, entry.outcome))
+
+/- The caller view supplies reached endpoint state while immutable target-row enumeration still contributes the absent third-row zero. -/
+example : transientOutcomes? = some [
+    (addressAt target.id 1, .accepted (stored 12)),
+    (addressAt target.id 2, .inheritedPoison .dateRangeInvalid),
+    (addressAt target.id 3, .accepted (stored 0))
+  ] := by
+  native_decide
+
 /- The same yearless carrier over the probe's third measured pair, where start and finish share one
 month, so the quarter follows that single label. -/
 example :

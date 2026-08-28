@@ -352,7 +352,23 @@ def executeWith (placement : CheckedAddressedNumericPlacement model)
       (List (SourcedNumericTargetOutcome CellAddr)) :=
   placement.executeWithRead input input.read evaluate
 
-/-- Classify shared addressed outcomes against the immutable source document without collapsing their exact row keys. -/
+/-- Classify caller-read addressed outcomes against immutable source target state without collapsing their exact row keys. -/
+def executeResultWithRead
+    (placement : CheckedAddressedNumericPlacement model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (evaluate : CheckedCell →
+      Except NumericComputationFault NumericComputationResult)
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload)) :
+    Except AddressedNumericLeafFault
+      (NumericComputationRunView
+        (ComputationFormalMessage Payload) CellAddr) := do
+  let outcomes ← placement.executeWithRead input read evaluate
+  pure (NumericComputationRunView.fromSourceOutcomesWithMessages
+    MessagePointer.ofCellAddr payloadAt supplied outcomes)
+
+/-- Immutable-document specialization of the shared addressed result projection. -/
 def executeResultWith
     (placement : CheckedAddressedNumericPlacement model)
     (input : CheckedDocument model)
@@ -362,10 +378,8 @@ def executeResultWith
     (supplied : List (ComputationFormalMessage Payload)) :
     Except AddressedNumericLeafFault
       (NumericComputationRunView
-        (ComputationFormalMessage Payload) CellAddr) := do
-  let outcomes ← placement.executeWith input evaluate
-  pure (NumericComputationRunView.fromSourceOutcomesWithMessages
-    MessagePointer.ofCellAddr payloadAt supplied outcomes)
+        (ComputationFormalMessage Payload) CellAddr) :=
+  placement.executeResultWithRead input input.read evaluate payloadAt supplied
 
 end CheckedAddressedNumericPlacement
 

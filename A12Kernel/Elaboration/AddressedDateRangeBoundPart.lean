@@ -90,14 +90,35 @@ private def evaluateSource
   operation.placement.evaluateSourceAtom sourceCell
     (.dateRangeBoundPart operation.source operation.bound operation.part)
 
-/-- Execute the certified component operation once per instantiated row through the shared placement. -/
+/-- Execute the certified component operation once per instantiated row through a caller-supplied exact-address source view. -/
+def executeWithRead (operation : CheckedAddressedDateRangeBoundPart model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except AddressedDateRangeBoundPartFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  operation.placement.executeWithRead input read operation.evaluateSource
+
+/-- Immutable-document specialization of the addressed endpoint-component executor. -/
 def execute (operation : CheckedAddressedDateRangeBoundPart model)
     (input : CheckedDocument model) :
     Except AddressedDateRangeBoundPartFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  operation.placement.executeWith input operation.evaluateSource
+  operation.executeWithRead input input.read
 
-/-- Classify the addressed rich outcomes against the immutable source document without collapsing their exact row keys. -/
+/-- Classify caller-read rich outcomes against immutable source target state without collapsing their exact row keys. -/
+def executeResultWithRead
+    (operation : CheckedAddressedDateRangeBoundPart model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload)) :
+    Except AddressedDateRangeBoundPartFault
+      (NumericComputationRunView
+        (ComputationFormalMessage Payload) CellAddr) :=
+  operation.placement.executeResultWithRead input read operation.evaluateSource
+    payloadAt supplied
+
+/-- Immutable-document specialization of the addressed endpoint-component result. -/
 def executeResult
     (operation : CheckedAddressedDateRangeBoundPart model)
     (input : CheckedDocument model)
@@ -106,8 +127,7 @@ def executeResult
     Except AddressedDateRangeBoundPartFault
       (NumericComputationRunView
         (ComputationFormalMessage Payload) CellAddr) :=
-  operation.placement.executeResultWith input operation.evaluateSource
-    payloadAt supplied
+  operation.executeResultWithRead input input.read payloadAt supplied
 
 end CheckedAddressedDateRangeBoundPart
 
