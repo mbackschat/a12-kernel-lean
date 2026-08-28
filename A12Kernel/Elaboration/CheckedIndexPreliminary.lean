@@ -287,16 +287,32 @@ end CheckedIndexPreliminary
 
 namespace CheckedDocument
 
-/-- Run every model-declared index mandatory/uniqueness preliminary rule over the immutable base checked document without mutating it. -/
-def applyFullIndexPreliminary (checked : CheckedDocument model) :
+private def applyIndexPreliminaryForGroups
+    (checked : CheckedDocument model)
+    (groups : List RepeatableGroupDecl) :
     Except CheckedIndexPreliminaryError (CheckedIndexPreliminary model) := do
   let defaulted := checked.indexDefaults model.repeatableGroups
   pure {
     base := checked
     defaulted
     findings := ← checked.indexFindings defaulted [] .full
-      model.repeatableGroups
+      groups
   }
+
+/-- Run every model-declared index mandatory/uniqueness preliminary rule over the immutable base checked document without mutating it. -/
+def applyFullIndexPreliminary (checked : CheckedDocument model) :
+    Except CheckedIndexPreliminaryError (CheckedIndexPreliminary model) :=
+  checked.applyIndexPreliminaryForGroups model.repeatableGroups
+
+/-- Stage the full-call index defaults while deriving preliminary findings only for groups whose index field is selected. This is the computation prepass boundary: unused indexes keep their transient defaults but do not run mandatory or uniqueness checks. -/
+def applySelectedFullIndexPreliminary (checked : CheckedDocument model)
+    (selectedIndexFields : List FieldId) :
+    Except CheckedIndexPreliminaryError (CheckedIndexPreliminary model) :=
+  checked.applyIndexPreliminaryForGroups
+    (model.repeatableGroups.filter fun group =>
+      match group.indexField with
+      | some field => selectedIndexFields.contains field
+      | none => false)
 
 end CheckedDocument
 
