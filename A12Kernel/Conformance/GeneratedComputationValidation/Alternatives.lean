@@ -58,6 +58,129 @@ private def invalidCommonFormalInputError? :
   | .error error => some error
   | .ok _ => none
 
+private def generatedRuntimeContext
+    (common source extra date : RawCell) : ScalarComputationContext :=
+  let raw : RawFlatContext := {
+    read field :=
+      if field = crossGroupOtherTarget.id then common
+      else if field = crossGroupSource.id then source
+      else if field = crossGroupExtra.id then extra
+      else if field = crossGroupDate.id then date
+      else .empty
+  }
+  { read := (crossGroupModel.checkContext raw).read }
+
+private def domainFailureOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation crossGroupModel) :=
+  elaborateNumericComputationOperation crossGroupModel ["Rules"]
+    crossGroupTarget.id
+    (.binary .divide
+      (.literal { value := 1, authoredScale := 0 })
+      (.literal { value := 0, authoredScale := 0 })) true
+
+private def domainFailureFirstTable? : Option (GeneratedComputationTable
+    (CheckedNumericComputationOperation crossGroupModel)) := do
+  let first ← domainFailureOperation.toOption
+  let second ← crossGroupNumberOperation.toOption
+  pure {
+    targetField := crossGroupTarget.id
+    name := "domainFailureFirst"
+    commonPrecondition := some (.fieldFilled crossGroupOtherTarget.id)
+    alternatives := .guarded {
+      first := {
+        precondition := .fieldFilled crossGroupSource.id
+        operation := first }
+      second := {
+        precondition := .fieldFilled crossGroupSource.id
+        operation := second } }
+    messagePlan
+  }
+
+private def operationPoisonTable? : Option (GeneratedComputationTable
+    (CheckedNumericComputationOperation crossGroupModel)) := do
+  let first ← crossGroupNumberOperation.toOption
+  let second ← crossGroupDatePartOperation.toOption
+  pure {
+    targetField := crossGroupTarget.id
+    name := "operationPoison"
+    commonPrecondition := some (.fieldFilled crossGroupOtherTarget.id)
+    alternatives := .guarded {
+      first := {
+        precondition := .fieldFilled crossGroupExtra.id
+        operation := first }
+      second := {
+        precondition := .fieldNotFilled crossGroupExtra.id
+        operation := second } }
+    messagePlan
+  }
+
+private def generatedRuntimeResult
+    (common source extra date : RawCell) :
+    Option GeneratedNumericComputationEvaluation := do
+  let table ← formalInputTable?
+  (table.evaluateNumeric
+    (generatedRuntimeContext common source extra date)).toOption
+
+private def domainFailureFirstResult :
+    Option GeneratedNumericComputationEvaluation := do
+  let table ← domainFailureFirstTable?
+  (table.evaluateNumeric (generatedRuntimeContext
+    (.parsed (.num 1)) (.parsed (.num 7)) .empty .empty)).toOption
+
+private def invalidRuntimeCommonValidationError? :
+    Option GeneratedComputationValidationError := do
+  let table ← formalInputTable?
+  match { table with
+      commonPrecondition := some (.fieldFilled 999) }.evaluateNumeric
+        (generatedRuntimeContext (.parsed (.num 1))
+          (.parsed (.num 7)) .empty .empty) with
+  | .error (.validation error) => some error
+  | .error (.operation _) | .ok _ => none
+
+private def selectedOperationPoisonResult :
+    Option GeneratedNumericComputationEvaluation := do
+  let table ← operationPoisonTable?
+  (table.evaluateNumeric (generatedRuntimeContext
+    (.parsed (.num 1)) (.rejected .malformed)
+      (.parsed (.num 1)) .empty)).toOption
+
+/- Runtime evaluation preserves activation and operation phases: a false common
+   guard hides malformed row inputs, common poison stops before selection, and a
+   selected operand poison stays an operation result. -/
+example :
+    generatedRuntimeResult .empty (.rejected .malformed)
+        (.rejected .malformed) (.rejected .malformed) =
+        some .noMatch := by
+  native_decide
+
+example :
+    generatedRuntimeResult (.rejected .malformed) (.parsed (.num 7))
+      .empty .empty = some (.guardPoison .malformed) := by
+  native_decide
+
+example :
+    generatedRuntimeResult (.parsed (.num 1)) (.parsed (.num 7))
+      (.rejected .malformed) (.rejected .malformed) =
+        some (.evaluated (.value 7)) := by
+  native_decide
+
+example :
+    selectedOperationPoisonResult =
+      some (.evaluated (.poison .malformed)) := by
+  native_decide
+
+/- First selection is final even when the selected numeric operation has a
+   domain failure; the later holding operation is not evaluated as fallback. -/
+example : domainFailureFirstResult = some (.evaluated .domainFailure) := by
+  native_decide
+
+/- Runtime cannot bypass the generated table's existing model and guard
+   admission merely because selection could otherwise evaluate the raw syntax. -/
+example : invalidRuntimeCommonValidationError? = some
+    (.resolve (.unknownFieldId 999)) := by
+  native_decide
+
 /- Semantic desugaring derives the checked condition's row group from the resolved computation target declaration. -/
 example : generatedRowGroupOf bothHoldingDifferent = some ["Form"] := by
   native_decide

@@ -8,6 +8,46 @@ These laws cover the singleton/guarded table split, declaration-order recovery, 
 
 namespace A12Kernel
 
+/-- Runtime activation no-match stays distinct from every evaluated numeric result. -/
+theorem generatedNumericComputationEvaluation_noMatch
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model))
+    (context : ScalarComputationContext) (rule : CheckedResolvedValidationRule model)
+    (admitted : assembleGeneratedNumericOperationTableRule model computation =
+      .ok rule)
+    (selection : computation.selectFirst context = .noMatch) :
+    computation.evaluateNumeric context = .ok .noMatch := by
+  rw [GeneratedComputationTable.evaluateNumeric, admitted, selection]
+  rfl
+
+/-- A poisoned generated-table guard stops before operation evaluation and retains its exact cause at the activation boundary. -/
+theorem generatedNumericComputationEvaluation_guardPoison
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model))
+    (context : ScalarComputationContext) (rule : CheckedResolvedValidationRule model)
+    (cause : FormalCause)
+    (admitted : assembleGeneratedNumericOperationTableRule model computation =
+      .ok rule)
+    (selection : computation.selectFirst context = .poison cause) :
+    computation.evaluateNumeric context = .ok (.guardPoison cause) := by
+  rw [GeneratedComputationTable.evaluateNumeric, admitted, selection]
+  rfl
+
+/-- Once an operation is selected, runtime evaluation delegates exactly to that operation and never re-enters the alternative scan. -/
+theorem generatedNumericComputationEvaluation_selected
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model))
+    (context : ScalarComputationContext)
+    (operation : CheckedNumericComputationOperation model)
+    (rule : CheckedResolvedValidationRule model)
+    (admitted : assembleGeneratedNumericOperationTableRule model computation =
+      .ok rule)
+    (selection : computation.selectFirst context = .selected operation) :
+    computation.evaluateNumeric context =
+      ((operation.evaluate context).map .evaluated).mapError .operation := by
+  cases result : operation.evaluate context <;>
+    simp [GeneratedComputationTable.evaluateNumeric, admitted, selection, result]
+
 /-- The generated numeric table inventory is exactly the validated model declarations referenced by its common guard, alternative guards, or checked operations. -/
 theorem generatedNumericOperationTable_fieldDependencies_exact
     (computation : GeneratedComputationTable

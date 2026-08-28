@@ -414,7 +414,7 @@
 <a id="cap-generated-computation-validation"></a>
 #### Generated computation validation
 
-- `boundary`: Every relevant alternative is retained for later validation; execution first-selection is not reused
-- `owner`: [`GeneratedComputationValidation.lean`](../../A12Kernel/Elaboration/GeneratedComputationValidation.lean)
-- `assurance`: E/P closed for admitted String/Number/repeatable routes; source-grounded; C none
-- `remains`: Wider target families follow SG5–SG8
+- `boundary`: Every relevant alternative is retained for later validation; execution first-selection is not reused. The admitted numeric carrier separately exposes runtime activation and selected-operation evaluation while preserving no match, guard poison, and the selected operation's numeric result as distinct phases.
+- `owner`: [`GeneratedComputationValidation.lean`](../../A12Kernel/Elaboration/GeneratedComputationValidation.lean), its [phase laws](../../A12Kernel/Proofs/GeneratedComputationValidation.lean), and [runtime separators](../../A12Kernel/Conformance/GeneratedComputationValidation/Alternatives.lean)
+- `assurance`: E/P closed for admitted String/Number/repeatable validation routes. The scalar numeric runtime first reuses complete generated-table admission, then fixes false-common short-circuit, exact guard poison, selected value and selected operand poison, and a selected domain failure with no fallback. P preserves the three runtime phases and exact selected-operation delegation. This is internally source-grounded; runtime target policy, storage, application, scheduling, and Kernel correspondence remain open. C none
+- `remains`: Runtime target completion and wider target families follow SG4–SG8

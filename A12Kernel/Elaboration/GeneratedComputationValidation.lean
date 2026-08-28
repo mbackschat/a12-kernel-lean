@@ -102,6 +102,13 @@ def selectFirst (computation : GeneratedComputationTable Operation)
 
 end GeneratedComputationTable
 
+/-- Runtime phase boundary for an admitted generated numeric table. Activation no-match and guard poison remain distinct from the selected operation's numeric result so later target projection cannot confuse an unselected table with an evaluated failure. -/
+inductive GeneratedNumericComputationEvaluation where
+  | noMatch
+  | guardPoison (cause : FormalCause)
+  | evaluated (result : NumericComputationResult)
+  deriving Repr, DecidableEq
+
 abbrev LiteralNumberComputationAlternative :=
   GeneratedComputationAlternative DecodedNumericLiteral
 
@@ -530,6 +537,31 @@ def assembleGeneratedNumericOperationRule (model : FlatModel)
     name
     alternatives := .singleton { operation, tolerance }
     messagePlan }
+
+/-- Failure while admitting or evaluating one generated numeric table. Static generated-table rejection stays separate from a selected operation's structural evaluation fault. -/
+inductive GeneratedNumericComputationEvaluationError where
+  | validation (cause : GeneratedComputationValidationError)
+  | operation (cause : NumericComputationFault)
+  deriving Repr
+
+namespace GeneratedComputationTable
+
+/-- Admit the complete generated table, select through its common/row guard structure, then evaluate only the first selected checked numeric operation. Target policy, storage, application, and later generated validation stay in their later phases. -/
+def evaluateNumeric (computation : GeneratedComputationTable
+    (CheckedNumericComputationOperation model))
+    (context : ScalarComputationContext) :
+    Except GeneratedNumericComputationEvaluationError
+      GeneratedNumericComputationEvaluation :=
+  match assembleGeneratedNumericOperationTableRule model computation with
+  | .error cause => .error (.validation cause)
+  | .ok _ =>
+      match computation.selectFirst context with
+      | .noMatch => pure .noMatch
+      | .poison cause => pure (.guardPoison cause)
+      | .selected operation =>
+          operation.evaluate context |>.map .evaluated |>.mapError .operation
+
+end GeneratedComputationTable
 
 /-- Failure while reusing generated-table admission before binding its complete direct-field inventory. -/
 inductive GeneratedNumericComputationFormalInputPlanError where
