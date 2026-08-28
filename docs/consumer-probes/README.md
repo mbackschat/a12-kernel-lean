@@ -21,7 +21,7 @@ Retained Kernel evidence separately bounds correspondence to A12 Kernel 30.8.1. 
 
 | Consumer type | Current status | Current bounded tasks |
 |---|---|---|
-| [Execute](EXECUTE.md) | green | Exact-address DateTime application, generated numeric-table evaluation/application, selected-preliminary execution across three composition seams, and explicit Number/String validation after one- and two-level application |
+| [Execute](EXECUTE.md) | green | Exact-address DateTime application, generated numeric-table evaluation/application, selected-preliminary execution across three composition seams, explicit Number/String validation after one- and two-level application, and materialized generated Number targets |
 | [Translate](TRANSLATE.md) | green | Computed-target refusal to exact external diagnostic or typed local refusal |
 | [Transform](TRANSFORM.md) | green | Checked numeric-operation identity and unsafe nonidentity boundary |
 | [Compile](COMPILE.md) | green | Specialized finite condition, generated numeric-table, selected-preliminary whole calls, three selected conversion-composition plans, and addressed multi-star Number selection with exact bounded refinement |
