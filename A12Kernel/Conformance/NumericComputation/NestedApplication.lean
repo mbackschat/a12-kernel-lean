@@ -1,5 +1,4 @@
-import A12Kernel.Elaboration.NumericComputation.RunApplication
-import A12Kernel.Semantics.NumericComparison
+import A12Kernel.Elaboration.NumericComputation.LaterValidation
 
 /-! # Finite two-level Number result application locks -/
 
@@ -118,29 +117,87 @@ private def topologyMatrixHolds : Bool := (do
 /- Two-level application pads predecessors only in the addressed parent, keeps action coordinates, preserves destination cells, and does not materialize an absent ERRORED target. -/
 example : topologyMatrixHolds = true := by native_decide
 
-private def positiveRows
-    (projection : NumericComputationTwoLevelApplicationProjection model) :
-    Option (List CellAddr) :=
-  projection.leafRows.foldlM (init := []) fun fired row => do
-    let [outer, inner] := row.path | none
-    let target := address amount.id outer inner
-    match projection.stateAt target with
-    | .absent | .presentEmpty => some fired
-    | .presentValue (.decimal number) =>
-        if NumericComparisonOp.greater.evalFixedRight
-            (.value number.amount .fixed) 0 == .fired .value then
-          some (fired ++ [target])
-        else some fired
-    | .presentValue .nonComputedForm => none
+private def amountPath : SurfaceFieldPath := {
+  base := .absolute
+  groups := ["Order", "Outer", "Inner"]
+  field := "Amount"
+}
 
-private def laterValidation? : Option (List CellAddr) := do
+private def positiveComparison? :
+    Option (CheckedOrderedNumericComparison model) :=
+  (elaborateRepeatableNumericComparison model
+    ["Order", "Outer", "Inner"] {
+      op := .ordinary .greater
+      left := .atom (.field amountPath)
+      right := .literal { value := 0, authoredScale := 0 }
+    }).toOption
+
+private def laterValidation? : Option (List (Env × Verdict)) := do
   let destination ← empty?
-  let applied ← (view [value 1 2 5, value 3 4 7])
-    |>.applyToCheckedTwoLevel destination 10 20 |>.toOption
-  positiveRows applied
+  let comparison ← positiveComparison?
+  ((view [value 1 2 5, value 3 4 7])
+    |>.evaluateTwoLevelAfterApplication
+      destination 10 20 comparison).toOption
 
-/- Later validation is explicit and sees only the two positive applied values, not their padded predecessors. -/
-example : laterValidation? = some [address amount.id 1 2, address amount.id 3 4] := by
+/- Later validation uses the checked addressed evaluator over parent-scoped inner prefixes. Synthetic outer predecessors without an inner row do not become validation rows. -/
+example : laterValidation? = some [
+    ([(10, 1), (20, 1)], .notFired),
+    ([(10, 1), (20, 2)], .fired .value),
+    ([(10, 3), (20, 1)], .notFired),
+    ([(10, 3), (20, 2)], .notFired),
+    ([(10, 3), (20, 3)], .notFired),
+    ([(10, 3), (20, 4)], .fired .value)
+  ] := by
+  native_decide
+
+private def laterDestination? : Option (CheckedDocument model) := checked? {
+  instantiatedRows := [
+    outerRow 1, outerRow 2, outerRow 3,
+    innerRow 1 1, innerRow 1 2, innerRow 3 1, innerRow 3 2]
+  cells := [{
+    address := address amount.id 3 2
+    stored := "4", raw := .parsed (.num 4)
+    numericDecimal := some { unscaled := 4, scale := 0 }
+  }]
+}
+
+private def laterValidationWith?
+    (entries : List (SourcedNumericTargetOutcome CellAddr)) :
+    Option (List (Env × Verdict)) := do
+  let destination ← laterDestination?
+  let comparison ← positiveComparison?
+  ((view entries).evaluateTwoLevelAfterApplication
+    destination 10 20 comparison).toOption
+
+private def nestedPreservingVerdicts := [
+  ([(10, 1), (20, 1)], Verdict.notFired),
+  ([(10, 1), (20, 2)], Verdict.notFired),
+  ([(10, 3), (20, 1)], Verdict.notFired),
+  ([(10, 3), (20, 2)], Verdict.fired .value),
+  ([(10, 3), (20, 3)], Verdict.notFired),
+  ([(10, 3), (20, 4)], Verdict.fired .value)
+]
+
+/- Later validation reads a pre-existing destination value below its exact parent while also observing the applied extension. -/
+example : laterValidationWith? [value 3 4 7] =
+    some nestedPreservingVerdicts := by
+  native_decide
+
+private def nestedClearedVerdicts := [
+  ([(10, 1), (20, 1)], Verdict.notFired),
+  ([(10, 1), (20, 2)], Verdict.notFired),
+  ([(10, 3), (20, 1)], Verdict.notFired),
+  ([(10, 3), (20, 2)], Verdict.notFired),
+  ([(10, 3), (20, 3)], Verdict.notFired),
+  ([(10, 3), (20, 4)], Verdict.fired .value)
+]
+
+/- Target rejection and retained clear both remove the pre-existing destination value before validation; the applied sibling still fires. -/
+example :
+    laterValidationWith? [errored 3 2, value 3 4 7] =
+        some nestedClearedVerdicts ∧
+      laterValidationWith? [cleared 3 2, value 3 4 7] =
+        some nestedClearedVerdicts := by
   native_decide
 
 private def applicationError? (entry : SourcedNumericTargetOutcome CellAddr) :

@@ -1,9 +1,9 @@
 import A12Kernel.Elaboration.NumericComputation.RunApplication
 import A12Kernel.Elaboration.NumericValidation.Evaluation
 
-/-! # One-level Number application followed by numeric validation
+/-! # Bounded Number application followed by numeric validation
 
-This bounded SG4 composition applies one retained exact-address Number result to a checked destination, enumerates the existing one-level normalized application prefix, and evaluates one checked ordinary direct-Number comparison at every resulting row. The validation reader overlays retained actions on the destination while preserving unrelated checked cells. It does not reconstruct a document, emit rule messages, support specialized numeric atoms, or define a general later-rule runner.
+This bounded SG4 composition applies one retained exact-address Number result to a checked destination, enumerates either the existing one-level normalized application prefix or the concrete inner rows of the existing two-level parent-scoped topology, and evaluates one checked ordinary direct-Number comparison at every selected row. The validation reader overlays retained actions on the destination while preserving unrelated checked cells. It does not reconstruct a document, emit rule messages, support specialized numeric atoms, or define a general later-rule runner.
 -/
 
 namespace A12Kernel
@@ -71,14 +71,13 @@ private def rowEnvironment (level : RepeatableLevel) (row : RowAddr) :
   | [coordinate] => pure [(level, coordinate)]
   | _ => throw .unsupportedComparison
 
-private def evaluateAppliedRows
+private def evaluateAppliedEnvironments
     (view : NumericComputationRunView Message CellAddr)
     (destination : CheckedDocument model)
     (comparison : CheckedOrderedNumericComparison model)
-    (level : RepeatableLevel) (rows : List RowAddr) :
+    (environments : List Env) :
     Except NumericComputationLaterValidationError (List (Env × Verdict)) :=
-  rows.mapM fun row => do
-    let environment ← rowEnvironment level row
+  environments.mapM fun environment => do
     let context : AddressedValidationEvaluationContext model := {
       scalar := {
         fields := destination.flatContext
@@ -91,6 +90,32 @@ private def evaluateAppliedRows
     let verdict ←
       comparison.evalAddressed context |>.mapError .validation
     pure (environment, verdict)
+
+private def evaluateAppliedRows
+    (view : NumericComputationRunView Message CellAddr)
+    (destination : CheckedDocument model)
+    (comparison : CheckedOrderedNumericComparison model)
+    (level : RepeatableLevel) (rows : List RowAddr) :
+    Except NumericComputationLaterValidationError (List (Env × Verdict)) := do
+  let environments ← rows.mapM (rowEnvironment level)
+  evaluateAppliedEnvironments view destination comparison environments
+
+private def twoLevelRowEnvironment
+    (outer inner : RepeatableLevel) (row : RowAddr) :
+    Except NumericComputationLaterValidationError Env :=
+  match row.path with
+  | [outerCoordinate, innerCoordinate] =>
+      pure [(outer, outerCoordinate), (inner, innerCoordinate)]
+  | _ => throw .unsupportedComparison
+
+private def evaluateAppliedTwoLevelRows
+    (view : NumericComputationRunView Message CellAddr)
+    (destination : CheckedDocument model)
+    (comparison : CheckedOrderedNumericComparison model)
+    (outer inner : RepeatableLevel) (rows : List RowAddr) :
+    Except NumericComputationLaterValidationError (List (Env × Verdict)) := do
+  let environments ← rows.mapM (twoLevelRowEnvironment outer inner)
+  evaluateAppliedEnvironments view destination comparison environments
 
 namespace NumericComputationRunView
 
@@ -111,6 +136,26 @@ def evaluateOneLevelAfterApplication
   if !comparison.supportsAppliedNumberValidation then
     throw .unsupportedComparison
   evaluateAppliedRows view destination comparison level applied.rows
+
+/-- Apply retained Number actions, then evaluate one checked direct-Number comparison at every concrete inner row in the normalized finite two-level destination topology. A padded outer predecessor without an inner row does not create a validation environment. -/
+def evaluateTwoLevelAfterApplication
+    (view : NumericComputationRunView Message CellAddr)
+    (destination : CheckedDocument model)
+    (outer inner : RepeatableLevel)
+    (comparison : CheckedOrderedNumericComparison model) :
+    Except NumericComputationLaterValidationError (List (Env × Verdict)) := do
+  let applied ←
+    (view.applyToCheckedTwoLevel destination outer inner)
+      |>.mapError .application
+  let group ← match model.repeatableGroupAtLevel? inner with
+    | some group => pure group
+    | none => throw .unsupportedComparison
+  if comparison.rowGroup != group.path then
+    throw (.comparisonGroup group.path comparison.rowGroup)
+  if !comparison.supportsAppliedNumberValidation then
+    throw .unsupportedComparison
+  evaluateAppliedTwoLevelRows view destination comparison
+    outer inner applied.leafRows
 
 end NumericComputationRunView
 
