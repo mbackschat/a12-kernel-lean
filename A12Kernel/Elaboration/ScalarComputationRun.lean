@@ -32,6 +32,12 @@ def referencesField (step : CheckedScalarComputationStep model)
   | .string table => table.referencesField field
   | .number table => table.referencesField field
 
+/-- Enumerate every model field referenced by this checked typed step. The model order is stable while the predicate traverses the step's complete guards and operations. -/
+def fieldDependencies (step : CheckedScalarComputationStep model) :
+    List FieldId :=
+  (model.fields.filter fun declaration =>
+    step.referencesField declaration.id).map (·.id)
+
 def supportsScalarEvaluation : CheckedScalarComputationStep model → Bool
   | .string _ => true
   | .number table => table.supportsScalarEvaluation

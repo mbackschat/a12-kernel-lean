@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ScalarComputationRunResult
+import A12Kernel.Elaboration.ScalarComputationFormalInput
 import A12Kernel.Elaboration.ScalarComputationRunRelation
 
 /-! # Finite mixed scalar computation-run locks
@@ -119,6 +119,11 @@ private def firstNumberUnreadString :=
     (holding, literalNumber 3),
     (holding, asNumber "FirstString")]).get (by native_decide)
 
+private def firstNumberUnreadInputString :=
+  (numberTable? firstNumberId [
+    (holding, literalNumber 3),
+    (holding, asNumber "InputString")]).get (by native_decide)
+
 private def secondStringFromNumber :=
   (stringTable? secondStringId [(holding,
     .concat (.fieldValueAsString (bare "FirstNumber"))
@@ -170,6 +175,12 @@ private def numberCell (field : FieldId) (amount : Int) :
     numericDecimal := some { unscaled := amount, scale := 0 } }
 
 private def malformedNumberCell (field : FieldId) :
+    ClassifiedCellInput :=
+  { address := { field, path := [] }
+    stored := "bad"
+    raw := .rejected .malformed }
+
+private def malformedStringCell (field : FieldId) :
     ClassifiedCellInput :=
   { address := { field, path := [] }
     stored := "bad"
@@ -686,5 +697,71 @@ example :
     .fail (.string firstStringValue) member pending enabled
       failingString_evaluated
   exact ⟨failed, .failed failed⟩
+
+private def formalFinding (field : FieldId)
+    (cause : FormalCause) : ComputationFormalInputFinding := {
+  address := { field, path := [] }
+  cause
+}
+
+private structure MixedFormalInputSummary where
+  planOperands : List FieldId
+  planTargets : List FieldId
+  selectedFields : List FieldId
+  findings : List ComputationFormalInputFinding
+  stringValues : List (FieldId × String)
+  numberValues : List (FieldId × StoredNumber)
+  deriving Repr, DecidableEq
+
+private def mixedFormalInputSummary? : Option MixedFormalInputSummary := do
+  let run ← (certifyScalarComputationRun [
+    .number firstNumberUnreadInputString,
+    .string secondStringFromNumber]).toOption
+  let input ← checkedDocument [
+    malformedStringCell inputStringId,
+    numberCell inputNumberId 4,
+    stringCell secondStringId "OLD"]
+  let plan ← run.formalInputPlan.toOption
+  let view ← (run.executeResultWithFormalInputs world prepared.patterns input
+    (fun _ => ()) [] ([] : List Unit)).toOption
+  pure {
+    planOperands := plan.operandFields
+    planTargets := plan.computedFields
+    selectedFields := plan.selectedFields
+    findings := view.formalErrorsInOperands
+    stringValues := view.scalar.string.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    numberValues := view.scalar.number.withoutErrors.map fun item =>
+      (item.targetField, item.value)
+  }
+
+/- The mixed plan inventories every family's raw dependencies, excludes both computed targets, and retains an eager malformed hidden alternative beside the exact family-partitioned result. -/
+example : mixedFormalInputSummary? = some {
+    planOperands := [inputStringId, gateId, inputNumberId, firstNumberId]
+    planTargets := [firstNumberId, secondStringId]
+    selectedFields := [inputStringId, gateId, inputNumberId]
+    findings := [formalFinding inputStringId .malformed]
+    stringValues := [(secondStringId, "3/4")]
+    numberValues := [
+      (firstNumberId, { unscaled := 3, scale := 0 })]
+  } := by
+  native_decide
+
+private def mixedFormalFailure? :
+    Option (List ComputationFormalInputFinding × FieldId × SurfaceScalarKind) := do
+  let run ← (certifyScalarComputationRun [
+    .number firstNumberUnreadInputString,
+    .string firstStringValue]).toOption
+  let input ← checkedDocument [malformedStringCell inputStringId]
+  match run.executeResultWithFormalInputs world missingPatterns input
+      (fun _ => ()) [] ([] : List Unit) with
+  | .error (.execution findings (.execution fault)) =>
+      some (findings, fault.target, fault.targetKind)
+  | _ => none
+
+/- A later typed structural fault retains the same eager mixed input inventory and its own String target identity. -/
+example : mixedFormalFailure? = some (
+    [formalFinding inputStringId .malformed], firstStringId, .string) := by
+  native_decide
 
 end A12Kernel.Conformance.ScalarComputationRun
