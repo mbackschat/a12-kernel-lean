@@ -95,6 +95,7 @@ import A12Kernel.Proofs.ComputationMessage
 import A12Kernel.Proofs.FieldId
 import A12Kernel.Proofs.NumericComputationRunResult
 import A12Kernel.Proofs.NumericComputationRunApplication
+import A12Kernel.Proofs.NumericComputationLaterValidation
 import A12Kernel.Proofs.NumericStoredNumber
 import A12Kernel.Proofs.NumericTarget
 import A12Kernel.Proofs.NumericInput
