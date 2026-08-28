@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.TimeFirstFilledComputation
-import A12Kernel.Elaboration.AddressedTimeFirstFilledComputation
+import A12Kernel.Elaboration.AddressedTimeFirstFilledFormalInput
 
 /-! # Direct and exact-address Time `FirstFilledValue` computation laws -/
 
@@ -34,6 +34,13 @@ theorem timeFirstFilled_executeResult_projects
   rw [CheckedTimeFirstFilledComputation.executeResult, evaluated]
   rfl
 
+/-- The immutable addressed executor is definitionally the caller-read route specialized to the document's checked read. -/
+theorem addressedTimeFirstFilled_executeWithRead_base
+    (operation : CheckedAddressedTimeFirstFilledComputation model)
+    (input : CheckedDocument model) :
+    operation.executeWithRead input input.read = operation.execute input := by
+  rfl
+
 /-- Addressed result construction retains the checked operation and classifies every executed outcome under its exact target address. -/
 theorem addressedTimeFirstFilled_executeResult_projects
     (operation : CheckedAddressedTimeFirstFilledComputation model)
@@ -47,10 +54,49 @@ theorem addressedTimeFirstFilled_executeResult_projects
         input.sourceTimeTargetStateAt messages
         (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
   rw [CheckedAddressedTimeFirstFilledComputation.executeResult,
-    executed] at produced
+    CheckedAddressedTimeFirstFilledComputation.executeResultWithRead]
+    at produced
+  change operation.executeWithRead input input.read = .ok outcomes at executed
+  rw [executed] at produced
   simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
   subst view
   exact ⟨rfl, rfl⟩
+
+/-- Successful whole-call composition preserves the exact prepared Time result, including eager findings, clock rendering, and source-relative actions. -/
+theorem addressedTimeFirstFilled_executeResultWithFormalInputs_exact
+    (operation : CheckedAddressedTimeFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (result : AddressedTimeFirstFilledComputationRunView model
+      ComputationFormalInputFinding)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResultWithRead input
+      prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands = .ok result) :
+    operation.executeResultWithFormalInputs input = .ok result := by
+  rw [CheckedAddressedTimeFirstFilledComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation, executed]
+
+/-- A post-preparation execution failure retains the exact eager input findings beside the unchanged addressed Time fault. -/
+theorem addressedTimeFirstFilled_executeResultWithFormalInputs_failure_exact
+    (operation : CheckedAddressedTimeFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (fault : AddressedTimeFirstFilledComputationFault)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResultWithRead input
+      prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands = .error fault) :
+    operation.executeResultWithFormalInputs input =
+      .error (.execution prepared.formalErrorsInOperands fault) := by
+  rw [CheckedAddressedTimeFirstFilledComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation, executed]
 
 /-- Addressed application is exactly the common Time fold over the separately supplied document's exact cell-state projection. -/
 theorem addressedTimeFirstFilledRun_applyToChecked_delegates

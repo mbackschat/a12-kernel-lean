@@ -113,15 +113,17 @@ structure AddressedTimeFirstFilledComputationRunView (model : FlatModel)
 
 namespace CheckedAddressedTimeFirstFilledComputation
 
-private def evaluateAt
+private def evaluateAtWithRead
     (operation : CheckedAddressedTimeFirstFilledComputation model)
-    (input : CheckedDocument model) (environment : Env) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
     Except AddressedTimeFirstFilledComputationFault
       AddressedTimeFirstFilledComputationOutcome := do
   let targetPath ←
     environment.pathForScope operation.target.repeatableScope
       |>.mapError .targetEnvironment
-  let resolved ← operation.source.resolveCheckedField input environment
+  let resolved ← operation.source.resolveCheckedFieldWithRead input read environment
     |>.mapError .source
   pure {
     targetField := { field := operation.targetField, path := targetPath }
@@ -129,29 +131,48 @@ private def evaluateAt
       (evalTimeFirstFilledCells resolved.cells)
   }
 
+/-- Execute one sibling-correlated Time scan per physical target row through a caller-supplied exact-address source view. Target topology, physical stored text, and immutable target state remain unchanged. -/
+def executeWithRead
+    (operation : CheckedAddressedTimeFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except AddressedTimeFirstFilledComputationFault
+      (List AddressedTimeFirstFilledComputationOutcome) := do
+  let environments ← input.actualRowEnvironments operation.target.repeatableScope
+    |>.mapError .targetRows
+  environments.mapM (operation.evaluateAtWithRead input read)
+
 /-- Execute one sibling-correlated Time scan per physical target row in document order. -/
 def execute
     (operation : CheckedAddressedTimeFirstFilledComputation model)
     (input : CheckedDocument model) :
     Except AddressedTimeFirstFilledComputationFault
-      (List AddressedTimeFirstFilledComputationOutcome) := do
-  let environments ← input.actualRowEnvironments operation.target.repeatableScope
-    |>.mapError .targetRows
-  environments.mapM (operation.evaluateAt input)
+      (List AddressedTimeFirstFilledComputationOutcome) :=
+  operation.executeWithRead input input.read
 
-/-- Classify every exact row outcome against immutable source target state through the shared Time result owner. -/
-def executeResult
+/-- Classify caller-view outcomes against immutable source target state through the shared Time result owner. -/
+def executeResultWithRead
     (operation : CheckedAddressedTimeFirstFilledComputation model)
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (residualMessages : List ResidualMessage) :
     Except AddressedTimeFirstFilledComputationFault
       (AddressedTimeFirstFilledComputationRunView model ResidualMessage) := do
-  let outcomes ← operation.execute input
+  let outcomes ← operation.executeWithRead input read
   pure {
     operation
     time := TimeComputationRunView.fromOutcomesAt
       input.sourceTimeTargetStateAt residualMessages
       (outcomes.map fun entry => (entry.targetField, entry.outcome))
   }
+
+/-- Classify every exact row outcome against immutable source target state through the shared Time result owner. -/
+def executeResult
+    (operation : CheckedAddressedTimeFirstFilledComputation model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    Except AddressedTimeFirstFilledComputationFault
+      (AddressedTimeFirstFilledComputationRunView model ResidualMessage) :=
+  operation.executeResultWithRead input input.read residualMessages
 
 end CheckedAddressedTimeFirstFilledComputation
 
