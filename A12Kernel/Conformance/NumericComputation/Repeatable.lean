@@ -1,5 +1,6 @@
 import A12Kernel.Conformance.NumericComputation.Support
 import A12Kernel.Elaboration.AddressedNumberFirstFilledComputation
+import A12Kernel.Elaboration.AddressedNumberFirstFilledGeneratedValidation
 import A12Kernel.Elaboration.NumericComputation.FormalInput
 
 /-! # Numeric-computation repeatable locks -/
@@ -436,9 +437,15 @@ private def decimalCell (id : FieldId) (path : List Nat) (stored : String)
   numericDecimal := some { unscaled, scale := 0 }
 }
 
+private def documentWithRows? (selectedRows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument addressedModel) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := selectedRows, cells }).toOption
+
 private def document? (cells : List ClassifiedCellInput) :
     Option (CheckedDocument addressedModel) :=
-  (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
+  documentWithRows? rows cells
 
 private def input? : Option (CheckedDocument addressedModel) :=
   document? [
@@ -628,6 +635,138 @@ example : summary? = some {
       .presentEmpty,
       .presentValue (.decimal (stored 4))]
   } := by
+  native_decide
+
+private def generatedMessagePlan : MessageRenderPlan :=
+  { parts := [.text "Result disagrees with its computation"] }
+
+private def generatedExpectedMessage (path : List Nat) : FlatRuleMessage := {
+  errorAddress := MessagePointer.ofCellAddr (addr target.id path)
+  errorCode := "computedNumberFirstFilled"
+  severity := .error
+  messageType := .omission
+  text := generatedMessagePlan.render
+}
+
+private def generatedAppliedValidation? : Option
+    (Summary × List (Env × FlatRuleOutcome)) := do
+  let operation ← multiOperation?
+  let sourceDocument ← multiInput?
+  let destination ← document? [
+    cell source.id [1, 1] "" .presentEmpty,
+    cell source.id [1, 2] "5" (.parsed (.num 5)),
+    cell fallback.id [2, 1] "8" (.parsed (.num 8)),
+    decimalCell target.id [1, 1] "9" 9,
+    decimalCell target.id [3, 1] "7" 7,
+    decimalCell target.id [4, 1] "6" 6,
+    decimalCell unrelated.id [] "4" 4]
+  let run ← (operation.executeGeneratedAppliedValidation sourceDocument
+    destination (fun _ => ()) [] "computedNumberFirstFilled"
+    generatedMessagePlan).toOption
+  let addresses :=
+    [[2, 1], [1, 2], [3, 1], [4, 1], [1, 1]].map (addr target.id) ++
+      [addr unrelated.id []]
+  pure ({
+    values := run.result.numeric.withoutErrors
+    changes := run.result.numeric.withChanges
+    errors := run.result.numeric.withErrors
+    cleared := run.result.numeric.cleared
+    states := addresses.map run.applied.stateAt
+  }, run.validation)
+
+/- The repeatable computation executes against its immutable source, applies only source-relative actions, and then validates every destination target row against destination sources. Parent two recomputes eight after source execution produced seven, so validation must follow application and reread the destination. Parent one's source-identical first target has no action and leaves the destination's stale nine to mismatch its recomputed five; reclassifying against the destination would erase that witness. The changed second target and parent three agree, while the errored fourth target is empty before the generated filled gate. -/
+example : generatedAppliedValidation? = some ({
+    values := [
+      { targetField := addr target.id [2, 1], value := stored 7 },
+      { targetField := addr target.id [1, 2], value := stored 5 },
+      { targetField := addr target.id [3, 1], value := stored 0 },
+      { targetField := addr target.id [1, 1], value := stored 5 }]
+    changes := [
+      { targetField := addr target.id [2, 1], value := stored 7 },
+      { targetField := addr target.id [1, 2], value := stored 5 },
+      { targetField := addr target.id [3, 1], value := stored 0 }]
+    errors := [{
+      targetField := addr target.id [4, 1]
+      attempted := stored 12
+      cause := .aboveMaximum
+    }]
+    cleared := []
+    states := [
+      .presentValue (.decimal (stored 7)),
+      .presentValue (.decimal (stored 5)),
+      .presentValue (.decimal (stored 0)),
+      .presentEmpty,
+      .presentValue (.decimal (stored 9)),
+      .presentValue (.decimal (stored 4))]
+  }, [
+    ([(100, 2), (120, 1)],
+      .fired (generatedExpectedMessage [2, 1])),
+    ([(100, 1), (120, 2)], .notFired),
+    ([(100, 3), (120, 1)], .notFired),
+    ([(100, 4), (120, 1)], .notFired),
+    ([(100, 1), (120, 1)],
+      .fired (generatedExpectedMessage [1, 1]))
+  ]) := by
+  native_decide
+
+private def generatedDestinationOnlyValidation? : Option
+    (Bool × Option (Env × FlatRuleOutcome)) := do
+  let operation ← multiOperation?
+  let sourceDocument ← multiInput?
+  let destinationRows := rows ++ [{ group := 120, path := [2, 2] }]
+  let destination ← documentWithRows? destinationRows [
+    cell fallback.id [2, 1] "8" (.parsed (.num 8)),
+    decimalCell target.id [2, 2] "9" 9]
+  let run ← (operation.executeGeneratedAppliedValidation sourceDocument
+    destination (fun _ => ()) [] "computedNumberFirstFilled"
+    generatedMessagePlan).toOption
+  let targetAddress := addr target.id [2, 2]
+  pure (
+    run.result.numeric.withoutErrors.any fun value =>
+      value.targetField == targetAddress,
+    run.validation.find? fun entry =>
+      entry.1 == [(100, 2), (120, 2)])
+
+/- Validation enumerates destination target rows rather than source execution rows. A destination-only target has no source result, yet its filled nine mismatches the destination's fallback eight and fires at its exact address. -/
+example : generatedDestinationOnlyValidation? = some (false,
+    some ([(100, 2), (120, 2)],
+      .fired (generatedExpectedMessage [2, 2]))) := by
+  native_decide
+
+private def generatedCreatedTopologyError? : Option
+    AddressedNumberFirstFilledAppliedValidationError := do
+  let operation ← multiOperation?
+  let sourceDocument ← multiInput?
+  let destinationRows := rows.erase { group := 120, path := [3, 1] }
+  let destination ← documentWithRows? destinationRows []
+  match operation.executeGeneratedAppliedValidation sourceDocument
+      destination (fun _ => ()) [] "computedNumberFirstFilled"
+      generatedMessagePlan with
+  | .error cause => some cause
+  | .ok _ => none
+
+/- The bounded route refuses the first retained action whose ancestry application would create. Existing-row validation cannot silently stand in for materialized document topology. -/
+example : generatedCreatedTopologyError? =
+    some (.materializedTopology (addr target.id [3, 1])) := by
+  native_decide
+
+private def generatedCreatedTopologyOrderError? : Option
+    AddressedNumberFirstFilledAppliedValidationError := do
+  let operation ← operation?
+  let sourceDocument ← input?
+  let destinationRows :=
+    (rows.erase { group := 120, path := [2, 1] }).erase
+      { group := 120, path := [3, 1] }
+  let destination ← documentWithRows? destinationRows []
+  match operation.executeGeneratedAppliedValidation sourceDocument
+      destination (fun _ => ()) [] "computedNumberFirstFilled"
+      generatedMessagePlan with
+  | .error cause => some cause
+  | .ok _ => none
+
+/- Topology refusal follows the established application action order: retained clears are examined before changed values. -/
+example : generatedCreatedTopologyOrderError? =
+    some (.materializedTopology (addr target.id [2, 1])) := by
   native_decide
 
 end AddressedFirstFilled

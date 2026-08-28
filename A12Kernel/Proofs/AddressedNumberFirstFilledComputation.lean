@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.AddressedNumberFirstFilledComputation
+import A12Kernel.Elaboration.AddressedNumberFirstFilledGeneratedValidation
 
 /-! # Exact-address repeatable Number `FirstFilledValue` laws -/
 
@@ -81,5 +81,16 @@ theorem addressedNumberFirstFilledRun_applyToChecked_delegates
     view.applyToChecked destination =
       view.numeric.applyToChecked destination := by
   rfl
+
+/-- The generated repeatable mismatch keeps the computed target on its left, the complete checked first-filled source on its right, and no caller-selectable scale-warning suppression. -/
+theorem addressedNumberFirstFilled_generatedMismatch_exact
+    (operation : CheckedAddressedNumberFirstFilledComputation model) :
+    let comparison := operation.generatedMismatchComparison
+    comparison.op = .ordinary .notEqual ∧
+      comparison.left =
+        .atom (.ordinary (.field operation.generatedValidationTarget)) ∧
+      comparison.right = .atom (.firstFilled operation.numberSource) ∧
+      comparison.suppressExactScaleWarning = false := by
+  simp [CheckedAddressedNumberFirstFilledComputation.generatedMismatchComparison]
 
 end A12Kernel
