@@ -672,6 +672,7 @@ run_cmd do
 #print axioms A12Kernel.generatedNumericComputationTarget_guardPoison
 #print axioms A12Kernel.generatedNumericComputationTarget_unsuppressed
 #print axioms A12Kernel.generatedNumericComputationTarget_suppressed
+#print axioms A12Kernel.generatedNumericComputationTarget_usesDeclarationPolicy
 #print axioms A12Kernel.generatedNumericOperationTable_fieldDependencies_exact
 #print axioms A12Kernel.guardedGeneratedComputation_firstHolds_selects
 #print axioms A12Kernel.numericComputationAtom_stringRange_toValidationAtom

@@ -556,6 +556,7 @@ def assembleGeneratedNumericOperationRule (model : FlatModel)
 inductive GeneratedNumericComputationEvaluationError where
   | validation (cause : GeneratedComputationValidationError)
   | operation (cause : NumericComputationFault)
+  | targetPolicyUnavailable (field : FieldId)
   deriving Repr
 
 namespace GeneratedComputationTable
@@ -576,6 +577,21 @@ def evaluateNumeric (computation : GeneratedComputationTable
           operation.evaluate context
             |>.map (.evaluated operation.core.suppressExactScaleWarning)
             |>.mapError .operation
+
+/-- Evaluate the admitted generated table and complete its activation through the exact target policy reconstructed from that table's validated model declaration. -/
+def evaluateNumericTarget (computation : GeneratedComputationTable
+    (CheckedNumericComputationOperation model))
+    (context : ScalarComputationContext) :
+    Except GeneratedNumericComputationEvaluationError NumericTargetCheckResult :=
+  match computation.evaluateNumeric context with
+  | .error cause => .error cause
+  | .ok evaluation =>
+      match model.lookupUniqueId computation.targetField with
+      | .error cause => .error (.validation (.resolve cause))
+      | .ok declaration =>
+          match declaration.toNumericTargetPolicy? with
+          | none => .error (.targetPolicyUnavailable computation.targetField)
+          | some policy => pure (evaluation.completeNumericTarget policy)
 
 end GeneratedComputationTable
 

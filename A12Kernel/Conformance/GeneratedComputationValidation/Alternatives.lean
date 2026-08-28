@@ -136,7 +136,7 @@ private def invalidRuntimeCommonValidationError? :
         (generatedRuntimeContext (.parsed (.num 1))
           (.parsed (.num 7)) .empty .empty) with
   | .error (.validation error) => some error
-  | .error (.operation _) | .ok _ => none
+  | .error (.operation _) | .error (.targetPolicyUnavailable _) | .ok _ => none
 
 private def selectedOperationPoisonResult :
     Option GeneratedNumericComputationEvaluation := do
@@ -147,6 +147,50 @@ private def selectedOperationPoisonResult :
 
 private def generatedRuntimeTargetPolicy : NumericTargetPolicy :=
   crossGroupTarget.toNumericTargetPolicy?.get (by native_decide)
+
+private def generatedRuntimeTargetResult
+    (common source extra date : RawCell) : Option NumericTargetCheckResult := do
+  let table ← formalInputTable?
+  (table.evaluateNumericTarget
+    (generatedRuntimeContext common source extra date)).toOption
+
+private def policyBoundSource : FlatFieldDecl :=
+  { id := 40, groupPath := ["Input"], name := "PolicySource",
+    policy := { kind := .number { scale := 0, signed := true } } }
+
+private def policyBoundTarget : FlatFieldDecl :=
+  { id := 41, groupPath := ["Output"], name := "PolicyTarget",
+    policy := { kind := .number { scale := 0, signed := true } },
+    numericTargetConstraints := {
+      NumericTargetConstraints.unconstrained with zeroAllowed := false } }
+
+private def policyBoundModel : FlatModel :=
+  { fields := [policyBoundSource, policyBoundTarget] }
+
+private def policyBoundOperation : Except NumericComputationElabError
+    (CheckedNumericComputationOperation policyBoundModel) :=
+  elaborateNumericComputationOperation policyBoundModel ["Rules"]
+    policyBoundTarget.id
+    (.atom (.field (absolutePath ["Input"] "PolicySource")))
+
+private def policyBoundTable? : Option (GeneratedComputationTable
+    (CheckedNumericComputationOperation policyBoundModel)) := do
+  let operation ← policyBoundOperation.toOption
+  pure {
+    targetField := policyBoundTarget.id
+    name := "policyBound"
+    alternatives := .singleton { operation }
+    messagePlan
+  }
+
+private def policyBoundZeroResult : Option NumericTargetCheckResult := do
+  let table ← policyBoundTable?
+  let raw : RawFlatContext := {
+    read field :=
+      if field = policyBoundSource.id then .parsed (.num 0) else .empty
+  }
+  (table.evaluateNumericTarget {
+    read := (policyBoundModel.checkContext raw).read }).toOption
 
 /- Runtime evaluation preserves activation and operation phases: a false common
    guard hides malformed row inputs, common poison stops before selection, and a
@@ -202,6 +246,35 @@ example :
       |>.completeNumericTarget generatedRuntimeTargetPolicy) =
         .supported (.rejected
           { unscaled := 24723, scale := 4 } .suppressedScaleMismatch) := by
+  native_decide
+
+/- Whole target evaluation binds the table's own declaration policy while
+   preserving every established activation and selected-result outcome. -/
+example :
+    generatedRuntimeTargetResult .empty (.rejected .malformed)
+        (.rejected .malformed) (.rejected .malformed) =
+        some (.supported .noValue) ∧
+      generatedRuntimeTargetResult (.rejected .malformed)
+        (.parsed (.num 7)) .empty .empty =
+          some (.supported (.inheritedPoison .malformed)) ∧
+      generatedRuntimeTargetResult (.parsed (.num 1))
+        (.parsed (.num 7)) .empty .empty =
+          some (.supported (.accepted { unscaled := 7, scale := 0 })) ∧
+      operationPoisonTable?.bind (fun table =>
+        (table.evaluateNumericTarget (generatedRuntimeContext
+          (.parsed (.num 1)) (.rejected .malformed)
+            (.parsed (.num 1)) .empty)).toOption) =
+          some (.supported (.inheritedPoison .malformed)) ∧
+      domainFailureFirstTable?.bind (fun table =>
+        (table.evaluateNumericTarget (generatedRuntimeContext
+          (.parsed (.num 1)) (.parsed (.num 7)) .empty .empty)).toOption) =
+          some (.supported (.invalidNoValue .calculationValue)) := by
+  native_decide
+
+/- The whole route cannot substitute an unconstrained caller policy for the
+   generated target declaration's zero prohibition. -/
+example : policyBoundZeroResult = some (.supported (.rejected
+    { unscaled := 0, scale := 0 } .zeroNotAllowed)) := by
   native_decide
 
 /- Runtime cannot bypass the generated table's existing model and guard

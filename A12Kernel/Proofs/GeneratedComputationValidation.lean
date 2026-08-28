@@ -81,6 +81,22 @@ theorem generatedNumericComputationTarget_suppressed
       policy.checkWithScaleWarningSuppressed result := by
   rfl
 
+/-- Whole generated numeric target evaluation uses only the policy reconstructed from the table target's validated declaration. -/
+theorem generatedNumericComputationTarget_usesDeclarationPolicy
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model))
+    (context : ScalarComputationContext)
+    (evaluation : GeneratedNumericComputationEvaluation)
+    (declaration : FlatFieldDecl) (policy : NumericTargetPolicy)
+    (executed : computation.evaluateNumeric context = .ok evaluation)
+    (resolved : model.lookupUniqueId computation.targetField = .ok declaration)
+    (policyExact : declaration.toNumericTargetPolicy? = some policy) :
+    computation.evaluateNumericTarget context =
+      .ok (evaluation.completeNumericTarget policy) := by
+  simp [GeneratedComputationTable.evaluateNumericTarget, executed, resolved,
+    policyExact]
+  rfl
+
 /-- The generated numeric table inventory is exactly the validated model declarations referenced by its common guard, alternative guards, or checked operations. -/
 theorem generatedNumericOperationTable_fieldDependencies_exact
     (computation : GeneratedComputationTable
