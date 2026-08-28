@@ -271,12 +271,28 @@ structure AddressedEnumerationToNumberHavingCascadeRunView
     (ComputationFormalMessage NumberPayload) CellAddr
   consumer : StringComputationRunView StringResidual CellAddr
 
+/-- One completed serial cross-family run paired with its call-global direct-field formal-input inventory. -/
+structure AddressedEnumerationToNumberHavingCascadeFormalInputRunView
+    (model : FlatModel) where
+  private mk ::
+  phases : AddressedEnumerationToNumberHavingCascadeRunView
+    model Unit ComputationFormalInputFinding
+  formalErrorsInOperands : List ComputationFormalInputFinding
+
 inductive AddressedEnumerationToNumberHavingCascadeFault where
   | enumerationProducer (cause : AddressedEnumerationComputationFault)
   | enumerationDependency (target : CellAddr)
       (cause : EnumerationDependencyFault)
   | numberProducer (cause : AddressedFieldValueAsNumberFault)
   | consumer (cause : AddressedEnumerationFirstFilledComputationFault)
+  deriving Repr, DecidableEq
+
+/-- Failure while composing the checked call-global inventory with the serial cross-family execution. -/
+inductive AddressedEnumerationToNumberHavingCascadeCheckedResultFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : AddressedEnumerationToNumberHavingCascadeFault)
   deriving Repr, DecidableEq
 
 namespace CheckedAddressedEnumerationToNumberHavingCascade
@@ -295,28 +311,40 @@ def analyze (plan : CheckedAddressedEnumerationToNumberHavingCascade model) :
     (plan.consumer.target.field, plan.consumer.source.fieldDependencies)]
 }
 
-/-- Complete Enumeration, convert its exact produced cells to Number, then expose both overlays to the lazy filtered consumer. -/
-def execute (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
-    (input : CheckedDocument model) :
+/-- Complete Enumeration from one caller-supplied fallback, convert its exact produced cells to Number, then expose both overlays above that fallback to the lazy filtered consumer. -/
+def executeWithFallbackRead
+    (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
+    (input : CheckedDocument model)
+    (fallbackRead : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedEnumerationToNumberHavingCascadeFault
       AddressedEnumerationToNumberHavingCascadeOutcomes := do
-  let enumerationProducer ← plan.enumerationProducer.execute input
+  let enumerationProducer ← plan.enumerationProducer.executeWithRead input
+    fallbackRead
     |>.mapError .enumerationProducer
   let enumerationDependencies ←
     projectEnumerationDependencyCells enumerationProducer
       |>.mapError fun error => .enumerationDependency error.target error.cause
   let enumerationRead :=
-    readAfterEnumerationDependencies input enumerationDependencies
+    readAfterEnumerationDependenciesWith enumerationDependencies fallbackRead
   let numberProducer ← plan.numberProducer.executeWithRead input enumerationRead
     |>.mapError .numberProducer
   let read := readAfterEnumerationDependenciesWith enumerationDependencies
-    (readAfterNumericDependencies input numberProducer)
+    (readAfterNumericDependenciesWith numberProducer fallbackRead)
   let consumer ← plan.consumer.executeWithRead input read |>.mapError .consumer
   pure { enumerationProducer, numberProducer, consumer }
 
-/-- Execute once, then classify all three retained phases against the immutable source document. -/
-def executeResult (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
+/-- Execute all three phases over the immutable checked document. -/
+def execute (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
+    (input : CheckedDocument model) :
+    Except AddressedEnumerationToNumberHavingCascadeFault
+      AddressedEnumerationToNumberHavingCascadeOutcomes :=
+  plan.executeWithFallbackRead input input.read
+
+/-- Execute through one fallback view, then classify all three retained phases against the immutable source document. -/
+def executeResultWithFallbackRead
+    (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
     (input : CheckedDocument model)
+    (fallbackRead : CellAddr → Except CheckedDocumentError CheckedCell)
     (numberPayloadAt : CellAddr → NumberPayload)
     (numberMessages : List (ComputationFormalMessage NumberPayload))
     (enumerationProducerResidualMessages consumerResidualMessages :
@@ -324,7 +352,7 @@ def executeResult (plan : CheckedAddressedEnumerationToNumberHavingCascade model
     Except AddressedEnumerationToNumberHavingCascadeFault
       (AddressedEnumerationToNumberHavingCascadeRunView
         model NumberPayload StringResidual) := do
-  let outcomes ← plan.execute input
+  let outcomes ← plan.executeWithFallbackRead input fallbackRead
   pure {
     plan
     enumerationProducer := projectAddressedEnumerationResults input
@@ -335,6 +363,45 @@ def executeResult (plan : CheckedAddressedEnumerationToNumberHavingCascade model
     consumer := projectAddressedEnumerationResults input consumerResidualMessages
       outcomes.consumer
   }
+
+/-- Execute once, then classify all three retained phases against the immutable source document. -/
+def executeResult (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
+    (input : CheckedDocument model)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (enumerationProducerResidualMessages consumerResidualMessages :
+      List StringResidual) :
+    Except AddressedEnumerationToNumberHavingCascadeFault
+      (AddressedEnumerationToNumberHavingCascadeRunView
+        model NumberPayload StringResidual) :=
+  plan.executeResultWithFallbackRead input input.read numberPayloadAt
+    numberMessages enumerationProducerResidualMessages consumerResidualMessages
+
+/-- Bind all three analyzed operations to one call-global direct-field inventory. -/
+def formalInputPlan
+    (plan : CheckedAddressedEnumerationToNumberHavingCascade model) :
+    Except ComputationFormalInputPlanError
+      (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputOperations model plan.analyze.fieldDependencies
+
+/-- Prepare the selected direct inputs once, then run all three typed phases through that fallback while retaining the eager inventory only at the whole-call boundary. -/
+def executeResultWithFormalInputs
+    (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
+    (input : CheckedDocument model) :
+    Except AddressedEnumerationToNumberHavingCascadeCheckedResultFault
+      (AddressedEnumerationToNumberHavingCascadeFormalInputRunView model) := do
+  let inputPlan ← plan.formalInputPlan |>.mapError .formalInput
+  let prepared ← inputPlan.prepare input |>.mapError .preliminary
+  let noResidual := ([] : List ComputationFormalInputFinding)
+  match plan.executeResultWithFallbackRead input
+      prepared.preliminary.readComputation (fun _ => ()) [] noResidual
+      noResidual with
+  | .error cause =>
+      .error (.execution prepared.formalErrorsInOperands cause)
+  | .ok phases => .ok {
+      phases
+      formalErrorsInOperands := prepared.formalErrorsInOperands
+    }
 
 end CheckedAddressedEnumerationToNumberHavingCascade
 

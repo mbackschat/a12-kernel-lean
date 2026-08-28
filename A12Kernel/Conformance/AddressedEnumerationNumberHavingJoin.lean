@@ -348,6 +348,111 @@ example : serialPlan?.isSome = true ∧
 } := by
   native_decide
 
+private def selectedRawChoice : FlatFieldDecl := {
+  rawChoice with
+  enumeration := some {
+    storedTokens := ["A", "B"]
+    defaultStoredToken := some "B"
+  }
+}
+
+private def selectedModel : FlatModel := {
+  fields := [target, directChoice, selectedRawChoice, computedChoice, limit,
+    rawGate, computedGate, otherChoice]
+  repeatableGroups := [
+    { level := 10, path := ["Form", "Rows"], repeatability := some 1 },
+    { level := 20, path := ["Form", "Rows", "Items"], repeatability := some 1,
+      indexField := some selectedRawChoice.id }]
+}
+
+private def selectedPrepared :
+    PreparedFlatStringContext selectedModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler selectedModel).toOption.get (by native_decide)
+
+private def selectedPlan? :
+    Option (CheckedAddressedEnumerationToNumberHavingCascade selectedModel) := do
+  let enumerationProducer ←
+    (checkAddressedEnumerationComputation selectedModel
+      ["Form", "Rows", "Items"] computedChoice.id
+      (.field (.direct (bare selectedRawChoice.name)))).toOption
+  let numberProducer ←
+    (checkAddressedFieldValueAsNumber selectedModel
+      ["Form", "Rows", "Items"] computedGate.id
+      (.category (bare computedChoice.name) "Numeric")).toOption
+  let consumer ←
+    (checkAddressedEnumerationFirstFilledComputation selectedModel
+      ["Form", "Rows"] target.id
+      (source computedChoice.name (having computedGate.name))).toOption
+  (checkAddressedEnumerationToNumberHavingCascade enumerationProducer
+    numberProducer consumer).toOption
+
+private def selectedInput? : Option (CheckedDocument selectedModel) :=
+  (checkDocument selectedPrepared "en_US" {
+    instantiatedRows := [row 10 [1], row 20 [1, 1]]
+    cells := [
+      numericCell limit [1] "2" 2,
+      cell computedChoice [1, 1] "A" (.parsed (.enum "A")),
+      numericCell computedGate [1, 1] "1" 1,
+      cell target [1] "A" (.parsed (.enum "A"))]
+  }).toOption
+
+private structure SelectedCascadeSummary where
+  selectedFields : List FieldId
+  formalErrors : List ComputationFormalInputFinding
+  enumerationValues : List (CellAddr × String)
+  enumerationChanges : List (CellAddr × String)
+  numberValues : List (CellAddr × StoredNumber)
+  numberChanges : List (CellAddr × StoredNumber)
+  consumerValues : List (CellAddr × String)
+  consumerChanges : List (CellAddr × String)
+  cleared : List CellAddr × List CellAddr × List CellAddr
+  deriving Repr, DecidableEq
+
+private def selectedCascadeSummary? : Option SelectedCascadeSummary := do
+  let plan ← selectedPlan?
+  let input ← selectedInput?
+  let inputPlan ← plan.formalInputPlan |>.toOption
+  let view ← plan.executeResultWithFormalInputs input |>.toOption
+  pure {
+    selectedFields := inputPlan.selectedFields
+    formalErrors := view.formalErrorsInOperands
+    enumerationValues := view.phases.enumerationProducer.withoutErrors.map
+      fun item => (item.targetField, item.value.text)
+    enumerationChanges := view.phases.enumerationProducer.withChanges.map
+      fun item => (item.targetField, item.value.text)
+    numberValues := view.phases.number.withoutErrors.map fun item =>
+      (item.targetField, item.value)
+    numberChanges := view.phases.number.withChanges.map fun item =>
+      (item.targetField, item.value)
+    consumerValues := view.phases.consumer.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    consumerChanges := view.phases.consumer.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    cleared := (view.phases.enumerationProducer.cleared,
+      view.phases.number.cleared, view.phases.consumer.cleared)
+  }
+
+/- A selected absent Enumeration index receives its declared default before the first typed phase, then crosses category conversion and a reached `Having` read without stale target leakage. -/
+example : selectedCascadeSummary? = some {
+  selectedFields := [selectedRawChoice.id, directChoice.id, limit.id]
+  formalErrors := []
+  enumerationValues := [
+    ({ field := computedChoice.id, path := [1, 1] }, "B")]
+  enumerationChanges := [
+    ({ field := computedChoice.id, path := [1, 1] }, "B")]
+  numberValues := [
+    ({ field := computedGate.id, path := [1, 1] },
+      { unscaled := 2, scale := 0 })]
+  numberChanges := [
+    ({ field := computedGate.id, path := [1, 1] },
+      { unscaled := 2, scale := 0 })]
+  consumerValues := [({ field := target.id, path := [1] }, "B")]
+  consumerChanges := [({ field := target.id, path := [1] }, "B")]
+  cleared := ([], [], [])
+} := by
+  native_decide
+
 private structure SerialResultApplicationSummary where
   enumerationProducerValues : List (CellAddr × String)
   enumerationProducerChanges : List (CellAddr × String)
