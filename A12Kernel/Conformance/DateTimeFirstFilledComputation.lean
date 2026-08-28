@@ -22,12 +22,10 @@ private def dateTimeField (id : FieldId) (groups : GroupPath) (name : String)
 
 private def target := dateTimeField 1 ["Cart"] "FirstMoment"
 private def source := dateTimeField 2 ["Cart", "Lines"] "Moment" [10]
-/- The different-**format** control necessarily uses the degenerate time-only format, because
-`yyyy-MM-dd'T'HH:mm:ss` is the only DateTime *storage* format the model gate admits: the dotted
-`dd.MM.yyyy'T'HH:mm:ss` spelling these two controls used before is a DSL expression tag, not a
-declarable format, and is refused outright. The format gate is kind-independent, so a DateTime field
-declaring the clock format is authorable, and these two differ from the source in the format string
-alone. -/
+/- The different-**format** control uses the legal degenerate time-only format. The dotted
+`dd.MM.yyyy'T'HH:mm:ss` spelling these controls used before is a DSL expression tag, not a declaration
+format, and is refused outright. The format gate is kind-independent, so a DateTime field declaring
+the clock format is authorable, and these two differ from the source in the format string alone. -/
 private def degenerateSource := dateTimeField 3 ["Cart", "Lines"] "Dotted" [10] "HH:mm:ss"
 private def incompleteSource := dateTimeField 4 ["Cart", "Lines"] "Incomplete" [10] "yyyy-MM-dd'T'HH:mm:ss" { TemporalComponents.now with second := false }
 private def timeSource : FlatFieldDecl := {

@@ -5,7 +5,7 @@ import A12Kernel.Semantics.NumericAggregate
 
 /-! # Checked Number aggregate lowering
 
-The established direct route resolves one unfiltered list of at least two distinct nonrepeatable Number fields into the aggregate atom used by checked numeric expressions. The ordinary entity-list route reuses the shared checked direct/plain-star/filtered-star source, resolves each slot lazily in authored order, and delegates the resulting cells through one resolver-parametric scan to the same aggregate folds. `SumOfProducts` instead checks exactly two same-group Number stars at the lowest repeatable level, resolves their shared topology once, and exposes full/partial validation plus a phase-indexed checked-cell fold. The full-validation faces of both checked sources reach generated computation validation through its bounded addressed context; unfiltered Number aggregates also reach ordinary partial rules through the call-local partial-view route, while `SumOfProducts` reaches ordinary addressed rules through the immutable checked-document projection. Group operands and concrete syntax remain outside.
+The established direct route resolves one unfiltered list of at least two distinct nonrepeatable Number fields into the aggregate atom used by checked numeric expressions. The ordinary entity-list route reuses the shared checked direct/plain-star/filtered-star source, resolves each slot lazily in authored order, and delegates the resulting cells through one resolver-parametric scan to the same aggregate folds. `SumOfProducts` instead checks exactly two Number stars whose fields have the same immediate owning group and whose lowest-repeatable topology is identical, resolves that shared topology once, and exposes full/partial validation plus a phase-indexed checked-cell fold. The owning group may be a fixed descendant of the starred group. The full-validation faces of both checked sources reach generated computation validation through its bounded addressed context; unfiltered Number aggregates also reach ordinary partial rules through the call-local partial-view route, while `SumOfProducts` reaches ordinary addressed rules through the immutable checked-document projection. Group operands and concrete syntax remain outside.
 -/
 
 namespace A12Kernel
@@ -43,7 +43,7 @@ inductive NumericProductAggregateElabError where
   | incompatibleTopology
   deriving Repr, DecidableEq
 
-/-- Two Number-star declarations certified against one model and one identical lowest-repeatable-star plan. Runtime row alignment follows from this shared plan rather than from zipping independently expanded lists. -/
+/-- Two Number-star declarations certified against one model, one immediate owning group, and one identical lowest-repeatable-star plan. Runtime row alignment follows from this shared plan rather than from zipping independently expanded lists. -/
 structure CheckedNumericProductAggregate (model : FlatModel) where
   left : CheckedStarNumberSource model
   right : CheckedStarNumberSource model
@@ -55,7 +55,7 @@ private def CheckedStarNumberSource.starsOnlyLowest
     (checked : CheckedStarNumberSource model) : Bool :=
   checked.source.path.firstStar + 1 == checked.source.path.axes.length
 
-/-- Check both fields through the established Number-star owner, then require the Kernel's same-group and lowest-star pair shape. One validated model supplies the common model-zone and non-starred ancestors are supplied once by the later outer environment. -/
+/-- Check both fields through the established Number-star owner, then require the Kernel's same-owning-group and lowest-star pair shape. One validated model supplies the common model-zone and non-starred ancestors are supplied once by the later outer environment. -/
 def elaborateNumericProductAggregate (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceNumericProductAggregate) :
     Except NumericProductAggregateElabError

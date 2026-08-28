@@ -2,15 +2,15 @@ import A12Kernel.Elaboration.TimeInput
 
 /-! # Time stored-input laws
 
-The capsule's headline claim is universal rather than case-by-case: a Time cell has exactly **one**
-formal cause available to it, so no stored text can produce the date finding that Date and DateTime
-input reserve for a position below the Gregorian floor. -/
+The capsule's headline claim is universal within its certified `TIME` plus `HH:mm:ss` profile rather
+than case-by-case: exactly **one** formal cause is available there, so no stored clock text can produce
+the date finding that a date-bearing declaration may use for a position below the Gregorian floor. -/
 
 namespace A12Kernel
 
-/-- Every Time cell this classifier *decides* carries either no finding or the single date-format
-finding. A clock has no position in time, so the second cause its Date and DateTime siblings need is
-unreachable here — and this is the statement that keeps a later widening from quietly introducing one.
+/-- Every stored cell this classifier *decides* carries either no finding or the single date-format
+finding. The certified clock format has no position in time, so the second cause is unreachable here;
+this is the statement that keeps a later widening from quietly introducing one.
 
 Stated over stored text on purpose: an already-`rejected` raw cell propagates whatever cause an earlier
 stage put there, and that cause is not this classifier's to constrain. -/

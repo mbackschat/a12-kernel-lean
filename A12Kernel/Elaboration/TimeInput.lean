@@ -5,15 +5,15 @@ import A12Kernel.Semantics.TemporalTarget
 
 /-! # Checked Time stored input
 
-Stored Time text is converted non-leniently against the declaration's format, and this capsule
-classifies it for the only Time format the kernel stores. Its result is a `CheckedCell TimeOfDay`,
+Stored clock text is converted non-leniently against the declaration's format, and this capsule
+classifies only a TIME field at the `HH:mm:ss` declaration. Its result is a `CheckedCell TimeOfDay`,
 which is already the input every Time consumer reads, so nothing here widens the value domain.
 
-**One cause covers every failure.** Measured, a Time field reports the *date-format* finding for a
+**One cause covers every failure in that certified clock profile.** Measured, the declaration reports the *date-format* finding for a
 component of the wrong width and for every out-of-range component alike — hour `24` included, which is
-not an end-of-day spelling — and it never reports the date finding, because a clock has no position in
-time to fall below a floor. That is the whole difference from `Date` and `DateTime` input, both of which
-carry the Gregorian floor and therefore need two causes.
+not an end-of-day spelling — and it never reports the date finding, because this format carries no position in
+time to fall below a floor. A TIME field at a date-bearing declaration is outside this classifier and may
+reach the date finding; the field kind alone does not select the cause set.
 
 The lexical rule is **identical to the authored Time literal's**, so the two share one decoder rather
 than agreeing by construction: three fixed two-digit ASCII components separated by colons, then the

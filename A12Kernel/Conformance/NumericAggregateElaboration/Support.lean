@@ -59,6 +59,11 @@ def filterRight : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } },
     repeatableScope := [10] }
 
+def packagedWeight : FlatFieldDecl :=
+  { id := 11, groupPath := ["Form", "Rows", "Packaging"], name := "Weight",
+    policy := { kind := .number { scale := 0, signed := false } },
+    repeatableScope := [10] }
+
 def rows : RepeatableGroupDecl :=
   { level := 10, path := ["Form", "Rows"], repeatability := some 3 }
 
@@ -75,7 +80,7 @@ def model : FlatModel :=
 
 def productModel : FlatModel :=
   { fields := model.fields ++ [repeatedPrice, repeatedText, otherRepeated,
-      nestedRepeated]
+      nestedRepeated, packagedWeight]
     repeatableGroups := [rows, otherRows, detailRows] }
 
 def bare (field : String) : SurfaceFieldPath :=
@@ -190,6 +195,14 @@ def nestedProductStar (outerStar : Bool) : SurfaceStarFieldPath :=
       { name := "Rows", starred := outerStar },
       { name := "Details", starred := true }]
     field := "Amount" }
+
+def packagedWeightStar : SurfaceStarFieldPath :=
+  { base := .absolute
+    groups := [
+      { name := "Form" },
+      { name := "Rows", starred := true },
+      { name := "Packaging" }]
+    field := "Weight" }
 
 def productSource (left right : SurfaceStarFieldPath) :
     SurfaceNumericProductAggregate :=

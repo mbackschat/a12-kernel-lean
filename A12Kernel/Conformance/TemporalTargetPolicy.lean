@@ -249,8 +249,8 @@ example :
   native_decide
 
 /- DateTime target rendering follows the checked model **zone**, and an exact millisecond remainder is
-deliberately absent from stored text. One instant renders two different wall labels, which is the whole
-observable content here: there is only one declarable DateTime format, so the format cannot vary. -/
+deliberately absent from stored text. One instant renders two different wall labels. This bounded target
+owns the ISO DateTime format, so format variation is outside this example. -/
 example :
     let instant? := (utcInstant? 2025 6 23 10 0 0).map fun instant =>
       { epochMillis := instant.epochMillis + 999 }

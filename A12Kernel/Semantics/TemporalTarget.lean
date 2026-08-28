@@ -17,14 +17,14 @@ def twoDigits (value : Nat) : String :=
 
 end TemporalTargetText
 
-/-- The only authorable Time target format in the bounded kernel profile. -/
+/-- The only format this bounded Time computation target owns. -/
 inductive TimeTargetFormat where
   | wholeSecond
   deriving Repr, DecidableEq
 
 namespace TimeTargetFormat
 
-/-- Admit exactly the kernel's complete Time storage format. -/
+/-- Admit exactly this target profile's complete clock format. -/
 def ofSource? : String → Option TimeTargetFormat
   | "HH:mm:ss" => some .wholeSecond
   | _ => none
@@ -173,11 +173,10 @@ inductive DateTimeTargetFormat where
 
 namespace DateTimeTargetFormat
 
-/-- Admit the **one** whole-second DateTime storage format a declaration may carry. Measured, the model
-gate refuses the day-first `dd.MM.yyyy'T'HH:mm:ss` spelling outright: that string is the kernel's own,
-but it tags DateTime-valued *expressions* — `Now`, the `DateTime(...)` constructor, a DSL constant —
-rather than naming a declarable format, and admitting it here certified declarations the kernel rejects.
-Unlike Date, which really does have two declarable spellings, DateTime has one. -/
+/-- Admit this bounded target's ISO whole-second DateTime profile. The model gate refuses the day-first
+`dd.MM.yyyy'T'HH:mm:ss` spelling outright: that string tags DateTime-valued expressions rather than a
+declaration format. Other legal vocabulary formats on a DateTime declaration remain outside this target
+renderer rather than being rejected as model-level authoring. -/
 def ofSource? : String → Option DateTimeTargetFormat
   | "yyyy-MM-dd'T'HH:mm:ss" => some .yearMonthDayTime
   | _ => none

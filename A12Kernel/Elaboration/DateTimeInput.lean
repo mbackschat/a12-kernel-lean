@@ -3,10 +3,11 @@ import A12Kernel.Elaboration.TimeInput
 
 /-! # Checked DateTime stored input
 
-A DateTime declaration carries exactly one storage format, `yyyy-MM-dd'T'HH:mm:ss`, and its `'T'` is
-part of that format rather than tolerated whitespace. This capsule classifies its stored text into the
-`RawCell` the checked document already carries, resolving the wall label in the model zone exactly as
-the full-Date classifier does.
+This bounded classifier owns a DateTime declaration at `yyyy-MM-dd'T'HH:mm:ss`, and its `'T'` is part
+of that format rather than tolerated whitespace. Other vocabulary formats are authorable on a DateTime
+field but remain outside this classifier. The admitted profile is classified into the `RawCell` the
+checked document already carries, resolving the wall label in the model zone exactly as the full-Date
+classifier does.
 
 **Two causes, split the same way as every other temporal input in this project.** A spelling or range
 question is `dateFormat`: a wrong separator or component width, an unreal calendar date in the date
@@ -30,7 +31,7 @@ namespace A12Kernel
 inductive CanonicalDateTimeFieldError where
   | notDateTime (path : List String) (actual : FieldKind)
   | policyUnavailable (path : List String)
-  /-- The declaration is a DateTime whose format is not the one storage format. Reachable rather than
+  /-- The declaration is a DateTime whose format is not this classifier's storage format. Reachable rather than
   defensive: the model gate admits any vocabulary format on any temporal kind. -/
   | unsupportedFormat (path : List String) (format : String)
   deriving Repr, DecidableEq

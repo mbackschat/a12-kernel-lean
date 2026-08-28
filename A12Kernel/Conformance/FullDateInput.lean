@@ -55,9 +55,13 @@ example :
     classifyResult? (dateField "yyyy-MM-dd") "UTC" "1582-10-10" =
       some (.inr (.rejected .dateFormat)) := by native_decide
 
+/- Calendar reality precedes the floor: year zero is a format failure, while a real pre-floor date
+reaches the position-in-time cause. -/
 example :
     classifyResult? (dateField "yyyy-MM-dd") "UTC" "1583-10-15" =
       some (.inr (.rejected .dateInvalid)) ∧
+    classifyResult? (dateField "yyyy-MM-dd") "UTC" "0000-06-15" =
+      some (.inr (.rejected .dateFormat)) ∧
     classifyResult? (dateField "yyyy-MM-dd") "UTC" "1500-02-29" =
       some (.inr (.rejected .dateInvalid)) ∧
     classifyResult? (dateField "yyyy-MM-dd") "UTC" "1583-10-16" =

@@ -7,7 +7,7 @@ namespace A12Kernel.Conformance.NumericAggregateElaboration.Products
 open A12Kernel
 open A12Kernel.Conformance.NumericAggregateElaboration.Support
 
-/- The dedicated pair admits exactly two same-group Number stars, permits the same wildcarded field twice as the A12 checker does, and rejects a different group or wrong kind. -/
+/- The dedicated pair admits exactly two Number stars from one owning group, permits the same wildcarded field twice as the A12 checker does, and rejects a different owning group or wrong kind. -/
 example :
     productErrorOf aggregateStar aggregateStar = none ∧
       productErrorOf (productStar "Amount") (productStar "Price") = none ∧
@@ -15,6 +15,15 @@ example :
         some (.differentGroups ["Form", "Rows"] ["Form", "Other"]) ∧
       productErrorOf (productStar "Amount") (productStar "Label") =
         some (.source (.fieldNotNumber repeatedText.path)) := by
+  native_decide
+
+/- The pair gate reads the fields' immediate owning groups, not merely their common starred ancestor.
+That owning group may itself be fixed as long as each path crosses the same repeatable level. -/
+example :
+    productErrorOf packagedWeightStar packagedWeightStar = none ∧
+      productErrorOf aggregateStar packagedWeightStar =
+        some (.differentGroups ["Form", "Rows"]
+          ["Form", "Rows", "Packaging"]) := by
   native_decide
 
 /- Only the lowest repeatable level may be starred. A named outer row plus an inner star remains legal. -/

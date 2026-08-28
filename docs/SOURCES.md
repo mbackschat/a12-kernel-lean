@@ -189,6 +189,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [What a rule-message parameter renders, measured locally 2026-08-24](sources/temporal-and-message-probes.md#src-rule-message-parameter-rendering)
 <a id="src-time-datetime-stored-input"></a>
 - [Stored Time and DateTime input causes, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-time-datetime-stored-input)
+<a id="src-declared-format-temporal-input"></a>
+- [Declared-format temporal input correction, reviewed inbound 2026-08-29](sources/temporal-and-message-probes.md#src-declared-format-temporal-input)
 <a id="src-temporal-format-vocabulary"></a>
 - [The temporal format gate is a kind-independent vocabulary, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-temporal-format-vocabulary)
 <a id="src-partial-date-input-causes"></a>
@@ -338,6 +340,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Fixed-group first-filled runtime order](sources/group-and-iteration-probes.md#src-group-first-filled-runtime-order)
 <a id="src-star-group-first-filled-runtime-order"></a>
 - [Starred-group first-filled runtime order](sources/group-and-iteration-probes.md#src-star-group-first-filled-runtime-order)
+<a id="src-sum-of-products-owning-group"></a>
+- [`SumOfProducts` owning-group and diagnostic matrix, reviewed inbound 2026-08-29](sources/group-and-iteration-probes.md#src-sum-of-products-owning-group)
 <a id="src-count-partial-extent"></a>
 - [Direct starred count partial-extent checkpoint](sources/group-and-iteration-probes.md#src-count-partial-extent)
 

@@ -103,7 +103,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `state`: open
 - `missing`: temporal parsing, admission, construction, model-zone legacy calendar stepping, additions and differences, DateRange operations, partial and formal propagation, and stored or computed targets must preserve exact instant, decoded components, format, and calendar provenance together.
 - `baseline`: [§6](IMPLEMENTATION-MAP.md#6--dates-and-time) owns implemented temporal boundaries. [Temporal comparison and aggregates](IMPLEMENTATION-MAP.md#cap-temporal-comparison-and-aggregates), [checked DateRange declaration](IMPLEMENTATION-MAP.md#cap-date-range-checked-declaration), and [checked direct DateRange bounds](IMPLEMENTATION-MAP.md#cap-checked-date-range-bound) own the principal DateRange subsets.
-- `remaining`: checked-document integration for standalone stored temporal classifiers, remaining legal formats and zones, pre-floor identities, and the deliberately imprecise `DATE_FRAGMENT` stored-value form that has no value-domain owner.
+- `remaining`: declared-format stored-input classification across temporal kinds, including the externally unclosed `yyyyMM` cross-kind cell and every non-ISO format/kind Kernel pair not covered by the bounded differential; checked-document integration for standalone classifiers; remaining zones and pre-floor identities; and the deliberately imprecise `DATE_FRAGMENT` stored-value form that has no value-domain owner.
 - `remaining`: remaining repeatable placements, broader recursive lowering, partial validation, rule and message integration, wider operands, and stored or computed target coverage.
 - `remaining`: materialized topology, later validation, valueless-source reason propagation, and maintained result/application correspondence for `DateFromDateTime`; sibling-parallel placement is statically closed as illegal for both DateTime component extractors.
 - `remaining`: external per-row `ValueAsDate` execution and the other temporal carriers' reading loci.
@@ -159,7 +159,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `state`: open
 - `missing`: bilingual parser and renderer paths, lexical and dot syntax, semantic indices, globals, nested or multiple stars, wider RNU `@From`, and remaining diagnostics must resolve through one checked namespace.
 - `baseline`: [§10](IMPLEMENTATION-MAP.md#10--paths-and-references) owns implemented paths. The [cross-clause diagnostic owner](IMPLEMENTATION-MAP.md#cross-clause-implementation-notes) owns exact projections and explicit unmapped refusals.
-- `remaining`: nested or different repeatable scopes, parallel RNU mapping, other group-list or count shapes and arities, other assembly refusals, and executable newly admitted conditions.
+- `remaining`: nested or different repeatable scopes, parallel RNU mapping, other group-list or count shapes and arities, parser-level `SumOfProducts` star and `Having` refusals with exact diagnostic projection, other assembly refusals, and executable newly admitted conditions.
 - `remaining`: fixed nonrepeatable descendants and wider comparison, computation, partial-validation, arithmetic-wrapper, and parser forms of `CurrentRepetition`.
 - `remaining`: computation has no semantic-index source that can represent direct reads of a computed field or naming it as an index key.
 - `evidence-needed`: measure a semantic-index projection inside `Having` only after a filtered Enumeration source can express a live no-self-read control.

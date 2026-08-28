@@ -68,11 +68,12 @@ example :
       classify? "2024-06-1514:30:00" = some (.rejected .dateFormat) := by
   native_decide
 
-/- **Position in time is the other cause, and the floor is the Date's own.** `1583-10-15` is refused
-where `1583-10-16` is admitted — the identical boundary, reached with a perfectly well-formed clock, so
-the two causes are separated by the date's position alone. -/
+/- **Position in time is the other cause, and the floor is the Date's own.** Calendar reality is settled
+first, so year zero is a format failure while the real `1583-10-15` reaches the position-in-time cause;
+`1583-10-16` is admitted at the identical boundary. -/
 example :
     classify? "1583-10-15T00:00:00" = some (.rejected .dateInvalid) ∧
+      classify? "0000-06-15T00:00:00" = some (.rejected .dateFormat) ∧
       classify? "1583-10-16T00:00:00" = some (.admitted 1583 10 16 0 0 0) ∧
       classify? "1500-01-01T00:00:00" = some (.rejected .dateInvalid) := by
   native_decide

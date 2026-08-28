@@ -27,7 +27,7 @@ theorem dateTimeInput_unsupportedZone
   simp [CheckedDateTimeInputField.classifyStoredForModel, unsupported,
     bind, Except.bind, throw, throwThe, MonadExceptOf.throw]
 
-/-- A certified declaration retains the one declarable storage format and its kind, so a consumer never
+/-- A certified declaration retains this classifier's bounded storage format and its kind, so a consumer never
 re-derives which spelling produced the cell. -/
 theorem checkedDateTimeInputField_format_declared
     (checked : CheckedDateTimeInputField) :
@@ -35,7 +35,7 @@ theorem checkedDateTimeInputField_format_declared
       checked.field.kind = .dateTime :=
   ⟨checked.formatOwned, checked.kindOwned⟩
 
-/-- The date half of the one storage format is the dashed full-Date format, which is what makes the
+/-- The date half of this classifier's storage format is the dashed full-Date format, which is what makes the
 component parser and the calendar-reality test shared rather than duplicated. -/
 @[simp] theorem dateTimeTargetFormat_dateHalf
     (format : DateTimeTargetFormat) :

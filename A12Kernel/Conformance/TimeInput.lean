@@ -46,9 +46,9 @@ example :
       classify? "23:59:59" = some (.clock 23 59 59) := by
   native_decide
 
-/- **One cause covers every failure.** A wrong component width and three out-of-range components all
-report the date-format finding, and none reports the date finding — a clock has no position in time to
-fall below a floor, which is the whole difference from Date and DateTime input. -/
+/- **One cause covers every failure in the certified clock profile.** A wrong component width and three
+out-of-range components all report the date-format finding, and none reports the date finding because
+this declared format carries no position in time. -/
 example :
     classify? "14:5:0" = some (.rejected .dateFormat) ∧
       classify? "25:00:00" = some (.rejected .dateFormat) ∧
