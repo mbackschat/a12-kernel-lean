@@ -219,11 +219,11 @@ private def policyBoundNumericCell (field : FieldId)
   numericDecimal := some { unscaled := value.unscaled, scale := value.scale }
 }
 
-private def policyBoundDocument? (source : StoredNumber)
+private def policyBoundDocument? (source : Option StoredNumber)
     (target : Option StoredNumber) : Option (CheckedDocument policyBoundModel) :=
   (checkDocument policyBoundPrepared "en_US" {
     instantiatedRows := []
-    cells := policyBoundNumericCell policyBoundSource.id source ::
+    cells := (source.map (policyBoundNumericCell policyBoundSource.id)).toList ++
       (target.map (policyBoundNumericCell policyBoundTarget.id)).toList
   }).toOption
 
@@ -231,8 +231,39 @@ private def policyBoundTargetExecution? (source : StoredNumber)
     (target : Option StoredNumber) :
     Option GeneratedNumericComputationTargetResult := do
   let table ← policyBoundTable?
-  let input ← policyBoundDocument? source target
+  let input ← policyBoundDocument? (some source) target
   (table.executeNumericTargetResult evaluationWorld input).toOption
+
+private def policyBoundGuardedTable? : Option (GeneratedComputationTable
+    (CheckedNumericComputationOperation policyBoundModel)) := do
+  let table ← policyBoundTable?
+  pure { table with
+    commonPrecondition := some (.fieldFilled policyBoundSource.id) }
+
+private def policyBoundRunResult? (source target : Option StoredNumber) :
+    Option (NumericComputationRunView
+      (ComputationFormalMessage Unit) CellAddr) := do
+  let table ← policyBoundGuardedTable?
+  let input ← policyBoundDocument? source target
+  (table.executeNumericResult evaluationWorld input (fun _ => ()) []).toOption
+
+private def policyBoundAppliedState? (source target : Option StoredNumber)
+    (destinationTarget : Option StoredNumber) : Option NumericTargetState := do
+  let result ← policyBoundRunResult? source target
+  let destination ← policyBoundDocument? source destinationTarget
+  let applied ← result.applyToChecked destination |>.toOption
+  pure (applied.stateAt { field := policyBoundTarget.id, path := [] })
+
+/- Public-result narrowing refuses unsupported target completion instead of
+   manufacturing a supported no-value or clear action. -/
+example :
+    ({
+      targetAddress := { field := policyBoundTarget.id, path := [] }
+      targetCheck := .unsupported (.fractionalScaleDoesNotFit 2 0)
+      sourceState := .presentValue (.decimal { unscaled := 5, scale := 0 })
+    } : GeneratedNumericComputationTargetResult).toSourceOutcome =
+      .error (.fractionalScaleDoesNotFit 2 0) := by
+  rfl
 
 /- Runtime evaluation preserves activation and operation phases: a false common
    guard hides malformed row inputs, common poison stops before selection, and a
@@ -241,6 +272,26 @@ example :
     generatedRuntimeResult .empty (.rejected .malformed)
         (.rejected .malformed) (.rejected .malformed) =
         some .noMatch := by
+  native_decide
+
+/- Public classification remains source-relative and application consumes only
+   retained actions. Equal source output stays inert against a different
+   destination, while no-match over a filled source target retains a clear that
+   creates present-empty placement in an absent destination. -/
+example :
+    let seven : StoredNumber := { unscaled := 7, scale := 0 }
+    let five : StoredNumber := { unscaled := 5, scale := 0 }
+    let nine : StoredNumber := { unscaled := 9, scale := 0 }
+    (do
+      let result ← policyBoundRunResult? (some seven) (some seven)
+      pure (result.withoutErrors, result.withChanges, result.cleared)) =
+        some ([⟨{ field := policyBoundTarget.id, path := [] }, seven⟩], [], []) ∧
+      policyBoundAppliedState? (some seven) (some seven) (some nine) =
+        some (.presentValue (.decimal nine)) ∧
+      policyBoundAppliedState? (some seven) (some five) none =
+        some (.presentValue (.decimal seven)) ∧
+      policyBoundAppliedState? none (some five) none =
+        some .presentEmpty := by
   native_decide
 
 example :

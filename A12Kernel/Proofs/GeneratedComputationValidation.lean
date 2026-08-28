@@ -131,6 +131,47 @@ theorem admittedGeneratedNumericOperationTable_executeTargetResult_exact
   rw [executed]
   rfl
 
+/-- Supported generated target completion narrows without changing target identity, outcome, or immutable source placement. -/
+@[simp] theorem generatedNumericComputationTargetResult_toSourceOutcome_supported
+    (target : CellAddr) (outcome : NumericTargetOutcome)
+    (source : NumericTargetState) :
+    (GeneratedNumericComputationTargetResult.mk target (.supported outcome)
+      source).toSourceOutcome = .ok {
+        targetField := target
+        outcome
+        source
+      } := by
+  rfl
+
+/-- Unsupported generated target completion cannot enter a public Number result. -/
+@[simp] theorem generatedNumericComputationTargetResult_toSourceOutcome_unsupported
+    (target : CellAddr) (cause : NumericTargetCheckFault)
+    (source : NumericTargetState) :
+    (GeneratedNumericComputationTargetResult.mk target (.unsupported cause)
+      source).toSourceOutcome = .error cause := by
+  rfl
+
+/-- Generated public-result construction delegates exactly to the established Number result projection after the target result has narrowed successfully. -/
+theorem admittedGeneratedNumericOperationTable_executeResult_exact
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model))
+    (admission : AdmittedGeneratedNumericOperationTable model computation)
+    (world : World) (input : CheckedDocument model)
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload))
+    (completed : GeneratedNumericComputationTargetResult)
+    (sourced : SourcedNumericTargetOutcome CellAddr)
+    (executed : admission.executeTargetResult world input = .ok completed)
+    (supported : completed.toSourceOutcome = .ok sourced) :
+    admission.executeResult world input payloadAt supplied = .ok
+      (NumericComputationRunView.fromSourceOutcomesWithMessages
+        MessagePointer.ofCellAddr payloadAt supplied [sourced]) := by
+  unfold AdmittedGeneratedNumericOperationTable.executeResult
+  rw [executed]
+  simp only [Except.mapError, Bind.bind, Except.bind]
+  rw [supported]
+  rfl
+
 /-- The generated numeric table inventory is exactly the validated model declarations referenced by its common guard, alternative guards, or checked operations. -/
 theorem generatedNumericOperationTable_fieldDependencies_exact
     (computation : GeneratedComputationTable

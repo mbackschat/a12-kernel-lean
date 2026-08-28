@@ -5,7 +5,7 @@ import A12Kernel.Semantics.ComputationCondition
 
 /-! # Checked generated computation validation
 
-This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide operand policy, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared model-indexed condition and whole-rule boundary. Direct entity-list aggregates narrow to the established scalar atom; repeatable aggregates, row-paired `SumOfProducts`, and Number `FirstFilledValue` retain their exact checked sources and evaluate through the bounded addressed leaf context without flattening model certificates or row topology. Scalar runtime target completion and immutable source placement are retained explicitly; public result classification, application, wider addressed leaves, whole-rule orchestration, and general computation scheduling remain outside.
+This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide operand policy, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared model-indexed condition and whole-rule boundary. Direct entity-list aggregates narrow to the established scalar atom; repeatable aggregates, row-paired `SumOfProducts`, and Number `FirstFilledValue` retain their exact checked sources and evaluate through the bounded addressed leaf context without flattening model certificates or row topology. Scalar runtime target completion, immutable source placement, source-relative public Number result classification, and checked separate-destination application are retained explicitly; wider addressed leaves, whole-rule orchestration, and general computation scheduling remain outside.
 
 Numeric, typed String/stored-Enumeration, and Boolean/Confirm value counts retain their exact checked direct/plain-star/filtered-star sources so generated validation cannot collapse per-cell provenance, discard literal-domain certificates, or merge distinct field-kind matrices.
 -/
@@ -620,6 +620,28 @@ structure GeneratedNumericComputationTargetResult where
   sourceState : NumericTargetState
   deriving Repr, DecidableEq
 
+namespace GeneratedNumericComputationTargetResult
+
+/-- Narrow a supported generated target result to the established source-relative Number result input. Unsupported completion remains an explicit structural refusal. -/
+def toSourceOutcome (result : GeneratedNumericComputationTargetResult) :
+    Except NumericTargetCheckFault
+      (SourcedNumericTargetOutcome CellAddr) :=
+  match result.targetCheck with
+  | .supported outcome => .ok {
+      targetField := result.targetAddress
+      outcome
+      source := result.sourceState
+    }
+  | .unsupported cause => .error cause
+
+end GeneratedNumericComputationTargetResult
+
+/-- Failure before a generated scalar target can enter the established public Number result. Evaluation and target-check refusal remain distinct phases. -/
+inductive GeneratedNumericComputationRunResultError where
+  | execution (cause : GeneratedNumericComputationEvaluationError)
+  | targetCheck (cause : NumericTargetCheckFault)
+  deriving Repr
+
 namespace AdmittedGeneratedNumericOperationTable
 
 /-- Evaluate only the first selected operation of an already-admitted table. Target completion remains a separate projection over the retained policy. -/
@@ -651,6 +673,21 @@ def executeTargetResult
     targetCheck := evaluation.completeNumericTarget admission.targetPolicy
     sourceState := input.numericTargetPlacementStateAt targetAddress
   }
+
+/-- Project one supported checked target result through the established source-relative Number result owner. Target-check refusal stays structural and message association remains caller-supplied at this phase. -/
+def executeResult
+    (admission : AdmittedGeneratedNumericOperationTable model computation)
+    (world : World) (input : CheckedDocument model)
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload)) :
+    Except GeneratedNumericComputationRunResultError
+      (NumericComputationRunView
+        (ComputationFormalMessage Payload) CellAddr) := do
+  let completed ←
+    (admission.executeTargetResult world input).mapError .execution
+  let sourced ← completed.toSourceOutcome |>.mapError .targetCheck
+  pure (NumericComputationRunView.fromSourceOutcomesWithMessages
+    MessagePointer.ofCellAddr payloadAt supplied [sourced])
 
 end AdmittedGeneratedNumericOperationTable
 
@@ -686,6 +723,19 @@ def executeNumericTargetResult (computation : GeneratedComputationTable
   match admitGeneratedNumericOperationTable model computation with
   | .error cause => .error (.validation cause)
   | .ok admission => admission.executeTargetResult world input
+
+/-- Admit and execute one scalar generated Number table, then project its supported target result into the established source-relative public result. The returned view applies through `NumericComputationRunView.applyToChecked` without any generated-specific transition. -/
+def executeNumericResult (computation : GeneratedComputationTable
+    (CheckedNumericComputationOperation model))
+    (world : World) (input : CheckedDocument model)
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload)) :
+    Except GeneratedNumericComputationRunResultError
+      (NumericComputationRunView
+        (ComputationFormalMessage Payload) CellAddr) :=
+  match admitGeneratedNumericOperationTable model computation with
+  | .error cause => .error (.execution (.validation cause))
+  | .ok admission => admission.executeResult world input payloadAt supplied
 
 end GeneratedComputationTable
 
