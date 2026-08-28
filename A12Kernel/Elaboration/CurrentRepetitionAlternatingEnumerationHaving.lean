@@ -85,6 +85,7 @@ inductive CurrentRepetitionAlternatingEnumerationHavingFault where
 /-- Failure while composing the checked call-global inventory with four-stage execution. -/
 inductive CurrentRepetitionAlternatingEnumerationHavingCheckedResultFault where
   | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (cause : CurrentRepetitionAlternatingEnumerationHavingFault)
   deriving Repr, DecidableEq
 
@@ -101,23 +102,35 @@ def analyze (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model) 
     (plan.consumer.target.field, plan.consumer.source.fieldDependencies)]
 }
 
-/-- Complete all three prefix phases, expose both completed Number phases, then run the lazy Enumeration consumer. -/
-def execute (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model)
+/-- Complete the immutable three-phase prefix, expose both completed Number phases, then run the lazy Enumeration consumer over a caller-supplied fallback view. -/
+def executeWithConsumerFallbackRead
+    (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model)
+    (fallbackRead : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except CurrentRepetitionAlternatingEnumerationHavingFault
       CurrentRepetitionAlternatingEnumerationHavingOutcomes := do
   let chain ← plan.chain.execute patterns input |>.mapError .chain
   let numberOutcomes := chain.rows.flatMap fun row => [row.first, row.third]
   let consumer ← plan.consumer.executeWithRead input
-      (readAfterNumericDependencies input numberOutcomes) |>.mapError .consumer
+      (readAfterNumericDependenciesWith numberOutcomes fallbackRead)
+    |>.mapError .consumer
   pure { chain, consumer }
 
-/-- Execute once and classify the alternating prefix and final Enumeration phase against the same immutable source. -/
-def executeResult
+/-- Execute every phase against the immutable checked input. -/
+def execute (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    Except CurrentRepetitionAlternatingEnumerationHavingFault
+      CurrentRepetitionAlternatingEnumerationHavingOutcomes :=
+  plan.executeWithConsumerFallbackRead patterns input input.read
+
+/-- Execute through one final-consumer fallback view and classify every phase against the same immutable source. -/
+def executeResultWithConsumerFallbackRead
     (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (input : CheckedDocument model)
+    (fallbackRead : CellAddr → Except CheckedDocumentError CheckedCell)
     (numberPayloadAt : CellAddr → NumberPayload)
     (numberMessages : List (ComputationFormalMessage NumberPayload))
     (chainStringResidualMessages consumerResidualMessages :
@@ -125,7 +138,7 @@ def executeResult
     Except CurrentRepetitionAlternatingEnumerationHavingFault
       (CurrentRepetitionAlternatingEnumerationHavingRunView
         model NumberPayload StringResidual) := do
-  let outcomes ← plan.execute patterns input
+  let outcomes ← plan.executeWithConsumerFallbackRead patterns input fallbackRead
   pure {
     plan
     chain := {
@@ -139,6 +152,22 @@ def executeResult
       consumerResidualMessages outcomes.consumer
   }
 
+/-- Execute once and classify the alternating prefix and final Enumeration phase against the same immutable source. -/
+def executeResult
+    (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (chainStringResidualMessages consumerResidualMessages :
+      List StringResidual) :
+    Except CurrentRepetitionAlternatingEnumerationHavingFault
+      (CurrentRepetitionAlternatingEnumerationHavingRunView
+        model NumberPayload StringResidual) :=
+  plan.executeResultWithConsumerFallbackRead patterns input input.read
+    numberPayloadAt numberMessages chainStringResidualMessages
+    consumerResidualMessages
+
 /-- Bind the complete four-operation Analyze inventory to one checked direct-field plan. -/
 def formalInputPlan
     (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model) :
@@ -146,7 +175,7 @@ def formalInputPlan
       (CheckedComputationFormalInputPlan model) :=
   checkComputationFormalInputOperations model plan.analyze.fieldDependencies
 
-/-- Collect the global inventory eagerly, then execute all four phases without supplied family residuals. Number retains its independently derived target-message semantics. -/
+/-- Prepare the selected final-consumer fallback once, then execute all four phases without supplied family residuals while retaining the complete eager inventory. Number retains its independently derived target-message semantics. -/
 def executeResultWithFormalInputs
     (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
@@ -154,11 +183,13 @@ def executeResultWithFormalInputs
     Except CurrentRepetitionAlternatingEnumerationHavingCheckedResultFault
       (CurrentRepetitionAlternatingEnumerationHavingFormalInputRunView model) := do
   let inputPlan ← plan.formalInputPlan |>.mapError .formalInput
-  let phases ← plan.executeResult patterns input (fun _ => ()) [] [] []
+  let prepared ← inputPlan.prepare input |>.mapError .preliminary
+  let phases ← plan.executeResultWithConsumerFallbackRead patterns input
+    prepared.preliminary.readComputation (fun _ => ()) [] [] []
     |>.mapError .execution
   pure {
     phases
-    formalErrorsInOperands := inputPlan.findings input
+    formalErrorsInOperands := prepared.formalErrorsInOperands
   }
 
 end CheckedCurrentRepetitionAlternatingEnumerationHaving

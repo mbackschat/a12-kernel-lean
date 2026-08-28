@@ -104,14 +104,21 @@ def checkAddressedNumberField
 
 abbrev AddressedNumberFieldFault := AddressedNumericLeafFault
 
-/-- Read completed Number outcomes at their exact addresses before falling back to the immutable checked input. The dependency cell deliberately exposes only value, clean emptiness, or cause-blind poison. -/
-def readAfterNumericDependencies (input : CheckedDocument model)
+/-- Read completed Number outcomes at their exact addresses before falling back to one caller-supplied checked-cell view. The dependency cell deliberately exposes only value, clean emptiness, or cause-blind poison. -/
+def readAfterNumericDependenciesWith
     (dependencies : List (SourcedNumericTargetOutcome CellAddr))
+    (fallback : CellAddr → Except CheckedDocumentError CheckedCell)
     (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
   match dependencies.find? fun dependency => dependency.targetField == address with
   | some dependency =>
       .ok (NumericDependencyCell.ofOutcome dependency.outcome).checked
-  | none => input.read address
+  | none => fallback address
+
+/-- Read completed Number outcomes at their exact addresses before falling back to the immutable checked input. -/
+def readAfterNumericDependencies (input : CheckedDocument model)
+    (dependencies : List (SourcedNumericTargetOutcome CellAddr)) :
+    CellAddr → Except CheckedDocumentError CheckedCell :=
+  readAfterNumericDependenciesWith dependencies input.read
 
 namespace CheckedAddressedNumberSource
 

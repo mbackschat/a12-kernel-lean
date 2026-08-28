@@ -66,6 +66,9 @@ theorem currentRepetitionAlternatingEnumerationHaving_executeResult_projects
         projectAddressedEnumerationResults input consumerResidualMessages
           outcomes.consumer) := by
   unfold CheckedCurrentRepetitionAlternatingEnumerationHaving.executeResult
+    CheckedCurrentRepetitionAlternatingEnumerationHaving.executeResultWithConsumerFallbackRead
+  change plan.executeWithConsumerFallbackRead patterns input input.read =
+    .ok outcomes at executed
   rw [executed]
   rfl
 
@@ -84,6 +87,9 @@ theorem currentRepetitionAlternatingEnumerationHaving_executeResult_hasNoConsume
       chainStringResidualMessages consumerResidualMessages).map
       (fun view => view.consumer.withErrors) = .ok [] := by
   unfold CheckedCurrentRepetitionAlternatingEnumerationHaving.executeResult
+    CheckedCurrentRepetitionAlternatingEnumerationHaving.executeResultWithConsumerFallbackRead
+  change plan.executeWithConsumerFallbackRead patterns input input.read =
+    .ok outcomes at executed
   rw [executed]
   change Except.ok (projectAddressedEnumerationResults input
     consumerResidualMessages outcomes.consumer).withErrors = Except.ok []
@@ -95,24 +101,36 @@ theorem currentRepetitionAlternatingEnumerationHaving_executeResultWithFormalInp
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (input : CheckedDocument model)
     (inputPlan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
     (outcomes : CurrentRepetitionAlternatingEnumerationHavingOutcomes)
     (view : CurrentRepetitionAlternatingEnumerationHavingFormalInputRunView model)
     (planned : plan.formalInputPlan = .ok inputPlan)
-    (executed : plan.execute patterns input = .ok outcomes)
+    (preparation : inputPlan.prepare input = .ok prepared)
+    (executed : plan.executeWithConsumerFallbackRead patterns input
+      prepared.preliminary.readComputation = .ok outcomes)
     (produced : plan.executeResultWithFormalInputs patterns input = .ok view) :
-    view.formalErrorsInOperands = inputPlan.findings input ∧
+    view.formalErrorsInOperands = prepared.formalErrorsInOperands ∧
+      view.phases.chain.string = StringComputationRunView.fromSourcedOutcomes
+        [] (outcomes.chain.rows.map (·.second)) ∧
+      view.phases.chain.number =
+        NumericComputationRunView.fromSourceOutcomesWithMessages
+          MessagePointer.ofCellAddr (fun _ => ()) []
+          (outcomes.chain.rows.flatMap fun row => [row.first, row.third]) ∧
+      view.phases.consumer = projectAddressedEnumerationResults input []
+        outcomes.consumer ∧
       view.phases.chain.string.formalErrorsInOperands = [] ∧
       view.phases.consumer.formalErrorsInOperands = [] := by
   rw [
     CheckedCurrentRepetitionAlternatingEnumerationHaving.executeResultWithFormalInputs,
     planned] at produced
-  simp only [bind, Except.bind, Except.mapError] at produced
-  rw [CheckedCurrentRepetitionAlternatingEnumerationHaving.executeResult,
+  simp only [bind, Except.bind, Except.mapError, preparation] at produced
+  rw [
+    CheckedCurrentRepetitionAlternatingEnumerationHaving.executeResultWithConsumerFallbackRead,
     executed] at produced
   simp only [bind, Except.bind, pure, Except.pure,
     Except.ok.injEq] at produced
   subst view
-  exact ⟨rfl, rfl, rfl⟩
+  exact ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 /-- Same-family application delegates to the completed middle String and final Enumeration folds in checked phase order. -/
 theorem currentRepetitionAlternatingEnumerationHavingRun_applyStrings_delegates

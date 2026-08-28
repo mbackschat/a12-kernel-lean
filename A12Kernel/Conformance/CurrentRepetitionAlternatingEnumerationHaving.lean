@@ -41,7 +41,8 @@ private def rows : RepeatableGroupDecl := {
 }
 
 private def lines : RepeatableGroupDecl := {
-  level := 20, path := ["Shipment", "Rows", "Lines"], repeatability := some 2
+  level := 20, path := ["Shipment", "Rows", "Lines"], repeatability := some 2,
+  indexField := some choice.id
 }
 
 private def model : FlatModel := {
@@ -162,6 +163,7 @@ private def formalInputDocument? : Option (CheckedDocument model) :=
     cells := [
       cell base [1, 1] "bad-base" (.rejected .malformed),
       cell directChoice [1] "bad-direct" (.rejected .declaredConstraint),
+      cell choice [1, 1] "A" (.parsed (.enum "A")),
       cell choice [1, 2] "bad-choice" (.rejected .declaredConstraint),
       cell limit [1] "bad-limit" (.rejected .malformed),
       cell first [1, 1] "bad-first" (.rejected .malformed),
@@ -169,6 +171,27 @@ private def formalInputDocument? : Option (CheckedDocument model) :=
       cell third [1, 1] "bad-third" (.rejected .malformed),
       cell target [1] "bad-target" (.rejected .declaredConstraint),
       cell unrelated [1] "bad-unrelated" (.rejected .malformed)]
+  }).toOption
+
+private def duplicateChoiceIndexInput? (direct : Option String) :
+    Option (CheckedDocument model) :=
+  let directCell := direct.toList.map fun token =>
+    cell directChoice [1] token (.parsed (.enum token))
+  let repeated := [1, 2].flatMap fun row => [
+    numericCell base [1, row] row,
+    numericCell first [1, row] 9,
+    cell second [1, row] (if row == 1 then "2" else "1")
+      (.parsed (.str (if row == 1 then "2" else "1"))),
+    numericCell third [1, row] (if row == 1 then 2 else 1),
+    cell choice [1, row] "A" (.parsed (.enum "A"))]
+  (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 20, path := [1, 1] },
+      { group := 20, path := [1, 2] }]
+    cells := [
+      numericCell limit [1] 1,
+      cell target [1] "A" (.parsed (.enum "A"))] ++ directCell ++ repeated
   }).toOption
 
 private structure Summary where
@@ -348,6 +371,39 @@ example :
             cause := .declaredConstraint },
           { address := { field := limit.id, path := [1] }
             cause := .malformed }], [], [], []) := by
+  native_decide
+
+private def preparedConsumerSummary? (direct : Option String) : Option
+    (List ComputationFormalInputFinding ×
+      List (CellAddr × String) × List (CellAddr × String) × List CellAddr) := do
+  let plan ← plan?
+  let input ← duplicateChoiceIndexInput? direct
+  let view ← plan.executeResultWithFormalInputs prepared.patterns input
+    |>.toOption
+  pure (view.formalErrorsInOperands,
+    view.phases.consumer.withoutErrors.map fun item =>
+      (item.targetField, item.value.text),
+    view.phases.consumer.withChanges.map fun item =>
+      (item.targetField, item.value.text),
+    view.phases.consumer.cleared)
+
+/- A reached duplicate indexed star source poisons the lazy final consumer and clears its source-filled target. -/
+example : preparedConsumerSummary? none = some ([
+    { address := { field := choice.id, path := [1, 1] },
+      cause := .duplicateIndex },
+    { address := { field := choice.id, path := [1, 2] },
+      cause := .duplicateIndex }
+  ], [], [], [{ field := target.id, path := [1] }]) := by
+  native_decide
+
+/- The earlier direct value hides the same prepared star poison at runtime without removing either eager finding. -/
+example : preparedConsumerSummary? (some "B") = some ([
+    { address := { field := choice.id, path := [1, 1] },
+      cause := .duplicateIndex },
+    { address := { field := choice.id, path := [1, 2] },
+      cause := .duplicateIndex }
+  ], [({ field := target.id, path := [1] }, "B")],
+    [({ field := target.id, path := [1] }, "B")], []) := by
   native_decide
 
 private structure PoisonResultApplicationSummary where
