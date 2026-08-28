@@ -93,4 +93,20 @@ theorem addressedNumberFirstFilled_generatedMismatch_exact
       comparison.suppressExactScaleWarning = false := by
   simp [CheckedAddressedNumberFirstFilledComputation.generatedMismatchComparison]
 
+/-- The materialized continuation is deliberately two-level only and refuses a deeper checked target before any runtime phase. -/
+theorem addressedNumberFirstFilled_materializedValidation_rejectsThreeLevels
+    (operation : CheckedAddressedNumberFirstFilledComputation model)
+    (source destination : CheckedDocument model)
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload))
+    (errorCode : String) (messagePlan : MessageRenderPlan)
+    (outer middle inner : RepeatableLevel)
+    (scope : operation.targetDeclaration.repeatableScope =
+      [outer, middle, inner]) :
+    operation.executeGeneratedMaterializedAppliedValidation source destination
+      payloadAt supplied errorCode messagePlan =
+        .error (.targetScope [outer, middle, inner]) := by
+  simp [CheckedAddressedNumberFirstFilledComputation.executeGeneratedMaterializedAppliedValidation,
+    scope] <;> rfl
+
 end A12Kernel

@@ -769,6 +769,100 @@ example : generatedCreatedTopologyOrderError? =
     some (.materializedTopology (addr target.id [2, 1])) := by
   native_decide
 
+private structure MaterializedGeneratedSummary where
+  result : Summary
+  outerRows : List RowAddr
+  leafRows : List RowAddr
+  validation : List (Env × FlatRuleOutcome)
+  deriving Repr, DecidableEq
+
+private def generatedMaterializedValidation? :
+    Option MaterializedGeneratedSummary := do
+  let operation ← operation?
+  let sourceDocument ← input?
+  let destinationRows := rows.filter fun row => row.group != 120
+  let destination ← documentWithRows? destinationRows [
+    cell source.id [1, 2] "6" (.parsed (.num 6)),
+    decimalCell unrelated.id [] "4" 4]
+  let run ← (operation.executeGeneratedMaterializedAppliedValidation
+    sourceDocument destination (fun _ => ()) []
+    "computedNumberFirstFilled" generatedMessagePlan).toOption
+  let leafRows := run.applied.leafRows
+  let addresses := leafRows.map fun row =>
+    { field := target.id, path := row.path }
+  pure {
+    result := {
+      values := run.result.numeric.withoutErrors
+      changes := run.result.numeric.withChanges
+      errors := run.result.numeric.withErrors
+      cleared := run.result.numeric.cleared
+      states := addresses.map run.applied.stateAt
+    }
+    outerRows := run.applied.outerRows
+    leafRows
+    validation := run.validation
+  }
+
+/- Two-level application materializes only target topology. The changed row `[1,2]` pads an empty predecessor, the retained clear creates `[2,1]`, the zero change creates `[3,1]`, and the errored `[4,1]` remains absent. Generated validation visits those normalized leaves in target order and recomputes parent one's source from the destination. -/
+example : generatedMaterializedValidation? = some {
+  result := {
+    values := [
+      { targetField := addr target.id [1, 2], value := stored 5 },
+      { targetField := addr target.id [3, 1], value := stored 0 },
+      { targetField := addr target.id [1, 1], value := stored 5 }]
+    changes := [
+      { targetField := addr target.id [1, 2], value := stored 5 },
+      { targetField := addr target.id [3, 1], value := stored 0 }]
+    errors := [{
+      targetField := addr target.id [4, 1]
+      attempted := stored 12
+      cause := .aboveMaximum
+    }]
+    cleared := [addr target.id [2, 1]]
+    states := [
+      .absent,
+      .presentValue (.decimal (stored 5)),
+      .presentEmpty,
+      .presentValue (.decimal (stored 0))]
+  }
+  outerRows :=
+    [{ group := 100, path := [1] }, { group := 100, path := [2] },
+      { group := 100, path := [3] }, { group := 100, path := [4] }]
+  leafRows :=
+    [{ group := 120, path := [1, 1] },
+      { group := 120, path := [1, 2] },
+      { group := 120, path := [2, 1] },
+      { group := 120, path := [3, 1] }]
+  validation := [
+    ([(100, 1), (120, 1)], .notFired),
+    ([(100, 1), (120, 2)],
+      .fired (generatedExpectedMessage [1, 2])),
+    ([(100, 2), (120, 1)], .notFired),
+    ([(100, 3), (120, 1)], .notFired)
+  ]
+} := by
+  native_decide
+
+private def generatedThreeLevelScopeError? : Option
+    AddressedNumberFirstFilledMaterializedAppliedValidationError := do
+  let deepTarget := field 108 "DeepResult" ["Parents", "Tasks", "Details"] [100, 120, 130]
+  let deepModel : FlatModel := { addressedModel with fields := deepTarget :: addressedModel.fields }
+  let deepSource := { siblingStar source.name with base := .relative 2 }
+  let operation ← (checkAddressedNumberFirstFilledComputation deepModel
+    deepTarget.groupPath deepTarget.id deepSource).toOption
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler deepModel).toOption
+  let document ← (checkDocument prepared "en_US"
+    { instantiatedRows := [], cells := [] }).toOption
+  errorOf <| operation.executeGeneratedMaterializedAppliedValidation
+    document document (fun _ => ()) [] "computedNumberFirstFilled"
+      generatedMessagePlan
+
+/- A checked three-level target with a nonempty proper outer source prefix reaches the bounded continuation and is rejected before rule assembly or source execution. -/
+example : generatedThreeLevelScopeError? =
+    some (.targetScope [100, 120, 130]) := by
+  native_decide
+
 end AddressedFirstFilled
 
 

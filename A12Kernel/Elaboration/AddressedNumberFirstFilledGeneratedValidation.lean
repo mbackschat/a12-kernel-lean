@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.GeneratedComputationValidation
 
 /-! # Repeatable Number first-filled application followed by generated validation
 
-This bounded composition executes one unconditional addressed Number `FirstFilledValue`, applies its source-relative actions to a same-model destination, and evaluates the generated mismatch at every destination target row. It reuses the checked repeatable rule and ordered numeric comparison owners. Action-created destination rows are rejected because materialized topology remains outside this route; guarded alternatives, tolerances, other operations, and general later-rule orchestration remain separate.
+This bounded composition executes one unconditional addressed Number `FirstFilledValue`, applies its source-relative actions to a same-model destination, and evaluates the generated mismatch at every destination target row. It reuses the checked repeatable rule and ordered numeric comparison owners. The existing-topology route rejects action-created rows; the exact two-level continuation delegates their normalization to the shared materialized topology owner. Guarded alternatives, tolerances, other operations, deeper target scopes, and general later-rule orchestration remain separate.
 -/
 
 namespace A12Kernel
@@ -21,11 +21,26 @@ inductive AddressedNumberFirstFilledAppliedValidationError where
   | validation (cause : OrdinaryRepeatableRuleEvaluationError)
   deriving Repr, DecidableEq
 
+inductive AddressedNumberFirstFilledMaterializedAppliedValidationError where
+  | rule (cause : AddressedNumberFirstFilledGeneratedRuleError)
+  | execution (cause : AddressedNumberFirstFilledComputationFault)
+  | targetScope (scope : List RepeatableLevel)
+  | application (cause : NumericComputationDocumentApplicationError)
+  | validation (cause : OrdinaryRepeatableRuleEvaluationError)
+  deriving Repr, DecidableEq
+
 /-- The exact repeatable-target phases retained by this bounded composition. -/
 structure AddressedNumberFirstFilledAppliedValidationView
     (model : FlatModel) (Payload : Type) where
   result : AddressedNumberFirstFilledComputationRunView model Payload
   applied : NumericComputationApplicationProjection model
+  validation : List (Env × FlatRuleOutcome)
+
+/-- The exact two-level materialized-target phases retained by this bounded composition. -/
+structure AddressedNumberFirstFilledMaterializedAppliedValidationView
+    (model : FlatModel) (Payload : Type) where
+  result : AddressedNumberFirstFilledComputationRunView model Payload
+  applied : NumericComputationTwoLevelApplicationProjection model
   validation : List (Env × FlatRuleOutcome)
 
 namespace CheckedAddressedNumberFirstFilledComputation
@@ -111,6 +126,19 @@ private def evaluateGenerated
       |>.mapError toOrdinaryRowEnvironmentError
   environments.mapM (evaluateGeneratedAt rule result destination)
 
+private def evaluateGeneratedTwoLevelRows
+    (rule : CheckedResolvedValidationRule model)
+    (result : NumericComputationRunView Message CellAddr)
+    (destination : CheckedDocument model)
+    (outer inner : RepeatableLevel) (rows : List RowAddr) :
+    Except OrdinaryRepeatableRuleEvaluationError
+      (List (Env × FlatRuleOutcome)) :=
+  rows.mapM fun row => match row.path with
+    | [outerCoordinate, innerCoordinate] =>
+        evaluateGeneratedAt rule result destination
+          [(outer, outerCoordinate), (inner, innerCoordinate)]
+    | _ => throw (.incoherentRow row)
+
 private def createdActionTarget?
     (operation : CheckedAddressedNumberFirstFilledComputation model)
     (result : NumericComputationRunView Message CellAddr)
@@ -142,6 +170,31 @@ def executeGeneratedAppliedValidation
       let validation ←
         (evaluateGenerated rule result.numeric destination).mapError .validation
       pure { result, applied, validation }
+
+/-- Execute against the immutable source, apply through the existing normalized two-level target topology, then recompute and emit the generated rule over every concrete materialized target leaf. -/
+def executeGeneratedMaterializedAppliedValidation
+    (operation : CheckedAddressedNumberFirstFilledComputation model)
+    (source destination : CheckedDocument model)
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload))
+    (errorCode : String) (messagePlan : MessageRenderPlan) :
+    Except AddressedNumberFirstFilledMaterializedAppliedValidationError
+      (AddressedNumberFirstFilledMaterializedAppliedValidationView
+        model Payload) := do
+  let (outer, inner) ← match operation.targetDeclaration.repeatableScope with
+    | [outer, inner] => pure (outer, inner)
+    | scope => throw (.targetScope scope)
+  let rule ←
+    (operation.generatedValidationRule errorCode messagePlan).mapError .rule
+  let result ←
+    (operation.executeResult source payloadAt supplied).mapError .execution
+  let applied ←
+    (result.numeric.applyToCheckedTwoLevel destination outer inner)
+      |>.mapError .application
+  let validation ←
+    (evaluateGeneratedTwoLevelRows rule result.numeric destination outer inner
+      applied.leafRows).mapError .validation
+  pure { result, applied, validation }
 
 end CheckedAddressedNumberFirstFilledComputation
 
