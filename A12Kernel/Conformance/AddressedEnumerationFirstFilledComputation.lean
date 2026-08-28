@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.AddressedEnumerationFirstFilledComputation
+import A12Kernel.Elaboration.AddressedEnumerationFormalInput
 
 /-! # Repeatable Enumeration `FirstFilledValue` locks -/
 
@@ -51,6 +51,7 @@ private def model : FlatModel := {
     directA, directB, nestedTarget, nestedDirectA, nestedDirectB]
   repeatableGroups := [{
     level := 10, path := ["Form", "Rows"], repeatability := some 3
+    indexField := some directB.id
   }, {
     level := 20, path := ["Form", "Rows", "Items"], repeatability := some 3
   }]
@@ -156,6 +157,12 @@ private def cell (field : FlatFieldDecl) (path : List Nat)
   raw
 }
 
+private def formalFinding (field : FlatFieldDecl) (path : List Nat)
+    (cause : FormalCause) : ComputationFormalInputFinding := {
+  address := { field := field.id, path }
+  cause
+}
+
 private def document? (rows : List RowAddr) (cells : List ClassifiedCellInput) :
     Option (CheckedDocument model) :=
   (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
@@ -202,6 +209,14 @@ private structure NestedApplicationSummary where
   row21 : StringTargetState
   deriving Repr, DecidableEq
 
+private structure SelectedPreliminarySummary where
+  findingsExact : Bool
+  values : List (CellAddr × String)
+  errorTargets : List CellAddr
+  changes : List (CellAddr × String)
+  cleared : List CellAddr
+  deriving Repr, DecidableEq
+
 private def nestedApplicationSummary? (input destination : CheckedDocument model) :
     Option NestedApplicationSummary := do
   let operation ← nestedDirectOperation?
@@ -246,6 +261,36 @@ example : directOperation?.isSome = true ∧ (do
     outcomes? operation input) = some [
       ({ field := target.id, path := [1] }, .value "B"),
       ({ field := target.id, path := [2] }, .value "A")] := by
+  native_decide
+
+/- The eager whole-call inventory retains duplicate findings for the later index operand even when an accepted first operand keeps that runtime read unreached; the row that lacks the first value reaches the prepared poison and clears. -/
+example : (do
+    let operation ← directOperation?
+    let input ← document? [row 10 [1], row 10 [2]] [
+      cell target [1] "B" (.parsed (.enum "B")),
+      cell target [2] "B" (.parsed (.enum "B")),
+      cell directA [1] "A" (.parsed (.enum "A")),
+      cell directB [1] "B" (.parsed (.enum "B")),
+      cell directB [2] "B" (.parsed (.enum "B"))]
+    let result ← operation.executeResultWithFormalInputs input |>.toOption
+    let findings := result.string.formalErrorsInOperands
+    pure ({
+      findingsExact := findings.length == 2 &&
+          findings.contains (formalFinding directB [1] .duplicateIndex) &&
+          findings.contains (formalFinding directB [2] .duplicateIndex)
+      values := result.string.withoutErrors.map fun item =>
+        (item.targetField, item.value.text)
+      errorTargets := result.string.withErrors.map fun item => item.targetField
+      changes := result.string.withChanges.map fun item =>
+        (item.targetField, item.value.text)
+      cleared := result.string.cleared
+    } : SelectedPreliminarySummary)) = some ({
+      findingsExact := true
+      values := [({ field := target.id, path := [1] }, "A")]
+      errorTargets := []
+      changes := [({ field := target.id, path := [1] }, "A")]
+      cleared := [{ field := target.id, path := [2] }]
+    } : SelectedPreliminarySummary) := by
   native_decide
 
 /- A two-level target also admits direct operands one level up and fans each parent-local selection only to that parent's leaves. -/
