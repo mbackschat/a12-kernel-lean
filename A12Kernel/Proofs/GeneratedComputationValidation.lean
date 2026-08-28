@@ -44,9 +44,42 @@ theorem generatedNumericComputationEvaluation_selected
       .ok rule)
     (selection : computation.selectFirst context = .selected operation) :
     computation.evaluateNumeric context =
-      ((operation.evaluate context).map .evaluated).mapError .operation := by
+      ((operation.evaluate context).map
+        (.evaluated operation.core.suppressExactScaleWarning)).mapError
+          .operation := by
   cases result : operation.evaluate context <;>
     simp [GeneratedComputationTable.evaluateNumeric, admitted, selection, result]
+
+/-- Cleanly unselected generated computation completes as target no-value. -/
+theorem generatedNumericComputationTarget_noMatch
+    (policy : NumericTargetPolicy) :
+    GeneratedNumericComputationEvaluation.noMatch.completeNumericTarget policy =
+      .supported .noValue := by
+  rfl
+
+/-- Activation poison remains inherited poison at the numeric target boundary. -/
+theorem generatedNumericComputationTarget_guardPoison
+    (policy : NumericTargetPolicy) (cause : FormalCause) :
+    ((GeneratedNumericComputationEvaluation.guardPoison cause)
+        |>.completeNumericTarget policy) =
+      .supported (.inheritedPoison cause) := by
+  rfl
+
+/-- An ordinary selected operation uses the fail-closed target checker. -/
+theorem generatedNumericComputationTarget_unsuppressed
+    (policy : NumericTargetPolicy) (result : NumericComputationResult) :
+    ((GeneratedNumericComputationEvaluation.evaluated false result)
+        |>.completeNumericTarget policy) =
+      policy.check result := by
+  rfl
+
+/-- A selected operation carrying the explicit warning-suppression bit uses only the established suppressed target checker. -/
+theorem generatedNumericComputationTarget_suppressed
+    (policy : NumericTargetPolicy) (result : NumericComputationResult) :
+    ((GeneratedNumericComputationEvaluation.evaluated true result)
+        |>.completeNumericTarget policy) =
+      policy.checkWithScaleWarningSuppressed result := by
+  rfl
 
 /-- The generated numeric table inventory is exactly the validated model declarations referenced by its common guard, alternative guards, or checked operations. -/
 theorem generatedNumericOperationTable_fieldDependencies_exact

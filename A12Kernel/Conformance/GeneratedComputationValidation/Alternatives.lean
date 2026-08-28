@@ -145,6 +145,9 @@ private def selectedOperationPoisonResult :
     (.parsed (.num 1)) (.rejected .malformed)
       (.parsed (.num 1)) .empty)).toOption
 
+private def generatedRuntimeTargetPolicy : NumericTargetPolicy :=
+  crossGroupTarget.toNumericTargetPolicy?.get (by native_decide)
+
 /- Runtime evaluation preserves activation and operation phases: a false common
    guard hides malformed row inputs, common poison stops before selection, and a
    selected operand poison stays an operation result. -/
@@ -162,17 +165,43 @@ example :
 example :
     generatedRuntimeResult (.parsed (.num 1)) (.parsed (.num 7))
       (.rejected .malformed) (.rejected .malformed) =
-        some (.evaluated (.value 7)) := by
+        some (.evaluated false (.value 7)) := by
   native_decide
 
 example :
     selectedOperationPoisonResult =
-      some (.evaluated (.poison .malformed)) := by
+      some (.evaluated false (.poison .malformed)) := by
   native_decide
 
 /- First selection is final even when the selected numeric operation has a
    domain failure; the later holding operation is not evaluated as fallback. -/
-example : domainFailureFirstResult = some (.evaluated .domainFailure) := by
+example : domainFailureFirstResult =
+    some (.evaluated true .domainFailure) := by
+  native_decide
+
+/- Target completion preserves the activation partition and dispatches a
+   selected result through that operation's exact warning-suppression choice. -/
+example :
+    GeneratedNumericComputationEvaluation.noMatch.completeNumericTarget
+        generatedRuntimeTargetPolicy = .supported .noValue ∧
+      ((GeneratedNumericComputationEvaluation.guardPoison .malformed)
+        |>.completeNumericTarget generatedRuntimeTargetPolicy) =
+          .supported (.inheritedPoison .malformed) ∧
+      ((GeneratedNumericComputationEvaluation.evaluated false .domainFailure)
+        |>.completeNumericTarget generatedRuntimeTargetPolicy) =
+          .supported (.invalidNoValue .calculationValue) := by
+  native_decide
+
+example :
+    ((GeneratedNumericComputationEvaluation.evaluated false
+        (.value (24723 / 10000)))
+      |>.completeNumericTarget generatedRuntimeTargetPolicy) =
+        .unsupported (.fractionalScaleDoesNotFit 4 0) ∧
+      ((GeneratedNumericComputationEvaluation.evaluated true
+        (.value (24723 / 10000)))
+      |>.completeNumericTarget generatedRuntimeTargetPolicy) =
+        .supported (.rejected
+          { unscaled := 24723, scale := 4 } .suppressedScaleMismatch) := by
   native_decide
 
 /- Runtime cannot bypass the generated table's existing model and guard

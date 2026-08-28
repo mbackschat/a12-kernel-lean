@@ -106,8 +106,22 @@ end GeneratedComputationTable
 inductive GeneratedNumericComputationEvaluation where
   | noMatch
   | guardPoison (cause : FormalCause)
-  | evaluated (result : NumericComputationResult)
+  | evaluated (suppressExactScaleWarning : Bool)
+      (result : NumericComputationResult)
   deriving Repr, DecidableEq
+
+namespace GeneratedNumericComputationEvaluation
+
+/-- Complete one admitted generated-table activation through the selected operation's retained target-check mode. A caller must supply the policy certified from the table's own target declaration. -/
+def completeNumericTarget (evaluation : GeneratedNumericComputationEvaluation)
+    (policy : NumericTargetPolicy) : NumericTargetCheckResult :=
+  match evaluation with
+  | .noMatch => .supported .noValue
+  | .guardPoison cause => .supported (.inheritedPoison cause)
+  | .evaluated false result => policy.check result
+  | .evaluated true result => policy.checkWithScaleWarningSuppressed result
+
+end GeneratedNumericComputationEvaluation
 
 abbrev LiteralNumberComputationAlternative :=
   GeneratedComputationAlternative DecodedNumericLiteral
@@ -559,7 +573,9 @@ def evaluateNumeric (computation : GeneratedComputationTable
       | .noMatch => pure .noMatch
       | .poison cause => pure (.guardPoison cause)
       | .selected operation =>
-          operation.evaluate context |>.map .evaluated |>.mapError .operation
+          operation.evaluate context
+            |>.map (.evaluated operation.core.suppressExactScaleWarning)
+            |>.mapError .operation
 
 end GeneratedComputationTable
 
