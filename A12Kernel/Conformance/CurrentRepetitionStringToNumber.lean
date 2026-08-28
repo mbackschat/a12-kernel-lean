@@ -328,6 +328,80 @@ example :
         .accepted { unscaled := 11, scale := 0 })] := by
   native_decide
 
+private def selectedLines : RepeatableGroupDecl := {
+  lines with repeatability := some 2, indexField := some base.id
+}
+
+private def selectedModel : FlatModel := {
+  fields := [base, first, second, otherString]
+  repeatableGroups := [selectedLines, other]
+}
+
+private def selectedPrepared :
+    PreparedFlatStringContext selectedModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler selectedModel).toOption.get (by native_decide)
+
+private def selectedPlan? :
+    Option (CheckedCurrentRepetitionStringToNumberCascade selectedModel) :=
+  (checkCurrentRepetitionStringToNumberCascade selectedModel selectedLines.path
+    group first.id (bare base.name) second.id
+    (.direct (bare first.name))).toOption
+
+private def selectedInput? : Option (CheckedDocument selectedModel) :=
+  (checkDocument selectedPrepared "en_US" {
+    instantiatedRows := [
+      { group := selectedLines.level, path := [1] },
+      { group := selectedLines.level, path := [2] }]
+    cells := [
+      numericCell base.id 1 7, numericCell base.id 2 7,
+      stringCell 1 "70", stringCell 2 "70",
+      numericCell second.id 1 700, numericCell second.id 2 700]
+  }).toOption
+
+private structure SelectedCascadeSummary where
+  selectedFields : List FieldId
+  formalErrors : List ComputationFormalInputFinding
+  stringCleared : List CellAddr
+  numberCleared : List CellAddr
+  stringErrors : List (CellAddr × StringTargetError)
+  phaseResidualCounts : Nat × Nat
+  deriving Repr, DecidableEq
+
+private def selectedCascadeSummary? : Option SelectedCascadeSummary := do
+  let plan ← selectedPlan?
+  let input ← selectedInput?
+  let inputPlan ← plan.formalInputPlan |>.toOption
+  let view ← plan.executeResultWithFormalInputs selectedPrepared.patterns input
+    |>.toOption
+  pure {
+    selectedFields := inputPlan.selectedFields
+    formalErrors := view.formalErrorsInOperands
+    stringCleared := view.phases.string.cleared
+    numberCleared := view.phases.number.cleared
+    stringErrors := view.phases.string.withErrors.map fun item =>
+      (item.targetField, item.cause)
+    phaseResidualCounts := (view.phases.string.formalErrorsInOperands.length,
+      view.phases.number.formalErrorsInOperands.length)
+  }
+
+/- Duplicate selected Number indexes poison both reached String conversions, whose completed dependency cells become cause-blind poison for the Number phase; eager findings remain whole-call only. -/
+example : selectedCascadeSummary? = some {
+  selectedFields := [base.id]
+  formalErrors := [
+    { address := { field := base.id, path := [1] }, cause := .duplicateIndex },
+    { address := { field := base.id, path := [2] }, cause := .duplicateIndex }]
+  stringCleared := [
+    { field := first.id, path := [1] },
+    { field := first.id, path := [2] }]
+  numberCleared := [
+    { field := second.id, path := [1] },
+    { field := second.id, path := [2] }]
+  stringErrors := []
+  phaseResidualCounts := (0, 0)
+} := by
+  native_decide
+
 /- A producer target error retains its attempted String but becomes the same cause-blind Number dependency poison. -/
 example :
     rowOutcomes? (numericCell base.id 1 (-5)) = some [

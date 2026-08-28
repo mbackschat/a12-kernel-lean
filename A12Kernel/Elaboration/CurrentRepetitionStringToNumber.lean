@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.CurrentRepetitionComputation
 import A12Kernel.Elaboration.AddressedFieldValueAsString
 import A12Kernel.Elaboration.AddressedFieldValueAsNumber
+import A12Kernel.Elaboration.ComputationFormalInput
 import A12Kernel.Elaboration.StringToNumberComputationRun
 import A12Kernel.Semantics.StringCascade
 
@@ -92,6 +93,14 @@ structure CurrentRepetitionStringToNumberOutcomes where
   rows : List CurrentRepetitionStringToNumberRowOutcomes
   deriving Repr, DecidableEq
 
+/-- One completed inverse cross-family run paired with its call-global direct-field formal-input inventory. -/
+structure CurrentRepetitionStringToNumberFormalInputRunView
+    (model : FlatModel) where
+  private mk ::
+  phases : StringToNumberComputationRunView
+    ComputationFormalInputFinding Unit CellAddr
+  formalErrorsInOperands : List ComputationFormalInputFinding
+
 /-- The complete structural coordinates and String outcomes produced before dependency projection and Number execution begin. -/
 structure CurrentRepetitionStringToNumberStringPhase where
   private mk ::
@@ -109,6 +118,14 @@ inductive CurrentRepetitionStringToNumberFault where
   | dependency (cause : StringDependencyFault)
   | number (cause : AddressedFieldValueAsNumberFault)
   | outcomeCardinality (target : FieldId) (actual : Nat)
+  deriving Repr, DecidableEq
+
+/-- Failure while composing the checked call-global inventory with the fixed inverse cascade. -/
+inductive CurrentRepetitionStringToNumberCheckedResultFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : CurrentRepetitionStringToNumberFault)
   deriving Repr, DecidableEq
 
 namespace CheckedCurrentRepetitionStringToNumberCascade
@@ -144,11 +161,12 @@ private def readAfterString (input : CheckedDocument model)
   | some dependency => .ok dependency.2
   | none => input.read address
 
-/-- Execute the row/guard checks and complete every String target before projecting any completion to the Number consumer. -/
-def executeStringPhase
+/-- Execute the row/guard checks through one caller-supplied read and complete every String target before projecting any completion to the Number consumer. -/
+def executeStringPhaseWithRead
     (plan : CheckedCurrentRepetitionStringToNumberCascade model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except CurrentRepetitionStringToNumberFault
       CurrentRepetitionStringToNumberStringPhase := do
   let environments ← plan.string.targetEnvironments input |>.mapError .rows
@@ -158,10 +176,21 @@ def executeStringPhase
       |>.mapError .coordinate
     if !guard.2 then throw (.guardNotTrue guard.1)
     pure guard.1
-  let outcomes ← plan.string.execute patterns input |>.mapError .string
+  let outcomes ← plan.string.executeWithRead patterns input read
+    |>.mapError .string
   if outcomes.length != environments.length then
     throw (.outcomeCardinality plan.string.targetField outcomes.length)
   pure { coordinates, outcomes }
+
+/-- Preserve the immutable-document String-phase entry point. -/
+def executeStringPhase
+    (plan : CheckedCurrentRepetitionStringToNumberCascade model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    Except CurrentRepetitionStringToNumberFault
+      CurrentRepetitionStringToNumberStringPhase :=
+  plan.executeStringPhaseWithRead patterns input
+    (CheckedAddressedFieldValueAsString.readSource input)
 
 /-- Project the complete String phase through the existing dependency-cell boundary, then execute every addressed Number target. -/
 def executeNumberPhase
@@ -187,7 +216,19 @@ def assemblePhases
     | (coordinate, string, number) => { coordinate, string, number }
 }
 
-/-- Execute the fixed positive guard at every instantiated row, then expose each completed String outcome only to the Number conversion at that exact address. -/
+/-- Execute the fixed positive guard through one initial caller-supplied read, then expose each completed String outcome only to the Number conversion at that exact address. -/
+def executeWithRead
+    (plan : CheckedCurrentRepetitionStringToNumberCascade model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except CurrentRepetitionStringToNumberFault
+      CurrentRepetitionStringToNumberOutcomes := do
+  let string ← plan.executeStringPhaseWithRead patterns input read
+  let number ← plan.executeNumberPhase input string
+  pure (assemblePhases string number)
+
+/-- Preserve the immutable-document entry point when no earlier preparation feeds the direct source. -/
 def execute (plan : CheckedCurrentRepetitionStringToNumberCascade model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (input : CheckedDocument model) :
@@ -197,7 +238,28 @@ def execute (plan : CheckedCurrentRepetitionStringToNumberCascade model)
   let number ← plan.executeNumberPhase input string
   pure (assemblePhases string number)
 
-/-- Execute the fixed cascade and project its already-sourced addressed phases through the existing family-preserving String-to-Number view. Each child carrier remains independently applicable, and its collections are extensional, so this boundary makes no mixed-document or result-order claim. -/
+/-- Execute through one fallback read and project the already-sourced addressed phases through the existing family-preserving String-to-Number view. -/
+def executeResultWithRead
+    (plan : CheckedCurrentRepetitionStringToNumberCascade model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (numberPayloadAt : CellAddr → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (stringResidualMessages : List StringResidual) :
+    Except CurrentRepetitionStringToNumberFault
+      (StringToNumberComputationRunView
+        StringResidual NumberPayload CellAddr) := do
+  let outcomes ← plan.executeWithRead patterns input read
+  pure {
+    string := StringComputationRunView.fromSourcedOutcomes
+      stringResidualMessages (outcomes.rows.map (·.string))
+    number := NumericComputationRunView.fromSourceOutcomesWithMessages
+      MessagePointer.ofCellAddr numberPayloadAt numberMessages
+      (outcomes.rows.map (·.number))
+  }
+
+/-- Execute the fixed cascade against the immutable document and retain the two family results separately. -/
 def executeResult (plan : CheckedCurrentRepetitionStringToNumberCascade model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (input : CheckedDocument model)
@@ -215,6 +277,40 @@ def executeResult (plan : CheckedCurrentRepetitionStringToNumberCascade model)
       MessagePointer.ofCellAddr numberPayloadAt numberMessages
       (outcomes.rows.map (·.number))
   }
+
+/-- Bind both analyzed operations to one call-global direct-field inventory. -/
+def formalInputPlan
+    (plan : CheckedCurrentRepetitionStringToNumberCascade model) :
+    Except ComputationFormalInputPlanError
+      (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputOperations model plan.analyze.fieldDependencies
+
+/-- Preserve the Number declaration's formal-text regime while adding only the selected generated index finding at the first phase boundary. -/
+def preparedStringSourceRead
+    (preliminary : CheckedIndexPreliminary model)
+    (address : CellAddr) : Except CheckedDocumentError CheckedCell := do
+  let base ← CheckedAddressedFieldValueAsString.readSource preliminary.base address
+  pure (preliminary.annotateCell address base)
+
+/-- Prepare the selected direct Number source once, then retain the eager inventory beside the two independently typed result channels. -/
+def executeResultWithFormalInputs
+    (plan : CheckedCurrentRepetitionStringToNumberCascade model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    Except CurrentRepetitionStringToNumberCheckedResultFault
+      (CurrentRepetitionStringToNumberFormalInputRunView model) := do
+  let inputPlan ← plan.formalInputPlan |>.mapError .formalInput
+  let prepared ← inputPlan.prepare input |>.mapError .preliminary
+  let noResidual := ([] : List ComputationFormalInputFinding)
+  match plan.executeResultWithRead patterns input
+      (preparedStringSourceRead prepared.preliminary) (fun _ => ()) []
+      noResidual with
+  | .error cause =>
+      .error (.execution prepared.formalErrorsInOperands cause)
+  | .ok phases => .ok {
+      phases
+      formalErrorsInOperands := prepared.formalErrorsInOperands
+    }
 
 end CheckedCurrentRepetitionStringToNumberCascade
 
