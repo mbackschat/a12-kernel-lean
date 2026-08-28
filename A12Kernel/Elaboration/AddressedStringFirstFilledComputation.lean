@@ -130,16 +130,17 @@ structure AddressedStringFirstFilledComputationRunView (model : FlatModel)
 
 namespace CheckedAddressedStringFirstFilledComputation
 
-private def evaluateAt
+private def evaluateAtWithRead
     (operation : CheckedAddressedStringFirstFilledComputation model)
     (matcher : Option (String → Bool)) (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (environment : Env) :
     Except AddressedStringFirstFilledComputationFault
       AddressedStringFirstFilledComputationOutcome := do
   let targetPath ←
     environment.pathForScope operation.target.repeatableScope
       |>.mapError .targetEnvironment
-  let resolved ← operation.source.resolveCheckedField input environment
+  let resolved ← operation.source.resolveCheckedFieldWithRead input read environment
     |>.mapError .source
   pure {
     targetField := { field := operation.targetField, path := targetPath }
@@ -148,11 +149,12 @@ private def evaluateAt
         resolved).asStringStore
   }
 
-/-- Execute one parent-local ordinary String scan per physical target row, then apply the one prepared target matcher. -/
-def execute
+/-- Execute one parent-local ordinary String scan through a caller-supplied exact-address source view, then apply the one prepared target matcher. Target topology, pattern preparation, and immutable target state remain unchanged. -/
+def executeWithRead
     (operation : CheckedAddressedStringFirstFilledComputation model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedStringFirstFilledComputationFault
       (List AddressedStringFirstFilledComputationOutcome) := do
   let matcher ← match patterns.targetMatcher? operation.targetField with
@@ -160,16 +162,27 @@ def execute
     | none => throw (.targetPatternUnavailable operation.targetField)
   let environments ← input.actualRowEnvironments operation.target.repeatableScope
     |>.mapError .targetRows
-  environments.mapM (operation.evaluateAt matcher input)
+  environments.mapM (operation.evaluateAtWithRead matcher input read)
 
-/-- Classify every exact rich outcome against the immutable source target at that same address. -/
-def executeResult
+/-- Execute one parent-local ordinary String scan per physical target row, then apply the one prepared target matcher. -/
+def execute
     (operation : CheckedAddressedStringFirstFilledComputation model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    (input : CheckedDocument model) :
+    Except AddressedStringFirstFilledComputationFault
+      (List AddressedStringFirstFilledComputationOutcome) :=
+  operation.executeWithRead patterns input input.read
+
+/-- Classify caller-view outcomes against the immutable source target at that same address. -/
+def executeResultWithRead
+    (operation : CheckedAddressedStringFirstFilledComputation model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (residualMessages : List ResidualMessage) :
     Except AddressedStringFirstFilledComputationFault
       (AddressedStringFirstFilledComputationRunView model ResidualMessage) := do
-  let outcomes ← operation.execute patterns input
+  let outcomes ← operation.executeWithRead patterns input read
   pure {
     operation
     string := StringComputationRunView.fromSourcedOutcomes residualMessages
@@ -179,6 +192,15 @@ def executeResult
         source := input.sourceStringTargetStateAt entry.targetField
       })
   }
+
+/-- Classify every exact rich outcome against the immutable source target at that same address. -/
+def executeResult
+    (operation : CheckedAddressedStringFirstFilledComputation model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    Except AddressedStringFirstFilledComputationFault
+      (AddressedStringFirstFilledComputationRunView model ResidualMessage) :=
+  operation.executeResultWithRead patterns input input.read residualMessages
 
 end CheckedAddressedStringFirstFilledComputation
 

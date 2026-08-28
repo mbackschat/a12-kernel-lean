@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.AddressedStringFirstFilledComputation
+import A12Kernel.Elaboration.AddressedStringFirstFilledFormalInput
 import A12Kernel.Proofs.StringComputationRunApplication
 
 /-! # Exact-address repeatable ordinary String `FirstFilledValue` laws -/
@@ -23,6 +23,15 @@ theorem checkedAddressedStringFirstFilled_carriersAndPlacement
     operation.sourceBindingPrefix, operation.sourceBindingStrict, operation.placement.targetNotReferenced,
     operation.placement.sourceBindingBound⟩
 
+/-- The immutable addressed executor is definitionally the caller-read route specialized to the document's checked read. -/
+theorem checkedAddressedStringFirstFilled_executeWithRead_base
+    (operation : CheckedAddressedStringFirstFilledComputation model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    operation.executeWithRead patterns input input.read =
+      operation.execute patterns input := by
+  rfl
+
 /-- Addressed result construction retains the checked operation and classifies every outcome against its exact immutable target state. -/
 theorem checkedAddressedStringFirstFilled_executeResult_projects
     (operation : CheckedAddressedStringFirstFilledComputation model)
@@ -39,11 +48,53 @@ theorem checkedAddressedStringFirstFilled_executeResult_projects
           outcome := entry.outcome
           source := input.sourceStringTargetStateAt entry.targetField
         }) := by
-  rw [CheckedAddressedStringFirstFilledComputation.executeResult, executed]
+  rw [CheckedAddressedStringFirstFilledComputation.executeResult,
+    CheckedAddressedStringFirstFilledComputation.executeResultWithRead]
     at produced
+  change operation.executeWithRead patterns input input.read = .ok outcomes
+    at executed
+  rw [executed] at produced
   simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
   subst view
   exact ⟨rfl, rfl⟩
+
+/-- Successful whole-call composition preserves the exact prepared String result, including eager findings, target-policy outcomes, and source-relative actions. -/
+theorem checkedAddressedStringFirstFilled_executeResultWithFormalInputs_exact
+    (operation : CheckedAddressedStringFirstFilledComputation model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (result : AddressedStringFirstFilledComputationRunView model
+      ComputationFormalInputFinding)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResultWithRead patterns input
+      prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands = .ok result) :
+    operation.executeResultWithFormalInputs patterns input = .ok result := by
+  rw [CheckedAddressedStringFirstFilledComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation, executed]
+
+/-- A post-preparation execution failure retains the exact eager input findings beside the unchanged addressed String fault. -/
+theorem checkedAddressedStringFirstFilled_executeResultWithFormalInputs_failure_exact
+    (operation : CheckedAddressedStringFirstFilledComputation model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (fault : AddressedStringFirstFilledComputationFault)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResultWithRead patterns input
+      prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands = .error fault) :
+    operation.executeResultWithFormalInputs patterns input =
+      .error (.execution prepared.formalErrorsInOperands fault) := by
+  rw [CheckedAddressedStringFirstFilledComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation, executed]
 
 /-- Exact-address checked application delegates to the established source-classified String fold. -/
 theorem addressedStringFirstFilledRun_applyToChecked_delegates

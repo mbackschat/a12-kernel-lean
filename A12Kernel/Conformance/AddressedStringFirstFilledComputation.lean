@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.AddressedStringFirstFilledComputation
+import A12Kernel.Elaboration.AddressedStringFirstFilledFormalInput
 
 /-! # Exact-address repeatable ordinary String `FirstFilledValue` locks -/
 
@@ -61,7 +61,8 @@ private def model : FlatModel := {
     targetDescendantSource]
   repeatableGroups := [
     { level := 10, path := ["Projects"], repeatability := some 6 },
-    { level := 20, path := ["Projects", "Choices"], repeatability := some 2 },
+    { level := 20, path := ["Projects", "Choices"], repeatability := some 2,
+      indexField := some source.id },
     { level := 30, path := ["Projects", "Tasks"], repeatability := some 2 },
     { level := 40, path := ["Projects", "Choices", "Details"],
       repeatability := some 2 },
@@ -208,9 +209,15 @@ private def cell (field : FieldId) (path : List Nat)
 private def address (field : FieldId) (path : List Nat) : CellAddr :=
   { field, path }
 
+private def documentWithRows? (selectedRows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := selectedRows, cells }).toOption
+
 private def document? (cells : List ClassifiedCellInput) :
     Option (CheckedDocument model) :=
-  (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
+  documentWithRows? rows cells
 
 private def inputCells : List ClassifiedCellInput := [
   cell source.id [1, 1] "" .presentEmpty,
@@ -313,6 +320,66 @@ example : resultApplicationSummary? = some {
       .presentEmpty,
       .presentValue ⟨"AAA", by decide⟩]
     unrelatedState := .presentValue ⟨"KEEP", by decide⟩
+  } := by
+  native_decide
+
+private def formalFinding (path : List Nat)
+    (cause : FormalCause) : ComputationFormalInputFinding := {
+  address := address source.id path
+  cause
+}
+
+private structure FormalInputSummary where
+  planOperands : List FieldId
+  planTargets : List FieldId
+  findingsExact : Bool
+  values : List (CellAddr × String)
+  changes : List (CellAddr × String)
+  errorsEmpty : Bool
+  cleared : List CellAddr
+  deriving Repr, DecidableEq
+
+private def formalInputSummary? : Option FormalInputSummary := do
+  let operation ← operation?
+  let plan ← operation.formalInputPlan.toOption
+  let input ← documentWithRows? [
+      { group := 10, path := [1] }, { group := 10, path := [2] },
+      { group := 20, path := [1, 1] },
+      { group := 20, path := [2, 1] },
+      { group := 20, path := [2, 2] },
+      { group := 30, path := [1, 1] },
+      { group := 30, path := [2, 1] }] [
+    cell source.id [1, 1] "AA",
+    cell source.id [2, 1] "AB",
+    cell source.id [2, 2] "AB",
+    cell target.id [1, 1] "A",
+    cell target.id [2, 1] "A"]
+  let result ← operation.executeResultWithFormalInputs prepared.patterns input
+    |>.toOption
+  let findings := result.string.formalErrorsInOperands
+  pure {
+    planOperands := plan.operandFields
+    planTargets := plan.computedFields
+    findingsExact := findings.length == 2 &&
+      findings.contains (formalFinding [2, 1] .duplicateIndex) &&
+      findings.contains (formalFinding [2, 2] .duplicateIndex)
+    values := result.string.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    changes := result.string.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    errorsEmpty := result.string.withErrors.isEmpty
+    cleared := result.string.cleared
+  }
+
+/- The selected String preliminary stays eager, but duplicate poison wins only when its parent-local scan reaches the annotated cell and therefore bypasses target-pattern rejection. -/
+example : formalInputSummary? = some {
+    planOperands := [source.id]
+    planTargets := [target.id]
+    findingsExact := true
+    values := [(address target.id [1, 1], "AA")]
+    changes := [(address target.id [1, 1], "AA")]
+    errorsEmpty := true
+    cleared := [address target.id [2, 1]]
   } := by
   native_decide
 
