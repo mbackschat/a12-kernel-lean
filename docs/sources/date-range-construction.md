@@ -25,7 +25,7 @@
 - `route`: [`FragmentRangeFormalDiffTest`](../../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/FragmentRangeFormalDiffTest.kt) Kernel-checks the same cause partition plus `datumBereichDatumFalsch` for a start before the universal floor, while kernel `FormatDefinitionDatumBereich` owns the shared full-range precedence.
 - `route`: [`A12JsonIngressKernelTest`](../../../a12-rulekit/adapter/src/test/java/io/github/mbackschat/a12/dm/adapter/laws/A12JsonIngressKernelTest.java) Kernel-checks that `01.01.2024-31.12.2024` is retained and accepted under the dotted declaration while `1.1.2024-31.12.2024` remains exact stored text and yields the format cause.
 - `limit`: the retained negative matrix is dotted/dash, the split-shape distinction is source-established rather than runtime-measured, the floor differential uses fragment format, and no retained external row observes the exact endpoint instants produced by UTC or Berlin parsing. Lean's ISO/slash cause matrix and model-zone instant composition therefore remain internally executable over source-established shared mechanisms rather than separately calibrated external rows.
-- `sync`: [SPEC-2026-08-18-01](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-18-01) is accepted at the reviewed checkpoint.
+- `sync`: [SPEC-2026-08-18-01](../archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#spec-2026-08-18-01) is accepted at the reviewed checkpoint.
 
 <a id="src-date-range-construction-equality"></a>
 #### Filled DateRange construction equality
@@ -56,7 +56,7 @@
 - `source`: kernel [`RuntimeController.constructDateRange`](../../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_30_8/internal/core/RuntimeController.java) delegates typed start and finish inputs to its endpoint-position range completion; a12-dmkits [`ExprEval`](../../../a12-rulekit/interpreter/src/commonMain/kotlin/io/github/mbackschat/a12/dm/interpreter/eval/ExprEval.kt) instead constructs the range from two ordinary evaluated temporal texts.
 - `diagnosis-limit`: the interpreter source shape and its existing bound-aware [`DateMath`](../../../a12-rulekit/interpreter/src/commonMain/kotlin/io/github/mbackschat/a12/dm/interpreter/eval/DateMath.kt) helper identify a likely missing finish-position completion, but the retained observation establishes only the divergent outcome until an upstream isolating test discharges the cause.
 - `limit`: this checkpoint establishes exact direct nonrepeatable `yyyy` endpoints, pair and stored equality outcomes, a finish-only negative, and one cross-component static refusal. Other fragments, Base-Year supplementation, exact endpoint instants, empty/formal rows, indices, repeatable placement, targets, and rendering remain unmeasured.
-- `sync`: §6 owns endpoint-position completion and §8 owns cross-DateRange component compatibility; [`SPEC-2026-08-19-01`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-01--date-range-equality-requires-matching-component-sets-across-both-operands) is accepted.
+- `sync`: §6 owns endpoint-position completion and §8 owns cross-DateRange component compatibility; [`SPEC-2026-08-19-01`](../archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#spec-2026-08-19-01--date-range-equality-requires-matching-component-sets-across-both-operands) is accepted.
 
 <a id="src-date-range-year-month-fragment-construction"></a>
 #### Year-month-fragment DateRange construction
@@ -93,7 +93,7 @@
 - `source`: kernel [`RuntimeController.constructDateRange`](../../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_30_8/internal/core/RuntimeController.java) owns endpoint construction; a12-dmkits [`ExprEval`](../../../a12-rulekit/interpreter/src/commonMain/kotlin/io/github/mbackschat/a12/dm/interpreter/eval/ExprEval.kt) owns the independent comparison route.
 - `mechanism-limit`: the observations discharge outcomes, component gates, configured-year calendar labels, and the interpreter divergence. They do not establish the Kernel's yearless carrier or the cause of the interpreter defect.
 - `limit`: exact instants are locally reconstructed under the checked model-zone profile but not externally exposed. Empty/formal rows, indices, repeatable placement, computation targets, and rendering remain outside this checkpoint.
-- `sync`: configured Base-Year completion uses the existing §6 account; [`SPEC-2026-08-19-02`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-02--yearless-date-range-comparison-remains-legal-without-base-year) is accepted.
+- `sync`: configured Base-Year completion uses the existing §6 account; [`SPEC-2026-08-19-02`](../archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#spec-2026-08-19-02--yearless-date-range-comparison-remains-legal-without-base-year) is accepted.
 
 <a id="src-date-range-yearless-construction-target"></a>
 #### Yearless DateRange construction targets
@@ -107,7 +107,7 @@
 - `separation`: the `MM` and `MM-dd` rows distinguish component granularity; the filled/inverted pair separates presentation from target acceptance, while empty and malformed rows separate ordinary clearing from formal-input clearing.
 - `mechanism-limit`: these observations discharge static authorability and public outcomes. They do not establish the Kernel's exact-versus-yearless carrier, copy-versus-render mechanism, or internal poison representation.
 - `limit`: exact and Base-Year-completed fragment constructor targets, crossed target profiles, alternate separators, repeatable targets, alternatives, scheduling, partial validation, and application destinations remain outside this checkpoint.
-- `sync`: [`SPEC-2026-08-19-05`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-05--date-range-construction-targets-admit-yearless-fragments) is accepted at the reviewed checkpoint.
+- `sync`: [`SPEC-2026-08-19-05`](../archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#spec-2026-08-19-05--date-range-construction-targets-admit-yearless-fragments) is accepted at the reviewed checkpoint.
 
 <a id="src-indexed-date-range-construction-target"></a>
 #### String-indexed DateRange construction targets
@@ -169,7 +169,7 @@
 - `integrity`: the no-Base-Year request is SHA-256 `8392d3dc6ba39b0680412bebef9baf7bc9064b9c6dd0d0adda6117a3e8cd9475`, model `d04baa4d7936be9f2b1734f113ffbc9c38399804ee0f0a5ca6c8940f92601d7d`, document `cebe20be87a455f0a007e0c85096cf73894f3748df778fdf43ccaf7ec5029148`, and two unchanged artifacts `867c9afa9a038ee6950acdc4560905d7380c305dba4aacbb157c4ae55244e01e`.
 - `mechanism-limit`: the runtime rows establish target values and preservation of yearless presentations, not the Kernel's internal exact-versus-yearless carrier or copy-versus-render mechanism.
 - `limit`: the packet has one filled row per source and does not establish empty-prefix scanning, formal poison, inverted target handling, mixed/multiple/group/filtered operands, nested repetition, partial validation, scheduling, or application.
-- `sync`: this six-policy packet is supplemented by the two statically admitted and runtime-measured rows at the [2026-08-19 DateRange reconciliation checkpoint](../SOURCES.md#src-date-range-2026-08-19-reconciliation); [`SPEC-2026-08-19-03`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-03--date-range-firstfilledvalue-admits-matching-fragment-profiles) is accepted there.
+- `sync`: this six-policy packet is supplemented by the two statically admitted and runtime-measured rows at the [2026-08-19 DateRange reconciliation checkpoint](../SOURCES.md#src-date-range-2026-08-19-reconciliation); [`SPEC-2026-08-19-03`](../archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#spec-2026-08-19-03--date-range-firstfilledvalue-admits-matching-fragment-profiles) is accepted there.
 
 <a id="src-date-range-direct-first-filled"></a>
 #### Direct-field-list DateRange `FirstFilledValue`
@@ -196,7 +196,7 @@
 - `integrity`: the configured request, model, and two unchanged artifacts are SHA-256 `cd9ec0b521adc3e1ae477db8772531432732945860ba2585cba5e2b3e3f4e0e4`, `2facf302fa3274f629aa89ecbaa52346e1579f0439830f5a8dd4cb7b0cd5af4d`, and `22e4e07503f25473c9b069ad39412483c093f60a29ee969c487f94513703486f`.
 - `integrity`: the no-Base-Year request, model, and two unchanged artifacts are SHA-256 `e69547f378c90b955db264c885e4ad0f3f71868ddc7c86e1ce3d391a0e1b6184`, `6414e3c46859e1f0d885051e2679a84c2ee7286b014a09dcfddd429ccc1fd6c5`, and `364c590f9dd82cd391b4e02a877baa7d89eca2845ef0b71e4c20761f99859bee`.
 - `limit`: the packets cover dotted/dash lists of exactly two and three sources and all four fragment profiles at exactly three sources with a fresh target. ISO/slash list execution, lengths greater than three, fragment-list formal suffixes, groups, stars, filters, repetition, target application, scheduling, and cause identity beyond the reported formal code remain unmeasured here.
-- `sync`: [`SPEC-2026-08-19-04`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-19-04--date-range-firstfilledvalue-scans-direct-field-lists-lazily) is accepted at the reviewed checkpoint.
+- `sync`: [`SPEC-2026-08-19-04`](../archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#spec-2026-08-19-04--date-range-firstfilledvalue-scans-direct-field-lists-lazily) is accepted at the reviewed checkpoint.
 
 <a id="src-date-range-yearless-overlap"></a>
 #### Unconfigured yearless DateRange overlap, measured locally 2026-08-22
@@ -226,7 +226,7 @@
 - `runtime-claim`: a `yyyy` operand is year-bearing on its own and its year decides the outcome against a completed yearless operand. `2024/2024` overlaps `06/06`; `2023/2023` does not.
 - `integrity`: models `3efb28a3cb5c8376c2f2c6275828d6135caadd606358ea7f4ad58810cf766dff` and `1682744bb1156217e6602824c659c4366d57bd28a0ace408474871c1253a1752`; request `491d24667f414cc8e3a33f670a64c1f72f21bb07067c01b567f8517a9812d879`; artifact `73790fe5946ccf4dd1058465091d09d07e6299ad3e57902349633cbc853b921c`. The admission rows reproduce against those exact model bytes.
 - `limit`: singular `DateRangesOverlap` only, direct stored operands, one filled value per field, and ordered ranges. No starred, filtered, group, or repetition operand; no empty or malformed operand; no wrapping range; and the plural `AtLeastOneDateRangeOverlaps` route was not reached, because its authored list syntax was not established in this session.
-- `sync`: locally originated. It corrects the narrower overlap sentence in [§6](../../spec/05-dates-and-time.md#6-date-fragments-and-fragment-ranges) and adds the year-class gate to [§8](../../spec/05-dates-and-time.md#8-date-ranges-and-overlap); [`SPEC-2026-08-22-01`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-22-01--date-range-overlap-admits-by-year-class-and-a-base-year-lifts-the-gate) carries it.
+- `sync`: locally originated. It corrects the narrower overlap sentence in [§6](../../spec/05-dates-and-time.md#6-date-fragments-and-fragment-ranges) and adds the year-class gate to [§8](../../spec/05-dates-and-time.md#8-date-ranges-and-overlap); [`SPEC-2026-08-22-01`](../archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#spec-2026-08-22-01--date-range-overlap-admits-by-year-class-and-a-base-year-lifts-the-gate) carries it.
 
 <a id="src-date-range-bound-base-year"></a>
 #### DateRange bound extraction and Base-Year completion, measured locally 2026-08-22
@@ -307,4 +307,4 @@
 - `local-divergence`: Lean enumerated one spelling per component set as a construction target, so a `MM`+empty-separator or `dd.MM` target could not be represented at all, even though this project's own clause already said the gate reads component sets rather than lexical profiles. The enumeration is replaced by the target's retained declared profile, admitted through the same component comparison.
 - `integrity`: model `edcf3be39f5c1419be1c368ada28c442c3f8321afa05b05b14646d96de8c210f`; request `2c151ca3d7c091a05fb4755b31a5816bcaf9169644c9806c1d7ba95dd7b45147`; artifact `564c688aa0f476e89a26dc8eeaee2c32f2b265654ded5147ed442ffaee261ef0`. The dry-run decisions were taken before the four computations were persisted, against the same declarations.
 - `limit`: two component sets, one unconfigured model, DATEFRAGMENT endpoints only, and one endpoint pair per set. No full-Date or year-bearing fragment construction in this batch, no Base-Year model, no formal-input branch, and no semantic-index endpoint. The construction-versus-stored *comparison* inherits the same widened match without an observation of its own.
-- `sync`: locally originated as a Lean correction. The canonical clause already stated that assignment compares component sets rather than lexical profiles, so the rule is unchanged; the outbound half is the spelling coverage and the gate order carried by [`SPEC-2026-08-23-03`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-23-03).
+- `sync`: locally originated as a Lean correction. The canonical clause already stated that assignment compares component sets rather than lexical profiles, so the rule is unchanged; the outbound half is the spelling coverage and the gate order carried by [`SPEC-2026-08-23-03`](../archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#spec-2026-08-23-03).

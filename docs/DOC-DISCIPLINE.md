@@ -18,7 +18,8 @@ Before editing documentation, classify each changed fact:
 | Persisted handoff action, oracle, stop condition, baseline, blocker, probe trigger, and resume command | [`PLAN.md`](PLAN.md) |
 | Stable representation, semantic ownership, dependency direction, composition invariant, or accepted/rejected encoding decision | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | Durable non-obvious formalization or research lesson | [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) |
-| Cross-project semantic reconciliation state | [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) |
+| Current cross-project semantic reconciliation state | [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) |
+| Terminal reconciliation receipts through 2026-08-28 | the frozen [historical ledger](archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md) |
 | Test method and executable gate contract | [`TESTING.md`](TESTING.md) |
 | Public process, artifact, consumer, product, or release contract | the exact owner named in [`README.md`](README.md#canonical-ownership-registry) |
 
@@ -76,7 +77,7 @@ This table is a trigger contract, not a document-count quota. A unit that genuin
 
 ## Intentional historical records
 
-[`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) and [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) are the only append-preserving live records. Findings retain stable IDs and visible corrections. Reconciliation entries retain stable IDs and terminal dispositions. Neither may absorb routine status, source-review narrative, or a second copy of the spec.
+[`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) and [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) are the only append-preserving live records. Findings retain stable IDs and visible corrections. The live ledger retains entries created after its archive boundary, including their eventual terminal dispositions, while the [historical ledger](archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md) immutably owns the earlier terminal receipts. Neither live record may absorb routine status, source-review narrative, or a second copy of the spec.
 
 Capability implementation kits may repeat the minimum semantics and procedure required to remain self-contained for their external audience. That exception does not authorize copied live counts, roadmaps, or provenance histories. Files under [`archived/`](archived/) are immutable historical records; correct live owners instead of silently rewriting an archive.
 

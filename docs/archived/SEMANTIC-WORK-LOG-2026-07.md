@@ -54,7 +54,7 @@ Temporary focused mutations confirm the precision and order seams; no mutation f
 
 ### Documentation and completion
 
-The canonical clauses now state encounter order, per-step precision, unavailable termination, and per-declaration missing directions. [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](../A12-DMKITS-SPEC-SYNC-LEDGER.md) records the accepted a12-dmkits reconciliation at revision `20230e403fa085c782534025f890669a975999a8`, while [`IMPLEMENTATION-MAP.md`](../IMPLEMENTATION-MAP.md) and [`LEAN-FINDINGS.md`](../LEAN-FINDINGS.md) record the narrower admitted Lean boundary and reusable consumer consequence.
+The canonical clauses now state encounter order, per-step precision, unavailable termination, and per-declaration missing directions. The [historical specification synchronization receipt](A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#spec-2026-07-20-14--enumeration-direct-field-comparability-uses-effective-display-remapping) records the accepted a12-dmkits reconciliation at revision `20230e403fa085c782534025f890669a975999a8`, while [`IMPLEMENTATION-MAP.md`](../IMPLEMENTATION-MAP.md) and [`LEAN-FINDINGS.md`](../LEAN-FINDINGS.md) record the narrower admitted Lean boundary and reusable consumer consequence.
 
 The introducing commit passed focused elaboration, `lake build`, `lake test`, `./scripts/check-lean-trust.sh`, `git diff --check`, worktree review, and a local Conventional Commit. It was not pushed.
 
