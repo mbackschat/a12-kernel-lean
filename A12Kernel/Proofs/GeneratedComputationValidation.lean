@@ -278,6 +278,40 @@ theorem generatedNumericOperationTable_executeResultWithFormalInputs_failure_exa
   simp only [preparation]
   rw [executed]
 
+/-- Successful application and later validation cannot alter the prepared execution result or its eager finding inventory. -/
+theorem generatedNumericFormalInputAppliedValidation_success_result_exact
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model))
+    (admission : AdmittedGeneratedNumericOperationTable model computation)
+    (executionWorld validationWorld : World)
+    (source destination : CheckedDocument model)
+    (inputPlan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (numeric : NumericComputationRunView
+      (ComputationFormalMessage Unit) CellAddr)
+    (view : GeneratedComputationTable.FormalInputAppliedValidationView model)
+    (admitted : admitGeneratedNumericOperationTable model computation =
+      .ok admission)
+    (planned : admission.formalInputPlan = .ok inputPlan)
+    (preparation : inputPlan.prepare source = .ok prepared)
+    (executed : admission.executeAddressedResultWithRead executionWorld source
+      prepared.preliminary.readComputation (fun _ => ()) [] = .ok numeric)
+    (completed : computation.executeNumericFormalInputAppliedValidation
+      executionWorld validationWorld source destination = .ok view) :
+    view.result = NumericComputationFormalInputRunView.of numeric
+      prepared.formalErrorsInOperands := by
+  unfold GeneratedComputationTable.executeNumericFormalInputAppliedValidation at completed
+  rw [admitted] at completed
+  simp only [Except.mapError, Bind.bind, Except.bind] at completed
+  rw [planned] at completed
+  simp only [preparation] at completed
+  rw [executed] at completed
+  simp only [] at completed
+  split at completed
+  · simp_all
+  · cases completed
+    rfl
+
 /-- The generated numeric table inventory is exactly the validated model declarations referenced by its common guard, alternative guards, or checked operations. -/
 theorem generatedNumericOperationTable_fieldDependencies_exact
     (computation : GeneratedComputationTable

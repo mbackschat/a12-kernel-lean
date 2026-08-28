@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.GeneratedComputationFormalInput
+import A12Kernel.Elaboration.GeneratedComputationAppliedValidation
 
 /-! # Generated-table selected-preliminary execution locks -/
 
@@ -185,6 +185,82 @@ example : summary? false = some {
     changes := []
     errors := []
     cleared := [targetAddress]
+  } := by
+  native_decide
+
+private def destination? (selectFirst : Bool) : Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 10, path := [2] }
+    ]
+    cells :=
+      (if selectFirst then [numberCell selector.id [] 1] else []) ++ [
+        numberCell directSource.id [] 8,
+        numberCell repeatedIndex.id [1] 2,
+        numberCell repeatedIndex.id [2] 3,
+        numberCell target.id [] 2
+      ]
+  }).toOption
+
+private structure AppliedSummary where
+  findings : List ComputationFormalInputFinding
+  typedMessagesEmpty : Bool
+  values : List (CellAddr × StoredNumber)
+  changes : List (CellAddr × StoredNumber)
+  cleared : List CellAddr
+  applied : NumericTargetState
+  validation : FlatRuleOutcome
+  deriving Repr, DecidableEq
+
+private def appliedSummary? (selectFirst : Bool) : Option AppliedSummary := do
+  let table ← table?
+  let source ← input? selectFirst
+  let destination ← destination? selectFirst
+  let run ← (table.executeNumericFormalInputAppliedValidation
+    { now := { epochMillis := 0 } } { now := { epochMillis := 0 } }
+    source destination).toOption
+  pure {
+    findings := run.result.formalErrorsInOperands
+    typedMessagesEmpty := run.result.numeric.formalErrorsInOperands.isEmpty
+    values := run.result.numeric.withoutErrors.map fun value =>
+      (value.targetField, value.value)
+    changes := run.result.numeric.withChanges.map fun value =>
+      (value.targetField, value.value)
+    cleared := run.result.numeric.cleared
+    applied := run.applied.stateAt targetAddress
+    validation := run.validation
+  }
+
+private def mismatchMessage : FlatRuleMessage := {
+  errorAddress := MessagePointer.ofCellAddr targetAddress
+  errorCode := "preparedGeneratedTable"
+  severity := .error
+  messageType := .value
+  text := ({ parts := [.text "generated mismatch"] } : MessageRenderPlan).render
+}
+
+/- The direct alternative hides prepared poison at runtime while retaining both eager findings. Application writes the source-derived `7`, then later validation recomputes against the destination's `8` and fires. -/
+example : appliedSummary? true = some {
+    findings := [finding 1, finding 2]
+    typedMessagesEmpty := true
+    values := [(targetAddress, seven)]
+    changes := [(targetAddress, seven)]
+    cleared := []
+    applied := .presentValue (.decimal seven)
+    validation := .fired mismatchMessage
+  } := by
+  native_decide
+
+/- Selecting the aggregate reaches prepared duplicate poison, retains the same eager findings, clears the stale target in the separate destination, and suppresses later validation at its filled-target gate. -/
+example : appliedSummary? false = some {
+    findings := [finding 1, finding 2]
+    typedMessagesEmpty := true
+    values := []
+    changes := []
+    cleared := [targetAddress]
+    applied := .presentEmpty
+    validation := .notFired
   } := by
   native_decide
 
