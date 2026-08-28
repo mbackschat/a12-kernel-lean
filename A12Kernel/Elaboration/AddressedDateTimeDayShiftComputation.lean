@@ -84,7 +84,9 @@ inductive AddressedDateTimeDayShiftComputationFault where
 /-- Failure while composing direct formal-input collection with addressed calendar-day execution. -/
 inductive AddressedDateTimeDayShiftCheckedResultFault where
   | formalInput (cause : ComputationFormalInputPlanError)
-  | execution (cause : AddressedDateTimeDayShiftComputationFault)
+  | preliminary (cause : CheckedIndexPreliminaryError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : AddressedDateTimeDayShiftComputationFault)
   deriving Repr, DecidableEq
 
 /-- One exact source/target-address pair and its declaration-rendered DateTime outcome. -/
@@ -141,9 +143,10 @@ private def classifyAt
     outcome
   }
 
-private def evaluateAt
+private def evaluateAtUsing
     (operation : CheckedAddressedDateTimeDayShiftComputation model)
-    (input : CheckedDocument model) (environment : Env) :
+    (input : CheckedDocument model) (environment : Env)
+    (amountInput : AddressedValidationInput model) :
     Except AddressedDateTimeDayShiftComputationFault
       AddressedDateTimeDayShiftComputationOutcome := do
   let sourcePath ← environment.pathForScope
@@ -163,10 +166,41 @@ private def evaluateAt
         groups := GroupPresenceContext.unavailable
       }
       outer := environment
-      input := .checked input
+      input := amountInput
     } |>.mapError .amountAddressing)
     (fun cause => .dayShift cause)
   operation.classifyAt environment sourceField result
+
+/-- Evaluate one exact target row with the immutable DateTime source and a caller-supplied addressed amount view. -/
+def evaluateAtWithAmountRead
+    (operation : CheckedAddressedDateTimeDayShiftComputation model)
+    (input : CheckedDocument model) (environment : Env)
+    (amountRead : Env → FieldId →
+      Except CheckedAddressingError (Option CheckedCell)) :
+    Except AddressedDateTimeDayShiftComputationFault
+      AddressedDateTimeDayShiftComputationOutcome :=
+  operation.evaluateAtUsing input environment (.partialView input amountRead)
+
+private def evaluateAt
+    (operation : CheckedAddressedDateTimeDayShiftComputation model)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedDateTimeDayShiftComputationFault
+      AddressedDateTimeDayShiftComputationOutcome :=
+  operation.evaluateAtUsing input environment (.checked input)
+
+/-- Execute every physical target row while numeric amounts read through one transient addressed view. -/
+def executeWithAmountRead
+    (operation : CheckedAddressedDateTimeDayShiftComputation model)
+    (input : CheckedDocument model)
+    (amountRead : Env → FieldId →
+      Except CheckedAddressingError (Option CheckedCell)) :
+    Except AddressedDateTimeDayShiftComputationFault
+      (List AddressedDateTimeDayShiftComputationOutcome) := do
+  let environments ← input.actualRowEnvironments
+    operation.checkedTarget.declaration.repeatableScope
+      |>.mapError .targetRows
+  environments.mapM fun environment =>
+    operation.evaluateAtWithAmountRead input environment amountRead
 
 /-- Execute once per physically instantiated target row in document order. -/
 def execute
@@ -200,7 +234,19 @@ def executeResult
   let outcomes ← operation.execute input
   pure (operation.resultFromOutcomes input residualMessages outcomes)
 
-/-- Collect direct formal-input findings eagerly, then execute and project the addressed result. Runtime short circuiting does not remove an already inventoried operand finding. -/
+/-- Execute with one caller-supplied addressed amount view and classify exact outcomes against immutable source target state. -/
+def executeResultWithAmountRead
+    (operation : CheckedAddressedDateTimeDayShiftComputation model)
+    (input : CheckedDocument model)
+    (amountRead : Env → FieldId →
+      Except CheckedAddressingError (Option CheckedCell))
+    (residualMessages : List ResidualMessage) :
+    Except AddressedDateTimeDayShiftComputationFault
+      (AddressedDateTimeDayShiftComputationRunView model ResidualMessage) := do
+  let outcomes ← operation.executeWithAmountRead input amountRead
+  pure (operation.resultFromOutcomes input residualMessages outcomes)
+
+/-- Prepare direct formal inputs once, then execute numeric amounts through that view while preserving source-first short circuiting and retaining the eager inventory on either result arm. -/
 def executeResultWithFormalInputs
     (operation : CheckedAddressedDateTimeDayShiftComputation model)
     (input : CheckedDocument model) :
@@ -208,7 +254,15 @@ def executeResultWithFormalInputs
       (AddressedDateTimeDayShiftComputationRunView model
         ComputationFormalInputFinding) := do
   let plan ← operation.formalInputPlan |>.mapError .formalInput
-  operation.executeResult input (plan.findings input) |>.mapError .execution
+  let prepared ← plan.prepare input |>.mapError .preliminary
+  let amountRead := fun environment field =>
+    (input.checkedCellWithRead prepared.preliminary.readComputation
+      environment field).map some
+  match operation.executeResultWithAmountRead input amountRead
+      prepared.formalErrorsInOperands with
+  | .error cause =>
+      .error (.execution prepared.formalErrorsInOperands cause)
+  | .ok view => .ok view
 
 end CheckedAddressedDateTimeDayShiftComputation
 

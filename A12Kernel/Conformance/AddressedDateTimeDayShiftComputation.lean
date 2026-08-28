@@ -178,6 +178,120 @@ example :
       some (2, true, true, false, false) := by
   native_decide
 
+private def indexedModel : FlatModel := {
+  model with
+  repeatableGroups := [
+    { level := 10, path := ["Order", "Projects"], repeatability := some 3 },
+    { level := 20, path := ["Order", "Projects", "Tasks"],
+      repeatability := some 3, indexField := some amount.id }
+  ]
+}
+
+private def indexedPrepared : PreparedFlatStringContext indexedModel
+    builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler indexedModel).toOption.get (by native_decide)
+
+private def indexedOperation? :
+    Option (CheckedAddressedDateTimeDayShiftComputation indexedModel) :=
+  (checkAddressedDateTimeDayShiftComputation indexedModel
+    ["Order", "Projects", "Tasks"] target.id
+    (absolute ["Order", "Projects"] source.name)
+    (absolute ["Order", "Projects", "Tasks"] amount.name)).toOption
+
+private def indexedInput? (sourceCell : ClassifiedCellInput) :
+    Option (CheckedDocument indexedModel) :=
+  (checkDocument indexedPrepared "en_US" {
+    instantiatedRows := [
+      row 10 [1], row 20 [1, 1], row 20 [1, 2]
+    ]
+    cells := [
+      sourceCell,
+      numberCell [1, 1] 1,
+      numberCell [1, 2] 1,
+      dateTimeCell target [1, 1] "2024-03-31T01:30:00",
+      dateTimeCell target [1, 2] "2024-03-31T01:30:00"
+    ]
+  }).toOption
+
+private def indexedFinding (field : FieldId) (path : List Nat)
+    (cause : FormalCause) : ComputationFormalInputFinding := {
+  address := address field path
+  cause
+}
+
+private def indexedResultSummary?
+    (sourceCell : ClassifiedCellInput) : Option
+      (List ComputationFormalInputFinding ×
+        List (CellAddr × String) × List CellAddr) := do
+  let operation ← indexedOperation?
+  let input ← indexedInput? sourceCell
+  let result ← operation.executeResultWithFormalInputs input |>.toOption
+  pure (
+    result.dateTime.formalErrorsInOperands,
+    result.dateTime.withoutErrors.map fun item =>
+      (item.targetField, item.value.text),
+    result.dateTime.cleared)
+
+private def indexedPreparedOutcomeSummary?
+    (sourceCell : ClassifiedCellInput) : Option (List OutcomeSummary) := do
+  let operation ← indexedOperation?
+  let input ← indexedInput? sourceCell
+  let plan ← operation.formalInputPlan |>.toOption
+  let prepared ← plan.prepare input |>.toOption
+  let outcomes ← (operation.executeWithAmountRead input
+    fun environment field =>
+      (input.checkedCellWithRead prepared.preliminary.readComputation
+        environment field).map some).toOption
+  pure (outcomes.map summarize)
+
+/- Reached duplicate-index day amounts remain eager findings, poison both calendar landings, and clear both source-filled targets. -/
+example : indexedResultSummary?
+    (dateTimeCell source [1] "2024-03-30T02:30:00") = some ([
+      indexedFinding amount.id [1, 1] .duplicateIndex,
+      indexedFinding amount.id [1, 2] .duplicateIndex
+    ], [], [
+      address target.id [1, 1],
+      address target.id [1, 2]
+    ]) := by
+  native_decide
+
+/- Prepared execution attaches the duplicate cause at the reached amount boundary. -/
+example : indexedPreparedOutcomeSummary?
+    (dateTimeCell source [1] "2024-03-30T02:30:00") = some [
+      { source := address source.id [1],
+        target := address target.id [1, 1],
+        value := none, poison := some .duplicateIndex },
+      { source := address source.id [1],
+        target := address target.id [1, 2],
+        value := none, poison := some .duplicateIndex }
+    ] := by
+  native_decide
+
+/- An earlier formal DateTime source does not remove the generated amount findings from the whole-call inventory. -/
+example : indexedResultSummary?
+    (cell source.id [1] "bad" (.rejected .dateFormat)) = some ([
+      indexedFinding source.id [1] .dateFormat,
+      indexedFinding amount.id [1, 1] .duplicateIndex,
+      indexedFinding amount.id [1, 2] .duplicateIndex
+    ], [], [
+      address target.id [1, 1],
+      address target.id [1, 2]
+    ]) := by
+  native_decide
+
+/- The immutable DateTime source remains first, so its formal cause hides the prepared amount poison at runtime. -/
+example : indexedPreparedOutcomeSummary?
+    (cell source.id [1] "bad" (.rejected .dateFormat)) = some [
+      { source := address source.id [1],
+        target := address target.id [1, 1],
+        value := none, poison := some .dateFormat },
+      { source := address source.id [1],
+        target := address target.id [1, 2],
+        value := none, poison := some .dateFormat }
+    ] := by
+  native_decide
+
 example : (do
     let operation ← operation?
     let input ← document? [] []

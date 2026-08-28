@@ -49,26 +49,49 @@ theorem addressedDateTimeDayShiftComputation_executeResult_projects
   subst view
   exact ⟨rfl, rfl⟩
 
-/-- The composed result's formal-input channel is exactly the eager checked-plan inventory. -/
+/-- Whole-call composition preserves the complete addressed calendar-day result after binding the eager formal-input inventory. -/
 theorem addressedDateTimeDayShiftComputation_executeResultWithFormalInputs_exact
     (operation : CheckedAddressedDateTimeDayShiftComputation model)
     (input : CheckedDocument model)
     (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
     (outcomes : List AddressedDateTimeDayShiftComputationOutcome)
-    (view : AddressedDateTimeDayShiftComputationRunView model
-      ComputationFormalInputFinding)
     (planned : operation.formalInputPlan = .ok plan)
-    (executed : operation.execute input = .ok outcomes)
-    (produced : operation.executeResultWithFormalInputs input = .ok view) :
-    view.dateTime.formalErrorsInOperands = plan.findings input := by
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeWithAmountRead input
+      (fun environment field =>
+        (input.checkedCellWithRead prepared.preliminary.readComputation
+          environment field).map some) = .ok outcomes) :
+    operation.executeResultWithFormalInputs input =
+      .ok (operation.resultFromOutcomes input
+        prepared.formalErrorsInOperands outcomes) := by
   rw [CheckedAddressedDateTimeDayShiftComputation.executeResultWithFormalInputs,
-    planned] at produced
-  simp only [bind, Except.bind, Except.mapError] at produced
-  rw [CheckedAddressedDateTimeDayShiftComputation.executeResult,
-    executed] at produced
-  simp only [bind, Except.bind, pure, Except.pure,
-    Except.ok.injEq] at produced
-  subst view
+    planned]
+  simp only [Except.mapError, Bind.bind, Except.bind, preparation]
+  rw [CheckedAddressedDateTimeDayShiftComputation.executeResultWithAmountRead,
+    executed]
+  rfl
+
+/-- A post-preparation structural failure retains the exact eager findings beside the unchanged calendar-day fault. -/
+theorem addressedDateTimeDayShiftComputation_executeResultWithFormalInputs_failure_exact
+    (operation : CheckedAddressedDateTimeDayShiftComputation model)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (fault : AddressedDateTimeDayShiftComputationFault)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeWithAmountRead input
+      (fun environment field =>
+        (input.checkedCellWithRead prepared.preliminary.readComputation
+          environment field).map some) = .error fault) :
+    operation.executeResultWithFormalInputs input =
+      .error (.execution prepared.formalErrorsInOperands fault) := by
+  rw [CheckedAddressedDateTimeDayShiftComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, Bind.bind, Except.bind, preparation]
+  rw [CheckedAddressedDateTimeDayShiftComputation.executeResultWithAmountRead,
+    executed]
   rfl
 
 /-- Exact-address application delegates to the common DateTime action fold. -/

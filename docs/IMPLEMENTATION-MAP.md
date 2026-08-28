@@ -319,6 +319,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Repeatable Number aggregate and repeatable suffix cascades](implementation/computations.md#cap-repeatable-number-aggregate-and-repeatable-suffix-cascades)
 <a id="cap-checked-direct-field-formal-input"></a>
 - [Checked direct-field formal-input inventory](implementation/computations.md#cap-checked-direct-field-formal-input)
+<a id="cap-selected-computation-preliminary"></a>
+- [Selected computation-preliminary whole calls](implementation/computations.md#cap-selected-computation-preliminary)
 <a id="cap-result-and-application"></a>
 - [Result and application](implementation/computations.md#cap-result-and-application)
 <a id="cap-fixed-string-firstfilledvalue-result-application"></a>
