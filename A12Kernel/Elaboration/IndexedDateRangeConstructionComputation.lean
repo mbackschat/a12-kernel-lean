@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CheckedIndexColumn
+import A12Kernel.Elaboration.ComputationFormalInput
 import A12Kernel.Elaboration.DateRangeConstructionComputation
 import A12Kernel.Elaboration.TemporalComputationResult
 
@@ -207,6 +208,14 @@ inductive IndexedDateRangeConstructionComputationFault where
   | target (cause : DateRangeTargetEvaluationFault)
   deriving Repr, DecidableEq
 
+/-- Failure while composing one checked indexed DateRange construction's complete formal-input preparation with its existing rich result boundary. -/
+inductive IndexedDateRangeConstructionFormalInputFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : IndexedDateRangeConstructionComputationFault)
+  deriving Repr, DecidableEq
+
 /-- Rich execution result retaining both keyed endpoint selections beside the typed target outcome. -/
 structure IndexedDateRangeConstructionComputationResult where
   start : IndexedDateRangeEndpointObservation
@@ -215,6 +224,65 @@ structure IndexedDateRangeConstructionComputationResult where
   deriving Repr, DecidableEq
 
 namespace CheckedIndexedDateRangeConstructionComputation
+
+def referencesEndpointField
+    (operation : CheckedIndexedDateRangeConstructionComputation model)
+    (field : FieldId) : Bool :=
+  operation.start.target.id == field || operation.finish.target.id == field
+
+def referencesKeyField
+    (operation : CheckedIndexedDateRangeConstructionComputation model)
+    (field : FieldId) : Bool :=
+  (match operation.start.key with
+    | .literal _ => false
+    | .field source => source.id == field) ||
+  (match operation.finish.key with
+    | .literal _ => false
+    | .field source => source.id == field)
+
+def referencesIndexField
+    (operation : CheckedIndexedDateRangeConstructionComputation model)
+    (field : FieldId) : Bool :=
+  operation.start.indexDeclaration.id == field
+
+/-- Model-declaration-ordered full-Date endpoint dependencies. -/
+def endpointFieldDependencies
+    (operation : CheckedIndexedDateRangeConstructionComputation model) :
+    List FieldId :=
+  (model.fields.filter fun declaration =>
+    operation.referencesEndpointField declaration.id).map (·.id)
+
+/-- Model-declaration-ordered dynamic selector dependencies; literal keys contribute no field. -/
+def keyFieldDependencies
+    (operation : CheckedIndexedDateRangeConstructionComputation model) :
+    List FieldId :=
+  (model.fields.filter fun declaration =>
+    operation.referencesKeyField declaration.id).map (·.id)
+
+/-- The model-declaration-ordered semantic-index column consumed by both checked endpoint selections. -/
+def indexFieldDependencies
+    (operation : CheckedIndexedDateRangeConstructionComputation model) :
+    List FieldId :=
+  (model.fields.filter fun declaration =>
+    operation.referencesIndexField declaration.id).map (·.id)
+
+/-- The model-declaration-ordered union of endpoint, dynamic-key, and implicit index dependencies. -/
+def formalInputFields
+    (operation : CheckedIndexedDateRangeConstructionComputation model) :
+    List FieldId :=
+  (model.fields.filter fun declaration =>
+    operation.referencesEndpointField declaration.id ||
+      operation.referencesKeyField declaration.id ||
+      operation.referencesIndexField declaration.id).map (·.id)
+
+/-- Bind endpoint, dynamic-key, and implicit index dependencies to the shared target-excluding formal-input plan. -/
+def formalInputPlan
+    (operation : CheckedIndexedDateRangeConstructionComputation model) :
+    Except ComputationFormalInputPlanError
+      (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputPlan model
+    operation.formalInputFields
+    [operation.target.source.id]
 
 private def stringKeyObservation : CellObservation → CellObservation String
   | .empty => .empty
@@ -286,6 +354,20 @@ def executeResult
   let result ← operation.execute preliminary
   pure (DateRangeComputationRunView.fromOutcomes preliminary.base
     residualMessages [(operation.target.source.id, result.outcome)])
+
+/-- Prepare selected cached and generated inputs once, execute against that same preliminary view, and place the eager inventory in the existing DateRange residual channel. -/
+def executeResultWithFormalInputs
+    (operation : CheckedIndexedDateRangeConstructionComputation model)
+    (input : CheckedDocument model) :
+    Except IndexedDateRangeConstructionFormalInputFault
+      (DateRangeComputationRunView ComputationFormalInputFinding) := do
+  let plan ← operation.formalInputPlan |>.mapError .formalInput
+  let prepared ← plan.prepare input |>.mapError .preliminary
+  match operation.executeResult prepared.preliminary
+      prepared.formalErrorsInOperands with
+  | .error cause =>
+      .error (.execution prepared.formalErrorsInOperands cause)
+  | .ok result => .ok result
 
 end CheckedIndexedDateRangeConstructionComputation
 

@@ -208,6 +208,46 @@ private def destination? (includeTarget : Bool) :
     directCell unrelatedTarget.id unrelatedStored.text
       (.parsed (.dateRange unrelatedRange))] }
 
+private def formalInputData : DocumentData :=
+  withTarget
+    (dataWithSelectors true false "sku1" "bad"
+      (.parsed (.str "sku1")) (.rejected .malformed))
+    priorStored priorRange
+
+private def formalFinding (field : FieldId) (path : List Nat)
+    (cause : FormalCause) : ComputationFormalInputFinding := {
+  address := { field, path }
+  cause
+}
+
+/- Field-key whole-call preparation retains endpoint, selector, and implicit index dependencies, then projects selected cached and generated findings through the existing DateRange result. -/
+example :
+    (do
+      let operation ← fieldOperation?
+      let input ← checkedDocument? formalInputData
+      let plan ← operation.formalInputPlan.toOption
+      let result ← operation.executeResultWithFormalInputs input |>.toOption
+      let findings := result.formalErrorsInOperands
+      pure (
+        operation.endpointFieldDependencies == [2, 3] &&
+        operation.keyFieldDependencies == [5, 6] &&
+        operation.indexFieldDependencies == [1] &&
+        plan.operandFields == [1, 2, 3, 5, 6] &&
+        plan.computedFields == [4] &&
+        findings.length == 3 &&
+        findings.contains (formalFinding 1 [1] .duplicateIndex) &&
+        findings.contains (formalFinding 1 [2] .duplicateIndex) &&
+        findings.contains (formalFinding 6 [] .malformed) &&
+        result.cleared == [4])) = some true := by
+  native_decide
+
+/- Literal keys contribute no dynamic field dependency while retaining both endpoints and the shared index. -/
+example :
+    (operation? "sku1" "sku2").map (fun operation =>
+      (operation.keyFieldDependencies, operation.formalInputFields)) =
+      some ([], [1, 2, 3]) := by
+  native_decide
+
 /- Exact literal keys may select different rows; the rich result retains both concrete addresses. -/
 example : (execute? "sku1" "sku2" (data false false)).map (fun result =>
     (result.start.key, result.start.address, result.finish.key,

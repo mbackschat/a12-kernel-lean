@@ -29,4 +29,61 @@ theorem checkedIndexedDateRangeConstructionComputation_executeResult_projects
   rw [CheckedIndexedDateRangeConstructionComputation.executeResult, evaluated]
   rfl
 
+/-- The complete formal-input inventory is exactly the validated declarations used as an endpoint, a dynamic key, or the shared semantic-index column. -/
+theorem checkedIndexedDateRangeConstructionComputation_formalInputFields_exact
+    (operation : CheckedIndexedDateRangeConstructionComputation model)
+    (field : FieldId) :
+    field ∈ operation.formalInputFields ↔
+      ∃ declaration ∈ model.fields,
+        declaration.id = field ∧
+          (operation.referencesEndpointField declaration.id = true ∨
+            operation.referencesKeyField declaration.id = true ∨
+            operation.referencesIndexField declaration.id = true) := by
+  rw [CheckedIndexedDateRangeConstructionComputation.formalInputFields,
+    List.mem_map]
+  constructor
+  · rintro ⟨declaration, member, equality⟩
+    rw [List.mem_filter] at member
+    simp only [Bool.or_eq_true] at member
+    exact ⟨declaration, member.1, equality, by
+      simpa [or_assoc] using member.2⟩
+  · rintro ⟨declaration, member, equality, referenced⟩
+    exact ⟨declaration, by
+      rw [List.mem_filter]
+      simp only [Bool.or_eq_true]
+      exact ⟨member, by simpa [or_assoc] using referenced⟩, equality⟩
+
+/-- Successful whole-call composition returns the unchanged DateRange result carrying the exact prepared inventory in its residual channel. -/
+theorem checkedIndexedDateRangeConstructionComputation_executeResultWithFormalInputs_exact
+    (operation : CheckedIndexedDateRangeConstructionComputation model)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (result : DateRangeComputationRunView ComputationFormalInputFinding)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResult prepared.preliminary
+      prepared.formalErrorsInOperands = .ok result) :
+    operation.executeResultWithFormalInputs input = .ok result := by
+  rw [CheckedIndexedDateRangeConstructionComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation, executed]
+
+/-- A post-preparation indexed execution failure retains the exact eager inventory beside the unchanged existing fault. -/
+theorem checkedIndexedDateRangeConstructionComputation_executeResultWithFormalInputs_failure_exact
+    (operation : CheckedIndexedDateRangeConstructionComputation model)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (fault : IndexedDateRangeConstructionComputationFault)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResult prepared.preliminary
+      prepared.formalErrorsInOperands = .error fault) :
+    operation.executeResultWithFormalInputs input =
+      .error (.execution prepared.formalErrorsInOperands fault) := by
+  rw [CheckedIndexedDateRangeConstructionComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation, executed]
+
 end A12Kernel
