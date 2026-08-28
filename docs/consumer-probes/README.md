@@ -23,7 +23,7 @@ Retained Kernel evidence separately bounds correspondence to A12 Kernel 30.8.1. 
 |---|---|---|
 | [Execute](EXECUTE.md) | green | Exact-address DateTime application, generated numeric-table evaluation/application, selected-preliminary execution across Boolean, token, String, and temporal carriers plus three composition seams, explicit Number/String validation after one- and two-level application, and materialized generated Number targets |
 | [Translate](TRANSLATE.md) | green | Computed-target refusal to exact external diagnostic or typed local refusal |
-| [Transform](TRANSFORM.md) | green | Checked numeric-operation identity and unsafe nonidentity boundary |
+| [Transform](TRANSFORM.md) | green | Checked numeric-operation identity plus fixed Boolean/Confirm declaration relocation under an exact runtime observation relation |
 | [Compile](COMPILE.md) | green | Specialized finite condition, generated numeric-table, selected-preliminary whole calls, three selected conversion-composition plans, and addressed multi-star Number selection with exact bounded refinement |
 | [Analyze](ANALYZE.md) | green; broader graph reconstruction amber | SMT-backed presence reachability, checked numeric-table cycle analysis, and generated-computation phase-alias safety |
 | [Verify](VERIFY.md) | green | Proof-bearing same-field contradiction certificate and counterexample boundary |
