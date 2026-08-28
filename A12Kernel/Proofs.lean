@@ -211,6 +211,7 @@ import A12Kernel.Proofs.StringFirstFilledComputation
 import A12Kernel.Proofs.AddressedStringFirstFilledComputation
 import A12Kernel.Proofs.DateFragmentFirstFilledComputation
 import A12Kernel.Proofs.DateRangeFirstFilledComputation
+import A12Kernel.Proofs.AddressedDateRangeFirstFilledFormalInput
 import A12Kernel.Proofs.DateTimeFirstFilledComputation
 import A12Kernel.Proofs.FullDateFirstFilledComputation
 import A12Kernel.Proofs.TimeFirstFilledComputation

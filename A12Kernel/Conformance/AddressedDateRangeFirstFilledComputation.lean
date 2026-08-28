@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.AddressedDateRangeFirstFilledComputation
+import A12Kernel.Elaboration.AddressedDateRangeFirstFilledFormalInput
 
 /-! # Exact-address repeatable DateRange `FirstFilledValue` locks -/
 
@@ -30,7 +30,8 @@ private def model : FlatModel := {
   fields := [source, dottedSource, monthSource, target, fixedTarget, unrelated]
   repeatableGroups := [
     { level := 10, path := ["Projects"], repeatability := some 4 },
-    { level := 20, path := ["Projects", "Choices"], repeatability := some 3 },
+    { level := 20, path := ["Projects", "Choices"], repeatability := some 3,
+      indexField := some source.id },
     { level := 30, path := ["Projects", "Tasks"], repeatability := some 3 }]
   timeZoneId := "UTC"
 }
@@ -110,6 +111,8 @@ private def document? (cells : List ClassifiedCellInput) :
   (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
 
 private def input? : Option (CheckedDocument model) := document? [
+  cell source.id [1, 1] "2024-06-01/2024-06-30"
+    (.parsed (.dateRange june)),
   cell source.id [1, 2] "2024-06-01/2024-06-30"
     (.parsed (.dateRange june)),
   cell source.id [2, 1] "2024-07-01/2024-07-31"
@@ -138,6 +141,36 @@ example : (do
       (address target.id [2, 1], .accepted (stored "2024-07-01/2024-07-31")),
       (address target.id [3, 1], .noValue),
       (address target.id [4, 1], .poison .dateRangeSeparator)] := by
+  native_decide
+
+/- The whole-call route selects one preliminary for the source declaration: both duplicate DateRange index cells remain in the eager inventory and poison each reached first-project scan, while other parents preserve their ordinary outcomes. -/
+example : (do
+    let operation ← operation?
+    let input ← input?
+    let result ← operation.executeResultWithFormalInputs input |>.toOption
+    pure (
+      result.dateRange.formalErrorsInOperands,
+      result.dateRange.withoutErrors.map (·.targetField),
+      result.dateRange.withErrors.map (·.targetField),
+      result.dateRange.cleared)) = some ([
+        {
+          address := address source.id [4, 1]
+          cause := .dateRangeSeparator
+        },
+        {
+          address := address source.id [1, 1]
+          cause := .duplicateIndex
+        },
+        {
+          address := address source.id [1, 2]
+          cause := .duplicateIndex
+        }
+      ], [address target.id [2, 1]], [], [
+        address target.id [1, 1],
+        address target.id [1, 2],
+        address target.id [3, 1],
+        address target.id [4, 1]
+      ]) := by
   native_decide
 
 private def duplicateFirstChoiceRead (input : CheckedDocument model)
