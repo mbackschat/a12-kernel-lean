@@ -189,9 +189,50 @@ private def result? (cells : List ClassifiedCellInput) :
   let preliminary ← preliminaryFor cells
   (checked.executeResult preliminary (fun _ => true) []).toOption
 
+private def formalInputCells : List ClassifiedCellInput :=
+  (cleanCells.filter fun cell =>
+    cell.address != { field := 4, path := [2] } &&
+      cell.address != { field := 5, path := [2] }) ++ [
+    { address := { field := 4, path := [2] },
+      stored := "bad", raw := .rejected .malformed },
+    indexCell 5 [2] "Alpha",
+    numberCell 2 [1] { unscaled := 7, scale := 0 },
+    numberCell 2 [2] { unscaled := 8, scale := 0 }
+  ]
+
+private def formalFinding (field : FieldId) (path : List Nat)
+    (cause : FormalCause) : ComputationFormalInputFinding := {
+  address := { field, path }
+  cause
+}
+
 /- The two expression groups retain exactly one route each: the anchor plus one additional route. -/
 example :
     checked?.map (·.additionalRoutes.length) = some 1 := by
+  native_decide
+
+/- Whole-call preparation includes the ordinary operands and all three participating index columns, then executes against that exact preliminary view while retaining its eager findings. -/
+example :
+    (do
+      let checked ← checked?
+      let input ← (preliminaryFor formalInputCells).map (·.base)
+      let plan ← checked.formalInputPlan.toOption
+      let result ←
+        (checked.executeResultWithFormalInputs input).toOption
+      let findings := result.formalErrorsInOperands
+      pure (
+        checked.ordinaryFieldDependencies == [4, 6] &&
+        checked.indexFieldDependencies == [1, 3, 5] &&
+        plan.operandFields == [1, 3, 4, 5, 6] &&
+        plan.computedFields == [2] &&
+        findings.length == 3 &&
+        findings.contains (formalFinding 4 [2] .malformed) &&
+        findings.contains (formalFinding 5 [1] .duplicateIndex) &&
+        findings.contains (formalFinding 5 [2] .duplicateIndex) &&
+        result.numeric.cleared == [
+          { field := 2, path := [1] },
+          { field := 2, path := [2] }
+        ])) = some true := by
   native_decide
 
 /- The explicit anchor must occur in the expression's indexed group; it cannot add an otherwise unread group to iteration and invalidity marking. -/

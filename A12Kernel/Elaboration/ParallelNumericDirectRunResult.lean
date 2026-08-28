@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.NumericComputation.RunResult
+import A12Kernel.Elaboration.NumericComputation.FormalInput
 import A12Kernel.Elaboration.ParallelNumericDirectRun
 
 /-! # Isolated direct parallel Number result
@@ -13,6 +13,14 @@ inductive ParallelNumericDirectRunResultError where
   | sourceTarget (error : NumericSourceTargetError)
   | clearing (error : ParallelNumericClearingError)
   | incoherentClassifiedIndexClear (address : CellAddr)
+  deriving Repr, DecidableEq
+
+/-- Failure while composing one checked parallel Number operation's complete formal-input preparation with its existing addressed execution and result boundary. -/
+inductive ParallelNumericDirectFormalInputRunFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ParallelNumericDirectRunResultError)
   deriving Repr, DecidableEq
 
 /-- Find the first outcome-classified target also claimed by the independently classified post-loop index clears. -/
@@ -65,6 +73,42 @@ def classifyParallelNumericOutcomes
 
 namespace CheckedIsolatedParallelNumericDirectRun
 
+/-- Model-declaration-ordered expression and guard fields read by this checked operation, excluding the implicit index columns owned by its routes. -/
+def ordinaryFieldDependencies
+    (checked : CheckedIsolatedParallelNumericDirectRun model) :
+    List FieldId :=
+  (model.fields.filter fun declaration =>
+    checked.referencesField declaration.id).map (·.id)
+
+/-- Whether one field is an index column consumed by any checked target-to-operand route. -/
+def referencesIndexField
+    (checked : CheckedIsolatedParallelNumericDirectRun model)
+    (field : FieldId) : Bool :=
+  checked.operandRoutes.any fun route =>
+    route.groups.leftIndexDeclaration.id == field ||
+      route.groups.rightIndexDeclaration.id == field
+
+/-- Model-declaration-ordered index columns needed by the checked parallel joins. -/
+def indexFieldDependencies
+    (checked : CheckedIsolatedParallelNumericDirectRun model) :
+    List FieldId :=
+  (model.fields.filter fun declaration =>
+    checked.referencesIndexField declaration.id).map (·.id)
+
+/-- Bind the complete ordinary-plus-index field inventory and computed target to the shared call-global formal-input plan. -/
+def formalInputPlan
+    (checked : CheckedIsolatedParallelNumericDirectRun model) :
+    Except ComputationFormalInputPlanError
+      (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputPlan model
+    (model.fields.filterMap fun declaration =>
+      if checked.referencesField declaration.id ||
+          checked.referencesIndexField declaration.id then
+        some declaration.id
+      else
+        none)
+    [checked.route.targetField]
+
 /-- Execute and classify one isolated repeatable direct Number computation from one checked preliminary input. -/
 def executeResult
     (checked : CheckedIsolatedParallelNumericDirectRun model)
@@ -78,6 +122,21 @@ def executeResult
       |>.mapError .execution
   classifyParallelNumericOutcomes preliminary
     checked.operandRoutes payloadAt supplied outcomes
+
+/-- Prepare selected cached and generated inputs once, execute against that same preliminary view, and retain the eager inventory beside either the addressed result or a later execution failure. -/
+def executeResultWithFormalInputs
+    (checked : CheckedIsolatedParallelNumericDirectRun model)
+    (input : CheckedDocument model) :
+    Except ParallelNumericDirectFormalInputRunFault
+      (NumericComputationFormalInputRunView model CellAddr) := do
+  let plan ← checked.formalInputPlan |>.mapError .formalInput
+  let prepared ← plan.prepare input |>.mapError .preliminary
+  match checked.executeResult prepared.preliminary (fun _ => ()) [] with
+  | .error cause =>
+      .error (.execution prepared.formalErrorsInOperands cause)
+  | .ok numeric =>
+      .ok (NumericComputationFormalInputRunView.of numeric
+        prepared.formalErrorsInOperands)
 
 end CheckedIsolatedParallelNumericDirectRun
 
