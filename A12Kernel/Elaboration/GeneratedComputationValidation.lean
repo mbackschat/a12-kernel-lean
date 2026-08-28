@@ -164,15 +164,36 @@ private def FlatModel.resolveGeneratedGuardField
     GeneratedComputationValidationError.resolve
   pure declaration.toPresenceField
 
+private structure ResolvedGeneratedNumberTarget (model : FlatModel)
+    (field : FieldId) where
+  declaration : FlatFieldDecl
+  target : FlatNumberField
+  policy : NumericTargetPolicy
+  declarationResolved :
+    model.resolveNonrepeatableDeclarationById field = .ok declaration
+  policyOwned : declaration.toNumericTargetPolicy? = some policy
+
 private def FlatModel.resolveGeneratedNumberTarget
     (model : FlatModel) (field : FieldId) :
     Except GeneratedComputationValidationError
-      (FlatFieldDecl × FlatNumberField) := do
-  let declaration ← (model.resolveNonrepeatableDeclarationById field).mapError
-    GeneratedComputationValidationError.resolve
-  match declaration.toNumberField? with
-  | some target => pure (declaration, target)
-  | none => throw (.targetNotNumber field)
+      (ResolvedGeneratedNumberTarget model field) :=
+  match hResolved : model.resolveNonrepeatableDeclarationById field with
+  | .error cause => .error (.resolve cause)
+  | .ok declaration =>
+      match declaration.toNumberField? with
+      | none => .error (.targetNotNumber field)
+      | some target =>
+          match hPolicy : declaration.toNumericTargetPolicy? with
+          | none => .error (.resolve
+              (.numericMinimumFractionalDigitsExceedMaximum declaration.path
+                declaration.numericTargetConstraints.minFractionalDigits
+                target.info.scale))
+          | some policy => .ok {
+              declaration
+              target
+              policy
+              declarationResolved := hResolved
+              policyOwned := hPolicy }
 
 namespace ComputationCondition
 
@@ -335,8 +356,10 @@ def assembleGeneratedLiteralNumberRule (model : FlatModel)
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
-      let (targetDeclaration, target) ←
+      let resolvedTarget ←
         model.resolveGeneratedNumberTarget computation.targetField
+      let targetDeclaration := resolvedTarget.declaration
+      let target := resolvedTarget.target
       checkLiteralNumberAlternativeScales target computation.alternatives
       let commonGuard ← match computation.commonPrecondition with
         | none => pure none
@@ -511,17 +534,34 @@ private def generatedNumericAlternatives (model : FlatModel)
         (alternatives.second :: alternatives.remaining)
       pure (remaining.foldl .or first)
 
-/-- Assemble the complete generated validation twin of a nonempty table whose payloads are already-checked numeric operations. Computation selection remains the generic first-match scan; this route retains every guarded mismatch in declaration order under one optional common guard and target-filled gate. -/
-def assembleGeneratedNumericOperationTableRule (model : FlatModel)
+/-- A generated numeric table admitted together with the exact declaration-owned target policy needed by later target completion. -/
+structure AdmittedGeneratedNumericOperationTable (model : FlatModel)
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model)) where
+  private mk ::
+  rule : CheckedResolvedValidationRule model
+  targetDeclaration : FlatFieldDecl
+  targetPolicy : NumericTargetPolicy
+  modelWellFormed : model.validate.isOk = true
+  targetResolved :
+    model.resolveNonrepeatableDeclarationById computation.targetField =
+      .ok targetDeclaration
+  targetPolicyOwned :
+    targetDeclaration.toNumericTargetPolicy? = some targetPolicy
+
+/-- Admit the complete generated validation twin and retain its resolved target policy. Computation selection remains the generic first-match scan; this route retains every guarded mismatch in declaration order under one optional common guard and target-filled gate. -/
+def admitGeneratedNumericOperationTable (model : FlatModel)
     (computation : GeneratedComputationTable
       (CheckedNumericComputationOperation model)) :
     Except GeneratedComputationValidationError
-      (CheckedResolvedValidationRule model) :=
+      (AdmittedGeneratedNumericOperationTable model computation) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
-      let (targetDeclaration, target) ←
+      let resolvedTarget ←
         model.resolveGeneratedNumberTarget computation.targetField
+      let targetDeclaration := resolvedTarget.declaration
+      let target := resolvedTarget.target
       let alternatives ← generatedNumericAlternatives model target
         computation.alternatives
       let commonGuard ← match computation.commonPrecondition with
@@ -535,9 +575,24 @@ def assembleGeneratedNumericOperationTableRule (model : FlatModel)
       let condition ← (CheckedValidationCondition.checkCore model
         targetDeclaration.groupPath core (by rw [hModel]; rfl)).mapError
           GeneratedComputationValidationError.conditionAssembly
-      (assembleResolvedValidationRule model condition computation.targetField
-        computation.name .error computation.messagePlan).mapError
-          GeneratedComputationValidationError.rule
+      let rule ← (assembleResolvedValidationRule model condition
+        computation.targetField computation.name .error
+        computation.messagePlan).mapError GeneratedComputationValidationError.rule
+      pure {
+        rule
+        targetDeclaration
+        targetPolicy := resolvedTarget.policy
+        modelWellFormed := by rw [hModel]; rfl
+        targetResolved := resolvedTarget.declarationResolved
+        targetPolicyOwned := resolvedTarget.policyOwned }
+
+/-- Project the admitted generated validation twin for callers that do not consume runtime target policy. -/
+def assembleGeneratedNumericOperationTableRule (model : FlatModel)
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model)) :
+    Except GeneratedComputationValidationError
+      (CheckedResolvedValidationRule model) :=
+  (admitGeneratedNumericOperationTable model computation).map (·.rule)
 
 /-- Assemble the generated validation twin of one checked unconditional numeric operation through the same singleton-table route used by guarded operations. -/
 def assembleGeneratedNumericOperationRule (model : FlatModel)
@@ -556,42 +611,47 @@ def assembleGeneratedNumericOperationRule (model : FlatModel)
 inductive GeneratedNumericComputationEvaluationError where
   | validation (cause : GeneratedComputationValidationError)
   | operation (cause : NumericComputationFault)
-  | targetPolicyUnavailable (field : FieldId)
   deriving Repr
+
+namespace AdmittedGeneratedNumericOperationTable
+
+/-- Evaluate only the first selected operation of an already-admitted table. Target completion remains a separate projection over the retained policy. -/
+def evaluate (_admission : AdmittedGeneratedNumericOperationTable model computation)
+    (context : ScalarComputationContext) :
+    Except GeneratedNumericComputationEvaluationError
+      GeneratedNumericComputationEvaluation :=
+  match computation.selectFirst context with
+  | .noMatch => pure .noMatch
+  | .poison cause => pure (.guardPoison cause)
+  | .selected operation =>
+      operation.evaluate context
+        |>.map (.evaluated operation.core.suppressExactScaleWarning)
+        |>.mapError .operation
+
+end AdmittedGeneratedNumericOperationTable
 
 namespace GeneratedComputationTable
 
-/-- Admit the complete generated table, select through its common/row guard structure, then evaluate only the first selected checked numeric operation. Target policy, storage, application, and later generated validation stay in their later phases. -/
+/-- Admit the complete generated table, select through its common/row guard structure, then evaluate only the first selected checked numeric operation. Storage, application, and later generated validation stay in their later phases. -/
 def evaluateNumeric (computation : GeneratedComputationTable
     (CheckedNumericComputationOperation model))
     (context : ScalarComputationContext) :
     Except GeneratedNumericComputationEvaluationError
       GeneratedNumericComputationEvaluation :=
-  match assembleGeneratedNumericOperationTableRule model computation with
+  match admitGeneratedNumericOperationTable model computation with
   | .error cause => .error (.validation cause)
-  | .ok _ =>
-      match computation.selectFirst context with
-      | .noMatch => pure .noMatch
-      | .poison cause => pure (.guardPoison cause)
-      | .selected operation =>
-          operation.evaluate context
-            |>.map (.evaluated operation.core.suppressExactScaleWarning)
-            |>.mapError .operation
+  | .ok admission => admission.evaluate context
 
 /-- Evaluate the admitted generated table and complete its activation through the exact target policy reconstructed from that table's validated model declaration. -/
 def evaluateNumericTarget (computation : GeneratedComputationTable
     (CheckedNumericComputationOperation model))
     (context : ScalarComputationContext) :
     Except GeneratedNumericComputationEvaluationError NumericTargetCheckResult :=
-  match computation.evaluateNumeric context with
-  | .error cause => .error cause
-  | .ok evaluation =>
-      match model.lookupUniqueId computation.targetField with
-      | .error cause => .error (.validation (.resolve cause))
-      | .ok declaration =>
-          match declaration.toNumericTargetPolicy? with
-          | none => .error (.targetPolicyUnavailable computation.targetField)
-          | some policy => pure (evaluation.completeNumericTarget policy)
+  match admitGeneratedNumericOperationTable model computation with
+  | .error cause => .error (.validation cause)
+  | .ok admission =>
+      (admission.evaluate context).map
+        (·.completeNumericTarget admission.targetPolicy)
 
 end GeneratedComputationTable
 

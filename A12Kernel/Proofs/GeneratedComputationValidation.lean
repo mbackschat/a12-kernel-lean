@@ -12,25 +12,29 @@ namespace A12Kernel
 theorem generatedNumericComputationEvaluation_noMatch
     (computation : GeneratedComputationTable
       (CheckedNumericComputationOperation model))
-    (context : ScalarComputationContext) (rule : CheckedResolvedValidationRule model)
-    (admitted : assembleGeneratedNumericOperationTableRule model computation =
-      .ok rule)
+    (context : ScalarComputationContext)
+    (admission : AdmittedGeneratedNumericOperationTable model computation)
+    (admitted : admitGeneratedNumericOperationTable model computation =
+      .ok admission)
     (selection : computation.selectFirst context = .noMatch) :
     computation.evaluateNumeric context = .ok .noMatch := by
-  rw [GeneratedComputationTable.evaluateNumeric, admitted, selection]
+  simp [GeneratedComputationTable.evaluateNumeric, admitted,
+    AdmittedGeneratedNumericOperationTable.evaluate, selection]
   rfl
 
 /-- A poisoned generated-table guard stops before operation evaluation and retains its exact cause at the activation boundary. -/
 theorem generatedNumericComputationEvaluation_guardPoison
     (computation : GeneratedComputationTable
       (CheckedNumericComputationOperation model))
-    (context : ScalarComputationContext) (rule : CheckedResolvedValidationRule model)
+    (context : ScalarComputationContext)
+    (admission : AdmittedGeneratedNumericOperationTable model computation)
     (cause : FormalCause)
-    (admitted : assembleGeneratedNumericOperationTableRule model computation =
-      .ok rule)
+    (admitted : admitGeneratedNumericOperationTable model computation =
+      .ok admission)
     (selection : computation.selectFirst context = .poison cause) :
     computation.evaluateNumeric context = .ok (.guardPoison cause) := by
-  rw [GeneratedComputationTable.evaluateNumeric, admitted, selection]
+  simp [GeneratedComputationTable.evaluateNumeric, admitted,
+    AdmittedGeneratedNumericOperationTable.evaluate, selection]
   rfl
 
 /-- Once an operation is selected, runtime evaluation delegates exactly to that operation and never re-enters the alternative scan. -/
@@ -39,16 +43,17 @@ theorem generatedNumericComputationEvaluation_selected
       (CheckedNumericComputationOperation model))
     (context : ScalarComputationContext)
     (operation : CheckedNumericComputationOperation model)
-    (rule : CheckedResolvedValidationRule model)
-    (admitted : assembleGeneratedNumericOperationTableRule model computation =
-      .ok rule)
+    (admission : AdmittedGeneratedNumericOperationTable model computation)
+    (admitted : admitGeneratedNumericOperationTable model computation =
+      .ok admission)
     (selection : computation.selectFirst context = .selected operation) :
     computation.evaluateNumeric context =
       ((operation.evaluate context).map
         (.evaluated operation.core.suppressExactScaleWarning)).mapError
           .operation := by
   cases result : operation.evaluate context <;>
-    simp [GeneratedComputationTable.evaluateNumeric, admitted, selection, result]
+    simp [GeneratedComputationTable.evaluateNumeric, admitted,
+      AdmittedGeneratedNumericOperationTable.evaluate, selection, result]
 
 /-- Cleanly unselected generated computation completes as target no-value. -/
 theorem generatedNumericComputationTarget_noMatch
@@ -81,20 +86,30 @@ theorem generatedNumericComputationTarget_suppressed
       policy.checkWithScaleWarningSuppressed result := by
   rfl
 
-/-- Whole generated numeric target evaluation uses only the policy reconstructed from the table target's validated declaration. -/
+/-- Every admitted generated numeric table retains a resolved declaration and its exact target policy. -/
+theorem admittedGeneratedNumericOperationTable_targetPolicyOwned
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model))
+    (admission : AdmittedGeneratedNumericOperationTable model computation) :
+    model.resolveNonrepeatableDeclarationById computation.targetField =
+        .ok admission.targetDeclaration ∧
+      admission.targetDeclaration.toNumericTargetPolicy? =
+        some admission.targetPolicy :=
+  ⟨admission.targetResolved, admission.targetPolicyOwned⟩
+
+/-- Whole generated numeric target evaluation uses only the policy retained by successful table admission. -/
 theorem generatedNumericComputationTarget_usesDeclarationPolicy
     (computation : GeneratedComputationTable
       (CheckedNumericComputationOperation model))
     (context : ScalarComputationContext)
     (evaluation : GeneratedNumericComputationEvaluation)
-    (declaration : FlatFieldDecl) (policy : NumericTargetPolicy)
-    (executed : computation.evaluateNumeric context = .ok evaluation)
-    (resolved : model.lookupUniqueId computation.targetField = .ok declaration)
-    (policyExact : declaration.toNumericTargetPolicy? = some policy) :
+    (admission : AdmittedGeneratedNumericOperationTable model computation)
+    (admitted : admitGeneratedNumericOperationTable model computation =
+      .ok admission)
+    (executed : admission.evaluate context = .ok evaluation) :
     computation.evaluateNumericTarget context =
-      .ok (evaluation.completeNumericTarget policy) := by
-  simp [GeneratedComputationTable.evaluateNumericTarget, executed, resolved,
-    policyExact]
+      .ok (evaluation.completeNumericTarget admission.targetPolicy) := by
+  simp [GeneratedComputationTable.evaluateNumericTarget, admitted, executed]
   rfl
 
 /-- The generated numeric table inventory is exactly the validated model declarations referenced by its common guard, alternative guards, or checked operations. -/

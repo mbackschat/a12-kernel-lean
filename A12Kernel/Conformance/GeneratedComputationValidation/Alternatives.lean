@@ -136,7 +136,15 @@ private def invalidRuntimeCommonValidationError? :
         (generatedRuntimeContext (.parsed (.num 1))
           (.parsed (.num 7)) .empty .empty) with
   | .error (.validation error) => some error
-  | .error (.operation _) | .error (.targetPolicyUnavailable _) | .ok _ => none
+  | .error (.operation _) | .ok _ => none
+
+/- Successful admission retains every capability needed by target completion, so
+   runtime evaluation has no separate target-policy-unavailable phase. -/
+example (error : GeneratedNumericComputationEvaluationError) :
+    (match error with
+      | .validation _ => true
+      | .operation _ => true) = true := by
+  cases error <;> rfl
 
 private def selectedOperationPoisonResult :
     Option GeneratedNumericComputationEvaluation := do
@@ -191,6 +199,12 @@ private def policyBoundZeroResult : Option NumericTargetCheckResult := do
   }
   (table.evaluateNumericTarget {
     read := (policyBoundModel.checkContext raw).read }).toOption
+
+private def policyBoundAdmissionPolicy : Option NumericTargetPolicy := do
+  let table ← policyBoundTable?
+  let admission ←
+    (admitGeneratedNumericOperationTable policyBoundModel table).toOption
+  pure admission.targetPolicy
 
 /- Runtime evaluation preserves activation and operation phases: a false common
    guard hides malformed row inputs, common poison stops before selection, and a
@@ -273,6 +287,10 @@ example :
 
 /- The whole route cannot substitute an unconstrained caller policy for the
    generated target declaration's zero prohibition. -/
+example : policyBoundAdmissionPolicy =
+    policyBoundTarget.toNumericTargetPolicy? := by
+  native_decide
+
 example : policyBoundZeroResult = some (.supported (.rejected
     { unscaled := 0, scale := 0 } .zeroNotAllowed)) := by
   native_decide
