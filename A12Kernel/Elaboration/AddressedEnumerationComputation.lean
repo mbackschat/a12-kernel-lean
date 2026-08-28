@@ -298,16 +298,26 @@ def execute (operation : CheckedAddressedEnumerationComputation model)
       (List AddressedEnumerationComputationOutcome) :=
   operation.executeWithRead input input.read
 
-/-- Execute and classify each exact target address against the immutable source target state. -/
-def executeResult (operation : CheckedAddressedEnumerationComputation model)
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+/-- Execute through one caller-supplied transient read and classify every exact target against the immutable source target state. -/
+def executeResultWithRead
+    (operation : CheckedAddressedEnumerationComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (residualMessages : List ResidualMessage) :
     Except AddressedEnumerationComputationFault
       (AddressedEnumerationComputationRunView model ResidualMessage) := do
-  let outcomes ← operation.execute input
+  let outcomes ← operation.executeWithRead input read
   pure {
     operation
     string := projectAddressedEnumerationResults input residualMessages outcomes
   }
+
+/-- Execute and classify each exact target address against the immutable source target state. -/
+def executeResult (operation : CheckedAddressedEnumerationComputation model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    Except AddressedEnumerationComputationFault
+      (AddressedEnumerationComputationRunView model ResidualMessage) :=
+  operation.executeResultWithRead input input.read residualMessages
 
 end CheckedAddressedEnumerationComputation
 

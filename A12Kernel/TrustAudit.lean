@@ -2027,6 +2027,7 @@ run_cmd do
 #print axioms A12Kernel.indexPreliminary_unique_contract
 #print axioms A12Kernel.checkedIndexPreliminary_preserves_parsed
 #print axioms A12Kernel.checkedIndexPreliminary_default_read
+#print axioms A12Kernel.checkedIndexPreliminary_computation_read_exact
 #print axioms A12Kernel.parallelCommonParent_prefix_left
 #print axioms A12Kernel.parallelCommonParent_prefix_right
 #print axioms A12Kernel.parallelOuterScope_classify_same
@@ -2234,6 +2235,7 @@ run_cmd do
 #print axioms A12Kernel.checkedAddressedEnumeration_excludes_target_reference
 #print axioms A12Kernel.checkedAddressedEnumeration_executeResult_hasNoTargetErrors
 #print axioms A12Kernel.addressedEnumeration_executeResultWithFormalInputs_exact
+#print axioms A12Kernel.addressedEnumeration_executeResultWithFormalInputs_failure_exact
 #print axioms A12Kernel.addressedEnumerationResults_haveNoTargetErrors
 #print axioms A12Kernel.enumerationDependencyCell_poison_causeBlind
 #print axioms A12Kernel.addressedEnumerationCascade_targetsDistinct

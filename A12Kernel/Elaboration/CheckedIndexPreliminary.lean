@@ -244,12 +244,22 @@ def stagedCell (preliminary : CheckedIndexPreliminary model)
   | some defaulted => defaulted.cell
   | none => base
 
-/-- Read the cell view seen by authored full-validation rules after index preliminary processing. This is not the computation formal-operand channel. -/
-def readAuthoredValidation (preliminary : CheckedIndexPreliminary model)
+/-- Read one exact cell through the call-local default and generated-finding overlay. The caller still chooses the validation or computation observation phase. -/
+def readPreparedCell (preliminary : CheckedIndexPreliminary model)
     (address : CellAddr) : Except CheckedDocumentError CheckedCell := do
   let base ← preliminary.base.read address
   pure (preliminary.annotateCell address
     (preliminary.stagedCell address base))
+
+/-- Read the cell view seen by authored full-validation rules after index preliminary processing. -/
+def readAuthoredValidation (preliminary : CheckedIndexPreliminary model)
+    (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
+  preliminary.readPreparedCell address
+
+/-- Read the same prepared cell for a computation-phase observer. Generated requiredness remains ignorable only because `observeCell .computation` owns that phase rule. -/
+def readComputation (preliminary : CheckedIndexPreliminary model)
+    (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
+  preliminary.readPreparedCell address
 
 private def placements (preliminary : CheckedIndexPreliminary model) :
     List CheckedCellPlacement :=

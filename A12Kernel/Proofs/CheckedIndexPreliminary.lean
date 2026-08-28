@@ -31,6 +31,7 @@ theorem checkedIndexPreliminary_preserves_parsed
     (preliminary.readAuthoredValidation address).map (·.parsed) =
       (preliminary.base.read address).map (·.parsed) := by
   unfold CheckedIndexPreliminary.readAuthoredValidation
+  unfold CheckedIndexPreliminary.readPreparedCell
   cases readResult : preliminary.base.read address with
   | error error => rfl
   | ok cell =>
@@ -55,12 +56,20 @@ theorem checkedIndexPreliminary_default_read
     preliminary.readAuthoredValidation address =
       .ok (checkAdmittedRawCell (.parsed (.enum defaulted.stored))) := by
   unfold CheckedIndexPreliminary.readAuthoredValidation
+  unfold CheckedIndexPreliminary.readPreparedCell
   rw [baseRead]
   simp only [bind, Except.bind]
   unfold CheckedIndexPreliminary.stagedCell
   rw [selected]
   unfold CheckedIndexPreliminary.annotateCell
   rw [noFinding]
+  rfl
+
+/-- Validation and computation receive the same prepared cell; their distinct observation phases alone decide whether a generated required finding is visible. -/
+@[simp] theorem checkedIndexPreliminary_computation_read_exact
+    (preliminary : CheckedIndexPreliminary model) (address : CellAddr) :
+    preliminary.readComputation address =
+      preliminary.readAuthoredValidation address := by
   rfl
 
 private theorem checkedPartialPreliminary_annotation_preserves_parsed

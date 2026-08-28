@@ -38,7 +38,9 @@ theorem checkedAddressedEnumeration_executeResult_hasNoTargetErrors
     (executed : operation.execute input = .ok outcomes) :
     (operation.executeResult input residualMessages).map
       (fun view => view.string.withErrors) = .ok [] := by
+  unfold CheckedAddressedEnumerationComputation.execute at executed
   unfold CheckedAddressedEnumerationComputation.executeResult
+  unfold CheckedAddressedEnumerationComputation.executeResultWithRead
   rw [executed]
   change Except.ok
     ((projectAddressedEnumerationResults input residualMessages outcomes).withErrors) =

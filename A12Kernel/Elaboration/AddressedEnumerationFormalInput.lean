@@ -5,10 +5,12 @@ import A12Kernel.Elaboration.ComputationFormalInput
 
 namespace A12Kernel
 
-/-- Failure while composing direct formal-input collection with addressed Enumeration assignment. -/
+/-- Failure while composing selected formal-input preparation with addressed Enumeration assignment. -/
 inductive AddressedEnumerationCheckedResultFault where
   | formalInput (cause : ComputationFormalInputPlanError)
-  | execution (cause : AddressedEnumerationComputationFault)
+  | preliminary (cause : CheckedIndexPreliminaryError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : AddressedEnumerationComputationFault)
   deriving Repr, DecidableEq
 
 namespace CheckedAddressedEnumerationComputation
@@ -20,14 +22,19 @@ def formalInputPlan (operation : CheckedAddressedEnumerationComputation model) :
   checkComputationFormalInputPlan model operation.source.fieldDependencies
     [operation.target.field]
 
-/-- Collect source findings eagerly, then execute and project the addressed String-shaped result. -/
+/-- Prepare selected source findings and index state once, then execute through that exact view and retain the inventory beside either result arm. -/
 def executeResultWithFormalInputs
     (operation : CheckedAddressedEnumerationComputation model)
     (input : CheckedDocument model) :
     Except AddressedEnumerationCheckedResultFault
       (AddressedEnumerationComputationRunView model ComputationFormalInputFinding) := do
   let plan ← operation.formalInputPlan |>.mapError .formalInput
-  operation.executeResult input (plan.findings input) |>.mapError .execution
+  let prepared ← plan.prepare input |>.mapError .preliminary
+  match operation.executeResultWithRead input
+      prepared.preliminary.readComputation prepared.formalErrorsInOperands with
+  | .error cause =>
+      .error (.execution prepared.formalErrorsInOperands cause)
+  | .ok result => .ok result
 
 end CheckedAddressedEnumerationComputation
 
