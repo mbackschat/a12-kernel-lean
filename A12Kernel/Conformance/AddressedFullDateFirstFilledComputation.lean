@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.AddressedFullDateFirstFilledComputation
+import A12Kernel.Elaboration.AddressedFullDateFirstFilledFormalInput
 
 /-! # Exact-address repeatable full-Date `FirstFilledValue` locks -/
 
@@ -40,7 +40,8 @@ private def model : FlatModel := {
     checkedSource, fixedTarget, unrelated]
   repeatableGroups := [
     { level := 10, path := ["Projects"], repeatability := some 5 },
-    { level := 20, path := ["Projects", "Choices"], repeatability := some 3 },
+    { level := 20, path := ["Projects", "Choices"], repeatability := some 3,
+      indexField := some source.id },
     { level := 30, path := ["Projects", "Tasks"], repeatability := some 3 }]
   timeZoneId := "UTC"
 }
@@ -115,9 +116,15 @@ private def cell (field : FieldId) (path : List Nat) (stored : String)
   address := address field path, stored, raw
 }
 
+private def documentWithRows? (selectedRows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := selectedRows, cells }).toOption
+
 private def document? (cells : List ClassifiedCellInput) :
     Option (CheckedDocument model) :=
-  (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
+  documentWithRows? rows cells
 
 private def input? : Option (CheckedDocument model) := document? [
   cell source.id [1, 2] "2024-06-15"
@@ -225,6 +232,70 @@ example : resultApplicationSummary? = some {
     row51 := .presentEmpty
     row52 := .absent
     unrelatedState := .presentValue (stored "2024-04-01")
+  } := by
+  native_decide
+
+private def formalFinding (path : List Nat)
+    (cause : FormalCause) : ComputationFormalInputFinding := {
+  address := address source.id path
+  cause
+}
+
+private structure FormalInputSummary where
+  planOperands : List FieldId
+  planTargets : List FieldId
+  findingsExact : Bool
+  values : List (CellAddr × String)
+  changes : List (CellAddr × String)
+  errorsEmpty : Bool
+  cleared : List CellAddr
+  deriving Repr, DecidableEq
+
+private def formalInputSummary? : Option FormalInputSummary := do
+  let operation ← operation?
+  let plan ← operation.formalInputPlan.toOption
+  let input ← documentWithRows? [
+      { group := 10, path := [1] }, { group := 10, path := [2] },
+      { group := 20, path := [1, 1] },
+      { group := 20, path := [2, 1] },
+      { group := 20, path := [2, 2] },
+      { group := 30, path := [1, 1] },
+      { group := 30, path := [2, 1] }] [
+    cell source.id [1, 1] "UNRENDERED-JUNE"
+      (.parsed (dateValue 1718409600000 2024 6 15)),
+    cell source.id [2, 1] "DUPLICATE-STORED-KEY"
+      (.parsed (dateValue 1721088000000 2024 7 16)),
+    cell source.id [2, 2] "DUPLICATE-STORED-KEY"
+      (.parsed (dateValue 1721174400000 2024 7 17)),
+    cell target.id [1, 1] "2024-01-01"
+      (.parsed (dateValue 1704067200000 2024 1 1)),
+    cell target.id [2, 1] "2024-01-01"
+      (.parsed (dateValue 1704067200000 2024 1 1))]
+  let result ← operation.executeResultWithFormalInputs input |>.toOption
+  let findings := result.fullDate.formalErrorsInOperands
+  pure {
+    planOperands := plan.operandFields
+    planTargets := plan.computedFields
+    findingsExact := findings.length == 2 &&
+      findings.contains (formalFinding [2, 1] .duplicateIndex) &&
+      findings.contains (formalFinding [2, 2] .duplicateIndex)
+    values := result.fullDate.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    changes := result.fullDate.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    errorsEmpty := result.fullDate.withErrors.isEmpty
+    cleared := result.fullDate.cleared
+  }
+
+/- Selected FULL Date preliminary compares stored index identity, while a clean computation selects instant identity and renders through the target policy. Duplicate stored keys poison only their reached parent-local scan. -/
+example : formalInputSummary? = some {
+    planOperands := [source.id]
+    planTargets := [target.id]
+    findingsExact := true
+    values := [(address target.id [1, 1], "2024-06-15")]
+    changes := [(address target.id [1, 1], "2024-06-15")]
+    errorsEmpty := true
+    cleared := [address target.id [2, 1]]
   } := by
   native_decide
 

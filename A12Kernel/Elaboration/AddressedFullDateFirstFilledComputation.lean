@@ -145,15 +145,17 @@ structure AddressedFullDateFirstFilledComputationRunView (model : FlatModel)
 
 namespace CheckedAddressedFullDateFirstFilledComputation
 
-private def evaluateAt
+private def evaluateAtWithRead
     (operation : CheckedAddressedFullDateFirstFilledComputation model)
-    (input : CheckedDocument model) (environment : Env) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
     Except AddressedFullDateFirstFilledComputationFault
       AddressedFullDateFirstFilledComputationOutcome := do
   let targetPath ←
     environment.pathForScope operation.target.repeatableScope
       |>.mapError .targetEnvironment
-  let resolved ← operation.source.resolveCheckedField input environment
+  let resolved ← operation.source.resolveCheckedFieldWithRead input read environment
     |>.mapError .source
   let outcome ← operation.targetPolicy.evaluate
       (evalFullDateFirstFilledCells resolved.cells)
@@ -163,29 +165,48 @@ private def evaluateAt
     outcome
   }
 
+/-- Execute one sibling-correlated FULL Date scan per physical target row through a caller-supplied exact-address source view. Target topology, physical stored text, and immutable source target state remain unchanged. -/
+def executeWithRead
+    (operation : CheckedAddressedFullDateFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except AddressedFullDateFirstFilledComputationFault
+      (List AddressedFullDateFirstFilledComputationOutcome) := do
+  let environments ← input.actualRowEnvironments operation.target.repeatableScope
+    |>.mapError .targetRows
+  environments.mapM (operation.evaluateAtWithRead input read)
+
 /-- Execute one sibling-correlated FULL Date scan per physical target row in document order. -/
 def execute
     (operation : CheckedAddressedFullDateFirstFilledComputation model)
     (input : CheckedDocument model) :
     Except AddressedFullDateFirstFilledComputationFault
-      (List AddressedFullDateFirstFilledComputationOutcome) := do
-  let environments ← input.actualRowEnvironments operation.target.repeatableScope
-    |>.mapError .targetRows
-  environments.mapM (operation.evaluateAt input)
+      (List AddressedFullDateFirstFilledComputationOutcome) :=
+  operation.executeWithRead input input.read
 
-/-- Classify every exact row outcome against immutable source target state through the shared FullDate result owner. -/
-def executeResult
+/-- Classify caller-view outcomes against immutable source target state through the shared FullDate result owner. -/
+def executeResultWithRead
     (operation : CheckedAddressedFullDateFirstFilledComputation model)
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (residualMessages : List ResidualMessage) :
     Except AddressedFullDateFirstFilledComputationFault
       (AddressedFullDateFirstFilledComputationRunView model ResidualMessage) := do
-  let outcomes ← operation.execute input
+  let outcomes ← operation.executeWithRead input read
   pure {
     operation
     fullDate := FullDateComputationRunView.fromOutcomesAt
       input.sourceFullDateTargetStateAt residualMessages
       (outcomes.map fun entry => (entry.targetField, entry.outcome))
   }
+
+/-- Classify every exact row outcome against immutable source target state through the shared FullDate result owner. -/
+def executeResult
+    (operation : CheckedAddressedFullDateFirstFilledComputation model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    Except AddressedFullDateFirstFilledComputationFault
+      (AddressedFullDateFirstFilledComputationRunView model ResidualMessage) :=
+  operation.executeResultWithRead input input.read residualMessages
 
 end CheckedAddressedFullDateFirstFilledComputation
 
