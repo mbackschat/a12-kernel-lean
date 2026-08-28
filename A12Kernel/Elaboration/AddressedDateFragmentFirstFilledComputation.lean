@@ -123,15 +123,17 @@ structure AddressedDateFragmentFirstFilledComputationRunView
 
 namespace CheckedAddressedDateFragmentFirstFilledComputation
 
-private def evaluateAt
+private def evaluateAtWithRead
     (operation : CheckedAddressedDateFragmentFirstFilledComputation model)
-    (input : CheckedDocument model) (environment : Env) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
     Except AddressedDateFragmentFirstFilledComputationFault
       AddressedDateFragmentFirstFilledComputationOutcome := do
   let targetPath ←
     environment.pathForScope operation.target.repeatableScope
       |>.mapError .targetEnvironment
-  let resolved ← operation.source.resolveCheckedField input environment
+  let resolved ← operation.source.resolveCheckedFieldWithRead input read environment
     |>.mapError .source
   pure {
     targetField := { field := operation.targetField, path := targetPath }
@@ -140,27 +142,46 @@ private def evaluateAt
         resolved
   }
 
+/-- Execute one sibling-correlated DateFragment scan per physical target row through a caller-supplied exact-address source view. Target topology, physical stored text, and immutable source target state remain unchanged. -/
+def executeWithRead
+    (operation : CheckedAddressedDateFragmentFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except AddressedDateFragmentFirstFilledComputationFault
+      (List AddressedDateFragmentFirstFilledComputationOutcome) := do
+  let environments ← input.actualRowEnvironments operation.target.repeatableScope
+    |>.mapError .targetRows
+  environments.mapM (operation.evaluateAtWithRead input read)
+
 /-- Execute one sibling-correlated DateFragment scan per physical target row in document order. -/
 def execute
     (operation : CheckedAddressedDateFragmentFirstFilledComputation model)
     (input : CheckedDocument model) :
     Except AddressedDateFragmentFirstFilledComputationFault
-      (List AddressedDateFragmentFirstFilledComputationOutcome) := do
-  let environments ← input.actualRowEnvironments operation.target.repeatableScope
-    |>.mapError .targetRows
-  environments.mapM (operation.evaluateAt input)
+      (List AddressedDateFragmentFirstFilledComputationOutcome) :=
+  operation.executeWithRead input input.read
+
+/-- Classify caller-view token outcomes against immutable source target state through the shared String result owner. -/
+def executeResultWithRead
+    (operation : CheckedAddressedDateFragmentFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (residualMessages : List ResidualMessage) :
+    Except AddressedDateFragmentFirstFilledComputationFault
+      (AddressedDateFragmentFirstFilledComputationRunView model ResidualMessage) := do
+  let outcomes ← operation.executeWithRead input read
+  pure {
+    operation
+    string := projectAddressedTokenResults input residualMessages outcomes
+  }
 
 /-- Classify every exact token outcome against immutable source target state through the shared String result owner. -/
 def executeResult
     (operation : CheckedAddressedDateFragmentFirstFilledComputation model)
     (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
     Except AddressedDateFragmentFirstFilledComputationFault
-      (AddressedDateFragmentFirstFilledComputationRunView model ResidualMessage) := do
-  let outcomes ← operation.execute input
-  pure {
-    operation
-    string := projectAddressedTokenResults input residualMessages outcomes
-  }
+      (AddressedDateFragmentFirstFilledComputationRunView model ResidualMessage) :=
+  operation.executeResultWithRead input input.read residualMessages
 
 end CheckedAddressedDateFragmentFirstFilledComputation
 

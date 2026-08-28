@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.AddressedDateFragmentFirstFilledComputation
+import A12Kernel.Elaboration.AddressedDateFragmentFirstFilledFormalInput
 
 /-! # Exact-address repeatable DateFragment `FirstFilledValue` locks -/
 
@@ -51,7 +51,8 @@ private def model : FlatModel := {
     fullDateTarget]
   repeatableGroups := [
     { level := 10, path := ["Projects"], repeatability := some 3 },
-    { level := 20, path := ["Projects", "Choices"], repeatability := some 2 },
+    { level := 20, path := ["Projects", "Choices"], repeatability := some 2,
+      indexField := some source.id },
     { level := 30, path := ["Projects", "Tasks"], repeatability := some 2 }]
 }
 
@@ -136,9 +137,15 @@ private def cell (field : FieldId) (path : List Nat) (stored : String)
 private def address (field : FieldId) (path : List Nat) : CellAddr :=
   { field, path }
 
+private def documentWithRows? (selectedRows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := selectedRows, cells }).toOption
+
 private def document? (cells : List ClassifiedCellInput) :
     Option (CheckedDocument model) :=
-  (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
+  documentWithRows? rows cells
 
 private def input? : Option (CheckedDocument model) := document? [
   cell source.id [1, 2] "06" (dateValue 6),
@@ -218,6 +225,65 @@ example : resultApplicationSummary? = some {
     row22 := .absent
     row31 := .presentEmpty
     unrelatedState := .presentValue ⟨"03", by decide⟩
+  } := by
+  native_decide
+
+private def formalFinding (path : List Nat)
+    (cause : FormalCause) : ComputationFormalInputFinding := {
+  address := address source.id path
+  cause
+}
+
+private structure FormalInputSummary where
+  planOperands : List FieldId
+  planTargets : List FieldId
+  findingsExact : Bool
+  values : List (CellAddr × String)
+  changes : List (CellAddr × String)
+  errorsEmpty : Bool
+  cleared : List CellAddr
+  deriving Repr, DecidableEq
+
+private def formalInputSummary? : Option FormalInputSummary := do
+  let operation ← operation?
+  let plan ← operation.formalInputPlan.toOption
+  let input ← documentWithRows? [
+      { group := 10, path := [1] }, { group := 10, path := [2] },
+      { group := 20, path := [1, 1] },
+      { group := 20, path := [2, 1] },
+      { group := 20, path := [2, 2] },
+      { group := 30, path := [1, 1] },
+      { group := 30, path := [2, 1] }] [
+    cell source.id [1, 1] "06" (dateValue 6),
+    cell source.id [2, 1] "07" (dateValue 7),
+    cell source.id [2, 2] "07" (dateValue 7),
+    cell target.id [1, 1] "05" (dateValue 5),
+    cell target.id [2, 1] "05" (dateValue 5)]
+  let result ← operation.executeResultWithFormalInputs input |>.toOption
+  let findings := result.string.formalErrorsInOperands
+  pure {
+    planOperands := plan.operandFields
+    planTargets := plan.computedFields
+    findingsExact := findings.length == 2 &&
+      findings.contains (formalFinding [2, 1] .duplicateIndex) &&
+      findings.contains (formalFinding [2, 2] .duplicateIndex)
+    values := result.string.withoutErrors.map fun item =>
+      (item.targetField, item.value.text)
+    changes := result.string.withChanges.map fun item =>
+      (item.targetField, item.value.text)
+    errorsEmpty := result.string.withErrors.isEmpty
+    cleared := result.string.cleared
+  }
+
+/- Selected partial-Date index preparation keeps the exact clean token while duplicate keys remain eager findings and poison only the reached parent-local scan. -/
+example : formalInputSummary? = some {
+    planOperands := [source.id]
+    planTargets := [target.id]
+    findingsExact := true
+    values := [(address target.id [1, 1], "06")]
+    changes := [(address target.id [1, 1], "06")]
+    errorsEmpty := true
+    cleared := [address target.id [2, 1]]
   } := by
   native_decide
 

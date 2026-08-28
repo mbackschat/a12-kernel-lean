@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.DateFragmentFirstFilledComputation
-import A12Kernel.Elaboration.AddressedDateFragmentFirstFilledComputation
+import A12Kernel.Elaboration.AddressedDateFragmentFirstFilledFormalInput
 import A12Kernel.Proofs.ExactTokenComputationResult
 import A12Kernel.Proofs.StringComputationRunApplication
 
@@ -88,6 +88,13 @@ theorem checkedAddressedDateFragmentFirstFilled_source_bounded
     operation.placement.sourceBindingNonempty,
     operation.placement.sourceBindingBound⟩
 
+/-- The immutable-document executor is definitionally the caller-read route specialized to the document's checked read. -/
+theorem checkedAddressedDateFragmentFirstFilled_executeWithRead_base
+    (operation : CheckedAddressedDateFragmentFirstFilledComputation model)
+    (input : CheckedDocument model) :
+    operation.executeWithRead input input.read = operation.execute input := by
+  rfl
+
 /-- Addressed result construction retains the checked operation and classifies every outcome against its exact immutable target state. -/
 theorem checkedAddressedDateFragmentFirstFilled_executeResult_projects
     (operation : CheckedAddressedDateFragmentFirstFilledComputation model)
@@ -100,7 +107,10 @@ theorem checkedAddressedDateFragmentFirstFilled_executeResult_projects
     view.operation = operation ∧
       view.string = projectAddressedTokenResults input messages outcomes := by
   rw [CheckedAddressedDateFragmentFirstFilledComputation.executeResult,
-    executed] at produced
+    CheckedAddressedDateFragmentFirstFilledComputation.executeResultWithRead]
+    at produced
+  change operation.executeWithRead input input.read = .ok outcomes at executed
+  rw [executed] at produced
   simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
   subst view
   exact ⟨rfl, rfl⟩
@@ -114,12 +124,50 @@ theorem checkedAddressedDateFragmentFirstFilled_executeResult_hasNoTargetErrors
     (operation.executeResult input messages).map
       (fun view => view.string.withErrors) = .ok [] := by
   unfold CheckedAddressedDateFragmentFirstFilledComputation.executeResult
+    CheckedAddressedDateFragmentFirstFilledComputation.executeResultWithRead
+  change operation.executeWithRead input input.read = .ok outcomes at executed
   rw [executed]
   change Except.ok
     ((projectAddressedTokenResults input messages outcomes).withErrors) =
       Except.ok []
   exact congrArg Except.ok
     (addressedTokenResults_haveNoTargetErrors outcomes input messages)
+
+/-- Successful whole-call composition preserves the exact prepared DateFragment result, including its eager findings and exact token/action partitions. -/
+theorem addressedDateFragmentFirstFilled_executeResultWithFormalInputs_exact
+    (operation : CheckedAddressedDateFragmentFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (result : AddressedDateFragmentFirstFilledComputationRunView model
+      ComputationFormalInputFinding)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResultWithRead input
+      prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands = .ok result) :
+    operation.executeResultWithFormalInputs input = .ok result := by
+  rw [CheckedAddressedDateFragmentFirstFilledComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation, executed]
+
+/-- A post-preparation execution failure retains the exact eager input findings beside the unchanged addressed DateFragment fault. -/
+theorem addressedDateFragmentFirstFilled_executeResultWithFormalInputs_failure_exact
+    (operation : CheckedAddressedDateFragmentFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (fault : AddressedDateFragmentFirstFilledComputationFault)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResultWithRead input
+      prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands = .error fault) :
+    operation.executeResultWithFormalInputs input =
+      .error (.execution prepared.formalErrorsInOperands fault) := by
+  rw [CheckedAddressedDateFragmentFirstFilledComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation, executed]
 
 /-- Exact-address checked application delegates to the established source-classified String fold. -/
 theorem addressedDateFragmentFirstFilledRun_applyToChecked_delegates
