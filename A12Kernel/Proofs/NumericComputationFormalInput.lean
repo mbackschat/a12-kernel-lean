@@ -73,4 +73,41 @@ theorem checkedNumericComputationRun_executeResultWithFormalInputs_failure_exact
   simp only [bind, Except.bind, Except.mapError]
   rw [executed]
 
+/-- Successful addressed Number first-filled composition preserves the complete eager raw inventory beside the independently classified typed Number result. -/
+theorem addressedNumberFirstFilled_executeResultWithFormalInputs_exact
+    (operation : CheckedAddressedNumberFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (result : AddressedNumberFirstFilledComputationRunView model Unit)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResultWithRead input
+      prepared.preliminary.readComputation (fun _ => ()) [] = .ok result) :
+    (operation.executeResultWithFormalInputs input).map (fun view =>
+      (view.formalErrorsInOperands, view.numeric)) =
+        .ok (prepared.formalErrorsInOperands, result.numeric) := by
+  rw [CheckedAddressedNumberFirstFilledComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation]
+  rw [executed]
+  rfl
+
+/-- A post-preparation addressed Number first-filled failure retains the exact eager raw inventory beside the unchanged execution fault. -/
+theorem addressedNumberFirstFilled_executeResultWithFormalInputs_failure_exact
+    (operation : CheckedAddressedNumberFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (fault : AddressedNumberFirstFilledComputationFault)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResultWithRead input
+      prepared.preliminary.readComputation (fun _ => ()) [] = .error fault) :
+    operation.executeResultWithFormalInputs input =
+      .error (.execution prepared.formalErrorsInOperands fault) := by
+  rw [CheckedAddressedNumberFirstFilledComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation, executed]
+
 end A12Kernel

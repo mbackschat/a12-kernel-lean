@@ -1,5 +1,6 @@
 import A12Kernel.Conformance.NumericComputation.Support
 import A12Kernel.Elaboration.AddressedNumberFirstFilledComputation
+import A12Kernel.Elaboration.NumericComputation.FormalInput
 
 /-! # Numeric-computation repeatable locks -/
 
@@ -337,7 +338,8 @@ private def addressedModel : FlatModel := {
   repeatableGroups := [
     { level := 100, path := ["Parents"], repeatability := some 4 },
     { level := 110, path := ["Parents", "Choices"], repeatability := some 3 },
-    { level := 115, path := ["Parents", "Fallbacks"], repeatability := some 3 },
+    { level := 115, path := ["Parents", "Fallbacks"], repeatability := some 3,
+      indexField := some fallback.id },
     { level := 120, path := ["Parents", "Tasks"], repeatability := some 3 },
     { level := 130, path := ["Parents", "Tasks", "Details"],
       repeatability := some 3 }]
@@ -369,6 +371,12 @@ private def multiOperation? :
     ["Parents", "Tasks"] target.id (siblingStar source.name)
       [siblingStarIn "Fallbacks" fallback.name]).toOption
 
+private def multiFormalPlanProjection? :
+    Option (List FieldId × List FieldId) := do
+  let operation ← multiOperation?
+  let plan ← operation.formalInputPlan.toOption
+  pure (plan.operandFields, plan.computedFields)
+
 private def elabError? (checked :
     Except AddressedNumberFirstFilledComputationElabError
       (CheckedAddressedNumberFirstFilledComputation addressedModel)) :
@@ -393,6 +401,11 @@ example :
           (.placement (.sourceScope targetDescendantSource.path))) := by
   native_decide
 
+/- The whole-call plan preserves the complete authored source order and excludes the exact computed target in its separate role. -/
+example : multiFormalPlanProjection? =
+    some ([source.id, fallback.id], [target.id]) := by
+  native_decide
+
 private def prepared :
     PreparedFlatStringContext addressedModel builtinStringPatternCompiler :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
@@ -404,7 +417,8 @@ private def rows : List RowAddr :=
     { group := 110, path := [1, 1] }, { group := 110, path := [1, 2] },
     { group := 110, path := [1, 3] }, { group := 110, path := [2, 1] },
     { group := 110, path := [4, 1] },
-    { group := 115, path := [1, 1] }, { group := 115, path := [2, 1] },
+    { group := 115, path := [1, 1] }, { group := 115, path := [1, 2] },
+    { group := 115, path := [2, 1] },
     { group := 115, path := [2, 2] }, { group := 115, path := [4, 1] },
     { group := 120, path := [2, 1] }, { group := 120, path := [1, 2] },
     { group := 120, path := [3, 1] }, { group := 120, path := [4, 1] },
@@ -445,9 +459,10 @@ private def multiInput? : Option (CheckedDocument addressedModel) :=
     cell source.id [1, 2] "5" (.parsed (.num 5)),
     cell source.id [1, 3] "bad-tail" (.rejected .malformed),
     cell source.id [4, 1] "12" (.parsed (.num 12)),
-    cell fallback.id [1, 1] "bad-later" (.rejected .malformed),
+    cell fallback.id [1, 1] "6" (.parsed (.num 6)),
+    cell fallback.id [1, 2] "6" (.parsed (.num 6)),
     cell fallback.id [2, 1] "7" (.parsed (.num 7)),
-    cell fallback.id [2, 2] "bad-tail" (.rejected .malformed),
+    cell fallback.id [2, 2] "7" (.parsed (.num 7)),
     cell fallback.id [4, 1] "6" (.parsed (.num 6)),
     decimalCell target.id [1, 1] "5" 5,
     decimalCell target.id [1, 2] "2" 2,
@@ -457,6 +472,11 @@ private def multiInput? : Option (CheckedDocument addressedModel) :=
 
 private def addr (id : FieldId) (path : List Nat) : CellAddr := { field := id, path }
 private def stored (unscaled : Int) : StoredNumber := { unscaled, scale := 0 }
+private def formalFinding (id : FieldId) (path : List Nat)
+    (cause : FormalCause) : ComputationFormalInputFinding := {
+  address := addr id path
+  cause
+}
 
 private def outcomes? : Option (List (CellAddr × NumericTargetOutcome)) := do
   let operation ← operation?
@@ -482,6 +502,32 @@ private def multiCallerReadOutcomes? : Option
     else
       pure base) |>.toOption
   pure (outcomes.map fun entry => (entry.targetField, entry.outcome))
+
+private structure FormalInputSummary where
+  findingsExact : Bool
+  values : List (NumericComputedInstance CellAddr)
+  errors : List (NumericComputedError CellAddr)
+  cleared : List CellAddr
+  numericMessagesEmpty : Bool
+  deriving Repr, DecidableEq
+
+private def multiFormalInputSummary? : Option FormalInputSummary := do
+  let operation ← multiOperation?
+  let input ← multiInput?
+  let result ← operation.executeResultWithFormalInputs input |>.toOption
+  let findings := result.formalErrorsInOperands
+  pure {
+    findingsExact := findings.length == 5 &&
+      findings.contains (formalFinding source.id [1, 3] .malformed) &&
+      findings.contains (formalFinding fallback.id [1, 1] .duplicateIndex) &&
+      findings.contains (formalFinding fallback.id [1, 2] .duplicateIndex) &&
+      findings.contains (formalFinding fallback.id [2, 1] .duplicateIndex) &&
+      findings.contains (formalFinding fallback.id [2, 2] .duplicateIndex)
+    values := result.numeric.withoutErrors
+    errors := result.numeric.withErrors
+    cleared := result.numeric.cleared
+    numericMessagesEmpty := result.numeric.formalErrorsInOperands.isEmpty
+  }
 
 /- Target rows scan only their enclosing parent's source extent. Empty exhaustion is zero, a malformed prefix poisons, the selected value hides its malformed tail, and target rejection follows selection. -/
 example : outcomes? = some [
@@ -511,6 +557,23 @@ example : multiCallerReadOutcomes? = some [
     (addr target.id [4, 1], .rejected (stored 12) .aboveMaximum),
     (addr target.id [1, 1], .inheritedPoison .duplicateIndex)
   ] := by
+  native_decide
+
+/- The whole call eagerly inventories the hidden malformed source tail and duplicate findings from the later star, keeps them out of Number's rendered-message channel, hides their runtime poison behind an earlier value, and reaches the same poison after first-source fallthrough. -/
+example : multiFormalInputSummary? = some {
+    findingsExact := true
+    values := [
+      { targetField := addr target.id [1, 2], value := stored 5 },
+      { targetField := addr target.id [3, 1], value := stored 0 },
+      { targetField := addr target.id [1, 1], value := stored 5 }]
+    errors := [{
+      targetField := addr target.id [4, 1]
+      attempted := stored 12
+      cause := .aboveMaximum
+    }]
+    cleared := [addr target.id [2, 1]]
+    numericMessagesEmpty := true
+  } := by
   native_decide
 
 private structure Summary where

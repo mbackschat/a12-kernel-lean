@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ComputationFormalInput
+import A12Kernel.Elaboration.AddressedNumberFirstFilledComputation
 import A12Kernel.Elaboration.NumericComputation.RunResult
 
 /-! # Checked numeric-computation formal inputs -/
@@ -94,5 +95,41 @@ def executeResultWithFormalInputs (run : CheckedNumericComputationRun model)
       .ok (NumericComputationFormalInputRunView.of numeric findings)
 
 end CheckedNumericComputationRun
+
+/-- Failure while composing selected formal-input preparation with addressed Number `FirstFilledValue`. -/
+inductive AddressedNumberFirstFilledCheckedResultFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : AddressedNumberFirstFilledComputationFault)
+  deriving Repr, DecidableEq
+
+namespace CheckedAddressedNumberFirstFilledComputation
+
+/-- Bind every authored sibling-star source and the computed Number target to the shared eager inventory. -/
+def formalInputPlan
+    (operation : CheckedAddressedNumberFirstFilledComputation model) :
+    Except ComputationFormalInputPlanError
+      (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputPlan model operation.sourceFields
+    [operation.targetField]
+
+/-- Prepare every selected source once, execute through that exact view, and retain raw findings beside rather than inside the typed Number result channels. -/
+def executeResultWithFormalInputs
+    (operation : CheckedAddressedNumberFirstFilledComputation model)
+    (input : CheckedDocument model) :
+    Except AddressedNumberFirstFilledCheckedResultFault
+      (NumericComputationFormalInputRunView model CellAddr) := do
+  let plan ← operation.formalInputPlan |>.mapError .formalInput
+  let prepared ← plan.prepare input |>.mapError .preliminary
+  match operation.executeResultWithRead input
+      prepared.preliminary.readComputation (fun _ => ()) [] with
+  | .error cause =>
+      .error (.execution prepared.formalErrorsInOperands cause)
+  | .ok result =>
+      .ok (NumericComputationFormalInputRunView.of result.numeric
+        prepared.formalErrorsInOperands)
+
+end CheckedAddressedNumberFirstFilledComputation
 
 end A12Kernel
