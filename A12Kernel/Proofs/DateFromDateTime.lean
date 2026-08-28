@@ -85,10 +85,15 @@ theorem checkedAddressedDateFromDateTime_executeResult_projects
     (executed : operation.execute input = .ok outcomes)
     (produced : operation.executeResult input messages = .ok view) :
     view.operation = operation ∧
-      view.fullDate = FullDateComputationRunView.fromOutcomesAt
+    view.fullDate = FullDateComputationRunView.fromOutcomesAt
         input.sourceFullDateTargetStateAt messages
         (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
-  rw [CheckedAddressedDateFromDateTime.executeResult, executed] at produced
+  have executedWithRead :
+      operation.executeWithRead input input.read = .ok outcomes := by
+    simpa [CheckedAddressedDateFromDateTime.execute] using executed
+  rw [CheckedAddressedDateFromDateTime.executeResult,
+    CheckedAddressedDateFromDateTime.executeResultWithRead,
+    executedWithRead] at produced
   simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
   subst view
   exact ⟨rfl, rfl⟩

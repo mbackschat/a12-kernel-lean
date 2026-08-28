@@ -75,4 +75,105 @@ example :
       }] := by
   native_decide
 
+private def indexedSource : FlatFieldDecl := {
+  id := 11
+  name := "SlotStamp"
+  groupPath := ["Schedule", "Slots"]
+  repeatableScope := [10]
+  policy := { kind := .temporal .dateTime TemporalComponents.now }
+  temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" }
+}
+
+private def indexedTarget : FlatFieldDecl := {
+  id := 12
+  name := "SlotDate"
+  groupPath := ["Schedule", "Slots"]
+  repeatableScope := [10]
+  policy := { kind := .temporal .date TemporalComponents.fullDate }
+  temporalTargetPolicy := some { format := "yyyy-MM-dd", partialMode := .full }
+}
+
+private def indexedModel : FlatModel := {
+  fields := [indexedSource, indexedTarget]
+  timeZoneId := "Europe/Berlin"
+  repeatableGroups := [{
+    level := 10
+    path := ["Schedule", "Slots"]
+    repeatability := some 2
+    indexField := some indexedSource.id
+  }]
+}
+
+private def indexedPrepared : PreparedFlatStringContext indexedModel
+    builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler indexedModel).toOption.get (by native_decide)
+
+private def clock : TimeOfDay :=
+  ⟨0, 30, 0, by decide⟩
+
+private def indexedSourceCell (row : Nat) : ClassifiedCellInput := {
+  address := { field := indexedSource.id, path := [row] }
+  stored := "2024-06-15T00:30:00"
+  raw := .parsed (.temporal (.dateTime
+    { epochMillis := 1718404200000 }
+    { year := 2024, month := 6, day := 15 }
+    clock .storedGregorian))
+}
+
+private def indexedTargetCell (row : Nat) : ClassifiedCellInput := {
+  address := { field := indexedTarget.id, path := [row] }
+  stored := "2024-06-01"
+  raw := .parsed (.temporal (.date {
+    instant := { epochMillis := 1717200000000 }
+    parts := { year := 2024, month := 6, day := 1 }
+    basis := .storedGregorian
+  }))
+}
+
+private def indexedInput? : Option (CheckedDocument indexedModel) :=
+  (checkDocument indexedPrepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 10, path := [2] }
+    ]
+    cells := [
+      indexedSourceCell 1,
+      indexedSourceCell 2,
+      indexedTargetCell 1,
+      indexedTargetCell 2
+    ]
+  }).toOption
+
+private def indexedOperation? :
+    Option (CheckedAddressedDateFromDateTime indexedModel) :=
+  (checkAddressedDateFromDateTime indexedModel ["Schedule", "Slots"]
+    indexedTarget.id { base := .relative 0, groups := [], field := indexedSource.name })
+    |>.toOption
+
+/- Duplicate DateTime indexes are both eager formal inputs and reached computation poison, so both source-filled FullDate targets clear. -/
+example :
+    (do
+      let operation ← indexedOperation?
+      let input ← indexedInput?
+      let result ← operation.executeResultWithFormalInputs input |>.toOption
+      pure (
+        result.fullDate.formalErrorsInOperands,
+        result.fullDate.withoutErrors.map (·.targetField),
+        result.fullDate.withErrors.map (·.targetField),
+        result.fullDate.cleared)) = some ([
+          {
+            address := { field := indexedSource.id, path := [1] }
+            cause := .duplicateIndex
+          },
+          {
+            address := { field := indexedSource.id, path := [2] }
+            cause := .duplicateIndex
+          }
+        ], [], [], [
+          { field := indexedTarget.id, path := [1] },
+          { field := indexedTarget.id, path := [2] }
+        ]) := by
+  native_decide
+
 end A12Kernel.Conformance.AddressedDateFromDateTimeFormalInput

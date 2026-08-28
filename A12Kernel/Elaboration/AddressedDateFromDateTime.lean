@@ -106,9 +106,10 @@ def evaluateSourceCell (operation : CheckedAddressedDateFromDateTime model)
       | none => throw (.sourceExtractionUnavailable sourceAddress)
   | .value _ => throw (.sourceValueKind sourceAddress)
 
-private def evaluateAtEnvironment
+private def evaluateAtWithRead
     (operation : CheckedAddressedDateFromDateTime model)
-    (input : CheckedDocument model) (environment : Env) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
     Except AddressedDateFromDateTimeFault AddressedDateFromDateTimeOutcome := do
   let sourcePath ←
     (environment.pathForScope
@@ -123,30 +124,47 @@ private def evaluateAtEnvironment
   let targetAddress : CellAddr := {
     field := operation.target.checked.target.id, path := targetPath
   }
-  let sourceCell ← input.read sourceAddress |>.mapError .sourceRead
+  let sourceCell ← read sourceAddress |>.mapError .sourceRead
   let result ← operation.evaluateSourceCell sourceAddress sourceCell
   let outcome ← operation.target.evaluate result |>.mapError .target
   pure { sourceField := sourceAddress, targetField := targetAddress, outcome }
 
-/-- Execute once per physically instantiated target row in document order. -/
-def execute (operation : CheckedAddressedDateFromDateTime model)
-    (input : CheckedDocument model) :
+/-- Execute once per physically instantiated target row while reading through one caller-supplied transient overlay. Target-row ownership remains with the immutable checked input. -/
+def executeWithRead (operation : CheckedAddressedDateFromDateTime model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedDateFromDateTimeFault
       (List AddressedDateFromDateTimeOutcome) := do
   let environments ←
     input.actualRowEnvironments operation.target.checked.declaration.repeatableScope
       |>.mapError .targetRows
-  environments.mapM (operation.evaluateAtEnvironment input)
+  environments.mapM (operation.evaluateAtWithRead read)
 
-/-- Execute every physical target row and classify each rich FullDate outcome against the immutable source state at that exact target address. -/
+/-- Execute once per physically instantiated target row in document order against the immutable input. -/
+def execute (operation : CheckedAddressedDateFromDateTime model)
+    (input : CheckedDocument model) :
+    Except AddressedDateFromDateTimeFault
+      (List AddressedDateFromDateTimeOutcome) :=
+  operation.executeWithRead input input.read
+
+/-- Execute through one caller-supplied transient read and classify each rich FullDate outcome against immutable source target state. -/
+def executeResultWithRead (operation : CheckedAddressedDateFromDateTime model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (residualMessages : List ResidualMessage) :
+    Except AddressedDateFromDateTimeFault
+      (AddressedDateFromDateTimeRunView model ResidualMessage) := do
+  let outcomes ← operation.executeWithRead input read
+  pure (AddressedDateFromDateTimeRunView.fromOutcomes operation input
+    residualMessages outcomes)
+
+/-- Execute every physical target row against the immutable input and classify each rich FullDate outcome at its exact target address. -/
 def executeResult (operation : CheckedAddressedDateFromDateTime model)
     (input : CheckedDocument model)
     (residualMessages : List ResidualMessage) :
     Except AddressedDateFromDateTimeFault
-      (AddressedDateFromDateTimeRunView model ResidualMessage) := do
-  let outcomes ← operation.execute input
-  pure (AddressedDateFromDateTimeRunView.fromOutcomes operation input
-    residualMessages outcomes)
+      (AddressedDateFromDateTimeRunView model ResidualMessage) :=
+  operation.executeResultWithRead input input.read residualMessages
 
 end CheckedAddressedDateFromDateTime
 

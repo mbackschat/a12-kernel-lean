@@ -8,7 +8,9 @@ namespace A12Kernel
 /-- Failure while composing direct formal-input collection with addressed date extraction. -/
 inductive AddressedDateFromDateTimeCheckedResultFault where
   | formalInput (cause : ComputationFormalInputPlanError)
-  | execution (cause : AddressedDateFromDateTimeFault)
+  | preliminary (cause : CheckedIndexPreliminaryError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : AddressedDateFromDateTimeFault)
   deriving Repr, DecidableEq
 
 namespace CheckedAddressedDateFromDateTime
@@ -25,14 +27,19 @@ def formalInputPlan (operation : CheckedAddressedDateFromDateTime model) :
   checkComputationFormalInputPlan model operation.fieldDependencies
     [operation.target.checked.target.id]
 
-/-- Collect the exact source findings eagerly, then execute and project the addressed FullDate result. -/
+/-- Prepare the exact source view once, then execute and project the addressed FullDate result while retaining the eager inventory on later faults. -/
 def executeResultWithFormalInputs
     (operation : CheckedAddressedDateFromDateTime model)
     (input : CheckedDocument model) :
     Except AddressedDateFromDateTimeCheckedResultFault
       (AddressedDateFromDateTimeRunView model ComputationFormalInputFinding) := do
   let plan ← operation.formalInputPlan |>.mapError .formalInput
-  operation.executeResult input (plan.findings input) |>.mapError .execution
+  let prepared ← plan.prepare input |>.mapError .preliminary
+  match operation.executeResultWithRead input
+      prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands with
+  | .ok view => pure view
+  | .error cause => throw (.execution prepared.formalErrorsInOperands cause)
 
 end CheckedAddressedDateFromDateTime
 
