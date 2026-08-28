@@ -25,7 +25,7 @@ Retained Kernel evidence separately bounds correspondence to A12 Kernel 30.8.1. 
 | [Translate](TRANSLATE.md) | green | Computed-target refusal to exact external diagnostic or typed local refusal |
 | [Transform](TRANSFORM.md) | green | Checked numeric-operation identity and unsafe nonidentity boundary |
 | [Compile](COMPILE.md) | green | Specialized finite condition, generated numeric-table, selected-preliminary whole calls, three selected conversion-composition plans, and addressed multi-star Number selection with exact bounded refinement |
-| [Analyze](ANALYZE.md) | green; broader graph reconstruction amber | SMT-backed presence reachability plus checked numeric-table cycle analysis |
+| [Analyze](ANALYZE.md) | green; broader graph reconstruction amber | SMT-backed presence reachability, checked numeric-table cycle analysis, and generated-computation phase-alias safety |
 | [Verify](VERIFY.md) | green | Proof-bearing same-field contradiction certificate and counterexample boundary |
 | [Synthesize](SYNTHESIZE.md) | green | SMT-produced presence witness replayed through Lean semantics |
 | [Qualify](QUALIFY.md) | green | Four independent DateTime consumer mutations and restoration |
