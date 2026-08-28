@@ -102,4 +102,87 @@ example :
       some (3, [true, true, true, false, false]) := by
   native_decide
 
+private def indexedHour :=
+  numberField 11 "Hour" ["Clock", "Rows"] [30] 23
+
+private def indexedTarget : FlatFieldDecl := {
+  id := 12
+  name := "SelectedTime"
+  groupPath := ["Clock", "Rows"]
+  repeatableScope := [30]
+  policy := { kind := .temporal .time TemporalComponents.time }
+  temporalTargetPolicy := some { format := "HH:mm:ss" }
+}
+
+private def indexedModel : FlatModel := {
+  fields := [indexedHour, indexedTarget]
+  repeatableGroups := [{
+    level := 30
+    path := ["Clock", "Rows"]
+    repeatability := some 2
+    indexField := some indexedHour.id
+  }]
+}
+
+private def indexedPrepared : PreparedFlatStringContext indexedModel
+    builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler indexedModel).toOption.get (by native_decide)
+
+private def indexedOperation? :
+    Option (CheckedAddressedTimeConstructionComputation indexedModel) :=
+  (checkAddressedTimeConstructionComputation indexedModel ["Clock", "Rows"]
+    indexedTarget.id (.hour (.number
+      (absolute ["Clock", "Rows"] indexedHour.name)))).toOption
+
+private def indexedHourCell (row : Nat) : ClassifiedCellInput := {
+  address := { field := indexedHour.id, path := [row] }
+  stored := "5"
+  raw := .parsed (.num 5)
+}
+
+private def indexedTargetCell (row : Nat) : ClassifiedCellInput := {
+  address := { field := indexedTarget.id, path := [row] }
+  stored := "01:00:00"
+  raw := .parsed (.temporal (.time
+    { epochMillis := 3600000 }
+    ⟨1, 0, 0, by decide⟩))
+}
+
+private def indexedInput? : Option (CheckedDocument indexedModel) :=
+  (checkDocument indexedPrepared "en_US" {
+    instantiatedRows := [row 30 [1], row 30 [2]]
+    cells := [
+      indexedHourCell 1,
+      indexedHourCell 2,
+      indexedTargetCell 1,
+      indexedTargetCell 2
+    ]
+  }).toOption
+
+/- Duplicate numeric indexes are both eager formal inputs and reached hour-component poison, so both source-filled Time targets clear. -/
+example :
+    (do
+      let operation ← indexedOperation?
+      let input ← indexedInput?
+      let result ← operation.executeResultWithFormalInputs input |>.toOption
+      pure (
+        result.time.formalErrorsInOperands,
+        result.time.withoutErrors.map (·.targetField),
+        result.time.withErrors,
+        result.time.cleared)) = some ([
+          {
+            address := { field := indexedHour.id, path := [1] }
+            cause := .duplicateIndex
+          },
+          {
+            address := { field := indexedHour.id, path := [2] }
+            cause := .duplicateIndex
+          }
+        ], [], [], [
+          { field := indexedTarget.id, path := [1] },
+          { field := indexedTarget.id, path := [2] }
+        ]) := by
+  native_decide
+
 end A12Kernel.Conformance.AddressedTimeConstructionFormalInput

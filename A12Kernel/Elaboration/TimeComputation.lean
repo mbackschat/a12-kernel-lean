@@ -507,66 +507,97 @@ structure AddressedTimeConstructionRunView (model : FlatModel)
 
 namespace CheckedAddressedTimeNumberField
 
-def read (checked : CheckedAddressedTimeNumberField model targetScope)
-    (input : CheckedDocument model) (environment : Env) :
+def readWith (checked : CheckedAddressedTimeNumberField model targetScope)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
     Except AddressedTimeConstructionFault TimeConstructionComponent := do
   let path ← environment.pathForScope checked.declaration.repeatableScope
     |>.mapError (.sourceEnvironment checked.source.id)
-  let cell ← input.read { field := checked.source.id, path }
+  let cell ← read { field := checked.source.id, path }
     |>.mapError (fun cause => .component (.document cause))
   CheckedTimeNumberField.classifyTimeNumberComponent checked.source.id
     (observeCell .computation cell) |>.mapError .component
+
+def read (checked : CheckedAddressedTimeNumberField model targetScope)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedTimeConstructionFault TimeConstructionComponent :=
+  checked.readWith input.read environment
 
 end CheckedAddressedTimeNumberField
 
 namespace CheckedAddressedTimeStringField
 
-def read (checked : CheckedAddressedTimeStringField model targetScope)
-    (input : CheckedDocument model) (environment : Env) :
+def readWith (checked : CheckedAddressedTimeStringField model targetScope)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
     Except AddressedTimeConstructionFault TimeConstructionComponent := do
   let path ← environment.pathForScope checked.declaration.repeatableScope
     |>.mapError (.sourceEnvironment checked.source.id)
-  let cell ← input.read { field := checked.source.id, path }
+  let cell ← read { field := checked.source.id, path }
     |>.mapError (fun cause => .component (.document cause))
   CheckedTimeStringField.classifyTimeStringComponent checked.source.id
     (observeCell .computation cell) |>.mapError .component
+
+def read (checked : CheckedAddressedTimeStringField model targetScope)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedTimeConstructionFault TimeConstructionComponent :=
+  checked.readWith input.read environment
 
 end CheckedAddressedTimeStringField
 
 namespace CheckedAddressedTimeExtractorField
 
-def read (checked : CheckedAddressedTimeExtractorField model targetScope)
-    (input : CheckedDocument model) (environment : Env) :
+def readWith (checked : CheckedAddressedTimeExtractorField model targetScope)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
     Except AddressedTimeConstructionFault TimeConstructionComponent := do
   let path ← environment.pathForScope checked.declaration.repeatableScope
     |>.mapError (.sourceEnvironment checked.source.id)
-  let cell ← input.read { field := checked.source.id, path }
+  let cell ← read { field := checked.source.id, path }
     |>.mapError (fun cause => .component (.document cause))
   CheckedTimeExtractorField.classifyTimeExtractorComponent checked.source.id
     checked.source.kind checked.part (observeCell .computation cell)
       |>.mapError .component
 
+def read (checked : CheckedAddressedTimeExtractorField model targetScope)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedTimeConstructionFault TimeConstructionComponent :=
+  checked.readWith input.read environment
+
 end CheckedAddressedTimeExtractorField
 
 namespace CheckedAddressedTimeComponent
 
-def read (checked : CheckedAddressedTimeComponent model targetScope)
-    (input : CheckedDocument model) (environment : Env) :
+def readWith (checked : CheckedAddressedTimeComponent model targetScope)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
     Except AddressedTimeConstructionFault TimeConstructionComponent :=
   match checked with
   | .constant value => pure (.value value)
-  | .number field => field.read input environment
-  | .string field => field.read input environment
-  | .extractor field => field.read input environment
+  | .number field => field.readWith read environment
+  | .string field => field.readWith read environment
+  | .extractor field => field.readWith read environment
+
+def read (checked : CheckedAddressedTimeComponent model targetScope)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedTimeConstructionFault TimeConstructionComponent :=
+  checked.readWith input.read environment
 
 end CheckedAddressedTimeComponent
 
 namespace CheckedAddressedTimeComponents
 
+def evaluateWithRead
+    (checked : CheckedAddressedTimeComponents model targetScope)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
+    Except AddressedTimeConstructionFault TimeConstructionResult :=
+  checked.evaluateWith fun component => component.readWith read environment
+
 def evaluate (checked : CheckedAddressedTimeComponents model targetScope)
     (input : CheckedDocument model) (environment : Env) :
     Except AddressedTimeConstructionFault TimeConstructionResult :=
-  checked.evaluateWith fun component => component.read input environment
+  checked.evaluateWithRead input.read environment
 
 end CheckedAddressedTimeComponents
 
@@ -584,48 +615,75 @@ def referencesField
     (field : FieldId) : Bool :=
   operation.components.referencesField field
 
+def evaluateOutcomeWithRead
+    (operation : CheckedAddressedTimeConstructionComputation model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
+    Except AddressedTimeConstructionFault TimeTargetOutcome := do
+  let result ← operation.components.evaluateWithRead read environment
+  pure (operation.target.evaluate result.asTimeComputationResult)
+
 def evaluateOutcome
     (operation : CheckedAddressedTimeConstructionComputation model)
     (input : CheckedDocument model) (environment : Env) :
-    Except AddressedTimeConstructionFault TimeTargetOutcome := do
-  let result ← operation.components.evaluate input environment
-  pure (operation.target.evaluate result.asTimeComputationResult)
+    Except AddressedTimeConstructionFault TimeTargetOutcome :=
+  operation.evaluateOutcomeWithRead input.read environment
 
-private def evaluateAt
+private def evaluateAtWithRead
     (operation : CheckedAddressedTimeConstructionComputation model)
-    (input : CheckedDocument model) (environment : Env) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
     Except AddressedTimeConstructionFault AddressedTimeConstructionOutcome := do
   let path ← environment.pathForScope
     operation.checkedTarget.declaration.repeatableScope
       |>.mapError .targetEnvironment
-  let outcome ← operation.evaluateOutcome input environment
+  let outcome ← operation.evaluateOutcomeWithRead read environment
   pure {
     targetField := { field := operation.checkedTarget.targetField, path }
     outcome }
+
+/-- Execute at every physical target row while reading each component through one caller-supplied transient overlay. -/
+def executeWithRead
+    (operation : CheckedAddressedTimeConstructionComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except AddressedTimeConstructionFault
+      (List AddressedTimeConstructionOutcome) := do
+  let environments ← input.actualRowEnvironments
+    operation.checkedTarget.declaration.repeatableScope
+      |>.mapError .targetRows
+  environments.mapM (operation.evaluateAtWithRead read)
 
 /-- Execute the checked construction once at every physical target row in document order. Each field component reads at its own bound scope inside that row. -/
 def execute
     (operation : CheckedAddressedTimeConstructionComputation model)
     (input : CheckedDocument model) :
     Except AddressedTimeConstructionFault
-      (List AddressedTimeConstructionOutcome) := do
-  let environments ← input.actualRowEnvironments
-    operation.checkedTarget.declaration.repeatableScope
-      |>.mapError .targetRows
-  environments.mapM (operation.evaluateAt input)
+      (List AddressedTimeConstructionOutcome) :=
+  operation.executeWithRead input input.read
+
+/-- Execute through one caller-supplied transient read and classify exact row outcomes against immutable source target state. -/
+def executeResultWithRead
+    (operation : CheckedAddressedTimeConstructionComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (residualMessages : List ResidualMessage) :
+    Except AddressedTimeConstructionFault
+      (AddressedTimeConstructionRunView model ResidualMessage) := do
+  let outcomes ← operation.executeWithRead input read
+  pure {
+    operation
+    time := TimeComputationRunView.fromOutcomesAt
+      input.sourceTimeTargetStateAt residualMessages
+      (outcomes.map fun entry => (entry.targetField, entry.outcome)) }
 
 /-- Classify exact row outcomes by ordinary immutable-source clock equality. The scalar constructor's always-changed exception does not cross this repeatable boundary. -/
 def executeResult
     (operation : CheckedAddressedTimeConstructionComputation model)
     (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
     Except AddressedTimeConstructionFault
-      (AddressedTimeConstructionRunView model ResidualMessage) := do
-  let outcomes ← operation.execute input
-  pure {
-    operation
-    time := TimeComputationRunView.fromOutcomesAt
-      input.sourceTimeTargetStateAt residualMessages
-      (outcomes.map fun entry => (entry.targetField, entry.outcome)) }
+      (AddressedTimeConstructionRunView model ResidualMessage) :=
+  operation.executeResultWithRead input input.read residualMessages
 
 end CheckedAddressedTimeConstructionComputation
 

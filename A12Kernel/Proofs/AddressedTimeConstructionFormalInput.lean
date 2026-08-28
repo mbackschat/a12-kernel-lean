@@ -5,26 +5,44 @@ import A12Kernel.Proofs.ComputationFormalInput
 
 namespace A12Kernel
 
-/-- The composed Time result's formal-input channel is exactly the eager checked-plan inventory. -/
+/-- Successful whole-call composition executes through the exact prepared read and projects its eager inventory unchanged into the Time result. -/
 theorem addressedTimeConstruction_executeResultWithFormalInputs_exact
     (operation : CheckedAddressedTimeConstructionComputation model)
     (input : CheckedDocument model)
     (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
     (outcomes : List AddressedTimeConstructionOutcome)
-    (view : AddressedTimeConstructionRunView model
-      ComputationFormalInputFinding)
     (planned : operation.formalInputPlan = .ok plan)
-    (executed : operation.execute input = .ok outcomes)
-    (produced : operation.executeResultWithFormalInputs input = .ok view) :
-    view.time.formalErrorsInOperands = plan.findings input := by
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeWithRead input
+      prepared.preliminary.readComputation = .ok outcomes) :
+    (operation.executeResultWithFormalInputs input).map
+      (fun view => view.time.formalErrorsInOperands) =
+        .ok prepared.formalErrorsInOperands := by
   rw [CheckedAddressedTimeConstructionComputation.executeResultWithFormalInputs,
-    planned] at produced
-  simp only [bind, Except.bind, Except.mapError] at produced
-  rw [CheckedAddressedTimeConstructionComputation.executeResult,
-    executed] at produced
-  simp only [bind, Except.bind, pure, Except.pure,
-    Except.ok.injEq] at produced
-  subst view
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation]
+  rw [CheckedAddressedTimeConstructionComputation.executeResultWithRead,
+    executed]
+  rfl
+
+/-- A post-preparation addressed execution failure retains the exact eager inventory beside the unchanged existing fault. -/
+theorem addressedTimeConstruction_executeResultWithFormalInputs_failure_exact
+    (operation : CheckedAddressedTimeConstructionComputation model)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (fault : AddressedTimeConstructionFault)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResultWithRead input
+      prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands = .error fault) :
+    operation.executeResultWithFormalInputs input =
+      .error (.execution prepared.formalErrorsInOperands fault) := by
+  rw [CheckedAddressedTimeConstructionComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation, executed]
   rfl
 
 end A12Kernel

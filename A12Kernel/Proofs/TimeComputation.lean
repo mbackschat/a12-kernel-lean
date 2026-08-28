@@ -118,11 +118,15 @@ theorem addressedTimeConstruction_executeResult_projects
     (executed : operation.execute input = .ok outcomes)
     (produced : operation.executeResult input messages = .ok view) :
     view.operation = operation ∧
-      view.time = TimeComputationRunView.fromOutcomesAt
+    view.time = TimeComputationRunView.fromOutcomesAt
         input.sourceTimeTargetStateAt messages
         (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
+  have executedWithRead :
+      operation.executeWithRead input input.read = .ok outcomes := by
+    simpa [CheckedAddressedTimeConstructionComputation.execute] using executed
   rw [CheckedAddressedTimeConstructionComputation.executeResult,
-    executed] at produced
+    CheckedAddressedTimeConstructionComputation.executeResultWithRead,
+    executedWithRead] at produced
   simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
   subst view
   exact ⟨rfl, rfl⟩
