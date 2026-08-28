@@ -19,9 +19,9 @@ Retained Kernel evidence separately bounds correspondence to A12 Kernel 30.8.1. 
 
 ## Portfolio
 
-| Consumer type | Current status | First concrete task |
+| Consumer type | Current status | Current bounded tasks |
 |---|---|---|
-| [Execute](EXECUTE.md) | green | Exact-address DateTime calendar-day execution and application |
+| [Execute](EXECUTE.md) | green | Exact-address DateTime application plus generated numeric-table target evaluation |
 | [Translate](TRANSLATE.md) | green | Computed-target refusal to exact external diagnostic or typed local refusal |
 | [Transform](TRANSFORM.md) | green | Checked numeric-operation identity and unsafe nonidentity boundary |
 | [Compile](COMPILE.md) | green | Specialized finite condition and generated numeric-table plans with exhaustive refinement |
