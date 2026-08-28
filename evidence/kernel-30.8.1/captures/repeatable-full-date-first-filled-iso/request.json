@@ -1,0 +1,76 @@
+{
+  "model": "FullDateParentProbe_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "pre1900-boundary-and-post1900",
+      "documentInline": {
+        "FullDateParentProbe_DM": {
+          "Projects": [
+            {
+              "Choices": [
+                {
+                  "PromiseDate": "1899-12-31"
+                }
+              ],
+              "Tasks": [
+                {
+                  "SelectedDate": "2024-06-01"
+                }
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "PromiseDate": "1900-01-01"
+                }
+              ],
+              "Tasks": [
+                {
+                  "SelectedDate": "2024-06-01"
+                }
+              ]
+            },
+            {
+              "Choices": [
+                {
+                  "PromiseDate": "2024-03-15"
+                }
+              ],
+              "Tasks": [
+                {
+                  "SelectedDate": "2024-06-01"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "malformed-source",
+      "documentInline": {
+        "FullDateParentProbe_DM": {
+          "Projects": [
+            {
+              "Choices": [
+                {
+                  "PromiseDate": "2024-02-31"
+                }
+              ],
+              "Tasks": [
+                {
+                  "SelectedDate": "2024-06-01"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

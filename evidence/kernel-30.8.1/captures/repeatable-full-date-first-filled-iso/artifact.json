@@ -1,0 +1,236 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "38aeb23b5849b831f8ae6ee09579367e28ce982b",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FullDateParentProbe_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "pre1900-boundary-and-post1900",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SelectedDateComp",
+              "field" : "FullDateParentProbe_DM/Projects/Tasks/SelectedDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Selected date differs from the first promise date.",
+              "referenced" : [
+                "/FullDateParentProbe_DM[1]/Projects[1]/Choices[0]/PromiseDate",
+                "FullDateParentProbe_DM/Projects/Tasks/SelectedDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SelectedDateComp",
+              "field" : "FullDateParentProbe_DM/Projects[2]/Tasks/SelectedDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Selected date differs from the first promise date.",
+              "referenced" : [
+                "/FullDateParentProbe_DM[1]/Projects[2]/Choices[0]/PromiseDate",
+                "FullDateParentProbe_DM/Projects[2]/Tasks/SelectedDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SelectedDateComp",
+              "field" : "FullDateParentProbe_DM/Projects[3]/Tasks/SelectedDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Selected date differs from the first promise date.",
+              "referenced" : [
+                "/FullDateParentProbe_DM[1]/Projects[3]/Choices[0]/PromiseDate",
+                "FullDateParentProbe_DM/Projects[3]/Tasks/SelectedDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "FullDateParentProbe_DM/Projects/Tasks/SelectedDate",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "1899-12-31"
+              },
+              {
+                "field" : "FullDateParentProbe_DM/Projects[2]/Tasks/SelectedDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1900-01-01"
+              },
+              {
+                "field" : "FullDateParentProbe_DM/Projects[3]/Tasks/SelectedDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-15"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SelectedDateComp",
+              "field" : "FullDateParentProbe_DM/Projects/Tasks/SelectedDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Selected date differs from the first promise date.",
+              "referenced" : [
+                "/FullDateParentProbe_DM[1]/Projects[1]/Choices[0]/PromiseDate",
+                "FullDateParentProbe_DM/Projects/Tasks/SelectedDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SelectedDateComp",
+              "field" : "FullDateParentProbe_DM/Projects[2]/Tasks/SelectedDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Selected date differs from the first promise date.",
+              "referenced" : [
+                "/FullDateParentProbe_DM[1]/Projects[2]/Choices[0]/PromiseDate",
+                "FullDateParentProbe_DM/Projects[2]/Tasks/SelectedDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SelectedDateComp",
+              "field" : "FullDateParentProbe_DM/Projects[3]/Tasks/SelectedDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Selected date differs from the first promise date.",
+              "referenced" : [
+                "/FullDateParentProbe_DM[1]/Projects[3]/Choices[0]/PromiseDate",
+                "FullDateParentProbe_DM/Projects[3]/Tasks/SelectedDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "FullDateParentProbe_DM/Projects/Tasks/SelectedDate",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "1899-12-31"
+              },
+              {
+                "field" : "FullDateParentProbe_DM/Projects[2]/Tasks/SelectedDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1900-01-01"
+              },
+              {
+                "field" : "FullDateParentProbe_DM/Projects[3]/Tasks/SelectedDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-15"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "malformed-source",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "FullDateParentProbe_DM/Projects/Choices/PromiseDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed. '2024-02-31' is not a valid date because the day '31' does not exist in the selected month.",
+              "referenced" : [
+                "FullDateParentProbe_DM/Projects/Choices/PromiseDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "FullDateParentProbe_DM/Projects/Tasks/SelectedDate",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "FullDateParentProbe_DM/Projects/Choices/PromiseDate",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed. '2024-02-31' is not a valid date because the day '31' does not exist in the selected month.",
+                "referenced" : [
+                  "FullDateParentProbe_DM/Projects/Choices/PromiseDate"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "FullDateParentProbe_DM/Projects/Choices/PromiseDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format YYYY-MM-DD are allowed. '2024-02-31' is not a valid date because the day '31' does not exist in the selected month.",
+              "referenced" : [
+                "FullDateParentProbe_DM/Projects/Choices/PromiseDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "FullDateParentProbe_DM/Projects/Tasks/SelectedDate",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "FullDateParentProbe_DM/Projects/Choices/PromiseDate",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "Only dates in the format YYYY-MM-DD are allowed. '2024-02-31' is not a valid date because the day '31' does not exist in the selected month.",
+                "referenced" : [
+                  "FullDateParentProbe_DM/Projects/Choices/PromiseDate"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -258,6 +258,15 @@ The route it took is worth keeping, because it is the cheap half of the discharg
 - `limit`: computation establishes two fixed nonrepeatable groups with exactly two direct declarations, the Boolean-plus-Confirm `True` and two-Boolean `False` kind forms, direct checked-document execution, and exact value/clear outcomes. Validation movement is measured for the fixed direct-field extent and fixed group-entity count only. Other arities or kind orders, recursive descendants, fixed groups inside repeatable scope, Enumeration/category projection, and legacy raw-`Document` routes remain outside.
 - `sync`: accepted [`SPEC-2026-08-24-05`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-24-05--fixed-boolean-group-numberofvalueinfields-computation-expands-its-direct-fields) at reviewed a12-dmkits `975a2e78602eaf26126168cd203bd84738885322`.
 
+<a id="src-boolean-confirm-constant-computation-targets"></a>
+#### Boolean and Confirm constant computation targets
+
+- `revision`: reviewed a12-dmkits `38aeb23b5849b831f8ae6ee09579367e28ce982b`, kernel `30.8.1`.
+- `route`: `RuleValidator.check` runs the Kernel consistency checker over four raw `DraftComputation` controls, changing only Boolean versus Confirm target kind and `True` versus `False` operation.
+- `claim`: Boolean accepts both constants. Confirm accepts `True` and refuses `False` with `MVK_INVALID_COMPARE_TO_YES`, so the comparison-side confirmation asymmetry also gates computation targets.
+- `limit`: static legality for two constants and two target kinds only. Runtime result, placement, preconditions, alternatives, and other Boolean operations remain unmeasured.
+- `sync`: inbound observation already implemented and maintained by a12-dmkits; no outbound ledger entry.
+
 <a id="src-token-value-count-group-runtime"></a>
 #### Token group value-count runtime
 

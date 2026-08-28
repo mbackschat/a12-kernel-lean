@@ -1,0 +1,103 @@
+{
+  "header" : {
+    "id" : "FullDateParentProbe_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "FullDateParentProbe_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/FullDateParentProbe_DM",
+        "name" : "FullDateParentProbe_DM",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/FullDateParentProbe_DM/Projects",
+            "name" : "Projects",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/FullDateParentProbe_DM/Projects/Choices",
+                "name" : "Choices",
+                "Group" : {
+                  "repeatability" : 5,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/FullDateParentProbe_DM/Projects/Choices/PromiseDate",
+                    "name" : "PromiseDate",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateType",
+                        "DateType" : {
+                          "format" : "yyyy-MM-dd"
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/FullDateParentProbe_DM/Projects/Tasks",
+                "name" : "Tasks",
+                "Group" : {
+                  "repeatability" : 5,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/FullDateParentProbe_DM/Projects/Tasks/SelectedDate",
+                    "name" : "SelectedDate",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateType",
+                        "DateType" : {
+                          "format" : "yyyy-MM-dd",
+                          "youngerThan1900Check" : true
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/FullDateParentProbe_DM/Projects/Tasks/SelectedDateComp",
+                    "name" : "SelectedDateComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../SelectedDate",
+                      "computationAlternatives" : [ {
+                        "operation" : "FirstFilledValue(../Choices*/PromiseDate)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Selected date differs from the first promise date."
+                      } ]
+                    }
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -232,21 +232,21 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-date-range-interpretation-first-filled-star"></a>
 - [Direct-star DateRange `FirstFilledValue` across year interpretations, measured locally 2026-08-24](sources/temporal-and-message-probes.md#src-date-range-interpretation-first-filled-star)
 <a id="src-date-range-repeatable-first-filled"></a>
-- [Sibling-star DateRange `FirstFilledValue` into exact repeatable targets, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-date-range-repeatable-first-filled)
+- [Sibling-star DateRange `FirstFilledValue` into exact repeatable targets, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-date-range-repeatable-first-filled)
 <a id="src-datetime-repeatable-first-filled"></a>
-- [Sibling-star DateTime `FirstFilledValue` into exact repeatable targets, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-datetime-repeatable-first-filled)
+- [Sibling-star DateTime `FirstFilledValue` into exact repeatable targets, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-datetime-repeatable-first-filled)
 <a id="src-full-date-repeatable-first-filled"></a>
-- [Checked sibling-star FULL Date target admission, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-full-date-repeatable-first-filled)
+- [Checked sibling-star FULL Date target admission, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-full-date-repeatable-first-filled)
 <a id="src-time-repeatable-first-filled"></a>
-- [Sibling-star Time `FirstFilledValue` target admission and runtime, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-time-repeatable-first-filled)
+- [Sibling-star Time `FirstFilledValue` target admission and runtime, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-time-repeatable-first-filled)
 <a id="src-time-repeatable-constant-construction"></a>
-- [Repeatable constant `Time(...)` construction result classification, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-time-repeatable-constant-construction)
+- [Repeatable constant `Time(...)` construction result classification, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-time-repeatable-constant-construction)
 <a id="src-time-repeatable-number-components"></a>
-- [Repeatable Number-backed `Time(...)` construction across root, enclosing, and leaf scopes, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-time-repeatable-number-components)
+- [Repeatable Number-backed `Time(...)` construction across root, enclosing, and leaf scopes, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-time-repeatable-number-components)
 <a id="src-time-repeatable-string-components"></a>
-- [Repeatable digit-String-backed `Time(...)` construction across root, enclosing, and leaf scopes, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-time-repeatable-string-components)
+- [Repeatable digit-String-backed `Time(...)` construction across root, enclosing, and leaf scopes, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-time-repeatable-string-components)
 <a id="src-time-repeatable-direct-extractor-components"></a>
-- [Repeatable direct-extractor `Time(...)` construction across root, enclosing, and leaf scopes, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-time-repeatable-direct-extractor-components)
+- [Repeatable direct-extractor `Time(...)` construction across root, enclosing, and leaf scopes, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-time-repeatable-direct-extractor-components)
 <a id="src-datetime-component-sibling-parallel-refusal"></a>
 - [Sibling-parallel refusal for DateTime component extractors, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-datetime-component-sibling-parallel-refusal)
 <a id="src-date-range-unconfigured-interpretation-first-filled-star"></a>
@@ -312,6 +312,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Boolean-group value-count computation shape matrix](sources/group-and-iteration-probes.md#src-boolean-group-value-count-computation-shape-matrix)
 <a id="src-boolean-fixed-group-value-count-computation"></a>
 - [Boolean fixed-group value-count computation](sources/group-and-iteration-probes.md#src-boolean-fixed-group-value-count-computation)
+<a id="src-boolean-confirm-constant-computation-targets"></a>
+- [Boolean and Confirm constant computation targets](sources/group-and-iteration-probes.md#src-boolean-confirm-constant-computation-targets)
 <a id="src-token-value-count-group-runtime"></a>
 - [Token group value-count runtime](sources/group-and-iteration-probes.md#src-token-value-count-group-runtime)
 <a id="src-token-value-count-fixed-group-admission"></a>

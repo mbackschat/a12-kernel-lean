@@ -90,11 +90,6 @@ theorem timeComputationRun_sourceValueChangedAt_different
       true := by
   simp [TimeComputationRunView.sourceValueChangedAt, different]
 
-/-- Every successful scalar `Time(...)` construction enters the changed subset, even when its stored clock text equals the source. -/
-@[simp] theorem scalarTimeConstructionRun_reportsChanged
-    (computed : TimeComputedInstance Target) :
-    TimeComputationRunView.scalarConstructionReportsChanged computed = true := rfl
-
 /-- The repeatable construction certificate excludes its target from every addressed field dependency. -/
 theorem checkedAddressedTimeConstructionComputation_excludes_target
     (operation : CheckedAddressedTimeConstructionComputation model) :

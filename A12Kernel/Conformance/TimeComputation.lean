@@ -120,7 +120,7 @@ private def constructionView? (input : DocumentData)
     (messages : List FormalCause := []) :
     Option (TimeComputationRunView FormalCause) := do
   let checked ← (checkDocument prepared "en_US" input).toOption
-  pure (TimeComputationRunView.fromScalarConstructionOutcomes checked messages
+  pure (TimeComputationRunView.fromOutcomes checked messages
     [(1, outcome)])
 
 private def checkedApplication? (input : DocumentData) :
@@ -263,12 +263,12 @@ example :
         .poison .malformed := by
   native_decide
 
-/- Kernel 30.8.1 reports every clean `Time(...)` construction in the changed subset, including source-identical text. -/
+/- Typed Time ingress classifies construction results by ordinary stored-clock equality. -/
 example :
     (constructionView? oldSource (.accepted oldTime)).map
         (fun view => (view.withoutErrors, view.withChanges)) =
       some ([{ targetField := 1, value := oldTime }],
-        [{ targetField := 1, value := oldTime }]) ∧
+        []) ∧
     (constructionView? oldSource (.accepted nextTime)).map
         (fun view => (view.withoutErrors, view.withChanges)) =
       some ([{ targetField := 1, value := nextTime }],
@@ -307,15 +307,14 @@ example :
         pure (applied 1)) = some .presentEmpty := by
   native_decide
 
-/- A source-identical `Time(...)` construction remains an application action and overwrites a different destination clock. -/
+/- A source-identical typed Time construction produces no action and preserves a different destination clock. -/
 example :
     (do
       let view ← constructionView? oldSource (.accepted oldTime)
       let applied ←
         view.applyTo (destinationWith (.presentValue nextTime)) |>.toOption
       pure (view.withChanges, applied 1)) =
-      some ([{ targetField := 1, value := oldTime }],
-        .presentValue oldTime) := by
+      some ([], .presentValue nextTime) := by
   native_decide
 
 /- A duplicate clear/write target is rejected before destination state participates. -/
@@ -331,7 +330,7 @@ example :
         some (some (.duplicateActionTarget 1)) := by
   native_decide
 
-/- Checked application keeps the constructor's source-identical action, starts from the separate destination, and preserves a distinct unrelated value. -/
+/- Checked application preserves the separate destination and unrelated value when typed source identity suppresses the action. -/
 example : (do
     let view ← constructionView? oldSource (.accepted oldTime)
     let checked ← checkedApplication? {
@@ -345,7 +344,7 @@ example : (do
     }
     let applied ← view.applyToChecked checked |>.toOption
     pure (applied target.id, applied other.id)) =
-      some (.presentValue oldTime, .presentValue otherTime) := by
+      some (.presentValue nextTime, .presentValue otherTime) := by
   native_decide
 
 /- Checked target validation retains the exact lookup cause and separates family and scope failures. -/
@@ -411,13 +410,13 @@ example :
           [{ targetField := 1, value := ⟨"05:00:00", by decide⟩ }]) := by
   native_decide
 
-/- Checked nonrepeatable `Time(...)` execution selects the scalar-construction policy, so a source-identical clock remains changed. -/
+/- Checked nonrepeatable `Time(...)` execution applies ordinary typed source equality. -/
 example :
     (executionView? (.second
       (.constant "05") (.constant "02") (.constant "08"))
       oldSource).map (fun view => (view.withoutErrors, view.withChanges)) =
       some ([{ targetField := 1, value := oldTime }],
-        [{ targetField := 1, value := oldTime }]) := by
+        []) := by
   native_decide
 
 /- The complete prefix reads in generated order; the first reached formal cause wins and clears a source-filled target without manufacturing an error. -/
@@ -535,7 +534,7 @@ example :
           .presentValue ⟨"06:00:00", by decide⟩) := by
   native_decide
 
-/- World-aware nonrepeatable `Time(...)` execution selects the same scalar-construction policy for a source-identical clock. -/
+/- World-aware nonrepeatable `Time(...)` execution applies the same typed source equality. -/
 example :
     (do
       let operation ← worldLiteralOperation?
@@ -545,7 +544,7 @@ example :
       let view ← worldView? operation
         { now := { epochMillis := 18000000 } } sourceInput
       pure view.withChanges) =
-      some [{ targetField := 1, value := ⟨"05:00:00", by decide⟩ }] := by
+      some [] := by
   native_decide
 
 private def addressedConstructionModel : FlatModel := {

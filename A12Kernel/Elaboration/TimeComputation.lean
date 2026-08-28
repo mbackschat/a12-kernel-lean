@@ -447,7 +447,7 @@ def executeResult
     (residualMessages : List ResidualMessage) :
     Except TimeComponentsFault (TimeComputationRunView ResidualMessage) := do
   let outcome ← operation.evaluateOutcome input
-  pure (TimeComputationRunView.fromScalarConstructionOutcomes input residualMessages
+  pure (TimeComputationRunView.fromOutcomes input residualMessages
     [(operation.target.checked.target.id, outcome)])
 
 end CheckedTimeConstructionComputation
@@ -481,7 +481,7 @@ def executeResult
     (residualMessages : List ResidualMessage) :
     Except TimeComponentsFault (TimeComputationRunView ResidualMessage) := do
   let outcome ← operation.evaluateOutcome world input
-  pure (TimeComputationRunView.fromScalarConstructionOutcomes input residualMessages
+  pure (TimeComputationRunView.fromOutcomes input residualMessages
     [(operation.target.checked.target.id, outcome)])
 
 end CheckedWorldTimeConstructionComputation
@@ -677,7 +677,7 @@ def executeResultWithRead
       input.sourceTimeTargetStateAt residualMessages
       (outcomes.map fun entry => (entry.targetField, entry.outcome)) }
 
-/-- Classify exact row outcomes by ordinary immutable-source clock equality. The scalar constructor's always-changed exception does not cross this repeatable boundary. -/
+/-- Classify exact row outcomes by ordinary immutable-source clock equality. -/
 def executeResult
     (operation : CheckedAddressedTimeConstructionComputation model)
     (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
