@@ -207,6 +207,7 @@ import A12Kernel.Proofs.StringApplication
 import A12Kernel.Proofs.Verdict
 import A12Kernel.Proofs.ValueList
 import A12Kernel.Proofs.FirstFilledValue
+import A12Kernel.Proofs.BooleanConstantComputation
 import A12Kernel.Proofs.BooleanFirstFilledComputation
 import A12Kernel.Proofs.AddressedBooleanFirstFilledComputation
 import A12Kernel.Proofs.AddressedNumberFirstFilledComputation

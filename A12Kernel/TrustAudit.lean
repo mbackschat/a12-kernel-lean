@@ -2446,3 +2446,4 @@ run_cmd do
 #print axioms A12Kernel.addressedTimeFirstFilled_executeResultWithFormalInputs_failure_exact
 #print axioms A12Kernel.addressedTimeFirstFilledRun_applyToChecked_delegates
 #print axioms A12Kernel.booleanValueCount_confirm_empty
+#print axioms A12Kernel.checkBooleanConstantOperation_accepts_iff

@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, and the Number aggregates' op-keyed expansion-kind classes, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, and the whole-rule error-field reference gate. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, and the whole-rule error-field reference gate. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -21,6 +21,8 @@ inductive KernelStaticDiagnostic where
   | varyingTypesNotAllowed
   /-- `FirstFilledValue` received the measured homogeneous two-Confirm operand expansion. -/
   | noBoolyAllowed
+  /-- A Confirm computation target received the constant False. True is accepted, and Boolean targets accept either constant. -/
+  | invalidCompareToYes
   /-- An operand list below the operator's required arity. -/
   | paramSizeInvalidN
   /-- A filled-group count carries one fixed unstarred operand, including a repeatable operand whose level is bound by the error-field row. The same repeatable operand outside that row draws `noWildcard`; a single starred operand is admitted, so this is not simply an operand-count gate. -/
@@ -103,6 +105,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .onlyStringEnumNumberAllowed => "MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED"
   | .varyingTypesNotAllowed => "MVK_VARYING_TYPES_NOT_ALLOWED"
   | .noBoolyAllowed => "MVK_NO_BOOLY_ALLOWED"
+  | .invalidCompareToYes => "MVK_INVALID_COMPARE_TO_YES"
   | .paramSizeInvalidN => "MVK_PARAMSIZE_INVALIDN"
   | .paramSizeInvalidGN => "MVK_PARAMSIZE_INVALIDGN"
   | .duplicateParam1 => "MVK_DUPLICATE_PARAM1"
@@ -148,7 +151,8 @@ def kernelCode : KernelStaticDiagnostic → String
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
 def all : List KernelStaticDiagnostic :=
   [.onlyStringEnumNumberDateAllowed, .onlyStringEnumNumberAllowed,
-    .varyingTypesNotAllowed, .noBoolyAllowed, .paramSizeInvalidN,
+    .varyingTypesNotAllowed, .noBoolyAllowed, .invalidCompareToYes,
+    .paramSizeInvalidN,
     .paramSizeInvalidGN, .paramSizeInvalid2, .duplicateParam1, .duplicateParam2,
     .noWildcard, .invalidWildcard, .noWildcardsGAllowed, .noWildcardsAllowed,
     .noGroupsAllowed,

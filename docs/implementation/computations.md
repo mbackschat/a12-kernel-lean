@@ -13,6 +13,15 @@
 - `assurance`: E/P closed for admitted leaves; upstream L locked for poison order; C partial through cascade
 - `remains`: Wider leaves follow family gaps
 
+<a id="cap-boolean-confirm-constant-computation-target-admission"></a>
+#### Boolean/Confirm constant computation target admission
+
+- `boundary`: A fixed nonrepeatable target in its declaring group admits one unconditional Boolean constant according to its declaration kind. Boolean admits `True` and `False`; Confirm admits only `True`, while Confirm with `False` is refused as `MVK_INVALID_COMPARE_TO_YES`. Other target kinds remain local unsupported refusals with no invented Kernel code.
+- `owner`: [`BooleanConstantComputation.lean`](../../A12Kernel/Elaboration/BooleanConstantComputation.lean), its [exact admission law](../../A12Kernel/Proofs/BooleanConstantComputation.lean), and the [Translate/Explain decision matrix](../../A12Kernel/Conformance/ComputationTargetDiagnosticConsumer.lean)
+- `spec-and-source`: [§11 ground rules](../../spec/09-computations.md#1-the-ground-rules) and the [Boolean/Confirm target checkpoint](../SOURCES.md#src-boolean-confirm-constant-computation-targets)
+- `assurance`: E/P close the exact target-kind gate, private checked carrier, and diagnostic projection. The four measured Boolean/Confirm rows and exact refusal identity are L locked by that checkpoint; the non-Boolean control prevents unsupported local target kinds from being misreported as that class. C/X/Q none.
+- `remains`: Runtime result, application, preconditions, alternatives, repeatable targets, and other Boolean operations remain with [SG4](../SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition).
+
 <a id="cap-first-selected-tables"></a>
 #### First-selected tables
 
