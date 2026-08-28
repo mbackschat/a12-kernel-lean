@@ -164,6 +164,7 @@ import A12Kernel.Elaboration.StarPath
 import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Elaboration.BooleanFirstFilledComputation
 import A12Kernel.Elaboration.AddressedBooleanFirstFilledComputation
+import A12Kernel.Elaboration.AddressedBooleanFirstFilledFormalInput
 import A12Kernel.Elaboration.AddressedNumberFirstFilledComputation
 import A12Kernel.Elaboration.AddressedNumberFirstFilledGeneratedValidation
 import A12Kernel.Elaboration.ExactTokenComputationResult

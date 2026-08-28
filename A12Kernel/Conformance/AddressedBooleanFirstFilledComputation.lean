@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.AddressedBooleanFirstFilledComputation
+import A12Kernel.Elaboration.AddressedBooleanFirstFilledFormalInput
 
 /-! # Exact-address repeatable Boolean `FirstFilledValue` locks -/
 
@@ -43,7 +43,8 @@ private def model : FlatModel := {
     unboundTarget, rootSource, peerSource]
   repeatableGroups := [
     { level := 10, path := ["Projects"], repeatability := some 4 },
-    { level := 20, path := ["Projects", "Choices"], repeatability := some 3 },
+    { level := 20, path := ["Projects", "Choices"], repeatability := some 3,
+      indexField := some source.id },
     { level := 30, path := ["Projects", "Tasks"], repeatability := some 3 },
     { level := 40, path := ["Projects", "Choices", "Details"],
       repeatability := some 3 },
@@ -158,9 +159,15 @@ private def cell (field : FieldId) (path : List Nat)
   raw := classifyStoredBooleanText stored
 }
 
+private def documentWithRows? (selectedRows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := selectedRows, cells }).toOption
+
 private def document? (cells : List ClassifiedCellInput) :
     Option (CheckedDocument model) :=
-  (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
+  documentWithRows? rows cells
 
 private def address (field : FieldId) (path : List Nat) : CellAddr :=
   { field, path }
@@ -250,6 +257,62 @@ example : resultApplicationSummary? = some {
     row41 := .presentEmpty
     row42 := .absent
     unrelatedState := .presentValue false
+  } := by
+  native_decide
+
+private def formalFinding (path : List Nat)
+    (cause : FormalCause) : ComputationFormalInputFinding := {
+  address := address source.id path
+  cause
+}
+
+private structure FormalInputSummary where
+  planOperands : List FieldId
+  planTargets : List FieldId
+  findingsExact : Bool
+  values : List (CellAddr × Bool)
+  changes : List (CellAddr × Bool)
+  cleared : List CellAddr
+  deriving Repr, DecidableEq
+
+private def formalInputSummary? : Option FormalInputSummary := do
+  let operation ← operation?
+  let plan ← operation.formalInputPlan.toOption
+  let input ← documentWithRows? [
+      { group := 10, path := [1] }, { group := 10, path := [2] },
+      { group := 20, path := [1, 1] },
+      { group := 20, path := [2, 1] },
+      { group := 20, path := [2, 2] },
+      { group := 30, path := [1, 1] },
+      { group := 30, path := [2, 1] }] [
+    cell source.id [1, 1] "false",
+    cell source.id [2, 1] "true",
+    cell source.id [2, 2] "true",
+    cell target.id [1, 1] "true",
+    cell target.id [2, 1] "false"]
+  let result ← operation.executeResultWithFormalInputs input |>.toOption
+  let findings := result.boolean.formalErrorsInOperands
+  pure {
+    planOperands := plan.operandFields
+    planTargets := plan.computedFields
+    findingsExact := findings.length == 2 &&
+      findings.contains (formalFinding [2, 1] .duplicateIndex) &&
+      findings.contains (formalFinding [2, 2] .duplicateIndex)
+    values := result.boolean.withoutErrors.map fun item =>
+      (item.targetField, item.value)
+    changes := result.boolean.withChanges.map fun item =>
+      (item.targetField, item.value)
+    cleared := result.boolean.cleared
+  }
+
+/- Selected Boolean-index preparation stays eager while runtime poison remains parent-local: a unique `false` is a value and a reached duplicate clears only its source-filled target. -/
+example : formalInputSummary? = some {
+    planOperands := [source.id]
+    planTargets := [target.id]
+    findingsExact := true
+    values := [(address target.id [1, 1], false)]
+    changes := [(address target.id [1, 1], false)]
+    cleared := [address target.id [2, 1]]
   } := by
   native_decide
 

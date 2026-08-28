@@ -151,15 +151,17 @@ structure AddressedBooleanFirstFilledComputationRunView (model : FlatModel)
 
 namespace CheckedAddressedBooleanFirstFilledComputation
 
-private def evaluateAt
+private def evaluateAtWithRead
     (operation : CheckedAddressedBooleanFirstFilledComputation model)
-    (input : CheckedDocument model) (environment : Env) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
     Except AddressedBooleanFirstFilledComputationFault
       AddressedBooleanFirstFilledComputationOutcome := do
   let targetPath ←
     environment.pathForScope operation.target.repeatableScope
       |>.mapError .targetEnvironment
-  let resolved ← operation.source.resolveCheckedField input environment
+  let resolved ← operation.source.resolveCheckedFieldWithRead input read environment
     |>.mapError .source
   pure {
     targetField := { field := operation.targetField, path := targetPath }
@@ -167,23 +169,34 @@ private def evaluateAt
       (resolved.cells.map fun cell => booleanFirstFilledCellAt cell.cell)
   }
 
+/-- Execute one sibling-correlated first-filled scan per physical target row through a caller-supplied exact-address source view. Target topology and immutable source target state remain unchanged. -/
+def executeWithRead
+    (operation : CheckedAddressedBooleanFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except AddressedBooleanFirstFilledComputationFault
+      (List AddressedBooleanFirstFilledComputationOutcome) := do
+  let environments ← input.actualRowEnvironments operation.target.repeatableScope
+    |>.mapError .targetRows
+  environments.mapM (operation.evaluateAtWithRead input read)
+
 /-- Execute one sibling-correlated first-filled scan per physical target row in document order. -/
 def execute
     (operation : CheckedAddressedBooleanFirstFilledComputation model)
     (input : CheckedDocument model) :
     Except AddressedBooleanFirstFilledComputationFault
-      (List AddressedBooleanFirstFilledComputationOutcome) := do
-  let environments ← input.actualRowEnvironments operation.target.repeatableScope
-    |>.mapError .targetRows
-  environments.mapM (operation.evaluateAt input)
+      (List AddressedBooleanFirstFilledComputationOutcome) :=
+  operation.executeWithRead input input.read
 
-/-- Classify every exact row outcome against immutable source target state through the shared Boolean result owner. -/
-def executeResult
+/-- Classify caller-view outcomes against immutable source target state through the shared Boolean result owner. -/
+def executeResultWithRead
     (operation : CheckedAddressedBooleanFirstFilledComputation model)
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (residualMessages : List ResidualMessage) :
     Except AddressedBooleanFirstFilledComputationFault
       (AddressedBooleanFirstFilledComputationRunView model ResidualMessage) := do
-  let outcomes ← operation.execute input
+  let outcomes ← operation.executeWithRead input read
   pure {
     operation
     boolean := BooleanComputationRunView.fromSourcedOutcomes residualMessages
@@ -191,6 +204,14 @@ def executeResult
         (entry.targetField, entry.result,
           input.sourceBooleanTargetStateAt entry.targetField))
   }
+
+/-- Classify every exact row outcome against immutable source target state through the shared Boolean result owner. -/
+def executeResult
+    (operation : CheckedAddressedBooleanFirstFilledComputation model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    Except AddressedBooleanFirstFilledComputationFault
+      (AddressedBooleanFirstFilledComputationRunView model ResidualMessage) :=
+  operation.executeResultWithRead input input.read residualMessages
 
 end CheckedAddressedBooleanFirstFilledComputation
 
