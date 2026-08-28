@@ -470,6 +470,19 @@ private def multiOutcomes? : Option (List (CellAddr × NumericTargetOutcome)) :=
   let outcomes ← operation.execute input |>.toOption
   pure (outcomes.map fun entry => (entry.targetField, entry.outcome))
 
+private def multiCallerReadOutcomes? : Option
+    (List (CellAddr × NumericTargetOutcome)) := do
+  let operation ← multiOperation?
+  let input ← multiInput?
+  let outcomes ← operation.executeWithRead input (fun address => do
+    let base ← input.read address
+    if address == addr source.id [1, 2] ||
+        address == addr fallback.id [4, 1] then
+      pure (base.withFinding .duplicateIndex)
+    else
+      pure base) |>.toOption
+  pure (outcomes.map fun entry => (entry.targetField, entry.outcome))
+
 /- Target rows scan only their enclosing parent's source extent. Empty exhaustion is zero, a malformed prefix poisons, the selected value hides its malformed tail, and target rejection follows selection. -/
 example : outcomes? = some [
     (addr target.id [2, 1], .inheritedPoison .malformed),
@@ -487,6 +500,16 @@ example : multiOutcomes? = some [
     (addr target.id [3, 1], .accepted (stored 0)),
     (addr target.id [4, 1], .rejected (stored 12) .aboveMaximum),
     (addr target.id [1, 1], .accepted (stored 5))
+  ] := by
+  native_decide
+
+/- A caller-supplied leaf view can poison one reached source and one later hidden fallback without changing topology, target order, exhausted zero, or declaration-owned target rejection. -/
+example : multiCallerReadOutcomes? = some [
+    (addr target.id [2, 1], .accepted (stored 7)),
+    (addr target.id [1, 2], .inheritedPoison .duplicateIndex),
+    (addr target.id [3, 1], .accepted (stored 0)),
+    (addr target.id [4, 1], .rejected (stored 12) .aboveMaximum),
+    (addr target.id [1, 1], .inheritedPoison .duplicateIndex)
   ] := by
   native_decide
 

@@ -191,14 +191,41 @@ structure AddressedNumberFirstFilledComputationRunView (model : FlatModel)
 
 namespace CheckedAddressedNumberFirstFilledComputation
 
-private def evaluateAtEnvironment
+private def scanSourcesWithRead
     (operation : CheckedAddressedNumberFirstFilledComputation model)
-    (input : CheckedDocument model) (environment : Env) :
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (outer : Env) :
+    List (CheckedStarNumberSource model) → FirstFilledScanState →
+      Except CheckedAddressingError FirstFilledNumberResult
+  | [], state => pure state.finish
+  | source :: remaining, state => do
+      match ← CheckedNumberEntitySource.scanCheckedStarDocumentComputationWithRead
+          source input read outer state with
+      | .inl next =>
+          operation.scanSourcesWithRead input read outer remaining next
+      | .inr result => pure result
+
+private def evaluateAtEnvironmentWithRead
+    (operation : CheckedAddressedNumberFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) :
     Except AddressedNumberFirstFilledComputationFault NumericComputationResult := do
-  let result ← operation.numberSource.evaluateCheckedDocumentComputation
-      input environment
+  let result ← operation.scanSourcesWithRead input read environment
+      operation.sources {}
     |>.mapError .sourceAddressing
   pure result.asComputationResult
+
+/-- Execute one authored-order parent-local scan through a caller-supplied exact-address source view. Target rows, target state, and source topology remain immutable. -/
+def executeWithRead
+    (operation : CheckedAddressedNumberFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except AddressedNumberFirstFilledComputationFault
+      (List (SourcedNumericTargetOutcome CellAddr)) :=
+  operation.target.executeAtEnvironment input
+    (operation.evaluateAtEnvironmentWithRead input read)
 
 /-- Execute one authored-order parent-local first-filled scan per physical target row through the shared Number target checker. Exact source target state is retained before any result projection. -/
 def execute
@@ -206,8 +233,23 @@ def execute
     (input : CheckedDocument model) :
     Except AddressedNumberFirstFilledComputationFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  operation.target.executeAtEnvironment input
-    (operation.evaluateAtEnvironment input)
+  operation.executeWithRead input input.read
+
+/-- Classify caller-view outcomes against immutable target state while retaining the checked operation for Analyze and Transform consumers. -/
+def executeResultWithRead
+    (operation : CheckedAddressedNumberFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload)) :
+    Except AddressedNumberFirstFilledComputationFault
+      (AddressedNumberFirstFilledComputationRunView model Payload) := do
+  let outcomes ← operation.executeWithRead input read
+  pure {
+    operation
+    numeric := NumericComputationRunView.fromSourceOutcomesWithMessages
+      MessagePointer.ofCellAddr payloadAt supplied outcomes
+  }
 
 /-- Classify exact addressed outcomes against immutable source target state while retaining the checked operation for Analyze and Transform consumers. -/
 def executeResult
@@ -215,13 +257,8 @@ def executeResult
     (input : CheckedDocument model) (payloadAt : CellAddr → Payload)
     (supplied : List (ComputationFormalMessage Payload)) :
     Except AddressedNumberFirstFilledComputationFault
-      (AddressedNumberFirstFilledComputationRunView model Payload) := do
-  let outcomes ← operation.execute input
-  pure {
-    operation
-    numeric := NumericComputationRunView.fromSourceOutcomesWithMessages
-      MessagePointer.ofCellAddr payloadAt supplied outcomes
-  }
+      (AddressedNumberFirstFilledComputationRunView model Payload) :=
+  operation.executeResultWithRead input input.read payloadAt supplied
 
 end CheckedAddressedNumberFirstFilledComputation
 

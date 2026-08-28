@@ -46,6 +46,13 @@ theorem checkedAddressedNumberFirstFilled_sound
       operand.placement.targetNotReferenced,
       operand.targetAdmitted⟩
 
+/-- The immutable addressed executor is exactly the caller-read executor specialized to the checked document's own read. -/
+theorem checkedAddressedNumberFirstFilled_executeWithRead_base
+    (operation : CheckedAddressedNumberFirstFilledComputation model)
+    (input : CheckedDocument model) :
+    operation.executeWithRead input input.read = operation.execute input := by
+  rfl
+
 /-- Addressed result construction retains the checked operation and delegates every source-relative public partition to the shared exact Number result owner. -/
 theorem checkedAddressedNumberFirstFilled_executeResult_projects
     (operation : CheckedAddressedNumberFirstFilledComputation model)
@@ -58,8 +65,11 @@ theorem checkedAddressedNumberFirstFilled_executeResult_projects
     view.operation = operation ∧
       view.numeric = NumericComputationRunView.fromSourceOutcomesWithMessages
         MessagePointer.ofCellAddr payloadAt supplied outcomes := by
-  rw [CheckedAddressedNumberFirstFilledComputation.executeResult, executed]
+  rw [CheckedAddressedNumberFirstFilledComputation.executeResult,
+    CheckedAddressedNumberFirstFilledComputation.executeResultWithRead]
     at produced
+  change operation.executeWithRead input input.read = .ok outcomes at executed
+  rw [executed] at produced
   simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
   subst view
   exact ⟨rfl, rfl⟩

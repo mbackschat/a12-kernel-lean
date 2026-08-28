@@ -306,6 +306,27 @@ def evaluateCheckedDocumentValidation
   scanCheckedDocumentValidationOperands document outer scope
     checked.operands {}
 
+/-- Scan one unfiltered checked Number star through a caller-supplied exact-address view while retaining immutable topology and the shared cross-operand prefix state. -/
+def scanCheckedStarDocumentComputationWithRead
+    (source : CheckedStarNumberSource model)
+    (document : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (outer : Env) (state : FirstFilledScanState) :
+    Except CheckedAddressingError
+      (FirstFilledScanState ⊕ FirstFilledNumberResult) := do
+  let resolved ←
+    (source.source.path.resolve document.source.toDocument outer)
+      |>.mapError .addressing
+  match ← scanFirstFilledItemsResolving
+      (fun environment => do
+        let cell ← document.checkedCellWithRead read environment source.field.id
+        pure (observeCell .computation cell).asNumberValueListCell)
+      resolved.environments
+      (state.enterSelection resolved.environments.isEmpty
+        resolved.domain.hasOpenTail false) with
+  | .inl next => pure (.inl next)
+  | .inr result => pure (.inr result.asNumber)
+
 private def scanCheckedDocumentComputationOperand
     (document : CheckedDocument model) (outer : Env)
     (state : FirstFilledScanState) :
@@ -317,19 +338,9 @@ private def scanCheckedDocumentComputationOperand
           (← document.numberValueListCellAt .computation [] source.field) with
       | .continue next => pure (.inl next)
       | .done result => pure (.inr result.asNumber)
-  | .star source => do
-      let resolved ←
-        (source.source.path.resolve document.source.toDocument outer)
-          |>.mapError .addressing
-      match ← scanFirstFilledItemsResolving
-          (fun environment =>
-            document.numberValueListCellAt .computation environment
-              source.field)
-          resolved.environments
-          (state.enterSelection resolved.environments.isEmpty
-            resolved.domain.hasOpenTail false) with
-      | .inl next => pure (.inl next)
-      | .inr result => pure (.inr result.asNumber)
+  | .star source =>
+      scanCheckedStarDocumentComputationWithRead source document document.read
+        outer state
   | .starHaving source => do
       let resolved ←
         (source.source.source.path.resolve document.source.toDocument outer)
