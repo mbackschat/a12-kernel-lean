@@ -1,14 +1,21 @@
 import A12Kernel.Semantics.ScalarText
 import A12Kernel.Document
 
-/-! # Typed Boolean target-state application
+/-! # Typed Boolean and Confirm computation outcomes and target-state application
 
-This module retains typed Boolean identity while preserving absent, present-empty, and formally invalid nonempty placement. Its target-polymorphic state transition serves both fixed field identifiers and exact repeatable cell addresses; document traversal, scheduling, row reconstruction, and validation remain separate.
+This module retains typed Boolean and Confirm identity while preserving absent, present-empty, and formally invalid nonempty placement. Its target-polymorphic state transition serves both fixed field identifiers and exact repeatable cell addresses; document traversal, scheduling, row reconstruction, and validation remain separate.
 -/
 
 namespace A12Kernel
 
-/-- Exact comparison-relevant state of one Boolean target cell. A nonempty invalid token remains filled without pretending to carry a Boolean value. -/
+/-- Operation-neutral Boolean computation outcome. A selected source may clear on exhaustion or poison, while a constant uses only the value arm. -/
+inductive BooleanComputationOutcome where
+  | value (value : Bool)
+  | noValue
+  | poison (cause : FormalCause)
+  deriving Repr, DecidableEq
+
+/-- Exact comparison-relevant state of one Boolean or Confirm target cell. A nonempty invalid token remains filled without pretending to carry a typed value. -/
 inductive BooleanTargetState where
   | absent
   | presentEmpty
@@ -18,7 +25,7 @@ inductive BooleanTargetState where
 
 namespace BooleanTargetState
 
-/-- Return the typed Boolean identity of a valid filled target. -/
+/-- Return the typed Boolean or Confirm identity of a valid filled target. -/
 def value? : BooleanTargetState → Option Bool
   | .presentValue value => some value
   | .absent | .presentEmpty | .presentInvalid _ => none
@@ -34,7 +41,7 @@ def applyRetainedClear : BooleanTargetState → BooleanTargetState
 
 end BooleanTargetState
 
-/-- Exact caller-supplied Boolean target-state projection. -/
+/-- Exact caller-supplied Boolean or Confirm target-state projection. -/
 abbrev BooleanComputationDestination (Target : Type := FieldId) :=
   Target → BooleanTargetState
 

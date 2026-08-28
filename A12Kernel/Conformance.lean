@@ -186,6 +186,7 @@ import A12Kernel.Conformance.StringApplication
 import A12Kernel.Conformance.ValueList
 import A12Kernel.Conformance.FirstFilledValue
 import A12Kernel.Conformance.FirstFilledValueElaboration
+import A12Kernel.Conformance.BooleanConstantComputation
 import A12Kernel.Conformance.BooleanFirstFilledComputation
 import A12Kernel.Conformance.AddressedBooleanFirstFilledComputation
 import A12Kernel.Conformance.CustomFirstFilledComputation

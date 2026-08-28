@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.NumericComputationResult
+import A12Kernel.Semantics.BooleanApplication
 import A12Kernel.Semantics.Correlation
 import A12Kernel.Semantics.ScalarEquality
 import A12Kernel.Semantics.ValueList
@@ -23,12 +24,8 @@ inductive FirstFilledTokenResult where
   | unavailable (cause : FormalCause)
   deriving Repr, DecidableEq
 
-/-- Computation consumes a selected Boolean, clears on exhaustion, and poisons on reached formal invalidity. -/
-inductive FirstFilledBooleanComputationResult where
-  | value (value : Bool)
-  | noValue
-  | poison (cause : FormalCause)
-  deriving Repr, DecidableEq
+/-- The first-filled specialization of the shared Boolean computation outcome. -/
+abbrev FirstFilledBooleanComputationResult := BooleanComputationOutcome
 
 /-- One typed Boolean cell before the private canonical-token scan adapter. -/
 inductive FirstFilledBooleanCell where

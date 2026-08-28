@@ -298,7 +298,7 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-computation-conditions"></a>
 - [Computation conditions](implementation/computations.md#cap-computation-conditions)
 <a id="cap-boolean-confirm-constant-computation-target-admission"></a>
-- [Boolean/Confirm constant computation target admission](implementation/computations.md#cap-boolean-confirm-constant-computation-target-admission)
+- [Boolean/Confirm constant computation target and result/application](implementation/computations.md#cap-boolean-confirm-constant-computation-target-admission)
 <a id="cap-first-selected-tables"></a>
 - [First-selected tables](implementation/computations.md#cap-first-selected-tables)
 <a id="cap-scalar-execution-plans"></a>

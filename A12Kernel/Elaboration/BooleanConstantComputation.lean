@@ -1,7 +1,8 @@
 import A12Kernel.Elaboration.Flat.Condition.SurfaceSupport
+import A12Kernel.Elaboration.BooleanComputationResult
 import A12Kernel.Elaboration.StaticDiagnostic
 
-/-! # Boolean and Confirm constant-computation target admission -/
+/-! # Boolean and Confirm constant-computation checking, execution, and result application -/
 
 namespace A12Kernel
 
@@ -15,6 +16,10 @@ namespace BooleanConstantOperation
 def targetKind : BooleanConstantOperation → FieldKind
   | .boolean _ => .boolean
   | .confirmTrue => .confirm
+
+def value : BooleanConstantOperation → Bool
+  | .boolean value => value
+  | .confirmTrue => true
 
 end BooleanConstantOperation
 
@@ -95,5 +100,58 @@ def checkBooleanConstantComputation
       throw (.targetRepeatable target.path)
   else
     throw (.targetGroup target.groupPath declaringGroup)
+
+/-- One checked constant result retaining the target certificate beside the shared typed Boolean channels. -/
+structure BooleanConstantComputationRunView (model : FlatModel) where
+  private mk ::
+  operation : CheckedBooleanConstantComputation model
+  boolean : BooleanComputationRunView FormalCause FieldId
+
+namespace CheckedBooleanConstantComputation
+
+/-- Evaluate the already checked constant without introducing a runtime failure branch. -/
+def execute (operation : CheckedBooleanConstantComputation model) :
+    BooleanComputationOutcome :=
+  .value operation.operation.operation.value
+
+/-- Classify the constant against immutable source target identity through the shared Boolean result owner. -/
+def executeResult (operation : CheckedBooleanConstantComputation model)
+    (input : CheckedDocument model) :
+    BooleanConstantComputationRunView model := {
+  operation
+  boolean := BooleanComputationRunView.fromSourcedOutcomes [] [(
+    operation.target.id, operation.execute,
+    input.sourceBooleanTargetState operation.target.id)]
+}
+
+end CheckedBooleanConstantComputation
+
+namespace BooleanConstantComputationRunView
+
+def withoutErrors (view : BooleanConstantComputationRunView model) :=
+  view.boolean.withoutErrors
+
+def withChanges (view : BooleanConstantComputationRunView model) :=
+  view.boolean.withChanges
+
+def withErrors (view : BooleanConstantComputationRunView model) :=
+  view.boolean.withErrors
+
+def cleared (view : BooleanConstantComputationRunView model) :=
+  view.boolean.cleared
+
+def formalErrorsInOperands (view : BooleanConstantComputationRunView model) :=
+  view.boolean.formalErrorsInOperands
+
+/-- The constant result has neither target errors nor operands that could contribute formal messages. -/
+def noErrorOccurred (view : BooleanConstantComputationRunView model) : Bool :=
+  view.boolean.noErrorOccurred
+
+/-- Apply only immutable-source-classified changes to a separate checked destination of the same model. -/
+def applyToChecked (view : BooleanConstantComputationRunView model)
+    (destination : CheckedDocument model) : BooleanComputationDestination :=
+  view.boolean.applyTo destination.sourceBooleanTargetState
+
+end BooleanConstantComputationRunView
 
 end A12Kernel
