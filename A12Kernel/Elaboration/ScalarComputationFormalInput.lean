@@ -38,7 +38,8 @@ namespace CheckedScalarComputationRun
 /-- Project every checked typed step to the shared `(target, raw dependencies)` whole-call shape in certified execution order. -/
 def formalInputOperations (run : CheckedScalarComputationRun model) :
     List (FieldId × List FieldId) :=
-  run.steps.map fun step => (step.targetField, step.fieldDependencies)
+  (analyzeScalarComputationSteps run.steps).map fun analysis =>
+    (analysis.targetField, analysis.fieldDependencies)
 
 /-- Build one call-global target-excluding input plan across both scalar families. -/
 def formalInputPlan (run : CheckedScalarComputationRun model) :

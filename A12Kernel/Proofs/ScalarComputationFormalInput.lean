@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.ScalarComputationFormalInput
 import A12Kernel.Proofs.ComputationFormalInput
+import A12Kernel.Proofs.ScalarComputationRun
 import A12Kernel.Proofs.ScalarComputationRunResult
 
 /-! # Finite mixed scalar formal-input laws -/
@@ -10,8 +11,13 @@ namespace A12Kernel
 @[simp] theorem scalarComputationRun_formalInputOperations_targets
     (run : CheckedScalarComputationRun model) :
     run.formalInputOperations.map Prod.fst = run.targetFields := by
-  simp [CheckedScalarComputationRun.formalInputOperations,
-    CheckedScalarComputationRun.targetFields]
+  unfold CheckedScalarComputationRun.formalInputOperations
+  unfold CheckedScalarComputationRun.targetFields
+  rw [List.map_map]
+  change (analyzeScalarComputationSteps run.steps).map
+      (fun analysis => analysis.targetField) =
+    run.steps.map (fun step => step.targetField)
+  exact analyzeScalarComputationSteps_targets run.steps
 
 /-- Successful whole-call composition preserves the exact mixed result beside the complete eager inventory. -/
 theorem scalarComputationRun_executeResultWithFormalInputs_exact

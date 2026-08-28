@@ -2003,6 +2003,9 @@ run_cmd do
 #print axioms A12Kernel.scalarComputationPairExecutionSteps_preserved
 #print axioms A12Kernel.scalarComputationPair_executionSteps
 #print axioms A12Kernel.scalarComputationPair_execute
+#print axioms A12Kernel.analyzeScalarComputationSteps_targets
+#print axioms A12Kernel.analyzeScalarComputationSteps_kinds
+#print axioms A12Kernel.analyzeScalarComputationSteps_dependencies
 #print axioms A12Kernel.scalarComputationRun_evaluateStep_target
 #print axioms A12Kernel.scalarComputationRun_failureTransition_identity
 #print axioms A12Kernel.scalarComputationRun_executeSteps_trace

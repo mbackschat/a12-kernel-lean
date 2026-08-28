@@ -16,6 +16,13 @@ inductive CheckedScalarComputationStep (model : FlatModel) where
   | string (table : CheckedStringComputationTable model)
   | number (table : CheckedNumericComputationTable model)
 
+/-- One checked mixed scalar step projected for pre-schedule analysis without requiring or choosing a run order. -/
+structure ScalarComputationStepDependency where
+  targetField : FieldId
+  targetKind : SurfaceScalarKind
+  fieldDependencies : List FieldId
+  deriving Repr, DecidableEq
+
 namespace CheckedScalarComputationStep
 
 def targetField : CheckedScalarComputationStep model → FieldId
@@ -38,11 +45,25 @@ def fieldDependencies (step : CheckedScalarComputationStep model) :
   (model.fields.filter fun declaration =>
     step.referencesField declaration.id).map (·.id)
 
+/-- Retain one checked step's family and complete raw dependency set before any run-order certificate exists. -/
+def dependencyAnalysis (step : CheckedScalarComputationStep model) :
+    ScalarComputationStepDependency := {
+  targetField := step.targetField
+  targetKind := step.targetKind
+  fieldDependencies := step.fieldDependencies
+}
+
 def supportsScalarEvaluation : CheckedScalarComputationStep model → Bool
   | .string _ => true
   | .number table => table.supportsScalarEvaluation
 
 end CheckedScalarComputationStep
+
+/-- Project a finite candidate step list for analysis without constructing a graph or accepting a schedule. -/
+def analyzeScalarComputationSteps
+    (steps : List (CheckedScalarComputationStep model)) :
+    List ScalarComputationStepDependency :=
+  steps.map (·.dependencyAnalysis)
 
 def firstNonScalarComputationStep? :
     List (CheckedScalarComputationStep model) → Option FieldId

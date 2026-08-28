@@ -145,6 +145,11 @@ private def firstStringFromNumber :=
     .fieldValueAsString (bare "FirstNumber"))]).get
       (by native_decide)
 
+private def firstStringFromSecondNumber :=
+  (stringTable? firstStringId [(holding,
+    .fieldValueAsString (bare "SecondNumber"))]).get
+      (by native_decide)
+
 private def consumerFirst :=
   (stringTable? secondStringId [
     (.fieldFilled gateId, .literal "SAFE"),
@@ -160,6 +165,10 @@ private def secondNumberFromString :=
   (numberTable? secondNumberId [(holding,
     .binary .add (asNumber "FirstString")
       (asNumber "InputString"))]).get (by native_decide)
+
+private def secondNumberFromFirstNumber :=
+  (numberTable? secondNumberId [(holding,
+    numberField "FirstNumber")]).get (by native_decide)
 
 private def stringCell (field : FieldId) (stored : String) :
     ClassifiedCellInput :=
@@ -226,6 +235,11 @@ private def pairOutcomes?
   let pair ← (certifyScalarComputationPair first second).toOption
   let input ← checkedDocument cells
   (pair.execute world prepared.patterns input).toOption
+
+private def dependencySummary
+    (steps : List (CheckedScalarComputationStep model)) :=
+  (analyzeScalarComputationSteps steps).map fun analysis =>
+    (analysis.targetField, analysis.targetKind, analysis.fieldDependencies)
 
 private def stringNumberString : List (CheckedScalarComputationStep model) :=
   [.string firstStringValue,
@@ -424,6 +438,24 @@ example :
     (certifyScalarComputationRun [
       .number firstNumberFromStringOnly,
       .string firstStringValue]).toOption = none := by
+  native_decide
+
+/- Analyze can inspect complete mixed dependencies before run certification: the first artifact contains a three-family-edge cycle, while the second is an acyclic chain supplied in reverse dependency order. -/
+example :
+    dependencySummary [
+      .string firstStringFromSecondNumber,
+      .number firstNumberFromStringOnly,
+      .number secondNumberFromFirstNumber] = [
+        (firstStringId, .string, [secondNumberId, gateId]),
+        (firstNumberId, .number, [firstStringId, gateId]),
+        (secondNumberId, .number, [firstNumberId, gateId])] ∧
+    dependencySummary [
+      .string secondStringFromNumberOnly,
+      .number firstNumberFromStringOnly,
+      .string firstStringValue] = [
+        (secondStringId, .string, [firstNumberId, gateId]),
+        (firstNumberId, .number, [firstStringId, gateId]),
+        (firstStringId, .string, [gateId])] := by
   native_decide
 
 /- A two-step authored pair retains its original order for Analyze while Execute reverses only the forward dependency and therefore reads the producer's fresh completion instead of stale target state. -/

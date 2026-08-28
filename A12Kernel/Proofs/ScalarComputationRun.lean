@@ -259,4 +259,28 @@ theorem scalarComputationPair_execute
       pair.execution.execute world patterns input := by
   rfl
 
+/-- Pre-schedule analysis preserves every candidate target exactly and in authored order. -/
+@[simp] theorem analyzeScalarComputationSteps_targets
+    (steps : List (CheckedScalarComputationStep model)) :
+    (analyzeScalarComputationSteps steps).map (·.targetField) =
+      steps.map (·.targetField) := by
+  simp [analyzeScalarComputationSteps,
+    CheckedScalarComputationStep.dependencyAnalysis]
+
+/-- Pre-schedule analysis preserves every candidate target family exactly and in authored order. -/
+@[simp] theorem analyzeScalarComputationSteps_kinds
+    (steps : List (CheckedScalarComputationStep model)) :
+    (analyzeScalarComputationSteps steps).map (·.targetKind) =
+      steps.map (·.targetKind) := by
+  simp [analyzeScalarComputationSteps,
+    CheckedScalarComputationStep.dependencyAnalysis]
+
+/-- Pre-schedule analysis preserves each candidate's complete raw dependency list exactly and in authored order. -/
+@[simp] theorem analyzeScalarComputationSteps_dependencies
+    (steps : List (CheckedScalarComputationStep model)) :
+    (analyzeScalarComputationSteps steps).map (·.fieldDependencies) =
+      steps.map (·.fieldDependencies) := by
+  simp [analyzeScalarComputationSteps,
+    CheckedScalarComputationStep.dependencyAnalysis]
+
 end A12Kernel
