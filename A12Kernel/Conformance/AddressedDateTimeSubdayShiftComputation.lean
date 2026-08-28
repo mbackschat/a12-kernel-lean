@@ -197,6 +197,108 @@ example :
       some (4, [true, true, true, true, false, false]) := by
   native_decide
 
+private def indexedModel : FlatModel := {
+  model with
+  repeatableGroups := [
+    { level := 10, path := ["Order", "Projects"], repeatability := some 3 },
+    { level := 20, path := ["Order", "Projects", "Tasks"],
+      repeatability := some 3, indexField := some rowAmount.id }
+  ]
+}
+
+private def indexedPrepared : PreparedFlatStringContext indexedModel
+    builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler indexedModel).toOption.get (by native_decide)
+
+private def indexedOperation? :
+    Option (CheckedAddressedDateTimeSubdayShiftComputation indexedModel) :=
+  (checkAddressedDateTimeSubdayShiftComputation indexedModel
+    ["Order", "Projects", "Tasks"] target.id
+    (absolute ["Order", "Projects"] source.name) .hours shiftAmount).toOption
+
+private def indexedInput? (sourceCell : ClassifiedCellInput) :
+    Option (CheckedDocument indexedModel) :=
+  (checkDocument indexedPrepared "en_US" {
+    instantiatedRows := [
+      row 10 [1], row 20 [1, 1], row 20 [1, 2]
+    ]
+    cells := [
+      sourceCell,
+      numberCell rootAmount.id [] 0,
+      numberCell rowAmount.id [1, 1] 1,
+      numberCell rowAmount.id [1, 2] 1,
+      dateTimeCell target.id [1, 1] "1970-01-01T01:00:00" 1 (by decide),
+      dateTimeCell target.id [1, 2] "1970-01-01T01:00:00" 1 (by decide)
+    ]
+  }).toOption
+
+private def indexedFinding (field : FieldId) (path : List Nat)
+    (cause : FormalCause) : ComputationFormalInputFinding := {
+  address := address field path
+  cause
+}
+
+private def indexedResultSummary?
+    (sourceCell : ClassifiedCellInput) : Option
+      (List ComputationFormalInputFinding ×
+        List (CellAddr × String) × List CellAddr) := do
+  let operation ← indexedOperation?
+  let input ← indexedInput? sourceCell
+  let result ← operation.executeResultWithFormalInputs input |>.toOption
+  pure (
+    result.dateTime.formalErrorsInOperands,
+    result.dateTime.withoutErrors.map fun item =>
+      (item.targetField, item.value.text),
+    result.dateTime.cleared)
+
+private def indexedPreparedOutcomeSummary?
+    (sourceCell : ClassifiedCellInput) : Option (List OutcomeSummary) := do
+  let operation ← indexedOperation?
+  let input ← indexedInput? sourceCell
+  let plan ← operation.formalInputPlan.toOption
+  let prepared ← plan.prepare input |>.toOption
+  let outcomes ← (operation.executeWithAmountRead input fun environment field =>
+    (input.checkedCellWithRead prepared.preliminary.readComputation
+      environment field).map some).toOption
+  pure (outcomes.map summarize)
+
+/- Reached duplicate-index amount cells poison both shifts and clear both source-filled targets while remaining exact eager findings. -/
+example : indexedResultSummary?
+    (dateTimeCell source.id [1] "1970-01-01T05:00:00" 5 (by decide)) =
+  some ([
+    indexedFinding rowAmount.id [1, 1] .duplicateIndex,
+    indexedFinding rowAmount.id [1, 2] .duplicateIndex
+  ], [], [
+    address target.id [1, 1],
+    address target.id [1, 2]
+  ]) := by
+  native_decide
+
+/- An earlier formal DateTime source does not remove either duplicate finding from the eager inventory. -/
+example : indexedResultSummary?
+    (cell source.id [1] "bad" (.rejected .dateFormat)) = some ([
+      indexedFinding source.id [1] .dateFormat,
+      indexedFinding rowAmount.id [1, 1] .duplicateIndex,
+      indexedFinding rowAmount.id [1, 2] .duplicateIndex
+    ], [], [
+      address target.id [1, 1],
+      address target.id [1, 2]
+    ]) := by
+  native_decide
+
+/- Prepared execution preserves source-first poison, so the duplicate amount remains runtime-unreached. -/
+example : indexedPreparedOutcomeSummary?
+    (cell source.id [1] "bad" (.rejected .dateFormat)) = some [
+      { source := address source.id [1],
+        target := address target.id [1, 1],
+        value := none, poison := some .dateFormat },
+      { source := address source.id [1],
+        target := address target.id [1, 2],
+        value := none, poison := some .dateFormat }
+    ] := by
+  native_decide
+
 private def failedFormalInputExecution? : Option
     (List ComputationFormalInputFinding × Instant) := do
   let operation ← operation?

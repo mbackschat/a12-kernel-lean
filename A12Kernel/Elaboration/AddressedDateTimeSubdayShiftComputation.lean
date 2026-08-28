@@ -62,6 +62,7 @@ inductive AddressedDateTimeSubdayShiftComputationFault where
 /-- Failure while composing direct formal-input collection with addressed sub-day execution. -/
 inductive AddressedDateTimeSubdayShiftCheckedResultFault where
   | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
       (cause : AddressedDateTimeSubdayShiftComputationFault)
   deriving Repr, DecidableEq
@@ -185,7 +186,19 @@ def executeResult
   let outcomes ← operation.execute input
   pure (operation.resultFromOutcomes input residualMessages outcomes)
 
-/-- Collect direct formal-input findings eagerly, then execute and project the addressed result. Duplicate authored dependencies do not duplicate one checked placement. -/
+/-- Execute with one caller-supplied addressed amount view and classify exact outcomes against immutable source target state. -/
+def executeResultWithAmountRead
+    (operation : CheckedAddressedDateTimeSubdayShiftComputation model)
+    (input : CheckedDocument model)
+    (amountRead : Env → FieldId →
+      Except CheckedAddressingError (Option CheckedCell))
+    (residualMessages : List ResidualMessage) :
+    Except AddressedDateTimeSubdayShiftComputationFault
+      (AddressedDateTimeSubdayShiftComputationRunView model ResidualMessage) := do
+  let outcomes ← operation.executeWithAmountRead input amountRead
+  pure (operation.resultFromOutcomes input residualMessages outcomes)
+
+/-- Prepare direct formal inputs once, then execute numeric amounts through that view while preserving source-first short circuiting and retaining the eager inventory on either result arm. -/
 def executeResultWithFormalInputs
     (operation : CheckedAddressedDateTimeSubdayShiftComputation model)
     (input : CheckedDocument model) :
@@ -193,9 +206,14 @@ def executeResultWithFormalInputs
       (AddressedDateTimeSubdayShiftComputationRunView model
         ComputationFormalInputFinding) := do
   let plan ← operation.formalInputPlan |>.mapError .formalInput
-  let findings := plan.findings input
-  match operation.executeResult input findings with
-  | .error cause => .error (.execution findings cause)
+  let prepared ← plan.prepare input |>.mapError .preliminary
+  let amountRead := fun environment field =>
+    (input.checkedCellWithRead prepared.preliminary.readComputation
+      environment field).map some
+  match operation.executeResultWithAmountRead input amountRead
+      prepared.formalErrorsInOperands with
+  | .error cause =>
+      .error (.execution prepared.formalErrorsInOperands cause)
   | .ok view => .ok view
 
 end CheckedAddressedDateTimeSubdayShiftComputation

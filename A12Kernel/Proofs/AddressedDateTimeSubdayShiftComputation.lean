@@ -48,15 +48,20 @@ theorem addressedDateTimeSubdayShiftComputation_executeResultWithFormalInputs_ex
     (operation : CheckedAddressedDateTimeSubdayShiftComputation model)
     (input : CheckedDocument model)
     (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
     (view : AddressedDateTimeSubdayShiftComputationRunView model
       ComputationFormalInputFinding)
     (planned : operation.formalInputPlan = .ok plan)
-    (executed : operation.executeResult input (plan.findings input) =
-      .ok view) :
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResultWithAmountRead input
+      (fun environment field =>
+        (input.checkedCellWithRead prepared.preliminary.readComputation
+          environment field).map some)
+      prepared.formalErrorsInOperands = .ok view) :
     operation.executeResultWithFormalInputs input = .ok view := by
   rw [CheckedAddressedDateTimeSubdayShiftComputation.executeResultWithFormalInputs,
     planned]
-  simp only [Except.mapError, Bind.bind, Except.bind]
+  simp only [Except.mapError, Bind.bind, Except.bind, preparation]
   rw [executed]
 
 /-- Once the addressed plan succeeds, a later structural failure retains the exact eager findings beside the unchanged fault. -/
@@ -64,15 +69,20 @@ theorem addressedDateTimeSubdayShiftComputation_executeResultWithFormalInputs_fa
     (operation : CheckedAddressedDateTimeSubdayShiftComputation model)
     (input : CheckedDocument model)
     (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
     (fault : AddressedDateTimeSubdayShiftComputationFault)
     (planned : operation.formalInputPlan = .ok plan)
-    (executed : operation.executeResult input (plan.findings input) =
-      .error fault) :
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResultWithAmountRead input
+      (fun environment field =>
+        (input.checkedCellWithRead prepared.preliminary.readComputation
+          environment field).map some)
+      prepared.formalErrorsInOperands = .error fault) :
     operation.executeResultWithFormalInputs input =
-      .error (.execution (plan.findings input) fault) := by
+      .error (.execution prepared.formalErrorsInOperands fault) := by
   rw [CheckedAddressedDateTimeSubdayShiftComputation.executeResultWithFormalInputs,
     planned]
-  simp only [Except.mapError, Bind.bind, Except.bind]
+  simp only [Except.mapError, Bind.bind, Except.bind, preparation]
   rw [executed]
 
 /-- Exact-address application is the common DateTime action fold over the separately supplied document. -/
