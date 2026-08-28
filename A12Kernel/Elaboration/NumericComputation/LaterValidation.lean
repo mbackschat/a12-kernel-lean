@@ -28,43 +28,6 @@ def CheckedOrderedNumericComparison.supportsAppliedNumberValidation
     comparison.core.right.allAtoms
       OrderedNumericValidationAtom.isOrdinaryDirectNumber
 
-private def appliedValueCell (value : StoredNumber) : CheckedCell :=
-  checkAdmittedRawCell (.parsed (.num value.amount))
-
-private def appliedEmptyCell (present : Bool) : CheckedCell :=
-  if present then checkAdmittedRawCell .presentEmpty
-  else checkAdmittedRawCell .empty
-
-private def NumericComputationRunView.appliedValidationCell
-    (view : NumericComputationRunView Message CellAddr)
-    (destination : CheckedDocument model)
-    (environment : Env) (field : FieldId) :
-    Except CheckedAddressingError CheckedCell := do
-  let declaration ←
-    (model.lookupUniqueId field).mapError (.field field)
-  let path ←
-    (environment.pathForScope declaration.repeatableScope)
-      |>.mapError .environment
-  let address : CellAddr := { field, path }
-  match view.withChanges.find? fun computed =>
-      computed.targetField == address with
-  | some computed => pure (appliedValueCell computed.value)
-  | none =>
-      if view.cleared.contains address then
-        pure (appliedEmptyCell true)
-      else if view.withErrors.any fun computed =>
-          computed.targetField == address then
-        pure (appliedEmptyCell
-          (destination.numericTargetPlacementStateAt address).isPresent)
-      else
-        let physical :=
-          (repeatableAncestorRowsFor declaration.repeatableScope path).all
-            destination.source.instantiatedRows.contains
-        if physical then
-          destination.read address |>.mapError .document
-        else
-          pure (appliedEmptyCell false)
-
 private def rowEnvironment (level : RepeatableLevel) (row : RowAddr) :
     Except NumericComputationLaterValidationError Env :=
   match row.path with
@@ -85,7 +48,7 @@ private def evaluateAppliedEnvironments
       }
       outer := environment
       input := .partialView destination fun current field =>
-        (view.appliedValidationCell destination current field).map some
+        (view.validationCellAfterApplication destination current field).map some
     }
     let verdict ←
       comparison.evalAddressed context |>.mapError .validation

@@ -1,4 +1,5 @@
 import A12Kernel.Conformance.GeneratedComputationValidation.Alternatives
+import A12Kernel.Conformance.GeneratedComputationValidation.AppliedValidation
 import A12Kernel.Conformance.GeneratedComputationValidation.CrossGroup
 import A12Kernel.Conformance.GeneratedComputationValidation.Repeatable
 

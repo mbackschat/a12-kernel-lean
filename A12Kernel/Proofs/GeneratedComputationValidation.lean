@@ -172,6 +172,24 @@ theorem admittedGeneratedNumericOperationTable_executeResult_exact
   rw [supported]
   rfl
 
+/-- Static generated-table rejection stops the bounded applied-validation route before execution, destination application, or later validation can contribute an outcome. -/
+theorem generatedNumericAppliedValidation_admissionError
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model))
+    (executionWorld validationWorld : World)
+    (source destination : CheckedDocument model)
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload))
+    (cause : GeneratedComputationValidationError)
+    (rejected : admitGeneratedNumericOperationTable model computation =
+      .error cause) :
+    computation.executeNumericAppliedValidation executionWorld validationWorld
+      source destination payloadAt supplied =
+        .error (.admission cause) := by
+  unfold GeneratedComputationTable.executeNumericAppliedValidation
+  rw [rejected]
+  rfl
+
 /-- Generated whole-call composition preserves the exact-address public result and the admitted plan's eager raw findings on success. -/
 theorem generatedNumericOperationTable_executeResultWithFormalInputs_exact
     (computation : GeneratedComputationTable

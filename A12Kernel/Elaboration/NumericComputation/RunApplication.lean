@@ -67,6 +67,48 @@ def numericComputationActionRowsFor
     throw (.zeroTargetCoordinate address)
   pure (repeatableAncestorRowsFor declaration.repeatableScope address.path)
 
+private def numericAppliedValueCell (value : StoredNumber) : CheckedCell :=
+  checkAdmittedRawCell (.parsed (.num value.amount))
+
+private def numericAppliedEmptyCell (present : Bool) : CheckedCell :=
+  if present then checkAdmittedRawCell .presentEmpty
+  else checkAdmittedRawCell .empty
+
+namespace NumericComputationRunView
+
+/-- Read one validation-phase cell after this view has successfully applied to the supplied destination. Retained Number actions override only their exact target; every other field preserves the destination's checked observation. -/
+def validationCellAfterApplication
+    (view : NumericComputationRunView Message CellAddr)
+    (destination : CheckedDocument model)
+    (environment : Env) (field : FieldId) :
+    Except CheckedAddressingError CheckedCell := do
+  let declaration ←
+    (model.lookupUniqueId field).mapError (.field field)
+  let path ←
+    (environment.pathForScope declaration.repeatableScope)
+      |>.mapError .environment
+  let address : CellAddr := { field, path }
+  match view.withChanges.find? fun computed =>
+      computed.targetField == address with
+  | some computed => pure (numericAppliedValueCell computed.value)
+  | none =>
+      if view.cleared.contains address then
+        pure (numericAppliedEmptyCell true)
+      else if view.withErrors.any fun computed =>
+          computed.targetField == address then
+        pure (numericAppliedEmptyCell
+          (destination.numericTargetPlacementStateAt address).isPresent)
+      else
+        let physical :=
+          (repeatableAncestorRowsFor declaration.repeatableScope path).all
+            destination.source.instantiatedRows.contains
+        if physical then
+          destination.read address |>.mapError .document
+        else
+          pure (numericAppliedEmptyCell false)
+
+end NumericComputationRunView
+
 /-- Exact Number-cell projection after retained-result application to a separately supplied checked destination. `createdRows` records only directly addressed ancestors proved absent in that destination; it deliberately makes no claim about unobserved predecessor padding or row order. -/
 structure NumericComputationApplicationProjection
     (model : FlatModel) where

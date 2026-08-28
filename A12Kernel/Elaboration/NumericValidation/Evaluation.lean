@@ -208,7 +208,8 @@ private def resolveAddressedOrdinary
         read := fun requested =>
           match addressed.find? fun entry => entry.1 == requested with
           | some entry => entry.2
-          | none => context.scalar.fields.read requested }
+          | none => context.scalar.fields.read requested
+        world := context.scalar.fields.world }
       let scalar : ValidationEvaluationContext := {
         context.scalar with fields }
       pure (scalar.resolveNumericValidationAtom source)
