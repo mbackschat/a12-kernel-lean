@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.StringComputationRunApplication
+import A12Kernel.Elaboration.StringComputationLaterValidation
 
 /-! # Finite one-level String result application locks -/
 
@@ -13,7 +13,10 @@ private def repeatedString (id : FieldId) (name : String) : FlatFieldDecl := {
 }
 
 private def source := repeatedString 1 "Source"
-private def label := repeatedString 2 "Label"
+private def label : FlatFieldDecl := {
+  repeatedString 2 "Label" with
+  stringPolicy := { lineBreaksPermitted := true }
+}
 
 private def amount : FlatFieldDecl := {
   id := 3, name := "Amount", groupPath := ["Order", "Lines"]
@@ -135,28 +138,128 @@ private def topologyMatrixHolds : Bool := (do
 example : topologyMatrixHolds = true := by
   native_decide
 
-private def projectedStringRows
-    (projection : StringComputationOneLevelApplicationProjection model) :
-    List CellAddr :=
-  projection.rows.filterMap fun selected => match selected.path with
-    | [coordinate] =>
-        let target := address label.id coordinate
-        match projection.stateAt target with
-        | .presentValue value => if value.text.isEmpty then none else some target
-        | .absent | .presentEmpty => none
-    | _ => none
+private def lengthComparison? :
+    Option (CheckedOrderedNumericComparison model) :=
+  (elaborateRepeatableNumericComparison model ["Order", "Lines"] {
+    op := .ordinary .greater
+    left := .atom (.stringLength {
+      base := .absolute
+      groups := ["Order", "Lines"]
+      field := "Label"
+    })
+    right := .literal { value := 0, authoredScale := 0 }
+  }).toOption
 
-private def laterValidation? : Option (List CellAddr) := do
+private def laterValidation? : Option (List (Env × Verdict)) := do
   let destination ← empty?
-  let applied ← (view [
+  let comparison ← lengthComparison?
+  ((view [
       value 1 ⟨"A", by decide⟩,
       value 3 ⟨"CCC", by decide⟩])
-    |>.applyToCheckedOneLevel destination 10 |>.toOption
-  pure (projectedStringRows applied)
+    |>.evaluateOneLevelLengthAfterApplication destination 10 comparison).toOption
 
-/- An explicit later String-row decision sees only the two applied values, not the padded empty predecessor. -/
-example : laterValidation? =
-    some [address label.id 1, address label.id 3] := by
+/- Later validation runs through the checked direct-String `Length` evaluator and sees only the two applied values, not the padded empty predecessor. -/
+example : laterValidation? = some [
+    ([(10, 1)], .fired .value),
+    ([(10, 2)], .notFired),
+    ([(10, 3)], .fired .value)
+  ] := by
+  native_decide
+
+private def laterDestination? : Option (CheckedDocument model) := checked? {
+  instantiatedRows := [row 1, row 2]
+  cells := [{
+    address := address label.id 2
+    stored := "KEEP"
+    raw := .parsed (.str "KEEP")
+  }]
+}
+
+private def laterValidationWith?
+    (entries : List (SourcedStringTargetOutcome CellAddr)) :
+    Option (List (Env × Verdict)) := do
+  let destination ← laterDestination?
+  let comparison ← lengthComparison?
+  ((view entries).evaluateOneLevelLengthAfterApplication
+    destination 10 comparison).toOption
+
+/- Later validation preserves an unrelated positive destination value while observing a new applied value at the extended prefix. -/
+example : laterValidationWith? [value 3 ⟨"CCC", by decide⟩] = some [
+    ([(10, 1)], .notFired),
+    ([(10, 2)], .fired .value),
+    ([(10, 3)], .fired .value)
+  ] := by
+  native_decide
+
+/- A target error clears the existing destination text before validation; the rejected attempted text is not validation input. -/
+example : laterValidationWith? [errored 2, value 3 ⟨"CCC", by decide⟩] = some [
+    ([(10, 1)], .notFired),
+    ([(10, 2)], .notFired),
+    ([(10, 3)], .fired .value)
+  ] := by
+  native_decide
+
+/- A source-classified retained clear replaces the existing destination text before validation independently of the target-error route. -/
+example : laterValidationWith? [cleared 2, value 3 ⟨"CCC", by decide⟩] = some [
+    ([(10, 1)], .notFired),
+    ([(10, 2)], .notFired),
+    ([(10, 3)], .fired .value)
+  ] := by
+  native_decide
+
+private def lengthAboveThreeComparison? :
+    Option (CheckedOrderedNumericComparison model) :=
+  (elaborateRepeatableNumericComparison model ["Order", "Lines"] {
+    op := .ordinary .greater
+    left := .atom (.stringLength {
+      base := .absolute
+      groups := ["Order", "Lines"]
+      field := "Label"
+    })
+    right := .literal { value := 3, authoredScale := 0 }
+  }).toOption
+
+private def normalizedAppliedLength? : Option (List (Env × Verdict)) := do
+  let destination ← empty?
+  let comparison ← lengthAboveThreeComparison?
+  ((view [value 1 ⟨"A\r\nB", by decide⟩])
+    |>.evaluateOneLevelLengthAfterApplication
+      destination 10 comparison).toOption
+
+/- The modeled destination accepts the exact CRLF-bearing computed payload used by the normalization separator. -/
+example : label.stringPolicy.checkTarget (.produced ⟨"A\r\nB", by decide⟩) =
+    .accepted ⟨"A\r\nB", by decide⟩ := by
+  native_decide
+
+/- Applied text enters the established validation cache normalization: `A\r\nB` has normalized length three and therefore does not satisfy `Length(Label) > 3`. -/
+example : normalizedAppliedLength? =
+    some [([(10, 1)], .notFired)] := by
+  native_decide
+
+private def directNumberComparison? :
+    Option (CheckedOrderedNumericComparison model) :=
+  (elaborateRepeatableNumericComparison model ["Order", "Lines"] {
+    op := .ordinary .greater
+    left := .atom (.field {
+      base := .absolute
+      groups := ["Order", "Lines"]
+      field := "Amount"
+    })
+    right := .literal { value := 0, authoredScale := 0 }
+  }).toOption
+
+private def unsupportedLaterValidationRefused : Bool :=
+  match (do
+    let destination ← empty?
+    let comparison ← directNumberComparison?
+    pure ((view [value 1 ⟨"A", by decide⟩])
+      |>.evaluateOneLevelLengthAfterApplication
+        destination 10 comparison)) with
+  | some (.error .unsupportedComparison) => true
+  | _ => false
+
+/- This composition refuses even an otherwise checked direct Number atom rather than becoming a generic addressed validation runner. -/
+example : unsupportedLaterValidationRefused = true := by
   native_decide
 
 private def applicationError?
