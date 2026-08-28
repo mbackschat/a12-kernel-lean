@@ -5,6 +5,13 @@ import A12Kernel.Proofs.TimeComputation
 
 namespace A12Kernel
 
+/-- The immutable addressed executor is definitionally the caller-read route specialized to the document's checked read. -/
+theorem checkedAddressedTimeFromDateTime_executeWithRead_base
+    (operation : CheckedAddressedTimeFromDateTime model)
+    (input : CheckedDocument model) :
+    operation.executeWithRead input input.read = operation.execute input := by
+  rfl
+
 /-- The shared source binding ties resolution, declaration ownership, bound scope, and complete-DateTime admission to the operation's exact declaring group and target reading scope. -/
 theorem checkedAddressedTimeFromDateTime_source_valid
     (operation : CheckedAddressedTimeFromDateTime model) :
@@ -35,7 +42,10 @@ theorem checkedAddressedTimeFromDateTime_executeResult_projects
       view.time = TimeComputationRunView.fromOutcomesAt
         input.sourceTimeTargetStateAt messages
         (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
-  rw [CheckedAddressedTimeFromDateTime.executeResult, executed] at produced
+  rw [CheckedAddressedTimeFromDateTime.executeResult,
+    CheckedAddressedTimeFromDateTime.executeResultWithRead] at produced
+  change operation.executeWithRead input input.read = .ok outcomes at executed
+  rw [executed] at produced
   simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
   subst view
   exact ⟨rfl, rfl⟩

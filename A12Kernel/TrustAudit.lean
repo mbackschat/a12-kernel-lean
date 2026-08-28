@@ -2241,6 +2241,7 @@ run_cmd do
 #print axioms A12Kernel.dateFromDateTimeComputation_poison
 #print axioms A12Kernel.dateFromDateTimeComputation_value
 #print axioms A12Kernel.timeFromDateTimeComputation_value
+#print axioms A12Kernel.checkedAddressedTimeFromDateTime_executeWithRead_base
 #print axioms A12Kernel.checkedAddressedTimeFromDateTime_source_valid
 #print axioms A12Kernel.checkedAddressedTimeFromDateTime_executeResult_projects
 #print axioms A12Kernel.addressedTimeFromDateTimeRun_applyToChecked_delegates

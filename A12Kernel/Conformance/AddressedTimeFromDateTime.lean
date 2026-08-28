@@ -176,6 +176,31 @@ example : (do
     ] := by
   native_decide
 
+private def transientOutcomeTriples? :
+    Option (List (CellAddr × CellAddr × TimeTargetOutcome)) := do
+  let operation ← operation?
+  let input ← input? 2 [
+    sourceCell source.id [1] "2024-06-15T00:30:00"
+      (.parsed (.temporal (momentAt 15 0 30 |>.get (by native_decide)))),
+    sourceCell source.id [2] "2024-06-16T13:45:00"
+      (.parsed (.temporal (momentAt 16 13 45 |>.get (by native_decide))))]
+  let transient ← input? 2 [
+    sourceCell source.id [1] "2024-06-16T23:45:00"
+      (.parsed (.temporal (momentAt 16 23 45 |>.get (by native_decide)))),
+    sourceCell source.id [2] "bad" (.rejected .dateFormat)]
+  let outcomes ← operation.executeWithRead input transient.read |>.toOption
+  pure (outcomes.map fun entry =>
+    (entry.sourceField, entry.targetField, entry.outcome))
+
+/- Caller-supplied source state controls reached extraction while immutable target-row topology and exact addresses remain unchanged. -/
+example : transientOutcomeTriples? = some [
+    (address source.id [1], address target.id [1],
+      .accepted (storedTime "23:45:00")),
+    (address source.id [2], address target.id [2],
+      .poison .dateFormat)
+  ] := by
+  native_decide
+
 /- Physical target-row encounter order is observable and must not be replaced by coordinate sorting. -/
 example : (do
     let operation ← operation?
