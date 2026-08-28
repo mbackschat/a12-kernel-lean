@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericComputation.FormalInput
+import A12Kernel.Conformance.NumericComputation.Support
 
 /-! # Checked numeric-computation formal-input locks -/
 
@@ -131,6 +132,84 @@ private def emptyInput? : Option (CheckedDocument model) :=
     instantiatedRows := []
     cells := []
   }).toOption
+
+namespace FailedExecution
+
+open A12Kernel.Conformance.NumericComputation.Support
+
+private def probeModel : FlatModel := {
+  A12Kernel.Conformance.NumericComputation.Support.model with
+  fields := A12Kernel.Conformance.NumericComputation.Support.model.fields.map
+    fun declaration =>
+      if declaration.id == sourceId then
+        { declaration with
+          numericTargetConstraints := { maximum := some 0 }
+        }
+      else declaration
+}
+
+private abbrev Row := ComputationAlternative
+  (CheckedNumericTargetComputationOperation probeModel)
+
+private def literal (value : Rat) : AuthoredNumericExpr SurfaceNumericAtom :=
+  .literal { value, authoredScale := 0 }
+
+private def unsupportedCalendar : AuthoredNumericExpr SurfaceNumericAtom :=
+  surfaceDateDifference .months
+    (.baseYear .direct) (surfaceDateOperand "Date")
+
+private def rowFor? (guard : ComputationCondition)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom) : Option Row := do
+  let operation ← (elaborateNumericTargetComputationOperation
+    probeModel ["Root"] targetId expression).toOption
+  pure { precondition := guard, operation }
+
+private def run? : Option (CheckedNumericComputationRun probeModel) := do
+  let first ← rowFor? (.fieldNotFilled wrongId) unsupportedCalendar
+  let second ← rowFor? (.fieldNotFilled sourceId) (literal 7)
+  let table ← (certifyNumericComputationTable [first, second]).toOption
+  (certifyNumericComputationRun [table]).toOption
+
+private def prepared : PreparedFlatStringContext probeModel
+    builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler probeModel).toOption.get (by native_decide)
+
+private def malformedSource : ClassifiedCellInput := {
+  address := { field := sourceId, path := [] }
+  stored := "1"
+  raw := .rejected .declaredConstraint
+}
+
+private def legacyDate : ClassifiedCellInput := {
+  address := { field := dateId, path := [] }
+  stored := "2020-02-29"
+  raw := .parsed (dateValue 2020 2 29 .legacyHybrid)
+}
+
+private def inputWith? (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument probeModel) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells
+  }).toOption
+
+private def failureWith? (cells : List ClassifiedCellInput) :
+    Option NumericComputationFormalInputRunFault := do
+  let run ← run?
+  let input ← inputWith? cells
+  match run.executeResultWithFormalInputs
+      { now := { epochMillis := 0 } } input with
+  | .error cause => some cause
+  | .ok _ => none
+
+def failure? : Option NumericComputationFormalInputRunFault :=
+  failureWith? [malformedSource, legacyDate]
+
+def cleanFailure? : Option NumericComputationFormalInputRunFault :=
+  failureWith? [legacyDate]
+
+end FailedExecution
 
 /- A fixed group-count dependency expands both operand groups to every declared member field.
    The computed target and unrelated field remain outside the collected formal-input findings. -/
@@ -265,6 +344,30 @@ example :
           (fun message => message.errorCode),
         view.numeric.noErrorOccurred)) =
       some ([], [berechnungsWertFehler], false) := by
+  native_decide
+
+/- The call-global inventory is fixed before selection and survives a selected
+   structural failure. The malformed source belongs only to the unreached later
+   alternative, so recovering it from the runtime trace would lose it. -/
+example :
+    FailedExecution.failure? =
+      some (.execution [{
+        address := { field :=
+          A12Kernel.Conformance.NumericComputation.Support.sourceId, path := [] }
+        cause := .declaredConstraint
+      }] (.execution (.evaluation
+        A12Kernel.Conformance.NumericComputation.Support.targetId
+        .unsupportedDateCalendar))) := by
+  native_decide
+
+/- The identical selected structural fault carries no raw finding when the
+   unreached dependency is clean. The fault alone therefore cannot reconstruct
+   the call-global inventory. -/
+example :
+    FailedExecution.cleanFailure? =
+      some (.execution [] (.execution (.evaluation
+        A12Kernel.Conformance.NumericComputation.Support.targetId
+        .unsupportedDateCalendar))) := by
   native_decide
 
 end A12Kernel.Conformance.NumericComputation.FormalInput

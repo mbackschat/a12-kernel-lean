@@ -11,10 +11,11 @@ structure NumericComputationFormalInputRunView (model : FlatModel) where
   numeric : NumericComputationRunView (ComputationFormalMessage Unit)
   formalErrorsInOperands : List ComputationFormalInputFinding
 
-/-- Failure while composing the checked scalar run's direct-field inventory with execution and source-relative result projection. -/
+/-- Failure while composing the checked scalar run's direct-field inventory with execution and source-relative result projection. Once planning succeeds, an execution failure retains the exact eager raw findings even though no numeric result exists. -/
 inductive NumericComputationFormalInputRunFault where
   | formalInput (cause : ComputationFormalInputPlanError)
-  | execution (cause : NumericComputationRunResultFault)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : NumericComputationRunResultFault)
   deriving Repr, DecidableEq
 
 namespace CheckedNumericComputationOperation
@@ -66,18 +67,19 @@ def formalInputPlan (run : CheckedNumericComputationRun model) :
       (CheckedComputationFormalInputPlan model) :=
   checkComputationFormalInputOperations model run.formalInputOperations
 
-/-- Check the call-global inventory before execution, then project its raw findings on success without copying them into the rendered numeric message channel. -/
+/-- Check the call-global inventory before execution, then retain its raw findings on either execution arm without copying them into the rendered numeric message channel. -/
 def executeResultWithFormalInputs (run : CheckedNumericComputationRun model)
     (world : World) (input : CheckedDocument model) :
     Except NumericComputationFormalInputRunFault
       (NumericComputationFormalInputRunView model) := do
   let inputPlan ← run.formalInputPlan |>.mapError .formalInput
-  let numeric ← run.executeResult world input (fun _ => ()) []
-    |>.mapError .execution
-  pure {
-    numeric
-    formalErrorsInOperands := inputPlan.findings input
-  }
+  let findings := inputPlan.findings input
+  match run.executeResult world input (fun _ => ()) [] with
+  | .error cause => .error (.execution findings cause)
+  | .ok numeric => .ok {
+      numeric
+      formalErrorsInOperands := findings
+    }
 
 end CheckedNumericComputationRun
 

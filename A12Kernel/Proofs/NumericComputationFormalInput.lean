@@ -59,4 +59,18 @@ theorem checkedNumericComputationRun_executeResultWithFormalInputs_exact
   rw [executed]
   rfl
 
+/-- Once formal-input planning succeeds, a failed numeric execution retains exactly that plan's eager raw findings beside the unchanged failure. -/
+theorem checkedNumericComputationRun_executeResultWithFormalInputs_failure_exact
+    (run : CheckedNumericComputationRun model)
+    (world : World) (input : CheckedDocument model)
+    (inputPlan : CheckedComputationFormalInputPlan model)
+    (fault : NumericComputationRunResultFault)
+    (planned : run.formalInputPlan = .ok inputPlan)
+    (executed : run.executeResult world input (fun _ => ()) [] = .error fault) :
+    run.executeResultWithFormalInputs world input =
+      .error (.execution (inputPlan.findings input) fault) := by
+  rw [CheckedNumericComputationRun.executeResultWithFormalInputs, planned]
+  simp only [bind, Except.bind, Except.mapError]
+  rw [executed]
+
 end A12Kernel
