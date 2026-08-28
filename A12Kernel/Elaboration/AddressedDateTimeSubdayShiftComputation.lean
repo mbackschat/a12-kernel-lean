@@ -62,7 +62,8 @@ inductive AddressedDateTimeSubdayShiftComputationFault where
 /-- Failure while composing direct formal-input collection with addressed sub-day execution. -/
 inductive AddressedDateTimeSubdayShiftCheckedResultFault where
   | formalInput (cause : ComputationFormalInputPlanError)
-  | execution (cause : AddressedDateTimeSubdayShiftComputationFault)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : AddressedDateTimeSubdayShiftComputationFault)
   deriving Repr, DecidableEq
 
 /-- One exact source/target-address pair and its declaration-rendered DateTime outcome. -/
@@ -192,7 +193,10 @@ def executeResultWithFormalInputs
       (AddressedDateTimeSubdayShiftComputationRunView model
         ComputationFormalInputFinding) := do
   let plan ← operation.formalInputPlan |>.mapError .formalInput
-  operation.executeResult input (plan.findings input) |>.mapError .execution
+  let findings := plan.findings input
+  match operation.executeResult input findings with
+  | .error cause => .error (.execution findings cause)
+  | .ok view => .ok view
 
 end CheckedAddressedDateTimeSubdayShiftComputation
 

@@ -76,6 +76,12 @@ private def dateTimeCell (field : FieldId) (path : List Nat)
     { year := 1970, month := 1, day := 1 }
     (clock hour 0 0 ⟨valid, by decide, by decide⟩) .storedGregorian)))
 
+private def outOfRangeDateTimeCell (field : FieldId) (path : List Nat) :=
+  cell field path "1970-01-01T00:00:00" (.parsed (.temporal (.dateTime
+    { epochMillis := -100000000000000 }
+    { year := 1970, month := 1, day := 1 }
+    (clock 0 0 0 (by decide)) .storedGregorian)))
+
 private def prepared : PreparedFlatStringContext model
     builtinStringPatternCompiler :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
@@ -189,6 +195,28 @@ example :
           findings.any fun finding => finding.address.field == target.id,
           findings.any fun finding => finding.address.field == unrelated.id])) =
       some (4, [true, true, true, true, false, false]) := by
+  native_decide
+
+private def failedFormalInputExecution? : Option
+    (List ComputationFormalInputFinding × Instant) := do
+  let operation ← operation?
+  let input ← document? [
+      row 10 [1], row 20 [1, 1], row 20 [1, 2]] [
+    numberCell rootAmount.id [] 0,
+    numberCell rowAmount.id [1, 1] 1,
+    cell rowAmount.id [1, 2] "bad" (.rejected .malformed),
+    outOfRangeDateTimeCell source.id [1]]
+  match operation.executeResultWithFormalInputs input with
+  | .error (.execution findings
+      (.shift (.semantic (.shiftedInstantOutsideProfile instant)))) =>
+      some (findings, instant)
+  | .error _ | .ok _ => none
+
+/- A post-plan first-row structural failure retains the eager malformed second-row amount even though execution never reaches that row. -/
+example : failedFormalInputExecution? = some ([{
+    address := address rowAmount.id [1, 2]
+    cause := .malformed
+  }], { epochMillis := -99999992800000 }) := by
   native_decide
 
 /- No physical target row reaches the malformed amount. -/
