@@ -2,7 +2,7 @@
 
 - `status`: green
 - `contract`: normalized checked capability plus runtime input produces its exact semantic outcome, with application included only when the selected probe boundary owns it.
-- `authority`: exact outcome equality from the [generated numeric-table conformance owner](../../A12Kernel/Conformance/GeneratedComputationValidation/Alternatives.lean), plus exact outcome and application equality from the [addressed DateTime calendar-day conformance owner](../../A12Kernel/Conformance/AddressedDateTimeDayShiftComputation.lean).
+- `authority`: exact outcome, public-result, and application equality from the [generated numeric-table conformance owner](../../A12Kernel/Conformance/GeneratedComputationValidation/Alternatives.lean), plus exact outcome and application equality from the [addressed DateTime calendar-day conformance owner](../../A12Kernel/Conformance/AddressedDateTimeDayShiftComputation.lean).
 - `handover`: the canonical computation, target-checking, temporal, repetition, and path clauses plus the bounded [generated computation validation](../implementation/computations.md#cap-generated-computation-validation) and [DateTime calendar-day](../implementation/computations.md#cap-exact-address-repeatable-datetime-day-shift) capability records.
 
 ## Calendar-day probe
@@ -30,6 +30,16 @@ The 108-case matrix contains 39 no-value results, 49 inherited poisons, 10 zero 
 
 The consumer used 368 nonblank implementation lines and 308 test/report lines, with no dependency beyond Python's standard library and no semantic questions or guesses. Warning-suppressed no-fit behavior, wider arithmetic, document application, scheduling, later validation, generated-validation mismatch execution, formal-input inventory, rendered messages, repeatable addressing, Kernel correspondence, protocol, shipment, and general Execute correctness remain outside this result.
 
+## Generated result/application probe
+
+A second fresh Python standard-library consumer received only a frozen scalar target-result handover. It independently implemented one specialized projection and one generic action pipeline over seven completed target results, six immutable source placements, and four separate destination placements. The 168-case product separates source-relative classification from destination application, exact decimal identity including scale, retained clearing, rejection, inherited poison, residual value-less messages, and explicit refusal of unsupported completion.
+
+| Run | Status | Cost | Result |
+|---|---|---:|---|
+| `execute-generated-application-04` | green | about 7 minutes | Exact public-result and applied-state agreement on all 168 finite combinations; all 10 mutants killed; every exact signature reconciled with Lean. |
+
+The consumer used 183 nonblank implementation lines and 240 test/report lines with no dependency beyond Python's standard library and no semantic questions or guesses. An implementing-session checker that did not import the consumer reproduced all 168 cases. The canonical matrix digest is `7881ab4adc1560264ffe1237260467548704c8f9302aeb7d5f10fda29efebee9`; a temporary Lean oracle using the admitted result projection and established one-target transition matched the exact signature digest `8bd44a624181847a3f03dbc8d7170a5354936c4f570767861bef472835a90292`. Checked model/address application is additionally locked by the owning repository conformance cases. Table selection and operation evaluation, supplied-message partition beyond the derived value-less target message, scheduling, repeatable topology, later validation, materialized-document transport, Kernel correspondence, protocol, shipment, compatibility, and general Execute correctness remain outside this result.
+
 ## Conclusion
 
-Bounded Execute transport works across both exact-address application and admitted generated-table target evaluation, and remains cheap enough to justify continued semantic shipments. The failed first calendar-day run proves that cold implementation plus consumer-local tests is insufficient; authoritative Lean reconciliation is mandatory.
+Bounded Execute transport works across exact-address application and the admitted generated-table path from selected target evaluation through source-relative public result and separate-destination application. It remains cheap enough to justify continued semantic shipments. The failed first calendar-day run proves that cold implementation plus consumer-local tests is insufficient; authoritative Lean reconciliation is mandatory.
