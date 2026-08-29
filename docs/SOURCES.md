@@ -357,6 +357,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Computation declaring group: containment gate and target-owned execution](sources/cross-layer-routes.md#src-computation-declaring-group-gate)
 <a id="src-fixed-target-star-placement"></a>
 - [Fixed computation target under a star operand: no placement gate](sources/cross-layer-routes.md#src-fixed-target-star-placement)
+<a id="src-unsuppressed-assignment-scale-reach"></a>
+- [The unsuppressed assignment-scale overflow has no authored witness](sources/cross-layer-routes.md#src-unsuppressed-assignment-scale-reach)
 <a id="src-repeatable-string-application"></a>
 - [Finite one- and two-level String separate-destination application, measured locally 2026-08-26](sources/cross-layer-routes.md#src-repeatable-string-application)
 <a id="src-repeatable-number-aggregate-cascade"></a>
