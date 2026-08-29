@@ -41,19 +41,22 @@ def evaluateComputationResult (format : DateRangeConstructionTargetFormat) :
 
 end DateRangeConstructionTargetFormat
 
-/-- Verify that the model-owned direct DateRange target remains in the computation's declaring group. -/
+/-- Verify that the model owns the direct DateRange target this construction writes.
+
+This deliberately says nothing about *where* the computation is declared. A construction reads two
+nonrepeatable endpoints, so nothing iterates and the Kernel's containment gate cannot fire; the
+[fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement)
+admits this exact constructor from an unrelated sibling group. -/
 def FlatModel.ownsDirectDateRangeTarget
-    (model : FlatModel) (declaringGroup : GroupPath)
-    (target : CheckedDirectDateRange model) : Bool :=
+    (model : FlatModel) (target : CheckedDirectDateRange model) : Bool :=
   match model.lookupUniqueId target.source.id with
-  | .ok declaration => declaration.groupPath == declaringGroup
+  | .ok _ => true
   | .error _ => false
 
 /-- Static refusal before one direct DateRange construction can reach its target. -/
 inductive DateRangeConstructionComputationElabError where
   | construction (cause : DateRangeConstructionElabError)
   | target (cause : DirectDateRangeElabError)
-  | targetGroup (actual expected : GroupPath)
   | endpointFormat (start finish : DateRangeEndpointFormat)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -63,7 +66,7 @@ structure CheckedDateRangeConstructionComputation (model : FlatModel) where
   construction : CheckedDateRangeConstruction model
   target : CheckedDirectDateRange model
   declaringGroup : GroupPath
-  targetOwnedByGroup : model.ownsDirectDateRangeTarget declaringGroup target = true
+  targetOwned : model.ownsDirectDateRangeTarget target = true
   format : DateRangeConstructionTargetFormat
   profileOwned :
     DateRangeConstructionTargetFormat.ofProfiles?
@@ -77,28 +80,28 @@ def elaborateDateRangeConstructionComputation
       (CheckedDateRangeConstructionComputation model) := do
   let construction ← elaborateDateRangeConstruction model start finish
     |>.mapError .construction
-  let targetDeclaration ← model.resolveNonrepeatableDeclarationById targetField
+  -- Resolved for its refusal, not its result: a repeatable target fails here as
+  -- `repeatableReference`, before the direct-DateRange check would report a different class.
+  -- No placement test follows; see `ownsDirectDateRangeTarget` above.
+  let _ ← model.resolveNonrepeatableDeclarationById targetField
     |>.mapError (fun error => .target (.source error))
-  if _hGroup : targetDeclaration.groupPath = declaringGroup then
-    let target ← elaborateDirectDateRange model targetField |>.mapError .target
-    if hOwned : model.ownsDirectDateRangeTarget declaringGroup target then
-      match hFormat : DateRangeConstructionTargetFormat.ofProfiles?
-          construction.start.format target.format with
-      | some format =>
-          pure {
-            construction
-            target
-            declaringGroup
-            targetOwnedByGroup := hOwned
-            format
-            profileOwned := hFormat
-          }
-      | none =>
-          throw (.endpointFormat construction.start.format construction.finish.format)
-    else
-      throw .incoherentCore
+  let target ← elaborateDirectDateRange model targetField |>.mapError .target
+  if hOwned : model.ownsDirectDateRangeTarget target then
+    match hFormat : DateRangeConstructionTargetFormat.ofProfiles?
+        construction.start.format target.format with
+    | some format =>
+        pure {
+          construction
+          target
+          declaringGroup
+          targetOwned := hOwned
+          format
+          profileOwned := hFormat
+        }
+    | none =>
+        throw (.endpointFormat construction.start.format construction.finish.format)
   else
-    throw (.targetGroup targetDeclaration.groupPath declaringGroup)
+    throw .incoherentCore
 
 /-- Project one evaluated construction into the shared exact-or-yearless target result while reusing its established formal-before-empty precedence. -/
 def DateRangeConstructionObservation.asComputationResult

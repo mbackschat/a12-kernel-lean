@@ -46,6 +46,10 @@ private def monthEmptyTarget :=
   rangeField 20 ["Order"] "MonthEmptyWindow" "MM" ""
 private def dayMonthDashTarget :=
   rangeField 21 ["Order"] "DayMonthWindow" "dd.MM" "-"
+/-- A DateRange target the declaring group does not contain. The construction is still admitted:
+its endpoints are nonrepeatable direct reads, so nothing iterates and the Kernel's containment gate
+cannot fire. Measured at the
+[fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement). -/
 private def wrongGroupTarget := rangeField 5 ["Elsewhere"] "OtherWindow"
 private def repeatedTarget :=
   rangeField 6 ["Order", "Rows"] "RepeatedWindow" "dd.MM.yyyy" "-" [10]
@@ -403,11 +407,8 @@ example :
       | .error (.target (.source (.repeatableReference path))) =>
           path == repeatedTarget.path
       | _ => false) &&
-    (match elaborateDateRangeConstructionComputation model ["Order"]
-        wrongGroupTarget.id start.id finish.id with
-      | .error (.targetGroup actual expected) =>
-          actual == ["Elsewhere"] && expected == ["Order"]
-      | _ => false) &&
+    (elaborateDateRangeConstructionComputation model ["Order"]
+      wrongGroupTarget.id start.id finish.id).isOk &&
     (match elaborateDateRangeConstructionComputation model ["Order"] start.id
         start.id finish.id with
       | .error (.target (.sourceNotDateRange source (.temporal .date))) =>

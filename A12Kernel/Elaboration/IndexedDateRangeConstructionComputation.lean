@@ -123,7 +123,6 @@ inductive IndexedDateRangeConstructionComputationElabError where
   | finish (cause : IndexedDateRangeEndpointElabError)
   | differentGroups (start finish : GroupPath)
   | target (cause : DirectDateRangeElabError)
-  | targetGroup (actual expected : GroupPath)
   | targetFormat (source : FullDateTargetFormat) (target : DateRangeInputFormat)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -135,7 +134,7 @@ structure CheckedIndexedDateRangeConstructionComputation (model : FlatModel) whe
   sameGroup : start.group = finish.group
   target : CheckedDirectDateRange model
   declaringGroup : GroupPath
-  targetOwnedByGroup : model.ownsDirectDateRangeTarget declaringGroup target = true
+  targetOwned : model.ownsDirectDateRangeTarget target = true
   format : DateRangeConstructionTargetFormat
   profileOwned : DateRangeConstructionTargetFormat.ofProfiles?
     (.full start.format) target.format = some format
@@ -152,12 +151,12 @@ def elaborateIndexedDateRangeConstructionComputation
   let finish ← elaborateIndexedDateRangeEndpoint model finishField finishKey
     |>.mapError .finish
   if hSame : start.group = finish.group then
-    let targetDeclaration ← model.resolveNonrepeatableDeclarationById targetField
+    -- Resolved for its refusal, not its result, and followed by no placement test; the shared
+    -- `ownsDirectDateRangeTarget` records why a construction has none.
+    let _ ← model.resolveNonrepeatableDeclarationById targetField
       |>.mapError (fun error => .target (.source error))
-    if targetDeclaration.groupPath != declaringGroup then
-      throw (.targetGroup targetDeclaration.groupPath declaringGroup)
     let target ← elaborateDirectDateRange model targetField |>.mapError .target
-    if hOwned : model.ownsDirectDateRangeTarget declaringGroup target then
+    if hOwned : model.ownsDirectDateRangeTarget target then
       match hFormat : DateRangeConstructionTargetFormat.ofProfiles?
           (.full start.format) target.format with
       | some format => pure {
@@ -166,7 +165,7 @@ def elaborateIndexedDateRangeConstructionComputation
           sameGroup := hSame
           target
           declaringGroup
-          targetOwnedByGroup := hOwned
+          targetOwned := hOwned
           format
           profileOwned := hFormat
         }
