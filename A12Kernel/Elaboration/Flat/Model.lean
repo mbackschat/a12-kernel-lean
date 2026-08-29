@@ -333,7 +333,9 @@ def FlatModel.requirednessScopeFor (model : FlatModel)
                 (model.repeatableScopeForGroupPath declaration.groupPath)
                 declaration.repeatableScope)
 
-/-- A group is present in the flattened namespace when it owns or contains a declared field, or has its own repeatable declaration. Empty nonrepeatable groups are rejected by the kernel and therefore need no representation here. -/
+/-- A group is present in the flattened namespace when it owns or contains a declared field, or has its own repeatable declaration.
+
+An empty **nonrepeatable** group is therefore outside this representation, and that is a limit of `FlatModel` rather than of the Kernel: measured 2026-08-29, the Kernel admits such a group and reports the model valid ([checkpoint](../../../docs/SOURCES.md#src-empty-declared-group)). Every gate that asks this query inherits the limit, so none of them can be exercised against a model carrying one, and one of them would diverge if it could be — the message group position's root gate reports its undeclared-root class where the Kernel reports the ordinary group class. No `FlatModel` can build that input, so no clause is wrong on the representable domain; giving groups their own declaration list is the change that would lift it, and [SG9](../../../docs/SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion) carries it. -/
 def FlatModel.hasGroupPath (model : FlatModel) (path : GroupPath) : Bool :=
   GroupPath.isValid path &&
     ((model.fields.any fun declaration => path.isPrefixOf declaration.groupPath) ||

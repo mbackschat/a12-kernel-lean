@@ -91,7 +91,11 @@ inductive ValidationMessageTemplateError where
   | invalidGroupParameter (parameter : String)
   /-- The first segment of an absolute group argument names no declared root group. Root existence is
   a gate of its own, ahead of containment and reported apart from it, so it fires whatever follows the
-  root and regardless of whether the rest could ever have contained the rule. -/
+  root and regardless of whether the rest could ever have contained the rule.
+
+  A root the model declares but leaves **empty** would be reported by the Kernel on the ordinary group
+  class instead. `FlatModel` cannot express such a group, so no input reaching here separates the two;
+  `FlatModel.hasGroupPath` owns that limit. -/
   | unknownRootGroup (parameter root : String)
   /-- A historic group terminal the Kernel still recognizes and refuses on the modern route. It stays
   distinct from `invalidGroupParameter` because the Kernel's own code is distinct. -/

@@ -1,5 +1,17 @@
 # Group and iteration source checkpoints
 
+<a id="src-empty-declared-group"></a>
+#### An empty declared group is kernel-valid, measured locally 2026-08-29
+
+- `revision`: a12-dmkits `4e78f8254bcf12f6d94fc23c5c3cd5e4906c8d04` (clean before and after), `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. Structured `group add` writes followed by `model check`, the Kernel's own consistency oracle.
+- `claim`: a nonrepeatable group carrying **no field anywhere in its subtree** is admitted and the model stays valid. Both a subgroup `/Probe/Hollow` and a whole empty **root** `/Hollow` were added to the two-root `GroupPos_DM` model, and `model check` reported the model valid after each.
+- `origin`: this contradicts an unmeasured claim this project carried in `FlatModel.hasGroupPath`, which justified representing groups only through their fields by asserting that the Kernel rejects empty ones. It was never measured, and it is false.
+- `consequence`: an empty declared group is visible to the rule-message group position. `$#/Hollow$` on the empty root draws `INVALID_GROUP`, the ordinary containment class, and `$#/Probe/Hollow$` draws it too, against an undeclared `$#/Nope$` drawing `INVALID_ROOT_GROUP` and a declared non-containing `$#/Second$` drawing `INVALID_GROUP` in the same batch. So an empty root is a *declared* root for that gate.
+- `local-consequence`: `FlatModel` represents a group only through its fields or its own repeatable declaration, so it cannot express an empty nonrepeatable group at all. Sixteen gates ask `hasGroupPath` and all inherit that limit; none is wrong on the representable domain, and the one that would diverge cannot be reached. Lifting it means giving groups their own declaration list, which [SG9](../SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion) carries as an owner decision rather than a capsule.
+- `limit`: static consistency only, one empty subgroup and one empty root, and no runtime observation. Not measured: what `GroupFilled` or a group-list operand does with an empty group, whether A12 Tools round-trips one, and whether an empty **repeatable** group behaves the same.
+- `sync`: it corrects a Lean docstring rather than a `spec/` clause, so it opens no ledger entry. `spec/` never asserted the rejection.
+
+
 <a id="src-multi-root-short-name-reach"></a>
 #### A model may declare more than one root group, and the short-name tier spans them, measured locally 2026-08-29
 
