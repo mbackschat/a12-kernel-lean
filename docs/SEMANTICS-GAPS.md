@@ -165,6 +165,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `remaining`: nested or different repeatable scopes, parallel RNU mapping, other group-list or count shapes and arities, parser-level `SumOfProducts` star and `Having` refusals with exact diagnostic projection, other assembly refusals, and executable newly admitted conditions.
 - `remaining`: fixed nonrepeatable descendants and wider comparison, computation, partial-validation, arithmetic-wrapper, and parser forms of `CurrentRepetition`.
 - `remaining`: computation has no semantic-index source that can represent direct reads of a computed field or naming it as an index key.
+- `remaining`: multi-root addressing is measured only for the bare-name tiers ([checkpoint](SOURCES.md#src-multi-root-short-name-reach)). Unmeasured across roots: the short-name flag disabled, a repeatable group in a second root, a name duplicated within one root while unique in another, and whether any other model-wide index shares that reach.
 - `evidence-needed`: measure a semantic-index projection inside `Having` only after a filtered Enumeration source can express a live no-self-read control.
 - `discriminator`: bare name, parent walk, and named turning point can spell neighboring routes. Equal local indices under different outer rows remain distinct, and unavailable index columns have phase-specific effects.
 - `consumer`: Translate, Transform, and Explain require stable declaration and row identity, preserved authored-path distinctions, and exact static failure classes.

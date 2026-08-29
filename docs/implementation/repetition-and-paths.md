@@ -84,9 +84,9 @@
 <a id="cap-flat-resolution"></a>
 #### Flat resolution
 
-- `boundary`: Absolute, parent-relative, and bare flat names plus quote-aware structured names
+- `boundary`: Absolute, parent-relative, and bare flat names plus quote-aware structured names. A bare name takes the declaring group's own declaration first and the flag-gated model-wide short-name index only on a miss, with no ancestor walk; that index spans **root groups**, and a model may declare more than one root.
 - `owner`: [`Flat/`](../../A12Kernel/Elaboration/Flat/)
-- `assurance`: E/P closed for admitted grammar; selected C/X
+- `assurance`: E/P closed for admitted grammar; selected C/X. The two-tier bare-name rule is upstream-locked at [`LF6`](../LEAN-FINDINGS.md), and its **cross-root** reach is measured at the [multi-root checkpoint](../SOURCES.md#src-multi-root-short-name-reach): a model with two roots is kernel-valid, a model-unique name resolves from the other root in both directions, a name declared once in each root is ambiguous from a group declaring neither, and the declaring-group tier still wins from a group that declares one. The theory agreed on every row on the first run, so this is a lock on a newly reachable dimension rather than a correction.
 - `remains`: Full concrete grammar/renderer: [SG9](../SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)
 
 <a id="cap-star-correlation-paths"></a>

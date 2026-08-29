@@ -1,5 +1,20 @@
 # Group and iteration source checkpoints
 
+<a id="src-multi-root-short-name-reach"></a>
+#### A model may declare more than one root group, and the short-name tier spans them, measured locally 2026-08-29
+
+- `revision`: a12-dmkits `4e78f8254bcf12f6d94fc23c5c3cd5e4906c8d04` (clean before and after), `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. Every row is one `rule check` verdict through a caller-tagged `batch`, all `KERNEL_CONFIRMED`.
+- `reachability`: a model with **two root groups** is authorable and kernel-valid. `group add --parent ""` is accepted, the terminal `apply` gate committed it, and `model check` reports the model valid. Until this row every path measurement ran on a single-root model, so nothing separated "model-wide" from "root-wide" in the short-name tier.
+- `model`: `GroupPos_DM` with roots `/Probe` (repeatable `/Probe/Rows`, its subgroup `/Probe/Rows/Deeper`, fixed `/Probe/Store`) and `/Second` (with `/Second/Inner`), `fieldRefByShortNameAllowed` true as `model new` leaves it. `Tag` and `OwnRootOnly` are model-unique; `Shared` is declared once in each root.
+- `claim`: the model-wide short-name tier is genuinely **model-wide**. A bare `Tag`, declared only under `/Second/Inner`, resolves from a rule at `/Probe/Rows`, and the symmetric direction resolves too. An absolute cross-root path resolves as well.
+- `claim`: the duplicate refusal crosses roots with it. A bare `Shared` from `/Probe/Rows`, which declares neither, draws `MVK_FIELDNAME_NOT_UNIQUE`.
+- `separator`: the declaring-group tier still wins over that cross-root ambiguity. The same bare `Shared` from a rule at `/Second/Inner`, which declares one of the two, is **admitted**, so the exact `declaringGroup/name` match runs ahead of the global index exactly as [`LF6`](../LEAN-FINDINGS.md) records, and the ambiguity is a property of the referring group rather than of the name.
+- `controls`: a same-root unique name and an own-scope name are admitted in the same batch, and a name declared in no root draws `MVK_INVALID_ENTITY`, so neither the admissions nor the refusals are artifacts of the route.
+- `local-consequence`: none. This project's resolver already filtered the whole field list with no root restriction and already tried the declaring group first, so all six rows agreed on the first run. The value is that a newly reachable dimension of the addressing keystone is now locked by cases instead of resting on an untested assumption; [§10](../IMPLEMENTATION-MAP.md#10--paths-and-references) owns the boundary.
+- `limit`: two roots, one nesting level below each, one condition language, and the short-name flag enabled. Not measured: the flag disabled across roots, a repeatable group in the second root, a bare name duplicated **within** one root while unique in the other, and whether any other model-wide index shares this reach.
+- `sync`: confirmatory. It adds no behavioral correction to `spec/`, so it opens no ledger entry.
+
+
 <a id="src-first-filled-additional-kind-computations"></a>
 #### Direct one-star additional-kind `FirstFilledValue` computations
 

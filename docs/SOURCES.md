@@ -269,6 +269,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Starred yearless DateRange overlap, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-starred-yearless-overlap)
 <a id="src-date-range-plural-year-class"></a>
 - [Plural DateRange overlap year class and fragment operands, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-plural-year-class)
+<a id="src-multi-root-short-name-reach"></a>
+- [A model may declare more than one root group, and the short-name tier spans them](sources/group-and-iteration-probes.md#src-multi-root-short-name-reach)
 <a id="src-message-group-parameter"></a>
 - [The rule-message group parameter `$#…$`](sources/temporal-and-message-probes.md#src-message-group-parameter)
 <a id="src-message-group-parameter-resolution"></a>

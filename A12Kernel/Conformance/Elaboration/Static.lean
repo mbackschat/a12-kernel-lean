@@ -295,14 +295,31 @@ example : errorOf (model.resolveField ["Order", "Details"]
     (relative 2 [] "Quantity")) = some (.aboveRoot 2) := by
   native_decide
 
+/-- Two **root** groups, which the Kernel admits: a model with more than one root is authorable and
+kernel-valid, so the model-wide short-name tier has a reach these cases can separate. `Code` is
+declared once in each root; `Only` is declared once in the whole model. -/
 private def ambiguousModel : FlatModel :=
   { fields := [
       { id := 0, groupPath := ["One"], name := "Code", policy := { kind := .boolean } },
-      { id := 1, groupPath := ["Two"], name := "Code", policy := { kind := .boolean } }],
+      { id := 1, groupPath := ["Two"], name := "Code", policy := { kind := .boolean } },
+      { id := 2, groupPath := ["Two"], name := "Only", policy := { kind := .boolean } }],
     fieldRefByShortNameAllowed := true }
 
 example : errorOf (ambiguousModel.resolveField ["Rule"] (bare "Code")) =
     some (.shortNameNotUnique "Code") := by
+  native_decide
+
+-- The model-wide tier is model-wide, not root-wide: a unique short name resolves from another root.
+example : resolvedIdOf (ambiguousModel.resolveField ["One"] (bare "Only")) = some 2 := by
+  native_decide
+
+/- The declaring-group tier wins over a **cross-root** duplicate, which is the asymmetry that keeps the
+two tiers apart: the same bare name reaches its own root's declaration from inside either root, and is
+ambiguous only from a group that declares neither. Scoping the model-wide tier to the rule's own root
+would keep these two rows and lose the one above. -/
+example :
+    resolvedIdOf (ambiguousModel.resolveField ["One"] (bare "Code")) = some 0 ∧
+      resolvedIdOf (ambiguousModel.resolveField ["Two"] (bare "Code")) = some 1 := by
   native_decide
 
 private def shortNamesDisabled : FlatModel :=
