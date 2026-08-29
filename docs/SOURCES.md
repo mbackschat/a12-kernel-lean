@@ -34,7 +34,9 @@ Search reusable provenance entries with `rg -n '^<a id="src-' docs/SOURCES.md`, 
 
 **What the CLI *does* reach is the static consistency oracle, and that is a first-class local route.** `model check`, `workspace check`, `rule check`, and computation dry-run validation call the real kernel's `checkConsistency` and can therefore support a static `KERNEL_CONFIRMED` claim, with the kernel message surfaced as the diagnostic summary and the extracted `MVK_*` as its code. So a **static-legality** question, such as which diagnostic class an illegal model draws, whether a gate reads the whole operand list, or whether a spelling is admitted, is measurable here and does not belong upstream.
 
-**The CLI's own fail-fast spec validation pre-empts kernel declaration gates, and then the route measures the tool.** Confirmed 2026-08-29 on two independent gates. `field add` refuses `maxFractionalDigits` above 14 with stderr *"invalid field spec: maxFractionalDigits must be ≤ 14 (the kernel's cap)"*, and refuses an Enumeration category whose value list is shorter, longer, or empty against its enum's values. Both exit 2 with **no envelope at all**, so neither the kernel's `fieldScaleCap` gate nor its category-alignment gate is reachable through this route, and both messages attribute the rule to the kernel while refusing locally. That is how such a row becomes a false attribution.
+**The CLI's own fail-fast spec validation pre-empts kernel declaration gates, and then the route measures the tool.** Confirmed 2026-08-29 on two independent gates.
+
+**Partly resolved the same day.** From a12-dmkits `01bc94279f0aee06fd8d9ccfad2e116354aa409e` these refusals carry the standard `rejected` envelope with `RK_INVALID_VALUE` and `source: PRECHECK`, so the layer is machine-readable, and the messages no longer attribute a local refusal to the kernel. The preflight itself stays, and `model check` over a hand-edited model reaches the kernel's own verdict ([reconciliation](#src-2026-08-29-reconciliation)). `field add` refuses `maxFractionalDigits` above 14 with stderr *"invalid field spec: maxFractionalDigits must be ≤ 14 (the kernel's cap)"*, and refuses an Enumeration category whose value list is shorter, longer, or empty against its enum's values. Both exit 2 with **no envelope at all**, so neither the kernel's `fieldScaleCap` gate nor its category-alignment gate is reachable through this route, and both messages attribute the rule to the kernel while refusing locally. That is how such a row becomes a false attribution.
 
 The tell is the envelope, not the message: a kernel verdict carries `verification: KERNEL_CONFIRMED` and an `MVK_*` diagnostic, while a front-end refusal carries neither and writes plain stderr. Read it before attributing any refusal. Treat every **declaration-shape** claim whose gate the CLI duplicates as not re-dischargeable here until an escape hatch exists, and note that this affects re-verification only: an accepted declaration still reaches the kernel's own oracle normally.
 
@@ -273,6 +275,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Starred yearless DateRange overlap, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-starred-yearless-overlap)
 <a id="src-date-range-plural-year-class"></a>
 - [Plural DateRange overlap year class and fragment operands, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-plural-year-class)
+<a id="src-2026-08-29-reconciliation"></a>
+- [Reviewed 2026-08-29 a12-dmkits reconciliation and correction batch](sources/cross-layer-routes.md#src-2026-08-29-reconciliation)
 <a id="src-date-range-direct-list-cross-group-sources"></a>
 - [A direct-list `FirstFilledValue` places its sources freely](sources/cross-layer-routes.md#src-date-range-direct-list-cross-group-sources)
 <a id="src-empty-declared-group"></a>

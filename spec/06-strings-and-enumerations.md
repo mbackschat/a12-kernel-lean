@@ -101,6 +101,8 @@ Enumeration values can carry named **category** attributes, read with the `->` o
 
 The category mapping is **positional** (`values[i]` categorizes enum value *i*) and **many-to-one** — the comparison fires for *every* value sharing that category value. An empty enum rides the not-evaluated track, category hop or not.
 
+That pairing is positional at **declaration** time too, and the kernel enforces it: a category's token list must have exactly as many entries as the enum has values. A shorter list draws `MVK_MISSING_CATEGORY_VALUE`, a longer one `MVK_MISSING_INTERNAL_VALUE`, and an empty one draws `MVK_MISSING_CATEGORY_VALUE` once per unclassified value rather than once for the declaration. Equal cardinality is the whole rule: same-length tokens **disjoint** from the enum's own values are admitted, which is what separates positional pairing from any set-membership reading, and a same-length reordering is admitted too. Every enum value therefore has exactly one category token, so a stored value the category does not map cannot arise.
+
 > **Non-normative implementation note.** Keep static comparability separate from runtime projection. For a legal ordinary enum declaration, retain locale-tagged `(stored, display)` facts, derive effective display-bearing status from `stored ≠ display`, and check the common-locale relation in both directions. Runtime evaluation compares stored tokens; `->` is a positional lookup over parallel stored/category vectors, so many-to-one mapping falls out directly.
 
 ### B.3 The value-list quantifiers — per-cell three-way classification ⚠

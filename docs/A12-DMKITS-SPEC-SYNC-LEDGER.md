@@ -37,7 +37,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-08-29-05"></a>
 ### `SPEC-2026-08-29-05` — a group may be declared empty, and then no operand may name it
 
-- `status`: pending
+- `status`: accepted
 - `clause`: [`08-paths-and-references.md` §1](../spec/08-paths-and-references.md)
 - `delta`: the clause said nothing about groups carrying no fields. Measured: such a group is **legal to declare**, and `model check` reports the model valid, for a subgroup, for a whole root, and for a repeatable group. Every operand that names one is then refused, on codes of their own rather than the unknown-group class: `MVK_GROUP_IS_EMPTY` for a group, `MVK_ROOT_GROUP_IS_EMPTY` for a root.
 - `mechanism`: the gate is over the **subtree**, not the direct children. A group with no direct field but a field in a descendant subgroup is admitted under group presence, collective fill, and the starred row count alike, in both repetition shapes, with populated direct controls admitted in the same batch. Declaration legality and operand legality are therefore separate questions for a group, which is the distinction the clause was missing.
@@ -46,13 +46,14 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `local-scope`: closed for the reachable half. It corrected a live defect: an empty **repeatable** group is expressible here and a starred group operand admitted one, so the certificate now carries a populated-group witness. An empty nonrepeatable group stays outside this project's model representation, which [SG9](SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion) carries.
 - `acceptance`: a12-dmkits states the declare-versus-name separation and its subtree gate, or supplies the contrary measurement.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
-- `reviewed a12-dmkits revision`: none yet.
+- `reviewed a12-dmkits revision`: `01bc94279f0aee06fd8d9ccfad2e116354aa409e`.
+- `disposition`: **accepted at a12-dmkits `01bc94279f0aee06fd8d9ccfad2e116354aa409e`.** Reproduced in full: the model is kernel-valid with an empty fixed group, an empty repeatable group, a shell of each kind, and a wholly unpopulated second root; four group carriers refuse the empty group, all four admit the shell, and the unpopulated root draws `MVK_ROOT_GROUP_IS_EMPTY`. The peer also answers this entry's `local-scope` note: an empty **nonrepeatable** group is authorable through `group add`, so a reproduction needs no JSON surgery for either repetition kind.
 
 
 <a id="spec-2026-08-29-04"></a>
 ### `SPEC-2026-08-29-04` — the rule-message `$#…$` group position admits the rule's own group and its ancestors
 
-- `status`: pending
+- `status`: accepted
 - `clause`: [`11-messages-and-custom.md` the parameter-grammar clauses](../spec/11-messages-and-custom.md)
 - `delta`: the clause covered the parameter **name** position, where `RootGroup`/`LfdNr` draws `INVALID_ENTITY`, and explicitly scoped that measured absence to the rule-owned carrier. It said nothing about the `$#…$` **group** position, which resolves the same words differently: `$#RootGroup$` and `$#RuleGroup$` are admitted there. The position takes an absolute group path, and the admitted set is the rule's own group plus its ancestors at any depth. A declared descendant, a sibling, and a group under a declared root that does not contain the rule all draw `INVALID_GROUP`, as does a relative spelling of a real group.
 - `delta`: an absolute argument resolves in **two gates the Kernel reports apart**, which a first pass of this entry got wrong by claiming one code covered the whole refusal. An undeclared first segment draws `INVALID_ROOT_GROUP` whatever follows it, so `$#/Nope$` and `$#/Nope/Rows$` share that code and `$#/probe$` shows the match is case-sensitive; only under a declared root does containment decide and report `INVALID_GROUP`. Segments take the name grammar's single-quote escape, so `$#/'Probe'/'Rows'$` reaches the same group as its bare spelling, while a malformed spelling is refused earlier on its own lexical codes: `MVK_LEXER_STANDARD_ERROR` for an unbalanced quote or empty quoted segment, `MVK_INCOMPLETE_INPUT` for a trailing separator, `MVK_UNEXPECTED_TOKEN` for a doubled one.
@@ -66,12 +67,13 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `local-scope`: closed for static admission. [§13](IMPLEMENTATION-MAP.md#13--message-interpolation) owns the implemented boundary; what the position renders is still unmeasured and stays with [SG10](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration).
 - `acceptance`: a12-dmkits states the group position's admitted set and its two resolution gates, or supplies the contrary measurement.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
-- `reviewed a12-dmkits revision`: none yet.
+- `reviewed a12-dmkits revision`: `01bc94279f0aee06fd8d9ccfad2e116354aa409e`.
+- `disposition`: **accepted at a12-dmkits `01bc94279f0aee06fd8d9ccfad2e116354aa409e`.** Reproduced in full on an insurance-policy fixture with a second root: every admitted spelling, both keyword shorthands, all three refusal classes, the four lexical codes, the quoting rows, and the cross-root separation matched. One phrasing narrowed: a quoted spelling is measured **admitted**, and that it reaches the same group is an inference from the containment gate rather than a separate observation. `spec/11` now states the admission alone.
 
 <a id="spec-2026-08-29-03"></a>
 ### `SPEC-2026-08-29-03` — an aggregate over a star derives no iteration, so a fixed computation target has no placement restriction at all
 
-- `status`: pending
+- `status`: accepted
 - `clause`: [`09-computations.md` the generated-rule anchoring paragraph](../spec/09-computations.md)
 - `delta`: the reconciled account states that iteration is derived from the computed field's own repeatable scope *or* from a per-row operand of a repeatable declaring group. It does not say which operands count. Measured: a sibling-star `FirstFilledValue` is **not** a per-row operand. A star aggregate into a *fixed* target is admitted from the target's own group, from an ancestor, from an unrelated sibling group, and from the starred source's own repeatable group — the identical pattern a bare constant gives at the same four placements. So a fixed target carries no placement restriction until an operand actually reads per row.
 - `delta`: the **operand side** is likewise unconstrained, which the first pass did not test. In a direct nonrepeatable `FirstFilledValue` list, a source need not lie in the declaring group and two sources need not share a group with each other; both are admitted at every declaring-group placement, with a self-referencing source refused `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD` as the live control. Containment constrains neither side of a shape that cannot iterate, and this project had narrowed the source side as its own bounded subset until it was measured.
@@ -83,12 +85,13 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `local-scope`: seven Lean gates refuse a fixed target outside its own declaring group and are therefore narrower than the Kernel on this shape. Closing them is not a widening to containment — containment also refuses the measured sibling admission — but the removal of a placement gate plus an iteration-derivation check. Open in [SG4](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition).
 - `acceptance`: a12-dmkits states which operand classes derive iteration, or supplies the contrary measurement showing a star aggregate into a fixed target refused on placement.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
-- `reviewed a12-dmkits revision`: none yet.
+- `reviewed a12-dmkits revision`: `01bc94279f0aee06fd8d9ccfad2e116354aa409e`.
+- `disposition`: **accepted at a12-dmkits `01bc94279f0aee06fd8d9ccfad2e116354aa409e`.** Reproduced on a two-root parts catalogue at five declaring-group placements, including the starred source's own repeatable group, which is the discriminator against a "repeatable group in the operand path" account. Corrected: the `MVK_NO_WILDCARD` half does not generalize — from a nonrepeatable declaring group an extent that **declares an index field** draws `MVK_ERROR_FIELD_NO_INDEX` instead, on two extents differing in nothing else. The repeatable half is uniform and survives. The self-reference control this entry cited is replaced, since its layer is disputed; `spec/09` carries both changes.
 
 <a id="spec-2026-08-29-02"></a>
 ### `SPEC-2026-08-29-02` — a sibling-star computation is admitted from any ancestor of its repeatable target, not only its own parent
 
-- `status`: pending
+- `status`: accepted
 - `supersedes`: the declaration-placement clause of [`SPEC-2026-08-27-01`](archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#spec-2026-08-27-01--a-sibling-star-computation-may-target-a-repeatable-group-and-stays-parent-local). That entry's sibling-star runtime account is untouched; only its placement sentence is corrected.
 - `clause`: [`09-computations.md` the generated-rule anchoring paragraph](../spec/09-computations.md)
 - `delta`: the accepted entry recorded that "the computation must be declared at its target's own parent; declaration elsewhere is refused `MVK_ERROR_FIELD_NOT_IN_RULEGROUP`". Measured against the Kernel, declaration at *any* ancestor is admitted; only a group the target does not lie below is refused. This is the same containment rule as [`SPEC-2026-08-29-01`](#spec-2026-08-29-01), now shown to govern the operand-bearing route and not just constants.
@@ -98,7 +101,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `local-scope`: closed. Every repeatable-target gate now admits by containment, and parent-local correlation under an ancestor declaration was measured separately before the widening landed. Recorded at [`AddressedRepeatableTarget.lean`](../A12Kernel/Elaboration/AddressedRepeatableTarget.lean).
 - `acceptance`: a12-dmkits restates the placement clause as containment, or supplies the contrary measurement showing the ancestor declaration refused with a correctly spelled operand.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
-- `reviewed a12-dmkits revision`: none yet.
+- `reviewed a12-dmkits revision`: `01bc94279f0aee06fd8d9ccfad2e116354aa409e`.
+- `disposition`: **accepted at a12-dmkits `01bc94279f0aee06fd8d9ccfad2e116354aa409e`.** Reproduced on the peer's own `/Warehouse` fixture with a bare-constant control this entry did not carry, which is what separates "the star operand earns the ancestor" from "containment alone decides"; only the second predicts the row-for-row match observed. Extended: the stale-relative-operand refusal has **two** codes, `MVK_INVALID_ENTITY` inside the tree and `MVK_TOO_MANY_PARENT_GROUPS` once the new declaring group is a root. `spec/09` carries the correction; the [reconciliation checkpoint](sources/cross-layer-routes.md#src-2026-08-29-reconciliation) owns the provenance.
 
 <a id="spec-2026-08-29-01"></a>
 ### `SPEC-2026-08-29-01` — `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` is a containment gate under derived iteration, and the computed field's own repetition derives it
