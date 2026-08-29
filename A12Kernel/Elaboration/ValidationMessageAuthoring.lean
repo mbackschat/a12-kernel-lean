@@ -41,6 +41,15 @@ mapped to the Kernel's pairing class, because the Kernel's gate is a question th
 cannot pose; the grammar in front of it — well-formedness, suffix order, key spelling, nesting — is
 measured and modeled exactly.
 
+A parameter written `$#...$` occupies the **group position**, which is a different position from the
+name one and resolves the same words differently: bare `$RootGroup$` is an entity lookup and refused,
+while `$#RootGroup$` is admitted. Its argument is an absolute group path or one of the two keyword
+shorthands for the endpoints of the rule's ancestor chain, and the admitted set is the rule's own group
+together with its ancestors — so containment runs the **opposite** way from the computation
+declaring-group gate: the *named* group must contain the rule's group. A relative spelling is refused
+even when it names a real group. Two historic terminals keep their own refusal class, which the Kernel
+reports distinctly rather than as an unknown group.
+
 One **non-field** parameter form is admitted: the Base Year terminal with an optional signed offset.
 Its only static gate is that the model declares a Base Year, and the offset is applied at authoring
 because nothing about it depends on the document.
@@ -72,6 +81,14 @@ inductive ValidationMessageTemplateError where
   /-- The named category is not one this Enumeration declaration declares, or the declaration itself
   is ill-formed. Both arrive through the one existing Enumeration projection gate. -/
   | category (parameter : String) (error : EnumerationOperandError)
+  /-- A group-position argument that is not a representable absolute path this rule's group lies
+  under, and is not one of the position's live keyword shorthands. The Kernel reports one code for the
+  whole class, so an unknown name, a declared descendant, a sibling, and a relative spelling are not
+  separated here either. -/
+  | invalidGroupParameter (parameter : String)
+  /-- A historic group terminal the Kernel still recognizes and refuses on the modern route. It stays
+  distinct from `invalidGroupParameter` because the Kernel's own code is distinct. -/
+  | retiredGroupTerminal (parameter terminal : String)
   /-- A Base Year parameter was authored against a model that declares none. -/
   | noBaseYear
   /-- A semantic-index key is itself keyed. -/
@@ -89,6 +106,14 @@ inductive MessageParameterSuffix where
   | none
   | value
   | category (name : String)
+  deriving Repr, DecidableEq
+
+/-- A group-position argument as the author spelled it. The two keyword shorthands stay distinct from
+a path, because what they denote is decided against the rule's group rather than at parsing. -/
+inductive AuthoredMessageGroup where
+  | ruleGroup
+  | rootGroup
+  | absolute (path : GroupPath)
   deriving Repr, DecidableEq
 
 /-- A key as the author spelled it: a decoded quoted literal, or a path to the keying field. -/
@@ -110,6 +135,8 @@ private inductive ParsedValidationMessagePart where
   | fieldCategoryWithTrailingSyntax (parameter : String)
       (reference : AuthoredFieldPath) (category : String)
   | baseYear (offset : Int)
+  /-- A group-position argument, beside the authored spelling a diagnostic quotes. -/
+  | group (parameter : String) (authored : AuthoredMessageGroup)
   /-- Any field form above, keyed. The suffix travels so one arm serves all three. -/
   | keyed (parameter : String) (reference : AuthoredFieldPath)
       (suffix : MessageParameterSuffix) (key : AuthoredMessageKey)
@@ -145,6 +172,14 @@ structure ValidationMessageKeywordProfile where
   baseYearTerminal : String
   /-- The selected language's spelling of the semantic-index key terminal. -/
   forTerminal : String
+  /-- The selected language's spelling of the group position's root shorthand. -/
+  rootGroupTerminal : String
+  /-- The selected language's spelling of the group position's own-group shorthand. -/
+  ruleGroupTerminal : String
+  /-- The historic group terminals the Kernel recognizes in the group position and refuses on the
+  modern route. Measured under the English condition language the set is `Zeile` and `Usb`; whether it
+  is selected by language at all is unmeasured, so the caller supplies it like the other terminals. -/
+  retiredGroupTerminals : List String := []
   deriving Repr, DecidableEq
 
 /-- Treat an exempt terminal as if the author had quoted it, then reuse the one existing
@@ -243,6 +278,27 @@ private def parseBaseYearOffset (remainder : String) : Option Int :=
           | _ => none
     | [] => none
 
+/-- Decode one group-position argument, with the `#` already stripped. A live keyword is taken before
+the path grammar, a retired terminal keeps its own refusal, and every other spelling must be an
+absolute group path: a relative one is refused even when it names a real group, so the leading
+separator is required rather than conventional. Segment quoting is unmeasured in this position and is
+therefore not decoded here. -/
+private def parseMessageGroup (profile : ValidationMessageKeywordProfile)
+    (parameter argument : String) :
+    Except ValidationMessageTemplateError AuthoredMessageGroup :=
+  if argument == profile.ruleGroupTerminal then
+    .ok .ruleGroup
+  else if argument == profile.rootGroupTerminal then
+    .ok .rootGroup
+  else if profile.retiredGroupTerminals.contains argument then
+    .error (.retiredGroupTerminal parameter argument)
+  else
+    match argument.splitOn "/" with
+    | "" :: first :: rest =>
+        if (first :: rest).all isBareName then .ok (.absolute (first :: rest))
+        else .error (.invalidGroupParameter parameter)
+    | _ => .error (.invalidGroupParameter parameter)
+
 /-- Decode a key's own spelling. A literal is the grammar's double-quoted token with `""` as its
 escape; anything else is a path to the keying field, and an unquoted bare word therefore resolves as a
 field rather than as a token. -/
@@ -270,6 +326,12 @@ trailing reserved word belong to the name itself. -/
 private def parseParameter (profile : ValidationMessageKeywordProfile)
     (parameter : String) :
     Except ValidationMessageTemplateError ParsedValidationMessagePart :=
+  -- The position marker is read first, because it selects a different grammar rather than a different
+  -- form inside the name grammar. Nothing in the name grammar can begin with it.
+  if parameter.startsWith "#" then
+    (ParsedValidationMessagePart.group parameter ·) <$>
+      parseMessageGroup profile parameter (parameter.drop 1).toString
+  else
   -- The Base Year terminal is checked first: it is a terminal, so an unquoted occurrence is never a
   -- field name, and its offset syntax is not part of any path.
   match splitMessageKey profile parameter with
@@ -385,6 +447,42 @@ structure CheckedValidationMessageCategory
     reference.declaration.enumeration = some projection.declaration.declaration
   categorySelected : projection.projectionRef = .category category
 
+/-- One admitted group-position parameter: the group the author named, beside the witnesses that it is
+a representable path and that it **contains** the rule's group. Containment runs opposite to the
+computation declaring-group gate, where the declaring group is the one that must contain the target. -/
+structure CheckedValidationMessageGroup
+    (model : FlatModel) (condition : CheckedFlatCondition model) where
+  parameter : String
+  group : GroupPath
+  valid : GroupPath.isValid group = true
+  containsRuleGroup : GroupPath.isPrefixOf group condition.rowGroup = true
+
+/-- Resolve one group-position argument against the rule's own group and apply the two gates the
+measured admitted set factors into: the named group is a representable path, and it contains the
+rule's group. Existence needs no separate test, because every ancestor of a declared group is itself
+declared — a named group passing containment is therefore declared, and one failing it is refused
+whether or not the model declares it, which is what a **declared** descendant and an unknown path
+sharing one refusal already says. -/
+def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition model)
+    (parameter : String) (authored : AuthoredMessageGroup) :
+    Except ValidationMessageTemplateError
+      (CheckedValidationMessageGroup model condition) :=
+  -- The root shorthand is the top of the *rule's own* ancestor chain rather than a model-wide root.
+  -- The measured model declares one root, so no observation separates the two readings; this one is
+  -- chosen because `FlatModel` does not enforce a single root and so cannot supply the other.
+  let group : GroupPath :=
+    match authored with
+    | .ruleGroup => condition.rowGroup
+    | .rootGroup => condition.rowGroup.take 1
+    | .absolute path => path
+  if hValid : GroupPath.isValid group = true then
+    if hContains : GroupPath.isPrefixOf group condition.rowGroup = true then
+      .ok { parameter, group, valid := hValid, containsRuleGroup := hContains }
+    else
+      .error (.invalidGroupParameter parameter)
+  else
+    .error (.invalidGroupParameter parameter)
+
 inductive CheckedValidationMessagePart
     (model : FlatModel) (condition : CheckedFlatCondition model) where
   | text (value : String)
@@ -395,6 +493,7 @@ inductive CheckedValidationMessagePart
   declares that year and that the arithmetic is the authored one. -/
   | baseYear (offset year : Int)
       (declared : model.baseYear = some (year - offset))
+  | group (access : CheckedValidationMessageGroup model condition)
 
 structure CheckedValidationMessageTemplate
     (model : FlatModel) (condition : CheckedFlatCondition model) where
@@ -505,6 +604,9 @@ private def checkMessageParts (model : FlatModel)
           pure (.baseYear offset (base + offset) (by
             rw [hDeclared, Int.add_sub_cancel]) ::
             (← checkMessageParts model profile condition rest))
+  | .group parameter authored :: rest => do
+      pure (.group (← checkMessageGroup condition parameter authored) ::
+        (← checkMessageParts model profile condition rest))
   | .keyed parameter reference _suffix key :: rest => do
       -- Measured, a keyed parameter is *not* subject to the condition-membership gate an unkeyed one
       -- carries: a keyed read of a field the condition never names is admitted, provided the
@@ -545,6 +647,9 @@ structure ValidationMessageInputs where
   /-- The field's current stored token. The category mapping is applied by the checked part, not by
   the caller, because the mapping is the declaration's and is measured. -/
   fieldStoredToken : FieldId → Option String
+  /-- The bytes an admitted group parameter renders as. They are the caller's because the Kernel's own
+  rendering for this position is unmeasured. -/
+  group : GroupPath → MessageGroupInput
 
 def CheckedValidationMessagePart.toRenderPart
     (inputs : ValidationMessageInputs) :
@@ -558,6 +663,7 @@ def CheckedValidationMessagePart.toRenderPart
           (inputs.fieldStoredToken access.reference.declaration.id).bind
             (access.projection.declaration.categoryTokenFor? access.category) }
   | .baseYear _ year _ => .baseYear year
+  | .group access => .group (inputs.group access.group)
 
 def CheckedValidationMessageTemplate.toRenderPlan
     (template : CheckedValidationMessageTemplate model condition)

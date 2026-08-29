@@ -62,6 +62,14 @@ structure MessageCategoryInput where
   categoryToken : Option String
   deriving Repr, DecidableEq
 
+/-- One admitted group-position parameter, already resolved to the group it names. What the Kernel
+renders for such a parameter is **unmeasured** — the [group-parameter
+checkpoint](../../docs/SOURCES.md#src-message-group-parameter) covers static admission only — so the
+caller supplies the bytes and this boundary claims nothing about how a group becomes text. -/
+structure MessageGroupInput where
+  text : String
+  deriving Repr, DecidableEq
+
 /-- One already-decoded rule-message part. Field references and `$` syntax have been checked before this point; replacement strings are opaque and are never parsed again. -/
 inductive MessageRenderPart where
   | text (value : String)
@@ -71,6 +79,8 @@ inductive MessageRenderPart where
   /-- The model's Base Year with the parameter's authored offset already applied. It carries no input
   record because nothing about it depends on the document or on a provider. -/
   | baseYear (year : Int)
+  /-- A group-position parameter whose admission is static and whose text is the caller's. -/
+  | group (input : MessageGroupInput)
   deriving Repr, DecidableEq
 
 namespace MessageRenderPart
@@ -81,6 +91,7 @@ def render : MessageRenderPart → String
   | .fieldValue input => input.resolve
   | .fieldCategory input => input.categoryToken.getD ""
   | .baseYear year => toString year
+  | .group input => input.text
 
 end MessageRenderPart
 

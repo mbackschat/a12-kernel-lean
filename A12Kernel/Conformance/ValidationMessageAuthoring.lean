@@ -40,8 +40,20 @@ private def status : FlatFieldDecl :=
       categories := [{ name := "Group", tokens := ["A", "B"] }]
     } }
 
+/-- A field one level **below** the rule group used by the group-position cases, so a refused
+descendant is a group the model really declares rather than an unknown path wearing a longer name. -/
+private def deepField : FlatFieldDecl :=
+  { id := 6, groupPath := ["Order", "Head", "Deeper"], name := "Deep",
+    policy := { kind := .string } }
+
+/-- A field in a **sibling** of that rule group, so a refused sibling is likewise declared. -/
+private def asideField : FlatFieldDecl :=
+  { id := 7, groupPath := ["Order", "Side"], name := "Aside",
+    policy := { kind := .string } }
+
 private def model : FlatModel :=
-  { fields := [amount, other, headAmount, forField, indexField, status] }
+  { fields := [amount, other, headAmount, forField, indexField, status,
+      deepField, asideField] }
 
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
@@ -62,6 +74,9 @@ private def keywordProfile : ValidationMessageKeywordProfile := {
   ]
   baseYearTerminal := "BaseYear"
   forTerminal := "For"
+  rootGroupTerminal := "RootGroup"
+  ruleGroupTerminal := "RuleGroup"
+  retiredGroupTerminals := ["Zeile", "Usb"]
 }
 
 private def condition? : Option (CheckedFlatCondition model) :=
@@ -187,6 +202,7 @@ private def baseYearRender? (template : String) : Option ResolvedMessageText := 
       { providerResult := none, modelLabel := none, debugDisplay := "A" }
     fieldValue := fun _ => { displayValue := none, defaultDisplay := "0" }
     fieldStoredToken := fun _ => none
+    group := fun _ => { text := "" }
   }).render
 
 /- The Base Year parameter applies its authored offset at authoring, because nothing about it depends
@@ -265,6 +281,9 @@ private def inputs : ValidationMessageInputs where
     else
       { displayValue := none, defaultDisplay := "" }
   fieldStoredToken field := if field == status.id then some "open" else none
+  -- The bytes are this fixture's, not the Kernel's: what an admitted group parameter renders is
+  -- unmeasured, so no case here asserts a rendered group.
+  group path := { text := String.intercalate "/" path }
 
 private def render? (template : String) : Option ResolvedMessageText := do
   let condition ← condition?
@@ -387,6 +406,87 @@ example :
         some (.semanticIndexUnsupported "Status->Group For \"k1\"") ∧
       templateError? "$Status-> For \"k1\"$" =
         some (.missingCategoryName "Status-> For \"k1\"") := by
+  native_decide
+
+/-- A rule in `/Order/Head`, whose group has one ancestor above it, one **declared** group below it,
+and one declared sibling. Every group-position case below runs against this one rule. -/
+private def headGroupOk? (template : String) : Option Bool :=
+  pathTemplateOk? ["Order", "Head"] (bare "Amount") template
+
+private def headGroupError? (template : String) :
+    Option ValidationMessageTemplateError :=
+  pathTemplateError? ["Order", "Head"] (bare "Amount") template
+
+/- The **group position** `$#...$`. Measured at kernel 30.8.1, the admitted set is the rule's own group
+together with its ancestors, so containment runs the opposite way from the computation declaring-group
+gate: the *named* group must contain the rule's group. The two keyword shorthands name the endpoints of
+that chain and are admitted for the same reason, not as separate admissions. -/
+example :
+    headGroupOk? "In $#/Order/Head$" = some true ∧
+      headGroupOk? "In $#/Order$" = some true ∧
+      headGroupOk? "In $#RuleGroup$" = some true ∧
+      headGroupOk? "In $#RootGroup$" = some true := by
+  native_decide
+
+/- The refused half, and the separator that makes containment the operative gate rather than mere
+existence: `/Order/Head/Deeper` and `/Order/Side` are groups this model really **declares**, and both
+are refused exactly like the unknown `/Order/Nope`. A descendant is therefore refused for being below
+the rule, not for being absent. -/
+example :
+    headGroupError? "In $#/Order/Head/Deeper$" =
+        some (.invalidGroupParameter "#/Order/Head/Deeper") ∧
+      headGroupError? "In $#/Order/Side$" =
+        some (.invalidGroupParameter "#/Order/Side") ∧
+      headGroupError? "In $#/Order/Nope$" =
+        some (.invalidGroupParameter "#/Order/Nope") := by
+  native_decide
+
+/- The leading separator is **required** rather than conventional. `Head` is the rule's own group and
+`Order` its ancestor, both admitted when spelled absolutely above; spelled relatively neither is, and a
+field name in this position is refused like any other word. -/
+example :
+    headGroupError? "In $#Head$" = some (.invalidGroupParameter "#Head") ∧
+      headGroupError? "In $#Order$" = some (.invalidGroupParameter "#Order") ∧
+      headGroupError? "In $#Amount$" = some (.invalidGroupParameter "#Amount") := by
+  native_decide
+
+/- Two historic terminals are **recognized** in this position and refused on their own class, which the
+Kernel reports with a code distinct from an unknown group. Three other words that look like terminals
+of the same vintage are not terminals here at all: they draw the ordinary unknown-group refusal, and so
+does an arbitrary name, so the retired class is exactly two members wide rather than a catch-all for
+old syntax. -/
+example :
+    headGroupError? "In $#Zeile$" = some (.retiredGroupTerminal "#Zeile" "Zeile") ∧
+      headGroupError? "In $#Usb$" = some (.retiredGroupTerminal "#Usb" "Usb") ∧
+      headGroupError? "In $#Vordruckzeile$" =
+        some (.invalidGroupParameter "#Vordruckzeile") ∧
+      headGroupError? "In $#Vordruckname$" =
+        some (.invalidGroupParameter "#Vordruckname") ∧
+      headGroupError? "In $#index(Head)$" =
+        some (.invalidGroupParameter "#index(Head)") ∧
+      headGroupError? "In $#NotATerminal$" =
+        some (.invalidGroupParameter "#NotATerminal") := by
+  native_decide
+
+/- The position marker selects a **different grammar**, not a different form inside the name grammar:
+the same word is an entity lookup without it and a group terminal with it. That is the pair the Kernel
+separates by reporting an entity refusal for one spelling and admitting the other. -/
+example :
+    headGroupOk? "In $#RootGroup$" = some true ∧
+      headGroupError? "In $RootGroup$" =
+        some (.reference "RootGroup"
+          (.invalidEntity (pathAt (.relative 0) [] "RootGroup"))) := by
+  native_decide
+
+/- At the root the chain has one member, so both shorthands and the absolute spelling of that one group
+coincide, and the group below — admitted as the *rule's own* group above — is refused here. Admission
+therefore tracks the rule's position rather than the group's own depth. -/
+example :
+    pathTemplateOk? ["Order"] (bare "Other") "In $#RuleGroup$" = some true ∧
+      pathTemplateOk? ["Order"] (bare "Other") "In $#RootGroup$" = some true ∧
+      pathTemplateOk? ["Order"] (bare "Other") "In $#/Order$" = some true ∧
+      pathTemplateError? ["Order"] (bare "Other") "In $#/Order/Head$" =
+        some (.invalidGroupParameter "#/Order/Head") := by
   native_decide
 
 end A12Kernel.Conformance.ValidationMessageAuthoring
