@@ -22,7 +22,9 @@ structure CheckedAddressedDateFromDateTime (model : FlatModel) where
   target : CheckedFullDateTarget model
   sourceBinding : CheckedBoundCompleteDateTimeSource model declaringGroup
     target.checked.declaration.repeatableScope
-  targetInDeclaringGroup : target.checked.declaration.groupPath = declaringGroup
+  declaringGroupValid : GroupPath.isValid declaringGroup = true
+  targetContainedInDeclaringGroup :
+    GroupPath.isPrefixOf declaringGroup target.checked.declaration.groupPath = true
   targetRepeatable : target.checked.declaration.repeatableScope ≠ []
 
 /-- Certify one source whose repeatable levels the target's own scope binds. -/
@@ -35,7 +37,9 @@ def checkAddressedDateFromDateTime
   let target ← elaborateFullDateTargetIn model
       targetDeclaration.repeatableScope targetField
     |>.mapError .target
-  if hGroup : target.checked.declaration.groupPath = declaringGroup then
+  if hValid : GroupPath.isValid declaringGroup = true then
+  if hGroup : GroupPath.isPrefixOf
+      declaringGroup target.checked.declaration.groupPath = true then
     if hRepeatable : target.checked.declaration.repeatableScope.isEmpty then
       throw (.targetNotRepeatable target.checked.declaration.path)
     else
@@ -45,13 +49,16 @@ def checkAddressedDateFromDateTime
         |>.mapError .source
       pure {
         declaringGroup, target, sourceBinding
-        targetInDeclaringGroup := hGroup
+        declaringGroupValid := hValid
+        targetContainedInDeclaringGroup := hGroup
         targetRepeatable := by
           intro empty
           simp [empty] at hRepeatable
       }
   else
     throw (.targetOutsideDeclaringGroup target.checked.declaration.path declaringGroup)
+  else
+    throw (.targetLookup (.invalidRuleGroup declaringGroup))
 
 inductive AddressedDateFromDateTimeFault where
   | targetRows (cause : ActualRowEnvironmentError)

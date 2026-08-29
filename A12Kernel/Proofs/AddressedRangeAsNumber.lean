@@ -15,8 +15,8 @@ theorem checkedAddressedRangeAsNumber_sound
           operation.placement.declaringGroup
           operation.placement.sourceReference =
         .ok operation.placement.sourceDeclaration ∧
-      operation.placement.targetDeclaration.groupPath =
-        operation.placement.declaringGroup ∧
+      GroupPath.isPrefixOf operation.placement.declaringGroup
+        operation.placement.targetDeclaration.groupPath = true ∧
       operation.placement.targetDeclaration.toNumericTargetPolicy? =
         some operation.placement.targetPolicy ∧
       operation.placement.targetDeclaration.repeatableScope ≠ [] ∧

@@ -13,8 +13,8 @@ theorem checkedAddressedFieldValueAsString_sound
       model.resolveFieldDeclarationUnchecked
           operation.declaringGroup operation.sourceReference =
         .ok operation.sourceDeclaration ∧
-      operation.targetDeclaration.groupPath =
-        operation.declaringGroup ∧
+      GroupPath.isPrefixOf operation.declaringGroup
+        operation.targetDeclaration.groupPath = true ∧
       operation.targetDeclaration.policy.kind = .string ∧
       operation.targetDeclaration.stringValueMode = .evaluated ∧
       operation.targetDeclaration.customType = none ∧
@@ -26,7 +26,7 @@ theorem checkedAddressedFieldValueAsString_sound
 
         operation.targetDeclaration.repeatableScope = true := by
   exact ⟨operation.modelWellFormed, operation.targetOwned,
-    operation.sourceResolved, operation.targetInDeclaringGroup,
+    operation.sourceResolved, operation.targetContainedInDeclaringGroup,
     operation.targetString, operation.targetEvaluated,
     operation.targetOrdinary, operation.targetNotEnumerated,
     operation.targetRepeatable, operation.sourceNumber,

@@ -69,8 +69,18 @@ private def outerAmount : FlatFieldDecl := {
   policy := { kind := .number { scale := 2, signed := true } }
 }
 
+/-- A real declared group strictly below the target's own group, so the placement separator below
+refuses a genuine group rather than an invented path. -/
+private def deeperAmount : FlatFieldDecl := {
+  id := 4
+  groupPath := ["Order", "Rows", "Deeper"]
+  name := "DeeperAmount"
+  policy := { kind := .number { scale := 2, signed := true } }
+  repeatableScope := [10]
+}
+
 private def model : FlatModel := {
-  fields := [amount, text, outerAmount]
+  fields := [amount, text, outerAmount, deeperAmount]
   repeatableGroups := [{
     level := 10
     path := ["Order", "Rows"]
@@ -151,6 +161,25 @@ example :
       | _ => false) = true ∧
     (checkAddressedFieldValueAsString
       model ["Order", "Rows"] text.id (parent "OuterAmount")).isOk = true := by
+  native_decide
+
+/- Placement is containment, not group equality: an ancestor declaring group admits the target, a declared group strictly below it does not, and an unrepresentable declaring group is refused before containment can vacuously admit everything. -/
+example :
+    (checkAddressedFieldValueAsString
+      model ["Order"] text.id (bare "OuterAmount")).isOk = true ∧
+    (match checkAddressedFieldValueAsString
+        model ["Order", "Rows", "Deeper"] text.id (bare "DeeperAmount") with
+      | .error (.targetOutsideDeclaringGroup path declaringGroup) =>
+          path == text.path && declaringGroup == ["Order", "Rows", "Deeper"]
+      | _ => false) = true ∧
+    (match checkAddressedFieldValueAsString
+        model [] text.id (bare "Amount") with
+      | .error (.target (.invalidRuleGroup group)) => group == []
+      | _ => false) = true ∧
+    (match checkAddressedFieldValueAsString
+        model ["Other"] text.id (bare "Amount") with
+      | .error (.targetOutsideDeclaringGroup path _) => path == text.path
+      | _ => false) = true := by
   native_decide
 
 /- Decimal-valued input selects stripped formal-read text while String-valued Number input remains verbatim, and the two rows cannot alias. -/

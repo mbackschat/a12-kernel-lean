@@ -14,8 +14,8 @@ theorem checkedAddressedNumberSource_sound
       model.resolveFieldDeclarationUnchecked
           source.placement.declaringGroup source.placement.sourceReference =
         .ok source.placement.sourceDeclaration ∧
-      source.placement.targetDeclaration.groupPath =
-        source.placement.declaringGroup ∧
+      GroupPath.isPrefixOf source.placement.declaringGroup
+        source.placement.targetDeclaration.groupPath = true ∧
       source.placement.targetDeclaration.toNumericTargetPolicy? =
         some source.placement.targetPolicy ∧
       source.placement.targetDeclaration.repeatableScope ≠ [] ∧
@@ -37,8 +37,8 @@ theorem checkedAddressedNumberField_sound
           operation.placement.declaringGroup
           operation.placement.sourceReference =
         .ok operation.placement.sourceDeclaration ∧
-      operation.placement.targetDeclaration.groupPath =
-        operation.placement.declaringGroup ∧
+      GroupPath.isPrefixOf operation.placement.declaringGroup
+        operation.placement.targetDeclaration.groupPath = true ∧
       operation.placement.targetDeclaration.toNumericTargetPolicy? =
         some operation.placement.targetPolicy ∧
       operation.placement.targetDeclaration.repeatableScope ≠ [] ∧

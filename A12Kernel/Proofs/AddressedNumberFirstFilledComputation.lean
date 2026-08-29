@@ -10,7 +10,8 @@ theorem checkedAddressedNumberFirstFilled_sound
     model.validate.isOk = true ∧
       model.lookupUniqueId operation.targetField =
         .ok operation.targetDeclaration ∧
-      operation.targetDeclaration.groupPath = operation.declaringGroup ∧
+      GroupPath.isPrefixOf operation.declaringGroup
+        operation.targetDeclaration.groupPath = true ∧
       operation.targetDeclaration.toNumericTargetPolicy? =
         some operation.target.targetPolicy ∧
       operation.operands ≠ [] ∧
@@ -32,7 +33,7 @@ theorem checkedAddressedNumberFirstFilled_sound
           (NumericScaleSummary.field operation.target.targetPolicy.info.scale)
           (NumericScaleSummary.field operand.source.field.info.scale) = true := by
   refine ⟨operation.target.modelWellFormed, operation.target.targetOwned,
-    operation.target.targetInDeclaringGroup, operation.target.targetPolicyOwned,
+    operation.target.targetContainedInDeclaringGroup, operation.target.targetPolicyOwned,
     ?_, ?_⟩
   · simp [CheckedAddressedNumberFirstFilledComputation.operands]
   · intro operand _

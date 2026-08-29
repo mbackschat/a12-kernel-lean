@@ -40,6 +40,12 @@ private def siblingSource : FlatFieldDecl := {
     repeatableScope := [20]
 }
 
+/-- A real declared group strictly below the target's own group, so the placement separator refuses
+a genuine group rather than an invented path. -/
+private def deeperSource : FlatFieldDecl := {
+  source with id := 7, name := "DeeperSource", groupPath := ["Order", "Rows", "Deeper"]
+}
+
 private def scaleZero : FlatFieldDecl := {
   target with
     id := 5
@@ -49,7 +55,8 @@ private def scaleZero : FlatFieldDecl := {
 }
 
 private def model : FlatModel := {
-  fields := [source, target, wrong, outer, siblingSource, scaleZero]
+  fields := [source, target, wrong, outer, siblingSource, scaleZero,
+    deeperSource]
   repeatableGroups := [
     { level := 10, path := ["Order", "Rows"], repeatability := some 4 },
     { level := 20, path := ["Order", "Others"], repeatability := some 3 }]
@@ -123,6 +130,24 @@ example :
         (sibling "Sibling") with
       | .error (.placement (.scopeMismatch targetPath sourcePath)) =>
           targetPath == target.path && sourcePath == siblingSource.path
+      | _ => false) = true := by
+  native_decide
+
+/- The shared numeric placement admits by containment, not group equality: an ancestor declaring group takes the repeatable target, a sibling group and a declared group strictly below it do not, and an unrepresentable declaring group is refused before containment can vacuously admit everything. -/
+example :
+    (checkAddressedNumberField model ["Order"] target.id (bare "Outer")).isOk = true ∧
+    (match checkAddressedNumberField model ["Order", "Rows", "Deeper"] target.id
+        (bare "DeeperSource") with
+      | .error (.placement (.targetOutsideDeclaringGroup path declaringGroup)) =>
+          path == target.path && declaringGroup == ["Order", "Rows", "Deeper"]
+      | _ => false) = true ∧
+    (match checkAddressedNumberField model ["Order", "Others"] target.id
+        (bare "Sibling") with
+      | .error (.placement (.targetOutsideDeclaringGroup path declaringGroup)) =>
+          path == target.path && declaringGroup == ["Order", "Others"]
+      | _ => false) = true ∧
+    (match checkAddressedNumberField model [] target.id (bare "Source") with
+      | .error (.placement (.target (.invalidRuleGroup group))) => group == []
       | _ => false) = true := by
   native_decide
 

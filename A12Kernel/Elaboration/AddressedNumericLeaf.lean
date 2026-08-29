@@ -31,8 +31,9 @@ structure CheckedAddressedNumericTarget (model : FlatModel) where
   modelWellFormed : model.validate.isOk = true
   targetOwned :
     model.lookupUniqueId targetField = .ok targetDeclaration
-  targetInDeclaringGroup :
-    targetDeclaration.groupPath = declaringGroup
+  declaringGroupValid : GroupPath.isValid declaringGroup = true
+  targetContainedInDeclaringGroup :
+    GroupPath.isPrefixOf declaringGroup targetDeclaration.groupPath = true
   targetPolicyOwned :
     targetDeclaration.toNumericTargetPolicy? = some targetPolicy
   targetRepeatable : targetDeclaration.repeatableScope ≠ []
@@ -77,10 +78,12 @@ theorem targetOwned (placement : CheckedAddressedNumericPlacement model) :
     model.lookupUniqueId placement.targetField =
       .ok placement.targetDeclaration := placement.target.targetOwned
 
-theorem targetInDeclaringGroup
+/-- The target lies at or below its declaring group; an ancestor declaration satisfies it. -/
+theorem targetContainedInDeclaringGroup
     (placement : CheckedAddressedNumericPlacement model) :
-    placement.targetDeclaration.groupPath = placement.declaringGroup :=
-  placement.target.targetInDeclaringGroup
+    GroupPath.isPrefixOf placement.declaringGroup
+      placement.targetDeclaration.groupPath = true :=
+  placement.target.targetContainedInDeclaringGroup
 
 theorem targetPolicyOwned
     (placement : CheckedAddressedNumericPlacement model) :
@@ -105,7 +108,9 @@ def checkAddressedNumericTarget
     match hTargetOwned : model.lookupUniqueId targetField with
     | .error cause => .error (.target cause)
     | .ok targetDeclaration =>
-      if hGroup : targetDeclaration.groupPath = declaringGroup then
+      if hValid : GroupPath.isValid declaringGroup = true then
+      if hGroup : GroupPath.isPrefixOf
+          declaringGroup targetDeclaration.groupPath = true then
         match hTargetKind : targetDeclaration.policy.kind with
         | .number _ =>
           match hTargetPolicy : targetDeclaration.toNumericTargetPolicy? with
@@ -123,7 +128,8 @@ def checkAddressedNumericTarget
                   rw [hModel]
                   rfl
                 targetOwned := hTargetOwned
-                targetInDeclaringGroup := hGroup
+                declaringGroupValid := hValid
+                targetContainedInDeclaringGroup := hGroup
                 targetPolicyOwned := hTargetPolicy
                 targetRepeatable := by
                   intro empty
@@ -135,6 +141,8 @@ def checkAddressedNumericTarget
       else
         .error (.targetOutsideDeclaringGroup
           targetDeclaration.path declaringGroup)
+      else
+        .error (.target (.invalidRuleGroup declaringGroup))
 
 /-- Check only the placement facts common to completed one-source addressed numeric leaves. -/
 def checkAddressedNumericPlacement
@@ -148,7 +156,9 @@ def checkAddressedNumericPlacement
     match hTargetOwned : model.lookupUniqueId targetField with
     | .error cause => .error (.target cause)
     | .ok targetDeclaration =>
-      if hGroup : targetDeclaration.groupPath = declaringGroup then
+      if hValid : GroupPath.isValid declaringGroup = true then
+      if hGroup : GroupPath.isPrefixOf
+          declaringGroup targetDeclaration.groupPath = true then
         match hTargetKind : targetDeclaration.policy.kind with
         | .number _ =>
           match hTargetPolicy :
@@ -180,7 +190,8 @@ def checkAddressedNumericPlacement
                         rw [hModel]
                         rfl
                       targetOwned := hTargetOwned
-                      targetInDeclaringGroup := hGroup
+                      declaringGroupValid := hValid
+                      targetContainedInDeclaringGroup := hGroup
                       targetPolicyOwned := hTargetPolicy
                       targetRepeatable := by
                         intro empty
@@ -203,6 +214,8 @@ def checkAddressedNumericPlacement
       else
         .error (.targetOutsideDeclaringGroup
           targetDeclaration.path declaringGroup)
+      else
+        .error (.target (.invalidRuleGroup declaringGroup))
 
 /-- Shared execution faults for one checked addressed numeric operation. Direct leaves use `sourceRead`; resolved repeatable sources retain their wider addressing failures separately. -/
 inductive AddressedNumericLeafFault where

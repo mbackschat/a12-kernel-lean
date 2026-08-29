@@ -38,8 +38,9 @@ structure CheckedAddressedFieldValueAsString (model : FlatModel) where
   sourceResolved :
     model.resolveFieldDeclarationUnchecked declaringGroup sourceReference =
       .ok sourceDeclaration
-  targetInDeclaringGroup :
-    targetDeclaration.groupPath = declaringGroup
+  declaringGroupValid : GroupPath.isValid declaringGroup = true
+  targetContainedInDeclaringGroup :
+    GroupPath.isPrefixOf declaringGroup targetDeclaration.groupPath = true
   targetString :
     targetDeclaration.policy.kind = .string
   targetEvaluated :
@@ -69,7 +70,9 @@ def checkAddressedFieldValueAsString
     match hTargetOwned : model.lookupUniqueId targetField with
     | .error cause => .error (.target cause)
     | .ok targetDeclaration =>
-      if hGroup : targetDeclaration.groupPath = declaringGroup then
+      if hValid : GroupPath.isValid declaringGroup = true then
+      if hGroup : GroupPath.isPrefixOf
+          declaringGroup targetDeclaration.groupPath = true then
         match hKind : targetDeclaration.policy.kind with
         | .string =>
           match hMode : targetDeclaration.stringValueMode with
@@ -109,7 +112,8 @@ def checkAddressedFieldValueAsString
                             rfl
                           targetOwned := hTargetOwned
                           sourceResolved := hSourceResolved
-                          targetInDeclaringGroup := hGroup
+                          declaringGroupValid := hValid
+                          targetContainedInDeclaringGroup := hGroup
                           targetString := hKind
                           targetEvaluated := hMode
                           targetOrdinary := hCustom
@@ -132,6 +136,8 @@ def checkAddressedFieldValueAsString
       else
         .error (.targetOutsideDeclaringGroup
           targetDeclaration.path declaringGroup)
+      else
+        .error (.target (.invalidRuleGroup declaringGroup))
 
 inductive AddressedFieldValueAsStringFault where
   | targetRows (cause : ActualRowEnvironmentError)

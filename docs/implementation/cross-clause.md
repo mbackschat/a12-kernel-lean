@@ -74,6 +74,8 @@ These stable names help when a query crosses numbered clauses. Their capability 
 
 - `owner-and-boundary`: [`AddressedNumericLeaf.lean`](../../A12Kernel/Elaboration/AddressedNumericLeaf.lean) owns `CheckedAddressedNumericTarget`, which carries actual-environment selection, iteration, and the target policy for a repeatable Number target, and admits an operand at any scope that target's own scope binds rather than requiring equality. Five completed consumers: `FieldValueAsNumber`, `RangeAsNumber`, String `Length`, direct Number assignment, and a DateRange endpoint's numeric component. A further consumer joins by supplying a certified source and reusing the existing result/application owners; it does not add a second placement representation.
 
+- `boundary`: Placement against the declaring group is **containment**, not equality: the target is admitted from its own group and from any ancestor, and refused only from a group it does not lie at or below. A declaring-group validity check runs first, because `[]` is a prefix of every path and would otherwise admit every placement vacuously. The same rule holds in the shared [`AddressedRepeatableTarget.lean`](../../A12Kernel/Elaboration/AddressedRepeatableTarget.lean) certificate and in the Enumeration, `FieldValueAsString`, `DateFromDateTime`, and `TimeFromDateTime` copies. L is the [declaring-group gate checkpoint](../SOURCES.md#src-computation-declaring-group-gate), which also measures that ancestor declaration leaves parent-local correlation unchanged; fixed-target placement is a different gate and is not widened by this one.
+
 <a id="cap-certified-direct-number-source-certificate"></a>
 #### Certified direct-Number source certificate
 

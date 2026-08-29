@@ -175,6 +175,11 @@ private def listMaximum : FlatFieldDecl := {
   numericTargetConstraints := { maximum := some (999 / 100) }
 }
 private def listWrongScale := listNumber 16 "ListWrongScale" 2
+/-- A real declared group strictly below the targets' own group, so the placement separator refuses
+a genuine group rather than an invented path. -/
+private def listDeeper : FlatFieldDecl := {
+  listNumber 21 "ListDeeper" 3 with groupPath := ["Probe", "Rows", "Deeper"]
+}
 private def listSingleTarget : FlatFieldDecl := {
   listNumber 17 "ListSingleTarget" 0 with
   numericTargetConstraints := { maximum := some 10 }
@@ -194,7 +199,8 @@ private def listRoundSource : FlatFieldDecl := {
 
 private def listModel : FlatModel := {
   fields := [listA, listB, listC, listMinimum, listMaximum, listWrongScale,
-    listSingleTarget, listAbsTarget, listRoundTarget, listRoundSource]
+    listSingleTarget, listAbsTarget, listRoundTarget, listRoundSource,
+    listDeeper]
   repeatableGroups := [{
     level := 20
     path := ["Probe", "Rows"]
@@ -413,6 +419,21 @@ example :
     (checkAddressedNumberExtremumOperands listModel ["Probe", "Rows"]
       listMaximum.id (literalOperand (5 / 4) 3) [] .minimum).toOption.isSome
       = true := by
+  native_decide
+
+/- The target-only half of the shared numeric placement admits by containment as well: a constant-only call, which reaches that gate without resolving any source, is taken from an ancestor declaring group, refused from a declared group strictly below the target, and refused from an unrepresentable declaring group. -/
+example :
+    (checkAddressedNumberExtremumOperands listModel ["Probe"]
+      listMaximum.id (literalOperand (5 / 4) 3) [] .minimum).isOk = true ∧
+    (match checkAddressedNumberExtremumOperands listModel ["Probe", "Rows", "Deeper"]
+        listMaximum.id (literalOperand (5 / 4) 3) [] .minimum with
+      | .error (.target (.targetOutsideDeclaringGroup path declaringGroup)) =>
+          path == listMaximum.path && declaringGroup == ["Probe", "Rows", "Deeper"]
+      | _ => false) = true ∧
+    (match checkAddressedNumberExtremumOperands listModel []
+        listMaximum.id (literalOperand (5 / 4) 3) [] .minimum with
+      | .error (.target (.target (.invalidRuleGroup group))) => group == []
+      | _ => false) = true := by
   native_decide
 
 /- Field/literal order is retained even though clean extrema commute. Empty Number still contributes zero, a negative literal remains a value, and a reached malformed field still poisons the call on either side of the literal. -/

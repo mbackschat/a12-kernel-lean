@@ -13,8 +13,8 @@ theorem checkedAddressedNumericPlacement_sound
       model.resolveFieldDeclarationUnchecked
           placement.declaringGroup placement.sourceReference =
         .ok placement.sourceDeclaration ∧
-      placement.targetDeclaration.groupPath =
-        placement.declaringGroup ∧
+      GroupPath.isPrefixOf placement.declaringGroup
+        placement.targetDeclaration.groupPath = true ∧
       placement.targetDeclaration.toNumericTargetPolicy? =
         some placement.targetPolicy ∧
       placement.targetDeclaration.repeatableScope ≠ [] ∧
@@ -22,7 +22,7 @@ theorem checkedAddressedNumericPlacement_sound
       placement.sourceDeclaration.repetitionBoundBy
         placement.targetDeclaration.repeatableScope = true := by
   exact ⟨placement.modelWellFormed, placement.targetOwned,
-    placement.sourceResolved, placement.targetInDeclaringGroup,
+    placement.sourceResolved, placement.targetContainedInDeclaringGroup,
     placement.targetPolicyOwned, placement.targetRepeatable,
     placement.sourceNotTarget, placement.sourceScopeBound⟩
 

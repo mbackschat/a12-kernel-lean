@@ -29,8 +29,14 @@ private def rootSource := temporalField 3 "ScheduleStamp" ["Schedule"] []
 private def rootTime := temporalField 4 "ScheduleTime" ["Schedule"] []
   .time TemporalComponents.time "HH:mm:ss"
 
+/-- A real declared group strictly below the target's own group, so the placement separator refuses
+a genuine group rather than an invented path. -/
+private def detailStamp := temporalField 5 "DetailStamp"
+  ["Schedule", "Slots", "Detail"] [10]
+  .dateTime TemporalComponents.now "yyyy-MM-dd'T'HH:mm:ss"
+
 private def model : FlatModel := {
-  fields := [source, target, rootSource, rootTime]
+  fields := [source, target, rootSource, rootTime, detailStamp]
   timeZoneId := "Europe/Berlin"
   repeatableGroups := [{
     level := 10, path := ["Schedule", "Slots"], repeatability := some 5
@@ -98,16 +104,22 @@ private def elabError? (checked :
   | .ok _ => none
 
 /- Target ownership, target repetition, complete-DateTime admission, and source-scope binding are four distinct
-addressed gates. The first row is this family's own narrower boundary, not a Kernel refusal: this family still
-carries an equality placement gate rather than the shared repeatable-target certificate's containment, so it
-refuses the ancestor `["Schedule"]` that the Kernel admits. The
-[declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate) owns the
-measurement and [SG4](../../docs/SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) tracks the
-remaining families. -/
+addressed gates. Placement is containment: the ancestor `["Schedule"]` is admitted with a source that resolves
+from that base, and only a group the target does not lie below is refused. An unrepresentable declaring group
+is refused on this family's own `targetLookup` channel, since its error type has no separate target
+constructor. The refused group is a declared one strictly below the target, so containment is
+separated in its own direction rather than only against an unrelated path. The [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate)
+owns the Kernel measurement. -/
 example :
     elabError? (checkAddressedTimeFromDateTime model ["Schedule"]
-      target.id (parent rootSource.name)) =
-        some (.targetOutsideDeclaringGroup target.path ["Schedule"]) ∧
+      target.id (bare rootSource.name)) = none ∧
+    elabError? (checkAddressedTimeFromDateTime model ["Schedule", "Slots", "Detail"]
+      target.id (bare detailStamp.name)) =
+        some (.targetOutsideDeclaringGroup target.path
+          ["Schedule", "Slots", "Detail"]) ∧
+    elabError? (checkAddressedTimeFromDateTime model []
+      target.id (bare source.name)) =
+        some (.targetLookup (.invalidRuleGroup [])) ∧
     elabError? (checkAddressedTimeFromDateTime model ["Schedule"]
       rootTime.id (bare rootSource.name)) =
         some (.targetNotRepeatable rootTime.path) ∧

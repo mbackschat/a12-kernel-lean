@@ -22,9 +22,13 @@ private def rootTarget : FlatFieldDecl := {
   target with id := 3, name := "PlannedDate", groupPath := ["Schedule"], repeatableScope := [] }
 private def outerSource : FlatFieldDecl := {
   source with id := 4, name := "ScheduleStamp", groupPath := ["Schedule"], repeatableScope := [] }
+/-- A real declared group strictly below the target's own group, so the placement separator refuses
+a genuine group rather than an invented path. -/
+private def detailStamp : FlatFieldDecl := {
+  source with id := 5, name := "DetailStamp", groupPath := ["Schedule", "Slots", "Detail"] }
 
 private def model : FlatModel := {
-  fields := [source, target, rootTarget, outerSource]
+  fields := [source, target, rootTarget, outerSource, detailStamp]
   timeZoneId := "Europe/Berlin"
   repeatableGroups := [{
     level := 10, path := ["Schedule", "Slots"], repeatability := some 5
@@ -48,6 +52,11 @@ private def operation? : Option (CheckedAddressedDateFromDateTime model) :=
 private def outerOperation? : Option (CheckedAddressedDateFromDateTime model) :=
   (checkAddressedDateFromDateTime model ["Schedule", "Slots"] target.id
     (parent "ScheduleStamp")).toOption
+
+/-- The same root source and repeatable target, declared one group above the target instead of at it. -/
+private def ancestorOperation? : Option (CheckedAddressedDateFromDateTime model) :=
+  (checkAddressedDateFromDateTime model ["Schedule"] target.id
+    (bare "ScheduleStamp")).toOption
 
 private def momentAt (day hour minute : Nat) : Option TemporalValue := do
   let wall ← LocalDateTime.ofYmdHms? 2024 6 day hour minute 0
@@ -77,6 +86,13 @@ private def outcomes? (rowCount : Nat) (cells : List ClassifiedCellInput) :
 private def outerOutcomes? (rowCount : Nat) (cells : List ClassifiedCellInput) :
     Option (List (CellAddr × CellAddr × FullDateTargetOutcome)) := do
   let operation ← outerOperation?
+  let input ← input? rowCount cells
+  let outcomes ← (operation.execute input).toOption
+  pure (outcomes.map fun entry => (entry.sourceField, entry.targetField, entry.outcome))
+
+private def ancestorOutcomes? (rowCount : Nat) (cells : List ClassifiedCellInput) :
+    Option (List (CellAddr × CellAddr × FullDateTargetOutcome)) := do
+  let operation ← ancestorOperation?
   let input ← input? rowCount cells
   let outcomes ← (operation.execute input).toOption
   pure (outcomes.map fun entry => (entry.sourceField, entry.targetField, entry.outcome))
@@ -231,6 +247,33 @@ example :
       ({ field := outerSource.id, path := [] }, address target.id 1, accepted "2024-06-15"),
       ({ field := outerSource.id, path := [] }, address target.id 2, accepted "2024-06-15")
     ] := by
+  native_decide
+
+/- Placement is containment, not group equality: an ancestor declaring group admits the repeatable target, a declared group strictly below it does not, and an unrepresentable declaring group is refused before containment can vacuously admit everything. -/
+example :
+    ancestorOperation?.isSome = true ∧
+    (match checkAddressedDateFromDateTime
+        model ["Schedule", "Slots", "Detail"] target.id (bare "DetailStamp") with
+      | .error (.targetOutsideDeclaringGroup path declaringGroup) =>
+          path == target.path && declaringGroup == ["Schedule", "Slots", "Detail"]
+      | _ => false) = true ∧
+    (match checkAddressedDateFromDateTime model [] target.id (bare "SlotStamp") with
+      | .error (.targetLookup (.invalidRuleGroup group)) => group == []
+      | _ => false) = true ∧
+    (match checkAddressedDateFromDateTime model ["Other"] target.id (bare "SlotStamp") with
+      | .error (.targetOutsideDeclaringGroup path _) => path == target.path
+      | _ => false) = true := by
+  native_decide
+
+/- Widening admission does not move the operand: the same root source reaches the same rows with the same addresses whether the computation is declared at the target's own group or one group above it. -/
+example : (do
+    let ancestorDeclared ← ancestorOutcomes? 2 [
+      outerCell "2024-06-15T00:30:00"
+        (.parsed (.temporal (momentAt 15 0 30 |>.get (by native_decide))))]
+    let ownGroupDeclared ← outerOutcomes? 2 [
+      outerCell "2024-06-15T00:30:00"
+        (.parsed (.temporal (momentAt 15 0 30 |>.get (by native_decide))))]
+    pure (ancestorDeclared == ownGroupDeclared)) = some true := by
   native_decide
 
 /- A formal root failure poisons every reached row while retaining the one root source address. -/
