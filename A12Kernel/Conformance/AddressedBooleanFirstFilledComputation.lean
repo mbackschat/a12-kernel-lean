@@ -117,9 +117,12 @@ private def elabError? (checked :
 `["Projects"]` admits the target with an absolute operand and with the operand re-spelled for that base; both
 admissions are Kernel-measured at the
 [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate).
-`["Projects", "Choices"]` is the discriminating refusal: it is a declared group *inside the target's own
-subtree*, so an account keyed on a shared first segment or on any same-subtree test still admits it, and only
-containment refuses it. That is the shape the checkpoint's operand-bearing row measured. -/
+`["Projects", "Choices"]` is the discriminating refusal: it is a declared group that shares the target's
+enclosing `["Projects"]` prefix without containing the target, so an account keyed on a shared first segment
+or on any common-ancestor test still admits it, and only containment refuses it. That is the shape the
+checkpoint's operand-bearing row measured. The complementary direction — a declared group strictly *below*
+the target — is separated by the other families named in
+[SG4](../../docs/SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition). -/
 example :
     (checkAddressedBooleanFirstFilledComputation model
       ["Projects"] target.id absoluteSiblingStar).toOption.isSome = true ∧
