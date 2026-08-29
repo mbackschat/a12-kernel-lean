@@ -71,71 +71,71 @@ def checkAddressedFieldValueAsString
     | .error cause => .error (.target cause)
     | .ok targetDeclaration =>
       if hValid : GroupPath.isValid declaringGroup = true then
-      if hGroup : GroupPath.isPrefixOf
-          declaringGroup targetDeclaration.groupPath = true then
-        match hKind : targetDeclaration.policy.kind with
-        | .string =>
-          match hMode : targetDeclaration.stringValueMode with
-          | .raw => .error (.rawStringTarget targetDeclaration.path)
-          | .evaluated =>
-            match hCustom : targetDeclaration.customType with
-            | some _ =>
-                .error (.customStringTarget targetDeclaration.path)
-            | none =>
-              match hEnumeration : targetDeclaration.enumeration with
+        if hGroup : GroupPath.isPrefixOf
+            declaringGroup targetDeclaration.groupPath = true then
+          match hKind : targetDeclaration.policy.kind with
+          | .string =>
+            match hMode : targetDeclaration.stringValueMode with
+            | .raw => .error (.rawStringTarget targetDeclaration.path)
+            | .evaluated =>
+              match hCustom : targetDeclaration.customType with
               | some _ =>
-                  .error (.enumeratedStringTarget targetDeclaration.path)
+                  .error (.customStringTarget targetDeclaration.path)
               | none =>
-                if hRepeatable :
-                    targetDeclaration.repeatableScope.isEmpty then
-                  .error (.targetNotRepeatable targetDeclaration.path)
-                else
-                  match hSourceResolved :
-                      model.resolveFieldDeclarationUnchecked
-                        declaringGroup sourceReference with
-                  | .error cause => .error (.source cause)
-                  | .ok sourceDeclaration =>
-                    match hSourceKind :
-                        sourceDeclaration.policy.kind with
-                    | .number info =>
-                      if hScope :
-                          sourceDeclaration.repetitionBoundBy
-                            targetDeclaration.repeatableScope = true then
-                        .ok {
-                          declaringGroup
-                          sourceReference
-                          targetField
-                          targetDeclaration
-                          sourceDeclaration
-                          modelWellFormed := by
-                            rw [hModel]
-                            rfl
-                          targetOwned := hTargetOwned
-                          sourceResolved := hSourceResolved
-                          declaringGroupValid := hValid
-                          targetContainedInDeclaringGroup := hGroup
-                          targetString := hKind
-                          targetEvaluated := hMode
-                          targetOrdinary := hCustom
-                          targetNotEnumerated := hEnumeration
-                          sourceNumber := ⟨info, hSourceKind⟩
-                          targetRepeatable := by
-                            intro empty
-                            simp [empty] at hRepeatable
-                          sourceScopeBound := hScope
-                        }
-                      else
-                        .error (.scopeMismatch
-                          targetDeclaration.path sourceDeclaration.path)
-                    | actual =>
-                        .error (.sourceKindMismatch
-                          sourceDeclaration.path actual.surfaceKind)
-        | actual =>
-            .error (.targetKindMismatch
-              targetDeclaration.path actual.surfaceKind)
-      else
-        .error (.targetOutsideDeclaringGroup
-          targetDeclaration.path declaringGroup)
+                match hEnumeration : targetDeclaration.enumeration with
+                | some _ =>
+                    .error (.enumeratedStringTarget targetDeclaration.path)
+                | none =>
+                  if hRepeatable :
+                      targetDeclaration.repeatableScope.isEmpty then
+                    .error (.targetNotRepeatable targetDeclaration.path)
+                  else
+                    match hSourceResolved :
+                        model.resolveFieldDeclarationUnchecked
+                          declaringGroup sourceReference with
+                    | .error cause => .error (.source cause)
+                    | .ok sourceDeclaration =>
+                      match hSourceKind :
+                          sourceDeclaration.policy.kind with
+                      | .number info =>
+                        if hScope :
+                            sourceDeclaration.repetitionBoundBy
+                              targetDeclaration.repeatableScope = true then
+                          .ok {
+                            declaringGroup
+                            sourceReference
+                            targetField
+                            targetDeclaration
+                            sourceDeclaration
+                            modelWellFormed := by
+                              rw [hModel]
+                              rfl
+                            targetOwned := hTargetOwned
+                            sourceResolved := hSourceResolved
+                            declaringGroupValid := hValid
+                            targetContainedInDeclaringGroup := hGroup
+                            targetString := hKind
+                            targetEvaluated := hMode
+                            targetOrdinary := hCustom
+                            targetNotEnumerated := hEnumeration
+                            sourceNumber := ⟨info, hSourceKind⟩
+                            targetRepeatable := by
+                              intro empty
+                              simp [empty] at hRepeatable
+                            sourceScopeBound := hScope
+                          }
+                        else
+                          .error (.scopeMismatch
+                            targetDeclaration.path sourceDeclaration.path)
+                      | actual =>
+                          .error (.sourceKindMismatch
+                            sourceDeclaration.path actual.surfaceKind)
+          | actual =>
+              .error (.targetKindMismatch
+                targetDeclaration.path actual.surfaceKind)
+        else
+          .error (.targetOutsideDeclaringGroup
+            targetDeclaration.path declaringGroup)
       else
         .error (.target (.invalidRuleGroup declaringGroup))
 

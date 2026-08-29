@@ -15,6 +15,7 @@ theorem checkedAddressedNumberRound_sound
           operation.numberSource.placement.declaringGroup
           operation.numberSource.placement.sourceReference =
         .ok operation.numberSource.placement.sourceDeclaration ∧
+      GroupPath.isValid operation.numberSource.placement.declaringGroup = true ∧
       GroupPath.isPrefixOf operation.numberSource.placement.declaringGroup
         operation.numberSource.placement.targetDeclaration.groupPath = true ∧
       operation.numberSource.placement.targetDeclaration.toNumericTargetPolicy? =

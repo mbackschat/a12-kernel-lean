@@ -78,6 +78,12 @@ theorem targetOwned (placement : CheckedAddressedNumericPlacement model) :
     model.lookupUniqueId placement.targetField =
       .ok placement.targetDeclaration := placement.target.targetOwned
 
+/-- The declaring group is a representable path. Containment against `[]` is vacuous, so this is what
+makes the next forwarder load-bearing rather than trivially satisfied. -/
+theorem declaringGroupValid (placement : CheckedAddressedNumericPlacement model) :
+    GroupPath.isValid placement.declaringGroup = true :=
+  placement.target.declaringGroupValid
+
 /-- The target lies at or below its declaring group; an ancestor declaration satisfies it. -/
 theorem targetContainedInDeclaringGroup
     (placement : CheckedAddressedNumericPlacement model) :
@@ -109,38 +115,38 @@ def checkAddressedNumericTarget
     | .error cause => .error (.target cause)
     | .ok targetDeclaration =>
       if hValid : GroupPath.isValid declaringGroup = true then
-      if hGroup : GroupPath.isPrefixOf
-          declaringGroup targetDeclaration.groupPath = true then
-        match hTargetKind : targetDeclaration.policy.kind with
-        | .number _ =>
-          match hTargetPolicy : targetDeclaration.toNumericTargetPolicy? with
-          | none => .error (.targetPolicyUnavailable targetDeclaration.path)
-          | some targetPolicy =>
-            if hRepeatable : targetDeclaration.repeatableScope.isEmpty then
-              .error (.targetNotRepeatable targetDeclaration.path)
-            else
-              .ok {
-                declaringGroup
-                targetField
-                targetDeclaration
-                targetPolicy
-                modelWellFormed := by
-                  rw [hModel]
-                  rfl
-                targetOwned := hTargetOwned
-                declaringGroupValid := hValid
-                targetContainedInDeclaringGroup := hGroup
-                targetPolicyOwned := hTargetPolicy
-                targetRepeatable := by
-                  intro empty
-                  simp [empty] at hRepeatable
-              }
-        | actual =>
-            .error (.targetKindMismatch
-              targetDeclaration.path actual.surfaceKind)
-      else
-        .error (.targetOutsideDeclaringGroup
-          targetDeclaration.path declaringGroup)
+        if hGroup : GroupPath.isPrefixOf
+            declaringGroup targetDeclaration.groupPath = true then
+          match hTargetKind : targetDeclaration.policy.kind with
+          | .number _ =>
+            match hTargetPolicy : targetDeclaration.toNumericTargetPolicy? with
+            | none => .error (.targetPolicyUnavailable targetDeclaration.path)
+            | some targetPolicy =>
+              if hRepeatable : targetDeclaration.repeatableScope.isEmpty then
+                .error (.targetNotRepeatable targetDeclaration.path)
+              else
+                .ok {
+                  declaringGroup
+                  targetField
+                  targetDeclaration
+                  targetPolicy
+                  modelWellFormed := by
+                    rw [hModel]
+                    rfl
+                  targetOwned := hTargetOwned
+                  declaringGroupValid := hValid
+                  targetContainedInDeclaringGroup := hGroup
+                  targetPolicyOwned := hTargetPolicy
+                  targetRepeatable := by
+                    intro empty
+                    simp [empty] at hRepeatable
+                }
+          | actual =>
+              .error (.targetKindMismatch
+                targetDeclaration.path actual.surfaceKind)
+        else
+          .error (.targetOutsideDeclaringGroup
+            targetDeclaration.path declaringGroup)
       else
         .error (.target (.invalidRuleGroup declaringGroup))
 
@@ -157,63 +163,63 @@ def checkAddressedNumericPlacement
     | .error cause => .error (.target cause)
     | .ok targetDeclaration =>
       if hValid : GroupPath.isValid declaringGroup = true then
-      if hGroup : GroupPath.isPrefixOf
-          declaringGroup targetDeclaration.groupPath = true then
-        match hTargetKind : targetDeclaration.policy.kind with
-        | .number _ =>
-          match hTargetPolicy :
-              targetDeclaration.toNumericTargetPolicy? with
-          | none =>
-              .error (.targetPolicyUnavailable targetDeclaration.path)
-          | some targetPolicy =>
-            if hRepeatable :
-                targetDeclaration.repeatableScope.isEmpty then
-              .error (.targetNotRepeatable targetDeclaration.path)
-            else
-              match hSourceResolved :
-                  model.resolveFieldDeclarationUnchecked
-                    declaringGroup sourceReference with
-              | .error cause => .error (.source cause)
-              | .ok sourceDeclaration =>
-                if hSelf : sourceDeclaration.id == targetField then
-                  .error (.targetSelfReference targetField)
-                else if hScope :
-                    sourceDeclaration.repetitionBoundBy
-                      targetDeclaration.repeatableScope = true then
-                  .ok {
-                    target := {
-                      declaringGroup
-                      targetField
-                      targetDeclaration
-                      targetPolicy
-                      modelWellFormed := by
-                        rw [hModel]
-                        rfl
-                      targetOwned := hTargetOwned
-                      declaringGroupValid := hValid
-                      targetContainedInDeclaringGroup := hGroup
-                      targetPolicyOwned := hTargetPolicy
-                      targetRepeatable := by
-                        intro empty
-                        simp [empty] at hRepeatable
+        if hGroup : GroupPath.isPrefixOf
+            declaringGroup targetDeclaration.groupPath = true then
+          match hTargetKind : targetDeclaration.policy.kind with
+          | .number _ =>
+            match hTargetPolicy :
+                targetDeclaration.toNumericTargetPolicy? with
+            | none =>
+                .error (.targetPolicyUnavailable targetDeclaration.path)
+            | some targetPolicy =>
+              if hRepeatable :
+                  targetDeclaration.repeatableScope.isEmpty then
+                .error (.targetNotRepeatable targetDeclaration.path)
+              else
+                match hSourceResolved :
+                    model.resolveFieldDeclarationUnchecked
+                      declaringGroup sourceReference with
+                | .error cause => .error (.source cause)
+                | .ok sourceDeclaration =>
+                  if hSelf : sourceDeclaration.id == targetField then
+                    .error (.targetSelfReference targetField)
+                  else if hScope :
+                      sourceDeclaration.repetitionBoundBy
+                        targetDeclaration.repeatableScope = true then
+                    .ok {
+                      target := {
+                        declaringGroup
+                        targetField
+                        targetDeclaration
+                        targetPolicy
+                        modelWellFormed := by
+                          rw [hModel]
+                          rfl
+                        targetOwned := hTargetOwned
+                        declaringGroupValid := hValid
+                        targetContainedInDeclaringGroup := hGroup
+                        targetPolicyOwned := hTargetPolicy
+                        targetRepeatable := by
+                          intro empty
+                          simp [empty] at hRepeatable
+                      }
+                      sourceReference
+                      sourceDeclaration
+                      sourceResolved := hSourceResolved
+                      sourceNotTarget := by
+                        intro equal
+                        simp [equal] at hSelf
+                      sourceScopeBound := hScope
                     }
-                    sourceReference
-                    sourceDeclaration
-                    sourceResolved := hSourceResolved
-                    sourceNotTarget := by
-                      intro equal
-                      simp [equal] at hSelf
-                    sourceScopeBound := hScope
-                  }
-                else
-                  .error (.scopeMismatch
-                    targetDeclaration.path sourceDeclaration.path)
-        | actual =>
-            .error (.targetKindMismatch
-              targetDeclaration.path actual.surfaceKind)
-      else
-        .error (.targetOutsideDeclaringGroup
-          targetDeclaration.path declaringGroup)
+                  else
+                    .error (.scopeMismatch
+                      targetDeclaration.path sourceDeclaration.path)
+          | actual =>
+              .error (.targetKindMismatch
+                targetDeclaration.path actual.surfaceKind)
+        else
+          .error (.targetOutsideDeclaringGroup
+            targetDeclaration.path declaringGroup)
       else
         .error (.target (.invalidRuleGroup declaringGroup))
 

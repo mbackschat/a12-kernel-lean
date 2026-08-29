@@ -265,7 +265,7 @@ example :
       | _ => false) = true := by
   native_decide
 
-/- Widening admission does not move the operand: the same root source reaches the same rows with the same addresses whether the computation is declared at the target's own group or one group above it. -/
+/- A regression guard, not a measurement. Execution reads the target's own repeatable scope and the resolved source declaration, never the declaring group, so these two runs agree by construction; the example fails only if a future execute path starts consulting `declaringGroup`. The Kernel's own correlation invariance under an ancestor declaration is measured separately at the [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate). -/
 example : (do
     let ancestorDeclared ← ancestorOutcomes? 2 [
       outerCell "2024-06-15T00:30:00"
@@ -308,6 +308,13 @@ private def nestedOperation? : Option (CheckedAddressedDateFromDateTime nestedMo
   (checkAddressedDateFromDateTime nestedModel ["Project", "Milestones", "Tasks"]
     nestedTarget.id (parent "MilestoneStamp")).toOption
 
+/-- The same nested operation declared at the **repeatable** ancestor `["Project", "Milestones"]`,
+whose own operand spelling is bare rather than parent-relative from that base. -/
+private def nestedAncestorOperation? :
+    Option (CheckedAddressedDateFromDateTime nestedModel) :=
+  (checkAddressedDateFromDateTime nestedModel ["Project", "Milestones"]
+    nestedTarget.id (bare "MilestoneStamp")).toOption
+
 private def nestedSourceCell (outer : Nat) (stored : String)
     (raw : RawCell) : ClassifiedCellInput :=
   { address := { field := nestedSource.id, path := [outer] }, stored, raw }
@@ -325,6 +332,15 @@ private def nestedRows : List RowAddr :=
   [{ group := 10, path := [1] }, { group := 10, path := [2] },
     { group := 20, path := [1, 1] }, { group := 20, path := [1, 2] },
     { group := 20, path := [2, 1] }, { group := 20, path := [2, 2] }]
+
+private def nestedAncestorOutcomes? (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (List (CellAddr × CellAddr × FullDateTargetOutcome)) := do
+  let operation ← nestedAncestorOperation?
+  let input ← (checkDocument nestedPrepared "en_US" {
+    instantiatedRows := rows, cells }).toOption
+  let outcomes ← (operation.execute input).toOption
+  pure (outcomes.map fun entry => (entry.sourceField, entry.targetField, entry.outcome))
 
 private def nestedSourceAddress (outer : Nat) : CellAddr :=
   { field := nestedSource.id, path := [outer] }
@@ -347,6 +363,32 @@ example :
       (nestedSourceAddress 2, nestedTargetAddress 2 1, accepted "2024-06-16"),
       (nestedSourceAddress 2, nestedTargetAddress 2 2, accepted "2024-06-16")
     ] := by
+  native_decide
+
+/- Containment admits a **repeatable** ancestor, a composition equality never reached: the middle
+`["Project", "Milestones"]` group repeats and still takes a target two levels of repetition deep, and
+outer-row correlation survives it. The root `["Project"]` is refused on the source channel rather than
+the placement channel, because the operand is still spelled for the middle base — the same pair of
+codes the [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate)
+records as the origin of the superseded parenthood reading. -/
+example :
+    nestedAncestorOperation?.isSome = true ∧
+    nestedAncestorOutcomes? nestedRows [
+      nestedSourceCell 1 "2024-06-15T00:30:00"
+        (.parsed (.temporal (momentAt 15 0 30 |>.get (by native_decide)))),
+      nestedSourceCell 2 "2024-06-16T23:45:00"
+        (.parsed (.temporal (momentAt 16 23 45 |>.get (by native_decide))))
+    ] = some [
+      (nestedSourceAddress 1, nestedTargetAddress 1 1, accepted "2024-06-15"),
+      (nestedSourceAddress 1, nestedTargetAddress 1 2, accepted "2024-06-15"),
+      (nestedSourceAddress 2, nestedTargetAddress 2 1, accepted "2024-06-16"),
+      (nestedSourceAddress 2, nestedTargetAddress 2 2, accepted "2024-06-16")
+    ] ∧
+    (match checkAddressedDateFromDateTime nestedModel ["Project"]
+        nestedTarget.id (bare "MilestoneStamp") with
+      | .error (.source (.source (.invalidEntity reference))) =>
+          reference.field == "MilestoneStamp"
+      | _ => false) = true := by
   native_decide
 
 /- A malformed enclosing source poisons only its own leaves; the sibling enclosing row still

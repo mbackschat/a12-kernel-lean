@@ -30,6 +30,16 @@ theorem checkedAddressedTimeFromDateTime_source_valid
     operation.sourceBinding.sourceScopeBound,
     operation.sourceBinding.sourceAdmitted⟩
 
+/-- The checked operation places its repeatable target at or below a representable declaring group. Validity is a separate conjunct because `[]` is a prefix of every path, so containment alone would hold vacuously for an unrepresentable group. -/
+theorem checkedAddressedTimeFromDateTime_target_placement
+    (operation : CheckedAddressedTimeFromDateTime model) :
+    GroupPath.isValid operation.declaringGroup = true ∧
+      GroupPath.isPrefixOf operation.declaringGroup
+        operation.target.checked.declaration.groupPath = true ∧
+      operation.target.checked.declaration.repeatableScope ≠ [] :=
+  ⟨operation.declaringGroupValid, operation.targetContainedInDeclaringGroup,
+    operation.targetRepeatable⟩
+
 /-- Addressed result construction retains the checked operation and classifies every executed outcome under its exact target address. -/
 theorem checkedAddressedTimeFromDateTime_executeResult_projects
     (operation : CheckedAddressedTimeFromDateTime model)

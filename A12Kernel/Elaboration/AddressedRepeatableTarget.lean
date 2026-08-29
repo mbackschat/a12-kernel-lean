@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.Flat.Model
 
 This module owns the model-relative certificate shared by exact-address computations whose target is repeatable and lies within the computation's declaring group. Carrier-specific target policy remains with each operation.
 
-A `GroupPath`'s **first segment is the model root**, so the shallowest legal declaring group is a one-segment path and never `[]`. `FlatFieldDecl.hasValidPath` already forbids an empty declaration path, so no target can sit at `[]` either. That is why validity is checked separately below: `[]` is a prefix of every path, so containment alone would treat the unrepresentable empty group as containing everything.
+`GroupPath.isValid` rejects an empty path and any empty segment, so `[]` is not a representable declaring group; `FlatFieldDecl.hasValidPath` applies the same predicate, so no target can sit at `[]` either. That is why validity is checked separately below: `[]` is a prefix of every path, so containment alone would treat the unrepresentable empty group as containing everything. Nothing in `FlatModel` requires the first segment to name a single shared root, so do not read the check as a root convention.
 
 Placement through **this certificate** is containment, not parenthood: the target is admitted from its own group and from any ancestor of it, and refused only from a group it does not lie below. Several exact-address families still carry their own equality-based placement gate and are not governed by this module; [SG4](../../docs/SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) names them. Do not read this paragraph as an estate-wide rule.
 

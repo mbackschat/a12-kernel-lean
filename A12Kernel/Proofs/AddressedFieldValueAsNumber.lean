@@ -15,6 +15,7 @@ theorem checkedAddressedFieldValueAsNumber_sound
           operation.placement.declaringGroup
           operation.placement.sourceReference =
         .ok operation.placement.sourceDeclaration ∧
+      GroupPath.isValid operation.placement.declaringGroup = true ∧
       GroupPath.isPrefixOf operation.placement.declaringGroup
         operation.placement.targetDeclaration.groupPath = true ∧
       operation.placement.targetDeclaration.toNumericTargetPolicy? =

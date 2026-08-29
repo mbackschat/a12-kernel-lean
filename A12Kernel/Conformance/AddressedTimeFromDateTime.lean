@@ -35,8 +35,13 @@ private def detailStamp := temporalField 5 "DetailStamp"
   ["Schedule", "Slots", "Detail"] [10]
   .dateTime TemporalComponents.now "yyyy-MM-dd'T'HH:mm:ss"
 
+/-- A declared group at the target's own depth that does not contain it, so the refusal separates
+containment from a shared-prefix or common-ancestor account. -/
+private def otherStamp := temporalField 6 "OtherStamp" ["Schedule", "Other"] []
+  .dateTime TemporalComponents.now "yyyy-MM-dd'T'HH:mm:ss"
+
 private def model : FlatModel := {
-  fields := [source, target, rootSource, rootTime, detailStamp]
+  fields := [source, target, rootSource, rootTime, detailStamp, otherStamp]
   timeZoneId := "Europe/Berlin"
   repeatableGroups := [{
     level := 10, path := ["Schedule", "Slots"], repeatability := some 5
@@ -107,8 +112,9 @@ private def elabError? (checked :
 addressed gates. Placement is containment: the ancestor `["Schedule"]` is admitted with a source that resolves
 from that base, and only a group the target does not lie below is refused. An unrepresentable declaring group
 is refused on this family's own `targetLookup` channel, since its error type has no separate target
-constructor. The refused group is a declared one strictly below the target, so containment is
-separated in its own direction rather than only against an unrelated path. The [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate)
+constructor. Two declared groups are refused, one strictly below the target and one at the target's
+own depth beside it, so containment is separated in both directions rather than only against an
+unrelated path. The [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate)
 owns the Kernel measurement. -/
 example :
     elabError? (checkAddressedTimeFromDateTime model ["Schedule"]
@@ -117,6 +123,9 @@ example :
       target.id (bare detailStamp.name)) =
         some (.targetOutsideDeclaringGroup target.path
           ["Schedule", "Slots", "Detail"]) ∧
+    elabError? (checkAddressedTimeFromDateTime model ["Schedule", "Other"]
+      target.id (bare otherStamp.name)) =
+        some (.targetOutsideDeclaringGroup target.path ["Schedule", "Other"]) ∧
     elabError? (checkAddressedTimeFromDateTime model []
       target.id (bare source.name)) =
         some (.targetLookup (.invalidRuleGroup [])) ∧

@@ -180,6 +180,11 @@ a genuine group rather than an invented path. -/
 private def listDeeper : FlatFieldDecl := {
   listNumber 21 "ListDeeper" 3 with groupPath := ["Probe", "Rows", "Deeper"]
 }
+/-- A real declared group at the targets' own depth that does not contain them, so the separator
+covers the shared-prefix account as well as the strictly-below one. -/
+private def listBeside : FlatFieldDecl := {
+  listNumber 22 "ListBeside" 3 with groupPath := ["Probe", "Beside"], repeatableScope := []
+}
 private def listSingleTarget : FlatFieldDecl := {
   listNumber 17 "ListSingleTarget" 0 with
   numericTargetConstraints := { maximum := some 10 }
@@ -200,7 +205,7 @@ private def listRoundSource : FlatFieldDecl := {
 private def listModel : FlatModel := {
   fields := [listA, listB, listC, listMinimum, listMaximum, listWrongScale,
     listSingleTarget, listAbsTarget, listRoundTarget, listRoundSource,
-    listDeeper]
+    listDeeper, listBeside]
   repeatableGroups := [{
     level := 20
     path := ["Probe", "Rows"]
@@ -421,7 +426,7 @@ example :
       = true := by
   native_decide
 
-/- The target-only half of the shared numeric placement admits by containment as well: a constant-only call, which reaches that gate without resolving any source, is taken from an ancestor declaring group, refused from a declared group strictly below the target, and refused from an unrepresentable declaring group. -/
+/- The target-only half of the shared numeric placement admits by containment as well: a constant-only call, which reaches that gate without resolving any source, is taken from an ancestor declaring group, refused from a declared group strictly below the target, refused from a declared group beside it at the target's own depth, and refused from an unrepresentable declaring group. -/
 example :
     (checkAddressedNumberExtremumOperands listModel ["Probe"]
       listMaximum.id (literalOperand (5 / 4) 3) [] .minimum).isOk = true ∧
@@ -429,6 +434,11 @@ example :
         listMaximum.id (literalOperand (5 / 4) 3) [] .minimum with
       | .error (.target (.targetOutsideDeclaringGroup path declaringGroup)) =>
           path == listMaximum.path && declaringGroup == ["Probe", "Rows", "Deeper"]
+      | _ => false) = true ∧
+    (match checkAddressedNumberExtremumOperands listModel ["Probe", "Beside"]
+        listMaximum.id (literalOperand (5 / 4) 3) [] .minimum with
+      | .error (.target (.targetOutsideDeclaringGroup path declaringGroup)) =>
+          path == listMaximum.path && declaringGroup == ["Probe", "Beside"]
       | _ => false) = true ∧
     (match checkAddressedNumberExtremumOperands listModel []
         listMaximum.id (literalOperand (5 / 4) 3) [] .minimum with

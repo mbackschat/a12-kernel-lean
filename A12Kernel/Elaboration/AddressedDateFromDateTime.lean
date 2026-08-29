@@ -38,26 +38,28 @@ def checkAddressedDateFromDateTime
       targetDeclaration.repeatableScope targetField
     |>.mapError .target
   if hValid : GroupPath.isValid declaringGroup = true then
-  if hGroup : GroupPath.isPrefixOf
-      declaringGroup target.checked.declaration.groupPath = true then
-    if hRepeatable : target.checked.declaration.repeatableScope.isEmpty then
-      throw (.targetNotRepeatable target.checked.declaration.path)
+    if hGroup : GroupPath.isPrefixOf
+        declaringGroup target.checked.declaration.groupPath = true then
+      if hRepeatable : target.checked.declaration.repeatableScope.isEmpty then
+        throw (.targetNotRepeatable target.checked.declaration.path)
+      else
+        let sourceBinding ← checkBoundCompleteDateTimeSource model declaringGroup
+          target.checked.declaration.path
+          target.checked.declaration.repeatableScope sourceReference
+          |>.mapError .source
+        pure {
+          declaringGroup, target, sourceBinding
+          declaringGroupValid := hValid
+          targetContainedInDeclaringGroup := hGroup
+          targetRepeatable := by
+            intro empty
+            simp [empty] at hRepeatable
+        }
     else
-      let sourceBinding ← checkBoundCompleteDateTimeSource model declaringGroup
-        target.checked.declaration.path
-        target.checked.declaration.repeatableScope sourceReference
-        |>.mapError .source
-      pure {
-        declaringGroup, target, sourceBinding
-        declaringGroupValid := hValid
-        targetContainedInDeclaringGroup := hGroup
-        targetRepeatable := by
-          intro empty
-          simp [empty] at hRepeatable
-      }
+      throw (.targetOutsideDeclaringGroup target.checked.declaration.path declaringGroup)
   else
-    throw (.targetOutsideDeclaringGroup target.checked.declaration.path declaringGroup)
-  else
+    -- A placement fault travels on the target-lookup channel because this error type has no separate
+    -- target constructor. That is a channel reuse, not a claim about kernel diagnostic precedence.
     throw (.targetLookup (.invalidRuleGroup declaringGroup))
 
 inductive AddressedDateFromDateTimeFault where
