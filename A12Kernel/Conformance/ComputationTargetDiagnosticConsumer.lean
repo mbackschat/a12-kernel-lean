@@ -69,6 +69,14 @@ private def confirmTarget : FlatFieldDecl := {
   policy := { kind := .confirm }
 }
 
+private def repeatedConfirm : FlatFieldDecl := {
+  id := 34
+  groupPath := ["Root", "Rows"]
+  name := "RepeatedConfirm"
+  policy := { kind := .confirm }
+  repeatableScope := [10]
+}
+
 private def rulesMarker : FlatFieldDecl := {
   id := 33
   groupPath := ["Rules"]
@@ -78,8 +86,8 @@ private def rulesMarker : FlatFieldDecl := {
 
 private def consumerModel : FlatModel :=
   { model with fields :=
-      booleanTarget :: confirmTarget :: rulesMarker :: stringTarget ::
-        model.fields }
+      booleanTarget :: confirmTarget :: repeatedConfirm :: rulesMarker ::
+        stringTarget :: model.fields }
 
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
@@ -215,6 +223,19 @@ example :
         .kernelRejected .errorReferenceToCalculatedField ∧
       (stringDecision (.field (bare "StringTarget"))).kernelCode? =
         some "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD" := by
+  native_decide
+
+/- Fixed placement is checked before the constant, so a repeatable Confirm target reports the local
+placement refusal and no Kernel code at all. The Confirm asymmetry two examples above holds only once
+the target is fixed; reading the two gates in their documented listing order instead reports
+`MVK_INVALID_COMPARE_TO_YES` here and loses the placement cause. -/
+example :
+    let repeatableConfirmFalse := decideBooleanConstantTargetDiagnostic
+      (checkBooleanConstantComputation consumerModel ["Root"]
+        repeatedConfirm.id false)
+    repeatableConfirmFalse = .booleanConstantRefusal
+        (.targetRepeatable repeatedConfirm.path) ∧
+      repeatableConfirmFalse.kernelCode? = none := by
   native_decide
 
 end A12Kernel.Conformance.ComputationTargetDiagnosticConsumer
