@@ -60,20 +60,29 @@ private theorem groupPath_isValid_take_one {path : GroupPath}
       simp [GroupPath.isValid] at valid ⊢
       exact valid.1
 
-/-- The group position's gate is genuinely applied at its entry point: every admitted absolute
-argument contains the rule's group, so nothing below the rule is ever reached through it. -/
-theorem checkMessageGroup_absolute_containsRuleGroup
+/-- The group position's gates are genuinely applied at its entry point: every admitted absolute
+argument names a declared root group **and** contains the rule's group, so nothing below the rule and
+nothing under an undeclared root is ever reached through it. -/
+theorem checkMessageGroup_absolute_admitted
     {model : FlatModel} {condition : CheckedFlatCondition model}
     {parameter : String} {path : GroupPath}
     {access : CheckedValidationMessageGroup model condition}
     (admitted : checkMessageGroup condition parameter (.absolute path) = .ok access) :
-    GroupPath.isPrefixOf path condition.rowGroup = true := by
-  rw [checkMessageGroup] at admitted
-  split at admitted
-  · split at admitted
-    · assumption
-    · cases admitted
-  · cases admitted
+    GroupPath.isPrefixOf path condition.rowGroup = true ∧
+      model.hasGroupPath (path.take 1) = true := by
+  cases path with
+  | nil => cases admitted
+  | cons root rest =>
+      rw [checkMessageGroup] at admitted
+      split at admitted
+      case isFalse => cases admitted
+      case isTrue hRoot =>
+        rw [admitMessageGroup] at admitted
+        split at admitted
+        · split at admitted
+          · exact ⟨by assumption, hRoot⟩
+          · cases admitted
+        · cases admitted
 
 /-- Both keyword shorthands are admitted whenever the rule's group is a representable path, and each
 resolves to one endpoint of that group's own ancestor chain. They are therefore shorthands inside the
@@ -84,7 +93,7 @@ theorem checkMessageGroup_ruleGroup_resolvesToRuleGroup
     (valid : GroupPath.isValid condition.rowGroup = true) :
     (checkMessageGroup condition parameter .ruleGroup).map
         (fun access => access.group) = .ok condition.rowGroup := by
-  rw [checkMessageGroup]
+  rw [checkMessageGroup, admitMessageGroup]
   simp only [valid, groupPath_isPrefixOf_self, dite_true]
   rfl
 
@@ -94,7 +103,7 @@ theorem checkMessageGroup_rootGroup_resolvesToChainRoot
     (valid : GroupPath.isValid condition.rowGroup = true) :
     (checkMessageGroup condition parameter .rootGroup).map
         (fun access => access.group) = .ok (condition.rowGroup.take 1) := by
-  rw [checkMessageGroup]
+  rw [checkMessageGroup, admitMessageGroup]
   simp only [groupPath_isValid_take_one valid, groupPath_take_isPrefixOf,
     dite_true]
   rfl

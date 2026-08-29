@@ -1007,7 +1007,7 @@ run_cmd do
 #print axioms A12Kernel.checkedValidationMessageReference_usedByCondition
 #print axioms A12Kernel.checkedValidationMessage_fieldValue_present_isOpaque
 #print axioms A12Kernel.checkedValidationMessage_inputs_doNotChangeVerdict
-#print axioms A12Kernel.checkMessageGroup_absolute_containsRuleGroup
+#print axioms A12Kernel.checkMessageGroup_absolute_admitted
 #print axioms A12Kernel.checkMessageGroup_ruleGroup_resolvesToRuleGroup
 #print axioms A12Kernel.checkMessageGroup_rootGroup_resolvesToChainRoot
 #print axioms A12Kernel.checkedEnUsStringPatternMessage_fieldValue_isOpaque

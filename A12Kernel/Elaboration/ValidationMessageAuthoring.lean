@@ -47,8 +47,11 @@ while `$#RootGroup$` is admitted. Its argument is an absolute group path or one 
 shorthands for the endpoints of the rule's ancestor chain, and the admitted set is the rule's own group
 together with its ancestors — so containment runs the **opposite** way from the computation
 declaring-group gate: the *named* group must contain the rule's group. A relative spelling is refused
-even when it names a real group. Two historic terminals keep their own refusal class, which the Kernel
-reports distinctly rather than as an unknown group.
+even when it names a real group. An absolute path resolves in two stages the Kernel reports apart, an
+undeclared root ahead of containment, and its segments take the same quote escape as a name — but
+because the keyword match is on the raw argument, quoting a terminal turns it back into an ordinary
+group name. Two historic terminals keep their own refusal class, which the Kernel reports distinctly
+rather than as an unknown group, and quoting removes that reading too.
 
 One **non-field** parameter form is admitted: the Base Year terminal with an optional signed offset.
 Its only static gate is that the model declares a Base Year, and the offset is applied at authoring
@@ -81,11 +84,15 @@ inductive ValidationMessageTemplateError where
   /-- The named category is not one this Enumeration declaration declares, or the declaration itself
   is ill-formed. Both arrive through the one existing Enumeration projection gate. -/
   | category (parameter : String) (error : EnumerationOperandError)
-  /-- A group-position argument that is not a representable absolute path this rule's group lies
-  under, and is not one of the position's live keyword shorthands. The Kernel reports one code for the
-  whole class, so an unknown name, a declared descendant, a sibling, and a relative spelling are not
-  separated here either. -/
+  /-- A group-position argument whose root is declared but which the rule's group does not lie under,
+  or which is not an absolute path at all. A declared descendant, a sibling, an unknown group below a
+  declared root, and every relative spelling share this one refusal, which is the Kernel's own
+  grouping — an **unknown root** is separated onto `unknownRootGroup` instead. -/
   | invalidGroupParameter (parameter : String)
+  /-- The first segment of an absolute group argument names no declared root group. Root existence is
+  a gate of its own, ahead of containment and reported apart from it, so it fires whatever follows the
+  root and regardless of whether the rest could ever have contained the rule. -/
+  | unknownRootGroup (parameter root : String)
   /-- A historic group terminal the Kernel still recognizes and refuses on the modern route. It stays
   distinct from `invalidGroupParameter` because the Kernel's own code is distinct. -/
   | retiredGroupTerminal (parameter terminal : String)
@@ -281,8 +288,11 @@ private def parseBaseYearOffset (remainder : String) : Option Int :=
 /-- Decode one group-position argument, with the `#` already stripped. A live keyword is taken before
 the path grammar, a retired terminal keeps its own refusal, and every other spelling must be an
 absolute group path: a relative one is refused even when it names a real group, so the leading
-separator is required rather than conventional. Segment quoting is unmeasured in this position and is
-therefore not decoded here. -/
+separator is required rather than conventional. Each segment takes the name grammar's single-quote
+escape and the quotes are erased before lookup, so quoting reaches the same group — but the keyword
+match above is on the **raw** argument, which is why quoting a terminal turns it back into an ordinary
+group name. A malformed spelling is a parse failure rather than a group refusal; the Kernel separates
+three lexical codes for these shapes, which this fragment reports as its one parse class. -/
 private def parseMessageGroup (profile : ValidationMessageKeywordProfile)
     (parameter argument : String) :
     Except ValidationMessageTemplateError AuthoredMessageGroup :=
@@ -295,8 +305,9 @@ private def parseMessageGroup (profile : ValidationMessageKeywordProfile)
   else
     match argument.splitOn "/" with
     | "" :: first :: rest =>
-        if (first :: rest).all isBareName then .ok (.absolute (first :: rest))
-        else .error (.invalidGroupParameter parameter)
+        match decodeSegments (first :: rest) with
+        | some names => .ok (.absolute (names.map (·.text)))
+        | none => .error (.invalidParameter parameter)
     | _ => .error (.invalidGroupParameter parameter)
 
 /-- Decode a key's own spelling. A literal is the grammar's double-quoted token with `""` as its
@@ -457,24 +468,16 @@ structure CheckedValidationMessageGroup
   valid : GroupPath.isValid group = true
   containsRuleGroup : GroupPath.isPrefixOf group condition.rowGroup = true
 
-/-- Resolve one group-position argument against the rule's own group and apply the two gates the
-measured admitted set factors into: the named group is a representable path, and it contains the
-rule's group. Existence needs no separate test, because every ancestor of a declared group is itself
-declared — a named group passing containment is therefore declared, and one failing it is refused
-whether or not the model declares it, which is what a **declared** descendant and an unknown path
-sharing one refusal already says. -/
-def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition model)
-    (parameter : String) (authored : AuthoredMessageGroup) :
+/-- Admit one resolved group under the two gates every argument shares: it is a representable path,
+and it **contains** the rule's group. Below the root gate, containment needs no separate existence
+test, because every ancestor of a declared group is itself declared — so a group passing containment
+is declared, and one failing it is refused whether or not the model declares it, which is what a
+**declared** descendant and an unknown group below a declared root sharing one refusal already says. -/
+def admitMessageGroup {model : FlatModel}
+    (condition : CheckedFlatCondition model) (parameter : String)
+    (group : GroupPath) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageGroup model condition) :=
-  -- The root shorthand is the top of the *rule's own* ancestor chain rather than a model-wide root.
-  -- The measured model declares one root, so no observation separates the two readings; this one is
-  -- chosen because `FlatModel` does not enforce a single root and so cannot supply the other.
-  let group : GroupPath :=
-    match authored with
-    | .ruleGroup => condition.rowGroup
-    | .rootGroup => condition.rowGroup.take 1
-    | .absolute path => path
   if hValid : GroupPath.isValid group = true then
     if hContains : GroupPath.isPrefixOf group condition.rowGroup = true then
       .ok { parameter, group, valid := hValid, containsRuleGroup := hContains }
@@ -482,6 +485,27 @@ def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition mode
       .error (.invalidGroupParameter parameter)
   else
     .error (.invalidGroupParameter parameter)
+
+/-- Resolve one group-position argument against the rule's own group. An absolute path resolves in the
+two stages the Kernel reports apart: its first segment must name a declared root group, and only then
+does containment decide. The root gate belongs to the path form alone — a keyword resolves to a group
+derived from the rule's own, which introduces no root the model might not declare. -/
+def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition model)
+    (parameter : String) (authored : AuthoredMessageGroup) :
+    Except ValidationMessageTemplateError
+      (CheckedValidationMessageGroup model condition) :=
+  match authored with
+  -- The root shorthand is the top of the *rule's own* ancestor chain rather than a model-wide root.
+  -- A model with two roots separates the two readings, and the rule's own chain is what the Kernel
+  -- admits: under the second root the shorthand is accepted while the first root is refused.
+  | .ruleGroup => admitMessageGroup condition parameter condition.rowGroup
+  | .rootGroup => admitMessageGroup condition parameter (condition.rowGroup.take 1)
+  | .absolute [] => .error (.invalidGroupParameter parameter)
+  | .absolute (root :: rest) =>
+      if model.hasGroupPath [root] then
+        admitMessageGroup condition parameter (root :: rest)
+      else
+        .error (.unknownRootGroup parameter root)
 
 inductive CheckedValidationMessagePart
     (model : FlatModel) (condition : CheckedFlatCondition model) where

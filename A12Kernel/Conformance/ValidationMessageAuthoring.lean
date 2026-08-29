@@ -51,9 +51,15 @@ private def asideField : FlatFieldDecl :=
   { id := 7, groupPath := ["Order", "Side"], name := "Aside",
     policy := { kind := .string } }
 
+/-- A field under a **second root group**. The Kernel admits a model with more than one root, which is
+what makes the root shorthand's meaning measurable rather than a distinction without a difference. -/
+private def branchLabel : FlatFieldDecl :=
+  { id := 8, groupPath := ["Vendor", "Branch"], name := "Label",
+    policy := { kind := .string } }
+
 private def model : FlatModel :=
   { fields := [amount, other, headAmount, forField, indexField, status,
-      deepField, asideField] }
+      deepField, asideField, branchLabel] }
 
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
@@ -487,6 +493,63 @@ example :
       pathTemplateOk? ["Order"] (bare "Other") "In $#/Order$" = some true ∧
       pathTemplateError? ["Order"] (bare "Other") "In $#/Order/Head$" =
         some (.invalidGroupParameter "#/Order/Head") := by
+  native_decide
+
+/- The group argument takes the name grammar's **single-quote escape** at any segment, and the quotes
+are erased before the group is looked up, so a quoted spelling reaches the same group as its bare one. -/
+example :
+    headGroupOk? "In $#/'Order'/'Head'$" = some true ∧
+      headGroupOk? "In $#/'Order'/Head$" = some true ∧
+      headGroupOk? "In $#/Order/'Head'$" = some true ∧
+      headGroupOk? "In $#/'Order'$" = some true := by
+  native_decide
+
+/- Quoting is not merely erased, though: it **suppresses** the keyword reading. Each of these three
+words is a terminal in this position unquoted — two admitted, one on the retired class — and quoting
+all three turns them into ordinary group names, which are then refused because a bare name is not an
+absolute path. That is the separator between "quotes are stripped first" and "quotes decide whether the
+word is a terminal at all". -/
+example :
+    headGroupError? "In $#'RootGroup'$" =
+        some (.invalidGroupParameter "#'RootGroup'") ∧
+      headGroupError? "In $#'RuleGroup'$" =
+        some (.invalidGroupParameter "#'RuleGroup'") ∧
+      headGroupError? "In $#'Zeile'$" = some (.invalidGroupParameter "#'Zeile'") := by
+  native_decide
+
+/- An absolute path resolves in **two stages**, and the Kernel reports them apart. The first segment
+must name a declared root group; when it does not, the refusal is the root one whatever follows it. A
+declared root followed by an unknown or non-containing group is the ordinary group refusal instead, so
+root existence and containment are separate gates rather than one. -/
+example :
+    headGroupError? "In $#/Nope$" = some (.unknownRootGroup "#/Nope" "Nope") ∧
+      headGroupError? "In $#/Nope/Head$" =
+        some (.unknownRootGroup "#/Nope/Head" "Nope") ∧
+      headGroupError? "In $#/Order/Nope$" =
+        some (.invalidGroupParameter "#/Order/Nope") := by
+  native_decide
+
+/- A malformed **spelling** is a parse failure rather than a group refusal, which is where this
+fragment's one parse class sits relative to the Kernel's three distinct lexical codes for these shapes.
+An empty segment, a doubled separator, a trailing separator, and an unbalanced quote all fail here. -/
+example :
+    headGroupError? "In $#/Order/$" = some (.invalidParameter "#/Order/") ∧
+      headGroupError? "In $#//Order$" = some (.invalidParameter "#//Order") ∧
+      headGroupError? "In $#/'Order/Head$" =
+        some (.invalidParameter "#/'Order/Head") ∧
+      headGroupError? "In $#/''$" = some (.invalidParameter "#/''") := by
+  native_decide
+
+/- The root shorthand names the root of the **rule's own** ancestor chain, not a model-wide root. A
+second root group separates the two readings: a rule under it admits the shorthand while the other
+root, which no longer contains the rule, is refused. -/
+example :
+    pathTemplateOk? ["Vendor", "Branch"] (bare "Label") "In $#RootGroup$" =
+        some true ∧
+      pathTemplateOk? ["Vendor", "Branch"] (bare "Label") "In $#/Vendor$" =
+        some true ∧
+      pathTemplateError? ["Vendor", "Branch"] (bare "Label") "In $#/Order$" =
+        some (.invalidGroupParameter "#/Order") := by
   native_decide
 
 end A12Kernel.Conformance.ValidationMessageAuthoring
