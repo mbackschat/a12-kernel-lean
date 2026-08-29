@@ -4,9 +4,34 @@ import A12Kernel.Semantics.ConstructedDateShift
 import A12Kernel.Semantics.TemporalTarget
 
 /-! # Checked full-Date stored input
-This capsule classifies full-precision stored Date text for the two exact formats already shared by temporal targets. It preserves declared-format parsing, calendar reality, the universal Gregorian floor, the optional pre-1900 check, model-zone midnight identity, and stored-Gregorian provenance before the immutable checked document exposes a value. Partial precision, wider format syntax, and other model zones remain separate. -/
+This capsule classifies full-precision stored Date text for the three measured complete formats. It preserves declared-format parsing, calendar reality, the universal Gregorian floor, the optional pre-1900 check, model-zone midnight identity, and stored-Gregorian provenance before the immutable checked document exposes a value. Partial precision, computed-target policy, wider format syntax, and other model zones remain separate. -/
 
 namespace A12Kernel
+
+/-- Exact complete-Date formats admitted by the bounded stored-input classifier. This is wider than the
+computed-target renderer by the measured compact spelling, so input certification cannot accidentally
+widen target authoring. -/
+inductive FullDateInputFormat where
+  | dayMonthYearDots
+  | yearMonthDayDashes
+  | yearMonthDayConcatenated
+  deriving Repr, DecidableEq
+
+namespace FullDateInputFormat
+
+/-- Admit the three complete-Date declaration spellings measured on stored input. -/
+def ofSource? : String → Option FullDateInputFormat
+  | "dd.MM.yyyy" => some .dayMonthYearDots
+  | "yyyy-MM-dd" => some .yearMonthDayDashes
+  | "yyyyMMdd" => some .yearMonthDayConcatenated
+  | _ => none
+
+/-- Embed the narrower computed-target format in the stored-input vocabulary. -/
+def ofTarget : FullDateTargetFormat → FullDateInputFormat
+  | .dayMonthYearDots => .dayMonthYearDots
+  | .yearMonthDayDashes => .yearMonthDayDashes
+
+end FullDateInputFormat
 
 /-- Fail-closed reasons before a declaration can use the bounded full-Date input classifier. -/
 inductive CanonicalFullDateFieldError where
@@ -22,13 +47,13 @@ structure CheckedFullDateInputField where
   declaration : FlatFieldDecl
   field : FlatTemporalField
   policy : TemporalTargetPolicy
-  format : FullDateTargetFormat
+  format : FullDateInputFormat
   fieldOwned : declaration.toTemporalField? = some field
   policyOwned : declaration.toTemporalTargetPolicy? = some policy
   kindOwned : field.kind = .date
   componentsOwned : field.components = TemporalComponents.fullDate
   precisionOwned : policy.partialMode = .full
-  formatOwned : FullDateTargetFormat.ofSource? policy.format = some format
+  formatOwned : FullDateInputFormat.ofSource? policy.format = some format
 
 /-- Certify one bounded full-Date input declaration without imposing a direct or repeatable addressing shape. -/
 def certifyFullDateInputField (declaration : FlatFieldDecl) :
@@ -42,7 +67,7 @@ def certifyFullDateInputField (declaration : FlatFieldDecl) :
           | none => .error (.policyUnavailable declaration.path)
           | some policy =>
               if hPrecision : policy.partialMode = .full then
-                match hFormat : FullDateTargetFormat.ofSource? policy.format with
+                match hFormat : FullDateInputFormat.ofSource? policy.format with
                 | none => .error (.unsupportedPolicy declaration.path
                     policy.format policy.partialMode)
                 | some format => .ok {
@@ -75,7 +100,7 @@ widths and the separator are the whole gate here: a component of the wrong width
 body, or a wrong field count is rejected, while a zero component or an impossible calendar day still
 passes. Partial precision needs exactly this step, because a zero is an omission marker there rather
 than an unreal date, so the reality test cannot be folded into the split. -/
-def FullDateTargetFormat.parseComponents? (format : FullDateTargetFormat)
+def FullDateInputFormat.parseComponents? (format : FullDateInputFormat)
     (text : String) : Option DateParts :=
   let component (width : Nat) (source : String) : Option Nat :=
     if source.length = width then parseAsciiNatural? source else none
@@ -96,12 +121,29 @@ def FullDateTargetFormat.parseComponents? (format : FullDateTargetFormat)
           let day ← component 2 dayText
           pure { year, month, day }
       | _ => none
+  | .yearMonthDayConcatenated =>
+      if text.length = 8 then do
+        let year ← component 4 (text.take 4).toString
+        let month ← component 2 (text.drop 4 |>.take 2).toString
+        let day ← component 2 (text.drop 6).toString
+        pure { year, month, day }
+      else none
+
+/-- Parse a computed-target format through its corresponding stored-input spelling. -/
+def FullDateTargetFormat.parseComponents? (format : FullDateTargetFormat)
+    (text : String) : Option DateParts :=
+  (FullDateInputFormat.ofTarget format).parseComponents? text
 
 /-- Decode one fixed-width ASCII full Date under the default-cutover legacy calendar used by non-lenient stored-value parsing. -/
-def FullDateTargetFormat.parseLegacyParts? (format : FullDateTargetFormat)
+def FullDateInputFormat.parseLegacyParts? (format : FullDateInputFormat)
     (text : String) : Option DateParts := do
   let parts ← format.parseComponents? text
   if DateParts.LegacyHybrid.isReal parts then some parts else none
+
+/-- Decode a computed-target format through the shared stored-input parser. -/
+def FullDateTargetFormat.parseLegacyParts? (format : FullDateTargetFormat)
+    (text : String) : Option DateParts :=
+  (FullDateInputFormat.ofTarget format).parseLegacyParts? text
 
 /-- Resolve one admitted stored Date label at local midnight while retaining its decoded components and stored-Gregorian origin. -/
 def ModelZone.ConcreteProfile.resolveStoredDate? (profile : ModelZone.ConcreteProfile)

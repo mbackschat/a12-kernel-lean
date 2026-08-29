@@ -190,9 +190,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-time-datetime-stored-input"></a>
 - [Stored Time and DateTime input causes, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-time-datetime-stored-input)
 <a id="src-declared-format-temporal-input"></a>
-- [Declared-format temporal input correction, reviewed inbound 2026-08-29](sources/temporal-and-message-probes.md#src-declared-format-temporal-input)
+- [Declared-format temporal input correction and widened grid, reviewed inbound 2026-08-29](sources/temporal-and-message-probes.md#src-declared-format-temporal-input)
 <a id="src-temporal-format-vocabulary"></a>
-- [The temporal format gate is a kind-independent vocabulary, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-temporal-format-vocabulary)
+- [Cross-kind temporal format admission in the original measured subset, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-temporal-format-vocabulary)
 <a id="src-partial-date-input-causes"></a>
 - [Which formal cause a partially known Date draws, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-partial-date-input-causes)
 <a id="src-date-decoded-identity-witness"></a>

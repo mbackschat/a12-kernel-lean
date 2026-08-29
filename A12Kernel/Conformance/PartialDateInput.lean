@@ -134,6 +134,11 @@ example :
       classify? .full "2024-06-15" = none := by
   native_decide
 
+/- Compact full-Date input does not widen partial-precision authoring without its own measured omission
+matrix. This is a local coverage boundary, not a claim that the kernel refuses the declaration. -/
+example : classify? .dayOptional "20240600" (format := "yyyyMMdd") = none := by
+  native_decide
+
 /- The whole rule is **independent of the declared spelling**. The German `dd.MM.yyyy` declaration
 reproduces the ladder, the non-suffix refusal, the reality-before-position order, and the floor cause
 cell for cell, so the omission marker is the zero *component* rather than a position in the ISO text.

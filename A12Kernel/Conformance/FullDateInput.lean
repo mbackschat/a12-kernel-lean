@@ -43,6 +43,8 @@ example :
     classifyResult? (dateField "yyyy-MM-dd") "GMT" "2024-06-15" =
       (utcDate? 2024 6 15).map .inr ∧
     classifyResult? (dateField "dd.MM.yyyy") "UTC" "15.06.2024" =
+      (utcDate? 2024 6 15).map .inr ∧
+    classifyResult? (dateField "yyyyMMdd") "UTC" "20240615" =
       (utcDate? 2024 6 15).map .inr := by native_decide
 
 example :
@@ -53,6 +55,8 @@ example :
     classifyResult? (dateField "yyyy-MM-dd") "UTC" "1583-02-30" =
       some (.inr (.rejected .dateFormat)) ∧
     classifyResult? (dateField "yyyy-MM-dd") "UTC" "1582-10-10" =
+      some (.inr (.rejected .dateFormat)) ∧
+    classifyResult? (dateField "yyyyMMdd") "UTC" "2024-06-15" =
       some (.inr (.rejected .dateFormat)) := by native_decide
 
 /- Calendar reality precedes the floor: year zero is a format failure, while a real pre-floor date
@@ -67,6 +71,14 @@ example :
     classifyResult? (dateField "yyyy-MM-dd") "UTC" "1583-10-16" =
       (utcDate? 1583 10 16).map .inr ∧
     classifyResult? (dateField "yyyy-MM-dd") "UTC" "2024-13-01" =
+      some (.inr (.rejected .dateFormat)) ∧
+    classifyResult? (dateField "yyyyMMdd") "UTC" "15831015" =
+      some (.inr (.rejected .dateInvalid)) ∧
+    classifyResult? (dateField "yyyyMMdd") "UTC" "15831016" =
+      (utcDate? 1583 10 16).map .inr ∧
+    classifyResult? (dateField "yyyyMMdd") "UTC" "00000615" =
+      some (.inr (.rejected .dateFormat)) ∧
+    classifyResult? (dateField "yyyyMMdd") "UTC" "20240231" =
       some (.inr (.rejected .dateFormat)) := by native_decide
 
 example :
@@ -99,6 +111,10 @@ example :
 example : classifyResult? (dateField "yyyy-MM-dd") "Europe/Paris" "2024-01-01" =
     some (.inl (.unsupportedZone "Europe/Paris")) := by native_decide
 
+/- The compact spelling is a stored-input capability only. Target rendering stays on its separately
+measured vocabulary rather than inheriting a declaration admission that did not observe computation. -/
+example : FullDateTargetFormat.ofSource? "yyyyMMdd" = none := by native_decide
+
 example :
     let path := ["Policy", "EffectiveDate"]
     let incomplete := { TemporalComponents.fullDate with day := false }
@@ -113,6 +129,8 @@ example :
       some (.policyUnavailable path) ∧
     certificationError? (dateField "yyyy/MM/dd") =
       some (.unsupportedPolicy path "yyyy/MM/dd" .full) ∧
+    certificationError? (dateField "ddMMyyyy") =
+      some (.unsupportedPolicy path "ddMMyyyy" .full) ∧
     certificationError? (dateField "yyyy-MM-dd" .dayOptional) =
       some (.unsupportedPolicy path "yyyy-MM-dd" .dayOptional) := by native_decide
 

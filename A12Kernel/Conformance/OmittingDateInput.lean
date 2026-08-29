@@ -3,17 +3,13 @@ import A12Kernel.Elaboration.OmittingDateInput
 /-! # Component-omitting Date declaration locks
 
 A DATE declaration may carry a format that omits components, so its stored text is shorter than a
-complete date and its value denotes an interval. All five such formats are legal declarations, measured
-`KERNEL_CONFIRMED`; this capsule owns the three whose value shape already exists here.
+complete date and its value denotes an interval or a yearless calendar position. All seven declarations are Kernel-measured, and this capsule owns all seven through the two existing value shapes.
 
-Every admission and refusal below is read off the kernel's own `validateFull` on **both** codegen
-strategies, which agreed on all eleven observed rows. The result is uniform: **one cause**,
-`datumFormatFalsch`, for every spelling failure, with no position-in-time cause anywhere, because these
-formats carry no complete date to fall below a floor.
+Every named admission and refusal below is read off the kernel's own `validateFull` on **both** codegen strategies, with the compact additions also agreeing with the interpreter. Every retained failure reports `datumFormatFalsch`; the executable classifier has no second rejection arm. Stored texts outside the retained matrix remain externally unverified.
 
-The two **yearless** formats classify into the `MonthDayValue` the DateRange family already uses, because
+The four **yearless** formats classify into the `MonthDayValue` the DateRange family already uses, because
 a month without a year denotes no interval of concrete dates. Their day bound is the month's greatest
-possible day with February at 29, measured across the whole boundary. -/
+possible day with February at 29, locked by the named month-end and compact-order boundaries. -/
 
 namespace A12Kernel.Conformance.OmittingDateInput
 
@@ -68,9 +64,8 @@ example :
       classify? "yyyy-MM" "2021-02" = .interval 2021 2 1 2021 2 28 := by
   native_decide
 
-/- **Widths are fixed and one cause covers every spelling failure.** A short year, a year carrying extra
-components, and an out-of-range month all report the format finding, and none reports the date finding —
-these formats carry no complete date whose position could fall below the floor. -/
+/- The executable classifier has one rejection cause. These retained width, extra-component, and range
+failures all report the format finding and none reports the date finding. -/
 example :
     classify? "yyyy" "20" = .rejected .dateFormat ∧
       classify? "yyyy" "2020-06" = .rejected .dateFormat ∧
@@ -91,11 +86,11 @@ example :
       classify? "yyyy-MM" "" = .presentEmpty := by
   native_decide
 
-/- Certification is refused only for the two **complete** formats, which belong to the full-Date
-classifier. Both refusals are reachable, since both are legal declarations. -/
+/- All three complete formats belong to the full-Date classifier and remain outside this one. -/
 example :
     classify? "yyyy-MM-dd" "2020-06-15" = .unowned ∧
-      classify? "dd.MM.yyyy" "15.06.2020" = .unowned := by
+      classify? "dd.MM.yyyy" "15.06.2020" = .unowned ∧
+      classify? "yyyyMMdd" "20200615" = .unowned := by
   native_decide
 
 /-! ## Yearless formats -/
@@ -104,7 +99,9 @@ example :
 so it stores day one, which is what its month check is applied to. -/
 example :
     classify? "MM" "06" = .yearless 6 1 ∧
-      classify? "MM-dd" "06-15" = .yearless 6 15 := by
+      classify? "MM-dd" "06-15" = .yearless 6 15 ∧
+      classify? "MMdd" "0615" = .yearless 6 15 ∧
+      classify? "ddMM" "1506" = .yearless 6 15 := by
   native_decide
 
 /- **The day bound is the month's greatest possible day, and February reaches 29.** No year is available
@@ -117,12 +114,25 @@ example :
       classify? "MM-dd" "04-30" = .yearless 4 30 ∧
       classify? "MM-dd" "01-31" = .yearless 1 31 ∧
       classify? "MM-dd" "02-29" = .yearless 2 29 ∧
-      classify? "MM-dd" "02-30" = .rejected .dateFormat := by
+      classify? "MM-dd" "02-30" = .rejected .dateFormat ∧
+      classify? "MMdd" "0229" = .yearless 2 29 ∧
+      classify? "MMdd" "0230" = .rejected .dateFormat ∧
+      classify? "ddMM" "2902" = .yearless 2 29 ∧
+      classify? "ddMM" "3002" = .rejected .dateFormat ∧
+      classify? "ddMM" "3104" = .rejected .dateFormat := by
   native_decide
 
-/- Widths, ranges, and the separator are exact here too, and every failure is the same one cause: a month
-carrying an extra component, a zero month, a short month or day, a zero day, a missing separator, and an
-out-of-range month all report the format finding. -/
+/- Separator and component order are independent admission axes: removing the dot admits day-month,
+while reversing the same compact components into the existing month-day spelling changes the value. -/
+example :
+    classify? "ddMM" "0611" = .yearless 11 6 ∧
+      classify? "dd.MM" "15.06" = .unowned ∧
+      classify? "MMdd" "0611" = .yearless 6 11 ∧
+      classify? "MMdd" "06-15" = .rejected .dateFormat ∧
+      classify? "ddMM" "15-06" = .rejected .dateFormat := by
+  native_decide
+
+/- The retained width, range, and separator failures all reach the classifier's sole format cause. -/
 example :
     classify? "MM" "06-15" = .rejected .dateFormat ∧
       classify? "MM" "00" = .rejected .dateFormat ∧
@@ -163,7 +173,7 @@ example :
 
 The component set is **derived** from the declared format, and feeding it to the existing direct-comparison
 gate reproduces the measured admission matrix. Every row below was read off `rule add --dry-run` at
-kernel 30.8.1 over one model declaring all five formats plus a complete one.
+kernel 30.8.1 over one model declaring the previously known five formats plus a complete one. The two compact yearless spellings share the same derived component sets, so the same gate applies without another comparison rule.
 
 No new comparison rule was needed, which is the point of measuring this: the gate is **year presence**
 after optional Base-Year supplementation plus date-class agreement, and it already said so. -/

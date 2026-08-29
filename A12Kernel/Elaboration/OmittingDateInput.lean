@@ -4,36 +4,37 @@ import A12Kernel.Semantics.DateRangeOverlap
 /-! # Checked component-omitting Date input
 
 A DATE declaration may carry a format that **omits components**: measured at kernel 30.8.1, `yyyy`,
-`yyyy-MM`, `yyyyMM`, `MM`, and `MM-dd` are all legal DATE formats alongside the two complete ones. Such a
-declaration's stored text is shorter than a complete date and its value denotes an interval rather than a
-day.
+`yyyy-MM`, `yyyyMM`, `MM`, `MM-dd`, `MMdd`, and `ddMM` are legal DATE formats alongside the three complete ones. Such a
+declaration's stored text is shorter than a complete date and its value denotes either an interval or a
+yearless calendar position.
 
 The three year-bearing formats classify into an existing `PartiallyKnownDateValue`: a year alone is the
 omitted-month shape and a year-month is the omitted-day shape, so every existing `ValueAsDate` consumer
 reads them through the endpoint resolver it already has.
 
-The two **yearless** formats cannot: a month without a year denotes no interval of concrete dates, so it
+The four **yearless** formats cannot: a month without a year denotes no interval of concrete dates, so it
 has no `PartiallyKnownDateValue` form. They classify into the `MonthDayValue` the DateRange family
 already uses for exactly this, reached here through a local two-armed result rather than by widening the
 partial-Date domain with a shape most of its consumers could not resolve.
 
-**One cause, and no position-in-time cause at all.** Measured, every spelling failure reports
-`dateFormat`: a wrong component width, a text carrying components the format omits, and an out-of-range
-month alike. `dateInvalid` cannot arise, because these formats carry no complete date whose position
-could fall below the Gregorian floor — which is the whole structural difference from complete-format
-input, where two causes are needed.
+**One executable rejection cause.** The classifier maps every parse or calendar failure to `dateFormat`
+and has no `dateInvalid` constructor arm, because these formats carry no complete date whose position it
+could compare with the Gregorian floor. The retained Kernel matrix establishes the named width,
+extra-component, separator, component-order, month-range, and greatest-day rows; other stored texts remain
+external evidence pending.
 
 **The separator is exact in both directions.** `yyyy-MM` refuses `202006` and `yyyyMM` refuses
 `2020-06`, so the two spellings are separate formats rather than one lenient parser.
 
-**A yearless day is validated against its month's greatest possible day, with February at 29**, which is
-measured across the whole boundary: `04-31` is refused where `04-30` is admitted, `01-31` is admitted, and
-`02-29` is admitted where `02-30` is refused. No year is available to decide leapness, so this is the
+**A yearless day is validated against its month's greatest possible day, with February at 29**, locked at
+the named April, January, and February boundaries: `04-31` is refused where `04-30` is admitted,
+`01-31` is admitted, and `02-29` is admitted where `02-30` is refused. No year is available to decide
+leapness, so this is the
 `yearlessLastDay` rule the overlap owner already states rather than a second account of it. -/
 
 namespace A12Kernel
 
-/-- A DATE declaration format that omits components and carries a year. -/
+/-- A DATE declaration format that omits at least one component. -/
 inductive OmittingDateFormat where
   /-- `yyyy` — the value is a whole calendar year. -/
   | year
@@ -45,11 +46,15 @@ inductive OmittingDateFormat where
   | month
   /-- `MM-dd` — a yearless month and day, whose day is bounded by the month's greatest possible. -/
   | monthDay
+  /-- `MMdd` — the same month-day value without a separator. -/
+  | monthDayConcatenated
+  /-- `ddMM` — the same yearless components in day-month order. -/
+  | dayMonthConcatenated
   deriving Repr, DecidableEq
 
 namespace OmittingDateFormat
 
-/-- Admit the five measured component-omitting formats. The two complete formats belong to the full-Date
+/-- Admit the seven measured component-omitting formats. The three complete formats belong to the full-Date
 classifier and are refused here. -/
 def ofSource? : String → Option OmittingDateFormat
   | "yyyy" => some .year
@@ -57,12 +62,14 @@ def ofSource? : String → Option OmittingDateFormat
   | "yyyyMM" => some .yearMonthConcatenated
   | "MM" => some .month
   | "MM-dd" => some .monthDay
+  | "MMdd" => some .monthDayConcatenated
+  | "ddMM" => some .dayMonthConcatenated
   | _ => none
 
 /-- Whether this format's value carries a year, and therefore denotes an interval of concrete dates. -/
 def carriesYear : OmittingDateFormat → Bool
   | .year | .yearMonthDashed | .yearMonthConcatenated => true
-  | .month | .monthDay => false
+  | .month | .monthDay | .monthDayConcatenated | .dayMonthConcatenated => false
 
 /-- The component set a declaration of this format exposes.
 
@@ -81,7 +88,7 @@ def components : OmittingDateFormat → TemporalComponents
   | .month =>
       { year := false, month := true, day := false
         hour := false, minute := false, second := false }
-  | .monthDay =>
+  | .monthDay | .monthDayConcatenated | .dayMonthConcatenated =>
       { year := false, month := true, day := true
         hour := false, minute := false, second := false }
 
@@ -109,7 +116,7 @@ def parseYearComponents? (format : OmittingDateFormat) (text : String) :
         let month ← digitsOfWidth? (text.drop 4).toString 2
         pure ((year : Int), some month)
       else none
-  | .month | .monthDay => none
+  | .month | .monthDay | .monthDayConcatenated | .dayMonthConcatenated => none
 
 /-- Split stored text into the yearless month and day a yearless format carries, with `MM` supplying day
 one so both formats produce the same shape.
@@ -133,6 +140,18 @@ def parseYearlessComponents? (format : OmittingDateFormat) (text : String) :
           let day ← digitsOfWidth? dayText 2
           admit month day
       | _ => none
+  | .monthDayConcatenated =>
+      if text.length == 4 then do
+        let month ← digitsOfWidth? (text.take 2).toString 2
+        let day ← digitsOfWidth? (text.drop 2).toString 2
+        admit month day
+      else none
+  | .dayMonthConcatenated =>
+      if text.length == 4 then do
+        let day ← digitsOfWidth? (text.take 2).toString 2
+        let month ← digitsOfWidth? (text.drop 2).toString 2
+        admit month day
+      else none
   | .year | .yearMonthDashed | .yearMonthConcatenated => none
 
 end OmittingDateFormat
@@ -141,8 +160,8 @@ end OmittingDateFormat
 inductive CanonicalOmittingDateFieldError where
   | notDate (path : List String) (actual : FieldKind)
   | policyUnavailable (path : List String)
-  /-- The declaration is a Date whose format is complete or yearless rather than year-bearing and
-  component-omitting. Reachable rather than defensive: all five are legal declarations. -/
+  /-- The declaration is a Date whose format is outside this seven-format component-omitting
+  classifier, including a complete or otherwise unsupported spelling. -/
   | unsupportedFormat (path : List String) (format : String)
   deriving Repr, DecidableEq
 
