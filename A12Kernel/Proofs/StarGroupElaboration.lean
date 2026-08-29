@@ -4,6 +4,22 @@ import A12Kernel.Elaboration.StarGroup
 
 namespace A12Kernel
 
+/-- A group that is present in the namespace and is **not** a declared repeatable group necessarily
+carries a field in its subtree, because those are the only two ways `FlatModel` makes a group present.
+
+This is why the nonrepeatable terminal branch needs no separate empty-group gate: the Kernel's
+group-operand refusal cannot be reached there. Only the repeatable branch can name a group with no
+fields, and that branch carries its own witness. -/
+theorem hasGroupPath_nonrepeatable_contributesField
+    {model : FlatModel} {path : GroupPath}
+    (present : model.hasGroupPath path = true)
+    (nonrepeatable :
+      (model.repeatableGroups.any fun group => group.path == path) = false) :
+    model.groupContributesField path = true := by
+  rw [FlatModel.hasGroupPath] at present
+  simp only [nonrepeatable, Bool.or_false, Bool.and_eq_true] at present
+  exact present.2
+
 /-- Checked group lowering retains the model-derived outer-to-inner repeatable ancestry. -/
 @[simp] theorem checkedStarredGroupSource_ancestry
     (checked : CheckedStarredGroupSource model) :

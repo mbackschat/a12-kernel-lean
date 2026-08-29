@@ -21,8 +21,9 @@ inductive StarredGroupElabError where
   | unknownGroup (path : GroupPath)
   /-- The named group carries no field anywhere in its subtree. The Kernel admits such a group in a
   model and then refuses every operand naming it, on a code of its own rather than the unknown-group
-  one. Only a repeatable group reaches this here, because `FlatModel` represents a nonrepeatable group
-  solely through its fields. -/
+  one. Only a repeatable group reaches this here, which is not an assumption but a consequence:
+  `hasGroupPath_nonrepeatable_contributesField` proves that a present nonrepeatable group carries a
+  field, so the nonrepeatable terminal branch cannot reach this arm. -/
   | groupHasNoFields (path : GroupPath)
   | path (error : StarPathElabError)
   | incoherentCore
