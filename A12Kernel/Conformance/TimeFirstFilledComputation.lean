@@ -253,7 +253,7 @@ example :
       signature? [malformedInput 1, selectedInput 2] = some "POISON" := by
   native_decide
 
-/- The checked boundary admits only the bounded fixed `HH:mm:ss` Time target and direct single-level starred source. Placement is unconstrained: this shape's target is fixed and its operand is a star aggregate, so no iteration is derived and the Kernel admits the target from an unrelated sibling group — measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement). A repeatable target is still refused, on the carrier's own fixed-target gate rather than on placement. -/
+/- The checked boundary admits only the bounded fixed `HH:mm:ss` Time target and direct single-level starred source. Placement is unconstrained. Declaring at the source's own repeatable group puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
 example :
     (checked? target.id (star "Time")).isSome = true ∧
       (checked? target.id (star "ShortTime")).isNone = true ∧
@@ -262,7 +262,8 @@ example :
       partialSource.temporalFirstFilledStarCarrier? = none ∧
       checkedSource.temporalFirstFilledStarCarrier? = none ∧
       (checked? otherFormatTarget.id (star "Time")).isNone = true ∧
-      (checked? otherGroupTarget.id (star "Time")).isSome = true ∧
+      (checkedAt? ["Cart", "Lines"] target.id (star "Time")).isSome = true ∧
+      (checkedAt? [] target.id (star "Time")).isNone = true ∧
       (checkedAt? ["Cart", "Lines"] repeatedTarget.id
         (star "Time")).isNone = true ∧
       (checked? target.id nestedStar).isNone = true := by

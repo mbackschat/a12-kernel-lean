@@ -62,16 +62,17 @@ private def directToFirst :=
 private def directFromTarget :=
   rangeField 41 "DirectFromTarget" "dd.MM" "-" (some .anchorStart)
 
-/-- A fixed DateRange target outside the declaring group, whose sources stay inside it. Its profile
-matches the dotted list so the placement cell below is not decided by the comparability gate. -/
+/-- A fixed DateRange target in a subgroup, used with a declaring group of `["Cart", "Sub"]` so the
+target lies *above* it. Its profile matches the dotted list so the placement cell below is not
+decided by the comparability gate, and the whole fixture stays under one model root. -/
 private def otherGroupTarget : FlatFieldDecl :=
-  { rangeField 42 "OtherWindow" "dd.MM.yyyy" "-" with groupPath := ["Other"] }
+  { rangeField 42 "OtherWindow" "dd.MM.yyyy" "-" with groupPath := ["Cart", "Sub"] }
 
-/-- A source outside the declaring group. A bare operand name resolves against that group, so this
-one is unreachable from the admitted spelling — the refusal below is resolution, not the capsule's
-own source-group narrowing, and either way it carries no Kernel code. -/
+/-- A source outside the declaring group, reachable with an **absolute** operand path. A bare name
+resolves against the declaring group and so cannot name this field, but the admitted surface is not
+limited to bare names, so the capsule's own source-group narrowing does fire and is separable. -/
 private def otherGroupSource : FlatFieldDecl :=
-  { rangeField 43 "OtherSource" "dd.MM.yyyy" "-" with groupPath := ["Other"] }
+  { rangeField 43 "OtherSource" "dd.MM.yyyy" "-" with groupPath := ["Cart", "Sub"] }
 
 private def model : FlatModel := {
   fields := [target, dottedTarget, yearTarget, yearMonthTarget, monthTarget,
@@ -372,13 +373,29 @@ example :
         dottedTarget.id projectedThirdSource).toOption.isNone = true := by
   native_decide
 
-/- Placement is unconstrained. The target sits in `["Other"]` while the declaring group and every source stay in `["Cart"]`, and the list is still admitted: nothing in a direct nonrepeatable list iterates, so the Kernel's containment gate cannot fire. Measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement), whose direct-list row admits this shape at four placements. The sources must still share the declaring group; that is this capsule's own bounded subset, and a bare operand name cannot even spell a source outside it. Either refusal carries no Kernel code, so the second cell asserts exactly that and claims no diagnostic class. -/
+/- Placement is unconstrained. The target sits in `["Other"]` while the declaring group and every source stay in `["Cart"]`, and the list is still admitted: nothing in a direct nonrepeatable list iterates, so the Kernel's containment gate cannot fire. Measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement), whose direct-list row admits this shape at four placements. The sources must still share the declaring group; that is this capsule's own bounded subset, reached here with an absolute operand path and refused `sourceGroup`, which carries no Kernel diagnostic because the Kernel admits a cross-group list. -/
 example :
     (checkDateRangeFirstFilledDirectComputation model ["Cart"]
       otherGroupTarget.id
       (directSource "DirectDottedFirst" "DirectDottedSecond")).toOption.isSome
       = true ∧
-    directDiagnostic? otherGroupTarget.id "DirectDottedFirst" "OtherSource" = none := by
+    (match checkDateRangeFirstFilledDirectComputation model []
+        otherGroupTarget.id (directSource "DirectDottedFirst" "DirectDottedSecond") with
+      | .error (.sourceShape (.resolve (.invalidRuleGroup group))) => group == []
+      | _ => false) = true ∧
+    (match checkDateRangeFirstFilledDirectComputation model ["Cart"] otherGroupTarget.id
+        { first := .field (bare "DirectDottedFirst")
+          rest := [.field { base := .absolute, groups := ["Cart", "Sub"],
+                            field := "OtherSource" }] } with
+      | .error (.sourceGroup path actual expected) =>
+          path == otherGroupSource.path && actual == ["Cart", "Sub"] && expected == ["Cart"]
+      | _ => false) = true ∧
+    (match checkDateRangeFirstFilledDirectComputation model ["Cart"] otherGroupTarget.id
+        { first := .field (bare "DirectDottedFirst")
+          rest := [.field { base := .absolute, groups := ["Cart", "Sub"],
+                            field := "OtherSource" }] } with
+      | .error cause => cause.diagnostic? == none
+      | _ => false) = true := by
   native_decide
 
 /- Three direct fields preserve authored-order recursion: two empty prefixes reach the third value, while a second-position value or formal cause hides the third selection result. -/

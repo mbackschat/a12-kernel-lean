@@ -121,6 +121,11 @@ private def operation? (startKey finishKey : String) :=
   (elaborateIndexedDateRangeConstructionComputation model ["Order"] target.id
     start.id startKey finish.id finishKey).toOption
 
+/-- The same elaboration with the declaring group varied instead of the target's group. -/
+private def operationAt? (declaringGroup : GroupPath) (startKey finishKey : String) :=
+  (elaborateIndexedDateRangeConstructionComputation model declaringGroup target.id
+    start.id startKey finish.id finishKey).toOption
+
 private def execute? (startKey finishKey : String) (source : DocumentData) := do
   let operation ← operation? startKey finishKey
   let preliminary ← preliminary? source
@@ -219,6 +224,12 @@ private def formalFinding (field : FieldId) (path : List Nat)
   address := { field, path }
   cause
 }
+
+/- Placement is unconstrained here too, and this family had no cell in either direction before. Declaring at the indexed group puts the fixed target above the declaring group and is admitted, because a construction reads nonrepeatable endpoints and derives no iteration; an unrepresentable declaring group is refused on the target channel. Measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement). -/
+example :
+    (operationAt? ["Order", "Items"] "sku1" "sku2").isSome = true ∧
+      (operationAt? [] "sku1" "sku2").isNone = true := by
+  native_decide
 
 /- Field-key whole-call preparation retains endpoint, selector, and implicit index dependencies, then projects selected cached and generated findings through the existing DateRange result. -/
 example :

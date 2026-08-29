@@ -98,6 +98,12 @@ private def checkedFor? (candidate : FlatModel)
 
 private def checked? := checkedFor? model
 
+/-- The same check with the declaring group varied, which is how a target outside the declaring
+group is expressed under a single model root. -/
+private def checkedAt? (declaringGroup : GroupPath) (targetField : FieldId) (field : String) :=
+  (checkDateRangeFirstFilledComputation
+    model declaringGroup targetField (star field)).toOption
+
 private def preparedFor? (candidate : FlatModel) :
     Option (PreparedFlatStringContext candidate builtinStringPatternCompiler) :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
@@ -327,6 +333,12 @@ example :
       stored := "03/10"
       raw := .parsed (.dateRange (.yearlessMonth 3 10))
     }] = some "VALUE|03/10" := by
+  native_decide
+
+/- The fifth temporal carrier shares the star family's placement account: declaring at the source's own repeatable group puts the fixed target above the declaring group and is admitted, because a star aggregate derives no iteration, while an unrepresentable declaring group is refused. Measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement). -/
+example :
+    (checkedAt? ["Cart", "Lines"] yearTarget.id "YearSource").isSome = true ∧
+      (checkedAt? [] yearTarget.id "YearSource").isNone = true := by
   native_decide
 
 /- All four fragment policies are admitted only as matching target/source pairs. -/

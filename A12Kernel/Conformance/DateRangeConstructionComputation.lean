@@ -46,9 +46,10 @@ private def monthEmptyTarget :=
   rangeField 20 ["Order"] "MonthEmptyWindow" "MM" ""
 private def dayMonthDashTarget :=
   rangeField 21 ["Order"] "DayMonthWindow" "dd.MM" "-"
-/-- A DateRange target the declaring group does not contain. The construction is still admitted:
-its endpoints are nonrepeatable direct reads, so nothing iterates and the Kernel's containment gate
-cannot fire. Measured at the
+/-- Retained as an unrelated-declaration control. Placement itself is exercised by varying the
+declaring group instead, which keeps the fixture to one model root as an authored A12 model is:
+declaring at `["Order", "Rows"]` puts the fixed target above the declaring group, and the
+construction is still admitted because nonrepeatable endpoints derive no iteration. Measured at the
 [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement). -/
 private def wrongGroupTarget := rangeField 5 ["Elsewhere"] "OtherWindow"
 private def repeatedTarget :=
@@ -407,8 +408,11 @@ example :
       | .error (.target (.source (.repeatableReference path))) =>
           path == repeatedTarget.path
       | _ => false) &&
-    (elaborateDateRangeConstructionComputation model ["Order"]
-      wrongGroupTarget.id start.id finish.id).isOk &&
+    (elaborateDateRangeConstructionComputation model ["Order", "Rows"]
+      target.id start.id finish.id).isOk &&
+    (match elaborateDateRangeConstructionComputation model [] target.id start.id finish.id with
+      | .error (.target (.source (.invalidRuleGroup group))) => group == []
+      | _ => false) &&
     (match elaborateDateRangeConstructionComputation model ["Order"] start.id
         start.id finish.id with
       | .error (.target (.sourceNotDateRange source (.temporal .date))) =>

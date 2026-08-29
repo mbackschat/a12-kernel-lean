@@ -33,12 +33,10 @@ private def nestedSource :=
   customField 6 ["Review", "Rows", "Details"] "NestedCode" [10, 20]
 private def unrelated := customField 7 ["Review"] "Unrelated"
 
-/-- A fixed Custom target in a group the declaring group does not contain. -/
-private def otherGroupTarget := customField 8 ["Summary"] "OtherCode"
 
 private def model : FlatModel := {
   fields := [target, source, ordinary, other, repeatedTarget, nestedSource,
-    unrelated, otherGroupTarget]
+    unrelated]
   repeatableGroups := [
     { level := 10, path := ["Review", "Rows"], repeatability := some 4 },
     { level := 20, path := ["Review", "Rows", "Details"],
@@ -75,6 +73,12 @@ private def world : World := {
 
 private def checked? (targetField : FieldId) (authored : SurfaceStarFieldPath) :=
   (checkCustomFirstFilledComputation model ["Review"] targetField authored).toOption
+
+/-- The same check with the declaring group varied instead of the target, which is how a target
+outside the declaring group is expressed under a single model root. -/
+private def checkedAt? (declaringGroup : GroupPath) (targetField : FieldId)
+    (authored : SurfaceStarFieldPath) :=
+  (checkCustomFirstFilledComputation model declaringGroup targetField authored).toOption
 
 private def prepared :
     PreparedFlatStringContext model builtinStringPatternCompiler :=
@@ -133,10 +137,11 @@ example :
       some (.poison (.registeredCustomValidation rejection)) := by
   native_decide
 
-/- The checked boundary admits only the same Custom type on a fixed target and direct single-level starred source. Placement is not part of that boundary: a fixed target in `["Summary"]`, which the declaring group `["Review"]` does not contain, is admitted, because a star aggregate derives no iteration and the Kernel's containment gate cannot fire — measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement). The repeatable target is still refused, on the fixed-target gate rather than on placement. -/
+/- The checked boundary admits only the same Custom type on a fixed target and direct single-level starred source. Placement is not part of that boundary. Declaring at `["Review", "Rows"]` puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused, and the repeatable target is refused on the fixed-target gate rather than on placement. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
 example :
     (checked? target.id (star "Code")).isSome = true ∧
-      (checked? otherGroupTarget.id (star "Code")).isSome = true ∧
+      (checkedAt? ["Review", "Rows"] target.id (star "Code")).isSome = true ∧
+      (checkedAt? [] target.id (star "Code")).isNone = true ∧
       (checked? target.id (star "Ordinary")).isNone = true ∧
       (checked? target.id (star "OtherCode")).isNone = true ∧
       (checked? repeatedTarget.id (star "Code")).isNone = true ∧
