@@ -34,4 +34,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-No entries. There are no `pending` or `handed-off` reconciliation items as of the archive split on 2026-08-28.
+<a id="spec-2026-08-29-01"></a>
+### `SPEC-2026-08-29-01` — `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` is a containment gate under derived iteration, and the computed field's own repetition derives it
+
+- `status`: pending
+- `clause`: [`09-computations.md` the generated-rule anchoring paragraph](../spec/09-computations.md) and its §1 declaration-group bullets
+- `delta`: the gate fires exactly when iteration is derived **and** the computed field does not lie at or below the declaring group. Iteration has two independent sources: a per-row operand of a repeatable declaring group, and the computed field's own repeatable scope reaching the gate through the generated rule anchored at that field. Containment, not parenthood, is what admits: an ancestor declaring group including the root is accepted. A repeatable declaring group derives no iteration by itself.
+- `delta`: separately, the declaring group contributes no repetition at runtime. A constant computation declared in a repeatable group whose fixed target sits elsewhere produces exactly one value whether that group has zero or three instantiated rows.
+- `corrects`: this repository previously stated the placement-only reading — that declaration outside a repeatable target's own group is refused *and* that the operand is irrelevant. Both halves were wrong. a12-dmkits' handback of 2026-08-29 states the mirrored operand-only reading, that "placement alone never refuses", recorded there as `KERNEL-FINDINGS` `KF212`, locked by `validate.laws.ComputationDeclaringGroupLawsTest`, and published in the shipped `schema computation add` description of the new `group` key. A constant into a repeatable target declared elsewhere carries no operand and is still refused, so that universal negative is false. Every row of the handback's own four-row matrix reproduces; it held the computed field non-repeatable throughout and so could not reach this case.
+- `evidence`: [declaring-group gate checkpoint](sources/cross-layer-routes.md#src-computation-declaring-group-gate) — seven `KERNEL_CONFIRMED` static rows and one `:adapter:kernelProbe` artifact at a12-dmkits `4ad7cec69df28790cd47adae14f7ab18eca4733e`, Kernel `30.8.1`, both codegen strategies agreeing.
+- `surfaces`: `KF212` and its locking test, the `group` key's published schema description, and any interpreter or validator path that pre-checks placement independently of derived iteration.
+- `acceptance`: a12-dmkits restates the gate as containment under derived iteration, its locking test gains the constant-into-repeatable-target row and the admitted ancestor-declaration row, and the shipped schema description drops "Placement alone never refuses".
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: none yet.

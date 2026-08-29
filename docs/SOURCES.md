@@ -353,6 +353,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Fixed target owns cross-group computation scope](sources/cross-layer-routes.md#src-fixed-computation-target-scope)
 <a id="src-cross-group-computation-authoring-block"></a>
 - [Cross-group computation placement is unauthorable through the structured verbs](sources/cross-layer-routes.md#src-cross-group-computation-authoring-block)
+<a id="src-computation-declaring-group-gate"></a>
+- [Computation declaring group: containment gate and target-owned execution](sources/cross-layer-routes.md#src-computation-declaring-group-gate)
 <a id="src-repeatable-string-application"></a>
 - [Finite one- and two-level String separate-destination application, measured locally 2026-08-26](sources/cross-layer-routes.md#src-repeatable-string-application)
 <a id="src-repeatable-number-aggregate-cascade"></a>
