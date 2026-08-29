@@ -2,7 +2,11 @@ import A12Kernel.Elaboration.Flat.Model
 
 /-! # Carrier-neutral repeatable target placement
 
-This module owns the model-relative certificate shared by exact-address computations whose target is repeatable and belongs to the computation's declaring group. Carrier-specific target policy remains with each operation.
+This module owns the model-relative certificate shared by exact-address computations whose target is repeatable and sits directly in the computation's declaring group. Carrier-specific target policy remains with each operation.
+
+`inDeclaringGroup` demands **equality**, which is deliberately narrower than the Kernel. The Kernel's gate is containment: a repeatable target is admitted from its own group and from any ancestor of it, refused only from a group it does not lie below. The [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate) measures both, including the sibling-star operand shape these families use, whose ancestor declaration the Kernel admits once the relative operand is re-spelled for that base.
+
+The restriction stays because admission is not the whole clause. Every consuming family evaluates parent-local correlation against the declaring group, and no measurement covers that runtime under an ancestor declaration; widening the certificate would let each family apply a correlation clause to inputs it was never calibrated on. Widen it only together with that runtime measurement, per [SG4](../../docs/SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition).
 -/
 
 namespace A12Kernel

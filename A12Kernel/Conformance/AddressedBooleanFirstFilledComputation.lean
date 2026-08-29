@@ -105,7 +105,11 @@ private def elabError? (checked :
   | .error cause => some cause
   | .ok _ => none
 
-/- The addressed boundary requires a repeatable Boolean target, one Boolean star axis, and no target self-read. -/
+/- The addressed boundary requires a repeatable Boolean target, one Boolean star axis, and no target self-read.
+The first row is this fragment's own narrower boundary rather than a Kernel refusal: `["Projects"]` is an
+ancestor of the target's `["Projects", "Tasks"]`, and the Kernel admits that placement for exactly this
+sibling-star shape. The [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate)
+owns the measurement and the reason the certificate stays narrow. -/
 example :
     operation?.isSome = true ∧
     elabError? (checkAddressedBooleanFirstFilledComputation model

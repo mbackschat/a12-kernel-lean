@@ -34,6 +34,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-08-29-02"></a>
+### `SPEC-2026-08-29-02` — a sibling-star computation is admitted from any ancestor of its repeatable target, not only its own parent
+
+- `status`: pending
+- `supersedes`: the declaration-placement clause of [`SPEC-2026-08-27-01`](archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#spec-2026-08-27-01--a-sibling-star-computation-may-target-a-repeatable-group-and-stays-parent-local). That entry's sibling-star runtime account is untouched; only its placement sentence is corrected.
+- `clause`: [`09-computations.md` the generated-rule anchoring paragraph](../spec/09-computations.md)
+- `delta`: the accepted entry recorded that "the computation must be declared at its target's own parent; declaration elsewhere is refused `MVK_ERROR_FIELD_NOT_IN_RULEGROUP`". Measured against the Kernel, declaration at *any* ancestor is admitted; only a group the target does not lie below is refused. This is the same containment rule as [`SPEC-2026-08-29-01`](#spec-2026-08-29-01), now shown to govern the operand-bearing route and not just constants.
+- `mechanism`: the earlier reading is what a relative operand produces. Moving the declaration to an ancestor while leaving the operand spelled against the old base refuses with `MVK_INVALID_ENTITY`, an operand-resolution failure under a different code. Re-spelling the operand for the new base, or writing it absolute, admits the same placement.
+- `evidence`: [declaring-group gate checkpoint](sources/cross-layer-routes.md#src-computation-declaring-group-gate), the operand-bearing and misattribution rows — four placements with an absolute operand, the same four with a bare-constant control, and the three relative-spelling rows, all `KERNEL_CONFIRMED` at a12-dmkits `4ad7cec69df28790cd47adae14f7ab18eca4733e`, Kernel `30.8.1`.
+- `surfaces`: any peer clause, test, or catalog note stating that a sibling-star or exact-address computation must be declared at its target's own parent.
+- `local-scope`: this project's shared repeatable-target certificate keeps the narrower equality on purpose. Admission is measured; parent-local correlation *runtime* under an ancestor declaration is not, and every consuming family applies that correlation clause. Recorded at [`AddressedRepeatableTarget.lean`](../A12Kernel/Elaboration/AddressedRepeatableTarget.lean) and open in [SG4](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition).
+- `acceptance`: a12-dmkits restates the placement clause as containment, or supplies the contrary measurement showing the ancestor declaration refused with a correctly spelled operand.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: none yet.
+
 <a id="spec-2026-08-29-01"></a>
 ### `SPEC-2026-08-29-01` — `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` is a containment gate under derived iteration, and the computed field's own repetition derives it
 
