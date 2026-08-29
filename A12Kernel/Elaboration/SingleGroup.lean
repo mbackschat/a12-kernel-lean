@@ -116,8 +116,10 @@ def overlaps (left right : ResolvedGroupReference) : Bool :=
     `none` is the explicit boundary rather than an empty group, and every wider shape takes
     it: the group is absent from the model, it is itself inside a repeatable scope, or it
     owns any deeper descendant field. Nested descendants are deliberately refused rather
-    than counted through the subtree the validation arm uses, because no observation covers
-    them and a refusal claims nothing while a count would.
+    than counted through the subtree the validation arm uses. The Kernel **admits** such an
+    operand, measured at the [nested-descendant
+    checkpoint](../../docs/SOURCES.md#src-nested-descendant-group-count-admission), but what
+    it counts there is unmeasured, and a refusal claims nothing while a count would.
 
     `origin` is deliberately not consulted, which is a narrowing relative to
     `fixedWellFormedBool`: that predicate admits a `RuleGroup` reference bound to an

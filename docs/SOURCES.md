@@ -279,6 +279,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Reviewed 2026-08-29 a12-dmkits reconciliation and correction batch](sources/cross-layer-routes.md#src-2026-08-29-reconciliation)
 <a id="src-date-range-direct-list-cross-group-sources"></a>
 - [A direct-list `FirstFilledValue` places its sources freely](sources/cross-layer-routes.md#src-date-range-direct-list-cross-group-sources)
+<a id="src-nested-descendant-group-count-admission"></a>
+- [A fixed group-count operand admits nested descendants](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-admission)
 <a id="src-empty-declared-group"></a>
 - [An empty declared group is kernel-valid](sources/group-and-iteration-probes.md#src-empty-declared-group)
 <a id="src-multi-root-short-name-reach"></a>

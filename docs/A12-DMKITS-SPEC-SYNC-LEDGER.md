@@ -34,6 +34,22 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-08-30-01"></a>
+### `SPEC-2026-08-30-01` — a fixed group-count operand admits a group populated only through a nested descendant
+
+- `status`: pending
+- `clause`: [`02-logic-and-formal-errors.md` the Number-computation group-count paragraph](../spec/02-logic-and-formal-errors.md)
+- `delta`: the clause listed the admitted fixed-list shapes and their refusal classes but said nothing about **where inside the group its fields sit**. Measured: a fixed group whose only field lies in a descendant subgroup is an admitted operand of `NumberOfFilledGroups`, in first position, in second position, and in a three-group list. Neither position nor arity gates it.
+- `mechanism`: the gate that does fire on such a group is elsewhere. A group under a repeatable extent still draws `MVK_NO_WILDCARD`, and a one-group list still draws `MVK_PARAMSIZE_INVALIDGN`, both in the same model, so nesting is not being confused with either.
+- `evidence`: [nested-descendant checkpoint](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-admission), six `computation add --dry-run` verdicts at a12-dmkits `01bc94279f0aee06fd8d9ccfad2e116354aa409e` (clean), `dmtool` 0.13.0, Kernel `30.8.1`, each `KERNEL_CONFIRMED` with `source: KERNEL`.
+- `surfaces`: any peer clause, checker, or catalog note that treats a group-count operand as an expansion of **direct** children, which would refuse this shape or count it short.
+- `local-scope`: **unimplemented, deliberately.** This project refuses the shape, and admission alone does not license widening: what such an operand counts is unmeasured, and a refusal claims nothing while a count claims a value. [SG13](SEMANTICS-GAPS.md#sg13--group-list-and-group-count-completion) carries the runtime observation that would close it.
+- `question`: does a nested-descendant operand count through the whole subtree, as the validation arm's group expansion does, or over direct children only? A runtime row either way would close this locally.
+- `acceptance`: a12-dmkits states the admission and, if it knows, the counting rule; or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: none yet.
+
+
 <a id="spec-2026-08-29-05"></a>
 ### `SPEC-2026-08-29-05` — a group may be declared empty, and then no operand may name it
 

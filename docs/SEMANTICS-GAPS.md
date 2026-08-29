@@ -212,7 +212,8 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `state`: open
 - `missing`: every group-list predicate and filled-group count must reuse the resolved group product or structural terminal-row count while preserving partial relevance, wildcard expansion, filter order, computation poison, and decisiveness.
 - `baseline`: [resolved validation group presence](IMPLEMENTATION-MAP.md#resolved-validation-group-presence), [checked group-star terminals](IMPLEMENTATION-MAP.md#checked-group-star-terminals), and the SG5 group capability records own the implemented subsets.
-- `remaining`: structural and call-local group errors, repeatable operands, nested descendants, and value-reading computation behavior beyond the measured fixed direct-field shape.
+- `remaining`: structural and call-local group errors, repeatable operands, and value-reading computation behavior beyond the measured fixed direct-field shape.
+- `remaining`: a fixed group-count operand owning **nested descendants** is Kernel-admitted ([checkpoint](SOURCES.md#src-nested-descendant-group-count-admission)) and locally refused. Only the counting rule is missing: close it with one runtime observation of the count over a nested-descendant group, then widen the scalar computation-phase gate. Do not widen on the admission alone, because the refusal claims nothing and a wrong count claims a value.
 - `remaining`: starred computation runtime, lists above the measured fixed arity, partial fixed or starred multi-entity lists, filtered group operands, relevance timing, and poison or lookahead policy.
 - `discriminator`: nonrelevant content or a later failed expansion beside an earlier decisive group separates eager, leaking, and correct prefix accounts.
 - `consumer`: Execute and Explain require exact product or count, relevance, environment, and reached failure. Analyze requires operand order and decisive prefix.

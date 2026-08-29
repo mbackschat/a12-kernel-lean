@@ -1,5 +1,19 @@
 # Group and iteration source checkpoints
 
+<a id="src-nested-descendant-group-count-admission"></a>
+#### A fixed group-count operand admits nested descendants, measured locally 2026-08-30
+
+- `revision`: a12-dmkits `01bc94279f0aee06fd8d9ccfad2e116354aa409e` (clean before and after), `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. Six `computation add --dry-run` verdicts through a caller-tagged `batch`, all `KERNEL_CONFIRMED` with `source: KERNEL`.
+- `question`: this project's scalar computation-phase group read refuses a group that owns any deeper descendant field, deliberately and with its reason stated: no observation covered the shape, and a refusal claims nothing while a count would. The admission half is now measured.
+- `model`: `GroupPos_DM` with a Number target `/Probe/Tally`, a flat `/Probe/Flat` and `/Probe/Alpha` holding direct fields, and a **shell** `/Probe/Shell` whose only field sits in the descendant `/Probe/Shell/Inner`.
+- `claim`: a fixed group whose fields lie in a **nested descendant** subgroup is an admitted operand of `NumberOfFilledGroups`. Admitted in first position, in second position, and in a three-group list, so neither position nor arity gates it.
+- `controls`: the all-flat pair is admitted and a one-group list refuses `MVK_PARAMSIZE_INVALIDGN`, so the arity gate is live in the same model; a list naming a group under a repeatable extent refuses `MVK_NO_WILDCARD`, which is the wildcard gate rather than a nesting one.
+- `confound`: a first pass ran against a model that did not declare the shell and drew `MVK_INVALID_ENTITY` on every nested row. The flat control stayed admitted and the arity control still fired, which is what exposed it; a run whose refusals are uniform across the matrix is measuring the fixture.
+- `local-consequence`: **none yet, and deliberately so.** Admission is measured; what such an operand *counts* is not. Widening the local gate on admission alone would make the theory return a number it cannot justify, which is worse than the refusal it would replace. The exclusion stays, with its justification narrowed from "no observation covers this shape" to "the counting rule is unmeasured".
+- `limit`: static admission only, one nesting level, list lengths one to three, and a nonrepeatable shell. Not measured: what the count yields over a nested descendant, whether the validation and computation arms agree there, deeper nesting, and a repeatable shell.
+- `sync`: locally originated and behavioral. It adds a static admission `spec/` does not state; its outbound entry carries it.
+
+
 <a id="src-empty-declared-group"></a>
 #### An empty declared group is kernel-valid, measured locally 2026-08-29
 
