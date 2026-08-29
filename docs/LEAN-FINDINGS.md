@@ -1442,3 +1442,18 @@ Lean treatment: before a matrix supports a universal, list the axes the claim qu
 - **Two causes reachable under one diagnostic code need a row per cause, not per code.** All four accounts had rows that refused with this code; none had a row that refused with it for the *other* reason. Grouping by observed code hides exactly the structure the claim is about.
 - **A cause that changes the code is the cheapest separator available.** Re-spelling the operand turned `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` into `MVK_INVALID_ENTITY`, which is what finally separated placement from operand resolution. Look for a neighbouring code before building a subtler discriminator.
 - This is [`LF80`](#lf80--a-separator-that-both-accounts-satisfy-is-not-a-separator-and-a-boolean-lock-hides-which-one-you-have) and [`LF100`](#lf100--a-refusal-names-an-entity-not-the-gates-subject-only-an-admitted-row-that-varies-the-entity-says-which-one-the-gate-reads) one level up. Those ask whether a *row* separates two accounts; this asks whether the *matrix* spans the claim, which a row-local check cannot answer.
+
+## LF108 — an operator enumeration by name misses every operator that has no name
+
+> Date: 2026-08-29. Sections: §4, §11. Basis: one committed wrong claim, corrected the same day; the [assignment-scale reach checkpoint](SOURCES.md#src-unsuppressed-assignment-scale-reach) settles the enumeration.
+
+Deciding whether an internal fault arm is reachable required knowing which operators can raise a computed value's fractional scale above its target's. The catalog was searched by operator id for division, multiplication, and their synonyms; nothing matched, and `SumOfProducts` was recorded as the only scale-increasing operator. That claim reached a keyed source record before `AddressedNumberDivision.lean` — a module this repository already owned — made it obvious that A12 has division.
+
+The reason the search failed is structural, not careless. `*`, `/`, and `^` are **infix**, so they carry no catalog id resembling their meaning, and no name-based query reaches them however many synonyms it tries. An enumeration that only ever queried names cannot report that it never saw a whole syntactic class; it returns a clean, short, wrong list.
+
+The conclusion happened to survive — all four operators are refused unsuppressed — but that was luck, not method. Had `*` been admitted where `SumOfProducts` was refused, the recorded claim would have been confidently false.
+
+Lean treatment: before an enumeration over a catalog supports a claim, name the **syntactic classes** the catalog contains and confirm the query reaches each one. For A12 that is at least named functions, infix arithmetic, and comparison forms. Cross-check the result against this repository's own module list, which is an independent index of the same operator set and is what caught this instance.
+
+- **A short answer from a catalog query is the warning sign, not the reassurance.** One hit for "every scale-increasing operator" should have prompted a second query shape rather than a record.
+- This is [`LF107`](#lf107--a-matrix-that-pins-one-axis-across-every-row-cannot-see-a-second-cause-and-reads-as-complete-while-doing-it) in the enumeration domain. There the unvaried axis hid a second cause; here the unqueried syntactic class hid four more operators. Both fail the same way: the evidence looks complete from inside because everything it did collect agrees.
