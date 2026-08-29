@@ -101,7 +101,7 @@ Power has two precision stages that are observable and must not be replaced with
 
 | name | value | what it constrains | refused as |
 |---|---|---|---|
-| `fieldScaleCap` | **14** | the largest declarable `maxFractionalDigits` | plain **MVK-less** model check (*"Only values smaller than or equal to 14 are allowed"*) |
+| `fieldScaleCap` | **14** | the largest declarable `maxFractionalDigits` | plain **MVK-less** model check (*"Only values smaller than or equal to 14 are allowed"*); no longer re-dischargeable through the structured CLI, which refuses the spec first ([route limit](../docs/SOURCES.md#engine-routing-rule--pick-the-layer-by-the-question-not-by-habit)) |
 | `fieldScaleOrdering` | `min ≤ max` | the declared fractional interval | `MVK_FRACT_DIGITS_INVALID` |
 | `enteredValueTotalDigits` | **15** | an entered **value**, integer **plus** fractional digits, on **every** number field | `stelligkeitZuLang` |
 | `amountIntegerCap` | **15 − scale** | an entered value's integer part, **amount trait only** | `zahlZuvieleVorkommastellen` |
