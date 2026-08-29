@@ -234,7 +234,7 @@ example :
       signature? [malformedInput 1, selectedInput 2] = some "POISON" := by
   native_decide
 
-/- Admission is limited to one complete ISO DateTime carrier and one direct single-level star. -/
+/- Admission is limited to one complete ISO DateTime carrier and one direct single-level star. Placement is unconstrained: this shape's target is fixed and its operand is a star aggregate, so no iteration is derived and the Kernel admits the target from an unrelated sibling group — measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement). A repeatable target is still refused, on the carrier's own fixed-target gate rather than on placement. -/
 example :
     (checked? target.id (star "Moment")).isSome = true ∧
       (checked? target.id (star "Dotted")).isNone = true ∧
@@ -242,7 +242,7 @@ example :
       (checked? target.id (star "Time")).isNone = true ∧
       partialSource.temporalFirstFilledStarCarrier? = none ∧
       (checked? degenerateTarget.id (star "Moment")).isNone = true ∧
-      (checked? otherGroupTarget.id (star "Moment")).isNone = true ∧
+      (checked? otherGroupTarget.id (star "Moment")).isSome = true ∧
       (checkedAt? ["Cart", "Lines"] repeatedTarget.id (star "Moment")).isNone = true ∧
       (checked? target.id nestedStar).isNone = true := by
   native_decide

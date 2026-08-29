@@ -276,7 +276,7 @@ example : (do
       } := by
   native_decide
 
-/- The checked boundary admits every measured legal DateFragment policy only when target and direct single-level starred source match exactly. -/
+/- The checked boundary admits every measured legal DateFragment policy only when target and direct single-level starred source match exactly. Placement is unconstrained: this shape's target is fixed and its operand is a star aggregate, so no iteration is derived and the Kernel admits the target from an unrelated sibling group — measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement). A repeatable target is still refused, on the carrier's own fixed-target gate rather than on placement. -/
 example :
     (checked? target.id (star "Month")).isSome = true ∧
       (checked? target.id (star "Year")).isNone = true ∧
@@ -291,7 +291,7 @@ example :
       (checked? target.id (star "Date")).isNone = true ∧
       (checked? target.id (star "Clock")).isNone = true ∧
       (checked? target.id (star "CheckedMonth")).isNone = true ∧
-      (checked? otherGroupTarget.id (star "Month")).isNone = true ∧
+      (checked? otherGroupTarget.id (star "Month")).isSome = true ∧
       (checkedAt? ["Review", "Rows"] repeatedTarget.id
         (star "Month")).isNone = true ∧
       (checked? target.id nestedStar).isNone = true := by

@@ -326,7 +326,7 @@ example :
       ] = some "POISON" := by
   native_decide
 
-/- The checked boundary admits either exact full-Date format only when target and direct single-level starred source match; optional checks and wider profiles remain excluded. -/
+/- The checked boundary admits either exact full-Date format only when target and direct single-level starred source match; optional checks and wider profiles remain excluded. Placement is unconstrained: this shape's target is fixed and its operand is a star aggregate, so no iteration is derived and the Kernel admits the target from an unrelated sibling group — measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement). A repeatable target is still refused, on the carrier's own fixed-target gate rather than on placement. -/
 example :
     (checked? target.id (star "PromiseDate")).isSome = true ∧
       (checked? target.id (star "DottedDate")).isNone = true ∧
@@ -341,7 +341,7 @@ example :
       (checked? target.id (star "Month")).isNone = true ∧
       (checked? target.id (star "PartialDate")).isNone = true ∧
       (checked? target.id (star "IncompleteDate")).isNone = true ∧
-      (checked? otherGroupTarget.id (star "PromiseDate")).isNone = true ∧
+      (checked? otherGroupTarget.id (star "PromiseDate")).isSome = true ∧
       (checkedAt? ["Cart", "Lines"] repeatedTarget.id
         (star "PromiseDate")).isNone = true ∧
       (checked? target.id nestedStar).isNone = true := by
