@@ -12,7 +12,8 @@
 - `controls`: a same-root unique name and an own-scope name are admitted in the same batch, and a name declared in no root draws `MVK_INVALID_ENTITY`, so neither the admissions nor the refusals are artifacts of the route.
 - `local-consequence`: none. This project's resolver already filtered the whole field list with no root restriction and already tried the declaring group first, so all six rows agreed on the first run. The value is that a newly reachable dimension of the addressing keystone is now locked by cases instead of resting on an untested assumption; [§10](../IMPLEMENTATION-MAP.md#10--paths-and-references) owns the boundary.
 - `limit`: two roots, one nesting level below each, one condition language, and the short-name flag enabled. Not measured: the flag disabled across roots, a repeatable group in the second root, a bare name duplicated **within** one root while unique in the other, and whether any other model-wide index shares this reach.
-- `sync`: confirmatory. It adds no behavioral correction to `spec/`, so it opens no ledger entry.
+- `reuse`: the same two-root model carried the cross-root computation-placement rows recorded on the [fixed-target star placement checkpoint](../SOURCES.md#src-fixed-target-star-placement), which owns that claim.
+- `sync`: confirmatory for addressing. It adds no behavioral correction to `spec/` on its own account, so it opens no ledger entry; the placement rows it enabled strengthen the already pending [`SPEC-2026-08-29-03`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-29-03).
 
 
 <a id="src-first-filled-additional-kind-computations"></a>
