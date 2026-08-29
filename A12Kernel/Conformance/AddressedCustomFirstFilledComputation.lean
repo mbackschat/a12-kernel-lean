@@ -110,7 +110,7 @@ private def elabError? (checked :
   | .error cause => some cause
   | .ok _ => none
 
-/- The checked boundary separates target placement, Custom declaration identity, source shape and scope, and self-reference. -/
+/- The checked boundary separates target placement, Custom declaration identity, source shape and scope, and self-reference. Placement is containment: the ancestor `["Projects"]` is admitted with an operand spelled for that base, while `["Projects", "Choices"]` — which shares the target's enclosing prefix without containing it — is refused, so an account keyed on a common ancestor still admits what only containment rejects. -/
 example :
     operation?.isSome = true ∧
     elabError? (checkAddressedCustomFirstFilledComputation model
@@ -119,6 +119,11 @@ example :
     elabError? (checkAddressedCustomFirstFilledComputation model
       ["Summary"] target.id (siblingStar source.name)) =
         some (.targetOutsideDeclaringGroup target.path ["Summary"]) ∧
+    (checkAddressedCustomFirstFilledComputation model
+      ["Projects"] target.id absoluteSiblingStar).toOption.isSome = true ∧
+    elabError? (checkAddressedCustomFirstFilledComputation model
+      ["Projects", "Choices"] target.id absoluteSiblingStar) =
+        some (.targetOutsideDeclaringGroup target.path ["Projects", "Choices"]) ∧
     elabError? (checkAddressedCustomFirstFilledComputation model
       ["Summary"] fixedTarget.id (siblingStar source.name)) =
         some (.targetNotRepeatable fixedTarget.path) ∧

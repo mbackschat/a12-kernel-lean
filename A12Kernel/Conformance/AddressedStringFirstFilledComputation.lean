@@ -132,7 +132,7 @@ private def elabError? (checked : Except
   | .error cause => some cause
   | .ok _ => none
 
-/- The checked boundary separates repeatable target placement, ordinary String carrier admission, sibling-star scope, and self-reference. -/
+/- The checked boundary separates repeatable target placement, ordinary String carrier admission, sibling-star scope, and self-reference. Placement is containment: the ancestor `["Projects"]` is admitted with an operand spelled for that base, while `["Projects", "Choices"]` — which shares the target's enclosing prefix without containing it — is refused, so an account keyed on a common ancestor still admits what only containment rejects. -/
 example : operation?.isSome = true ∧
     elabError? (checkAddressedStringFirstFilledComputation model
       ["Projects", "Tasks"] 99 (siblingStar source.name)) =
@@ -140,6 +140,11 @@ example : operation?.isSome = true ∧
     elabError? (checkAddressedStringFirstFilledComputation model
       ["Summary"] target.id (siblingStar source.name)) =
         some (.targetOutsideDeclaringGroup target.path ["Summary"]) ∧
+    (checkAddressedStringFirstFilledComputation model
+      ["Projects"] target.id absoluteSiblingStar).toOption.isSome = true ∧
+    elabError? (checkAddressedStringFirstFilledComputation model
+      ["Projects", "Choices"] target.id absoluteSiblingStar) =
+        some (.targetOutsideDeclaringGroup target.path ["Projects", "Choices"]) ∧
     elabError? (checkAddressedStringFirstFilledComputation model
       ["Summary"] fixedTarget.id (siblingStar source.name)) =
         some (.targetNotRepeatable fixedTarget.path) ∧
