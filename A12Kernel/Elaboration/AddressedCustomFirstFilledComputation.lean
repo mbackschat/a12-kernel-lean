@@ -57,10 +57,12 @@ theorem targetOwned
     model.lookupUniqueId operation.targetField = .ok operation.target :=
   operation.checkedTarget.owned
 
-theorem targetInDeclaringGroup
+/-- The target lies at or below its declaring group. This states containment only; which groups the
+checker *refuses* is a separate question, since it also rejects an unrepresentable declaring group. -/
+theorem targetContainedInDeclaringGroup
     (operation : CheckedAddressedCustomFirstFilledComputation model) :
-    operation.target.groupPath = operation.declaringGroup :=
-  operation.checkedTarget.inDeclaringGroup
+    GroupPath.isPrefixOf operation.declaringGroup operation.target.groupPath = true :=
+  operation.checkedTarget.targetContained
 
 theorem targetRepeatable
     (operation : CheckedAddressedCustomFirstFilledComputation model) :

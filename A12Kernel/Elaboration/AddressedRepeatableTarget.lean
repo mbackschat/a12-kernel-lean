@@ -2,11 +2,13 @@ import A12Kernel.Elaboration.Flat.Model
 
 /-! # Carrier-neutral repeatable target placement
 
-This module owns the model-relative certificate shared by exact-address computations whose target is repeatable and sits directly in the computation's declaring group. Carrier-specific target policy remains with each operation.
+This module owns the model-relative certificate shared by exact-address computations whose target is repeatable and lies within the computation's declaring group. Carrier-specific target policy remains with each operation.
 
-`inDeclaringGroup` demands **equality**, which is deliberately narrower than the Kernel. The Kernel's gate is containment: a repeatable target is admitted from its own group and from any ancestor of it, refused only from a group it does not lie below. The [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate) measures both, including the sibling-star operand shape these families use, whose ancestor declaration the Kernel admits once the relative operand is re-spelled for that base.
+A `GroupPath`'s **first segment is the model root**, so the shallowest legal declaring group is a one-segment path and never `[]`. `FlatFieldDecl.hasValidPath` already forbids an empty declaration path, so no target can sit at `[]` either. That is why validity is checked separately below: `[]` is a prefix of every path, so containment alone would treat the unrepresentable empty group as containing everything.
 
-The restriction stays because admission is not the whole clause. Every consuming family evaluates parent-local correlation against the declaring group, and no measurement covers that runtime under an ancestor declaration; widening the certificate would let each family apply a correlation clause to inputs it was never calibrated on. Widen it only together with that runtime measurement, per [SG4](../../docs/SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition).
+Placement through **this certificate** is containment, not parenthood: the target is admitted from its own group and from any ancestor of it, and refused only from a group it does not lie below. Several exact-address families still carry their own equality-based placement gate and are not governed by this module; [SG4](../../docs/SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) names them. Do not read this paragraph as an estate-wide rule.
+
+The [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate) measures both halves against the Kernel, for a bare constant and for the sibling-star operand shape these families use, and separately measures that parent-local correlation is identical from the target's own group, from one ancestor, and from the root. Admission therefore widens without moving any family's correlation clause. That correlation row covers the String sibling-star representative only; other carriers inherit the shared star-axis mechanism rather than their own row.
 -/
 
 namespace A12Kernel
@@ -24,7 +26,11 @@ structure CheckedAddressedRepeatableTarget (model : FlatModel) where
   targetField : FieldId
   declaration : FlatFieldDecl
   owned : model.lookupUniqueId targetField = .ok declaration
-  inDeclaringGroup : declaration.groupPath = declaringGroup
+  /-- Containment against `[]` is vacuous, so `targetContained` only means what it says once the
+  declaring group is a representable path. This field is what makes the next one load-bearing. -/
+  declaringGroupValid : GroupPath.isValid declaringGroup = true
+  /-- The target lies at or below the declaring group. Equality is the common case, not the rule. -/
+  targetContained : GroupPath.isPrefixOf declaringGroup declaration.groupPath = true
   repeatable : declaration.repeatableScope ≠ []
 
 /-- Check carrier-neutral target placement before an operation checks its own target kind. -/
@@ -35,21 +41,26 @@ def checkAddressedRepeatableTarget
   match hTarget : model.lookupUniqueId targetField with
   | .error cause => .error (.target cause)
   | .ok declaration => do
-    if hGroup : declaration.groupPath = declaringGroup then
-      if hRepeatable : declaration.repeatableScope.isEmpty then
-        throw (.targetNotRepeatable declaration.path)
+    if hValid : GroupPath.isValid declaringGroup = true then
+      if hContained :
+          GroupPath.isPrefixOf declaringGroup declaration.groupPath = true then
+        if hRepeatable : declaration.repeatableScope.isEmpty then
+          throw (.targetNotRepeatable declaration.path)
+        else
+          pure {
+            declaringGroup
+            targetField
+            declaration
+            owned := hTarget
+            declaringGroupValid := hValid
+            targetContained := hContained
+            repeatable := by
+              intro empty
+              simp [empty] at hRepeatable
+          }
       else
-        pure {
-          declaringGroup
-          targetField
-          declaration
-          owned := hTarget
-          inDeclaringGroup := hGroup
-          repeatable := by
-            intro empty
-            simp [empty] at hRepeatable
-        }
+        throw (.targetOutsideDeclaringGroup declaration.path declaringGroup)
     else
-      throw (.targetOutsideDeclaringGroup declaration.path declaringGroup)
+      throw (.target (.invalidRuleGroup declaringGroup))
 
 end A12Kernel

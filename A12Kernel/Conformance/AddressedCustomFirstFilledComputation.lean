@@ -117,8 +117,8 @@ example :
       ["Projects", "Tasks"] 99 (siblingStar source.name)) =
         some (.target (.unknownFieldId 99)) ∧
     elabError? (checkAddressedCustomFirstFilledComputation model
-      ["Projects"] target.id (siblingStar source.name)) =
-        some (.targetOutsideDeclaringGroup target.path ["Projects"]) ∧
+      ["Summary"] target.id (siblingStar source.name)) =
+        some (.targetOutsideDeclaringGroup target.path ["Summary"]) ∧
     elabError? (checkAddressedCustomFirstFilledComputation model
       ["Summary"] fixedTarget.id (siblingStar source.name)) =
         some (.targetNotRepeatable fixedTarget.path) ∧

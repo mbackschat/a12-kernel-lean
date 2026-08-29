@@ -174,6 +174,23 @@ example : operation?.isSome = true ∧ projectedOperation?.isSome = true ∧
       some (.targetNotRepeatable rootTarget.path) := by
   native_decide
 
+/- This family carries its own placement gate rather than the shared repeatable-target certificate, so it
+needs its own rows. It encodes the same rule — containment against a representable declaring group — with the
+ancestor `["Form"]` admitted and the deeper `["Form", "Rows", "Details"]` refused even though it lies inside
+the target's own subtree. The invalid-group cause travels on the `ordinary` channel here, because this error
+type has no `target` constructor; that is a channel difference, not a different rule. The
+[declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate) owns the
+Kernel measurement. -/
+example :
+    errorOf target.id ["Form"] (.literal "B") = none ∧
+    errorOf target.id ["Form", "Rows", "Details"] (.literal "B") =
+        some (.targetOutsideDeclaringGroup target.path ["Form", "Rows", "Details"]) ∧
+    errorOf target.id [] (.literal "B") =
+        some (.ordinary (.resolve (.invalidRuleGroup []))) ∧
+    errorOf target.id ["Form", ""] (.literal "B") =
+        some (.ordinary (.resolve (.invalidRuleGroup ["Form", ""]))) := by
+  native_decide
+
 /- Static target-domain compatibility and reading-mode self-reference stay ahead of execution. -/
 example :
     errorOf target.id ["Form", "Rows"] (.literal "C") =

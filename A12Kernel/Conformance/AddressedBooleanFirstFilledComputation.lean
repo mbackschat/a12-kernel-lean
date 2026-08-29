@@ -86,6 +86,14 @@ private def absoluteSiblingStar : SurfaceStarFieldPath := {
   field := source.name
 }
 
+/-- The sibling star as it must be spelled from the ancestor `["Projects"]` rather than from the
+target's own group: same operand, one fewer level of parent walk. -/
+private def respelledSiblingStar : SurfaceStarFieldPath := {
+  base := .relative 0
+  groups := [{ name := "Choices", starred := true }]
+  field := source.name
+}
+
 private def rootStar : SurfaceStarFieldPath := {
   base := .absolute
   groups := [{ name := "GlobalChoices", starred := true }]
@@ -105,16 +113,52 @@ private def elabError? (checked :
   | .error cause => some cause
   | .ok _ => none
 
-/- The addressed boundary requires a repeatable Boolean target, one Boolean star axis, and no target self-read.
-The first row is this fragment's own narrower boundary rather than a Kernel refusal: `["Projects"]` is an
-ancestor of the target's `["Projects", "Tasks"]`, and the Kernel admits that placement for exactly this
-sibling-star shape. The [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate)
-owns the measurement and the reason the certificate stays narrow. -/
+/- Placement is containment, not parenthood, and it is separate from operand resolution. The ancestor
+`["Projects"]` admits the target with an absolute operand and with the operand re-spelled for that base; both
+admissions are Kernel-measured at the
+[declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate).
+`["Projects", "Choices"]` is the discriminating refusal: it is a declared group *inside the target's own
+subtree*, so an account keyed on a shared first segment or on any same-subtree test still admits it, and only
+containment refuses it. That is the shape the checkpoint's operand-bearing row measured. -/
 example :
-    operation?.isSome = true ∧
+    (checkAddressedBooleanFirstFilledComputation model
+      ["Projects"] target.id absoluteSiblingStar).toOption.isSome = true ∧
+    (checkAddressedBooleanFirstFilledComputation model
+      ["Projects"] target.id respelledSiblingStar).toOption.isSome = true ∧
+    elabError? (checkAddressedBooleanFirstFilledComputation model
+      ["Projects", "Choices"] target.id absoluteSiblingStar) =
+        some (.targetOutsideDeclaringGroup target.path ["Projects", "Choices"]) ∧
+    elabError? (checkAddressedBooleanFirstFilledComputation model
+      ["Summary"] target.id absoluteSiblingStar) =
+        some (.targetOutsideDeclaringGroup target.path ["Summary"]) := by
+  native_decide
+
+/- Keeping the target-relative spelling while moving to the ancestor fails in the *source*, not the placement,
+so the two causes stay separable. The encoding differs from the Kernel here and the case records only the local
+outcome: this fragment refuses the walk itself, because one parent exceeds a one-segment declaring group, while
+the Kernel's measured `..` reached its root and then failed the lookup under it. Same separation of causes,
+different cause on this cell. -/
+example :
     elabError? (checkAddressedBooleanFirstFilledComputation model
       ["Projects"] target.id (siblingStar source.name)) =
-        some (.targetOutsideDeclaringGroup target.path ["Projects"]) ∧
+        some (.source (.resolve (.aboveRoot 1))) := by
+  native_decide
+
+/- Containment is checked against a representable declaring group, never on its own: `[]` is a prefix of every
+path, so containment alone would treat it as containing everything. An empty segment is refused here too,
+though that cell is about the reported cause rather than admission, since no declaration path can contain one. -/
+example :
+    elabError? (checkAddressedBooleanFirstFilledComputation model
+      [] target.id absoluteSiblingStar) =
+        some (.target (.invalidRuleGroup [])) ∧
+    elabError? (checkAddressedBooleanFirstFilledComputation model
+      ["Projects", ""] target.id absoluteSiblingStar) =
+        some (.target (.invalidRuleGroup ["Projects", ""])) := by
+  native_decide
+
+/- The addressed boundary requires a repeatable Boolean target, one Boolean star axis, and no target self-read. -/
+example :
+    operation?.isSome = true ∧
     elabError? (checkAddressedBooleanFirstFilledComputation model
       ["Summary"] fixedTarget.id (siblingStar source.name)) =
         some (.targetNotRepeatable fixedTarget.path) ∧
@@ -186,6 +230,27 @@ private def input? : Option (CheckedDocument model) :=
     cell target.id [3, 1] "true",
     cell target.id [4, 1] "false",
     cell unrelated.id [] "true"]
+
+/- Moving the declaration to an ancestor changes admission, never correlation: the ancestor-declared
+operations produce the same rows, in the same order, with the same values as the declaration at the target's
+own group. The [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate)
+measures that invariance against the Kernel across the containment range on both codegen strategies; this
+locks it for the executable account, which is what makes widening admission safe for the correlation clause. -/
+example : (do
+    let own ← operation?
+    let ancestorAbsolute ← (checkAddressedBooleanFirstFilledComputation model
+      ["Projects"] target.id absoluteSiblingStar).toOption
+    let ancestorRespelled ← (checkAddressedBooleanFirstFilledComputation model
+      ["Projects"] target.id respelledSiblingStar).toOption
+    let input ← input?
+    let ownOutcomes ← own.execute input |>.toOption
+    let absoluteOutcomes ← ancestorAbsolute.execute input |>.toOption
+    let respelledOutcomes ← ancestorRespelled.execute input |>.toOption
+    let view := fun (entries : List _) =>
+      entries.map fun entry => (entry.targetField, entry.result)
+    pure ((view absoluteOutcomes == view ownOutcomes)
+      && (view respelledOutcomes == view ownOutcomes))) = some true := by
+  native_decide
 
 /- Each target row scans only its enclosing parent's sibling source rows. False remains a value, an empty sibling extent yields no value, and malformed content poisons only that parent. -/
 example : (do

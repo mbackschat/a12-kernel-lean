@@ -138,8 +138,8 @@ example : operation?.isSome = true ∧
       ["Projects", "Tasks"] 99 (siblingStar source.name)) =
         some (.target (.unknownFieldId 99)) ∧
     elabError? (checkAddressedStringFirstFilledComputation model
-      ["Projects"] target.id (siblingStar source.name)) =
-        some (.targetOutsideDeclaringGroup target.path ["Projects"]) ∧
+      ["Summary"] target.id (siblingStar source.name)) =
+        some (.targetOutsideDeclaringGroup target.path ["Summary"]) ∧
     elabError? (checkAddressedStringFirstFilledComputation model
       ["Summary"] fixedTarget.id (siblingStar source.name)) =
         some (.targetNotRepeatable fixedTarget.path) ∧

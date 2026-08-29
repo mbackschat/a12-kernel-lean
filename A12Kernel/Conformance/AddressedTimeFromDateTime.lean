@@ -97,7 +97,13 @@ private def elabError? (checked :
   | .error cause => some cause
   | .ok _ => none
 
-/- Target ownership, target repetition, complete-DateTime admission, and source-scope binding are four distinct addressed gates. -/
+/- Target ownership, target repetition, complete-DateTime admission, and source-scope binding are four distinct
+addressed gates. The first row is this family's own narrower boundary, not a Kernel refusal: this family still
+carries an equality placement gate rather than the shared repeatable-target certificate's containment, so it
+refuses the ancestor `["Schedule"]` that the Kernel admits. The
+[declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate) owns the
+measurement and [SG4](../../docs/SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) tracks the
+remaining families. -/
 example :
     elabError? (checkAddressedTimeFromDateTime model ["Schedule"]
       target.id (parent rootSource.name)) =

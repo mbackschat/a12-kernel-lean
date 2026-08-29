@@ -42,7 +42,9 @@ structure CheckedAddressedEnumerationTarget (model : FlatModel) where
   enumerationOwned : declaration.enumeration = some enumeration
   checkedExact : elaborateEnumeration enumeration = .ok checked
   projectionExact : checkEnumerationProjection checked .stored = .ok projection
-  inDeclaringGroup : declaration.groupPath = declaringGroup
+  declaringGroupValid : GroupPath.isValid declaringGroup = true
+  /-- The target lies at or below the declaring group; equality is the common case, not the rule. -/
+  targetContained : GroupPath.isPrefixOf declaringGroup declaration.groupPath = true
   repeatable : declaration.repeatableScope ≠ []
 
 namespace CheckedAddressedEnumerationTarget
@@ -111,38 +113,43 @@ def checkAddressedEnumerationTarget
     match hOwned : model.lookupUniqueId targetField with
     | .error cause => .error (.ordinary (.resolve cause))
     | .ok declaration =>
-      if hGroup : declaration.groupPath = declaringGroup then
-        match hKind : declaration.policy.kind, hEnumeration : declaration.enumeration with
-        | .enumeration, some source =>
-          match hChecked : elaborateEnumeration source with
-          | .error _ => .error (.ordinary .incoherentCore)
-          | .ok checked =>
-            match hProjection : checkEnumerationProjection checked .stored with
+      if hValid : GroupPath.isValid declaringGroup = true then
+        if hContained :
+            GroupPath.isPrefixOf declaringGroup declaration.groupPath = true then
+          match hKind : declaration.policy.kind, hEnumeration : declaration.enumeration with
+          | .enumeration, some source =>
+            match hChecked : elaborateEnumeration source with
             | .error _ => .error (.ordinary .incoherentCore)
-            | .ok projection =>
-              if hRepeatable : declaration.repeatableScope.isEmpty then
-                .error (.targetNotRepeatable declaration.path)
-              else
-                .ok {
-                  declaringGroup, targetField, declaration
-                  enumeration := source
-                  checked
-                  projection
-                  modelWellFormed := by rw [hModel]; rfl
-                  owned := hOwned
-                  targetKind := hKind
-                  enumerationOwned := hEnumeration
-                  checkedExact := hChecked
-                  projectionExact := hProjection
-                  inDeclaringGroup := hGroup
-                  repeatable := by
-                    intro empty
-                    simp [empty] at hRepeatable
-                }
-        | actual, _ =>
-            .error (.ordinary (.targetKindMismatch declaration.path actual.surfaceKind))
+            | .ok checked =>
+              match hProjection : checkEnumerationProjection checked .stored with
+              | .error _ => .error (.ordinary .incoherentCore)
+              | .ok projection =>
+                if hRepeatable : declaration.repeatableScope.isEmpty then
+                  .error (.targetNotRepeatable declaration.path)
+                else
+                  .ok {
+                    declaringGroup, targetField, declaration
+                    enumeration := source
+                    checked
+                    projection
+                    modelWellFormed := by rw [hModel]; rfl
+                    owned := hOwned
+                    targetKind := hKind
+                    enumerationOwned := hEnumeration
+                    checkedExact := hChecked
+                    projectionExact := hProjection
+                    declaringGroupValid := hValid
+                    targetContained := hContained
+                    repeatable := by
+                      intro empty
+                      simp [empty] at hRepeatable
+                  }
+          | actual, _ =>
+              .error (.ordinary (.targetKindMismatch declaration.path actual.surfaceKind))
+        else
+          .error (.targetOutsideDeclaringGroup declaration.path declaringGroup)
       else
-        .error (.targetOutsideDeclaringGroup declaration.path declaringGroup)
+        .error (.ordinary (.resolve (.invalidRuleGroup declaringGroup)))
 
 private def checkAddressedEnumerationSource
     (model : FlatModel) (declaringGroup : GroupPath)

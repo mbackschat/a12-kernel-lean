@@ -1423,3 +1423,22 @@ Three things worth keeping.
 - **A contradiction with a settled `spec/` row is evidence against the reading, not the row.** The row had its own basis; a fresh observation that appears to refute it should first be suspected of measuring something else. Checking that direction cost one probe and prevented a wrong ledger entry against an already-correct clause.
 
 It also answered the semantic question in the other direction: the field count needs **no** computation-arm rule, because its invalid operand *is* the operand and the general poison rule fires first. `NumberOfFilledGroups` needs two arms only because an invalid *descendant* leaves its group operand present. The asymmetry between the two counts is structural, not a special count behaviour.
+
+## LF107 — a matrix that pins one axis across every row cannot see a second cause, and reads as complete while doing it
+
+> Date: 2026-08-29. Sections: §11. Basis: four instances of the same defect within two days, in two repositories; the [declaring-group gate checkpoint](SOURCES.md#src-computation-declaring-group-gate) settles the mechanism.
+
+`MVK_ERROR_FIELD_NOT_IN_RULEGROUP` has **two independent derivation sources**: a per-row operand of a repeatable declaring group, and the written field's own repeatable scope. Four separate accounts each generalized from a matrix that held one of those axes at a single value, and every one of them was internally consistent:
+
+- a12-dmkits' `KF212` varied the operand exhaustively while holding the written field non-repeatable, and concluded "placement alone never refuses".
+- This project's `spec/09` varied placement while holding the operand fixed, and concluded the mirror image — that the gate reads placement and not the operand.
+- Accepted `SPEC-2026-08-27-01` recorded that a sibling-star computation "must be declared at its target's own parent", having moved the declaration without re-spelling its relative operand; the resulting refusal was the operand failing to resolve, under a *different* code.
+- This project's own `CheckedAddressedRepeatableTarget` encoded that parenthood reading as an equality, which no case could falsify because no case declared at an ancestor.
+
+**The tell is not disagreement between rows.** Every row of every one of those matrices reproduces. The tell is an axis that appears in the *claim* but never varies in the *evidence*, and a matrix has no way to signal that from inside: rows that all agree look like a law.
+
+Lean treatment: before a matrix supports a universal, list the axes the claim quantifies over and confirm each one takes at least two values somewhere in the retained rows. An axis pinned across every row bounds the claim to that value and must appear in its statement. Where an axis is genuinely unreachable in the current fragment, say `no witness known as of <rev>` rather than dropping the qualifier.
+
+- **Two causes reachable under one diagnostic code need a row per cause, not per code.** All four accounts had rows that refused with this code; none had a row that refused with it for the *other* reason. Grouping by observed code hides exactly the structure the claim is about.
+- **A cause that changes the code is the cheapest separator available.** Re-spelling the operand turned `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` into `MVK_INVALID_ENTITY`, which is what finally separated placement from operand resolution. Look for a neighbouring code before building a subtler discriminator.
+- This is [`LF80`](#lf80--a-separator-that-both-accounts-satisfy-is-not-a-separator-and-a-boolean-lock-hides-which-one-you-have) and [`LF100`](#lf100--a-refusal-names-an-entity-not-the-gates-subject-only-an-admitted-row-that-varies-the-entity-says-which-one-the-gate-reads) one level up. Those ask whether a *row* separates two accounts; this asks whether the *matrix* spans the claim, which a row-local check cannot answer.
