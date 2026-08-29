@@ -182,6 +182,15 @@ example :
       | _ => false) = true := by
   native_decide
 
+/- Placement and operand resolution are two gates, not one. Moving the declaration to the ancestor without re-spelling its operand still refuses, but on the source channel as an unresolvable entity rather than as a placement refusal. The [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate) measures that pair as `MVK_INVALID_ENTITY` against `MVK_ERROR_FIELD_NOT_IN_RULEGROUP`, and records misattributing the first to the second as the origin of the superseded parenthood reading. -/
+example :
+    (match checkAddressedFieldValueAsString model ["Order"] text.id (bare "Amount") with
+      | .error (.source (.invalidEntity reference)) => reference.field == "Amount"
+      | _ => false) = true ∧
+    (checkAddressedFieldValueAsString
+      model ["Order"] text.id (bare "OuterAmount")).isOk = true := by
+  native_decide
+
 /- Decimal-valued input selects stripped formal-read text while String-valued Number input remains verbatim, and the two rows cannot alias. -/
 example :
     outcomes? [
