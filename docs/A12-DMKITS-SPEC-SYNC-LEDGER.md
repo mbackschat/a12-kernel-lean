@@ -37,7 +37,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-08-29-01"></a>
 ### `SPEC-2026-08-29-01` — `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` is a containment gate under derived iteration, and the computed field's own repetition derives it
 
-- `status`: pending
+- `status`: accepted
 - `clause`: [`09-computations.md` the generated-rule anchoring paragraph](../spec/09-computations.md) and its §1 declaration-group bullets
 - `delta`: the gate fires exactly when iteration is derived **and** the computed field does not lie at or below the declaring group. Iteration has two independent sources: a per-row operand of a repeatable declaring group, and the computed field's own repeatable scope reaching the gate through the generated rule anchored at that field. Containment, not parenthood, is what admits: an ancestor declaring group including the root is accepted. A repeatable declaring group derives no iteration by itself.
 - `delta`: separately, the declaring group contributes no repetition at runtime. A constant computation declared in a repeatable group whose fixed target sits elsewhere produces exactly one value whether that group has zero or three instantiated rows.
@@ -46,4 +46,5 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `surfaces`: `KF212` and its locking test, the `group` key's published schema description, and any interpreter or validator path that pre-checks placement independently of derived iteration.
 - `acceptance`: a12-dmkits restates the gate as containment under derived iteration, its locking test gains the constant-into-repeatable-target row and the admitted ancestor-declaration row, and the shipped schema description drops "Placement alone never refuses".
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
-- `reviewed a12-dmkits revision`: none yet.
+- `reviewed a12-dmkits revision`: `ab055329376fe89f6cdf9490bad0e9520e3a56f3`, reviewed clean at HEAD. Every acceptance condition is met: `KF212` is restated as containment under derived iteration with the parenthood reading corrected, the shipped schema description no longer claims placement never refuses, and `ComputationDeclaringGroupLawsTest` gains both required rows plus the two unrelated-subtree controls, with the retraction recorded in the class javadoc rather than left as a silent edit. The peer reproduced the counterexample on its own `/Depot` model instead of adopting the reported rows.
+- `disposition`: accepted. The revision also supplies an inbound rule/computation asymmetry recorded at the [declaring-group gate checkpoint](sources/cross-layer-routes.md#src-computation-declaring-group-gate); under the no-feedback-loop rule it creates no new outbound entry, and it is held on reviewed peer provenance because this project's `rule check` route cannot reach that cell.
