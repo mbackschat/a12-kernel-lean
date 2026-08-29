@@ -34,6 +34,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-08-29-03"></a>
+### `SPEC-2026-08-29-03` — an aggregate over a star derives no iteration, so a fixed computation target has no placement restriction at all
+
+- `status`: pending
+- `clause`: [`09-computations.md` the generated-rule anchoring paragraph](../spec/09-computations.md)
+- `delta`: the reconciled account states that iteration is derived from the computed field's own repeatable scope *or* from a per-row operand of a repeatable declaring group. It does not say which operands count. Measured: a sibling-star `FirstFilledValue` is **not** a per-row operand. A star aggregate into a *fixed* target is admitted from the target's own group, from an ancestor, from an unrelated sibling group, and from the starred source's own repeatable group — the identical pattern a bare constant gives at the same four placements. So a fixed target carries no placement restriction until an operand actually reads per row.
+- `mechanism`: the same model separates the two operand classes. The unstarred per-row read `[Marker]` declared at the repeatable `/Probe/Rows` refuses `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` with the Kernel's own text naming iteration, while `FirstFilledValue(/Probe/Rows*/Marker)` at the same declaring group is admitted. The distinction is aggregation, not the presence of a repeatable group in the operand path. An unstarred read of a repeatable field from a nonrepeatable declaring group never reaches this gate: `MVK_NO_WILDCARD` refuses it earlier.
+- `evidence`: [fixed-target star placement checkpoint](sources/cross-layer-routes.md#src-fixed-target-star-placement), ten `KERNEL_CONFIRMED` `computation add --dry-run` rows over one model at a12-dmkits `4e78f8254bcf12f6d94fc23c5c3cd5e4906c8d04` (clean), `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. The matrix carries its own negative control: a repeatable target declared at a non-containing group refuses `MVK_ERROR_FIELD_NOT_IN_RULEGROUP` in the same model, so the gate is reachable and the eight admissions are not an unreachable-gate artifact.
+- `surfaces`: any peer clause, test, or catalog note that treats a starred operand of a repeatable group as deriving iteration, or that constrains where a fixed-target computation may be declared.
+- `local-scope`: seven Lean gates refuse a fixed target outside its own declaring group and are therefore narrower than the Kernel on this shape. Closing them is not a widening to containment — containment also refuses the measured sibling admission — but the removal of a placement gate plus an iteration-derivation check. Open in [SG4](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition).
+- `acceptance`: a12-dmkits states which operand classes derive iteration, or supplies the contrary measurement showing a star aggregate into a fixed target refused on placement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: none yet.
+
 <a id="spec-2026-08-29-02"></a>
 ### `SPEC-2026-08-29-02` — a sibling-star computation is admitted from any ancestor of its repeatable target, not only its own parent
 
@@ -44,7 +58,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `mechanism`: the earlier reading is what a relative operand produces. Moving the declaration to an ancestor while leaving the operand spelled against the old base refuses with `MVK_INVALID_ENTITY`, an operand-resolution failure under a different code. Re-spelling the operand for the new base, or writing it absolute, admits the same placement.
 - `evidence`: [declaring-group gate checkpoint](sources/cross-layer-routes.md#src-computation-declaring-group-gate), the operand-bearing and misattribution rows — four placements with an absolute operand, the same four with a bare-constant control, and the three relative-spelling rows, all `KERNEL_CONFIRMED` at a12-dmkits `4ad7cec69df28790cd47adae14f7ab18eca4733e`, Kernel `30.8.1`.
 - `surfaces`: any peer clause, test, or catalog note stating that a sibling-star or exact-address computation must be declared at its target's own parent.
-- `local-scope`: this project's shared repeatable-target certificate keeps the narrower equality on purpose. Admission is measured; parent-local correlation *runtime* under an ancestor declaration is not, and every consuming family applies that correlation clause. Recorded at [`AddressedRepeatableTarget.lean`](../A12Kernel/Elaboration/AddressedRepeatableTarget.lean) and open in [SG4](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition).
+- `local-scope`: closed. Every repeatable-target gate now admits by containment, and parent-local correlation under an ancestor declaration was measured separately before the widening landed. Recorded at [`AddressedRepeatableTarget.lean`](../A12Kernel/Elaboration/AddressedRepeatableTarget.lean).
 - `acceptance`: a12-dmkits restates the placement clause as containment, or supplies the contrary measurement showing the ancestor declaration refused with a correctly spelled operand.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 - `reviewed a12-dmkits revision`: none yet.
