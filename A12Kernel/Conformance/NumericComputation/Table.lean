@@ -17,9 +17,25 @@ private def operation? (target : FieldId)
   (elaborateNumericTargetComputationOperation
     model ["Root"] target expression).toOption
 
+private def operationAt? (declaringGroup : GroupPath) (target : FieldId)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom) :
+    Option (CheckedNumericTargetComputationOperation model) :=
+  (elaborateNumericTargetComputationOperation
+    model declaringGroup target expression).toOption
+
 private def literalRow? (guard : ComputationCondition) (target : FieldId)
     (value : Rat) : Option NumericRow := do
   let operation ← operation? target
+    (.literal { value, authoredScale := 0 })
+  pure {
+    precondition := guard
+    operation := operation
+  }
+
+private def literalRowAt? (declaringGroup : GroupPath)
+    (guard : ComputationCondition) (target : FieldId)
+    (value : Rat) : Option NumericRow := do
+  let operation ← operationAt? declaringGroup target
     (.literal { value, authoredScale := 0 })
   pure {
     precondition := guard
@@ -70,6 +86,12 @@ private def tableOutcome? (rows : List (Option NumericRow))
   let table ← (certifyNumericComputationTable alternatives).toOption
   (table.evaluate input).toOption
 
+private def tableDeclaringGroups? (rows : List (Option NumericRow)) :
+    Option (List GroupPath) := do
+  let alternatives ← collectRows? rows
+  let table ← (certifyNumericComputationTable alternatives).toOption
+  pure table.declaringGroups
+
 /- Construction rejects empty input and the first row that changes target or complete policy. -/
 example :
     tableError? [] = some .empty ∧
@@ -81,6 +103,15 @@ example :
       literalRow? (.fieldNotFilled laterId) targetId 1,
       alteredPolicyRow? (.fieldNotFilled laterId)] =
         some (.targetPolicyMismatch 2) := by
+  native_decide
+
+/- Same-target table assembly retains each row's definition placement even though target-owned runtime
+evaluation does not consume it. -/
+example :
+    tableDeclaringGroups? [
+      literalRow? (.fieldFilled sourceId) targetId 1,
+      literalRowAt? ["Rules"] (.fieldNotFilled sourceId) targetId 2] =
+      some [["Root"], ["Rules"]] := by
   native_decide
 
 /- Guard admission is model-relative, and a target-presence guard is rejected independently of the checked expression. -/

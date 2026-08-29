@@ -40,6 +40,20 @@ private theorem selectableNumericAlternatives_transport
   cases samePolicy
   rfl
 
+private theorem numericAlternativeDeclaringGroups_transport
+    {sourceTarget target : FieldId}
+    {sourcePolicy targetPolicy : NumericTargetPolicy}
+    (sameTarget : sourceTarget = target)
+    (samePolicy : sourcePolicy = targetPolicy)
+    (alternatives : List (CheckedNumericComputationAlternative
+      model sourceTarget sourcePolicy)) :
+    List.map (·.operation.operation.declaringGroup)
+        (samePolicy ▸ (sameTarget ▸ alternatives)) =
+      List.map (·.operation.operation.declaringGroup) alternatives := by
+  cases sameTarget
+  cases samePolicy
+  rfl
+
 /-- Appending a later same-target table preserves every selectable Number row in authored encounter order. -/
 theorem appendSameNumericTarget_selectableAlternatives
     (left right : CheckedNumericComputationTable model)
@@ -52,6 +66,21 @@ theorem appendSameNumericTarget_selectableAlternatives
     CheckedNumericComputationTable.selectableAlternatives,
     List.map_cons, List.map_append]
   rw [selectableNumericAlternatives_transport sameTarget samePolicy]
+  simp
+
+/-- Same-target Number assembly preserves every row's computation declaration group in authored order
+although target-owned runtime selection does not consume it. -/
+theorem appendSameNumericTarget_declaringGroups
+    (left right : CheckedNumericComputationTable model)
+    (sameTarget : right.targetField = left.targetField)
+    (samePolicy : right.targetPolicy = left.targetPolicy) :
+    (left.appendSameTarget right sameTarget samePolicy).declaringGroups =
+      left.declaringGroups ++ right.declaringGroups := by
+  simp only [CheckedNumericComputationTable.appendSameTarget,
+    CheckedNumericComputationTable.declaringGroups,
+    CheckedNumericComputationTable.checkedAlternatives,
+    List.map_cons, List.map_append]
+  rw [numericAlternativeDeclaringGroups_transport sameTarget samePolicy]
   simp
 
 /-- A same-target pair becomes one table at the first target position. -/

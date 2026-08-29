@@ -812,6 +812,7 @@ run_cmd do
 #print axioms A12Kernel.emptyNumericField_evaluates_zero
 #print axioms A12Kernel.requiredEmptyNumericField_evaluates_zero
 #print axioms A12Kernel.poisonedNumericField_evaluates_poison
+#print axioms A12Kernel.checkedNumericComputationOperation_declaringGroup_valid
 #print axioms A12Kernel.checkedNumericComputationOperation_noTargetReference
 #print axioms A12Kernel.checkedNumericComputationOperation_admittedShape
 #print axioms A12Kernel.checkedNumericComputationOperation_scaleGate
@@ -900,6 +901,7 @@ run_cmd do
 #print axioms A12Kernel.firstNonScalarNumericTable_eq_none_iff
 #print axioms A12Kernel.checkedNumericComputationRun_table_scalar
 #print axioms A12Kernel.appendSameNumericTarget_selectableAlternatives
+#print axioms A12Kernel.appendSameNumericTarget_declaringGroups
 #print axioms A12Kernel.flattenNumericComputationTables_sameTarget_pair
 #print axioms A12Kernel.flattenNumericComputationTables_retainsFirstTargetPosition
 #print axioms A12Kernel.numericComputationRun_read_pending

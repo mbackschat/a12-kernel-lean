@@ -260,6 +260,13 @@ theorem numericComputation_fieldValueAsNumber_poison_preservesCause
     ScalarComputationContext.readNumericComputationAtomWith, observed]
   rfl
 
+/-- A checked Numeric definition retains a syntactically valid computation declaration group even when
+its expression has no field operand. -/
+theorem checkedNumericComputationOperation_declaringGroup_valid
+    (checked : CheckedNumericComputationOperation model) :
+    GroupPath.isValid checked.declaringGroup = true :=
+  checked.declaringGroupValid
+
 /-- A checked operation contains no direct reference to its own target at any depth of the shared authored tree. -/
 theorem checkedNumericComputationOperation_noTargetReference
     (checked : CheckedNumericComputationOperation model) :

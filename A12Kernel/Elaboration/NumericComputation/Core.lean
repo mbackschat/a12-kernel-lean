@@ -283,9 +283,12 @@ def NumericComputationOperation.WellFormed
     (operation : NumericComputationOperation model) : Prop :=
   operation.wellFormedBool = true
 
-/-- A model-coherent operation produced only after target, operands, authoring shape, self-reference, and result scale have been checked. -/
+/-- A model-coherent operation produced only after target, operands, authoring shape, self-reference,
+result scale, and computation declaration-group syntax have been checked. -/
 structure CheckedNumericComputationOperation (model : FlatModel) where
+  declaringGroup : GroupPath
   core : NumericComputationOperation model
+  declaringGroupValid : GroupPath.isValid declaringGroup = true
   modelWellFormed : model.validate.isOk = true
   wellFormed : core.WellFormed
 
@@ -591,6 +594,14 @@ private def FlatModel.resolveDirectTargetAdmissionExpression?
           | _, _ => none
   | _ => none
 
+/-- Check computation-group syntax independently of whether the Numeric expression has an operand. -/
+private def certifyNumericComputationDeclaringGroup (declaringGroup : GroupPath) :
+    Except NumericComputationElabError { group : GroupPath // GroupPath.isValid group = true } :=
+  if hValid : GroupPath.isValid declaringGroup = true then
+    .ok ⟨declaringGroup, hValid⟩
+  else
+    .error (.resolve (.invalidRuleGroup declaringGroup))
+
 /-- Resolve and check the complete numeric computation surface, including checked entity-list atoms and the distinct row-aligned `SumOfProducts` source, through the one shared numeric expression tree. -/
 def elaborateCompleteNumericComputationOperation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
@@ -600,18 +611,18 @@ def elaborateCompleteNumericComputationOperation
       (CheckedNumericComputationOperation model) := do
   match hModel : model.validate with
   | .error error => throw (.resolve error)
-  | .ok () =>
-      if !GroupPath.isValid declaringGroup then
-        throw (.resolve (.invalidRuleGroup declaringGroup))
+  | .ok () => do
+      let checkedDeclaringGroup ←
+        certifyNumericComputationDeclaringGroup declaringGroup
       let target ← model.resolveNumericComputationTarget targetField
       let deferredTargetExpression? :=
         model.resolveDirectTargetAdmissionExpression?
-          declaringGroup target expression
+          checkedDeclaringGroup.val target expression
       let defersTargetReference := deferredTargetExpression?.isSome
       let resolved ← match deferredTargetExpression? with
         | some resolved => pure resolved
         | none =>
-            model.resolveNumericComputationExpression declaringGroup
+            model.resolveNumericComputationExpression checkedDeclaringGroup.val
               targetField expression
       if !resolved.isAdmittedResolvedNumericOperation then
         throw .unsupportedExpression
@@ -634,7 +645,9 @@ def elaborateCompleteNumericComputationOperation
         suppressExactScaleWarning }
       if hCore : core.wellFormedBool = true then
         pure {
+          declaringGroup := checkedDeclaringGroup.val
           core
+          declaringGroupValid := checkedDeclaringGroup.property
           modelWellFormed := by
             rw [hModel]
             rfl

@@ -108,6 +108,11 @@ def selectableAlternatives (table : CheckedNumericComputationTable model) :
       (CheckedNumericTargetComputationOperation model)) :=
   table.checkedAlternatives.map (·.toSelectable)
 
+/-- Preserve each row's computation declaration group in authored order. Runtime selection does not
+consume placement, but Analyze and Transform consumers do. -/
+def declaringGroups (table : CheckedNumericComputationTable model) : List GroupPath :=
+  table.checkedAlternatives.map (·.operation.operation.declaringGroup)
+
 /-- Select first through computation-phase scalar guards, then evaluate only that checked operation. Repeatable operands retain the existing explicit scalar-context fault. -/
 def evaluate (table : CheckedNumericComputationTable model)
     (context : ScalarComputationContext) :

@@ -12,6 +12,25 @@ private def targetDiagnosticOf
     Option KernelStaticDiagnostic :=
   error?.bind NumericComputationElabError.targetDiagnostic?
 
+private def crossGroupTarget : FlatFieldDecl :=
+  { id := 100, groupPath := ["Store"], name := "StockLevel",
+    policy := { kind := .number numberInfo } }
+
+private def rulesMarker : FlatFieldDecl :=
+  { id := 101, groupPath := ["Rules"], name := "Marker",
+    policy := { kind := .number numberInfo } }
+
+private def crossGroupModel : FlatModel :=
+  { fields := [crossGroupTarget, rulesMarker] }
+
+private def crossGroupConstantPlacementAndResult? :
+    Option (GroupPath × FieldId × NumericComputationResult) := do
+  let operation ←
+    (elaborateNumericComputationOperation crossGroupModel ["Rules"]
+      crossGroupTarget.id (.literal { value := -1, authoredScale := 0 })).toOption
+  let result ← (operation.evaluate context).toOption
+  pure (operation.declaringGroup, operation.core.target.id, result)
+
 /- Checked computation-operation authoring resolves the shared numeric tree and rejects a nested direct reference to its own target. -/
 example :
     checkedErrorOf
@@ -326,6 +345,13 @@ example :
         (context (checkedNumber (.parsed (.num 3)))) = some (.value 5) ∧
       checkedResultOf (.literal { value := 7, authoredScale := 0 }) =
         some (.value 7) := by
+  native_decide
+
+/- The measured cross-group Number constant retains definition placement independently of the fixed
+target that owns its one runtime instance. Runtime evaluation remains the established constant value. -/
+example :
+    crossGroupConstantPlacementAndResult? =
+      some (["Rules"], crossGroupTarget.id, .value (-1)) := by
   native_decide
 
 example :
