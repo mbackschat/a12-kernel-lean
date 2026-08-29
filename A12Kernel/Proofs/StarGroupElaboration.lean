@@ -18,8 +18,8 @@ namespace A12Kernel
   have owned : checked.group ∈ model.repeatableGroups := by
     simpa using checked.groupOwned
   simp [CheckedStarredGroupSource.wellFormedBool,
-    checked.modelWellFormed, owned, checked.ancestryOwned,
-    checked.firstStarWithin, checked.pathValid]
+    checked.modelWellFormed, owned, checked.groupPopulated,
+    checked.ancestryOwned, checked.firstStarWithin, checked.pathValid]
 
 /-- A starred group source cannot be transplanted into a checked condition owned by another declaring group. -/
 theorem checkedStarredGroupSource_wellFormed_declaringGroup
@@ -27,7 +27,7 @@ theorem checkedStarredGroupSource_wellFormed_declaringGroup
     (valid : checked.wellFormedBool rowGroup = true) :
     checked.declaringGroup = rowGroup := by
   simp [CheckedStarredGroupSource.wellFormedBool] at valid
-  exact valid.1.1.1.1
+  exact valid.1.1.1.1.1
 
 /-- Full validation always supplies complete relevance for a starred group count. -/
 @[simp] theorem checkedStarredGroupSource_allRowsRelevant_full
@@ -141,15 +141,17 @@ theorem elaborateStarredGroupSource_never_incoherentCore
       · simp
       · rename_i group hLookup
         split
+        · split
+          · simp
+          · rename_i plan hPlan
+            obtain ⟨member, pathEq⟩ :=
+              lookupUniqueRepeatablePath_owned model
+                (basePath ++ source.groups.map (·.name)) group hLookup
+            have ancestry :=
+              elaborateStarPathPlan_ancestry model basePath source.groups
+                group.path plan hPlan
+            simp [member, pathEq, ancestry]
         · simp
-        · rename_i plan hPlan
-          obtain ⟨member, pathEq⟩ :=
-            lookupUniqueRepeatablePath_owned model
-              (basePath ++ source.groups.map (·.name)) group hLookup
-          have ancestry :=
-            elaborateStarPathPlan_ancestry model basePath source.groups
-              group.path plan hPlan
-          simp [member, pathEq, ancestry]
 
 /-- The shared star planner's defensive incoherent-core branch is likewise dead, so a group
     operand cannot surface it through the mapped `path` channel either. -/
@@ -168,15 +170,17 @@ theorem elaborateStarredGroupSource_never_path_incoherentCore
       · simp
       · rename_i group _
         split
-        · rename_i error hPlan
-          have dead := elaborateStarPathPlan_never_incoherentCore model basePath
-            source.groups group.path
-          rw [hPlan] at dead
-          simp only [ne_eq, Except.error.injEq] at dead
-          simp [dead]
         · split
-          · split <;> simp
-          · simp
+          · rename_i error hPlan
+            have dead := elaborateStarPathPlan_never_incoherentCore model basePath
+              source.groups group.path
+            rw [hPlan] at dead
+            simp only [ne_eq, Except.error.injEq] at dead
+            simp [dead]
+          · split
+            · split <;> simp
+            · simp
+        · simp
 
 /-- General starred-group lowering cannot expose its own defensive incoherent-core branch for either terminal interpretation. -/
 theorem elaborateStarredGroupOperandSource_never_incoherentCore

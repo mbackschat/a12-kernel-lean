@@ -19,6 +19,11 @@ inductive StarredGroupElabError where
   | resolve (error : ResolveError)
   | invalidGroupReference (reference : SurfaceStarGroupPath)
   | unknownGroup (path : GroupPath)
+  /-- The named group carries no field anywhere in its subtree. The Kernel admits such a group in a
+  model and then refuses every operand naming it, on a code of its own rather than the unknown-group
+  one. Only a repeatable group reaches this here, because `FlatModel` represents a nonrepeatable group
+  solely through its fields. -/
+  | groupHasNoFields (path : GroupPath)
   | path (error : StarPathElabError)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -30,6 +35,9 @@ structure CheckedStarredGroupSource (model : FlatModel) where
   path : StarPath
   modelWellFormed : model.validate.isOk = true
   groupOwned : model.repeatableGroups.contains group = true
+  /-- The terminal carries at least one field, which is the Kernel's group-operand gate rather than a
+  structural property of the path. -/
+  groupPopulated : model.groupContributesField group.path = true
   ancestryOwned : path.axes.map (·.level) = model.repeatableScopeForGroupPath group.path
   firstStarWithin : path.firstStar < path.axes.length
   pathValid : path.validate.isOk = true
@@ -99,6 +107,7 @@ def elaborateStarredGroupSource (model : FlatModel) (declaringGroup : GroupPath)
           match model.lookupUniqueRepeatablePath (basePath ++ source.groups.map (·.name)) with
           | .error error => .error (.resolve error)
           | .ok group =>
+              if hPopulated : model.groupContributesField group.path = true then
               match elaborateStarPathPlan model basePath source.groups group.path with
               | .error error => .error (.path error)
               | .ok plan =>
@@ -111,6 +120,7 @@ def elaborateStarredGroupSource (model : FlatModel) (declaringGroup : GroupPath)
                         path := plan.path
                         modelWellFormed := by rw [hModel]; rfl
                         groupOwned := hGroup
+                        groupPopulated := hPopulated
                         ancestryOwned := hAncestry
                         firstStarWithin := plan.firstStarWithin
                         pathValid := plan.pathValid }
@@ -118,6 +128,8 @@ def elaborateStarredGroupSource (model : FlatModel) (declaringGroup : GroupPath)
                       .error .incoherentCore
                   else
                     .error .incoherentCore
+              else
+                .error (.groupHasNoFields group.path)
 
 /-- Resolve one starred group operand and retain whether its terminal is a structural repeatable row or an ordinary descendant-derived group product. -/
 def elaborateStarredGroupOperandSource (model : FlatModel)
@@ -189,6 +201,7 @@ def wellFormedBool (checked : CheckedStarredGroupSource model)
     (rowGroup : GroupPath) : Bool :=
   checked.declaringGroup == rowGroup && model.validate.isOk &&
     model.repeatableGroups.contains checked.group &&
+    model.groupContributesField checked.group.path &&
     checked.path.axes.map (·.level) ==
       model.repeatableScopeForGroupPath checked.group.path &&
     decide (checked.path.firstStar < checked.path.axes.length) &&

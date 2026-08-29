@@ -22,6 +22,14 @@ private def items : RepeatableGroupDecl :=
 private def model : FlatModel :=
   { fields := [amount], repeatableGroups := [items, sections] }
 
+/-- A repeatable group carrying **no field anywhere in its subtree**. The Kernel admits such a group in
+a model and reports the model valid, then refuses every operand that names it. -/
+private def hollow : RepeatableGroupDecl :=
+  { level := 30, path := ["Shop", "Catalog", "Hollow"], repeatability := some 2 }
+
+private def hollowModel : FlatModel :=
+  { fields := [amount], repeatableGroups := [items, sections, hollow] }
+
 private def segment (name : String) (starred : Bool := false) : SurfaceStarGroupSegment :=
   { name, starred }
 
@@ -39,6 +47,13 @@ private def document (rows : List RowAddr) : Document :=
 
 private def checkedOf (source : SurfaceStarGroupPath) (targetModel : FlatModel := model) :=
   elaborateStarredGroupSource targetModel amount.groupPath source
+
+private def errorOfStarredGroup
+    (result : Except StarredGroupElabError (CheckedStarredGroupSource hollowModel)) :
+    Option StarredGroupElabError :=
+  match result with
+  | .ok _ => none
+  | .error error => some error
 
 private def resultOf (source : SurfaceStarGroupPath) :=
   match checkedOf source with
@@ -221,6 +236,20 @@ example :
     let rows := [{ group := 10, path := [1] }, { group := 20, path := [1, 2] }]
     contextErrorOf (absoluteSource false true true) rows =
       some (.nonprefixRows 20 [1] [2]) := by
+  native_decide
+
+/- A group operand naming a group whose **subtree contains no field** is refused. The Kernel admits the
+empty group in the model, then reports `MVK_GROUP_IS_EMPTY` for every operand that names it; only a
+repeatable one is expressible here, because `FlatModel` represents a nonrepeatable group solely through
+its fields. The populated sibling is the control that keeps the refusal from being an artifact of the
+model rather than of the group. -/
+example :
+    (elaborateStarredGroupSource hollowModel amount.groupPath
+        { base := .absolute
+          groups := [segment "Shop", segment "Catalog", segment "Hollow" true] }
+      |> errorOfStarredGroup) = some (.groupHasNoFields ["Shop", "Catalog", "Hollow"]) ∧
+      (elaborateStarredGroupSource hollowModel amount.groupPath
+          (absoluteSource false true true)).toOption.isSome = true := by
   native_decide
 
 end A12Kernel.Conformance.StarGroupElaboration

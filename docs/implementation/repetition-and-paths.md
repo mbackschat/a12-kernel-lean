@@ -73,9 +73,10 @@
 <a id="cap-group-list-count-terminals"></a>
 #### Group-list/count terminals
 
-- `boundary`: Terminal repeatable groups count structural rows; nonrepeatable terminals below stars evaluate once per selected ancestor environment
+- `boundary`: Terminal repeatable groups count structural rows; nonrepeatable terminals below stars evaluate once per selected ancestor environment. A terminal must carry at least one field somewhere in its **subtree**, which is the Kernel's own group-operand gate and is separate from the group being declared at all; the certificate retains that witness, so every construction site is compiler-enforced.
 - `owner`: [`StarGroup.lean`](../../A12Kernel/Elaboration/StarGroup.lean), [`ValidationCondition/`](../../A12Kernel/Elaboration/ValidationCondition/)
 - `assurance`: E/P closed for bounded terminals, including repeated-star occurrence preservation, zero-row polarity, bound-prefix admission, and nonrepeatable-terminal composition; upstream L at [source registry](../SOURCES.md), [source registry](../SOURCES.md), and [source registry](../SOURCES.md); C none
+- `assurance`: The empty-terminal gate is measured at the [empty-group checkpoint](../SOURCES.md#src-empty-declared-group), which corrected a live defect: a starred operand on an empty repeatable group had been admitted where the Kernel refuses `MVK_GROUP_IS_EMPTY`. Its separator is a group populated only through a descendant subgroup, admitted in the same batch, which fixes the gate as subtree-wide rather than direct-child. Outbound as [SPEC-2026-08-29-05](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-29-05)
 - `remains`: Complete group-list/count surface: [SG13](../SEMANTICS-GAPS.md#sg13--group-list-and-group-count-completion)
 
 

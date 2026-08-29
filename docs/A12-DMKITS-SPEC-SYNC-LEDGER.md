@@ -34,6 +34,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-08-29-05"></a>
+### `SPEC-2026-08-29-05` — a group may be declared empty, and then no operand may name it
+
+- `status`: pending
+- `clause`: [`08-paths-and-references.md` §1](../spec/08-paths-and-references.md)
+- `delta`: the clause said nothing about groups carrying no fields. Measured: such a group is **legal to declare**, and `model check` reports the model valid, for a subgroup, for a whole root, and for a repeatable group. Every operand that names one is then refused, on codes of their own rather than the unknown-group class: `MVK_GROUP_IS_EMPTY` for a group, `MVK_ROOT_GROUP_IS_EMPTY` for a root.
+- `mechanism`: the gate is over the **subtree**, not the direct children. A group with no direct field but a field in a descendant subgroup is admitted under group presence, collective fill, and the starred row count alike, in both repetition shapes, with populated direct controls admitted in the same batch. Declaration legality and operand legality are therefore separate questions for a group, which is the distinction the clause was missing.
+- `evidence`: [empty-group checkpoint](sources/group-and-iteration-probes.md#src-empty-declared-group), structured `group add` writes plus `model check` and `rule check` verdicts at a12-dmkits `4e78f8254bcf12f6d94fc23c5c3cd5e4906c8d04` (clean), `dmtool` 0.13.0, Kernel `30.8.1`.
+- `surfaces`: any peer clause, test, or catalog note that treats a declared group as automatically nameable by an operand, or that reports an empty group on the unknown-group class.
+- `local-scope`: closed for the reachable half. It corrected a live defect: an empty **repeatable** group is expressible here and a starred group operand admitted one, so the certificate now carries a populated-group witness. An empty nonrepeatable group stays outside this project's model representation, which [SG9](SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion) carries.
+- `acceptance`: a12-dmkits states the declare-versus-name separation and its subtree gate, or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: none yet.
+
+
 <a id="spec-2026-08-29-04"></a>
 ### `SPEC-2026-08-29-04` — the rule-message `$#…$` group position admits the rule's own group and its ancestors
 

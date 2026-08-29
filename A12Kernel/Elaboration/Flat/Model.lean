@@ -333,12 +333,25 @@ def FlatModel.requirednessScopeFor (model : FlatModel)
                 (model.repeatableScopeForGroupPath declaration.groupPath)
                 declaration.repeatableScope)
 
+/-- Whether a group carries at least one field anywhere in its subtree.
+
+This is the Kernel's own group-operand gate. Measured 2026-08-29, an operand naming a group whose
+subtree carries no field is refused `MVK_GROUP_IS_EMPTY` (and `MVK_ROOT_GROUP_IS_EMPTY` for a root),
+while a group populated only through a descendant subgroup is admitted, so the test is over the whole
+subtree rather than the direct children ([checkpoint](../../../docs/SOURCES.md#src-empty-declared-group)).
+It is deliberately not the same question as `hasGroupPath`: a group with no fields may still be
+**present**, because a repeatable declaration names it. -/
+def FlatModel.groupContributesField (model : FlatModel) (path : GroupPath) : Bool :=
+  model.fields.any fun declaration => path.isPrefixOf declaration.groupPath
+
 /-- A group is present in the flattened namespace when it owns or contains a declared field, or has its own repeatable declaration.
 
-An empty **nonrepeatable** group is therefore outside this representation, and that is a limit of `FlatModel` rather than of the Kernel: measured 2026-08-29, the Kernel admits such a group and reports the model valid ([checkpoint](../../../docs/SOURCES.md#src-empty-declared-group)). Every gate that asks this query inherits the limit, so none of them can be exercised against a model carrying one, and one of them would diverge if it could be — the message group position's root gate reports its undeclared-root class where the Kernel reports the ordinary group class. No `FlatModel` can build that input, so no clause is wrong on the representable domain; giving groups their own declaration list is the change that would lift it, and [SG9](../../../docs/SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion) carries it. -/
+An empty **nonrepeatable** group is therefore outside this representation, and that is a limit of `FlatModel` rather than of the Kernel: measured 2026-08-29, the Kernel admits such a group and reports the model valid ([checkpoint](../../../docs/SOURCES.md#src-empty-declared-group)). One gate would diverge if that input could be built, since the message group position's root gate reports its undeclared-root class where the Kernel reports the ordinary group class; no `FlatModel` can build it, and giving groups their own declaration list is the change that would lift the limit, which [SG9](../../../docs/SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion) carries.
+
+An empty **repeatable** group is a different matter and *is* expressible, because a repeatable declaration names its group directly. Presence is therefore not admission: `groupContributesField` is the gate a group **operand** must pass, and this query is not. -/
 def FlatModel.hasGroupPath (model : FlatModel) (path : GroupPath) : Bool :=
   GroupPath.isValid path &&
-    ((model.fields.any fun declaration => path.isPrefixOf declaration.groupPath) ||
+    (model.groupContributesField path ||
       model.repeatableGroups.any fun group => group.path == path)
 
 /-- Every field declared anywhere in a group's subtree, in declaration order. A group declares no kind, value, or instance of its own, so this recursive extent is the whole of what a group-scope operand contributes, and a deeper descendant group's field belongs to it exactly like a direct child's.

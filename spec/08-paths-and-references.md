@@ -13,6 +13,7 @@ Path resolution reads a cell *relative to the current repetition context* ([`01-
 - Paths are **absolute** (`/Order/Quantity`) or **relative** (`../Other`). Relative paths within a rule's group are shorter and survive the group being moved.
 - **The one combination that *requires* absolute:** the `*` may not be attached to a relative `..` step (`MVK_INVALID_WILDCARD_REL`). A named segment reached after walking upward may still be starred, so `../Items*/Count` is legal; `..*/Budget`, which tries to reopen the ancestor step itself, must instead use an absolute path such as `/Project/Milestones*/Budget`.
 - A field may be referenced by a **bare short name** (`[Quantity]`). Direct lookup under the declaring group is always attempted; the model-wide fallback requires `fieldRefByShortNameAllowed`, whose kernel default is off.
+- **A group may be declared empty, and then it may not be named.** A group carrying no field anywhere in its subtree is legal in a model, and `model check` reports the model valid, but every operand naming one is refused: `MVK_GROUP_IS_EMPTY`, or `MVK_ROOT_GROUP_IS_EMPTY` when the group is a root. The gate is over the whole subtree rather than the direct children, so a group populated only through a descendant subgroup is admitted. It applies to both repetition shapes, including a starred count over an empty repeatable group. The [empty-group checkpoint](../docs/SOURCES.md#src-empty-declared-group) owns the matrix and its limits.
 
 ---
 
