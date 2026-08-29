@@ -141,11 +141,15 @@ def FlatModel.admitsStringComputationTarget (model : FlatModel)
         declaration.stringPolicy == policy
   | .error _ => false
 
-/-- One ordinary String target and expression certified against the same validated model. Target policy cannot be substituted after elaboration. -/
+/-- One ordinary String target and expression certified against the same validated model. The
+declaration group remains definition identity even when fixed target placement owns execution scope.
+Target policy cannot be substituted after elaboration. -/
 structure CheckedStringComputationOperation (model : FlatModel) where
+  declaringGroup : GroupPath
   expression : CheckedStringExpr model
   targetField : FieldId
   targetPolicy : StringFieldPolicy
+  declaringGroupValid : GroupPath.isValid declaringGroup = true
   targetAdmitted : model.admitsStringComputationTarget targetField targetPolicy = true
   targetNotReferenced : expression.core.referencesField targetField = false
 
@@ -194,6 +198,14 @@ def elaborateStringExpr (model : FlatModel) (declaringGroup : GroupPath)
       let core ← elaborateStringExprCore model declaringGroup expression
       certifyStringExpr model hModel core
 
+/-- Check computation-group syntax independently of operands, including operand-free literals. -/
+private def certifyStringComputationDeclaringGroup (declaringGroup : GroupPath) :
+    Except StringComputationElabError { group : GroupPath // GroupPath.isValid group = true } :=
+  if hValid : GroupPath.isValid declaringGroup = true then
+    .ok ⟨declaringGroup, hValid⟩
+  else
+    .error (.resolve (.invalidRuleGroup declaringGroup))
+
 /-- Resolve one ordinary nonrepeatable String target and expression together. The declaration supplies the complete basic target policy, and direct self-reference is rejected before a runtime operation exists. -/
 def elaborateStringComputationOperation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
@@ -202,6 +214,8 @@ def elaborateStringComputationOperation
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
+      let checkedDeclaringGroup ←
+        certifyStringComputationDeclaringGroup declaringGroup
       let declaration ←
         (model.resolveNonrepeatableDeclarationById targetField).mapError .resolve
       match declaration.policy.kind with
@@ -211,7 +225,7 @@ def elaborateStringComputationOperation
         throw (.rawStringTarget declaration.path)
       if declaration.customType.isSome then
         throw (.customStringTarget declaration.path)
-      let core ← elaborateStringExprCore model declaringGroup expression
+      let core ← elaborateStringExprCore model checkedDeclaringGroup.val expression
       let checked ← certifyStringExpr model hModel core
       if hReference : checked.core.referencesField targetField = true then
         if checked.core.isRootTargetReference targetField then
@@ -222,9 +236,11 @@ def elaborateStringComputationOperation
         if hTarget : model.admitsStringComputationTarget
             targetField declaration.stringPolicy = true then
           pure {
+            declaringGroup := checkedDeclaringGroup.val
             expression := checked
             targetField
             targetPolicy := declaration.stringPolicy
+            declaringGroupValid := checkedDeclaringGroup.property
             targetAdmitted := hTarget
             targetNotReferenced := by
               cases hValue : checked.core.referencesField targetField with

@@ -4,7 +4,7 @@ import A12Kernel.Semantics.StringAlternatives
 
 /-! # Checked nonrepeatable String computation tables
 
-This capsule certifies an already-resolved, nonempty guarded String table against one validated flat model. Every row reuses the existing checked String operation, direct-presence condition tree, first-match selector, declaration-owned target policy, and resolved evaluator. The table stores one target and policy rather than repeating them per row.
+This capsule certifies an already-resolved, nonempty guarded String table against one validated flat model. Every row reuses the existing checked String operation, direct-presence condition tree, first-match selector, declaration-owned target policy, and resolved evaluator. The table stores one target and policy rather than repeating them per row, while every row retains its computation declaration group until the runtime-only projection.
 
 The guard fragment admits any nonrepeatable scalar declaration, including raw String presence, but no repeatable reference. Common-precondition distribution has already happened before this boundary. Unguarded singleton authoring, scheduling, result projection, application, and validation remain separate.
 -/
@@ -13,8 +13,10 @@ namespace A12Kernel
 
 /-- One row after its checked operation has been consolidated into the table's shared target. -/
 structure CheckedStringComputationAlternative (model : FlatModel) (target : FieldId) where
+  declaringGroup : GroupPath
   precondition : ComputationCondition
   expression : CheckedStringExpr model
+  declaringGroupValid : GroupPath.isValid declaringGroup = true
   guardWellFormed : precondition.WellFormed model
   guardExcludesTarget : precondition.referencesField target = false
   expressionExcludesTarget : expression.core.referencesField target = false
@@ -51,8 +53,10 @@ private def certifyStringComputationAlternative
     if hGuard : alternative.precondition.wellFormedBool model = true then
       if hTarget : alternative.precondition.referencesField target = false then
         pure {
+          declaringGroup := alternative.operation.declaringGroup
           precondition := alternative.precondition
           expression := alternative.operation.expression
+          declaringGroupValid := alternative.operation.declaringGroupValid
           guardWellFormed := hGuard
           guardExcludesTarget := hTarget
           expressionExcludesTarget := by simpa [hSameTarget] using
@@ -103,6 +107,11 @@ namespace CheckedStringComputationTable
 def selectableAlternatives (table : CheckedStringComputationTable model) :
     List (CheckedStringComputationAlternative model table.targetField) :=
   table.first :: table.remaining
+
+/-- Preserve each alternative's computation declaration group in authored encounter order. Runtime
+evaluation does not need placement, but Analyze and Transform consumers do. -/
+def declaringGroups (table : CheckedStringComputationTable model) : List GroupPath :=
+  table.selectableAlternatives.map (·.declaringGroup)
 
 /-- Erase only model certificates, retaining target, policy, guard order, and expression trees exactly. Prior target state is supplied by the later result-projection boundary. -/
 def toResolved (table : CheckedStringComputationTable model) (prior : PriorStringTarget) : StringAlternativeComputation where

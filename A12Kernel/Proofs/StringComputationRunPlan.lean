@@ -17,6 +17,15 @@ private theorem resolvedStringAlternatives_transport
   cases sameTarget
   rfl
 
+private theorem stringAlternativeDeclaringGroups_transport
+    {sourceTarget target : FieldId}
+    (sameTarget : sourceTarget = target)
+    (alternatives : List (CheckedStringComputationAlternative model sourceTarget)) :
+    List.map (·.declaringGroup) (sameTarget ▸ alternatives) =
+      List.map (·.declaringGroup) alternatives := by
+  cases sameTarget
+  rfl
+
 /-- Appending a later table preserves every resolved row in authored encounter order. -/
 theorem appendSameStringTarget_resolvedAlternatives
     (left right : CheckedStringComputationTable model)
@@ -29,6 +38,19 @@ theorem appendSameStringTarget_resolvedAlternatives
     CheckedStringComputationTable.toResolved,
     CheckedStringComputationTable.selectableAlternatives,
     List.map_append, resolvedStringAlternatives_transport]
+
+/-- Same-target assembly preserves every row's computation declaration group in authored order even
+though the runtime-only projection erases placement. -/
+theorem appendSameStringTarget_declaringGroups
+    (left right : CheckedStringComputationTable model)
+    (sameTarget : right.targetField = left.targetField)
+    (samePolicy : right.targetPolicy = left.targetPolicy) :
+    (left.appendSameTarget right sameTarget samePolicy).declaringGroups =
+      left.declaringGroups ++ right.declaringGroups := by
+  simp [CheckedStringComputationTable.appendSameTarget,
+    CheckedStringComputationTable.declaringGroups,
+    CheckedStringComputationTable.selectableAlternatives,
+    List.map_append, stringAlternativeDeclaringGroups_transport]
 
 /-- A same-target pair becomes one table at the first target position, using the append operation whose row-order law is stated above. -/
 theorem flattenStringComputationTables_sameTarget_pair

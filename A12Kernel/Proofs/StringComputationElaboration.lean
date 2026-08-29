@@ -75,6 +75,13 @@ theorem checkedStringComputation_target_admitted
       operation.targetPolicy = true :=
   operation.targetAdmitted
 
+/-- Checked String definitions retain a syntactically valid computation declaration group even when
+their expression has no field operand. -/
+theorem checkedStringComputation_declaringGroup_valid
+    (operation : CheckedStringComputationOperation model) :
+    GroupPath.isValid operation.declaringGroup = true :=
+  operation.declaringGroupValid
+
 /-- Integrated String-operation lowering makes direct target self-reference unrepresentable. -/
 theorem checkedStringComputation_excludes_target_reference
     (operation : CheckedStringComputationOperation model) :

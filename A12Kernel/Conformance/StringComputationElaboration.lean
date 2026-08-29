@@ -37,8 +37,17 @@ private def target : FlatFieldDecl :=
       minLength := some 2
       maxLength := some 5 } }
 
+private def crossGroupTarget : FlatFieldDecl :=
+  { id := 5, groupPath := ["Store"], name := "Label",
+    policy := { kind := .string } }
+
+private def rulesMarker : FlatFieldDecl :=
+  { id := 6, groupPath := ["Rules"], name := "Marker",
+    policy := { kind := .string } }
+
 private def model : FlatModel :=
-  { fields := [source, suffix, amount, repeatedText, target]
+  { fields := [source, suffix, amount, repeatedText, target,
+      crossGroupTarget, rulesMarker]
     repeatableGroups := [{ level := 10, path := ["Form", "Rows"] }] }
 
 private def digitSource : FlatFieldDecl :=
@@ -160,6 +169,11 @@ private def operationPolicyOf
   match result with
   | .ok checked => some checked.targetPolicy
   | .error _ => none
+
+private def operationPlacementOf
+    (result : Except StringComputationElabError
+      (CheckedStringComputationOperation model)) : Option (GroupPath × FieldId) :=
+  result.toOption.map fun checked => (checked.declaringGroup, checked.targetField)
 
 private def operationOutcomeOf
     (result : Except StringComputationElabError
@@ -318,6 +332,26 @@ example :
       (.literal "AB\r\nCD")
     operationPolicyOf result = some target.stringPolicy ∧
       operationOutcomeOf result [] = some (.accepted rawCrLfResult) := by
+  native_decide
+
+/- A literal has no operand from which placement could be recovered. The checked definition therefore
+retains its fixed declaration group independently of the cross-group target that owns execution. -/
+example :
+    operationPlacementOf
+      (elaborateStringComputationOperation model ["Rules"] crossGroupTarget.id
+        (.literal "READY")) =
+      some (["Rules"], crossGroupTarget.id) := by
+  native_decide
+
+/- Even an operand-free literal cannot turn an invalid computation group into a checked definition. -/
+example :
+    operationErrorOf
+        (elaborateStringComputationOperation model [] target.id (.literal "READY")) =
+      some (.resolve (.invalidRuleGroup [])) ∧
+    operationErrorOf
+        (elaborateStringComputationOperation model ["Rules", ""] target.id
+          (.literal "READY")) =
+      some (.resolve (.invalidRuleGroup ["Rules", ""])) := by
   native_decide
 
 /- The checked target operation consumes the range result without a parallel target path. -/

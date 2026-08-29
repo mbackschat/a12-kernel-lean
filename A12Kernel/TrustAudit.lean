@@ -1871,6 +1871,7 @@ run_cmd do
 #print axioms A12Kernel.elaborateStringExprCore_concat
 #print axioms A12Kernel.checkedStringExpr_evaluate
 #print axioms A12Kernel.checkedStringComputation_target_admitted
+#print axioms A12Kernel.checkedStringComputation_declaringGroup_valid
 #print axioms A12Kernel.checkedStringComputation_excludes_target_reference
 #print axioms A12Kernel.checkedStringComputation_evaluateOutcome
 #print axioms A12Kernel.checkedStringComputation_missingTargetPattern_failsClosed
@@ -1879,6 +1880,7 @@ run_cmd do
 #print axioms A12Kernel.checkedStringComputationAlternative_expression_excludes_target
 #print axioms A12Kernel.checkedStringComputationTable_evaluateOutcome_erases
 #print axioms A12Kernel.appendSameStringTarget_resolvedAlternatives
+#print axioms A12Kernel.appendSameStringTarget_declaringGroups
 #print axioms A12Kernel.flattenStringComputationTables_sameTarget_pair
 #print axioms A12Kernel.stringComputationRun_read_pending
 #print axioms A12Kernel.stringComputationRun_read_completed

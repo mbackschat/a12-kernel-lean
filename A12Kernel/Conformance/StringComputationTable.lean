@@ -30,8 +30,12 @@ private def repeatedGate : FlatFieldDecl :=
   { id := 4, groupPath := ["Form", "Rows"], name := "RepeatedGate",
     policy := { kind := .string }, repeatableScope := [10] }
 
+private def rulesMarker : FlatFieldDecl :=
+  { id := 5, groupPath := ["Rules"], name := "Marker",
+    policy := { kind := .string } }
+
 private def model : FlatModel :=
-  { fields := [source, rawGate, target, otherTarget, repeatedGate]
+  { fields := [source, rawGate, target, otherTarget, repeatedGate, rulesMarker]
     repeatableGroups := [{ level := 10, path := ["Form", "Rows"] }] }
 
 private def bare (field : String) : SurfaceFieldPath :=
@@ -39,6 +43,11 @@ private def bare (field : String) : SurfaceFieldPath :=
 
 private def operation (targetField : FieldId) (expression : StringExpr SurfaceFieldPath) : Option (CheckedStringComputationOperation model) :=
   (elaborateStringComputationOperation model ["Form"] targetField expression).toOption
+
+private def operationAt (declaringGroup : GroupPath) (targetField : FieldId)
+    (expression : StringExpr SurfaceFieldPath) :
+    Option (CheckedStringComputationOperation model) :=
+  (elaborateStringComputationOperation model declaringGroup targetField expression).toOption
 
 private def alternative (guard : ComputationCondition) (op : CheckedStringComputationOperation model) :
     ComputationAlternative (CheckedStringComputationOperation model) :=
@@ -59,6 +68,12 @@ private def tableOutcome
   let table ← (certifyStringComputationTable alternatives).toOption
   (table.evaluateOutcomeWithPattern none context).toOption
 
+private def tableDeclaringGroups
+    (alternatives : List (ComputationAlternative
+      (CheckedStringComputationOperation model))) : Option (List GroupPath) := do
+  let table ← (certifyStringComputationTable alternatives).toOption
+  pure table.declaringGroups
+
 private def context (sourceCell rawGateCell : RawCell) :
     StringComputationContext where
   read field :=
@@ -74,6 +89,9 @@ private def literalFallback : CheckedStringComputationOperation model :=
 
 private def otherLiteral : CheckedStringComputationOperation model :=
   (operation otherTarget.id (.literal "OTHER")).get (by native_decide)
+
+private def rulesLiteral : CheckedStringComputationOperation model :=
+  (operationAt ["Rules"] target.id (.literal "RULES")).get (by native_decide)
 
 /- Empty guarded tables are unrepresentable after certification. -/
 example : tableError [] = some .empty := by
@@ -110,6 +128,15 @@ example :
       [alternative (.fieldNotFilled rawGate.id) copySource,
        alternative (.fieldNotFilled rawGate.id) otherLiteral] =
         some (.targetMismatch 2 target.id otherTarget.id) := by
+  native_decide
+
+/- Table assembly may erase placement from runtime evaluation, but it retains every authored row's
+declaration group for Analyze and Transform consumers, including a cross-group literal. -/
+example :
+    tableDeclaringGroups
+      [alternative (.fieldFilled rawGate.id) copySource,
+       alternative (.fieldNotFilled rawGate.id) rulesLiteral] =
+      some [["Form"], ["Rules"]] := by
   native_decide
 
 /- Selection is terminal even when the selected copy stores no value. -/
