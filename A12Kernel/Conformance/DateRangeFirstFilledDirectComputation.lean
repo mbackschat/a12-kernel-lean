@@ -62,6 +62,17 @@ private def directToFirst :=
 private def directFromTarget :=
   rangeField 41 "DirectFromTarget" "dd.MM" "-" (some .anchorStart)
 
+/-- A fixed DateRange target outside the declaring group, whose sources stay inside it. Its profile
+matches the dotted list so the placement cell below is not decided by the comparability gate. -/
+private def otherGroupTarget : FlatFieldDecl :=
+  { rangeField 42 "OtherWindow" "dd.MM.yyyy" "-" with groupPath := ["Other"] }
+
+/-- A source outside the declaring group. A bare operand name resolves against that group, so this
+one is unreachable from the admitted spelling — the refusal below is resolution, not the capsule's
+own source-group narrowing, and either way it carries no Kernel code. -/
+private def otherGroupSource : FlatFieldDecl :=
+  { rangeField 43 "OtherSource" "dd.MM.yyyy" "-" with groupPath := ["Other"] }
+
 private def model : FlatModel := {
   fields := [target, dottedTarget, yearTarget, yearMonthTarget, monthTarget,
     monthDayTarget, directDottedFirst, directDottedSecond, directIsoSource,
@@ -70,7 +81,7 @@ private def model : FlatModel := {
     directMonthFirst, directMonthSecond, directMonthThird, directMonthDayFirst,
     directMonthDaySecond, directMonthDayThird, directMonthEmptyFirst,
     directMonthEmptySecond, directFromFirst, directFromSecond, directToTarget,
-    directToFirst, directFromTarget]
+    directToFirst, directFromTarget, otherGroupTarget, otherGroupSource]
   repeatableGroups := []
   timeZoneId := "UTC"
 }
@@ -359,6 +370,15 @@ example :
         some .paramSizeInvalidN ∧
       (checkDateRangeFirstFilledDirectComputation model ["Cart"]
         dottedTarget.id projectedThirdSource).toOption.isNone = true := by
+  native_decide
+
+/- Placement is unconstrained. The target sits in `["Other"]` while the declaring group and every source stay in `["Cart"]`, and the list is still admitted: nothing in a direct nonrepeatable list iterates, so the Kernel's containment gate cannot fire. Measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement), whose direct-list row admits this shape at four placements. The sources must still share the declaring group; that is this capsule's own bounded subset, and a bare operand name cannot even spell a source outside it. Either refusal carries no Kernel code, so the second cell asserts exactly that and claims no diagnostic class. -/
+example :
+    (checkDateRangeFirstFilledDirectComputation model ["Cart"]
+      otherGroupTarget.id
+      (directSource "DirectDottedFirst" "DirectDottedSecond")).toOption.isSome
+      = true ∧
+    directDiagnostic? otherGroupTarget.id "DirectDottedFirst" "OtherSource" = none := by
   native_decide
 
 /- Three direct fields preserve authored-order recursion: two empty prefixes reach the third value, while a second-position value or formal cause hides the third selection result. -/
