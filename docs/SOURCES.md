@@ -351,6 +351,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Computation definition, execution, and result](sources/cross-layer-routes.md#computation-definition-execution-and-result)
 <a id="src-fixed-computation-target-scope"></a>
 - [Fixed target owns cross-group computation scope](sources/cross-layer-routes.md#src-fixed-computation-target-scope)
+<a id="src-cross-group-computation-authoring-block"></a>
+- [Cross-group computation placement is unauthorable through the structured verbs](sources/cross-layer-routes.md#src-cross-group-computation-authoring-block)
 <a id="src-repeatable-string-application"></a>
 - [Finite one- and two-level String separate-destination application, measured locally 2026-08-26](sources/cross-layer-routes.md#src-repeatable-string-application)
 <a id="src-repeatable-number-aggregate-cascade"></a>

@@ -62,6 +62,15 @@ The new mechanism note in the 2026-08-26 handback was independently inspected at
 - `separator`: declaration-group iteration would produce no outcome in both documents; target-owned fixed scope produces exactly one value.
 - `limit`: the runtime discriminator is one Number constant across two fixed subtrees. Generated Java is measured only for the seeded target, not the empty document. The checkpoint does not directly calibrate Boolean or Confirm constants, repeatable cross-group targets, generated validation, retained result partitions, separate-destination application, or wider operations.
 
+<a id="src-cross-group-computation-authoring-block"></a>
+#### Cross-group computation placement is unauthorable through the structured verbs
+
+- `revision`: a12-dmkits `3d234f6b7cdd57ad466a498c20d7c8e099c48dcd` (clean), `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, A12 Tools distribution `2025.06-ext5`.
+- `measurement`: `schema computation add` is `additionalProperties: false` over `alternatives`, `comment`, `commonPrecondition`, `computedField`, `errorCodesToSuppress`, `messages`, and `name`, with no group key; `computation modify --spec` consumes the same spec. `schema rule add` carries the optional absolute `group` override that computations lack.
+- `measurement`: for a fixed `/Probe/Store` and `/Probe/Rules` model, an absolute `computedField` of `/Probe/Store/StockLevel` previews `KERNEL_CONFIRMED` and places the computation at `/Probe/Store/StockComp`, while the relative cross-group walk is refused ahead of the envelope with exit 2 and `computedField must be an absolute path`. `computation read` returns `calculatedField` with no declaring-group key, so the round trip neither writes nor reports placement.
+- `claim`: the block is in the instrument, not the Kernel. The peer's own [`CrossGroupConstantComputeScopeDiffTest`](../../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/CrossGroupConstantComputeScopeDiffTest.kt) authors the shape directly with declaring group `/Rules` and the relative target walk, so the model format carries an independent computation group.
+- `limit`: this measures authorability only. It establishes nothing about how the Kernel executes a cross-group String, Boolean, or Confirm constant; that question is exactly what the missing capability would let the [kernel runtime probe](../SOURCES.md#engine-routing-rule--pick-the-layer-by-the-question-not-by-habit) reach. The capability request left as the 2026-08-29 `dmtool` feedback note.
+
 <a id="src-repeatable-string-application"></a>
 #### Finite one- and two-level String separate-destination application, measured locally 2026-08-26
 
