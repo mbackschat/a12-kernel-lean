@@ -17,7 +17,6 @@ def FlatFieldDecl.isOrdinaryStringComputationCarrier
 
 inductive StringFirstFilledComputationElabError where
   | target (cause : ResolveError)
-  | targetGroup (actual expected : GroupPath)
   | targetRepeatable (path : List String)
   | targetNotOrdinaryString (path : List String)
   | source (cause : StarPathElabError)
@@ -30,9 +29,9 @@ structure CheckedStringFirstFilledComputation (model : FlatModel) where
   private mk ::
   target : FlatFieldDecl
   source : CheckedStarFieldPath model
-  targetGroup : GroupPath
+  /-- The group the computation is declared in, which the target need not lie in. -/
+  declaringGroup : GroupPath
   targetFixed : target.repeatableScope = []
-  targetOwnedByGroup : target.groupPath = targetGroup
   targetOrdinary : target.isOrdinaryStringComputationCarrier = true
   sourceOrdinary : source.declaration.isOrdinaryStringComputationCarrier = true
   sourceDirectSingleStar : source.isDirectSingleStar = true
@@ -46,32 +45,30 @@ def checkStringFirstFilledComputation
   let source ← elaborateStarFieldPath model declaringGroup authored
     |>.mapError .source
   let target ← model.lookupUniqueId targetField |>.mapError .target
-  if hGroup : target.groupPath = declaringGroup then
-    if hFixed : target.repeatableScope = [] then
-      if hTarget : target.isOrdinaryStringComputationCarrier = true then
-        if hSource : source.declaration.isOrdinaryStringComputationCarrier = true then
-          if hShape : source.isDirectSingleStar = true then
-            pure {
-              target
-              source
-              targetGroup := declaringGroup
-              targetFixed := hFixed
-              targetOwnedByGroup := hGroup
-              targetOrdinary := hTarget
-              sourceOrdinary := hSource
-              sourceDirectSingleStar := hShape
-            }
-          else
-            throw (.sourceShape source.declaration.path)
+  -- No placement test. `elaborateStarFieldPath` already rejects an unrepresentable declaring
+  -- group, and placement itself is unconstrained here: a fixed target under a star aggregate
+  -- derives no iteration, so the Kernel admits it from an unrelated group.
+  if hFixed : target.repeatableScope = [] then
+    if hTarget : target.isOrdinaryStringComputationCarrier = true then
+      if hSource : source.declaration.isOrdinaryStringComputationCarrier = true then
+        if hShape : source.isDirectSingleStar = true then
+          pure {
+            target
+            source
+            declaringGroup
+            targetFixed := hFixed
+            targetOrdinary := hTarget
+            sourceOrdinary := hSource
+            sourceDirectSingleStar := hShape
+          }
         else
-          throw (.sourceNotOrdinaryString source.declaration.path)
+          throw (.sourceShape source.declaration.path)
       else
-        throw (.targetNotOrdinaryString target.path)
+        throw (.sourceNotOrdinaryString source.declaration.path)
     else
-      throw (.targetRepeatable target.path)
+      throw (.targetNotOrdinaryString target.path)
   else
-    throw (.targetGroup target.groupPath declaringGroup)
-
+    throw (.targetRepeatable target.path)
 /-- Classify one prepared ordinary String source cell for computation-phase first-filled selection. -/
 def stringFirstFilledCellAt (cell : CheckedCell) : ValueListCell .token :=
   match observeCell .computation cell with

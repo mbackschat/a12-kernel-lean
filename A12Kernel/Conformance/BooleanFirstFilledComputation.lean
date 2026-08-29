@@ -41,9 +41,14 @@ private def unrelated : FlatFieldDecl := {
   target with id := 6, name := "Unrelated"
 }
 
+/-- A fixed Boolean target in a group the declaring group does not contain. -/
+private def otherGroupTarget : FlatFieldDecl := {
+  target with id := 7, name := "OtherApproved", groupPath := ["Summary"]
+}
+
 private def model : FlatModel := {
   fields := [target, source, confirmSource, repeatedTarget, nestedSource,
-    unrelated]
+    unrelated, otherGroupTarget]
   repeatableGroups := [
     { level := 10, path := ["Review", "Rows"], repeatability := some 4 },
     { level := 20, path := ["Review", "Rows", "Details"], repeatability := some 3 }]
@@ -183,9 +188,10 @@ example : (do
   some ([.malformed], false) := by
   native_decide
 
-/- The checked boundary admits only a fixed Boolean target and one direct single-level starred Boolean source. -/
+/- The checked boundary admits only a fixed Boolean target and one direct single-level starred Boolean source. Placement is not part of that boundary: a fixed target in `["Summary"]`, which the declaring group `["Review"]` does not contain, is admitted, because a star aggregate derives no iteration and the Kernel's containment gate cannot fire — measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement). The repeatable target is still refused, on the fixed-target gate rather than on placement. -/
 example :
     (checked? target.id (star "Approved")).isSome = true ∧
+      (checked? otherGroupTarget.id (star "Approved")).isSome = true ∧
       (checked? target.id (star "Confirmed")).isNone = true ∧
       (checked? repeatedTarget.id (star "Approved")).isNone = true ∧
       (checked? target.id nestedStar).isNone = true := by

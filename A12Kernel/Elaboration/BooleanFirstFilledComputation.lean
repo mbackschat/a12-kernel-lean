@@ -12,7 +12,6 @@ namespace A12Kernel
 
 inductive BooleanFirstFilledComputationElabError where
   | target (cause : ResolveError)
-  | targetGroup (actual expected : GroupPath)
   | targetRepeatable (path : List String)
   | targetKind (path : List String) (actual : SurfaceScalarKind)
   | source (cause : StarPathElabError)
@@ -25,10 +24,10 @@ structure CheckedBooleanFirstFilledComputation (model : FlatModel) where
   private mk ::
   target : FlatFieldDecl
   source : CheckedStarFieldPath model
-  targetGroup : GroupPath
+  /-- The group the computation is declared in, which the target need not lie in. -/
+  declaringGroup : GroupPath
   targetBoolean : target.policy.kind = .boolean
   targetFixed : target.repeatableScope = []
-  targetOwnedByGroup : target.groupPath = targetGroup
   sourceBoolean : source.declaration.policy.kind = .boolean
   sourceDirectSingleStar : source.isDirectSingleStar = true
 
@@ -41,33 +40,31 @@ def checkBooleanFirstFilledComputation
   let source ← elaborateStarFieldPath model declaringGroup authored
     |>.mapError .source
   let target ← model.lookupUniqueId targetField |>.mapError .target
-  if hGroup : target.groupPath = declaringGroup then
-    if hFixed : target.repeatableScope = [] then
-      if hTargetKind : target.policy.kind = .boolean then
-        if hSourceKind : source.declaration.policy.kind = .boolean then
-          if hShape : source.isDirectSingleStar = true then
-            pure {
-              target
-              source
-              targetGroup := declaringGroup
-              targetBoolean := hTargetKind
-              targetFixed := hFixed
-              targetOwnedByGroup := hGroup
-              sourceBoolean := hSourceKind
-              sourceDirectSingleStar := hShape
-            }
-          else
-            throw (.sourceShape source.declaration.path)
+  -- No placement test. `elaborateStarFieldPath` already rejects an unrepresentable declaring
+  -- group, and placement itself is unconstrained here: a fixed target under a star aggregate
+  -- derives no iteration, so the Kernel admits it from an unrelated group.
+  if hFixed : target.repeatableScope = [] then
+    if hTargetKind : target.policy.kind = .boolean then
+      if hSourceKind : source.declaration.policy.kind = .boolean then
+        if hShape : source.isDirectSingleStar = true then
+          pure {
+            target
+            source
+            declaringGroup
+            targetBoolean := hTargetKind
+            targetFixed := hFixed
+            sourceBoolean := hSourceKind
+            sourceDirectSingleStar := hShape
+          }
         else
-          throw (.sourceKind source.declaration.path
-            source.declaration.policy.kind.surfaceKind)
+          throw (.sourceShape source.declaration.path)
       else
-        throw (.targetKind target.path target.policy.kind.surfaceKind)
+        throw (.sourceKind source.declaration.path
+          source.declaration.policy.kind.surfaceKind)
     else
-      throw (.targetRepeatable target.path)
+      throw (.targetKind target.path target.policy.kind.surfaceKind)
   else
-    throw (.targetGroup target.groupPath declaringGroup)
-
+    throw (.targetRepeatable target.path)
 /-- Classify one checked Boolean source cell for computation-phase first-filled selection. -/
 def booleanFirstFilledCellAt (cell : CheckedCell) : FirstFilledBooleanCell :=
   match observeCell .computation cell with

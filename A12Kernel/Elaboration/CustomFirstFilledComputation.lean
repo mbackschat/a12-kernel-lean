@@ -10,7 +10,6 @@ namespace A12Kernel
 
 inductive CustomFirstFilledComputationElabError where
   | target (cause : ResolveError)
-  | targetGroup (actual expected : GroupPath)
   | targetRepeatable (path : List String)
   | targetNotCustom (path : List String)
   | source (cause : StarPathElabError)
@@ -26,10 +25,10 @@ structure CheckedCustomFirstFilledComputation (model : FlatModel) where
   target : FlatFieldDecl
   source : CheckedStarFieldPath model
   customType : CustomFieldTypeDeclaration
-  targetGroup : GroupPath
+  /-- The group the computation is declared in, which the target need not lie in. -/
+  declaringGroup : GroupPath
   targetCustom : target.customType = some customType
   targetFixed : target.repeatableScope = []
-  targetOwnedByGroup : target.groupPath = targetGroup
   sourceCustom : source.declaration.customType = some customType
   sourceDirectSingleStar : source.isDirectSingleStar = true
 
@@ -42,34 +41,32 @@ def checkCustomFirstFilledComputation
   let source ← elaborateStarFieldPath model declaringGroup authored
     |>.mapError .source
   let target ← model.lookupUniqueId targetField |>.mapError .target
-  if hGroup : target.groupPath = declaringGroup then
-    if hFixed : target.repeatableScope = [] then
-      match hTarget : target.customType with
-      | none => throw (.targetNotCustom target.path)
-      | some customType =>
-        if hSource : source.declaration.customType = some customType then
-          if hShape : source.isDirectSingleStar = true then
-            pure {
-              target
-              source
-              customType
-              targetGroup := declaringGroup
-              targetCustom := hTarget
-              targetFixed := hFixed
-              targetOwnedByGroup := hGroup
-              sourceCustom := hSource
-              sourceDirectSingleStar := hShape
-            }
-          else
-            throw (.sourceShape source.declaration.path)
+  -- No placement test. `elaborateStarFieldPath` already rejects an unrepresentable declaring
+  -- group, and placement itself is unconstrained here: a fixed target under a star aggregate
+  -- derives no iteration, so the Kernel admits it from an unrelated group.
+  if hFixed : target.repeatableScope = [] then
+    match hTarget : target.customType with
+    | none => throw (.targetNotCustom target.path)
+    | some customType =>
+      if hSource : source.declaration.customType = some customType then
+        if hShape : source.isDirectSingleStar = true then
+          pure {
+            target
+            source
+            customType
+            declaringGroup
+            targetCustom := hTarget
+            targetFixed := hFixed
+            sourceCustom := hSource
+            sourceDirectSingleStar := hShape
+          }
         else
-          throw (.sourceCustomTypeMismatch source.declaration.path customType
-            source.declaration.customType)
-    else
-      throw (.targetRepeatable target.path)
+          throw (.sourceShape source.declaration.path)
+      else
+        throw (.sourceCustomTypeMismatch source.declaration.path customType
+          source.declaration.customType)
   else
-    throw (.targetGroup target.groupPath declaringGroup)
-
+    throw (.targetRepeatable target.path)
 /-- Classify one already prepared Custom source cell for computation-phase first-filled selection. -/
 def customFirstFilledCellAt (cell : CheckedCell) : ValueListCell .token :=
   match observeCell .computation cell with

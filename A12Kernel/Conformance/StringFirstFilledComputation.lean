@@ -28,6 +28,10 @@ private def customSource : FlatFieldDecl := {
 }
 private def nestedSource := stringField 6 ["Review", "Rows", "Details"] "Nested" [10, 20]
 private def unrelated := stringField 7 ["Review"] "Unrelated"
+
+/-- A fixed ordinary String target in a group the declaring group does not contain. -/
+private def otherGroupTarget :=
+  stringField 11 ["Summary"] "OtherCode" [] { maxLength := some 3 }
 private def customTarget : FlatFieldDecl := {
   stringField 8 ["Review"] "CustomTarget" with
   customType := some { name := "ReviewCode" }
@@ -43,7 +47,8 @@ private def patternTarget : FlatFieldDecl := {
 
 private def model : FlatModel := {
   fields := [target, source, repeatedTarget, rawSource, customSource,
-    nestedSource, unrelated, customTarget, rawTarget, patternTarget]
+    nestedSource, unrelated, customTarget, rawTarget, patternTarget,
+    otherGroupTarget]
   repeatableGroups := [
     { level := 10, path := ["Review", "Rows"], repeatability := some 3 },
     { level := 20, path := ["Review", "Rows", "Details"], repeatability := some 2 }]
@@ -120,9 +125,10 @@ private def outcome? (sourceCell : Option ClassifiedCellInput) :
     Option StringTargetOutcome :=
   outcomeFor? target.id sourceCell
 
-/- The checked boundary retains only a fixed ordinary evaluated-String target and a direct single-level ordinary String star. -/
+/- The checked boundary retains only a fixed ordinary evaluated-String target and a direct single-level ordinary String star. Placement is not part of that boundary: a fixed target in `["Summary"]`, which the declaring group `["Review"]` does not contain, is admitted, because a star aggregate derives no iteration and the Kernel's containment gate cannot fire — measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement). The repeatable target is still refused, on the fixed-target gate rather than on placement. -/
 example :
     (checked? target.id (star source.name)).isSome = true ∧
+      (checked? otherGroupTarget.id (star source.name)).isSome = true ∧
       (checked? patternTarget.id (star source.name)).isSome = true ∧
       (checked? repeatedTarget.id (star source.name)).isNone = true ∧
       (checked? customTarget.id (star source.name)).isNone = true ∧

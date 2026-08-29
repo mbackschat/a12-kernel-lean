@@ -33,9 +33,12 @@ private def nestedSource :=
   customField 6 ["Review", "Rows", "Details"] "NestedCode" [10, 20]
 private def unrelated := customField 7 ["Review"] "Unrelated"
 
+/-- A fixed Custom target in a group the declaring group does not contain. -/
+private def otherGroupTarget := customField 8 ["Summary"] "OtherCode"
+
 private def model : FlatModel := {
   fields := [target, source, ordinary, other, repeatedTarget, nestedSource,
-    unrelated]
+    unrelated, otherGroupTarget]
   repeatableGroups := [
     { level := 10, path := ["Review", "Rows"], repeatability := some 4 },
     { level := 20, path := ["Review", "Rows", "Details"],
@@ -130,9 +133,10 @@ example :
       some (.poison (.registeredCustomValidation rejection)) := by
   native_decide
 
-/- The checked boundary admits only the same Custom type on a fixed target and direct single-level starred source. -/
+/- The checked boundary admits only the same Custom type on a fixed target and direct single-level starred source. Placement is not part of that boundary: a fixed target in `["Summary"]`, which the declaring group `["Review"]` does not contain, is admitted, because a star aggregate derives no iteration and the Kernel's containment gate cannot fire — measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement). The repeatable target is still refused, on the fixed-target gate rather than on placement. -/
 example :
     (checked? target.id (star "Code")).isSome = true ∧
+      (checked? otherGroupTarget.id (star "Code")).isSome = true ∧
       (checked? target.id (star "Ordinary")).isNone = true ∧
       (checked? target.id (star "OtherCode")).isNone = true ∧
       (checked? repeatedTarget.id (star "Code")).isNone = true ∧
