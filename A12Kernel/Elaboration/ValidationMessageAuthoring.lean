@@ -23,8 +23,11 @@ that first name: an undeclared category or a non-Enumeration field stops at its 
 declared category reaches the trailing-syntax refusal. What a category access **renders** is measured: the category
 token the field's current stored value maps to, so the checked part carries the declaration's own
 mapping and the caller supplies only the stored token. An absent stored token renders as the empty
-string, which is measured; a token the category does not map cannot arise, because a declaration's
-categories align one-to-one with its values.
+string, which is measured. A token the category does not map is **not represented** here, because
+`CheckedEnumerationProjection` admits only a declaration whose categories align one-to-one with its
+values. Whether the Kernel enforces that alignment is unmeasured: `dmtool` refuses a misaligned
+category in its own spec validation, so the gate has no observation route ([route
+limit](../../docs/SOURCES.md#engine-routing-rule--pick-the-layer-by-the-question-not-by-habit)).
 
 A field reference may finally carry a **semantic-index key**, `For "k"` or `For SomeField`, after any
 value or category suffix — that order is the grammar's, not a preference. Its gate is on the
