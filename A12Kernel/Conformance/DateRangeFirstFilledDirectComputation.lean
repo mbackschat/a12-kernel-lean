@@ -373,28 +373,31 @@ example :
         dottedTarget.id projectedThirdSource).toOption.isNone = true := by
   native_decide
 
-/- Placement is unconstrained. The target sits in `["Other"]` while the declaring group and every source stay in `["Cart"]`, and the list is still admitted: nothing in a direct nonrepeatable list iterates, so the Kernel's containment gate cannot fire. Measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement), whose direct-list row admits this shape at four placements. The sources must still share the declaring group; that is this capsule's own bounded subset, reached here with an absolute operand path and refused `sourceGroup`, which carries no Kernel diagnostic because the Kernel admits a cross-group list. -/
+/- Placement is unconstrained on **both** sides. The target sits in `["Other"]` while the declaring
+group and the sources stay in `["Cart"]`, and a source may equally sit in a group of its own: nothing
+in a direct nonrepeatable list iterates, so the Kernel's containment gate cannot fire anywhere in it.
+Measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement),
+whose direct-list row admits the target shape at four placements, and at the
+[cross-group source checkpoint](../../docs/SOURCES.md#src-date-range-direct-list-cross-group-sources),
+which admits a list whose two sources lie in two different groups. A representable declaring group is
+still required, which is what the empty-path row separates. -/
 example :
     (checkDateRangeFirstFilledDirectComputation model ["Cart"]
       otherGroupTarget.id
       (directSource "DirectDottedFirst" "DirectDottedSecond")).toOption.isSome
       = true ∧
+    (checkDateRangeFirstFilledDirectComputation model ["Cart"] otherGroupTarget.id
+        { first := .field (bare "DirectDottedFirst")
+          rest := [.field { base := .absolute, groups := ["Cart", "Sub"],
+                            field := "OtherSource" }] }).toOption.isSome = true ∧
+    (checkDateRangeFirstFilledDirectComputation model ["Cart", "Sub"] otherGroupTarget.id
+        { first := .field { base := .absolute, groups := ["Cart"],
+                            field := "DirectDottedFirst" }
+          rest := [.field { base := .absolute, groups := ["Cart", "Sub"],
+                            field := "OtherSource" }] }).toOption.isSome = true ∧
     (match checkDateRangeFirstFilledDirectComputation model []
         otherGroupTarget.id (directSource "DirectDottedFirst" "DirectDottedSecond") with
       | .error (.sourceShape (.resolve (.invalidRuleGroup group))) => group == []
-      | _ => false) = true ∧
-    (match checkDateRangeFirstFilledDirectComputation model ["Cart"] otherGroupTarget.id
-        { first := .field (bare "DirectDottedFirst")
-          rest := [.field { base := .absolute, groups := ["Cart", "Sub"],
-                            field := "OtherSource" }] } with
-      | .error (.sourceGroup path actual expected) =>
-          path == otherGroupSource.path && actual == ["Cart", "Sub"] && expected == ["Cart"]
-      | _ => false) = true ∧
-    (match checkDateRangeFirstFilledDirectComputation model ["Cart"] otherGroupTarget.id
-        { first := .field (bare "DirectDottedFirst")
-          rest := [.field { base := .absolute, groups := ["Cart", "Sub"],
-                            field := "OtherSource" }] } with
-      | .error cause => cause.diagnostic? == none
       | _ => false) = true := by
   native_decide
 

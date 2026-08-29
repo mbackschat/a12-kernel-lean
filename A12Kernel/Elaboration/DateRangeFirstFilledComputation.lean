@@ -93,7 +93,6 @@ inductive DateRangeFirstFilledDirectComputationElabError where
   | source (path : List String) (cause : DirectDateRangeElabError)
   | sourceShape (cause : FieldEntityShapeElabError)
   | unsupportedSourceShape
-  | sourceGroup (path : List String) (actual expected : GroupPath)
   | varyingProfiles (first second : List String)
   | targetProfileNotComparable (target : List String)
       (source : DateRangeInputFormat)
@@ -109,8 +108,7 @@ def diagnostic? : DateRangeFirstFilledDirectComputationElabError →
   | .varyingProfiles _ _ => some .varyingTypesNotAllowed
   | .targetProfileNotComparable _ _ => some .invalidCompareToDateRange
   | .targetSelfReference _ => some .errorReferenceToCalculatedField
-  | .target _ | .source _ _ | .unsupportedSourceShape |
-      .sourceGroup _ _ _ => none
+  | .target _ | .source _ _ | .unsupportedSourceShape => none
 
 end DateRangeFirstFilledDirectComputationElabError
 
@@ -119,28 +117,22 @@ private structure DateRangeFirstFilledDirectCandidate (model : FlatModel) where
   direct : CheckedDirectDateRange model
   sourceIdentity : direct.source.id = declaration.id
 
-private structure GroupedDateRangeFirstFilledDirectCandidate
-    (model : FlatModel) (declaringGroup : GroupPath) where
-  candidate : DateRangeFirstFilledDirectCandidate model
-  ownedByGroup : candidate.declaration.groupPath = declaringGroup
-
 private structure NonselfDateRangeFirstFilledDirectCandidate
-    (model : FlatModel) (targetField : FieldId) (declaringGroup : GroupPath) where
-  candidate : GroupedDateRangeFirstFilledDirectCandidate model declaringGroup
-  excludesTarget : candidate.candidate.direct.source.id ≠ targetField
+    (model : FlatModel) (targetField : FieldId) where
+  candidate : DateRangeFirstFilledDirectCandidate model
+  excludesTarget : candidate.direct.source.id ≠ targetField
 
-/-- One checked direct source in the computation's declaring group sharing the list's one declared profile. Every source must expose the identical declared format; the shared format only has to expose the *target's* component set, so a lexical cross between the list and its target is admitted while a cross inside the list is not.
+/-- One checked direct source sharing the list's one declared profile. Every source must expose the identical declared format; the shared format only has to expose the *target's* component set, so a lexical cross between the list and its target is admitted while a cross inside the list is not.
 
-The declaring group indexes the sources, not the target. Requiring the sources to share it is this capsule's own bounded subset and carries no Kernel diagnostic; the Kernel admits a cross-group list, which [SG4](../../docs/SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) tracks as an open widening. -/
+A source carries **no placement requirement**: it need not lie in the declaring group, and two sources of one list need not share a group. Nothing in a direct nonrepeatable list iterates, so the Kernel's containment gate cannot fire on either side ([checkpoint](../../docs/SOURCES.md#src-date-range-direct-list-cross-group-sources)). -/
 structure CheckedDateRangeFirstFilledDirectSource
     (model : FlatModel) (targetField : FieldId) (format : DateRangeInputFormat)
-    (declaringGroup : GroupPath) where
+    where
   private mk ::
   declaration : FlatFieldDecl
   direct : CheckedDirectDateRange model
   sourceIdentity : direct.source.id = declaration.id
   sourceFormat : direct.format = format
-  ownedByGroup : declaration.groupPath = declaringGroup
   excludesTarget : direct.source.id ≠ targetField
 
 /-- One fixed DateRange target and a finite direct nonrepeatable same-group source list sharing its declaration profile. -/
@@ -153,7 +145,7 @@ structure CheckedDateRangeFirstFilledDirectComputation (model : FlatModel) where
   /-- The group the computation is declared in, which the target need not lie in or below. -/
   declaringGroup : GroupPath
   sources : List (CheckedDateRangeFirstFilledDirectSource model
-    target.source.id format declaringGroup)
+    target.source.id format)
   targetComparable : target.format.components = format.components
 
 private def directStoredDeclarations (model : FlatModel) :
@@ -179,50 +171,33 @@ private def elaborateDirectCandidates (model : FlatModel) :
       else
         throw (.source declaration.path .incoherentCore)
 
-private def certifyDirectSourceGroups (declaringGroup : GroupPath) :
+private def certifyDirectSourcesExcludeTarget (targetField : FieldId) :
     List (DateRangeFirstFilledDirectCandidate model) →
       Except DateRangeFirstFilledDirectComputationElabError
-        (List (GroupedDateRangeFirstFilledDirectCandidate model declaringGroup))
+        (List (NonselfDateRangeFirstFilledDirectCandidate model targetField))
   | [] => pure []
   | candidate :: remaining => do
-      if hOwned : candidate.declaration.groupPath = declaringGroup then
-        pure ({ candidate, ownedByGroup := hOwned } ::
-          (← certifyDirectSourceGroups declaringGroup remaining))
-      else
-        throw (.sourceGroup candidate.declaration.path
-          candidate.declaration.groupPath declaringGroup)
-
-private def certifyDirectSourcesExcludeTarget (targetField : FieldId) :
-    List (GroupedDateRangeFirstFilledDirectCandidate model declaringGroup) →
-      Except DateRangeFirstFilledDirectComputationElabError
-        (List (NonselfDateRangeFirstFilledDirectCandidate
-          model targetField declaringGroup))
-  | [] => pure []
-  | candidate :: remaining => do
-      if hExcludes : candidate.candidate.direct.source.id = targetField then
-        throw (.targetSelfReference candidate.candidate.declaration.path)
+      if hExcludes : candidate.direct.source.id = targetField then
+        throw (.targetSelfReference candidate.declaration.path)
       else
         pure ({ candidate, excludesTarget := hExcludes } ::
           (← certifyDirectSourcesExcludeTarget targetField remaining))
 
 private def certifyDirectSourceProfiles (targetPath : List String)
     (format : DateRangeInputFormat) :
-    List (NonselfDateRangeFirstFilledDirectCandidate
-      model targetField declaringGroup) →
+    List (NonselfDateRangeFirstFilledDirectCandidate model targetField) →
       Except DateRangeFirstFilledDirectComputationElabError
         (List (CheckedDateRangeFirstFilledDirectSource
-          model targetField format declaringGroup))
+          model targetField format))
   | [] => pure []
   | candidate :: remaining => do
-      let grouped := candidate.candidate
-      let source := grouped.candidate
+      let source := candidate.candidate
       if hMatches : source.direct.format = format then
         pure ({
           declaration := source.declaration
           direct := source.direct
           sourceIdentity := source.sourceIdentity
           sourceFormat := hMatches
-          ownedByGroup := grouped.ownedByGroup
           excludesTarget := candidate.excludesTarget
         } :: (← certifyDirectSourceProfiles targetPath format remaining))
       else
@@ -241,17 +216,16 @@ def checkDateRangeFirstFilledDirectComputation
     |>.mapError fun cause => .target (.source cause)
   let target ← elaborateDirectDateRange model targetField |>.mapError .target
   let candidates ← elaborateDirectCandidates model sourceDeclarations
-  -- No target-placement test. The list is a direct read of nonrepeatable fields, so nothing
-  -- iterates and the Kernel's containment gate cannot fire; a fixed target is admitted from an
-  -- unrelated group. The source-group requirement below is this capsule's own bounded subset.
-  let grouped ← certifyDirectSourceGroups declaringGroup candidates
-  let nonself ← certifyDirectSourcesExcludeTarget target.source.id grouped
+  -- No placement test on either side. The list is a direct read of nonrepeatable fields, so
+  -- nothing iterates and the Kernel's containment gate cannot fire: the target may sit in an
+  -- unrelated group, and so may each source, including in two different groups from each other.
+  let nonself ← certifyDirectSourcesExcludeTarget target.source.id candidates
   -- The list's own profile leads: every source must repeat the first one's exact declared
   -- format, and only that shared format is then compared with the target. An empty list has
   -- no profile of its own, so the target's stands in and the comparison is trivial.
   let sharedFormat := match nonself with
     | [] => target.format
-    | candidate :: _ => candidate.candidate.candidate.direct.format
+    | candidate :: _ => candidate.candidate.direct.format
   let sources ← certifyDirectSourceProfiles
     targetDeclaration.path sharedFormat nonself
   if hComparable : target.format.components = sharedFormat.components then
