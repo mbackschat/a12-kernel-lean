@@ -523,4 +523,22 @@ def FlatModel.resolveAuthoredField (model : FlatModel)
   let path ← (reference.lower profile).mapError .syntax
   (model.resolveField declaringGroup path).mapError .resolve
 
+
+/-- A successful reference resolution certifies its declaring group. The guard above rejects an
+unrepresentable group before anything else, so every consumer holding an `.ok` result may state
+group validity instead of re-testing it. -/
+theorem FlatModel.resolveFieldDeclarationUnchecked_declaringGroupValid
+    {model : FlatModel} {declaringGroup : GroupPath} {reference : SurfaceFieldPath}
+    {declaration : FlatFieldDecl}
+    (resolved :
+      model.resolveFieldDeclarationUnchecked declaringGroup reference = .ok declaration) :
+    GroupPath.isValid declaringGroup = true := by
+  cases hValid : GroupPath.isValid declaringGroup with
+  | true => rfl
+  | false =>
+    rw [FlatModel.resolveFieldDeclarationUnchecked] at resolved
+    simp only [hValid, Bool.not_false, if_true, bind, Except.bind, throw, throwThe,
+      MonadExceptOf.throw] at resolved
+    cases resolved
+
 end A12Kernel

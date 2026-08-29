@@ -639,4 +639,23 @@ def elaborateStarFieldPath (model : FlatModel) (declaringGroup : GroupPath)
       else
         throw .incoherentCore
 
+/-- A checked star field path certifies its declaring group. Resolution runs first and rejects an
+unrepresentable group, so the five fixed-target star families can state group validity in their own
+certificates without re-testing it. -/
+theorem elaborateStarFieldPath_declaringGroupValid
+    {model : FlatModel} {declaringGroup : GroupPath} {source : SurfaceStarFieldPath}
+    {checked : CheckedStarFieldPath model}
+    (elaborated : elaborateStarFieldPath model declaringGroup source = .ok checked) :
+    GroupPath.isValid declaringGroup = true := by
+  unfold elaborateStarFieldPath at elaborated
+  split at elaborated
+  · cases elaborated
+  · cases hResolved :
+      model.resolveFieldDeclarationUnchecked declaringGroup source.toFieldPath with
+    | error _ =>
+        simp only [hResolved, bind, Except.bind, Except.mapError] at elaborated
+        cases elaborated
+    | ok declaration =>
+        exact FlatModel.resolveFieldDeclarationUnchecked_declaringGroupValid hResolved
+
 end A12Kernel

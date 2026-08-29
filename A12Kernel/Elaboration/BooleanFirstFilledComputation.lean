@@ -26,6 +26,9 @@ structure CheckedBooleanFirstFilledComputation (model : FlatModel) where
   source : CheckedStarFieldPath model
   /-- The group the computation is declared in, which the target need not lie in. -/
   declaringGroup : GroupPath
+  /-- The declaring group is a representable path, certified by the star elaboration above rather
+  than re-tested here. Placement itself is unconstrained; only representability survives. -/
+  declaringGroupValid : GroupPath.isValid declaringGroup = true
   targetBoolean : target.policy.kind = .boolean
   targetFixed : target.repeatableScope = []
   sourceBoolean : source.declaration.policy.kind = .boolean
@@ -37,34 +40,38 @@ def checkBooleanFirstFilledComputation
     (authored : SurfaceStarFieldPath) :
     Except BooleanFirstFilledComputationElabError
       (CheckedBooleanFirstFilledComputation model) := do
-  let source ← elaborateStarFieldPath model declaringGroup authored
-    |>.mapError .source
-  let target ← model.lookupUniqueId targetField |>.mapError .target
-  -- No placement test. `elaborateStarFieldPath` already rejects an unrepresentable declaring
-  -- group, and placement itself is unconstrained here: a fixed target under a star aggregate
-  -- derives no iteration, so the Kernel admits it from an unrelated group.
-  if hFixed : target.repeatableScope = [] then
-    if hTargetKind : target.policy.kind = .boolean then
-      if hSourceKind : source.declaration.policy.kind = .boolean then
-        if hShape : source.isDirectSingleStar = true then
-          pure {
-            target
-            source
-            declaringGroup
-            targetBoolean := hTargetKind
-            targetFixed := hFixed
-            sourceBoolean := hSourceKind
-            sourceDirectSingleStar := hShape
-          }
+  match hStar : elaborateStarFieldPath model declaringGroup authored with
+  | .error cause => .error (.source cause)
+  | .ok source => do
+    let target ← model.lookupUniqueId targetField |>.mapError .target
+    -- No placement test. `elaborateStarFieldPath` already rejects an unrepresentable declaring
+    -- group, and placement itself is unconstrained here: a fixed target under a star aggregate
+    -- derives no iteration, so the Kernel admits it from an unrelated group.
+    if hFixed : target.repeatableScope = [] then
+      if hTargetKind : target.policy.kind = .boolean then
+        if hSourceKind : source.declaration.policy.kind = .boolean then
+          if hShape : source.isDirectSingleStar = true then
+            pure {
+              target
+              source
+              declaringGroup
+              declaringGroupValid :=
+                elaborateStarFieldPath_declaringGroupValid hStar
+              targetBoolean := hTargetKind
+              targetFixed := hFixed
+              sourceBoolean := hSourceKind
+              sourceDirectSingleStar := hShape
+            }
+          else
+            throw (.sourceShape source.declaration.path)
         else
-          throw (.sourceShape source.declaration.path)
+          throw (.sourceKind source.declaration.path
+            source.declaration.policy.kind.surfaceKind)
       else
-        throw (.sourceKind source.declaration.path
-          source.declaration.policy.kind.surfaceKind)
+        throw (.targetKind target.path target.policy.kind.surfaceKind)
     else
-      throw (.targetKind target.path target.policy.kind.surfaceKind)
-  else
-    throw (.targetRepeatable target.path)
+      throw (.targetRepeatable target.path)
+
 /-- Classify one checked Boolean source cell for computation-phase first-filled selection. -/
 def booleanFirstFilledCellAt (cell : CheckedCell) : FirstFilledBooleanCell :=
   match observeCell .computation cell with

@@ -27,6 +27,9 @@ structure CheckedCustomFirstFilledComputation (model : FlatModel) where
   customType : CustomFieldTypeDeclaration
   /-- The group the computation is declared in, which the target need not lie in. -/
   declaringGroup : GroupPath
+  /-- The declaring group is a representable path, certified by the star elaboration above rather
+  than re-tested here. Placement itself is unconstrained; only representability survives. -/
+  declaringGroupValid : GroupPath.isValid declaringGroup = true
   targetCustom : target.customType = some customType
   targetFixed : target.repeatableScope = []
   sourceCustom : source.declaration.customType = some customType
@@ -38,35 +41,39 @@ def checkCustomFirstFilledComputation
     (authored : SurfaceStarFieldPath) :
     Except CustomFirstFilledComputationElabError
       (CheckedCustomFirstFilledComputation model) := do
-  let source ← elaborateStarFieldPath model declaringGroup authored
-    |>.mapError .source
-  let target ← model.lookupUniqueId targetField |>.mapError .target
-  -- No placement test. `elaborateStarFieldPath` already rejects an unrepresentable declaring
-  -- group, and placement itself is unconstrained here: a fixed target under a star aggregate
-  -- derives no iteration, so the Kernel admits it from an unrelated group.
-  if hFixed : target.repeatableScope = [] then
-    match hTarget : target.customType with
-    | none => throw (.targetNotCustom target.path)
-    | some customType =>
-      if hSource : source.declaration.customType = some customType then
-        if hShape : source.isDirectSingleStar = true then
-          pure {
-            target
-            source
-            customType
-            declaringGroup
-            targetCustom := hTarget
-            targetFixed := hFixed
-            sourceCustom := hSource
-            sourceDirectSingleStar := hShape
-          }
+  match hStar : elaborateStarFieldPath model declaringGroup authored with
+  | .error cause => .error (.source cause)
+  | .ok source => do
+    let target ← model.lookupUniqueId targetField |>.mapError .target
+    -- No placement test. `elaborateStarFieldPath` already rejects an unrepresentable declaring
+    -- group, and placement itself is unconstrained here: a fixed target under a star aggregate
+    -- derives no iteration, so the Kernel admits it from an unrelated group.
+    if hFixed : target.repeatableScope = [] then
+      match hTarget : target.customType with
+      | none => throw (.targetNotCustom target.path)
+      | some customType =>
+        if hSource : source.declaration.customType = some customType then
+          if hShape : source.isDirectSingleStar = true then
+            pure {
+              target
+              source
+              customType
+              declaringGroup
+              declaringGroupValid :=
+                elaborateStarFieldPath_declaringGroupValid hStar
+              targetCustom := hTarget
+              targetFixed := hFixed
+              sourceCustom := hSource
+              sourceDirectSingleStar := hShape
+            }
+          else
+            throw (.sourceShape source.declaration.path)
         else
-          throw (.sourceShape source.declaration.path)
-      else
-        throw (.sourceCustomTypeMismatch source.declaration.path customType
-          source.declaration.customType)
-  else
-    throw (.targetRepeatable target.path)
+          throw (.sourceCustomTypeMismatch source.declaration.path customType
+            source.declaration.customType)
+    else
+      throw (.targetRepeatable target.path)
+
 /-- Classify one already prepared Custom source cell for computation-phase first-filled selection. -/
 def customFirstFilledCellAt (cell : CheckedCell) : ValueListCell .token :=
   match observeCell .computation cell with

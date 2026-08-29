@@ -134,7 +134,9 @@ structure CheckedIndexedDateRangeConstructionComputation (model : FlatModel) whe
   sameGroup : start.group = finish.group
   target : CheckedDirectDateRange model
   declaringGroup : GroupPath
-  targetOwned : model.ownsDirectDateRangeTarget target = true
+  /-- The declaring group is a representable path; placement itself is unconstrained. See the
+  sibling certificate in [`DateRangeConstructionComputation.lean`](DateRangeConstructionComputation.lean). -/
+  declaringGroupValid : GroupPath.isValid declaringGroup = true
   format : DateRangeConstructionTargetFormat
   profileOwned : DateRangeConstructionTargetFormat.ofProfiles?
     (.full start.format) target.format = some format
@@ -151,12 +153,12 @@ def elaborateIndexedDateRangeConstructionComputation
   let finish ← elaborateIndexedDateRangeEndpoint model finishField finishKey
     |>.mapError .finish
   if hSame : start.group = finish.group then
-    -- Resolved for its refusal, not its result, and followed by no placement test; the shared
-    -- `ownsDirectDateRangeTarget` records why a construction has none.
+    -- Resolved for its refusal, not its result. No placement test follows, only the group-validity
+    -- check the removed equality test used to imply.
     let _ ← model.resolveNonrepeatableDeclarationById targetField
       |>.mapError (fun error => .target (.source error))
     let target ← elaborateDirectDateRange model targetField |>.mapError .target
-    if hOwned : model.ownsDirectDateRangeTarget target then
+    if hValid : GroupPath.isValid declaringGroup = true then
       match hFormat : DateRangeConstructionTargetFormat.ofProfiles?
           (.full start.format) target.format with
       | some format => pure {
@@ -165,13 +167,13 @@ def elaborateIndexedDateRangeConstructionComputation
           sameGroup := hSame
           target
           declaringGroup
-          targetOwned := hOwned
+          declaringGroupValid := hValid
           format
           profileOwned := hFormat
         }
       | none => throw (.targetFormat start.format target.format)
     else
-      throw .incoherentCore
+      throw (.target (.source (.invalidRuleGroup declaringGroup)))
   else
     throw (.differentGroups start.group.path finish.group.path)
 

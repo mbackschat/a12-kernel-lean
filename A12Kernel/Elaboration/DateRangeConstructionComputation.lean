@@ -41,18 +41,6 @@ def evaluateComputationResult (format : DateRangeConstructionTargetFormat) :
 
 end DateRangeConstructionTargetFormat
 
-/-- Verify that the model owns the direct DateRange target this construction writes.
-
-This deliberately says nothing about *where* the computation is declared. A construction reads two
-nonrepeatable endpoints, so nothing iterates and the Kernel's containment gate cannot fire; the
-[fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement)
-admits this exact constructor from an unrelated sibling group. -/
-def FlatModel.ownsDirectDateRangeTarget
-    (model : FlatModel) (target : CheckedDirectDateRange model) : Bool :=
-  match model.lookupUniqueId target.source.id with
-  | .ok _ => true
-  | .error _ => false
-
 /-- Static refusal before one direct DateRange construction can reach its target. -/
 inductive DateRangeConstructionComputationElabError where
   | construction (cause : DateRangeConstructionElabError)
@@ -66,7 +54,11 @@ structure CheckedDateRangeConstructionComputation (model : FlatModel) where
   construction : CheckedDateRangeConstruction model
   target : CheckedDirectDateRange model
   declaringGroup : GroupPath
-  targetOwned : model.ownsDirectDateRangeTarget target = true
+  /-- The declaring group is a representable path. Placement itself is unconstrained here — a
+  construction reads two nonrepeatable endpoints, so nothing iterates and the Kernel's containment
+  gate cannot fire ([checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement)) — but the
+  group must still be a group, and nothing else in this certificate implies it. -/
+  declaringGroupValid : GroupPath.isValid declaringGroup = true
   format : DateRangeConstructionTargetFormat
   profileOwned :
     DateRangeConstructionTargetFormat.ofProfiles?
@@ -82,11 +74,12 @@ def elaborateDateRangeConstructionComputation
     |>.mapError .construction
   -- Resolved for its refusal, not its result: a repeatable target fails here as
   -- `repeatableReference`, before the direct-DateRange check would report a different class.
-  -- No placement test follows; see `ownsDirectDateRangeTarget` above.
   let _ ← model.resolveNonrepeatableDeclarationById targetField
     |>.mapError (fun error => .target (.source error))
   let target ← elaborateDirectDateRange model targetField |>.mapError .target
-  if hOwned : model.ownsDirectDateRangeTarget target then
+  -- Validity only, not placement: the target may sit anywhere, but `[]` and an empty segment are
+  -- not groups. Removing the former equality test removed the only thing that implied this.
+  if hValid : GroupPath.isValid declaringGroup = true then
     match hFormat : DateRangeConstructionTargetFormat.ofProfiles?
         construction.start.format target.format with
     | some format =>
@@ -94,14 +87,14 @@ def elaborateDateRangeConstructionComputation
           construction
           target
           declaringGroup
-          targetOwned := hOwned
+          declaringGroupValid := hValid
           format
           profileOwned := hFormat
         }
     | none =>
         throw (.endpointFormat construction.start.format construction.finish.format)
   else
-    throw .incoherentCore
+    throw (.target (.source (.invalidRuleGroup declaringGroup)))
 
 /-- Project one evaluated construction into the shared exact-or-yearless target result while reusing its established formal-before-empty precedence. -/
 def DateRangeConstructionObservation.asComputationResult

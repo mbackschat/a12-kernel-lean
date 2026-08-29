@@ -10,11 +10,11 @@ theorem checkedIndexedDateRangeConstructionComputation_admitted
     operation.start.key.admittedBy model = true ∧
       operation.finish.key.admittedBy model = true ∧
       operation.start.group = operation.finish.group ∧
-      model.ownsDirectDateRangeTarget operation.target = true ∧
+      GroupPath.isValid operation.declaringGroup = true ∧
       DateRangeConstructionTargetFormat.ofProfiles?
         (.full operation.start.format) operation.target.format = some operation.format :=
   ⟨operation.start.keyOwned, operation.finish.keyOwned, operation.sameGroup,
-    operation.targetOwned, operation.profileOwned⟩
+    operation.declaringGroupValid, operation.profileOwned⟩
 
 /-- Rich indexed-construction result projection retains the checked target identity and delegates all five channels to the established DateRange classifier. -/
 theorem checkedIndexedDateRangeConstructionComputation_executeResult_projects

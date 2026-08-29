@@ -167,14 +167,14 @@ theorem dateRangeConstructionObservation_asComputationResult_yearlessMonthDay
       (.value (.monthDay finish))).asComputationResult =
       .value (.yearlessMonthDay start finish) := rfl
 
-/-- The checked target retains its model ownership and construction-profile certificate. Placement is deliberately absent: a construction reads nonrepeatable endpoints, so the Kernel constrains where it is declared not at all. -/
+/-- The checked operation retains a representable declaring group and its construction-profile certificate. Placement is deliberately absent: a construction reads nonrepeatable endpoints, so the Kernel constrains where it is declared not at all — only that the declaring group is a group. -/
 theorem checkedDateRangeConstructionComputation_target_admitted
     (operation : CheckedDateRangeConstructionComputation model) :
-    model.ownsDirectDateRangeTarget operation.target = true ∧
+    GroupPath.isValid operation.declaringGroup = true ∧
       DateRangeConstructionTargetFormat.ofProfiles?
         operation.construction.start.format operation.target.format =
           some operation.format :=
-  ⟨operation.targetOwned, operation.profileOwned⟩
+  ⟨operation.declaringGroupValid, operation.profileOwned⟩
 
 /-- One supported construction evaluation reaches its checked target renderer without rereading either endpoint. -/
 theorem checkedDateRangeConstructionComputation_execute_value
