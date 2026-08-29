@@ -34,6 +34,22 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-08-29-04"></a>
+### `SPEC-2026-08-29-04` — the rule-message `$#…$` group position admits the rule's own group and its ancestors
+
+- `status`: pending
+- `clause`: [`11-messages-and-custom.md` the parameter-grammar clauses](../spec/11-messages-and-custom.md)
+- `delta`: the clause covered the parameter **name** position, where `RootGroup`/`LfdNr` draws `INVALID_ENTITY`, and explicitly scoped that measured absence to the rule-owned carrier. It said nothing about the `$#…$` **group** position, which resolves the same words differently: `$#RootGroup$` and `$#RuleGroup$` are admitted there. The position takes an absolute group path, and the admitted set is the rule's own group plus its ancestors — a declared descendant, a sibling, and an unknown path all draw `INVALID_GROUP`, as does a relative spelling of a real group.
+- `mechanism`: containment, running opposite to the computation declaring-group gate. There the computed field must lie at or below the declaring group; here the *named* group must contain the rule's group, and `RootGroup`/`RuleGroup` are keyword shorthands for the two endpoints of that chain.
+- `delta`: the clause's existing assertion that `Zeile` and `Usb` "are not permitted in an A12 model at all" gains its code. Both draw `PARAM_INVALID_IN_NEW_WORLD`, distinct from `INVALID_GROUP`, so the Kernel recognizes the terminals and refuses them on the modern route rather than failing to parse them. `Vordruckzeile`, `Vordruckname`, and `index(...)` draw plain `INVALID_GROUP` on this carrier and so are not terminals in this position.
+- `evidence`: [group-parameter checkpoint](sources/temporal-and-message-probes.md#src-message-group-parameter), `rule check --message` verdicts over one model at a12-dmkits `4e78f8254bcf12f6d94fc23c5c3cd5e4906c8d04` (clean), `dmtool` 0.13.0, Kernel `30.8.1`. Admitted controls (`$Marker$`, `$Marker.value$`, parameterless text) and a refused control (`$#NotATerminal$`) run in the same batch.
+- `confound`: a first attempt used a negative condition and every row, controls included, refused `MVK_NEG_CONDITION_IN_ITERATION` before the error-text checker ran. Any peer reproduction needs a positive condition or it measures the condition gate instead.
+- `surfaces`: any peer clause, test, or catalog note that treats `$#…$` as a second spelling of the name position, or that constrains the group parameter to the rule's own group alone.
+- `local-scope`: unimplemented. [SG10](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration) carries the Lean capsule for this position.
+- `acceptance`: a12-dmkits states the group position's admitted set, or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: none yet.
+
 <a id="spec-2026-08-29-03"></a>
 ### `SPEC-2026-08-29-03` — an aggregate over a star derives no iteration, so a fixed computation target has no placement restriction at all
 

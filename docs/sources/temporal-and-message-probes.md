@@ -502,6 +502,21 @@
 - `local-state`: both halves are implemented. The configured half lives with the plural owner and the unconfigured all-yearless half with the yearless owner, which now exposes a scalar-versus-list entry point beside its any-pair one; the two share one generic first-match scan and its no-UNKNOWN law.
 - `sync`: locally originated and consistent with the clause the singular gate already carries, which states the gate over any overlap operand list rather than per operator. [`SPEC-2026-08-22-01`](../archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#spec-2026-08-22-01--date-range-overlap-admits-by-year-class-and-a-base-year-lifts-the-gate) already carries that correction and is extended by this measurement rather than superseded, so it creates no second entry.
 
+<a id="src-message-group-parameter"></a>
+#### The rule-message group parameter `$#…$`, measured locally 2026-08-29
+
+- `revision`: a12-dmkits `4e78f8254bcf12f6d94fc23c5c3cd5e4906c8d04` (clean before and after), `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. Every row is one `rule check --message en_US=…` verdict, the real Kernel error-text checker, dispatched through a caller-tagged `batch`.
+- `model`: the `FixedStar_DM` probe model, English condition language, one root `Probe` with repeatable `/Probe/Rows` (containing `Marker` and the subgroup `/Probe/Rows/Deeper`) and fixed `/Probe/Store` and `/Probe/Beside`. Every row uses the same rule: error field `/Probe/Rows/Marker`, condition `Length(Marker) > 3`.
+- `confound`: the first attempt used `FieldNotFilled(Marker)` and every row — including the plain-text control — refused `MVK_NEG_CONDITION_IN_ITERATION`. The condition gate pre-empts the error-text checker entirely, so no message row means anything until a positive condition is used. The uniform control failure is the tell.
+- `position`: `$#…$` is a **group** parameter position, distinct from the `$Field$` name position. The same word behaves differently in each: bare `$RootGroup$` draws `INVALID_ENTITY` as an entity lookup, while `$#RootGroup$` is admitted.
+- `matrix`: the admitted set is the rule's own group and its ancestors. `$#/Probe/Rows$` (own) and `$#/Probe$` (root) are admitted; `$#/Probe/Rows/Deeper$` (a **declared** descendant), `$#/Probe/Store$` (sibling), and `$#/Probe/Nope$` (unknown) all draw `INVALID_GROUP`. Containment runs the opposite way from the computation declaring-group gate: here the *named* group must contain the rule's group.
+- `spelling`: the path must be absolute. `$#Rows$` names a real group relative to the rule and still draws `INVALID_GROUP`, as do `$#Probe$`, `$#Store$`, and the field `$#Marker$`.
+- `keywords`: `$#RootGroup$` and `$#RuleGroup$` are admitted keyword shorthands for the two endpoints of that chain. `$#LfdNr$`, the German spelling, draws `INVALID_GROUP` under an English condition language, matching the terminal-language rule the clause already states for the name position.
+- `retired`: `$#Zeile$` and `$#Usb$` draw `PARAM_INVALID_IN_NEW_WORLD`, a code distinct from `INVALID_GROUP`. The Kernel recognizes both terminals and refuses them on the modern route, which supplies the exact code for the clause's existing assertion that they are not permitted in an A12 model.
+- `unrecognized`: `$#Vordruckzeile$`, `$#Vordruckname$`, and `$#index(Rows)$` draw `INVALID_GROUP`, the same code as an arbitrary unknown name, so on the rule-owned carrier they are not terminals in this position at all.
+- `controls`: `$Marker$`, `$Marker.value$`, and parameterless text are admitted in the same batch, and `$#NotATerminal$` is refused, so the admissions are not an unreachable-checker artifact.
+- `limit`: static admission only, one carrier, one condition language, one root, and one nesting level. What each admitted parameter *renders* is unmeasured, as is the German condition language and every non-rule parameter owner that shares the terminal bundle.
+
 <a id="src-dmtool-2026-08-22-instrument-handback"></a>
 #### Reviewed 2026-08-22 instrument handback and its two Kernel measurements
 

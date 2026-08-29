@@ -269,6 +269,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Starred yearless DateRange overlap, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-starred-yearless-overlap)
 <a id="src-date-range-plural-year-class"></a>
 - [Plural DateRange overlap year class and fragment operands, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-plural-year-class)
+<a id="src-message-group-parameter"></a>
+- [The rule-message group parameter `$#…$`](sources/temporal-and-message-probes.md#src-message-group-parameter)
 <a id="src-dmtool-2026-08-22-instrument-handback"></a>
 - [Reviewed 2026-08-22 instrument handback and its two Kernel measurements](sources/temporal-and-message-probes.md#src-dmtool-2026-08-22-instrument-handback)
 <a id="src-2026-08-23-reconciliation"></a>
