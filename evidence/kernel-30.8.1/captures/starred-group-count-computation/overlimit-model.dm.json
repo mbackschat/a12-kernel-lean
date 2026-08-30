@@ -1,0 +1,204 @@
+{
+  "header" : {
+    "id" : "StarPolarity_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "StarPolarity_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Flat",
+            "name" : "Flat",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Flat/FlatValue",
+                "name" : "FlatValue",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Other",
+            "name" : "Other",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Other/OtherValue",
+                "name" : "OtherValue",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowValue",
+                "name" : "RowValue",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/TallyStar",
+            "name" : "TallyStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/TallyMixed",
+            "name" : "TallyMixed",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/TallyFixed",
+            "name" : "TallyFixed",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/TallyStarComp",
+            "name" : "TallyStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TallyStar",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(Rows*)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Star tally."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/TallyMixedComp",
+            "name" : "TallyMixedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TallyMixed",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(Flat, Rows*)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Mixed tally."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/TallyFixedComp",
+            "name" : "TallyFixedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TallyFixed",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(Flat, Other)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Fixed tally."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/TallySum",
+            "name" : "TallySum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/TallySumComp",
+            "name" : "TallySumComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TallySum",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowValue)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Sum tally."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

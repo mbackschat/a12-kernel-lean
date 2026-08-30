@@ -1,0 +1,810 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "ba07ba8b396df85b18a530d2d9eaddd3674ece9e",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "StarPolarity_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "five-rows-at-capacity",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyFixedComp",
+              "field" : "Probe/TallyFixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Fixed tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Other/OtherValue",
+                "Probe/TallyFixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyStarComp",
+              "field" : "Probe/TallyStar",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallyStar"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallySumComp",
+              "field" : "Probe/TallySum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Sum tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/TallyFixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "6"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Probe/TallySum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyFixedComp",
+              "field" : "Probe/TallyFixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Fixed tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Other/OtherValue",
+                "Probe/TallyFixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyStarComp",
+              "field" : "Probe/TallyStar",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallyStar"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallySumComp",
+              "field" : "Probe/TallySum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Sum tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/TallyFixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "6"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Probe/TallySum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "six-rows-one-over-limit",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyFixedComp",
+              "field" : "Probe/TallyFixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Fixed tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Other/OtherValue",
+                "Probe/TallyFixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyStarComp",
+              "field" : "Probe/TallyStar",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallyStar"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallySumComp",
+              "field" : "Probe/TallySum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Sum tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[6]/RowValue",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 6, but at most 5 is allowed.",
+              "referenced" : [
+                "Probe/Rows[6]/RowValue"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[6]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[6]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/TallyFixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "6"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Probe/TallySum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Rows[6]/RowValue",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Probe/Rows' was specified with 6, but at most 5 is allowed.",
+                "referenced" : [
+                  "Probe/Rows[6]/RowValue"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[6]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/Rows[6]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyFixedComp",
+              "field" : "Probe/TallyFixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Fixed tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Other/OtherValue",
+                "Probe/TallyFixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyStarComp",
+              "field" : "Probe/TallyStar",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallyStar"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallySumComp",
+              "field" : "Probe/TallySum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Sum tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[6]/RowValue",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 6, but at most 5 is allowed.",
+              "referenced" : [
+                "Probe/Rows[6]/RowValue"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[6]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[6]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/TallyFixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "6"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Probe/TallySum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Rows[6]/RowValue",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Probe/Rows' was specified with 6, but at most 5 is allowed.",
+                "referenced" : [
+                  "Probe/Rows[6]/RowValue"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[6]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/Rows[6]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "seven-rows-two-over-limit",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyFixedComp",
+              "field" : "Probe/TallyFixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Fixed tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Other/OtherValue",
+                "Probe/TallyFixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyStarComp",
+              "field" : "Probe/TallyStar",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallyStar"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallySumComp",
+              "field" : "Probe/TallySum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Sum tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[6]/RowValue",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 6, but at most 5 is allowed.",
+              "referenced" : [
+                "Probe/Rows[6]/RowValue"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[7]/RowValue",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 7, but at most 5 is allowed.",
+              "referenced" : [
+                "Probe/Rows[7]/RowValue"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[6]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[6]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[7]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[7]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/TallyFixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "6"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Probe/TallySum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Rows[6]/RowValue",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Probe/Rows' was specified with 6, but at most 5 is allowed.",
+                "referenced" : [
+                  "Probe/Rows[6]/RowValue"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Rows[7]/RowValue",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Probe/Rows' was specified with 7, but at most 5 is allowed.",
+                "referenced" : [
+                  "Probe/Rows[7]/RowValue"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[6]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/Rows[6]"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[7]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/Rows[7]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyFixedComp",
+              "field" : "Probe/TallyFixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Fixed tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Other/OtherValue",
+                "Probe/TallyFixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyStarComp",
+              "field" : "Probe/TallyStar",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallyStar"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallySumComp",
+              "field" : "Probe/TallySum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Sum tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[6]/RowValue",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 6, but at most 5 is allowed.",
+              "referenced" : [
+                "Probe/Rows[6]/RowValue"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[7]/RowValue",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 7, but at most 5 is allowed.",
+              "referenced" : [
+                "Probe/Rows[7]/RowValue"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[6]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[6]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[7]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[7]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/TallyFixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "6"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Probe/TallySum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Rows[6]/RowValue",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Probe/Rows' was specified with 6, but at most 5 is allowed.",
+                "referenced" : [
+                  "Probe/Rows[6]/RowValue"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/Rows[7]/RowValue",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Probe/Rows' was specified with 7, but at most 5 is allowed.",
+                "referenced" : [
+                  "Probe/Rows[7]/RowValue"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[6]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/Rows[6]"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[7]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/Rows[7]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
