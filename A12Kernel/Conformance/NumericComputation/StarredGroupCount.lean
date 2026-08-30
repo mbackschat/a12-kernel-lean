@@ -182,14 +182,11 @@ them is replayed against those rows at its owning clause in
 `Conformance/StarredGroupCountComputation.lean`. What these cases add is that an elaborated
 operand list reaches that fold.
 
-**Static admission of these shapes is not measured**, and each case below asserts it silently by
-answering at all. The Kernel built an engine for a model carrying the duplicate list and computed
-from it, which is runtime acceptance rather than an authoring-time verdict; this project's own
-admission rows for the two-star shapes were observed in a window that could not be certified clean
-and so are not cited. The shapes follow the operator's recorded gate —
-[§1](../../../spec/02-logic-and-formal-errors.md) states that direct duplicate checking skips
-wildcarded operands — but that gate is the reason the elaborator admits them, not evidence that
-the Kernel does.
+Static admission is measured on the same estate, through the Kernel's own model check, so each
+case below asserting it silently by answering at all is now backed rather than inherited from
+[§1](../../../spec/02-logic-and-formal-errors.md)'s wildcard-duplicate gate. Both halves rest on
+one estate: this project's own rows for these shapes were observed in a window that could not be
+certified clean and are not cited.
 -/
 
 /- Two independent cardinalities add, and neither operand's rows reach the other's count. -/

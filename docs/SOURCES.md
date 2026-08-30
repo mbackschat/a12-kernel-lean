@@ -143,7 +143,9 @@ The peer revision is inbound reviewed provenance, so its accepted canonical corr
 
 a12-dmkits revision `856465c37` (clean) carries two Kernel observations this project consumes at the [starred group-count checkpoint](sources/group-and-iteration-probes.md#src-starred-group-count-computation): the compute arm's over-limit exclusion reproduced on the peer's own fixture with the four-row control this project's capture lacked, and the first measurement anywhere of a list holding **two starred operands**, including the same group named twice. Both live in [`NestedGroupFillCountLawsTest`](../../a12-rulekit/adapter/src/test/java/io/github/mbackschat/a12/dm/adapter/laws/NestedGroupFillCountLawsTest.java) and were read here rather than taken on report; that suite drives the real Kernel runtime rather than the peer interpreter.
 
-The over-limit half originated in this project and is now measured on both estates, so it needs no outbound request. The two-star half is inbound and creates none by the rule above. Only the runtime fold is measured on the two-star shapes — the checkpoint's `two-star-limit` record owns what stays open.
+Revision `7967f5cb3` completes that batch with the two-star shapes' **static** admission, through the Kernel's own `checkConsistency`, after this project pointed out that runtime acceptance is not an authoring verdict. The same revision retracts a provenance line that had cited this project as having pinned those rows; the rows came from a window this project could not certify clean and were never citable.
+
+The over-limit half originated in this project and is now measured on both estates, so it needs no outbound request. The two-star halves are inbound and create none by the rule above. Both rest on the peer's estate alone — the checkpoint's `two-star-limit` record owns that.
 
 ## Provenance checkpoint index
 
