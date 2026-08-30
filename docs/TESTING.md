@@ -272,6 +272,25 @@ Observable boundaries must stay explicit. A retained authored message can establ
 
 For a future family, first use an existing source-maintained a12-dmkits corpus or differential route when it can retain the required own-domain observation without changing its meaning. If no current route exposes the required channel, record a specific upstream request and leave the capsule `external evidence pending`; use a temporary proposal only for a coherent capability with its own architecture and acceptance lifecycle. Never patch `RuntimeLaws`, add a temporary capture test, resurrect capture V1, or modify a cloned, archived, or copied a12-dmkits source tree. Exclude kernel binaries, linked types or code, volatile logs, and machine-specific state, and preserve the sibling's tracked and visible-untracked status exactly. The accepted [`compact pipeline plan`](SEMANTIC-CAPSULE-PIPELINE-PROPOSAL.md) owns future engagement and scaling limits.
 
+### Peer-session coordination
+
+A live a12-dmkits session is an accelerator, never a dependency. The **channel of record stays the ledger**, which the user carries; a message only shortens the latency. Everything below follows from that, and it is also why the protocol degrades cleanly when no peer is reachable.
+
+**Drain the inbox at commit boundaries, not on arrival.** An arriving message is not an interrupt. Finish the unit or reach a commit point, then reply. The single exception is a live time window — a peer holding its worktree clean for a probe, or a claim of yours about to ship into its permanent record — because those expire and nothing else does. A peer saying "no rush" means what it says.
+
+**Send pointers, not prose.** The [discharge rule](../CLAUDE.md) makes a peer message a claim-bearing channel and the least gated one. Prefer an entry id, checkpoint anchor, reviewed revision, and artifact SHA-256 over re-narrating a finding whose gated version is already written. Re-narration is how a message and its own record come to disagree, and only the record gets re-read.
+
+**Close explicitly.** When both sides report nothing pending, the thread is closed. Reopening needs a new measurement, a contradiction, or a request — never commentary on the exchange itself. **State no ratios or tallies in a message.** Three were corrected in one session, every one from a mismatched denominator, and a denominator is only enforceable in a document with a reviewer; if a pattern is worth keeping it goes in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) once, with what it counts.
+
+**A capability claim about the peer's running tools needs execution.** It is a reachability claim under the discharge table, settled by running the binary and never by reading the source that feeds it — a stale launcher serves the old catalog while the source shows the new one. Both projects made this error in the same session, in opposite directions.
+
+**When no peer is reachable, nothing changes about what gets written.** Check the live sessions before relying on the channel, and never let a message be the only place a claim exists — with pointer discipline it never is. Concretely:
+
+- **Never block a unit on a reply.** A ledger entry's acceptance condition is discharged by a committed a12-dmkits revision that the user carries over, not by a session answering. Land the unit, leave the entry `pending`, and continue.
+- **Never build a workflow on a notification arriving.** An idle subscription can go stale, fire late, or never fire; treat one as a convenience and nothing more.
+- **A dirty sibling with no peer to coordinate is an evidence blocker, not a work blocker.** The probe route stamps `producer.source.state`, and a `DIRTY` artifact is exploration only. Mark the capsule `external evidence pending` — a first-class state this project already supports — and select work that does not need the route. Never wait on it, and never clean, stash, or check out anything in the sibling to create the window yourself.
+- **A correction you cannot deliver still gets recorded.** Put it in the owning checkpoint and its ledger entry with the contradiction stated, and tell the user if it is time-sensitive. That is the durable path whether or not anyone is listening.
+
 ## Tier gates
 
 Run this Tier 1 gate for an internal semantic capsule:
