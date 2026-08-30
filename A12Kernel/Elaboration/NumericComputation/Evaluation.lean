@@ -255,9 +255,25 @@ def readCheckedNumericComputationAtom
   | .sumOfProducts source =>
       (source.evaluateComputation context.document context.outer
         context.starRead).mapError NumericComputationFault.repeatableAddressing
-  -- This route *does* carry the topology a starred operand needs; wiring its row count is the
-  -- next unit. Until then it refuses rather than answering a fixed-only count for a mixed list.
-  | .filledGroupCountMixed _ => throw .groupCountNeedsModel
+  | .filledGroupCountMixed operands => do
+      -- Each operand is read into its own contribution and the fold adds them. A fixed operand
+      -- keeps the cell projection the fixed-only form uses, so the two forms cannot disagree about
+      -- a group they both reach; a starred operand contributes the in-capacity instantiated row
+      -- count, which is the quantity this route carries the topology for.
+      let readings ← operands.mapM fun operand =>
+        match operand with
+        | .fixed reference =>
+            match reference.computationDescendants? model with
+            | none => throw (NumericComputationFault.unsupportedGroupCount reference.path)
+            | some descendants =>
+                pure (GroupCountOperandReading.fixed
+                  (descendants.map fun declaration =>
+                    observeCell .computation (context.scalar.read declaration.id)))
+        | .starred source =>
+            match source.inCapacityRowCount context.document context.outer with
+            | .error error => throw (NumericComputationFault.repeatableAddressing error)
+            | .ok rows => pure (GroupCountOperandReading.starredRows rows)
+      pure (.value (numberOfFilledGroupsForComputationOperands readings))
   | .numeric source =>
       context.scalar.readNumericComputationAtomWith
         (fun op aggregate =>
