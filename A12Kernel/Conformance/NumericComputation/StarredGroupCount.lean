@@ -276,4 +276,22 @@ example :
       some [flatValueId, rowValueId, targetId] := by
   native_decide
 
+/- **An over-limit row adds no headroom, and the producer is where that is decided.** Six and seven
+   instantiated rows in a `max 5` group yield the same channel as five, because the producer counts
+   in-capacity rows before building it. The measured documents type VALUE on all four targets at
+   five, six and seven rows alike ([checkpoint](../../../docs/SOURCES.md#src-starred-group-count-computation)),
+   which this reproduces — but they do not separate a physical-row reading from an in-capacity one
+   at the *type*, since both are closed once the count reaches capacity. What separates them is the
+   channel itself, so that is what this asserts. -/
+example :
+    growthOf mixedList true 6 = some (some [.fixedGroup true, .starredGroupCount 5 5]) ∧
+      growthOf mixedList true 7 = some (some [.fixedGroup true, .starredGroupCount 5 5]) := by
+  native_decide
+
+/- The type those channels produce, at the measured seed no count can reach. -/
+example :
+    typeOf 6 (growthOf mixedList true 6) = some (.fired .value) ∧
+      typeOf 6 (growthOf mixedList true 7) = some (.fired .value) := by
+  native_decide
+
 end A12Kernel.Conformance.NumericComputation.StarredGroupCount
