@@ -707,6 +707,44 @@ example :
         (.numeric (.filledGroupCount [preferencesGroup, preferencesGroup])) = true := by
   native_decide
 
+/-! ### One repetition level, and the refusal at two
+
+The admitted shape is the measured one: every repeatable descendant exactly one repetition level
+below the operand. A deeper axis is refused rather than assumed to compose, and nothing measures
+what such a shell counts.
+-/
+
+/-- `repeatableShellModel` with one extra repeatable level between the shell and its rows. -/
+private def deepShellModel : FlatModel :=
+  { fields := [
+      numberIn preferencesChoiceId ["Root", "Preferences"] "Choice",
+      { numberIn shellClauseId ["Root", "Shell", "Mid", "Rows"] "Clause" with
+          repeatableScope := [10, 11] }]
+    repeatableGroups :=
+      [ { level := 10, path := ["Root", "Shell", "Mid"], repeatability := some 3 }
+      , { level := 11, path := ["Root", "Shell", "Mid", "Rows"], repeatability := some 5 } ] }
+
+/- **One variable: the extra repetition level.** The same shell over the same descendant field is
+   admitted at one level and refused at two, so the boundary is the axis count and not the nesting
+   depth the [subtree extent](../../../docs/SOURCES.md#src-nested-descendant-group-count-runtime)
+   already measured as irrelevant. Refusing claims nothing; composing would claim a value. -/
+example :
+    (shellGroup.computationOperandAdmitted repeatableShellModel,
+      shellGroup.computationOperandAdmitted deepShellModel) = (true, false) := by
+  native_decide
+
+/- It reaches the whole route as the ordinary unsupported-operand refusal, naming the shell rather
+   than the deep descendant, so a consumer sees the operand it authored. -/
+example :
+    (AuthoredNumericExpr.evaluateCheckedComputationIn (model := deepShellModel)
+      (.atom (.numeric (.filledGroupCount [shellGroup, preferencesGroup])))
+      { scalar := { read := shellRead presentEmpty (filled 7) }
+        document := shellDocument 1
+        outer := []
+        filterRead := fun _ _ => presentEmpty
+        starRead := fun _ _ => presentEmpty }).toOption = none := by
+  native_decide
+
 /-! ### The gate reaches the mixed atom too
 
 The pre-read pass exists because a structural fault must not be hidden by data. `evalOrdered`
