@@ -1,0 +1,818 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "568fca72858430b355f46d2faee545b7f99fdbd5",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "StarCount_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "no-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "one-instantiated-empty-row",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "one-filled-row",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "two-rows-second-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "three-rows-all-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "flat-empty-two-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "all-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

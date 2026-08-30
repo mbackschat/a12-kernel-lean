@@ -1,0 +1,115 @@
+{
+ "model": "StarCount_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "no-rows",
+   "documentInline": {
+    "Probe": {
+     "Tally": 9,
+     "TallyMixed": 9,
+     "Flat": {
+      "FlatValue": 1
+     },
+     "Rows": []
+    }
+   }
+  },
+  {
+   "name": "one-instantiated-empty-row",
+   "documentInline": {
+    "Probe": {
+     "Tally": 9,
+     "TallyMixed": 9,
+     "Flat": {
+      "FlatValue": 1
+     },
+     "Rows": [
+      {}
+     ]
+    }
+   }
+  },
+  {
+   "name": "one-filled-row",
+   "documentInline": {
+    "Probe": {
+     "Tally": 9,
+     "TallyMixed": 9,
+     "Flat": {
+      "FlatValue": 1
+     },
+     "Rows": [
+      {
+       "RowValue": 2
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "two-rows-second-filled",
+   "documentInline": {
+    "Probe": {
+     "Tally": 9,
+     "TallyMixed": 9,
+     "Flat": {
+      "FlatValue": 1
+     },
+     "Rows": [
+      {},
+      {
+       "RowValue": 5
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "three-rows-all-empty",
+   "documentInline": {
+    "Probe": {
+     "Tally": 9,
+     "TallyMixed": 9,
+     "Flat": {
+      "FlatValue": 1
+     },
+     "Rows": [
+      {},
+      {},
+      {}
+     ]
+    }
+   }
+  },
+  {
+   "name": "flat-empty-two-rows",
+   "documentInline": {
+    "Probe": {
+     "Tally": 9,
+     "TallyMixed": 9,
+     "Flat": {},
+     "Rows": [
+      {},
+      {}
+     ]
+    }
+   }
+  },
+  {
+   "name": "all-empty",
+   "documentInline": {
+    "Probe": {
+     "Tally": 9,
+     "TallyMixed": 9,
+     "Flat": {},
+     "Rows": []
+    }
+   }
+  }
+ ]
+}

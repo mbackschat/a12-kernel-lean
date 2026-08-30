@@ -34,6 +34,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-08-30-04"></a>
+### `SPEC-2026-08-30-04` — a starred group operand contributes a row count, beside a fixed operand's zero-or-one
+
+- `status`: pending
+- `clause`: [`02-logic-and-formal-errors.md` the Number-computation group-count admission paragraph](../spec/02-logic-and-formal-errors.md)
+- `delta`: the clause already recorded that `NumberOfFilledGroups(G*)` and the mixed `NumberOfFilledGroups(G*, Fixed)` are statically admitted in computations, and closed with an explicit non-claim — *"these are admission facts only; they do not establish computation runtime behavior for a starred operand."* Measured: a starred repeatable operand contributes that group's **instantiated row count**, and in a mixed list the two operand forms contribute unlike quantities that simply add — the fixed operand's zero-or-one plus the starred operand's row count.
+- `mechanism`: the operator is not a uniform per-operand presence tally with a wildcard spelling. Each operand form has its own result domain, so a checker cannot fold the list by asking one presence question per operand. The starred form's extent is the same in-capacity instantiated-row extent the validation carrier already uses, which makes the arms agree here; that is worth stating because the *fixed* form has them inverted on formal invalidity, so agreement is a measurement rather than the default.
+- `evidence`: [starred group-count checkpoint](sources/group-and-iteration-probes.md#src-starred-group-count-computation), one `:adapter:kernelProbe` request over seven documents at a12-dmkits `568fca72858430b355f46d2faee545b7f99fdbd5` (clean), `dmtool` 0.13.0, Kernel `30.8.1`, both codegen strategies with `enginesAgree: true` on every row, over a model whose four admission rows were re-derived first. Two discriminators: three instantiated empty rows count `3`, which no presence-bit or filled-row account reaches; and the document with the fixed group emptied leaves both targets equal, which is what separates the added contributions.
+- `surfaces`: any peer clause, checker, or catalog note that folds a `NumberOfFilledGroups` operand list by one presence predicate per operand, or that describes the starred spelling as a wildcard over the same zero-or-one contribution.
+- `local-scope`: **unimplemented and fail-closed.** This project's checked scalar computation admits only a list of fixed nonrepeatable operands, each contributing zero or one, and refuses any operand whose subtree carries a repeatable group. Both measured shapes are therefore refused rather than answered wrongly. The representation this needs is a second operand form with a row-count result domain, not the widened cell projection ruled out at [`SPEC-2026-08-30-03`](#spec-2026-08-30-03): the Kernel gives rows their own spelling instead of making the fixed operand see them.
+- `acceptance`: a12-dmkits confirms the three-empty-rows discriminator and the added mixed contributions on its own fixture, or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: none yet.
+
+
 <a id="spec-2026-08-30-03"></a>
 ### `SPEC-2026-08-30-03` — a repeatable descendant makes its shell count structurally, not by cell content
 
