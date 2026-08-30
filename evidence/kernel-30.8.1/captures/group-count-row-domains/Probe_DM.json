@@ -1,0 +1,202 @@
+{
+  "header" : {
+    "id" : "Probe_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Probe_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Flat",
+            "name" : "Flat",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Flat/FlatValue",
+                "name" : "FlatValue",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/ShellOne",
+            "name" : "ShellOne",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/ShellOne/Rows",
+                "name" : "Rows",
+                "Group" : {
+                  "repeatability" : 5,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/ShellOne/Rows/RowValue",
+                    "name" : "RowValue",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/ShellDeep",
+            "name" : "ShellDeep",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/ShellDeep/Mid",
+                "name" : "Mid",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Group",
+                    "id" : "/Probe/ShellDeep/Mid/Rows",
+                    "name" : "Rows",
+                    "Group" : {
+                      "repeatability" : 5,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Probe/ShellDeep/Mid/Rows/DeepValue",
+                        "name" : "DeepValue",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "NumberType",
+                            "NumberType" : {
+                              "maxFractionalDigits" : 0
+                            }
+                          }
+                        }
+                      } ]
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Tally",
+            "name" : "Tally",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/TallyTwo",
+            "name" : "TallyTwo",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/TallyComp",
+            "name" : "TallyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Tally",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(/Probe/ShellOne, /Probe/Flat)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tally counts filled groups."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/TallyTwoComp",
+            "name" : "TallyTwoComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TallyTwo",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(/Probe/ShellDeep, /Probe/Flat)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "TallyTwo counts filled groups."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/TallyStar",
+            "name" : "TallyStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/TallyStarComp",
+            "name" : "TallyStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TallyStar",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(/Probe/ShellDeep/Mid*)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "TallyStar counts Mid rows."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

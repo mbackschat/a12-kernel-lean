@@ -1,0 +1,30 @@
+{
+ "model": "Probe_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "mid-row-no-rows-key",
+   "document": "mid-row-no-rows-key.json"
+  },
+  {
+   "name": "mid-row-empty-rows",
+   "document": "mid-row-empty-rows.json"
+  },
+  {
+   "name": "mid-four-rows-over",
+   "document": "mid-four-rows-over.json"
+  },
+  {
+   "name": "mid-two-rows-with-leaf",
+   "document": "mid-two-rows-with-leaf.json"
+  },
+  {
+   "name": "mid-no-rows",
+   "document": "mid-no-rows.json"
+  }
+ ]
+}

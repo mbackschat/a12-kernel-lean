@@ -53,6 +53,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 
+<a id="spec-2026-08-30-09"></a>
+### `SPEC-2026-08-30-09` — an outer repeatable row is group content on its own, with no row beneath it
+
+- `status`: pending
+- `clause`: [`02-logic-and-formal-errors.md` §3 group content](../spec/02-logic-and-formal-errors.md)
+- `delta`: [`SPEC-2026-08-30-08`](#spec-2026-08-30-08) established that repetition depth does not bound the row constituent, and left one shape open: which *level's* row counts. Measured: the **outer** row alone. A shell whose repeatable descendant holds one row with no inner row beneath it counts as filled, on both spellings of that document — an outer row with no inner group key, and one with an explicitly empty inner list — while the no-row control does not count.
+- `mechanism`: the constituent is **any** instantiated row in the operand's subtree, not a row at the deepest repeatable level. The two readings coincide on every document where the levels are instantiated together, which is why a fixture that always fills both cannot tell them apart.
+- `evidence`: [row-domain checkpoint](sources/group-and-iteration-probes.md#src-group-count-row-domains), one `:adapter:kernelProbe` request over five documents, `validateFull` and `compute`, both codegen strategies agreeing on every row, `producer.source.state: CLEAN` at a12-dmkits `89871694469f582d3ec5d0df22dbacb53b0dde63`.
+- `limit`: one shell shape, scale-0 Numbers, capacities 3 and 5. Three or more repetition levels are unmeasured, as is an over-limit row at the inner level.
+- `surfaces`: any peer clause, checker, or evaluator that derives group content from rows at the innermost repeatable level, or that walks to the deepest declaration before asking whether a row exists. A fixture instantiating both levels together cannot distinguish that from the measured rule.
+- `local-scope`: [`GroupCount.lean`](../A12Kernel/Conformance/NumericComputation/GroupCount.lean) had this branch locked as this project's own reading and now replays it as a measured row.
+- `acceptance`: a12-dmkits confirms that an outer row with no inner row beneath it makes the shell count, or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-30-08"></a>
 ### `SPEC-2026-08-30-08` — repetition depth does not bound a group-count operand's row constituent
 

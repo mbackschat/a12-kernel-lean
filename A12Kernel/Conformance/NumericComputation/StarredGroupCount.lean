@@ -268,6 +268,64 @@ example :
 example : nestedCount [shellFixed, shellRowsStarred] 0 = some (.value 0) := by
   native_decide
 
+/-! ## A starred group that owns its own repeatable descendant
+
+The starred operand's own extent, on a group whose rows each contain a second repetition level.
+Measured at the [row-domain checkpoint](../../../docs/SOURCES.md#src-group-count-row-domains) on
+both codegen strategies.
+-/
+
+private def midLevel : RepeatableLevel := 13
+private def deepRowsLevel : RepeatableLevel := 14
+
+/-- `Mid` repeats and each of its rows owns the repeatable `Rows` below it. -/
+private def twoLevelModel : FlatModel :=
+  { fields :=
+      [ numberIn flatValueId ["Probe", "Flat"] "FlatValue"
+      , { numberIn rowValueId ["Probe", "ShellDeep", "Mid", "Rows"] "DeepValue" with
+            repeatableScope := [midLevel, deepRowsLevel] }
+      , numberIn targetId ["Probe"] "Target" ]
+    repeatableGroups :=
+      [ { level := midLevel, path := ["Probe", "ShellDeep", "Mid"], repeatability := some 3 }
+      , { level := deepRowsLevel, path := ["Probe", "ShellDeep", "Mid", "Rows"],
+          repeatability := some 5 } ] }
+
+private def midStar : SurfaceGroupCountOperand :=
+  .starred { base := .absolute, groups := ["Probe", "ShellDeep", "Mid"] }
+
+private def twoLevelCount (rows : List RowAddr) : Option NumericComputationResult :=
+  match elaborateNumericComputationOperation twoLevelModel ["Probe"] targetId
+      (.atom (.filledGroupCount [midStar])) with
+  | .error _ => none
+  | .ok checked =>
+      match checked.core.expression with
+      | .atom atom =>
+          ((⟨{ read := fun _ => emptyCell },
+             { instantiatedRows := rows, rawCells := fun _ => none },
+             [], fun _ _ => emptyCell, fun _ _ => emptyCell⟩ :
+            NumericComputationEvaluationContext).readCheckedNumericComputationAtom
+              (model := twoLevelModel) atom).toOption
+      | _ => none
+
+private def midRow (index : Nat) : RowAddr := { group := midLevel, path := [index] }
+private def deepRow (outer inner : Nat) : RowAddr :=
+  { group := deepRowsLevel, path := [outer, inner] }
+
+/- The operand counts **its own** rows and the repeatable level below it does not disturb them: two
+   `Mid` rows each carrying a leaf row count two, not four and not one. An account folding the inner
+   level into the same quantity answers four here. -/
+example :
+    [twoLevelCount [], twoLevelCount [midRow 1],
+      twoLevelCount [midRow 1, deepRow 1 1, midRow 2, deepRow 2 1]] =
+      [some (.value 0), some (.value 1), some (.value 2)] := by
+  native_decide
+
+/- **The over-limit row, on this carrier rather than inherited from the flat one.** Four rows in a
+   `max 3` group count three, so the starred operand's in-capacity domain survives the descendant
+   that makes this group different from the one where that rule was first measured. -/
+example : twoLevelCount [midRow 1, midRow 2, midRow 3, midRow 4] = some (.value 3) := by
+  native_decide
+
 /-! ## Growth channels, and the message type they feed
 
 The same checked operand list read for the *other* question the Kernel asks of it. These close the

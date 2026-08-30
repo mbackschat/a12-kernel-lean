@@ -755,10 +755,11 @@ example :
       (some (.value 2), some (.value 1)) := by
   native_decide
 
-/- **This project's own reading, not a measured row.** An outer row with no inner row under it makes
-   the shell count here, because the clause asks whether *any* repeatable descendant has an
-   instantiated row. Every measured document carries both levels or neither, so the Kernel's answer
-   for the half-instantiated shape is unknown; the checkpoint's `limit` names it. -/
+/- **The half-instantiated shape, measured.** An outer row with no inner row beneath it makes the
+   shell count: the clause asks whether *any* repeatable descendant has an instantiated row, and the
+   Kernel agrees on both spellings of that document — an outer row carrying no inner group key at
+   all, and one carrying an explicitly empty inner list. The outer row alone is therefore content,
+   which a reading that required a **leaf** row would deny on exactly this document. -/
 example : deepCount [midRow] = some (.value 2) := by
   native_decide
 
