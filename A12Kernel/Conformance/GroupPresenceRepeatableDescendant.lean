@@ -12,9 +12,11 @@ checkpoint](../../docs/SOURCES.md#src-repeatable-descendant-group-count): one in
 carrying no filled cell still makes the group count. These cases lock that this arm agrees, on the
 same discriminator. This module's own fixture exercises the row constituent, because inside a
 repeatable descendant a cell cannot exist without a row; the Kernel-side shape that separates both
-constituents against one operand is measured at that checkpoint instead. The compute arm deliberately
-refuses the shape instead, because its cell-list projection cannot express row instantiation at
-all; `ResolvedGroupReference.computationDescendants?` owns that boundary.
+constituents against one operand is measured at that checkpoint instead. The compute arm agrees
+wherever it carries the document: its **scalar** route still refuses, because a cell-list
+projection cannot express row instantiation at all, while its addressed route reads the rows.
+`ResolvedGroupReference.computationDescendants?` and `repeatableDescendantShape?` own that split
+and `Conformance/NumericComputation/GroupCount.lean` locks both sides.
 -/
 
 namespace A12Kernel.Conformance.GroupPresenceRepeatableDescendant

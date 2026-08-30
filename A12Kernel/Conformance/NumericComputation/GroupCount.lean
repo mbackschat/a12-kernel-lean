@@ -622,6 +622,44 @@ example : mixedShellCount (filled 3) (filled 9) (filled 7) 1 = some (.value 2) :
 example : mixedShellCount presentEmpty presentEmpty (filled 7) 0 = some (.value 1) := by
   native_decide
 
+/-! ### The same operand, in an atom with no star
+
+An operand list carrying a star elaborates to `filledGroupCountMixed`; an all-fixed one elaborates
+to the plain `filledGroupCount` atom. Both reach this evaluator over the same document, so a
+`Shell` operand's admissibility must not depend on whether some *other* operand in the list
+happens to be starred.
+-/
+
+private def shellPlainCount (clause preference : CheckedCell) (rows : Nat) :
+    Option NumericComputationResult :=
+  (NumericComputationEvaluationContext.readCheckedNumericComputationAtom
+    (model := repeatableShellModel)
+    { scalar := { read := shellRead clause preference }
+      document := shellDocument rows
+      outer := []
+      filterRead := fun _ _ => presentEmpty
+      starRead := fun _ _ => presentEmpty }
+    (.numeric (.filledGroupCount [shellGroup, preferencesGroup]))).toOption
+
+/- **The seam.** Same model, same document, same two references — only the atom shape differs from
+   the mixed case above, and the answer must not. Before the addressed evaluator carried its own
+   fixed reader it delegated this atom to the scalar one, which refuses a repeatable-descendant
+   operand outright, so `NumberOfFilledGroups(Shell, Preferences)` was refused while
+   `NumberOfFilledGroups(Shell, Preferences, Rows*)` counted the identical `Shell`. -/
+example :
+    shellPlainCount presentEmpty (filled 7) 1 =
+      shellAddressedCount repeatableShellModel presentEmpty (filled 7) 1 := by
+  native_decide
+
+/- Stated absolutely, so the agreement above is not two routes wrong together. -/
+example : shellPlainCount presentEmpty (filled 7) 1 = some (.value 2) := by
+  native_decide
+
+/- The control: removing the row drops the count on this atom too, so the row constituent reaches
+   the plain shape rather than the operand counting unconditionally. -/
+example : shellPlainCount presentEmpty (filled 7) 0 = some (.value 1) := by
+  native_decide
+
 /-! ## The self-validation message's referenced fields
 
 The measured message names its operands' subtree fields at any depth plus the computed target. The

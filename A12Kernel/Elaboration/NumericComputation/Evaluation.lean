@@ -286,6 +286,23 @@ def readGroupCountOperand
       | .error error => .error (NumericComputationFault.repeatableAddressing error)
       | .ok rows => .ok (GroupCountOperandReading.starredRows rows)
 
+/-- Count an all-fixed group-count operand list on the route that carries the document.
+
+    The addressed evaluator reaches this atom for a list with no star, and the scalar reader it
+    would otherwise delegate to must refuse a repeatable-descendant operand because a cell list
+    cannot express row instantiation. Delegating anyway would make one operand's admissibility a
+    function of whether some *other* operand in the list happened to be starred, since only a
+    starred sibling routes the list to the mixed atom. Both atom shapes therefore share
+    `readGroupCountOperand` and the operand fold; `readCheckedNumericComputationAtom_filledGroupCount_eq_mixed`
+    states the resulting agreement. -/
+def readFilledGroupCount
+    (context : NumericComputationEvaluationContext) (model : FlatModel)
+    (groups : List ResolvedGroupReference) :
+    Except NumericComputationFault NumericComputationResult := do
+  let readings ← groups.mapM fun reference =>
+    context.readGroupCountOperand model (.fixed reference)
+  pure (.value (numberOfFilledGroupsForComputationOperands readings))
+
 /-- Read one group-count operand as the growth channel its contribution still offers.
 
     This is the same operand list the value reading traverses, seen through the other question the
@@ -360,7 +377,7 @@ def readCheckedNumericComputationAtom
           (aggregate.evaluateComputation op context.document context.outer
             context.scalar.read context.filterRead context.starRead).mapError
               NumericComputationFault.repeatableAddressing)
-        (context.scalar.readFilledGroupCount model) source
+        (context.readFilledGroupCount model) source
 
 end NumericComputationEvaluationContext
 

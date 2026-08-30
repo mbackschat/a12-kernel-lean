@@ -48,15 +48,23 @@ theorem numericComputationEvaluationContext_aggregate_delegates
           NumericComputationFault.repeatableAddressing := by
   rfl
 
-/-- The addressed context resolves a fixed group count through its own scalar reader, so the
-group operand observes the scalar cells rather than an addressed row view. The count needs no
-document, outer environment, or star reader, and cannot silently acquire one here. -/
-theorem numericComputationEvaluationContext_filledGroupCount_delegates
+/-- A fixed group count acquires no iteration reader and no outer environment.
+
+    This restates a guard that used to say the count delegates to the scalar reader outright and
+    so needs no document at all. The measured repeatable-descendant shape falsified the *document*
+    half — a group whose only content is a repeatable descendant counts on an instantiated row, and
+    only the document carries rows — so the clause reads `document` deliberately. Everything else
+    the addressed context adds stays out: the count is invariant in `outer`, `filterRead`, and
+    `starRead`, which is what still separates it from an iterated or correlated read. -/
+theorem numericComputationEvaluationContext_filledGroupCount_ignoresIteration
     (context : NumericComputationEvaluationContext)
-    (groups : List ResolvedGroupReference) :
-    context.readCheckedNumericComputationAtom
+    (groups : List ResolvedGroupReference)
+    (outer : Env) (filterRead starRead : Env → FieldId → CheckedCell) :
+    ({ context with outer, filterRead, starRead } :
+        NumericComputationEvaluationContext).readCheckedNumericComputationAtom
         (model := model) (.numeric (.filledGroupCount groups)) =
-      context.scalar.readFilledGroupCount model groups := by
+      context.readCheckedNumericComputationAtom
+        (model := model) (.numeric (.filledGroupCount groups)) := by
   rfl
 
 /-- The full computation context retains the checked value-count source, authored constant, addressed readers, and structural-failure channel exactly. -/
@@ -690,5 +698,24 @@ theorem readGroupCountOperand_fixed_refuses_outside_both_shapes
   simp [NumericComputationEvaluationContext.readGroupCountOperand,
     NumericComputationEvaluationContext.readGroupContent, noCells, noRows, Except.map]
 
+/-- The two group-count atom shapes read an all-fixed operand list identically.
+
+    An authored list reaches `filledGroupCountMixed` only when some operand carries a star, so
+    without this law an operand's admissibility could depend on a **sibling's** form: the addressed
+    evaluator delegated the starless atom to the scalar reader, which necessarily refuses a
+    repeatable-descendant operand, while the mixed atom answered the identical operand from the
+    document. This states the invariant that closes that seam — atom shape is a routing detail and
+    carries no semantics of its own. -/
+theorem readCheckedNumericComputationAtom_filledGroupCount_eq_mixed
+    {model : FlatModel} (context : NumericComputationEvaluationContext)
+    (groups : List ResolvedGroupReference) :
+    context.readCheckedNumericComputationAtom (model := model)
+        (.numeric (.filledGroupCount groups)) =
+      context.readCheckedNumericComputationAtom (model := model)
+        (.filledGroupCountMixed (groups.map .fixed)) := by
+  simp [NumericComputationEvaluationContext.readCheckedNumericComputationAtom,
+    ScalarComputationContext.readNumericComputationAtomWith,
+    NumericComputationEvaluationContext.readFilledGroupCount, List.mapM_map,
+    Function.comp_def]
 
 end A12Kernel
