@@ -660,6 +660,53 @@ example : shellPlainCount presentEmpty (filled 7) 1 = some (.value 2) := by
 example : shellPlainCount presentEmpty (filled 7) 0 = some (.value 1) := by
   native_decide
 
+private def shellPlainRoute (clause preference : CheckedCell) (rows : Nat) :
+    Option NumericComputationResult :=
+  (AuthoredNumericExpr.evaluateCheckedComputationIn (model := repeatableShellModel)
+    (.atom (.numeric (.filledGroupCount [shellGroup, preferencesGroup])))
+    { scalar := { read := shellRead clause preference }
+      document := shellDocument rows
+      outer := []
+      filterRead := fun _ _ => presentEmpty
+      starRead := fun _ _ => presentEmpty }).toOption
+
+/- **Through the whole expression, not just the atom.** A structural fault pass runs before any
+   read, so an operand can be rejected there while the reader would have answered — and a case
+   written against the reader alone cannot see it. Both must admit the same operand. -/
+example : shellPlainRoute presentEmpty (filled 7) 1 = shellPlainCount presentEmpty (filled 7) 1 := by
+  native_decide
+
+/- The fault pass is model-structural and takes no document, so the rowless control must still
+   answer rather than refuse: whether a row exists is a reading, not an admission. -/
+example : shellPlainRoute presentEmpty (filled 7) 0 = some (.value 1) := by
+  native_decide
+
+/- A group outside **both** admitted shapes still refuses at that pass, which is what keeps the
+   widening from turning the structural gate off. -/
+example :
+    (AuthoredNumericExpr.evaluateCheckedComputationIn (model := repeatableShellModel)
+      (.atom (.numeric (.filledGroupCount [missingGroup, preferencesGroup])))
+      { scalar := { read := shellRead presentEmpty (filled 7) }
+        document := shellDocument 1
+        outer := []
+        filterRead := fun _ _ => presentEmpty
+        starRead := fun _ _ => presentEmpty }).toOption = none := by
+  native_decide
+
+/- **The one operand the two predicates must disagree on.** A repeatable-descendant shell is an
+   admitted count operand — the pass above and the reader both take it — and is still not scalar
+   evaluable, because the scalar route reads cells and the row constituent is not a cell. Sharing
+   one admission predicate between the gate and the reader must not pull this third site along
+   with them; the flat sibling stays scalar evaluable on the same model. -/
+example :
+    CheckedNumericComputationAtom.supportsScalarEvaluation
+        (model := repeatableShellModel)
+        (.numeric (.filledGroupCount [shellGroup, preferencesGroup])) = false ∧
+      CheckedNumericComputationAtom.supportsScalarEvaluation
+        (model := repeatableShellModel)
+        (.numeric (.filledGroupCount [preferencesGroup, preferencesGroup])) = true := by
+  native_decide
+
 /-! ## The self-validation message's referenced fields
 
 The measured message names its operands' subtree fields at any depth plus the computed target. The

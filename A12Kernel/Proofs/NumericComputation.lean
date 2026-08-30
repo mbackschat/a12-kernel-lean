@@ -698,6 +698,27 @@ theorem readGroupCountOperand_fixed_refuses_outside_both_shapes
   simp [NumericComputationEvaluationContext.readGroupCountOperand,
     NumericComputationEvaluationContext.readGroupContent, noCells, noRows, Except.map]
 
+/-- The pre-read structural gate and the operand reader refuse exactly together.
+
+    Two sites decide whether a fixed group-count operand is admitted, and only one of them runs on
+    every route, so a widening that reaches the reader alone leaves the gate rejecting an operand
+    the reader would have counted — which is how the repeatable-descendant shell stayed refused
+    end to end after its reader already answered. Both now decide through
+    `computationOperandAdmitted`, and this states that the equivalence is the shared predicate
+    rather than a coincidence of two matches. -/
+theorem readGroupCountOperand_fixed_error_iff_notAdmitted
+    {model : FlatModel} (context : NumericComputationEvaluationContext)
+    (reference : ResolvedGroupReference) :
+    context.readGroupCountOperand model (.fixed reference) =
+        .error (NumericComputationFault.unsupportedGroupCount reference.path) ↔
+      reference.computationOperandAdmitted model = false := by
+  simp only [NumericComputationEvaluationContext.readGroupCountOperand,
+    NumericComputationEvaluationContext.readGroupContent,
+    ResolvedGroupReference.computationOperandAdmitted]
+  cases cells : reference.computationDescendants? model <;>
+    cases rows : reference.repeatableDescendantShape? model <;>
+      simp [Except.map]
+
 /-- The two group-count atom shapes read an all-fixed operand list identically.
 
     An authored list reaches `filledGroupCountMixed` only when some operand carries a star, so

@@ -464,10 +464,12 @@ def CheckedNumericComputationAtom.numericComputationFault? :
   | .tokenValueCount _ => none
   | .booleanValueCount _ => none
   -- A group operand's boundary is model-structural, so it is decided here rather than left
-  -- to the reading branch, where a data-dependent poison could otherwise hide it.
+  -- to the reading branch, where a data-dependent poison could otherwise hide it. It must be the
+  -- reader's own admission and not a narrower copy: refusing here what the reader would count
+  -- makes the gate, rather than the operand, decide the answer.
   | .numeric (.filledGroupCount groups) =>
       match groups.find? fun reference =>
-          (reference.computationDescendants? model).isNone with
+          !reference.computationOperandAdmitted model with
       | some reference => some (.unsupportedGroupCount reference.path)
       | none => none
   | .numeric source =>

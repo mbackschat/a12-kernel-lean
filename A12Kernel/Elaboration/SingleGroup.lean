@@ -201,6 +201,23 @@ def repeatableDescendantShape? (reference : ResolvedGroupReference) (model : Fla
     else
       some repeatables
 
+/-- Whether the computation arm admits this group as a count operand at all.
+
+    The one place the two admitted shapes are named together: a subtree of ordinary descendant
+    cells, or a repeatable descendant whose rows the document carries. Both the pre-read structural
+    fault pass and the operand reader decide admission through this, so a widening cannot reach one
+    and leave the other refusing the same operand — the divergence that
+    `readGroupCountOperand_fixed_error_iff_notAdmitted` now forbids.
+
+    **Not every site that tests `computationDescendants?` should move to this one.**
+    `supportsScalarEvaluation` asks whether the *scalar* route can evaluate the atom, and that
+    route reads cells only, so a repeatable descendant is genuinely outside it and the narrower
+    query is the right one there. The distinction is which route the caller describes, not which
+    predicate is newer. -/
+def computationOperandAdmitted (reference : ResolvedGroupReference) (model : FlatModel) : Bool :=
+  (reference.computationDescendants? model).isSome ||
+    (reference.repeatableDescendantShape? model).isSome
+
 end ResolvedGroupReference
 
 /-- Shared failures while resolving one group reference that must denote either a nonrepeatable ordinary group or the already-selected `RuleGroup` instance. -/
