@@ -832,6 +832,7 @@ run_cmd do
 #print axioms A12Kernel.computedNumberSelfValidation_notFired_iff
 #print axioms A12Kernel.computedNumberSelfValidation_closed_value
 #print axioms A12Kernel.computedNumberSelfValidation_below_omission_iff
+#print axioms A12Kernel.computedNumberSelfValidation_above_value
 #print axioms A12Kernel.starredChannels_separate_at_capacity
 #print axioms A12Kernel.selfValidationFillToFix_all_or_nothing
 #print axioms A12Kernel.starredGroupCount_canGrow_eq_declared_extent_movement

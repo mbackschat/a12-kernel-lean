@@ -4,10 +4,10 @@ import A12Kernel.Semantics.GroupPresence
 
 /-! # Laws of the computed target's implicit self-validation message
 
-These are internal consequences of the chosen account, not correspondence claims. The measured
-region is stated as such: the boundary law holds in every direction, while the omission law is
-conditioned on the computed value lying below its seed, which is where every retained observation
-sits.
+These are internal consequences of the chosen account, not correspondence claims. The two
+directional laws partition the firing region: below its seed the message types OMISSION exactly on
+headroom, and above it VALUE regardless of headroom. Both sides are now measured, the second on the
+document this project's own captures could not supply.
 -/
 
 namespace A12Kernel
@@ -48,9 +48,8 @@ theorem computedNumberSelfValidation_closed_value
 
 /-- Below its seed, the message types OMISSION exactly when some operand can still grow.
 
-    The hypothesis is the measured region rather than a convenience: every retained document has
-    its computed value below its stored one, so nothing here separates this directional reading
-    from a coarser one that ignores the gap's sign. -/
+    The hypothesis is the region where growth is the closing direction, not a convenience: above
+    the seed a grow-only quantity moves further away, which the companion law below states. -/
 theorem computedNumberSelfValidation_below_omission_iff
     (stored computed : Rat) (operands : List ComputationOperandGrowth)
     (below : normalizedComparisonValue computed < normalizedComparisonValue stored) :
@@ -62,6 +61,25 @@ theorem computedNumberSelfValidation_below_omission_iff
     NumericComparisonOp.holds, NumericComparisonOp.fillCanBreak,
     numericDifferenceFillCanClose, computedNumberFillability, NumericFillability.fixed]
   cases growth : operands.any ComputationOperandGrowth.canGrow <;> simp [differs, below]
+
+/-- Above its seed, the message types VALUE whatever headroom the operands have.
+
+    This is the half the directional reading adds over a coarser "can the quantity move at all"
+    one, and it is the half that had never been measured on either estate — every retained document
+    sat below its seed, where the two readings agree. It holds because these operands are grow-only
+    and the stored side is fixed, so nothing can close a gap that growth widens. -/
+theorem computedNumberSelfValidation_above_value
+    (stored computed : Rat) (operands : List ComputationOperandGrowth)
+    (above : normalizedComparisonValue stored < normalizedComparisonValue computed) :
+    computedNumberSelfValidation stored computed operands = .fired .value := by
+  have differs : ¬ normalizedComparisonValue computed = normalizedComparisonValue stored :=
+    fun equal => absurd above (by simp [equal])
+  have notBelow : ¬ normalizedComparisonValue computed < normalizedComparisonValue stored :=
+    Std.not_gt_of_lt above
+  simp only [computedNumberSelfValidation, NumericComparisonOp.eval,
+    NumericComparisonOp.holds, NumericComparisonOp.fillCanBreak,
+    numericDifferenceFillCanClose, computedNumberFillability, NumericFillability.fixed]
+  simp [differs, notBelow]
 
 /-- The two starred channels are independent, at every declared capacity.
 
