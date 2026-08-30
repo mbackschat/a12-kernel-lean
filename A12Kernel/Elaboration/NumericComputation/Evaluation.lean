@@ -457,6 +457,15 @@ def NumericComputationAtom.numericComputationFault? :
   -- No model is available on this route, so no single operand can be named.
   | .filledGroupCount _ => some .groupCountNeedsModel
 
+/-- The structural fault a fixed group-count operand carries, if any.
+
+    Shared by both group-count atoms so the pre-read gate cannot end up narrower than the reader
+    on one of them; `readGroupCountOperand_fixed_error_iff_notAdmitted` ties it to the reader. -/
+def fixedGroupCountOperandFault? (model : FlatModel) (reference : ResolvedGroupReference) :
+    Option NumericComputationFault :=
+  if reference.computationOperandAdmitted model then none
+  else some (.unsupportedGroupCount reference.path)
+
 def CheckedNumericComputationAtom.numericComputationFault? :
     CheckedNumericComputationAtom model → Option NumericComputationFault
   | .firstFilled _ => none
@@ -464,18 +473,23 @@ def CheckedNumericComputationAtom.numericComputationFault? :
   | .tokenValueCount _ => none
   | .booleanValueCount _ => none
   -- A group operand's boundary is model-structural, so it is decided here rather than left
-  -- to the reading branch, where a data-dependent poison could otherwise hide it. It must be the
+  -- to the reading branch, where a data-dependent poison could otherwise hide it: `evalOrdered`
+  -- stops at a left poison, so an ungated atom's structural fault is never reached. It must be the
   -- reader's own admission and not a narrower copy: refusing here what the reader would count
   -- makes the gate, rather than the operand, decide the answer.
   | .numeric (.filledGroupCount groups) =>
-      match groups.find? fun reference =>
-          !reference.computationOperandAdmitted model with
-      | some reference => some (.unsupportedGroupCount reference.path)
-      | none => none
+      groups.findSome? (fixedGroupCountOperandFault? model)
   | .numeric source =>
       NumericComputationAtom.numericComputationFault? source
   | .sumOfProducts _ => none
-  | .filledGroupCountMixed _ => none
+  -- The same gate, because this atom holds the same `fixed` operand form. Only the fixed operands
+  -- are pre-decided: a starred operand's refusal is a `StarAddressingError` over the document's
+  -- own row topology, which no model-structural pass can answer.
+  | .filledGroupCountMixed operands =>
+      operands.findSome? fun operand =>
+        match operand with
+        | .fixed reference => fixedGroupCountOperandFault? model reference
+        | .starred _ => none
 
 namespace LoweredNumericExpr
 

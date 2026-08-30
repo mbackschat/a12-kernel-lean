@@ -719,6 +719,21 @@ theorem readGroupCountOperand_fixed_error_iff_notAdmitted
     cases rows : reference.repeatableDescendantShape? model <;>
       simp [Except.map]
 
+/-- The two group-count atom shapes gate an all-fixed operand list identically.
+
+    The companion to the reading law below, at the other site that can refuse an operand. Without
+    it the mixed atom could stay ungated, and `evalOrdered`'s left-poison short circuit would then
+    hide its structural fault behind a branch that is never reached — the fault reported for one
+    atom and swallowed for the other over the identical operand. -/
+theorem numericComputationFault_filledGroupCount_eq_mixed
+    {model : FlatModel} (groups : List ResolvedGroupReference) :
+    CheckedNumericComputationAtom.numericComputationFault?
+        (model := model) (.numeric (.filledGroupCount groups)) =
+      CheckedNumericComputationAtom.numericComputationFault?
+        (model := model) (.filledGroupCountMixed (groups.map .fixed)) := by
+  simp [CheckedNumericComputationAtom.numericComputationFault?, List.findSome?_map,
+    Function.comp_def]
+
 /-- The two group-count atom shapes read an all-fixed operand list identically.
 
     An authored list reaches `filledGroupCountMixed` only when some operand carries a star, so

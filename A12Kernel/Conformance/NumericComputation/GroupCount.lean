@@ -707,6 +707,54 @@ example :
         (.numeric (.filledGroupCount [preferencesGroup, preferencesGroup])) = true := by
   native_decide
 
+/-! ### The gate reaches the mixed atom too
+
+The pre-read pass exists because a structural fault must not be hidden by data. `evalOrdered`
+stops at a left poison without reaching the right operand, so an atom the pass skips can carry an
+unsupported operand that is never reported. Both group-count atoms hold the same `fixed` operand
+form and both must be pre-checked.
+-/
+
+private def poisonCell : CheckedCell :=
+  { rawPresent := true, parsed := none, findings := [.malformed] }
+
+private def poisonedBeside (right : CheckedNumericComputationAtom model) :
+    Option NumericComputationFault :=
+  match AuthoredNumericExpr.evaluateCheckedComputationIn (model := model)
+      (.binary .add
+        (.atom (.numeric (.field (numberIn detailsAmountId ["Root", "Details"] "Amount"))))
+        (.atom right))
+      { scalar := { read := fun id => if id == detailsAmountId then poisonCell else presentEmpty }
+        document := shellDocument 0
+        outer := []
+        filterRead := fun _ _ => presentEmpty
+        starRead := fun _ _ => presentEmpty } with
+  | .error fault => some fault
+  | .ok _ => none
+
+/- **The discriminator, and it is the poison that makes it one.** One unsupported operand, two atom
+   shapes, one short-circuiting sum. The plain atom reports the structural fault because the pass
+   runs before any read; the mixed atom must not answer poison instead, which is the reader's
+   result for a branch it never reached. Atom construction is direct here because the elaborator
+   emits the mixed shape only for a list carrying a star, and the gate is a property of the atom. -/
+example :
+    poisonedBeside (.filledGroupCountMixed [.fixed missingGroup, .fixed preferencesGroup]) =
+      poisonedBeside (.numeric (.filledGroupCount [missingGroup, preferencesGroup])) := by
+  native_decide
+
+/- Stated absolutely, so the agreement above is not both shapes staying silent together. -/
+example :
+    poisonedBeside (.filledGroupCountMixed [.fixed missingGroup, .fixed preferencesGroup]) =
+      some (.unsupportedGroupCount ["Root", "Missing"]) := by
+  native_decide
+
+/- The control: an admitted operand list beside the same poison reports no structural fault, so the
+   gate is not refusing every mixed atom it is now given. -/
+example :
+    poisonedBeside (.filledGroupCountMixed [.fixed detailsGroup, .fixed preferencesGroup]) =
+      none := by
+  native_decide
+
 /-! ## The self-validation message's referenced fields
 
 The measured message names its operands' subtree fields at any depth plus the computed target. The
