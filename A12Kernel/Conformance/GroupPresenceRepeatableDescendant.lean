@@ -10,9 +10,9 @@ a repeatable descendant.
 That shape is measured at the [repeatable-descendant
 checkpoint](../../docs/SOURCES.md#src-repeatable-descendant-group-count): one instantiated row
 carrying no filled cell still makes the group count. These cases lock that this arm agrees, on the
-same discriminator. Neither constituent can be varied against the other in one shape — a cell needs
-a row wherever rows exist — so the disjunction here is the retained account rather than a single
-measured contrast. The compute arm deliberately
+same discriminator. This module's own fixture exercises the row constituent, because inside a
+repeatable descendant a cell cannot exist without a row; the Kernel-side shape that separates both
+constituents against one operand is measured at that checkpoint instead. The compute arm deliberately
 refuses the shape instead, because its cell-list projection cannot express row instantiation at
 all; `ResolvedGroupReference.computationDescendants?` owns that boundary.
 -/
