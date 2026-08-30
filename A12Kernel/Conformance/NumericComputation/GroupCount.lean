@@ -439,6 +439,19 @@ def repeatableShellModel : FlatModel :=
           repeatableScope := [10] }]
     repeatableGroups := [{ level := 10, path := ["Root", "Shell", "Rows"] }] }
 
+def shellNoteId : FieldId := 6
+
+/-- The shell owning **both** constituents at once: an ordinary field of its own beside a repeatable
+    descendant. Every other fixture here carries one constituent or the other, which leaves the
+    clause's disjunction unexercised inside a single operand — the shape a12-dmkits measured. -/
+def mixedShellModel : FlatModel :=
+  { fields := [
+      numberIn preferencesChoiceId ["Root", "Preferences"] "Choice",
+      numberIn shellNoteId ["Root", "Shell"] "Note",
+      { numberIn shellClauseId ["Root", "Shell", "Rows"] "Clause" with
+          repeatableScope := [10] }]
+    repeatableGroups := [{ level := 10, path := ["Root", "Shell", "Rows"] }] }
+
 def shellGroup : ResolvedGroupReference :=
   { path := ["Root", "Shell"], origin := .path }
 
@@ -565,6 +578,48 @@ example :
 /- The established nonrepeatable shell is untouched by the widening — same model, same two-level
    descendant, same answer as the scalar route gives above. -/
 example : shellAddressedCount shellModel (filled 24) (filled 7) 0 = some (.value 2) := by
+  native_decide
+
+/-! ### The mixed shell, where one operand carries both constituents
+
+Every fixture above holds one constituent or the other, so none of them exercises the clause's
+disjunction *inside* one operand. This is the shape a12-dmkits measured — a group owning an ordinary
+field beside a repeatable descendant — reproduced here on this project's own model.
+-/
+
+private def mixedShellRead (note clause preference : CheckedCell) : FieldId → CheckedCell := fun id =>
+  if id == shellNoteId then note
+  else if id == shellClauseId then clause
+  else if id == preferencesChoiceId then preference
+  else presentEmpty
+
+private def mixedShellCount (note clause preference : CheckedCell) (rows : Nat) :
+    Option NumericComputationResult :=
+  (NumericComputationEvaluationContext.readCheckedNumericComputationAtom
+    (model := mixedShellModel)
+    { scalar := { read := mixedShellRead note clause preference }
+      document := shellDocument rows
+      outer := []
+      filterRead := fun _ _ => presentEmpty
+      starRead := fun _ _ => presentEmpty }
+    (.filledGroupCountMixed [.fixed shellGroup, .fixed preferencesGroup])).toOption
+
+/- **The cell constituent alone**, with no row instantiated anywhere. -/
+example : mixedShellCount (filled 3) presentEmpty (filled 7) 0 = some (.value 2) := by
+  native_decide
+
+/- **The row constituent alone**, with the shell's own field empty. Either suffices, which is what
+   makes the clause a disjunction rather than a cell scan with a row fallback. -/
+example : mixedShellCount presentEmpty presentEmpty (filled 7) 1 = some (.value 2) := by
+  native_decide
+
+/- Both together still contribute one, since the operand is one declared entity. -/
+example : mixedShellCount (filled 3) (filled 9) (filled 7) 1 = some (.value 2) := by
+  native_decide
+
+/- **The neither-constituent control**, which is what keeps the three rows above from being an
+   unconditional count. -/
+example : mixedShellCount presentEmpty presentEmpty (filled 7) 0 = some (.value 1) := by
   native_decide
 
 /-! ## The self-validation message's referenced fields
