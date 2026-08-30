@@ -53,6 +53,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 
+<a id="spec-2026-08-30-10"></a>
+### `SPEC-2026-08-30-10` — an over-limit row stamps every repeatable group between it and its cell, not only the cell
+
+- `status`: pending
+- `clause`: [`04-numbers-and-decimals.md` over-capacity finding multiplicity](../spec/04-numbers-and-decimals.md), refining the address roles [`01-data-model.md`](../spec/01-data-model.md) records for `zuGrosseZeile` / `zuGrosseKontextnummer`
+- `delta`: the clause said one group-level row finding plus one field-local context-number finding **per placed over-capacity cell**. That predicts two findings for a row carrying one cell, and the measured answer is **three**: `zuGrosseZeile` on the row, and `zuGrosseKontextnummer` on both the intermediate repeatable **group** and the leaf field. The intermediate address is a group, not a placed cell, so the standing rule does not generate it.
+- `mechanism`: the context-number stamp follows the **address chain** from the over-limit row down to each placed cell, marking every repeatable group on the way, rather than being emitted once per cell. A flat repeatable group has no intermediate address, which is why the earlier count matched there and is a special case rather than the general rule.
+- `evidence`: [row-domain checkpoint](sources/group-and-iteration-probes.md#src-group-count-row-domains), the `mid-four-rows-over` row — four rows in a `max 3` group whose row owns a repeatable `Rows` holding one leaf cell. Both codegen strategies report the identical three findings with identical addresses, `producer.source.state: CLEAN` at a12-dmkits `89871694469f582d3ec5d0df22dbacb53b0dde63`.
+- `limit`: one nesting depth between row and cell, one placed cell, capacity 3 at the outer level. Not measured: two intermediate levels, several placed cells beneath one over-limit row, an over-limit row at the **inner** level, and whether an unplaced declaration contributes.
+- `surfaces`: any peer clause, checker, or Explain consumer that derives over-capacity finding multiplicity from the placed cells alone. It will under-report by one finding per intermediate repeatable group, and a flat fixture cannot show it.
+- `local-scope`: this project models the over-repetition cell overlay but not the finding addresses, so there is no Lean owner to correct; recorded as an observation for [SG10](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration).
+- `acceptance`: a12-dmkits confirms the intermediate-group finding on its own nested fixture, or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-30-09"></a>
 ### `SPEC-2026-08-30-09` — an outer repeatable row is group content on its own, with no row beneath it
 
