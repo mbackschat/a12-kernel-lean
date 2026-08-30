@@ -37,7 +37,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-08-30-05"></a>
 ### `SPEC-2026-08-30-05` — declared capacity bounds a starred operand's message polarity
 
-- `status`: pending
+- `status`: accepted
 - `clause`: [`10-validation-and-polarity.md` the "same rule fires either type" list](../spec/10-validation-and-polarity.md)
 - `delta`: the list enumerated the shapes whose message type is computed from the data and carried no starred-operand entry, and the grow-only note stated the rule without its boundary. Measured: a starred operand normally types OMISSION because its extent can gain a row, **declared capacity ends that**, and headroom is read per operator against its own quantity rather than once per operand.
 - `mechanism`: this is the clause's own directional fillability reaching a carrier it had not been measured on, not a new rule. What is new is the boundary and the channel split: at capacity with every row empty, one document has the two counts typing VALUE while a `Sum` over the same starred group types OMISSION, because a count grows only by rows and a sum also by fills.
@@ -47,7 +47,9 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `local-scope`: unimplemented. This project models validation polarity but has no implicit computation self-validation message carrier, so there is nothing here for the rule to be wrong in yet.
 - `acceptance`: a12-dmkits measures the at-capacity rows — a starred group at declared capacity typing VALUE, one row below typing OMISSION — or supplies the contrary measurement. Its existing below-capacity rows do not settle it.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
-- `reviewed a12-dmkits revision`: none yet. The operand-form half was independently measured at `42fdec77f`; the capacity boundary was sent to the peer as a correction before that fixture landed.
+- `reviewed a12-dmkits revision`: `08987fc8e`, read here rather than taken on report. `NestedGroupFillCountLawsTest.polarityTracksTheQuantitysOwnHeadroomAndNotTheStar` asserts all six rows on the peer's own `Riders` group at declared max 5 — at capacity both starred targets `VALUE_ERROR`, one row below both `OMISSION_ERROR`, and at capacity with empty rows the count `VALUE_ERROR` against the sum `OMISSION_ERROR`. A second model, a second engine, and the same result.
+- `not reproduced there`: the peer's rows establish the capacity boundary and the count-versus-sum split. They do not establish the wildcard-free control sitting at `VALUE_ERROR` beside a starred `Sum` at `OMISSION_ERROR` in one run, which remains this project's witness alone; the peer marked it as unreproduced on its side rather than letting it read as jointly held.
+- `disposition`: the round also retired a corollary the peer had drawn from its own field-count lock, that a starred operand can never reach all-filled. Both projects had measured only below capacity, where the false account fits every row; [`LF114`](LEAN-FINDINGS.md#lf114--both-sides-sampling-one-side-of-an-unnamed-boundary-agree-and-re-derivation-cannot-break-the-tie) records why mutual confirmation could not catch it.
 
 
 <a id="spec-2026-08-30-04"></a>
