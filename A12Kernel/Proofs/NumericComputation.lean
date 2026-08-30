@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericComputation
+import A12Kernel.Proofs.GroupPresence
 import A12Kernel.Proofs.Observation
 import A12Kernel.Proofs.SingleGroupElaboration
 
@@ -656,5 +657,52 @@ theorem groupPresentForComputation_of_subtreeMember
   exact List.any_eq_true.mpr
     ⟨observeCell .computation (context.read declaration.id),
       List.mem_map_of_mem member, present⟩
+
+/-- `mapM` over a mapped list is `mapM` of the composite. -/
+private theorem mapM_map_except {α β γ : Type}
+    (h : α → β) (f : β → Except NumericComputationFault γ) :
+    ∀ list : List α, (list.map h).mapM f = list.mapM (fun element => f (h element))
+  | [] => rfl
+  | element :: rest => by
+      simp only [List.map_cons, List.mapM_cons, mapM_map_except h f rest]
+
+/-- A pointwise `Except.map` lifts out of `mapM`, refusal included. -/
+private theorem mapM_except_map {α β γ : Type}
+    (f : α → Except NumericComputationFault β) (g : β → γ) :
+    ∀ list : List α,
+      list.mapM (fun element => (f element).map g) = (list.mapM f).map (List.map g)
+  | [] => rfl
+  | element :: rest => by
+      simp only [List.mapM_cons, mapM_except_map f g rest]
+      cases f element with
+      | error _ => rfl
+      | ok _ =>
+          cases rest.mapM f with
+          | error _ => rfl
+          | ok _ => rfl
+
+/-- Widening the group count did not change what the established form answers.
+
+    The addressed evaluator's mixed arm and the scalar fixed-only reader agree on every operand
+    list the two can both hold — same descendant extent, same cell reads, same count — and they
+    agree on refusal too, so the widening cannot turn a rejected group into an answer. This is the
+    statement behind `readGroupCountOperand`'s claim that the two forms cannot disagree about a
+    group they both reach, which was otherwise only a comment. -/
+theorem filledGroupCountMixed_fixed_eq_scalarCount
+    {model : FlatModel} (context : NumericComputationEvaluationContext)
+    (groups : List ResolvedGroupReference) :
+    context.readCheckedNumericComputationAtom
+        (model := model)
+        (.filledGroupCountMixed (groups.map CheckedGroupCountOperand.fixed)) =
+      context.scalar.readFilledGroupCount model groups := by
+  simp only [NumericComputationEvaluationContext.readCheckedNumericComputationAtom,
+    ScalarComputationContext.readFilledGroupCount,
+    NumericComputationEvaluationContext.readGroupCountOperand, mapM_map_except, mapM_except_map]
+  cases groups.mapM (context.scalar.readGroupDescendants model) with
+  | error _ => rfl
+  | ok observed =>
+      simp only [Except.map, bind, Except.bind, pure, Except.pure,
+        numberOfFilledGroupsForComputationOperands_fixed]
+
 
 end A12Kernel

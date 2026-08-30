@@ -104,20 +104,29 @@ def readDateTimeDifferenceOperand (context : ScalarComputationContext) :
       | none => throw .worldRequired
   | _ => throw .unsupportedDateTimeDifferenceOperand
 
-/-- Count one resolved fixed multi-group operand list in the computation arm. Each group is
-decided by its own descendant reads through this same context, so the count observes the same
-cells the surrounding computation observes; it deliberately interprets them differently, since
-a poisoned cell is present here while an ordinary numeric read of it poisons the result. A
-group outside the admitted scalar boundary refuses explicitly rather than counting as absent. -/
+/-- Observe one fixed group's descendant cells in the computation arm.
+
+The reads go through this same context, so the count observes the same cells the surrounding
+computation observes; it deliberately interprets them differently, since a poisoned cell is
+present here while an ordinary numeric read of it poisons the result. A group outside the
+admitted scalar boundary refuses explicitly rather than observing as absent. Both group-count
+readers share this step, which is what `filledGroupCountMixed_fixed_eq_scalarCount` turns into a
+statement about the two counts. -/
+def readGroupDescendants (context : ScalarComputationContext) (model : FlatModel)
+    (reference : ResolvedGroupReference) :
+    Except NumericComputationFault (List CellObservation) :=
+  match reference.computationDescendants? model with
+  | none => throw (NumericComputationFault.unsupportedGroupCount reference.path)
+  | some descendants =>
+      pure (descendants.map fun declaration =>
+        observeCell .computation (context.read declaration.id))
+
+/-- Count one resolved fixed multi-group operand list in the computation arm, each group decided
+by its own descendant observation. -/
 def readFilledGroupCount (context : ScalarComputationContext) (model : FlatModel)
     (groups : List ResolvedGroupReference) :
     Except NumericComputationFault NumericComputationResult := do
-  let observed ← groups.mapM fun reference =>
-    match reference.computationDescendants? model with
-    | none => throw (NumericComputationFault.unsupportedGroupCount reference.path)
-    | some descendants =>
-        pure (descendants.map fun declaration =>
-          observeCell .computation (context.read declaration.id))
+  let observed ← groups.mapM (context.readGroupDescendants model)
   pure (.value (numberOfFilledGroupsForComputation observed))
 
 /-- Share every non-aggregate computation atom branch while allowing the direct and addressed evaluators to supply their own aggregate projection and group-count projection. Group presence is supplied rather than shared because only a model-carrying caller can enumerate a group's descendants. -/
@@ -226,6 +235,24 @@ end ScalarComputationContext
 
 namespace NumericComputationEvaluationContext
 
+/-- Read one group-count operand into its contribution.
+
+    A **fixed** operand takes exactly the descendant extent and cell reads the scalar fixed-only
+    reader takes, which is what makes the two forms agree on any list they can both hold — stated
+    as `filledGroupCountMixed_fixed_eq_scalarCount` rather than left to this comment. A **starred**
+    operand takes the in-capacity instantiated row count, the quantity this route carries the
+    document topology for. -/
+def readGroupCountOperand
+    (context : NumericComputationEvaluationContext) (model : FlatModel) :
+    CheckedGroupCountOperand model →
+      Except NumericComputationFault GroupCountOperandReading
+  | .fixed reference =>
+      (context.scalar.readGroupDescendants model reference).map GroupCountOperandReading.fixed
+  | .starred source =>
+      match source.inCapacityRowCount context.document context.outer with
+      | .error error => .error (NumericComputationFault.repeatableAddressing error)
+      | .ok rows => .ok (GroupCountOperandReading.starredRows rows)
+
 /-- Evaluate one model-checked atom against its complete direct/repeatable computation inputs. Addressing failures stay explicit and cannot collapse into a numeric value, clean absence, or formal poison. -/
 def readCheckedNumericComputationAtom
     (context : NumericComputationEvaluationContext) :
@@ -256,23 +283,7 @@ def readCheckedNumericComputationAtom
       (source.evaluateComputation context.document context.outer
         context.starRead).mapError NumericComputationFault.repeatableAddressing
   | .filledGroupCountMixed operands => do
-      -- Each operand is read into its own contribution and the fold adds them. A fixed operand
-      -- keeps the cell projection the fixed-only form uses, so the two forms cannot disagree about
-      -- a group they both reach; a starred operand contributes the in-capacity instantiated row
-      -- count, which is the quantity this route carries the topology for.
-      let readings ← operands.mapM fun operand =>
-        match operand with
-        | .fixed reference =>
-            match reference.computationDescendants? model with
-            | none => throw (NumericComputationFault.unsupportedGroupCount reference.path)
-            | some descendants =>
-                pure (GroupCountOperandReading.fixed
-                  (descendants.map fun declaration =>
-                    observeCell .computation (context.scalar.read declaration.id)))
-        | .starred source =>
-            match source.inCapacityRowCount context.document context.outer with
-            | .error error => throw (NumericComputationFault.repeatableAddressing error)
-            | .ok rows => pure (GroupCountOperandReading.starredRows rows)
+      let readings ← operands.mapM (context.readGroupCountOperand model)
       pure (.value (numberOfFilledGroupsForComputationOperands readings))
   | .numeric source =>
       context.scalar.readNumericComputationAtomWith
