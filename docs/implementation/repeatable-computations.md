@@ -4,6 +4,17 @@ The exact-address repeatable half of §11. Scalar, fixed, and nonrepeatable comp
 
 ### §11 — calculations and formal checking
 
+<a id="cap-repeatable-string-constant-computation"></a>
+#### Repeatable ordinary String constant
+
+- `boundary`: One repeatable ordinary String target takes a bare authored literal over the shared [repeatable-target certificate](../../A12Kernel/Elaboration/AddressedRepeatableTarget.lean), so placement is containment: the target's own group and every ancestor admit it, and a group the target does not lie below is refused with the measured `MVK_ERROR_FIELD_NOT_IN_RULEGROUP`. The literal has no operand, so the target's own repeatable scope is the only source of iteration.
+- `boundary`: Execution writes the one root attempt once per physical target row under an exact `CellAddr`, and a group with no instantiated row yields no outcome at all. The root attempt reuses `StringTerm.store`, so an empty literal is a no-value rather than an accepted empty string, by the same clause concatenation uses. Each row is then classified by the declaration's own policy and prepared matcher; the family adds no acceptance or rejection logic, and a missing prepared matcher fails closed at the target.
+- `boundary`: A rejected write retains its exact attempted payload rather than being truncated, blanked, or cleared. Result classification and application reuse the shared typed String channels keyed by address. The fixed Boolean/Confirm constant carrier stays separate: result domains differ, one value under a `FieldId` against one per row under a `CellAddr`.
+- `owner`: [`RepeatableStringConstantComputation.lean`](../../A12Kernel/Elaboration/RepeatableStringConstantComputation.lean), [proofs](../../A12Kernel/Proofs/RepeatableStringConstantComputation.lean), and [cases](../../A12Kernel/Conformance/RepeatableStringConstantComputation.lean)
+- `assurance`: E closes containment admission at the target's own group and at an ancestor with the refusal's Kernel identity, the declined nonrepeatable and non-ordinary targets, the zero/one/two-row matrix, maximum-length rejection retaining the exact payload, the empty-literal no-value against its fitting control, and the fail-closed missing-matcher input. P closes the two laws a consumer needs: execution is independent of the declaring group given the same target and literal, and every row's outcome is exactly the declaration's own target check applied to the one root attempt.
+- `assurance`: L is the [cross-group carrier](../SOURCES.md#src-cross-group-repeatable-constant-target) and [target-check](../SOURCES.md#src-repeatable-string-constant-target-check) checkpoints, matching row counts, addresses, and the retained over-long payload on both Kernel strategies. The delegation law is what lets the measured length row stand for the target policy rather than for one clause of it; pattern and minimum-length refusals are not separately measured. Result and application correspondence, and the applied document state after a rejected write, remain external evidence pending. C/X none.
+- `remains`: Number and other-kind bare constants, a rejected write's applied state, a stored prior value's survival, and wider scheduling remain with [SG4](../SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition).
+
 <a id="cap-exact-address-repeatable-string-firstfilledvalue-result-application"></a>
 #### Exact-address repeatable ordinary String `FirstFilledValue` result/application
 
