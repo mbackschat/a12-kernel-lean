@@ -237,13 +237,19 @@ end ScalarComputationContext
 
 namespace NumericComputationEvaluationContext
 
-/-- Read one group-count operand into its contribution.
+/-- A fixed group-count operand's content, with the row constituent the scalar reader cannot express.
 
-    A **fixed** operand takes the same descendant extent and cell reads the scalar fixed-only reader
-    takes wherever that reader answers, which is what keeps the two forms agreeing on any list they
-    can both hold. Where it refuses for a repeatable descendant, this route answers instead, using
-    the row constituent the scalar projection cannot express. A **starred** operand takes the
-    in-capacity instantiated row count, the quantity this route carries the document topology for. -/
+    Content has **two constituents and either suffices**: an admitted descendant cell outside every
+    repeatable row, or an instantiated row in a repeatable descendant. Where the scalar reader
+    answers, this takes exactly its extent and reads, so the routes agree there; only the shape it
+    refuses reaches the second branch.
+
+    The row constituent counts **any** instantiated row, over-limit ones included. That follows the
+    recorded structural rule — an over-limit row stays in the physical topology and still supplies
+    group content ([§7](../../../spec/07-repetition-and-iteration.md)) — rather than the starred
+    count's in-capacity domain, which is a numeric evaluation domain and not a presence question.
+    The choice is inherited, not measured on this carrier: no retained observation has a shell whose
+    rows are *all* over-limit, which is the only document where the two accounts differ. -/
 def readGroupContent (context : NumericComputationEvaluationContext) (model : FlatModel)
     (reference : ResolvedGroupReference) :
     Except NumericComputationFault (List CellObservation × Bool) :=
@@ -261,6 +267,13 @@ def readGroupContent (context : NumericComputationEvaluationContext) (model : Fl
             repeatables.any fun group =>
               context.document.instantiatedRows.any fun row => row.group == group.level)
 
+/-- Read one group-count operand into its contribution.
+
+    A **fixed** operand takes the same descendant extent and cell reads the scalar fixed-only reader
+    takes wherever that reader answers, which is what keeps the two forms agreeing on any list they
+    can both hold. Where it refuses for a repeatable descendant, this route answers instead, using
+    the row constituent the scalar projection cannot express. A **starred** operand takes the
+    in-capacity instantiated row count, the quantity this route carries the document topology for. -/
 def readGroupCountOperand
     (context : NumericComputationEvaluationContext) (model : FlatModel) :
     CheckedGroupCountOperand model →
