@@ -1,0 +1,594 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "c9679c901789585f2f830d02c7d1060efb9012f5",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "model.dm.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "both-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Nested shell tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Shell/Inner/Deep",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyDirectComp",
+              "field" : "Probe/TallyDirect",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Direct tally.",
+              "referenced" : [
+                "Probe/Direct/DirectValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyDirect"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyDirect",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Nested shell tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Shell/Inner/Deep",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyDirectComp",
+              "field" : "Probe/TallyDirect",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Direct tally.",
+              "referenced" : [
+                "Probe/Direct/DirectValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyDirect"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyDirect",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "nested-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyDirectComp",
+              "field" : "Probe/TallyDirect",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Direct tally.",
+              "referenced" : [
+                "Probe/Direct/DirectValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyDirect"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Shell/Inner/Deep",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Probe/Shell/Inner/Deep"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyDirect",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Probe/Shell/Inner/Deep",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Probe/Shell/Inner/Deep"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyDirectComp",
+              "field" : "Probe/TallyDirect",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Direct tally.",
+              "referenced" : [
+                "Probe/Direct/DirectValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyDirect"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Shell/Inner/Deep",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Probe/Shell/Inner/Deep"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyDirect",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Probe/Shell/Inner/Deep",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Probe/Shell/Inner/Deep"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "nested-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Nested shell tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Shell/Inner/Deep",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Shell/Inner/Deep",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyDirectComp",
+              "field" : "Probe/TallyDirect",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Direct tally.",
+              "referenced" : [
+                "Probe/Direct/DirectValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyDirect"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyDirect",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Nested shell tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Shell/Inner/Deep",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Shell/Inner/Deep",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyDirectComp",
+              "field" : "Probe/TallyDirect",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Direct tally.",
+              "referenced" : [
+                "Probe/Direct/DirectValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyDirect"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyDirect",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "direct-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Nested shell tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Shell/Inner/Deep",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Direct/DirectValue",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Probe/Direct/DirectValue"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyDirect",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Probe/Direct/DirectValue",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Probe/Direct/DirectValue"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Nested shell tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Shell/Inner/Deep",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Direct/DirectValue",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Probe/Direct/DirectValue"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyDirect",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Probe/Direct/DirectValue",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The value must be integer.",
+                "referenced" : [
+                  "Probe/Direct/DirectValue"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "all-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Nested shell tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Shell/Inner/Deep",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Shell/Inner/Deep",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyDirectComp",
+              "field" : "Probe/TallyDirect",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Direct tally.",
+              "referenced" : [
+                "Probe/Direct/DirectValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyDirect"
+              ],
+              "fillToFix" : [
+                "Probe/Direct/DirectValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyDirect"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/TallyDirect",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Nested shell tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Shell/Inner/Deep",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Shell/Inner/Deep",
+                "Probe/Tally"
+              ]
+            },
+            {
+              "code" : "TallyDirectComp",
+              "field" : "Probe/TallyDirect",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Direct tally.",
+              "referenced" : [
+                "Probe/Direct/DirectValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyDirect"
+              ],
+              "fillToFix" : [
+                "Probe/Direct/DirectValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyDirect"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Probe/TallyDirect",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

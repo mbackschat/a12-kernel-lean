@@ -1,0 +1,160 @@
+{
+  "header" : {
+    "id" : "NestedInvalid_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "NestedInvalid_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Flat",
+            "name" : "Flat",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Flat/FlatValue",
+                "name" : "FlatValue",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Shell",
+            "name" : "Shell",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/Shell/Inner",
+                "name" : "Inner",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Shell/Inner/Deep",
+                    "name" : "Deep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Direct",
+            "name" : "Direct",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Direct/DirectValue",
+                "name" : "DirectValue",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Tally",
+            "name" : "Tally",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/TallyDirect",
+            "name" : "TallyDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/TallyComp",
+            "name" : "TallyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Tally",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(/Probe/Flat, /Probe/Shell)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Nested shell tally."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/TallyDirectComp",
+            "name" : "TallyDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TallyDirect",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(/Probe/Flat, /Probe/Direct)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Direct tally."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

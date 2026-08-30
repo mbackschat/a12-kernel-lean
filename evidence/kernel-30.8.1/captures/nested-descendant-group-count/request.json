@@ -1,0 +1,22 @@
+{
+  "model": "model.dm.json",
+  "locale": "en_US",
+  "observe": ["validateFull", "compute"],
+  "rows": [
+    { "name": "both-filled",
+      "documentInline": {"Probe": {"Tally": 9, "TallyDirect": 9,
+        "Flat": {"FlatValue": 1}, "Shell": {"Inner": {"Deep": 2}}, "Direct": {"DirectValue": 3}}}},
+    { "name": "nested-malformed",
+      "documentInline": {"Probe": {"Tally": 9, "TallyDirect": 9,
+        "Flat": {"FlatValue": 1}, "Shell": {"Inner": {"Deep": "bad"}}, "Direct": {"DirectValue": 3}}}},
+    { "name": "nested-empty",
+      "documentInline": {"Probe": {"Tally": 9, "TallyDirect": 9,
+        "Flat": {"FlatValue": 1}, "Shell": {"Inner": {}}, "Direct": {"DirectValue": 3}}}},
+    { "name": "direct-malformed",
+      "documentInline": {"Probe": {"Tally": 9, "TallyDirect": 9,
+        "Flat": {"FlatValue": 1}, "Shell": {"Inner": {"Deep": 2}}, "Direct": {"DirectValue": "bad"}}}},
+    { "name": "all-empty",
+      "documentInline": {"Probe": {"Tally": 9, "TallyDirect": 9,
+        "Flat": {}, "Shell": {"Inner": {}}, "Direct": {}}}}
+  ]
+}

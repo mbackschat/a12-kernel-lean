@@ -34,6 +34,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-08-30-02"></a>
+### `SPEC-2026-08-30-02` — a group-count operand's erroneous-operand rule reaches a nested descendant
+
+- `status`: pending
+- `clause`: [`02-logic-and-formal-errors.md` the compute-arm inversion paragraph](../spec/02-logic-and-formal-errors.md)
+- `delta`: the clause stated that a formally invalid cell leaves its operand group counting as **filled**, measured for a **direct** child only, and named that limit. Measured: the rule reaches a nested descendant unchanged. A shell group whose only field lies two levels down and holds a non-numeric value counts as filled and the count takes the same exact `2`; emptying that cell instead drops it to `1`.
+- `mechanism`: the established one, now shown to reach through the subtree rather than the direct children. The invalid cell **is** in the checked plan's inventory — it appears in `formalErrorsInOperands` as `zahlHatUngueltigeZeichen` at its exact nested path — and the count is still unaffected, the target neither cleared nor errored. A presence test is not a read, at any depth.
+- `evidence`: [nested invalid-descendant checkpoint](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-invalid), one `:adapter:kernelProbe` request over five documents at a12-dmkits `c9679c901789585f2f830d02c7d1060efb9012f5` (clean), `dmtool` 0.13.0, Kernel `30.8.1`, `validateFull` and `compute` on both codegen strategies with `enginesAgree: true` on every row. A direct-child control in the same model and run reproduces the already established answer, and the `referenced` inventory names the nested field independently of the count.
+- `surfaces`: any peer clause, checker, or catalog note that scopes the erroneous-operand rule to a group's direct children, which would answer this shape short or unavailable.
+- `local-scope`: implemented. The scalar computation-phase clause already counted it that way by uniformity after the subtree extent closed; this replaces that assumption with the measurement and adds its retained conformance lock.
+- `acceptance`: a12-dmkits confirms the nested extension on its own fixture, or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: none yet.
+
+
 <a id="spec-2026-08-30-01"></a>
 ### `SPEC-2026-08-30-01` — a fixed group-count operand admits a group populated only through a nested descendant, and counts its whole subtree
 

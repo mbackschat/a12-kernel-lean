@@ -12,7 +12,8 @@ The counted rows are measured at a12-dmkits `677e2eb7` under accepted `EXP-2026-
 Static admission and its exact short-arity, duplicate, overlap, and missing-star diagnostics
 are measured through the clean exact-source consistency route at `cd41ea94`; the cell-level
 projections themselves are locked in `Conformance/GroupPresence.lean`. The subtree extent of a
-single operand is measured on both arms at `e0bfd1f35` under accepted `SPEC-2026-08-30-01`.
+single operand is measured on both arms at `e0bfd1f35` under accepted `SPEC-2026-08-30-01`, and its
+nested formally invalid row at `c9679c901` under pending `SPEC-2026-08-30-02`.
 -/
 
 namespace A12Kernel.Conformance.NumericComputation.GroupCount
@@ -463,6 +464,13 @@ example : shellCount (filled 24) (filled 7) = some (.value 2) := by
 /- The control. Emptying that descendant drops the count to `1`, so a count stuck at `1` above
    would not have satisfied the direct-children account for the wrong reason. -/
 example : shellCount presentEmpty (filled 7) = some (.value 1) := by
+  native_decide
+
+/- The measured row for the two rules together: the shell's only field is a nested descendant
+   **and** it is formally invalid, and the group still counts as filled. The invalid cell reaches
+   the Kernel's own operand inventory and the count is unaffected, so a presence test is not a
+   read at any depth. -/
+example : shellCount malformed (filled 7) = some (.value 2) := by
   native_decide
 
 /- Boundary: a **repeatable** descendant keeps the refusal. The Kernel admits such an operand
