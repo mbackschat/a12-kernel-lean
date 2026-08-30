@@ -36,9 +36,13 @@ Search reusable provenance entries with `rg -n '^<a id="src-' docs/SOURCES.md`, 
 
 **The CLI's own fail-fast spec validation pre-empts kernel declaration gates, and then the route measures the tool.** Confirmed 2026-08-29 on two independent gates.
 
-**Partly resolved the same day.** From a12-dmkits `01bc94279f0aee06fd8d9ccfad2e116354aa409e` these refusals carry the standard `rejected` envelope with `RK_INVALID_VALUE` and `source: PRECHECK`, so the layer is machine-readable, and the messages no longer attribute a local refusal to the kernel. The preflight itself stays, and `model check` over a hand-edited model reaches the kernel's own verdict ([reconciliation](#src-2026-08-29-reconciliation)). `field add` refuses `maxFractionalDigits` above 14 with stderr *"invalid field spec: maxFractionalDigits must be ≤ 14 (the kernel's cap)"*, and refuses an Enumeration category whose value list is shorter, longer, or empty against its enum's values. Both exit 2 with **no envelope at all**, so neither the kernel's `fieldScaleCap` gate nor its category-alignment gate is reachable through this route, and both messages attribute the rule to the kernel while refusing locally. That is how such a row becomes a false attribution.
+**Partly resolved the same day.** From a12-dmkits `01bc94279f0aee06fd8d9ccfad2e116354aa409e` these refusals carry the standard `rejected` envelope with `RK_INVALID_VALUE` and `source: PRECHECK`, so the layer is machine-readable, and the messages no longer attribute a local refusal to the kernel. The preflight itself stays, and `model check` over a hand-edited **copy** of a model reaches the kernel's own verdict ([reconciliation](#src-2026-08-29-reconciliation)). From the [2026-08-30 handback](#src-2026-08-30-reconciliation) the peer's own skill rule scopes rather than forbids that route: hand-writing a shape into a copy is measurement and never authoring, and the copy is never persisted from or kept.
 
-The tell is the envelope, not the message: a kernel verdict carries `verification: KERNEL_CONFIRMED` and an `MVK_*` diagnostic, while a front-end refusal carries neither and writes plain stderr. Read it before attributing any refusal. Treat every **declaration-shape** claim whose gate the CLI duplicates as not re-dischargeable here until an escape hatch exists, and note that this affects re-verification only: an accepted declaration still reaches the kernel's own oracle normally.
+The originating observation, before the envelope fix: `field add` refused `maxFractionalDigits` above 14 with stderr *"invalid field spec: maxFractionalDigits must be ≤ 14 (the kernel's cap)"*, and refused an Enumeration category whose value list is shorter, longer, or empty against its enum's values, both exiting 2 with **no envelope at all** while attributing the rule to the kernel. That is how such a row becomes a false attribution, and it is why neither the kernel's `fieldScaleCap` gate nor its category-alignment gate is reachable through the `field add` route itself.
+
+One limit on the replacement envelope: `RK_INVALID_VALUE` with `source: PRECHECK` does not discriminate **which** local gate refused, since the schema gate emits the same pair.
+
+The tell is the envelope, not the message: a kernel verdict carries `verification: KERNEL_CONFIRMED` and an `MVK_*` diagnostic, while a front-end refusal carries neither and writes plain stderr. Read it before attributing any refusal. **The `MVK_*` code is the load-bearing half of that pair**, measured at a12-dmkits `e0bfd1f353acca32b60811bc26f3b2c3d657c1d8`: no main source mints such a literal, so only a kernel message can carry one, while `source: KERNEL` on its own also reaches a **codeless** deserialize-tier refusal and `verification: KERNEL_CONFIRMED` was asserted unconditionally by the DSL-bearing authoring verbs before `842ef01a6` ([reconciliation](#src-2026-08-30-reconciliation)). Treat every **declaration-shape** claim whose gate the CLI duplicates as not re-dischargeable here until an escape hatch exists, and note that this affects re-verification only: an accepted declaration still reaches the kernel's own oracle normally.
 
 The reusable provenance route is `../a12-rulekit/scripts/prepare-dmtool-source.sh`: it accepts only the sibling's exact clean HEAD, reuses or rebuilds the JVM launcher as needed, and verifies its reported revision before returning it. Each retained observation records the actual launcher and kernel versions from that run rather than inheriting the historical 2026-08-06 launcher identity. [`TESTING.md`](TESTING.md#structured-dmtool-probes-and-feedback) owns the probe method and the required persisted-read-back check.
 
@@ -275,10 +279,14 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Starred yearless DateRange overlap, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-starred-yearless-overlap)
 <a id="src-date-range-plural-year-class"></a>
 - [Plural DateRange overlap year class and fragment operands, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-plural-year-class)
+<a id="src-2026-08-30-reconciliation"></a>
+- [Reviewed 2026-08-30 a12-dmkits reconciliation, retraction, and instrument answers](sources/cross-layer-routes.md#src-2026-08-30-reconciliation)
 <a id="src-2026-08-29-reconciliation"></a>
 - [Reviewed 2026-08-29 a12-dmkits reconciliation and correction batch](sources/cross-layer-routes.md#src-2026-08-29-reconciliation)
 <a id="src-date-range-direct-list-cross-group-sources"></a>
 - [A direct-list `FirstFilledValue` places its sources freely](sources/cross-layer-routes.md#src-date-range-direct-list-cross-group-sources)
+<a id="src-nested-descendant-group-count-runtime"></a>
+- [A group-count operand reads its whole subtree](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-runtime)
 <a id="src-nested-descendant-group-count-admission"></a>
 - [A fixed group-count operand admits nested descendants](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-admission)
 <a id="src-empty-declared-group"></a>

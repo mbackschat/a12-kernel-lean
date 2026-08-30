@@ -140,4 +140,22 @@ theorem checkSingleGroupContext_admittedNumber_coherent
     checkSingleGroupContext_lookup_coherent model group raw row field.id declaration
       lookup sameGroup sameScope⟩
 
+/-- An admitted fixed group operand enumerates its **whole subtree**, never a narrower extent.
+
+    This is the shared-expansion invariant stated at the one site that previously dissented:
+    every group expansion in the theory routes through `FlatModel.groupSubtreeFields`, so a
+    consumer may read a group's fields instead of re-walking the model and no operand site can
+    disagree with a sibling about how far a group reaches. The nearest false generalization is
+    that the extent is the group's **direct** children, which this refutes for every admitted
+    reference at once. -/
+theorem computationDescendants_admitted_eq_subtreeFields
+    {reference : ResolvedGroupReference} {model : FlatModel}
+    {descendants : List FlatFieldDecl}
+    (admitted : reference.computationDescendants? model = some descendants) :
+    descendants = model.groupSubtreeFields reference.path := by
+  rw [ResolvedGroupReference.computationDescendants?] at admitted
+  split at admitted
+  · simp at admitted
+  · exact (Option.some.inj admitted).symm
+
 end A12Kernel

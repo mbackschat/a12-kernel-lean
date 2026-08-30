@@ -35,19 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 ## Current queue
 
 <a id="spec-2026-08-30-01"></a>
-### `SPEC-2026-08-30-01` — a fixed group-count operand admits a group populated only through a nested descendant
+### `SPEC-2026-08-30-01` — a fixed group-count operand admits a group populated only through a nested descendant, and counts its whole subtree
 
-- `status`: pending
+- `status`: accepted
 - `clause`: [`02-logic-and-formal-errors.md` the Number-computation group-count paragraph](../spec/02-logic-and-formal-errors.md)
 - `delta`: the clause listed the admitted fixed-list shapes and their refusal classes but said nothing about **where inside the group its fields sit**. Measured: a fixed group whose only field lies in a descendant subgroup is an admitted operand of `NumberOfFilledGroups`, in first position, in second position, and in a three-group list. Neither position nor arity gates it.
 - `mechanism`: the gate that does fire on such a group is elsewhere. A group under a repeatable extent still draws `MVK_NO_WILDCARD`, and a one-group list still draws `MVK_PARAMSIZE_INVALIDGN`, both in the same model, so nesting is not being confused with either.
 - `evidence`: [nested-descendant checkpoint](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-admission), six `computation add --dry-run` verdicts at a12-dmkits `01bc94279f0aee06fd8d9ccfad2e116354aa409e` (clean), `dmtool` 0.13.0, Kernel `30.8.1`, each `KERNEL_CONFIRMED` with `source: KERNEL`.
 - `surfaces`: any peer clause, checker, or catalog note that treats a group-count operand as an expansion of **direct** children, which would refuse this shape or count it short.
-- `local-scope`: **unimplemented, deliberately.** This project refuses the shape, and admission alone does not license widening: what such an operand counts is unmeasured, and a refusal claims nothing while a count claims a value. [SG13](SEMANTICS-GAPS.md#sg13--group-list-and-group-count-completion) carries the runtime observation that would close it.
-- `question`: does a nested-descendant operand count through the whole subtree, as the validation arm's group expansion does, or over direct children only? A runtime row either way would close this locally.
+- `local-scope`: implemented on acceptance. The scalar computation-phase gate now enumerates the whole subtree through `FlatModel.groupSubtreeFields`, with the extent held by `computationDescendants_admitted_eq_subtreeFields` and its consumer-visible half `groupPresentForComputation_of_subtreeMember`. A repeatable group at or below the operand is still refused, which is a representational boundary rather than the Kernel's.
+- `question`: does a nested-descendant operand count through the whole subtree, as the validation arm's group expansion does, or over direct children only? **Answered: the whole subtree**, on both arms.
 - `acceptance`: a12-dmkits states the admission and, if it knows, the counting rule; or supplies the contrary measurement.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
-- `reviewed a12-dmkits revision`: none yet.
+- `reviewed a12-dmkits revision`: `e0bfd1f353acca32b60811bc26f3b2c3d657c1d8` (clean). Reproduced on the peer's own fixture and extended past all four stated limits. Runtime discriminator and control read here rather than taken on report, and the harness confirmed to drive the real kernel rather than the peer's interpreter; the disposition, the retained refusal, and the two remaining unmeasured shapes are recorded at the [runtime checkpoint](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-runtime). The peer declined to widen its own typed group-count surface on the same result, for the same reason this project had declined to widen on admission alone.
 
 
 <a id="spec-2026-08-29-05"></a>
@@ -103,6 +103,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 - `reviewed a12-dmkits revision`: `01bc94279f0aee06fd8d9ccfad2e116354aa409e`.
 - `disposition`: **accepted at a12-dmkits `01bc94279f0aee06fd8d9ccfad2e116354aa409e`.** Reproduced on a two-root parts catalogue at five declaring-group placements, including the starred source's own repeatable group, which is the discriminator against a "repeatable group in the operand path" account. Corrected: the `MVK_NO_WILDCARD` half does not generalize — from a nonrepeatable declaring group an extent that **declares an index field** draws `MVK_ERROR_FIELD_NO_INDEX` instead, on two extents differing in nothing else. The repeatable half is uniform and survives. The self-reference control this entry cited is replaced, since its layer is disputed; `spec/09` carries both changes.
+- `correction`: appended 2026-08-30 rather than rewriting the receipt. The peer **retracted** that layer dispute at `e0bfd1f353acca32b60811bc26f3b2c3d657c1d8`: the refusal is the Kernel's and the original control was sound. The replacement control stays, on its own merits, and the [2026-08-30 reconciliation](sources/cross-layer-routes.md#src-2026-08-30-reconciliation) owns the retraction and the refined attribution rule it produced.
 
 <a id="spec-2026-08-29-02"></a>
 ### `SPEC-2026-08-29-02` — a sibling-star computation is admitted from any ancestor of its repeatable target, not only its own parent

@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.NumericComputation
 import A12Kernel.Proofs.Observation
+import A12Kernel.Proofs.SingleGroupElaboration
 
 /-! # Numeric computation-expression laws -/
 
@@ -632,5 +633,28 @@ theorem numericComputation_structuralFault_contextIndependent
       .error fault := by
   simp [AuthoredNumericExpr.evaluateComputation,
     invalid]
+
+/-- Depth is irrelevant to the compute-arm group count: one compute-present cell **anywhere**
+    in an admitted operand's subtree makes that group count as filled.
+
+    This is the consumer-visible half of `computationDescendants_admitted_eq_subtreeFields`. A
+    re-narrowing of the operand's extent to its direct children breaks it, because a shell
+    group — one owning no direct field at all — would then contribute an empty cell list and
+    could never be filled. -/
+theorem groupPresentForComputation_of_subtreeMember
+    (context : ScalarComputationContext) (model : FlatModel)
+    {reference : ResolvedGroupReference} {descendants : List FlatFieldDecl}
+    (admitted : reference.computationDescendants? model = some descendants)
+    {declaration : FlatFieldDecl}
+    (member : declaration ∈ model.groupSubtreeFields reference.path)
+    (present :
+      (observeCell .computation (context.read declaration.id)).presentForComputation = true) :
+    groupPresentForComputation
+        (descendants.map fun source =>
+          observeCell .computation (context.read source.id)) = true := by
+  rw [computationDescendants_admitted_eq_subtreeFields admitted]
+  exact List.any_eq_true.mpr
+    ⟨observeCell .computation (context.read declaration.id),
+      List.mem_map_of_mem member, present⟩
 
 end A12Kernel

@@ -498,6 +498,7 @@ run_cmd do
 #print axioms A12Kernel.checkSingleGroupContext_wrong_group_is_malformed
 #print axioms A12Kernel.checkSingleGroupContext_wrong_scope_is_malformed
 #print axioms A12Kernel.checkSingleGroupContext_admittedNumber_coherent
+#print axioms A12Kernel.computationDescendants_admitted_eq_subtreeFields
 #print axioms A12Kernel.correlatedHaving_wellFormed_equalityScalesAgree
 #print axioms A12Kernel.resolvedSingleCorrelatedRule_wellFormed_equalityScalesAgree
 
@@ -866,6 +867,7 @@ run_cmd do
 #print axioms A12Kernel.numericComputationResult_evalOrdered_of_notPoison
 #print axioms A12Kernel.numericComputation_domainFailure_ne_poison
 #print axioms A12Kernel.numericComputation_structuralFault_contextIndependent
+#print axioms A12Kernel.groupPresentForComputation_of_subtreeMember
 #print axioms A12Kernel.stripFractionalZeros_preserves_amount
 #print axioms A12Kernel.padFractionalScale_preserves_amount
 #print axioms A12Kernel.storedNumber_fromComputed_minScale

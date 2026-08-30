@@ -110,16 +110,21 @@ def overlaps (left right : ResolvedGroupReference) : Bool :=
   left.path.isPrefixOf right.path || right.path.isPrefixOf left.path
 
 /-- Enumerate the fields one fixed group contributes to a scalar computation-phase presence
-    read. Admits exactly the shape the retained computation-arm observation covers: a fixed
-    nonrepeatable group whose fields are its **direct** children.
+    read: its whole subtree, through `FlatModel.groupSubtreeFields` like every other group
+    expansion in the theory, so no operand site disagrees with a sibling about how far a
+    group reaches.
 
-    `none` is the explicit boundary rather than an empty group, and every wider shape takes
-    it: the group is absent from the model, it is itself inside a repeatable scope, or it
-    owns any deeper descendant field. Nested descendants are deliberately refused rather
-    than counted through the subtree the validation arm uses. The Kernel **admits** such an
-    operand, measured at the [nested-descendant
-    checkpoint](../../docs/SOURCES.md#src-nested-descendant-group-count-admission), but what
-    it counts there is unmeasured, and a refusal claims nothing while a count would.
+    The subtree rather than the direct children is the Kernel's own rule, measured on both
+    arms at the [nested group-count runtime
+    checkpoint](../../docs/SOURCES.md#src-nested-descendant-group-count-runtime): a group whose
+    only field lies two levels down counts as filled, and emptying that field drops the count.
+
+    `none` is the explicit boundary rather than an empty group. The group may be absent from
+    the model, or a repeatable group may sit at or above it, both of which leave a scalar
+    context with no instantiated row to read. A repeatable group **below** it is refused for
+    the same representational reason and is the one place this narrows the Kernel, which
+    admits that operand statically; what it counts there is unmeasured, and a refusal claims
+    nothing while a count would.
 
     `origin` is deliberately not consulted, which is a narrowing relative to
     `fixedWellFormedBool`: that predicate admits a `RuleGroup` reference bound to an
@@ -128,15 +133,12 @@ def overlaps (left right : ResolvedGroupReference) : Bool :=
 def computationDescendants? (reference : ResolvedGroupReference)
     (model : FlatModel) : Option (List FlatFieldDecl) :=
   if !model.hasGroupPath reference.path ||
-      !(model.repeatableScopeForGroupPath reference.path).isEmpty then
-    none
-  else if model.fields.any fun declaration =>
-      reference.path.isPrefixOf declaration.groupPath &&
-        declaration.groupPath != reference.path then
+      !(model.repeatableScopeForGroupPath reference.path).isEmpty ||
+      model.repeatableGroups.any fun group =>
+        reference.path.isPrefixOf group.path then
     none
   else
-    some (model.fields.filter fun declaration =>
-      declaration.groupPath == reference.path)
+    some (model.groupSubtreeFields reference.path)
 
 end ResolvedGroupReference
 

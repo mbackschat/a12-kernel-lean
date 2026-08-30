@@ -11,7 +11,8 @@ computation counts it. Both arms here are derived from one shared per-group cell
 The counted rows are measured at a12-dmkits `677e2eb7` under accepted `EXP-2026-08-06-01`.
 Static admission and its exact short-arity, duplicate, overlap, and missing-star diagnostics
 are measured through the clean exact-source consistency route at `cd41ea94`; the cell-level
-projections themselves are locked in `Conformance/GroupPresence.lean`.
+projections themselves are locked in `Conformance/GroupPresence.lean`. The subtree extent of a
+single operand is measured on both arms at `e0bfd1f35` under accepted `SPEC-2026-08-30-01`.
 -/
 
 namespace A12Kernel.Conformance.NumericComputation.GroupCount
@@ -59,8 +60,8 @@ def nestedSelfReferentialComputationModel : FlatModel :=
     fields := model.fields ++
       [numberIn computedTargetId ["Root", "Details", "Inner"] "Target"] }
 
-/-- `Details` additionally owns a deeper descendant field. Nested descendants are outside the
-    measured shape, so this model is the refusal boundary rather than a wider count. -/
+/-- `Details` additionally owns a deeper descendant field, so it carries direct and nested
+    content at once. The pure shell below is the case that separates the two accounts. -/
 def nestedDescendantModel : FlatModel :=
   { model with
     fields := model.fields ++
@@ -158,6 +159,13 @@ def checkedCountGroupsIn (source : FlatModel) (groups : List GroupPath) :
       | .atom (.numeric (.filledGroupCount resolved)) => some resolved
       | _ => none
 
+def checkedCountResultIn (source : FlatModel) (groups : List GroupPath)
+    (rows : Rows) : Option NumericComputationResult :=
+  match elaborateNumericComputationOperation (withComputedTarget source) ["Root"]
+      computedTargetId (surfaceCount groups) with
+  | .error _ => none
+  | .ok checked => checked.evaluate { read := rows.read } |>.toOption
+
 def checkedCountFaultIn (source : FlatModel) (groups : List GroupPath)
     (rows : Rows) : Option NumericComputationFault :=
   match elaborateNumericComputationOperation (withComputedTarget source) ["Root"]
@@ -246,22 +254,21 @@ example :
       some (.targetSelfReference computedTargetId) := by
   native_decide
 
-/- The checked surface preserves both explicit downstream boundaries: a statically admitted
-   operand with deeper descendants fails computation preflight, and arm-crossing generated
-   mismatch lowering remains unsupported. -/
+/- The checked surface carries the subtree rule end to end: an operand owning a deeper
+   descendant counts through it rather than failing computation preflight. Arm-crossing
+   generated mismatch lowering remains unsupported, which is a separate boundary. -/
 example :
-    checkedCountFaultIn nestedDescendantModel
+    checkedCountResultIn nestedDescendantModel
         [["Root", "Details"], ["Root", "Preferences"]]
-        malformedBeside = some (.unsupportedGroupCount ["Root", "Details"]) ∧
+        malformedBeside = some (.value 2) ∧
       generatedMismatchErrorOf
         [["Root", "Details"], ["Root", "Preferences"]] =
         some (.conditionAssembly .incoherentCore) := by
   native_decide
 
-/- The lower bound is not an exact-two rule, and static admission does not inherit the
-   runtime projection's direct-descendant boundary: a third disjoint group, a nested terminal
-   with its own direct field, and an operand that itself owns a deeper descendant all pass
-   consistency checking. The last shape still takes `unsupportedGroupCount` at evaluation. -/
+/- The lower bound is not an exact-two rule: a third disjoint group, a nested terminal with
+   its own direct field, and an operand that itself owns a deeper descendant all pass
+   consistency checking. -/
 example :
     checkedCountErrorIn threeGroupModel
         [["Root", "Details"], ["Root", "Preferences"], ["Root", "Other"]] =
@@ -364,12 +371,12 @@ example :
         some (.poison .malformed) := by
   native_decide
 
-/- Boundary: a deeper descendant field puts the operand outside the measured shape, so it is
-   refused rather than counted through the subtree the validation arm traverses. The refusal names
-   the offending operand rather than the whole count, which is what an Explain consumer points at. -/
+/- An operand owning both a direct field and a deeper descendant is counted through the whole
+   subtree, the same extent the validation arm traverses. Here the direct field alone decides it,
+   since the descendant is absent; the shell rows below separate the two accounts. -/
 example :
-    faultIn nestedDescendantModel [detailsGroup, preferencesGroup] malformedBeside =
-      some (.unsupportedGroupCount ["Root", "Details"]) := by
+    countIn nestedDescendantModel [detailsGroup, preferencesGroup] malformedBeside =
+      some (.value 2) := by
   native_decide
 
 /- Boundary: a group inside a repeatable scope is refused, since a scalar context has no
@@ -406,6 +413,65 @@ example :
       CheckedNumericComputationAtom.supportsScalarEvaluation
         (model := model) (.numeric (.filledGroupCount [missingGroup, preferencesGroup])) =
         false := by
+  native_decide
+
+
+/-! ## The shell discriminator
+
+A **shell** owns no direct field at all: its only field sits two levels down. That asymmetry
+against the flat sibling is what separates the two accounts of a group-count operand, because
+under a direct-children account a shell owns nothing and can never be filled. -/
+
+def shellClauseId : FieldId := 5
+
+def shellModel : FlatModel :=
+  { fields := [
+      numberIn preferencesChoiceId ["Root", "Preferences"] "Choice",
+      numberIn shellClauseId ["Root", "Shell", "Terms"] "Clause"] }
+
+/-- The same shell with its descendant subgroup repeatable instead of ordinary. -/
+def repeatableShellModel : FlatModel :=
+  { fields := [
+      numberIn preferencesChoiceId ["Root", "Preferences"] "Choice",
+      { numberIn shellClauseId ["Root", "Shell", "Rows"] "Clause" with
+          repeatableScope := [10] }]
+    repeatableGroups := [{ level := 10, path := ["Root", "Shell", "Rows"] }] }
+
+def shellGroup : ResolvedGroupReference :=
+  { path := ["Root", "Shell"], origin := .path }
+
+def shellRead (clause preference : CheckedCell) : FieldId → CheckedCell := fun id =>
+  if id == shellClauseId then clause
+  else if id == preferencesChoiceId then preference
+  else presentEmpty
+
+def shellCountIn (target : FlatModel) (clause preference : CheckedCell) :
+    Except NumericComputationFault NumericComputationResult :=
+  ScalarComputationContext.readCheckedNumericComputationAtom
+    (model := target) { read := shellRead clause preference }
+    (.numeric (.filledGroupCount [shellGroup, preferencesGroup]))
+
+def shellCount (clause preference : CheckedCell) : Option NumericComputationResult :=
+  (shellCountIn shellModel clause preference).toOption
+
+/- The discriminator: a group whose only field lies two levels down contributes to the count,
+   so the operand reads content over the whole subtree. A direct-children account answers `1`
+   here, because the shell would own nothing. -/
+example : shellCount (filled 24) (filled 7) = some (.value 2) := by
+  native_decide
+
+/- The control. Emptying that descendant drops the count to `1`, so a count stuck at `1` above
+   would not have satisfied the direct-children account for the wrong reason. -/
+example : shellCount presentEmpty (filled 7) = some (.value 1) := by
+  native_decide
+
+/- Boundary: a **repeatable** descendant keeps the refusal. The Kernel admits such an operand
+   statically, but a scalar context has no instantiated row to read and what it counts there is
+   unmeasured, so this refuses rather than answering either number. -/
+example :
+    (match shellCountIn repeatableShellModel (filled 24) (filled 7) with
+      | .error fault => some fault
+      | .ok _ => none) = some (.unsupportedGroupCount ["Root", "Shell"]) := by
   native_decide
 
 end A12Kernel.Conformance.NumericComputation.GroupCount
