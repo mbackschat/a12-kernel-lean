@@ -1,0 +1,26 @@
+{
+ "model": "Probe_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "deep-two-level-row-empty",
+   "document": "deep-two-level-row-empty.json"
+  },
+  {
+   "name": "deep-two-level-no-rows",
+   "document": "deep-two-level-no-rows.json"
+  },
+  {
+   "name": "deep-two-level-row-filled",
+   "document": "deep-two-level-row-filled.json"
+  },
+  {
+   "name": "one-level-row-empty",
+   "document": "one-level-row-empty.json"
+  }
+ ]
+}

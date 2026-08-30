@@ -53,6 +53,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 
+<a id="spec-2026-08-30-08"></a>
+### `SPEC-2026-08-30-08` — repetition depth does not bound a group-count operand's row constituent
+
+- `status`: pending
+- `clause`: [`02-logic-and-formal-errors.md` §3 group content](../spec/02-logic-and-formal-errors.md)
+- `delta`: the clause stated the two content constituents generally — an admitted descendant cell anywhere in the subtree, **or** an instantiated row in a repeatable descendant — but every row supporting the second reached exactly **one** repetition level. Measured at two: a shell whose only content is a repeatable group containing a second repeatable group counts on one instantiated leaf row with an empty cell, and drops to absent when the rows are removed.
+- `mechanism`: subtree **containment**, not an axis count. The cell constituent was already measured to ignore nesting depth, and the validation arm's own row test has no depth bound either, so the two arms agreeing at depth is what makes this a property of the containment relation rather than a second rule about levels.
+- `evidence`: [deep repeatable-descendant checkpoint](sources/group-and-iteration-probes.md#src-deep-repeatable-descendant-group-count), one `:adapter:kernelProbe` request over four documents, `validateFull` and `compute`, both codegen strategies agreeing on every row, `producer.source.state: CLEAN` at a12-dmkits `89871694469f582d3ec5d0df22dbacb53b0dde63`. Static admission measured in the same session through `computation add --dry-run`, with an unstarred-repeatable child refused `MVK_NO_WILDCARD` from `source: KERNEL` as the live-gate control.
+- `limit`: two repetition levels, one shell shape, scale-0 Numbers. The **half-instantiated** shape is not measured — an outer row with no inner row beneath it — and it is exactly where a containment reading and a leaf-row reading could still differ. This project counts such a shell as present and marks that as its own reading.
+- `surfaces`: any peer clause, checker, or evaluator whose group-content rule reaches repeatable rows only one level below the operand, or that enumerates repetition axes instead of testing containment. A one-level fixture cannot distinguish the two.
+- `local-scope`: `ResolvedGroupReference.repeatableDescendantShape?` refused the deeper shape and that refusal is lifted; [`GroupCount.lean`](../A12Kernel/Conformance/NumericComputation/GroupCount.lean) replays the measured rows and locks the half-instantiated branch separately as unmeasured.
+- `acceptance`: a12-dmkits confirms the depth-independent reading on its own fixture — a two-level shell counting on one empty leaf row — or supplies the contrary measurement. The half-instantiated row would be a welcome addition either way.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-30-07"></a>
 ### `SPEC-2026-08-30-07` — a group-count message's `referenced` set is the operand's whole subtree, plus the target
 

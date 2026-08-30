@@ -182,10 +182,12 @@ def computationDescendants? (reference : ResolvedGroupReference)
     carries the document's row topology can answer it, and this names the groups whose rows it must
     consult. `none` keeps that caller on the same refusal.
 
-    The admitted shape is the measured one: the operand itself outside any repeatable scope, and
-    every repeatable descendant exactly **one** repetition level deep
-    ([checkpoint](../../docs/SOURCES.md#src-repeatable-descendant-group-count)). A deeper axis is
-    refused rather than assumed to compose, since nothing measures it. -/
+    The admitted shape needs only the operand itself outside any repeatable scope. **Repetition
+    depth does not bound it**: a descendant two repetition levels below the operand counts exactly
+    as one level does ([checkpoint](../../docs/SOURCES.md#src-deep-repeatable-descendant-group-count)),
+    which is what the row constituent already implied — the validation arm tests subtree
+    containment with no depth bound at all. Measured at two levels; the clause is stated for any,
+    because the mechanism is containment rather than an axis count. -/
 def repeatableDescendantShape? (reference : ResolvedGroupReference) (model : FlatModel) :
     Option (List RepeatableGroupDecl) :=
   if !model.hasGroupPath reference.path ||
@@ -194,12 +196,7 @@ def repeatableDescendantShape? (reference : ResolvedGroupReference) (model : Fla
   else
     let repeatables := model.repeatableGroups.filter fun group =>
       reference.path.isPrefixOf group.path
-    if repeatables.isEmpty ||
-        repeatables.any fun group =>
-          (model.repeatableScopeForGroupPath group.path).length != 1 then
-      none
-    else
-      some repeatables
+    if repeatables.isEmpty then none else some repeatables
 
 /-- Whether the computation arm admits this group as a count operand at all.
 

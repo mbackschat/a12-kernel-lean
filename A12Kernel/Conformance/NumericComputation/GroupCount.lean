@@ -707,11 +707,12 @@ example :
         (.numeric (.filledGroupCount [preferencesGroup, preferencesGroup])) = true := by
   native_decide
 
-/-! ### One repetition level, and the refusal at two
+/-! ### Repetition depth does not bound the row constituent
 
-The admitted shape is the measured one: every repeatable descendant exactly one repetition level
-below the operand. A deeper axis is refused rather than assumed to compose, and nothing measures
-what such a shell counts.
+A group whose only content is a repeatable descendant **two** repetition levels down counts exactly
+as one level does, measured at the [deep repeatable-descendant
+checkpoint](../../../docs/SOURCES.md#src-deep-repeatable-descendant-group-count) on both codegen
+strategies. These replay that request's rows.
 -/
 
 /-- `repeatableShellModel` with one extra repeatable level between the shell and its rows. -/
@@ -724,25 +725,41 @@ private def deepShellModel : FlatModel :=
       [ { level := 10, path := ["Root", "Shell", "Mid"], repeatability := some 3 }
       , { level := 11, path := ["Root", "Shell", "Mid", "Rows"], repeatability := some 5 } ] }
 
-/- **One variable: the extra repetition level.** The same shell over the same descendant field is
-   admitted at one level and refused at two, so the boundary is the axis count and not the nesting
-   depth the [subtree extent](../../../docs/SOURCES.md#src-nested-descendant-group-count-runtime)
-   already measured as irrelevant. Refusing claims nothing; composing would claim a value. -/
-example :
-    (shellGroup.computationOperandAdmitted repeatableShellModel,
-      shellGroup.computationOperandAdmitted deepShellModel) = (true, false) := by
+private def deepCountWith (clause : CheckedCell) (rows : List RowAddr) :
+    Option NumericComputationResult :=
+  (AuthoredNumericExpr.evaluateCheckedComputationIn (model := deepShellModel)
+    (.atom (.numeric (.filledGroupCount [shellGroup, preferencesGroup])))
+    { scalar := { read := shellRead clause (filled 7) }
+      document := { instantiatedRows := rows, rawCells := fun _ => none }
+      outer := []
+      filterRead := fun _ _ => presentEmpty
+      starRead := fun _ _ => presentEmpty }).toOption
+
+private def deepCount (rows : List RowAddr) : Option NumericComputationResult :=
+  deepCountWith presentEmpty rows
+
+private def midRow : RowAddr := { group := 10, path := [1] }
+private def leafRow : RowAddr := { group := 11, path := [1, 1] }
+
+/- **The discriminator and its control**, the measured pair. One `Mid` row holding one `Rows` row
+   whose only cell is empty makes the shell count, and removing both drops it — the same answer the
+   one-level shell gives, so the axis count is not a boundary. A depth-bounded account answers one
+   on the first row. -/
+example : (deepCount [midRow, leafRow], deepCount []) = (some (.value 2), some (.value 1)) := by
   native_decide
 
-/- It reaches the whole route as the ordinary unsupported-operand refusal, naming the shell rather
-   than the deep descendant, so a consumer sees the operand it authored. -/
+/- The measured filled-leaf row. Its cell lies inside the repeatable rows, so it is outside the
+   cell constituent entirely — the answer is the same two, reached by the row alone in both. -/
 example :
-    (AuthoredNumericExpr.evaluateCheckedComputationIn (model := deepShellModel)
-      (.atom (.numeric (.filledGroupCount [shellGroup, preferencesGroup])))
-      { scalar := { read := shellRead presentEmpty (filled 7) }
-        document := shellDocument 1
-        outer := []
-        filterRead := fun _ _ => presentEmpty
-        starRead := fun _ _ => presentEmpty }).toOption = none := by
+    (deepCountWith (filled 24) [midRow, leafRow], deepCountWith (filled 24) []) =
+      (some (.value 2), some (.value 1)) := by
+  native_decide
+
+/- **This project's own reading, not a measured row.** An outer row with no inner row under it makes
+   the shell count here, because the clause asks whether *any* repeatable descendant has an
+   instantiated row. Every measured document carries both levels or neither, so the Kernel's answer
+   for the half-instantiated shape is unknown; the checkpoint's `limit` names it. -/
+example : deepCount [midRow] = some (.value 2) := by
   native_decide
 
 /-! ### The gate reaches the mixed atom too

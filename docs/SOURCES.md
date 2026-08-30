@@ -303,6 +303,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [The computation arm counts a starred repeatable group's instantiated rows](sources/group-and-iteration-probes.md#src-starred-group-count-computation)
 <a id="src-repeatable-descendant-group-count"></a>
 - [A repeatable descendant makes its shell count structurally](sources/group-and-iteration-probes.md#src-repeatable-descendant-group-count)
+<a id="src-deep-repeatable-descendant-group-count"></a>
+- [Repetition depth does not bound a group-count operand's row constituent](sources/group-and-iteration-probes.md#src-deep-repeatable-descendant-group-count)
 <a id="src-nested-descendant-group-count-invalid"></a>
 - [A formally invalid nested descendant still fills its group](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-invalid)
 <a id="src-nested-descendant-group-count-runtime"></a>
