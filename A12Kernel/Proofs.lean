@@ -37,6 +37,7 @@ import A12Kernel.Proofs.BaseYearDateSource
 import A12Kernel.Proofs.BerlinLegacyCalendarArithmetic
 import A12Kernel.Proofs.BerlinLegacyTimeZone
 import A12Kernel.Proofs.BooleanConstantComputation
+import A12Kernel.Proofs.RepeatableNumberConstantComputation
 import A12Kernel.Proofs.RepeatableStringConstantComputation
 import A12Kernel.Proofs.BooleanFirstFilledComputation
 import A12Kernel.Proofs.CheckedDocument

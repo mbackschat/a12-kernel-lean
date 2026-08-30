@@ -1,0 +1,414 @@
+{
+  "header" : {
+    "id" : "CrossRep_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "CrossRep_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Tasks",
+            "name" : "Tasks",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/LabelOwn",
+                "name" : "LabelOwn",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/LabelRoot",
+                "name" : "LabelRoot",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/Marker",
+                "name" : "Marker",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Tasks/LabelOwnComp",
+                "name" : "LabelOwnComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../LabelOwn",
+                  "computationAlternatives" : [ {
+                    "operation" : "\"FIXED\""
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Own-group constant."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/NumOwn",
+                "name" : "NumOwn",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/NumRoot",
+                "name" : "NumRoot",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/BoolOwn",
+                "name" : "BoolOwn",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/BoolRoot",
+                "name" : "BoolRoot",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/ConfOwn",
+                "name" : "ConfOwn",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "ConfirmType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/ConfRoot",
+                "name" : "ConfRoot",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "ConfirmType"
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Tasks/NumOwnComp",
+                "name" : "NumOwnComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../NumOwn",
+                  "computationAlternatives" : [ {
+                    "operation" : "-1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "constant into NumOwn."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Tasks/BoolOwnComp",
+                "name" : "BoolOwnComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../BoolOwn",
+                  "computationAlternatives" : [ {
+                    "operation" : "True"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "constant into BoolOwn."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Tasks/ConfOwnComp",
+                "name" : "ConfOwnComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../ConfOwn",
+                  "computationAlternatives" : [ {
+                    "operation" : "True"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "constant into ConfOwn."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/BoolCtl",
+                "name" : "BoolCtl",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/ConfCtl",
+                "name" : "ConfCtl",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "ConfirmType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/ShortLabel",
+                "name" : "ShortLabel",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 3
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/FitLabel",
+                "name" : "FitLabel",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 3
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/Whole",
+                "name" : "Whole",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/Cents",
+                "name" : "Cents",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Tasks/Bounded",
+                "name" : "Bounded",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "minValue" : 0,
+                      "maxValue" : 10
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Store",
+            "name" : "Store",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Store/Note",
+                "name" : "Note",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/LabelRootComp",
+            "name" : "LabelRootComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Tasks/LabelRoot",
+              "computationAlternatives" : [ {
+                "operation" : "\"FIXED\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Root-declared constant."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NumRootComp",
+            "name" : "NumRootComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Tasks/NumRoot",
+              "computationAlternatives" : [ {
+                "operation" : "-1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "constant into NumRoot."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/BoolRootComp",
+            "name" : "BoolRootComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Tasks/BoolRoot",
+              "computationAlternatives" : [ {
+                "operation" : "True"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "constant into BoolRoot."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/ConfRootComp",
+            "name" : "ConfRootComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Tasks/ConfRoot",
+              "computationAlternatives" : [ {
+                "operation" : "True"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "constant into ConfRoot."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/ShortLabelComp",
+            "name" : "ShortLabelComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Tasks/ShortLabel",
+              "computationAlternatives" : [ {
+                "operation" : "\"FIXEDLONG\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "over-long constant."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FitLabelComp",
+            "name" : "FitLabelComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Tasks/FitLabel",
+              "computationAlternatives" : [ {
+                "operation" : "\"AB\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "fitting constant."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/BoundedComp",
+            "name" : "BoundedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Tasks/Bounded",
+              "computationAlternatives" : [ {
+                "operation" : "99"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "bounded constant."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/WholeComp",
+            "name" : "WholeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Tasks/Whole",
+              "computationAlternatives" : [ {
+                "operation" : "-1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "numeric constant."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/CentsComp",
+            "name" : "CentsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Tasks/Cents",
+              "computationAlternatives" : [ {
+                "operation" : "1.5"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "narrower-scale constant."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
