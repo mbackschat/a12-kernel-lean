@@ -473,6 +473,35 @@ example : shellCount presentEmpty (filled 7) = some (.value 1) := by
 example : shellCount malformed (filled 7) = some (.value 2) := by
   native_decide
 
+/-- The validation arm over the shell's own descendant cell, with no repeatable row and full
+    coverage, so formal invalidity is the only dimension left free. The cells are supplied here
+    rather than derived, exactly as the direct-child pair above; the model-side derivation for
+    this shape is exercised by the group-presence cases instead. -/
+def shellValidationCount (clause preference : CheckedCell) : FilledGroupCount :=
+  let state (cells : List CheckedCell) : GroupPresenceState :=
+    ({ descendantCells := cells
+       hasInstantiatedRow := false
+       structuralError := false
+       relevance := .fullyRelevant } : ResolvedGroupPresenceInput).derive
+  numberOfFilledGroups [state [clause], state [preference]]
+
+/- The arms diverge at the **nested** shape exactly as they do at a direct child, which is the
+   nearest false generalization worth guarding: widening the compute arm's extent through the
+   subtree says nothing about the validation arm's availability rule. Over the same shell cells
+   the compute arm counts the malformed descendant as filled and the validation arm cannot answer
+   at all. -/
+example :
+    (shellCount malformed (filled 7), shellValidationCount malformed (filled 7)) =
+      (some (.value 2), .unknown) := by
+  native_decide
+
+/- The clean control on that same pair, so the divergence is the descendant cell's formal state
+   and not the nesting: both arms answer two. -/
+example :
+    (shellCount (filled 24) (filled 7), shellValidationCount (filled 24) (filled 7)) =
+      (some (.value 2), .value 2) := by
+  native_decide
+
 /- Boundary: a **repeatable** descendant keeps the refusal, and the measurement says why. The Kernel
    counts such a shell structurally — one instantiated row with no filled cell still makes it count —
    so the answer is not a wider cell scan but a different mechanism, and this cell-list projection
