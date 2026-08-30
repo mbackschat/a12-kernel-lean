@@ -218,18 +218,54 @@ route from an authored computation to its implicit self-validation message type,
 measures over a model of this shape with `Rows` declared `max 5`.
 -/
 
-private def growthOf (operands : List SurfaceGroupCountOperand)
+/-- The same model with the repeatable group's declared maximum withheld, which the staged model
+    boundary permits. Its starred operand still evaluates; only its *movement* is unknown. -/
+private def unboundedModel : FlatModel :=
+  { model with
+      repeatableGroups := model.repeatableGroups.map fun group =>
+        if group.level == rowsLevel then { group with repeatability := none } else group }
+
+private def growthIn (target : FlatModel) (operands : List SurfaceGroupCountOperand)
     (flatFilled : Bool) (rows : Nat) (others : Nat := 0) :
     Option (Option (List ComputationOperandGrowth)) :=
-  match elaborateNumericComputationOperation model ["Probe"] targetId
+  match elaborateNumericComputationOperation target ["Probe"] targetId
       (.atom (.filledGroupCount operands)) with
   | .error _ => none
   | .ok checked =>
       match checked.core.expression with
       | .atom (.filledGroupCountMixed checkedOperands) =>
           ((evaluationContext flatFilled rows others).growthOfGroupCountOperands
-            model checkedOperands).toOption
+            target checkedOperands).toOption
       | _ => none
+
+/- **The fail-closed suppression, which is the branch that must not read as "closed".** A starred
+   group whose model retains no finite extent has unknown movement, so the whole list yields no
+   channels rather than a closed one — a missing channel read as closed would silently type the
+   message VALUE. The bound model beside it is the control: same operands, same document, channels
+   present. -/
+example :
+    growthIn unboundedModel mixedList true 3 = some none ∧
+      growthIn model mixedList true 3 = some (some [.fixedGroup true, .starredGroupCount 3 5]) := by
+  native_decide
+
+/- The suppression is confined to growth: the same operand list still **counts** on the unbounded
+   model, so withholding the declared maximum removes a movement rule and not an evaluation. -/
+example :
+    (match elaborateNumericComputationOperation unboundedModel ["Probe"] targetId
+        (.atom (.filledGroupCount mixedList)) with
+      | .error _ => none
+      | .ok checked =>
+          match checked.core.expression with
+          | .atom atom =>
+              ((evaluationContext true 3 0).readCheckedNumericComputationAtom
+                (model := unboundedModel) atom).toOption
+          | _ => none) = some (.value 4) := by
+  native_decide
+
+private def growthOf (operands : List SurfaceGroupCountOperand)
+    (flatFilled : Bool) (rows : Nat) (others : Nat := 0) :
+    Option (Option (List ComputationOperandGrowth)) :=
+  growthIn model operands flatFilled rows others
 
 /-- The measured type of a target seeded past any reachable count. -/
 private def typeOf (computed : Rat) (channels : Option (Option (List ComputationOperandGrowth))) :
