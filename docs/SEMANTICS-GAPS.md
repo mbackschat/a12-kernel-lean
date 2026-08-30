@@ -126,7 +126,6 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `evidence-needed`: select one coherent temporal family and use the matching keyed checkpoint in [`SOURCES.md`](SOURCES.md). Do not infer an unmeasured carrier from an adjacent carrier with the same value outcome.
 - `entry-gate`: each selected family needs one bounded source packet and a separator matrix over format, world, profile, gap or overlap, cutover, empty or formal precedence, and target policy.
 - `completion-gate`: every admitted temporal operation and target path is checked across its legal profile with exact empty and formal polarity plus separating gap, overlap, cutover, and millisecond cases.
-- `blocked-on`: none
 - `route-state`: discovery-required
 
 ### SG7 — String, pattern, and custom-field completion
@@ -244,7 +243,8 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `scope`: only mandatory-information callers remain in scope. Parser callers are already covered by the canonical numeric narrowing clause, and the sentinel is observationally inert at their two gates.
 - `baseline`: no Lean owner or spec clause represents the mandatory-information derivation.
 - `remaining`: **the derivation is exposed, and the entry-gate question is answered.** The facade offers `getMandatoryInformationFromRules` over a rule collection, returning three field-name sets, verified in kernel `30.8.1` source rather than surveyed. What follows from that is a routing fact, not an observability one: it is a **model-and-rule-level** query with no document, so neither `validateFull` nor `compute` can expose it and the accepted runtime-probe route cannot reach it. a12-dmkits has no code touching the interface and lists the signature as unverified in its own survey.
-- `remaining`: the observation is therefore requested as [`EXP-2026-08-30-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#exp-2026-08-30-01), which carries the input, both accounts, their predictions, the negative result, and the smallest producer that would settle it. Write no Lean and no clause before it returns.
+- `remaining`: the observation is requested as [`EXP-2026-08-30-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#exp-2026-08-30-01), which carries the input, both accounts, their predictions, the unsatisfiable control, and the negative result. Write no Lean and no clause before it returns.
+- `blocked-on`: **an owner decision, not an observation.** Reaching the query means giving a12-dmkits' adapter a typed mandatory-information capability, since it admits no kernel type across its boundary — a feature with an API surface, not a probe. The entry's `narrowed surface` record also shrinks the payoff to one arm of one visitor, so the decision is whether that arm is worth the capability.
 - `evidence-needed`: compare a sentinel-valued authored literal with an absent bound at each mandatory-information caller on both Kernel strategies. A negative result closes this entry as unobservable.
 - `discriminator`: the parser caller is not a valid discriminator because both readings admit there. Only a mandatory-information caller can separate them.
 - `consumer`: Analyze and Explain need no bound separated from a bound whose value equals the sentinel. Execute needs the distinction only if the derived answer reaches firing.
