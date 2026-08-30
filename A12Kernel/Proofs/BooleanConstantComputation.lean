@@ -42,4 +42,44 @@ theorem booleanConstantComputationRun_applyToChecked_delegates
       view.boolean.applyTo destination.sourceBooleanTargetState := by
   rfl
 
+/-! ## Repeatable constant targets -/
+
+/-- Two checked constants with the same target and the same value execute identically however they
+are placed. This is the measured claim stated as a law: a root declaration and a declaration at the
+target's own group produce the same rows and the same values, because iteration comes from the
+target's scope and a constant supplies no other source
+([checkpoint](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)). -/
+theorem checkedRepeatableBooleanConstantComputation_execute_ignoresDeclaringGroup
+    {model : FlatModel}
+    (first second : CheckedRepeatableBooleanConstantComputation model)
+    (sameTarget :
+      first.checkedTarget.targetField = second.checkedTarget.targetField)
+    (sameDeclaration :
+      first.checkedTarget.declaration = second.checkedTarget.declaration)
+    (sameValue : first.value = second.value)
+    (input : CheckedDocument model) :
+    first.execute input = second.execute input := by
+  simp only [CheckedRepeatableBooleanConstantComputation.execute,
+    sameTarget, sameDeclaration, sameValue]
+
+/-- Every emitted row carries the same constant. The family has no per-row content beyond its
+address, so a consumer needs only the row set and one value; nothing can make one row differ. -/
+theorem checkedRepeatableBooleanConstantComputation_execute_constantAcrossRows
+    {model : FlatModel}
+    (operation : CheckedRepeatableBooleanConstantComputation model)
+    (input : CheckedDocument model)
+    (outcomes : List RepeatableBooleanConstantComputationOutcome)
+    (executed : operation.execute input = .ok outcomes) :
+    ∀ entry ∈ outcomes, entry.result = .value operation.value := by
+  simp only [CheckedRepeatableBooleanConstantComputation.execute] at executed
+  split at executed
+  · simp at executed
+  · split at executed
+    · simp at executed
+    · obtain ⟨rfl⟩ := Except.ok.inj executed
+      intro entry member
+      simp only [List.mem_map] at member
+      obtain ⟨path, _, built⟩ := member
+      exact built ▸ rfl
+
 end A12Kernel

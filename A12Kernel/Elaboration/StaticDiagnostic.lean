@@ -23,6 +23,11 @@ inductive KernelStaticDiagnostic where
   | noBoolyAllowed
   /-- A Confirm computation target received the constant False. True is accepted, and Boolean targets accept either constant. -/
   | invalidCompareToYes
+  /-- A computation's target does not lie at or below its declaring group while the computation
+  iterates. Iteration is derived from the target's own repeatable scope or from a per-row operand of
+  a repeatable declaring group, so a bare constant into a repeatable target reaches this class with
+  no operand at all. -/
+  | fieldNotInRuleGroup
   /-- An operand list below the operator's required arity. -/
   | paramSizeInvalidN
   /-- A filled-group count carries one fixed unstarred operand, including a repeatable operand whose level is bound by the error-field row. The same repeatable operand outside that row draws `noWildcard`; a single starred operand is admitted, so this is not simply an operand-count gate. -/
@@ -106,6 +111,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .varyingTypesNotAllowed => "MVK_VARYING_TYPES_NOT_ALLOWED"
   | .noBoolyAllowed => "MVK_NO_BOOLY_ALLOWED"
   | .invalidCompareToYes => "MVK_INVALID_COMPARE_TO_YES"
+  | .fieldNotInRuleGroup => "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
   | .paramSizeInvalidN => "MVK_PARAMSIZE_INVALIDN"
   | .paramSizeInvalidGN => "MVK_PARAMSIZE_INVALIDGN"
   | .duplicateParam1 => "MVK_DUPLICATE_PARAM1"
@@ -152,6 +158,7 @@ def kernelCode : KernelStaticDiagnostic → String
 def all : List KernelStaticDiagnostic :=
   [.onlyStringEnumNumberDateAllowed, .onlyStringEnumNumberAllowed,
     .varyingTypesNotAllowed, .noBoolyAllowed, .invalidCompareToYes,
+    .fieldNotInRuleGroup,
     .paramSizeInvalidN,
     .paramSizeInvalidGN, .paramSizeInvalid2, .duplicateParam1, .duplicateParam2,
     .noWildcard, .invalidWildcard, .noWildcardsGAllowed, .noWildcardsAllowed,

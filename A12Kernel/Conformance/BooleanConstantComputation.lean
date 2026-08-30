@@ -212,4 +212,98 @@ example :
     crossGroupAppliedState? rulesMarker.id = some .absent := by
   native_decide
 
+/-! ## Repeatable constant targets
+
+The Kernel admits a bare constant into a repeatable target from the target's own group and from any
+ancestor of it, and computes one value per instantiated target row
+([checkpoint](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)). -/
+
+private def taskApproved : FlatFieldDecl := {
+  id := 20
+  groupPath := ["Probe", "Tasks"]
+  name := "Approved"
+  policy := { kind := .boolean }
+  repeatableScope := [10]
+}
+
+private def taskConfirmed : FlatFieldDecl := {
+  id := 21
+  groupPath := ["Probe", "Tasks"]
+  name := "Confirmed"
+  policy := { kind := .confirm }
+  repeatableScope := [10]
+}
+
+private def formLevel : FlatFieldDecl := {
+  id := 22
+  groupPath := ["Probe", "Store"]
+  name := "Available"
+  policy := { kind := .boolean }
+}
+
+private def repeatableModel : FlatModel := {
+  fields := [taskApproved, taskConfirmed, formLevel]
+  repeatableGroups := [
+    { level := 10, path := ["Probe", "Tasks"], repeatability := some 3 }]
+}
+
+private def repeatablePrepared :
+    PreparedFlatStringContext repeatableModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler repeatableModel).toOption.get (by native_decide)
+
+private def taskRows (count : Nat) : Option (CheckedDocument repeatableModel) :=
+  (checkDocument repeatablePrepared "en_US" {
+    instantiatedRows :=
+      (List.range count).map fun index => { group := 10, path := [index + 1] }
+    cells := [] }).toOption
+
+private def approvedAt (path : List Nat) : CellAddr :=
+  { field := taskApproved.id, path }
+
+/- Declaring the constant at the root computes once per instantiated target row, and at no row when
+the group has none. The Kernel gives the identical outcomes from the target's own group, so the row
+count comes from the target's scope and the declaring group contributes no repetition. -/
+example : ((checkRepeatableBooleanConstantComputation
+      repeatableModel ["Probe"] taskApproved.id true).toOption.bind fun operation => do
+    let none? ← (taskRows 0).bind fun input => (operation.execute input).toOption
+    let one ← (taskRows 1).bind fun input => (operation.execute input).toOption
+    let three ← (taskRows 3).bind fun input => (operation.execute input).toOption
+    pure (none?.map (·.targetField), one.map (·.targetField),
+      three.map fun entry => (entry.targetField, entry.result))) =
+    some ([], [approvedAt [1]],
+      [(approvedAt [1], .value true), (approvedAt [2], .value true),
+        (approvedAt [3], .value true)]) := by
+  native_decide
+
+/- Containment, not parenthood: the target's own group and every ancestor are admitted, and only a
+group the target does not lie below is refused. The Kernel refuses that one
+`MVK_ERROR_FIELD_NOT_IN_RULEGROUP` on this exact carrier. -/
+example : ([["Probe", "Tasks"], ["Probe"]].map fun group =>
+      (checkRepeatableBooleanConstantComputation
+        repeatableModel group taskApproved.id true).toOption.isSome,
+    match checkRepeatableBooleanConstantComputation
+        repeatableModel ["Probe", "Store"] taskApproved.id true with
+    | .error cause => cause.diagnostic?.map KernelStaticDiagnostic.kernelCode
+    | .ok _ => none) =
+    ([true, true], some "MVK_ERROR_FIELD_NOT_IN_RULEGROUP") := by
+  native_decide
+
+/- The Confirm asymmetry is the operation's, so it survives the repeatable carrier unchanged: the
+target-kind certificate admits `True` and refuses `False` with the measured Kernel diagnostic. -/
+example : ((checkRepeatableBooleanConstantComputation
+      repeatableModel ["Probe"] taskConfirmed.id true).toOption.isSome,
+    match checkRepeatableBooleanConstantComputation
+        repeatableModel ["Probe"] taskConfirmed.id false with
+    | .error cause => cause.diagnostic?
+    | .ok _ => none) =
+    (true, some .invalidCompareToYes) := by
+  native_decide
+
+/- A fixed target is refused by this carrier, which is what keeps the two families separate rather
+than one widened gate: the fixed route above still owns that shape. -/
+example : (checkRepeatableBooleanConstantComputation
+    repeatableModel ["Probe"] formLevel.id true).toOption.isSome = false := by
+  native_decide
+
 end A12Kernel.Conformance.BooleanConstantComputation
