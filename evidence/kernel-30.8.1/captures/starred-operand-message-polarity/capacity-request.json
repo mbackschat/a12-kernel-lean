@@ -1,0 +1,99 @@
+{
+ "model": "StarPolarity_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "at-capacity-all-filled",
+   "documentInline": {
+    "Probe": {
+     "TallyStar": 99,
+     "TallyMixed": 99,
+     "TallyFixed": 99,
+     "TallySum": 99,
+     "Flat": {
+      "FlatValue": 1
+     },
+     "Other": {
+      "OtherValue": 1
+     },
+     "Rows": [
+      {
+       "RowValue": 1
+      },
+      {
+       "RowValue": 1
+      },
+      {
+       "RowValue": 1
+      },
+      {
+       "RowValue": 1
+      },
+      {
+       "RowValue": 1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "one-below-capacity-all-filled",
+   "documentInline": {
+    "Probe": {
+     "TallyStar": 99,
+     "TallyMixed": 99,
+     "TallyFixed": 99,
+     "TallySum": 99,
+     "Flat": {
+      "FlatValue": 1
+     },
+     "Other": {
+      "OtherValue": 1
+     },
+     "Rows": [
+      {
+       "RowValue": 1
+      },
+      {
+       "RowValue": 1
+      },
+      {
+       "RowValue": 1
+      },
+      {
+       "RowValue": 1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "at-capacity-rows-empty",
+   "documentInline": {
+    "Probe": {
+     "TallyStar": 99,
+     "TallyMixed": 99,
+     "TallyFixed": 99,
+     "TallySum": 99,
+     "Flat": {
+      "FlatValue": 1
+     },
+     "Other": {
+      "OtherValue": 1
+     },
+     "Rows": [
+      {},
+      {},
+      {},
+      {},
+      {}
+     ]
+    }
+   }
+  }
+ ]
+}

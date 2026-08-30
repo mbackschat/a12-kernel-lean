@@ -260,10 +260,12 @@ def numberOfFilledGroupsForComputation (groups : List (List CellObservation)) : 
 
 /-- One operand's reading inside a computation-arm `NumberOfFilledGroups` list.
 
-    The two forms are not two spellings of one question. A `fixed` operand is decided by its
-    descendant cells and contributes at most one. A `starredRows` operand contributes a
-    **quantity** — its group's instantiated row count — which no presence predicate can express,
-    and it never reads a cell, so a row carrying nothing still counts.
+    The two forms are not two spellings of one *question*, though they share one result domain.
+    A `fixed` operand is decided by its descendant cells and contributes an indicator. A
+    `starredRows` operand contributes a **cardinality** — its group's instantiated row count —
+    which no presence predicate can express, and it never reads a cell, so a row carrying
+    nothing still counts. The fold over them stays uniform, so a consumer needs one traversal
+    with a form-dependent contribution rather than a result type per form.
 
     `starredRows` takes the **in-capacity** instantiated row count. Excluding an over-limit row
     is the caller's, because this arm has no measurement for one: the validation carrier's

@@ -1,0 +1,85 @@
+{
+ "model": "StarCount_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "all-referenced-filled-one-row",
+   "documentInline": {
+    "Probe": {
+     "Tally": 9,
+     "TallyMixed": 9,
+     "Flat": {
+      "FlatValue": 1
+     },
+     "Rows": [
+      {
+       "RowValue": 7
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "all-referenced-filled-two-rows",
+   "documentInline": {
+    "Probe": {
+     "Tally": 9,
+     "TallyMixed": 9,
+     "Flat": {
+      "FlatValue": 1
+     },
+     "Rows": [
+      {
+       "RowValue": 7
+      },
+      {
+       "RowValue": 8
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "rows-filled-flat-empty",
+   "documentInline": {
+    "Probe": {
+     "Tally": 9,
+     "TallyMixed": 9,
+     "Flat": {},
+     "Rows": [
+      {
+       "RowValue": 7
+      },
+      {
+       "RowValue": 8
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "seed-equals-computed",
+   "documentInline": {
+    "Probe": {
+     "Tally": 2,
+     "TallyMixed": 3,
+     "Flat": {
+      "FlatValue": 1
+     },
+     "Rows": [
+      {
+       "RowValue": 7
+      },
+      {
+       "RowValue": 8
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

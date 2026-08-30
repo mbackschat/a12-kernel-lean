@@ -1,0 +1,71 @@
+{
+ "model": "StarPolarity_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "everything-filled",
+   "documentInline": {
+    "Probe": {
+     "TallyStar": 9,
+     "TallyMixed": 9,
+     "TallyFixed": 9,
+     "TallySum": 99,
+     "Flat": {
+      "FlatValue": 1
+     },
+     "Other": {
+      "OtherValue": 1
+     },
+     "Rows": [
+      {
+       "RowValue": 7
+      },
+      {
+       "RowValue": 8
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "no-rows-all-filled",
+   "documentInline": {
+    "Probe": {
+     "TallyStar": 9,
+     "TallyMixed": 9,
+     "TallyFixed": 9,
+     "TallySum": 99,
+     "Flat": {
+      "FlatValue": 1
+     },
+     "Other": {
+      "OtherValue": 1
+     },
+     "Rows": []
+    }
+   }
+  },
+  {
+   "name": "fixed-operands-empty",
+   "documentInline": {
+    "Probe": {
+     "TallyStar": 9,
+     "TallyMixed": 9,
+     "TallyFixed": 9,
+     "TallySum": 99,
+     "Flat": {},
+     "Other": {},
+     "Rows": [
+      {
+       "RowValue": 7
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,568 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "42fdec77fd03f1644c05eb6dcff484441960eff5",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "StarPolarity_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "at-capacity-all-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyFixedComp",
+              "field" : "Probe/TallyFixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Fixed tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Other/OtherValue",
+                "Probe/TallyFixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyStarComp",
+              "field" : "Probe/TallyStar",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallyStar"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallySumComp",
+              "field" : "Probe/TallySum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Sum tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/TallyFixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "6"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Probe/TallySum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyFixedComp",
+              "field" : "Probe/TallyFixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Fixed tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Other/OtherValue",
+                "Probe/TallyFixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyStarComp",
+              "field" : "Probe/TallyStar",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallyStar"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallySumComp",
+              "field" : "Probe/TallySum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Sum tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/TallyFixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "6"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Probe/TallySum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "one-below-capacity-all-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyFixedComp",
+              "field" : "Probe/TallyFixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Fixed tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Other/OtherValue",
+                "Probe/TallyFixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            },
+            {
+              "code" : "TallyStarComp",
+              "field" : "Probe/TallyStar",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallyStar"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallyStar"
+              ]
+            },
+            {
+              "code" : "TallySumComp",
+              "field" : "Probe/TallySum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Sum tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/TallyFixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              },
+              {
+                "field" : "Probe/TallySum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyFixedComp",
+              "field" : "Probe/TallyFixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Fixed tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Other/OtherValue",
+                "Probe/TallyFixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ]
+            },
+            {
+              "code" : "TallyStarComp",
+              "field" : "Probe/TallyStar",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallyStar"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallyStar"
+              ]
+            },
+            {
+              "code" : "TallySumComp",
+              "field" : "Probe/TallySum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Sum tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/TallyFixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              },
+              {
+                "field" : "Probe/TallySum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "at-capacity-rows-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyFixedComp",
+              "field" : "Probe/TallyFixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Fixed tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Other/OtherValue",
+                "Probe/TallyFixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyStarComp",
+              "field" : "Probe/TallyStar",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallyStar"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallySumComp",
+              "field" : "Probe/TallySum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Sum tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/TallyFixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "6"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Probe/TallySum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyFixedComp",
+              "field" : "Probe/TallyFixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Fixed tally.",
+              "referenced" : [
+                "Probe/Flat/FlatValue",
+                "Probe/Other/OtherValue",
+                "Probe/TallyFixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyMixedComp",
+              "field" : "Probe/TallyMixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Mixed tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/TallyMixed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallyStarComp",
+              "field" : "Probe/TallyStar",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Star tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallyStar"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TallySumComp",
+              "field" : "Probe/TallySum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Sum tally.",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/RowValue",
+                "Probe/TallySum"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/TallyFixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/TallyMixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "6"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Probe/TallySum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

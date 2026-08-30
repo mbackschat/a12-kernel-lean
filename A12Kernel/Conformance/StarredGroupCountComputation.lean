@@ -2,15 +2,17 @@ import A12Kernel.Semantics.GroupPresence
 
 /-! # The computation arm's starred group-count operand
 
-`NumberOfFilledGroups` does not fold its operand list by asking one presence question per
-operand. A **fixed** operand contributes zero or one by its descendant content; a **starred**
-repeatable operand contributes that group's instantiated row count, which is a quantity the
-presence question cannot express. Both forms appear in one list and their contributions add.
+`NumberOfFilledGroups` folds its operand list additively into one result domain, with a
+**form-dependent contribution**: a fixed operand contributes an indicator of its descendant
+content, a starred repeatable operand contributes that group's instantiated row count. What the
+operator is not is a uniform *presence* tally with a wildcard spelling — a presence question
+cannot express the second contribution — but the fold itself stays uniform, so one traversal
+carrying a form-dependent contribution is enough and no per-form result type is needed.
 
 Measured at the [starred group-count
 checkpoint](../../docs/SOURCES.md#src-starred-group-count-computation) over seven documents on
 both Kernel codegen strategies. These cases replay that table at the clause that owns the
-result domain, under a stated mapping from each measured document to an operand reading: a
+fold, under a stated mapping from each measured document to an operand reading: a
 filled `FlatValue` to a present fixed cell, and `n` instantiated `Rows` to `starredRows n`.
 The numbers are measured; that mapping is this project's representation choice and is exactly
 what elaboration would have to establish. It does not: the checked scalar computation still
