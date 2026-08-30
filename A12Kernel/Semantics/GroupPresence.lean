@@ -258,4 +258,41 @@ def groupPresentForComputation (cells : List CellObservation) : Bool :=
 def numberOfFilledGroupsForComputation (groups : List (List CellObservation)) : Nat :=
   groups.countP groupPresentForComputation
 
+/-- One operand's reading inside a computation-arm `NumberOfFilledGroups` list.
+
+    The two forms are not two spellings of one question. A `fixed` operand is decided by its
+    descendant cells and contributes at most one. A `starredRows` operand contributes a
+    **quantity** — its group's instantiated row count — which no presence predicate can express,
+    and it never reads a cell, so a row carrying nothing still counts.
+
+    `starredRows` takes the **in-capacity** instantiated row count. Excluding an over-limit row
+    is the caller's, because this arm has no measurement for one: the validation carrier's
+    over-limit exclusion ([§7](../../spec/07-repetition-and-iteration.md)) is a separate
+    observation and is not assumed here. -/
+inductive GroupCountOperandReading where
+  | fixed (cells : List CellObservation)
+  | starredRows (rows : Nat)
+  deriving Repr, DecidableEq
+
+/-- What one operand adds to the count. -/
+def GroupCountOperandReading.contribution : GroupCountOperandReading → Nat
+  | .fixed cells => if groupPresentForComputation cells then 1 else 0
+  | .starredRows rows => rows
+
+/-- The computation-arm `NumberOfFilledGroups` over a mixed operand list. Contributions add,
+    which is what lets a fixed operand's zero-or-one and a starred operand's row count stand in
+    one list without either reinterpreting the other.
+
+    Measured at the [starred group-count
+    checkpoint](../../docs/SOURCES.md#src-starred-group-count-computation): three instantiated
+    empty rows count three, and emptying a fixed operand beside them drops the total by exactly
+    one. `numberOfFilledGroupsForComputationOperands_fixed` states that the fixed-only list is
+    the established plain multi-group count, so this generalizes that clause rather than
+    competing with it. -/
+def numberOfFilledGroupsForComputationOperands :
+    List GroupCountOperandReading → Nat
+  | [] => 0
+  | operand :: rest =>
+      operand.contribution + numberOfFilledGroupsForComputationOperands rest
+
 end A12Kernel

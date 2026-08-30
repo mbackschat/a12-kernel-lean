@@ -139,4 +139,37 @@ theorem groupPresentForComputation_eq_content_of_clean
     groupPresentForComputation]
   exact any_presentForComputation_eq_any_admitsGroupContent input.descendantCells clean
 
+/-- Splitting an operand list splits its count. This is the law behind "the contributions add":
+    a consumer may decompose a mixed list into its fixed and starred parts, or read one operand's
+    share off the total, without the operator's fold having to be re-derived per shape. -/
+theorem numberOfFilledGroupsForComputationOperands_append
+    (left right : List GroupCountOperandReading) :
+    numberOfFilledGroupsForComputationOperands (left ++ right) =
+      numberOfFilledGroupsForComputationOperands left +
+        numberOfFilledGroupsForComputationOperands right := by
+  induction left with
+  | nil => simp [numberOfFilledGroupsForComputationOperands]
+  | cons operand rest ih =>
+      simp [numberOfFilledGroupsForComputationOperands, ih, Nat.add_assoc]
+
+/-- The mixed operand fold **generalizes** the established plain multi-group count rather than
+    competing with it: over a list of fixed operands the two agree.
+
+    This is the statement that keeps the starred operand from silently restating the fixed one.
+    Its direction matters — it constrains the new clause by the measured old one, not the
+    reverse — and it says nothing about a list containing a starred operand, whose contribution
+    the plain count cannot express at any width. -/
+theorem numberOfFilledGroupsForComputationOperands_fixed
+    (groups : List (List CellObservation)) :
+    numberOfFilledGroupsForComputationOperands
+        (groups.map GroupCountOperandReading.fixed) =
+      numberOfFilledGroupsForComputation groups := by
+  induction groups with
+  | nil => rfl
+  | cons cells rest ih =>
+      simp only [List.map_cons, numberOfFilledGroupsForComputationOperands, ih,
+        GroupCountOperandReading.contribution, numberOfFilledGroupsForComputation,
+        List.countP_cons]
+      cases groupPresentForComputation cells <;> simp [Nat.add_comm]
+
 end A12Kernel
