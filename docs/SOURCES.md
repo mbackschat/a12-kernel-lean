@@ -311,6 +311,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [An over-limit row stamps every node the document writes beneath it](sources/group-and-iteration-probes.md#src-over-limit-finding-multiplicity)
 <a id="src-nested-over-limit-attribution"></a>
 - [An inner over-limit row is invisible beneath an outer one](sources/group-and-iteration-probes.md#src-nested-over-limit-attribution)
+<a id="src-over-limit-absorption-depth"></a>
+- [The absorption is transitive and suppresses the whole written subtree](sources/group-and-iteration-probes.md#src-over-limit-absorption-depth)
 <a id="src-nested-descendant-group-count-invalid"></a>
 - [A formally invalid nested descendant still fills its group](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-invalid)
 <a id="src-nested-descendant-group-count-runtime"></a>

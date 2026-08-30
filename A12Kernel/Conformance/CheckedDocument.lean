@@ -329,6 +329,31 @@ example : ((checked? {
     some ([.overRepetition], .unknown .overRepetition) := by
   native_decide
 
+/- The over-repetition overlay replaces a formal cause at any distance below the violated row, not
+only in its own cells: the same malformed value reads as over-repetition two levels beneath an
+over-limit `Items[3]` and stays malformed beneath the in-capacity `Items[2]`. The sibling is what
+makes the first reading a suppression rather than an input that was never checked. Measured on
+kernel 30.8.1, where the deep cell reports no format finding at all while its in-capacity twin
+reports `zahlHatUngueltigeZeichen` ([checkpoint](../../docs/SOURCES.md#src-over-limit-absorption-depth)). -/
+example : ((checked? {
+    instantiatedRows :=
+      ((List.range 3).map fun index => { group := 10, path := [index + 1] }) ++
+        [{ group := 11, path := [3, 1] }, { group := 12, path := [3, 1, 1] },
+          line21, { group := 12, path := [2, 1, 1] }]
+    cells := [
+      { address := { field := 6, path := [3, 1, 1] }
+        stored := "bad"
+        raw := .rejected .malformed },
+      { address := { field := 6, path := [2, 1, 1] }
+        stored := "bad"
+        raw := .rejected .malformed }]
+  }).bind fun checked => do
+    let beyond ← (checked.read { field := 6, path := [3, 1, 1] }).toOption
+    let within ← (checked.read { field := 6, path := [2, 1, 1] }).toOption
+    pure (beyond.findings, within.findings)) =
+    some ([.overRepetition], [.malformed]) := by
+  native_decide
+
 /- Requiredness annotates a later validation view while computation retains the base empty observation. -/
 example : ((checked? classified).bind fun checked =>
     (checked.applyAbsoluteRequiredAt 4).toOption.map fun result =>
