@@ -1,4 +1,6 @@
+import A12Kernel.Elaboration.NumericComputation
 import A12Kernel.Semantics.ComputationSelfValidation
+import A12Kernel.Semantics.GroupPresence
 
 /-! # Laws of the computed target's implicit self-validation message
 
@@ -72,6 +74,22 @@ theorem starredChannels_separate_at_capacity (rows : Nat) :
       (ComputationOperandGrowth.starredRowValues rows rows false).canGrow = true := by
   simp [ComputationOperandGrowth.canGrow]
 
+/-- The starred channel is the validation arm's declared-extent movement, not a second rule.
+
+    `FilledGroupCount.availableWithFillability?` already decides a count's movement by comparing it
+    to its declared extent, and this states that the computation arm's row channel *is* that
+    decision rather than a restatement of it. Without this the two arms could drift apart on the
+    same group while both still passed their own cases. -/
+theorem starredGroupCount_canGrow_eq_declared_extent_movement
+    (instantiated capacity : Nat) :
+    (ComputationOperandGrowth.starredGroupCount instantiated capacity).canGrow =
+      (((FilledGroupCount.value instantiated).availableWithFillability? capacity).any
+        fun available => available.2.canGrow) := by
+  simp only [ComputationOperandGrowth.canGrow, FilledGroupCount.availableWithFillability?,
+    Option.any_some]
+  by_cases below : instantiated < capacity <;>
+    simp [below, NumericFillability.growOnly, NumericFillability.fixed]
+
 /-- `fillToFix` is never a proper subset of the referenced set.
 
     It carries all of it or none of it, so a consumer reading a listed pointer as "this cell is
@@ -84,5 +102,30 @@ theorem selfValidationFillToFix_all_or_nothing
   | fired polarity => cases polarity <;> simp [selfValidationFillToFix]
   | notFired => exact Or.inr rfl
   | unknown => exact Or.inr rfl
+
+/-! ## The producer -/
+
+/-- A fixed operand can grow exactly when it currently contributes nothing.
+
+    Growth and contribution are one decision read twice, so a message cannot type VALUE on an
+    operand the count treats as absent, nor OMISSION on one it treats as present. -/
+theorem fixedGroup_canGrow_iff_contributes_zero (cells : List CellObservation) :
+    (ComputationOperandGrowth.fixedGroup (groupPresentForComputation cells)).canGrow = true ↔
+      (GroupCountOperandReading.fixed cells).contribution = 0 := by
+  simp only [ComputationOperandGrowth.canGrow, GroupCountOperandReading.contribution]
+  cases groupPresentForComputation cells <;> simp
+
+/-- The two readings of a fixed operand refuse together, because they share one descendant read.
+
+    This is what keeps a consumer from reaching a typed message without a channel behind it, or a
+    channel for a group the count itself refused. -/
+theorem growthOfGroupCountOperand_fixed_refuses_iff
+    {model : FlatModel} (context : NumericComputationEvaluationContext)
+    (reference : ResolvedGroupReference) (fault : NumericComputationFault) :
+    context.growthOfGroupCountOperand model (.fixed reference) = .error fault ↔
+      context.readGroupCountOperand model (.fixed reference) = .error fault := by
+  simp only [NumericComputationEvaluationContext.growthOfGroupCountOperand,
+    NumericComputationEvaluationContext.readGroupCountOperand]
+  cases context.scalar.readGroupDescendants model reference <;> simp [Except.map]
 
 end A12Kernel

@@ -210,4 +210,53 @@ example :
       countOf [starredOperand] false 3 0 = some (.value 3) := by
   native_decide
 
+/-! ## Growth channels, and the message type they feed
+
+The same checked operand list read for the *other* question the Kernel asks of it. These close the
+route from an authored computation to its implicit self-validation message type, which the
+[message-polarity checkpoint](../../../docs/SOURCES.md#src-starred-operand-message-polarity)
+measures over a model of this shape with `Rows` declared `max 5`.
+-/
+
+private def growthOf (operands : List SurfaceGroupCountOperand)
+    (flatFilled : Bool) (rows : Nat) (others : Nat := 0) :
+    Option (Option (List ComputationOperandGrowth)) :=
+  match elaborateNumericComputationOperation model ["Probe"] targetId
+      (.atom (.filledGroupCount operands)) with
+  | .error _ => none
+  | .ok checked =>
+      match checked.core.expression with
+      | .atom (.filledGroupCountMixed checkedOperands) =>
+          ((evaluationContext flatFilled rows others).growthOfGroupCountOperands
+            model checkedOperands).toOption
+      | _ => none
+
+/-- The measured type of a target seeded past any reachable count. -/
+private def typeOf (computed : Rat) (channels : Option (Option (List ComputationOperandGrowth))) :
+    Option Verdict :=
+  match channels with
+  | some (some channels) => some (computedNumberSelfValidation 99 computed channels)
+  | _ => none
+
+/- Elaboration yields the declared capacity beside the instantiated count, so the channel is read
+   against the model rather than against the document alone. -/
+example :
+    growthOf mixedList true 4 = some (some [.fixedGroup true, .starredGroupCount 4 5]) ∧
+      growthOf mixedList true 5 = some (some [.fixedGroup true, .starredGroupCount 5 5]) := by
+  native_decide
+
+/- **The capacity boundary, end to end from an authored operand list.** One row of remaining
+   capacity is the whole difference between the two message types, and nothing outside the operand
+   list changes between them. -/
+example :
+    typeOf 5 (growthOf mixedList true 4) = some (.fired .omission) ∧
+      typeOf 6 (growthOf mixedList true 5) = some (.fired .value) := by
+  native_decide
+
+/- Emptying the fixed operand reopens a channel the exhausted starred one no longer has, so the
+   at-capacity target types OMISSION again — the fixed channel acting alone. No measured document
+   holds that combination; this is the clause's own consequence and carries no external claim. -/
+example : typeOf 5 (growthOf mixedList false 5) = some (.fired .omission) := by
+  native_decide
+
 end A12Kernel.Conformance.NumericComputation.StarredGroupCount

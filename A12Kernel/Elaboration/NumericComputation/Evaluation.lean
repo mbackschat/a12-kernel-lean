@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericComputation.Core
+import A12Kernel.Semantics.ComputationSelfValidation
 
 /-! # Checked numeric-computation evaluation and fault projection -/
 
@@ -252,6 +253,42 @@ def readGroupCountOperand
       match source.inCapacityRowCount context.document context.outer with
       | .error error => .error (NumericComputationFault.repeatableAddressing error)
       | .ok rows => .ok (GroupCountOperandReading.starredRows rows)
+
+/-- Read one group-count operand as the growth channel its contribution still offers.
+
+    This is the same operand list the value reading traverses, seen through the other question the
+    Kernel asks of it — `computedNumberSelfValidation` types the target's implicit message from
+    these. A **fixed** operand can gain content while its subtree is empty; a **starred** one can
+    gain a row while its declared capacity is not exhausted.
+
+    A starred group whose model retains no finite extent yields no channel rather than an assumed
+    unbounded one, matching `numberOfFilledGroupsOperand?`'s refusal on the validation arm: a
+    movement rule for that shape is unmeasured on either arm. -/
+def growthOfGroupCountOperand
+    (context : NumericComputationEvaluationContext) (model : FlatModel) :
+    CheckedGroupCountOperand model →
+      Except NumericComputationFault (Option ComputationOperandGrowth)
+  | .fixed reference =>
+      (context.scalar.readGroupDescendants model reference).map fun cells =>
+        some (.fixedGroup (groupPresentForComputation cells))
+  | .starred source =>
+      match source.group.repeatability with
+      | none => .ok none
+      | some capacity =>
+          match source.inCapacityRowCount context.document context.outer with
+          | .error error => .error (NumericComputationFault.repeatableAddressing error)
+          | .ok rows => .ok (some (.starredGroupCount rows capacity))
+
+/-- The whole operand list's growth, refusing as soon as one operand has no retained extent.
+
+    Refusing the list rather than dropping the operand is deliberate: a missing channel would read
+    as a closed one and silently type the message VALUE. -/
+def growthOfGroupCountOperands
+    (context : NumericComputationEvaluationContext) (model : FlatModel)
+    (operands : List (CheckedGroupCountOperand model)) :
+    Except NumericComputationFault (Option (List ComputationOperandGrowth)) := do
+  let channels ← operands.mapM (context.growthOfGroupCountOperand model)
+  pure (channels.mapM id)
 
 /-- Evaluate one model-checked atom against its complete direct/repeatable computation inputs. Addressing failures stay explicit and cannot collapse into a numeric value, clean absence, or formal poison. -/
 def readCheckedNumericComputationAtom
