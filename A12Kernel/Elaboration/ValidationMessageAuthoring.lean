@@ -68,6 +68,26 @@ also refuses a name carrying one of the grammar's accented letters before the na
 
 namespace A12Kernel
 
+/-- Which lexical class a malformed group argument falls into. The Kernel reports three distinct
+codes among these shapes rather than one parse class, and the class follows the malformed shape, so
+this fragment reproduces it. What it does not reproduce is the character **position** the lexer code
+additionally carries, which is a payload rather than a class.
+
+Measured at the [group-parameter resolution
+checkpoint](../../docs/SOURCES.md#src-message-group-parameter-resolution): an unbalanced quote and an
+empty quoted segment draw `MVK_LEXER_STANDARD_ERROR`, a trailing separator `MVK_INCOMPLETE_INPUT`,
+and a doubled separator `MVK_UNEXPECTED_TOKEN`. The last two are the pair that shows the empty
+segment's **position** decides, since neither is distinguishable from the other by its characters
+alone. -/
+inductive MessageGroupLexicalFault where
+  /-- An unbalanced quote, or a quoted segment whose body is not a bare name. `MVK_LEXER_STANDARD_ERROR`. -/
+  | quote
+  /-- An empty final segment: the argument ends on its separator. `MVK_INCOMPLETE_INPUT`. -/
+  | truncated
+  /-- An empty non-final segment: two separators with nothing between them. `MVK_UNEXPECTED_TOKEN`. -/
+  | separator
+  deriving Repr, DecidableEq
+
 inductive ValidationMessageTemplateError where
   | emptyTemplate
   | lineSeparator
@@ -91,6 +111,10 @@ inductive ValidationMessageTemplateError where
   declared root, and every relative spelling share this one refusal, which is the Kernel's own
   grouping — an **unknown root** is separated onto `unknownRootGroup` instead. -/
   | invalidGroupParameter (parameter : String)
+  /-- A group argument the parameter grammar refuses before any group is looked up, carrying which of
+  the Kernel's three lexical classes the malformed shape falls into. Kept apart from
+  `invalidGroupParameter`, which is a group **refusal** on a well-formed spelling. -/
+  | groupParameterLexical (parameter : String) (fault : MessageGroupLexicalFault)
   /-- The first segment of an absolute group argument names no declared root group. Root existence is
   a gate of its own, ahead of containment and reported apart from it, so it fires whatever follows the
   root and regardless of whether the rest could ever have contained the rule.
@@ -216,6 +240,20 @@ private def decodeSegment (segment : String) : Option AuthoredPathName :=
       | _ => none
   | _ => if isBareName segment then some { text := segment } else none
 
+/-- Decode a group argument's segments, classifying the first malformed one rather than collapsing
+every shape onto one parse class. The walk is single-pass, so the failing segment's position — which
+is what separates a trailing separator from a doubled one — is available exactly where it is decided. -/
+private def decodeGroupSegments :
+    List String → Except MessageGroupLexicalFault (List AuthoredPathName)
+  | [] => .ok []
+  | segment :: rest =>
+      match decodeSegment segment with
+      | some name => (decodeGroupSegments rest).map (name :: ·)
+      | none =>
+          if !segment.isEmpty then .error .quote
+          else if rest.isEmpty then .error .truncated
+          else .error .separator
+
 /-- Decode a list of authored segments, failing as a whole if any segment is malformed. -/
 private def decodeSegments : List String → Option (List AuthoredPathName)
   | [] => some []
@@ -297,8 +335,8 @@ absolute group path: a relative one is refused even when it names a real group, 
 separator is required rather than conventional. Each segment takes the name grammar's single-quote
 escape and the quotes are erased before lookup, so quoting reaches the same group — but the keyword
 match above is on the **raw** argument, which is why quoting a terminal turns it back into an ordinary
-group name. A malformed spelling is a parse failure rather than a group refusal; the Kernel separates
-three lexical codes for these shapes, which this fragment reports as its one parse class. -/
+group name. A malformed spelling is a parse failure rather than a group refusal, on the Kernel's own
+three lexical classes rather than one; `MessageGroupLexicalFault` owns that split. -/
 private def parseMessageGroup (profile : ValidationMessageKeywordProfile)
     (parameter argument : String) :
     Except ValidationMessageTemplateError AuthoredMessageGroup :=
@@ -311,9 +349,9 @@ private def parseMessageGroup (profile : ValidationMessageKeywordProfile)
   else
     match argument.splitOn "/" with
     | "" :: first :: rest =>
-        match decodeSegments (first :: rest) with
-        | some names => .ok (.absolute (names.map (·.text)))
-        | none => .error (.invalidParameter parameter)
+        match decodeGroupSegments (first :: rest) with
+        | .ok names => .ok (.absolute (names.map (·.text)))
+        | .error fault => .error (.groupParameterLexical parameter fault)
     | _ => .error (.invalidGroupParameter parameter)
 
 /-- Decode a key's own spelling. A literal is the grammar's double-quoted token with `""` as its

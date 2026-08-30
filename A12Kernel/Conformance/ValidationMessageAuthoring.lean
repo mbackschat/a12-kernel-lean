@@ -529,15 +529,20 @@ example :
         some (.invalidGroupParameter "#/Order/Nope") := by
   native_decide
 
-/- A malformed **spelling** is a parse failure rather than a group refusal, which is where this
-fragment's one parse class sits relative to the Kernel's three distinct lexical codes for these shapes.
-An empty segment, a doubled separator, a trailing separator, and an unbalanced quote all fail here. -/
+/- A malformed **spelling** is a parse failure rather than a group refusal, and the Kernel separates
+three lexical classes among these shapes rather than reporting one. The class follows the malformed
+shape, so it is decidable here; only the character position the lexer code additionally carries is not.
+A trailing separator and a doubled one are the pair that shows the position of the empty segment
+decides, since neither is distinguishable from the other by its characters alone. -/
 example :
-    headGroupError? "In $#/Order/$" = some (.invalidParameter "#/Order/") ∧
-      headGroupError? "In $#//Order$" = some (.invalidParameter "#//Order") ∧
+    headGroupError? "In $#/Order/$" =
+        some (.groupParameterLexical "#/Order/" .truncated) ∧
+      headGroupError? "In $#//Order$" =
+        some (.groupParameterLexical "#//Order" .separator) ∧
       headGroupError? "In $#/'Order/Head$" =
-        some (.invalidParameter "#/'Order/Head") ∧
-      headGroupError? "In $#/''$" = some (.invalidParameter "#/''") := by
+        some (.groupParameterLexical "#/'Order/Head" .quote) ∧
+      headGroupError? "In $#/''$" =
+        some (.groupParameterLexical "#/''" .quote) := by
   native_decide
 
 /- The root shorthand names the root of the **rule's own** ancestor chain, not a model-wide root. A
