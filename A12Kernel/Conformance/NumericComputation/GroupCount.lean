@@ -503,14 +503,68 @@ example :
       (some (.value 2), .value 2) := by
   native_decide
 
-/- Boundary: a **repeatable** descendant keeps the refusal, and the measurement says why. The Kernel
-   counts such a shell structurally — one instantiated row with no filled cell still makes it count —
-   so the answer is not a wider cell scan but a different mechanism, and this cell-list projection
-   cannot express row instantiation at all. -/
+/- Boundary: a **repeatable** descendant keeps the refusal *on this route*, and the measurement says
+   why. The Kernel counts such a shell structurally — one instantiated row with no filled cell still
+   makes it count — so the answer is not a wider cell scan but a different mechanism, and this
+   cell-list projection cannot express row instantiation at all. The route that carries the document
+   answers it below; refusing here is correct rather than incomplete. -/
 example :
     (match shellCountIn repeatableShellModel (filled 24) (filled 7) with
       | .error fault => some fault
       | .ok _ => none) = some (.unsupportedGroupCount ["Root", "Shell"]) := by
+  native_decide
+
+/-! ## The repeatable-descendant shell, on the route that carries row topology
+
+The Kernel counts a shell whose only content is a repeatable descendant **structurally** — one
+instantiated row with no filled cell still makes it count ([checkpoint](../../../docs/SOURCES.md#src-repeatable-descendant-group-count)).
+The scalar route above still refuses, correctly: its whole input is a cell read. The addressed
+route carries the document, so it answers.
+-/
+
+private def shellDocument (rows : Nat) : Document :=
+  { instantiatedRows := (List.range rows).map fun index => { group := 10, path := [index + 1] }
+    rawCells := fun _ => none }
+
+private def shellAddressedCount (target : FlatModel) (clause preference : CheckedCell)
+    (rows : Nat) : Option NumericComputationResult :=
+  (NumericComputationEvaluationContext.readCheckedNumericComputationAtom
+    (model := target)
+    { scalar := { read := shellRead clause preference }
+      document := shellDocument rows
+      outer := []
+      filterRead := fun _ _ => presentEmpty
+      starRead := fun _ _ => presentEmpty }
+    (.filledGroupCountMixed [.fixed shellGroup, .fixed preferencesGroup])).toOption
+
+/- **The discriminator.** One instantiated row carrying nothing makes the shell count, so the total
+   is two where a cell account answers one. The shell owns no filled cell anywhere: its only field
+   lives inside the row. -/
+example :
+    shellAddressedCount repeatableShellModel presentEmpty (filled 7) 1 = some (.value 2) := by
+  native_decide
+
+/- Removing that row drops the count, so the row constituent is doing the work rather than an
+   unconditional count. -/
+example :
+    shellAddressedCount repeatableShellModel presentEmpty (filled 7) 0 = some (.value 1) := by
+  native_decide
+
+/- **A cell read cannot rescue a rowless shell**, which is the mechanism rather than a detail: the
+   shell's only field lies inside a repeatable row, so it is outside the scalar constituent
+   entirely. Supplying it as filled changes nothing while no row exists. -/
+example :
+    shellAddressedCount repeatableShellModel (filled 24) (filled 7) 0 = some (.value 1) := by
+  native_decide
+
+/- The all-absent control: neither constituent, and neither operand counts unconditionally. -/
+example :
+    shellAddressedCount repeatableShellModel presentEmpty presentEmpty 0 = some (.value 0) := by
+  native_decide
+
+/- The established nonrepeatable shell is untouched by the widening — same model, same two-level
+   descendant, same answer as the scalar route gives above. -/
+example : shellAddressedCount shellModel (filled 24) (filled 7) 0 = some (.value 2) := by
   native_decide
 
 /-! ## The self-validation message's referenced fields
@@ -529,11 +583,12 @@ example :
       [shellClauseId, preferencesChoiceId, computedTargetId] := by
   native_decide
 
-/- **The extent is wider than the admitted evaluation, and deliberately so.** With the shell's
-   descendant subgroup repeatable instead of ordinary, this project's checked count refuses the
-   operand outright — `unsupportedGroupCount`, locked above — yet the message extent still names the
-   row field, which is what the Kernel does. The inventory is a property of the authored operand,
-   not of a successful read, so it must not be derived from the evaluation's own descendants. -/
+/- **The extent is wider than any one route's admitted evaluation.** With the shell's descendant
+   subgroup repeatable instead of ordinary, the scalar count still refuses the operand outright —
+   `unsupportedGroupCount`, locked above — and the addressed route answers it only because it
+   carries row topology. The message extent names the row field regardless of which route reads it,
+   and takes no document at all, so the inventory must not be derived from any evaluation's own
+   descendants. -/
 example :
     referencedFieldsForFilledGroupCount repeatableShellModel
         [.fixed shellGroup] computedTargetId =

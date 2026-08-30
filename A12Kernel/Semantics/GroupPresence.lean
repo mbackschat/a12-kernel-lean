@@ -261,24 +261,32 @@ def numberOfFilledGroupsForComputation (groups : List (List CellObservation)) : 
 /-- One operand's reading inside a computation-arm `NumberOfFilledGroups` list.
 
     The two forms are not two spellings of one *question*, though they share one result domain.
-    A `fixed` operand is decided by its descendant cells and contributes an indicator. A
-    `starredRows` operand contributes a **cardinality** — its group's instantiated row count —
-    which no presence predicate can express, and it never reads a cell, so a row carrying
-    nothing still counts. The fold over them stays uniform, so a consumer needs one traversal
-    with a form-dependent contribution rather than a result type per form.
+    A `fixed` operand contributes an indicator of its subtree's content. A `starredRows` operand
+    contributes a **cardinality** — its group's instantiated row count — which no presence
+    predicate can express, and it never reads a cell, so a row carrying nothing still counts.
+    The fold over them stays uniform, so a consumer needs one traversal with a form-dependent
+    contribution rather than a result type per form.
+
+    A fixed operand's content has **two constituents and either suffices**: an admitted
+    descendant cell anywhere in its subtree, or an instantiated row in a repeatable descendant
+    ([checkpoint](../../docs/SOURCES.md#src-repeatable-descendant-group-count)). The second is
+    carried separately because row instantiation is not expressible as a cell read at any width,
+    which is exactly why a caller with no row topology must refuse the shape rather than answer
+    it as absent. A caller whose operand owns no repeatable descendant passes `false`.
 
     `starredRows` takes the **in-capacity** instantiated row count. Excluding an over-limit row
     is the caller's, because this arm has no measurement for one: the validation carrier's
     over-limit exclusion ([§7](../../spec/07-repetition-and-iteration.md)) is a separate
     observation and is not assumed here. -/
 inductive GroupCountOperandReading where
-  | fixed (cells : List CellObservation)
+  | fixed (cells : List CellObservation) (rowInstantiated : Bool)
   | starredRows (rows : Nat)
   deriving Repr, DecidableEq
 
 /-- What one operand adds to the count. -/
 def GroupCountOperandReading.contribution : GroupCountOperandReading → Nat
-  | .fixed cells => if groupPresentForComputation cells then 1 else 0
+  | .fixed cells rowInstantiated =>
+      if groupPresentForComputation cells || rowInstantiated then 1 else 0
   | .starredRows rows => rows
 
 /-- The computation-arm `NumberOfFilledGroups` over a mixed operand list. Contributions add,

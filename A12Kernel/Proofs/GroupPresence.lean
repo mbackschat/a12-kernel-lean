@@ -162,7 +162,7 @@ theorem numberOfFilledGroupsForComputationOperands_append
 theorem numberOfFilledGroupsForComputationOperands_fixed
     (groups : List (List CellObservation)) :
     numberOfFilledGroupsForComputationOperands
-        (groups.map GroupCountOperandReading.fixed) =
+        (groups.map (GroupCountOperandReading.fixed · false)) =
       numberOfFilledGroupsForComputation groups := by
   induction groups with
   | nil => rfl

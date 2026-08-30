@@ -658,51 +658,37 @@ theorem groupPresentForComputation_of_subtreeMember
     ⟨observeCell .computation (context.read declaration.id),
       List.mem_map_of_mem member, present⟩
 
-/-- `mapM` over a mapped list is `mapM` of the composite. -/
-private theorem mapM_map_except {α β γ : Type}
-    (h : α → β) (f : β → Except NumericComputationFault γ) :
-    ∀ list : List α, (list.map h).mapM f = list.mapM (fun element => f (h element))
-  | [] => rfl
-  | element :: rest => by
-      simp only [List.map_cons, List.mapM_cons, mapM_map_except h f rest]
+/-- Wherever the established fixed-only reader answers, the widened arm answers identically.
 
-/-- A pointwise `Except.map` lifts out of `mapM`, refusal included. -/
-private theorem mapM_except_map {α β γ : Type}
-    (f : α → Except NumericComputationFault β) (g : β → γ) :
-    ∀ list : List α,
-      list.mapM (fun element => (f element).map g) = (list.mapM f).map (List.map g)
-  | [] => rfl
-  | element :: rest => by
-      simp only [List.mapM_cons, mapM_except_map f g rest]
-      cases f element with
-      | error _ => rfl
-      | ok _ =>
-          cases rest.mapM f with
-          | error _ => rfl
-          | ok _ => rfl
+    The addressed evaluator now answers one shape the scalar reader refuses — a group whose subtree
+    carries a repeatable descendant, whose content the Kernel decides structurally and a cell-list
+    projection cannot express. That widening is deliberate, so the two are no longer equal on every
+    list: this states the property that survives and is the one that matters, that the new arm
+    changes nothing the old one already decided.
 
-/-- Widening the group count did not change what the established form answers.
-
-    The addressed evaluator's mixed arm and the scalar fixed-only reader agree on every operand
-    list the two can both hold — same descendant extent, same cell reads, same count — and they
-    agree on refusal too, so the widening cannot turn a rejected group into an answer. This is the
-    statement behind `readGroupCountOperand`'s claim that the two forms cannot disagree about a
-    group they both reach, which was otherwise only a comment. -/
-theorem filledGroupCountMixed_fixed_eq_scalarCount
+    It is stated per operand rather than per list because the widening happens per operand; the
+    earlier list-level equality was a lift of exactly this, and lifting it now would need a
+    hypothesis on every element that says no more than the conjunction of these. -/
+theorem readGroupCountOperand_fixed_eq_scalarDescendants
     {model : FlatModel} (context : NumericComputationEvaluationContext)
-    (groups : List ResolvedGroupReference) :
-    context.readCheckedNumericComputationAtom
-        (model := model)
-        (.filledGroupCountMixed (groups.map CheckedGroupCountOperand.fixed)) =
-      context.scalar.readFilledGroupCount model groups := by
-  simp only [NumericComputationEvaluationContext.readCheckedNumericComputationAtom,
-    ScalarComputationContext.readFilledGroupCount,
-    NumericComputationEvaluationContext.readGroupCountOperand, mapM_map_except, mapM_except_map]
-  cases groups.mapM (context.scalar.readGroupDescendants model) with
-  | error _ => rfl
-  | ok observed =>
-      simp only [Except.map, bind, Except.bind, pure, Except.pure,
-        numberOfFilledGroupsForComputationOperands_fixed]
+    (reference : ResolvedGroupReference) (descendants : List FlatFieldDecl)
+    (admitted : reference.computationDescendants? model = some descendants) :
+    context.readGroupCountOperand model (.fixed reference) =
+      .ok (.fixed (descendants.map fun declaration =>
+        observeCell .computation (context.scalar.read declaration.id)) false) := by
+  simp [NumericComputationEvaluationContext.readGroupCountOperand,
+    NumericComputationEvaluationContext.readGroupContent, admitted, Except.map]
+
+/-- The refusal survives too: a group outside both admitted shapes still refuses, naming its path. -/
+theorem readGroupCountOperand_fixed_refuses_outside_both_shapes
+    {model : FlatModel} (context : NumericComputationEvaluationContext)
+    (reference : ResolvedGroupReference)
+    (noCells : reference.computationDescendants? model = none)
+    (noRows : reference.repeatableDescendantShape? model = none) :
+    context.readGroupCountOperand model (.fixed reference) =
+      .error (NumericComputationFault.unsupportedGroupCount reference.path) := by
+  simp [NumericComputationEvaluationContext.readGroupCountOperand,
+    NumericComputationEvaluationContext.readGroupContent, noCells, noRows, Except.map]
 
 
 end A12Kernel

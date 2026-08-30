@@ -109,11 +109,13 @@ theorem selfValidationFillToFix_all_or_nothing
 
     Growth and contribution are one decision read twice, so a message cannot type VALUE on an
     operand the count treats as absent, nor OMISSION on one it treats as present. -/
-theorem fixedGroup_canGrow_iff_contributes_zero (cells : List CellObservation) :
-    (ComputationOperandGrowth.fixedGroup (groupPresentForComputation cells)).canGrow = true ↔
-      (GroupCountOperandReading.fixed cells).contribution = 0 := by
+theorem fixedGroup_canGrow_iff_contributes_zero
+    (cells : List CellObservation) (rowInstantiated : Bool) :
+    (ComputationOperandGrowth.fixedGroup
+        (groupPresentForComputation cells || rowInstantiated)).canGrow = true ↔
+      (GroupCountOperandReading.fixed cells rowInstantiated).contribution = 0 := by
   simp only [ComputationOperandGrowth.canGrow, GroupCountOperandReading.contribution]
-  cases groupPresentForComputation cells <;> simp
+  cases groupPresentForComputation cells <;> cases rowInstantiated <;> simp
 
 /-- The two readings of a fixed operand refuse together, because they share one descendant read.
 
@@ -126,7 +128,7 @@ theorem growthOfGroupCountOperand_fixed_refuses_iff
       context.readGroupCountOperand model (.fixed reference) = .error fault := by
   simp only [NumericComputationEvaluationContext.growthOfGroupCountOperand,
     NumericComputationEvaluationContext.readGroupCountOperand]
-  cases context.scalar.readGroupDescendants model reference <;> simp [Except.map]
+  cases context.readGroupContent model reference <;> simp [Except.map]
 
 /-- Where the count's evaluation is admitted, the message names exactly the cells it reads.
 

@@ -110,9 +110,10 @@ def readDateTimeDifferenceOperand (context : ScalarComputationContext) :
 The reads go through this same context, so the count observes the same cells the surrounding
 computation observes; it deliberately interprets them differently, since a poisoned cell is
 present here while an ordinary numeric read of it poisons the result. A group outside the
-admitted scalar boundary refuses explicitly rather than observing as absent. Both group-count
-readers share this step, which is what `filledGroupCountMixed_fixed_eq_scalarCount` turns into a
-statement about the two counts. -/
+admitted scalar boundary refuses explicitly rather than observing as absent. The addressed
+group-count route takes this step wherever it answers, which is what
+`readGroupCountOperand_fixed_eq_scalarDescendants` turns into a statement about the two routes;
+where it refuses, that route answers from row topology this context does not carry. -/
 def readGroupDescendants (context : ScalarComputationContext) (model : FlatModel)
     (reference : ResolvedGroupReference) :
     Except NumericComputationFault (List CellObservation) :=
@@ -238,17 +239,35 @@ namespace NumericComputationEvaluationContext
 
 /-- Read one group-count operand into its contribution.
 
-    A **fixed** operand takes exactly the descendant extent and cell reads the scalar fixed-only
-    reader takes, which is what makes the two forms agree on any list they can both hold — stated
-    as `filledGroupCountMixed_fixed_eq_scalarCount` rather than left to this comment. A **starred**
-    operand takes the in-capacity instantiated row count, the quantity this route carries the
-    document topology for. -/
+    A **fixed** operand takes the same descendant extent and cell reads the scalar fixed-only reader
+    takes wherever that reader answers, which is what keeps the two forms agreeing on any list they
+    can both hold. Where it refuses for a repeatable descendant, this route answers instead, using
+    the row constituent the scalar projection cannot express. A **starred** operand takes the
+    in-capacity instantiated row count, the quantity this route carries the document topology for. -/
+def readGroupContent (context : NumericComputationEvaluationContext) (model : FlatModel)
+    (reference : ResolvedGroupReference) :
+    Except NumericComputationFault (List CellObservation × Bool) :=
+  match reference.computationDescendants? model with
+  | some descendants =>
+      .ok (descendants.map (fun declaration =>
+        observeCell .computation (context.scalar.read declaration.id)), false)
+  | none =>
+      match reference.repeatableDescendantShape? model with
+      | none => .error (NumericComputationFault.unsupportedGroupCount reference.path)
+      | some repeatables =>
+          .ok (((model.groupSubtreeFields reference.path).filter
+              (·.repeatableScope.isEmpty)).map (fun declaration =>
+                observeCell .computation (context.scalar.read declaration.id)),
+            repeatables.any fun group =>
+              context.document.instantiatedRows.any fun row => row.group == group.level)
+
 def readGroupCountOperand
     (context : NumericComputationEvaluationContext) (model : FlatModel) :
     CheckedGroupCountOperand model →
       Except NumericComputationFault GroupCountOperandReading
   | .fixed reference =>
-      (context.scalar.readGroupDescendants model reference).map GroupCountOperandReading.fixed
+      (context.readGroupContent model reference).map fun content =>
+        .fixed content.1 content.2
   | .starred source =>
       match source.inCapacityRowCount context.document context.outer with
       | .error error => .error (NumericComputationFault.repeatableAddressing error)
@@ -269,8 +288,8 @@ def growthOfGroupCountOperand
     CheckedGroupCountOperand model →
       Except NumericComputationFault (Option ComputationOperandGrowth)
   | .fixed reference =>
-      (context.scalar.readGroupDescendants model reference).map fun cells =>
-        some (.fixedGroup (groupPresentForComputation cells))
+      (context.readGroupContent model reference).map fun content =>
+        some (.fixedGroup (groupPresentForComputation content.1 || content.2))
   | .starred source =>
       match source.group.repeatability with
       | none => .ok none

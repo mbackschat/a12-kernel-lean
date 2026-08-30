@@ -28,11 +28,11 @@ namespace A12Kernel.Conformance.StarredGroupCountComputation
 open A12Kernel
 
 /-- `Flat` holding a filled `FlatValue`: one present descendant cell. -/
-private def flatFilled : GroupCountOperandReading := .fixed [.value (.num 1)]
+private def flatFilled : GroupCountOperandReading := .fixed [.value (.num 1)] false
 
 /-- `Flat` with nothing in it. The operator tests presence and never reads, so present-empty and
     absent are the same operand reading. -/
-private def flatEmpty : GroupCountOperandReading := .fixed [.empty]
+private def flatEmpty : GroupCountOperandReading := .fixed [.empty] false
 
 /-- `Tally := NumberOfFilledGroups(Rows*)` over a repeatable group holding `n` instantiated rows. -/
 private def tally (n : Nat) : Nat :=

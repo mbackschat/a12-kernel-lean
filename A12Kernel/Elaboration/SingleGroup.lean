@@ -174,6 +174,33 @@ def computationDescendants? (reference : ResolvedGroupReference)
   else
     some (model.groupSubtreeFields reference.path)
 
+
+/-- The repeatable descendants of a fixed group-count operand, when the shape is the measured one.
+
+    `computationDescendants?` refuses a group whose subtree carries a repeatable descendant, because
+    a projection to cell reads cannot express row instantiation at any width. A caller that also
+    carries the document's row topology can answer it, and this names the groups whose rows it must
+    consult. `none` keeps that caller on the same refusal.
+
+    The admitted shape is the measured one: the operand itself outside any repeatable scope, and
+    every repeatable descendant exactly **one** repetition level deep
+    ([checkpoint](../../docs/SOURCES.md#src-repeatable-descendant-group-count)). A deeper axis is
+    refused rather than assumed to compose, since nothing measures it. -/
+def repeatableDescendantShape? (reference : ResolvedGroupReference) (model : FlatModel) :
+    Option (List RepeatableGroupDecl) :=
+  if !model.hasGroupPath reference.path ||
+      !(model.repeatableScopeForGroupPath reference.path).isEmpty then
+    none
+  else
+    let repeatables := model.repeatableGroups.filter fun group =>
+      reference.path.isPrefixOf group.path
+    if repeatables.isEmpty ||
+        repeatables.any fun group =>
+          (model.repeatableScopeForGroupPath group.path).length != 1 then
+      none
+    else
+      some repeatables
+
 end ResolvedGroupReference
 
 /-- Shared failures while resolving one group reference that must denote either a nonrepeatable ordinary group or the already-selected `RuleGroup` instance. -/
