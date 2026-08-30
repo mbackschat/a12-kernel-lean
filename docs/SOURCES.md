@@ -417,6 +417,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A repeatable target declared cross-group iterates from its own scope](sources/cross-layer-routes.md#src-cross-group-repeatable-constant-target)
 <a id="src-repeatable-string-constant-target-check"></a>
 - [A String constant its target rejects keeps the exact attempted value](sources/cross-layer-routes.md#src-repeatable-string-constant-target-check)
+<a id="src-repeatable-number-constant-target-check"></a>
+- [A Number constant: scale refuses at authoring, range errors per row](sources/cross-layer-routes.md#src-repeatable-number-constant-target-check)
 <a id="src-fixed-target-star-placement"></a>
 - [Fixed computation target under a star operand: no placement gate](sources/cross-layer-routes.md#src-fixed-target-star-placement)
 <a id="src-unsuppressed-assignment-scale-reach"></a>
