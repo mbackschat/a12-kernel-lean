@@ -413,6 +413,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Cross-group computation placement is unauthorable through the structured verbs](sources/cross-layer-routes.md#src-cross-group-computation-authoring-block)
 <a id="src-computation-declaring-group-gate"></a>
 - [Computation declaring group: containment gate and target-owned execution](sources/cross-layer-routes.md#src-computation-declaring-group-gate)
+<a id="src-cross-group-repeatable-constant-target"></a>
+- [A repeatable target declared cross-group iterates from its own scope](sources/cross-layer-routes.md#src-cross-group-repeatable-constant-target)
 <a id="src-fixed-target-star-placement"></a>
 - [Fixed computation target under a star operand: no placement gate](sources/cross-layer-routes.md#src-fixed-target-star-placement)
 <a id="src-unsuppressed-assignment-scale-reach"></a>

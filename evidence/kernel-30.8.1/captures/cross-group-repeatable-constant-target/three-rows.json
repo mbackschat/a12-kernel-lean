@@ -1,0 +1,42 @@
+{
+ "Probe": {
+  "Store": {
+   "Note": null
+  },
+  "Tasks": [
+   {
+    "LabelOwn": null,
+    "LabelRoot": null,
+    "NumOwn": null,
+    "NumRoot": null,
+    "BoolOwn": null,
+    "BoolRoot": null,
+    "ConfOwn": null,
+    "ConfRoot": null,
+    "Marker": "m1"
+   },
+   {
+    "LabelOwn": null,
+    "LabelRoot": null,
+    "NumOwn": null,
+    "NumRoot": null,
+    "BoolOwn": null,
+    "BoolRoot": null,
+    "ConfOwn": null,
+    "ConfRoot": null,
+    "Marker": "m2"
+   },
+   {
+    "LabelOwn": null,
+    "LabelRoot": null,
+    "NumOwn": null,
+    "NumRoot": null,
+    "BoolOwn": null,
+    "BoolRoot": null,
+    "ConfOwn": null,
+    "ConfRoot": null,
+    "Marker": "m3"
+   }
+  ]
+ }
+}
