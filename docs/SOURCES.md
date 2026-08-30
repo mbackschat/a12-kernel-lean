@@ -145,6 +145,8 @@ a12-dmkits revision `856465c37` (clean) carries two Kernel observations this pro
 
 Revision `7967f5cb3` completes that batch with the two-star shapes' **static** admission, through the Kernel's own `checkConsistency`, after this project pointed out that runtime acceptance is not an authoring verdict. The same revision retracts a provenance line that had cited this project as having pinned those rows; the rows came from a window this project could not certify clean and were never citable.
 
+Revision `531a2c769` adds two more from the same exchange: the separating document for the self-validation message's **direction**, which this project named but could not reach, and the `fillToFix` all-or-nothing projection reproduced on an all-filled document. Both are recorded at the [message-polarity checkpoint](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity), and the second closes [`SPEC-2026-08-30-06`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-30-06).
+
 The over-limit half originated in this project and is now measured on both estates, so it needs no outbound request. The two-star halves are inbound and create none by the rule above. Both rest on the peer's estate alone — the checkpoint's `two-star-limit` record owns that.
 
 ## Provenance checkpoint index

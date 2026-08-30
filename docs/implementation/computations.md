@@ -515,7 +515,7 @@
 - `owner`: [`ComputationSelfValidation.lean`](../../A12Kernel/Semantics/ComputationSelfValidation.lean), [`NumericComputation/Evaluation.lean`](../../A12Kernel/Elaboration/NumericComputation/Evaluation.lean)
 - `case`: [self-validation cases](../../A12Kernel/Conformance/ComputationSelfValidation.lean) replay all ten retained documents and their 30 message observations, with the at-capacity empty-row document as the channel separator and the equal-seed document as the no-message control.
 - `case`: [starred group-count cases](../../A12Kernel/Conformance/NumericComputation/StarredGroupCount.lean) close the route from an authored operand list to the type, with the capacity boundary reproduced end to end from elaboration.
-- `assurance`: E/P closed and externally calibrated at the [message-polarity checkpoint](../SOURCES.md#src-starred-operand-message-polarity) on both codegen strategies. The **direction** is not calibrated: every retained row has its computed value below its seed, so the rows admit a coarser account equally; the checkpoint's `direction` record owns the discriminator. C none.
+- `assurance`: E/P closed and externally calibrated at the [message-polarity checkpoint](../SOURCES.md#src-starred-operand-message-polarity) on both codegen strategies. The direction is calibrated too, on the separating document a12-dmkits measured after this project named it — headroom is necessary but not sufficient, and growth must move the quantity toward the seed. C none.
 - `remains`: Message text, pointer, and referenced-set construction, and the non-Number target: [SG10](../SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration)
 
 <a id="cap-generated-computation-validation"></a>

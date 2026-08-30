@@ -37,7 +37,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-08-30-06"></a>
 ### `SPEC-2026-08-30-06` — a computation's `fillToFix` is its whole referenced set or empty, never a subset
 
-- `status`: pending
+- `status`: accepted
 - `clause`: [`10-validation-and-polarity.md` the starred-operand message-type entries](../spec/10-validation-and-polarity.md), sharpening the general non-minimality note in [`01-data-model.md`](../spec/01-data-model.md)
 - `delta`: the data-model clause says only that `fillToFix` "need not be a minimal set of empty cells whose literal filling alone repairs the rule", and that a VALUE message has none. Measured on the computation's implicit self-validation message: it is **exactly `referenced` or exactly empty**, never a proper subset, and it tracks the message type with no independent content of its own. The computed target's own pointer is included.
 - `mechanism`: it is one decision spelled as a list, not a per-cell analysis. The witness row settles that: a target types OMISSION on **row headroom alone** while every referenced cell is filled, and each of those filled pointers appears in its `fillToFix`. So a consumer that reads a listed pointer as "this cell is empty" is reading the whole message's polarity through a per-cell shape, and would be wrong on that row.
@@ -48,6 +48,9 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `local-scope`: [`ComputationSelfValidation.lean`](../A12Kernel/Semantics/ComputationSelfValidation.lean) implements the type and the projection, with the all-or-nothing property proved rather than only exampled.
 - `acceptance`: a12-dmkits confirms the all-or-nothing projection on its own fixture including a filled referenced cell inside an OMISSION message, or supplies the contrary measurement. The direction discriminator above is offered separately and does not gate this entry.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: `531a2c769`, read here rather than taken on report. `NestedGroupFillCountLawsTest.anOmissionsFillToFixIsTheWholeReferencedSetEvenWhenEveryCellItNamesIsFilled` reproduces the projection on the peer's own fixture and on the shape the acceptance condition asked for: four of five rows instantiated with **every cell filled**, the target typing OMISSION on row headroom alone, and the channel non-empty and equal to `referenced` with nothing empty anywhere in the document.
+- `disposition`: the peer's interpreter was already unexposed — it sets `fillToFix` to `referenced` for an OMISSION and to empty otherwise, differentially locked against the kernel's own responsible-pointer accessor — so what the round added is the all-filled row, which is exactly the document where a per-cell implementation still looks right. The peer placed the fact in its findings rather than its operator catalog, since it is a message-channel property and not a per-operator one.
+- `disposition`: the entry's separately offered **direction** discriminator was measured in the same round and is recorded at the [checkpoint](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity), not here. It confirmed the directional account this project had implemented as inherited, and corrected the peer's own coarser reading: headroom is necessary but not sufficient. Both estates had held only below-seed rows, so neither account had been tested on either side — the second instance of [`LF114`](LEAN-FINDINGS.md#lf114--both-sides-sampling-one-side-of-an-unnamed-boundary-agree-and-re-derivation-cannot-break-the-tie) on this one operator.
 
 
 <a id="spec-2026-08-30-05"></a>

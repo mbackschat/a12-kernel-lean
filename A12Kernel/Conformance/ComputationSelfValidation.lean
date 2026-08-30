@@ -12,9 +12,9 @@ message type, under a stated mapping from each measured document to an operand l
 `FlatValue` to a present fixed group, `n` instantiated `Rows` of a `max 5` group to that operand's
 row state, and whether every instantiated row carries its `RowValue`.
 
-Every retained row has its computed value **below** its stored seed, so none of them separates the
-directional reading inherited from the rule arm from a coarser "can it move at all" one. The
-account here is the rule arm's; the checkpoint's `limit` owns that gap.
+The ten documents all have their computed value **below** the stored seed, so none of them
+separates the directional reading from a coarser "can it move at all" one. The separating document
+was measured afterwards and is locked below; the account here is the rule arm's, and it survives.
 -/
 
 namespace A12Kernel.Conformance.ComputationSelfValidation
@@ -107,6 +107,21 @@ example :
    the established changed-subset projection and is what makes every row above a stored-versus-
    computed mismatch rather than an independent finding. -/
 example : typeOf 2 2 (starCount 2) = .notFired ∧ typeOf 3 3 (mixedCount true 2) = .notFired := by
+  native_decide
+
+/-! ## Direction
+
+Measured after the ten documents above, on the separating document none of them supplies.
+-/
+
+/- **The direction discriminator.** One document, one variable: the stored seed. A grow-only count
+   three of five rows deep with every cell filled types VALUE when its computed `3` already
+   *exceeds* a seed of `1`, because growing moves it further away, and OMISSION at a seed of `9`.
+   A coarse "can the quantity move at all" account predicts OMISSION on both and is refuted here;
+   headroom is necessary but not sufficient. -/
+example :
+    typeOf 1 3 (starCount 3) = .fired .value ∧
+      typeOf 9 3 (starCount 3) = .fired .omission := by
   native_decide
 
 /-! ## `fillToFix` -/
