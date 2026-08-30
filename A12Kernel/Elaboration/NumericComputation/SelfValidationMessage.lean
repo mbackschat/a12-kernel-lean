@@ -6,22 +6,27 @@ A computed Number target whose value disagrees with its stored cell carries a fo
 the cells behind it. This module owns **which fields** that message names for a
 `NumberOfFilledGroups` target. It constructs no pointer coordinates, no text, and no message.
 
-The extent is the operator's own: each operand names its group's whole-subtree fields at any depth,
-which is exactly what the count reads. Both operand forms use that one extent, so the message does
-not distinguish a fixed operand from a starred one — the distinction lives in the coordinates, not
-in the field set.
+The extent is each operand's **own reach**. Every operand of this operator is a group, so each names
+the fields anywhere in its subtree at any depth and however many there are, which is exactly what
+the count reads, and both
+operand forms use that one extent — the message does not distinguish a fixed operand from a starred
+one, the distinction living in the coordinates rather than the field set. Do not carry the subtree
+rule to a **field** operand of another carrier: a `Sum` over one flattened field is measured to name
+that field alone and not its sibling.
 
 Two properties matter to a consumer and neither is visible from the type. It is an **authored-shape
-inventory, not a reached-cell trace**: a starred operand names its row field even in a document with
-no instantiated row. And the channel is a **set** — the retained observations arrive ordered by
+inventory, not a reached-cell trace**, and the sharp form of that is invariance: the set is
+byte-identical between a document with no instantiated row and one whose every row cell is filled,
+which a partially-read account cannot produce. And the channel is a **set** — the retained observations arrive ordered by
 their rendered spelling, which is the capture's normalization rather than a Kernel guarantee, so no
 order is claimed here.
 
-Only the field half is modelled. Each named cell also carries repetition coordinates, and the
-retained bytes show two spellings — bare for a repetition-free address, coordinated with the starred
-axis at the wildcard for one crossing a repeatable group. Mapping a rendered coordinate onto this
-project's pointer domain is a separate question, and [`SEMANTICS-GAPS.md`](../../../docs/SEMANTICS-GAPS.md)'s
-SG10 owns it.
+Only the field half is modelled, and that is this project's boundary rather than the observation's.
+Each named cell also carries repetition coordinates in two spellings — bare for a repetition-free
+address, and carrying its axes for one crossing a repeatable group, where the starred axis is
+**unbound** rather than a row index. That value is measured off the Kernel pointer's own repetition
+indexes and is invariant in the row count, so the domain question is answered; representing it here
+belongs to [`SEMANTICS-GAPS.md`](../../../docs/SEMANTICS-GAPS.md)'s SG10.
 -/
 
 namespace A12Kernel

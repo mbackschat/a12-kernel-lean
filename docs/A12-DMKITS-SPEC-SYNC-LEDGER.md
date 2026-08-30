@@ -37,7 +37,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-08-30-07"></a>
 ### `SPEC-2026-08-30-07` — a group-count message's `referenced` set is the operand's whole subtree, plus the target
 
-- `status`: pending
+- `status`: accepted
 - `clause`: [`10-validation-and-polarity.md` the implicit self-validation message entries](../spec/10-validation-and-polarity.md)
 - `delta`: the clause said nothing about which cells a computed target's implicit message names. Measured: each authored operand contributes the fields anywhere in its group's **subtree at any depth**, and the computed target is named too. Both operand forms use that one extent, so a fixed operand and a starred one are indistinguishable in the field set.
 - `mechanism`: the inventory follows the **authored operand**, not a successful read. Two rows establish that separately: a starred operand names its row field in a document with no instantiated row, and a group whose descendant is repeatable is named even where an evaluator refuses to count it. A checker that derives the channel from the cells its evaluation actually reached will therefore under-report on exactly the documents where the message matters most.
@@ -47,6 +47,9 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `local-scope`: [`SelfValidationMessage.lean`](../A12Kernel/Elaboration/NumericComputation/SelfValidationMessage.lean) owns the inventory; a law ties it to the evaluation's own descendants exactly where that evaluation is admitted, and a case locks the wider case where it is not.
 - `acceptance`: a12-dmkits confirms the subtree extent and the authored-shape property on its own fixture — a two-level shell and a no-row starred operand — or supplies the contrary measurement.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: `7c325e82c`, read here rather than taken on report. `NestedGroupFillCountLawsTest.theReferencedSetFollowsTheAuthoredOperandAndIsUnchangedByWhetherAnyRowExists` confirms both halves and strengthens one: the set is **byte-identical** between a document with no instantiated row and one with four rows whose every cell is filled. This entry's own rows each show the set naming more than was read, which a partially-read account accommodates; invariance under filling does not, so the rival account is refuted rather than disfavoured.
+- `disposition`: the round also **bounded** the extent, which this entry had left implicit. The extent is the operand's own reach, not its enclosing group's — a `Sum` over one flattened field in the same message set names that field alone and not its sibling. The clause now states that bound, since a reader carrying the subtree rule from a group operand to a field one would over-report. The same lock closes the multi-field question this project's fixtures could not reach, every group in them owning exactly one field.
+- `disposition`: this entry's stated `limit` on the pointer coordinates is answered for this shape and is not a semantic gap. The starred axis carries an **unbound** value read off the Kernel pointer's own repetition indexes rather than parsed from a rendered path, and it is invariant in the row count, so it is not a row index. Modelling that domain remains this project's own implementation boundary under [SG10](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration).
 
 
 <a id="spec-2026-08-30-06"></a>
