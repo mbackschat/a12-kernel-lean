@@ -242,12 +242,13 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `missing`: derived mandatory-information comparison must keep an authored numeric literal distinct from the derivation's own sentinel, so a legal literal equal to that sentinel cannot read as an absent bound.
 - `scope`: only mandatory-information callers remain in scope. Parser callers are already covered by the canonical numeric narrowing clause, and the sentinel is observationally inert at their two gates.
 - `baseline`: no Lean owner or spec clause represents the mandatory-information derivation.
-- `remaining`: determine whether any observable engine output exposes the mandatory-information derivation specifically.
+- `remaining`: **the derivation is exposed, and the entry-gate question is answered.** The facade offers `getMandatoryInformationFromRules` over a rule collection, returning three field-name sets, verified in kernel `30.8.1` source rather than surveyed. What follows from that is a routing fact, not an observability one: it is a **model-and-rule-level** query with no document, so neither `validateFull` nor `compute` can expose it and the accepted runtime-probe route cannot reach it. a12-dmkits has no code touching the interface and lists the signature as unverified in its own survey.
+- `remaining`: the observation is therefore requested as [`EXP-2026-08-30-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#exp-2026-08-30-01), which carries the input, both accounts, their predictions, the negative result, and the smallest producer that would settle it. Write no Lean and no clause before it returns.
 - `evidence-needed`: compare a sentinel-valued authored literal with an absent bound at each mandatory-information caller on both Kernel strategies. A negative result closes this entry as unobservable.
 - `discriminator`: the parser caller is not a valid discriminator because both readings admit there. Only a mandatory-information caller can separate them.
 - `consumer`: Analyze and Explain need no bound separated from a bound whose value equals the sentinel. Execute needs the distinction only if the derived answer reaches firing.
 - `forbidden`: do not encode the sentinel as absence, state a firing consequence before observation, or model the derivation from caller source reading alone.
-- `entry-gate`: establish one observable mandatory-information output before writing Lean.
+- `entry-gate`: establish one observable mandatory-information output before writing Lean. The output exists and is named above; what is still missing is a route that reads it.
 - `completion-gate`: the derived comparison retains authored literal identity at every caller, and absence is representable only as absence.
 - `blocked-on`: none
 - `route-state`: discovery-required

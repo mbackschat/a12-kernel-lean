@@ -34,6 +34,22 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="exp-2026-08-30-01"></a>
+### `EXP-2026-08-30-01` — does a colliding literal silently drop a rule from mandatory-information derivation?
+
+- `status`: pending
+- `question`: two models identical except one rule's numeric literal. Does the derived mandatory-information output differ in the way the shared narrowing helper's sentinel predicts, or does the derivation keep the authored literal distinct?
+- `competing accounts`: **(a) conflated** — the derivation reads a literal that narrows to the helper's absent-value sentinel as "not a numeric constant" and skips the rule, so its fields never enter the derived sets. **(b) distinct** — the authored literal is carried separately from absence and the rule is derived on its actual value.
+- `input`: one model with a rule comparing a filled-field or filled-context count against a literal, in a shape the derivation recognizes; a control at an ordinary small literal such as `1`; and the variant at a colliding literal. Colliding values are the sentinel itself and every value congruent to it under the helper's 32-bit narrowing, `4294967295` and `8589934591` among them, plus decimals that round onto it. Read `getMandatory`, `getMandatoryForRootGroup`, and `getMandatoryRootGroups` for each.
+- `prediction`: under **(a)** the control's fields appear in the derived sets and the colliding variant's do not, with everything else in the model identical. Under **(b)** both appear, or both are absent for a reason the control also exhibits.
+- `negative result`: the two variants produce identical derived sets, or the control itself derives nothing — the second means the chosen rule shape is not one the derivation recognizes and the input has to be rebuilt before the question is asked.
+- `source basis`: verified in kernel `30.8.1` source rather than surveyed. `FeldOperationUtil.getZahlKonstanteWert` returns `-1` both for a genuine `-1` and for "this operand is not a numeric constant", after a `Math.round` and a narrowing cast to `int`. The three visitors under the kernel's `mandatoryinformation` package branch on `z == -1` to abandon the pattern. That is a source read of the mechanism and **not** a discharged claim about the derived output, which is exactly what this entry asks for.
+- `route limit`: no available route reaches it. The derivation is a **model-and-rule-level** query — the facade exposes `getMandatoryInformationFromRules` over a rule collection, returning three field-name sets — so it is not a document evaluation and neither `validateFull` nor `compute` can expose it. The accepted `:adapter:kernelProbe` route observes only those two. a12-dmkits has no code touching the interface; its own API survey lists the signature as agent-surveyed and explicitly unverified, so nothing there can be reused as-is.
+- `requested capability`: the smallest useful producer is a read-only rule-collection meta-information observation over an already-loaded model, reporting the three derived name sets deterministically. It needs no document and no new evaluation surface.
+- `local-scope`: [SG14](SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) owns the obligation. No Lean owner or `spec/` clause represents the derivation, and none should be written before this observation.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-30-07"></a>
 ### `SPEC-2026-08-30-07` — a group-count message's `referenced` set is the operand's whole subtree, plus the target
 
