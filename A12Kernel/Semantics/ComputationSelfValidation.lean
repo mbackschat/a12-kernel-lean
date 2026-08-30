@@ -30,7 +30,13 @@ namespace A12Kernel
     rows grows by either. The separating document holds a starred group at declared capacity with
     every row empty — there the count cannot move and a sum over the same rows still can. -/
 inductive ComputationOperandGrowth where
-  /-- A fixed group operand, contributing an indicator of its subtree content. -/
+  /-- A fixed group operand, contributing an indicator of its subtree content.
+
+      A present operand is **closed**, because the indicator is capped at one and no fill can move
+      it further — including a group already present through one instantiated row of a repeatable
+      descendant, which can gain rows without gaining contribution. That case is a consequence of
+      the cap rather than a measurement: every measured document types its polarity from operands
+      with no repeatable descendant. -/
   | fixedGroup (present : Bool)
   /-- A starred group operand counted by rows, at `instantiated` of `capacity` declared rows. -/
   | starredGroupCount (instantiated capacity : Nat)
