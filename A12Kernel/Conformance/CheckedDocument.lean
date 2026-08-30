@@ -309,6 +309,26 @@ example : ((checked? {
     some (.unknown .overRepetition, .poison .overRepetition, .value (.str "within")) := by
   native_decide
 
+/- Two violated axes on one cell collapse to one finding, not two: the overlay records that the cell
+is unreachable, never how many ancestors made it so. This is the Lean counterpart of the Kernel's
+own absorption, where a nested over-limit row draws no code of its own and every finding beneath it
+names the outermost violation ([checkpoint](../../docs/SOURCES.md#src-nested-over-limit-attribution)). -/
+example : ((checked? {
+    instantiatedRows :=
+      ((List.range 3).map fun index => { group := 10, path := [index + 1] }) ++
+        ((List.range 6).map fun index => { group := 11, path := [3, index + 1] }) ++
+        [{ group := 12, path := [3, 6, 1] }]
+    cells := [{
+      address := { field := 6, path := [3, 6, 1] }
+      stored := "doubly"
+      raw := .parsed (.str "doubly")
+    }]
+  }).bind fun checked =>
+    (checked.read { field := 6, path := [3, 6, 1] }).toOption.map fun cell =>
+      (cell.findings, observeCell .validation cell)) =
+    some ([.overRepetition], .unknown .overRepetition) := by
+  native_decide
+
 /- Requiredness annotates a later validation view while computation retains the base empty observation. -/
 example : ((checked? classified).bind fun checked =>
     (checked.applyAbsoluteRequiredAt 4).toOption.map fun result =>
