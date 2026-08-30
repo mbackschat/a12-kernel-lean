@@ -473,9 +473,10 @@ example : shellCount presentEmpty (filled 7) = some (.value 1) := by
 example : shellCount malformed (filled 7) = some (.value 2) := by
   native_decide
 
-/- Boundary: a **repeatable** descendant keeps the refusal. The Kernel admits such an operand
-   statically, but a scalar context has no instantiated row to read and what it counts there is
-   unmeasured, so this refuses rather than answering either number. -/
+/- Boundary: a **repeatable** descendant keeps the refusal, and the measurement says why. The Kernel
+   counts such a shell structurally — one instantiated row with no filled cell still makes it count —
+   so the answer is not a wider cell scan but a different mechanism, and this cell-list projection
+   cannot express row instantiation at all. -/
 example :
     (match shellCountIn repeatableShellModel (filled 24) (filled 7) with
       | .error fault => some fault

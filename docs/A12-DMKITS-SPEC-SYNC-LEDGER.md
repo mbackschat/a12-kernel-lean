@@ -34,6 +34,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-08-30-03"></a>
+### `SPEC-2026-08-30-03` — a repeatable descendant makes its shell count structurally, not by cell content
+
+- `status`: pending
+- `clause`: [`02-logic-and-formal-errors.md` the Number-computation group-count paragraph](../spec/02-logic-and-formal-errors.md)
+- `delta`: the clause carried the subtree rule for **nonrepeatable** descendants, where a group's content is its cells, and named the repeatable case unmeasured. Measured: the notion of content **changes** there rather than extending. An instantiated row is itself content, so a shell whose only content is a repeatable descendant counts as filled on one row carrying no filled cell at all; removing that row drops the count.
+- `mechanism`: this is the structural rule the clause already states for the **starred** single-group form — a repeatable row counts even when every descendant is empty — surfacing through an **unstarred nonrepeatable** operand that merely contains a repeatable group. The two operand shapes therefore share one notion of repeatable content instead of each carrying its own, which is the part a checker is most likely to get wrong by treating the unstarred operand as a pure subtree scan.
+- `evidence`: [repeatable-descendant checkpoint](sources/group-and-iteration-probes.md#src-repeatable-descendant-group-count), one `:adapter:kernelProbe` request over five documents at a12-dmkits `04134609513485554fb4a84a67dc6fa0d7add154` (clean), `dmtool` 0.13.0, Kernel `30.8.1`, both codegen strategies with `enginesAgree: true` on every row. The empty-instantiated-row document is the discriminator; a cell-content account predicts `1` and the measurement is `2`.
+- `surfaces`: any peer clause, checker, or catalog note that expands an unstarred group operand as a scan over its subtree's cells, which would answer this shape short.
+- `local-scope`: **deliberately unimplemented, and now for a measured reason.** `computationDescendants?` projects a group to a list of cell reads, and row instantiation is not expressible as a cell read at any width, so this shape needs the document's row topology rather than a wider filter. The exclusion is a named boundary between two mechanisms rather than an open question.
+- `acceptance`: a12-dmkits confirms the empty-instantiated-row discriminator on its own fixture, or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed a12-dmkits revision`: none yet.
+
+
 <a id="spec-2026-08-30-02"></a>
 ### `SPEC-2026-08-30-02` — a group-count operand's erroneous-operand rule reaches a nested descendant
 

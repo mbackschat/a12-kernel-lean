@@ -1,0 +1,22 @@
+{
+  "model": "model.dm.json",
+  "locale": "en_US",
+  "observe": ["validateFull", "compute"],
+  "rows": [
+    { "name": "row-filled",
+      "documentInline": {"Probe": {"Tally": 9, "Flat": {"FlatValue": 1},
+        "RowShell": {"Rows": [{"RowValue": 2}]}}}},
+    { "name": "no-rows",
+      "documentInline": {"Probe": {"Tally": 9, "Flat": {"FlatValue": 1},
+        "RowShell": {"Rows": []}}}},
+    { "name": "one-instantiated-empty-row",
+      "documentInline": {"Probe": {"Tally": 9, "Flat": {"FlatValue": 1},
+        "RowShell": {"Rows": [{}]}}}},
+    { "name": "two-rows-second-filled",
+      "documentInline": {"Probe": {"Tally": 9, "Flat": {"FlatValue": 1},
+        "RowShell": {"Rows": [{}, {"RowValue": 5}]}}}},
+    { "name": "all-empty",
+      "documentInline": {"Probe": {"Tally": 9, "Flat": {},
+        "RowShell": {"Rows": []}}}}
+  ]
+}

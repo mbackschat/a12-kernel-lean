@@ -121,10 +121,15 @@ def overlaps (left right : ResolvedGroupReference) : Bool :=
 
     `none` is the explicit boundary rather than an empty group. The group may be absent from
     the model, or a repeatable group may sit at or above it, both of which leave a scalar
-    context with no instantiated row to read. A repeatable group **below** it is refused for
-    the same representational reason and is the one place this narrows the Kernel, which
-    admits that operand statically; what it counts there is unmeasured, and a refusal claims
-    nothing while a count would.
+    context with no instantiated row to read.
+
+    A repeatable group **below** it is refused too, and that refusal is a boundary between two
+    mechanisms rather than a gap. Measured at the [repeatable-descendant
+    checkpoint](../../docs/SOURCES.md#src-repeatable-descendant-group-count), the Kernel counts
+    such a shell **structurally**: one instantiated row carrying no filled cell at all makes it
+    count as filled. This query projects a group to a list of cell reads, and row instantiation
+    is not a cell read at any width, so counting that shape needs the document's row topology
+    instead of a wider filter.
 
     `origin` is deliberately not consulted, which is a narrowing relative to
     `fixedWellFormedBool`: that predicate admits a `RuleGroup` reference bound to an

@@ -287,6 +287,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Reviewed 2026-08-29 a12-dmkits reconciliation and correction batch](sources/cross-layer-routes.md#src-2026-08-29-reconciliation)
 <a id="src-date-range-direct-list-cross-group-sources"></a>
 - [A direct-list `FirstFilledValue` places its sources freely](sources/cross-layer-routes.md#src-date-range-direct-list-cross-group-sources)
+<a id="src-repeatable-descendant-group-count"></a>
+- [A repeatable descendant makes its shell count structurally](sources/group-and-iteration-probes.md#src-repeatable-descendant-group-count)
 <a id="src-nested-descendant-group-count-invalid"></a>
 - [A formally invalid nested descendant still fills its group](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-invalid)
 <a id="src-nested-descendant-group-count-runtime"></a>

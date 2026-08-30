@@ -1,0 +1,356 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "04134609513485554fb4a84a67dc6fa0d7add154",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "model.dm.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "row-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Repeatable shell tally.",
+              "referenced" : [
+                "/Probe[1]/RowShell[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Repeatable shell tally.",
+              "referenced" : [
+                "/Probe[1]/RowShell[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "no-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Repeatable shell tally.",
+              "referenced" : [
+                "/Probe[1]/RowShell[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/RowShell[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/Tally"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Repeatable shell tally.",
+              "referenced" : [
+                "/Probe[1]/RowShell[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/RowShell[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/Tally"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "one-instantiated-empty-row",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Repeatable shell tally.",
+              "referenced" : [
+                "/Probe[1]/RowShell[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Repeatable shell tally.",
+              "referenced" : [
+                "/Probe[1]/RowShell[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "two-rows-second-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Repeatable shell tally.",
+              "referenced" : [
+                "/Probe[1]/RowShell[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Repeatable shell tally.",
+              "referenced" : [
+                "/Probe[1]/RowShell[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "all-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Repeatable shell tally.",
+              "referenced" : [
+                "/Probe[1]/RowShell[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/RowShell[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/Tally"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TallyComp",
+              "field" : "Probe/Tally",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Repeatable shell tally.",
+              "referenced" : [
+                "/Probe[1]/RowShell[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/Tally"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/RowShell[1]/Rows[0]/RowValue",
+                "Probe/Flat/FlatValue",
+                "Probe/Tally"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}
