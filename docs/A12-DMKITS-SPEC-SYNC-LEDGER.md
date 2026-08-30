@@ -52,7 +52,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-08-30-02"></a>
 ### `SPEC-2026-08-30-02` — a group-count operand's erroneous-operand rule reaches a nested descendant
 
-- `status`: pending
+- `status`: accepted
 - `clause`: [`02-logic-and-formal-errors.md` the compute-arm inversion paragraph](../spec/02-logic-and-formal-errors.md)
 - `delta`: the clause stated that a formally invalid cell leaves its operand group counting as **filled**, measured for a **direct** child only, and named that limit. Measured: the rule reaches a nested descendant unchanged. A shell group whose only field lies two levels down and holds a non-numeric value counts as filled and the count takes the same exact `2`; emptying that cell instead drops it to `1`.
 - `mechanism`: the established one, now shown to reach through the subtree rather than the direct children. The invalid cell **is** in the checked plan's inventory — it appears in `formalErrorsInOperands` as `zahlHatUngueltigeZeichen` at its exact nested path — and the count is still unaffected, the target neither cleared nor errored. A presence test is not a read, at any depth.
@@ -61,7 +61,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `local-scope`: implemented. The scalar computation-phase clause already counted it that way by uniformity after the subtree extent closed; this replaces that assumption with the measurement and adds its retained conformance lock.
 - `acceptance`: a12-dmkits confirms the nested extension on its own fixture, or supplies the contrary measurement.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
-- `reviewed a12-dmkits revision`: none yet.
+- `reviewed a12-dmkits revision`: `568fca728`, read here rather than taken on report. The same shell holding only a malformed `Months` counts `2` and the same shell holding nothing counts `1` — this entry's own discriminator, one variable. The peer had first offered an adjacent row, the arm-divergence one, and withdrew it when told the outcome coincided but the case did not: that row asks what an erroneous operand does to each arm, this one asks whether invalid content is content for the fill predicate at all. Its added consequence agrees with the account already carried here — on the computation arm the count's content is not the admitted-value notion `GroupFilled` uses, where invalid-only is false.
 
 
 <a id="spec-2026-08-30-01"></a>
