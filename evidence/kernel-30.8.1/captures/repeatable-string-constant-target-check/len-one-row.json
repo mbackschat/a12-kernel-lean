@@ -1,0 +1,24 @@
+{
+ "Probe": {
+  "Store": {
+   "Note": null
+  },
+  "Tasks": [
+   {
+    "LabelOwn": null,
+    "LabelRoot": null,
+    "NumOwn": null,
+    "NumRoot": null,
+    "BoolOwn": null,
+    "BoolRoot": null,
+    "ConfOwn": null,
+    "ConfRoot": null,
+    "BoolCtl": null,
+    "ConfCtl": null,
+    "ShortLabel": null,
+    "FitLabel": null,
+    "Marker": "m1"
+   }
+  ]
+ }
+}
