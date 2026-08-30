@@ -27,7 +27,15 @@ private def NatPath.isPrefixOf : List Nat → List Nat → Bool
   | expected :: expectedRest, actual :: actualRest =>
       expected == actual && NatPath.isPrefixOf expectedRest actualRest
 
-private def rowWithinGroup (model : FlatModel) (groupPath : GroupPath)
+/-- Whether one instantiated row lies inside a group's subtree, at a bound outer address.
+
+    The row-containment half of group content, and the rule both arms answer: the compute arm's
+    group-count operand reaches the same decision through its own repeatable-descendant shape, and
+    `groupCount_rowConstituent_eq_validationArm` states that agreement. Containment is by path
+    prefix and carries no repetition-depth bound, which is what the Kernel was measured to do
+    ([checkpoint](../../docs/SOURCES.md#src-deep-repeatable-descendant-group-count)). Public because
+    that cross-arm law needs it, not because callers outside this module should re-decide it. -/
+def rowWithinGroup (model : FlatModel) (groupPath : GroupPath)
     (addressPrefix : List Nat) (row : RowAddr) : Bool :=
   match model.repeatableGroupAtLevel? row.group with
   | none => false

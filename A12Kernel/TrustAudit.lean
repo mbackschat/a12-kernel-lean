@@ -830,6 +830,7 @@ run_cmd do
 #print axioms A12Kernel.readCheckedNumericComputationAtom_filledGroupCount_eq_mixed
 #print axioms A12Kernel.readGroupCountOperand_fixed_error_iff_notAdmitted
 #print axioms A12Kernel.numericComputationFault_filledGroupCount_eq_mixed
+#print axioms A12Kernel.groupCount_rowConstituent_eq_validationArm
 #print axioms A12Kernel.readGroupCountOperand_fixed_eq_scalarDescendants
 #print axioms A12Kernel.readGroupCountOperand_fixed_refuses_outside_both_shapes
 #print axioms A12Kernel.computedNumberSelfValidation_notFired_iff

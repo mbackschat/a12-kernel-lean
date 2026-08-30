@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.CheckedGroupPresence
 import A12Kernel.Elaboration.NumericComputation
 import A12Kernel.Proofs.GroupPresence
 import A12Kernel.Proofs.Observation
@@ -697,6 +698,57 @@ theorem readGroupCountOperand_fixed_refuses_outside_both_shapes
       .error (NumericComputationFault.unsupportedGroupCount reference.path) := by
   simp [NumericComputationEvaluationContext.readGroupCountOperand,
     NumericComputationEvaluationContext.readGroupContent, noCells, noRows, Except.map]
+
+/-- The compute arm's row constituent **is** the validation arm's, on the shape only it admits.
+
+    Both arms decide whether a group has an instantiated row somewhere beneath it, and until now
+    they did so through two independent tests — the validation arm's `rowWithinGroup`, and the
+    compute arm's own scan over the repeatable groups its shape query returns. The Kernel was
+    measured to answer the same on this shape at any repetition depth and with only the outer row
+    instantiated ([checkpoints](../../docs/SOURCES.md#src-group-count-row-domains)), so the two
+    tests agreeing is the property that must not quietly lapse: without it one arm could count a
+    shell the other calls empty, on a document neither arm's own cases exercise.
+
+    The hypothesis is the unique level identity model validation establishes, which is exactly what
+    `repeatableGroupAtLevel?` is documented to assume. -/
+theorem groupCount_rowConstituent_eq_validationArm
+    {model : FlatModel} (rows : List RowAddr)
+    (reference : ResolvedGroupReference) (repeatables : List RepeatableGroupDecl)
+    (shape : reference.repeatableDescendantShape? model = some repeatables)
+    (levels : ∀ group ∈ model.repeatableGroups,
+      model.repeatableGroupAtLevel? group.level = some group) :
+    (repeatables.any fun group => rows.any fun row => row.group == group.level) =
+      rows.any (CheckedDocument.rowWithinGroup model reference.path []) := by
+  have hrep : repeatables =
+      model.repeatableGroups.filter fun group => reference.path.isPrefixOf group.path := by
+    simp only [ResolvedGroupReference.repeatableDescendantShape?] at shape
+    split at shape
+    · simp at shape
+    · split at shape
+      · simp at shape
+      · exact (Option.some.inj shape).symm
+  subst hrep
+  apply Bool.eq_iff_iff.mpr
+  simp only [List.any_eq_true, List.mem_filter, CheckedDocument.rowWithinGroup]
+  constructor
+  · rintro ⟨g, ⟨hgmem, hpre⟩, r, hrmem, hlevel⟩
+    refine ⟨r, hrmem, ?_⟩
+    have : r.group = g.level := by simpa using hlevel
+    rw [this, levels g hgmem]
+    simpa using hpre
+  · rintro ⟨r, hrmem, hrow⟩
+    revert hrow
+    cases hlook : model.repeatableGroupAtLevel? r.group with
+    | none => simp
+    | some g =>
+        intro hrow
+        have hgmem : g ∈ model.repeatableGroups := by
+          simpa using List.mem_of_find?_eq_some hlook
+        have hglevel : g.level = r.group := by
+          have := List.find?_some hlook
+          simpa using this
+        refine ⟨g, ⟨hgmem, ?_⟩, r, hrmem, by simp [hglevel]⟩
+        simpa using hrow
 
 /-- The pre-read structural gate and the operand reader refuse exactly together.
 
