@@ -281,4 +281,27 @@ def resolvedTopology (checked : CheckedStarredGroupPresenceSource model)
 
 end CheckedStarredGroupPresenceSource
 
+/-- A starred group operand resolves only against a representable declaring group.
+
+    Stated here rather than in a proof module because the guard it reads sits in
+    `SurfaceStarGroupPath.resolveBase`, which is private construction detail: exporting that
+    definition to state the lemma elsewhere would expose the base walk for no consumer. Every other
+    operand kind's guard is already public, so this is the one arm that needs a local statement. -/
+theorem elaborateStarredGroupOperandSource_declaringGroupValid
+    {model : FlatModel} {declaringGroup : GroupPath} {source : SurfaceStarGroupPath}
+    {checked : CheckedStarredGroupOperandSource model}
+    (resolved :
+      elaborateStarredGroupOperandSource model declaringGroup source = .ok checked) :
+    GroupPath.isValid declaringGroup = true := by
+  cases hValid : GroupPath.isValid declaringGroup with
+  | true => rfl
+  | false =>
+    rw [elaborateStarredGroupOperandSource] at resolved
+    split at resolved
+    · cases resolved
+    · rw [SurfaceStarGroupPath.resolveBase] at resolved
+      simp only [hValid, Bool.not_false, if_true, bind, Except.bind, throw, throwThe,
+        MonadExceptOf.throw] at resolved
+      cases resolved
+
 end A12Kernel

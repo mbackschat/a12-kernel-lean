@@ -418,4 +418,78 @@ def elaborateFieldEntityShape (model : FlatModel)
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
   elaborateFieldEntityShapeIn model declaringGroup [] authored
 
+/-- Every operand kind resolves only against a representable declaring group, so a checked
+    entity-list shape certifies its declaring group without re-testing it.
+
+    Each arm's guard belongs to that arm's own owner and is stated there; this composes the five
+    rather than restating any. A family building a certificate over this shape can therefore carry
+    `declaringGroup` with its validity attached instead of leaving it uncertified. -/
+theorem resolveFieldEntityOperandIn_declaringGroupValid
+    {model : FlatModel} {declaringGroup : GroupPath} {scope : List RepeatableLevel}
+    {authored : SurfaceFieldEntityOperand} {resolved : ResolvedFieldEntityOperand model}
+    (ok : resolveFieldEntityOperandIn model declaringGroup scope authored = .ok resolved) :
+    GroupPath.isValid declaringGroup = true := by
+  unfold resolveFieldEntityOperandIn at ok
+  cases authored with
+  | field path form =>
+      cases hResolved :
+        model.resolveFieldDeclarationUnchecked declaringGroup path with
+      | error _ =>
+          simp only [hResolved, bind, Except.bind, Except.mapError] at ok
+          cases ok
+      | ok declaration =>
+          exact FlatModel.resolveFieldDeclarationUnchecked_declaringGroupValid hResolved
+  | star path =>
+      cases hStar : elaborateStarFieldPath model declaringGroup path with
+      | error _ =>
+          simp only [hStar, bind, Except.bind, Except.mapError] at ok
+          cases ok
+      | ok checked => exact elaborateStarFieldPath_declaringGroupValid hStar
+  | starHaving path having =>
+      cases hStar : elaborateStarFieldPath model declaringGroup path with
+      | error _ =>
+          simp only [hStar, bind, Except.bind, Except.mapError] at ok
+          cases ok
+      | ok checked => exact elaborateStarFieldPath_declaringGroupValid hStar
+  | group reference =>
+      cases hGroup : model.resolveFixedGroupReference declaringGroup reference with
+      | error _ =>
+          simp only [hGroup, bind, Except.bind, Except.mapError] at ok
+          cases ok
+      | ok resolvedGroup =>
+          exact FlatModel.resolveFixedGroupReference_declaringGroupValid hGroup
+  | starredGroup reference =>
+      cases hSource :
+        elaborateStarredGroupOperandSource model declaringGroup reference with
+      | error _ =>
+          simp only [hSource, bind, Except.bind, Except.mapError] at ok
+          cases ok
+      | ok source =>
+          exact elaborateStarredGroupOperandSource_declaringGroupValid hSource
+
+/-- A checked entity-list shape therefore certifies its declaring group: the list is nonempty by
+    construction, so its first operand always reaches one of those guards. -/
+theorem elaborateFieldEntityShapeIn_declaringGroupValid
+    {model : FlatModel} {declaringGroup : GroupPath} {scope : List RepeatableLevel}
+    {authored : SurfaceFieldEntitySource} {checked : CheckedFieldEntityShape model}
+    (ok : elaborateFieldEntityShapeIn model declaringGroup scope authored = .ok checked) :
+    GroupPath.isValid declaringGroup = true := by
+  unfold elaborateFieldEntityShapeIn at ok
+  split at ok
+  · cases ok
+  · cases hFirst :
+      resolveFieldEntityOperandIn model declaringGroup scope authored.first with
+    | error _ =>
+        simp only [hFirst, bind, Except.bind] at ok
+        cases ok
+    | ok first => exact resolveFieldEntityOperandIn_declaringGroupValid hFirst
+
+/-- The scalar specialization inherits it unchanged. -/
+theorem elaborateFieldEntityShape_declaringGroupValid
+    {model : FlatModel} {declaringGroup : GroupPath}
+    {authored : SurfaceFieldEntitySource} {checked : CheckedFieldEntityShape model}
+    (ok : elaborateFieldEntityShape model declaringGroup authored = .ok checked) :
+    GroupPath.isValid declaringGroup = true :=
+  elaborateFieldEntityShapeIn_declaringGroupValid ok
+
 end A12Kernel

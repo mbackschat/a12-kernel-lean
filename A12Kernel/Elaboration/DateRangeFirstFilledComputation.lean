@@ -144,6 +144,9 @@ structure CheckedDateRangeFirstFilledDirectComputation (model : FlatModel) where
   format : DateRangeInputFormat
   /-- The group the computation is declared in, which the target need not lie in or below. -/
   declaringGroup : GroupPath
+  /-- That group is representable. Every operand kind's resolution guards it, so the certificate
+      carries the fact rather than leaving a consumer to re-test a path this shape already walked. -/
+  declaringGroupValid : GroupPath.isValid declaringGroup = true
   sources : List (CheckedDateRangeFirstFilledDirectSource model
     target.source.id format)
   targetComparable : target.format.components = format.components
@@ -208,9 +211,12 @@ def checkDateRangeFirstFilledDirectComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceFieldEntitySource) :
     Except DateRangeFirstFilledDirectComputationElabError
-      (CheckedDateRangeFirstFilledDirectComputation model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored
-    |>.mapError .sourceShape
+      (CheckedDateRangeFirstFilledDirectComputation model) :=
+  -- Matched rather than bound, so the shape's own group guard is available as the certificate's
+  -- validity field instead of being re-tested on a path this resolution already walked.
+  match hShape : elaborateFieldEntityShape model declaringGroup authored with
+  | .error error => .error (.sourceShape error)
+  | .ok shape => do
   let sourceDeclarations ← directStoredDeclarations model shape.operands
   let targetDeclaration ← model.resolveNonrepeatableDeclarationById targetField
     |>.mapError fun cause => .target (.source cause)
@@ -235,6 +241,7 @@ def checkDateRangeFirstFilledDirectComputation
       shape
       format := sharedFormat
       declaringGroup
+      declaringGroupValid := elaborateFieldEntityShape_declaringGroupValid hShape
       sources
       targetComparable := hComparable }
   else

@@ -289,4 +289,27 @@ def FlatModel.checkSingleGroupContext (model : FlatModel)
           malformedCheckedCell
     | .error _ => malformedCheckedCell
 
+/-- A fixed group operand resolves only against a representable declaring group. Both surface forms
+    guard it: an ordinary path walks from it, and the `RuleGroup` keyword *is* it. -/
+theorem FlatModel.resolveFixedGroupReference_declaringGroupValid
+    {model : FlatModel} {declaringGroup : GroupPath} {surface : SurfaceGroupReference}
+    {resolved : ResolvedGroupReference}
+    (ok : model.resolveFixedGroupReference declaringGroup surface = .ok resolved) :
+    GroupPath.isValid declaringGroup = true := by
+  cases hValid : GroupPath.isValid declaringGroup with
+  | true => rfl
+  | false =>
+    rw [FlatModel.resolveFixedGroupReference] at ok
+    cases surface with
+    | path groupPath =>
+        rw [SurfaceGroupReference.resolveAgainst, SurfaceGroupPath.resolveAgainst] at ok
+        simp only [hValid, Bool.not_false, if_true, bind, Except.bind, throw, throwThe,
+          MonadExceptOf.throw, Except.mapError] at ok
+        cases ok
+    | ruleGroup starred =>
+        rw [SurfaceGroupReference.resolveAgainst] at ok
+        simp only [hValid, Bool.not_false, if_true, bind, Except.bind, throw, throwThe,
+          MonadExceptOf.throw, Except.mapError] at ok
+        cases ok
+
 end A12Kernel
