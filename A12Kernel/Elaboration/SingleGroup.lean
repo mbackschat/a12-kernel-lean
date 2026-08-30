@@ -19,6 +19,34 @@ inductive SurfaceGroupReference where
   | ruleGroup (starred : Bool)
   deriving Repr, DecidableEq
 
+/-- One operand of a filled-group count, which is the only carrier admitting both forms in one list.
+
+    The two are kept apart at the surface rather than by a flag on `SurfaceGroupReference`, because
+    every other group-valued carrier admits exactly one of them and would gain an unreachable arm.
+    A `starred` operand names a **terminal** group carrying the wildcard, as
+    `NumberOfFilledGroups(Rows*)` spells it; a star on an intermediate axis is a different admitted
+    subset and is not represented here. -/
+inductive SurfaceGroupCountOperand where
+  | fixed (reference : SurfaceGroupReference)
+  | starred (reference : SurfaceGroupPath)
+  deriving Repr, DecidableEq
+
+/-- Recover the fixed-only operand payload exactly when no operand carries a star. Carriers that
+    accepting only the fixed form narrow through this rather than re-checking surface syntax, so the
+    widened list costs them one refusal arm instead of a rewrite. -/
+def SurfaceGroupCountOperand.fixedOnly? :
+    List SurfaceGroupCountOperand → Option (List SurfaceGroupReference)
+  | [] => some []
+  | .fixed reference :: rest => (fixedOnly? rest).map (reference :: ·)
+  | .starred _ :: _ => none
+
+/-- The first starred operand, which is what a carrier refusing the form reports. -/
+def SurfaceGroupCountOperand.firstStarred? :
+    List SurfaceGroupCountOperand → Option SurfaceGroupPath
+  | [] => none
+  | .starred reference :: _ => some reference
+  | .fixed _ :: rest => firstStarred? rest
+
 inductive GroupReferenceOrigin where
   | path
   | ruleGroup

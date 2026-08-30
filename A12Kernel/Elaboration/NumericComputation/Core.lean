@@ -30,6 +30,49 @@ inductive SurfaceNumericComputationAtom where
   | sumOfProducts (source : SurfaceNumericProductAggregate)
   deriving Repr, DecidableEq
 
+/-- Re-spell an ordinary group path as a star plan whose **terminal** group carries the wildcard,
+    which is the only starred group-operand shape measured for this operator. A path navigating by
+    parent count has no representation as a star plan, so it is refused rather than approximated. -/
+private def SurfaceGroupPath.toTerminalStarred (path : SurfaceGroupPath) :
+    Option SurfaceStarGroupPath :=
+  if path.turningPoint.isSome then none
+  else
+    match path.groups.reverse with
+    | [] => none
+    | terminal :: reversedPrefix =>
+        some { base := path.base
+               groups := reversedPrefix.reverse.map (fun name => { name }) ++
+                 [{ name := terminal, starred := true }] }
+
+/-- One checked operand of a filled-group count, in the carrier that admits both forms in one list.
+
+    The two contribute unlike quantities into the **same** result domain — an indicator for a fixed
+    operand, a cardinality for a starred one — so a consumer folds them in one traversal with a
+    form-dependent contribution rather than carrying a result type per form. `GroupCountOperandReading`
+    owns that fold; this type is only its checked input.
+
+    A starred operand keeps its full `CheckedStarredGroupSource` rather than a resolved path, because
+    the quantity it contributes is the in-capacity instantiated row count and that needs the star
+    plan's topology. It is the same certificate the starred validation carriers already consume. -/
+inductive CheckedGroupCountOperand (model : FlatModel) where
+  | fixed (reference : ResolvedGroupReference)
+  | starred (source : CheckedStarredGroupSource model)
+
+namespace CheckedGroupCountOperand
+
+/-- Whether the operand's group subtree contains the computed target, which is the self-reference
+    gate every group-valued operand shares. -/
+def referencesField (operand : CheckedGroupCountOperand model)
+    (model' : FlatModel) (field : FieldId) : Bool :=
+  match operand with
+  | .fixed reference => reference.referencesField model' field
+  | .starred source =>
+      match model'.lookupUniqueId field with
+      | .ok declaration => source.group.path.isPrefixOf declaration.groupPath
+      | .error _ => false
+
+end CheckedGroupCountOperand
+
 /-- One checked numeric computation atom. Ordinary scalar/entity-list sources retain the shared resolved atom, `FirstFilledValue` and value count retain their distinct scans over that same entity-list source, and `SumOfProducts` retains its proof-bearing common-row plan. -/
 inductive CheckedNumericComputationAtom (model : FlatModel) where
   | numeric
@@ -40,6 +83,10 @@ inductive CheckedNumericComputationAtom (model : FlatModel) where
   | tokenValueCount (source : CheckedTokenValueCountSource model)
   | booleanValueCount (source : CheckedBooleanValueCountSource model)
   | sumOfProducts (source : CheckedNumericProductAggregate model)
+  /-- A filled-group count whose operand list carries at least one star. The fixed-only list
+  keeps the established `numeric` atom untouched, so widening this operator costs the
+  already-measured form nothing. -/
+  | filledGroupCountMixed (operands : List (CheckedGroupCountOperand model))
 
 /-- Fail-closed faults outside the admitted numeric computation-expression fragment. -/
 inductive NumericComputationFault where
@@ -92,6 +139,13 @@ inductive NumericComputationElabError where
   | unknownGroupInCount (path : GroupPath)
   | repeatableGroupCountRequiresStar (path : GroupPath)
   | groupCountNeedsMultipleOperands
+  /-- A starred group-count operand, which the Kernel admits and this fragment does not yet
+  lower. Held apart from `groupCountNeedsMultipleOperands` because the two gates are
+  complementary rather than alternatives: the arity minimum governs the unstarred form only,
+  and a single starred operand is a complete list. -/
+  | starredGroupCountOperand (reference : SurfaceGroupPath)
+  /-- The starred group plan itself refused; the underlying error carries the class. -/
+  | starredGroupCountPlan (error : StarredGroupElabError)
   | overlappingGroupCountOperands (left right : GroupPath)
   | targetSelfReference (field : FieldId)
   | targetSelfReferenceAfterScale (field : FieldId)
@@ -109,6 +163,10 @@ namespace NumericComputationElabError
 def groupCountDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic
   | .groupCountNeedsMultipleOperands => some .paramSizeInvalidGN
+  -- No diagnostic: the Kernel admits this shape, so a refusal here is this fragment's
+  -- boundary rather than a Kernel class, and guessing one would misattribute it.
+  | .starredGroupCountOperand _ => none
+  | .starredGroupCountPlan _ => none
   | .overlappingGroupCountOperands left right =>
       if left == right then some .duplicateParam1 else some .duplicateParam2
   | .repeatableGroupCountRequiresStar _ => some .noWildcard
@@ -146,6 +204,8 @@ def FlatModel.admitsNumericComputationOperand
   | .tokenValueCount _ => true
   | .booleanValueCount _ => true
   | .sumOfProducts _ => true
+  -- Every operand carries its own model certificate, so admission is settled at elaboration.
+  | .filledGroupCountMixed _ => true
   | .numeric (.field declaration) =>
       match model.lookupUniqueId declaration.id with
       | .ok admitted =>
@@ -234,6 +294,8 @@ def CheckedNumericComputationAtom.numericScaleSummary
   | .tokenValueCount source => source.scaleSummary
   | .booleanValueCount source => source.scaleSummary
   | .sumOfProducts source => source.scaleSummary
+  -- A count is integral, exactly like the fixed-only form's `filledGroupCount` summary.
+  | .filledGroupCountMixed _ => NumericScaleSummary.field 0
 
 def CheckedNumericComputationAtom.references
     (model : FlatModel) (field : FieldId) :
@@ -244,6 +306,8 @@ def CheckedNumericComputationAtom.references
   | .booleanValueCount source => source.referencesField field
   | .sumOfProducts source =>
       source.left.field.id == field || source.right.field.id == field
+  | .filledGroupCountMixed operands =>
+      operands.any fun operand => operand.referencesField model field
   | .numeric (.field declaration) => declaration.id == field
   | .numeric (.baseYear _) => false
   | .numeric (.baseYearDatePart _ _ _) => false
@@ -531,19 +595,57 @@ private def FlatModel.resolveNumericComputationExpression
         if checked.referencesField target then
           throw (.targetSelfReference target)
         pure (.numeric (.aggregate op checked))
-    | .numeric (.filledGroupCount surfaces) => do
-        let groups ← model.resolveFixedGroupReferences declaringGroup surfaces
-          |>.mapError NumericComputationElabError.ofFixedGroupReferenceError
-        if groups.length < 2 then
-          throw .groupCountNeedsMultipleOperands
-        match ResolvedGroupReferences.firstOverlap? groups with
-        | some (left, right) =>
-            throw (.overlappingGroupCountOperands left right)
-        | none =>
-            if groups.any fun group => group.referencesField model target then
-              throw (.targetSelfReference target)
-            else
-              pure (.numeric (.filledGroupCount groups))
+    | .numeric (.filledGroupCount operands) => do
+        match SurfaceGroupCountOperand.fixedOnly? operands with
+        | some surfaces => do
+            let groups ← model.resolveFixedGroupReferences declaringGroup surfaces
+              |>.mapError NumericComputationElabError.ofFixedGroupReferenceError
+            -- The arity minimum governs the unstarred form only. A list carrying a star takes the
+            -- branch below, where one operand is a complete list; both halves are measured.
+            if groups.length < 2 then
+              throw .groupCountNeedsMultipleOperands
+            match ResolvedGroupReferences.firstOverlap? groups with
+            | some (left, right) =>
+                throw (.overlappingGroupCountOperands left right)
+            | none =>
+                if groups.any fun group => group.referencesField model target then
+                  throw (.targetSelfReference target)
+                else
+                  pure (.numeric (.filledGroupCount groups))
+        | none => do
+            let checked ← operands.mapM fun operand =>
+              match operand with
+              | .fixed reference => do
+                  let resolved ← model.resolveFixedGroupReference declaringGroup reference
+                    |>.mapError NumericComputationElabError.ofFixedGroupReferenceError
+                  pure (CheckedGroupCountOperand.fixed resolved)
+              | .starred path =>
+                  match SurfaceGroupPath.toTerminalStarred path with
+                  | none => throw (NumericComputationElabError.starredGroupCountOperand path)
+                  | some plan =>
+                      match elaborateStarredGroupOperandSource model declaringGroup plan with
+                      | .error error =>
+                          throw (NumericComputationElabError.starredGroupCountPlan error)
+                      | .ok (.terminalRepeatable source) =>
+                          pure (CheckedGroupCountOperand.starred source)
+                      -- A starred **nonrepeatable** terminal is a different shape with its own
+                      -- Kernel class, and it is not measured on this carrier.
+                      | .ok (.terminalPresence _) =>
+                          throw (NumericComputationElabError.starredGroupCountOperand path)
+            -- Overlap is enforced over the fixed operands, where it is measured. A mixed pair's
+            -- duplicate rule is unmeasured, so no gate is invented for it here.
+            let fixedOnly := checked.filterMap fun operand =>
+              match operand with
+              | .fixed reference => some reference
+              | .starred _ => none
+            match ResolvedGroupReferences.firstOverlap? fixedOnly with
+            | some (left, right) =>
+                throw (.overlappingGroupCountOperands left right)
+            | none =>
+                if checked.any fun operand => operand.referencesField model target then
+                  throw (.targetSelfReference target)
+                else
+                  pure (.filledGroupCountMixed checked)
 
 /-- Resolve the measured arithmetic shapes whose target reference is deferred
 until after the scale comparison.

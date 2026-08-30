@@ -217,7 +217,7 @@ private def fixedGroupCount
       ["Order", "Details"], ["Order", "Preferences"]]) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.filledGroupCount (groups.map fun path =>
-    .path { base := .absolute, groups := path }))
+    .fixed (.path { base := .absolute, groups := path })))
 
 private def groupCountComparison
     (groups : List GroupPath := [

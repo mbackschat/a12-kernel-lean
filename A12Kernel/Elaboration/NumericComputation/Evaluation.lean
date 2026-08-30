@@ -207,6 +207,10 @@ def readCheckedNumericComputationAtom (context : ScalarComputationContext) :
       | some result => pure result.toComputationResult
       | none => throw .repeatableContextRequired
   | .sumOfProducts _ => throw .repeatableContextRequired
+  -- A starred operand contributes an in-capacity row count, which this context cannot read:
+  -- its whole input is `FieldId → CheckedCell`. The refusal is the same one a repeatable
+  -- aggregate gets here, for the same reason, and it is correct rather than incomplete.
+  | .filledGroupCountMixed _ => throw .repeatableContextRequired
   | .numeric source =>
       context.readNumericComputationAtomWith (Aggregate := CheckedNumberEntitySource model)
         (fun op aggregate =>
@@ -251,6 +255,9 @@ def readCheckedNumericComputationAtom
   | .sumOfProducts source =>
       (source.evaluateComputation context.document context.outer
         context.starRead).mapError NumericComputationFault.repeatableAddressing
+  -- This route *does* carry the topology a starred operand needs; wiring its row count is the
+  -- next unit. Until then it refuses rather than answering a fixed-only count for a mixed list.
+  | .filledGroupCountMixed _ => throw .groupCountNeedsModel
   | .numeric source =>
       context.scalar.readNumericComputationAtomWith
         (fun op aggregate =>
@@ -353,6 +360,7 @@ def CheckedNumericComputationAtom.numericComputationFault? :
   | .numeric source =>
       NumericComputationAtom.numericComputationFault? source
   | .sumOfProducts _ => none
+  | .filledGroupCountMixed _ => none
 
 namespace LoweredNumericExpr
 

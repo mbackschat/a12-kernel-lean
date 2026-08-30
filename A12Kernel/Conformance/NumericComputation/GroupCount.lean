@@ -134,7 +134,7 @@ def surfaceGroup (path : GroupPath) : SurfaceGroupReference :=
 
 def surfaceCount (groups : List GroupPath) :
     AuthoredNumericExpr SurfaceNumericAtom :=
-  .atom (.filledGroupCount (groups.map surfaceGroup))
+  .atom (.filledGroupCount (groups.map fun path => .fixed (surfaceGroup path)))
 
 def checkedCountResultOf (groups : List GroupPath) (rows : Rows) :
     Option NumericComputationResult :=

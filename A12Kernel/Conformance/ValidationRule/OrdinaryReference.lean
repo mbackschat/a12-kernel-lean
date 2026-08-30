@@ -444,8 +444,8 @@ private def countModel : FlatModel :=
 private def ruleGroupCountSurface : SurfaceNumericComparison :=
   { op := .ordinary .greater
     left := .atom (.filledGroupCount [
-      .ruleGroup false,
-      .path { base := .absolute, groups := ["Count", "Fixed"] }])
+      .fixed (.ruleGroup false),
+      .fixed (.path { base := .absolute, groups := ["Count", "Fixed"] })])
     right := .literal { value := 0, authoredScale := 0 } }
 
 private def countReferences? (environment : Env) :

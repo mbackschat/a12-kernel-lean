@@ -332,7 +332,7 @@ inductive SurfaceNumericAtom
       (left right : SurfaceDateDifferenceOperand)
   | dayDifference (left right : SurfaceDateDifferenceOperand)
   | aggregate (op : NumericAggregateOp) (source : Aggregate)
-  | filledGroupCount (groups : List SurfaceGroupReference)
+  | filledGroupCount (operands : List SurfaceGroupCountOperand)
   deriving Repr, DecidableEq
 
 inductive ResolvedNumericAtom (Field : Type)

@@ -175,7 +175,14 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
         NumericValidationElabError.aggregate
       model.ensureNumericAggregateRowGroup rowGroup checked.fields
       pure (.aggregate op checked.resolvedFields)
-  | .filledGroupCount surfaces => do
+  | .filledGroupCount operands => do
+      let surfaces ←
+        match SurfaceGroupCountOperand.fixedOnly? operands with
+        | some surfaces => pure surfaces
+        | none =>
+            throw (NumericValidationElabError.starredGroupCountOperand
+              ((SurfaceGroupCountOperand.firstStarred? operands).getD
+                { base := .absolute, groups := [] }))
       let groups ← model.resolveFixedGroupReferences rowGroup surfaces
         |>.mapError NumericValidationElabError.ofFixedGroupReferenceError
       if groups.length < 2 then

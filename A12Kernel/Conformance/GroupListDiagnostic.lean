@@ -119,7 +119,7 @@ private def countDiagnostic? (groups : List GroupPath)
   let surface : SurfaceNumericComparison :=
     { op := .ordinary .greater
       left := .atom (.filledGroupCount
-        (groups.map fun path => .path { base := .absolute, groups := path }))
+        (groups.map fun path => .fixed (.path { base := .absolute, groups := path })))
       right := .literal { value := 0, authoredScale := 0 } }
   match elaborateNumericComparison probeModel rowGroup surface with
   | .ok _ => none

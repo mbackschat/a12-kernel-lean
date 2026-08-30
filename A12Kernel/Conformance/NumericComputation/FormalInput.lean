@@ -36,8 +36,8 @@ private def surfaceGroup (path : GroupPath) : SurfaceGroupReference :=
   .path { base := .absolute, groups := path }
 
 private def surfaceExpression : AuthoredNumericExpr SurfaceNumericAtom :=
-  .atom (.filledGroupCount [surfaceGroup ["Root", "Details"],
-    surfaceGroup ["Root", "Preferences"]])
+  .atom (.filledGroupCount [.fixed (surfaceGroup ["Root", "Details"]),
+    .fixed (surfaceGroup ["Root", "Preferences"])])
 
 private def checkedOperation? : Option (CheckedNumericComputationOperation model) :=
   (elaborateNumericComputationOperation model ["Root"] target.id
