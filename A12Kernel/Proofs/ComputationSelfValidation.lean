@@ -128,4 +128,23 @@ theorem growthOfGroupCountOperand_fixed_refuses_iff
     NumericComputationEvaluationContext.readGroupCountOperand]
   cases context.scalar.readGroupDescendants model reference <;> simp [Except.map]
 
+/-- Where the count's evaluation is admitted, the message names exactly the cells it reads.
+
+    An Explain consumer can therefore align the inventory with the evaluation without carrying a
+    second extent. The converse does not hold and must not be assumed: the inventory is defined for
+    operands this project's checked count refuses, which is the wider-extent case its conformance
+    locks. -/
+theorem referencedFields_fixed_eq_computationDescendants
+    {model : FlatModel} (reference : ResolvedGroupReference)
+    (descendants : List FlatFieldDecl)
+    (admitted : reference.computationDescendants? model = some descendants) :
+    (CheckedGroupCountOperand.fixed (model := model) reference).referencedFields model =
+      descendants.map (·.id) := by
+  simp only [CheckedGroupCountOperand.referencedFields, CheckedGroupCountOperand.groupPath]
+  simp only [ResolvedGroupReference.computationDescendants?] at admitted
+  split at admitted
+  · simp at admitted
+  · simp at admitted
+    rw [← admitted]
+
 end A12Kernel

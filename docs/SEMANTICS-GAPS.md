@@ -189,6 +189,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `remaining`: `RepetitionNotUnique` structural references and cross-repetition coordinates remain refused.
 - `remaining`: add a reference field to `FlatRuleMessage` only for a shipment consumer that receives messages without their checked rule.
 - `remaining`: widen `MessagePointer` for nonrepeatable context coordinates and `fillToFix` only for a named consumer of the corresponding Kernel accessors.
+- `remaining`: the computed target's self-validation message has its **field** inventory and its `fillToFix` projection ([capability](IMPLEMENTATION-MAP.md#cap-computation-self-validation-type)). What that leaves to this gap is the pointers' repetition coordinates: one measured message carries a repetition-free address bare and a repeatable-crossing one fully coordinated with the starred axis at the wildcard, and mapping those onto this project's pointer domain is unresolved.
 - `remaining`: represent the keyed no-match error address as no matching row rather than as a wildcard or physical row.
 - `remaining`: keyed message-parameter admission needs a condition spine carrying keyed leaves. Rendering and a key field absent from the condition remain unmeasured.
 - `consumer`: Explain and Govern require structured provenance, pointers, exact bytes, severity, and polarity. Missing providers or pointer shapes are explicit insufficiency.

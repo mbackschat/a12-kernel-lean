@@ -34,6 +34,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-08-30-07"></a>
+### `SPEC-2026-08-30-07` — a group-count message's `referenced` set is the operand's whole subtree, plus the target
+
+- `status`: pending
+- `clause`: [`10-validation-and-polarity.md` the implicit self-validation message entries](../spec/10-validation-and-polarity.md)
+- `delta`: the clause said nothing about which cells a computed target's implicit message names. Measured: each authored operand contributes the fields anywhere in its group's **subtree at any depth**, and the computed target is named too. Both operand forms use that one extent, so a fixed operand and a starred one are indistinguishable in the field set.
+- `mechanism`: the inventory follows the **authored operand**, not a successful read. Two rows establish that separately: a starred operand names its row field in a document with no instantiated row, and a group whose descendant is repeatable is named even where an evaluator refuses to count it. A checker that derives the channel from the cells its evaluation actually reached will therefore under-report on exactly the documents where the message matters most.
+- `evidence`: read from the message bytes of retained captures rather than from a new run — the [nested-descendant checkpoint](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-runtime) for the two-level depth row, the [repeatable-descendant checkpoint](sources/group-and-iteration-probes.md#src-repeatable-descendant-group-count) for the repeatable one, and the [message-polarity checkpoint](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity) for the no-row starred rows. Both codegen strategies throughout.
+- `limit`: only the **field** half. One message carries two pointer spellings — a repetition-free address bare, one crossing a repeatable group fully coordinated with the starred axis at the wildcard — and mapping a rendered coordinate onto a pointer domain is not claimed here. The channel's multiplicity for a repeated operand is unmeasured, so no deduplication is asserted either way.
+- `surfaces`: any peer clause, checker, or Explain consumer that builds a computation message's `referenced` set from reached cells, from an operand group's direct children only, or that distinguishes the operand forms in the field set.
+- `local-scope`: [`SelfValidationMessage.lean`](../A12Kernel/Elaboration/NumericComputation/SelfValidationMessage.lean) owns the inventory; a law ties it to the evaluation's own descendants exactly where that evaluation is admitted, and a case locks the wider case where it is not.
+- `acceptance`: a12-dmkits confirms the subtree extent and the authored-shape property on its own fixture — a two-level shell and a no-row starred operand — or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-30-06"></a>
 ### `SPEC-2026-08-30-06` — a computation's `fillToFix` is its whole referenced set or empty, never a subset
 

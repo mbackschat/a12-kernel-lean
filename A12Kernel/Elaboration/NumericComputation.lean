@@ -1,13 +1,14 @@
-import A12Kernel.Elaboration.NumericComputation.Target
-import A12Kernel.Elaboration.NumericComputation.Table
-import A12Kernel.Elaboration.NumericComputation.RunPlan
-import A12Kernel.Elaboration.NumericComputation.Run
-import A12Kernel.Elaboration.NumericComputation.RunRelation
-import A12Kernel.Elaboration.NumericComputation.SourceTarget
-import A12Kernel.Elaboration.NumericComputation.RunResult
-import A12Kernel.Elaboration.NumericComputation.RunApplication
-import A12Kernel.Elaboration.NumericComputation.LaterValidation
 import A12Kernel.Elaboration.NumericComputation.FormalInput
+import A12Kernel.Elaboration.NumericComputation.LaterValidation
+import A12Kernel.Elaboration.NumericComputation.Run
+import A12Kernel.Elaboration.NumericComputation.RunApplication
+import A12Kernel.Elaboration.NumericComputation.RunPlan
+import A12Kernel.Elaboration.NumericComputation.RunRelation
+import A12Kernel.Elaboration.NumericComputation.RunResult
+import A12Kernel.Elaboration.NumericComputation.SelfValidationMessage
+import A12Kernel.Elaboration.NumericComputation.SourceTarget
+import A12Kernel.Elaboration.NumericComputation.Table
+import A12Kernel.Elaboration.NumericComputation.Target
 
 /-! # Checked numeric computation expressions
 

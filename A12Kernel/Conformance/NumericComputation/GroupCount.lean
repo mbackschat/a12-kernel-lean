@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericComputation
+import A12Kernel.Elaboration.NumericComputation.SelfValidationMessage
 import A12Kernel.Elaboration.GeneratedComputationValidation
 
 /-! # Compute-arm fixed multi-group filled-count locks
@@ -510,6 +511,33 @@ example :
     (match shellCountIn repeatableShellModel (filled 24) (filled 7) with
       | .error fault => some fault
       | .ok _ => none) = some (.unsupportedGroupCount ["Root", "Shell"]) := by
+  native_decide
+
+/-! ## The self-validation message's referenced fields
+
+The measured message names its operands' subtree fields at any depth plus the computed target. The
+channel is a set, so the **order** below is this project's own — authored operand order with the
+target last — and carries no external claim.
+-/
+
+/- The nested shell, reproducing the measured inventory: a group whose only field lies two levels
+   below it still names that field, so a group's own depth does not bound what the message
+   reports. -/
+example :
+    referencedFieldsForFilledGroupCount shellModel
+        [.fixed shellGroup, .fixed preferencesGroup] computedTargetId =
+      [shellClauseId, preferencesChoiceId, computedTargetId] := by
+  native_decide
+
+/- **The extent is wider than the admitted evaluation, and deliberately so.** With the shell's
+   descendant subgroup repeatable instead of ordinary, this project's checked count refuses the
+   operand outright — `unsupportedGroupCount`, locked above — yet the message extent still names the
+   row field, which is what the Kernel does. The inventory is a property of the authored operand,
+   not of a successful read, so it must not be derived from the evaluation's own descendants. -/
+example :
+    referencedFieldsForFilledGroupCount repeatableShellModel
+        [.fixed shellGroup] computedTargetId =
+      [shellClauseId, computedTargetId] := by
   native_decide
 
 end A12Kernel.Conformance.NumericComputation.GroupCount

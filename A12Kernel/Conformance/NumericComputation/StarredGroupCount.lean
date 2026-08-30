@@ -259,4 +259,21 @@ example :
 example : typeOf 5 (growthOf mixedList false 5) = some (.fired .omission) := by
   native_decide
 
+/- **The inventory is an authored shape, not a reached-cell trace.** A starred operand names its
+   row field with no document in hand at all — the function takes none — which is why the measured
+   no-row documents still list `Rows`' field. Both operand forms use the one subtree extent, so the
+   fixed and starred halves are indistinguishable in the field set; the difference the Kernel does
+   render lives in the coordinates, which this project does not model. -/
+example :
+    (match elaborateNumericComputationOperation model ["Probe"] targetId
+        (.atom (.filledGroupCount mixedList)) with
+      | .error _ => none
+      | .ok checked =>
+          match checked.core.expression with
+          | .atom (.filledGroupCountMixed operands) =>
+              some (referencedFieldsForFilledGroupCount model operands targetId)
+          | _ => none) =
+      some [flatValueId, rowValueId, targetId] := by
+  native_decide
+
 end A12Kernel.Conformance.NumericComputation.StarredGroupCount
