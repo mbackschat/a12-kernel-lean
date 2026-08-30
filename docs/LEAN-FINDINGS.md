@@ -1507,3 +1507,19 @@ The scoping error is the whole finding. "Probe" reads as the deliberate, ceremon
 A negative existential also inverts the usual reading of a short result. A grep that returns *few* hits feels like a clean answer, and under `head` it looks identical whether the corpus held twenty matches or five hundred. The tell that would have caught this — piping to `wc -l` first — costs one command and is the same command that sizes the read.
 
 Treatment: widen the rule from *a probe's output* to **any command whose output settles a claim**, and count the matches before reading them. When the claim is that something does *not* exist, enumerate exhaustively or state the search's exact scope and matched count alongside it, so a reader can see what the claim rests on. `LF107`'s unvaried axis, `LF110`'s wrong conjunct, and this truncated corpus are one family: evidence that looks complete from inside because everything it did collect agrees.
+
+## LF113 — prose about this project's own mechanism is a claim too, and it is the one whose refutation is already in the repository
+
+The repeatable-descendant measurement was written up as *"the notion of content changes rather than extending"* — a row rule replacing the cell rule. The peer disputed it and was right, but the decisive evidence was never on their side of the boundary. `ResolvedGroupPresenceInput.derive` reads:
+
+```
+content := input.hasInstantiatedRow || input.descendantCells.any CheckedCell.admitsGroupContent
+```
+
+A plain disjunction of two constituents, and it had said that for as long as the query existed. In the same session it was locked with a conformance case whose own comment says the two sources agree where both can fire. Then the prose claimed one replaced the other.
+
+Three of the four wrong claims made that day were about a12-dmkits' estate, where checking costs a search and truncation or a missing measurement can defeat it. This one was about a definition in this repository, twelve lines from the case that exercised it, and checking it cost a single `grep`. It is the cheapest claim class in the project and the one that got the least verification, for the obvious reason: nobody re-reads a definition they believe they already know.
+
+There is no gate for it. The trust audit checks axioms, the source-hygiene gate checks shape, and the doc-hygiene gate checks size and ownership; none compares a sentence about a mechanism with the mechanism. A conformance case cannot fail because a document describes it wrongly, and a wrong description is exactly as portable as a right one — this one reached `spec/`, a ledger entry, two Lean docstrings, and a peer, inside an hour.
+
+Treatment: when a claim's subject is a declaration in this repository, **read the declaration in the same edit that describes it**, and prefer quoting its shape over paraphrasing its behaviour. A paraphrase drifts; `a || b` does not. The tell that this one was drifting was available too — the description said *replaces* where the retained case beside it said *agree* — so an inconsistency between new prose and an existing case comment is worth stopping for. This is [`LF112`](#lf112--a-command-whose-output-settles-a-claim-is-an-observation-even-when-it-is-only-a-grep) with the corpus at zero distance: there the evidence was truncated, here it was never opened.
