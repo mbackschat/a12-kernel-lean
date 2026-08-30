@@ -10,7 +10,7 @@ This is a per-capability promise, not a claim that the entire A12 language has a
 
 Lean is the precision engine and executable backstop behind the shipment. It is not the primary onboarding language, a dependency that a downstream runtime must embed, or source code to transliterate. The consumer receives language-neutral rules or relations, normalized data, checked examples, evidence limits, and qualification tools; links to Lean declarations make the account auditable and answer exact questions when useful.
 
-The short reader-facing explanation is in the top-level [`README.md`](../README.md#how-knowledge-travels-to-other-software). In the precise model, this repository is the **semantics factory**, a **semantic shipment** is a versioned purpose-specific projection, and an evaluator, importer, refactoring tool, or other independent program is the **consumer**. Consumer feedback returns here; a semantic correction creates a new shipment identity instead of private downstream behavior.
+The short reader-facing explanation is in the top-level [`README.md`](../README.md#why-this-project-exists). In the precise model, this repository is the **semantics factory**, a **semantic shipment** is a versioned purpose-specific projection, and an evaluator, importer, refactoring tool, or other independent program is the **consumer**. Consumer feedback returns here; a semantic correction creates a new shipment identity instead of private downstream behavior.
 
 ## Consumer probes before shipment
 

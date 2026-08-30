@@ -4,7 +4,7 @@
 
 One deliberately smaller solver-free Analyze pilot now exists outside this proposal's adoption boundary: it detects only an exact same-field presence contradiction at the root of an already-checked flat condition and returns a proof-bearing witness that the error condition never fires. It adds no constraint language, domain search, accepted-document relation, solver preparation, command, or shipment. Its current boundary lives in [§12 of the implementation map](IMPLEMENTATION-MAP.md#12--validation-and-polarity); none of the proposed SMT architecture below is thereby adopted.
 
-The [G40 contract](../../a12-rulekit/docs/FEATURE-GAPS.md#3-open-backlog) correction landed in a12-dmkits revision `93e2bd57fc53db49cd36b743d3912e2dc5088df2` across its current gap, seed, CLI, interpreter, and example owners. Seed-vocabulary and shipped-command follow-ups landed at revisions `71dd93df111c88eab701f9b6f94310c8e29eb825` and `68c9e9556dbe838dac662ce48d650f9d0adbcd91`; revision `bcd74cefc4db161e592edfd2dc7912b7f65d8a02` then aligned the documented focused run with its JVM-only command. Reconciliation against that clean sibling HEAD confirmed that G40 remains open, distinguishes condition reachability, model inhabitance, and computation-table partition analysis, preserves the SME/TDG evidence and two independent demand gates, and adds no analyzer, solver, dependency, command, or behavior. Every future upstream handoff must still re-audit the then-current revision.
+The [G40 contract](../../a12-rulekit/docs/FEATURE-GAPS.md#3-open) correction landed in a12-dmkits revision `93e2bd57fc53db49cd36b743d3912e2dc5088df2` across its current gap, seed, CLI, interpreter, and example owners. Seed-vocabulary and shipped-command follow-ups landed at revisions `71dd93df111c88eab701f9b6f94310c8e29eb825` and `68c9e9556dbe838dac662ce48d650f9d0adbcd91`; revision `bcd74cefc4db161e592edfd2dc7912b7f65d8a02` then aligned the documented focused run with its JVM-only command. Reconciliation against that clean sibling HEAD confirmed that G40 remains open, distinguishes condition reachability, model inhabitance, and computation-table partition analysis, preserves the SME/TDG evidence and two independent demand gates, and adds no analyzer, solver, dependency, command, or behavior. Every future upstream handoff must still re-audit the then-current revision.
 
 ## Decision
 
@@ -240,7 +240,7 @@ These stages state technical dependency order for a future experiment. They are 
 
 ### Stage 0 — fixed query contract
 
-The query taxonomy, acceptance-profile requirements, trust directions, and early Lean invariants are fixed here and in LF17 in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md#lf17--dead-error-conditions-and-uninhabitable-models-are-different-queries). a12-dmkits [G40](../../a12-rulekit/docs/FEATURE-GAPS.md#3-open-backlog) independently adopted the same three-way distinction while keeping the analyses unimplemented and demand-gated. This prerequisite changes no solver behavior and adopts no dependency.
+The query taxonomy, acceptance-profile requirements, trust directions, and early Lean invariants are fixed here and in LF17 in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md#lf17--dead-error-conditions-and-uninhabitable-models-are-different-queries). a12-dmkits [G40](../../a12-rulekit/docs/FEATURE-GAPS.md#3-open) independently adopted the same three-way distinction while keeping the analyses unimplemented and demand-gated. This prerequisite changes no solver behavior and adopts no dependency.
 
 ### Stage 1 — solver-free reachability
 
