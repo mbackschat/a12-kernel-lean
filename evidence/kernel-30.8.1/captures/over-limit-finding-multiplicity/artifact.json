@@ -1,0 +1,682 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "1be2d603c90be578fe7ea0de0b8c515cb2a479c4",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Probe_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "ctl",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyTwo",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyTwo",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "two-cells-over",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/ShellDeep/Mid[4]/Rows",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/ShellDeep/Mid' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/ShellDeep/Mid[4]/Rows"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/ShellDeep/Mid[4]/Rows/DeepValue",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/ShellDeep/Mid' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/ShellDeep/Mid[4]/Rows/DeepValue"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/ShellDeep/Mid[4]/Rows/DeepValue2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/ShellDeep/Mid' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/ShellDeep/Mid[4]/Rows/DeepValue2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/ShellDeep/Mid[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/ShellDeep/Mid[4]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Probe/TallyTwo",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/ShellDeep/Mid[4]/Rows",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Probe/ShellDeep/Mid' was specified with 4, but at most 3 is allowed.",
+                "referenced" : [
+                  "Probe/ShellDeep/Mid[4]/Rows"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/ShellDeep/Mid[4]/Rows/DeepValue",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Probe/ShellDeep/Mid' was specified with 4, but at most 3 is allowed.",
+                "referenced" : [
+                  "Probe/ShellDeep/Mid[4]/Rows/DeepValue"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/ShellDeep/Mid[4]/Rows/DeepValue2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Probe/ShellDeep/Mid' was specified with 4, but at most 3 is allowed.",
+                "referenced" : [
+                  "Probe/ShellDeep/Mid[4]/Rows/DeepValue2"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/ShellDeep/Mid[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/ShellDeep/Mid[4]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/ShellDeep/Mid[4]/Rows",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/ShellDeep/Mid' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/ShellDeep/Mid[4]/Rows"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/ShellDeep/Mid[4]/Rows/DeepValue",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/ShellDeep/Mid' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/ShellDeep/Mid[4]/Rows/DeepValue"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/ShellDeep/Mid[4]/Rows/DeepValue2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/ShellDeep/Mid' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/ShellDeep/Mid[4]/Rows/DeepValue2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/ShellDeep/Mid[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/ShellDeep/Mid[4]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Probe/TallyTwo",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/ShellDeep/Mid[4]/Rows",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Probe/ShellDeep/Mid' was specified with 4, but at most 3 is allowed.",
+                "referenced" : [
+                  "Probe/ShellDeep/Mid[4]/Rows"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/ShellDeep/Mid[4]/Rows/DeepValue",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Probe/ShellDeep/Mid' was specified with 4, but at most 3 is allowed.",
+                "referenced" : [
+                  "Probe/ShellDeep/Mid[4]/Rows/DeepValue"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Probe/ShellDeep/Mid[4]/Rows/DeepValue2",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Probe/ShellDeep/Mid' was specified with 4, but at most 3 is allowed.",
+                "referenced" : [
+                  "Probe/ShellDeep/Mid[4]/Rows/DeepValue2"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/ShellDeep/Mid[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/ShellDeep/Mid[4]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "tri-outer-over",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Tri/A[3]/B",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Tri/A' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Tri/A[3]/B"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Tri/A[3]/B/C",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Tri/A' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Tri/A[3]/B/C"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Tri/A[3]/B/C/TriValue",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Tri/A' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Tri/A[3]/B/C/TriValue"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Tri/A[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Tri/A[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyTwo",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Tri/A[3]/B",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Tri/A' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Tri/A[3]/B"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Tri/A[3]/B/C",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Tri/A' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Tri/A[3]/B/C"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Tri/A[3]/B/C/TriValue",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Tri/A' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Tri/A[3]/B/C/TriValue"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Tri/A[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Tri/A[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyTwo",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "tri-outer-over-bare",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Tri/A[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Tri/A[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyTwo",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Tri/A[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Tri/A[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyTwo",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "tri-inner-over",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Tri/A/B[3]/C",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Tri/A/B' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Tri/A/B[3]/C"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Tri/A/B[3]/C/TriValue",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Tri/A/B' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Tri/A/B[3]/C/TriValue"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Tri/A/B[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Tri/A/B[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyTwo",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Tri/A/B[3]/C",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Tri/A/B' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Tri/A/B[3]/C"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Tri/A/B[3]/C/TriValue",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Tri/A/B' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Tri/A/B[3]/C/TriValue"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Tri/A/B[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Tri/A/B[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Tally",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyStar",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/TallyTwo",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

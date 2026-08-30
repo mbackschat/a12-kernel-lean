@@ -1,0 +1,37 @@
+{
+ "Probe": {
+  "Tally": null,
+  "TallyTwo": null,
+  "TallyStar": null,
+  "Flat": {
+   "FlatValue": 7
+  },
+  "ShellDeep": {
+   "Mid": [
+    {
+     "Rows": [
+      {
+       "DeepValue": null,
+       "DeepValue2": null
+      }
+     ]
+    }
+   ]
+  },
+  "Tri": {
+   "A": [
+    {
+     "B": [
+      {
+       "C": [
+        {
+         "TriValue": null
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

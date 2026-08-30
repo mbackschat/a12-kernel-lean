@@ -283,6 +283,32 @@ example : ((checked? {
     some (.unknown .overRepetition, .poison .overRepetition) := by
   native_decide
 
+/- Every axis is checked, not just the outermost or the nearest: a middle `Lines` coordinate beyond
+its own capacity makes a `Details` cell unavailable although the `Items` ancestor above it and the
+`Details` coordinate below it are both in capacity, while the identical cell one `Lines` row earlier
+stays a value. The row list is dense because the checked document rejects a sparse one. Measured on
+kernel 30.8.1, where the same shape stamps `Details` and its cell but leaves the in-cap sibling
+clean (`tri-inner-over`, [checkpoint](../../docs/SOURCES.md#src-over-limit-finding-multiplicity)). -/
+example : ((checked? {
+    instantiatedRows :=
+      [row1, row2] ++
+        ((List.range 6).map fun index => { group := 11, path := [2, index + 1] }) ++
+        [{ group := 12, path := [2, 5, 1] }, { group := 12, path := [2, 6, 1] }]
+    cells := [
+      { address := { field := 6, path := [2, 6, 1] }
+        stored := "beyond"
+        raw := .parsed (.str "beyond") },
+      { address := { field := 6, path := [2, 5, 1] }
+        stored := "within"
+        raw := .parsed (.str "within") }]
+  }).bind fun checked => do
+    let beyond ← (checked.read { field := 6, path := [2, 6, 1] }).toOption
+    let within ← (checked.read { field := 6, path := [2, 5, 1] }).toOption
+    pure (observeCell .validation beyond, observeCell .computation beyond,
+      observeCell .validation within)) =
+    some (.unknown .overRepetition, .poison .overRepetition, .value (.str "within")) := by
+  native_decide
+
 /- Requiredness annotates a later validation view while computation retains the base empty observation. -/
 example : ((checked? classified).bind fun checked =>
     (checked.applyAbsoluteRequiredAt 4).toOption.map fun result =>
