@@ -172,7 +172,8 @@
 <a id="cap-group-content-gate"></a>
 #### Group-content gate
 
-- `boundary`: Structural row content and group error state remain independent of field values and authored findings
+- `boundary`: Structural row content and group error state remain independent of field values and authored findings. Content therefore has **two constituents and either suffices**: an admitted descendant cell anywhere in the subtree, or an instantiated row anywhere in it.
 - `owner`: [`GroupPresence.lean`](../../A12Kernel/Semantics/GroupPresence.lean), [`CheckedGroupPresence.lean`](../../A12Kernel/Elaboration/CheckedGroupPresence.lean)
-- `assurance`: E/P closed for resolved product; source-grounded
+- `case`: [group-presence separators](../../A12Kernel/Conformance/GroupPresence.lean) fix the product state from supplied constituents; [repeatable-descendant cases](../../A12Kernel/Conformance/GroupPresenceRepeatableDescendant.lean) derive them from a model instead, on the one shape that isolates the row constituent — a group owning no field anywhere, whose only content is a repeatable descendant.
+- `assurance`: E/P closed for resolved product; source-grounded. The disjunction is now **externally measured** rather than only source-grounded: the row constituent alone at the [repeatable-descendant checkpoint](../SOURCES.md#src-repeatable-descendant-group-count), and both constituents separated against one operand in the peer fixture that checkpoint reviews, with a neither-constituent control ruling out an unconditional count. The measurement is on the count carrier; this arm is shown to agree rather than measured itself.
 - `remains`: Complete group lists/counts: [SG13](../SEMANTICS-GAPS.md#sg13--group-list-and-group-count-completion)
