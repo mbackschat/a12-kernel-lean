@@ -15,10 +15,10 @@ operator reads headroom against its own quantity**, so two computations over the
 group can type differently in one document.
 
 Measured at the [message-polarity checkpoint](../../docs/SOURCES.md#src-starred-operand-message-polarity)
-over ten documents on both Kernel codegen strategies. Two limits ride along. Every retained row has
-the computed value **below** its stored seed, so the rows are equally consistent with a coarser
-account that ignores direction; the directional reading is inherited from the rule arm rather than
-separated here. And growth was exercised only through row count and cell fill.
+over ten documents on both Kernel codegen strategies, and the direction separately afterwards on the
+document none of those ten supplies: headroom is necessary but not sufficient, since a quantity whose
+computed value already exceeds its seed types VALUE despite having room to grow. Growth itself was
+exercised only through row count and cell fill.
 -/
 
 namespace A12Kernel
