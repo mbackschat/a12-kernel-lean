@@ -34,6 +34,22 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-08-30-06"></a>
+### `SPEC-2026-08-30-06` — a computation's `fillToFix` is its whole referenced set or empty, never a subset
+
+- `status`: pending
+- `clause`: [`10-validation-and-polarity.md` the starred-operand message-type entries](../spec/10-validation-and-polarity.md), sharpening the general non-minimality note in [`01-data-model.md`](../spec/01-data-model.md)
+- `delta`: the data-model clause says only that `fillToFix` "need not be a minimal set of empty cells whose literal filling alone repairs the rule", and that a VALUE message has none. Measured on the computation's implicit self-validation message: it is **exactly `referenced` or exactly empty**, never a proper subset, and it tracks the message type with no independent content of its own. The computed target's own pointer is included.
+- `mechanism`: it is one decision spelled as a list, not a per-cell analysis. The witness row settles that: a target types OMISSION on **row headroom alone** while every referenced cell is filled, and each of those filled pointers appears in its `fillToFix`. So a consumer that reads a listed pointer as "this cell is empty" is reading the whole message's polarity through a per-cell shape, and would be wrong on that row.
+- `scope`: this is the computation carrier only. It does not extend to authored rule messages, whose operator-specific projections — `RepetitionNotUnique`'s duplicate-cluster expansion in [§7](../spec/07-repetition-and-iteration.md) among them — stay exactly as recorded. Reading it onto them would be the same over-generalization this project has already had to retract once on this operator family.
+- `evidence`: [message-polarity checkpoint](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity), the same three clean `:adapter:kernelProbe` requests as [`SPEC-2026-08-30-05`](#spec-2026-08-30-05), read for their `fillToFix` channel rather than their `type` channel — 30 message observations over ten documents on both codegen strategies. Every one is all-or-nothing; none is a proper subset.
+- `limit`: the message *type* itself carries an unmeasured direction on this carrier. Every retained row has the computed value **below** its stored seed, so the rows do not separate the rule arm's directional reading from a coarser "can it move at all" one. This project implements the directional account, inherited rather than measured here. The discriminator is one document: a grow-only target whose computed value already exceeds its seed.
+- `surfaces`: any peer clause, checker, or consumer that derives a computation message's `fillToFix` per cell, filters it to empty cells, or presents a listed pointer as an empty-cell claim.
+- `local-scope`: [`ComputationSelfValidation.lean`](../A12Kernel/Semantics/ComputationSelfValidation.lean) implements the type and the projection, with the all-or-nothing property proved rather than only exampled.
+- `acceptance`: a12-dmkits confirms the all-or-nothing projection on its own fixture including a filled referenced cell inside an OMISSION message, or supplies the contrary measurement. The direction discriminator above is offered separately and does not gate this entry.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-30-05"></a>
 ### `SPEC-2026-08-30-05` — declared capacity bounds a starred operand's message polarity
 

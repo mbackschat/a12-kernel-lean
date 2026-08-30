@@ -503,6 +503,18 @@
 - `assurance`: E/P closed for the normalized pointer and existing partition; upstream pointer-domain L at [source registry](../SOURCES.md); C none
 - `remains`: Raw pointer-factory boundary, other message collections, error-code mapping, and localized payload construction: [SG10](../SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration)
 
+<a id="cap-computation-self-validation-type"></a>
+#### Implicit self-validation message type
+
+- `boundary`: A computed Number target disagreeing with its stored cell carries a formal message with no authored condition behind it. Its type is the rule arm's directional fillability applied to that inequality, with the stored side fixed; the equal-seed case produces no message and no computed outcome at all.
+- `boundary`: The measured content is the computed side's fillability. **Headroom is read per operator against its own quantity**, so `ComputationOperandGrowth` carries three channels — a fixed group grows by content, a starred group count by rows, a value read inside starred rows by either. At exhausted capacity the count is closed while a sum over those same rows is open, which is the separating document and is proved for every capacity rather than only the measured five.
+- `boundary`: `fillToFix` is the whole referenced set or empty, never a proper subset, and carries no content beyond the type. A listed pointer is not a claim that the cell is empty; the witness types OMISSION on row headroom while every referenced cell is filled.
+- `boundary`: The stored side's fixity is measured rather than assumed — a stored side able to move would have typed the at-capacity documents OMISSION. The message's text, pointer, and referenced set are not constructed here.
+- `owner`: [`ComputationSelfValidation.lean`](../../A12Kernel/Semantics/ComputationSelfValidation.lean)
+- `case`: [self-validation cases](../../A12Kernel/Conformance/ComputationSelfValidation.lean) replay all ten retained documents and their 30 message observations, with the at-capacity empty-row document as the channel separator and the equal-seed document as the no-message control.
+- `assurance`: E/P closed and externally calibrated at the [message-polarity checkpoint](../SOURCES.md#src-starred-operand-message-polarity) on both codegen strategies. The **direction** is not calibrated: every retained row has its computed value below its seed, so the rows admit a coarser account equally; the checkpoint's `direction` record owns the discriminator. C none.
+- `remains`: Message text, pointer, and referenced-set construction, and the non-Number target: [SG10](../SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration)
+
 <a id="cap-generated-computation-validation"></a>
 #### Generated computation validation
 
