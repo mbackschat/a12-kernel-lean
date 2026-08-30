@@ -75,4 +75,30 @@ example :
       [(0, 1), (1, 2), (1, 2), (2, 3), (3, 4), (2, 2), (0, 0)] := by
   decide
 
+/-! ## Two starred operands, and the same group named twice
+
+Measured on a12-dmkits' kernel oracle at the [two-star
+rows](../../docs/SOURCES.md#src-starred-group-count-computation), under the same stated mapping:
+each starred operand's group contributes its instantiated row count, so naming one group twice
+yields that group's reading twice. Only the runtime fold is measured there; static admission of
+these shapes is not, and `Conformance/NumericComputation/StarredGroupCount.lean` carries that
+limit.
+-/
+
+/-- `NumberOfFilledGroups(A*, B*)` over two repeatable groups holding `left` and `right` rows. -/
+private def tallyTwoStar (left right : Nat) : Nat :=
+  numberOfFilledGroupsForComputationOperands [.starredRows left, .starredRows right]
+
+/- Two distinct starred operands add, and neither group's rows reach the other's contribution.
+   The empty-second row separates the sum from a maximum, and the all-empty row from a constant. -/
+example : tallyTwoStar 3 2 = 5 ∧ tallyTwoStar 3 0 = 3 ∧ tallyTwoStar 0 0 = 0 := by
+  decide
+
+/- **The multiplicity discriminator.** The same group named twice contributes twice: three rows
+   answer six, where any fold over *distinct* groups answers three. This is what makes the operand
+   list a sum over authored positions rather than over the groups those positions name, and it is
+   why the fixed operands' overlap gate is deliberately not extended over starred ones. -/
+example : tallyTwoStar 3 3 = 6 ∧ tally 3 = 3 := by
+  decide
+
 end A12Kernel.Conformance.StarredGroupCountComputation

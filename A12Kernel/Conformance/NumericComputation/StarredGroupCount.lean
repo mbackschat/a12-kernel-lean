@@ -176,16 +176,20 @@ example : scalarCountOf mixedList = some .repeatableContextRequired := by
 
 /-! ## Two starred operands
 
-Every case below is **internal closure only**, and deliberately carries no external claim. Three
-admission rows and three runtime rows were observed against the Kernel, but the sibling worktree was
-verified clean *before* the run and found dirty *after* it, with no check in between — so neither
-set can be certified to a clean window and neither is cited. The expectations here are this fold's
-own arithmetic. A clean-window re-run is pending; until it lands, treat the agreement between the
-two as unrecorded.
+The **runtime** numbers below are measured — on a12-dmkits' kernel oracle, at the [two-star
+rows](../../../docs/SOURCES.md#src-starred-group-count-computation) — and the fold that produces
+them is replayed against those rows at its owning clause in
+`Conformance/StarredGroupCountComputation.lean`. What these cases add is that an elaborated
+operand list reaches that fold.
 
-The shapes themselves follow the operator's recorded gates: [§1](../../../spec/02-logic-and-formal-errors.md)
-states that direct duplicate checking skips wildcarded operands, which is why a repeated starred
-group is expected to be admitted rather than refused.
+**Static admission of these shapes is not measured**, and each case below asserts it silently by
+answering at all. The Kernel built an engine for a model carrying the duplicate list and computed
+from it, which is runtime acceptance rather than an authoring-time verdict; this project's own
+admission rows for the two-star shapes were observed in a window that could not be certified clean
+and so are not cited. The shapes follow the operator's recorded gate —
+[§1](../../../spec/02-logic-and-formal-errors.md) states that direct duplicate checking skips
+wildcarded operands — but that gate is the reason the elaborator admits them, not evidence that
+the Kernel does.
 -/
 
 /- Two independent cardinalities add, and neither operand's rows reach the other's count. -/
