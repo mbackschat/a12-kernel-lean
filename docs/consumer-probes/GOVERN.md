@@ -2,7 +2,7 @@
 
 - `status`: green
 - `contract`: versioned semantic artifacts and evidence produce an impact, compatibility, or release decision under an explicit policy.
-- `authority`: Git-owned change identity, the corrected [calendar-day clause](../../spec/05-dates-and-time.md#5-time-zones-and-the-sub-day-difference), its [Lean capability](../implementation/computations.md#cap-exact-address-repeatable-datetime-day-shift), and the [Execute](EXECUTE.md) and [Qualify](QUALIFY.md) lab results.
+- `authority`: Git-owned change identity, the corrected [calendar-day clause](../../spec/05-dates-and-time.md#5-time-zones-and-the-sub-day-difference), its [Lean capability](../implementation/repeatable-computations.md#cap-exact-address-repeatable-datetime-day-shift), and the [Execute](EXECUTE.md) and [Qualify](QUALIFY.md) lab results.
 
 ## First probe
 

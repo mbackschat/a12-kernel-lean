@@ -330,39 +330,39 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-fixed-string-firstfilledvalue-result-application"></a>
 - [Fixed ordinary String `FirstFilledValue` result/application](implementation/computations.md#cap-fixed-string-firstfilledvalue-result-application)
 <a id="cap-exact-address-repeatable-string-firstfilledvalue-result-application"></a>
-- [Exact-address repeatable ordinary String `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-string-firstfilledvalue-result-application)
+- [Exact-address repeatable ordinary String `FirstFilledValue` result/application](implementation/repeatable-computations.md#cap-exact-address-repeatable-string-firstfilledvalue-result-application)
 <a id="cap-exact-address-repeatable-number-firstfilledvalue-result-application"></a>
-- [Exact-address repeatable Number `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-number-firstfilledvalue-result-application)
+- [Exact-address repeatable Number `FirstFilledValue` result/application](implementation/repeatable-computations.md#cap-exact-address-repeatable-number-firstfilledvalue-result-application)
 <a id="cap-exact-address-repeatable-boolean-firstfilledvalue-result-application"></a>
-- [Exact-address repeatable Boolean `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-boolean-firstfilledvalue-result-application)
+- [Exact-address repeatable Boolean `FirstFilledValue` result/application](implementation/repeatable-computations.md#cap-exact-address-repeatable-boolean-firstfilledvalue-result-application)
 <a id="cap-exact-address-repeatable-custom-firstfilledvalue-result-application"></a>
-- [Exact-address repeatable Custom `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-custom-firstfilledvalue-result-application)
+- [Exact-address repeatable Custom `FirstFilledValue` result/application](implementation/repeatable-computations.md#cap-exact-address-repeatable-custom-firstfilledvalue-result-application)
 <a id="cap-exact-address-repeatable-datefragment-firstfilledvalue-result-application"></a>
-- [Exact-address repeatable DateFragment `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-datefragment-firstfilledvalue-result-application)
+- [Exact-address repeatable DateFragment `FirstFilledValue` result/application](implementation/repeatable-computations.md#cap-exact-address-repeatable-datefragment-firstfilledvalue-result-application)
 <a id="cap-exact-address-repeatable-daterange-firstfilledvalue-result-application"></a>
-- [Exact-address repeatable DateRange `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-daterange-firstfilledvalue-result-application)
+- [Exact-address repeatable DateRange `FirstFilledValue` result/application](implementation/repeatable-computations.md#cap-exact-address-repeatable-daterange-firstfilledvalue-result-application)
 <a id="cap-exact-address-repeatable-datetime-firstfilledvalue-result-application"></a>
-- [Exact-address repeatable DateTime `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-datetime-firstfilledvalue-result-application)
+- [Exact-address repeatable DateTime `FirstFilledValue` result/application](implementation/repeatable-computations.md#cap-exact-address-repeatable-datetime-firstfilledvalue-result-application)
 <a id="cap-exact-address-repeatable-datetime-subday-shift"></a>
-- [Exact-address repeatable DateTime sub-day shift](implementation/computations.md#cap-exact-address-repeatable-datetime-subday-shift)
+- [Exact-address repeatable DateTime sub-day shift](implementation/repeatable-computations.md#cap-exact-address-repeatable-datetime-subday-shift)
 <a id="cap-exact-address-repeatable-datetime-day-shift"></a>
-- [Exact-address repeatable DateTime calendar-day shift](implementation/computations.md#cap-exact-address-repeatable-datetime-day-shift)
+- [Exact-address repeatable DateTime calendar-day shift](implementation/repeatable-computations.md#cap-exact-address-repeatable-datetime-day-shift)
 <a id="cap-repeatable-number-datetime-shift-cascade"></a>
-- [Repeatable Number-to-DateTime shift cascade](implementation/computations.md#cap-repeatable-number-datetime-shift-cascade)
+- [Repeatable Number-to-DateTime shift cascade](implementation/repeatable-computations.md#cap-repeatable-number-datetime-shift-cascade)
 <a id="cap-exact-address-repeatable-full-date-firstfilledvalue-result-application"></a>
-- [Exact-address repeatable FULL Date `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-full-date-firstfilledvalue-result-application)
+- [Exact-address repeatable FULL Date `FirstFilledValue` result/application](implementation/repeatable-computations.md#cap-exact-address-repeatable-full-date-firstfilledvalue-result-application)
 <a id="cap-exact-address-repeatable-time-firstfilledvalue-result-application"></a>
-- [Exact-address repeatable Time `FirstFilledValue` result/application](implementation/computations.md#cap-exact-address-repeatable-time-firstfilledvalue-result-application)
+- [Exact-address repeatable Time `FirstFilledValue` result/application](implementation/repeatable-computations.md#cap-exact-address-repeatable-time-firstfilledvalue-result-application)
 <a id="cap-exact-address-repeatable-time-constant-construction"></a>
-- [Exact-address repeatable constant `Time(...)` construction](implementation/computations.md#cap-exact-address-repeatable-time-constant-construction)
+- [Exact-address repeatable constant `Time(...)` construction](implementation/repeatable-computations.md#cap-exact-address-repeatable-time-constant-construction)
 <a id="cap-exact-address-repeatable-time-construction"></a>
-- [Exact-address repeatable `Time(...)` construction](implementation/computations.md#cap-exact-address-repeatable-time-construction)
+- [Exact-address repeatable `Time(...)` construction](implementation/repeatable-computations.md#cap-exact-address-repeatable-time-construction)
 <a id="cap-world-backed-repeatable-time-construction"></a>
-- [World-backed repeatable `Time(...)` construction](implementation/computations.md#cap-world-backed-repeatable-time-construction)
+- [World-backed repeatable `Time(...)` construction](implementation/repeatable-computations.md#cap-world-backed-repeatable-time-construction)
 <a id="cap-nonrepeatable-daterange-source-placement"></a>
 - [Nonrepeatable DateRange source placement](implementation/computations.md#cap-nonrepeatable-daterange-source-placement)
 <a id="cap-exact-address-repeatable-time-result-application"></a>
-- [Exact-address repeatable Time result/application](implementation/computations.md#cap-exact-address-repeatable-time-result-application)
+- [Exact-address repeatable Time result/application](implementation/repeatable-computations.md#cap-exact-address-repeatable-time-result-application)
 <a id="cap-nonrepeatable-daterange-result"></a>
 - [Nonrepeatable DateRange result](implementation/computations.md#cap-nonrepeatable-daterange-result)
 <a id="cap-nonrepeatable-daterange-application"></a>
