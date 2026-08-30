@@ -71,7 +71,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-08-30-09"></a>
 ### `SPEC-2026-08-30-09` — an outer repeatable row is group content on its own, with no row beneath it
 
-- `status`: pending
+- `status`: accepted
 - `clause`: [`02-logic-and-formal-errors.md` §3 group content](../spec/02-logic-and-formal-errors.md)
 - `delta`: [`SPEC-2026-08-30-08`](#spec-2026-08-30-08) established that repetition depth does not bound the row constituent, and left one shape open: which *level's* row counts. Measured: the **outer** row alone. A shell whose repeatable descendant holds one row with no inner row beneath it counts as filled, on both spellings of that document — an outer row with no inner group key, and one with an explicitly empty inner list — while the no-row control does not count.
 - `mechanism`: the constituent is **any** instantiated row in the operand's subtree, not a row at the deepest repeatable level. The two readings coincide on every document where the levels are instantiated together, which is why a fixture that always fills both cannot tell them apart.
@@ -80,13 +80,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `surfaces`: any peer clause, checker, or evaluator that derives group content from rows at the innermost repeatable level, or that walks to the deepest declaration before asking whether a row exists. A fixture instantiating both levels together cannot distinguish that from the measured rule.
 - `local-scope`: [`GroupCount.lean`](../A12Kernel/Conformance/NumericComputation/GroupCount.lean) had this branch locked as this project's own reading and now replays it as a measured row.
 - `acceptance`: a12-dmkits confirms that an outer row with no inner row beneath it makes the shell count, or supplies the contrary measurement.
+- `reviewed a12-dmkits revision`: `1be2d603c`, the same test. Its third row is exactly this shape — a `Pallets` row with no `Cartons` row beneath it — and counts `2`, where a leaf-row rule predicts `1`. Measured there **independently**: the peer reached it from this entry's predecessor without seeing this entry, and its commit still describes the row as this project's own unmeasured reading, which it had ceased to be hours earlier.
+- `disposition`: **accepted.** Two estates measured the discriminator separately and agree, so the containment reading is confirmed rather than merely consistent. The residual limits are unchanged and shared by both.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 
 <a id="spec-2026-08-30-08"></a>
 ### `SPEC-2026-08-30-08` — repetition depth does not bound a group-count operand's row constituent
 
-- `status`: pending
+- `status`: accepted
 - `clause`: [`02-logic-and-formal-errors.md` §3 group content](../spec/02-logic-and-formal-errors.md)
 - `delta`: the clause stated the two content constituents generally — an admitted descendant cell anywhere in the subtree, **or** an instantiated row in a repeatable descendant — but every row supporting the second reached exactly **one** repetition level. Measured at two: a shell whose only content is a repeatable group containing a second repeatable group counts on one instantiated leaf row with an empty cell, and drops to absent when the rows are removed.
 - `mechanism`: subtree **containment**, not an axis count. The cell constituent was already measured to ignore nesting depth, and the validation arm's own row test has no depth bound either, so the two arms agreeing at depth is what makes this a property of the containment relation rather than a second rule about levels.
@@ -95,6 +97,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `surfaces`: any peer clause, checker, or evaluator whose group-content rule reaches repeatable rows only one level below the operand, or that enumerates repetition axes instead of testing containment. A one-level fixture cannot distinguish the two.
 - `local-scope`: `ResolvedGroupReference.repeatableDescendantShape?` refused the deeper shape and that refusal is lifted; [`GroupCount.lean`](../A12Kernel/Conformance/NumericComputation/GroupCount.lean) replays the measured rows and locks the half-instantiated branch separately as unmeasured.
 - `acceptance`: a12-dmkits confirms the depth-independent reading on its own fixture — a two-level shell counting on one empty leaf row — or supplies the contrary measurement. The half-instantiated row would be a welcome addition either way.
+- `reviewed a12-dmkits revision`: `1be2d603c`, read here rather than taken on report. `adapter.laws.DeepRepeatableRowConstituentLawsTest` drives the kernel-backed `RuntimeLaws.compute` on its own `Pallets`/`Cartons` model and asserts static admission separately through `consistencyMessages`, since a computed number is not an `MVK_*` verdict. Its empty-leaf and filled-leaf rows both count `2` against a no-row control at `1`, matching this project's rows on a different model and a different harness.
+- `disposition`: **accepted.** The reading is confirmed on a second estate, which rules out a fixture-structure confound but not a shape one: both estates used exactly two repetition levels, capacities of at least two at each, and scale-0 Numbers. Three or more levels stay unmeasured on both, as this entry's `limit` already said.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 
