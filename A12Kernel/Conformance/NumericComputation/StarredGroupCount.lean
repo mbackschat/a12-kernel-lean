@@ -210,6 +210,64 @@ example :
       countOf [starredOperand] false 3 0 = some (.value 3) := by
   native_decide
 
+/-! ## An operand whose group contains another operand's
+
+Every list above holds disjoint operand groups. A fixed operand naming an **ancestor** of a starred
+operand's group is the shape where the two could interfere, because the ancestor's only content is
+the very rows the star counts. Both readings are the project's own; external evidence is pending.
+-/
+
+private def shellRowsLevel : RepeatableLevel := 12
+
+/-- `Shell` owns no field of its own: its content is exactly the repeatable `Shell/Rows` below it,
+    which is also what the starred operand counts. -/
+private def nestedModel : FlatModel :=
+  { fields :=
+      [ numberIn flatValueId ["Probe", "Flat"] "FlatValue"
+      , { numberIn rowValueId ["Probe", "Shell", "Rows"] "RowValue" with
+            repeatableScope := [shellRowsLevel] }
+      , numberIn targetId ["Probe"] "Target" ]
+    repeatableGroups :=
+      [ { level := shellRowsLevel, path := ["Probe", "Shell", "Rows"],
+          repeatability := some 5 } ] }
+
+private def nestedCount (operands : List SurfaceGroupCountOperand) (rows : Nat) :
+    Option NumericComputationResult :=
+  match elaborateNumericComputationOperation nestedModel ["Probe"] targetId
+      (.atom (.filledGroupCount operands)) with
+  | .error _ => none
+  | .ok checked =>
+      match checked.core.expression with
+      | .atom atom =>
+          ((⟨{ read := fun _ => emptyCell },
+             { instantiatedRows :=
+                 (List.range rows).map fun index => { group := shellRowsLevel, path := [index + 1] }
+               rawCells := fun _ => none },
+             [], fun _ _ => emptyCell, fun _ _ => emptyCell⟩ :
+            NumericComputationEvaluationContext).readCheckedNumericComputationAtom
+              (model := nestedModel) atom).toOption
+      | _ => none
+
+private def shellFixed : SurfaceGroupCountOperand := fixedOperand ["Probe", "Shell"]
+private def shellRowsStarred : SurfaceGroupCountOperand :=
+  .starred { base := .absolute, groups := ["Probe", "Shell", "Rows"] }
+
+/- **Containment does not merge the operands.** One row makes the ancestor present *and* is the
+   one row the star counts, so the pair answers two where a deduplicating or overlap-refusing
+   account answers one or refuses. The fixed operand contributes an indicator, so a second row
+   moves only the star's half — which is what shows the two are not reading one quantity. -/
+example :
+    [nestedCount [shellFixed, shellRowsStarred] 1,
+      nestedCount [shellFixed, shellRowsStarred] 2] =
+      [some (.value 2), some (.value 3)] := by
+  native_decide
+
+/- The control. With no row the ancestor has no content either, so its indicator and the star fall
+   to zero together — the shared source of both halves, stated as the case that would break if the
+   ancestor could count without the rows. -/
+example : nestedCount [shellFixed, shellRowsStarred] 0 = some (.value 0) := by
+  native_decide
+
 /-! ## Growth channels, and the message type they feed
 
 The same checked operand list read for the *other* question the Kernel asks of it. These close the
