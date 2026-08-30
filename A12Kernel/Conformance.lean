@@ -102,6 +102,7 @@ import A12Kernel.Conformance.ValidationFillQuantifier
 import A12Kernel.Conformance.GroupListDiagnostic
 import A12Kernel.Conformance.RepetitionNotUniqueDiagnostic
 import A12Kernel.Conformance.GroupPresence
+import A12Kernel.Conformance.GroupPresenceRepeatableDescendant
 import A12Kernel.Conformance.GeneratedComputationValidation
 import A12Kernel.Conformance.Required
 import A12Kernel.Conformance.NumericScale
