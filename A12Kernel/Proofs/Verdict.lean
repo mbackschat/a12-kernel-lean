@@ -167,6 +167,39 @@ theorem disj_distributes_over_conj (a b c : Verdict) :
     | next p q => cases p <;> cases q <;> rfl
     | next p q r => cases p <;> cases q <;> cases r <;> rfl
 
+/-- Collapsing `unknown` to `notFired` commutes with `And`. -/
+theorem conj_collapseUnknown (a b : Verdict) :
+    (conj a b).collapseUnknown = conj a.collapseUnknown b.collapseUnknown := by
+  cases a <;> cases b <;> try rfl
+  all_goals
+    first
+    | next p => cases p <;> rfl
+    | next p q => cases p <;> cases q <;> rfl
+
+/-- Collapsing `unknown` to `notFired` commutes with `Or`. -/
+theorem disj_collapseUnknown (a b : Verdict) :
+    (disj a b).collapseUnknown = disj a.collapseUnknown b.collapseUnknown := by
+  cases a <;> cases b <;> try rfl
+  all_goals
+    first
+    | next p => cases p <;> rfl
+    | next p q => cases p <;> cases q <;> rfl
+
+/-- The consumer-facing form: two accounts of a leaf that differ only between `unknown`
+    and `notFired` compose to outcomes that differ only there too, so no surrounding
+    `And`/`Or` recovers the distinction. Corollary of the two homomorphisms. -/
+theorem conj_collapseUnknown_congr {a b c d : Verdict}
+    (left : a.collapseUnknown = c.collapseUnknown)
+    (right : b.collapseUnknown = d.collapseUnknown) :
+    (conj a b).collapseUnknown = (conj c d).collapseUnknown := by
+  rw [conj_collapseUnknown, conj_collapseUnknown, left, right]
+
+theorem disj_collapseUnknown_congr {a b c d : Verdict}
+    (left : a.collapseUnknown = c.collapseUnknown)
+    (right : b.collapseUnknown = d.collapseUnknown) :
+    (disj a b).collapseUnknown = (disj c d).collapseUnknown := by
+  rw [disj_collapseUnknown, disj_collapseUnknown, left, right]
+
 end Verdict
 
 /-! ## Checked non-laws
@@ -183,5 +216,10 @@ example : Verdict.disj .unknown (.fired .omission) ≠ .unknown := by decide
 
 example : Verdict.conj (.fired .value) (.fired .omission) ≠ .fired .value := by decide
 example : Verdict.disj (.fired .value) (.fired .omission) ≠ .fired .omission := by decide
+
+/- The collapse moves something, so its homomorphisms are not the identity restated; and it
+   fixes every fired verdict, so it can neither create a message nor remove one. -/
+example : Verdict.collapseUnknown .unknown ≠ .unknown := by decide
+example (p : Polarity) : Verdict.collapseUnknown (.fired p) = .fired p := by cases p <;> rfl
 
 end A12Kernel

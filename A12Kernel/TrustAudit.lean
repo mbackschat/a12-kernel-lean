@@ -522,6 +522,13 @@ run_cmd do
 #print axioms A12Kernel.Verdict.disj_absorbs_conj
 #print axioms A12Kernel.Verdict.conj_distributes_over_disj
 #print axioms A12Kernel.Verdict.disj_distributes_over_conj
+#print axioms A12Kernel.Verdict.conj_collapseUnknown
+#print axioms A12Kernel.Verdict.disj_collapseUnknown
+#print axioms A12Kernel.Verdict.conj_collapseUnknown_congr
+#print axioms A12Kernel.Verdict.disj_collapseUnknown_congr
+#print axioms A12Kernel.ConditionTree.evalVerdict_and_eq_conj
+#print axioms A12Kernel.ConditionTree.evalVerdict_or_eq_disj
+#print axioms A12Kernel.ConditionTree.evalVerdict_collapseUnknown
 
 #print axioms A12Kernel.formalCheck_wellFormed
 #print axioms A12Kernel.checkRawCellWith_wellFormed

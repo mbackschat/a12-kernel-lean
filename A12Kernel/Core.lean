@@ -87,6 +87,18 @@ def disj : Verdict → Verdict → Verdict
   | _,               .unknown       => .unknown
   | .notFired,       .notFired      => .notFired
 
+/-- Read `unknown` as `notFired`, the two verdicts that emit no message.
+
+    This is not a semantic clause — no evaluator applies it — but the canonical map whose
+    laws state how far an UNKNOWN leaf is observable. The A12 condition language has no
+    generic `Not` ([§1](../spec/02-logic-and-formal-errors.md)), so neither verdict can
+    become `fired` through composition, and `conj`/`disj` absorb them identically. It is
+    therefore the tool for a leaf whose account is undecided between the two: if only this
+    distinction is at stake, no composed rule outcome can settle it. -/
+def collapseUnknown : Verdict → Verdict
+  | .unknown => .notFired
+  | verdict => verdict
+
 end Verdict
 
 /-! ## Number scale and the value domain -/
