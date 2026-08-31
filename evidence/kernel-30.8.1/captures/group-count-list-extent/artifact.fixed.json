@@ -1,0 +1,460 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "1be2d603c90be578fe7ea0de0b8c515cb2a479c4",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "GrpFixed_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "f0-none",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FLT2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FLT2",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "FLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FLT3",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "FLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FLT4",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FLT2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FLT2",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "FLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FLT3",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "FLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FLT4",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "f1-g1-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FLT2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FLT2",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "FLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FLT3",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "FLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FLT4",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FLT2",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FLT2",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "FLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FLT3",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            },
+            {
+              "code" : "FLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "FLT4",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "f2-g1-and-sub",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FLT3",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FLT4",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FLT3",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FLT4",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "f3-g1-sub-three",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FLT3",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FLT4",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FLT3",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FLT4",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "f4-both-direct",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FLT3",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FLT4",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FLT3",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "FLT4",
+              "referenced" : [
+                "/Probe[1]/G2[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

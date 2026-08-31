@@ -301,6 +301,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A computation's message type follows what can still grow](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity)
 <a id="src-filled-field-count-nested-capacity"></a>
 - [A group `NumberOfFilledFields` moves against declared slot capacity, not declared field count](sources/group-and-iteration-probes.md#src-filled-field-count-nested-capacity)
+<a id="src-group-count-list-extent"></a>
+- [A group-count list's extent is its operand list, and a starred member breaks that](sources/group-and-iteration-probes.md#src-group-count-list-extent)
 <a id="src-starred-group-count-computation"></a>
 - [The computation arm counts a starred repeatable group's instantiated rows](sources/group-and-iteration-probes.md#src-starred-group-count-computation)
 <a id="src-repeatable-descendant-group-count"></a>

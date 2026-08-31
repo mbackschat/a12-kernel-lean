@@ -78,6 +78,11 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
   | .aggregate op source =>
       (source.evaluate op context.fields.observeValidationAt).toValidationArithmetic
   | .filledGroupCount groups =>
+      -- The extent is the operand list, deliberately **not** the subtree slot capacity the field
+      -- count uses. A listed group contributes at most one however many descendant rows it holds,
+      -- and it counts as filled through a descendant row; both are measured
+      -- ([checkpoint](../../../docs/SOURCES.md#src-group-count-list-extent)). Only a *starred*
+      -- member can contribute per row, and this arm refuses one at elaboration.
       match context.groups.resolveAll groups with
       | none => .error .groupState
       | some states =>

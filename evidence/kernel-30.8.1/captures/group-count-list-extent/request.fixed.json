@@ -1,0 +1,29 @@
+{
+ "model": "GrpFixed_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "f0-none",
+   "document": "f0-none.json"
+  },
+  {
+   "name": "f1-g1-only",
+   "document": "f1-g1-only.json"
+  },
+  {
+   "name": "f2-g1-and-sub",
+   "document": "f2-g1-and-sub.json"
+  },
+  {
+   "name": "f3-g1-sub-three",
+   "document": "f3-g1-sub-three.json"
+  },
+  {
+   "name": "f4-both-direct",
+   "document": "f4-both-direct.json"
+  }
+ ]
+}

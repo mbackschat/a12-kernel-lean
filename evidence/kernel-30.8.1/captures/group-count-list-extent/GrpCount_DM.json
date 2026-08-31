@@ -1,0 +1,139 @@
+{
+  "header" : {
+    "id" : "GrpCount_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "GrpCount_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/G1",
+            "name" : "G1",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/G1/A",
+                "name" : "A",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Rows/R",
+                "name" : "R",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GLT2",
+            "name" : "GLT2",
+            "Rule" : {
+              "errorEntityRelPath" : "../G1/A",
+              "errorCode" : "GLT2",
+              "errorCondition" : "NumberOfFilledGroups(G1, Rows*) < 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GLT2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GLT3",
+            "name" : "GLT3",
+            "Rule" : {
+              "errorEntityRelPath" : "../G1/A",
+              "errorCode" : "GLT3",
+              "errorCondition" : "NumberOfFilledGroups(G1, Rows*) < 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GLT3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GLT4",
+            "name" : "GLT4",
+            "Rule" : {
+              "errorEntityRelPath" : "../G1/A",
+              "errorCode" : "GLT4",
+              "errorCondition" : "NumberOfFilledGroups(G1, Rows*) < 4",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GLT4"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GLT5",
+            "name" : "GLT5",
+            "Rule" : {
+              "errorEntityRelPath" : "../G1/A",
+              "errorCode" : "GLT5",
+              "errorCondition" : "NumberOfFilledGroups(G1, Rows*) < 5",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GLT5"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
