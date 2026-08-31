@@ -1,6 +1,21 @@
 # Inbound group-operand source checkpoints
 
-Reconciled inbound batches for group operands, entity lists, carrier sweeps, and partial relevance. Locally measured group and iteration probes stay in [`group-and-iteration-probes.md`](group-and-iteration-probes.md); [`../SOURCES.md`](../SOURCES.md) remains the anchor registry for both.
+Reconciled inbound batches for group operands, entity lists, carrier sweeps, partial relevance, and the group declaration domain. Locally measured group and iteration probes stay in [`group-and-iteration-probes.md`](group-and-iteration-probes.md); [`../SOURCES.md`](../SOURCES.md) remains the anchor registry for both.
+
+### Inbound repeatability declaration domain
+
+<a id="src-repeatability-domain-peer-measurement"></a>
+#### The kernel's `repeatability` domain is `> 0`, and `1` is admitted, inbound 2026-08-31
+
+- `revision`: a12-dmkits `a6b011140f0de1d19c3d394b02df0fd199a8627f`, its [`GroupRepeatabilityDomainLawsTest`](../../../a12-rulekit/adapter/src/test/java/io/github/mbackschat/a12/dm/adapter/laws/GroupRepeatabilityDomainLawsTest.java). Read here rather than taken on report: the revision is the sibling checkout's `HEAD`, and the test's own expected map carries all nine rows on a declared-repeatable group of its own fixture.
+- `question`: this project's [`SPEC-2026-08-31-07`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-07) stated the domain as a finite integer of **at least two**. The lower bound was never measured against a Kernel gate.
+- `claim`: **the domain is `> 0`, and `1` is admitted at both gates.** `2`, `3`, `1`, the text `"2"`, and an absent key are all `ADMITTED`; `0`, `null`, and `-1` draw `MVK_MAX_VALUES_INVALID`; a Boolean `true` is refused by the reader before either gate. **Absence means non-repeatable**, which is the half of this project's clause that stands. A `1` is a non-repeatable group spelled explicitly rather than an error.
+- `gate-split`: the reader accepts `null`, `0`, and `-1` **without complaint**; only `checkConsistency` refuses them. The peer's first run used a load-gate oracle and reported every value admitted, which would have arrived here as a clean refutation of the whole entry rather than a correction of its lower bound. Its neighbouring mounted-component test measures the reader and genuinely does find the Kernel tolerant there, so the mistake would have looked corroborated. Name the gate before comparing verdicts.
+- `text`: the refusal is emitted **per element** — once for the group and once for every field beneath it — and the domain message has two wordings: `0` and `null` draw *"Only values greater than 0 are allowed."*, a negative draws *"Only values without a sign are allowed."*.
+- `defect-source`: the measurement here was sound and the **inference** was not. This project read `≥ 2` off `dmtool group add --repeatable`'s own refusal — an instrument's client-side narrowing — and wrote it as the Kernel's domain ([`LF126`](../LEAN-FINDINGS.md)). The defeater was in this repository the whole time: fourteen retained conformance fixtures across seven modules declare `repeatability := some 1`, every one of which the withdrawn claim made unauthorable.
+- `local-consequence`: [`spec/01`](../../spec/01-data-model.md)'s group clause is corrected to `> 0` with the gate split and both wordings, and `RepeatableGroupDecl.repeatability`'s docstring with it. No Lean clause gated on `≥ 2`, so nothing else moved.
+- `peer-consequence`: the peer's `DocumentModelDraft.repeatable` and `ModelDocument.addRepeatableGroup` both refuse below `2`, a narrowing that had no test and no recorded Kernel basis. It keeps the narrowing deliberately and now documents it as one step stricter than the Kernel.
+- `sync`: **inbound and already reviewed upstream, so it opens no outbound entry.** It dispositions the existing [`SPEC-2026-08-31-07`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-07) in place.
 
 ### Inbound entity-list group-operand, validator-cardinality, and cleared-value batch
 

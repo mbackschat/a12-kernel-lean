@@ -319,6 +319,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-repeatability-declaration-domain"></a>
 - [A repeatable group always carries a finite maximum, and absence means nonrepeatable](sources/group-and-iteration-probes.md#src-repeatability-declaration-domain)
+<a id="src-repeatability-domain-peer-measurement"></a>
+- [The `repeatability` domain is `> 0` and `1` is admitted, measured by a12-dmkits](sources/inbound-group-operand-batches.md#src-repeatability-domain-peer-measurement)
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-and-iteration-probes.md#src-over-limit-computation-target)
