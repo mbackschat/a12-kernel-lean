@@ -1,0 +1,112 @@
+{
+  "header" : {
+    "id" : "Lit_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Lit_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Lit_DM",
+        "name" : "Lit_DM",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Lit_DM/DDate",
+            "name" : "DDate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "dd.MM.yyyy"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Lit_DM/YDate",
+            "name" : "YDate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Lit_DM/TDate",
+            "name" : "TDate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Lit_DM/DT",
+            "name" : "DT",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Lit_DM/Src",
+            "name" : "Src",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Lit_DM/YearOnly",
+            "name" : "YearOnly",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy"
+                }
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

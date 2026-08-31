@@ -321,6 +321,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A repeatable group always carries a finite maximum, and absence means nonrepeatable](sources/group-and-iteration-probes.md#src-repeatability-declaration-domain)
 <a id="src-repeatability-domain-peer-measurement"></a>
 - [The `repeatability` domain is `> 0` and `1` is admitted, measured by a12-dmkits](sources/inbound-group-operand-batches.md#src-repeatability-domain-peer-measurement)
+<a id="src-erroneous-member-quantifier-undecidable"></a>
+- [An erroneous member makes the quantifier undecidable rather than shrinking its list](sources/inbound-group-operand-batches.md#src-erroneous-member-quantifier-undecidable)
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-and-iteration-probes.md#src-over-limit-computation-target)
@@ -468,6 +470,8 @@ Two shards carry these: locally measured probes in [`group-and-iteration-probes.
 
 <a id="src-constant-literal-family-gate"></a>
 - [A bare constant's admission is gated by the target's declared format string, never its kind](sources/cross-layer-routes.md#src-constant-literal-family-gate)
+<a id="src-temporal-constant-literal-composition"></a>
+- [The temporal literal vocabulary composes, and the Base Year gate reads year disagreement](sources/cross-layer-routes.md#src-temporal-constant-literal-composition)
 
 <a id="src-component-omitting-date-formats"></a>
 - [A component-omitting date target needs every component its format names, and the Base Year supplies the year](sources/cross-layer-routes.md#src-component-omitting-date-formats)

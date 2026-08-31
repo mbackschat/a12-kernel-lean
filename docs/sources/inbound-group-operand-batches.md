@@ -2,6 +2,21 @@
 
 Reconciled inbound batches for group operands, entity lists, carrier sweeps, partial relevance, and the group declaration domain. Locally measured group and iteration probes stay in [`group-and-iteration-probes.md`](group-and-iteration-probes.md); [`../SOURCES.md`](../SOURCES.md) remains the anchor registry for both.
 
+### The erroneous list member
+
+<a id="src-erroneous-member-quantifier-undecidable"></a>
+#### An erroneous member makes the quantifier undecidable rather than shrinking its list, measured locally 2026-08-31
+
+- `revision`: one `:adapter:kernelProbe` request at a12-dmkits `c2900fe7c91a55e0debd0124f847ee2de0f06186`, the sibling checkout clean before and after with `state: CLEAN` in the artifact. `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `validateFull` on both codegen strategies, `enginesAgree: true` on all three rows.
+- `question`: [`spec/10`](../../spec/10-validation-and-polarity.md) said a field carrying a formal error is not relevant and drew from it that a malformed operand is **dropped from a quantifier's list**, "which is the same answer as treating it as neither filled nor empty". That was source-grounded from the Kernel's business prose and never measured. a12-dmkits reported it contradicted at this revision; a report does not discharge a claim this project wrote into `spec/`, so it was re-derived here.
+- `model`: `Quant_DM`, four nonrepeatable Numbers `A`, `B`, `C`, `W`, and six rules all guarded by `FieldFilled(W)` so none fires vacuously: `AllFieldsFilled(A,B,C)`, `NotAllFieldsFilled(A,B,C)`, `NumberOfFilledFields(A,B,C) == 3`, `== 2`, `AtLeastOneFieldFilled(A,B,C)`, and `FieldFilled(A)` as the control.
+- `claim`: **all four list quantifiers go silent on the erroneous document, and the three obvious accounts are each excluded by one of them.** With `B` malformed, `AllFieldsFilled`, `NotAllFieldsFilled`, `== 3`, and `== 2` all stay silent. Dropping `B` from the list predicts the universal firing over `A` and `C`; counting it filled predicts `== 3`; counting it empty predicts the negative quantifier and `== 2`. The controls fix the other two rows: all three valid fires the universal and `== 3`, the middle left **empty** fires the negative quantifier and `== 2`.
+- `separator`: **`AtLeastOneFieldFilled` fires on the erroneous document**, alongside `FieldFilled(A)` and the malformed cell's own `zahlHatUngueltigeZeichen`. That is the row that makes this three-valued logic rather than an abandoned document or a suppressed rule set: an existential with a *definite* witness stays decidable while a universal over the same list does not. Without it, silence in four rules is equally consistent with the Kernel giving up on the document.
+- `not-reached`: this settles the **operand-list** reading only. Whether the Kernel's internal relevant list also excludes the field is a different question, and no observable here distinguishes it.
+- `limit`: one malformed converter (a non-numeric Number), one nonrepeatable three-field list, `en_US`, full validation, no repetition. Not measured: an out-of-calendar Date or another converter, a repeatable list, partial validation, and the group-operand quantifiers.
+- `bytes`: [`erroneous-member-quantifier/`](../../evidence/kernel-30.8.1/captures/erroneous-member-quantifier/); SHA-256 model `01572cfb9665dfd1e0ad4d418790b38c351f703c45e035f8b308b22e0c04bfca`, request `90d9b751745bb6b47c374a0caeb3e0048b2e206083f0a0e4a8fc543cafbf421f`, artifact `919ac484e797c6f9ac344912112a53e47043a2e3545764369ffc1cf896cbc27e`. A bounded raw calibration capture with no typed consumer: it does not run under `lake test` and establishes neither `L` nor `C` coverage.
+- `sync`: **inbound.** The contradiction arrived from a12-dmkits' committed and reviewed `c2900fe7c`, which measured the same four rules on two converters plus its own control; this round re-derives it and adds the existential row. It opens no outbound entry and dispositions [`SPEC-2026-08-31-05`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-05) in place.
+
 ### Inbound repeatability declaration domain
 
 <a id="src-repeatability-domain-peer-measurement"></a>

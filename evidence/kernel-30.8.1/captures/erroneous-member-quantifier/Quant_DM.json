@@ -1,0 +1,172 @@
+{
+  "header" : {
+    "id" : "Quant_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Quant_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Quant_DM",
+        "name" : "Quant_DM",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Quant_DM/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Quant_DM/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Quant_DM/C",
+            "name" : "C",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Quant_DM/W",
+            "name" : "W",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Quant_DM/ALLF",
+            "name" : "ALLF",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "ALLF",
+              "errorCondition" : "FieldFilled(W) And AllFieldsFilled(A, B, C)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "ALLF"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Quant_DM/NOTALL",
+            "name" : "NOTALL",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NOTALL",
+              "errorCondition" : "FieldFilled(W) And NotAllFieldsFilled(A, B, C)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NOTALL"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Quant_DM/CNT3",
+            "name" : "CNT3",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "CNT3",
+              "errorCondition" : "FieldFilled(W) And NumberOfFilledFields(A, B, C) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "CNT3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Quant_DM/CNT2",
+            "name" : "CNT2",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "CNT2",
+              "errorCondition" : "FieldFilled(W) And NumberOfFilledFields(A, B, C) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "CNT2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Quant_DM/ATLEAST",
+            "name" : "ATLEAST",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "ATLEAST",
+              "errorCondition" : "FieldFilled(W) And AtLeastOneFieldFilled(A, B, C)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "ATLEAST"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Quant_DM/CTRL",
+            "name" : "CTRL",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "CTRL",
+              "errorCondition" : "FieldFilled(W) And FieldFilled(A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "CTRL"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
