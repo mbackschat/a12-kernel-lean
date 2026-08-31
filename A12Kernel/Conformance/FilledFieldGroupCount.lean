@@ -1,8 +1,11 @@
+import A12Kernel.Elaboration.CheckedGroupPresence
 import A12Kernel.Elaboration.FilledFieldGroupCount
 
 /-! # Checked group-scope `NumberOfFilledFields` conformance
 
 The fixed-group rows distinguish filled, present-empty, and absent descendants. The starred rows distinguish whole-extent expansion from a per-row or row-1 read and lock the empty-group zero.
+
+The last case reads **group presence** on the same three-level fixture, because presence and this count answer differently on one document and no fixture of either family alone can show it.
 -/
 
 namespace A12Kernel
@@ -438,6 +441,31 @@ example :
      fixedFill .notExactlyOneFieldFilled []) =
     (some .falseOrUnknown, some .falseOrUnknown,
      some (.fired .value), some (.fired .value), some (.fired .omission)) := by
+  native_decide
+
+private def threeLevelContent (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) : Option Bool := do
+  let document ← (checkDocument threeLevelPrepared "en_US" {
+    instantiatedRows := rows
+    cells }).toOption
+  let input ← (document.groupPresenceInput ["Probe", "Shell"] [] .fullyRelevant false).toOption
+  pure input.derive.content
+
+/- **Group presence and this count are not one quantity, and the capacity projection is where they
+   come apart.** Two documents give the identical count of `0` and opposite presence: with no `L1`
+   row at all the shell has neither constituent, while three rows whose only filled cell sits in the
+   over-limit third still fill it — the in-capacity rows satisfy presence's *row* constituent, which
+   the count has no way to express. Kernel-measured as one pair in one run: `NumberOfFilledGroups`
+   drops to one operand on the empty document and stays at two on the over-limit one, while the
+   count's `< 1` rule fires on both
+   ([checkpoint](../../docs/SOURCES.md#src-group-operand-over-limit-extent)). A consumer that derived
+   either operator from the other would answer these two documents alike. -/
+example :
+    (threeLevelContent threeLevelOuterRows [cell 60 [3] "x"],
+     threeLevelCount threeLevelOuterRows [cell 60 [3] "x"],
+     threeLevelContent [] [],
+     threeLevelCount [] []) =
+    (some true, some (.value 0), some false, some (.value 0)) := by
   native_decide
 
 end A12Kernel
