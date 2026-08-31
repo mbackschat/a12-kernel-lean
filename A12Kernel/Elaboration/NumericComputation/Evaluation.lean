@@ -248,8 +248,17 @@ namespace NumericComputationEvaluationContext
     recorded structural rule — an over-limit row stays in the physical topology and still supplies
     group content ([§7](../../../spec/07-repetition-and-iteration.md)) — rather than the starred
     count's in-capacity domain, which is a numeric evaluation domain and not a presence question.
-    The choice is inherited, not measured on this carrier: no retained observation has a shell whose
-    rows are *all* over-limit, which is the only document where the two accounts differ. -/
+
+    The choice is inherited rather than measured here, but the two accounts are **indistinguishable**
+    on this carrier, so nothing observable rides on it. They differ only where a shell's rows are all
+    over-limit, and the nearest repeatable descendant level cannot be in that state: the checked
+    document rejects a gap in a row sequence, so a level holding any row holds row 1
+    ([case](../../Conformance/CheckedDocument.lean)), and a declared repeatability is a positive
+    integer, so row 1 is in capacity ([checkpoint](../../../docs/SOURCES.md#src-repeatability-domain-peer-measurement)).
+    What remains is the enclosing binding, which the arm excludes separately when it is over-limit.
+    This is a property of this project's own types rather than a Kernel observation, so it is
+    provable and not measurable; it is unproved only because `CheckedDocument` checks the
+    predecessor rule without retaining it as a certificate a proof could use. -/
 def readGroupContent (context : NumericComputationEvaluationContext) (model : FlatModel)
     (reference : ResolvedGroupReference) :
     Except NumericComputationFault (List CellObservation × Bool) :=

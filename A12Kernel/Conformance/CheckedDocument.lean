@@ -426,4 +426,30 @@ example : (prepareFlatStringContext world builtinStringPatternCompiler model).to
       | _ => false))) = some (true, true, true) := by
   native_decide
 
+/- **The row list is dense and parent-closed, and these two guards are what make it so.** The
+   over-limit case above states that property in a comment and depends on it, and so do several
+   accounts outside this module: that a repeatable level holding any row holds row 1, and that a
+   child row implies its parent. A gap in the sequence names the missing predecessor; a child
+   without its parent names the parent, and the parent check runs first, so a row missing both
+   reports the parent rather than the predecessor. The third component is the control that keeps
+   the two refusals from being a document format this checker simply never admits.
+
+   This is this project's own representation invariant and claims nothing about the Kernel: the
+   wire form is a JSON row **array**, which cannot carry a hole, so no document can present the
+   refused shape and no observation could witness a Kernel verdict on it. -/
+example : (prepareFlatStringContext world builtinStringPatternCompiler model).toOption.map
+    (fun prepared => (
+      (match checkDocument prepared "en_US"
+        { classified with instantiatedRows := [row1, row3] } with
+      | .error (.nonprefixRow row predecessor) => row == row3 && predecessor == row2
+      | _ => false),
+      (match checkDocument prepared "en_US"
+        { classified with instantiatedRows := [line21] } with
+      | .error (.missingParentRow row parent) => row == line21 && parent == row2
+      | _ => false),
+      (checkDocument prepared "en_US"
+        { classified with instantiatedRows := [row1, row2, line21] }).toOption.isSome)) =
+    some (true, true, true) := by
+  native_decide
+
 end A12Kernel.Conformance.CheckedDocument
