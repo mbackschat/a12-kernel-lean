@@ -54,6 +54,14 @@
 - `assurance`: E/P closed for the named selection boundary, with the general delegation law and its Number specialization proved so the two routes cannot describe two policies; upstream L locked for ordinary match/column timing and full parallel duplicate exclusion, and index-kind independence plus the four-state read are locally Kernel-locked at the [kind-independence](../SOURCES.md#src-semantic-index-kind-independence) and [endpoint-shape](../SOURCES.md#src-date-range-endpoint-shapes) checkpoints; C none
 - `remains`: Remaining non-Number selected targets, the literal format check, and wider keys: [SG9](../SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)
 
+<a id="cap-over-repetition-findings"></a>
+#### Over-repetition finding set
+
+- `boundary`: the structural findings a document draws for rows beyond a group's declared repeatability, as a **set** of coded nodes rather than a count: one `zuGrosseZeile` naming the outermost violated row, plus one `zuGrosseKontextnummer` naming every node the document writes beneath it at any depth. Multiplicity counts **cells, not groups** — a descendant row writing two keys contributes three findings. Absorption is transitive: a nested over-limit row draws no row code and is named like any other written node. Emission **order is not claimed**, so the cases compare sets; the rendered **text** of either finding is not produced here.
+- `owner`: [`OverRepetitionFindings.lean`](../../A12Kernel/Elaboration/OverRepetitionFindings.lean), [outermost-attribution law](../../A12Kernel/Proofs/CheckedDocument.lean), [cases](../../A12Kernel/Conformance/OverRepetitionFindings.lean)
+- `assurance`: E closed against the [multiplicity](../sources/over-repetition-probes.md#src-over-limit-finding-multiplicity), [attribution](../sources/over-repetition-probes.md#src-nested-over-limit-attribution), and [absorption-depth](../sources/over-repetition-probes.md#src-over-limit-absorption-depth) checkpoints, all on both codegen strategies, and the six cases were checked to discriminate by perturbation — dropping absorption fails four, dropping cells fails three. P states the attribution shape for every document, not only the measured ones: each named row is over its own capacity and none lies beneath another named row.
+- `remains`: A cell counts when the document **places** it; every measured document writes every declared key of the rows it instantiates, so present-vs-declared is unseparated. Message text: [SG10](../SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration)
+
 <a id="cap-repeatable-validation"></a>
 #### Repeatable validation
 

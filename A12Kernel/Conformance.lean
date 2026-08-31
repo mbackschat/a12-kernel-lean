@@ -51,6 +51,7 @@ import A12Kernel.Conformance.RepeatableStringConstantComputation
 import A12Kernel.Conformance.BooleanEntityGroupOperand
 import A12Kernel.Conformance.BooleanFirstFilledComputation
 import A12Kernel.Conformance.CheckedDocument
+import A12Kernel.Conformance.OverRepetitionFindings
 import A12Kernel.Conformance.CheckedEnumeration
 import A12Kernel.Conformance.CheckedIndexColumn
 import A12Kernel.Conformance.CheckedIndexPreliminary

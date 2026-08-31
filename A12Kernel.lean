@@ -127,6 +127,7 @@ import A12Kernel.Elaboration.RawString
 import A12Kernel.Elaboration.CustomField
 import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.OverRepetitionFindings
 import A12Kernel.Elaboration.DateRangeConstructionComparison
 import A12Kernel.Elaboration.DateRangeTargetPresentation
 import A12Kernel.Elaboration.DateRangeConstructionComputation

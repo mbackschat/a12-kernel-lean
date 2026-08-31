@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.OverRepetitionFindings
 
 /-! # Checked-document row-environment laws -/
 
@@ -400,5 +401,30 @@ theorem checkedDocument_validationRowEnvironments_singleton
     checked.validationRowEnvironments [level] =
       checked.actualRowEnvironments [level] := by
   rfl
+
+/-- **Absorption, as a property rather than by example.** Every row the finding set names with the
+row code is itself over its declared repeatability, and no such row lies beneath another one, so a
+nested violation can never contribute a second row code however deep it sits. The by-example cases
+fix the count on particular documents; this fixes the shape for every document. -/
+theorem checkedDocument_overRepetitionFindings_rowCode_outermost
+    (checked : CheckedDocument model) (row : RowAddr)
+    (named : row ∈ checked.outermostOverLimitRows) :
+    checked.rowOverLimit row = true ∧
+      ∀ other ∈ checked.outermostOverLimitRows,
+        other.path.length < row.path.length →
+          row.path.take other.path.length ≠ other.path := by
+  unfold CheckedDocument.outermostOverLimitRows at named
+  rw [List.mem_filter] at named
+  obtain ⟨violated, notBeneath⟩ := named
+  rw [List.mem_filter] at violated
+  refine ⟨by simpa using violated.2, ?_⟩
+  intro other otherNamed shorter prefixEq
+  unfold CheckedDocument.outermostOverLimitRows at otherNamed
+  rw [List.mem_filter] at otherNamed
+  have : (checked.source.instantiatedRows.filter (checked.rowOverLimit ·)).any
+      fun candidate => CheckedDocument.extendsRow candidate row.path := by
+    refine List.any_eq_true.mpr ⟨other, otherNamed.1, ?_⟩
+    simp [CheckedDocument.extendsRow, shorter, prefixEq]
+  simp [this] at notBeneath
 
 end A12Kernel
