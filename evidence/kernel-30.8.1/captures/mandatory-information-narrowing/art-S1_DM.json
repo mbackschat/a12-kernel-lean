@@ -1,0 +1,30 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "c2900fe7c91a55e0debd0124f847ee2de0f06186",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "S1_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [ ],
+  "mandatoryInformation" : {
+    "mandatory" : [
+      "/S1_DM/A"
+    ],
+    "mandatoryForRootGroup" : [
+      "/S1_DM/A"
+    ],
+    "mandatoryRootGroups" : [
+      "S1_DM"
+    ]
+  }
+}

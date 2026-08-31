@@ -323,6 +323,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [The `repeatability` domain is `> 0` and `1` is admitted, measured by a12-dmkits](sources/inbound-group-operand-batches.md#src-repeatability-domain-peer-measurement)
 <a id="src-erroneous-member-quantifier-undecidable"></a>
 - [An erroneous member makes the quantifier undecidable rather than shrinking its list](sources/inbound-group-operand-batches.md#src-erroneous-member-quantifier-undecidable)
+<a id="src-mandatory-information-narrowing"></a>
+- [Mandatory-information derivation reads a 32-bit-narrowed threshold](sources/rule-set-meta-information.md#src-mandatory-information-narrowing)
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-and-iteration-probes.md#src-over-limit-computation-target)
