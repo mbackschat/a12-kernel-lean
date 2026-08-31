@@ -249,7 +249,10 @@ private def numericEntityGuardShape? :
       (tokenEntityReferenceScopes? source.source).map (⟨·, true, true⟩)
   | .booleanValueCount source =>
       (booleanValueCountReferenceScopes? source).map (⟨·, true, true⟩)
-  | .ordinary _ => none
+  -- The guard shape exists for Number entity operations whose references sit at a queried level.
+  -- A group count references groups, not levelled Number entities, so it has no shape here — the
+  -- same answer the scalar leaf gives.
+  | .ordinary _ | .filledGroupCountMixed _ => none
 
 private def positiveCountThresholdIsUnguarded
     (entityOnLeft : Bool) : NumericValidationOp → Bool

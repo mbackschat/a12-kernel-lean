@@ -239,6 +239,43 @@ def numberOfFilledGroups (states : List GroupPresenceState) : FilledGroupCount :
   if states.any (fun state => state.erroneous || !(state.relevance == .fullyRelevant)) then .unknown
   else .value (states.countP fun state => state.content)
 
+/-- One validation-arm operand of a filled-group count whose list may carry a star. A fixed member
+    keeps its resolved presence state, whose unavailability or nonrelevance makes the whole count
+    unknown exactly as in the fixed-only list. A starred member contributes an in-capacity
+    instantiated **row count**, which is structural and so is always available.
+
+    That a starred member contributes rows rather than filled rows is measured at the [list-extent
+    checkpoint](../../docs/SOURCES.md#src-group-count-list-extent): an instantiated but wholly empty
+    row still counts, under an operator named `NumberOfFilledGroups`. It is the same quantity the
+    sole-star validation carrier already computes, so the two cannot disagree. -/
+inductive ValidationGroupCountOperand where
+  | fixed (state : GroupPresenceState)
+  | starredRows (rows : Nat)
+  deriving Repr, DecidableEq
+
+/-- What one validation operand adds once the count is known to be available. -/
+def ValidationGroupCountOperand.contribution : ValidationGroupCountOperand → Nat
+  | .fixed state => if state.content then 1 else 0
+  | .starredRows rows => rows
+
+/-- Whether one operand makes the whole count unavailable. Only a fixed member can: a starred
+    member's rows are structural, and no measurement here gives a star its own unknown. -/
+def ValidationGroupCountOperand.unavailable : ValidationGroupCountOperand → Bool
+  | .fixed state => state.erroneous || !(state.relevance == .fullyRelevant)
+  | .starredRows _ => false
+
+/-- The validation-arm `NumberOfFilledGroups` over an operand list that may carry a star. One
+    unavailable fixed member makes the whole count unknown, exactly as in the fixed-only list;
+    otherwise contributions add, so a fixed member's zero-or-one and a starred member's row count
+    stand in one list without either reinterpreting the other. -/
+def numberOfFilledGroupsForValidationOperands
+    (operands : List ValidationGroupCountOperand) : FilledGroupCount :=
+  if operands.any ValidationGroupCountOperand.unavailable then
+    .unknown
+  else
+    .value (operands.foldl (init := 0) fun total operand =>
+      total + operand.contribution)
+
 /-- One group's computation-phase presence, decided by its own descendant reads rather than
     by a separately supplied state, so it cannot disagree with the cells the computation
     itself reads. -/

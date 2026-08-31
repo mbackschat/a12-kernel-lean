@@ -17,6 +17,11 @@ inductive OrderedNumericValidationAtom (model : FlatModel) where
   | aggregate (op : NumericAggregateOp)
       (source : CheckedNumberEntitySource model)
   | sumOfProducts (source : CheckedNumericProductAggregate model)
+  /-- A filled-group count whose operand list carries at least one star. The fixed-only list stays
+  on the established scalar atom, so widening this operator costs the already-measured form nothing.
+  A starred member contributes its in-capacity instantiated row count, which needs document row
+  topology, so this arm resolves only on the addressed route. -/
+  | filledGroupCountMixed (operands : List (CheckedGroupCountOperand model))
 
 /-- One model-indexed numeric comparison whose atom resolver, rather than the containing leaf, owns relevance timing and addressed-source selection. -/
 abbrev OrderedNumericComparison (model : FlatModel) :=
@@ -80,7 +85,8 @@ private def checkedTokenValueCountAdmittedIn
 def isDataDependent : OrderedNumericValidationAtom model → Bool
   | .ordinary source => source.isDataDependent
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
-  | .booleanValueCount _ | .aggregate _ _ | .sumOfProducts _ => true
+  | .booleanValueCount _ | .aggregate _ _ | .sumOfProducts _
+  | .filledGroupCountMixed _ => true
 
 def summary : OrderedNumericValidationAtom model → NumericScaleSummary
   | .ordinary source => numericValidationSummary source
@@ -90,6 +96,7 @@ def summary : OrderedNumericValidationAtom model → NumericScaleSummary
   | .booleanValueCount source => source.scaleSummary
   | .aggregate op source => source.aggregateScaleSummary op
   | .sumOfProducts source => source.scaleSummary
+  | .filledGroupCountMixed _ => NumericScaleSummary.field 0
 
 /-- An ordinary direct atom needs addressed evaluation exactly when any checked field declaration is repeatable. Specialized sources retain their established addressed criteria. -/
 def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
@@ -103,6 +110,7 @@ def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
   | .tokenValueCount source => source.source.directFields?.isNone
   | .booleanValueCount source => source.directFields?.isNone
   | .aggregate _ _ | .sumOfProducts _ => true
+  | .filledGroupCountMixed _ => true
 
 def admitted (atom : OrderedNumericValidationAtom model)
     (rowGroup : GroupPath)
@@ -132,6 +140,11 @@ def admitted (atom : OrderedNumericValidationAtom model)
   | .sumOfProducts _ =>
       scope == .modelWideCheckedComputation ||
         scope == .sameGroupAddressed
+  | .filledGroupCountMixed operands =>
+      (scope == .modelWideCheckedComputation ||
+        scope == .sameGroupAddressed) &&
+        1 < operands.length &&
+        !operands.any CheckedGroupCountOperand.isRoot
 
 def referencesField (atom : OrderedNumericValidationAtom model)
     (field : FieldId) : Bool :=
@@ -144,6 +157,8 @@ def referencesField (atom : OrderedNumericValidationAtom model)
   | .aggregate _ source => source.referencesField field
   | .sumOfProducts source =>
       source.left.field.id == field || source.right.field.id == field
+  | .filledGroupCountMixed operands =>
+      operands.any fun operand => operand.referencesField model field
 
 /-- Whether this exact checked atom retains any filtered entity-list slot. This is static source structure, not a statement about which runtime branch or candidate will be reached. -/
 def hasHaving : OrderedNumericValidationAtom model → Bool
@@ -151,7 +166,7 @@ def hasHaving : OrderedNumericValidationAtom model → Bool
       source.hasHaving
   | .tokenValueCount source => source.source.hasHaving
   | .booleanValueCount source => source.hasHaving
-  | .ordinary _ | .sumOfProducts _ => false
+  | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ => false
 
 end OrderedNumericValidationAtom
 
@@ -198,7 +213,7 @@ def OrderedNumericValidationAtom.supportsAddressedPartial :
     OrderedNumericValidationAtom model → Bool
   | .ordinary _ | .aggregate _ _ => true
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
-  | .booleanValueCount _ | .sumOfProducts _ => false
+  | .booleanValueCount _ | .sumOfProducts _ | .filledGroupCountMixed _ => false
 
 def OrderedNumericComparison.supportsAddressedPartial
     (comparison : OrderedNumericComparison model) : Bool :=

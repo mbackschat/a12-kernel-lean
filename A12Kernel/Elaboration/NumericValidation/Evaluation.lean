@@ -170,6 +170,9 @@ def resolve (atom : OrderedNumericValidationAtom model)
             .error .nonRelevant
       | none => .error .groupState
   | .aggregate _ _ | .sumOfProducts _ => .error .groupState
+  -- A starred member's contribution is an instantiated row count, which this scalar context
+  -- carries no document to read. The addressed resolver owns the arm.
+  | .filledGroupCountMixed _ => .error .groupState
 
 /-- Full addressed validation makes every already-certified direct field relevant. Partial scopes use their separate evaluator and cannot inhabit this context. -/
 def addressedDirectRelevant
@@ -218,6 +221,31 @@ private def resolveAddressedOrdinary
       let scalar : ValidationEvaluationContext := {
         context.scalar with fields }
       pure (scalar.resolveNumericValidationAtom source)
+
+/-- Read every operand of a mixed filled-group count in authored order. A fixed member needs its
+    resolved presence state and answers `none` — semantic unavailability — when the checked-document
+    boundary omitted one. A starred member reads its in-capacity instantiated row count, whose
+    failure is structural and stays in the addressing domain rather than collapsing to UNKNOWN. -/
+private def readValidationGroupCountOperands
+    (groups : GroupPresenceContext) (document : Document) (outer : Env) :
+    List (CheckedGroupCountOperand model) →
+      Except CheckedAddressingError (Option (List ValidationGroupCountOperand))
+  | [] => pure (some [])
+  | operand :: rest => do
+      let head : Option ValidationGroupCountOperand ←
+        match operand with
+        | .fixed reference =>
+            pure ((groups reference.path).map ValidationGroupCountOperand.fixed)
+        | .starred source =>
+            let rows ← (source.inCapacityRowCount document outer).mapError
+              CheckedAddressingError.addressing
+            pure (some (.starredRows rows))
+      match head with
+      | none => pure none
+      | some reading =>
+          match ← readValidationGroupCountOperands groups document outer rest with
+          | none => pure none
+          | some tail => pure (some (reading :: tail))
 
 /-- Resolve one model-certified numeric source while preserving structural addressing failure outside semantic unavailability. -/
 def resolveAddressed (atom : OrderedNumericValidationAtom model)
@@ -291,6 +319,27 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
           (source.evaluateCheckedDocumentAt
             .validation document context.outer).map
               NumericOperand.toValidationArithmetic
+  | .filledGroupCountMixed operands =>
+      -- The extent is the sum of each member's own capacity, one per fixed group and the declared
+      -- row maximum per star, so a below-capacity count still types OMISSION
+      -- ([checkpoint](../../../docs/SOURCES.md#src-group-count-list-extent)). An unretained maximum
+      -- leaves no finite extent to reach and yields unavailability rather than an invented rule.
+      match (operands.mapM CheckedGroupCountOperand.declaredExtent?).map List.sum with
+      | none => pure (.error .groupState)
+      | some extent =>
+          let document := match context.input with
+            | .legacy document _ => document
+            | .checked document | .partialView document _ =>
+                DocumentData.toDocument document.source
+          match ← readValidationGroupCountOperands context.scalar.groups document
+              context.outer operands with
+          | none => pure (.error .groupState)
+          | some readings =>
+              match (numberOfFilledGroupsForValidationOperands
+                  readings).availableWithFillability? extent with
+              | none => pure (.error .groupState)
+              | some available =>
+                  pure (.ok (.value available.1 available.2))
 
 end OrderedNumericValidationAtom
 
@@ -564,7 +613,7 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
           | .result (.evaluated operand) =>
               pure operand.toValidationArithmetic
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
-  | .booleanValueCount _ | .sumOfProducts _ =>
+  | .booleanValueCount _ | .sumOfProducts _ | .filledGroupCountMixed _ =>
       pure (.error .groupState)
 
 /-- Evaluate a partial addressed numeric comparison. `none` means the atom family or filter shape is structurally unsupported; a reached relevance failure is numeric UNKNOWN. The caller must apply the rule-wide `Having` skip first. -/

@@ -469,4 +469,77 @@ def elaborateRepeatableNumericComparison
   else
     throw .incoherentCore
 
+
+/-- Admit one filled-group count whose operand list carries at least one star, as a comparison
+against a literal threshold. This is the shape the Kernel admits and the scalar carrier refuses: a
+bare repeatable member is refused `MVK_NO_WILDCARD` upstream, so the star is mandatory rather than
+optional, and a starred member contributes its in-capacity instantiated row count
+([checkpoint](../../../docs/SOURCES.md#src-group-count-list-extent)).
+
+The fixed-only list keeps the established scalar atom untouched and is refused here, so widening
+this operator costs the already-measured form nothing. Overlap is enforced over the fixed operands,
+where it is measured; a mixed pair's duplicate rule is unmeasured and no gate is invented for it. -/
+def elaborateMixedFilledGroupCountComparison
+    (model : FlatModel) (rowGroup : GroupPath)
+    (operands : List SurfaceGroupCountOperand)
+    (op : NumericComparisonOp) (threshold : Rat) :
+    Except NumericValidationElabError
+      (CheckedOrderedNumericComparison model) := do
+  if (SurfaceGroupCountOperand.fixedOnly? operands).isSome then
+    throw .unsupportedExpression
+  let checked ← operands.mapM fun operand =>
+    match operand with
+    | .fixed reference => do
+        let resolved ← model.resolveFixedGroupReference rowGroup reference
+          |>.mapError NumericValidationElabError.ofFixedGroupReferenceError
+        pure (CheckedGroupCountOperand.fixed resolved)
+    | .starred path =>
+        match SurfaceGroupPath.toTerminalStarred path with
+        | none => throw (NumericValidationElabError.starredGroupCountOperand path)
+        | some plan =>
+            match elaborateStarredGroupOperandSource model rowGroup plan with
+            | .error error =>
+                throw (NumericValidationElabError.starredGroupCountPlan error)
+            | .ok (.terminalRepeatable source) =>
+                pure (CheckedGroupCountOperand.starred source)
+            | .ok (.terminalPresence _) =>
+                throw (NumericValidationElabError.starredGroupCountOperand path)
+  if checked.length < 2 then
+    throw .groupCountNeedsMultipleOperands
+  match checked.find? CheckedGroupCountOperand.isRoot with
+  | some (.fixed reference) => throw (.rootGroupInGroupCount reference.path)
+  | some (.starred source) => throw (.rootGroupInGroupCount source.group.path)
+  | none =>
+      let fixedOnly := checked.filterMap fun operand =>
+        match operand with
+        | .fixed reference => some reference
+        | .starred _ => none
+      match ResolvedGroupReferences.firstOverlap? fixedOnly with
+      | some (left, right) => throw (.overlappingGroupCountOperands left right)
+      | none =>
+          -- The list is not fixed-only, so some member is a star and its own certificate carries
+          -- the model proof. Searching for it rather than requiring one from the caller keeps the
+          -- entry point free of a hypothesis the surface cannot supply.
+          match checked.find? fun operand =>
+              match operand with
+              | .starred _ => true
+              | .fixed _ => false with
+          | none | some (.fixed _) =>
+              throw NumericValidationElabError.unsupportedExpression
+          | some (.starred witness) =>
+              let core : OrderedNumericComparison model := {
+                op := .ordinary op
+                left := .atom (.filledGroupCountMixed checked)
+                right := .literal { value := threshold, authoredScale := 0 }
+                suppressExactScaleWarning := false }
+              if hCore : core.wellFormedInBool rowGroup .sameGroupAddressed = true then
+                pure {
+                  rowGroup
+                  operandScope := .sameGroupAddressed
+                  core
+                  modelWellFormed := witness.modelWellFormed
+                  wellFormed := hCore }
+              else
+                throw NumericValidationElabError.incoherentCore
+
 end A12Kernel

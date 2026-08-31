@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.GroupPresence
 import A12Kernel.Semantics.NumericComparison
@@ -259,6 +260,65 @@ def evaluatePartialNumberOfFilledGroups
     pure .nonRelevant
 
 end CheckedStarredGroupSource
+
+/-- Re-spell an ordinary group path as a star plan whose **terminal** group carries the wildcard,
+    which is the only starred group-operand shape measured for this operator. A path navigating by
+    parent count has no representation as a star plan, so it is refused rather than approximated. -/
+def SurfaceGroupPath.toTerminalStarred (path : SurfaceGroupPath) :
+    Option SurfaceStarGroupPath :=
+  if path.turningPoint.isSome then none
+  else
+    match path.groups.reverse with
+    | [] => none
+    | terminal :: reversedPrefix =>
+        some { base := path.base
+               groups := reversedPrefix.reverse.map (fun name => { name }) ++
+                 [{ name := terminal, starred := true }] }
+
+/-- One checked operand of a filled-group count, in the carrier that admits both forms in one list.
+
+    The two contribute unlike quantities into the **same** result domain — an indicator for a fixed
+    operand, a cardinality for a starred one — so a consumer folds them in one traversal with a
+    form-dependent contribution rather than carrying a result type per form. `GroupCountOperandReading`
+    owns that fold; this type is only its checked input.
+
+    A starred operand keeps its full `CheckedStarredGroupSource` rather than a resolved path, because
+    the quantity it contributes is the in-capacity instantiated row count and that needs the star
+    plan's topology. It is the same certificate the starred validation carriers already consume. -/
+inductive CheckedGroupCountOperand (model : FlatModel) where
+  | fixed (reference : ResolvedGroupReference)
+  | starred (source : CheckedStarredGroupSource model)
+
+namespace CheckedGroupCountOperand
+
+/-- Whether the operand's group subtree contains the computed target, which is the self-reference
+    gate every group-valued operand shares. -/
+def referencesField (operand : CheckedGroupCountOperand model)
+    (model' : FlatModel) (field : FieldId) : Bool :=
+  match operand with
+  | .fixed reference => reference.referencesField model' field
+  | .starred source =>
+      match model'.lookupUniqueId field with
+      | .ok declaration => source.group.path.isPrefixOf declaration.groupPath
+      | .error _ => false
+
+
+/-- Whether the operand names a root group, which every group-count carrier refuses. A starred
+    operand's own group path carries the same rule as a fixed reference's. -/
+def isRoot (operand : CheckedGroupCountOperand model) : Bool :=
+  match operand with
+  | .fixed reference => reference.isRoot
+  | .starred source => source.group.path.length == 1
+
+/-- The operand's contribution to the count's declared extent: one slot for a fixed group, and the
+    declared row maximum for a starred one. `none` is an unretained maximum, which leaves the whole
+    count without a finite extent to reach rather than acquiring an unmeasured movement rule. -/
+def declaredExtent? (operand : CheckedGroupCountOperand model) : Option Nat :=
+  match operand with
+  | .fixed _ => some 1
+  | .starred source => source.group.repeatability
+
+end CheckedGroupCountOperand
 
 namespace CheckedStarredGroupPresenceSource
 

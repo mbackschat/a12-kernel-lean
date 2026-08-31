@@ -95,11 +95,13 @@ abbrev NumericValidationExpression :=
 /-- Closed rejection classes for this deliberately narrow consumer, not kernel diagnostic codes. -/
 inductive NumericValidationElabError where
   | resolve (error : ResolveError)
-  /-- A starred group-count operand on the validation carrier. The starred form is admitted by
-  the Kernel here too, but this project's validation account owns it in the dedicated
-  starred-group count rather than in this shared numeric atom, so it is refused fail-closed
-  instead of being resolved twice. -/
+  /-- A starred group-count operand reaching the **scalar** numeric atom, which carries no document
+  and so cannot read a star's row count. The mixed carrier admits the same operand on the ordered
+  route; this arm stays a fail-closed refusal for the scalar one, and also refuses a starred
+  terminal that is nonrepeatable, a shape with its own Kernel class and no measurement here. -/
   | starredGroupCountOperand (reference : SurfaceGroupPath)
+  /-- A starred group-count operand whose star plan itself does not check. -/
+  | starredGroupCountPlan (error : StarredGroupElabError)
   | fieldOutsideRowGroup (path : List String) (rowGroup : GroupPath)
   | fieldNotNumber (path : List String)
   | lengthOperandNotEvaluatedString (path : List String)

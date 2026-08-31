@@ -30,48 +30,6 @@ inductive SurfaceNumericComputationAtom where
   | sumOfProducts (source : SurfaceNumericProductAggregate)
   deriving Repr, DecidableEq
 
-/-- Re-spell an ordinary group path as a star plan whose **terminal** group carries the wildcard,
-    which is the only starred group-operand shape measured for this operator. A path navigating by
-    parent count has no representation as a star plan, so it is refused rather than approximated. -/
-private def SurfaceGroupPath.toTerminalStarred (path : SurfaceGroupPath) :
-    Option SurfaceStarGroupPath :=
-  if path.turningPoint.isSome then none
-  else
-    match path.groups.reverse with
-    | [] => none
-    | terminal :: reversedPrefix =>
-        some { base := path.base
-               groups := reversedPrefix.reverse.map (fun name => { name }) ++
-                 [{ name := terminal, starred := true }] }
-
-/-- One checked operand of a filled-group count, in the carrier that admits both forms in one list.
-
-    The two contribute unlike quantities into the **same** result domain — an indicator for a fixed
-    operand, a cardinality for a starred one — so a consumer folds them in one traversal with a
-    form-dependent contribution rather than carrying a result type per form. `GroupCountOperandReading`
-    owns that fold; this type is only its checked input.
-
-    A starred operand keeps its full `CheckedStarredGroupSource` rather than a resolved path, because
-    the quantity it contributes is the in-capacity instantiated row count and that needs the star
-    plan's topology. It is the same certificate the starred validation carriers already consume. -/
-inductive CheckedGroupCountOperand (model : FlatModel) where
-  | fixed (reference : ResolvedGroupReference)
-  | starred (source : CheckedStarredGroupSource model)
-
-namespace CheckedGroupCountOperand
-
-/-- Whether the operand's group subtree contains the computed target, which is the self-reference
-    gate every group-valued operand shares. -/
-def referencesField (operand : CheckedGroupCountOperand model)
-    (model' : FlatModel) (field : FieldId) : Bool :=
-  match operand with
-  | .fixed reference => reference.referencesField model' field
-  | .starred source =>
-      match model'.lookupUniqueId field with
-      | .ok declaration => source.group.path.isPrefixOf declaration.groupPath
-      | .error _ => false
-
-end CheckedGroupCountOperand
 
 /-- One checked numeric computation atom. Ordinary scalar/entity-list sources retain the shared resolved atom, `FirstFilledValue` and value count retain their distinct scans over that same entity-list source, and `SumOfProducts` retains its proof-bearing common-row plan. -/
 inductive CheckedNumericComputationAtom (model : FlatModel) where

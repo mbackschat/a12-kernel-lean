@@ -297,6 +297,9 @@ private def orderedNumericAtomIterationScope :
       mergeIterationScopes
         (checkedStarBindingScope source.left.source)
         (checkedStarBindingScope source.right.source)
+  -- A group count imposes no rule iteration, and a starred member reopens its own axis inside the
+  -- count rather than making the enclosing rule repeat, exactly as the scalar group count does.
+  | .filledGroupCountMixed _ => pure none
 
 private def authoredNumericIterationScope
     (scopeOf : Atom →

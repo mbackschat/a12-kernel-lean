@@ -182,6 +182,13 @@ def OrderedNumericValidationAtom.referencePointers (environment : Env) :
   | .tokenValueCount source => source.referencePointers environment
   | .booleanValueCount source => source.referencePointers environment
   | .sumOfProducts source => source.referencePointers environment
+  | .filledGroupCountMixed operands =>
+      -- Routed through the same sieve as the scalar group count, so a star in the list cannot
+      -- change which references a message may project.
+      sievedFieldPointers model
+        (fun declaration =>
+          operands.any fun operand => operand.referencesField model declaration.id)
+        environment
 
 /-- Traverse one authored operand expression left to right. Literals reference nothing; a failing atom fails the whole projection. -/
 private def expressionPointers (environment : Env) :
