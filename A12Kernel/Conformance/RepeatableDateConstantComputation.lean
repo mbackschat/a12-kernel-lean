@@ -24,8 +24,13 @@ private def dateField (id : FieldId) (name : String) (groupPath : GroupPath)
 private def iso := dateField 1 "DIso" ["Probe", "Rows"] [10]
 private def ger := dateField 2 "DGer" ["Probe", "Rows"] [10] "dd.MM.yyyy"
 
-/-- The component-omitting target the Kernel accepts and this carrier declines. -/
 private def year := dateField 3 "DYear" ["Probe", "Rows"] [10] "yyyy"
+private def yearMonth := dateField 6 "DYearMonth" ["Probe", "Rows"] [10] "yyyy-MM"
+private def compact := dateField 7 "DCompact" ["Probe", "Rows"] [10] "yyyyMM"
+
+/-- A **yearless** format: the one component-omitting shape this carrier still excludes, because the
+Kernel refuses a Date constant for it unless the model declares a Base Year. -/
+private def monthOnly := dateField 8 "DMonth" ["Probe", "Rows"] [10] "MM"
 
 private def note := dateField 4 "Note" ["Probe", "Store"] []
 
@@ -33,7 +38,7 @@ private def note := dateField 4 "Note" ["Probe", "Store"] []
 private def guarded := dateField 5 "DGuarded" ["Probe", "Rows"] [10] "yyyy-MM-dd" true
 
 private def model : FlatModel := {
-  fields := [iso, ger, year, note, guarded]
+  fields := [iso, ger, year, yearMonth, compact, monthOnly, note, guarded]
   repeatableGroups := [
     { level := 10, path := ["Probe", "Rows"], repeatability := some 3 }]
   timeZoneId := "UTC"
@@ -94,12 +99,24 @@ example : (outcomes? ["Probe"] iso.id 2, outcomes? ["Probe", "Rows"] iso.id 2,
      some []) := by
   native_decide
 
-/- A component-omitting target is this carrier's **stated exclusion**, not a Kernel refusal. The
-   Kernel admits `yyyy` and silently stores `2024`, discarding day and month; no renderer here drops
-   components, so the carrier declines rather than inventing one. It claims no Kernel class for that
-   decline, which is what keeps the exclusion from reading as a measured static gate. -/
-example : (outcome? ["Probe"] year.id,
-    match checkRepeatableDateConstantComputation model ["Probe"] year.id march5 with
+/- **The component-omitting store, measured.** One literal reaches three declared component subsets
+   and keeps exactly what each names, with its own separator: `yyyy` stores `2024`, `yyyy-MM` stores
+   `2024-03`, and `yyyyMM` stores `202403`. The discarded day and month are reported nowhere — every
+   row is accepted. Together with the two complete formats above, one constant now produces five
+   different stored texts, which is what makes the declared format a rendering rather than a gate. -/
+example : (outcome? ["Probe"] year.id, outcome? ["Probe"] yearMonth.id,
+    outcome? ["Probe"] compact.id) =
+    (some (.accepted (stored "2024")), some (.accepted (stored "2024-03")),
+     some (.accepted (stored "202403"))) := by
+  native_decide
+
+/- A **yearless** format is the remaining stated exclusion, and it is the one the Kernel also refuses
+   — without a declared Base Year a Date constant draws `MVK_INVALID_COMPARE_TO_DATE` there. This
+   carrier declines it too, but claims **no** Kernel class: the refusals coincide on this model and
+   would part company on one declaring a Base Year, which is unmeasured, so borrowing the Kernel's
+   code here would assert agreement that has not been observed. -/
+example : (outcome? ["Probe"] monthOnly.id,
+    match checkRepeatableDateConstantComputation model ["Probe"] monthOnly.id march5 with
     | .error cause => cause.diagnostic?.isSome
     | .ok _ => true) = (none, false) := by
   native_decide

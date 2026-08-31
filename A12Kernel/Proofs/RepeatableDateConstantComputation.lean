@@ -58,13 +58,26 @@ theorem checkedRepeatableDateConstantComputation_accepted_rendersInTargetFormat
     (operation : CheckedRepeatableDateConstantComputation model)
     (stored : StoredDate)
     (accepted : operation.outcome = .accepted stored) :
-    stored = operation.dateTarget.format.renderCivil operation.constant := by
-  simp only [CheckedRepeatableDateConstantComputation.outcome,
-    CheckedFullDateTarget.evaluateCivil] at accepted
-  split at accepted
-  · exact absurd accepted (by simp)
-  · split at accepted
-    · exact absurd accepted (by simp)
-    · exact (FullDateTargetOutcome.accepted.inj accepted).symm
+    stored = operation.dateTarget.renderCivil operation.constant := by
+  simp only [CheckedRepeatableDateConstantComputation.outcome] at accepted
+  cases hTarget : operation.dateTarget with
+  | complete target =>
+      simp only [hTarget, CheckedDateConstantTarget.evaluateCivil,
+        CheckedFullDateTarget.evaluateCivil] at accepted
+      simp only [CheckedDateConstantTarget.renderCivil]
+      split at accepted
+      · exact absurd accepted (by simp)
+      · split at accepted
+        · exact absurd accepted (by simp)
+        · exact (FullDateTargetOutcome.accepted.inj accepted).symm
+  | omittedComponent target =>
+      simp only [hTarget, CheckedDateConstantTarget.evaluateCivil,
+        CheckedOmittedComponentDateTarget.evaluateCivil] at accepted
+      simp only [CheckedDateConstantTarget.renderCivil]
+      split at accepted
+      · exact absurd accepted (by simp)
+      · split at accepted
+        · exact absurd accepted (by simp)
+        · exact (FullDateTargetOutcome.accepted.inj accepted).symm
 
 end A12Kernel

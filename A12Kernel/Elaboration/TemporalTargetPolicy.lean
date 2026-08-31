@@ -254,6 +254,82 @@ def evaluate
 
 end CheckedFullDateTarget
 
+/-- Static refusal before a component-omitting Date target can execute. -/
+inductive OmittedComponentDateTargetElabError where
+  | targetPolicy (error : TemporalTargetElabError)
+  | targetKind (target : FieldId) (actual : TemporalKind)
+  | unsupportedFormat (target : FieldId) (source : String)
+  deriving Repr, DecidableEq
+
+/-- One checked Date target whose declared format names fewer components than a calendar date has.
+
+    It deliberately constrains **only** the kind and the format, leaving `partialMode` free. The
+    Kernel decides this shape from the declared format string alone: a `yyyy-MM` DATE and a `yyyy-MM`
+    DATE_FRAGMENT accept the same constant and store the same text
+    ([checkpoint](../../docs/SOURCES.md#src-component-omitting-date-formats)), so constraining the
+    precision here would refuse a declaration the Kernel accepts. -/
+structure CheckedOmittedComponentDateTarget (model : FlatModel) where
+  checked : CheckedTemporalTargetPolicy model
+  format : OmittedComponentDateFormat
+  targetIsDate : checked.target.kind = .date
+  formatMatches :
+    OmittedComponentDateFormat.ofSource? checked.policy.format = some format
+
+namespace CheckedTemporalTargetPolicy
+
+/-- Refine a checked temporal target to the renderable component-omitting Date subset. The yearless
+`MM` and `MM-dd` formats are outside it: the Kernel refuses a Date constant for them unless the model
+declares a Base Year, and what such a target then stores is unmeasured. -/
+def toOmittedComponentDateTarget
+    (checked : CheckedTemporalTargetPolicy model) :
+    Except OmittedComponentDateTargetElabError
+      (CheckedOmittedComponentDateTarget model) := do
+  if hDate : checked.target.kind = .date then
+    match hFormat :
+        OmittedComponentDateFormat.ofSource? checked.policy.format with
+    | none =>
+        throw (.unsupportedFormat checked.target.id checked.policy.format)
+    | some format =>
+        pure { checked, format, targetIsDate := hDate, formatMatches := hFormat }
+  else
+    throw (.targetKind checked.target.id checked.target.kind)
+
+end CheckedTemporalTargetPolicy
+
+/-- Resolve and refine one model-owned component-omitting Date target whose repetition scope is bound
+by the caller. -/
+def elaborateOmittedComponentDateTargetIn
+    (model : FlatModel) (scope : List RepeatableLevel) (targetField : FieldId) :
+    Except OmittedComponentDateTargetElabError
+      (CheckedOmittedComponentDateTarget model) := do
+  let checked ←
+    elaborateTemporalTargetPolicyIn model scope targetField
+      |>.mapError .targetPolicy
+  checked.toOmittedComponentDateTarget
+
+namespace CheckedOmittedComponentDateTarget
+
+/-- Render one literal civil Date into this target's declared component subset, then apply the
+declaration's **own** ordered additional-check and floor gates.
+
+    Reusing those gates here is an assumption rather than a measurement: the constant rows covered
+    only targets with no additional check, so what a `yyyy` target declaring the pre-1900 check does
+    with a 1899 constant is unobserved. The gates are declaration-owned and the flag sits on the
+    policy whatever the format, which is why they are applied rather than dropped; the exclusion is
+    recorded beside the carrier's coverage entry so the assumption is visible rather than silent. -/
+def evaluateCivil (target : CheckedOmittedComponentDateTarget model)
+    (date : CivilDate) : FullDateTargetOutcome :=
+  let stored := target.format.renderCivil date
+  if target.checked.policy.youngerThan1900Check &&
+      date.Before FullDate.year1900Start.civil then
+    .errored stored .before1900
+  else if date.Before CivilDate.gregorianFloor then
+    .errored stored .beforeGregorianFloor
+  else
+    .accepted stored
+
+end CheckedOmittedComponentDateTarget
+
 /-- Static refusal before the bounded DateTime target can execute. -/
 inductive DateTimeTargetElabError where
   | targetPolicy (error : TemporalTargetElabError)
