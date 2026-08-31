@@ -34,63 +34,7 @@ leapness, so this is the
 
 namespace A12Kernel
 
-/-- A DATE declaration format that omits at least one component. -/
-inductive OmittingDateFormat where
-  /-- `yyyy` — the value is a whole calendar year. -/
-  | year
-  /-- `yyyy-MM` — the value is a whole calendar month. -/
-  | yearMonthDashed
-  /-- `yyyyMM` — the same value under a separator-free spelling, refused by the dashed format. -/
-  | yearMonthConcatenated
-  /-- `MM` — a yearless month, denoting no interval of concrete dates. -/
-  | month
-  /-- `MM-dd` — a yearless month and day, whose day is bounded by the month's greatest possible. -/
-  | monthDay
-  /-- `MMdd` — the same month-day value without a separator. -/
-  | monthDayConcatenated
-  /-- `ddMM` — the same yearless components in day-month order. -/
-  | dayMonthConcatenated
-  deriving Repr, DecidableEq
-
 namespace OmittingDateFormat
-
-/-- Admit the seven measured component-omitting formats. The three complete formats belong to the full-Date
-classifier and are refused here. -/
-def ofSource? : String → Option OmittingDateFormat
-  | "yyyy" => some .year
-  | "yyyy-MM" => some .yearMonthDashed
-  | "yyyyMM" => some .yearMonthConcatenated
-  | "MM" => some .month
-  | "MM-dd" => some .monthDay
-  | "MMdd" => some .monthDayConcatenated
-  | "ddMM" => some .dayMonthConcatenated
-  | _ => none
-
-/-- Whether this format's value carries a year, and therefore denotes an interval of concrete dates. -/
-def carriesYear : OmittingDateFormat → Bool
-  | .year | .yearMonthDashed | .yearMonthConcatenated => true
-  | .month | .monthDay | .monthDayConcatenated | .dayMonthConcatenated => false
-
-/-- The component set a declaration of this format exposes.
-
-Derived from the format rather than declared beside it, because the two cannot disagree: the stored text
-is what carries the components, so a `yyyy` field exposing a day would describe a value it has no way to
-store. Feeding this to `TemporalComparisonOp.admitsFormats` reproduces the measured comparison matrix
-exactly — any two year-bearing formats compare regardless of how many components they carry, and a
-yearless one is refused against a year-bearing one without a Base Year. -/
-def components : OmittingDateFormat → TemporalComponents
-  | .year =>
-      { year := true, month := false, day := false
-        hour := false, minute := false, second := false }
-  | .yearMonthDashed | .yearMonthConcatenated =>
-      { year := true, month := true, day := false
-        hour := false, minute := false, second := false }
-  | .month =>
-      { year := false, month := true, day := false
-        hour := false, minute := false, second := false }
-  | .monthDay | .monthDayConcatenated | .dayMonthConcatenated =>
-      { year := false, month := true, day := true
-        hour := false, minute := false, second := false }
 
 /-- One exact fixed-width digit run. Every width violation and every non-digit fails here, which is why
 one cause suffices for the whole family. -/

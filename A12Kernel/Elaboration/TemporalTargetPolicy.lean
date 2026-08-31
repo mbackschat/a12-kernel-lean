@@ -274,15 +274,16 @@ inductive OmittedComponentDateTargetElabError where
     precision here would refuse a declaration the Kernel accepts. -/
 structure CheckedOmittedComponentDateTarget (model : FlatModel) where
   checked : CheckedTemporalTargetPolicy model
-  format : OmittedComponentDateFormat
+  format : OmittingDateFormat
   targetIsDate : checked.target.kind = .date
   formatMatches :
-    OmittedComponentDateFormat.ofSource? checked.policy.format = some format
+    OmittingDateFormat.ofSource? checked.policy.format = some format
   /-- A yearless target exists only in a model that declares a Base Year, so no consumer can build
-  one the Kernel would refuse. The Base Year is consumed **here and nowhere else**: it gates this
-  certificate and reaches no part of the rendering. -/
+  one the Kernel would refuse. "Yearless" is `carriesYear` failing — the Base Year requirement *is*
+  year-absence, not a second classification of it. The Base Year is consumed **here and nowhere
+  else**: it gates this certificate and reaches no part of the rendering. -/
   baseYearWhenYearless :
-    (format.needsBaseYear && !model.hasBaseYear) = false
+    (!format.carriesYear && !model.hasBaseYear) = false
 
 namespace CheckedTemporalTargetPolicy
 
@@ -296,11 +297,11 @@ def toOmittedComponentDateTarget
       (CheckedOmittedComponentDateTarget model) := do
   if hDate : checked.target.kind = .date then
     match hFormat :
-        OmittedComponentDateFormat.ofSource? checked.policy.format with
+        OmittingDateFormat.ofSource? checked.policy.format with
     | none =>
         throw (.unsupportedFormat checked.target.id checked.policy.format)
     | some format =>
-        if hBase : (format.needsBaseYear && !model.hasBaseYear) = false then
+        if hBase : (!format.carriesYear && !model.hasBaseYear) = false then
           pure { checked, format, targetIsDate := hDate, formatMatches := hFormat,
                  baseYearWhenYearless := hBase }
         else

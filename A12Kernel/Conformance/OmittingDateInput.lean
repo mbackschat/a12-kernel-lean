@@ -231,4 +231,43 @@ example :
       OmittingDateFormat.monthDay.components.hasTime = false := by
   native_decide
 
+/-- Every yearless-real month/day pair in a leap year, so February 29 is included. Exhaustive rather
+than sampled: the round-trip below guards an assumption about component order, and a sampled check
+leaves the unsampled pairs exactly where an order mistake hides. -/
+private def everyMonthDay : List (Nat × Nat) :=
+  (List.range 12).flatMap fun monthIndex =>
+    let month := monthIndex + 1
+    (List.range (YearlessInterval.yearlessLastDay month)).map fun dayIndex =>
+      (month, dayIndex + 1)
+
+private def roundTrips (format : OmittingDateFormat) (month day : Nat) : Bool :=
+  match CivilDate.ofParts? { year := 2024, month, day } with
+  | none => false
+  | some date =>
+      OmittingDateFormat.parseYearlessComponents? format
+          (OmittingDateFormat.renderCivilText format date) ==
+        some { month, day := if format == .month then 1 else day }
+
+/- **A yearless target's store reads back as the components it wrote**, on every real month/day pair
+   of a leap year and all four yearless spellings. The store itself is measured only for `MM` and
+   `MM-dd` ([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)); the two **compact**
+   spellings render in the order this classifier reads them, which is an assumption. This case is
+   what keeps that assumption from silently splitting the two directions: `MMdd` and `ddMM` differ
+   from each other in exactly that order, so a renderer copied from the wrong sibling fails here on
+   every pair whose month and day differ. `MM` writes no day and reads back the implied day one. -/
+example : [OmittingDateFormat.month, .monthDay, .monthDayConcatenated,
+    .dayMonthConcatenated].map (fun format =>
+      everyMonthDay.all fun pair => roundTrips format pair.1 pair.2) =
+    [true, true, true, true] := by
+  native_decide
+
+/- The exhaustive pass above would also hold for a renderer that confused the two compact spellings
+   if their parsers agreed, so this is the separator: one date whose month and day differ renders to
+   two different texts under the two compact formats, and each is refused by the other's reading. -/
+example : ((CivilDate.ofParts? { year := 2024, month := 6, day := 11 }).map fun date =>
+      (OmittingDateFormat.renderCivilText .monthDayConcatenated date,
+        OmittingDateFormat.renderCivilText .dayMonthConcatenated date)) =
+    some ("0611", "1106") := by
+  native_decide
+
 end A12Kernel.Conformance.OmittingDateInput

@@ -59,21 +59,21 @@ day render identically however far apart their years are, which is the whole con
 rule that a declared Base Year gates admission and contributes nothing to the store. A carrier that
 completed the rendering from the Base Year, or from the constant's own year, would satisfy every
 year-leading fixture and fail this. -/
-theorem omittedComponentDateFormat_yearless_renderCivilText_yearIrrelevant
-    (format : OmittedComponentDateFormat) (yearless : format.needsBaseYear = true)
+theorem omittingDateFormat_yearless_renderCivilText_yearIrrelevant
+    (format : OmittingDateFormat) (yearless : format.carriesYear = false)
     (left right : CivilDate)
     (sameMonth : left.parts.month = right.parts.month)
     (sameDay : left.parts.day = right.parts.day) :
     format.renderCivilText left = format.renderCivilText right := by
-  cases format <;> simp_all [OmittedComponentDateFormat.needsBaseYear,
-    OmittedComponentDateFormat.renderCivilText]
+  cases format <;> simp_all [OmittingDateFormat.carriesYear,
+    OmittingDateFormat.renderCivilText]
 
 /-- The Base Year is consumed by the certificate and nowhere else: a checked component-omitting
 target can exist for a yearless format only in a model that declares one. Stated as the contrapositive
 a consumer actually needs — no Base Year, no yearless target. -/
 theorem checkedOmittedComponentDateTarget_yearless_hasBaseYear
     {model : FlatModel} (target : CheckedOmittedComponentDateTarget model)
-    (yearless : target.format.needsBaseYear = true) :
+    (yearless : target.format.carriesYear = false) :
     model.hasBaseYear = true := by
   have := target.baseYearWhenYearless
   simp [yearless] at this

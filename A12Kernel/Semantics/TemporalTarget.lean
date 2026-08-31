@@ -127,60 +127,14 @@ def render (format : FullDateTargetFormat) (date : FullDate) : StoredDate :=
 
 end FullDateTargetFormat
 
-/-- The year-leading component-omitting Date declaration formats, as **target renderings only**.
+/-! ## Component-omitting Date target rendering
 
-    This is deliberately a separate type from `FullDateTargetFormat` rather than three more of its
-    constructors. That one carries `parseComponents?`, which reads a *stored* cell back into a date;
-    widening it would force an answer to how a stored `2024` parses, and that has never been
-    measured. Rendering into such a target has been
-    ([checkpoint](../../docs/SOURCES.md#src-component-omitting-date-formats)), so the two questions
-    are kept apart and only the measured one is modeled.
+    The classification itself is [`OmittingDateFormat`](TemporalFormat.lean), shared with the
+    stored-input classifier that reads such a cell back, because a declared format names one
+    component set and two tables of it could disagree. This section adds only the rendering
+    direction; `carriesYear` there is the same predicate the Base Year gate consumes. -/
 
-    The yearless `MM` and `MM-dd` are **excluded**: the Kernel refuses a date constant for them
-    unless the model declares a Base Year, and what such a target then stores is unmeasured. -/
-inductive OmittedComponentDateFormat where
-  | yearOnly
-  | yearMonthDashes
-  | yearMonthCompact
-  | monthOnly
-  | monthDayDashes
-  deriving Repr, DecidableEq
-
-namespace OmittedComponentDateFormat
-
-/-- Admit only the three exact declaration sources this renderer implements. -/
-def ofSource? : String → Option OmittedComponentDateFormat
-  | "yyyy" => some .yearOnly
-  | "yyyy-MM" => some .yearMonthDashes
-  | "yyyyMM" => some .yearMonthCompact
-  | "MM" => some .monthOnly
-  | "MM-dd" => some .monthDayDashes
-  | _ => none
-
-/-- Whether the declaration is **yearless**, which is the Kernel's own gate: such a target refuses a
-Date constant unless the model declares a Base Year, and admits it once one is declared. The Base
-Year reaches admission only and contributes no component to the rendering below
-([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)). -/
-def needsBaseYear : OmittedComponentDateFormat → Bool
-  | .yearOnly | .yearMonthDashes | .yearMonthCompact => false
-  | .monthOnly | .monthDayDashes => true
-
-/-- Render one real civil Date, keeping exactly the components the format names and its own
-separator. Measured: `2024`, `2024-03`, `202403`, `03`, and `03-05` for the same 5 March 2024, with
-the omitted components discarded and nothing reported. A yearless format writes **no year** even
-where the model declares a Base Year, so nothing here reads one. -/
-def renderCivilText (format : OmittedComponentDateFormat) (date : CivilDate) : String :=
-  let parts := date.parts
-  match format with
-  | .yearOnly => toString parts.year
-  | .yearMonthDashes =>
-      toString parts.year ++ "-" ++ TemporalTargetText.twoDigits parts.month
-  | .yearMonthCompact =>
-      toString parts.year ++ TemporalTargetText.twoDigits parts.month
-  | .monthOnly => TemporalTargetText.twoDigits parts.month
-  | .monthDayDashes =>
-      TemporalTargetText.twoDigits parts.month ++ "-" ++
-        TemporalTargetText.twoDigits parts.day
+namespace OmittingDateFormat
 
 /-- A rendered year is at least one character. The two-component formats get their nonemptiness from
 their trailing month digits, but a year-only rendering has no literal to lean on, so the digit
@@ -223,20 +177,57 @@ private theorem twoDigits_ne_empty (value : Nat) :
     have := congrArg String.toList contra
     simp [Nat.repr] at this
 
+/-- Render one real civil Date, keeping exactly the components the format names and its own
+separator. Measured: `2024`, `2024-03`, `202403`, `03`, and `03-05` for the same 5 March 2024, with
+the omitted components discarded and nothing reported. A yearless format writes **no year** even
+where the model declares a Base Year, so nothing here reads one.
+
+The two compact yearless spellings render in the component order `parseYearlessComponents?` reads
+them back in, which is an **assumption**: their store is unmeasured, and the dashed siblings cannot
+supply it because `MMdd` and `ddMM` differ from each other in exactly that order. The exhaustive
+round-trip case in [`Conformance/OmittingDateInput.lean`](../Conformance/OmittingDateInput.lean) is
+what keeps the two directions from drifting apart while the external row is missing. -/
+def renderCivilText (format : OmittingDateFormat) (date : CivilDate) : String :=
+  let parts := date.parts
+  match format with
+  | .year => toString parts.year
+  | .yearMonthDashed =>
+      toString parts.year ++ "-" ++ TemporalTargetText.twoDigits parts.month
+  | .yearMonthConcatenated =>
+      toString parts.year ++ TemporalTargetText.twoDigits parts.month
+  | .month => TemporalTargetText.twoDigits parts.month
+  | .monthDay =>
+      TemporalTargetText.twoDigits parts.month ++ "-" ++
+        TemporalTargetText.twoDigits parts.day
+  | .monthDayConcatenated =>
+      TemporalTargetText.twoDigits parts.month ++ TemporalTargetText.twoDigits parts.day
+  | .dayMonthConcatenated =>
+      TemporalTargetText.twoDigits parts.day ++ TemporalTargetText.twoDigits parts.month
+
 /-- Render into the exact nonempty attempt a component-omitting target stores. -/
-def renderCivil (format : OmittedComponentDateFormat) (date : CivilDate) : StoredDate :=
+def renderCivil (format : OmittingDateFormat) (date : CivilDate) : StoredDate :=
   {
     text := format.renderCivilText date
     nonempty := by
       cases format
-      case monthOnly =>
+      case month =>
         simpa [renderCivilText] using twoDigits_ne_empty date.parts.month
+      case monthDayConcatenated =>
+        simp only [renderCivilText]
+        intro contra
+        exact absurd (String.append_eq_empty_iff.mp contra).1
+          (twoDigits_ne_empty date.parts.month)
+      case dayMonthConcatenated =>
+        simp only [renderCivilText]
+        intro contra
+        exact absurd (String.append_eq_empty_iff.mp contra).1
+          (twoDigits_ne_empty date.parts.day)
       all_goals
         simp [renderCivilText, TemporalTargetText.twoDigits,
           intRepr_ne_empty date.parts.year]
   }
 
-end OmittedComponentDateFormat
+end OmittingDateFormat
 
 /-- Root result before a checked temporal target consumes it. Exact instant identity is retained until the target-specific renderer runs. -/
 inductive TemporalComputationResult where
