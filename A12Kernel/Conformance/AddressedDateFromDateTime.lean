@@ -490,6 +490,44 @@ private def thirdLevelSourceAddress (outer : Nat) : CellAddr :=
 private def thirdLevelTargetAddress (outer middle inner : Nat) : CellAddr :=
   { field := thirdLevelTarget.id, path := [outer, middle, inner] }
 
+/-- Target leaves reached over the third-level rows plus a supplied extension, projected to their
+    exact coordinates. -/
+private def thirdLevelPathsWith (extra : List RowAddr) : Option (List (List Nat)) := do
+  let entries ← thirdLevelOutcomes? (thirdLevelRows ++ extra) [
+    thirdLevelSourceCell 1 "2024-06-15T00:30:00"
+      (.parsed (.temporal (momentAt 15 0 30 |>.get (by native_decide)))),
+    thirdLevelSourceCell 2 "2024-06-16T23:45:00"
+      (.parsed (.temporal (momentAt 16 23 45 |>.get (by native_decide))))]
+  pure (entries.map fun entry => entry.2.1.path)
+
+/- **The over-limit exclusion is level-independent across three repetition axes.** Every level is
+   declared `max 5`. A sixth row excludes its own subtree at the inner, middle, and outer level
+   alike, while the in-capacity rows beside it in the same document all contribute. The middle case
+   is the one a leaf-only test gets wrong: `[1, 6, 1]` is excluded although the leaf's own coordinate
+   is `1`, and `[1, 3, 1]` beside it is kept — so the decision is the whole environment, not the
+   target level's coordinate. Measured on kernel 30.8.1 across both codegen strategies on this same
+   `Milestones`/`Tasks`/`Subtasks` shape with all three capacities at two, where four documents
+   differing only in which level overflows produce an identical eight-leaf result
+   ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). -/
+example :
+    (thirdLevelPathsWith [{ group := 30, path := [1, 1, 3] }],
+      thirdLevelPathsWith
+        [{ group := 30, path := [1, 1, 3] }, { group := 30, path := [1, 1, 4] },
+         { group := 30, path := [1, 1, 5] }, { group := 30, path := [1, 1, 6] }],
+      thirdLevelPathsWith
+        [{ group := 20, path := [1, 3] }, { group := 20, path := [1, 4] },
+         { group := 20, path := [1, 5] }, { group := 20, path := [1, 6] },
+         { group := 30, path := [1, 3, 1] }, { group := 30, path := [1, 6, 1] }],
+      thirdLevelPathsWith
+        [{ group := 10, path := [3] }, { group := 10, path := [4] },
+         { group := 10, path := [5] }, { group := 10, path := [6] },
+         { group := 20, path := [6, 1] }, { group := 30, path := [6, 1, 1] }]) =
+    (some [[1, 1, 1], [1, 1, 2], [1, 2, 1], [2, 1, 1], [1, 1, 3]],
+      some [[1, 1, 1], [1, 1, 2], [1, 2, 1], [2, 1, 1], [1, 1, 3], [1, 1, 4], [1, 1, 5]],
+      some [[1, 1, 1], [1, 1, 2], [1, 2, 1], [2, 1, 1], [1, 3, 1]],
+      some [[1, 1, 1], [1, 1, 2], [1, 2, 1], [2, 1, 1]]) := by
+  native_decide
+
 /- A source two axes above the target keeps its own outer address while each physical leaf retains all three coordinates. -/
 example : thirdLevelOperation?.isSome = true ∧
     thirdLevelOutcomes? thirdLevelRows [

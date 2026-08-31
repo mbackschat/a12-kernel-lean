@@ -1,0 +1,303 @@
+{
+ "model": "model.dm.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "all-at-capacity",
+   "documentInline": {
+    "Project": {
+     "Milestones": [
+      {
+       "MilestoneStamp": "2024-06-01T10:11:12",
+       "Tasks": [
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        },
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "MilestoneStamp": "2024-06-01T10:11:12",
+       "Tasks": [
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        },
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "middle-over-3-tasks",
+   "documentInline": {
+    "Project": {
+     "Milestones": [
+      {
+       "MilestoneStamp": "2024-06-01T10:11:12",
+       "Tasks": [
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        },
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        },
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "MilestoneStamp": "2024-06-01T10:11:12",
+       "Tasks": [
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        },
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "outer-over-3-milestones",
+   "documentInline": {
+    "Project": {
+     "Milestones": [
+      {
+       "MilestoneStamp": "2024-06-01T10:11:12",
+       "Tasks": [
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        },
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "MilestoneStamp": "2024-06-01T10:11:12",
+       "Tasks": [
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        },
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "MilestoneStamp": "2024-06-01T10:11:12",
+       "Tasks": [
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        },
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "inner-over-3-subtasks",
+   "documentInline": {
+    "Project": {
+     "Milestones": [
+      {
+       "MilestoneStamp": "2024-06-01T10:11:12",
+       "Tasks": [
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        },
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "MilestoneStamp": "2024-06-01T10:11:12",
+       "Tasks": [
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        },
+        {
+         "TaskId": "T",
+         "Subtasks": [
+          {
+           "SubtaskDate": null
+          },
+          {
+           "SubtaskDate": null
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ]
+}
