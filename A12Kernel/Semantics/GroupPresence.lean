@@ -155,6 +155,21 @@ def GroupPresenceState.asGroupListPresence
   else if state.definitelyEmpty then .empty
   else .unavailable
 
+/-- The **numeric count's** own operand projection, which is stricter than the predicates'
+    on exactly one dimension: partial coverage.
+
+    `GroupFilled` and the group-list quantifiers decide a partly covered group from the
+    content they can see, so a covered filled cell makes the group filled however its
+    uncovered siblings read. The count does not: every field of an operand group must be in
+    the relevant set, or the count is undecided. One coverage separates them — a group's
+    filled cell relevant and its empty sibling not — where the Kernel fires `GroupFilled`
+    and `AtLeastOneGroupFilled` and leaves `NumberOfFilledGroups` silent
+    ([checkpoint](../../docs/SOURCES.md#src-partial-coverage-group-operands)). Do not
+    collapse the two projections; the divergence is measured, not conservatism. -/
+def GroupPresenceState.asFilledGroupCountPresence
+    (state : GroupPresenceState) : GroupListPresenceState :=
+  if state.relevance == .fullyRelevant then state.asGroupListPresence else .unavailable
+
 /-- Extensional group-list classification. Unavailable field or group operands are neither filled nor empty. -/
 structure GroupListPresenceTally where
   filled : Nat
@@ -246,8 +261,8 @@ end FilledGroupCount
     undecided by one. Measured on both codegen strategies at the [unavailability
     checkpoint](../../docs/SOURCES.md#src-group-count-unavailability). -/
 def numberOfFilledGroups (states : List GroupPresenceState) : FilledGroupCount :=
-  if states.any (fun state => state.asGroupListPresence == .unavailable) then .unknown
-  else .value (states.countP fun state => state.asGroupListPresence == .filled)
+  if states.any (fun state => state.asFilledGroupCountPresence == .unavailable) then .unknown
+  else .value (states.countP fun state => state.asFilledGroupCountPresence == .filled)
 
 /-- One validation-arm operand of a filled-group count whose list may carry a star. A fixed member
     keeps its resolved presence state, whose unavailability or nonrelevance makes the whole count
@@ -265,7 +280,7 @@ inductive ValidationGroupCountOperand where
 
 /-- What one validation operand adds once the count is known to be available. -/
 def ValidationGroupCountOperand.contribution : ValidationGroupCountOperand → Nat
-  | .fixed state => if state.asGroupListPresence == .filled then 1 else 0
+  | .fixed state => if state.asFilledGroupCountPresence == .filled then 1 else 0
   | .starredRows rows => rows
 
 /-- Whether one operand makes the whole count unavailable. Only a fixed member can, and only when
@@ -273,7 +288,7 @@ def ValidationGroupCountOperand.contribution : ValidationGroupCountOperand → N
     starred member's rows are structural, and an invalid cell inside a row leaves both the row and
     the count untouched. -/
 def ValidationGroupCountOperand.unavailable : ValidationGroupCountOperand → Bool
-  | .fixed state => state.asGroupListPresence == .unavailable
+  | .fixed state => state.asFilledGroupCountPresence == .unavailable
   | .starredRows _ => false
 
 /-- The validation-arm `NumberOfFilledGroups` over an operand list that may carry a star. One

@@ -15,7 +15,7 @@ private theorem validationOperandFold_fixed :
       (states.map ValidationGroupCountOperand.fixed).foldl
         (fun total operand => total + operand.contribution) accumulated
         = accumulated + states.countP fun state =>
-            state.asGroupListPresence == .filled := by
+            state.asFilledGroupCountPresence == .filled := by
   intro states
   induction states with
   | nil => intro accumulated; simp
@@ -24,7 +24,7 @@ private theorem validationOperandFold_fixed :
       simp only [List.map_cons, List.foldl_cons, List.countP_cons]
       rw [ih]
       simp only [ValidationGroupCountOperand.contribution]
-      by_cases hFilled : head.asGroupListPresence == .filled
+      by_cases hFilled : head.asFilledGroupCountPresence == .filled
       · simp [hFilled]; omega
       · simp [hFilled]
 
@@ -39,7 +39,7 @@ theorem numberOfFilledGroupsForValidationOperands_fixed
   simp only [numberOfFilledGroupsForValidationOperands, numberOfFilledGroups,
     List.any_map, Function.comp_def, ValidationGroupCountOperand.unavailable]
   by_cases hAny :
-      states.any fun state => state.asGroupListPresence == .unavailable
+      states.any fun state => state.asFilledGroupCountPresence == .unavailable
   · simp [hAny]
   · simp only [hAny, if_false, Bool.false_eq_true]
     simp [validationOperandFold_fixed states 0]

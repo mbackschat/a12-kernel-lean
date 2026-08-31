@@ -70,7 +70,10 @@ theorem undecidedHead_makesFilledGroupCountUnknown
     (state : GroupPresenceState) (rest : List GroupPresenceState)
     (undecided : state.asGroupListPresence = .unavailable) :
     numberOfFilledGroups (state :: rest) = .unknown := by
-  simp [numberOfFilledGroups, undecided]
+  have countUndecided : state.asFilledGroupCountPresence = .unavailable := by
+    unfold GroupPresenceState.asFilledGroupCountPresence
+    split <;> simp [undecided]
+  simp [numberOfFilledGroups, countUndecided]
 
 /-- The measured asymmetry, stated where it can be reused: over a group whose content is already
     admitted, a formal error is invisible to the count. Marking such a group erroneous moves neither
@@ -83,12 +86,16 @@ theorem filledGroupCount_indifferentToErrorOnDecidedGroup
       numberOfFilledGroups (state :: rest) := by
   have ignoresError : ({ state with erroneous := true } : GroupPresenceState).definitelyFilled
       = state.definitelyFilled := rfl
-  have updated : ({ state with erroneous := true } : GroupPresenceState).asGroupListPresence
-      = .filled := by
-    simp [GroupPresenceState.asGroupListPresence, ignoresError, filled]
-  have original : state.asGroupListPresence = .filled := by
-    simp [GroupPresenceState.asGroupListPresence, filled]
-  simp [numberOfFilledGroups, updated, original]
+  have updated : ({ state with erroneous := true } : GroupPresenceState).asFilledGroupCountPresence
+      = state.asFilledGroupCountPresence := by
+    unfold GroupPresenceState.asFilledGroupCountPresence
+    have sameRelevance : ({ state with erroneous := true } : GroupPresenceState).relevance
+        = state.relevance := rfl
+    rw [sameRelevance]
+    split
+    · simp [GroupPresenceState.asGroupListPresence, ignoresError, filled]
+    · rfl
+  simp [numberOfFilledGroups, List.countP_cons, updated]
 
 theorem relativeRequiredness_uses_positivePresence (state : GroupPresenceState) :
     state.activatesRelativeRequiredness = state.definitelyFilled := rfl

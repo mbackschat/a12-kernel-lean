@@ -1,0 +1,244 @@
+{
+  "header" : {
+    "id" : "Part_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Part_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Part_DM",
+        "name" : "Part_DM",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Part_DM/G1",
+            "name" : "G1",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Part_DM/G1/A",
+                "name" : "A",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Part_DM/G1/B",
+                "name" : "B",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Part_DM/G2",
+            "name" : "G2",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Part_DM/G2/C",
+                "name" : "C",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Part_DM/W",
+            "name" : "W",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Part_DM/NFG0",
+            "name" : "NFG0",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NFG0",
+              "errorCondition" : "FieldFilled(/Part_DM/W) And NumberOfFilledGroups(/Part_DM/G1, /Part_DM/G2) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NFG0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Part_DM/NFG1",
+            "name" : "NFG1",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NFG1",
+              "errorCondition" : "FieldFilled(/Part_DM/W) And NumberOfFilledGroups(/Part_DM/G1, /Part_DM/G2) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NFG1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Part_DM/NFG2",
+            "name" : "NFG2",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NFG2",
+              "errorCondition" : "FieldFilled(/Part_DM/W) And NumberOfFilledGroups(/Part_DM/G1, /Part_DM/G2) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NFG2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Part_DM/LIVE",
+            "name" : "LIVE",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "LIVE",
+              "errorCondition" : "FieldFilled(/Part_DM/W)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "LIVE"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Part_DM/Z",
+            "name" : "Z",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Part_DM/GF1",
+            "name" : "GF1",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "GF1",
+              "errorCondition" : "FieldFilled(/Part_DM/W) And GroupFilled(/Part_DM/G1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GF1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Part_DM/GNF2",
+            "name" : "GNF2",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "GNF2",
+              "errorCondition" : "FieldFilled(/Part_DM/W) And GroupNotFilled(/Part_DM/G2)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GNF2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Part_DM/ALOGF",
+            "name" : "ALOGF",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "ALOGF",
+              "errorCondition" : "FieldFilled(/Part_DM/W) And AtLeastOneGroupFilled(/Part_DM/G1, /Part_DM/G2)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "ALOGF"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Part_DM/NGF",
+            "name" : "NGF",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NGF",
+              "errorCondition" : "FieldFilled(/Part_DM/W) And NoGroupFilled(/Part_DM/G1, /Part_DM/G2)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NGF"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Part_DM/ALLGF",
+            "name" : "ALLGF",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "ALLGF",
+              "errorCondition" : "FieldFilled(/Part_DM/W) And AllGroupsFilled(/Part_DM/G1, /Part_DM/G2)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "ALLGF"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Part_DM/NALLGF",
+            "name" : "NALLGF",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NALLGF",
+              "errorCondition" : "FieldFilled(/Part_DM/W) And NotAllGroupsFilled(/Part_DM/G1, /Part_DM/G2)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NALLGF"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

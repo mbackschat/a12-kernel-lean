@@ -1,0 +1,14 @@
+{"model":"Part_DM.json","locale":"en_US","observe":["validateFull","validatePart"],
+ "rows":[
+  {"name":"full-coverage","document":"d-a-filled.json",
+   "relevant":[{"path":"/Part_DM/W"},{"path":"/Part_DM/G1/A"},{"path":"/Part_DM/G1/B"},{"path":"/Part_DM/G2/C"}]},
+  {"name":"cover-empty-cell-only","document":"d-a-filled.json",
+   "relevant":[{"path":"/Part_DM/W"},{"path":"/Part_DM/G1/B"},{"path":"/Part_DM/G2/C"}]},
+  {"name":"cover-filled-cell-only","document":"d-a-filled.json",
+   "relevant":[{"path":"/Part_DM/W"},{"path":"/Part_DM/G1/A"},{"path":"/Part_DM/G2/C"}]},
+  {"name":"none-relevant","document":"d-a-filled.json","relevant":[]},
+  {"name":"malformed-covered","document":"d-b-malformed.json",
+   "relevant":[{"path":"/Part_DM/W"},{"path":"/Part_DM/G1/A"},{"path":"/Part_DM/G1/B"},{"path":"/Part_DM/G2/C"}]},
+  {"name":"malformed-uncovered","document":"d-b-malformed.json",
+   "relevant":[{"path":"/Part_DM/W"},{"path":"/Part_DM/G1/A"},{"path":"/Part_DM/G2/C"}]}
+ ]}

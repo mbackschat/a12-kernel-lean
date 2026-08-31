@@ -66,6 +66,10 @@ The accepted two-fixed-group computation persisted, read back as `NumberOfFilled
 
 The request's `observe` key selects the entry points. `validateFull` is always observed and cannot be dropped, because an engine block's `messages` is a required key of `schemaVersion` 1 and an unlooked-at empty list would be indistinguishable from nothing firing; `observe: ["compute"]` is refused for exactly that reason, and a compute-only consumer therefore pays a validation pass per row per strategy. Adding `compute` adds a per-engine `computations` block: `outcomes` sorted by `field`, each carrying `cleared`, `errored`, and a `value` that is **absent on a clear**, plus the `formalErrorsInOperands` channel. `enginesAgree` is derived over every channel a block reports rather than over the messages alone. Three claim limits travel with the route, and each one defeats a tempting reading.
 
+**`validatePart` is a third observation, accepted upstream at a12-dmkits `8cad1224f86e91c46f0db3573adb4f0fe894a959` after this project recorded the coverage leg as unreachable.** Asking for it makes each row's `relevant` required — a set of `{path}` objects naming the covered fields — and adds a `partialMessages` block to each engine block, so a retained artifact produced without it keeps its bytes and its digest. An **absent** `relevant` is "not observed" and an **empty** one is the `noneRelevant` request; the two stay distinct end to end and `partialMessages` renders even when empty, so an empty result is readable as a measurement rather than as an omission. Omit `reps` unless a specific repetition is the point: it takes one entry per path *part*, not per repeatable part, and the probe otherwise fills the all-wildcard form.
+
+`validateFull` remains the invariant control on a `validatePart` row, because it cannot see the coverage and must answer identically whatever it is.
+
 `formalErrorsInOperands` is the checked-plan inventory of [`09-computations.md` §3.3](../spec/09-computations.md#33-what-compute-reports), never a cause edge: it is emitted whether or not anything was skipped, its operand set includes fields merely *contained by* a referenced group rather than a read trace, and a target cleared because the computation it read was itself ERRORED names nothing in it. The ERRORED producer's own per-instance error message is **not exposed** by the artifact, so a run-fault cause is still unreachable through this route. And `schemaVersion` stayed `1` by deliberate byte-compatibility, so the version no longer determines the artifact's shape and a retained artifact must record what its request asked for.
 
 [`TESTING.md`](TESTING.md#the-kernel-runtime-probe-route) owns the operating method; the [fixed-group first-filled checkpoint](#src-group-first-filled-runtime-order) records this repository's first use and its exact claim boundary.
@@ -336,6 +340,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [`zuGrosseZeile` renders no coordinate, and two over-limit groups report independently](sources/over-repetition-probes.md#src-over-limit-finding-text)
 <a id="src-starred-group-count-computation"></a>
 - [The computation arm counts a starred repeatable group's instantiated rows](sources/group-and-iteration-probes.md#src-starred-group-count-computation)
+<a id="src-partial-coverage-group-operands"></a>
+- [The count needs every operand field covered, where the presence predicates read what they can see](sources/group-and-iteration-probes.md#src-partial-coverage-group-operands)
 <a id="src-starred-group-quantifier-capacity"></a>
 - [The threshold quantifiers read the in-capacity extent, and an instantiated row is filled](sources/group-and-iteration-probes.md#src-starred-group-quantifier-capacity)
 <a id="src-address-dialect-selector"></a>

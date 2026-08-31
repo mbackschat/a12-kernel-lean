@@ -129,12 +129,20 @@ example : (numberOfFilledGroups [state [empty] true true, cleanFilled],
 
 example : numberOfFilledGroups [cleanFilled, cleanEmpty] = .value 1 := by native_decide
 
-/- Coverage is the other dimension and is *not* what the checkpoint measured. Visible content still
-   decides a partly covered group, matching `groupFilled` above; invisible absence does not. -/
-example : numberOfFilledGroups [state [valid] false false .partlyRelevant] = .value 1 := by
+/- Coverage is the dimension where the count and the presence predicates **diverge**, measured at
+   the [partial-coverage checkpoint](../../docs/SOURCES.md#src-partial-coverage-group-operands).
+   Visible content decides `GroupFilled` and the quantifiers under partial coverage; the numeric
+   count instead needs every field of every operand group in the relevant set and is otherwise
+   undecided. One coverage separates them: with a group's filled cell covered and its empty sibling
+   not, the Kernel fires `GroupFilled` and `AtLeastOneGroupFilled` and leaves the count silent. -/
+example : numberOfFilledGroups [state [valid] false false .partlyRelevant] = .unknown := by
   native_decide
 example : numberOfFilledGroups [state [empty] false false .partlyRelevant] = .unknown := by
   native_decide
+example : (state [valid] false false .partlyRelevant).asGroupListPresence = .filled := by
+  native_decide
+example : GroupFillQuantifier.atLeastOneGroupFilled.evalValidation
+    [state [valid] false false .partlyRelevant, cleanEmpty] = .fired .value := by native_decide
 
 /- A fixed group is one declared entity, not one entity per descendant. One filled descendant makes
    a half-filled group count as given; exhausting both declared group operands makes the count fixed. -/

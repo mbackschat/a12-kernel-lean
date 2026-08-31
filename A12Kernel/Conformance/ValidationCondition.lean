@@ -624,11 +624,13 @@ example : checkedGroupCount?.map (fun checked =>
     })) = some (.unknown, .unknown, .unknown) := by
   native_decide
 
-/- The separating control on the same route: once content is admitted, the group's own formal error
-   is invisible to the count, which fires exactly as over two clean groups. Visible content decides
-   a partly covered group for the same reason. Both are measured at the [unavailability
-   checkpoint](../../docs/SOURCES.md#src-group-count-unavailability) only for the error dimension;
-   the coverage dimension follows the shared decided-presence projection. -/
+/- Two dimensions that look alike and are not. Once content is admitted, the group's own formal
+   error is invisible to the count, which fires exactly as over two clean groups ([unavailability
+   checkpoint](../../docs/SOURCES.md#src-group-count-unavailability)). **Partial coverage is the
+   opposite**: the count needs every field of an operand group relevant and goes silent otherwise,
+   even over a group whose covered cell is filled, where `GroupFilled` and the quantifiers still
+   fire ([partial-coverage checkpoint](../../docs/SOURCES.md#src-partial-coverage-group-operands)).
+   This case had carried the error dimension's answer into the coverage one by uniformity. -/
 example : checkedGroupCount?.map (fun checked =>
     (checked.core.evalSelected {
       fields := model.checkContext (raw .empty .empty)
@@ -641,7 +643,7 @@ example : checkedGroupCount?.map (fun checked =>
       groups := twoGroupContext
         ["Order", "Details"] (groupState true false .partlyRelevant)
         ["Order", "Preferences"] (groupState true false)
-    })) = some (.fired .value, .fired .value) := by
+    })) = some (.fired .value, .unknown) := by
   native_decide
 
 /- Fixed group counts require at least two distinct non-root, nonrepeatable groups. The checked source also retains each group subtree for whole-rule reference validation. -/

@@ -1,0 +1,9 @@
+{"model":"Part_DM.json","locale":"en_US","observe":["validateFull","validatePart"],
+ "rows":[
+  {"name":"all-fields-covered","document":"d-a-filled.json",
+   "relevant":[{"path":"/Part_DM/W"},{"path":"/Part_DM/Z"},{"path":"/Part_DM/G1/A"},{"path":"/Part_DM/G1/B"},{"path":"/Part_DM/G2/C"}]},
+  {"name":"operands-covered-Z-not","document":"d-a-filled.json",
+   "relevant":[{"path":"/Part_DM/W"},{"path":"/Part_DM/G1/A"},{"path":"/Part_DM/G1/B"},{"path":"/Part_DM/G2/C"}]},
+  {"name":"G1-full-G2-uncovered","document":"d-a-filled.json",
+   "relevant":[{"path":"/Part_DM/W"},{"path":"/Part_DM/G1/A"},{"path":"/Part_DM/G1/B"}]}
+ ]}
