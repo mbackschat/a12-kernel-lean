@@ -159,27 +159,11 @@ theorem checkedNumberEntityOperand_aggregateSide_delegates
         filteredSource.resolvedValueSide document outer filterRead starRead := by
   exact ⟨rfl, rfl, rfl⟩
 
-/-- Full-validation aggregate and value-count consumers obtain their one-operand side from the rich checked projection, then retain the established first-formal-cause terminal result. A group operand narrows to its declared-capacity extent, starred or not; a field and a filtered star keep the complete formal-cell view. -/
+/-- Full-validation aggregate and value-count consumers obtain their one-operand side from the rich checked projection, then retain the established first-formal-cause terminal result. A plain star and a group operand narrow to their declared-capacity extent; a field and a filtered star keep the complete formal-cell view. -/
 theorem checkedNumberEntityOperand_checkedValidationAggregate_usesRichProjection
     (checked : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env) :
     checked.resolvedCheckedDocumentValidationAggregateSide document outer =
-      (do
-        let resolved ← checked.resolveCheckedValidationOperand document outer
-        let side := match checked with
-          | .group _ => resolved.inCapacityValueListSideAt .validation
-          | .field _ | .star _ | .starHaving _ =>
-              resolved.valueListSideAt .validation
-        match side.available with
-        | .error cause => pure (.inr (.unknown cause))
-        | .ok () => pure (.inl side)) := by
-  rfl
-
-/-- The selected full-validation `Sum` account narrows a plain star and a group operand to their in-capacity checked cells, and nothing else. -/
-theorem checkedNumberEntityOperand_checkedValidationSum_usesCapacityProjection
-    (checked : CheckedNumberEntityOperand model)
-    (document : CheckedDocument model) (outer : Env) :
-    checked.resolvedCheckedDocumentValidationSumSide document outer =
       (do
         let resolved ← checked.resolveCheckedValidationOperand document outer
         let side := match checked with
@@ -191,39 +175,14 @@ theorem checkedNumberEntityOperand_checkedValidationSum_usesCapacityProjection
         | .ok () => pure (.inl side)) := by
   rfl
 
-/-- The two full-validation resolvers agree on a **group** operand and differ nowhere else on it, so
-    `Sum` cannot drift away from the extrema and the distinct count on the extent they now share.
-    Stated as an equation between the resolvers rather than restated per operator: the six carriers
-    the [checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep)
-    measured must answer from one domain, and a later selected narrowing of either resolver alone
-    would break this rather than pass silently. -/
-theorem checkedNumberEntityGroup_validationSum_agreesWithAggregate
-    (group : CheckedNumberEntityGroup model)
-    (document : CheckedDocument model) (outer : Env) :
-    (CheckedNumberEntityOperand.group group).resolvedCheckedDocumentValidationSumSide
-        document outer =
-      (CheckedNumberEntityOperand.group group).resolvedCheckedDocumentValidationAggregateSide
-        document outer := by
-  rfl
-
 /-- A checked Number group computation uses the same operand-bounded rich projection as validation,
-    changing only the phase at which each cached cell is observed. -/
+    changing only the phase at which each cached cell is observed — the declared-capacity extent
+    included. The value count once narrowed here alone; the measured arm shows every group aggregate
+    sharing that domain, so the two accounts are one resolver and this is their single statement. -/
 theorem checkedNumberEntityGroup_checkedComputationAggregate_usesRichProjection
     (group : CheckedNumberEntityGroup model)
     (document : CheckedDocument model) (outer : Env) :
     (CheckedNumberEntityOperand.group group).resolvedCheckedDocumentComputationAggregateSide
-        document outer = (do
-      let resolved ←
-        (CheckedNumberEntityOperand.group group).resolveCheckedValidationOperand
-          document outer
-      pure (.inl (resolved.valueListSideAt .computation))) := by
-  rfl
-
-/-- A checked Number group value count narrows its computation domain to in-capacity cells without changing the ordinary group aggregate projection. -/
-theorem checkedNumberEntityGroup_checkedComputationValueCount_usesCapacityProjection
-    (group : CheckedNumberEntityGroup model)
-    (document : CheckedDocument model) (outer : Env) :
-    (CheckedNumberEntityOperand.group group).resolvedCheckedDocumentValueCountComputationSide
         document outer = (do
       let resolved ←
         (CheckedNumberEntityOperand.group group).resolveCheckedValidationOperand

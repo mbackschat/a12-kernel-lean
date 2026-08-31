@@ -171,13 +171,40 @@ example :
         malformedCell 5 [3], cell 6 [3] 15] = some (.value 1 .fixed) := by
   native_decide
 
-/- The value-count specialization does not narrow the project's ordinary group aggregate account. -/
+/- The ordinary group aggregates share the value count's declared-capacity domain on this arm too:
+   the over-limit row is removed rather than admitted and classified unavailable. The whole-extent
+   account would answer `74` and `15` here, and the paired control holds the same in-capacity cells
+   without the third row. Kernel-measured on both codegen strategies, which agreed on every row. -/
 example :
     aggregate? limitedSource? .sum
       (limitedRows ++ [{ group := 40, path := [3] }]) [
         cell 5 [1] 10, cell 6 [1] 12,
         cell 5 [2] 13, cell 6 [2] 14,
-        cell 5 [3] 10, cell 6 [3] 15] = some (.unknown .overRepetition) := by
+        cell 5 [3] 10, cell 6 [3] 15] = some (.value 49 .fixed) ∧
+    aggregate? limitedSource? .sum limitedRows [
+        cell 5 [1] 10, cell 6 [1] 12,
+        cell 5 [2] 13, cell 6 [2] 14] = some (.value 49 .fixed) ∧
+    aggregate? limitedSource? .maximum
+      (limitedRows ++ [{ group := 40, path := [3] }]) [
+        cell 5 [1] 10, cell 6 [1] 12,
+        cell 5 [2] 13, cell 6 [2] 14,
+        cell 5 [3] 10, cell 6 [3] 15] = some (.value 14 .fixed) := by
+  native_decide
+
+/- `MinValue` needs the reversed fixture: with the smallest value in capacity it would answer `10`
+   under either account, so here the over-limit row carries the smaller one. The distinct count
+   separates on the same document, where the whole extent would reach five values. -/
+example :
+    aggregate? limitedSource? .minimum
+      (limitedRows ++ [{ group := 40, path := [3] }]) [
+        cell 5 [1] 10, cell 6 [1] 12,
+        cell 5 [2] 13, cell 6 [2] 14,
+        cell 5 [3] 5, cell 6 [3] 15] = some (.value 10 .fixed) ∧
+    aggregate? limitedSource? .distinctCount
+      (limitedRows ++ [{ group := 40, path := [3] }]) [
+        cell 5 [1] 10, cell 6 [1] 12,
+        cell 5 [2] 13, cell 6 [2] 14,
+        cell 5 [3] 5, cell 6 [3] 15] = some (.value 4 .fixed) := by
   native_decide
 
 private def chargeRows : List RowAddr :=

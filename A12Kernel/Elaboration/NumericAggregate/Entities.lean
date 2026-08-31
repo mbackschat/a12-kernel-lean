@@ -186,41 +186,30 @@ def resolvedComputationAggregateSide
 
 /-- Resolve one validation aggregate slot from the immutable checked document. Validation filters evaluate every candidate before the first target classification; target reads then stop at the first formal cause.
 
-    A **group** operand narrows to its declared-capacity extent, starred or not, like the plain star
-    and for the same measured reason: a row beyond its group's declared repeatability is not in the
-    domain the operand denotes, so its cell is neither aggregated nor able to make the aggregate
-    unavailable. Measured on the fixed form
-    ([checkpoint](../../../docs/sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep))
-    and on the starred form
-    ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent)),
-    which agree on every arm; the two forms were briefly split here on the fixed measurement alone and
-    the starred probe closed it.
+    A plain **star** and a **group** operand each narrow to their declared-capacity extent, for the
+    same measured reason: a row beyond its group's declared repeatability is not in the domain the
+    operand denotes, so its cell is neither aggregated nor able to make the aggregate unavailable. A
+    field and a filtered star keep the complete formal-cell view.
 
-    A well-formed over-limit cell alone cannot establish that: the separating observation is a
-    **malformed** cell, which poisons the aggregate one index below capacity and is ignored one index
-    above it, and that pair is measured on both forms. A field or filtered star keeps the complete
-    formal-cell view. -/
+    One resolver serves every validation aggregate consumer — `Sum`, the extrema, the distinct count,
+    and the value count. `Sum` and the group form were measured first, and the remaining consumers
+    were left holding the complete view as an untested scope limit; the starred-field ladder
+    ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-starred-field-operand-extent))
+    refuted that limit on all four at once. The group form answers identically on its fixed
+    ([checkpoint](../../../docs/sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep))
+    and starred
+    ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent))
+    spellings.
+
+    A well-formed over-limit cell alone cannot establish the mechanism: the separating observation is
+    a **malformed** cell, which poisons the aggregate one index below capacity and is ignored one
+    index above it, and that pair is measured on both forms. -/
 def resolvedCheckedDocumentValidationAggregateSide
     (checked : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError
       (Sum (ResolvedValueListSide .number) NumericOperand) :=
   do
-    let resolved ← checked.resolveCheckedValidationOperand document outer
-    let side := match checked with
-      | .group _ => resolved.inCapacityValueListSideAt .validation
-      | .field _ | .star _ | .starHaving _ =>
-          resolved.valueListSideAt .validation
-    match side.available with
-    | .error cause => pure (.inr (.unknown cause))
-    | .ok () => pure (.inl side)
-
-/-- Resolve the selected capacity-bounded validation `Sum` slot. A plain star and a group operand each narrow to their own declared-capacity extent; a field and a filtered star keep the ordinary validation aggregate projection. -/
-def resolvedCheckedDocumentValidationSumSide
-    (checked : CheckedNumberEntityOperand model)
-    (document : CheckedDocument model) (outer : Env) :
-    Except CheckedAddressingError
-      (Sum (ResolvedValueListSide .number) NumericOperand) := do
     let resolved ← checked.resolveCheckedValidationOperand document outer
     let side := match checked with
       | .star _ | .group _ => resolved.inCapacityValueListSideAt .validation
@@ -230,7 +219,21 @@ def resolvedCheckedDocumentValidationSumSide
     | .error cause => pure (.inr (.unknown cause))
     | .ok () => pure (.inl side)
 
-/-- Resolve one computation aggregate slot from the same checked document. A filtered slot retains one-kept-successor lookahead and keeps structural target/filter failure outside formal poison. -/
+/-- Resolve one computation aggregate slot from the same checked document. A filtered slot retains one-kept-successor lookahead and keeps structural target/filter failure outside formal poison.
+
+    A plain **star** and a **group** operand narrow to their declared-capacity extent here exactly as
+    on the full-validation arm, and for the same reason: the over-limit row is not in the domain the
+    operand denotes, so it is neither aggregated nor able to poison the computation. The arm boundary
+    was measured rather than inherited — the same eight documents observed through `compute` answered
+    from the in-capacity domain on both codegen strategies
+    ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm)),
+    and the kernel reported the over-limit index as a formal error in the operand while still
+    producing an uncleared computed value.
+
+    The star once resolved its own environments here instead of going through the shared operand
+    core. Both routes agreed on every retained computation case, so the capacity projection is the
+    only intended behavioural difference; the shared core is kept because it is the one the group
+    arm and the whole validation arm already use. -/
 def resolvedCheckedDocumentComputationAggregateSide
     (checked : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env) :
@@ -240,12 +243,6 @@ def resolvedCheckedDocumentComputationAggregateSide
   | .field source =>
       resolvedCheckedDocumentSide document .computation source.field
         [[]] false false
-  | .star source => do
-      let resolved ←
-        (source.source.path.resolve document.source.toDocument outer)
-          |>.mapError .addressing
-      resolvedCheckedDocumentSide document .computation source.field
-        resolved.environments resolved.domain.hasOpenTail false
   | .starHaving source => do
       let resolved ←
         (source.source.source.path.resolve document.source.toDocument outer)
@@ -265,22 +262,9 @@ def resolvedCheckedDocumentComputationAggregateSide
             hasHaving := true })
       | .terminated cause | .poison cause =>
           pure (.inr (.unknown cause))
-  | .group _ => do
-      let resolved ← checked.resolveCheckedValidationOperand document outer
-      pure (.inl (resolved.valueListSideAt .computation))
-
-/-- Resolve one computation value-count slot. A checked Number group excludes cells beneath a declared-capacity violation before the count classifies their content; every other operand keeps the established computation aggregate route. -/
-def resolvedCheckedDocumentValueCountComputationSide
-    (checked : CheckedNumberEntityOperand model)
-    (document : CheckedDocument model) (outer : Env) :
-    Except CheckedAddressingError
-      (Sum (ResolvedValueListSide .number) NumericOperand) :=
-  match checked with
-  | .group _ => do
+  | .star _ | .group _ => do
       let resolved ← checked.resolveCheckedValidationOperand document outer
       pure (.inl (resolved.inCapacityValueListSideAt .computation))
-  | .field _ | .star _ | .starHaving _ =>
-      checked.resolvedCheckedDocumentComputationAggregateSide document outer
 
 /-- Resolve one unfiltered partial-validation slot from the checked document. Direct nonrelevance precedes its cell query; star topology precedes the established all-rows gate; a local filter remains a rule-level skip. -/
 def resolvedCheckedDocumentPartialAggregateSide
@@ -477,17 +461,13 @@ def evaluateComputationAggregate (checked : CheckedNumberEntitySource model)
     operand.resolvedComputationAggregateSide document outer direct
       filterRead starRead
 
-/-- Evaluate validation-phase aggregate accumulation from one immutable model-certified checked document. -/
+/-- Evaluate validation-phase aggregate accumulation from one immutable model-certified checked document. Every operator resolves through the one capacity-aware side, so `Sum` cannot drift away from the extrema and the distinct count on the extent they share. -/
 def evaluateCheckedDocumentValidationAggregate
     (checked : CheckedNumberEntitySource model)
     (op : NumericAggregateOp) (document : CheckedDocument model)
     (outer : Env) : Except CheckedAddressingError NumericOperand :=
-  match op with
-  | .sum => checked.evaluateAggregateWith .sum fun operand =>
-      operand.resolvedCheckedDocumentValidationSumSide document outer
-  | .minimum | .maximum | .distinctCount =>
-      checked.evaluateAggregateWith op fun operand =>
-        operand.resolvedCheckedDocumentValidationAggregateSide document outer
+  checked.evaluateAggregateWith op fun operand =>
+    operand.resolvedCheckedDocumentValidationAggregateSide document outer
 
 /-- Evaluate computation-phase aggregate accumulation from the same checked document without changing filter or poison timing. -/
 def evaluateCheckedDocumentComputationAggregate
@@ -609,13 +589,13 @@ def evaluateCheckedDocumentValueCountValidation
   checked.evaluateValueCountWith expected fun operand =>
     operand.resolvedCheckedDocumentValidationAggregateSide document outer
 
-/-- Evaluate computation-phase numeric value count through its selected capacity-aware group resolver and the established one-kept-successor filter traversal. -/
+/-- Evaluate computation-phase numeric value count through the shared capacity-aware computation resolver and the established one-kept-successor filter traversal. -/
 def evaluateCheckedDocumentValueCountComputation
     (checked : CheckedNumberEntitySource model)
     (expected : Rat) (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError NumericOperand :=
   checked.evaluateValueCountWith expected fun operand =>
-    operand.resolvedCheckedDocumentValueCountComputationSide document outer
+    operand.resolvedCheckedDocumentComputationAggregateSide document outer
 
 /-- Run the common partial value-count fold over a raw or checked-document operand resolver. -/
 def evaluatePartialValueCountWith

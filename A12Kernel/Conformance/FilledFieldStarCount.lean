@@ -98,6 +98,32 @@ private def valueCountWith? (expected : Rat)
   let document ← documentWith? cells
   (source.evaluateCheckedDocumentValueCountValidation expected document []).toOption
 
+/- The in-capacity controls instantiate only the two rows declared capacity allows, so an operand
+   that ignores the over-limit row must answer identically on both documents. -/
+private def aggregateInCapWith? (op : NumericAggregateOp)
+    (cells : List ClassifiedCellInput) : Option NumericOperand := do
+  let source ← numberSource?
+  let document ← partialDocumentWith? cells
+  (source.evaluateCheckedDocumentValidationAggregate op document []).toOption
+
+private def valueCountInCapWith? (expected : Rat)
+    (cells : List ClassifiedCellInput) : Option NumericOperand := do
+  let source ← numberSource?
+  let document ← partialDocumentWith? cells
+  (source.evaluateCheckedDocumentValueCountValidation expected document []).toOption
+
+private def computationAggregateWith? (op : NumericAggregateOp)
+    (cells : List ClassifiedCellInput) : Option NumericOperand := do
+  let source ← numberSource?
+  let document ← documentWith? cells
+  (source.evaluateCheckedDocumentComputationAggregate op document []).toOption
+
+private def computationValueCountWith? (expected : Rat)
+    (cells : List ClassifiedCellInput) : Option NumericOperand := do
+  let source ← numberSource?
+  let document ← documentWith? cells
+  (source.evaluateCheckedDocumentValueCountComputation expected document []).toOption
+
 private def filledCountWith?
     (cells : List ClassifiedCellInput) : Option FilledFieldCount := do
   let source ← filledSource?
@@ -190,16 +216,50 @@ example :
       filledGroupOperand? rows = some (.value 2 .fixed) := by
   native_decide
 
-/- Operators outside the measured three-consumer slice retain the complete formal-cell view rather than inheriting Sum's capacity projection. -/
+/- The extrema project to declared capacity on the starred field carrier exactly as `Sum` does.
+   `MinValue` needs the reversed fixture to discriminate: with the smaller value in capacity it
+   would answer `10` under either account, so here the over-limit row carries the smaller one. Each
+   control holds only the in-capacity rows and answers identically, which is what makes the pair
+   separate the capacity projection from a general failure to read the third row. -/
 example :
-    aggregateWith? .minimum [cell 1 10, cell 2 20, cell 3 99] =
-        some (.unknown .overRepetition) ∧
     aggregateWith? .maximum [cell 1 10, cell 2 20, cell 3 99] =
-        some (.unknown .overRepetition) ∧
+        some (.value 20 .fixed) ∧
+    aggregateInCapWith? .maximum [cell 1 10, cell 2 20] =
+        some (.value 20 .fixed) ∧
+    aggregateWith? .minimum [cell 1 10, cell 2 20, cell 3 5] =
+        some (.value 10 .fixed) ∧
+    aggregateInCapWith? .minimum [cell 1 10, cell 2 20] =
+        some (.value 10 .fixed) := by
+  native_decide
+
+/- The distinct count and the value count project too. Both fixtures put the discriminating value
+   only in the over-limit row, so the whole-extent account would answer `3` and `1` here. -/
+example :
     aggregateWith? .distinctCount [cell 1 10, cell 2 20, cell 3 99] =
-        some (.unknown .overRepetition) ∧
+        some (.value 2 .fixed) ∧
+    aggregateInCapWith? .distinctCount [cell 1 10, cell 2 20] =
+        some (.value 2 .fixed) ∧
     valueCountWith? 99 [cell 1 10, cell 2 20, cell 3 99] =
-        some (.unknown .overRepetition) := by
+        some (.value 0 .fixed) ∧
+    valueCountInCapWith? 99 [cell 1 10, cell 2 20] =
+        some (.value 0 .fixed) := by
+  native_decide
+
+/- The computation arm answers from the same declared-capacity domain, on the same eight documents
+   observed through `compute`. The kernel reported the over-limit index as a formal error in the
+   operand and still produced an uncleared value there, which is what rules out the alternative that
+   the row is admitted and merely fails to contribute. -/
+example :
+    computationAggregateWith? .sum [cell 1 10, cell 2 20, cell 3 99] =
+        some (.value 30 .fixed) ∧
+    computationAggregateWith? .maximum [cell 1 10, cell 2 20, cell 3 99] =
+        some (.value 20 .fixed) ∧
+    computationAggregateWith? .minimum [cell 1 10, cell 2 20, cell 3 5] =
+        some (.value 10 .fixed) ∧
+    computationAggregateWith? .distinctCount [cell 1 10, cell 2 20, cell 3 99] =
+        some (.value 2 .fixed) ∧
+    computationValueCountWith? 99 [cell 1 10, cell 2 20, cell 3 99] =
+        some (.value 0 .fixed) := by
   native_decide
 
 /- Capacity projection is not a blanket formal-error filter: an in-cap malformed row still makes both measured consumers unavailable. -/

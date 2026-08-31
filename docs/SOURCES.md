@@ -413,6 +413,10 @@ Two shards carry these: locally measured probes in [`group-and-iteration-probes.
 - [Fixed-group over-limit extent across six carriers](sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep)
 <a id="src-starred-group-operand-extent"></a>
 - [Starred group operand extent and the malformed separator](sources/group-and-iteration-probes.md#src-starred-group-operand-extent)
+<a id="src-starred-field-operand-extent"></a>
+- [Starred field operand extent across the extrema, distinct count, and value count](sources/group-and-iteration-probes.md#src-starred-field-operand-extent)
+<a id="src-capacity-projection-computation-arm"></a>
+- [Declared-capacity projection on the computation arm](sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm)
 <a id="src-star-over-repetition-domain"></a>
 - [Over-repetition exclusion from starred numeric domains](sources/over-repetition-probes.md#src-star-over-repetition-domain)
 <a id="src-temporal-field-values-not-unique-group-runtime"></a>

@@ -1,0 +1,405 @@
+{
+  "header" : {
+    "id" : "capfamily",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "capfamily",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Rows/V",
+                "name" : "V",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/GrpShell",
+            "name" : "GrpShell",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/GrpShell/GRows",
+                "name" : "GRows",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/GrpShell/GRows/GV",
+                    "name" : "GV",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Err",
+            "name" : "Err",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FMIN5",
+            "name" : "FMIN5",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "FMIN5",
+              "errorCondition" : "FieldFilled(/Probe/Err) And MinValue(/Probe/Rows*/V) == 5",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "FMIN5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FMIN7",
+            "name" : "FMIN7",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "FMIN7",
+              "errorCondition" : "FieldFilled(/Probe/Err) And MinValue(/Probe/Rows*/V) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "FMIN7"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FMAX5",
+            "name" : "FMAX5",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "FMAX5",
+              "errorCondition" : "FieldFilled(/Probe/Err) And MaxValue(/Probe/Rows*/V) == 5",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "FMAX5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FMAX7",
+            "name" : "FMAX7",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "FMAX7",
+              "errorCondition" : "FieldFilled(/Probe/Err) And MaxValue(/Probe/Rows*/V) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "FMAX7"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FDIF1",
+            "name" : "FDIF1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "FDIF1",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfDifferentValues(/Probe/Rows*/V) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "FDIF1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FDIF2",
+            "name" : "FDIF2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "FDIF2",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfDifferentValues(/Probe/Rows*/V) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "FDIF2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FCNT0",
+            "name" : "FCNT0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "FCNT0",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfValueInFields(7 In /Probe/Rows*/V) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "FCNT0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FCNT1",
+            "name" : "FCNT1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "FCNT1",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfValueInFields(7 In /Probe/Rows*/V) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "FCNT1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GMIN5",
+            "name" : "GMIN5",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "GMIN5",
+              "errorCondition" : "FieldFilled(/Probe/Err) And MinValue(/Probe/GrpShell/GRows*) == 5",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GMIN5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GMIN7",
+            "name" : "GMIN7",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "GMIN7",
+              "errorCondition" : "FieldFilled(/Probe/Err) And MinValue(/Probe/GrpShell/GRows*) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GMIN7"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GMAX5",
+            "name" : "GMAX5",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "GMAX5",
+              "errorCondition" : "FieldFilled(/Probe/Err) And MaxValue(/Probe/GrpShell/GRows*) == 5",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GMAX5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GMAX7",
+            "name" : "GMAX7",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "GMAX7",
+              "errorCondition" : "FieldFilled(/Probe/Err) And MaxValue(/Probe/GrpShell/GRows*) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GMAX7"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GDIF1",
+            "name" : "GDIF1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "GDIF1",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfDifferentValues(/Probe/GrpShell/GRows*) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GDIF1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GDIF2",
+            "name" : "GDIF2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "GDIF2",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfDifferentValues(/Probe/GrpShell/GRows*) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GDIF2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GSUM0",
+            "name" : "GSUM0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "GSUM0",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/GrpShell/GRows*) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GSUM0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GSUM5",
+            "name" : "GSUM5",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "GSUM5",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/GrpShell/GRows*) == 5",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GSUM5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GSUM12",
+            "name" : "GSUM12",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "GSUM12",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/GrpShell/GRows*) == 12",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GSUM12"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/XSUM0",
+            "name" : "XSUM0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "XSUM0",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/GrpShell) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "XSUM0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/XSUM5",
+            "name" : "XSUM5",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "XSUM5",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/GrpShell) == 5",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "XSUM5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/XSUM12",
+            "name" : "XSUM12",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "XSUM12",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/GrpShell) == 12",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "XSUM12"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GSUM7",
+            "name" : "GSUM7",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "GSUM7",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/GrpShell/GRows*) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GSUM7"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/XSUM7",
+            "name" : "XSUM7",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "XSUM7",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/GrpShell) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "XSUM7"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

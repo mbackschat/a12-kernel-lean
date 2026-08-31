@@ -1,0 +1,42 @@
+{
+ "model": "comp.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "f-over",
+   "document": "f-over.json"
+  },
+  {
+   "name": "f-over-rev",
+   "document": "f-over-rev.json"
+  },
+  {
+   "name": "f-ctrl",
+   "document": "f-ctrl.json"
+  },
+  {
+   "name": "g-over",
+   "document": "g-over.json"
+  },
+  {
+   "name": "g-over-rev",
+   "document": "g-over-rev.json"
+  },
+  {
+   "name": "g-ctrl",
+   "document": "g-ctrl.json"
+  },
+  {
+   "name": "g-empty",
+   "document": "g-empty.json"
+  },
+  {
+   "name": "g-norows",
+   "document": "g-norows.json"
+  }
+ ]
+}

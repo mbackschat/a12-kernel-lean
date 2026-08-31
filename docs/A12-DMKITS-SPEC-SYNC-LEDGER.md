@@ -34,6 +34,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-08-31-11"></a>
+### `SPEC-2026-08-31-11` — the declared-capacity projection is a property of the operand, and it reaches the starred field and the computation arm
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md`](../spec/07-repetition-and-iteration.md)'s over-repetition evaluation-domain paragraph, extended with the starred-field carriers and a new operand-side computation bullet
+- `delta`: two extensions, both measured rather than transferred. A **starred field operand** answers from its in-capacity extent under `MinValue`, `MaxValue`, `NumberOfDifferentValues`, and `NumberOfValueInFields`, not only under `Sum` and `NumberOfFilledFields`. And the whole exclusion holds on the **computation arm**: the same five operators over a starred field and a group carrier produce the identical table under `compute` that they produce under `validateFull`, on both codegen strategies.
+- `mechanism`: the computation arm shows the mechanism in a form full validation cannot. The engine reports `zuGrosseKontextnummer` for the over-limit cell among the computation's operand errors and still yields an uncleared, definite computed value — so a formal error is present in the operand and does not reach the result. On the validation arm only the malformed pair separates *removed from the domain* from *classified unavailable*; here the two are separated on a well-formed document.
+- `consequence`: an implementation may share one enumeration between the two arms for this exclusion and must not special-case it per arm. This project had special-cased it in both directions — the starred field kept the complete view on both arms, and the group operand kept it on the computation arm — and each was locked green by a case asserting `unknown`.
+- `evidence`: the [starred-field checkpoint](sources/group-and-iteration-probes.md#src-starred-field-operand-extent) and the [computation-arm checkpoint](sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm) — two requests over eight shared documents, `producer.source.state: CLEAN` at a12-dmkits `88fd13243d7b5dd7238fcd190865c4fbdd247a2a`, `enginesAgree: true` on every row.
+- `limit`: one repetition level, bounded repeatability 2, scale-0 Numbers, `en_US`. Not measured: a Boolean or token *starred field* carrier, partial validation, nesting below the star, and whether an emptied in-capacity domain leaves the *computed* extrema unavailable as it does under validation.
+- `acceptance`: a12-dmkits confirms that its own extent excludes the over-limit row for a starred field operand under the extrema, the distinct count, and the value count, and that its computation arm applies the same exclusion without a per-arm special case — or supplies the contrary measurement. The peer named both of these as gaps in its own estate before this run, so a reproduction on its differential harness is the natural form.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-31-10"></a>
 ### `SPEC-2026-08-31-10` — an over-limit row leaves a group operand's extent, starred or not, and a malformed cell is what proves it
 
