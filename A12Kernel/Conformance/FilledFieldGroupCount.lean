@@ -276,4 +276,50 @@ example :
     nestedStarCount [] = none := by
   native_decide
 
+private def threeLevelModel : FlatModel :=
+  { fields := [
+      { id := 60, groupPath := ["Probe", "Shell", "L1"], name := "V1",
+        policy := { kind := .string }, repeatableScope := [60] },
+      { id := 61, groupPath := ["Probe", "Shell", "L1", "L2"], name := "V2",
+        policy := { kind := .string }, repeatableScope := [60, 61] },
+      { id := 62, groupPath := ["Probe", "Shell", "L1", "L2", "L3"], name := "V3",
+        policy := { kind := .string }, repeatableScope := [60, 61, 62] }]
+    repeatableGroups := [
+      { level := 60, path := ["Probe", "Shell", "L1"], repeatability := some 2 },
+      { level := 61, path := ["Probe", "Shell", "L1", "L2"], repeatability := some 2 },
+      { level := 62, path := ["Probe", "Shell", "L1", "L2", "L3"],
+        repeatability := some 2 }] }
+
+private def threeLevelPrepared :
+    PreparedFlatStringContext threeLevelModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler threeLevelModel).toOption.get (by native_decide)
+
+private def threeLevelChecked? :
+    Option (CheckedFilledFieldCountGroupSource threeLevelModel) :=
+  (elaborateFilledFieldCountFixedGroupValidationSource threeLevelModel ["Probe"] {
+    group := { base := .absolute, groups := ["Probe", "Shell"] } }).toOption
+
+private def threeLevelCount (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) : Option FilledFieldCount := do
+  let checked ← threeLevelChecked?
+  let document ← (checkDocument threeLevelPrepared "en_US" {
+    instantiatedRows := rows
+    cells }).toOption
+  (checked.evaluateCheckedDocumentValidation document []).toOption
+
+private def threeLevelRows : List RowAddr :=
+  [{ group := 60, path := [1] }, { group := 61, path := [1, 1] },
+   { group := 62, path := [1, 1, 1] }]
+
+/- The extent reaches a cell **three** repetition levels below the operand, so no axis count bounds
+   it. The depth-2 reading this clause once carried would answer zero on the first document, and the
+   empty control shows the first is not a group counting unconditionally. Measured on kernel 30.8.1
+   at the [group-operand extent checkpoint](../../docs/SOURCES.md#src-group-operand-over-limit-extent),
+   where `AtLeastOneFieldFilled` and `NoFieldFilled` over the same operand agree in the same run. -/
+example :
+    threeLevelCount threeLevelRows [cell 62 [1, 1, 1] "x"] = some (.value 1) ∧
+    threeLevelCount threeLevelRows [] = some (.value 0) := by
+  native_decide
+
 end A12Kernel
