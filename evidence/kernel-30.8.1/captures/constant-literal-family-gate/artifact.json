@@ -26,6 +26,12 @@
           "computations" : {
             "outcomes" : [
               {
+                "field" : "Probe/Rows/DClock",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12:30:00"
+              },
+              {
                 "field" : "Probe/Rows/DF",
                 "cleared" : false,
                 "errored" : false,
@@ -45,6 +51,18 @@
               },
               {
                 "field" : "Probe/Rows/T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12:30:00"
+              },
+              {
+                "field" : "Probe/Rows/T2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[2]/DClock",
                 "cleared" : false,
                 "errored" : false,
                 "value" : "12:30:00"
@@ -72,6 +90,12 @@
                 "cleared" : false,
                 "errored" : false,
                 "value" : "12:30:00"
+              },
+              {
+                "field" : "Probe/Rows[2]/T2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
               }
             ],
             "formalErrorsInOperands" : [ ]
@@ -83,6 +107,12 @@
           "computations" : {
             "outcomes" : [
               {
+                "field" : "Probe/Rows/DClock",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12:30:00"
+              },
+              {
                 "field" : "Probe/Rows/DF",
                 "cleared" : false,
                 "errored" : false,
@@ -102,6 +132,18 @@
               },
               {
                 "field" : "Probe/Rows/T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12:30:00"
+              },
+              {
+                "field" : "Probe/Rows/T2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[2]/DClock",
                 "cleared" : false,
                 "errored" : false,
                 "value" : "12:30:00"
@@ -129,6 +171,12 @@
                 "cleared" : false,
                 "errored" : false,
                 "value" : "12:30:00"
+              },
+              {
+                "field" : "Probe/Rows[2]/T2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
               }
             ],
             "formalErrorsInOperands" : [ ]

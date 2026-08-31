@@ -45,6 +45,7 @@ import A12Kernel.Conformance.BerlinLegacyTimeZone
 import A12Kernel.Conformance.BooleanConstantComputation
 import A12Kernel.Conformance.MixedFilledGroupCount
 import A12Kernel.Conformance.RepeatableDateConstantComputation
+import A12Kernel.Conformance.RepeatableTimeConstantComputation
 import A12Kernel.Conformance.RepeatableNumberConstantComputation
 import A12Kernel.Conformance.RepeatableStringConstantComputation
 import A12Kernel.Conformance.BooleanEntityGroupOperand

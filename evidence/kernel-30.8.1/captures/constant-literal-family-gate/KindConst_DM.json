@@ -218,6 +218,34 @@
                 "text" : "c-S"
               } ]
             }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/DClockComp",
+            "name" : "DClockComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/DClock",
+              "computationAlternatives" : [ {
+                "operation" : "\"12:30:00\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "c-DClock"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/T2Comp",
+            "name" : "T2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/T2",
+              "computationAlternatives" : [ {
+                "operation" : "\"05.03.2024\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "c-T2"
+              } ]
+            }
           } ]
         }
       } ]
