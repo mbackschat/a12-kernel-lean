@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.StringComputationRunResult
 
 /-! # Family-preserving String and Number computation result
 
-This direction-neutral carrier retains the two established family views over one exact target-key domain. Execution order, dependency direction, activation, application, and mixed-document reconstruction remain owned by the checked run that returns it.
+This direction-neutral carrier retains the two established family views over one exact target-key domain. Family-separated application is defined in `A12Kernel.Elaboration.StringNumberComputationRunApplication`; execution order, dependency direction, activation, and mixed-document reconstruction remain owned by the checked run that returns it.
 -/
 
 namespace A12Kernel

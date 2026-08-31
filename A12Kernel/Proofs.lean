@@ -235,6 +235,7 @@ import A12Kernel.Proofs.StringComputationRunApplication
 import A12Kernel.Proofs.StringComputationRunPlan
 import A12Kernel.Proofs.StringComputationRunRelation
 import A12Kernel.Proofs.StringComputationRunResult
+import A12Kernel.Proofs.StringNumberComputationRunApplication
 import A12Kernel.Proofs.StringComputationTable
 import A12Kernel.Proofs.StringFieldPolicy
 import A12Kernel.Proofs.StringFirstFilledComputation
