@@ -1,0 +1,242 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "1be2d603c90be578fe7ea0de0b8c515cb2a479c4",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "GrpCount_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "h1-one-filled-one-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GLT4",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ]
+            },
+            {
+              "code" : "GLT5",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GLT5",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GLT4",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ]
+            },
+            {
+              "code" : "GLT5",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GLT5",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "h2-one-empty-row",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GLT3",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ]
+            },
+            {
+              "code" : "GLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GLT4",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ]
+            },
+            {
+              "code" : "GLT5",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GLT5",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GLT3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GLT3",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ]
+            },
+            {
+              "code" : "GLT4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GLT4",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ]
+            },
+            {
+              "code" : "GLT5",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "GLT5",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "h3-three-rows-one-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GLT5",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GLT5",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GLT5",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "GLT5",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/R",
+                "Probe/G1/A"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
