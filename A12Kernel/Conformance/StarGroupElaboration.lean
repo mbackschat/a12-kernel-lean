@@ -200,14 +200,14 @@ example :
       countResultOf (absoluteSource false true true) rows = some (.value 3) := by
   native_decide
 
-/- The carrier that separates the two extents is outside this document domain, which is why no case
-   above distinguishes them. The Kernel answers `AtLeastOneGroupFilled` on a group whose ONLY
-   instantiated row lies beyond its capacity, measured at a12-dmkits `4e174d86a`; here the same
-   topology is refused before any operator sees it, because instantiated rows at a level must form a
-   prefix. Every representable over-limit document keeps an in-capacity row, so the structural and
-   in-capacity readings of the quantifiers coincide on all of them and only the numeric count's
-   narrower extent is observable. The refusal is the honest lock: it records the boundary rather than
-   asserting an extent this domain cannot witness. -/
+/- The carrier that would separate the quantifiers' two candidate extents is outside this document
+   domain, which is why no case above distinguishes them: instantiated rows at a level must form a
+   prefix, so every representable over-limit document keeps an in-capacity row and the structural and
+   in-capacity readings coincide on all of them. Only the numeric count's narrower extent is
+   observable here. a12-dmkits cannot reach that carrier either — its builder materializes the prefix,
+   measured at `b145ce565` where instantiating row 3 of a capacity-2 group makes the count read 2 —
+   so the quantifiers' extent is unreached on both routes rather than settled. The refusal is the
+   honest lock: it records the boundary instead of asserting an extent this domain cannot witness. -/
 example :
     let onlyOverLimitRow := [{ group := 10, path := [1] }, { group := 20, path := [1, 4] }]
     contextErrorOf (absoluteSource false true true) onlyOverLimitRow =
