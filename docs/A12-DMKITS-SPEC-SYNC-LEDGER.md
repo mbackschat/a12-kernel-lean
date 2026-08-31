@@ -34,6 +34,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-08-31-15"></a>
+### `SPEC-2026-08-31-15` — a group operand's expansion tracks its repeatable ancestor's firing row, and that half is no longer unwitnessed
+
+- `status`: pending
+- `clause`: [`01-data-model.md`](../spec/01-data-model.md), the `referenced`-pointer depth rule for a group operand
+- `delta`: not a rule change — a **recorded confidence limit is retired**, which the same obligation covers. The clause gave one depth rule for a group operand's expansion, a repeatable level above it staying concrete at the firing row and every level at or below it wildcarded, and stated that the concrete half had no observation behind it. It now has one for the **unstarred** form; the starred form's concrete half stays stated from the rule, and the clause says which is which.
+- `evidence`: retained bytes re-read with no new run ([checkpoint](sources/group-and-iteration-probes.md#src-filled-field-count-deep-capacity), `coordinates` row). `NumberOfFilledFields(Flat)` under a `max 2` repeatable `Outer`, one asymmetric document firing the rule in both rows, `/Probe[1]/Outer[1]/Flat[1]/Rows[0]/RowR` beside `/Probe[1]/Outer[2]/Flat[1]/Rows[0]/RowR`, `enginesAgree: true`.
+- `separator`: the `[2]` firing is the whole witness. Both nonrepeatable levels in the same address carry `[1]`, so a row-one-only observation cannot distinguish a tracked ancestor row from that constant, and every earlier retained observation of a group operand had its ancestors at row one.
+- `local-consequence`: none. The Lean side refuses this operand shape at elaboration (`repeatableGroupRequiresAddress`), so the clause is ahead of the theory here, as the checkpoint's `narrower` row already records.
+- `acceptance`: a12-dmkits confirms the retired limit, or reports that its own account of a group operand's ancestry differs.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-08-31-14"></a>
 ### `SPEC-2026-08-31-14` — the declared-capacity extent reaches the distinct count and `FirstFilledValue`, and cannot be settled for uniqueness
 
