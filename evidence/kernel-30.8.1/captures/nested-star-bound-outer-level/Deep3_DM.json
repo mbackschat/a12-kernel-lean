@@ -1,0 +1,144 @@
+{
+  "header" : {
+    "id" : "Deep3_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Deep3_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Shell",
+            "name" : "Shell",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/Shell/L1",
+                "name" : "L1",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Group",
+                    "id" : "/Probe/Shell/L1/L2",
+                    "name" : "L2",
+                    "Group" : {
+                      "repeatability" : 2,
+                      "elements" : [ {
+                        "type" : "Group",
+                        "id" : "/Probe/Shell/L1/L2/L3",
+                        "name" : "L3",
+                        "Group" : {
+                          "repeatability" : 2,
+                          "elements" : [ {
+                            "type" : "Field",
+                            "id" : "/Probe/Shell/L1/L2/L3/V3",
+                            "name" : "V3",
+                            "Field" : {
+                              "fieldType" : {
+                                "type" : "StringType"
+                              }
+                            }
+                          } ]
+                        }
+                      }, {
+                        "type" : "Field",
+                        "id" : "/Probe/Shell/L1/L2/V2",
+                        "name" : "V2",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "StringType"
+                          }
+                        }
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Probe/Shell/L1/V1",
+                    "name" : "V1",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Rule",
+                    "id" : "/Probe/Shell/L1/NEST",
+                    "name" : "NEST",
+                    "Rule" : {
+                      "errorEntityRelPath" : "../V1",
+                      "errorCode" : "NEST",
+                      "errorCondition" : "FieldFilled(V1) AND NumberOfFilledFields(L2*) > 0",
+                      "severity" : "ERROR",
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "nested star reached"
+                      } ]
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Other",
+            "name" : "Other",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Other/W",
+                "name" : "W",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GCOUNT",
+            "name" : "GCOUNT",
+            "Rule" : {
+              "errorEntityRelPath" : "../Other/W",
+              "errorCode" : "GCOUNT",
+              "errorCondition" : "NumberOfFilledGroups(Shell, Other) < 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "shell not counted"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

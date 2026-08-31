@@ -225,4 +225,55 @@ example :
       some (.value 7 .fixed) := by
   native_decide
 
+private def nestedStarModel : FlatModel :=
+  { fields := [
+      { id := 40, groupPath := ["Probe", "Shell", "L1"], name := "V1",
+        policy := { kind := .string }, repeatableScope := [40] },
+      { id := 41, groupPath := ["Probe", "Shell", "L1", "L2"], name := "V2",
+        policy := { kind := .string }, repeatableScope := [40, 41] }]
+    repeatableGroups := [
+      { level := 40, path := ["Probe", "Shell", "L1"], repeatability := some 2 },
+      { level := 41, path := ["Probe", "Shell", "L1", "L2"], repeatability := some 2 }] }
+
+private def nestedStarPrepared :
+    PreparedFlatStringContext nestedStarModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler nestedStarModel).toOption.get (by native_decide)
+
+/-- The star sits on the **inner** level while the outer one stays unstarred, because the rule
+reading it is authored on that outer group and binds it. -/
+private def nestedStarChecked? :
+    Option (CheckedFilledFieldCountGroupSource nestedStarModel) :=
+  (elaborateFilledFieldCountStarredGroupValidationSource nestedStarModel
+    ["Probe", "Shell", "L1"] {
+      group := {
+        base := .absolute
+        groups := [{ name := "Probe" }, { name := "Shell" },
+                   { name := "L1" }, { name := "L2", starred := true }] } }).toOption
+
+private def nestedStarDocument? : Option (CheckedDocument nestedStarModel) :=
+  (checkDocument nestedStarPrepared "en_US" {
+    instantiatedRows := [
+      { group := 40, path := [1] }, { group := 40, path := [2] },
+      { group := 41, path := [1, 1] }]
+    cells := [cell 40 [1] "a", cell 40 [2] "b", cell 41 [1, 1] "y"] }).toOption
+
+private def nestedStarCount (outer : Env) : Option FilledFieldCount := do
+  let checked ← nestedStarChecked?
+  let document ← nestedStarDocument?
+  (checked.evaluateCheckedDocumentValidation document outer).toOption
+
+/- A nested star answers from its **own enclosing row**, not from the union of every outer row.
+   The second outer row instantiates no inner row at all, so a union account would report the
+   first row's cell there too and the two bindings would be indistinguishable. Unbound the
+   operand refuses rather than guessing a row, which is what makes this shape a reading question
+   rather than a representational one. Measured on kernel 30.8.1 at the
+   [nested-star checkpoint](../../docs/SOURCES.md#src-nested-star-bound-outer-level), where the
+   same condition draws exactly one message, on the first outer row. -/
+example :
+    nestedStarCount [(40, 1)] = some (.value 1) ∧
+    nestedStarCount [(40, 2)] = some (.value 0) ∧
+    nestedStarCount [] = none := by
+  native_decide
+
 end A12Kernel
