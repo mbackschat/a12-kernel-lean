@@ -28,9 +28,9 @@ private def year := dateField 3 "DYear" ["Probe", "Rows"] [10] "yyyy"
 private def yearMonth := dateField 6 "DYearMonth" ["Probe", "Rows"] [10] "yyyy-MM"
 private def compact := dateField 7 "DCompact" ["Probe", "Rows"] [10] "yyyyMM"
 
-/-- A **yearless** format: the one component-omitting shape this carrier still excludes, because the
-Kernel refuses a Date constant for it unless the model declares a Base Year. -/
+/-- The two **yearless** formats: admitted only where the model declares a Base Year. -/
 private def monthOnly := dateField 8 "DMonth" ["Probe", "Rows"] [10] "MM"
+private def monthDay := dateField 9 "DMonthDay" ["Probe", "Rows"] [10] "MM-dd"
 
 private def note := dateField 4 "Note" ["Probe", "Store"] []
 
@@ -38,11 +38,15 @@ private def note := dateField 4 "Note" ["Probe", "Store"] []
 private def guarded := dateField 5 "DGuarded" ["Probe", "Rows"] [10] "yyyy-MM-dd" true
 
 private def model : FlatModel := {
-  fields := [iso, ger, year, yearMonth, compact, monthOnly, note, guarded]
+  fields := [iso, ger, year, yearMonth, compact, monthOnly, monthDay, note, guarded]
   repeatableGroups := [
     { level := 10, path := ["Probe", "Rows"], repeatability := some 3 }]
   timeZoneId := "UTC"
 }
+
+/-- The same model with a declared Base Year and **nothing else changed**, so a difference between
+the two is attributable to that declaration alone. -/
+private def baseYearModel : FlatModel := { model with baseYear := some 2024 }
 
 private def prepared : PreparedFlatStringContext model builtinStringPatternCompiler :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
@@ -60,6 +64,10 @@ private def march5 : CivilDate :=
 private def old : CivilDate :=
   { parts := { year := 1899, month := 12, day := 31 }, real := by decide }
 
+/-- The same month and day a century earlier, so a yearless rendering cannot distinguish it. -/
+private def march5Old : CivilDate :=
+  { parts := { year := 1899, month := 3, day := 5 }, real := by decide }
+
 private def outcome? (declaringGroup : GroupPath) (target : FieldId)
     (constant : CivilDate := march5) : Option FullDateTargetOutcome :=
   (checkRepeatableDateConstantComputation model declaringGroup target constant).toOption.map
@@ -72,6 +80,12 @@ private def outcomes? (declaringGroup : GroupPath) (target : FieldId) (count : N
 
 private def stored (text : String) (nonempty : text ≠ "" := by decide) : StoredDate :=
   { text, nonempty }
+
+/-- The same query against the Base-Year model, so a yearless target can be reached at all. -/
+private def baseYearOutcome? (target : FieldId)
+    (constant : CivilDate := march5) : Option FullDateTargetOutcome :=
+  (checkRepeatableDateConstantComputation baseYearModel ["Probe"] target constant).toOption.map
+    (·.outcome)
 
 /- **One constant stores two different texts.** The declared format is a rendering of the literal
    date, not a gate on it: the same `05.03.2024` reaches an ISO-declared target as `2024-03-05` and a
@@ -126,15 +140,37 @@ example : (outcome? ["Probe"] year.id, outcome? ["Probe"] yearMonth.id,
      some (.accepted (stored "202403"))) := by
   native_decide
 
-/- A **yearless** format is the remaining stated exclusion, and it is the one the Kernel also refuses
-   — without a declared Base Year a Date constant draws `MVK_INVALID_COMPARE_TO_DATE` there. This
-   carrier declines it too, but claims **no** Kernel class: the refusals coincide on this model and
-   would part company on one declaring a Base Year, which is unmeasured, so borrowing the Kernel's
-   code here would assert agreement that has not been observed. -/
-example : (outcome? ["Probe"] monthOnly.id,
-    match checkRepeatableDateConstantComputation model ["Probe"] monthOnly.id march5 with
-    | .error cause => cause.diagnostic?.isSome
-    | .ok _ => true) = (none, false) := by
+/- **A yearless target needs a declared Base Year, and the Base Year reaches admission only.** The
+   two models differ in that one declaration and nothing else. Without it both yearless targets are
+   refused, with the Kernel's own `MVK_INVALID_COMPARE_TO_DATE`; with it both are accepted and store
+   **no year at all** — `03` and `03-05` — although the model declares 2024 and the constant supplies
+   it. Measured on kernel 30.8.1 across both codegen strategies, where the same constant into `MM`,
+   `MM-dd`, `yyyy-MM`, `yyyy`, and a complete target stored those five different texts in one run
+   ([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)). A carrier completing the store
+   from the Base Year would pass every year-leading row above and fail exactly here. -/
+example : (outcome? ["Probe"] monthOnly.id, outcome? ["Probe"] monthDay.id,
+    baseYearOutcome? monthOnly.id, baseYearOutcome? monthDay.id) =
+    (none, none,
+     some (.accepted (stored "03")), some (.accepted (stored "03-05"))) := by
+  native_decide
+
+/- The refusal without a Base Year carries the Kernel identity it was measured with, on both yearless
+   formats. Its admitted control is the same target on the Base-Year model above, so this is a gate
+   that opens rather than a declaration the carrier never supported. -/
+example : ([monthOnly.id, monthDay.id].map fun target =>
+      match checkRepeatableDateConstantComputation model ["Probe"] target march5 with
+      | .error cause => cause.diagnostic?.map KernelStaticDiagnostic.kernelCode
+      | .ok _ => none) =
+    [some "MVK_INVALID_COMPARE_TO_DATE", some "MVK_INVALID_COMPARE_TO_DATE"] := by
+  native_decide
+
+/- **The stored text of a yearless target does not depend on the year**, which is the whole content
+   of "the Base Year gates admission and renders nothing". Two constants a century apart store the
+   same two texts, while the year-leading sibling on the same model separates them. -/
+example : ([baseYearOutcome? monthOnly.id march5, baseYearOutcome? monthOnly.id march5Old,
+      baseYearOutcome? yearMonth.id march5, baseYearOutcome? yearMonth.id march5Old]) =
+    [some (.accepted (stored "03")), some (.accepted (stored "03")),
+     some (.accepted (stored "2024-03")), some (.accepted (stored "1899-03"))] := by
   native_decide
 
 /- Placement is containment: the target's own group and every ancestor admit it, and only a group the

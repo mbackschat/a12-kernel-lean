@@ -259,6 +259,10 @@ inductive OmittedComponentDateTargetElabError where
   | targetPolicy (error : TemporalTargetElabError)
   | targetKind (target : FieldId) (actual : TemporalKind)
   | unsupportedFormat (target : FieldId) (source : String)
+  /-- A yearless declaration in a model that declares no Base Year. This is the Kernel's own refusal
+  rather than a narrower local one: the same target admits the constant once a Base Year is
+  declared. -/
+  | yearlessWithoutBaseYear (target : FieldId) (source : String)
   deriving Repr, DecidableEq
 
 /-- One checked Date target whose declared format names fewer components than a calendar date has.
@@ -274,12 +278,18 @@ structure CheckedOmittedComponentDateTarget (model : FlatModel) where
   targetIsDate : checked.target.kind = .date
   formatMatches :
     OmittedComponentDateFormat.ofSource? checked.policy.format = some format
+  /-- A yearless target exists only in a model that declares a Base Year, so no consumer can build
+  one the Kernel would refuse. The Base Year is consumed **here and nowhere else**: it gates this
+  certificate and reaches no part of the rendering. -/
+  baseYearWhenYearless :
+    (format.needsBaseYear && !model.hasBaseYear) = false
 
 namespace CheckedTemporalTargetPolicy
 
 /-- Refine a checked temporal target to the renderable component-omitting Date subset. The yearless
-`MM` and `MM-dd` formats are outside it: the Kernel refuses a Date constant for them unless the model
-declares a Base Year, and what such a target then stores is unmeasured. -/
+`MM` and `MM-dd` formats are inside it exactly when the model declares a Base Year, which is the
+Kernel's own gate and the Base Year's only effect: the store that follows keeps no year either way
+([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)). -/
 def toOmittedComponentDateTarget
     (checked : CheckedTemporalTargetPolicy model) :
     Except OmittedComponentDateTargetElabError
@@ -290,7 +300,11 @@ def toOmittedComponentDateTarget
     | none =>
         throw (.unsupportedFormat checked.target.id checked.policy.format)
     | some format =>
-        pure { checked, format, targetIsDate := hDate, formatMatches := hFormat }
+        if hBase : (format.needsBaseYear && !model.hasBaseYear) = false then
+          pure { checked, format, targetIsDate := hDate, formatMatches := hFormat,
+                 baseYearWhenYearless := hBase }
+        else
+          throw (.yearlessWithoutBaseYear checked.target.id checked.policy.format)
   else
     throw (.targetKind checked.target.id checked.target.kind)
 

@@ -45,11 +45,14 @@ inductive RepeatableDateConstantComputationElabError where
 
 namespace RepeatableDateConstantComputationElabError
 
-/-- Only the shared placement refusal carries a measured Kernel identity here. A target this project
-cannot render is its own routing and claims no class, because the Kernel admits it. -/
+/-- Two refusals carry a measured Kernel identity: the shared placement one, and a yearless target
+in a model declaring no Base Year, which the Kernel refuses with the same code and admits once a
+Base Year is declared ([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)). A target
+this project simply cannot render claims no class, because the Kernel admits it. -/
 def diagnostic? :
     RepeatableDateConstantComputationElabError → Option KernelStaticDiagnostic
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
+  | .targetNotRenderableDate _ (.yearlessWithoutBaseYear _ _) => some .invalidCompareToDate
   | .target (.target _) | .target (.targetNotRepeatable _)
   | .targetNotRenderableDate _ _ => none
 
