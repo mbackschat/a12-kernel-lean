@@ -433,9 +433,50 @@ narrower channel can drop a finding but never invent one, and can never name a n
 document does not. The measured rows fix which findings survive on particular documents; this fixes
 that nothing else can appear, which is the half a per-document case cannot reach. -/
 theorem checkedDocument_computationOverRepetitionFindings_sublist
-    (checked : CheckedDocument model) (operandGroupPaths : List (List String)) :
+    (checked : CheckedDocument model) (operandGroupPaths : List GroupPath) :
     (checked.computationOverRepetitionFindings operandGroupPaths).Sublist
       checked.overRepetitionFindings :=
   List.filter_sublist
+
+/-- Weakening a filter's predicate weakens its result to a superlist. Stated locally because the
+monotonicity below is the only consumer and the shape is not otherwise shared. -/
+private theorem filter_sublist_filter {α : Type} (l : List α) (p q : α → Bool)
+    (implies : ∀ a, p a = true → q a = true) :
+    (l.filter p).Sublist (l.filter q) := by
+  induction l with
+  | nil => simp
+  | cons a rest ih =>
+      by_cases hp : p a = true
+      · have hq : q a = true := implies a hp
+        simp [hp, hq]
+        exact ih
+      · simp only [Bool.not_eq_true] at hp
+        by_cases hq : q a = true
+        · simp [hp, hq]
+          exact ih.trans (List.sublist_cons_self a (rest.filter q))
+        · simp only [Bool.not_eq_true] at hq
+          simp [hp, hq]
+          exact ih
+
+/-- **Reading more operands never loses a finding.** A computation whose operand paths include
+another's reports at least what that other reports, in the same order. With the sublist law above
+this brackets the channel from both sides for every document: it is monotone in the operand set and
+bounded by the validation set, so the empty operand list and the full document are its two ends.
+
+The hypothesis is membership rather than sublist inclusion, because the filter reads the operand list
+through `any` and neither order nor multiplicity can affect it — a consumer that reorders or
+deduplicates its operands is covered without a separate law. -/
+theorem checkedDocument_computationOverRepetitionFindings_mono
+    (checked : CheckedDocument model) (narrow wide : List GroupPath)
+    (covers : ∀ path ∈ narrow, path ∈ wide) :
+    (checked.computationOverRepetitionFindings narrow).Sublist
+      (checked.computationOverRepetitionFindings wide) := by
+  unfold CheckedDocument.computationOverRepetitionFindings
+  refine filter_sublist_filter _ _ _ ?_
+  intro finding held
+  split at held
+  · exact absurd held (by simp)
+  · rcases List.any_eq_true.mp held with ⟨candidate, member, hit⟩
+    exact List.any_eq_true.mpr ⟨candidate, covers candidate member, hit⟩
 
 end A12Kernel
