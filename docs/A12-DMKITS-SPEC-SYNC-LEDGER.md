@@ -54,7 +54,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 
 <a id="spec-2026-08-31-08"></a>
-### `SPEC-2026-08-31-08` — an over-limit row is outside a computation's target inventory
+### `SPEC-2026-08-31-08` — an over-limit row produces no computed value and its target is cleared
 
 - `status`: pending
 - `clause`: [`07-repetition-and-iteration.md`](../spec/07-repetition-and-iteration.md), beside the existing over-repetition evaluation-domain exclusion
