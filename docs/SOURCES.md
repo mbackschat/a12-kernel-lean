@@ -304,6 +304,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A computation's message type follows what can still grow](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity)
 <a id="src-filled-field-count-nested-capacity"></a>
 - [A group `NumberOfFilledFields` moves against declared slot capacity, not declared field count](sources/group-and-iteration-probes.md#src-filled-field-count-nested-capacity)
+<a id="src-filled-field-count-deep-capacity"></a>
+- [Slot capacity compounds through nested repetition levels and stops at the operand group](sources/group-and-iteration-probes.md#src-filled-field-count-deep-capacity)
 <a id="src-group-count-list-extent"></a>
 - [A group-count list's extent is its operand list, and a starred member breaks that](sources/group-and-iteration-probes.md#src-group-count-list-extent)
 
@@ -355,8 +357,10 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 ### Group and iteration source checkpoints
 
+Two shards carry these: locally measured probes in [`group-and-iteration-probes.md`](sources/group-and-iteration-probes.md) and reconciled inbound batches in [`inbound-group-operand-batches.md`](sources/inbound-group-operand-batches.md). Each entry below links to the shard that owns it.
+
 <a id="inbound-entity-list-group-operand-validator-cardinality-and-cleared-value-batch"></a>
-- [Inbound entity-list group-operand, validator-cardinality, and cleared-value batch](sources/group-and-iteration-probes.md#inbound-entity-list-group-operand-validator-cardinality-and-cleared-value-batch)
+- [Inbound entity-list group-operand, validator-cardinality, and cleared-value batch](sources/inbound-group-operand-batches.md#inbound-entity-list-group-operand-validator-cardinality-and-cleared-value-batch)
 <a id="src-first-filled-additional-kind-computations"></a>
 - [Direct one-star additional-kind `FirstFilledValue` computations](sources/group-and-iteration-probes.md#src-first-filled-additional-kind-computations)
 <a id="src-first-filled-kind-computations"></a>
@@ -370,57 +374,57 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-group-list-rnu-admission-correction"></a>
 - [Group-list and RNU admission correction](sources/group-and-iteration-probes.md#src-group-list-rnu-admission-correction)
 <a id="src-entity-list-group-gates"></a>
-- [Entity-list group gates](sources/group-and-iteration-probes.md#src-entity-list-group-gates)
+- [Entity-list group gates](sources/inbound-group-operand-batches.md#src-entity-list-group-gates)
 <a id="src-field-values-not-unique-group-admission"></a>
-- [Field-values-not-unique group admission](sources/group-and-iteration-probes.md#src-field-values-not-unique-group-admission)
+- [Field-values-not-unique group admission](sources/inbound-group-operand-batches.md#src-field-values-not-unique-group-admission)
 <a id="src-field-values-not-unique-group-runtime"></a>
-- [Field-values-not-unique group runtime](sources/group-and-iteration-probes.md#src-field-values-not-unique-group-runtime)
+- [Field-values-not-unique group runtime](sources/inbound-group-operand-batches.md#src-field-values-not-unique-group-runtime)
 <a id="src-number-group-computation-runtime"></a>
-- [Number group computation runtime](sources/group-and-iteration-probes.md#src-number-group-computation-runtime)
+- [Number group computation runtime](sources/inbound-group-operand-batches.md#src-number-group-computation-runtime)
 <a id="src-number-group-value-count-computation-capacity"></a>
-- [Number group value-count computation capacity](sources/group-and-iteration-probes.md#src-number-group-value-count-computation-capacity)
+- [Number group value-count computation capacity](sources/inbound-group-operand-batches.md#src-number-group-value-count-computation-capacity)
 <a id="src-token-group-partial-runtime"></a>
-- [Token group partial-validation runtime](sources/group-and-iteration-probes.md#src-token-group-partial-runtime)
+- [Token group partial-validation runtime](sources/inbound-group-operand-batches.md#src-token-group-partial-runtime)
 <a id="src-token-group-value-count-computation-capacity"></a>
-- [Token group value-count computation capacity](sources/group-and-iteration-probes.md#src-token-group-value-count-computation-capacity)
+- [Token group value-count computation capacity](sources/inbound-group-operand-batches.md#src-token-group-value-count-computation-capacity)
 <a id="src-boolean-group-value-count-computation-capacity"></a>
-- [Boolean/Confirm group value-count computation capacity](sources/group-and-iteration-probes.md#src-boolean-group-value-count-computation-capacity)
+- [Boolean/Confirm group value-count computation capacity](sources/inbound-group-operand-batches.md#src-boolean-group-value-count-computation-capacity)
 <a id="src-false-boolean-group-value-count-computation-capacity"></a>
-- [False Boolean-group value-count computation capacity](sources/group-and-iteration-probes.md#src-false-boolean-group-value-count-computation-capacity)
+- [False Boolean-group value-count computation capacity](sources/inbound-group-operand-batches.md#src-false-boolean-group-value-count-computation-capacity)
 <a id="src-boolean-group-value-count-computation-shape-matrix"></a>
-- [Boolean-group value-count computation shape matrix](sources/group-and-iteration-probes.md#src-boolean-group-value-count-computation-shape-matrix)
+- [Boolean-group value-count computation shape matrix](sources/inbound-group-operand-batches.md#src-boolean-group-value-count-computation-shape-matrix)
 <a id="src-boolean-fixed-group-value-count-computation"></a>
-- [Boolean fixed-group value-count computation](sources/group-and-iteration-probes.md#src-boolean-fixed-group-value-count-computation)
+- [Boolean fixed-group value-count computation](sources/inbound-group-operand-batches.md#src-boolean-fixed-group-value-count-computation)
 <a id="src-boolean-confirm-constant-computation-targets"></a>
-- [Boolean and Confirm constant computation targets](sources/group-and-iteration-probes.md#src-boolean-confirm-constant-computation-targets)
+- [Boolean and Confirm constant computation targets](sources/inbound-group-operand-batches.md#src-boolean-confirm-constant-computation-targets)
 <a id="src-token-value-count-group-runtime"></a>
-- [Token group value-count runtime](sources/group-and-iteration-probes.md#src-token-value-count-group-runtime)
+- [Token group value-count runtime](sources/inbound-group-operand-batches.md#src-token-value-count-group-runtime)
 <a id="src-token-value-count-fixed-group-admission"></a>
-- [Token fixed-group value-count admission](sources/group-and-iteration-probes.md#src-token-value-count-fixed-group-admission)
+- [Token fixed-group value-count admission](sources/inbound-group-operand-batches.md#src-token-value-count-fixed-group-admission)
 <a id="src-filled-field-group-runtime"></a>
-- [Filled-field group-count runtime](sources/group-and-iteration-probes.md#src-filled-field-group-runtime)
+- [Filled-field group-count runtime](sources/inbound-group-operand-batches.md#src-filled-field-group-runtime)
 <a id="src-star-over-repetition-domain"></a>
 - [Over-repetition exclusion from starred numeric domains](sources/over-repetition-probes.md#src-star-over-repetition-domain)
 <a id="src-temporal-field-values-not-unique-group-runtime"></a>
-- [Temporal field-values-not-unique group runtime](sources/group-and-iteration-probes.md#src-temporal-field-values-not-unique-group-runtime)
+- [Temporal field-values-not-unique group runtime](sources/inbound-group-operand-batches.md#src-temporal-field-values-not-unique-group-runtime)
 <a id="src-boolean-value-count-group-runtime"></a>
-- [Boolean value-count group runtime](sources/group-and-iteration-probes.md#src-boolean-value-count-group-runtime)
+- [Boolean value-count group runtime](sources/inbound-group-operand-batches.md#src-boolean-value-count-group-runtime)
 <a id="src-group-carrier-static-admission"></a>
-- [Group-carrier static admission](sources/group-and-iteration-probes.md#src-group-carrier-static-admission)
+- [Group-carrier static admission](sources/inbound-group-operand-batches.md#src-group-carrier-static-admission)
 <a id="src-group-carrier-duplicate-precedence"></a>
-- [Group-carrier duplicate precedence](sources/group-and-iteration-probes.md#src-group-carrier-duplicate-precedence)
+- [Group-carrier duplicate precedence](sources/inbound-group-operand-batches.md#src-group-carrier-duplicate-precedence)
 <a id="src-group-carrier-admission-sweep"></a>
-- [Group-carrier admission sweep](sources/group-and-iteration-probes.md#src-group-carrier-admission-sweep)
+- [Group-carrier admission sweep](sources/inbound-group-operand-batches.md#src-group-carrier-admission-sweep)
 <a id="src-group-runtime-and-reference"></a>
-- [Group runtime and reference correction](sources/group-and-iteration-probes.md#src-group-runtime-and-reference)
+- [Group runtime and reference correction](sources/inbound-group-operand-batches.md#src-group-runtime-and-reference)
 <a id="src-group-first-filled-runtime-order"></a>
-- [Fixed-group first-filled runtime order](sources/group-and-iteration-probes.md#src-group-first-filled-runtime-order)
+- [Fixed-group first-filled runtime order](sources/inbound-group-operand-batches.md#src-group-first-filled-runtime-order)
 <a id="src-star-group-first-filled-runtime-order"></a>
-- [Starred-group first-filled runtime order](sources/group-and-iteration-probes.md#src-star-group-first-filled-runtime-order)
+- [Starred-group first-filled runtime order](sources/inbound-group-operand-batches.md#src-star-group-first-filled-runtime-order)
 <a id="src-sum-of-products-owning-group"></a>
-- [`SumOfProducts` owning-group and diagnostic matrix, reviewed inbound 2026-08-29](sources/group-and-iteration-probes.md#src-sum-of-products-owning-group)
+- [`SumOfProducts` owning-group and diagnostic matrix, reviewed inbound 2026-08-29](sources/inbound-group-operand-batches.md#src-sum-of-products-owning-group)
 <a id="src-count-partial-extent"></a>
-- [Direct starred count partial-extent checkpoint](sources/group-and-iteration-probes.md#src-count-partial-extent)
+- [Direct starred count partial-extent checkpoint](sources/inbound-group-operand-batches.md#src-count-partial-extent)
 
 ### Cross-layer source routes
 

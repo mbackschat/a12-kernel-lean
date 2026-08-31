@@ -1,0 +1,31 @@
+{
+ "Probe": {
+  "Flat": {
+   "FlatA": "a",
+   "Rows": [
+    {
+     "RowR": "r",
+     "Inner": [
+      {
+       "InnerI": "i"
+      },
+      {
+       "InnerI": "i"
+      }
+     ]
+    },
+    {
+     "RowR": "r",
+     "Inner": [
+      {
+       "InnerI": "i"
+      },
+      {
+       "InnerI": "i"
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

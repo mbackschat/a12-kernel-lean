@@ -167,4 +167,62 @@ example :
     nestedOperand (nestedRows 3) (nestedFilled 3) = some (.value 4 .fixed) := by
   native_decide
 
+private def deepModel : FlatModel :=
+  { fields := [
+      { id := 30, groupPath := ["Probe", "Flat"], name := "FlatA",
+        policy := { kind := .string } },
+      { id := 31, groupPath := ["Probe", "Flat", "Rows"], name := "RowR",
+        policy := { kind := .string }, repeatableScope := [30] },
+      { id := 32, groupPath := ["Probe", "Flat", "Rows", "Inner"], name := "InnerI",
+        policy := { kind := .string }, repeatableScope := [30, 31] }]
+    repeatableGroups := [
+      { level := 30, path := ["Probe", "Flat", "Rows"], repeatability := some 2 },
+      { level := 31, path := ["Probe", "Flat", "Rows", "Inner"],
+        repeatability := some 2 }] }
+
+private def deepPrepared :
+    PreparedFlatStringContext deepModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler deepModel).toOption.get (by native_decide)
+
+private def deepChecked? : Option (CheckedFilledFieldCountGroupSource deepModel) :=
+  (elaborateFilledFieldCountFixedGroupValidationSource deepModel ["Probe"] {
+    group := { base := .absolute, groups := ["Probe", "Flat"] } }).toOption
+
+private def deepOperand (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) : Option NumericOperand := do
+  let checked ← deepChecked?
+  let document ← (checkDocument deepPrepared "en_US" {
+    instantiatedRows := rows
+    cells }).toOption
+  (checked.evaluateCheckedDocumentFixedValidationOperand? document []).toOption.join
+
+private def deepOuterRows : List RowAddr :=
+  [{ group := 30, path := [1] }, { group := 30, path := [2] }]
+
+private def deepInnerRows (outer : Nat) : List RowAddr :=
+  [{ group := 31, path := [outer, 1] }, { group := 31, path := [outer, 2] }]
+
+private def deepOuterCells : List ClassifiedCellInput :=
+  [cell 30 [] "a", cell 31 [1] "r", cell 31 [2] "r"]
+
+private def deepInnerCells (outer : Nat) : List ClassifiedCellInput :=
+  [cell 32 [outer, 1] "i", cell 32 [outer, 2] "i"]
+
+/- Capacity **compounds** through a second nesting level rather than adding each level once. Two
+   `max 2` levels beneath one direct field admit `1 + 2 * (1 + 2 * 1) = 7` cells, so the count is
+   still grow-only at five and fixed only at seven. Measured on kernel 30.8.1 at the
+   [deep-capacity checkpoint](../../docs/SOURCES.md#src-filled-field-count-deep-capacity), whose
+   walk separates this reading from three others: summing each level once bounds at five, the
+   declaration count at three, and instantiated rather than declared rows would fix every saturated
+   document including the three-cell one below. -/
+example :
+    deepOperand deepOuterRows deepOuterCells = some (.value 3 .growOnly) ∧
+    deepOperand (deepOuterRows ++ deepInnerRows 1)
+        (deepOuterCells ++ deepInnerCells 1) = some (.value 5 .growOnly) ∧
+    deepOperand (deepOuterRows ++ deepInnerRows 1 ++ deepInnerRows 2)
+        (deepOuterCells ++ deepInnerCells 1 ++ deepInnerCells 2) =
+      some (.value 7 .fixed) := by
+  native_decide
+
 end A12Kernel

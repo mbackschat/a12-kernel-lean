@@ -1,0 +1,312 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "a8bd8e86450b1629c08449e33116f84eef029859",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FillDeep_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "d0-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "E8",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "deep count below eight",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "E8",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "deep count below eight",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "d3-flat-two-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "E8",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "deep count below eight",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "E8",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "deep count below eight",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "d4-one-inner",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "E8",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "deep count below eight",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "E8",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "deep count below eight",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "d5-two-inner",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "E8",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "deep count below eight",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "E8",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "deep count below eight",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "d6-three-inner",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "E8",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "deep count below eight",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "E8",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "deep count below eight",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "d7-capacity",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "E8",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "deep count below eight",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "E8",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "deep count below eight",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/Inner[0]/InnerI",
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

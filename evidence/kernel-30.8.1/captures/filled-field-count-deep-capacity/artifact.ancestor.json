@@ -1,0 +1,194 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "a8bd8e86450b1629c08449e33116f84eef029859",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FillAnc_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "a-single-full",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "E4",
+              "field" : "Probe/Outer/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "row count below four",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "E4",
+              "field" : "Probe/Outer/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "row count below four",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "a-asym",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "E4",
+              "field" : "Probe/Outer/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "row count below four",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "E4",
+              "field" : "Probe/Outer[2]/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "row count below four",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer[2]/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Outer[2]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer[2]/Flat/FlatA"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "E4",
+              "field" : "Probe/Outer/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "row count below four",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "E4",
+              "field" : "Probe/Outer[2]/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "row count below four",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer[2]/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Outer[2]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer[2]/Flat/FlatA"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "a-both-full",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "E4",
+              "field" : "Probe/Outer/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "row count below four",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "E4",
+              "field" : "Probe/Outer[2]/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "row count below four",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer[2]/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "E4",
+              "field" : "Probe/Outer/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "row count below four",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "E4",
+              "field" : "Probe/Outer[2]/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "row count below four",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer[2]/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

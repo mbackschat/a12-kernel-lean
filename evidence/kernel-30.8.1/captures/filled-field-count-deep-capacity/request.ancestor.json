@@ -1,0 +1,21 @@
+{
+ "model": "FillAnc_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "a-single-full",
+   "document": "a-single-full.json"
+  },
+  {
+   "name": "a-asym",
+   "document": "a-asym.json"
+  },
+  {
+   "name": "a-both-full",
+   "document": "a-both-full.json"
+  }
+ ]
+}
