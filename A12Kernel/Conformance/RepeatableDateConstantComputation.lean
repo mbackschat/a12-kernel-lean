@@ -28,9 +28,12 @@ private def year := dateField 3 "DYear" ["Probe", "Rows"] [10] "yyyy"
 private def yearMonth := dateField 6 "DYearMonth" ["Probe", "Rows"] [10] "yyyy-MM"
 private def compact := dateField 7 "DCompact" ["Probe", "Rows"] [10] "yyyyMM"
 
-/-- The two **yearless** formats: admitted only where the model declares a Base Year. -/
+/-- The four **yearless** formats: admitted only where the model declares a Base Year. The two
+compact spellings carry the same components in opposite order, which is why they are both here. -/
 private def monthOnly := dateField 8 "DMonth" ["Probe", "Rows"] [10] "MM"
 private def monthDay := dateField 9 "DMonthDay" ["Probe", "Rows"] [10] "MM-dd"
+private def monthDayCompact := dateField 10 "DMonthDayC" ["Probe", "Rows"] [10] "MMdd"
+private def dayMonthCompact := dateField 11 "DDayMonthC" ["Probe", "Rows"] [10] "ddMM"
 
 private def note := dateField 4 "Note" ["Probe", "Store"] []
 
@@ -38,7 +41,8 @@ private def note := dateField 4 "Note" ["Probe", "Store"] []
 private def guarded := dateField 5 "DGuarded" ["Probe", "Rows"] [10] "yyyy-MM-dd" true
 
 private def model : FlatModel := {
-  fields := [iso, ger, year, yearMonth, compact, monthOnly, monthDay, note, guarded]
+  fields := [iso, ger, year, yearMonth, compact, monthOnly, monthDay,
+    monthDayCompact, dayMonthCompact, note, guarded]
   repeatableGroups := [
     { level := 10, path := ["Probe", "Rows"], repeatability := some 3 }]
   timeZoneId := "UTC"
@@ -67,6 +71,10 @@ private def old : CivilDate :=
 /-- The same month and day a century earlier, so a yearless rendering cannot distinguish it. -/
 private def march5Old : CivilDate :=
   { parts := { year := 1899, month := 3, day := 5 }, real := by decide }
+
+/-- A date whose month and day differ, so a component-order mistake cannot hide behind them. -/
+private def june11 : CivilDate :=
+  { parts := { year := 2024, month := 6, day := 11 }, real := by decide }
 
 private def outcome? (declaringGroup : GroupPath) (target : FieldId)
     (constant : CivilDate := march5) : Option FullDateTargetOutcome :=
@@ -162,6 +170,18 @@ example : ([monthOnly.id, monthDay.id].map fun target =>
       | .error cause => cause.diagnostic?.map KernelStaticDiagnostic.kernelCode
       | .ok _ => none) =
     [some "MVK_INVALID_COMPARE_TO_DATE", some "MVK_INVALID_COMPARE_TO_DATE"] := by
+  native_decide
+
+/- **The two compact spellings store the same components in opposite order.** One `11.06.2024` — a
+   date whose month and day differ, which is the only kind that can separate them — stores `0611`
+   into `MMdd` and `1106` into `ddMM`, with the dashed `MM-dd` control storing `06-11` beside them.
+   The two compact texts are exact reverses, so a renderer copying either spelling from the other
+   fails here and nowhere else in this family. Measured on kernel 30.8.1 on both codegen strategies
+   in one run ([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)). -/
+example : ([monthDayCompact.id, dayMonthCompact.id, monthDay.id].map fun target =>
+      baseYearOutcome? target june11) =
+    [some (.accepted (stored "0611")), some (.accepted (stored "1106")),
+     some (.accepted (stored "06-11"))] := by
   native_decide
 
 /- **The stored text of a yearless target does not depend on the year**, which is the whole content

@@ -1,0 +1,119 @@
+{
+  "header" : {
+    "id" : "Compact_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Compact_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false,
+      "baseYear" : "2024"
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Card",
+        "name" : "Card",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Card/MonthDayC",
+            "name" : "MonthDayC",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "MMdd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Card/DayMonthC",
+            "name" : "DayMonthC",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "ddMM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Card/MonthDayD",
+            "name" : "MonthDayD",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Card/MonthDayCComp",
+            "name" : "MonthDayCComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MonthDayC",
+              "computationAlternatives" : [ {
+                "operation" : "\"11.06.2024\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "constant"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Card/DayMonthCComp",
+            "name" : "DayMonthCComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DayMonthC",
+              "computationAlternatives" : [ {
+                "operation" : "\"11.06.2024\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "constant"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Card/MonthDayDComp",
+            "name" : "MonthDayDComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MonthDayD",
+              "computationAlternatives" : [ {
+                "operation" : "\"11.06.2024\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "constant"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

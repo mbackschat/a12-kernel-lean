@@ -249,12 +249,11 @@ private def roundTrips (format : OmittingDateFormat) (month day : Nat) : Bool :=
         some { month, day := if format == .month then 1 else day }
 
 /- **A yearless target's store reads back as the components it wrote**, on every real month/day pair
-   of a leap year and all four yearless spellings. The store itself is measured only for `MM` and
-   `MM-dd` ([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)); the two **compact**
-   spellings render in the order this classifier reads them, which is an assumption. This case is
-   what keeps that assumption from silently splitting the two directions: `MMdd` and `ddMM` differ
-   from each other in exactly that order, so a renderer copied from the wrong sibling fails here on
-   every pair whose month and day differ. `MM` writes no day and reads back the implied day one. -/
+   of a leap year and all four yearless spellings. Each spelling's store is separately measured
+   ([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)), so this case is not what
+   establishes the component order; it is what keeps the two directions from drifting apart later,
+   since a change to either one alone breaks it on every pair whose month and day differ. `MM` writes
+   no day and reads back the implied day one. -/
 example : [OmittingDateFormat.month, .monthDay, .monthDayConcatenated,
     .dayMonthConcatenated].map (fun format =>
       everyMonthDay.all fun pair => roundTrips format pair.1 pair.2) =

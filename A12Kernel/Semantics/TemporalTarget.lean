@@ -182,11 +182,11 @@ separator. Measured: `2024`, `2024-03`, `202403`, `03`, and `03-05` for the same
 the omitted components discarded and nothing reported. A yearless format writes **no year** even
 where the model declares a Base Year, so nothing here reads one.
 
-The two compact yearless spellings render in the component order `parseYearlessComponents?` reads
-them back in, which is an **assumption**: their store is unmeasured, and the dashed siblings cannot
-supply it because `MMdd` and `ddMM` differ from each other in exactly that order. The exhaustive
-round-trip case in [`Conformance/OmittingDateInput.lean`](../Conformance/OmittingDateInput.lean) is
-what keeps the two directions from drifting apart while the external row is missing. -/
+The two compact yearless spellings store the same components in opposite order — `MMdd` writes
+`0611` where `ddMM` writes `1106` for 11 June — which is measured rather than derived from the dashed
+siblings, since those cannot distinguish an order they do not vary. The exhaustive round-trip case in
+[`Conformance/OmittingDateInput.lean`](../Conformance/OmittingDateInput.lean) keeps this direction
+agreeing with the reading one. -/
 def renderCivilText (format : OmittingDateFormat) (date : CivilDate) : String :=
   let parts := date.parts
   match format with

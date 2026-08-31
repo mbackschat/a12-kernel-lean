@@ -1,0 +1,80 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "735e1345932880a892c48e7ece6b398ce21ece29",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Compact_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Card/DayMonthC",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1106"
+              },
+              {
+                "field" : "Card/MonthDayC",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0611"
+              },
+              {
+                "field" : "Card/MonthDayD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "06-11"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Card/DayMonthC",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1106"
+              },
+              {
+                "field" : "Card/MonthDayC",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0611"
+              },
+              {
+                "field" : "Card/MonthDayD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "06-11"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}
