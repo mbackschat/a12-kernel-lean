@@ -162,7 +162,7 @@ a12-dmkits revision `4e174d86a` disposes three outbound entries from this projec
 [`PartialCoverageGroupOperandDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/PartialCoverageGroupOperandDiffTest.kt) reproduces [`SPEC-2026-08-31-18`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-18)'s count rule exactly and **splits its predicate half three ways**, with a coverage this project's batch did not run — a whole operand group left uncovered, where `NotAllGroupsFilled` is silent because an uncovered group is undecided rather than empty. The [partial-coverage checkpoint](sources/group-and-iteration-probes.md#src-partial-coverage-group-operands) owns it.
 
 The same revision reports that a12-dmkits **cannot corroborate** [`SPEC-2026-08-31-16`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-16) through its renderer, which is what that entry's acceptance condition anticipated. `b145ce565` then corroborates the substantive half on the typed value instead, as `KF228` in [`MessagePointerVectorDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/MessagePointerVectorDiffTest.kt): one referenced field's `repetitionIndexes()` reads `[1, 0, 1]` from a rule leaving its repeatable level free and `[1, 1, 1]` from a rule bound to that row.
-Reading that revision also settled the premise a12-dmkits had flagged: no kernel class emits either spelling. `KernelRuntimeProbe.address` renders one typed pointer two ways by a documented branch, so the "two spellings" half of that entry was a claim about the instrument and is withdrawn. The [selector checkpoint](sources/temporal-and-message-probes.md#src-address-dialect-selector) owns both halves.
+Reading that revision also settled the premise a12-dmkits had flagged: no kernel class emits either spelling. `KernelRuntimeProbe.address` renders one typed pointer two ways by a documented branch, so the "two spellings" half of that entry was a claim about the instrument and is withdrawn. The [selector checkpoint](sources/message-and-pointer-probes.md#src-address-dialect-selector) owns both halves.
 
 All three are inbound from a committed reviewed revision and create no outbound request by the rule above. The refutation corrects prose this project originated, so the correction lands in [`spec/02`](../spec/02-logic-and-formal-errors.md) and [`spec/10`](../spec/10-validation-and-polarity.md) with the retraction recorded at its own checkpoint rather than as a new entry.
 
@@ -223,9 +223,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-semantic-index-kind-independence"></a>
 - [The index field's kind and the selected target's kind are independent, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-semantic-index-kind-independence)
 <a id="src-rule-message-parameter-grammar"></a>
-- [The rule-message parameter grammar: paths, quoting, category, and Base Year, measured locally 2026-08-24](sources/temporal-and-message-probes.md#src-rule-message-parameter-grammar)
+- [The rule-message parameter grammar: paths, quoting, category, and Base Year, measured locally 2026-08-24](sources/message-and-pointer-probes.md#src-rule-message-parameter-grammar)
 <a id="src-rule-message-parameter-rendering"></a>
-- [What a rule-message parameter renders, measured locally 2026-08-24](sources/temporal-and-message-probes.md#src-rule-message-parameter-rendering)
+- [What a rule-message parameter renders, measured locally 2026-08-24](sources/message-and-pointer-probes.md#src-rule-message-parameter-rendering)
 <a id="src-time-datetime-stored-input"></a>
 - [Stored Time and DateTime input causes, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-time-datetime-stored-input)
 <a id="src-declared-format-temporal-input"></a>
@@ -239,7 +239,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-temporal-aggregate-gate"></a>
 - [Which temporal format gate each aggregate carrier uses, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-temporal-aggregate-gate)
 <a id="src-message-address-dialects"></a>
-- [A message address is written in one of two dialects, and which one depends on the operand](sources/temporal-and-message-probes.md#src-message-address-dialects)
+- [A message address is written in one of two dialects, and which one depends on the operand](sources/message-and-pointer-probes.md#src-message-address-dialects)
 
 <a id="src-omitting-date-formats"></a>
 - [What a component-omitting DATE format stores, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-omitting-date-formats)
@@ -254,7 +254,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-value-as-date-locus"></a>
 - [Where a partial-Date `ValueAsDate` operand may be read, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-value-as-date-locus)
 <a id="src-rule-message-semantic-index"></a>
-- [The semantic-index suffix on a rule-message parameter, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-rule-message-semantic-index)
+- [The semantic-index suffix on a rule-message parameter, measured locally 2026-08-23](sources/message-and-pointer-probes.md#src-rule-message-semantic-index)
 <a id="src-date-range-endpoint-shapes"></a>
 - [Which operand shapes a DateRange endpoint admits, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-endpoint-shapes)
 <a id="src-nested-rule-locus"></a>
@@ -358,7 +358,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-starred-group-quantifier-capacity"></a>
 - [The threshold quantifiers read the in-capacity extent, and an instantiated row is filled](sources/group-and-iteration-probes.md#src-starred-group-quantifier-capacity)
 <a id="src-address-dialect-selector"></a>
-- [An unbound repeatable level is what selects a message pointer's slash spelling](sources/temporal-and-message-probes.md#src-address-dialect-selector)
+- [An unbound repeatable level is what selects a message pointer's slash spelling](sources/message-and-pointer-probes.md#src-address-dialect-selector)
 <a id="src-repeatable-descendant-group-count"></a>
 - [A repeatable descendant makes its shell count structurally](sources/group-and-iteration-probes.md#src-repeatable-descendant-group-count)
 <a id="src-deep-repeatable-descendant-group-count"></a>
@@ -386,9 +386,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-multi-root-short-name-reach"></a>
 - [A model may declare more than one root group, and the short-name tier spans them](sources/group-and-iteration-probes.md#src-multi-root-short-name-reach)
 <a id="src-message-group-parameter"></a>
-- [The rule-message group parameter `$#…$`](sources/temporal-and-message-probes.md#src-message-group-parameter)
+- [The rule-message group parameter `$#…$`](sources/message-and-pointer-probes.md#src-message-group-parameter)
 <a id="src-message-group-parameter-resolution"></a>
-- [How the rule-message group parameter resolves](sources/temporal-and-message-probes.md#src-message-group-parameter-resolution)
+- [How the rule-message group parameter resolves](sources/message-and-pointer-probes.md#src-message-group-parameter-resolution)
 <a id="src-dmtool-2026-08-22-instrument-handback"></a>
 - [Reviewed 2026-08-22 instrument handback and its two Kernel measurements](sources/temporal-and-message-probes.md#src-dmtool-2026-08-22-instrument-handback)
 <a id="src-2026-08-23-reconciliation"></a>

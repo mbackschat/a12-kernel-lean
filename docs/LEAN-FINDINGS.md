@@ -1771,7 +1771,7 @@ Treatment. When a `spec/` edit **removes** a possibility — an *only*, an *in-c
 
 ## LF130 — a correlation with no exceptions is the tell that the instrument computed one column from the other
 
-> Date: 2026-08-31. Sections: §1 and §13. Basis: [`SPEC-2026-08-31-16`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-16)'s retracted half, the [selector checkpoint](sources/temporal-and-message-probes.md#src-address-dialect-selector)'s `two-spellings-retracted` row, and a12-dmkits' matching retraction in `KF228` at `b145ce565`.
+> Date: 2026-08-31. Sections: §1 and §13. Basis: [`SPEC-2026-08-31-16`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-16)'s retracted half, the [selector checkpoint](sources/message-and-pointer-probes.md#src-address-dialect-selector)'s `two-spellings-retracted` row, and a12-dmkits' matching retraction in `KF228` at `b145ce565`.
 
 Across twenty-two retained artifacts and more than a thousand messages, every slash-led address carried a `0` at an unbound repeatable level and every bare one did not. That is 1228 rows with no exception, re-read deliberately, cross-checked against four candidate causes, three of which it excluded. It was still not evidence, because the observing probe *chooses* the slash-led rendering exactly when `toExactPointer()` returns null, which is exactly the condition that a non-final level carries `0`. The spelling is computed from the coordinate. Correlating them restates a branch.
 
