@@ -88,12 +88,19 @@ private def outcomeOf (source : SurfaceEnumerationComputationSource)
     (elaborateEnumerationComputation model ["Form"] target.id source).toOption
   some (checked.evaluate raw)
 
-/- Literals are checked against the exact target domain before runtime. -/
+/- Literals are checked against the exact target domain before runtime, and the refusal carries the
+   Kernel identity it was measured with. This is the one constant family whose target constrains the
+   literal's **value** statically rather than rendering it, which is why the admitted token stores
+   verbatim while an undeclared one never reaches runtime
+   ([checkpoint](../../docs/SOURCES.md#src-constant-literal-family-gate)). -/
 example :
     outcomeOf (.literal "A") (rawAt 99 .empty) =
         some (.accepted { text := "A", nonempty := by decide }) ∧
       errorOf (.literal "C") =
-        some (.literalOutsideTarget target.path "C") := by
+        some (.literalOutsideTarget target.path "C") ∧
+      (errorOf (.literal "C")).bind
+          (fun cause => cause.diagnostic?.map KernelStaticDiagnostic.kernelCode) =
+        some "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON" := by
   native_decide
 
 /- A compatible direct source preserves value, clean empty, and formal poison through the shared token result. -/

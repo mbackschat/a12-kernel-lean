@@ -79,6 +79,17 @@ inductive EnumerationComputationElabError where
 
 namespace EnumerationComputationElabError
 
+/-- Only the literal-domain refusal carries a measured Kernel identity. The others are this project's
+own routing, or gates whose Kernel class was never observed, so they claim none
+([checkpoint](../../docs/SOURCES.md#src-constant-literal-family-gate)). -/
+def diagnostic? : EnumerationComputationElabError → Option KernelStaticDiagnostic
+  | .literalOutsideTarget _ _ => some .invalidStringConstantForEnumComparison
+  | .resolve _ | .targetKindMismatch _ _ | .source _
+  | .sourceIncompatible _ _ | .targetSelfReference _
+  | .targetSelfReferenceAtDirectField _
+  | .targetSelfReferenceAtCompatibleCategory _
+  | .incoherentCore => none
+
 /-- Project the measured direct and compatible-category Enumeration
 target-reference refusals to their distinct Kernel diagnostic classes. Domain,
 display, kind, and resolution failures remain local until separately measured. -/
