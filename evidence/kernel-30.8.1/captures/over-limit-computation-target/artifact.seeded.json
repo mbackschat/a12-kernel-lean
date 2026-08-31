@@ -1,0 +1,1174 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "1be2d603c90be578fe7ea0de0b8c515cb2a479c4",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "model.dm.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "seeded-in-capacity",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones/MilestoneStamp",
+                "Project/Milestones/Tasks/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Project/Milestones/Phase",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "This field is required.",
+              "referenced" : [
+                "Project/Milestones/Phase"
+              ],
+              "fillToFix" : [
+                "Project/Milestones/Phase"
+              ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Project/Milestones[2]/Phase",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "This field is required.",
+              "referenced" : [
+                "Project/Milestones[2]/Phase"
+              ],
+              "fillToFix" : [
+                "Project/Milestones[2]/Phase"
+              ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones/Tasks/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones/Tasks/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones/Tasks[2]/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones/Tasks[2]/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones[2]/Tasks/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones[2]/Tasks/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones[2]/Tasks[2]/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones[2]/Tasks[2]/TaskId"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks[2]/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SubtaskDateComp",
+              "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Subtask date follows its milestone.",
+              "referenced" : [
+                "Project/Milestones/MilestoneStamp",
+                "Project/Milestones/Tasks/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Project/Milestones/Phase",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "This field is required.",
+              "referenced" : [
+                "Project/Milestones/Phase"
+              ],
+              "fillToFix" : [
+                "Project/Milestones/Phase"
+              ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Project/Milestones[2]/Phase",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "This field is required.",
+              "referenced" : [
+                "Project/Milestones[2]/Phase"
+              ],
+              "fillToFix" : [
+                "Project/Milestones[2]/Phase"
+              ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones/Tasks/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones/Tasks/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones/Tasks[2]/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones/Tasks[2]/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones[2]/Tasks/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones[2]/Tasks/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones[2]/Tasks[2]/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones[2]/Tasks[2]/TaskId"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks[2]/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "seeded-over-limit",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "mandatoryField",
+              "field" : "Project/Milestones/Phase",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "This field is required.",
+              "referenced" : [
+                "Project/Milestones/Phase"
+              ],
+              "fillToFix" : [
+                "Project/Milestones/Phase"
+              ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Project/Milestones[2]/Phase",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "This field is required.",
+              "referenced" : [
+                "Project/Milestones[2]/Phase"
+              ],
+              "fillToFix" : [
+                "Project/Milestones[2]/Phase"
+              ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones/Tasks/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones/Tasks/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones/Tasks[2]/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones/Tasks[2]/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones[2]/Tasks/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones[2]/Tasks/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones[2]/Tasks[2]/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones[2]/Tasks[2]/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Project/Milestones/Tasks/Subtasks[3]/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Project/Milestones/Tasks/Subtasks' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Project/Milestones/Tasks/Subtasks[3]/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Project/Milestones/Tasks/Subtasks[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Project/Milestones/Tasks/Subtasks[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks[3]/SubtaskDate",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks[2]/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Project/Milestones/Tasks/Subtasks[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Project/Milestones/Tasks/Subtasks[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "mandatoryField",
+              "field" : "Project/Milestones/Phase",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "This field is required.",
+              "referenced" : [
+                "Project/Milestones/Phase"
+              ],
+              "fillToFix" : [
+                "Project/Milestones/Phase"
+              ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Project/Milestones[2]/Phase",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "This field is required.",
+              "referenced" : [
+                "Project/Milestones[2]/Phase"
+              ],
+              "fillToFix" : [
+                "Project/Milestones[2]/Phase"
+              ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones/Tasks/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones/Tasks/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones/Tasks[2]/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones/Tasks[2]/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones[2]/Tasks/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones[2]/Tasks/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones[2]/Tasks[2]/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones[2]/Tasks[2]/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Project/Milestones/Tasks/Subtasks[3]/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Project/Milestones/Tasks/Subtasks' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Project/Milestones/Tasks/Subtasks[3]/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Project/Milestones/Tasks/Subtasks[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Project/Milestones/Tasks/Subtasks[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks[3]/SubtaskDate",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks[2]/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Project/Milestones/Tasks/Subtasks[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Project/Milestones/Tasks/Subtasks[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "two-levels-over",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "mandatoryField",
+              "field" : "Project/Milestones/Phase",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "This field is required.",
+              "referenced" : [
+                "Project/Milestones/Phase"
+              ],
+              "fillToFix" : [
+                "Project/Milestones/Phase"
+              ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Project/Milestones[2]/Phase",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "This field is required.",
+              "referenced" : [
+                "Project/Milestones[2]/Phase"
+              ],
+              "fillToFix" : [
+                "Project/Milestones[2]/Phase"
+              ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones/Tasks/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones/Tasks/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones/Tasks[2]/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones/Tasks[2]/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones[2]/Tasks/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones[2]/Tasks/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones[2]/Tasks[2]/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones[2]/Tasks[2]/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Project/Milestones/Tasks/Subtasks[3]/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Project/Milestones/Tasks/Subtasks' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Project/Milestones/Tasks/Subtasks[3]/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Project/Milestones/Tasks[3]/Subtasks",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Project/Milestones/Tasks[3]/Subtasks"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Project/Milestones/Tasks[3]/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Project/Milestones/Tasks[3]/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Project/Milestones/Tasks[3]/Subtasks[2]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Project/Milestones/Tasks[3]/Subtasks[2]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Project/Milestones/Tasks[3]/Subtasks[2]/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Project/Milestones/Tasks[3]/Subtasks[2]/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Project/Milestones/Tasks[3]/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Project/Milestones/Tasks[3]/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Project/Milestones/Tasks/Subtasks[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Project/Milestones/Tasks/Subtasks[3]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Project/Milestones/Tasks[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Project/Milestones/Tasks[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks[2]/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Project/Milestones/Tasks[3]/Subtasks",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+                "referenced" : [
+                  "Project/Milestones/Tasks[3]/Subtasks"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Project/Milestones/Tasks[3]/Subtasks[2]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+                "referenced" : [
+                  "Project/Milestones/Tasks[3]/Subtasks[2]"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Project/Milestones/Tasks/Subtasks[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Project/Milestones/Tasks/Subtasks[3]"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Project/Milestones/Tasks[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Project/Milestones/Tasks[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "mandatoryField",
+              "field" : "Project/Milestones/Phase",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "This field is required.",
+              "referenced" : [
+                "Project/Milestones/Phase"
+              ],
+              "fillToFix" : [
+                "Project/Milestones/Phase"
+              ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Project/Milestones[2]/Phase",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "This field is required.",
+              "referenced" : [
+                "Project/Milestones[2]/Phase"
+              ],
+              "fillToFix" : [
+                "Project/Milestones[2]/Phase"
+              ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones/Tasks/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones/Tasks/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones/Tasks[2]/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones/Tasks[2]/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones[2]/Tasks/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones[2]/Tasks/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Project/Milestones[2]/Tasks[2]/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The values of the field must be unique.",
+              "referenced" : [
+                "Project/Milestones[2]/Tasks[2]/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Project/Milestones/Tasks/Subtasks[3]/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Project/Milestones/Tasks/Subtasks' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Project/Milestones/Tasks/Subtasks[3]/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Project/Milestones/Tasks[3]/Subtasks",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Project/Milestones/Tasks[3]/Subtasks"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Project/Milestones/Tasks[3]/Subtasks/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Project/Milestones/Tasks[3]/Subtasks/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Project/Milestones/Tasks[3]/Subtasks[2]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Project/Milestones/Tasks[3]/Subtasks[2]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Project/Milestones/Tasks[3]/Subtasks[2]/SubtaskDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Project/Milestones/Tasks[3]/Subtasks[2]/SubtaskDate"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Project/Milestones/Tasks[3]/TaskId",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Project/Milestones/Tasks[3]/TaskId"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Project/Milestones/Tasks/Subtasks[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Project/Milestones/Tasks/Subtasks[3]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Project/Milestones/Tasks[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Project/Milestones/Tasks[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones/Tasks[2]/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks[2]/Subtasks/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              },
+              {
+                "field" : "Project/Milestones[2]/Tasks[2]/Subtasks[2]/SubtaskDate",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Project/Milestones/Tasks[3]/Subtasks",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+                "referenced" : [
+                  "Project/Milestones/Tasks[3]/Subtasks"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Project/Milestones/Tasks[3]/Subtasks[2]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Project/Milestones/Tasks' was specified with 3, but at most 2 is allowed.",
+                "referenced" : [
+                  "Project/Milestones/Tasks[3]/Subtasks[2]"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Project/Milestones/Tasks/Subtasks[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Project/Milestones/Tasks/Subtasks[3]"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Project/Milestones/Tasks[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Project/Milestones/Tasks[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
