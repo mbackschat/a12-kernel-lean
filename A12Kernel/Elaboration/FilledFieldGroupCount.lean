@@ -48,8 +48,13 @@ def evaluateCheckedDocumentValidation
   pure (numberOfFilledFields (resolved.addressedCells.map fun addressed =>
     observeCell .validation addressed.cell))
 
-/-- Lift the measured fixed-group validation count against its expanded direct-field extent. The
-    starred carrier returns `none` because its movement depends on a separate declared row extent. -/
+/-- Lift the measured fixed-group validation count against its subtree's declared **slot capacity**.
+    A subtree owning a repeatable descendant admits more cells than it declares fields, and the count
+    stays grow-only until every one of those slots is filled; the declaration count would freeze it
+    early ([checkpoint](../../../docs/SOURCES.md#src-filled-field-count-nested-capacity)). An
+    unretained descendant maximum yields no operand at all rather than an unmeasured movement rule,
+    matching the starred carrier's own treatment of a missing extent. The starred carrier returns
+    `none` here because its movement depends on a separate declared row extent. -/
 def evaluateCheckedDocumentFixedValidationOperand?
     (checked : CheckedFilledFieldCountGroupSource model)
     (document : CheckedDocument model) (outer : Env) :
@@ -57,8 +62,9 @@ def evaluateCheckedDocumentFixedValidationOperand?
   let count ← checked.evaluateCheckedDocumentValidation document outer
   match checked.source with
   | .fixed _ =>
-      pure ((count.availableWithFillability? checked.declarations.length).map
-        fun available => .value available.1 available.2)
+      pure ((model.groupSubtreeSlotCapacity? checked.source.groupPath).bind
+        fun capacity => (count.availableWithFillability? capacity).map
+          fun available => .value available.1 available.2)
   | .starred _ | .starredPresence _ => pure none
 
 end CheckedFilledFieldCountGroupSource

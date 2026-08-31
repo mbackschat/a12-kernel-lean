@@ -124,6 +124,7 @@ import A12Kernel.Proofs.EnumerationRepetitionNotUnique
 import A12Kernel.Proofs.EnumerationValueList
 import A12Kernel.Proofs.ExactTokenComputationResult
 import A12Kernel.Proofs.FieldId
+import A12Kernel.Proofs.FilledFieldGroupCount
 import A12Kernel.Proofs.FirstFilledValue
 import A12Kernel.Proofs.FlatNumberValueList
 import A12Kernel.Proofs.FlatPresenceContradiction

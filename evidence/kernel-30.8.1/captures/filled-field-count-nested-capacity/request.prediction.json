@@ -1,0 +1,17 @@
+{
+ "model": "FillCap_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "k4-one-slot-left",
+   "document": "k4-one-slot-left.json"
+  },
+  {
+   "name": "k5-capacity",
+   "document": "k5-capacity.json"
+  }
+ ]
+}

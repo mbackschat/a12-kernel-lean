@@ -1,0 +1,146 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "1be2d603c90be578fe7ea0de0b8c515cb2a479c4",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FillCap_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "k4-one-slot-left",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LT5",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT5",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "/Probe[1]/Flat[1]/Rows[0]/RowS",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "/Probe[1]/Flat[1]/Rows[0]/RowS",
+                "Probe/Flat/FlatA"
+              ]
+            },
+            {
+              "code" : "LT6",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT6",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "/Probe[1]/Flat[1]/Rows[0]/RowS",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "/Probe[1]/Flat[1]/Rows[0]/RowS",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LT5",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT5",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "/Probe[1]/Flat[1]/Rows[0]/RowS",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "/Probe[1]/Flat[1]/Rows[0]/RowS",
+                "Probe/Flat/FlatA"
+              ]
+            },
+            {
+              "code" : "LT6",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT6",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "/Probe[1]/Flat[1]/Rows[0]/RowS",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "/Probe[1]/Flat[1]/Rows[0]/RowS",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "k5-capacity",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LT6",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LT6",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "/Probe[1]/Flat[1]/Rows[0]/RowS",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LT6",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LT6",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "/Probe[1]/Flat[1]/Rows[0]/RowS",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

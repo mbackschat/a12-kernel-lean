@@ -1,0 +1,116 @@
+{
+  "header" : {
+    "id" : "FillCount_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "FillCount_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Flat",
+            "name" : "Flat",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/Flat/Rows",
+                "name" : "Rows",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Flat/Rows/RowR",
+                    "name" : "RowR",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Flat/FlatA",
+                "name" : "FlatA",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/LT2",
+            "name" : "LT2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Flat/FlatA",
+              "errorCode" : "LT2",
+              "errorCondition" : "NumberOfFilledFields(Flat) < 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "LT2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/LT3",
+            "name" : "LT3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Flat/FlatA",
+              "errorCode" : "LT3",
+              "errorCondition" : "NumberOfFilledFields(Flat) < 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "LT3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/LT5",
+            "name" : "LT5",
+            "Rule" : {
+              "errorEntityRelPath" : "../Flat/FlatA",
+              "errorCode" : "LT5",
+              "errorCondition" : "NumberOfFilledFields(Flat) < 5",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "LT5"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

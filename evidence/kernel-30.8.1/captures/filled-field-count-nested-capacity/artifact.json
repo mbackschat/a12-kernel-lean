@@ -1,0 +1,394 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "1be2d603c90be578fe7ea0de0b8c515cb2a479c4",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FillCount_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "c0-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LT2",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT2",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            },
+            {
+              "code" : "LT3",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT3",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            },
+            {
+              "code" : "LT5",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT5",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LT2",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT2",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            },
+            {
+              "code" : "LT3",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT3",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            },
+            {
+              "code" : "LT5",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT5",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "c1-flat-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LT2",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT2",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            },
+            {
+              "code" : "LT3",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT3",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            },
+            {
+              "code" : "LT5",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT5",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LT2",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT2",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            },
+            {
+              "code" : "LT3",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT3",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            },
+            {
+              "code" : "LT5",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT5",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "c2-flat-one-row",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LT3",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT3",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            },
+            {
+              "code" : "LT5",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT5",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LT3",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT3",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            },
+            {
+              "code" : "LT5",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT5",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "c3-flat-two-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LT5",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT5",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LT5",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "LT5",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "c4-capacity",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LT5",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LT5",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LT5",
+              "field" : "Probe/Flat/FlatA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LT5",
+              "referenced" : [
+                "/Probe[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Flat/FlatA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -122,4 +122,49 @@ example :
     starredCount twoRows [cell 10 [2] "a2"] = some (.value 1) := by
   native_decide
 
+private def nestedModel : FlatModel :=
+  { fields := [
+      { id := 20, groupPath := ["Probe", "Flat"], name := "FlatA",
+        policy := { kind := .string } },
+      { id := 21, groupPath := ["Probe", "Flat", "Rows"], name := "RowR",
+        policy := { kind := .string }, repeatableScope := [20] }]
+    repeatableGroups := [{
+      level := 20, path := ["Probe", "Flat", "Rows"], repeatability := some 3 }] }
+
+private def nestedPrepared :
+    PreparedFlatStringContext nestedModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler nestedModel).toOption.get (by native_decide)
+
+private def nestedChecked? : Option (CheckedFilledFieldCountGroupSource nestedModel) :=
+  (elaborateFilledFieldCountFixedGroupValidationSource nestedModel ["Probe"] {
+    group := { base := .absolute, groups := ["Probe", "Flat"] } }).toOption
+
+private def nestedOperand (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) : Option NumericOperand := do
+  let checked ← nestedChecked?
+  let document ← (checkDocument nestedPrepared "en_US" {
+    instantiatedRows := rows
+    cells }).toOption
+  (checked.evaluateCheckedDocumentFixedValidationOperand? document []).toOption.join
+
+private def nestedRows (count : Nat) : List RowAddr :=
+  (List.range count).map fun index => { group := 20, path := [index + 1] }
+
+private def nestedFilled (count : Nat) : List ClassifiedCellInput :=
+  cell 20 [] "a" :: (List.range count).map fun index => cell 21 [index + 1] "r"
+
+/- Movement is bounded by the subtree's declared **slot capacity**, not by its declaration count. One
+   direct field beside a `max 3` descendant row holding one field admits four cells, so a document at
+   two or three filled cells can still grow and fires OMISSION, and only the fourth is fixed. Measured
+   on kernel 30.8.1 at the
+   [nested-capacity checkpoint](../../docs/SOURCES.md#src-filled-field-count-nested-capacity); the two
+   numbers coincide exactly when the subtree owns no repeatable descendant, which every other fixture
+   here satisfies. -/
+example :
+    nestedOperand (nestedRows 1) (nestedFilled 1) = some (.value 2 .growOnly) ∧
+    nestedOperand (nestedRows 2) (nestedFilled 2) = some (.value 3 .growOnly) ∧
+    nestedOperand (nestedRows 3) (nestedFilled 3) = some (.value 4 .fixed) := by
+  native_decide
+
 end A12Kernel

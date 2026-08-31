@@ -361,6 +361,36 @@ def FlatModel.groupSubtreeFields (model : FlatModel) (path : GroupPath) :
     List FlatFieldDecl :=
   model.fields.filter fun declaration => path.isPrefixOf declaration.groupPath
 
+/-- How many cells one declaration contributes beneath a group whose own repeatable ancestry already
+covers `enclosing` levels: one per row combination its remaining repeatable ancestors may reach.
+A declaration with no repeatable ancestor below that group contributes exactly one. `none` is an
+unretained maximum on some level, which has no finite contribution. -/
+def FlatModel.declarationSlots? (model : FlatModel) (enclosing : Nat)
+    (declaration : FlatFieldDecl) : Option Nat :=
+  (declaration.repeatableScope.drop enclosing).foldl (init := some 1)
+    fun rows level =>
+      rows.bind fun product =>
+        (model.repeatableGroupAtLevel? level).bind fun group =>
+          group.repeatability.map (· * product)
+
+/-- The declared **slot capacity** of a group's subtree: how many cells a document can hold beneath
+this group once every repeatable descendant is filled to its declared maximum. `none` means some
+descendant's maximum is not retained, so the subtree has no finite capacity to reach.
+
+This is deliberately not `(groupSubtreeFields path).length`. The two coincide exactly when the
+subtree owns no repeatable descendant, so a movement rule keyed on the declaration count looks
+correct on every model without one — and kernel 30.8.1 keeps such a count grow-only until this
+capacity is reached, not until the declaration count is
+([checkpoint](../../../docs/SOURCES.md#src-filled-field-count-nested-capacity)). -/
+def FlatModel.groupSubtreeSlotCapacity? (model : FlatModel) (path : GroupPath) :
+    Option Nat :=
+  (model.groupSubtreeFields path).foldl (init := some 0)
+    fun total declaration =>
+      total.bind fun accumulated =>
+        (model.declarationSlots?
+          (model.repeatableScopeForGroupPath path).length declaration).map
+            (accumulated + ·)
+
 private def FlatModel.lookupPath? (model : FlatModel) (path : List String) :
     Except ResolveError (Option FlatFieldDecl) :=
   match model.fields.filter (fun declaration => declaration.path == path) with

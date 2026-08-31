@@ -299,6 +299,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A direct-list `FirstFilledValue` places its sources freely](sources/cross-layer-routes.md#src-date-range-direct-list-cross-group-sources)
 <a id="src-starred-operand-message-polarity"></a>
 - [A computation's message type follows what can still grow](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity)
+<a id="src-filled-field-count-nested-capacity"></a>
+- [A group `NumberOfFilledFields` moves against declared slot capacity, not declared field count](sources/group-and-iteration-probes.md#src-filled-field-count-nested-capacity)
 <a id="src-starred-group-count-computation"></a>
 - [The computation arm counts a starred repeatable group's instantiated rows](sources/group-and-iteration-probes.md#src-starred-group-count-computation)
 <a id="src-repeatable-descendant-group-count"></a>

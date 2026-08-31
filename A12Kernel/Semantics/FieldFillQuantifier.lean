@@ -35,7 +35,12 @@ namespace FilledFieldCount
 
 /-- Pair an available validation count with its movement against the declared entity extent. A
     missing entity can only increase the count; exhausting the extent makes it fixed. Cause-free
-    count unavailability remains absent rather than acquiring a fabricated formal cause. -/
+    count unavailability remains absent rather than acquiring a fabricated formal cause.
+
+    `declaredExtent` is the number of **slots the document can hold**, not the number of fields
+    declared. The two differ as soon as the operand's subtree owns a repeatable descendant, and
+    passing the declaration count there freezes the movement early
+    ([checkpoint](../../docs/SOURCES.md#src-filled-field-count-nested-capacity)). -/
 def availableWithFillability? (result : FilledFieldCount)
     (declaredExtent : Nat) : Option (Nat × NumericFillability) :=
   match result with

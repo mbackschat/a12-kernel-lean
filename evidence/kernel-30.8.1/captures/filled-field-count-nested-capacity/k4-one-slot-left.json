@@ -1,0 +1,17 @@
+{
+ "Probe": {
+  "Flat": {
+   "FlatA": "a",
+   "Rows": [
+    {
+     "RowR": "r",
+     "RowS": "s"
+    },
+    {
+     "RowR": "r",
+     "RowS": null
+    }
+   ]
+  }
+ }
+}
