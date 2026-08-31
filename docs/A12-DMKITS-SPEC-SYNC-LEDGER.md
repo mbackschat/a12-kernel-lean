@@ -71,6 +71,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `limit-open`: the split is measured on the fixed group operand only, so whether a **starred** carrier shows the same malformed-in-capacity versus over-limit behavior is unmeasured, and `Sum` over an empty in-capacity domain is not measured either. Both stay unclaimed rather than inherited across the carrier boundary.
 - `local-consequence`: four consumers here keep the complete formal-cell view for want of exactly these rows — the value counts and the extrema over a group operand. Correcting them is dependent work carried by [SG13](SEMANTICS-GAPS.md#sg13--group-list-and-group-count-completion), not by this entry.
 - `evidence`: the [fixed-group over-limit extent checkpoint](sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep).
+- `clause-updated`: [`07-repetition-and-iteration.md`](../spec/07-repetition-and-iteration.md), where the over-repetition domain paragraph named starred carriers only and left the nested axis unverified. It now states the fixed group operand's carrier list, the outer-versus-inner result, and the malformed separator that makes the exclusion a domain fact rather than an unavailability fact. No outbound entry follows: the correction arrives from an already committed and reviewed peer revision answering this entry, and the local half it extends is the one that produced the request.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 

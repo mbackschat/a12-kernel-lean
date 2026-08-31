@@ -161,6 +161,7 @@ import A12Kernel.Conformance.FullDateFirstFilledComputation
 import A12Kernel.Conformance.FullDateInput
 import A12Kernel.Conformance.GeneratedComputationValidation
 import A12Kernel.Conformance.GroupListDiagnostic
+import A12Kernel.Conformance.GroupOperandCapacity
 import A12Kernel.Conformance.GroupPresence
 import A12Kernel.Conformance.GroupPresenceRepeatableDescendant
 import A12Kernel.Conformance.IndexedDateRangeConstructionComputation
