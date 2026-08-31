@@ -53,6 +53,23 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 
+<a id="spec-2026-08-31-03"></a>
+### `SPEC-2026-08-31-03` — a bare constant's admission is gated by the target's declared format string, not its kind
+
+- `status`: pending
+- `clause`: [`09-computations.md`](../spec/09-computations.md) constant-families row, which gains the family gate, the ENUM membership timing, and the authorable-kind inventory; [`12-concrete-syntax.md`](../spec/12-concrete-syntax.md)'s lexer note, which gains the clock literal
+- `delta`: new behavior, not a correction. [`SPEC-2026-08-31-02`](#spec-2026-08-31-02) recorded that a Date constant meets no target check and is rendered into the target's declared format. That rule is **not Date-specific**, and the input deciding admission is the target's declared **format string** rather than its declared kind.
+- `mechanism`: a complete 2×2 on one model. A TIME field declared `HH:mm:ss` admits `"12:30:00"` and refuses `"05.03.2024"`; a TIME field declared `yyyy-MM-dd` does the exact opposite; a **DATE** field declared `HH:mm:ss` admits the clock and refuses the date; a DATE field declared `yyyy-MM-dd` admits the date and refuses the clock. Each kind appears on both sides of both outcomes, which is what excludes the kind as the cause rather than leaving it merely unvaried. A family mismatch draws `MVK_INVALID_COMPARE_TO_DATE`.
+- `two-rules`: admission and storage are separate rules that compose. The family **gates**; the format then **renders**, and may drop components silently — `"05.03.2024"` into a `yyyy-MM` DATE_FRAGMENT stores `2024-03`, reproducing on a second kind the lossy store the Date entry measured for a `yyyy` DATE target. A peer implementing one rule for both will get the `yyyy-MM-dd`-on-a-TIME-field cell wrong in one direction or the fragment store wrong in the other.
+- `enum-timing`: ENUM is the one kind whose target constrains the constant's **value** statically. `"A"` is admitted against a declaration listing `A` and `B`; `"Z"` is refused `MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON`. That is a **fourth** target-check timing beside String's all-at-runtime, Number's split, and Date's none.
+- `inventory`: of the kinds this project had left unmeasured, **TIME, ENUM, and DATE_FRAGMENT admit a bare constant**; DATETIME and DATERANGE have **no known witness** at this revision. That is a missing witness, not a proof of unauthorability — and the range literal drew its own distinct `MVK_INVALID_COMPARE_TO_DATE_RANGE`, so something classified there. A witness for either is the most useful thing a12-dmkits can return with this entry, alongside the omitted-year shape [`SPEC-2026-08-31-02`](#spec-2026-08-31-02) asks about.
+- `evidence`: the [family-gate checkpoint](sources/cross-layer-routes.md#src-constant-literal-family-gate) — a static matrix on a computation-free model plus a runtime request on both codegen strategies, `enginesAgree: true`, `producer.source.state: CLEAN` at a12-dmkits `1be2d603c90be578fe7ea0de0b8c515cb2a479c4`. String and Number constants ran as live controls so the all-refusal rows cannot be read as a dead gate.
+- `limit`: two temporal formats per family, one clock literal, one date literal, one two-value enumeration, one repetition level, `en_US`, no Base Year. Not measured: whether the family gate reads component sets or a coarser date/time split — every date-shaped format tested is complete or year-leading, so a `MM`-only format could still separate those readings.
+- `local-scope`: no new Lean owner. The measurement explains the [Date carrier](implementation/repeatable-computations.md#cap-repeatable-date-constant-computation)'s component-omitting exclusion rather than changing it — such a target is in-family and renders lossily, so extending it needs a component-dropping renderer and not a new admission rule. TIME, ENUM, and DATE_FRAGMENT carriers stay unwritten with their admission rules now measured.
+- `acceptance`: a12-dmkits confirms on its own fixtures that the declared format string and not the kind decides a constant's admission — in particular the DATE-field-declared-`HH:mm:ss` cell, which is the one that cannot be explained by reading the kind — or supplies the contrary measurement, or a witness for a DATETIME or DATERANGE literal.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-31-02"></a>
 ### `SPEC-2026-08-31-02` — a Date constant has no target check at either time and is stored in the target's declared format
 

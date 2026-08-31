@@ -431,6 +431,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-date-constant-target-formatting"></a>
 - [A Date constant is admitted by its own spelling and stored in the target's format, with no target check at either time](sources/cross-layer-routes.md#src-date-constant-target-formatting)
+
+<a id="src-constant-literal-family-gate"></a>
+- [A bare constant's admission is gated by the target's declared format string, never its kind](sources/cross-layer-routes.md#src-constant-literal-family-gate)
 <a id="src-fixed-target-star-placement"></a>
 - [Fixed computation target under a star operand: no placement gate](sources/cross-layer-routes.md#src-fixed-target-star-placement)
 <a id="src-unsuppressed-assignment-scale-reach"></a>
