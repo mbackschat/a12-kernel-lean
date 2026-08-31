@@ -446,6 +446,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-component-omitting-date-formats"></a>
 - [A component-omitting date target needs every component its format names, and the Base Year supplies the year](sources/cross-layer-routes.md#src-component-omitting-date-formats)
+
+<a id="src-base-year-yearless-store"></a>
+- [A declared Base Year gates a yearless target's authoring and contributes nothing to its store](sources/cross-layer-routes.md#src-base-year-yearless-store)
 <a id="src-fixed-target-star-placement"></a>
 - [Fixed computation target under a star operand: no placement gate](sources/cross-layer-routes.md#src-fixed-target-star-placement)
 <a id="src-unsuppressed-assignment-scale-reach"></a>

@@ -1,0 +1,3 @@
+{"model": "BaseYear_DM.json", "locale": "en_US",
+ "observe": ["validateFull", "compute"],
+ "rows": [{"name": "empty", "document": "d-empty.json"}]}
