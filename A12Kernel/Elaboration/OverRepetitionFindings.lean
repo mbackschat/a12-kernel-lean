@@ -1,11 +1,21 @@
 import A12Kernel.Elaboration.CheckedDocument
 
-/-! # The over-repetition finding set a document draws
+/-! # The over-repetition finding set a document draws **under full validation**
 
 A row instantiated beyond its group's declared repeatability does not merely lose its computed
 values ([`CheckedDocument.computationRowOutcomes`](CheckedDocument.lean)); it makes the document
 report a specific, countable set of structural findings. This module owns that set and nothing else:
 which nodes are named, with which of the two codes, and how a nested violation is absorbed.
+
+**The arm is part of the claim.** Everything below is the full-validation channel. A computation
+reports its own over-repetition errors through a **second, narrower** channel scoped to what its
+operands reach, and the two disagree on documents this project already holds: in the multiplicity
+capture's own artifact the nested document draws **ten** validation findings and **zero** operand
+errors, and the two-independent document draws eight against four
+([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-limit-finding-multiplicity)).
+So this set must not be read as what a computation sees. That channel has no owner here; it is
+recorded as an obligation in [SG4](../../docs/SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition)
+rather than approximated by this one.
 
 **One rule replaces the special cases.** An over-limit row draws one `zuGrosseZeile` on itself, plus
 one `zuGrosseKontextnummer` for every node the document instantiates beneath it, at any depth

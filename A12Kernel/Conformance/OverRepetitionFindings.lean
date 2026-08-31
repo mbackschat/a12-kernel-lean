@@ -9,6 +9,10 @@ carrying `Rows`, and an independent `A`/`B`/`C` chain each declared `max 2`.
 
 Findings are compared as **sets**: nothing measured fixes the Kernel's emission order, so a case that
 pinned one would claim more than the observation supports.
+
+Every count here is the **full-validation** channel's. The same artifacts carry a second, narrower
+operand-scoped channel that a computation sees, and it answers differently on these very documents,
+so none of these numbers may be reused for it.
 -/
 
 namespace A12Kernel.Conformance.OverRepetitionFindings
