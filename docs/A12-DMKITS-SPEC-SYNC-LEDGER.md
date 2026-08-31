@@ -53,6 +53,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 
+<a id="spec-2026-08-31-06"></a>
+### `SPEC-2026-08-31-06` — one group-count static gate table governs both arms, and containment reaches a wildcarded operand
+
+- `status`: pending
+- `clause`: [`02-logic-and-formal-errors.md`](../spec/02-logic-and-formal-errors.md), the static-authoring paragraph of the numeric group-count section and the starred-fold sentence beside it, both corrected in this change
+- `delta`: the clause listed the fixed-only refusals — short arity, exact repetition, ancestor-beside-descendant — as a rule about *plain* lists, said nothing about a root operand beside a **disjoint** one, and asserted that "duplicate checking skips wildcarded operands". The last is false. **Strict containment between any two members is refused `MVK_DUPLICATE_PARAM2` whichever side carries the star**, and the only pair a star escapes with is two starred operands naming the **same** group, which are admitted and counted once per position. Beside that, a root operand beside a disjoint one is refused `MVK_ROOT_GROUP_WITH_OTHER_PARAMETERS`, and **containment is checked before rootness**, so a root beside its own descendant draws the containment class.
+- `arm`: the whole table is arm-independent, measured on the computation arm rather than carried across from the validation arm. That mattered: the same operator is known to **invert** across the arms on formal invalidity, so the boundary is real and this project had in fact implemented the two arms differently.
+- `consequence`: a reimplementer building the computation arm from the previous clause would admit three shapes the Kernel refuses at authoring time — a fixed group beside a star inside it, a star beside a star inside it, and a root beside a disjoint operand — and would then need a runtime answer for a list that never reaches runtime. This project had exactly that defect and a pair of conformance cases locking the invented runtime answer; both are deleted.
+- `evidence`: the [static-gate checkpoint](sources/group-and-iteration-probes.md#src-group-count-static-gates-both-arms) — twenty-six `computation add --dry-run` invocations over one two-root model, each refusal paired with an admitted control differing in exactly the named dimension, `dmtool` 0.13.0 at a12-dmkits `1be2d603c90be578fe7ea0de0b8c515cb2a479c4`, clean before and after.
+- `limit`: `NumberOfFilledGroups` only, one declaring group, `en_US`, one nesting level for the fixed-beside-star pair and two for the star-beside-star pair. Not measured: the same table under a repeatable declaring group, a filtered star, and an unretained repeatability.
+- `local-scope`: both computation branches now call the same containment predicate and root gate in the measured order, as the validation branches already did; [`cross-clause.md`](implementation/cross-clause.md#cap-mixed-validation-filled-group-count) owns the coverage.
+- `acceptance`: a12-dmkits confirms that its group-count elaboration applies containment and rootness identically in rules and computations, with containment first — or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-31-04"></a>
 ### `SPEC-2026-08-31-04` — a component-omitting date target needs every component its format names, and the Base Year supplies the year
 

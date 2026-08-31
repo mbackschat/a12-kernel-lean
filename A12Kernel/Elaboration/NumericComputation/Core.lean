@@ -105,6 +105,9 @@ inductive NumericComputationElabError where
   /-- The starred group plan itself refused; the underlying error carries the class. -/
   | starredGroupCountPlan (error : StarredGroupElabError)
   | overlappingGroupCountOperands (left right : GroupPath)
+  /-- A root group beside any other operand. Reached only once containment is ruled out, because
+  the Kernel checks the two gates in that order on both arms. -/
+  | rootGroupInGroupCount (path : GroupPath)
   | targetSelfReference (field : FieldId)
   | targetSelfReferenceAfterScale (field : FieldId)
   | authoring (result : NumericAuthoringCheck)
@@ -128,6 +131,7 @@ def groupCountDiagnostic? :
   | .overlappingGroupCountOperands left right =>
       if left == right then some .duplicateParam1 else some .duplicateParam2
   | .repeatableGroupCountRequiresStar _ => some .noWildcard
+  | .rootGroupInGroupCount _ => some .rootGroupWithOtherParameters
   | _ => none
 
 /-- Project the measured computed Number target-scale rejection and the target
@@ -566,10 +570,13 @@ private def FlatModel.resolveNumericComputationExpression
             | some (left, right) =>
                 throw (.overlappingGroupCountOperands left right)
             | none =>
-                if groups.any fun group => group.referencesField model target then
-                  throw (.targetSelfReference target)
-                else
-                  pure (.numeric (.filledGroupCount groups))
+                match groups.find? ResolvedGroupReference.isRoot with
+                | some root => throw (.rootGroupInGroupCount root.path)
+                | none =>
+                    if groups.any fun group => group.referencesField model target then
+                      throw (.targetSelfReference target)
+                    else
+                      pure (.numeric (.filledGroupCount groups))
         | none => do
             let checked ← operands.mapM fun operand =>
               match operand with
@@ -590,20 +597,21 @@ private def FlatModel.resolveNumericComputationExpression
                       -- Kernel class, and it is not measured on this carrier.
                       | .ok (.terminalPresence _) =>
                           throw (NumericComputationElabError.starredGroupCountOperand path)
-            -- Overlap is enforced over the fixed operands, where it is measured. A mixed pair's
-            -- duplicate rule is unmeasured, so no gate is invented for it here.
-            let fixedOnly := checked.filterMap fun operand =>
-              match operand with
-              | .fixed reference => some reference
-              | .starred _ => none
-            match ResolvedGroupReferences.firstOverlap? fixedOnly with
+            -- Containment reaches every member whichever side carries the star, and it runs
+            -- **before** rootness: a root beside its own descendant draws the overlap class, and
+            -- the root class is what remains for a root beside a disjoint operand. Both gates and
+            -- their order are measured on this arm rather than carried over from validation.
+            match CheckedGroupCountOperand.firstDuplicate? checked with
             | some (left, right) =>
                 throw (.overlappingGroupCountOperands left right)
             | none =>
-                if checked.any fun operand => operand.referencesField model target then
-                  throw (.targetSelfReference target)
-                else
-                  pure (.filledGroupCountMixed checked)
+                match checked.find? CheckedGroupCountOperand.isRoot with
+                | some operand => throw (.rootGroupInGroupCount operand.groupPath)
+                | none =>
+                    if checked.any fun operand => operand.referencesField model target then
+                      throw (.targetSelfReference target)
+                    else
+                      pure (.filledGroupCountMixed checked)
 
 /-- Resolve the measured arithmetic shapes whose target reference is deferred
 until after the scale comparison.

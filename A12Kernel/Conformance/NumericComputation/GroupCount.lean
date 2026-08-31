@@ -74,6 +74,14 @@ def threeGroupModel : FlatModel :=
     fields := model.fields ++
       [numberIn thirdGroupId ["Root", "Other"] "OtherValue"] }
 
+/-- A **second root** beside `Root`, so a root operand can stand next to a disjoint one. The
+    single-root models above cannot express that pair: every group there either is `Root` or lies
+    under it, which is the containment class instead. -/
+def twoRootModel : FlatModel :=
+  { model with
+    fields := model.fields ++
+      [numberIn thirdGroupId ["Second", "Aside"] "AsideValue"] }
+
 /-- A group reached only through a repeatable declaration, with no direct field of its own. -/
 def repeatableGroupModel : FlatModel :=
   { fields := model.fields ++
@@ -297,8 +305,9 @@ example :
 
 /- The kernel distinguishes fixed-count authoring failures by diagnostic identity: short
    arity, exact duplication, ancestor overlap, and an unstarred repeatable group are four
-   separate classes. Root beside any descendant is the same overlap class, not a separate
-   root rejection. -/
+   separate classes. Root beside its own descendant is the overlap class, because containment is
+   checked first; the root class the next case locks is what remains once containment is ruled
+   out. -/
 example :
     checkedCountDiagnosticIn model [["Root", "Details"]] =
         some .paramSizeInvalidGN ∧
@@ -314,6 +323,22 @@ example :
       checkedCountDiagnosticIn repeatableGroupModel
         [["Root", "Rows"]] =
         some .noWildcard := by
+  native_decide
+
+/- A root operand beside a **disjoint** one draws its own class, in either authored order, and the
+   disjoint non-root pair beside it is admitted — so this is the root, not the cross-root list.
+   Measured on the computation arm through `computation add --dry-run`
+   ([checkpoint](../../../docs/SOURCES.md#src-group-count-static-gates-both-arms)); the arm makes no
+   difference to any gate in the table. -/
+example :
+    checkedCountDiagnosticIn twoRootModel [["Root"], ["Second"]] =
+        some .rootGroupWithOtherParameters ∧
+      checkedCountDiagnosticIn twoRootModel [["Root", "Details"], ["Second"]] =
+        some .rootGroupWithOtherParameters ∧
+      checkedCountDiagnosticIn twoRootModel [["Second"], ["Root", "Details"]] =
+        some .rootGroupWithOtherParameters ∧
+      checkedCountDiagnosticIn twoRootModel
+        [["Root", "Details"], ["Second", "Aside"]] = none := by
   native_decide
 
 /- The all-clean positive control takes the same `2`, so the measured row cannot be read as a

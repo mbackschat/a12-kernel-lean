@@ -99,6 +99,82 @@ example : admitted [fixedOperand ["Probe", "Flat"]] = false := by
 example : admitted [fixedOperand ["Probe", "Flat"], fixedOperand ["Probe", "Other"]] = true := by
   native_decide
 
+/-! ### Containment and rootness over a mixed list
+
+The whole static gate table is **arm-independent**: every class the validation arm draws over a
+mixed operand list, the computation arm draws identically, in both authored orders, measured through
+`computation add --dry-run` on a two-root model
+([checkpoint](../../../docs/SOURCES.md#src-group-count-static-gates-both-arms)). The arm boundary is
+real for polarity — a computation's count carries none — so reusing the validation arm's gates here
+is a claim, and this is the measurement that discharges it.
+-/
+
+private def gateNested : FieldId := 5
+private def gateInner : FieldId := 6
+private def gateSecond : FieldId := 7
+private def gateTarget : FieldId := 8
+
+private def nestedLevel : RepeatableLevel := 12
+private def innerLevel : RepeatableLevel := 13
+private def secondLevel : RepeatableLevel := 14
+
+/-- A repeatable group under a **fixed** one, a repeatable group under a **repeatable** one, and a
+    repeatable group under a **second root**. Those three carriers are what the model above lacks:
+    every containment pair and the disjoint-root control need one of them. -/
+private def gateModel : FlatModel :=
+  { fields :=
+      [ numberIn flatValueId ["Probe", "Flat"] "FlatValue"
+      , { numberIn gateNested ["Probe", "Flat", "Nested"] "NestedValue" with
+            repeatableScope := [nestedLevel] }
+      , { numberIn rowValueId ["Probe", "Rows"] "RowValue" with
+            repeatableScope := [rowsLevel] }
+      , { numberIn gateInner ["Probe", "Rows", "Inner"] "InnerValue" with
+            repeatableScope := [rowsLevel, innerLevel] }
+      , { numberIn gateSecond ["Second", "SRows"] "SecondRowValue" with
+            repeatableScope := [secondLevel] }
+      , numberIn gateTarget ["Probe"] "GateTarget" ]
+    repeatableGroups :=
+      [ { level := rowsLevel, path := ["Probe", "Rows"], repeatability := some 3 }
+      , { level := nestedLevel, path := ["Probe", "Flat", "Nested"], repeatability := some 2 }
+      , { level := innerLevel, path := ["Probe", "Rows", "Inner"], repeatability := some 2 }
+      , { level := secondLevel, path := ["Second", "SRows"], repeatability := some 3 } ] }
+
+private def gateCode? (operands : List SurfaceGroupCountOperand) : Option KernelStaticDiagnostic :=
+  match elaborateNumericComputationOperation gateModel ["Probe"] gateTarget
+      (.atom (.filledGroupCount operands)) with
+  | .error error => NumericComputationElabError.groupCountDiagnostic? error
+  | .ok _ => none
+
+private def gateStar (path : GroupPath) : SurfaceGroupCountOperand :=
+  .starred { base := .absolute, groups := path }
+
+/- Strict containment refuses whichever side carries the star and in whichever order. The disjoint
+   mixed pair beside it is admitted, so the refusals are the containment and not the mixing. -/
+example :
+    (gateCode? [fixedOperand ["Probe", "Flat"], gateStar ["Probe", "Flat", "Nested"]],
+      gateCode? [gateStar ["Probe", "Flat", "Nested"], fixedOperand ["Probe", "Flat"]],
+      gateCode? [gateStar ["Probe", "Rows"], gateStar ["Probe", "Rows", "Inner"]],
+      gateCode? [fixedOperand ["Probe", "Flat"], gateStar ["Probe", "Rows"]]) =
+    (some .duplicateParam2, some .duplicateParam2, some .duplicateParam2, none) := by
+  native_decide
+
+/- Two stars naming the **same** group are admitted and count once per position, which is the
+   exception that makes the rule containment rather than distinctness. -/
+example : gateCode? [gateStar ["Probe", "Rows"], gateStar ["Probe", "Rows"]] = none := by
+  native_decide
+
+/- A root operand beside a disjoint star draws the root class in either order, and containment wins
+   over it when the star lies inside the root. The live control is a nonroot fixed group beside
+   another root's star. -/
+example :
+    (gateCode? [fixedOperand ["Probe"], gateStar ["Second", "SRows"]],
+      gateCode? [gateStar ["Second", "SRows"], fixedOperand ["Probe"]],
+      gateCode? [fixedOperand ["Probe"], gateStar ["Probe", "Rows"]],
+      gateCode? [fixedOperand ["Probe", "Flat"], gateStar ["Second", "SRows"]]) =
+    (some .rootGroupWithOtherParameters, some .rootGroupWithOtherParameters,
+      some .duplicateParam2, none) := by
+  native_decide
+
 /-! ## Runtime -/
 
 private def emptyCell : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
@@ -212,61 +288,14 @@ example :
 
 /-! ## An operand whose group contains another operand's
 
-Every list above holds disjoint operand groups. A fixed operand naming an **ancestor** of a starred
-operand's group is the shape where the two could interfere, because the ancestor's only content is
-the very rows the star counts. Both readings are the project's own; external evidence is pending.
+A fixed operand naming an **ancestor** of a starred operand's group is the shape where the two
+could interfere, because the ancestor's only content is the very rows the star counts. This project
+answered it — the pair counts twice, with no overlap gate and no deduplication — and that answer is
+**falsified**: the Kernel never reaches the runtime, refusing the pair `MVK_DUPLICATE_PARAM2` at
+authoring time, in either order, on a pure shell exactly as on a group with a field of its own
+([checkpoint](../../../docs/SOURCES.md#src-group-count-static-gates-both-arms)). The counting cases
+that stood here locked an unauthorable shape; the gate table above replaces them.
 -/
-
-private def shellRowsLevel : RepeatableLevel := 12
-
-/-- `Shell` owns no field of its own: its content is exactly the repeatable `Shell/Rows` below it,
-    which is also what the starred operand counts. -/
-private def nestedModel : FlatModel :=
-  { fields :=
-      [ numberIn flatValueId ["Probe", "Flat"] "FlatValue"
-      , { numberIn rowValueId ["Probe", "Shell", "Rows"] "RowValue" with
-            repeatableScope := [shellRowsLevel] }
-      , numberIn targetId ["Probe"] "Target" ]
-    repeatableGroups :=
-      [ { level := shellRowsLevel, path := ["Probe", "Shell", "Rows"],
-          repeatability := some 5 } ] }
-
-private def nestedCount (operands : List SurfaceGroupCountOperand) (rows : Nat) :
-    Option NumericComputationResult :=
-  match elaborateNumericComputationOperation nestedModel ["Probe"] targetId
-      (.atom (.filledGroupCount operands)) with
-  | .error _ => none
-  | .ok checked =>
-      match checked.core.expression with
-      | .atom atom =>
-          ((⟨{ read := fun _ => emptyCell },
-             { instantiatedRows :=
-                 (List.range rows).map fun index => { group := shellRowsLevel, path := [index + 1] }
-               rawCells := fun _ => none },
-             [], fun _ _ => emptyCell, fun _ _ => emptyCell⟩ :
-            NumericComputationEvaluationContext).readCheckedNumericComputationAtom
-              (model := nestedModel) atom).toOption
-      | _ => none
-
-private def shellFixed : SurfaceGroupCountOperand := fixedOperand ["Probe", "Shell"]
-private def shellRowsStarred : SurfaceGroupCountOperand :=
-  .starred { base := .absolute, groups := ["Probe", "Shell", "Rows"] }
-
-/- **Containment does not merge the operands.** One row makes the ancestor present *and* is the
-   one row the star counts, so the pair answers two where a deduplicating or overlap-refusing
-   account answers one or refuses. The fixed operand contributes an indicator, so a second row
-   moves only the star's half — which is what shows the two are not reading one quantity. -/
-example :
-    [nestedCount [shellFixed, shellRowsStarred] 1,
-      nestedCount [shellFixed, shellRowsStarred] 2] =
-      [some (.value 2), some (.value 3)] := by
-  native_decide
-
-/- The control. With no row the ancestor has no content either, so its indicator and the star fall
-   to zero together — the shared source of both halves, stated as the case that would break if the
-   ancestor could count without the rows. -/
-example : nestedCount [shellFixed, shellRowsStarred] 0 = some (.value 0) := by
-  native_decide
 
 /-! ## A starred group that owns its own repeatable descendant
 
