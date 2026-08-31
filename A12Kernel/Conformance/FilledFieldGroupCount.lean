@@ -397,11 +397,12 @@ example :
    bad cell one index apart moves the count between unknown and zero and moves `NoFieldFilled`
    between silent and fired. A definite zero alone cannot separate *removed from the domain* from
    *classified unavailable and not counted*; this pair can, and it is why the consumer opts into the
-   in-capacity projection rather than filtering the cells afterwards. The separator is Kernel-measured
-   on `Sum` over a fixed group operand at the [inbound extent
-   checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep);
-   the count carrier's own malformed pair is this project's account of the shared extent and is not
-   itself measured. -/
+   in-capacity projection rather than filtering the cells afterwards. Kernel-measured on this
+   carrier — `NumberOfFilledFields` is unavailable with the bad cell in capacity and answers `1` with
+   the identical cell one index above it, on the starred and unstarred spellings alike
+   ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep)).
+   It was first locked here as this project's account of the shared extent, carried over from the
+   same separator on `Sum`; the count's own row replaced that inheritance rather than confirming it. -/
 example :
     (threeLevelCount threeLevelOuterRows [malformedCell 60 [3]],
      threeLevelFill .noFieldFilled threeLevelOuterRows [malformedCell 60 [3]],
