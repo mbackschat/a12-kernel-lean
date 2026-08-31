@@ -110,12 +110,12 @@ def overRepetitionFindings (checked : CheckedDocument model) :
 /-- The group path a finding's node belongs to: a row's own declared group, or a cell's declaring
 group. A node whose owner the model does not declare has no path and is therefore outside every
 operand's scope, which keeps an unresolvable node out of the narrower channel rather than into it. -/
-private def nodeGroupPath? (model : FlatModel) : OverRepetitionNode → Option (List String)
+private def nodeGroupPath? (model : FlatModel) : OverRepetitionNode → Option GroupPath
   | .row address => (model.repeatableGroupAtLevel? address.group).map (·.path)
   | .cell address => (model.fields.find? (·.id == address.field)).map (·.groupPath)
 
 /-- Whether two group paths lie on one root-to-leaf line: either may be the ancestor. -/
-private def comparableGroupPath (left right : List String) : Bool :=
+private def comparableGroupPath (left right : GroupPath) : Bool :=
   left.isPrefixOf right || right.isPrefixOf left
 
 /-- The over-repetition findings a **computation** reports, which is not the set the document draws.
@@ -137,11 +137,14 @@ private def comparableGroupPath (left right : List String) : Bool :=
     an operand two repetition levels down under an over-limit outer row draws three messages. Both
     halves are one comparability test, so the clause is stated once; only its evidence is split.
 
-    Takes the operand group paths rather than reading them from a computation, because no checked
-    computation in this estate exposes an operand path list yet. That coupling is the reason this is
-    a projection over the finding set instead of a consumer of one. -/
+    Takes the operand group paths rather than a checked computation, so that it stays a projection
+    over the finding set instead of a consumer of one. For a group-count computation the supply is
+    already settled and needs nothing new: `CheckedGroupCountOperand.groupPath` gives one path per
+    operand for both the fixed and the starred form, and is the same accessor the containment and
+    rootness gates read. What no atom yet exposes is a path list for an *arbitrary* checked
+    computation expression, whose field operands would each contribute their declaring group. -/
 def computationOverRepetitionFindings (checked : CheckedDocument model)
-    (operandGroupPaths : List (List String)) : List OverRepetitionFinding :=
+    (operandGroupPaths : List GroupPath) : List OverRepetitionFinding :=
   checked.overRepetitionFindings.filter fun finding =>
     match nodeGroupPath? model finding.node with
     | none => false

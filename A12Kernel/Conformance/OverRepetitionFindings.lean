@@ -193,6 +193,37 @@ example :
     scoped? [] bothViolatedRows [emptyCell deepValue.id [4, 1]] = some [] := by
   native_decide
 
+/-- The retained artifact's own operand set, read off its probe model's three computations rather
+than chosen: `NumberOfFilledGroups(/Probe/ShellOne, /Probe/Flat)`,
+`NumberOfFilledGroups(/Probe/ShellDeep, /Probe/Flat)`, and `NumberOfFilledGroups(/Probe/ShellDeep/Mid*)`.
+Two of the four groups exist in no fixture here and are kept anyway, because an operand naming a
+group with no finding is what shows the filter runs per finding rather than per operand. -/
+private def probeOperands : List (List String) :=
+  [["Probe", "ShellOne"], ["Probe", "Flat"], ["Probe", "ShellDeep"], ["Probe", "ShellDeep", "Mid"]]
+
+private def triOnlyRows : List RowAddr :=
+  [{ group := 30, path := [1] }, { group := 30, path := [2] },
+   { group := 30, path := [3] }, { group := 40, path := [3, 1] }]
+
+/- **The two channels on the artifact's own operand set, at both of its readings.** With every
+   descendant of the violated `Mid[4]` written, the computation reports the whole ShellDeep subtree
+   and nothing of `Tri` — the artifact's `two-independent` row reports exactly these four, one
+   `zuGrosseZeile` on `Mid[4]` and one `zuGrosseKontextnummer` per node beneath it, against eight
+   validation findings. On a document violating only `Tri`, which no operand names, the computation
+   reports **nothing** while validation still reports the subtree — the artifact's `nested-over` row,
+   ten against zero. The codes are preserved, not collapsed: the operand channel carries the row code
+   too, so the difference between the channels is scope alone
+   ([checkpoint](../../docs/SOURCES.md#src-over-limit-finding-multiplicity)). -/
+example :
+    scoped? probeOperands bothViolatedRows
+        [emptyCell deepValue.id [4, 1], emptyCell deepValue2.id [4, 1]] =
+      some [(.rowNumberTooLarge, [4]), (.contextNumberTooLarge, [4, 1]),
+            (.contextNumberTooLarge, [4, 1]), (.contextNumberTooLarge, [4, 1])] ∧
+    scoped? probeOperands triOnlyRows [] = some [] ∧
+    sorted (findings? triOnlyRows []) =
+      some [(.rowNumberTooLarge, [3]), (.contextNumberTooLarge, [3, 1])] := by
+  native_decide
+
 /- An operand **beneath** the violated row keeps it: the scope is comparability with the operand's
    path, not containment of the finding within it. The `Mid*` operand of the probe model is exactly
    this shape — the violated row is `Mid[4]` itself — and an over-limit row strictly above an operand
