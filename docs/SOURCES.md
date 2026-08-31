@@ -332,6 +332,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [`NumberOfDifferentValues` classifies by its first operand](sources/group-and-iteration-probes.md#src-distinct-count-first-operand-class)
 <a id="src-capacity-consumer-sweep"></a>
 - [The declared-capacity extent reaches the last four operand-stream consumers](sources/group-and-iteration-probes.md#src-capacity-consumer-sweep)
+<a id="src-over-limit-finding-text"></a>
+- [`zuGrosseZeile` renders no coordinate, and two over-limit groups report independently](sources/over-repetition-probes.md#src-over-limit-finding-text)
 <a id="src-starred-group-count-computation"></a>
 - [The computation arm counts a starred repeatable group's instantiated rows](sources/group-and-iteration-probes.md#src-starred-group-count-computation)
 <a id="src-repeatable-descendant-group-count"></a>
