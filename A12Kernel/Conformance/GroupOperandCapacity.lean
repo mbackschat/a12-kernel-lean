@@ -129,17 +129,17 @@ private def starredAggregate? (op : NumericAggregateOp) (rowCount : Nat)
     cells }).toOption
   (source.evaluateCheckedDocumentValidationAggregate op document []).toOption
 
-/- **The boundary, and it is unmeasured on purpose.** A *starred* group operand over the same
-   document keeps the complete formal-cell view, so the over-limit cell still makes the aggregate
-   unavailable. Nothing measured says the two group forms differ; the checkpoint covers the fixed
-   form alone, and flipping the starred one would replace an untested account with another untested
-   account in the opposite direction. The runtime-probe route can settle it and
-   [SG13](../../docs/SEMANTICS-GAPS.md) carries the obligation. The case exists so the fixed/starred
-   split cannot be simplified away without noticing that a question is attached to it. -/
+/- **The star changes nothing.** A *starred* group operand over the same document answers the same
+   `5`, and its control the same `12`. The two group forms were briefly split here on the fixed
+   measurement alone; a starred-operand probe answered every arm identically — `5` against a `12`
+   control, `0` against a `1` control for the count, and the malformed pair evaluable above capacity
+   and non-evaluable below it ([checkpoint](../../docs/SOURCES.md#src-starred-group-operand-extent)).
+   The case stays because a resolver that narrowed only the unstarred form would pass every other
+   case in this module. -/
 example :
     (starredAggregate? .sum 3 [fee [1] 5, fee [3] 7],
      starredAggregate? .sum 2 [fee [1] 5, fee [2] 7]) =
-    (some (.unknown .overRepetition),
+    (some (.value 5 { canGrow := true, canShrink := false }),
      some (.value 12 { canGrow := false, canShrink := false })) := by
   native_decide
 

@@ -649,12 +649,12 @@ def resolvedComputationSide
 
 /-- Resolve one Boolean/Confirm slot from the immutable checked document and project its addressed cells only after topology and filter selection succeed.
 
-    A **fixed** group slot projects its declared-capacity extent: kernel 30.8.1 answers `0` for
+    A group slot projects its declared-capacity extent, starred or not: kernel 30.8.1 answers `0` for
     `NumberOfValueInFields(True In G)` when the only `true` cell sits beyond its group's declared
     repeatability, and `1` on the control one index lower
-    ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep)).
-    A **starred** group slot keeps the complete formal-cell view, unchanged and untested on this
-    dimension; [SG13](../../docs/SEMANTICS-GAPS.md) carries the starred observation. -/
+    ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep)),
+    and the starred form answers the same way on its own
+    [probe](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent). -/
 def resolvedCheckedValidationSide
     (checked : CheckedBooleanValueCountOperand model expected)
     (document : CheckedDocument model) (outer : Env) :
@@ -674,9 +674,7 @@ def resolvedCheckedValidationSide
           source.resolveCheckedUninstantiatedTail document outer
         pure (core, hasUninstantiatedTail)
   let addressed := match checked with
-    | .group source =>
-        if source.source.isStarred then core.addressedCells
-        else core.inCapacityAddressedCells
+    | .group _ => core.inCapacityAddressedCells
     | .field _ | .star _ => core.addressedCells
   pure {
     cells := addressed.map fun cell =>

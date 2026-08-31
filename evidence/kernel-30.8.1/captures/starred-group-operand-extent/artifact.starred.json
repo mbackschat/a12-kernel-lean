@@ -1,0 +1,562 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "e235a4b3aa1a32d952069e4a5dc9917900861f04",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "StarredExtent_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "s-notes-over",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NF0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF0",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/Notes[3]/Tag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Shell/Notes' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Shell/Notes[3]/Tag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/Notes[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Shell/Notes[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NF0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF0",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/Notes[3]/Tag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Shell/Notes' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Shell/Notes[3]/Tag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/Notes[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Shell/Notes[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "s-notes-ctrl",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NF1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF1",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NF1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF1",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "s-notes-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NF0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF0",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NF0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF0",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "s-sum-over",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NF0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF0",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag"
+              ]
+            },
+            {
+              "code" : "SUM5",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM5",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/Charges[3]/Fee",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Shell/Charges' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Shell/Charges[3]/Fee"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/Charges[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Shell/Charges[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NF0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF0",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag"
+              ]
+            },
+            {
+              "code" : "SUM5",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM5",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/Charges[3]/Fee",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Shell/Charges' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Shell/Charges[3]/Fee"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/Charges[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Shell/Charges[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "s-sum-ctrl",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NF0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF0",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag"
+              ]
+            },
+            {
+              "code" : "SUM12",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "SUM12",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NF0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF0",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag"
+              ]
+            },
+            {
+              "code" : "SUM12",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "SUM12",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "s-bad-incap",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NF0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF0",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Shell/Charges[2]/Fee",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Probe/Shell/Charges[2]/Fee"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NF0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF0",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Shell/Charges[2]/Fee",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Probe/Shell/Charges[2]/Fee"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "s-bad-over",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "NF0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF0",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag"
+              ]
+            },
+            {
+              "code" : "SUM5",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM5",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/Charges[3]/Fee",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Shell/Charges' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Shell/Charges[3]/Fee"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/Charges[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Shell/Charges[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "NF0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NF0",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Notes[0]/Tag"
+              ]
+            },
+            {
+              "code" : "SUM5",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "SUM5",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/Charges[0]/Fee"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/Charges[3]/Fee",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Shell/Charges' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Shell/Charges[3]/Fee"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/Charges[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Shell/Charges[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

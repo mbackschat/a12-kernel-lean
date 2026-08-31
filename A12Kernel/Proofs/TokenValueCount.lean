@@ -128,9 +128,8 @@ theorem checkedBooleanValueCountGroup_expansion_complete
       simpa [CheckedBooleanValueCountGroup.fields] using retained
 
 /-- A checked Boolean/Confirm group combines the shared recursive concrete extent with its separate
-    hierarchical tail decision before projecting cached cells into the canonical token domain. The
-    projected extent is capacity-narrowed for a fixed group and complete for a starred one, which is
-    a measured boundary rather than an implementation detail of this scan. -/
+    hierarchical tail decision before projecting cached cells into the canonical token domain, and
+    projects the group's declared-capacity extent rather than its complete formal-cell view. -/
 theorem checkedBooleanValueCountGroup_resolvedCheckedValidationSide
     (group : CheckedBooleanValueCountGroup model expected)
     (document : CheckedDocument model) (outer : Env) :
@@ -140,11 +139,8 @@ theorem checkedBooleanValueCountGroup_resolvedCheckedValidationSide
         group.source.boundLevelCount group.fields
       let hasUninstantiatedTail ←
         group.resolveCheckedUninstantiatedTail document outer
-      let addressed :=
-        if group.source.isStarred then core.addressedCells
-        else core.inCapacityAddressedCells
       pure {
-        cells := addressed.map fun cell =>
+        cells := core.inCapacityAddressedCells.map fun cell =>
           booleanValueCountCellAt .validation cell.cell
         hasUninstantiatedTail
         hasHaving := core.hasHaving

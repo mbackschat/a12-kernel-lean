@@ -34,6 +34,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-08-31-10"></a>
+### `SPEC-2026-08-31-10` — an over-limit row leaves a group operand's extent, starred or not, and a malformed cell is what proves it
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md`](../spec/07-repetition-and-iteration.md)'s over-repetition evaluation-domain paragraph, and [`02-logic-and-formal-errors.md`](../spec/02-logic-and-formal-errors.md)'s unfiltered validation tally
+- `delta`: the clause named starred `Sum`, starred-field `NumberOfFilledFields`, and starred-group `NumberOfFilledGroups` at one repetition level, and left the group-operand form open. Measured: a **starred** group operand answers exactly as the unstarred one. `NumberOfFilledFields(G/Sub*)` answers `0` when the only filled cell sits one index above capacity and `1` on the control one index lower; `Sum(G/Sub*)` answers `5` on a document holding `5` in capacity and `7` over limit, and `12` on the control. The `spec/02` tally is corrected on its **range** rather than its classification: an over-limit cell enters none of `t`, `e`, or `u`.
+- `mechanism`: the separating observation is a **malformed** cell, not a well-formed one. In capacity it makes `Sum` non-evaluable; the identical value one index above capacity leaves `Sum` answering its in-capacity total. A well-formed over-limit cell cannot distinguish *removed from the domain* from *classified unavailable and not counted*, because both predict the same definite answer.
+- `consequence`: an implementation that filters over-limit cells **after** classifying them agrees everywhere except on documents mixing a bad cell with a good one — the shape a suite built from clean fixtures never reaches. This project had exactly that, on three carriers, and two of the three were locked green by cases asserting the wrong answer.
+- `evidence`: the [starred-operand checkpoint](sources/group-and-iteration-probes.md#src-starred-group-operand-extent) — one request, seven documents, exact-equality ladders so `UNAVAILABLE` is observed rather than inferred, both codegen strategies agreeing on every row, `producer.source.state: CLEAN` at a12-dmkits `e235a4b3aa1a32d952069e4a5dc9917900861f04`.
+- `limit`: two carriers over a starred group at one repetition level, bounded repeatability 2, `en_US`, full validation. Not measured: the extrema and `NumberOfDifferentValues` over a starred group, partial validation, nesting below the star, and `Sum` over an in-capacity domain that is empty — the ladder carried no `== 0` member, so a definite zero and non-evaluability are indistinguishable there.
+- `acceptance`: a12-dmkits confirms that its group-operand extent excludes an over-limit row for the starred form as for the fixed one, and that a malformed cell above capacity does not block the aggregate — or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="exp-2026-08-30-01"></a>
 ### `EXP-2026-08-30-01` — does a colliding literal silently drop a rule from mandatory-information derivation?
 

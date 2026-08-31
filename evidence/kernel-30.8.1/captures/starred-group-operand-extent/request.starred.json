@@ -1,0 +1,37 @@
+{
+ "model": "StarredExtent_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "s-notes-over",
+   "document": "s-notes-over.json"
+  },
+  {
+   "name": "s-notes-ctrl",
+   "document": "s-notes-ctrl.json"
+  },
+  {
+   "name": "s-notes-empty",
+   "document": "s-notes-empty.json"
+  },
+  {
+   "name": "s-sum-over",
+   "document": "s-sum-over.json"
+  },
+  {
+   "name": "s-sum-ctrl",
+   "document": "s-sum-ctrl.json"
+  },
+  {
+   "name": "s-bad-incap",
+   "document": "s-bad-incap.json"
+  },
+  {
+   "name": "s-bad-over",
+   "document": "s-bad-over.json"
+  }
+ ]
+}

@@ -1,0 +1,187 @@
+{
+  "header" : {
+    "id" : "starredextent",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "starredextent",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Shell",
+            "name" : "Shell",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/Shell/Notes",
+                "name" : "Notes",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Shell/Notes/Tag",
+                    "name" : "Tag",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Shell/Charges",
+                "name" : "Charges",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Shell/Charges/Fee",
+                    "name" : "Fee",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Guard",
+            "name" : "Guard",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Err",
+            "name" : "Err",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NF0",
+            "name" : "NF0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "NF0",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfFilledFields(/Probe/Shell/Notes*) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NF0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NF1",
+            "name" : "NF1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "NF1",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfFilledFields(/Probe/Shell/Notes*) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NF1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NF2",
+            "name" : "NF2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "NF2",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfFilledFields(/Probe/Shell/Notes*) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NF2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/SUM5",
+            "name" : "SUM5",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "SUM5",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/Shell/Charges*) == 5",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "SUM5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/SUM7",
+            "name" : "SUM7",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "SUM7",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/Shell/Charges*) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "SUM7"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/SUM12",
+            "name" : "SUM12",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "SUM12",
+              "errorCondition" : "FieldFilled(/Probe/Err) And Sum(/Probe/Shell/Charges*) == 12",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "SUM12"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

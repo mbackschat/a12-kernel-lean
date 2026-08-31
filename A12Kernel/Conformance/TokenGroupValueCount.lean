@@ -132,12 +132,18 @@ private def validation? (rows : List RowAddr)
   let document ← checkedDocument? rows cells
   (checked.evaluateCheckedDocumentValidation document []).toOption
 
-/- Full validation retains the over-capacity cell and its formal cause. -/
+/- Full validation **excludes** the over-capacity cell, exactly as computation does. The only match
+   sits one index above capacity and the count is a definite zero rather than unavailable. This case
+   asserted the opposite until a starred-operand probe measured it: kernel 30.8.1 answers `0` on this
+   shape and leaves the aggregate evaluable when the over-limit cell is malformed, while the same bad
+   cell one index lower makes it non-evaluable
+   ([checkpoint](../../docs/SOURCES.md#src-starred-group-operand-extent)). The over-repetition
+   findings stay on the immutable checked document; only the operand's extent changed. -/
 example :
     validation? overCapacityRows [
       cell 30 1 "Y", cell 31 1 "Y", cell 30 2 "Y", cell 31 2 "Y",
       cell 30 3 "X", cell 31 3 "Y"] =
-        some (.unknown .overRepetition) := by
+        some (.value 0 { canGrow := false, canShrink := false }) := by
   native_decide
 
 /- An over-capacity match stays outside the computation domain. -/

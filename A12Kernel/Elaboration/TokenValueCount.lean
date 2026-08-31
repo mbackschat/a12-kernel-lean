@@ -254,7 +254,15 @@ def elaborateTokenValueCountFixedGroupValidationSource (model : FlatModel)
 
 namespace CheckedTokenValueCountGroupSource
 
-/-- Full validation classifies the complete formal group extent through each declaration's retained token projection. -/
+/-- Full validation classifies the group's **in-capacity** extent through each declaration's retained
+token projection, exactly as this carrier's computation arm already did.
+
+    The two arms were split here on an untested reading that full validation retained the over-limit
+    cell and reported its formal cause. It does not: on a document whose only match sits one index
+    above capacity, kernel 30.8.1 answers `0`, and on a document whose only *malformed* cell sits
+    there the aggregate still evaluates, while the identical cell one index lower makes it
+    non-evaluable ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent)).
+    The over-repetition findings stay on the immutable checked document either way. -/
 def evaluateCheckedDocumentValidation
     (checked : CheckedTokenValueCountGroupSource model)
     (document : CheckedDocument model) (outer : Env) :
@@ -262,7 +270,7 @@ def evaluateCheckedDocumentValidation
   let resolved ← (CheckedTokenEntityOperand.group checked.group)
     |>.resolveCheckedValidationOperand document outer
   let side := (ResolvedValueCountSide.empty : ResolvedValueCountSide .token)
-    |>.appendResolved (resolved.valueListSideAt .validation)
+    |>.appendResolved (resolved.inCapacityValueListSideAt .validation)
   pure (evalValueCountAggregate checked.expected side)
 
 /-- Computation excludes cells beneath a declared-capacity violation before classifying group content, leaving their structural findings on the checked document. -/
@@ -343,13 +351,12 @@ def evaluateValidation (checked : CheckedTokenValueCountSource model)
 
 /-- Full validation over the immutable checked document reuses the shared addressed token operand and retains per-slot filter provenance for the existing value-count fold.
 
-    A **fixed** group slot narrows to its declared-capacity extent: kernel 30.8.1 answers `0` for
-    `NumberOfValueInFields("KEEP" In G)` when the only matching cell sits beyond its group's declared
-    repeatability, and `1` on the control one index lower
+    A group slot narrows to its declared-capacity extent, starred or not: kernel 30.8.1 answers `0`
+    for `NumberOfValueInFields("KEEP" In G)` when the only matching cell sits beyond its group's
+    declared repeatability, and `1` on the control one index lower
     ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep)).
-    A **starred** group slot keeps the complete formal-cell view, unchanged and untested on this
-    dimension: the measurement is on the fixed form, and [SG13](../../docs/SEMANTICS-GAPS.md) carries
-    the starred one. -/
+    The starred form answers the same way on its own
+    [probe](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent). -/
 def evaluateCheckedDocumentValidation
     (checked : CheckedTokenValueCountSource model)
     (document : CheckedDocument model) (outer : Env) :
@@ -359,11 +366,8 @@ def evaluateCheckedDocumentValidation
       let resolved ←
         operand.resolveCheckedValidationOperand document outer
       match operand with
-      | .group slot =>
-          if slot.source.isStarred then
-            pure (.inl (resolved.valueListSideAt .validation))
-          else
-            pure (.inl (resolved.inCapacityValueListSideAt .validation))
+      | .group _ =>
+          pure (.inl (resolved.inCapacityValueListSideAt .validation))
       | .field _ | .star _ =>
           pure (.inl (resolved.valueListSideAt .validation))
 

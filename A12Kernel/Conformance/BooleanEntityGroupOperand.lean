@@ -321,12 +321,16 @@ example :
 private def overCapacityRows : List RowAddr :=
   [computationRow 1, computationRow 2, computationRow 3]
 
+/- Full validation excludes the over-capacity cell, like computation. The only `true` sits one index
+   above capacity and the count is a definite zero rather than unavailable; this case asserted the
+   opposite until the starred-operand probe measured the extent
+   ([checkpoint](../../docs/SOURCES.md#src-starred-group-operand-extent)). -/
 example :
     checkedValidationResult? overCapacityRows [
       booleanCell 1 false, emptyComputationCell 51 1,
       booleanCell 2 false, emptyComputationCell 51 2,
       booleanCell 3 true, emptyComputationCell 51 3] =
-        some (.unknown .overRepetition) := by
+        some (.value 0 { canGrow := true, canShrink := false }) := by
   native_decide
 
 example :
@@ -424,12 +428,14 @@ example :
         some (.unknown .booleanToken) := by
   native_decide
 
+/- The `False` overload draws the same conclusion on its own fixture: the only `false` is over limit,
+   so the count is zero and fixed rather than unavailable. -/
 example :
     checkedFalseValidationResult? overCapacityRows [
       booleanCell 1 true, peerBooleanCell 1 true,
       booleanCell 2 true, peerBooleanCell 2 true,
       booleanCell 3 false, peerBooleanCell 3 true] =
-        some (.unknown .overRepetition) := by
+        some (.value 0 { canGrow := false, canShrink := false }) := by
   native_decide
 
 example :
