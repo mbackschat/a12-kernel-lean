@@ -330,6 +330,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Repetition depth does not bound a group-count operand's row constituent](sources/group-and-iteration-probes.md#src-deep-repeatable-descendant-group-count)
 <a id="src-nested-star-bound-outer-level"></a>
 - [A nested star answers from its own enclosing row](sources/group-and-iteration-probes.md#src-nested-star-bound-outer-level)
+<a id="src-group-operand-over-limit-extent"></a>
+- [A fixed group operand's extent excludes an over-limit row, and the count is zero rather than unknown](sources/group-and-iteration-probes.md#src-group-operand-over-limit-extent)
 <a id="src-group-count-row-domains"></a>
 - [The half-instantiated shell, the starred group over a repeatable descendant, and the unreachable row-domain discriminator](sources/group-and-iteration-probes.md#src-group-count-row-domains)
 <a id="src-over-limit-finding-multiplicity"></a>

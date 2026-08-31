@@ -1,0 +1,698 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "7ace4229c4c714f657172f36c643c5adffcb35c9",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Deep3Count_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "n0-shell-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FZERO",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "shell count is exactly zero",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1"
+              ]
+            },
+            {
+              "code" : "GCOUNT",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "shell not counted",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ]
+            },
+            {
+              "code" : "NOFILL",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "shell has no filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FZERO",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "shell count is exactly zero",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1"
+              ]
+            },
+            {
+              "code" : "GCOUNT",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "shell not counted",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ]
+            },
+            {
+              "code" : "NOFILL",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "shell has no filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "n1-depth-one",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ANYFILL",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell has at least one filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FCOUNT",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell holds a filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ANYFILL",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell has at least one filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FCOUNT",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell holds a filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "n3-depth-three",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ANYFILL",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell has at least one filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FCOUNT",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell holds a filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ANYFILL",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell has at least one filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FCOUNT",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell holds a filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "nover-inner",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FZERO",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "shell count is exactly zero",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1"
+              ]
+            },
+            {
+              "code" : "NOFILL",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "shell has no filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/L1/L2[3]/V2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Shell/L1/L2' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Shell/L1/L2[3]/V2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/L1/L2[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Shell/L1/L2[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FZERO",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "shell count is exactly zero",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1"
+              ]
+            },
+            {
+              "code" : "NOFILL",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "shell has no filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/L1/L2[3]/V2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Shell/L1/L2' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Shell/L1/L2[3]/V2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/L1/L2[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Shell/L1/L2[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "nover-inner-ctrl",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ANYFILL",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell has at least one filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FCOUNT",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell holds a filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ANYFILL",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell has at least one filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FCOUNT",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell holds a filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "nover-outer",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "FZERO",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "shell count is exactly zero",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1"
+              ]
+            },
+            {
+              "code" : "NOFILL",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "shell has no filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/L1[3]/V1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Shell/L1' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Shell/L1[3]/V1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/L1[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Shell/L1[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "FZERO",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "shell count is exactly zero",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1"
+              ]
+            },
+            {
+              "code" : "NOFILL",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "shell has no filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Shell/L1[3]/V1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Shell/L1' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Shell/L1[3]/V1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Shell/L1[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Shell/L1[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "nover-outer-ctrl",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ANYFILL",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell has at least one filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FCOUNT",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell holds a filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ANYFILL",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell has at least one filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FCOUNT",
+              "field" : "Probe/Other/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "shell holds a filled cell",
+              "referenced" : [
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/L3[0]/V3",
+                "/Probe[1]/Shell[1]/L1[0]/L2[0]/V2",
+                "/Probe[1]/Shell[1]/L1[0]/V1",
+                "Probe/Other/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

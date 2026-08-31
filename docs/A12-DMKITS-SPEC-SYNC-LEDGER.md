@@ -53,6 +53,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 
+<a id="exp-2026-08-31-02"></a>
+### `EXP-2026-08-31-02` — does the over-limit exclusion live in the group operand's extent or in each consuming operator?
+
+- `status`: pending
+- `question`: kernel 30.8.1 answers `NumberOfFilledFields(Shell)` as exactly `0`, and fires `NoFieldFilled(Shell)`, on a document whose only filled cell sits in a row beyond its group's declared repeatability, with the in-capacity rows instantiated and empty ([checkpoint](sources/group-and-iteration-probes.md#src-group-operand-over-limit-extent)). What is not measured is whether that is a property of the **group operand's row extent**, shared by every carrier that expands a group, or of the **fill-quantifier family** alone.
+- `why-it-blocks`: this project answers `unknown` on those documents, so one of the two accounts has to change, and they are not interchangeable. Excluding at the shared extent makes the measured family right and contradicts four established cases on the value-count, token-group, and Boolean-group carriers, which assert `unknown` with cause `overRepetition` at validation phase. Excluding at the fill quantifiers alone leaves two neighbouring group operands disagreeing about the same cell in the same document, which is the shape a later cleanup silently flattens.
+- `recommended account`: the **shared extent**, if the observation permits it. The Kernel already excludes an over-limit row from starred evaluation domains, and a row outside the domain has no cell to classify, which makes `retain the cell and go unknown` the account that needs evidence rather than the exclusion. The four contradicting cases cite no over-repetition checkpoint of their own. This is a recommendation, not a decision: it was not acted on, and the entry is filed instead.
+- `evidence-needed`: on one document whose only content sits in an over-limit row, and its in-capacity control, observe (a) a value-count carrier such as `NumberOfValueInFields` over a group operand, (b) an aggregate such as `Sum` over a **homogeneous** Number group operand, and (c) a Boolean or Confirm group operand. A `< 1`-style negative rule must accompany each so `unknown` is distinguished from the empty answer, which is the step that turned this round from inconclusive to decisive.
+- `discriminator`: a rule that only fires on the positive answer cannot separate `unknown` from `zero`. Every arm needs its negative partner.
+- `limit`: the local round covered three fill quantifiers over one fixed nonrepeatable group operand at two repetition levels, full validation only.
+- `acceptance`: a12-dmkits supplies those three observations, or reports that its own estate already fixes the locus, and this project then corrects one locus and re-audits the cases that move.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-31-09"></a>
 ### `SPEC-2026-08-31-09` — a `Having` filter refuses a group operand, on both arms and in either position
 
