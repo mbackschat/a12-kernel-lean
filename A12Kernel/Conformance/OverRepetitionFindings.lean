@@ -160,4 +160,49 @@ example : sorted (findings?
           (.contextNumberTooLarge, [4, 1])] := by
   native_decide
 
+private def scoped? (operands : List (List String)) (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (List (OverRepetitionCode × List Nat)) :=
+  sorted ((checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption.map
+    (·.computationOverRepetitionFindings operands))
+
+/- The document above, read through the **computation** channel instead of the validation one. It is
+   the separating shape: two over-limit subtrees, and a computation whose operands name only one of
+   them. Kernel-measured on the retained multiplicity artifact, where the probe model's three
+   computations name `/Probe/ShellDeep`, `/Probe/ShellDeep/Mid*`, and `/Probe/ShellOne` and none
+   names `/Probe/Tri` — so `Mid[4]` draws its four operand errors and `A[3]` draws nothing, in one
+   document. Reading only a single-subtree document would leave a document-wide account fitting every
+   row, which is how the validation set came to stand in for this one. -/
+private def bothViolatedRows : List RowAddr :=
+  [{ group := 30, path := [1] },
+   { group := 30, path := [2] },
+   { group := 30, path := [3] },
+   { group := 40, path := [3, 1] },
+   { group := 10, path := [1] },
+   { group := 10, path := [2] },
+   { group := 10, path := [3] },
+   { group := 10, path := [4] },
+   { group := 20, path := [4, 1] }]
+
+example :
+    scoped? [["Probe", "ShellDeep"]] bothViolatedRows [emptyCell deepValue.id [4, 1]] =
+      some [(.rowNumberTooLarge, [4]), (.contextNumberTooLarge, [4, 1]),
+            (.contextNumberTooLarge, [4, 1])] ∧
+    scoped? [["Probe", "Tri"]] bothViolatedRows [emptyCell deepValue.id [4, 1]] =
+      some [(.rowNumberTooLarge, [3]), (.contextNumberTooLarge, [3, 1])] ∧
+    scoped? [] bothViolatedRows [emptyCell deepValue.id [4, 1]] = some [] := by
+  native_decide
+
+/- An operand **beneath** the violated row keeps it: the scope is comparability with the operand's
+   path, not containment of the finding within it. The `Mid*` operand of the probe model is exactly
+   this shape — the violated row is `Mid[4]` itself — and an over-limit row strictly above an operand
+   is the peer's measured half rather than this project's, so it is stated in the clause and not
+   locked by a row here. -/
+example :
+    scoped? [["Probe", "ShellDeep", "Mid", "Rows"]] bothViolatedRows
+        [emptyCell deepValue.id [4, 1]] =
+      some [(.rowNumberTooLarge, [4]), (.contextNumberTooLarge, [4, 1]),
+            (.contextNumberTooLarge, [4, 1])] := by
+  native_decide
+
 end A12Kernel.Conformance.OverRepetitionFindings

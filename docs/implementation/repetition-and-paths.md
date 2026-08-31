@@ -62,6 +62,14 @@
 - `assurance`: E closed against the [multiplicity](../sources/over-repetition-probes.md#src-over-limit-finding-multiplicity), [attribution](../sources/over-repetition-probes.md#src-nested-over-limit-attribution), and [absorption-depth](../sources/over-repetition-probes.md#src-over-limit-absorption-depth) checkpoints, all on both codegen strategies, and the six cases were checked to discriminate by perturbation — dropping absorption fails four, dropping cells fails three. P states the attribution shape for every document, not only the measured ones: each named row is over its own capacity and none lies beneath another named row.
 - `remains`: A cell counts when the document **places** it; every measured document writes every declared key of the rows it instantiates, so present-vs-declared is unseparated. Message text: [SG10](../SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration)
 
+<a id="cap-computation-over-repetition-channel"></a>
+#### Computation over-repetition channel
+
+- `boundary`: the **narrower** over-repetition set a computation reports, as a filter of the full-validation set above on group-path comparability with the computation's operands: a finding is kept when its node's declaring group path and some operand's path lie on one root-to-leaf line, in either direction, and a node whose owning group the model does not declare is dropped. The operand paths are a **parameter**, not read from a checked computation, because no checked computation in this estate exposes an operand path list. Rendered text and address spelling are not produced here.
+- `owner`: [`OverRepetitionFindings.lean`](../../A12Kernel/Elaboration/OverRepetitionFindings.lean), [sublist law](../../A12Kernel/Proofs/CheckedDocument.lean), [cases](../../A12Kernel/Conformance/OverRepetitionFindings.lean)
+- `assurance`: E closed for the **downward** half against this project's retained [multiplicity](../sources/over-repetition-probes.md#src-over-limit-finding-multiplicity) artifact, whose probe model names `/Probe/ShellDeep`, `/Probe/ShellDeep/Mid*`, and `/Probe/ShellOne` and no operand naming `/Probe/Tri` — one document holding two over-limit subtrees reports four operand errors under the read one and none under the unread one, against eight validation findings. P states the containment: the computation set is a `Sublist` of the validation set for every document and every operand list.
+- `remains`: the **upward** half — a finding strictly above an operand — is a12-dmkits' measurement rather than this project's ([checkpoint](../sources/inbound-group-operand-batches.md#src-starred-field-operand-peer-reproduction)), so no case locks it. Operand derivation and message text: [SG4](../SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition)
+
 <a id="cap-repeatable-validation"></a>
 #### Repeatable validation
 

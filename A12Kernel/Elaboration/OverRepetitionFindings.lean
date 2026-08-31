@@ -13,9 +13,9 @@ operands reach, and the two disagree on documents this project already holds: in
 capture's own artifact the nested document draws **ten** validation findings and **zero** operand
 errors, and the two-independent document draws eight against four
 ([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-limit-finding-multiplicity)).
-So this set must not be read as what a computation sees. That channel has no owner here; it is
-recorded as an obligation in [SG4](../../docs/SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition)
-rather than approximated by this one.
+So this set must not be read as what a computation sees. That channel is owned separately below, by
+[`computationOverRepetitionFindings`](#A12Kernel.CheckedDocument.computationOverRepetitionFindings),
+as a projection of this set rather than as a second traversal.
 
 **One rule replaces the special cases.** An over-limit row draws one `zuGrosseZeile` on itself, plus
 one `zuGrosseKontextnummer` for every node the document instantiates beneath it, at any depth
@@ -106,6 +106,46 @@ def overRepetitionFindings (checked : CheckedDocument model) :
     { code := .rowNumberTooLarge, node := .row row } ::
       (checked.writtenBeneath row).map fun node =>
         { code := .contextNumberTooLarge, node }
+
+/-- The group path a finding's node belongs to: a row's own declared group, or a cell's declaring
+group. A node whose owner the model does not declare has no path and is therefore outside every
+operand's scope, which keeps an unresolvable node out of the narrower channel rather than into it. -/
+private def nodeGroupPath? (model : FlatModel) : OverRepetitionNode → Option (List String)
+  | .row address => (model.repeatableGroupAtLevel? address.group).map (·.path)
+  | .cell address => (model.fields.find? (·.id == address.field)).map (·.groupPath)
+
+/-- Whether two group paths lie on one root-to-leaf line: either may be the ancestor. -/
+private def comparableGroupPath (left right : List String) : Bool :=
+  left.isPrefixOf right || right.isPrefixOf left
+
+/-- The over-repetition findings a **computation** reports, which is not the set the document draws.
+
+    Full validation reports every over-limit row in the document
+    ([`overRepetitionFindings`](#A12Kernel.CheckedDocument.overRepetitionFindings)); a computation
+    reports only what its own operands reach, so the two differ whenever a violated subtree is
+    unread. In this project's retained multiplicity artifact the nested document draws ten validation
+    findings and **zero** operand errors, and the two-independent document eight against four
+    ([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-limit-finding-multiplicity)).
+
+    **The scope is comparability, and its two halves have different provenance.** A finding at or
+    beneath an operand is measured here: that artifact's probe model names `/Probe/ShellDeep`,
+    `/Probe/ShellDeep/Mid*`, and `/Probe/ShellOne` and no operand names `/Probe/Tri`, so one document
+    holding both an over-limit `Mid[4]` and an over-limit `A[3]` reports the first and not the
+    second. A finding **strictly above** an operand is a12-dmkits' measurement rather than this
+    project's
+    ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-starred-field-operand-peer-reproduction)):
+    an operand two repetition levels down under an over-limit outer row draws three messages. Both
+    halves are one comparability test, so the clause is stated once; only its evidence is split.
+
+    Takes the operand group paths rather than reading them from a computation, because no checked
+    computation in this estate exposes an operand path list yet. That coupling is the reason this is
+    a projection over the finding set instead of a consumer of one. -/
+def computationOverRepetitionFindings (checked : CheckedDocument model)
+    (operandGroupPaths : List (List String)) : List OverRepetitionFinding :=
+  checked.overRepetitionFindings.filter fun finding =>
+    match nodeGroupPath? model finding.node with
+    | none => false
+    | some path => operandGroupPaths.any (comparableGroupPath path ·)
 
 end CheckedDocument
 

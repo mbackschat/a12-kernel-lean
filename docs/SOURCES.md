@@ -418,7 +418,7 @@ Two shards carry these: locally measured probes in [`group-and-iteration-probes.
 <a id="src-capacity-projection-computation-arm"></a>
 - [Declared-capacity projection on the computation arm](sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm)
 <a id="src-starred-field-operand-peer-reproduction"></a>
-- [Starred field operand and empty-domain zero, reproduced by a12-dmkits](sources/inbound-group-operand-batches.md#src-starred-field-operand-peer-reproduction)
+- [Starred field operand, empty-domain zero, and the operand-scoped over-repetition channel, reproduced by a12-dmkits](sources/inbound-group-operand-batches.md#src-starred-field-operand-peer-reproduction)
 <a id="src-star-over-repetition-domain"></a>
 - [Over-repetition exclusion from starred numeric domains](sources/over-repetition-probes.md#src-star-over-repetition-domain)
 <a id="src-temporal-field-values-not-unique-group-runtime"></a>

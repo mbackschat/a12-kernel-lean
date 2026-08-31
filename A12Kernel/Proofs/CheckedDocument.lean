@@ -427,4 +427,15 @@ theorem checkedDocument_overRepetitionFindings_rowCode_outermost
     simp [CheckedDocument.extendsRow, shorter, prefixEq]
   simp [this] at notBeneath
 
+/-- **The computation channel only ever removes.** Whatever operand paths a computation carries, the
+findings it reports are a sublist of the ones the document draws under full validation — so the
+narrower channel can drop a finding but never invent one, and can never name a node or code the
+document does not. The measured rows fix which findings survive on particular documents; this fixes
+that nothing else can appear, which is the half a per-document case cannot reach. -/
+theorem checkedDocument_computationOverRepetitionFindings_sublist
+    (checked : CheckedDocument model) (operandGroupPaths : List (List String)) :
+    (checked.computationOverRepetitionFindings operandGroupPaths).Sublist
+      checked.overRepetitionFindings :=
+  List.filter_sublist
+
 end A12Kernel

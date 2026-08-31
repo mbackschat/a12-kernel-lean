@@ -274,6 +274,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Semantic index](implementation/repetition-and-paths.md#cap-semantic-index)
 <a id="cap-over-repetition-findings"></a>
 - [Over-repetition finding set](implementation/repetition-and-paths.md#cap-over-repetition-findings)
+<a id="cap-computation-over-repetition-channel"></a>
+- [Computation over-repetition channel](implementation/repetition-and-paths.md#cap-computation-over-repetition-channel)
 <a id="cap-repeatable-validation"></a>
 - [Repeatable validation](implementation/repetition-and-paths.md#cap-repeatable-validation)
 <a id="cap-repeatable-number-computation"></a>
