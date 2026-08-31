@@ -53,6 +53,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 
+<a id="spec-2026-08-31-07"></a>
+### `SPEC-2026-08-31-07` — a repeatable group always carries a finite maximum, and absence means non-repeatable
+
+- `status`: pending
+- `clause`: [`01-data-model.md`](../spec/01-data-model.md), the group definition
+- `delta`: the clause named `repeatability` as the repeatable group's declared range without stating its domain or what its absence means. Both are now measured: it is a finite integer of **at least two**, `null` and `0` are refused `MVK_MAX_VALUES_INVALID`, and a group declaring no maximum is **non-repeatable** rather than unbounded — the Kernel refuses a wildcard over it `MVK_INVALID_WILDCARD` and admits its bare name as an ordinary group operand, which is the reverse of both answers with the maximum present.
+- `consequence`: an implementation modelling the maximum as an optional integer has an unreachable branch. It may keep the branch as a total function, but it must not expose the absent case as an authorable model, and no clause may be written to depend on its unreachability. This project had five records carrying it as an open measurement; all are now closed as unreachable rather than pending.
+- `evidence`: the [declaration-domain checkpoint](sources/group-and-iteration-probes.md#src-repeatability-declaration-domain) — four Kernel-gated `model check` runs and two `computation add --dry-run` runs at a12-dmkits `1be2d603c90be578fe7ea0de0b8c515cb2a479c4`, clean before and after. The variants were hand-written into throwaway copies under this project's model-check exception and deleted, so no artifact is retained; the base model is retained and named there.
+- `limit`: one model, one nesting level of repeatable groups, `en_US`. Not covered: whether a model arriving through import or type-def inheritance reaches a different spelling.
+- `acceptance`: a12-dmkits confirms that its model representation treats an absent repetition maximum as non-repeatable and rejects `null` and `0`, or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-31-06"></a>
 ### `SPEC-2026-08-31-06` — one group-count static gate table governs both arms, and containment reaches a wildcarded operand
 

@@ -311,8 +311,9 @@ def isRoot (operand : CheckedGroupCountOperand model) : Bool :=
   | .starred source => source.group.path.length == 1
 
 /-- The operand's contribution to the count's declared extent: one slot for a fixed group, and the
-    declared row maximum for a starred one. `none` is an unretained maximum, which leaves the whole
-    count without a finite extent to reach rather than acquiring an unmeasured movement rule. -/
+    declared row maximum for a starred one. `none` leaves the whole count without a finite extent to
+    reach rather than acquiring an unmeasured movement rule; `RepeatableGroupDecl.repeatability`
+    owns why no authorable model selects that branch. -/
 def declaredExtent? (operand : CheckedGroupCountOperand model) : Option Nat :=
   match operand with
   | .fixed _ => some 1

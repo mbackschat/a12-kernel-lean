@@ -53,7 +53,7 @@ def evaluateCheckedDocumentValidation
     stays grow-only until every one of those slots is filled; the declaration count would freeze it
     early ([checkpoint](../../../docs/SOURCES.md#src-filled-field-count-nested-capacity)). An
     unretained descendant maximum yields no operand at all rather than an unmeasured movement rule,
-    matching the starred carrier's own treatment of a missing extent. The starred carrier returns
+    matching the starred carrier and reachable in no authorable model. The starred carrier returns
     `none` here because its movement depends on a separate declared row extent. -/
 def evaluateCheckedDocumentFixedValidationOperand?
     (checked : CheckedFilledFieldCountGroupSource model)

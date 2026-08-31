@@ -364,7 +364,7 @@ def FlatModel.groupSubtreeFields (model : FlatModel) (path : GroupPath) :
 /-- How many cells one declaration contributes beneath a group whose own repeatable ancestry already
 covers `enclosing` levels: one per row combination its remaining repeatable ancestors may reach.
 A declaration with no repeatable ancestor below that group contributes exactly one. `none` is an
-unretained maximum on some level, which has no finite contribution. -/
+unretained maximum on some level, which has no finite contribution and no authorable model. -/
 def FlatModel.declarationSlots? (model : FlatModel) (enclosing : Nat)
     (declaration : FlatFieldDecl) : Option Nat :=
   (declaration.repeatableScope.drop enclosing).foldl (init := some 1)

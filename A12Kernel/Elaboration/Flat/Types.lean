@@ -331,7 +331,13 @@ end FlatFieldDecl
 structure RepeatableGroupDecl where
   level : RepeatableLevel
   path : GroupPath
-  /-- Declared maximum row count when the staged model boundary retains it. -/
+  /-- Declared maximum row count when the staged model boundary retains it.
+
+  `none` is a **staging** absence, never an unbounded group: a Kernel-valid model always
+  declares a finite maximum of at least two, and a group declaring none is nonrepeatable
+  rather than unbounded ([checkpoint](../../../docs/SOURCES.md#src-repeatability-declaration-domain)).
+  Every consumer keeping a `none` branch therefore answers a shape no authorable model reaches;
+  keep those branches total and do not write a clause that depends on their unreachability. -/
   repeatability : Option Nat := none
   /-- The unique direct-child field used for semantic row selection, when declared. -/
   indexField : Option FieldId := none

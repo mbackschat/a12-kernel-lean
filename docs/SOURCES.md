@@ -309,6 +309,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-group-count-static-gates-both-arms"></a>
 - [The group-count static gate table is the same on both arms](sources/group-and-iteration-probes.md#src-group-count-static-gates-both-arms)
+
+<a id="src-repeatability-declaration-domain"></a>
+- [A repeatable group always carries a finite maximum, and absence means nonrepeatable](sources/group-and-iteration-probes.md#src-repeatability-declaration-domain)
 <a id="src-starred-group-count-computation"></a>
 - [The computation arm counts a starred repeatable group's instantiated rows](sources/group-and-iteration-probes.md#src-starred-group-count-computation)
 <a id="src-repeatable-descendant-group-count"></a>
