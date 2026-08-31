@@ -117,6 +117,16 @@ example : numberOfFilledGroups [malformedOnly, cleanFilled] = .unknown := by nat
 example : numberOfFilledGroups [cleanFilled, admittedAndErroneous] = .value 2 := by native_decide
 example : numberOfFilledGroups [cleanFilled, malformedOnly] = .unknown := by native_decide
 
+/- The same rule for a **structural** error rather than a cell finding. A group carrying an
+   over-limit row diagnostic still counts when its content is admitted, so `definitelyFilled`
+   ignoring `erroneous` outright is right for both error kinds and not just the measured cell one.
+   Measured on its own model at the same checkpoint, where the threshold rule fires at its clean
+   count beside `zuGrosseZeile` and `zuGrosseKontextnummer`. -/
+example : (numberOfFilledGroups [state [empty] true true, cleanFilled],
+    numberOfFilledGroups [state [empty] true false, cleanFilled]) =
+    (.value 2, .value 2) := by
+  native_decide
+
 example : numberOfFilledGroups [cleanFilled, cleanEmpty] = .value 1 := by native_decide
 
 /- Coverage is the other dimension and is *not* what the checkpoint measured. Visible content still

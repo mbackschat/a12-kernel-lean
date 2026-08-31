@@ -1,0 +1,276 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "1be2d603c90be578fe7ea0de0b8c515cb2a479c4",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "StructErr_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "s0-clean",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "F3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F3",
+              "referenced" : [
+                "/Probe[1]/G1[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "F3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F3",
+              "referenced" : [
+                "/Probe[1]/G1[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "s1-over-with-content",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "F3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F3",
+              "referenced" : [
+                "/Probe[1]/G1[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/G1/Sub[3]/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/G1/Sub' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/G1/Sub[3]/S"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/G1/Sub[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/G1/Sub[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "F3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F3",
+              "referenced" : [
+                "/Probe[1]/G1[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/G1/Sub[3]/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/G1/Sub' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/G1/Sub[3]/S"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/G1/Sub[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/G1/Sub[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "s2-over-no-direct",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "F3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F3",
+              "referenced" : [
+                "/Probe[1]/G1[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/G1/Sub[3]/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/G1/Sub' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/G1/Sub[3]/S"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/G1/Sub[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/G1/Sub[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "F3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F3",
+              "referenced" : [
+                "/Probe[1]/G1[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/G1/Sub[3]/S",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/G1/Sub' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/G1/Sub[3]/S"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/G1/Sub[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/G1/Sub[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "s3-at-capacity",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "F3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F3",
+              "referenced" : [
+                "/Probe[1]/G1[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "F3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F3",
+              "referenced" : [
+                "/Probe[1]/G1[1]/Sub[0]/S",
+                "Probe/G1/A",
+                "Probe/G2/B"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

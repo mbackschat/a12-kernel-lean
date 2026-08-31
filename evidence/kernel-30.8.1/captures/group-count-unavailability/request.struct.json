@@ -1,0 +1,5 @@
+{"model":"StructErr_DM.json","locale":"en_US","observe":["validateFull"],
+ "rows":[{"name":"s0-clean","document":"s0-clean.json"},
+         {"name":"s1-over-with-content","document":"s1-over-with-content.json"},
+         {"name":"s2-over-no-direct","document":"s2-over-no-direct.json"},
+         {"name":"s3-at-capacity","document":"s3-at-capacity.json"}]}
