@@ -34,6 +34,24 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="exp-2026-08-31-03"></a>
+### `EXP-2026-08-31-03` — does `FieldValuesNotUnique` see an over-limit row's value?
+
+- `status`: pending
+- `question`: the declared-capacity projection is measured to live in the **operand's extent** rather than in each consuming operator ([`EXP-2026-08-31-02`](#exp-2026-08-31-02), [`SPEC-2026-08-31-10`](#spec-2026-08-31-10), [`SPEC-2026-08-31-11`](#spec-2026-08-31-11)), across nine consumers, both arms, and both spellings. `FieldValuesNotUnique` is the one carrier family that consumes the same resolved stream and has **no row of its own**. Does a duplicate whose only partner sits above capacity fire it?
+- `competing accounts`: **(a) extent** — the projection is a property of the operand, so an over-limit row supplies no value and the rule stays silent; the split in this estate is then this project's conservatism rather than a Kernel distinction. **(b) consumer** — uniqueness reads the complete formal-cell view, and the exclusion measured elsewhere is per consumer after all, which would also reopen whether the other nine share one mechanism or nine agreements.
+- `input`: one model, one repeatable group declared `max 2` carrying a scale-0 Number, one rule `FieldValuesNotUnique` over the starred single field. Five documents: **`dup-in-capacity`** rows `5, 5` — the positive control that proves the rule is present and evaluable in this run; **`distinct-in-capacity`** rows `5, 7` — the negative control that proves silence is a reading; **`dup-needs-over-limit`** rows `5, 7, 5`, whose only duplicate pair needs row 3; **`dup-both-over-limit`** rows `1, 2, 5, 5`, the same question with both partners above capacity; **`malformed-plus-over-limit`** with a malformed row 1 beside the pair, since this operator skips an unavailable cell instead of terminalizing on it and is therefore the one place where the two exclusions could interact.
+- `prediction`: under **(a)** exactly `dup-in-capacity` fires the uniqueness message and the other four do not. Under **(b)** `dup-needs-over-limit` and `dup-both-over-limit` fire it as well.
+- `discriminator`: the two controls are the point. A rule that fires only on the positive answer cannot separate "excluded" from "never evaluated", and the over-limit rows draw `zuGrosseZeile`/`zuGrosseKontextnummer` in every document regardless, so the reading is the presence of the **uniqueness** message specifically, never the emptiness of the message set ([`LF125`](LEAN-FINDINGS.md)).
+- `negative result`: if the rule refuses authoring over a starred field on this shape, the question is unreachable on this route and the entry closes as unobservable rather than answered.
+- `local-consequence`: all three carriers — [`NumberValuesNotUnique.lean`](../A12Kernel/Elaboration/NumberValuesNotUnique.lean), [`TokenValuesNotUnique.lean`](../A12Kernel/Elaboration/TokenValuesNotUnique.lean), [`TemporalValuesNotUnique.lean`](../A12Kernel/Elaboration/TemporalValuesNotUnique.lean) — read the **complete** cell view today, and no conformance case pins that answer on an over-limit row, so nothing is locked wrong; the branch is simply unexercised on the side that matters. Account (a) switches their starred and group operands to the in-capacity projection the aggregates already use. This is [`LF124`](LEAN-FINDINGS.md)'s shape one step earlier than usual: the split is currently justified by a docstring that says other consumers "keep the complete formal-cell view", which is a statement of caution wearing the grammar of a measurement.
+- `searched`: this project's retained evidence holds no answer — the only `NotUnique` string across `evidence/` is an unrelated `shortNameNotUnique` rejection class in the validation-core bundle.
+- `route`: `:adapter:kernelProbe`, `validateFull`, one request, five documents. **Blocked only on a clean sibling worktree**, not on a missing capability.
+- `acceptance`: the five rows, or a12-dmkits reporting that its own uniqueness carrier already reaches the extent through the same resolver as its aggregates and on what basis.
+- `local-scope`: [SG13](SEMANTICS-GAPS.md#sg13--group-list-and-group-count-completion) owns the obligation.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-31-11"></a>
 ### `SPEC-2026-08-31-11` — the declared-capacity projection is a property of the operand, and it reaches the starred field and the computation arm
 
