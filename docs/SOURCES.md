@@ -153,6 +153,18 @@ Revision `531a2c769` adds two more from the same exchange: the separating docume
 
 The over-limit half originated in this project and is now measured on both estates, so it needs no outbound request. The two-star halves are inbound and create none by the rule above. Both rest on the peer's estate alone — the checkpoint's `two-star-limit` record owns that.
 
+### Reviewed group-operand extent and coverage batch
+
+a12-dmkits revision `4e174d86a` disposes three outbound entries from this project and carries two Kernel observations it consumes, each read here rather than taken on report.
+
+[`StarredGroupQuantifierCapacityDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/StarredGroupQuantifierCapacityDiffTest.kt) **refutes** [`SPEC-2026-08-31-17`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-17): a group whose only instantiated row lies beyond its declared capacity still answers `AtLeastOneGroupFilled`, on a document built through the kernel's own factory, so the two threshold quantifiers do not share the numeric count's in-capacity extent and the peer's unqualified KERNEL-FINDINGS line is correct as written. The [capacity checkpoint](sources/group-and-iteration-probes.md#src-starred-group-quantifier-capacity) owns it and the residue their rows leave open.
+
+[`PartialCoverageGroupOperandDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/PartialCoverageGroupOperandDiffTest.kt) reproduces [`SPEC-2026-08-31-18`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-18)'s count rule exactly and **splits its predicate half three ways**, with a coverage this project's batch did not run — a whole operand group left uncovered, where `NotAllGroupsFilled` is silent because an uncovered group is undecided rather than empty. The [partial-coverage checkpoint](sources/group-and-iteration-probes.md#src-partial-coverage-group-operands) owns it.
+
+The same revision reports that a12-dmkits **cannot corroborate** [`SPEC-2026-08-31-16`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-16), its renderer flattening both kernel spellings into one, which is what that entry's acceptance condition anticipated; the [selector checkpoint](sources/temporal-and-message-probes.md#src-address-dialect-selector) owns the residue and the one instrument that could still settle it.
+
+All three are inbound from a committed reviewed revision and create no outbound request by the rule above. The refutation corrects prose this project originated, so the correction lands in [`spec/02`](../spec/02-logic-and-formal-errors.md) and [`spec/10`](../spec/10-validation-and-polarity.md) with the retraction recorded at its own checkpoint rather than as a new entry.
+
 ## Provenance checkpoint index
 
 Search stable `src-` anchors in this hub, then follow the link to the bounded family shard. Exact revisions and source-level claim limits remain in those records.

@@ -200,6 +200,20 @@ example :
       countResultOf (absoluteSource false true true) rows = some (.value 3) := by
   native_decide
 
+/- The carrier that separates the two extents is outside this document domain, which is why no case
+   above distinguishes them. The Kernel answers `AtLeastOneGroupFilled` on a group whose ONLY
+   instantiated row lies beyond its capacity, measured at a12-dmkits `4e174d86a`; here the same
+   topology is refused before any operator sees it, because instantiated rows at a level must form a
+   prefix. Every representable over-limit document keeps an in-capacity row, so the structural and
+   in-capacity readings of the quantifiers coincide on all of them and only the numeric count's
+   narrower extent is observable. The refusal is the honest lock: it records the boundary rather than
+   asserting an extent this domain cannot witness. -/
+example :
+    let onlyOverLimitRow := [{ group := 10, path := [1] }, { group := 20, path := [1, 4] }]
+    contextErrorOf (absoluteSource false true true) onlyOverLimitRow =
+      some (.nonprefixRows 20 [1] [4]) := by
+  native_decide
+
 /- Static and runtime topology failures remain fail-closed at their existing owners. -/
 example :
     errorOf (absoluteSource true true true) =
