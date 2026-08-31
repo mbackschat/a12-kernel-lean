@@ -72,4 +72,43 @@ theorem flatModel_declarationSlots_repeatableDescendant
           simp only [hCapacity] at retained
           simp [hCapacity, Option.some.inj retained]
 
+
+/-- A group operand's validation tally reports **no** uninstantiated slot, because its resolved core
+enumerates instantiated rows only. This is the quantity that puts `AllFieldsFilled`,
+`NotAllFieldsFilled`, and `FieldsNotCollectivelyFilled` outside `GroupFieldFillQuantifier`: each
+reads that field, and each would therefore answer from a zero that means *not enumerated* rather
+than *no declared tail*. -/
+theorem checkedFilledFieldCountGroupSource_tally_uninstantiated_zero
+    (checked : CheckedFilledFieldCountGroupSource model)
+    (document : CheckedDocument model) (outer : Env)
+    (tally : ValidationFillTally)
+    (resolved : checked.validationFillTally document outer = .ok tally) :
+    tally.uninstantiated = 0 := by
+  unfold CheckedFilledFieldCountGroupSource.validationFillTally at resolved
+  cases core :
+      document.resolveCheckedGroupEntityOperandCore outer
+        checked.source.boundLevelCount checked.declarations with
+  | error error => simp [core, bind, Except.bind] at resolved
+  | ok value =>
+      rw [core] at resolved
+      simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at resolved
+      subst resolved
+      generalize value.inCapacityAddressedCells = cells
+      suffices general :
+          ∀ (start : ValidationFillTally) (remaining : List CheckedAddressedCell),
+            start.uninstantiated = 0 →
+              (remaining.foldl (init := start) fun tally addressed =>
+                tally.combine
+                  (observeCell .validation addressed.cell).asValidationFillTally).uninstantiated =
+                0 by
+        exact general _ cells rfl
+      intro start remaining
+      induction remaining generalizing start with
+      | nil => intro zero; exact zero
+      | cons head rest hypothesis =>
+          intro zero
+          refine hypothesis _ ?_
+          cases observation : observeCell .validation head.cell <;>
+            simp [ValidationFillTally.combine, observation, zero]
+
 end A12Kernel

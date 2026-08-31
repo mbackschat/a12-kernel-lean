@@ -343,4 +343,100 @@ example :
     threeLevelCount threeLevelInnerRows [cell 61 [1, 3] "x"] = some (.value 0) := by
   native_decide
 
+private def malformedCell (field : FieldId) (path : List Nat) : ClassifiedCellInput :=
+  { address := { field, path }
+    stored := "?"
+    raw := .rejected .malformed }
+
+private def fixedFill
+    (operator : CheckedFilledFieldCountGroupSource.GroupFieldFillQuantifier)
+    (cells : List ClassifiedCellInput) : Option ValidationFillOutcome := do
+  let checked ← fixedChecked?
+  let document ← (checkDocument fixedPrepared "en_US" {
+    instantiatedRows := []
+    cells }).toOption
+  (checked.evaluateCheckedDocumentValidationFill operator document []).toOption
+
+private def threeLevelFill
+    (operator : CheckedFilledFieldCountGroupSource.GroupFieldFillQuantifier)
+    (rows : List RowAddr) (cells : List ClassifiedCellInput) :
+    Option ValidationFillOutcome := do
+  let checked ← threeLevelChecked?
+  let document ← (checkDocument threeLevelPrepared "en_US" {
+    instantiatedRows := rows
+    cells }).toOption
+  (checked.evaluateCheckedDocumentValidationFill operator document []).toOption
+
+/- The two Kernel-measured operators read the same depth-3 extent the count does, and each carries a
+   different polarity: `AtLeastOneFieldFilled` fires VALUE, `NoFieldFilled` fires OMISSION. The empty
+   control separates a firing from an operator that fires unconditionally, and it is the document on
+   which the two exchange places. Measured in the same run as the count
+   ([checkpoint](../../docs/SOURCES.md#src-group-operand-over-limit-extent)). -/
+example :
+    (threeLevelFill .atLeastOneFieldFilled threeLevelRows [cell 62 [1, 1, 1] "x"],
+     threeLevelFill .noFieldFilled threeLevelRows [cell 62 [1, 1, 1] "x"],
+     threeLevelFill .atLeastOneFieldFilled threeLevelRows [],
+     threeLevelFill .noFieldFilled threeLevelRows []) =
+    (some (.fired .value), some .falseOrUnknown,
+     some .falseOrUnknown, some (.fired .omission)) := by
+  native_decide
+
+/- An over-limit filled cell leaves both operators reading an empty extent, exactly as it leaves the
+   count at zero. The in-capacity control differs only in the offending index, so the row separates
+   the capacity projection from a general failure to see the cell. -/
+example :
+    (threeLevelFill .atLeastOneFieldFilled threeLevelOuterRows [cell 60 [3] "x"],
+     threeLevelFill .noFieldFilled threeLevelOuterRows [cell 60 [3] "x"],
+     threeLevelFill .atLeastOneFieldFilled (threeLevelOuterRows.take 2) [cell 60 [2] "x"],
+     threeLevelFill .noFieldFilled (threeLevelOuterRows.take 2) [cell 60 [2] "x"]) =
+    (some .falseOrUnknown, some (.fired .omission),
+     some (.fired .value), some .falseOrUnknown) := by
+  native_decide
+
+/- A formally invalid cell is **retained inside** the extent and **excluded above** it, so the same
+   bad cell one index apart moves the count between unknown and zero and moves `NoFieldFilled`
+   between silent and fired. A definite zero alone cannot separate *removed from the domain* from
+   *classified unavailable and not counted*; this pair can, and it is why the consumer opts into the
+   in-capacity projection rather than filtering the cells afterwards. The separator is Kernel-measured
+   on `Sum` over a fixed group operand at the [inbound extent
+   checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep);
+   the count carrier's own malformed pair is this project's account of the shared extent and is not
+   itself measured. -/
+example :
+    (threeLevelCount threeLevelOuterRows [malformedCell 60 [3]],
+     threeLevelFill .noFieldFilled threeLevelOuterRows [malformedCell 60 [3]],
+     threeLevelCount (threeLevelOuterRows.take 2) [malformedCell 60 [2]],
+     threeLevelFill .noFieldFilled (threeLevelOuterRows.take 2) [malformedCell 60 [2]]) =
+    (some (.value 0), some (.fired .omission),
+     some .unknown, some .falseOrUnknown) := by
+  native_decide
+
+/- The fill operators are **not** a projection of the count, and this is the document that proves it:
+   one filled cell beside one formally invalid sibling leaves the count unavailable while
+   `AtLeastOneFieldFilled` still fires on the filled one. An implementation that answered the
+   quantifiers by comparing the count would answer nothing here. `NoFieldFilled` stays silent for the
+   opposite reason — it needs both no filled cell and no unknown one — so the two admitted operators
+   are not each other's negation either. -/
+example :
+    (fixedCount [cell 1 [] "s", malformedCell 2 []],
+     fixedFill .atLeastOneFieldFilled [cell 1 [] "s", malformedCell 2 []],
+     fixedFill .noFieldFilled [cell 1 [] "s", malformedCell 2 []]) =
+    (some .unknown, some (.fired .value), some .falseOrUnknown) := by
+  native_decide
+
+/- The two evidence-pending operators are the same mechanism at a different threshold: one filled
+   cell leaves `MoreThanOneFieldFilled` silent, and `NotExactlyOneFieldFilled` silent as well, while
+   a second filled cell fires both with VALUE. The pair is retained because the threshold is where a
+   naive `≠ 1` reading would fire on the empty document too, and the empty control shows it fires
+   with OMISSION there instead. -/
+example :
+    (fixedFill .moreThanOneFieldFilled [cell 1 [] "s"],
+     fixedFill .notExactlyOneFieldFilled [cell 1 [] "s"],
+     fixedFill .moreThanOneFieldFilled [cell 1 [] "s", cell 2 [] "c"],
+     fixedFill .notExactlyOneFieldFilled [cell 1 [] "s", cell 2 [] "c"],
+     fixedFill .notExactlyOneFieldFilled []) =
+    (some .falseOrUnknown, some .falseOrUnknown,
+     some (.fired .value), some (.fired .value), some (.fired .omission)) := by
+  native_decide
+
 end A12Kernel

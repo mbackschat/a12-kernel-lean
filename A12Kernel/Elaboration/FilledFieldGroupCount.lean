@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Elaboration.FieldEntityList
 import A12Kernel.Semantics.FieldFillQuantifier
+import A12Kernel.Semantics.ValidationFillQuantifier
 import A12Kernel.Semantics.NumericComparison
 
 /-! # Checked group-scope filled-field counts
@@ -58,6 +59,35 @@ def evaluateCheckedDocumentValidation
     (resolved.inCapacityAddressedCells.map fun addressed =>
       observeCell .validation addressed.cell))
 
+/-- The field-fill operators a **group** operand can answer here.
+
+    Three of the seven read a declared-but-uninstantiated slot count, and the group operand's
+    resolved core enumerates instantiated rows only, so `AllFieldsFilled`, `NotAllFieldsFilled`, and
+    `FieldsNotCollectivelyFilled` would each be answered from a tally that silently reports zero
+    uninstantiated slots where a declared repeatable tail exists. They are excluded rather than
+    answered wrongly; `checkedFilledFieldCountGroupSource_tally_uninstantiated_zero` states the
+    quantity that makes the exclusion necessary rather than cautious.
+
+    The four admitted operators read only `filled` and `unknown`, which the instantiated extent
+    supplies exactly. `NoFieldFilled` and `AtLeastOneFieldFilled` are Kernel-measured
+    ([checkpoint](../../../docs/SOURCES.md#src-group-operand-over-limit-extent)); the other two are
+    the same mechanism at a different threshold and remain external evidence pending. -/
+inductive GroupFieldFillQuantifier where
+  | noFieldFilled
+  | atLeastOneFieldFilled
+  | moreThanOneFieldFilled
+  | notExactlyOneFieldFilled
+  deriving Repr, DecidableEq
+
+/-- Every admitted group operator is the ordinary field-fill operator of the same name; the subset is
+an admission boundary, not a second semantics. -/
+def GroupFieldFillQuantifier.toFieldFillQuantifier :
+    GroupFieldFillQuantifier → FieldFillQuantifier
+  | .noFieldFilled => .noFieldFilled
+  | .atLeastOneFieldFilled => .atLeastOneFieldFilled
+  | .moreThanOneFieldFilled => .moreThanOneFieldFilled
+  | .notExactlyOneFieldFilled => .notExactlyOneFieldFilled
+
 /-- Lift the measured fixed-group validation count against its subtree's declared **slot capacity**.
     A subtree owning a repeatable descendant admits more cells than it declares fields, and the count
     stays grow-only until every one of those slots is filled; the declaration count would freeze it
@@ -76,6 +106,33 @@ def evaluateCheckedDocumentFixedValidationOperand?
         fun capacity => (count.availableWithFillability? capacity).map
           fun available => .value available.1 available.2)
   | .starred _ | .starredPresence _ => pure none
+
+/-- The extensional validation tally of the group operand's in-capacity extent.
+
+    `uninstantiated` is `0` because the resolved group core enumerates instantiated rows only. That
+    is a fact about this extent rather than about the model, which is exactly why the three
+    tail-reading operators are outside `GroupFieldFillQuantifier`. -/
+def validationFillTally (checked : CheckedFilledFieldCountGroupSource model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError ValidationFillTally := do
+  let resolved ← document.resolveCheckedGroupEntityOperandCore outer
+    checked.source.boundLevelCount checked.declarations
+  pure (resolved.inCapacityAddressedCells.foldl (init := ({ filled := 0, empty := 0, unknown := 0, uninstantiated := 0 } : ValidationFillTally))
+    fun tally addressed =>
+      tally.combine (observeCell .validation addressed.cell).asValidationFillTally)
+
+/-- Answer one admitted field-fill operator over the group operand's in-capacity extent.
+
+    This is not a projection of `evaluateCheckedDocumentValidation`: the count is unavailable as soon
+    as one operand cell is formally invalid, while `AtLeastOneFieldFilled` still fires on a filled
+    sibling. The two carriers therefore disagree on a document holding both, deliberately. -/
+def evaluateCheckedDocumentValidationFill
+    (checked : CheckedFilledFieldCountGroupSource model)
+    (operator : GroupFieldFillQuantifier)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError ValidationFillOutcome := do
+  let tally ← checked.validationFillTally document outer
+  pure (operator.toFieldFillQuantifier.evalValidation tally)
 
 end CheckedFilledFieldCountGroupSource
 
