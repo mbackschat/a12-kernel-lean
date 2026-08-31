@@ -243,4 +243,26 @@ example : (count true 2 (errored := true), count false 2, count false 2 (errored
      none) := by
   native_decide
 
+/- **Containment is checked before rootness, and the order is measured.** A root beside its own
+descendant draws the overlap class rather than the root class, in either operand order, exactly as
+the fixed-only list does. The root class is reserved for a root beside a *disjoint* operand, which
+this fixture's single root cannot express — the [list-extent checkpoint](../../docs/SOURCES.md#src-group-count-list-extent)
+carries that row on a two-root model. Running the gates the other way round reports a root the author
+must remove where the Kernel reports an overlap they must resolve. -/
+example : (kernelCode? [.fixed (.path { base := .absolute, groups := ["Probe"] }),
+      starredOperand],
+    kernelCode? [starredOperand,
+      .fixed (.path { base := .absolute, groups := ["Probe"] })]) =
+    (some "MVK_DUPLICATE_PARAM2", some "MVK_DUPLICATE_PARAM2") := by
+  native_decide
+
+/- Arity above the measured pair is admitted, mixed as well as fixed, and the admission does not
+depend on where the star sits in the list. The gate is a minimum of two operands, not an exact pair;
+the Kernel admits three- and four-operand lists on both shapes. -/
+example : ((comparison? [fixedOperand, starredOperand, otherStar]).isSome,
+    (comparison? [fixedOperand, otherStar, starredOperand]).isSome,
+    (comparison? [starredOperand, fixedOperand, otherStar]).isSome) =
+    (true, true, true) := by
+  native_decide
+
 end A12Kernel.Conformance.MixedFilledGroupCount

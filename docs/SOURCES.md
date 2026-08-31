@@ -315,11 +315,11 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-group-count-row-domains"></a>
 - [The half-instantiated shell, the starred group over a repeatable descendant, and the unreachable row-domain discriminator](sources/group-and-iteration-probes.md#src-group-count-row-domains)
 <a id="src-over-limit-finding-multiplicity"></a>
-- [An over-limit row stamps every node the document writes beneath it](sources/group-and-iteration-probes.md#src-over-limit-finding-multiplicity)
+- [An over-limit row stamps every node the document writes beneath it](sources/over-repetition-probes.md#src-over-limit-finding-multiplicity)
 <a id="src-nested-over-limit-attribution"></a>
-- [An inner over-limit row is invisible beneath an outer one](sources/group-and-iteration-probes.md#src-nested-over-limit-attribution)
+- [An inner over-limit row is invisible beneath an outer one](sources/over-repetition-probes.md#src-nested-over-limit-attribution)
 <a id="src-over-limit-absorption-depth"></a>
-- [The absorption is transitive and suppresses the whole written subtree](sources/group-and-iteration-probes.md#src-over-limit-absorption-depth)
+- [The absorption is transitive and suppresses the whole written subtree](sources/over-repetition-probes.md#src-over-limit-absorption-depth)
 <a id="src-nested-descendant-group-count-invalid"></a>
 - [A formally invalid nested descendant still fills its group](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-invalid)
 <a id="src-nested-descendant-group-count-runtime"></a>
@@ -388,7 +388,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-filled-field-group-runtime"></a>
 - [Filled-field group-count runtime](sources/group-and-iteration-probes.md#src-filled-field-group-runtime)
 <a id="src-star-over-repetition-domain"></a>
-- [Over-repetition exclusion from starred numeric domains](sources/group-and-iteration-probes.md#src-star-over-repetition-domain)
+- [Over-repetition exclusion from starred numeric domains](sources/over-repetition-probes.md#src-star-over-repetition-domain)
 <a id="src-temporal-field-values-not-unique-group-runtime"></a>
 - [Temporal field-values-not-unique group runtime](sources/group-and-iteration-probes.md#src-temporal-field-values-not-unique-group-runtime)
 <a id="src-boolean-value-count-group-runtime"></a>

@@ -507,12 +507,16 @@ def elaborateMixedFilledGroupCountComparison
                 throw (NumericValidationElabError.starredGroupCountOperand path)
   if checked.length < 2 then
     throw .groupCountNeedsMultipleOperands
-  match checked.find? CheckedGroupCountOperand.isRoot with
-  | some (.fixed reference) => throw (.rootGroupInGroupCount reference.path)
-  | some (.starred source) => throw (.rootGroupInGroupCount source.group.path)
+  -- Containment runs **before** rootness, and the order is measured: a root beside its own
+  -- descendant draws the overlap class in either operand order, while the root class is reserved for
+  -- a root beside a disjoint operand. Reversed, this reports a root the author must remove where the
+  -- Kernel reports an overlap they must resolve.
+  match CheckedGroupCountOperand.firstDuplicate? checked with
+  | some (left, right) => throw (.overlappingGroupCountOperands left right)
   | none =>
-      match CheckedGroupCountOperand.firstDuplicate? checked with
-      | some (left, right) => throw (.overlappingGroupCountOperands left right)
+      match checked.find? CheckedGroupCountOperand.isRoot with
+      | some (.fixed reference) => throw (.rootGroupInGroupCount reference.path)
+      | some (.starred source) => throw (.rootGroupInGroupCount source.group.path)
       | none =>
           -- The list is not fixed-only, so some member is a star and its own certificate carries
           -- the model proof. Searching for it rather than requiring one from the caller keeps the
