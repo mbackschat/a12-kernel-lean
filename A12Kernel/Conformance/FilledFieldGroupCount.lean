@@ -322,4 +322,25 @@ example :
     threeLevelCount threeLevelRows [] = some (.value 0) := by
   native_decide
 
+private def threeLevelOuterRows : List RowAddr :=
+  [{ group := 60, path := [1] }, { group := 60, path := [2] },
+   { group := 60, path := [3] }]
+
+private def threeLevelInnerRows : List RowAddr :=
+  [{ group := 60, path := [1] }, { group := 61, path := [1, 1] },
+   { group := 61, path := [1, 2] }, { group := 61, path := [1, 3] }]
+
+/- A cell in a row beyond the group's declared repeatability is **not counted and does not make the
+   count unknown**, at the outer level and the inner one alike. The distinction is what the fixture
+   is built for: the in-capacity rows are instantiated and empty, so an account that retained the
+   offending cell as formally invalid would answer unknown, and kernel 30.8.1 fires a `< 1` rule on
+   these documents ([checkpoint](../../docs/SOURCES.md#src-group-operand-over-limit-extent)). Each
+   control differs only in the offending index. -/
+example :
+    threeLevelCount (threeLevelOuterRows.take 2) [cell 60 [2] "x"] = some (.value 1) ∧
+    threeLevelCount threeLevelOuterRows [cell 60 [3] "x"] = some (.value 0) ∧
+    threeLevelCount (threeLevelInnerRows.take 3) [cell 61 [1, 2] "x"] = some (.value 1) ∧
+    threeLevelCount threeLevelInnerRows [cell 61 [1, 3] "x"] = some (.value 0) := by
+  native_decide
+
 end A12Kernel

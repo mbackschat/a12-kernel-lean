@@ -38,15 +38,25 @@ def declarations (checked : CheckedFilledFieldCountGroupSource model) :
     List FlatFieldDecl :=
   checked.first :: checked.rest
 
-/-- Evaluate the measured full-validation group extent with the existing empty/filled/formal-invalid count semantics. This returns the count only; comparison movement for a group source remains outside until a non-vacuous polarity observation fixes it. -/
+/-- Evaluate the measured full-validation group extent with the existing empty/filled/formal-invalid count semantics. This returns the count only; comparison movement for a group source remains outside until a non-vacuous polarity observation fixes it.
+
+    The domain is the **in-capacity** projection, opted into here exactly as the starred carrier's
+    measured consumers opt into it. A cell in a row beyond the group's declared repeatability is not
+    counted and does not make the count unknown: on a document whose in-capacity rows are
+    instantiated and empty and whose only filled cell lies beyond capacity, kernel 30.8.1 answers
+    `0` and fires a `< 1` rule, which an unknown count would leave silent
+    ([checkpoint](../../../docs/SOURCES.md#src-group-operand-over-limit-extent)). The complete
+    formal-cell view stays available on the checked document for the group consumers that have no
+    such measurement. -/
 def evaluateCheckedDocumentValidation
     (checked : CheckedFilledFieldCountGroupSource model)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError FilledFieldCount := do
   let resolved ← document.resolveCheckedGroupEntityOperandCore outer
     checked.source.boundLevelCount checked.declarations
-  pure (numberOfFilledFields (resolved.addressedCells.map fun addressed =>
-    observeCell .validation addressed.cell))
+  pure (numberOfFilledFields
+    (resolved.inCapacityAddressedCells.map fun addressed =>
+      observeCell .validation addressed.cell))
 
 /-- Lift the measured fixed-group validation count against its subtree's declared **slot capacity**.
     A subtree owning a repeatable descendant admits more cells than it declares fields, and the count
