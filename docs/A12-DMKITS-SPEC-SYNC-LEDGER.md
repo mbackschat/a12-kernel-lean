@@ -53,6 +53,23 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 
+<a id="spec-2026-08-31-02"></a>
+### `SPEC-2026-08-31-02` — a Date constant has no target check at either time and is stored in the target's declared format
+
+- `status`: pending
+- `clause`: [`09-computations.md`](../spec/09-computations.md) constant-families row, which gains Date's timing; [`12-concrete-syntax.md`](../spec/12-concrete-syntax.md)'s lexer note, refined with the calendar-validity and padding conditions
+- `delta`: new behavior, not a correction. The constant families' target-check **timing** was recorded for String (everything at runtime) and Number (split across authoring and runtime). Date is a **third** timing: no target check at all. The static gate reads only the literal's own spelling and never the target's declared format, and the runtime renders the constant into whatever format the target declares, without error.
+- `mechanism`: one authored `"05.03.2024"` written to targets declared `dd.MM.yyyy`, `yyyy-MM-dd`, and `yyyy` stores `05.03.2024`, `2024-03-05`, and `2024` on every instantiated row, `cleared: false` and `errored: false` throughout, no message on either engine. The same constant is admitted into all three at authoring. So the constant is one temporal value and the declared format is a rendering of it, exactly as a Number constant's stored text renders its amount.
+- `consequence`: a component-omitting target such as `yyyy` **discards day and month silently**. A peer that refuses such a target, that stores the authored text, or that raises a warning diverges on the most likely authoring mistake in this family, and diverges without any signal that would surface it.
+- `literal-kind`: the classification requires a real calendar date and mandatory zero padding, not merely the `DD.MM.YYYY` shape. `29.02.2024` classifies and `29.02.2023` does not — one digit apart, differing only by whether the date exists; `30.04.2024` classifies and `31.04.2024` does not; `5.3.2024` does not where `05.03.2024` does. A token that fails the match reaches the target as a String and is refused `MVK_INVALID_COMPARE_TO_DATE`, so the observable code names a comparison and points at neither the format nor the literal. The **ISO** spelling is in that refused set, and is exactly the text an ISO-declared target stores.
+- `omitted-year`: `spec/12`'s note admits "the omitted-year shape" beside `DD.MM.YYYY`. No witness was found on this route — `05.03.`, `05.03`, and `03.2024` are each refused — so the clause records it as unwitnessed rather than refuted. If a12-dmkits holds a witness, that is the most useful thing it can return with this entry.
+- `evidence`: the [Date-constant checkpoint](sources/cross-layer-routes.md#src-date-constant-target-formatting) — a static decision table on a computation-free model plus a runtime request on both codegen strategies, `enginesAgree: true`, `producer.source.state: CLEAN` at a12-dmkits `1be2d603c90be578fe7ea0de0b8c515cb2a479c4`.
+- `limit`: three declared formats, one repetition level at bounded repeatability 3, one complete-date literal, `en_US`, no Base Year. Not measured: DATE_FRAGMENT, TIME, DATETIME, and DATERANGE targets, a constant under a precondition, and a seeded target cell.
+- `local-scope`: no Lean owner yet — this measurement precedes the carrier, which [SG4](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) requires. The checkpoint hands that capsule its rule: `FullDateTargetFormat` already renders the two complete formats to exactly these two strings, and the component-omitting target stays a stated exclusion because `ofSource?` does not admit it.
+- `acceptance`: a12-dmkits confirms that a Date constant is admitted independently of the target's declared format and stored in it, including the silent component-omitting case — or supplies the contrary measurement, or a witness for the omitted-year literal shape.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-31-01"></a>
 ### `SPEC-2026-08-31-01` — a filled-group count is unavailable only where an operand's presence is undecided, not on any error
 

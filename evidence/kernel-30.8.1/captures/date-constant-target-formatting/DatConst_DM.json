@@ -1,0 +1,126 @@
+{
+  "header" : {
+    "id" : "DatConst_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "DatConst_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Rows/DIso",
+                "name" : "DIso",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/DGer",
+                "name" : "DGer",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "dd.MM.yyyy"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/DYear",
+                "name" : "DYear",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/DIsoComp",
+            "name" : "DIsoComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/DIso",
+              "computationAlternatives" : [ {
+                "operation" : "\"05.03.2024\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "c-DIso"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/DGerComp",
+            "name" : "DGerComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/DGer",
+              "computationAlternatives" : [ {
+                "operation" : "\"05.03.2024\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "c-DGer"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/DYearComp",
+            "name" : "DYearComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/DYear",
+              "computationAlternatives" : [ {
+                "operation" : "\"05.03.2024\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "c-DYear"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

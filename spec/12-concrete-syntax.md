@@ -29,7 +29,7 @@ The complete bilingual spelling table is source-characterized by the kernel's [`
 | boolean / confirm const | `True` / `False` | compared to Boolean/Confirm fields per [§1](02-logic-and-formal-errors.md) |
 | value list | `( "A", "B" )` / `( 1, 2, 3 )` | string list or number list, introduced by the `In` separator (see §4) |
 
-> **Non-normative implementation note.** The date/string ambiguity is a **lexer/typer** decision, not an evaluator one: classify a `"…"` token as `dateConst` iff its content matches `DD.MM.YYYY` (or the omitted-year shape), else `strConst`; ISO shapes are always `strConst`. Then the AST literal node already carries the right kind.
+> **Non-normative implementation note.** The date/string ambiguity is a **lexer/typer** decision, not an evaluator one: classify a `"…"` token as `dateConst` iff its content matches `DD.MM.YYYY` (or the omitted-year shape), else `strConst`; ISO shapes are always `strConst`. **The match requires a real calendar date and mandatory zero padding, not merely the shape**: `"29.02.2024"` classifies as a date and `"29.02.2023"` does not, `"30.04.2024"` does and `"31.04.2024"` does not, and `"5.3.2024"` does not where `"05.03.2024"` does. A token that fails the match reaches the target as a String and is refused there, so the observable code names a comparison rather than the literal ([checkpoint](../docs/SOURCES.md#src-date-constant-target-formatting)). No witness for the omitted-year shape was found on that route — `"05.03."`, `"05.03"`, and `"03.2024"` are each refused — which leaves the shape unwitnessed rather than refuted. Then the AST literal node already carries the right kind.
 
 ---
 

@@ -1,0 +1,138 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "1be2d603c90be578fe7ea0de0b8c515cb2a479c4",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "DatConst_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "two-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Rows/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[2]/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Rows/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[2]/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "no-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

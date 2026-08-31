@@ -428,6 +428,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A Number constant: scale refuses at authoring, range errors per row](sources/cross-layer-routes.md#src-repeatable-number-constant-target-check)
 <a id="src-repeatable-number-constant-scale-rendering"></a>
 - [A Number constant's scale is read twice, differently: the gate keeps trailing zeros, the store strips them and pads](sources/cross-layer-routes.md#src-repeatable-number-constant-scale-rendering)
+
+<a id="src-date-constant-target-formatting"></a>
+- [A Date constant is admitted by its own spelling and stored in the target's format, with no target check at either time](sources/cross-layer-routes.md#src-date-constant-target-formatting)
 <a id="src-fixed-target-star-placement"></a>
 - [Fixed computation target under a star operand: no placement gate](sources/cross-layer-routes.md#src-fixed-target-star-placement)
 <a id="src-unsuppressed-assignment-scale-reach"></a>
