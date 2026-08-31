@@ -434,6 +434,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-constant-literal-family-gate"></a>
 - [A bare constant's admission is gated by the target's declared format string, never its kind](sources/cross-layer-routes.md#src-constant-literal-family-gate)
+
+<a id="src-component-omitting-date-formats"></a>
+- [A component-omitting date target needs every component its format names, and the Base Year supplies the year](sources/cross-layer-routes.md#src-component-omitting-date-formats)
 <a id="src-fixed-target-star-placement"></a>
 - [Fixed computation target under a star operand: no placement gate](sources/cross-layer-routes.md#src-fixed-target-star-placement)
 <a id="src-unsuppressed-assignment-scale-reach"></a>

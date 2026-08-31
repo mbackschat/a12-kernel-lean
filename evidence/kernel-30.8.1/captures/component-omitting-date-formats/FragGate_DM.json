@@ -1,0 +1,168 @@
+{
+  "header" : {
+    "id" : "FragFmt_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "FragFmt_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Rows/D_yyyy",
+                "name" : "D_yyyy",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/D_yyyyMM",
+                "name" : "D_yyyyMM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/D_MM",
+                "name" : "D_MM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "MM"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/D_MMdd",
+                "name" : "D_MMdd",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/F_yyyy",
+                "name" : "F_yyyy",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateFragmentType",
+                    "DateFragmentType" : {
+                      "formatOfFragment" : "yyyy"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/F_yyyyMM",
+                "name" : "F_yyyyMM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateFragmentType",
+                    "DateFragmentType" : {
+                      "formatOfFragment" : "yyyy-MM"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/F_MM",
+                "name" : "F_MM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateFragmentType",
+                    "DateFragmentType" : {
+                      "formatOfFragment" : "MM"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/F_MMdd",
+                "name" : "F_MMdd",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateFragmentType",
+                    "DateFragmentType" : {
+                      "formatOfFragment" : "MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/D_compact",
+                "name" : "D_compact",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyyMM"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/F_compact",
+                "name" : "F_compact",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateFragmentType",
+                    "DateFragmentType" : {
+                      "formatOfFragment" : "yyyyMM"
+                    }
+                  }
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

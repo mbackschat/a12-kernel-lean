@@ -53,6 +53,23 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 
+<a id="spec-2026-08-31-04"></a>
+### `SPEC-2026-08-31-04` — a component-omitting date target needs every component its format names, and the Base Year supplies the year
+
+- `status`: pending
+- `clause`: [`09-computations.md`](../spec/09-computations.md) constant-families row, refining the family gate [`SPEC-2026-08-31-03`](#spec-2026-08-31-03) introduced
+- `delta`: new behavior, and a **refinement of the entry above**. That entry said the literal's temporal family must match the format's. A date-shaped format is not one family: of the five component-omitting date formats, the year-leading `yyyy`, `yyyy-MM`, and `yyyyMM` admit a full-date constant while the yearless `MM` and `MM-dd` refuse it `MVK_INVALID_COMPARE_TO_DATE`, identically on DATE and DATE_FRAGMENT declarations.
+- `mechanism`: the split is the **Base Year**, and this was predicted from existing clauses before it was measured. `spec/05` already said a model without a Base Year rejects a yearless date and `spec/07` said a declared Base Year lifts that refusal for a yearless *aggregate operand*. Declaring `modelInfo.baseYear` lifts it for all four yearless targets across both kinds, with the year-leading controls unchanged — the same mechanism reaching the constant-assignment carrier, discharged by measurement rather than inherited across the carrier boundary.
+- `rendering`: the store drops exactly the components the format omits and keeps the format's own separator — `yyyy` stores `2024`, `yyyy-MM` stores `2024-03`, `yyyyMM` stores `202403` — on every instantiated row, nothing cleared or errored. DATE and DATE_FRAGMENT declarations produce identical text, so the kind remains irrelevant at both stages.
+- `consequence`: a peer implementing the family gate as a date/time split admits `MM` where the Kernel refuses, and one implementing the store as a fixed complete rendering writes `2024-03-05` where the Kernel writes `2024`. The two errors are independent and neither shows up on a complete-format fixture.
+- `evidence`: the [component-omitting checkpoint](sources/cross-layer-routes.md#src-component-omitting-date-formats) on both codegen strategies, `enginesAgree: true`, `producer.source.state: CLEAN` at a12-dmkits `1be2d603c90be578fe7ea0de0b8c515cb2a479c4`.
+- `instrument limit`: the Base Year rows were reached only by hand-writing `content.modelInfo.baseYear` into a non-persisted model copy, because `dmtool` exposes no route to declare one. Those rows are **not reproducible from the retained bytes**; the admission and rendering tables are. Routed separately as a dated `dmtool` feedback note, not as part of this entry, because it is an instrument limit rather than Kernel behavior.
+- `limit`: five component-omitting formats, one full-date literal, one Base Year value, one repetition level, `en_US`. Not measured: what a yearless target *stores* under a Base Year, and a literal supplying fewer components than a year-leading format names.
+- `local-scope`: no clause changes yet. Both landed constant carriers exclude a component-omitting target, and this measurement turns that from a missing *rule* into a missing **renderer**: `FullDateTargetFormat` admits only the two complete formats and always emits three components. Extending it is a shared-type change reaching five families, so it is sequenced as its own unit with the table above as its specification. [SG15](SEMANTICS-GAPS.md#sg15--bare-constant-target-families) owns the obligation.
+- `acceptance`: a12-dmkits confirms that a yearless date format refuses a full-date constant without a declared Base Year and admits it with one, and that the three year-leading formats store their own component subsets — or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-31-03"></a>
 ### `SPEC-2026-08-31-03` — a bare constant's admission is gated by the target's declared format string, not its kind
 

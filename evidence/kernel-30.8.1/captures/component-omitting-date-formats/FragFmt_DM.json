@@ -1,0 +1,252 @@
+{
+  "header" : {
+    "id" : "FragFmt_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "FragFmt_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Rows/D_yyyy",
+                "name" : "D_yyyy",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/D_yyyyMM",
+                "name" : "D_yyyyMM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/D_MM",
+                "name" : "D_MM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "MM"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/D_MMdd",
+                "name" : "D_MMdd",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/F_yyyy",
+                "name" : "F_yyyy",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateFragmentType",
+                    "DateFragmentType" : {
+                      "formatOfFragment" : "yyyy"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/F_yyyyMM",
+                "name" : "F_yyyyMM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateFragmentType",
+                    "DateFragmentType" : {
+                      "formatOfFragment" : "yyyy-MM"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/F_MM",
+                "name" : "F_MM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateFragmentType",
+                    "DateFragmentType" : {
+                      "formatOfFragment" : "MM"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/F_MMdd",
+                "name" : "F_MMdd",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateFragmentType",
+                    "DateFragmentType" : {
+                      "formatOfFragment" : "MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/D_compact",
+                "name" : "D_compact",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyyMM"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/F_compact",
+                "name" : "F_compact",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateFragmentType",
+                    "DateFragmentType" : {
+                      "formatOfFragment" : "yyyyMM"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/D_yyyyComp",
+            "name" : "D_yyyyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/D_yyyy",
+              "computationAlternatives" : [ {
+                "operation" : "\"05.03.2024\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "c-D_yyyy"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/D_yyyyMMComp",
+            "name" : "D_yyyyMMComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/D_yyyyMM",
+              "computationAlternatives" : [ {
+                "operation" : "\"05.03.2024\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "c-D_yyyyMM"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/D_compactComp",
+            "name" : "D_compactComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/D_compact",
+              "computationAlternatives" : [ {
+                "operation" : "\"05.03.2024\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "c-D_compact"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/F_yyyyComp",
+            "name" : "F_yyyyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/F_yyyy",
+              "computationAlternatives" : [ {
+                "operation" : "\"05.03.2024\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "c-F_yyyy"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/F_yyyyMMComp",
+            "name" : "F_yyyyMMComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/F_yyyyMM",
+              "computationAlternatives" : [ {
+                "operation" : "\"05.03.2024\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "c-F_yyyyMM"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/F_compactComp",
+            "name" : "F_compactComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/F_compact",
+              "computationAlternatives" : [ {
+                "operation" : "\"05.03.2024\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "c-F_compact"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

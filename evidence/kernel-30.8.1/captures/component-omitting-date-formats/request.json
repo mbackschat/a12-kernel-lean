@@ -1,0 +1,2 @@
+{"model":"FragFmt_DM.json","locale":"en_US","observe":["validateFull","compute"],
+ "rows":[{"name":"two-rows","document":"d2.json"},{"name":"no-rows","document":"d0.json"}]}
