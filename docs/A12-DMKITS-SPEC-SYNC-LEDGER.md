@@ -53,6 +53,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 
+<a id="spec-2026-08-31-09"></a>
+### `SPEC-2026-08-31-09` — a `Having` filter refuses a group operand, on both arms and in either position
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md`](../spec/07-repetition-and-iteration.md), beside the existing three-gates paragraph
+- `delta`: the clause listed three gates that read the authored operand — arity, kind/category, and the wildcard gate — and said nothing about the filter site. Measured: `NumberOfFilledGroups(G/Sub* Having (…), G2)` is rejected `MVK_NO_GROUPS_ALLOWED` with the kernel naming `Having` as the site, in either operand position and on both the validation and computation arms, while the same filter over a field list and the same group operand unfiltered are both admitted in the same run. A `Having` written after the operand list is a parse error, `MVK_UNEXPECTED_TOKEN`, so no operator-level spelling exists either.
+- `consequence`: a consumer that pushes a row filter down onto a group operand — a natural rewrite, since a group operand denotes rows and a filter selects rows — emits a model the kernel rejects, even though both halves are separately legal. An importer or refactoring tool needs the pairing gate, not only the two component gates.
+- `evidence`: the [repeatable-scope gate checkpoint](sources/group-and-iteration-probes.md#src-group-count-gates-repeatable-scope), with its admitted field-filter and unfiltered-group controls in the same run, which are what make the pairing rather than either half the cause.
+- `limit`: `NumberOfFilledGroups` and `NumberOfFilledFields` only, one repeatable declaring group, `en_US`. Not measured: whether every other group-admitting carrier draws the same refusal at a filter site — [`spec/07`](../spec/07-repetition-and-iteration.md) already warns that group-operand admission is per-operator and transfers by no analogy.
+- `acceptance`: a12-dmkits confirms that its elaboration refuses a group path at a filter site for the carriers it admits group operands on — or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-31-08"></a>
 ### `SPEC-2026-08-31-08` — an over-limit row produces no computed value and its target is cleared
 

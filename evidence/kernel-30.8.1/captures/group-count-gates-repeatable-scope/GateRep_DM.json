@@ -1,0 +1,129 @@
+{
+  "header" : {
+    "id" : "GateRep_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "GateRep_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Cycle",
+            "name" : "Cycle",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/Cycle/G1",
+                "name" : "G1",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Group",
+                    "id" : "/Probe/Cycle/G1/Sub",
+                    "name" : "Sub",
+                    "Group" : {
+                      "repeatability" : 2,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Probe/Cycle/G1/Sub/S",
+                        "name" : "S",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "StringType"
+                          }
+                        }
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Probe/Cycle/G1/A",
+                    "name" : "A",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Cycle/G2",
+                "name" : "G2",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Cycle/G2/B",
+                    "name" : "B",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Cycle/Amount",
+                "name" : "Amount",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "maxIntegerDigits" : 5
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Out",
+            "name" : "Out",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Out/O",
+                "name" : "O",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

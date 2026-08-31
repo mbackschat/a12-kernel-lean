@@ -314,6 +314,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-group-count-static-gates-both-arms"></a>
 - [The group-count static gate table is the same on both arms](sources/group-and-iteration-probes.md#src-group-count-static-gates-both-arms)
+<a id="src-group-count-gates-repeatable-scope"></a>
+- [The group-count gate table survives a repeatable declaring group, and a filter refuses a group operand](sources/group-and-iteration-probes.md#src-group-count-gates-repeatable-scope)
 
 <a id="src-repeatability-declaration-domain"></a>
 - [A repeatable group always carries a finite maximum, and absence means nonrepeatable](sources/group-and-iteration-probes.md#src-repeatability-declaration-domain)
