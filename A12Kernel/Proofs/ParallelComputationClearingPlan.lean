@@ -33,6 +33,7 @@ theorem parallelNumericTargetRouteEnvironments_cells_irrelevant
     route.targetEnvironments left =
       route.targetEnvironments right := by
   simp [CheckedParallelNumericTargetRoute.targetEnvironments,
+    CheckedDocument.computationRowEnvironments,
     CheckedDocument.actualRowEnvironments, rows]
 
 /-- Target-instance enumeration depends on checked physical row topology, never on placed target-cell payloads. -/
@@ -269,7 +270,7 @@ theorem parallelNumericTargetRoute_coverageWithMarks_addresses_nodup
       have coverageEnvironmentsNodup :
           (coverage.map (·.environment)).Nodup := by
         rw [environmentProjection]
-        exact checkedDocument_actualRowEnvironments_nodup
+        exact checkedDocument_computationRowEnvironments_nodup
           preliminary.base
           route.targetDeclaration.repeatableScope
           environments environmentsResult
@@ -289,13 +290,13 @@ theorem parallelNumericTargetRoute_coverageWithMarks_addresses_nodup
         rw [← environmentProjection]
         exact List.mem_map.mpr ⟨right, rightMember, rfl⟩
       have leftLevels :=
-        checkedDocument_actualRowEnvironment_scope
+        checkedDocument_computationRowEnvironment_scope
           preliminary.base
           route.targetDeclaration.repeatableScope
           environments environmentsResult
           left.environment leftEnvironmentMember
       have rightLevels :=
-        checkedDocument_actualRowEnvironment_scope
+        checkedDocument_computationRowEnvironment_scope
           preliminary.base
           route.targetDeclaration.repeatableScope
           environments environmentsResult

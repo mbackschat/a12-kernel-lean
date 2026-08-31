@@ -153,7 +153,7 @@ def targetEnvironments
     (operation : CheckedAddressedFieldValueAsString model)
     (input : CheckedDocument model) :
     Except ActualRowEnvironmentError (List Env) :=
-  input.actualRowEnvironments operation.targetDeclaration.repeatableScope
+  input.computationRowEnvironments operation.targetDeclaration.repeatableScope
 
 private def stringCell (cell : CheckedCell String) : CheckedCell := {
   rawPresent := cell.rawPresent

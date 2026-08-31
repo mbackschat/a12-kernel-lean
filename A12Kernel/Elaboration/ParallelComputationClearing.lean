@@ -128,7 +128,7 @@ def WellFormed (route : CheckedParallelNumericTargetRoute model) : Prop :=
 def targetEnvironments (route : CheckedParallelNumericTargetRoute model)
     (checked : CheckedDocument model) :
     Except ActualRowEnvironmentError (List Env) :=
-  checked.actualRowEnvironments
+  checked.computationRowEnvironments
     route.targetDeclaration.repeatableScope
 
 /-- Derive one checked index side's cause-blind invalid-mark plan. The target's complete scope remains the coverage domain for every observed group. -/

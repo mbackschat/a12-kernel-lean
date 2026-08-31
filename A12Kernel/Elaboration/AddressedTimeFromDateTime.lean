@@ -129,7 +129,7 @@ def executeWithRead (operation : CheckedAddressedTimeFromDateTime model)
     Except AddressedTimeFromDateTimeFault
       (List AddressedTimeFromDateTimeOutcome) := do
   let environments ←
-    input.actualRowEnvironments operation.target.checked.declaration.repeatableScope
+    input.computationRowEnvironments operation.target.checked.declaration.repeatableScope
       |>.mapError .targetRows
   environments.mapM (operation.evaluateAtWithRead read)
 

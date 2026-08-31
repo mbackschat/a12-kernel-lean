@@ -53,6 +53,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 
+<a id="spec-2026-08-31-08"></a>
+### `SPEC-2026-08-31-08` — an over-limit row is outside a computation's target inventory
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md`](../spec/07-repetition-and-iteration.md), beside the existing over-repetition evaluation-domain exclusion
+- `delta`: the clause excluded an over-limit row from starred `Sum`, starred-field, and starred-group evaluation domains, and said nothing about a computation writing **into** such a row. Measured: a repeatable target's computation runs once per **in-capacity** instantiated row. A group declared `max 3` produces exactly three rows of outcomes at three, four, and five instantiated rows, and the excess rows receive no outcome at all — not cleared, not errored, absent — while reporting their own `zuGrosseZeile` and `zuGrosseKontextnummer` in the same run.
+- `consequence`: an implementation that enumerates a computation target's rows from the same physical row list validation uses will compute into a row the Kernel leaves untouched. This project had exactly that, on every repeatable-target carrier; one indexed-parallel carrier instead aborted the whole run with a structural fault on an otherwise valid document, which is how the divergence surfaced. The two enumerations must stay separate, because validation still reports the excluded row.
+- `sibling-rows`: two disjoint over-limit rows each draw their own `zuGrosseZeile`. That is consistent with the absorption rule recorded at [`SPEC-2026-08-30-10`](#spec-2026-08-30-10), which governs nesting rather than sibling rows, and is stated here so the two are not read as conflicting.
+- `evidence`: the [over-limit target checkpoint](sources/group-and-iteration-probes.md#src-over-limit-computation-target) — one request, three documents, an at-capacity control producing the same outcomes, both codegen strategies agreeing on every row, `producer.source.state: CLEAN` at a12-dmkits `1be2d603c90be578fe7ea0de0b8c515cb2a479c4`. The prediction was recorded from the existing over-repetition clauses before the run and reproduced.
+- `limit`: one repeatable level, bounded repeatability 3, DATE targets, bare constants, `en_US`. Not measured: a nested level, an over-limit **ancestor** row, and whether a seeded cell in an excluded row is cleared — the compute observation reports the attempt rather than the resulting document.
+- `carrier-crossing`: measured on the bare-constant carrier and applied to every repeatable-target carrier here on the stated assumption that the target inventory is one question with one answer. Recorded as an assumption rather than an inheritance; a12-dmkits may already hold a measurement that confirms or splits it.
+- `acceptance`: a12-dmkits confirms that its repeatable-target computation enumerates in-capacity rows only, and that it does not share that enumeration with validation — or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-31-07"></a>
 ### `SPEC-2026-08-31-07` — a repeatable group always carries a finite maximum, and absence means non-repeatable
 

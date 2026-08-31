@@ -148,7 +148,7 @@ def executeWithAmountRead
       Except CheckedAddressingError (Option CheckedCell)) :
     Except AddressedDateTimeSubdayShiftComputationFault
       (List AddressedDateTimeSubdayShiftComputationOutcome) := do
-  let environments ← input.actualRowEnvironments
+  let environments ← input.computationRowEnvironments
     operation.checkedTarget.declaration.repeatableScope
       |>.mapError .targetRows
   environments.mapM fun environment =>
@@ -160,7 +160,7 @@ def execute
     (input : CheckedDocument model) :
     Except AddressedDateTimeSubdayShiftComputationFault
       (List AddressedDateTimeSubdayShiftComputationOutcome) := do
-  let environments ← input.actualRowEnvironments
+  let environments ← input.computationRowEnvironments
     operation.checkedTarget.declaration.repeatableScope
       |>.mapError .targetRows
   environments.mapM (operation.evaluateAt input)

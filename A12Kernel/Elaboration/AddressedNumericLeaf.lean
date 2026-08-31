@@ -240,7 +240,7 @@ def targetEnvironments
     (target : CheckedAddressedNumericTarget model)
     (input : CheckedDocument model) :
     Except ActualRowEnvironmentError (List Env) :=
-  input.actualRowEnvironments target.targetDeclaration.repeatableScope
+  input.computationRowEnvironments target.targetDeclaration.repeatableScope
 
 end CheckedAddressedNumericTarget
 

@@ -83,8 +83,8 @@ example : (outcome? ["Probe"] iso.id, outcome? ["Probe"] ger.id) =
     (some (.accepted (stored "2024-03-05")), some (.accepted (stored "05.03.2024"))) := by
   native_decide
 
-/- The constant reaches every physical target row and no more, from an ancestor exactly as from the
-   target's own group. Two rows, two outcomes; no rows, none at all rather than one implicit
+/- The constant reaches every in-capacity target row and no more, from an ancestor exactly as from
+   the target's own group. Two rows, two outcomes; no rows, none at all rather than one implicit
    instance. -/
 example : (outcomes? ["Probe"] iso.id 2, outcomes? ["Probe", "Rows"] iso.id 2,
     outcomes? ["Probe"] iso.id 0) =
@@ -97,6 +97,19 @@ example : (outcomes? ["Probe"] iso.id 2, outcomes? ["Probe", "Rows"] iso.id 2,
            { targetField := { field := iso.id, path := [2] }
              outcome := .accepted (stored "2024-03-05") }],
      some []) := by
+  native_decide
+
+/- **An over-limit row receives nothing.** Declared capacity is three: four and five instantiated
+   rows both write exactly the first three, against an at-capacity control that writes the same
+   three. Measured on kernel 30.8.1 across both codegen strategies, where the excess rows carry
+   `zuGrosseZeile` and `zuGrosseKontextnummer` and no computed value at all
+   ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). The physical row survives
+   in the topology; it is the computation's target inventory that excludes it. -/
+example :
+    ((outcomes? ["Probe"] iso.id 3).map (·.map (·.targetField.path)),
+      (outcomes? ["Probe"] iso.id 4).map (·.map (·.targetField.path)),
+      (outcomes? ["Probe"] iso.id 5).map (·.map (·.targetField.path))) =
+    (some [[1], [2], [3]], some [[1], [2], [3]], some [[1], [2], [3]]) := by
   native_decide
 
 /- **The component-omitting store, measured.** One literal reaches three declared component subsets

@@ -103,7 +103,7 @@ def execute (operation : CheckedRepeatableTimeConstantComputation model)
       (List RepeatableTimeConstantComputationOutcome) :=
   let field := operation.checkedTarget.targetField
   let scope := operation.checkedTarget.declaration.repeatableScope
-  match input.actualRowEnvironments scope with
+  match input.computationRowEnvironments scope with
   | .error cause => .error (.targetRows cause)
   | .ok environments =>
       match environments.mapM fun environment => environment.pathForScope scope with

@@ -312,6 +312,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-repeatability-declaration-domain"></a>
 - [A repeatable group always carries a finite maximum, and absence means nonrepeatable](sources/group-and-iteration-probes.md#src-repeatability-declaration-domain)
+
+<a id="src-over-limit-computation-target"></a>
+- [An over-limit row receives no computed value](sources/group-and-iteration-probes.md#src-over-limit-computation-target)
 <a id="src-starred-group-count-computation"></a>
 - [The computation arm counts a starred repeatable group's instantiated rows](sources/group-and-iteration-probes.md#src-starred-group-count-computation)
 <a id="src-repeatable-descendant-group-count"></a>

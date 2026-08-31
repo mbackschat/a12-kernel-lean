@@ -160,7 +160,7 @@ def executeWithRead
   let matcher ← match patterns.targetMatcher? operation.targetField with
     | some matcher => pure matcher
     | none => throw (.targetPatternUnavailable operation.targetField)
-  let environments ← input.actualRowEnvironments operation.target.repeatableScope
+  let environments ← input.computationRowEnvironments operation.target.repeatableScope
     |>.mapError .targetRows
   environments.mapM (operation.evaluateAtWithRead matcher input read)
 

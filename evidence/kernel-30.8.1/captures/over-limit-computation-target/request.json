@@ -1,0 +1,4 @@
+{"model":"DatConst_DM.json","locale":"en_US","observe":["validateFull","compute"],
+ "rows":[{"name":"at-capacity-3","document":"d3-capacity.json"},
+         {"name":"over-4","document":"d4-over.json"},
+         {"name":"over-5","document":"d5-over.json"}]}

@@ -147,7 +147,7 @@ def executeWithRead
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedDateTimeFirstFilledComputationFault
       (List AddressedDateTimeFirstFilledComputationOutcome) := do
-  let environments ← input.actualRowEnvironments operation.target.repeatableScope
+  let environments ← input.computationRowEnvironments operation.target.repeatableScope
     |>.mapError .targetRows
   environments.mapM (operation.evaluateAtWithRead input read)
 

@@ -1,0 +1,754 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "1be2d603c90be578fe7ea0de0b8c515cb2a479c4",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "DatConst_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "at-capacity-3",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Rows/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[2]/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              },
+              {
+                "field" : "Probe/Rows[3]/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows[3]/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[3]/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Rows/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[2]/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              },
+              {
+                "field" : "Probe/Rows[3]/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows[3]/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[3]/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "over-4",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/DGer",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[4]/DGer"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/DIso",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[4]/DIso"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/DYear",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[4]/DYear"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[4]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Rows/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[2]/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              },
+              {
+                "field" : "Probe/Rows[3]/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows[3]/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[3]/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/Rows[4]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/DGer",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[4]/DGer"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/DIso",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[4]/DIso"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/DYear",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[4]/DYear"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[4]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Rows/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[2]/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              },
+              {
+                "field" : "Probe/Rows[3]/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows[3]/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[3]/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/Rows[4]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "over-5",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/DGer",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[4]/DGer"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/DIso",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[4]/DIso"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/DYear",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[4]/DYear"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[5]/DGer",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 5, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[5]/DGer"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[5]/DIso",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 5, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[5]/DIso"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[5]/DYear",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 5, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[5]/DYear"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[4]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[5]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[5]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Rows/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[2]/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              },
+              {
+                "field" : "Probe/Rows[3]/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows[3]/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[3]/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/Rows[4]"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[5]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/Rows[5]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/DGer",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[4]/DGer"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/DIso",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[4]/DIso"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[4]/DYear",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[4]/DYear"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[5]/DGer",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 5, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[5]/DGer"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[5]/DIso",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 5, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[5]/DIso"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[5]/DYear",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 5, but at most 3 is allowed.",
+              "referenced" : [
+                "Probe/Rows[5]/DYear"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[4]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[5]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[5]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Rows/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows[2]/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[2]/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              },
+              {
+                "field" : "Probe/Rows[3]/DGer",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "05.03.2024"
+              },
+              {
+                "field" : "Probe/Rows[3]/DIso",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05"
+              },
+              {
+                "field" : "Probe/Rows[3]/DYear",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/Rows[4]"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Probe/Rows[5]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Probe/Rows[5]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

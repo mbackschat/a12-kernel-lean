@@ -103,7 +103,7 @@ def execute (operation : CheckedRepeatableStringConstantComputation model)
   match patterns.targetMatcher? field with
   | none => .error (.targetPatternUnavailable field)
   | some matcher =>
-      match input.actualRowEnvironments scope with
+      match input.computationRowEnvironments scope with
       | .error cause => .error (.targetRows cause)
       | .ok environments =>
           match environments.mapM fun environment => environment.pathForScope scope with

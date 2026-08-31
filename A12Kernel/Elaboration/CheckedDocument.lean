@@ -362,6 +362,29 @@ def actualRowEnvironments (checked : CheckedDocument model)
           else
             throw (.incoherentRow row)
 
+/-- The row domain a **computation target** iterates: the physical rows above, minus every row
+beyond its group's declared capacity.
+
+The two domains differ only there, and the difference is measured rather than derived. A repeatable
+target declared `max 3` receives its constant on exactly three rows whether the document instantiates
+three, four, or five, while the excess rows draw `zuGrosseZeile` and `zuGrosseKontextnummer` and no
+computed value at all ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). The
+physical row survives in the topology — validation still reports it — so the exclusion belongs to the
+target inventory and not to `actualRowEnvironments`, whose validation-side consumers keep the
+complete domain.
+
+A plain filter rather than a fallible fold: `actualRowEnvironments` has already matched the scope
+against its owning group, so the axis lookup behind `addressOverLimit?` resolves and its `none` is
+unreachable here. Keeping such an environment rather than failing on it also makes the result a
+sublist of the physical domain, which is what carries `Nodup` and the per-environment scope shape
+across to every consumer. -/
+def computationRowEnvironments (checked : CheckedDocument model)
+    (scope : List RepeatableLevel) :
+    Except ActualRowEnvironmentError (List Env) := do
+  let environments ← checked.actualRowEnvironments scope
+  pure (environments.filter fun environment =>
+    model.addressOverLimit? scope (environment.map (·.2)) != some true)
+
 private def environmentExtends (parent child : Env) : Bool :=
   child.take parent.length == parent
 

@@ -282,6 +282,58 @@ theorem checkedDocument_actualRowEnvironment_scope
   (checkedDocument_actualRowEnvironment_properties
     checked scope environments resolved).2 environment member
 
+/-- The computation-target domain is a sublist of the physical one: it drops over-limit rows and
+keeps every other row in place. Every property the physical projection carries therefore transfers,
+which is why the excluding filter needed no separate invariant. -/
+theorem checkedDocument_computationRowEnvironments_sublist
+    (checked : CheckedDocument model)
+    (scope : List RepeatableLevel) (environments computed : List Env)
+    (physical : checked.actualRowEnvironments scope = .ok environments)
+    (resolved : checked.computationRowEnvironments scope = .ok computed) :
+    computed.Sublist environments := by
+  unfold CheckedDocument.computationRowEnvironments at resolved
+  rw [physical] at resolved
+  simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at resolved
+  subst resolved
+  exact List.filter_sublist
+
+/-- Successful computation-target projection preserves physical row uniqueness. -/
+theorem checkedDocument_computationRowEnvironments_nodup
+    (checked : CheckedDocument model)
+    (scope : List RepeatableLevel) (computed : List Env)
+    (resolved : checked.computationRowEnvironments scope = .ok computed) :
+    computed.Nodup := by
+  match physical : checked.actualRowEnvironments scope with
+  | .ok environments =>
+      exact ((checkedDocument_computationRowEnvironments_sublist
+        checked scope environments computed physical resolved).nodup
+        (checkedDocument_actualRowEnvironments_nodup
+          checked scope environments physical))
+  | .error error =>
+      exfalso
+      unfold CheckedDocument.computationRowEnvironments at resolved
+      rw [physical] at resolved
+      simp [bind, Except.bind] at resolved
+
+/-- Every computation-target environment contains exactly the requested scope levels in model order. -/
+theorem checkedDocument_computationRowEnvironment_scope
+    (checked : CheckedDocument model)
+    (scope : List RepeatableLevel) (computed : List Env)
+    (resolved : checked.computationRowEnvironments scope = .ok computed)
+    (environment : Env) (member : environment ∈ computed) :
+    environment.map Prod.fst = scope := by
+  match physical : checked.actualRowEnvironments scope with
+  | .ok environments =>
+      exact checkedDocument_actualRowEnvironment_scope
+        checked scope environments physical environment
+        ((checkedDocument_computationRowEnvironments_sublist
+          checked scope environments computed physical resolved).mem member)
+  | .error error =>
+      exfalso
+      unfold CheckedDocument.computationRowEnvironments at resolved
+      rw [physical] at resolved
+      simp [bind, Except.bind] at resolved
+
 /-- The validation projection never invents an outermost row. A one-level validation scope is exactly the physical row projection. -/
 theorem checkedDocument_validationRowEnvironments_singleton
     (checked : CheckedDocument model) (level : RepeatableLevel) :

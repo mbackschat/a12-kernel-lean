@@ -326,7 +326,7 @@ def execute
     (world : World) (input : CheckedDocument model) :
     Except AddressedTimeConstructionFault
       (List AddressedTimeConstructionOutcome) := do
-  let environments ← input.actualRowEnvironments
+  let environments ← input.computationRowEnvironments
     operation.checkedTarget.declaration.repeatableScope
       |>.mapError .targetRows
   environments.mapM (operation.evaluateAt world input)

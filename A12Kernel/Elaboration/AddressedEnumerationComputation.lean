@@ -293,7 +293,7 @@ def executeWithRead (operation : CheckedAddressedEnumerationComputation model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedEnumerationComputationFault
       (List AddressedEnumerationComputationOutcome) := do
-  let environments ← input.actualRowEnvironments
+  let environments ← input.computationRowEnvironments
       operation.target.declaration.repeatableScope
     |>.mapError .targetRows
   environments.mapM (operation.evaluateAtWithRead read)

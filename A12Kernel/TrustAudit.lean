@@ -2101,6 +2101,9 @@ run_cmd do
 #print axioms A12Kernel.repeatableAncestorRowsFor_pair
 #print axioms A12Kernel.checkedDocument_actualRowEnvironments_nodup
 #print axioms A12Kernel.checkedDocument_actualRowEnvironment_scope
+#print axioms A12Kernel.checkedDocument_computationRowEnvironments_sublist
+#print axioms A12Kernel.checkedDocument_computationRowEnvironments_nodup
+#print axioms A12Kernel.checkedDocument_computationRowEnvironment_scope
 #print axioms A12Kernel.checkedDocument_validationRowEnvironments_singleton
 #print axioms A12Kernel.checkedParallelNumericTargetRoute_wellFormed
 #print axioms A12Kernel.parallelNumericTargetRouteEnvironments_cells_irrelevant

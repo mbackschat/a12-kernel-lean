@@ -132,6 +132,38 @@ private def invalidIndexCell (field : FieldId) (path : List Nat) :
   sourceFilledPlanTargets.filter fun cell =>
     cell.address != { field, path }
 
+/-- The clean document with one target row beyond the group's declared capacity of two. -/
+private def overLimitPreliminary : Option (CheckedIndexPreliminary model) := do
+  let prepared ←
+    (prepareFlatStringContext { now := { epochMillis := 0 } }
+      builtinStringPatternCompiler model).toOption
+  let document ←
+    (checkDocument prepared "en_US" {
+      instantiatedRows := rows ++ [{ group := 1, path := [3] }]
+      cells := cleanCells }).toOption
+  document.applyFullIndexPreliminary.toOption
+
+/- **An over-limit target row is neither computed nor fatal.** The index column already skipped it,
+   and before the target inventory did too the two enumerations disagreed: the row survived the
+   invalid-index filter, reached `targetKeyFor` with no column entry, and aborted the whole run with
+   a structural `missingTargetIndex` fault on a document the checker had accepted. That was this
+   family's only witnessed structural failure, and it was a defect rather than a reachable Kernel
+   behaviour — the Kernel writes into in-capacity rows only
+   ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). The in-capacity control
+   beside it is the same document without the excess row, and each list repeats because the plan
+   holds two tables that each cover both rows. -/
+private def executedPaths? (preliminary : Option (CheckedIndexPreliminary model)) :
+    Option (List (List Nat)) := do
+  let checked ← run?
+  let p ← preliminary
+  let outcomes ← (checked.execute p).toOption
+  some (outcomes.map (·.address.path))
+
+example :
+    (executedPaths? overLimitPreliminary, executedPaths? (preliminaryFor cleanCells)) =
+    (some [[1], [2], [1], [2]], some [[1], [2], [1], [2]]) := by
+  native_decide
+
 private def sharedOperandPlan? :
     Option (CheckedParallelNumericPlan model) :=
   checkedPlan? [table? 4 offsetPath 6, table? 2 offsetPath 6]
