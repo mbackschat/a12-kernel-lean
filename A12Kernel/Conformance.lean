@@ -256,6 +256,7 @@ import A12Kernel.Conformance.StringComputationNestedApplication
 import A12Kernel.Conformance.StringComputationRepeatableApplication
 import A12Kernel.Conformance.StringComputationRun
 import A12Kernel.Conformance.StringNumberComputationRunApplication
+import A12Kernel.Conformance.StringNumberComputationRunView
 import A12Kernel.Conformance.StringComputationTable
 import A12Kernel.Conformance.StringFieldPolicy
 import A12Kernel.Conformance.StringFirstFilledComputation

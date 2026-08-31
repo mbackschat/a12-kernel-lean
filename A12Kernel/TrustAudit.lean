@@ -1943,6 +1943,7 @@ run_cmd do
 #print axioms A12Kernel.stringNumberComputationRun_applyTo_number
 #print axioms A12Kernel.stringNumberComputationRun_applyTo_string_independent
 #print axioms A12Kernel.stringNumberComputationRun_applyTo_number_independent
+#print axioms A12Kernel.stringNumberComputationRun_noErrorOccurred_iff
 #print axioms A12Kernel.stringComputationRun_applyToChecked_noActions
 #print axioms A12Kernel.stringComputationRun_applyToChecked_delegates
 #print axioms A12Kernel.stringComputationRun_applyToChecked_duplicateTarget
