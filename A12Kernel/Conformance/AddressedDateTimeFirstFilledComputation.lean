@@ -159,6 +159,31 @@ example : (do
       (address target.id [4, 1], .poison .dateFormat)] := by
   native_decide
 
+/-- Target rows reached by this operation, over the fixture's rows plus a supplied extension. -/
+private def targetPathsWith (extra : List RowAddr) : Option (List (List Nat)) := do
+  let operation ← operation?
+  let input ← documentWithRows? (rows ++ extra) []
+  let outcomes ← operation.execute input |>.toOption
+  pure (outcomes.map fun entry => entry.targetField.path)
+
+/- **Over-limit exclusion reaches through an ancestor.** `Projects` is declared `max 4` and `Tasks`
+   `max 3`. A third task row in project 1 is in capacity and appears; a fourth does not; and a fifth
+   project's task row does not either, although nothing about that task row's own coordinate is out
+   of range. Measured on kernel 30.8.1 across both codegen strategies on this same two-level
+   topology, where a fourth `Tasks` row and a fourth `Projects` row each leave the computed-outcome
+   list identical to its at-capacity control
+   ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). This is the second
+   carrier for that rule — the first was a bare constant — and the ancestor row is why the exclusion
+   cannot be a test on the target's own coordinate alone. -/
+example :
+    (targetPathsWith [{ group := 30, path := [1, 3] }],
+      targetPathsWith [{ group := 30, path := [1, 3] }, { group := 30, path := [1, 4] }],
+      targetPathsWith [{ group := 10, path := [5] }, { group := 30, path := [5, 1] }]) =
+    (some [[1, 1], [1, 2], [2, 1], [3, 1], [4, 1], [1, 3]],
+      some [[1, 1], [1, 2], [2, 1], [3, 1], [4, 1], [1, 3]],
+      some [[1, 1], [1, 2], [2, 1], [3, 1], [4, 1]]) := by
+  native_decide
+
 private structure ResultApplicationSummary where
   values : List (CellAddr × String)
   changes : List (CellAddr × String)

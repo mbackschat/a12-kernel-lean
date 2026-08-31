@@ -1,0 +1,488 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "1be2d603c90be578fe7ea0de0b8c515cb2a479c4",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "DateTimeRows_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "tasks-at-capacity-3",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "DateTimeRows/Projects/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects/Tasks[2]/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects/Tasks[3]/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "DateTimeRows/Projects/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects/Tasks[2]/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects/Tasks[3]/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "tasks-over-4",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "DateTimeRows/Projects/Tasks[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "DateTimeRows/Projects/Tasks[4]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "DateTimeRows/Projects/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects/Tasks[2]/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects/Tasks[3]/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "DateTimeRows/Projects/Tasks[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "DateTimeRows/Projects/Tasks[4]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "DateTimeRows/Projects/Tasks[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "DateTimeRows/Projects/Tasks[4]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "DateTimeRows/Projects/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects/Tasks[2]/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects/Tasks[3]/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "DateTimeRows/Projects/Tasks[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "DateTimeRows/Projects/Tasks[4]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "projects-at-capacity-3",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "DateTimeRows/Projects/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects[2]/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-02T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects[3]/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-03T10:11:12"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "DateTimeRows/Projects/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects[2]/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-02T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects[3]/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-03T10:11:12"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "projects-over-4",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "DateTimeRows/Projects[4]/Choices",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/DateTimeRows/Projects' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "DateTimeRows/Projects[4]/Choices"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "DateTimeRows/Projects[4]/Choices/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/DateTimeRows/Projects' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "DateTimeRows/Projects[4]/Choices/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "DateTimeRows/Projects[4]/Tasks",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/DateTimeRows/Projects' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "DateTimeRows/Projects[4]/Tasks"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "DateTimeRows/Projects[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "DateTimeRows/Projects[4]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "DateTimeRows/Projects/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects[2]/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-02T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects[3]/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-03T10:11:12"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "DateTimeRows/Projects[4]/Choices",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/DateTimeRows/Projects' was specified with 4, but at most 3 is allowed.",
+                "referenced" : [
+                  "DateTimeRows/Projects[4]/Choices"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "DateTimeRows/Projects[4]/Choices/Stamp",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/DateTimeRows/Projects' was specified with 4, but at most 3 is allowed.",
+                "referenced" : [
+                  "DateTimeRows/Projects[4]/Choices/Stamp"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "DateTimeRows/Projects[4]/Tasks",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/DateTimeRows/Projects' was specified with 4, but at most 3 is allowed.",
+                "referenced" : [
+                  "DateTimeRows/Projects[4]/Tasks"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "DateTimeRows/Projects[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "DateTimeRows/Projects[4]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "DateTimeRows/Projects[4]/Choices",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/DateTimeRows/Projects' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "DateTimeRows/Projects[4]/Choices"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "DateTimeRows/Projects[4]/Choices/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/DateTimeRows/Projects' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "DateTimeRows/Projects[4]/Choices/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "DateTimeRows/Projects[4]/Tasks",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/DateTimeRows/Projects' was specified with 4, but at most 3 is allowed.",
+              "referenced" : [
+                "DateTimeRows/Projects[4]/Tasks"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "DateTimeRows/Projects[4]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "DateTimeRows/Projects[4]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "DateTimeRows/Projects/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-01T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects[2]/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-02T10:11:12"
+              },
+              {
+                "field" : "DateTimeRows/Projects[3]/Tasks/SelectedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-06-03T10:11:12"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "DateTimeRows/Projects[4]/Choices",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/DateTimeRows/Projects' was specified with 4, but at most 3 is allowed.",
+                "referenced" : [
+                  "DateTimeRows/Projects[4]/Choices"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "DateTimeRows/Projects[4]/Choices/Stamp",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/DateTimeRows/Projects' was specified with 4, but at most 3 is allowed.",
+                "referenced" : [
+                  "DateTimeRows/Projects[4]/Choices/Stamp"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "DateTimeRows/Projects[4]/Tasks",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/DateTimeRows/Projects' was specified with 4, but at most 3 is allowed.",
+                "referenced" : [
+                  "DateTimeRows/Projects[4]/Tasks"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "DateTimeRows/Projects[4]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "DateTimeRows/Projects[4]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
