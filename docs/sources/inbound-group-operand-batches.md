@@ -420,3 +420,25 @@ and computation-overlay payload reads.
 [`RepeatableRowContentDiffTest`](../../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/RepeatableRowContentDiffTest.kt), [`ReferenceDrivenIterationScopeTest`](../../../a12-rulekit/interpreter/src/commonTest/kotlin/io/github/mbackschat/a12/dm/interpreter/ReferenceDrivenIterationScopeTest.kt), and [`RepetitionNotUniqueKeyOrderDiffTest`](../../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/RepetitionNotUniqueKeyOrderDiffTest.kt) retain V1-to-V2 predecessor padding, recursive implicit validation child row 1 versus concrete-row consumers, and deepest-key-parent RNU iteration independent of authored key order.
 
 These are reviewed inbound corrections already committed in a12-dmkits; they update this repository's canonical clauses and provenance without creating an outbound ledger entry. The partial-extent probes do not establish declared-versus-present completeness, three-or-more-level relevance gates, or skip-versus-UNKNOWN for a non-relevant value-list cell, so those claims remain absent.
+
+### Inbound fixed-group over-limit extent batch
+
+<a id="src-group-operand-capacity-consumer-sweep"></a>
+#### Fixed-group over-limit extent across six carriers
+
+- `revision`: a12-dmkits `dd11c9a90`, the short form the peer reported; kernel 30.8.1.
+- `route`: tri-engine differential — dynamic-Groovy codegen, static-Java codegen, and the peer interpreter — compared on the complete `code@pointer` message set rather than on the probe rule's presence, so a divergence in the accompanying formal messages cannot pass as agreement.
+- `test`: [`GroupOperandOverLimitExtentDiffTest`](../../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/GroupOperandOverLimitExtentDiffTest.kt).
+- `instrument`: the carrier's exact value is read off a **ladder of candidate equalities** (`== 0`, `== 1`, …) and the member that fires is the answer; none firing is reported as `UNAVAILABLE` and two as ambiguous. This makes non-evaluability a first-class observation instead of an inference from two silences, and it is the generalization of the `< 1` negative partner that made the local round decisive.
+- `fixture`: a **nonrepeatable** shell group per operand kind — `Notes`, `Flags`, `Amounts` — each owning repeatable descendants capped at 2, so index 3 is over-limit. The operand is therefore the fixed group form throughout.
+- `claim`: `NumberOfFilledFields(Notes)` answers `0` when the only filled cell sits over limit and `1` on the in-capacity control, at the outer repetition level and the inner one alike.
+- `claim`: `NumberOfValueInFields("KEEP" In Notes)` and `NumberOfValueInFields(True In Flags)` answer `0` over limit and `1` in capacity.
+- `claim`: `Sum(Amounts)` answers `5`, `MaxValue(Amounts)` answers `5`, and `NumberOfDifferentValues(Amounts)` answers `1` on a document holding `5` in capacity and `7` over limit; `MinValue(Amounts)` answers `7` on the reversed document, so the extremum is discriminating rather than coincidentally equal.
+- `claim`: a malformed cell **in capacity** makes `Sum(Amounts)` `UNAVAILABLE`; the identical malformed cell one index **over limit**, with `5` in capacity, answers `5`.
+- `mechanism`: that last pair is what separates *removed from the domain* from *classified unavailable and not counted* — both accounts predict a definite `0` on an only-over-limit document, and they differ exactly where unavailability propagates. An over-limit row is not an excused member of the evaluation domain; it is not in the domain being classified.
+- `shape-note`: the counts are decidable on an only-over-limit document, but the aggregates are not: on an empty domain *excluded* and *unavailable* are both candidate-free, so the aggregate rows need a **mixed** document with a value in capacity. The local only-over-limit shape is the right instrument for the counts and blind for the aggregates.
+- `agreement`: the peer interpreter agrees on every row, so no peer fix followed; that was not knowable before measuring.
+- `limit`: one fixture, `en_US`, bounded repeatability 2, three declared levels only on the String shell, full validation and no partial.
+- `limit`: the malformed-in-capacity versus over-limit split is measured on the **fixed** group operand only. Whether a starred carrier shows the same split is unmeasured.
+- `limit`: `Sum` over an empty in-capacity domain is not measured, because the mixed document deliberately avoids it; whether that is `0` or unavailable remains open.
+- `peer-boundary`: four of the six carriers have no typed factory for an unstarred group operand in the peer's API, so the probe authored raw condition strings. That is a peer type-level erasure over a shape the Kernel admits, recorded there as `DG42`; it constrains the peer's surface, not the Kernel's.
