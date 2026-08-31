@@ -70,13 +70,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-08-31-09"></a>
 ### `SPEC-2026-08-31-09` — a `Having` filter refuses a group operand, on both arms and in either position
 
-- `status`: pending
+- `status`: accepted
 - `clause`: [`07-repetition-and-iteration.md`](../spec/07-repetition-and-iteration.md), beside the existing three-gates paragraph
 - `delta`: the clause listed three gates that read the authored operand — arity, kind/category, and the wildcard gate — and said nothing about the filter site. Measured: `NumberOfFilledGroups(G/Sub* Having (…), G2)` is rejected `MVK_NO_GROUPS_ALLOWED` with the kernel naming `Having` as the site, in either operand position and on both the validation and computation arms, while the same filter over a field list and the same group operand unfiltered are both admitted in the same run. A `Having` written after the operand list is a parse error, `MVK_UNEXPECTED_TOKEN`, so no operator-level spelling exists either.
 - `consequence`: a consumer that pushes a row filter down onto a group operand — a natural rewrite, since a group operand denotes rows and a filter selects rows — emits a model the kernel rejects, even though both halves are separately legal. An importer or refactoring tool needs the pairing gate, not only the two component gates.
 - `evidence`: the [repeatable-scope gate checkpoint](sources/group-and-iteration-probes.md#src-group-count-gates-repeatable-scope), with its admitted field-filter and unfiltered-group controls in the same run, which are what make the pairing rather than either half the cause.
 - `limit`: `NumberOfFilledGroups` and `NumberOfFilledFields` only, one repeatable declaring group, `en_US`. Not measured: whether every other group-admitting carrier draws the same refusal at a filter site — [`spec/07`](../spec/07-repetition-and-iteration.md) already warns that group-operand admission is per-operator and transfers by no analogy.
 - `acceptance`: a12-dmkits confirms that its elaboration refuses a group path at a filter site for the carriers it admits group operands on — or supplies the contrary measurement.
+- `disposition`: **accepted** at a12-dmkits `539abf35d004fc4a3c8a5a8b5af37f4e4cfb0b11`, clean, whose `GroupOperandFilterLawsTest` locks the refusal at either operand position, on both arms, and names the filter as the site. Confirmed on every axis this entry claimed.
+- `limit-closed`: the entry's open `limit` — whether every other group-admitting carrier draws the same refusal — is **closed**, not merely widened. Six carriers are measured, each against its own unfiltered control: the four field-fill quantifiers, `FieldValuesNotUnique`, `FirstFilledValue`, the value aggregates, `NumberOfFilledGroups`, and `NumberOfFilledFields`. With the post-list spelling a parse error rather than a second refused site, no spelling attaches a filter to a group operand.
+- `layer-received`: an axis this entry did not ask for. The peer's two pre-existing locks reached the refusal as a **code-generation** throw and had never been run through static arbitration, so a reader of either would have placed the refusal at the wrong layer — which matters because a consumer authoring against the static checker only ever sees the static answer. It refuses there too, and the clause here now says so.
+- `positional-limit`: each measured filter reads its **own** group's field. A filter naming a *different* group's field varies two things at once and is a separate question with a refusal of its own; neither project measures it, and the clause says so rather than generalizing.
+- `text-note`: the diagnostic does not echo the condition, so `Having` in its text is the kernel naming the site rather than quoting the input. A text assertion on the bare word would have passed under either reading.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 
