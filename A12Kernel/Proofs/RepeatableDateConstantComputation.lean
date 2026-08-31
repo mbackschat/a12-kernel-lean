@@ -1,3 +1,4 @@
+import A12Kernel.Proofs.CheckedDocument
 import A12Kernel.Elaboration.RepeatableDateConstantComputation
 
 /-! # Repeatable Date constant laws -/
@@ -24,11 +25,12 @@ theorem checkedRepeatableDateConstantComputation_execute_ignoresDeclaringGroup
     CheckedRepeatableDateConstantComputation.outcome,
     sameTarget, sameDeclaration, sameDateTarget, sameConstant]
 
-/-- Every row's outcome is exactly the declaration's own render-and-check applied to the one literal
-date. The family adds no acceptance or rejection logic, which is what lets the measured formatting
-rows stand for the whole target rather than for one clause of it: the declared format reaches the
-result only through `evaluateCivil`'s renderer, so a constant and a computed Date producing the same
-civil date cannot store different text. -/
+/-- Every row's outcome is either the declaration's own render-and-check applied to the one literal
+date, or the over-limit clear. The family adds no acceptance or rejection logic of its own, which is
+what lets the measured formatting rows stand for the whole target rather than for one clause of it:
+the declared format reaches the result only through `evaluateCivil`'s renderer, so a constant and a
+computed Date producing the same civil date cannot store different text. The second disjunct is the
+capacity exclusion, which carries no target logic either — not a rejection the family invented. -/
 theorem checkedRepeatableDateConstantComputation_execute_delegatesTargetRendering
     {model : FlatModel}
     (operation : CheckedRepeatableDateConstantComputation model)
@@ -36,18 +38,19 @@ theorem checkedRepeatableDateConstantComputation_execute_delegatesTargetRenderin
     (outcomes : List RepeatableDateConstantComputationOutcome)
     (executed : operation.execute input = .ok outcomes) :
     ∀ entry ∈ outcomes,
-      entry.outcome = operation.dateTarget.evaluateCivil operation.constant := by
+      entry.outcome = operation.dateTarget.evaluateCivil operation.constant ∨
+        entry.outcome = .noValue := by
   simp only [CheckedRepeatableDateConstantComputation.execute,
     CheckedRepeatableDateConstantComputation.outcome] at executed
-  split at executed
-  · simp at executed
-  · split at executed
-    · simp at executed
-    · obtain ⟨rfl⟩ := Except.ok.inj executed
-      intro entry member
-      simp only [List.mem_map] at member
-      obtain ⟨path, _, built⟩ := member
-      exact built ▸ rfl
+  intro entry member
+  rcases checkedDocument_computationRowOutcomes_mem input _ _ _ _ outcomes executed
+      entry member with ⟨environment, built⟩ | ⟨environment, built⟩
+  · split at built
+    · exact absurd built (by simp)
+    · exact .inr (by simp [← Except.ok.inj built])
+  · split at built
+    · exact absurd built (by simp)
+    · exact .inl (by simp [← Except.ok.inj built])
 
 /-- The literal's stored text is the target's format applied to it, and nothing else. Stated
 separately from the delegation law because it is the half the Kernel rows actually measured: one

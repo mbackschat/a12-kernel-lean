@@ -1,3 +1,4 @@
+import A12Kernel.Proofs.CheckedDocument
 import A12Kernel.Elaboration.RepeatableNumberConstantComputation
 
 /-! # Repeatable ordinary Number constant laws -/
@@ -25,29 +26,32 @@ theorem checkedRepeatableNumberConstantComputation_execute_ignoresDeclaringGroup
     CheckedRepeatableNumberConstantComputation.storedConstant,
     sameTarget, sameDeclaration, samePolicy, sameConstant]
 
-/-- Every row's outcome is exactly the target policy's own attempt check applied to the one stored
-constant. The family therefore adds no acceptance or rejection logic of its own, which is what lets
-the measured over-maximum row stand for the whole target policy rather than for one clause of it, and
-what makes the retained attempt uncapped by construction rather than by a local decision. -/
+/-- Every row's outcome is either the target policy's own attempt check applied to the one stored
+constant, or the over-limit clear. The family therefore adds no acceptance or rejection logic of its
+own, which is what lets the measured over-maximum row stand for the whole target policy rather than
+for one clause of it, and what makes the retained attempt uncapped by construction rather than by a
+local decision. The capacity disjunct is an address-level exclusion, not a policy outcome. -/
 theorem checkedRepeatableNumberConstantComputation_execute_delegatesTargetCheck
     {model : FlatModel}
     (operation : CheckedRepeatableNumberConstantComputation model)
     (input : CheckedDocument model)
     (outcomes : List RepeatableNumberConstantComputationOutcome)
     (executed : operation.execute input = .ok outcomes) :
-    ∀ entry ∈ outcomes, entry.outcome =
-      NumericTargetPolicy.checkAttempt operation.targetPolicy operation.storedConstant := by
+    ∀ entry ∈ outcomes,
+      entry.outcome =
+        NumericTargetPolicy.checkAttempt operation.targetPolicy operation.storedConstant ∨
+        entry.outcome = .noValue := by
   simp only [CheckedRepeatableNumberConstantComputation.execute,
     CheckedRepeatableNumberConstantComputation.outcome] at executed
-  split at executed
-  · simp at executed
-  · split at executed
-    · simp at executed
-    · obtain ⟨rfl⟩ := Except.ok.inj executed
-      intro entry member
-      simp only [List.mem_map] at member
-      obtain ⟨path, _, built⟩ := member
-      exact built ▸ rfl
+  intro entry member
+  rcases checkedDocument_computationRowOutcomes_mem input _ _ _ _ outcomes executed
+      entry member with ⟨environment, built⟩ | ⟨environment, built⟩
+  · split at built
+    · exact absurd built (by simp)
+    · exact .inr (by simp [← Except.ok.inj built])
+  · split at built
+    · exact absurd built (by simp)
+    · exact .inl (by simp [← Except.ok.inj built])
 
 /-- The carrier's per-row outcome is exactly what the shared computed-Number target check produces
 for an operation yielding the same amount, so a constant and an operation cannot disagree about the

@@ -122,18 +122,34 @@ private def evaluateAtWithRead
   let outcome := operation.target.evaluate operand.asTimeComputationResult
   pure { sourceField := sourceAddress, targetField := targetAddress, outcome }
 
-/-- Execute once per physically instantiated target row while reading through one caller-supplied transient overlay. Target-row ownership remains with the immutable checked input. -/
+/-- The no-value outcome an over-limit target row takes instead of an extraction, retaining both
+exact addresses so the application projection clears the target. The source cell is not read there,
+which is the whole difference from an extraction that happens to find nothing. -/
+def clearedAt (operation : CheckedAddressedTimeFromDateTime model)
+    (environment : Env) :
+    Except AddressedTimeFromDateTimeFault AddressedTimeFromDateTimeOutcome := do
+  let sourcePath ←
+    (environment.pathForScope
+      operation.sourceBinding.sourceDeclaration.repeatableScope)
+      |>.mapError .environment
+  let targetPath ←
+    (environment.pathForScope operation.target.checked.declaration.repeatableScope)
+      |>.mapError .environment
+  pure {
+    sourceField := { field := operation.sourceBinding.source.id, path := sourcePath }
+    targetField := { field := operation.target.checked.target.id, path := targetPath }
+    outcome := .noValue }
+
+/-- Execute once per **in-capacity** target row while reading through one caller-supplied transient overlay, and only a clear at each over-limit row. Target-row ownership remains with the immutable checked input. -/
 def executeWithRead (operation : CheckedAddressedTimeFromDateTime model)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedTimeFromDateTimeFault
       (List AddressedTimeFromDateTimeOutcome) := do
-  let environments ←
-    input.computationRowEnvironments operation.target.checked.declaration.repeatableScope
-      |>.mapError .targetRows
-  environments.mapM (operation.evaluateAtWithRead read)
+  input.computationRowOutcomes operation.target.checked.declaration.repeatableScope
+    .targetRows operation.clearedAt (operation.evaluateAtWithRead read)
 
-/-- Execute once per physically instantiated target row in document order against the immutable input. -/
+/-- Execute once per in-capacity target row in document order against the immutable input, and a clear at each over-limit row. -/
 def execute (operation : CheckedAddressedTimeFromDateTime model)
     (input : CheckedDocument model) :
     Except AddressedTimeFromDateTimeFault

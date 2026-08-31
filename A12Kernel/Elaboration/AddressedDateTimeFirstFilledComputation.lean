@@ -140,16 +140,27 @@ private def evaluateAtWithRead
     outcome
   }
 
-/-- Execute one sibling-correlated DateTime scan per physical target row through a caller-supplied exact-address source view. Target topology, physical stored text, cached wall labels, and immutable target state remain unchanged. -/
+/-- The no-value outcome an over-limit target row takes instead of a scan, retaining its exact
+address so the application projection clears it. -/
+def clearedAt (operation : CheckedAddressedDateTimeFirstFilledComputation model)
+    (environment : Env) :
+    Except AddressedDateTimeFirstFilledComputationFault
+      AddressedDateTimeFirstFilledComputationOutcome := do
+  let targetPath ←
+    environment.pathForScope operation.target.repeatableScope
+      |>.mapError .targetEnvironment
+  pure { targetField := { field := operation.targetField, path := targetPath }
+         outcome := .noValue }
+
+/-- Execute one sibling-correlated DateTime scan per **in-capacity** target row through a caller-supplied exact-address source view, and only a clear at each over-limit row. Target topology, physical stored text, cached wall labels, and immutable target state remain unchanged. -/
 def executeWithRead
     (operation : CheckedAddressedDateTimeFirstFilledComputation model)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedDateTimeFirstFilledComputationFault
       (List AddressedDateTimeFirstFilledComputationOutcome) := do
-  let environments ← input.computationRowEnvironments operation.target.repeatableScope
-    |>.mapError .targetRows
-  environments.mapM (operation.evaluateAtWithRead input read)
+  input.computationRowOutcomes operation.target.repeatableScope .targetRows
+    operation.clearedAt (operation.evaluateAtWithRead input read)
 
 /-- Execute one sibling-correlated DateTime scan per physical target row in document order. -/
 def execute

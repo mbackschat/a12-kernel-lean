@@ -148,12 +148,12 @@ inductive AddressedFieldValueAsStringFault where
 
 namespace CheckedAddressedFieldValueAsString
 
-/-- The physically instantiated environments at the operation's exact target scope. -/
+/-- The physically instantiated environments at the operation's exact target scope, over-limit rows included. -/
 def targetEnvironments
     (operation : CheckedAddressedFieldValueAsString model)
     (input : CheckedDocument model) :
     Except ActualRowEnvironmentError (List Env) :=
-  input.computationRowEnvironments operation.targetDeclaration.repeatableScope
+  input.actualRowEnvironments operation.targetDeclaration.repeatableScope
 
 private def stringCell (cell : CheckedCell String) : CheckedCell := {
   rawPresent := cell.rawPresent
@@ -178,22 +178,27 @@ def executeWithRead (operation : CheckedAddressedFieldValueAsString model)
     | none =>
         throw (.evaluation
           (.targetPatternUnavailable operation.targetField))
-  let environments ←
-    (operation.targetEnvironments input).mapError .targetRows
-  environments.mapM fun environment => do
+  let addressAt (environment : Env) : Except AddressedFieldValueAsStringFault CellAddr := do
     let path ←
       (environment.pathForScope
         operation.targetDeclaration.repeatableScope).mapError .environment
+    pure { field := operation.targetField, path }
+  input.computationRowOutcomes operation.targetDeclaration.repeatableScope .targetRows
+    (fun environment => do
+      let targetAddress ← addressAt environment
+      pure {
+        targetField := targetAddress
+        outcome := .noValue
+        source := input.sourceStringTargetStateAt targetAddress
+      })
+    (fun environment => do
+    let targetAddress ← addressAt environment
     let sourcePath ←
       (environment.pathForScope
         operation.sourceDeclaration.repeatableScope).mapError .environment
     let sourceAddress : CellAddr := {
       field := operation.sourceDeclaration.id
       path := sourcePath
-    }
-    let targetAddress : CellAddr := {
-      field := operation.targetField
-      path
     }
     let sourceCell ← (read sourceAddress).mapError .sourceRead
     let context : StringComputationContext := {
@@ -212,7 +217,7 @@ def executeWithRead (operation : CheckedAddressedFieldValueAsString model)
         operation.targetDeclaration.stringPolicy.checkTargetWithPattern
           matcher store
       source := input.sourceStringTargetStateAt targetAddress
-    }
+    })
 
 /-- Execute through the immutable checked document's Number-text projection. -/
 def execute (operation : CheckedAddressedFieldValueAsString model)

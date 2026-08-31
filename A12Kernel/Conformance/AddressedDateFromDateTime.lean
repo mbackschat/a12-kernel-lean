@@ -490,42 +490,67 @@ private def thirdLevelSourceAddress (outer : Nat) : CellAddr :=
 private def thirdLevelTargetAddress (outer middle inner : Nat) : CellAddr :=
   { field := thirdLevelTarget.id, path := [outer, middle, inner] }
 
-/-- Target leaves reached over the third-level rows plus a supplied extension, projected to their
-    exact coordinates. -/
-private def thirdLevelPathsWith (extra : List RowAddr) : Option (List (List Nat)) := do
-  let entries ← thirdLevelOutcomes? (thirdLevelRows ++ extra) [
+/-- Target leaves reached over the third-level rows plus a supplied extension, each projected to its
+    exact coordinates and whether it received the extracted date.
+
+    The Boolean is the whole separator: an excluded row is **present** with a clear, so a projection
+    of coordinates alone would now pass on every document. Every source this fixture fills is a
+    complete DateTime, so `false` means the row was excluded, never that the extraction failed. -/
+private def thirdLevelPathsWith (extra : List RowAddr)
+    (extraCells : List ClassifiedCellInput := []) :
+    Option (List (List Nat × Bool)) := do
+  let entries ← thirdLevelOutcomes? (thirdLevelRows ++ extra) ([
     thirdLevelSourceCell 1 "2024-06-15T00:30:00"
       (.parsed (.temporal (momentAt 15 0 30 |>.get (by native_decide)))),
     thirdLevelSourceCell 2 "2024-06-16T23:45:00"
-      (.parsed (.temporal (momentAt 16 23 45 |>.get (by native_decide))))]
-  pure (entries.map fun entry => entry.2.1.path)
+      (.parsed (.temporal (momentAt 16 23 45 |>.get (by native_decide))))] ++ extraCells)
+  pure (entries.map fun entry =>
+    (entry.2.1.path, match entry.2.2 with | .accepted _ => true | _ => false))
 
-/- **The over-limit exclusion is level-independent across three repetition axes.** Every level is
-   declared `max 5`. A sixth row excludes its own subtree at the inner, middle, and outer level
-   alike, while the in-capacity rows beside it in the same document all contribute. The middle case
-   is the one a leaf-only test gets wrong: `[1, 6, 1]` is excluded although the leaf's own coordinate
-   is `1`, and `[1, 3, 1]` beside it is kept — so the decision is the whole environment, not the
-   target level's coordinate. Measured on kernel 30.8.1 across both codegen strategies on this same
-   `Milestones`/`Tasks`/`Subtasks` shape with all three capacities at two, where four documents
-   differing only in which level overflows produce an identical eight-leaf result
+/- **The over-limit exclusion is level-independent across three repetition axes, and it clears rather
+   than skips.** Every level is declared `max 5`. A sixth row excludes its own subtree from the
+   computation at the inner, middle, and outer level alike — the row still receives an outcome, and
+   that outcome carries no value — while the in-capacity rows beside it in the same document all
+   compute. The middle case is the one a leaf-only test gets wrong: `[1, 6, 1]` is excluded although
+   the leaf's own coordinate is `1`, and `[1, 3, 1]` beside it is kept, so the decision is the whole
+   environment rather than the target level's coordinate. The last case fills the source at outer 6
+   as well, so its `false` cannot be read as a missing source. Measured on kernel 30.8.1 across both
+   codegen strategies on this same `Milestones`/`Tasks`/`Subtasks` shape with all three capacities at
+   two, where four documents differing only in which level overflows produce an identical eight-leaf
+   computed result and report the excess rows cleared
    ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). -/
+private def overInner : Option (List (List Nat × Bool)) :=
+  thirdLevelPathsWith [{ group := 30, path := [1, 1, 3] }]
+
+private def overInnerSaturated : Option (List (List Nat × Bool)) :=
+  thirdLevelPathsWith
+    [{ group := 30, path := [1, 1, 3] }, { group := 30, path := [1, 1, 4] },
+     { group := 30, path := [1, 1, 5] }, { group := 30, path := [1, 1, 6] }]
+
+private def overMiddle : Option (List (List Nat × Bool)) :=
+  thirdLevelPathsWith
+    [{ group := 20, path := [1, 3] }, { group := 20, path := [1, 4] },
+     { group := 20, path := [1, 5] }, { group := 20, path := [1, 6] },
+     { group := 30, path := [1, 3, 1] }, { group := 30, path := [1, 6, 1] }]
+
+private def overOuter : Option (List (List Nat × Bool)) :=
+  thirdLevelPathsWith
+    [{ group := 10, path := [3] }, { group := 10, path := [4] },
+     { group := 10, path := [5] }, { group := 10, path := [6] },
+     { group := 20, path := [6, 1] }, { group := 30, path := [6, 1, 1] }]
+    [thirdLevelSourceCell 6 "2024-06-17T08:09:10"
+      (.parsed (.temporal (momentAt 17 8 9 |>.get (by native_decide))))]
+
 example :
-    (thirdLevelPathsWith [{ group := 30, path := [1, 1, 3] }],
-      thirdLevelPathsWith
-        [{ group := 30, path := [1, 1, 3] }, { group := 30, path := [1, 1, 4] },
-         { group := 30, path := [1, 1, 5] }, { group := 30, path := [1, 1, 6] }],
-      thirdLevelPathsWith
-        [{ group := 20, path := [1, 3] }, { group := 20, path := [1, 4] },
-         { group := 20, path := [1, 5] }, { group := 20, path := [1, 6] },
-         { group := 30, path := [1, 3, 1] }, { group := 30, path := [1, 6, 1] }],
-      thirdLevelPathsWith
-        [{ group := 10, path := [3] }, { group := 10, path := [4] },
-         { group := 10, path := [5] }, { group := 10, path := [6] },
-         { group := 20, path := [6, 1] }, { group := 30, path := [6, 1, 1] }]) =
-    (some [[1, 1, 1], [1, 1, 2], [1, 2, 1], [2, 1, 1], [1, 1, 3]],
-      some [[1, 1, 1], [1, 1, 2], [1, 2, 1], [2, 1, 1], [1, 1, 3], [1, 1, 4], [1, 1, 5]],
-      some [[1, 1, 1], [1, 1, 2], [1, 2, 1], [2, 1, 1], [1, 3, 1]],
-      some [[1, 1, 1], [1, 1, 2], [1, 2, 1], [2, 1, 1]]) := by
+    [overInner, overInnerSaturated, overMiddle, overOuter] =
+    [some [([1, 1, 1], true), ([1, 1, 2], true), ([1, 2, 1], true), ([2, 1, 1], true),
+           ([1, 1, 3], true)],
+      some [([1, 1, 1], true), ([1, 1, 2], true), ([1, 2, 1], true), ([2, 1, 1], true),
+            ([1, 1, 3], true), ([1, 1, 4], true), ([1, 1, 5], true), ([1, 1, 6], false)],
+      some [([1, 1, 1], true), ([1, 1, 2], true), ([1, 2, 1], true), ([2, 1, 1], true),
+            ([1, 3, 1], true), ([1, 6, 1], false)],
+      some [([1, 1, 1], true), ([1, 1, 2], true), ([1, 2, 1], true), ([2, 1, 1], true),
+            ([6, 1, 1], false)]] := by
   native_decide
 
 /- A source two axes above the target keeps its own outer address while each physical leaf retains all three coordinates. -/

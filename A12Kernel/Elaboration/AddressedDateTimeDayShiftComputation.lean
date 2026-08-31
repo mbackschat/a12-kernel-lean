@@ -188,7 +188,26 @@ private def evaluateAt
       AddressedDateTimeDayShiftComputationOutcome :=
   operation.evaluateAtUsing input environment (.checked input)
 
-/-- Execute every physical target row while numeric amounts read through one transient addressed view. -/
+/-- The no-value outcome an over-limit target row takes instead of a shift, retaining both exact
+addresses so the application projection clears the target. Neither the source cell nor the amount is
+read there. -/
+def clearedAt
+    (operation : CheckedAddressedDateTimeDayShiftComputation model)
+    (environment : Env) :
+    Except AddressedDateTimeDayShiftComputationFault
+      AddressedDateTimeDayShiftComputationOutcome := do
+  let sourcePath ← environment.pathForScope
+    operation.source.sourceDeclaration.repeatableScope
+      |>.mapError .environment
+  let targetPath ← environment.pathForScope
+    operation.checkedTarget.declaration.repeatableScope
+      |>.mapError .environment
+  pure {
+    sourceField := { field := operation.source.source.id, path := sourcePath }
+    targetField := { field := operation.checkedTarget.targetField, path := targetPath }
+    outcome := .noValue }
+
+/-- Execute every **in-capacity** target row while numeric amounts read through one transient addressed view, and only a clear at each over-limit row. -/
 def executeWithAmountRead
     (operation : CheckedAddressedDateTimeDayShiftComputation model)
     (input : CheckedDocument model)
@@ -196,22 +215,18 @@ def executeWithAmountRead
       Except CheckedAddressingError (Option CheckedCell)) :
     Except AddressedDateTimeDayShiftComputationFault
       (List AddressedDateTimeDayShiftComputationOutcome) := do
-  let environments ← input.computationRowEnvironments
-    operation.checkedTarget.declaration.repeatableScope
-      |>.mapError .targetRows
-  environments.mapM fun environment =>
-    operation.evaluateAtWithAmountRead input environment amountRead
+  input.computationRowOutcomes operation.checkedTarget.declaration.repeatableScope
+    .targetRows operation.clearedAt fun environment =>
+      operation.evaluateAtWithAmountRead input environment amountRead
 
-/-- Execute once per physically instantiated target row in document order. -/
+/-- Execute once per in-capacity target row in document order, and a clear at each over-limit row. -/
 def execute
     (operation : CheckedAddressedDateTimeDayShiftComputation model)
     (input : CheckedDocument model) :
     Except AddressedDateTimeDayShiftComputationFault
       (List AddressedDateTimeDayShiftComputationOutcome) := do
-  let environments ← input.computationRowEnvironments
-    operation.checkedTarget.declaration.repeatableScope
-      |>.mapError .targetRows
-  environments.mapM (operation.evaluateAt input)
+  input.computationRowOutcomes operation.checkedTarget.declaration.repeatableScope
+    .targetRows operation.clearedAt (operation.evaluateAt input)
 
 /-- Classify already-executed exact row outcomes against immutable source target state. -/
 def resultFromOutcomes

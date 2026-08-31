@@ -176,18 +176,31 @@ private def evaluateAtWithRead
     result := (evalFirstFilledToken side).asComputationResult
   }
 
-/-- Execute one sibling-correlated Custom scan per physical target row through a caller-supplied exact-address source view. Target topology, prepared Custom validation, and immutable source target state remain unchanged. -/
+/-- The no-value outcome an over-limit target row takes instead of a scan, retaining its exact
+address so the application projection clears it. -/
+def clearedAt (operation : CheckedAddressedCustomFirstFilledComputation model)
+    (environment : Env) :
+    Except AddressedCustomFirstFilledComputationFault
+      AddressedCustomFirstFilledComputationOutcome := do
+  let targetPath ←
+    environment.pathForScope operation.target.repeatableScope
+      |>.mapError .targetEnvironment
+  pure {
+    targetField := { field := operation.targetField, path := targetPath }
+    result := .noValue
+  }
+
+/-- Execute one sibling-correlated Custom scan per **in-capacity** target row through a caller-supplied exact-address source view, and only a clear at each over-limit row. Target topology, prepared Custom validation, and immutable source target state remain unchanged. -/
 def executeWithRead
     (operation : CheckedAddressedCustomFirstFilledComputation model)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedCustomFirstFilledComputationFault
       (List AddressedCustomFirstFilledComputationOutcome) := do
-  let environments ← input.computationRowEnvironments operation.target.repeatableScope
-    |>.mapError .targetRows
-  environments.mapM (operation.evaluateAtWithRead input read)
+  input.computationRowOutcomes operation.target.repeatableScope .targetRows
+    operation.clearedAt (operation.evaluateAtWithRead input read)
 
-/-- Execute one prepared, sibling-correlated Custom scan per physical target row in document order. -/
+/-- Execute one prepared, sibling-correlated Custom scan per in-capacity target row in document order, and a clear at each over-limit row. -/
 def execute
     (operation : CheckedAddressedCustomFirstFilledComputation model)
     (input : CheckedDocument model) :

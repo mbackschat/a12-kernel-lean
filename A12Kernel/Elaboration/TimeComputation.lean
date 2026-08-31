@@ -642,17 +642,27 @@ private def evaluateAtWithRead
     targetField := { field := operation.checkedTarget.targetField, path }
     outcome }
 
-/-- Execute at every physical target row while reading each component through one caller-supplied transient overlay. -/
+/-- The no-value outcome an over-limit target row takes instead of a construction, retaining its
+exact address so the application projection clears it. No component is read there. -/
+def clearedAt (operation : CheckedAddressedTimeConstructionComputation model)
+    (environment : Env) :
+    Except AddressedTimeConstructionFault AddressedTimeConstructionOutcome := do
+  let path ← environment.pathForScope
+    operation.checkedTarget.declaration.repeatableScope
+      |>.mapError .targetEnvironment
+  pure {
+    targetField := { field := operation.checkedTarget.targetField, path }
+    outcome := .noValue }
+
+/-- Execute at every **in-capacity** target row while reading each component through one caller-supplied transient overlay, and only a clear at each over-limit row. -/
 def executeWithRead
     (operation : CheckedAddressedTimeConstructionComputation model)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedTimeConstructionFault
       (List AddressedTimeConstructionOutcome) := do
-  let environments ← input.computationRowEnvironments
-    operation.checkedTarget.declaration.repeatableScope
-      |>.mapError .targetRows
-  environments.mapM (operation.evaluateAtWithRead read)
+  input.computationRowOutcomes operation.checkedTarget.declaration.repeatableScope .targetRows
+    operation.clearedAt (operation.evaluateAtWithRead read)
 
 /-- Execute the checked construction once at every physical target row in document order. Each field component reads at its own bound scope inside that row. -/
 def execute

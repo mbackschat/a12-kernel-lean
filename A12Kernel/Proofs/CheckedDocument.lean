@@ -282,55 +282,115 @@ theorem checkedDocument_actualRowEnvironment_scope
   (checkedDocument_actualRowEnvironment_properties
     checked scope environments resolved).2 environment member
 
-/-- The computation-target domain is a sublist of the physical one: it drops over-limit rows and
-keeps every other row in place. Every property the physical projection carries therefore transfers,
-which is why the excluding filter needed no separate invariant. -/
-theorem checkedDocument_computationRowEnvironments_sublist
+/-- Membership transfer for an `Except`-valued `mapM`: every element of a successful result was
+produced by the mapped function at some element of the input. Stated here because the row-outcome law
+below is its only consumer; a second one would move it to a shared owner. -/
+private theorem exceptMapM_mem {α β ε : Type} {f : α → Except ε β} :
+    ∀ {l : List α} {out : List β}, l.mapM f = .ok out → ∀ b ∈ out, ∃ a ∈ l, f a = .ok b := by
+  intro l
+  induction l with
+  | nil =>
+      intro out executed b member
+      simp [List.mapM_nil, pure, Except.pure] at executed
+      subst executed
+      simp at member
+  | cons head tail ih =>
+      intro out executed b member
+      rw [List.mapM_cons] at executed
+      match hHead : f head with
+      | .error _ => rw [hHead] at executed; simp [bind, Except.bind] at executed
+      | .ok value =>
+          rw [hHead] at executed
+          match hTail : tail.mapM f with
+          | .error _ => rw [hTail] at executed; simp [bind, Except.bind] at executed
+          | .ok rest =>
+              rw [hTail] at executed
+              simp [bind, Except.bind, pure, Except.pure] at executed
+              subst executed
+              rcases List.mem_cons.mp member with rfl | inTail
+              · exact ⟨head, List.mem_cons_self, hHead⟩
+              · obtain ⟨a, inList, produced⟩ := ih hTail b inTail
+                exact ⟨a, List.mem_cons_of_mem _ inList, produced⟩
+
+/-- Every outcome a computation-target run produces came from exactly one of the two row treatments:
+the over-limit clear or the ordinary production. Carrier laws that used to read "every row's outcome
+is the operation's outcome" are recovered from this as the two-case statement they now are, rather
+than restated per family. -/
+theorem checkedDocument_computationRowOutcomes_mem
+    {Outcome Fault : Type} (checked : CheckedDocument model)
+    (scope : List RepeatableLevel)
+    (onRowError : ActualRowEnvironmentError → Fault)
+    (clearOnly produce : Env → Except Fault Outcome)
+    (outcomes : List Outcome)
+    (executed :
+      checked.computationRowOutcomes scope onRowError clearOnly produce = .ok outcomes)
+    (entry : Outcome) (member : entry ∈ outcomes) :
+    (∃ environment, clearOnly environment = .ok entry) ∨
+      ∃ environment, produce environment = .ok entry := by
+  unfold CheckedDocument.computationRowOutcomes at executed
+  match physical : checked.actualRowEnvironments scope with
+  | .error _ =>
+      rw [physical] at executed
+      simp [Except.mapError, bind, Except.bind] at executed
+  | .ok environments =>
+      rw [physical] at executed
+      simp only [Except.mapError, bind, Except.bind] at executed
+      obtain ⟨environment, _, produced⟩ := exceptMapM_mem executed entry member
+      by_cases over : checked.environmentOverLimit scope environment
+      · simp only [over, if_pos] at produced
+        exact .inl ⟨environment, produced⟩
+      · simp only [over] at produced
+        exact .inr ⟨environment, produced⟩
+
+/-- The in-capacity domain is a sublist of the physical one: it drops over-limit rows and keeps every
+other row in place. Every property the physical projection carries therefore transfers, which is why
+the excluding filter needed no separate invariant. -/
+theorem checkedDocument_inCapacityRowEnvironments_sublist
     (checked : CheckedDocument model)
     (scope : List RepeatableLevel) (environments computed : List Env)
     (physical : checked.actualRowEnvironments scope = .ok environments)
-    (resolved : checked.computationRowEnvironments scope = .ok computed) :
+    (resolved : checked.inCapacityRowEnvironments scope = .ok computed) :
     computed.Sublist environments := by
-  unfold CheckedDocument.computationRowEnvironments at resolved
+  unfold CheckedDocument.inCapacityRowEnvironments at resolved
   rw [physical] at resolved
   simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at resolved
   subst resolved
   exact List.filter_sublist
 
-/-- Successful computation-target projection preserves physical row uniqueness. -/
-theorem checkedDocument_computationRowEnvironments_nodup
+/-- Successful in-capacity projection preserves physical row uniqueness. -/
+theorem checkedDocument_inCapacityRowEnvironments_nodup
     (checked : CheckedDocument model)
     (scope : List RepeatableLevel) (computed : List Env)
-    (resolved : checked.computationRowEnvironments scope = .ok computed) :
+    (resolved : checked.inCapacityRowEnvironments scope = .ok computed) :
     computed.Nodup := by
   match physical : checked.actualRowEnvironments scope with
   | .ok environments =>
-      exact ((checkedDocument_computationRowEnvironments_sublist
+      exact ((checkedDocument_inCapacityRowEnvironments_sublist
         checked scope environments computed physical resolved).nodup
         (checkedDocument_actualRowEnvironments_nodup
           checked scope environments physical))
   | .error error =>
       exfalso
-      unfold CheckedDocument.computationRowEnvironments at resolved
+      unfold CheckedDocument.inCapacityRowEnvironments at resolved
       rw [physical] at resolved
       simp [bind, Except.bind] at resolved
 
-/-- Every computation-target environment contains exactly the requested scope levels in model order. -/
-theorem checkedDocument_computationRowEnvironment_scope
+/-- Every in-capacity environment contains exactly the requested scope levels in model order. -/
+theorem checkedDocument_inCapacityRowEnvironment_scope
     (checked : CheckedDocument model)
     (scope : List RepeatableLevel) (computed : List Env)
-    (resolved : checked.computationRowEnvironments scope = .ok computed)
+    (resolved : checked.inCapacityRowEnvironments scope = .ok computed)
     (environment : Env) (member : environment ∈ computed) :
     environment.map Prod.fst = scope := by
   match physical : checked.actualRowEnvironments scope with
   | .ok environments =>
       exact checkedDocument_actualRowEnvironment_scope
         checked scope environments physical environment
-        ((checkedDocument_computationRowEnvironments_sublist
+        ((checkedDocument_inCapacityRowEnvironments_sublist
           checked scope environments computed physical resolved).mem member)
   | .error error =>
       exfalso
-      unfold CheckedDocument.computationRowEnvironments at resolved
+      unfold CheckedDocument.inCapacityRowEnvironments at resolved
       rw [physical] at resolved
       simp [bind, Except.bind] at resolved
 

@@ -159,29 +159,58 @@ example : (do
       (address target.id [4, 1], .poison .dateFormat)] := by
   native_decide
 
-/-- Target rows reached by this operation, over the fixture's rows plus a supplied extension. -/
-private def targetPathsWith (extra : List RowAddr) : Option (List (List Nat)) := do
-  let operation ← operation?
-  let input ← documentWithRows? (rows ++ extra) []
-  let outcomes ← operation.execute input |>.toOption
-  pure (outcomes.map fun entry => entry.targetField.path)
+/-- Every project that owns a `Choices` row here carries a filled source, so an in-capacity target
+    row scans a value and only an excluded one can read `.noValue`. -/
+private def overLimitSourceCells : List ClassifiedCellInput := [
+  cell source.id [1, 1] "2024-06-01T10:11:12"
+    (dateTimeValue 1717229472000 2024 6 1 10 11 12 (by decide)),
+  cell source.id [2, 1] "2024-07-01T13:14:15"
+    (dateTimeValue 1719832455000 2024 7 1 13 14 15 (by decide)),
+  cell source.id [5, 1] "2024-08-01T16:17:18"
+    (dateTimeValue 1722521838000 2024 8 1 16 17 18 (by decide))]
 
-/- **Over-limit exclusion reaches through an ancestor.** `Projects` is declared `max 4` and `Tasks`
-   `max 3`. A third task row in project 1 is in capacity and appears; a fourth does not; and a fifth
-   project's task row does not either, although nothing about that task row's own coordinate is out
-   of range. Measured on kernel 30.8.1 across both codegen strategies on this same two-level
-   topology, where a fourth `Tasks` row and a fourth `Projects` row each leave the computed-outcome
-   list identical to its at-capacity control
-   ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). This is the second
-   carrier for that rule — the first was a bare constant — and the ancestor row is why the exclusion
-   cannot be a test on the target's own coordinate alone. -/
+/-- Target rows reached by this operation, over the fixture's rows plus a supplied extension and the
+    source cells that extension instantiates. -/
+private def targetPathsWith (extra : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (List (List Nat × DateTimeTargetOutcome)) := do
+  let operation ← operation?
+  let input ← documentWithRows? (rows ++ extra) cells
+  let outcomes ← operation.execute input |>.toOption
+  pure (outcomes.map fun entry => (entry.targetField.path, entry.outcome))
+
+/- **Over-limit exclusion reaches through an ancestor, and the excluded row is cleared.** `Projects`
+   is declared `max 4` and `Tasks` `max 3`. A third task row in project 1 is in capacity and scans; a
+   fourth takes `.noValue`; and a fifth project's task row takes `.noValue` too, although nothing
+   about that task row's own coordinate is out of range. Measured on kernel 30.8.1 across both
+   codegen strategies on this same two-level topology
+   ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)), where a seeded excess row
+   reports `cleared`. Every in-capacity row here has no source, so `.noValue` is also its scan
+   result — the discriminator is the *presence* of the entry, which dropping the row would lose. -/
+/- **An over-limit row clears where its in-capacity twin computes, and an over-limit ancestor does
+   the same to a row whose own coordinate is fine.** `Tasks` is declared `max 3`: rows `[1, 3]` and
+   `[1, 4]` sit in one project, read one filled source, and differ only in capacity — the first is
+   accepted, the second reads `.noValue`, which the application projection clears. `Projects` is
+   `max 4`: the fifth project's task row reads `.noValue` although its own `Choices` source is filled
+   and would have produced a value, so the exclusion is the ancestor's. Measured on kernel 30.8.1
+   across both codegen strategies, where a seeded excess row reports `cleared`
+   ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). Dropping the row instead
+   of clearing it passes every unseeded fixture and leaves a stale value. -/
 example :
-    (targetPathsWith [{ group := 30, path := [1, 3] }],
-      targetPathsWith [{ group := 30, path := [1, 3] }, { group := 30, path := [1, 4] }],
-      targetPathsWith [{ group := 10, path := [5] }, { group := 30, path := [5, 1] }]) =
-    (some [[1, 1], [1, 2], [2, 1], [3, 1], [4, 1], [1, 3]],
-      some [[1, 1], [1, 2], [2, 1], [3, 1], [4, 1], [1, 3]],
-      some [[1, 1], [1, 2], [2, 1], [3, 1], [4, 1]]) := by
+    (targetPathsWith [{ group := 30, path := [1, 3] }, { group := 30, path := [1, 4] }]
+       overLimitSourceCells.dropLast,
+      targetPathsWith [{ group := 10, path := [5] }, { group := 20, path := [5, 1] },
+        { group := 30, path := [5, 1] }] overLimitSourceCells) =
+    (some [([1, 1], .accepted (stored "2024-06-01T10:11:12")),
+           ([1, 2], .accepted (stored "2024-06-01T10:11:12")),
+           ([2, 1], .accepted (stored "2024-07-01T13:14:15")),
+           ([3, 1], .noValue), ([4, 1], .noValue),
+           ([1, 3], .accepted (stored "2024-06-01T10:11:12")),
+           ([1, 4], .noValue)],
+     some [([1, 1], .accepted (stored "2024-06-01T10:11:12")),
+           ([1, 2], .accepted (stored "2024-06-01T10:11:12")),
+           ([2, 1], .accepted (stored "2024-07-01T13:14:15")),
+           ([3, 1], .noValue), ([4, 1], .noValue), ([5, 1], .noValue)]) := by
   native_decide
 
 private structure ResultApplicationSummary where

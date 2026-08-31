@@ -1,3 +1,4 @@
+import A12Kernel.Proofs.CheckedDocument
 import A12Kernel.Elaboration.RepeatableStringConstantComputation
 
 /-! # Repeatable ordinary String constant laws -/
@@ -24,9 +25,10 @@ theorem checkedRepeatableStringConstantComputation_execute_ignoresDeclaringGroup
     CheckedRepeatableStringConstantComputation.store,
     sameTarget, sameDeclaration, sameLiteral]
 
-/-- Every row's outcome is exactly the declaration's own target check applied to the one root write
-attempt. The family therefore adds no acceptance or rejection logic of its own, which is what lets
-the measured `tooLong` row stand for the whole target policy rather than for one clause of it. -/
+/-- Every row's outcome is either the declaration's own target check applied to the one root write
+attempt, or the over-limit clear. The family therefore adds no acceptance or rejection logic of its
+own, which is what lets the measured `tooLong` row stand for the whole target policy rather than for
+one clause of it. -/
 theorem checkedRepeatableStringConstantComputation_execute_delegatesTargetCheck
     {model : FlatModel}
     (operation : CheckedRepeatableStringConstantComputation model)
@@ -36,18 +38,20 @@ theorem checkedRepeatableStringConstantComputation_execute_delegatesTargetCheck
       patterns.targetMatcher? operation.checkedTarget.targetField = some matcher)
     (outcomes : List RepeatableStringConstantComputationOutcome)
     (executed : operation.execute patterns input = .ok outcomes) :
-    ∀ entry ∈ outcomes, entry.outcome =
-      StringFieldPolicy.checkTargetWithPattern
-        operation.checkedTarget.declaration.stringPolicy matcher operation.store := by
+    ∀ entry ∈ outcomes,
+      entry.outcome =
+        StringFieldPolicy.checkTargetWithPattern
+          operation.checkedTarget.declaration.stringPolicy matcher operation.store ∨
+        entry.outcome = .noValue := by
   simp only [CheckedRepeatableStringConstantComputation.execute, prepared] at executed
-  split at executed
-  · simp at executed
-  · split at executed
-    · simp at executed
-    · obtain ⟨rfl⟩ := Except.ok.inj executed
-      intro entry member
-      simp only [List.mem_map] at member
-      obtain ⟨path, _, built⟩ := member
-      exact built ▸ rfl
+  intro entry member
+  rcases checkedDocument_computationRowOutcomes_mem input _ _ _ _ outcomes executed
+      entry member with ⟨environment, built⟩ | ⟨environment, built⟩
+  · split at built
+    · exact absurd built (by simp)
+    · exact .inr (by simp [← Except.ok.inj built])
+  · split at built
+    · exact absurd built (by simp)
+    · exact .inl (by simp [← Except.ok.inj built])
 
 end A12Kernel

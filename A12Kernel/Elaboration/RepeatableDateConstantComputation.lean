@@ -139,22 +139,22 @@ def outcome (operation : CheckedRepeatableDateConstantComputation model) :
     FullDateTargetOutcome :=
   operation.dateTarget.evaluateCivil operation.constant
 
-/-- Write the constant once per physical target row, in document order. A group with no instantiated
-row yields no outcome at all. -/
+/-- Write the constant once per **in-capacity** target row, in document order, and only a clear at
+each over-limit one. A group with no instantiated row yields no outcome at all. -/
 def execute (operation : CheckedRepeatableDateConstantComputation model)
     (input : CheckedDocument model) :
     Except RepeatableDateConstantComputationFault
       (List RepeatableDateConstantComputationOutcome) :=
   let field := operation.checkedTarget.targetField
   let scope := operation.checkedTarget.declaration.repeatableScope
-  match input.computationRowEnvironments scope with
-  | .error cause => .error (.targetRows cause)
-  | .ok environments =>
-      match environments.mapM fun environment => environment.pathForScope scope with
-      | .error cause => .error (.targetEnvironment cause)
-      | .ok paths => .ok (paths.map fun path => {
-          targetField := { field, path }
-          outcome := operation.outcome })
+  let at? (outcome : FullDateTargetOutcome) (environment : Env) :
+      Except RepeatableDateConstantComputationFault
+        RepeatableDateConstantComputationOutcome :=
+    match environment.pathForScope scope with
+    | .error cause => .error (.targetEnvironment cause)
+    | .ok path => .ok { targetField := { field, path }, outcome }
+  input.computationRowOutcomes scope .targetRows
+    (at? .noValue) (at? operation.outcome)
 
 end CheckedRepeatableDateConstantComputation
 

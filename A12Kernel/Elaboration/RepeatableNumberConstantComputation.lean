@@ -121,22 +121,22 @@ def outcome (operation : CheckedRepeatableNumberConstantComputation model) :
     NumericTargetOutcome :=
   NumericTargetPolicy.checkAttempt operation.targetPolicy operation.storedConstant
 
-/-- Write the constant once per physical target row, in document order, applying the declaration's
-own attempt check at each. A group with no instantiated row yields no outcome at all. -/
+/-- Write the constant once per **in-capacity** target row, in document order, applying the declaration's
+own attempt check at each, and only a clear at each over-limit row. A group with no instantiated row
+yields no outcome at all. -/
 def execute (operation : CheckedRepeatableNumberConstantComputation model)
     (input : CheckedDocument model) :
     Except RepeatableNumberConstantComputationFault
       (List RepeatableNumberConstantComputationOutcome) :=
   let field := operation.checkedTarget.targetField
   let scope := operation.checkedTarget.declaration.repeatableScope
-  match input.computationRowEnvironments scope with
-  | .error cause => .error (.targetRows cause)
-  | .ok environments =>
-      match environments.mapM fun environment => environment.pathForScope scope with
-      | .error cause => .error (.targetEnvironment cause)
-      | .ok paths => .ok (paths.map fun path => {
-          targetField := { field, path }
-          outcome := operation.outcome })
+  let at? (outcome : NumericTargetOutcome) (environment : Env) :
+      Except RepeatableNumberConstantComputationFault
+        RepeatableNumberConstantComputationOutcome :=
+    match environment.pathForScope scope with
+    | .error cause => .error (.targetEnvironment cause)
+    | .ok path => .ok { targetField := { field, path }, outcome }
+  input.computationRowOutcomes scope .targetRows (at? .noValue) (at? operation.outcome)
 
 /-- Classify every exact row outcome against immutable source target state through the shared Number
 result owner. -/

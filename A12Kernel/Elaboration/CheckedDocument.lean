@@ -362,28 +362,54 @@ def actualRowEnvironments (checked : CheckedDocument model)
           else
             throw (.incoherentRow row)
 
-/-- The row domain a **computation target** iterates: the physical rows above, minus every row
-beyond its group's declared capacity.
+/-- Whether one target-row environment lies beyond a declared capacity on any of its axes.
 
-The two domains differ only there, and the difference is measured rather than derived. A repeatable
-target declared `max 3` receives its constant on exactly three rows whether the document instantiates
-three, four, or five, while the excess rows draw `zuGrosseZeile` and `zuGrosseKontextnummer` and no
-computed value at all ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). The
-physical row survives in the topology — validation still reports it — so the exclusion belongs to the
-target inventory and not to `actualRowEnvironments`, whose validation-side consumers keep the
-complete domain.
+Decided over the whole environment rather than the target level's own coordinate: an over-limit
+**ancestor** excludes its descendants although their own coordinates are in range, measured over three
+repetition axes ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). -/
+def environmentOverLimit (checked : CheckedDocument model)
+    (scope : List RepeatableLevel) (environment : Env) : Bool :=
+  let _ := checked
+  model.addressOverLimit? scope (environment.map (·.2)) == some true
 
-A plain filter rather than a fallible fold: `actualRowEnvironments` has already matched the scope
-against its owning group, so the axis lookup behind `addressOverLimit?` resolves and its `none` is
-unreachable here. Keeping such an environment rather than failing on it also makes the result a
-sublist of the physical domain, which is what carries `Nodup` and the per-environment scope shape
-across to every consumer. -/
-def computationRowEnvironments (checked : CheckedDocument model)
+/-- The in-capacity physical rows at one repeatable scope, in document order.
+
+This is **not** the general computation-target domain: an addressed target still receives an outcome
+at an over-limit row (a clear), which `computationRowOutcomes` below expresses. It is the domain of a
+carrier whose own index column is capacity-bounded, where an over-limit row has no index entry at all
+and a structural lookup there would fail rather than produce a value. Whether such a carrier also
+clears its over-limit rows is not measured; this projection claims only the execution domain. -/
+def inCapacityRowEnvironments (checked : CheckedDocument model)
     (scope : List RepeatableLevel) :
     Except ActualRowEnvironmentError (List Env) := do
   let environments ← checked.actualRowEnvironments scope
   pure (environments.filter fun environment =>
-    model.addressOverLimit? scope (environment.map (·.2)) != some true)
+    !checked.environmentOverLimit scope environment)
+
+/-- Walk a **computation target**'s physical rows in document order, producing a value at each
+in-capacity row and only a clear at each over-limit one.
+
+The split is measured rather than derived. A repeatable target declared `max 3` receives its
+computed value on exactly three rows whether the document instantiates three, four, or five, while
+the excess rows draw `zuGrosseZeile` and `zuGrosseKontextnummer`. The excess row is **not** skipped:
+a target cell holding a stored value there is reported cleared, in the same run where its in-capacity
+siblings compute from a source present for both
+([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). So `clearOnly` returns the
+carrier's own no-value outcome, which every application projection already turns into a clear, and
+dropping the row instead would leave a stale value the Kernel removes.
+
+Document order is preserved and the cleared row keeps its natural position, matching the observed
+outcome sequence. `actualRowEnvironments` stays the physical domain because validation still reports
+the excluded row. -/
+def computationRowOutcomes {Outcome Fault : Type} (checked : CheckedDocument model)
+    (scope : List RepeatableLevel)
+    (onRowError : ActualRowEnvironmentError → Fault)
+    (clearOnly produce : Env → Except Fault Outcome) :
+    Except Fault (List Outcome) := do
+  let environments ← (checked.actualRowEnvironments scope).mapError onRowError
+  environments.mapM fun environment =>
+    if checked.environmentOverLimit scope environment then clearOnly environment
+    else produce environment
 
 private def environmentExtends (parent child : Env) : Bool :=
   child.take parent.length == parent

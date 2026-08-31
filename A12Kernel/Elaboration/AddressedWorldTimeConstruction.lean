@@ -320,16 +320,26 @@ private def evaluateAt
     targetField := { field := operation.checkedTarget.targetField, path }
     outcome }
 
-/-- Execute once at every physical target row. No row means no world-dependent component or amount read. -/
+/-- The no-value outcome an over-limit target row takes instead of a construction, retaining its
+exact address so the application projection clears it. No world-dependent component is read there. -/
+def clearedAt (operation : CheckedAddressedWorldTimeConstructionComputation model)
+    (environment : Env) :
+    Except AddressedTimeConstructionFault AddressedTimeConstructionOutcome := do
+  let path ← environment.pathForScope
+    operation.checkedTarget.declaration.repeatableScope
+      |>.mapError .targetEnvironment
+  pure {
+    targetField := { field := operation.checkedTarget.targetField, path }
+    outcome := .noValue }
+
+/-- Execute once at every **in-capacity** target row and only a clear at each over-limit row. No row means no world-dependent component or amount read. -/
 def execute
     (operation : CheckedAddressedWorldTimeConstructionComputation model)
     (world : World) (input : CheckedDocument model) :
     Except AddressedTimeConstructionFault
       (List AddressedTimeConstructionOutcome) := do
-  let environments ← input.computationRowEnvironments
-    operation.checkedTarget.declaration.repeatableScope
-      |>.mapError .targetRows
-  environments.mapM (operation.evaluateAt world input)
+  input.computationRowOutcomes operation.checkedTarget.declaration.repeatableScope .targetRows
+    operation.clearedAt (operation.evaluateAt world input)
 
 /-- Classify world-aware row outcomes through the same source-relative Time result boundary. -/
 def executeResult

@@ -91,19 +91,31 @@ private def evaluateAtWithRead
     result := selected.asComputationResult
   }
 
-/-- Execute one lazy first-filled scan per physical target row through a caller-supplied exact-address view. -/
+/-- The no-value outcome an over-limit target row takes instead of a computation, retaining its
+exact address so the application projection clears it. -/
+def clearedAt (operation : CheckedAddressedEnumerationFirstFilledComputation model)
+    (environment : Env) :
+    Except AddressedEnumerationFirstFilledComputationFault
+      AddressedEnumerationComputationOutcome := do
+  let targetPath ←
+    environment.pathForScope operation.target.declaration.repeatableScope
+      |>.mapError .targetEnvironment
+  pure {
+    targetField := { field := operation.target.field, path := targetPath }
+    result := .noValue
+  }
+
+/-- Execute one lazy first-filled scan per **in-capacity** target row through a caller-supplied exact-address view, and only a clear at each over-limit row. -/
 def executeWithRead
     (operation : CheckedAddressedEnumerationFirstFilledComputation model)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedEnumerationFirstFilledComputationFault
       (List AddressedEnumerationComputationOutcome) := do
-  let environments ← input.computationRowEnvironments
-      operation.target.declaration.repeatableScope
-    |>.mapError .targetRows
-  environments.mapM (operation.evaluateAtWithRead input read)
+  input.computationRowOutcomes operation.target.declaration.repeatableScope .targetRows
+    operation.clearedAt (operation.evaluateAtWithRead input read)
 
-/-- Execute one lazy first-filled scan per physical target row in document order. -/
+/-- Execute one lazy first-filled scan per in-capacity target row in document order, and a clear at each over-limit row. -/
 def execute (operation : CheckedAddressedEnumerationFirstFilledComputation model)
     (input : CheckedDocument model) :
     Except AddressedEnumerationFirstFilledComputationFault

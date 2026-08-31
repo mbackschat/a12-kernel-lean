@@ -235,12 +235,12 @@ inductive AddressedNumericLeafFault where
 
 namespace CheckedAddressedNumericTarget
 
-/-- The physically instantiated environments at the operation's exact target scope. Repetition comes from the computed target's own declaration, so an operation that references no field still iterates. -/
+/-- The physically instantiated environments at the operation's exact target scope, over-limit rows included. Repetition comes from the computed target's own declaration, so an operation that references no field still iterates. -/
 def targetEnvironments
     (target : CheckedAddressedNumericTarget model)
     (input : CheckedDocument model) :
     Except ActualRowEnvironmentError (List Env) :=
-  input.computationRowEnvironments target.targetDeclaration.repeatableScope
+  input.actualRowEnvironments target.targetDeclaration.repeatableScope
 
 end CheckedAddressedNumericTarget
 
@@ -278,26 +278,31 @@ private def executeAtEnvironmentUsing (placement : CheckedAddressedNumericTarget
       Except AddressedNumericLeafFault NumericComputationResult) :
     Except AddressedNumericLeafFault
       (List (SourcedNumericTargetOutcome CellAddr)) := do
-  let environments ←
-    (placement.targetEnvironments input).mapError .targetRows
-  environments.mapM fun environment => do
+  let addressAt (environment : Env) : Except AddressedNumericLeafFault CellAddr := do
     let path ←
       (environment.pathForScope
         placement.targetDeclaration.repeatableScope).mapError .environment
-    let targetAddress : CellAddr := {
-      field := placement.targetField
-      path
-    }
-    let result ← evaluate environment
-    let outcome ←
-      match checkTarget result with
-      | .supported outcome => pure outcome
-      | .unsupported cause => throw (.targetCheck cause)
-    pure {
-      targetField := targetAddress
-      outcome
-      source := input.numericTargetPlacementStateAt targetAddress
-    }
+    pure { field := placement.targetField, path }
+  input.computationRowOutcomes placement.targetDeclaration.repeatableScope .targetRows
+    (fun environment => do
+      let targetAddress ← addressAt environment
+      pure {
+        targetField := targetAddress
+        outcome := .noValue
+        source := input.numericTargetPlacementStateAt targetAddress
+      })
+    (fun environment => do
+      let targetAddress ← addressAt environment
+      let result ← evaluate environment
+      let outcome ←
+        match checkTarget result with
+        | .supported outcome => pure outcome
+        | .unsupported cause => throw (.targetCheck cause)
+      pure {
+        targetField := targetAddress
+        outcome
+        source := input.numericTargetPlacementStateAt targetAddress
+      })
 
 /-- Execute through the ordinary unsuppressed target checker. The callback receives the row
 environment rather than the target's path, because a source addresses at its own scope. -/

@@ -287,16 +287,28 @@ private def evaluateAtWithRead
     result
   }
 
+/-- The no-value outcome an over-limit target row takes instead of a computation, retaining its
+exact address so the application projection clears it. -/
+def clearedAt (operation : CheckedAddressedEnumerationComputation model)
+    (environment : Env) :
+    Except AddressedEnumerationComputationFault
+      AddressedEnumerationComputationOutcome := do
+  let targetPath ←
+    environment.pathForScope operation.target.declaration.repeatableScope
+      |>.mapError .environment
+  pure {
+    targetField := { field := operation.target.field, path := targetPath }
+    result := .noValue
+  }
+
 /-- Execute once per physically instantiated target row while reading through one caller-supplied transient overlay. Target-row ownership remains with the immutable checked input. -/
 def executeWithRead (operation : CheckedAddressedEnumerationComputation model)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedEnumerationComputationFault
       (List AddressedEnumerationComputationOutcome) := do
-  let environments ← input.computationRowEnvironments
-      operation.target.declaration.repeatableScope
-    |>.mapError .targetRows
-  environments.mapM (operation.evaluateAtWithRead read)
+  input.computationRowOutcomes operation.target.declaration.repeatableScope .targetRows
+    operation.clearedAt (operation.evaluateAtWithRead read)
 
 /-- Execute once per physically instantiated target row in document order against the immutable input. -/
 def execute (operation : CheckedAddressedEnumerationComputation model)

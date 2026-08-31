@@ -124,11 +124,11 @@ def WellFormed (route : CheckedParallelNumericTargetRoute model) : Prop :=
     (route.sourceDeclaration.repeatableScope ==
       model.repeatableScopeForGroupPath route.groups.rightGroup.path) = true
 
-/-- Enumerate exactly the physically instantiated target rows from the checked document. The target declaration owns the complete scope; callers cannot supply environments or fabricate rows. The inherited document order is an internal canonicalization because Kernel clearing order is not observable. -/
+/-- Enumerate exactly the in-capacity physically instantiated target rows from the checked document. An over-limit row carries no index entry, so it is outside this route's execution domain; its own clear is unmeasured for this carrier. The target declaration owns the complete scope; callers cannot supply environments or fabricate rows. The inherited document order is an internal canonicalization because Kernel clearing order is not observable. -/
 def targetEnvironments (route : CheckedParallelNumericTargetRoute model)
     (checked : CheckedDocument model) :
     Except ActualRowEnvironmentError (List Env) :=
-  checked.computationRowEnvironments
+  checked.inCapacityRowEnvironments
     route.targetDeclaration.repeatableScope
 
 /-- Derive one checked index side's cause-blind invalid-mark plan. The target's complete scope remains the coverage domain for every observed group. -/

@@ -149,7 +149,22 @@ private def evaluateAtWithRead
         resolved).asStringStore
   }
 
-/-- Execute one parent-local ordinary String scan through a caller-supplied exact-address source view, then apply the one prepared target matcher. Target topology, pattern preparation, and immutable target state remain unchanged. -/
+/-- The no-value outcome an over-limit target row takes instead of a scan, retaining its exact
+address so the application projection clears it. The prepared matcher is still required before any
+row runs, so an unavailable one stays a fault rather than being skipped by an excluded row. -/
+def clearedAt (operation : CheckedAddressedStringFirstFilledComputation model)
+    (environment : Env) :
+    Except AddressedStringFirstFilledComputationFault
+      AddressedStringFirstFilledComputationOutcome := do
+  let targetPath ←
+    environment.pathForScope operation.target.repeatableScope
+      |>.mapError .targetEnvironment
+  pure {
+    targetField := { field := operation.targetField, path := targetPath }
+    outcome := .noValue
+  }
+
+/-- Execute one parent-local ordinary String scan at each **in-capacity** target row through a caller-supplied exact-address source view, and a clear at each over-limit row, then apply the one prepared target matcher. Target topology, pattern preparation, and immutable target state remain unchanged. -/
 def executeWithRead
     (operation : CheckedAddressedStringFirstFilledComputation model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
@@ -160,11 +175,10 @@ def executeWithRead
   let matcher ← match patterns.targetMatcher? operation.targetField with
     | some matcher => pure matcher
     | none => throw (.targetPatternUnavailable operation.targetField)
-  let environments ← input.computationRowEnvironments operation.target.repeatableScope
-    |>.mapError .targetRows
-  environments.mapM (operation.evaluateAtWithRead matcher input read)
+  input.computationRowOutcomes operation.target.repeatableScope .targetRows
+    operation.clearedAt (operation.evaluateAtWithRead matcher input read)
 
-/-- Execute one parent-local ordinary String scan per physical target row, then apply the one prepared target matcher. -/
+/-- Execute one parent-local ordinary String scan per in-capacity target row and a clear at each over-limit row, then apply the one prepared target matcher. -/
 def execute
     (operation : CheckedAddressedStringFirstFilledComputation model)
     (patterns : PreparedFlatStringPatterns model compilePattern)

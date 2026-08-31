@@ -171,18 +171,31 @@ private def evaluateAtWithRead
       (resolved.cells.map fun cell => booleanFirstFilledCellAt cell.cell)
   }
 
-/-- Execute one sibling-correlated first-filled scan per physical target row through a caller-supplied exact-address source view. Target topology and immutable source target state remain unchanged. -/
+/-- The no-value outcome an over-limit target row takes instead of a scan, retaining its exact
+address so the application projection clears it. -/
+def clearedAt (operation : CheckedAddressedBooleanFirstFilledComputation model)
+    (environment : Env) :
+    Except AddressedBooleanFirstFilledComputationFault
+      AddressedBooleanFirstFilledComputationOutcome := do
+  let targetPath ←
+    environment.pathForScope operation.target.repeatableScope
+      |>.mapError .targetEnvironment
+  pure {
+    targetField := { field := operation.targetField, path := targetPath }
+    result := .noValue
+  }
+
+/-- Execute one sibling-correlated first-filled scan per **in-capacity** target row through a caller-supplied exact-address source view, and only a clear at each over-limit row. Target topology and immutable source target state remain unchanged. -/
 def executeWithRead
     (operation : CheckedAddressedBooleanFirstFilledComputation model)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedBooleanFirstFilledComputationFault
       (List AddressedBooleanFirstFilledComputationOutcome) := do
-  let environments ← input.computationRowEnvironments operation.target.repeatableScope
-    |>.mapError .targetRows
-  environments.mapM (operation.evaluateAtWithRead input read)
+  input.computationRowOutcomes operation.target.repeatableScope .targetRows
+    operation.clearedAt (operation.evaluateAtWithRead input read)
 
-/-- Execute one sibling-correlated first-filled scan per physical target row in document order. -/
+/-- Execute one sibling-correlated first-filled scan per in-capacity target row in document order, and a clear at each over-limit row. -/
 def execute
     (operation : CheckedAddressedBooleanFirstFilledComputation model)
     (input : CheckedDocument model) :

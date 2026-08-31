@@ -99,17 +99,20 @@ example : (outcomes? ["Probe"] iso.id 2, outcomes? ["Probe", "Rows"] iso.id 2,
      some []) := by
   native_decide
 
-/- **An over-limit row receives nothing.** Declared capacity is three: four and five instantiated
-   rows both write exactly the first three, against an at-capacity control that writes the same
-   three. Measured on kernel 30.8.1 across both codegen strategies, where the excess rows carry
-   `zuGrosseZeile` and `zuGrosseKontextnummer` and no computed value at all
-   ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). The physical row survives
-   in the topology; it is the computation's target inventory that excludes it. -/
+/- **An over-limit row gets a clear, not the constant.** Declared capacity is three: at four and five
+   instantiated rows the first three take the constant and every further row takes `.noValue`, which
+   the application projection turns into a clear. Measured on kernel 30.8.1 across both codegen
+   strategies: unseeded excess rows report no outcome under the changed-subset projection, and a
+   **seeded** one reports `cleared` with no value in the same run where its in-capacity siblings
+   compute ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). Dropping the row
+   instead would pass every unseeded fixture and leave a stale value the Kernel removes. -/
 example :
-    ((outcomes? ["Probe"] iso.id 3).map (·.map (·.targetField.path)),
-      (outcomes? ["Probe"] iso.id 4).map (·.map (·.targetField.path)),
-      (outcomes? ["Probe"] iso.id 5).map (·.map (·.targetField.path))) =
-    (some [[1], [2], [3]], some [[1], [2], [3]], some [[1], [2], [3]]) := by
+    ((outcomes? ["Probe"] iso.id 3).map (·.map (·.outcome)),
+      (outcomes? ["Probe"] iso.id 5).map (·.map (·.outcome))) =
+    (some [.accepted (stored "2024-03-05"), .accepted (stored "2024-03-05"),
+           .accepted (stored "2024-03-05")],
+     some [.accepted (stored "2024-03-05"), .accepted (stored "2024-03-05"),
+           .accepted (stored "2024-03-05"), .noValue, .noValue]) := by
   native_decide
 
 /- **The component-omitting store, measured.** One literal reaches three declared component subsets

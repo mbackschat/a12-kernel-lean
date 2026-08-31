@@ -142,18 +142,31 @@ private def evaluateAtWithRead
         resolved
   }
 
-/-- Execute one sibling-correlated DateFragment scan per physical target row through a caller-supplied exact-address source view. Target topology, physical stored text, and immutable source target state remain unchanged. -/
+/-- The no-value outcome an over-limit target row takes instead of a scan, retaining its exact
+address so the application projection clears it. -/
+def clearedAt (operation : CheckedAddressedDateFragmentFirstFilledComputation model)
+    (environment : Env) :
+    Except AddressedDateFragmentFirstFilledComputationFault
+      AddressedDateFragmentFirstFilledComputationOutcome := do
+  let targetPath ←
+    environment.pathForScope operation.target.repeatableScope
+      |>.mapError .targetEnvironment
+  pure {
+    targetField := { field := operation.targetField, path := targetPath }
+    result := .noValue
+  }
+
+/-- Execute one sibling-correlated DateFragment scan per **in-capacity** target row through a caller-supplied exact-address source view, and only a clear at each over-limit row. Target topology, physical stored text, and immutable source target state remain unchanged. -/
 def executeWithRead
     (operation : CheckedAddressedDateFragmentFirstFilledComputation model)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedDateFragmentFirstFilledComputationFault
       (List AddressedDateFragmentFirstFilledComputationOutcome) := do
-  let environments ← input.computationRowEnvironments operation.target.repeatableScope
-    |>.mapError .targetRows
-  environments.mapM (operation.evaluateAtWithRead input read)
+  input.computationRowOutcomes operation.target.repeatableScope .targetRows
+    operation.clearedAt (operation.evaluateAtWithRead input read)
 
-/-- Execute one sibling-correlated DateFragment scan per physical target row in document order. -/
+/-- Execute one sibling-correlated DateFragment scan per in-capacity target row in document order, and a clear at each over-limit row. -/
 def execute
     (operation : CheckedAddressedDateFragmentFirstFilledComputation model)
     (input : CheckedDocument model) :

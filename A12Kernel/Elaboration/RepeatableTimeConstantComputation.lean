@@ -95,22 +95,21 @@ def outcome (operation : CheckedRepeatableTimeConstantComputation model) :
     TimeTargetOutcome :=
   .accepted (TimeTargetFormat.render operation.timeTarget.format operation.constant)
 
-/-- Write the constant once per physical target row, in document order. A group with no instantiated
-row yields no outcome at all. -/
+/-- Write the constant once per **in-capacity** target row, in document order, and only a clear at each
+over-limit row. A group with no instantiated row yields no outcome at all. -/
 def execute (operation : CheckedRepeatableTimeConstantComputation model)
     (input : CheckedDocument model) :
     Except RepeatableTimeConstantComputationFault
       (List RepeatableTimeConstantComputationOutcome) :=
   let field := operation.checkedTarget.targetField
   let scope := operation.checkedTarget.declaration.repeatableScope
-  match input.computationRowEnvironments scope with
-  | .error cause => .error (.targetRows cause)
-  | .ok environments =>
-      match environments.mapM fun environment => environment.pathForScope scope with
-      | .error cause => .error (.targetEnvironment cause)
-      | .ok paths => .ok (paths.map fun path => {
-          targetField := { field, path }
-          outcome := operation.outcome })
+  let at? (outcome : TimeTargetOutcome) (environment : Env) :
+      Except RepeatableTimeConstantComputationFault
+        RepeatableTimeConstantComputationOutcome :=
+    match environment.pathForScope scope with
+    | .error cause => .error (.targetEnvironment cause)
+    | .ok path => .ok { targetField := { field, path }, outcome }
+  input.computationRowOutcomes scope .targetRows (at? .noValue) (at? operation.outcome)
 
 end CheckedRepeatableTimeConstantComputation
 

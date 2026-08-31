@@ -145,6 +145,20 @@ private def evaluateAtWithRead
     outcome
   }
 
+/-- The no-value outcome an over-limit target row takes instead of a scan, retaining its exact
+address so the application projection clears it. -/
+def clearedAt (operation : CheckedAddressedDateRangeFirstFilledComputation model)
+    (environment : Env) :
+    Except AddressedDateRangeFirstFilledComputationFault
+      AddressedDateRangeFirstFilledComputationOutcome := do
+  let targetPath ←
+    environment.pathForScope operation.target.repeatableScope
+      |>.mapError .targetEnvironment
+  pure {
+    targetField := { field := operation.targetField, path := targetPath }
+    outcome := .noValue
+  }
+
 /-- Execute one sibling-correlated DateRange scan per physical target row through a caller-supplied exact-address view. Target-row ownership and source topology remain immutable. -/
 def executeWithRead
     (operation : CheckedAddressedDateRangeFirstFilledComputation model)
@@ -152,11 +166,10 @@ def executeWithRead
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except AddressedDateRangeFirstFilledComputationFault
       (List AddressedDateRangeFirstFilledComputationOutcome) := do
-  let environments ← input.computationRowEnvironments operation.target.repeatableScope
-    |>.mapError .targetRows
-  environments.mapM (operation.evaluateAtWithRead input read)
+  input.computationRowOutcomes operation.target.repeatableScope .targetRows
+    operation.clearedAt (operation.evaluateAtWithRead input read)
 
-/-- Execute one sibling-correlated DateRange scan per physical target row in document order. -/
+/-- Execute one sibling-correlated DateRange scan per in-capacity target row in document order, and a clear at each over-limit row. -/
 def execute
     (operation : CheckedAddressedDateRangeFirstFilledComputation model)
     (input : CheckedDocument model) :

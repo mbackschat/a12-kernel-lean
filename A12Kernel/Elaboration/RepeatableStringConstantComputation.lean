@@ -91,8 +91,9 @@ def store (operation : CheckedRepeatableStringConstantComputation model) :
     StringStore :=
   (StringTerm.text operation.literal).store
 
-/-- Write the constant once per physical target row, in document order, applying the declaration's
-own target policy at each. A group with no instantiated row yields no outcome at all. -/
+/-- Write the constant once per **in-capacity** target row, in document order, applying the declaration's
+own target policy at each, and only a clear at each over-limit row. A group with no instantiated row
+yields no outcome at all. -/
 def execute (operation : CheckedRepeatableStringConstantComputation model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (input : CheckedDocument model) :
@@ -103,16 +104,16 @@ def execute (operation : CheckedRepeatableStringConstantComputation model)
   match patterns.targetMatcher? field with
   | none => .error (.targetPatternUnavailable field)
   | some matcher =>
-      match input.computationRowEnvironments scope with
-      | .error cause => .error (.targetRows cause)
-      | .ok environments =>
-          match environments.mapM fun environment => environment.pathForScope scope with
-          | .error cause => .error (.targetEnvironment cause)
-          | .ok paths => .ok (paths.map fun path => {
-              targetField := { field, path }
-              outcome := StringFieldPolicy.checkTargetWithPattern
-                operation.checkedTarget.declaration.stringPolicy matcher
-                operation.store })
+      let at? (outcome : StringTargetOutcome) (environment : Env) :
+          Except RepeatableStringConstantComputationFault
+            RepeatableStringConstantComputationOutcome :=
+        match environment.pathForScope scope with
+        | .error cause => .error (.targetEnvironment cause)
+        | .ok path => .ok { targetField := { field, path }, outcome }
+      input.computationRowOutcomes scope .targetRows (at? .noValue)
+        (at? (StringFieldPolicy.checkTargetWithPattern
+          operation.checkedTarget.declaration.stringPolicy matcher
+          operation.store))
 
 /-- Classify every exact row outcome against immutable source target state through the shared String
 result owner. -/

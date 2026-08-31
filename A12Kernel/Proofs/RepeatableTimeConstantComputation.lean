@@ -1,3 +1,4 @@
+import A12Kernel.Proofs.CheckedDocument
 import A12Kernel.Elaboration.RepeatableTimeConstantComputation
 
 /-! # Repeatable Time constant laws -/
@@ -22,30 +23,32 @@ theorem checkedRepeatableTimeConstantComputation_execute_ignoresDeclaringGroup
     CheckedRepeatableTimeConstantComputation.outcome,
     sameTarget, sameDeclaration, sameTimeTarget, sameConstant]
 
-/-- **Every row is accepted, unconditionally.** This family owns no rejection branch, matching a
-target domain whose every admitted clock passes the basic check — so unlike its Number and Date
-siblings there is no attempted-value retention rule to get wrong, and a consumer may read the store
-without a failure case. The hypothesis-free form is the content: no clock, target, or row makes it
-fail. -/
+/-- **Every in-capacity row is accepted, and no row is rejected.** This family owns no rejection
+branch, matching a target domain whose every admitted clock passes the basic check — so unlike its
+Number and Date siblings there is no attempted-value retention rule to get wrong, and a consumer may
+read the store without a failure case. The second disjunct is the capacity clear rather than a
+refusal: no clock or target makes this fail, only an address beyond the declared repetition. -/
 theorem checkedRepeatableTimeConstantComputation_execute_alwaysAccepts
     {model : FlatModel}
     (operation : CheckedRepeatableTimeConstantComputation model)
     (input : CheckedDocument model)
     (outcomes : List RepeatableTimeConstantComputationOutcome)
     (executed : operation.execute input = .ok outcomes) :
-    ∀ entry ∈ outcomes, entry.outcome =
-      .accepted (TimeTargetFormat.render operation.timeTarget.format operation.constant) := by
+    ∀ entry ∈ outcomes,
+      entry.outcome =
+        .accepted (TimeTargetFormat.render operation.timeTarget.format operation.constant) ∨
+        entry.outcome = .noValue := by
   simp only [CheckedRepeatableTimeConstantComputation.execute,
     CheckedRepeatableTimeConstantComputation.outcome] at executed
-  split at executed
-  · simp at executed
-  · split at executed
-    · simp at executed
-    · obtain ⟨rfl⟩ := Except.ok.inj executed
-      intro entry member
-      simp only [List.mem_map] at member
-      obtain ⟨path, _, built⟩ := member
-      exact built ▸ rfl
+  intro entry member
+  rcases checkedDocument_computationRowOutcomes_mem input _ _ _ _ outcomes executed
+      entry member with ⟨environment, built⟩ | ⟨environment, built⟩
+  · split at built
+    · exact absurd built (by simp)
+    · exact .inr (by simp [← Except.ok.inj built])
+  · split at built
+    · exact absurd built (by simp)
+    · exact .inl (by simp [← Except.ok.inj built])
 
 /-- The stored text is the target's declared format applied to the clock and nothing else, so a
 constant and a computed Time producing the same clock cannot store different text. Stated separately

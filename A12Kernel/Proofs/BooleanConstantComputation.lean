@@ -1,3 +1,4 @@
+import A12Kernel.Proofs.CheckedDocument
 import A12Kernel.Elaboration.BooleanConstantComputation
 
 /-! # Boolean and Confirm constant-computation laws -/
@@ -62,24 +63,26 @@ theorem checkedRepeatableBooleanConstantComputation_execute_ignoresDeclaringGrou
   simp only [CheckedRepeatableBooleanConstantComputation.execute,
     sameTarget, sameDeclaration, sameValue]
 
-/-- Every emitted row carries the same constant. The family has no per-row content beyond its
-address, so a consumer needs only the row set and one value; nothing can make one row differ. -/
+/-- Every emitted row carries the same constant or the over-limit clear. The family has no per-row
+content of its own beyond the address, so a consumer needs the row set, one value, and the capacity
+split; nothing else can make one row differ. -/
 theorem checkedRepeatableBooleanConstantComputation_execute_constantAcrossRows
     {model : FlatModel}
     (operation : CheckedRepeatableBooleanConstantComputation model)
     (input : CheckedDocument model)
     (outcomes : List RepeatableBooleanConstantComputationOutcome)
     (executed : operation.execute input = .ok outcomes) :
-    ∀ entry ∈ outcomes, entry.result = .value operation.value := by
+    ∀ entry ∈ outcomes,
+      entry.result = .value operation.value ∨ entry.result = .noValue := by
   simp only [CheckedRepeatableBooleanConstantComputation.execute] at executed
-  split at executed
-  · simp at executed
-  · split at executed
-    · simp at executed
-    · obtain ⟨rfl⟩ := Except.ok.inj executed
-      intro entry member
-      simp only [List.mem_map] at member
-      obtain ⟨path, _, built⟩ := member
-      exact built ▸ rfl
+  intro entry member
+  rcases checkedDocument_computationRowOutcomes_mem input _ _ _ _ outcomes executed
+      entry member with ⟨environment, built⟩ | ⟨environment, built⟩
+  · split at built
+    · exact absurd built (by simp)
+    · exact .inr (by simp [← Except.ok.inj built])
+  · split at built
+    · exact absurd built (by simp)
+    · exact .inl (by simp [← Except.ok.inj built])
 
 end A12Kernel

@@ -230,21 +230,24 @@ the row set the whole of this family's runtime content. -/
 def value (operation : CheckedRepeatableBooleanConstantComputation model) : Bool :=
   operation.operation.operation.value
 
-/-- Emit the constant once per physical target row, in document order. A group with no instantiated
-row yields no outcome at all rather than one implicit instance, because the target repeats. -/
+/-- Emit the constant once per **in-capacity** target row, in document order, and only a clear at each
+over-limit row. A group with no instantiated row yields no outcome at all rather than one implicit
+instance, because the target repeats. -/
 def execute (operation : CheckedRepeatableBooleanConstantComputation model)
     (input : CheckedDocument model) :
     Except RepeatableBooleanConstantComputationFault
       (List RepeatableBooleanConstantComputationOutcome) :=
   let scope := operation.checkedTarget.declaration.repeatableScope
-  match input.computationRowEnvironments scope with
-  | .error cause => .error (.targetRows cause)
-  | .ok environments =>
-      match environments.mapM fun environment => environment.pathForScope scope with
-      | .error cause => .error (.targetEnvironment cause)
-      | .ok paths => .ok (paths.map fun path => {
-          targetField := { field := operation.checkedTarget.targetField, path }
-          result := .value operation.value })
+  let at? (result : BooleanComputationOutcome) (environment : Env) :
+      Except RepeatableBooleanConstantComputationFault
+        RepeatableBooleanConstantComputationOutcome :=
+    match environment.pathForScope scope with
+    | .error cause => .error (.targetEnvironment cause)
+    | .ok path => .ok {
+        targetField := { field := operation.checkedTarget.targetField, path }
+        result }
+  input.computationRowOutcomes scope .targetRows
+    (at? .noValue) (at? (.value operation.value))
 
 /-- Classify every exact row outcome against immutable source target state through the shared
 Boolean result owner. -/
