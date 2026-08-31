@@ -2072,6 +2072,7 @@ run_cmd do
 #print axioms A12Kernel.resolveCheckedField_addressing_error
 #print axioms A12Kernel.resolveCheckedValidationEntityOperandCore_addressing_error
 #print axioms A12Kernel.resolveCheckedField_empty_topology
+#print axioms A12Kernel.resolvedCheckedEntityOperandCore_inCapacity_sublist
 #print axioms A12Kernel.indexPreliminary_mandatory_contract
 #print axioms A12Kernel.indexPreliminary_unique_contract
 #print axioms A12Kernel.checkedIndexPreliminary_preserves_parsed

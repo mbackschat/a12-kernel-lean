@@ -81,4 +81,24 @@ theorem resolveCheckedField_empty_topology
   rw [empty]
   simp [pure, Except.pure]
 
+/-- **The declared-capacity extent only ever removes cells, and it removes exactly the over-limit
+ones.** Every consumer that reads the in-capacity projection inherits this: it can never see a cell
+the complete view does not have, in an order the complete view does not have, so no answer the
+extent produces is one the whole topology could not have produced from some sub-selection. Stated at
+the owning mechanism rather than per carrier, because the five consumers reading it differ only in
+what they fold over the cells.
+
+The second conjunct is what makes the first informative — a selection that removed *nothing*
+satisfies the sublist alone, and a selection that removed everything would too. -/
+theorem resolvedCheckedEntityOperandCore_inCapacity_sublist
+    (resolved : ResolvedCheckedEntityOperandCore) :
+    resolved.inCapacityAddressedCells.Sublist resolved.addressedCells ∧
+      ∀ addressed ∈ resolved.addressedCells,
+        addressed ∈ resolved.inCapacityAddressedCells ↔
+          addressed.cell.findings.contains .overRepetition = false := by
+  refine ⟨List.filter_sublist, ?_⟩
+  intro addressed member
+  unfold ResolvedCheckedEntityOperandCore.inCapacityAddressedCells
+  simp [List.mem_filter, member]
+
 end A12Kernel
