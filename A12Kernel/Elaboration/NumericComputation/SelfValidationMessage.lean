@@ -33,11 +33,6 @@ namespace A12Kernel
 
 namespace CheckedGroupCountOperand
 
-/-- The group whose content this operand weighs, whichever form it takes. -/
-def groupPath : CheckedGroupCountOperand model → GroupPath
-  | .fixed reference => reference.path
-  | .starred source => source.group.path
-
 /-- The fields this operand names in the target's self-validation message.
 
     The whole subtree at any depth, measured on a group whose only field lies two levels below it

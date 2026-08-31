@@ -27,10 +27,37 @@ private def fieldR : FlatFieldDecl := {
   repeatableScope := [10]
 }
 
+private def fieldN : FlatFieldDecl := {
+  id := 3
+  groupPath := ["Probe", "G1", "Nested"]
+  name := "N"
+  policy := { kind := .string }
+  repeatableScope := [11]
+}
+
+private def fieldI : FlatFieldDecl := {
+  id := 4
+  groupPath := ["Probe", "Rows", "Inner"]
+  name := "I"
+  policy := { kind := .string }
+  repeatableScope := [10, 12]
+}
+
+private def fieldO : FlatFieldDecl := {
+  id := 5
+  groupPath := ["Probe", "Other"]
+  name := "O"
+  policy := { kind := .string }
+  repeatableScope := [13]
+}
+
 private def model : FlatModel := {
-  fields := [fieldA, fieldR]
+  fields := [fieldA, fieldR, fieldN, fieldI, fieldO]
   repeatableGroups := [
-    { level := 10, path := ["Probe", "Rows"], repeatability := some 3 }]
+    { level := 10, path := ["Probe", "Rows"], repeatability := some 3 },
+    { level := 11, path := ["Probe", "G1", "Nested"], repeatability := some 2 },
+    { level := 12, path := ["Probe", "Rows", "Inner"], repeatability := some 2 },
+    { level := 13, path := ["Probe", "Other"], repeatability := some 2 }]
 }
 
 private def prepared : PreparedFlatStringContext model builtinStringPatternCompiler :=
@@ -43,16 +70,40 @@ private def fixedOperand : SurfaceGroupCountOperand :=
 private def starredOperand : SurfaceGroupCountOperand :=
   .starred { base := .absolute, groups := ["Probe", "Rows"] }
 
+/-- A star strictly inside the fixed member's group, for the containment pair. -/
+private def nestedStar : SurfaceGroupCountOperand :=
+  .starred { base := .absolute, groups := ["Probe", "G1", "Nested"] }
+
+/-- A second, disjoint star, for the two-star sum. -/
+private def otherStar : SurfaceGroupCountOperand :=
+  .starred { base := .absolute, groups := ["Probe", "Other"] }
+
+/-- A star strictly inside another star's group, for the star-versus-star containment pair. -/
+private def innerStar : SurfaceGroupCountOperand :=
+  .starred { base := .absolute, groups := ["Probe", "Rows", "Inner"] }
+
+private def kernelCode? (operands : List SurfaceGroupCountOperand) : Option String :=
+  match elaborateMixedFilledGroupCountComparison model ["Probe"] operands
+      NumericComparisonOp.less 3 with
+  | .error cause =>
+      (NumericValidationElabError.groupCountDiagnostic? cause).map
+        KernelStaticDiagnostic.kernelCode
+  | .ok _ => none
+
 private def comparison? (operands : List SurfaceGroupCountOperand) :
     Option (CheckedOrderedNumericComparison model) :=
   (elaborateMixedFilledGroupCountComparison model ["Probe"] operands
     NumericComparisonOp.less 3).toOption
 
-private def atom? : Option (OrderedNumericValidationAtom model) := do
-  let comparison ← comparison? [fixedOperand, starredOperand]
+private def atomOf? (operands : List SurfaceGroupCountOperand) :
+    Option (OrderedNumericValidationAtom model) := do
+  let comparison ← comparison? operands
   match comparison.core.left with
   | .atom source => some source
   | _ => none
+
+private def atom? : Option (OrderedNumericValidationAtom model) :=
+  atomOf? [fixedOperand, starredOperand]
 
 /-- The fixed member's own presence state, supplied the way the checked-document boundary supplies
 it. Only its content varies here; erroneous and nonrelevant states belong to the shared group-count
@@ -70,12 +121,12 @@ private def cell (path : List Nat) : ClassifiedCellInput :=
     stored := "r"
     raw := .parsed (.str "r") }
 
-private def count (content : Bool) (rows : Nat)
+private def countWith (source : Option (OrderedNumericValidationAtom model))
+    (content : Bool) (instantiated : List RowAddr)
     (filled : List (List Nat) := []) : Option NumericArithmeticOutcome := do
-  let atom ← atom?
+  let atom ← source
   let document ← (checkDocument prepared "en_US" {
-    instantiatedRows := (List.range rows).map fun index =>
-      { group := 10, path := [index + 1] }
+    instantiatedRows := instantiated
     cells := filled.map cell }).toOption
   let context : AddressedValidationEvaluationContext model := {
     scalar := {
@@ -87,6 +138,13 @@ private def count (content : Bool) (rows : Nat)
   match atom.resolveAddressed context with
   | .ok inner => inner.toOption
   | .error _ => none
+
+private def rowsUpTo (count : Nat) : List RowAddr :=
+  (List.range count).map fun index => { group := 10, path := [index + 1] }
+
+private def count (content : Bool) (rows : Nat)
+    (filled : List (List Nat) := []) : Option NumericArithmeticOutcome :=
+  countWith atom? content (rowsUpTo rows) filled
 
 /- Contributions add: the fixed member gives zero or one and the starred member gives its row count,
 so one filled group beside zero, one, two, and three rows counts one, two, three, and four. The
@@ -128,6 +186,38 @@ example : ((comparison? [fixedOperand]).isSome,
     (comparison? [.fixed (.path { base := .absolute, groups := ["Probe"] }),
       starredOperand]).isSome) =
     (false, false, false, false) := by
+  native_decide
+
+/- Containment between any two members is a duplicate, whichever is starred and in whichever order,
+and it carries `MVK_DUPLICATE_PARAM2` rather than the equal-paths class. Two **stars naming the same
+group** are admitted instead and count that group once per position, which is the exception that
+makes this a containment rule rather than a distinctness rule. Measured on kernel 30.8.1. -/
+example : (kernelCode? [fixedOperand, nestedStar],
+    kernelCode? [nestedStar, fixedOperand],
+    kernelCode? [starredOperand, innerStar],
+    (comparison? [starredOperand, starredOperand]).isSome,
+    (comparison? [nestedStar, starredOperand]).isSome) =
+    (some "MVK_DUPLICATE_PARAM2", some "MVK_DUPLICATE_PARAM2",
+     some "MVK_DUPLICATE_PARAM2", true, true) := by
+  native_decide
+
+private def otherRows (count : Nat) : List RowAddr :=
+  (List.range count).map fun index => { group := 13, path := [index + 1] }
+
+/- Two stars sum per member and their capacities sum too: a `max 3` beside a `max 2` counts three at
+two-plus-one rows and is closed only at five. The **same** star twice double-counts rather than
+collapsing to one group — two rows count four and the extent is six, not three — so the fold is per
+position and so is the extent. That pair is what separates a per-position sum from a per-group one,
+and both halves are measured on kernel 30.8.1 across both codegen strategies. -/
+example : (countWith (atomOf? [starredOperand, otherStar]) false
+      (rowsUpTo 2 ++ otherRows 1),
+    countWith (atomOf? [starredOperand, otherStar]) false (rowsUpTo 3 ++ otherRows 2),
+    countWith (atomOf? [starredOperand, starredOperand]) false (rowsUpTo 2),
+    countWith (atomOf? [starredOperand, starredOperand]) false (rowsUpTo 3)) =
+    (some (.value 3 { canGrow := true, canShrink := false }),
+     some (.value 5 { canGrow := false, canShrink := false }),
+     some (.value 4 { canGrow := true, canShrink := false }),
+     some (.value 6 { canGrow := false, canShrink := false })) := by
   native_decide
 
 /- Placement admits the star from an ancestor of its own group, which is the only shape measured. -/

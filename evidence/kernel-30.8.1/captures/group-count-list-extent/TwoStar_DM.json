@@ -1,0 +1,293 @@
+{
+  "header" : {
+    "id" : "TwoStar_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "TwoStar_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/G1",
+            "name" : "G1",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/G1/Nested",
+                "name" : "Nested",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/G1/Nested/N",
+                    "name" : "N",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/G1/A",
+                "name" : "A",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Rows/R",
+                "name" : "R",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Rows/Inner",
+                "name" : "Inner",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Inner/I",
+                    "name" : "I",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Other",
+            "name" : "Other",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Other/O",
+                "name" : "O",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AB2",
+            "name" : "AB2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/R",
+              "errorCode" : "AB2",
+              "errorCondition" : "NumberOfFilledGroups(Rows*, Other*) < 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "AB2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AB3",
+            "name" : "AB3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/R",
+              "errorCode" : "AB3",
+              "errorCondition" : "NumberOfFilledGroups(Rows*, Other*) < 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "AB3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AB4",
+            "name" : "AB4",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/R",
+              "errorCode" : "AB4",
+              "errorCondition" : "NumberOfFilledGroups(Rows*, Other*) < 4",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "AB4"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AB5",
+            "name" : "AB5",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/R",
+              "errorCode" : "AB5",
+              "errorCondition" : "NumberOfFilledGroups(Rows*, Other*) < 5",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "AB5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AB6",
+            "name" : "AB6",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/R",
+              "errorCode" : "AB6",
+              "errorCondition" : "NumberOfFilledGroups(Rows*, Other*) < 6",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "AB6"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AB7",
+            "name" : "AB7",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/R",
+              "errorCode" : "AB7",
+              "errorCondition" : "NumberOfFilledGroups(Rows*, Other*) < 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "AB7"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/RR2",
+            "name" : "RR2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/R",
+              "errorCode" : "RR2",
+              "errorCondition" : "NumberOfFilledGroups(Rows*, Rows*) < 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "RR2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/RR3",
+            "name" : "RR3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/R",
+              "errorCode" : "RR3",
+              "errorCondition" : "NumberOfFilledGroups(Rows*, Rows*) < 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "RR3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/RR4",
+            "name" : "RR4",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/R",
+              "errorCode" : "RR4",
+              "errorCondition" : "NumberOfFilledGroups(Rows*, Rows*) < 4",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "RR4"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/RR5",
+            "name" : "RR5",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/R",
+              "errorCode" : "RR5",
+              "errorCondition" : "NumberOfFilledGroups(Rows*, Rows*) < 5",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "RR5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/RR6",
+            "name" : "RR6",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/R",
+              "errorCode" : "RR6",
+              "errorCondition" : "NumberOfFilledGroups(Rows*, Rows*) < 6",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "RR6"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/RR7",
+            "name" : "RR7",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/R",
+              "errorCode" : "RR7",
+              "errorCondition" : "NumberOfFilledGroups(Rows*, Rows*) < 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "RR7"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

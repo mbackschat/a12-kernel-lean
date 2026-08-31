@@ -318,6 +318,39 @@ def declaredExtent? (operand : CheckedGroupCountOperand model) : Option Nat :=
   | .fixed _ => some 1
   | .starred source => source.group.repeatability
 
+
+/-- The group this operand counts over, whichever form it takes. -/
+def groupPath (operand : CheckedGroupCountOperand model) : GroupPath :=
+  match operand with
+  | .fixed reference => reference.path
+  | .starred source => source.group.path
+
+/-- Whether two operands duplicate one another. Containment either way is a duplicate however each
+    side is spelled, and equal paths are a duplicate too — except when **both** are starred, which
+    the Kernel admits and counts once per position rather than once per group
+    ([checkpoint](../../docs/SOURCES.md#src-group-count-list-extent)). That exception is what makes
+    this a containment rule rather than a distinctness rule, and it is measured rather than derived
+    from the fixed-only carrier it generalizes. -/
+def duplicates (left right : CheckedGroupCountOperand model) : Bool :=
+  if left.groupPath == right.groupPath then
+    match left, right with
+    | .starred _, .starred _ => false
+    | _, _ => true
+  else
+    left.groupPath.isPrefixOf right.groupPath ||
+      right.groupPath.isPrefixOf left.groupPath
+
+/-- The first duplicate pair in authored order, reported as the two group paths the refusal names.
+    Equal paths select the Kernel's own equal-operand class and containment its containment class,
+    so the caller needs no second scan to tell them apart. -/
+def firstDuplicate? : List (CheckedGroupCountOperand model) →
+    Option (GroupPath × GroupPath)
+  | [] => none
+  | first :: rest =>
+      match rest.find? (first.duplicates ·) with
+      | some other => some (first.groupPath, other.groupPath)
+      | none => firstDuplicate? rest
+
 end CheckedGroupCountOperand
 
 namespace CheckedStarredGroupPresenceSource

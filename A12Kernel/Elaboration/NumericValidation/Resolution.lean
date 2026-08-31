@@ -477,8 +477,9 @@ optional, and a starred member contributes its in-capacity instantiated row coun
 ([checkpoint](../../../docs/SOURCES.md#src-group-count-list-extent)).
 
 The fixed-only list keeps the established scalar atom untouched and is refused here, so widening
-this operator costs the already-measured form nothing. Overlap is enforced over the fixed operands,
-where it is measured; a mixed pair's duplicate rule is unmeasured and no gate is invented for it. -/
+this operator costs the already-measured form nothing. The duplicate gate reaches every member: any
+containment refuses, and equal paths refuse unless both sides are starred, which the Kernel admits
+and counts once per position. -/
 def elaborateMixedFilledGroupCountComparison
     (model : FlatModel) (rowGroup : GroupPath)
     (operands : List SurfaceGroupCountOperand)
@@ -510,11 +511,7 @@ def elaborateMixedFilledGroupCountComparison
   | some (.fixed reference) => throw (.rootGroupInGroupCount reference.path)
   | some (.starred source) => throw (.rootGroupInGroupCount source.group.path)
   | none =>
-      let fixedOnly := checked.filterMap fun operand =>
-        match operand with
-        | .fixed reference => some reference
-        | .starred _ => none
-      match ResolvedGroupReferences.firstOverlap? fixedOnly with
+      match CheckedGroupCountOperand.firstDuplicate? checked with
       | some (left, right) => throw (.overlappingGroupCountOperands left right)
       | none =>
           -- The list is not fixed-only, so some member is a star and its own certificate carries
