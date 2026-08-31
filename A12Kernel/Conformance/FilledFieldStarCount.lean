@@ -267,7 +267,14 @@ example :
    which the round that first read these documents lacked for the extrema and the distinct count; its
    silence there was the missing member and not the kernel's answer. The extrema can still move in
    either direction while empty rows remain, which is what separates their identity from the distinct
-   count's and the value count's. -/
+   count's and the value count's.
+
+   The **values** are measured on both arms in the same family of runs — nine validation ladder
+   members fire `== 0` with `OMISSION_ERROR` on the never-instantiated and the emptied document
+   alike, and every computed target on those two documents carries `"0"` uncleared and unerrored, so
+   an emptied domain and an *unavailable* computation stay distinguishable. `canShrink` is the
+   estate's shared movement account rather than a separate observation: an omission polarity fixes
+   that growth is still possible and says nothing about the other direction. -/
 example :
     aggregateInCapWith? .minimum [] =
         some (.value 0 { canGrow := true, canShrink := true }) ∧
@@ -278,9 +285,24 @@ example :
     aggregateInCapWith? .distinctCount [] =
         some (.value 0 { canGrow := true, canShrink := false }) ∧
     valueCountInCapWith? 7 [] =
-        some (.value 0 { canGrow := true, canShrink := false }) ∧
+        some (.value 0 { canGrow := true, canShrink := false }) := by
+  native_decide
+
+/- The same emptied domain on the **computation** arm, which the comment above used to claim while
+   only one operator exercised it. All five are measured there: the probe's computed targets read
+   `0` on the never-instantiated and the emptied document under `Sum`, both extrema, the distinct
+   count, and the value count alike. -/
+example :
     computationAggregateWith? .minimum [] =
-        some (.value 0 { canGrow := true, canShrink := true }) := by
+        some (.value 0 { canGrow := true, canShrink := true }) ∧
+    computationAggregateWith? .maximum [] =
+        some (.value 0 { canGrow := true, canShrink := true }) ∧
+    computationAggregateWith? .sum [] =
+        some (.value 0 { canGrow := true, canShrink := true }) ∧
+    computationAggregateWith? .distinctCount [] =
+        some (.value 0 { canGrow := true, canShrink := false }) ∧
+    computationValueCountWith? 7 [] =
+        some (.value 0 { canGrow := true, canShrink := false }) := by
   native_decide
 
 /- Capacity projection is not a blanket formal-error filter: an in-cap malformed row still makes both measured consumers unavailable. -/
