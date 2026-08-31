@@ -341,7 +341,15 @@ def evaluateValidation (checked : CheckedTokenValueCountSource model)
       pure (.inl (← operand.resolvedValidationSide document outer
         directRead starRead))
 
-/-- Full validation over the immutable checked document reuses the shared addressed token operand and retains per-slot filter provenance for the existing value-count fold. -/
+/-- Full validation over the immutable checked document reuses the shared addressed token operand and retains per-slot filter provenance for the existing value-count fold.
+
+    A **fixed** group slot narrows to its declared-capacity extent: kernel 30.8.1 answers `0` for
+    `NumberOfValueInFields("KEEP" In G)` when the only matching cell sits beyond its group's declared
+    repeatability, and `1` on the control one index lower
+    ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep)).
+    A **starred** group slot keeps the complete formal-cell view, unchanged and untested on this
+    dimension: the measurement is on the fixed form, and [SG13](../../docs/SEMANTICS-GAPS.md) carries
+    the starred one. -/
 def evaluateCheckedDocumentValidation
     (checked : CheckedTokenValueCountSource model)
     (document : CheckedDocument model) (outer : Env) :
@@ -350,7 +358,14 @@ def evaluateCheckedDocumentValidation
     checked.expected checked.source.operands fun operand => do
       let resolved ←
         operand.resolveCheckedValidationOperand document outer
-      pure (.inl (resolved.valueListSideAt .validation))
+      match operand with
+      | .group slot =>
+          if slot.source.isStarred then
+            pure (.inl (resolved.valueListSideAt .validation))
+          else
+            pure (.inl (resolved.inCapacityValueListSideAt .validation))
+      | .field _ | .star _ =>
+          pure (.inl (resolved.valueListSideAt .validation))
 
 /-- Computation shares the same checked source and count fold while each filtered slot uses the computation iterator's one-kept-successor traversal. -/
 def evaluateComputation (checked : CheckedTokenValueCountSource model)

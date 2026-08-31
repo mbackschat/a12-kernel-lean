@@ -159,7 +159,7 @@ theorem checkedNumberEntityOperand_aggregateSide_delegates
         filteredSource.resolvedValueSide document outer filterRead starRead := by
   exact ⟨rfl, rfl, rfl⟩
 
-/-- Full-validation aggregate and value-count consumers obtain their one-operand side from the rich checked projection, then retain the established first-formal-cause terminal result. A group operand narrows to its declared-capacity extent; a field and a filtered star keep the complete formal-cell view. -/
+/-- Full-validation aggregate and value-count consumers obtain their one-operand side from the rich checked projection, then retain the established first-formal-cause terminal result. A fixed group operand narrows to its declared-capacity extent; a field, a filtered star, and a starred group keep the complete formal-cell view. -/
 theorem checkedNumberEntityOperand_checkedValidationAggregate_usesRichProjection
     (checked : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env) :
@@ -167,7 +167,9 @@ theorem checkedNumberEntityOperand_checkedValidationAggregate_usesRichProjection
       (do
         let resolved ← checked.resolveCheckedValidationOperand document outer
         let side := match checked with
-          | .group _ => resolved.inCapacityValueListSideAt .validation
+          | .group slot =>
+              if slot.source.isStarred then resolved.valueListSideAt .validation
+              else resolved.inCapacityValueListSideAt .validation
           | .field _ | .star _ | .starHaving _ =>
               resolved.valueListSideAt .validation
         match side.available with
@@ -175,7 +177,7 @@ theorem checkedNumberEntityOperand_checkedValidationAggregate_usesRichProjection
         | .ok () => pure (.inl side)) := by
   rfl
 
-/-- The selected full-validation `Sum` account narrows a plain star and a group operand to their in-capacity checked cells, and nothing else. -/
+/-- The selected full-validation `Sum` account narrows a plain star and a fixed group operand to their in-capacity checked cells, and nothing else. -/
 theorem checkedNumberEntityOperand_checkedValidationSum_usesCapacityProjection
     (checked : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env) :
@@ -183,7 +185,10 @@ theorem checkedNumberEntityOperand_checkedValidationSum_usesCapacityProjection
       (do
         let resolved ← checked.resolveCheckedValidationOperand document outer
         let side := match checked with
-          | .star _ | .group _ => resolved.inCapacityValueListSideAt .validation
+          | .star _ => resolved.inCapacityValueListSideAt .validation
+          | .group slot =>
+              if slot.source.isStarred then resolved.valueListSideAt .validation
+              else resolved.inCapacityValueListSideAt .validation
           | .field _ | .starHaving _ =>
               resolved.valueListSideAt .validation
         match side.available with

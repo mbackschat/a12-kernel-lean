@@ -186,15 +186,21 @@ def resolvedComputationAggregateSide
 
 /-- Resolve one validation aggregate slot from the immutable checked document. Validation filters evaluate every candidate before the first target classification; target reads then stop at the first formal cause.
 
-    A **group** operand narrows to its declared-capacity extent, like the plain star and for the same
-    measured reason: a row beyond its group's declared repeatability is not in the domain the operand
-    denotes, so its cell is neither aggregated nor able to make the aggregate unavailable
+    A **fixed** group operand narrows to its declared-capacity extent, like the plain star and for the
+    same measured reason: a row beyond its group's declared repeatability is not in the domain the
+    operand denotes, so its cell is neither aggregated nor able to make the aggregate unavailable
     ([checkpoint](../../../docs/sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep)).
     A well-formed over-limit cell alone cannot establish that: the separating observation is a
     **malformed** cell, which poisons the aggregate one index below capacity and is ignored one index
     above it. Every consumer of this resolver — the two extrema, `NumberOfDifferentValues`, and the
     Number value count — is covered, the first three by their own measured row and the count by its
-    two sibling kinds. A field or filtered star keeps the complete formal-cell view. -/
+    two sibling kinds.
+
+    A **starred** group operand keeps the complete formal-cell view, and that is a boundary rather
+    than a second rule. The measurement is on the fixed form only, and the starred group's answer is
+    this project's untested choice on every kind alike; the runtime-probe route can settle it and
+    [SG13](../../../docs/SEMANTICS-GAPS.md) carries the obligation. A field or filtered star keeps
+    the complete view too. -/
 def resolvedCheckedDocumentValidationAggregateSide
     (checked : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env) :
@@ -203,14 +209,16 @@ def resolvedCheckedDocumentValidationAggregateSide
   do
     let resolved ← checked.resolveCheckedValidationOperand document outer
     let side := match checked with
-      | .group _ => resolved.inCapacityValueListSideAt .validation
+      | .group slot =>
+          if slot.source.isStarred then resolved.valueListSideAt .validation
+          else resolved.inCapacityValueListSideAt .validation
       | .field _ | .star _ | .starHaving _ =>
           resolved.valueListSideAt .validation
     match side.available with
     | .error cause => pure (.inr (.unknown cause))
     | .ok () => pure (.inl side)
 
-/-- Resolve the selected capacity-bounded validation `Sum` slot. A plain star and a group operand each narrow to their own declared-capacity extent; a field and a filtered star keep the ordinary validation aggregate projection. -/
+/-- Resolve the selected capacity-bounded validation `Sum` slot. A plain star and a fixed group operand each narrow to their own declared-capacity extent; a field, a filtered star, and a starred group keep the ordinary validation aggregate projection. -/
 def resolvedCheckedDocumentValidationSumSide
     (checked : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env) :
@@ -218,7 +226,10 @@ def resolvedCheckedDocumentValidationSumSide
       (Sum (ResolvedValueListSide .number) NumericOperand) := do
     let resolved ← checked.resolveCheckedValidationOperand document outer
     let side := match checked with
-      | .star _ | .group _ => resolved.inCapacityValueListSideAt .validation
+      | .star _ => resolved.inCapacityValueListSideAt .validation
+      | .group slot =>
+          if slot.source.isStarred then resolved.valueListSideAt .validation
+          else resolved.inCapacityValueListSideAt .validation
       | .field _ | .starHaving _ =>
           resolved.valueListSideAt .validation
     match side.available with

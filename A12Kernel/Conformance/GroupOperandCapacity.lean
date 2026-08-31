@@ -1,4 +1,6 @@
 import A12Kernel.Elaboration.NumericAggregate.Entities
+import A12Kernel.Elaboration.TokenValueCount
+import A12Kernel.Elaboration.BooleanValueCount
 import A12Kernel.Elaboration.CheckedDocument
 
 /-! # A fixed group operand's declared-capacity extent
@@ -111,6 +113,105 @@ example :
       let cell ← (document.read { field := 1, path := [3] }).toOption
       pure (observeCell .validation cell)) =
       some (.unknown .overRepetition)) := by
+  native_decide
+
+private def starredSource? : Option (CheckedNumberEntitySource model) :=
+  (elaborateNumberEntitySource model ["Form"]
+    { first := .starredGroup { base := .absolute, groups :=
+        [{ name := "Form" }, { name := "Shell" }, { name := "Charges", starred := true }] }
+      rest := [] }).toOption
+
+private def starredAggregate? (op : NumericAggregateOp) (rowCount : Nat)
+    (cells : List ClassifiedCellInput) : Option NumericOperand := do
+  let source ← starredSource?
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := rows rowCount
+    cells }).toOption
+  (source.evaluateCheckedDocumentValidationAggregate op document []).toOption
+
+/- **The boundary, and it is unmeasured on purpose.** A *starred* group operand over the same
+   document keeps the complete formal-cell view, so the over-limit cell still makes the aggregate
+   unavailable. Nothing measured says the two group forms differ; the checkpoint covers the fixed
+   form alone, and flipping the starred one would replace an untested account with another untested
+   account in the opposite direction. The runtime-probe route can settle it and
+   [SG13](../../docs/SEMANTICS-GAPS.md) carries the obligation. The case exists so the fixed/starred
+   split cannot be simplified away without noticing that a question is attached to it. -/
+example :
+    (starredAggregate? .sum 3 [fee [1] 5, fee [3] 7],
+     starredAggregate? .sum 2 [fee [1] 5, fee [2] 7]) =
+    (some (.unknown .overRepetition),
+     some (.value 12 { canGrow := false, canShrink := false })) := by
+  native_decide
+
+/-! ## The two value counts over a fixed group operand
+
+`NumberOfValueInFields` is measured on a String group and on a Boolean group in the same run, each
+against its own in-capacity control. They reach the shared extent through two different resolvers,
+so neither result is carried by the other. -/
+
+private def carrierModel : FlatModel :=
+  { fields := [
+      { id := 10, groupPath := ["Form", "Notes", "Parcels"], name := "Tag",
+        policy := { kind := .string }, repeatableScope := [40] },
+      { id := 11, groupPath := ["Form", "Flags", "Checks"], name := "Verified",
+        policy := { kind := .boolean }, repeatableScope := [41] }]
+    repeatableGroups := [
+      { level := 40, path := ["Form", "Notes", "Parcels"], repeatability := some 2 },
+      { level := 41, path := ["Form", "Flags", "Checks"], repeatability := some 2 }] }
+
+private def carrierPrepared :
+    PreparedFlatStringContext carrierModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler carrierModel).toOption.get (by native_decide)
+
+private def tokenSource? : Option (CheckedTokenValueCountSource carrierModel) :=
+  (elaborateTokenValueCountFixedGroupValidationSource carrierModel ["Form"] "KEEP"
+    { group := { base := .absolute, groups := ["Form", "Notes"] } }).toOption
+
+private def booleanSource? : Option (CheckedBooleanValueCountSource carrierModel) :=
+  (elaborateBooleanValueCountSource carrierModel ["Form"] true
+    { first := .group (.path { base := .absolute, groups := ["Form", "Flags"] })
+      rest := [] }).toOption
+
+private def tag (row : Nat) (text : String) : ClassifiedCellInput :=
+  { address := { field := 10, path := [row] }, stored := text,
+    raw := .parsed (.str text) }
+
+private def verified (row : Nat) (value : Bool) : ClassifiedCellInput :=
+  { address := { field := 11, path := [row] }
+    stored := if value then "true" else "false"
+    raw := .parsed (.bool value) }
+
+private def carrierRows (level : RepeatableLevel) (count : Nat) : List RowAddr :=
+  (List.range count).map fun index => { group := level, path := [index + 1] }
+
+private def tokenCount? (rowCount : Nat) (cells : List ClassifiedCellInput) :
+    Option NumericOperand := do
+  let source ← tokenSource?
+  let document ← (checkDocument carrierPrepared "en_US" {
+    instantiatedRows := carrierRows 40 rowCount
+    cells }).toOption
+  (source.evaluateCheckedDocumentValidation document []).toOption
+
+private def booleanCount? (rowCount : Nat) (cells : List ClassifiedCellInput) :
+    Option NumericOperand := do
+  let source ← booleanSource?
+  let document ← (checkDocument carrierPrepared "en_US" {
+    instantiatedRows := carrierRows 41 rowCount
+    cells }).toOption
+  (source.evaluateCheckedDocumentValidation document []).toOption
+
+/- The only match sits one index above capacity, and the count is a definite zero rather than
+   unavailable; the control moves it to the last in-capacity row and the count becomes one. Both
+   rows are Kernel-measured. The movement stays grow-only either way, because the in-capacity rows
+   the count does read are instantiated and empty. -/
+example :
+    (tokenCount? 3 [tag 3 "KEEP"], tokenCount? 2 [tag 2 "KEEP"],
+     booleanCount? 3 [verified 3 true], booleanCount? 2 [verified 2 true]) =
+    (some (.value 0 { canGrow := true, canShrink := false }),
+     some (.value 1 { canGrow := true, canShrink := false }),
+     some (.value 0 { canGrow := true, canShrink := false }),
+     some (.value 1 { canGrow := true, canShrink := false })) := by
   native_decide
 
 end A12Kernel.Conformance.GroupOperandCapacity
