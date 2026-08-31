@@ -221,6 +221,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Whether two stored Date texts can decode to one instant, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-decoded-identity-witness)
 <a id="src-temporal-aggregate-gate"></a>
 - [Which temporal format gate each aggregate carrier uses, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-temporal-aggregate-gate)
+<a id="src-message-address-dialects"></a>
+- [A message address is written in one of two dialects, and which one depends on the operand](sources/temporal-and-message-probes.md#src-message-address-dialects)
+
 <a id="src-omitting-date-formats"></a>
 - [What a component-omitting DATE format stores, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-omitting-date-formats)
 <a id="src-filled-field-count"></a>
