@@ -93,7 +93,7 @@ theorem checkedTokenDistinctSource_checkedDocument_delegates
             (fun operand => do
               let resolved ←
                 operand.resolveCheckedValidationOperand document outer
-              pure (.inl (resolved.valueListSideAt .validation)))
+              pure (.inl (resolved.inCapacityValueListSideAt .validation)))
             (fun cause => .unknown cause)
             (fun accumulated _ side => accumulated.append side)
             checked.operands {

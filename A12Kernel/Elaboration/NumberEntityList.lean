@@ -375,7 +375,7 @@ def valueListSideAt (resolved : ResolvedCheckedNumberEntityOperand model)
     hasHaving := resolved.core.hasHaving
     hasNonRelevant := resolved.core.hasNonRelevant }
 
-/-- The capacity-bounded star projection used by explicitly selected consumers. Other consumers keep the complete formal-cell view through `valueListSideAt`. -/
+/-- The capacity-bounded projection used by every consumer whose answer the two accounts separate. `valueListSideAt` remains for the consumers they do not: `FieldValuesNotUnique` reaches the same verdict either way, because an over-limit cell is formally unavailable and that operator skips an unavailable cell exactly as it skips an empty ([checkpoint](../../docs/SOURCES.md#src-capacity-consumer-sweep)). -/
 def inCapacityValueListSideAt
     (resolved : ResolvedCheckedNumberEntityOperand model)
     (phase : Phase) : ResolvedValueListSide .number :=

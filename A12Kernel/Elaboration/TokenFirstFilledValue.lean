@@ -181,7 +181,7 @@ private def resolveCheckedFirstFilledValidationSide
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (ResolvedValueListSide .token) := do
   pure ((← source.resolveCheckedValidationOperand document outer)
-    |>.valueListSideAt .validation)
+    |>.inCapacityValueListSideAt .validation)
 
 /-- Evaluate the measured full-validation group fragments through the immutable checked document.
     One fixed group whose authored terminal is nonrepeatable, including its recursive repeatable

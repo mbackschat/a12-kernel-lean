@@ -1,0 +1,34 @@
+{
+ "Cap": {
+  "Out": null,
+  "W": "w",
+  "NShell": {
+   "NRows": [
+    {
+     "Amount": "abc"
+    },
+    {
+     "Amount": 5
+    },
+    {
+     "Amount": 5
+    }
+   ]
+  },
+  "TShell": {
+   "TRows": [
+    {
+     "Tag": "X"
+    },
+    {
+     "Tag": "Y"
+    },
+    {
+     "Tag": "X"
+    }
+   ]
+  },
+  "Out2": null,
+  "Out3": null
+ }
+}

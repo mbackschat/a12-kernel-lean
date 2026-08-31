@@ -1,0 +1,339 @@
+{
+  "header" : {
+    "id" : "Cap_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Cap_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Cap",
+        "name" : "Cap",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Cap/TShell",
+            "name" : "TShell",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Cap/TShell/TRows",
+                "name" : "TRows",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Cap/TShell/TRows/Tag",
+                    "name" : "Tag",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Cap/NShell",
+            "name" : "NShell",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Cap/NShell/NRows",
+                "name" : "NRows",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Cap/NShell/NRows/Amount",
+                    "name" : "Amount",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Cap/W",
+            "name" : "W",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Cap/Out",
+            "name" : "Out",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cap/LIVE",
+            "name" : "LIVE",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "LIVE",
+              "errorCondition" : "FieldFilled(/Cap/W)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "LIVE"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cap/DUPTAG",
+            "name" : "DUPTAG",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "DUPTAG",
+              "errorCondition" : "FieldFilled(/Cap/W) And FieldValuesNotUnique(/Cap/TShell/TRows*/Tag)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "DUPTAG"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cap/DUPAMT",
+            "name" : "DUPAMT",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "DUPAMT",
+              "errorCondition" : "FieldFilled(/Cap/W) And FieldValuesNotUnique(/Cap/NShell/NRows*/Amount)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "DUPAMT"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cap/NDVT0",
+            "name" : "NDVT0",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NDVT0",
+              "errorCondition" : "FieldFilled(/Cap/W) And NumberOfDifferentValues(/Cap/TShell/TRows*/Tag) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NDVT0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cap/NDVT1",
+            "name" : "NDVT1",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NDVT1",
+              "errorCondition" : "FieldFilled(/Cap/W) And NumberOfDifferentValues(/Cap/TShell/TRows*/Tag) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NDVT1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cap/NDVT2",
+            "name" : "NDVT2",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NDVT2",
+              "errorCondition" : "FieldFilled(/Cap/W) And NumberOfDifferentValues(/Cap/TShell/TRows*/Tag) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NDVT2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cap/NDVT3",
+            "name" : "NDVT3",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NDVT3",
+              "errorCondition" : "FieldFilled(/Cap/W) And NumberOfDifferentValues(/Cap/TShell/TRows*/Tag) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NDVT3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cap/NDVS0",
+            "name" : "NDVS0",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NDVS0",
+              "errorCondition" : "FieldFilled(/Cap/W) And NumberOfDifferentValues(/Cap/TShell) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NDVS0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cap/NDVS1",
+            "name" : "NDVS1",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NDVS1",
+              "errorCondition" : "FieldFilled(/Cap/W) And NumberOfDifferentValues(/Cap/TShell) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NDVS1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cap/NDVS2",
+            "name" : "NDVS2",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NDVS2",
+              "errorCondition" : "FieldFilled(/Cap/W) And NumberOfDifferentValues(/Cap/TShell) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NDVS2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cap/NDVS3",
+            "name" : "NDVS3",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NDVS3",
+              "errorCondition" : "FieldFilled(/Cap/W) And NumberOfDifferentValues(/Cap/TShell) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NDVS3"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Cap/OutComp",
+            "name" : "OutComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Out",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(/Cap/TShell/TRows*/Tag)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "out"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Cap/Out2",
+            "name" : "Out2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Cap/Out3",
+            "name" : "Out3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cap/DUPTG",
+            "name" : "DUPTG",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "DUPTG",
+              "errorCondition" : "FieldFilled(/Cap/W) And FieldValuesNotUnique(/Cap/TShell)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "DUPTG"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Cap/Out2Comp",
+            "name" : "Out2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Out2",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(/Cap/TShell/TRows*)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "o2"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Cap/Out3Comp",
+            "name" : "Out3Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Out3",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(/Cap/TShell)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "o3"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

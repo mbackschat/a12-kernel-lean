@@ -1,0 +1,1586 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "5e823edade542fb37336def0bb9f4f736a846b3f",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Cap_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "dup-in-capacity",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DUPAMT",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "DUPAMT",
+              "referenced" : [
+                "/Cap[1]/NShell[1]/NRows[0]/Amount",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DUPTAG",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "DUPTAG",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DUPTG",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "DUPTG",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "LIVE",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LIVE",
+              "referenced" : [
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVS1",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVS1",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVT1",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVT1",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Cap/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DUPAMT",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "DUPAMT",
+              "referenced" : [
+                "/Cap[1]/NShell[1]/NRows[0]/Amount",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DUPTAG",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "DUPTAG",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DUPTG",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "DUPTG",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "LIVE",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LIVE",
+              "referenced" : [
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVS1",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVS1",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVT1",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVT1",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Cap/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "distinct-in-capacity",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LIVE",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LIVE",
+              "referenced" : [
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVS2",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVS2",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVT2",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVT2",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Cap/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LIVE",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LIVE",
+              "referenced" : [
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVS2",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVS2",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVT2",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVT2",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Cap/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "dup-needs-over-limit",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LIVE",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LIVE",
+              "referenced" : [
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVS2",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVS2",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVT2",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVT2",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/NShell/NRows[3]/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/NShell/NRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]/Amount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/TShell/TRows[3]/Tag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]/Tag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/NShell/NRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/TShell/TRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Cap/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Cap/TShell/TRows[3]/Tag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]/Tag"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Cap/TShell/TRows[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LIVE",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LIVE",
+              "referenced" : [
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVS2",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVS2",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVT2",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVT2",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/NShell/NRows[3]/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/NShell/NRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]/Amount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/TShell/TRows[3]/Tag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]/Tag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/NShell/NRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/TShell/TRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Cap/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Cap/TShell/TRows[3]/Tag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]/Tag"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Cap/TShell/TRows[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "distinct-needs-over-limit",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DUPAMT",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "DUPAMT",
+              "referenced" : [
+                "/Cap[1]/NShell[1]/NRows[0]/Amount",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DUPTAG",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "DUPTAG",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DUPTG",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "DUPTG",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "LIVE",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LIVE",
+              "referenced" : [
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVS1",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVS1",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVT1",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVT1",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/NShell/NRows[3]/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/NShell/NRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]/Amount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/TShell/TRows[3]/Tag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]/Tag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/NShell/NRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/TShell/TRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Cap/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Cap/TShell/TRows[3]/Tag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]/Tag"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Cap/TShell/TRows[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DUPAMT",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "DUPAMT",
+              "referenced" : [
+                "/Cap[1]/NShell[1]/NRows[0]/Amount",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DUPTAG",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "DUPTAG",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "DUPTG",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "DUPTG",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "LIVE",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LIVE",
+              "referenced" : [
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVS1",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVS1",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVT1",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVT1",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/NShell/NRows[3]/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/NShell/NRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]/Amount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/TShell/TRows[3]/Tag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]/Tag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/NShell/NRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/TShell/TRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Cap/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "Cap/Out3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Cap/TShell/TRows[3]/Tag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]/Tag"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Cap/TShell/TRows[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "first-filled-over-limit",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LIVE",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LIVE",
+              "referenced" : [
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVS0",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NDVS0",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag"
+              ]
+            },
+            {
+              "code" : "NDVT0",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NDVT0",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/NShell/NRows[3]/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/NShell/NRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]/Amount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/TShell/TRows[3]/Tag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]/Tag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/NShell/NRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/TShell/TRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Cap/TShell/TRows[3]/Tag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]/Tag"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Cap/TShell/TRows[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LIVE",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LIVE",
+              "referenced" : [
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVS0",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NDVS0",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag"
+              ]
+            },
+            {
+              "code" : "NDVT0",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NDVT0",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/NShell/NRows[3]/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/NShell/NRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]/Amount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/TShell/TRows[3]/Tag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]/Tag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/NShell/NRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/TShell/TRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Cap/TShell/TRows[3]/Tag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]/Tag"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Cap/TShell/TRows[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "malformed-plus-over-limit",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LIVE",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LIVE",
+              "referenced" : [
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVS2",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVS2",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVT2",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVT2",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Cap/NShell/NRows/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Cap/NShell/NRows/Amount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/NShell/NRows[3]/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/NShell/NRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]/Amount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/TShell/TRows[3]/Tag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]/Tag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/NShell/NRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/TShell/TRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Cap/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "X"
+              },
+              {
+                "field" : "Cap/Out2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "X"
+              },
+              {
+                "field" : "Cap/Out3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "X"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Cap/TShell/TRows[3]/Tag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]/Tag"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Cap/TShell/TRows[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LIVE",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LIVE",
+              "referenced" : [
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVS2",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVS2",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVT2",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "NDVT2",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Cap/NShell/NRows/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Cap/NShell/NRows/Amount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/NShell/NRows[3]/Amount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/NShell/NRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]/Amount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Cap/TShell/TRows[3]/Tag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]/Tag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/NShell/NRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/NShell/NRows[3]"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Cap/TShell/TRows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Cap/TShell/TRows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Cap/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "X"
+              },
+              {
+                "field" : "Cap/Out2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "X"
+              },
+              {
+                "field" : "Cap/Out3",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "X"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Cap/TShell/TRows[3]/Tag",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The index for group '/Cap/TShell/TRows' was specified with 3, but at most 2 is allowed.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]/Tag"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Cap/TShell/TRows[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The row number is bigger than the maximum allowed value.",
+                "referenced" : [
+                  "Cap/TShell/TRows[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "no-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "LIVE",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LIVE",
+              "referenced" : [
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVS0",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NDVS0",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag"
+              ]
+            },
+            {
+              "code" : "NDVT0",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NDVT0",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "LIVE",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "LIVE",
+              "referenced" : [
+                "Cap/W"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NDVS0",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NDVS0",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag"
+              ]
+            },
+            {
+              "code" : "NDVT0",
+              "field" : "Cap/W",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "NDVT0",
+              "referenced" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag",
+                "Cap/W"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/TShell[1]/TRows[0]/Tag"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}
