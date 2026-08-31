@@ -38,6 +38,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 ### `SPEC-2026-08-31-18` — under partial coverage the filled-group count needs every operand field, where the presence predicates read what they can see
 
 - `status`: pending
+- `handed-off`: 2026-08-31 to the a12-dmkits session, as a pointer to this entry id and its checkpoint anchor rather than a fresh account. Awaiting the reviewed revision and its disposition.
 - `clause`: [`10-validation-and-polarity.md`](../spec/10-validation-and-polarity.md) partial-validation section and [`02-logic-and-formal-errors.md`](../spec/02-logic-and-formal-errors.md)'s `NumberOfFilledGroups` paragraph
 - `delta`: new behavior neither clause stated, and a **divergence within one family**. `GroupFilled`, `AtLeastOneGroupFilled`, and `NotAllGroupsFilled` decide a partly covered group from the content inside the relevant set; `NumberOfFilledGroups` instead requires every field of every operand group to be relevant and is otherwise undecided. The requirement is operand-local: an unreferenced field outside the coverage changes nothing. An empty `relevant` produces no message at all.
 - `delta`: partial validation also gates the **formal-error channel** by the same coverage — a malformed cell reports its finding under `validatePart` only when the cell is covered, though `validateFull` reports it either way. A consumer must not read a partial run's formal findings as the document's formal state.
@@ -51,6 +52,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 ### `SPEC-2026-08-31-17` — the two threshold quantifiers read the in-capacity extent, and an instantiated row is filled whatever its cells hold
 
 - `status`: pending
+- `handed-off`: 2026-08-31 to the a12-dmkits session, as a pointer to this entry id and its checkpoint anchor rather than a fresh account. Awaiting the reviewed revision and its disposition.
 - `clause`: [`02-logic-and-formal-errors.md`](../spec/02-logic-and-formal-errors.md), the count-zero / count-≥1 starred-group bullet
 - `delta`: the bullet said *each instantiated row*, which read alone admits an over-limit one. It now says **in-capacity**, on these two operators rather than by carrying [`SPEC-2026-08-31-10`](#spec-2026-08-31-10)'s extent rule to carriers that entry did not name. The second half — a created-but-empty row still counts — was already stated and is now measured on them too.
 - `evidence`: two `:adapter:kernelProbe` requests, nine documents, both codegen strategies, `enginesAgree: true` ([checkpoint](sources/group-and-iteration-probes.md#src-starred-group-quantifier-capacity)). Over a `max 3` group: four rows leave `AtLeastOneGroupFilled` firing VALUE, `NoGroupFilled` silent, and a `NumberOfFilledGroups == n` ladder firing at `3`.
@@ -63,6 +65,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 ### `SPEC-2026-08-31-16` — a message pointer has two spellings, and an unbound repeatable level is what selects between them
 
 - `status`: pending
+- `handed-off`: 2026-08-31 to the a12-dmkits session, as a pointer to this entry id and its checkpoint anchor rather than a fresh account. Awaiting the reviewed revision and its disposition.
 - `clause`: [`01-data-model.md`](../spec/01-data-model.md), a new paragraph after the `referenced`-pointer depth rule
 - `delta`: new behavior the clause did not name at all. A `referenced` or `fillToFix` entry is written either bare with repetition one elided, or slash-led with nothing elided and each unbound iterated level marked `[0]` beside concrete bound ancestors — and **one message routinely carries both**. The selector is whether the resolved path passes a repeatable level the rule's iteration left unbound. The consequence for a consumer is that a pointer type must represent two address kinds, and that the authored operand form is **not** recoverable from a pointer.
 - `evidence`: 22 retained artifacts re-read for the census and the exclusions ([dialect checkpoint](sources/temporal-and-message-probes.md#src-message-address-dialects)), plus one new `validateFull` run for the deciding prediction ([selector checkpoint](sources/temporal-and-message-probes.md#src-address-dialect-selector)).
@@ -76,6 +79,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 ### `SPEC-2026-08-31-15` — a group operand's expansion tracks its repeatable ancestor's firing row, and that half is no longer unwitnessed
 
 - `status`: pending
+- `handed-off`: 2026-08-31 to the a12-dmkits session, as a pointer to this entry id and its checkpoint anchor rather than a fresh account. Awaiting the reviewed revision and its disposition.
 - `clause`: [`01-data-model.md`](../spec/01-data-model.md), the `referenced`-pointer depth rule for a group operand
 - `delta`: not a rule change — a **recorded confidence limit is retired**, which the same obligation covers. The clause gave one depth rule for a group operand's expansion, a repeatable level above it staying concrete at the firing row and every level at or below it wildcarded, and stated that the concrete half had no observation behind it. It now has one for the **unstarred** form; the starred form's concrete half stays stated from the rule, and the clause says which is which.
 - `evidence`: retained bytes re-read with no new run ([checkpoint](sources/group-and-iteration-probes.md#src-filled-field-count-deep-capacity), `coordinates` row). `NumberOfFilledFields(Flat)` under a `max 2` repeatable `Outer`, one asymmetric document firing the rule in both rows, `/Probe[1]/Outer[1]/Flat[1]/Rows[0]/RowR` beside `/Probe[1]/Outer[2]/Flat[1]/Rows[0]/RowR`, `enginesAgree: true`.
