@@ -1628,7 +1628,7 @@ Treatment. When a failure arm has no witness, **derive one from the throw site b
 
 ## LF120 — the claim class follows the logical form, not the subject; a negative claim about an instrument is still reachability
 
-> Date: 2026-08-31. Sections: §5 and §9. Basis: `A12-DMTOOL-FEEDBACK-2026-08-31.md` §1, retracted by note `-02` the same day; the [Base Year store checkpoint](sources/cross-layer-routes.md#src-base-year-yearless-store).
+> Date: 2026-08-31. Sections: §5 and §9. Basis: a dated dmtool feedback note, retracted by its successor the same day and both since retired; the [Base Year store checkpoint](sources/cross-layer-routes.md#src-base-year-yearless-store) is the surviving record. The wrong claim is quoted in full below, so the finding does not depend on the retired note.
 
 This project's claim-discharge table says reachability is **measurement only** and that reading never discharges it, and it bans the phrasings that hide an undischarged one. That discipline was applied carefully to every kernel claim in the session that produced this finding. Then the same session wrote, about `dmtool`, *"No verb sets it. `model new` has no option, no `model` subcommand modifies it, and it is not a `group add` or `field add` property."* The setter is `dmtool config modify --base-year`, documented in that subcommand's own `--help`, and it had existed all along.
 
