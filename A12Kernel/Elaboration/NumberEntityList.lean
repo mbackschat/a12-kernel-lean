@@ -215,7 +215,7 @@ inductive NumberEntityElabError where
 
 namespace NumberEntityElabError
 
-/-- The expansion-kind gate is **each operator's own question about the expansion's values**, which is why this projection is keyed by the operator where every gate the shared checker owns is not. One group whose subtree contains a String draws three different classes here, and reading one carrier's class off a sibling is precisely the inference the Kernel refutes.
+/-- The expansion-kind gate is **each operator's own question about the expansion's values**, which is why this projection is keyed by the operator where every gate the shared checker owns is not. One group whose subtree contains a String draws a different class under each of `Sum` and the extrema, and reading one carrier's class off a sibling is precisely the inference the Kernel refutes. The distinct count is stronger still: its class is not a property of the operator alone, so it is projected below rather than claimed.
 
     Shape refusals delegate to the shared checker, because the star, arity, and duplicate gates do not vary by carrier.
 
@@ -227,7 +227,15 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
       match op with
       | .sum => some .noNumber
       | .minimum | .maximum => some .notSortable
-      | .distinctCount => some .stringEnumAndNonStringEnum
+      -- The distinct count is the one member whose code is selected by the operand list's *first*
+      -- element rather than by the offending one: Number-first draws `MVK_NUMBER_AND_NON_NUMBER`,
+      -- String-first `MVK_STRING_ENUM_AND_NON_STRING_ENUM`, Date-first `MVK_DATE_AND_NONDATE`, and
+      -- two groups differing only in declaration order flip it
+      -- ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). This error
+      -- carries no first-operand kind, so any single class here is wrong for some list that reaches
+      -- it — an earlier version projected the String class, measured on a String-first expansion and
+      -- carried onto Number-first ones.
+      | .distinctCount => none
   | .fieldKindMismatch _ _ =>
       match op with
       | .minimum | .maximum => some .notSortable

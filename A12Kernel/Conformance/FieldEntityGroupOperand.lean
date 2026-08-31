@@ -508,9 +508,17 @@ example :
     aggregateDiagnostic? .minimum [group ["Probe", "A"]] = some .notSortable := by
   native_decide
 
+/- **The distinct count claims no class here, and the reason is the one gate in this family whose code
+   is selected by the operand list's *first* member.** `NumberOfDifferentValues` classifies by its
+   first operand and then requires every later one to match: a Number-first mixed list draws
+   `MVK_NUMBER_AND_NON_NUMBER`, a String-first one `MVK_STRING_ENUM_AND_NON_STRING_ENUM`, and a
+   Date-first one `MVK_DATE_AND_NONDATE`, with two groups differing only in declaration order flipping
+   the code ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). `Probe/A`
+   expands Number-first, so the Kernel's class here is the Number one and not the String one an
+   earlier row claimed. This error value carries no first-operand kind, so it cannot decide between
+   them; projecting none is the narrowing this family already applies elsewhere. -/
 example :
-    aggregateDiagnostic? .distinctCount [group ["Probe", "A"]] =
-      some .stringEnumAndNonStringEnum := by
+    aggregateDiagnostic? .distinctCount [group ["Probe", "A"]] = none := by
   native_decide
 
 /- The pure-Number group is admitted under every one of them, which keeps the rows above pinned to
