@@ -262,6 +262,27 @@ example :
         some (.value 0 .fixed) := by
   native_decide
 
+/- An in-capacity domain the projection has emptied answers a definite `0` under every operator, on
+   both arms — not an unavailable aggregate. Kernel-measured with a `== 0` ladder member per carrier,
+   which the round that first read these documents lacked for the extrema and the distinct count; its
+   silence there was the missing member and not the kernel's answer. The extrema can still move in
+   either direction while empty rows remain, which is what separates their identity from the distinct
+   count's and the value count's. -/
+example :
+    aggregateInCapWith? .minimum [] =
+        some (.value 0 { canGrow := true, canShrink := true }) ∧
+    aggregateInCapWith? .maximum [] =
+        some (.value 0 { canGrow := true, canShrink := true }) ∧
+    aggregateInCapWith? .sum [] =
+        some (.value 0 { canGrow := true, canShrink := true }) ∧
+    aggregateInCapWith? .distinctCount [] =
+        some (.value 0 { canGrow := true, canShrink := false }) ∧
+    valueCountInCapWith? 7 [] =
+        some (.value 0 { canGrow := true, canShrink := false }) ∧
+    computationAggregateWith? .minimum [] =
+        some (.value 0 { canGrow := true, canShrink := true }) := by
+  native_decide
+
 /- Capacity projection is not a blanket formal-error filter: an in-cap malformed row still makes both measured consumers unavailable. -/
 example :
     sumWith? [cell 1 10, malformedCell 2, cell 3 99] =

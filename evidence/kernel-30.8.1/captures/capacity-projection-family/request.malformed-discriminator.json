@@ -1,0 +1,11 @@
+{
+ "model": "comp.json",
+ "locale": "en_US",
+ "observe": ["validateFull", "compute"],
+ "rows": [
+  {"name": "malformed-incap", "document": "m-incap.json"},
+  {"name": "malformed-over",  "document": "m-over.json"},
+  {"name": "g-empty",         "document": "g-empty.json"},
+  {"name": "g-norows",        "document": "g-norows.json"}
+ ]
+}
