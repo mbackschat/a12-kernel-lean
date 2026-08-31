@@ -1,6 +1,6 @@
 # Inbound group-operand source checkpoints
 
-Reconciled inbound batches for group operands, entity lists, carrier sweeps, partial relevance, and the group declaration domain. Locally measured group and iteration probes stay in [`group-and-iteration-probes.md`](group-and-iteration-probes.md); [`../SOURCES.md`](../SOURCES.md) remains the anchor registry for both.
+Reconciled inbound batches for group operands, entity lists, carrier sweeps, partial relevance, and the group declaration domain. Locally measured probes are split between [`group-and-iteration-probes.md`](group-and-iteration-probes.md) and [`group-list-and-capacity-probes.md`](group-list-and-capacity-probes.md); [`../SOURCES.md`](../SOURCES.md) remains the anchor registry for all three.
 
 ### The erroneous list member
 

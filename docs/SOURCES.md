@@ -157,9 +157,9 @@ The over-limit half originated in this project and is now measured on both estat
 
 a12-dmkits revision `4e174d86a` disposes three outbound entries from this project and carries two Kernel observations it consumes, each read here rather than taken on report.
 
-[`StarredGroupQuantifierCapacityDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/StarredGroupQuantifierCapacityDiffTest.kt) first **refuted** [`SPEC-2026-08-31-17`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-17) and then **retracted that refutation at `b145ce565`**, rewriting the test's account in place. The separating quantity this project named — a `NumberOfFilledGroups` ladder on their own document — reads `2`, so the kernel's instance factory materializes the prefix, the count excludes the over-limit row, and the quantifier had fired on rows one and two. The count's in-capacity extent is thereby measured on a second estate; the quantifiers' extent is unreached by either. The [capacity checkpoint](sources/group-and-iteration-probes.md#src-starred-group-quantifier-capacity) owns the arc.
+[`StarredGroupQuantifierCapacityDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/StarredGroupQuantifierCapacityDiffTest.kt) first **refuted** [`SPEC-2026-08-31-17`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-17) and then **retracted that refutation at `b145ce565`**, rewriting the test's account in place. The separating quantity this project named — a `NumberOfFilledGroups` ladder on their own document — reads `2`, so the kernel's instance factory materializes the prefix, the count excludes the over-limit row, and the quantifier had fired on rows one and two. The count's in-capacity extent is thereby measured on a second estate; the quantifiers' extent is unreached by either. The [capacity checkpoint](sources/group-list-and-capacity-probes.md#src-starred-group-quantifier-capacity) owns the arc.
 
-[`PartialCoverageGroupOperandDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/PartialCoverageGroupOperandDiffTest.kt) reproduces [`SPEC-2026-08-31-18`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-18)'s count rule exactly and **splits its predicate half three ways**, with a coverage this project's batch did not run — a whole operand group left uncovered, where `NotAllGroupsFilled` is silent because an uncovered group is undecided rather than empty. The [partial-coverage checkpoint](sources/group-and-iteration-probes.md#src-partial-coverage-group-operands) owns it.
+[`PartialCoverageGroupOperandDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/PartialCoverageGroupOperandDiffTest.kt) reproduces [`SPEC-2026-08-31-18`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-18)'s count rule exactly and **splits its predicate half three ways**, with a coverage this project's batch did not run — a whole operand group left uncovered, where `NotAllGroupsFilled` is silent because an uncovered group is undecided rather than empty. The [partial-coverage checkpoint](sources/group-list-and-capacity-probes.md#src-partial-coverage-group-operands) owns it.
 
 The same revision reports that a12-dmkits **cannot corroborate** [`SPEC-2026-08-31-16`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-16) through its renderer, which is what that entry's acceptance condition anticipated. `b145ce565` then corroborates the substantive half on the typed value instead, as `KF228` in [`MessagePointerVectorDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/MessagePointerVectorDiffTest.kt): one referenced field's `repetitionIndexes()` reads `[1, 0, 1]` from a rule leaving its repeatable level free and `[1, 1, 1]` from a rule bound to that row.
 Reading that revision also settled the premise a12-dmkits had flagged: no kernel class emits either spelling. `KernelRuntimeProbe.address` renders one typed pointer two ways by a documented branch, so the "two spellings" half of that entry was a claim about the instrument and is withdrawn. The [selector checkpoint](sources/message-and-pointer-probes.md#src-address-dialect-selector) owns both halves.
@@ -320,22 +320,22 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-starred-operand-message-polarity"></a>
 - [A computation's message type follows what can still grow](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity)
 <a id="src-filled-field-count-nested-capacity"></a>
-- [A group `NumberOfFilledFields` moves against declared slot capacity, not declared field count](sources/group-and-iteration-probes.md#src-filled-field-count-nested-capacity)
+- [A group `NumberOfFilledFields` moves against declared slot capacity, not declared field count](sources/group-list-and-capacity-probes.md#src-filled-field-count-nested-capacity)
 <a id="src-filled-field-count-deep-capacity"></a>
-- [Slot capacity compounds through nested repetition levels and stops at the operand group](sources/group-and-iteration-probes.md#src-filled-field-count-deep-capacity)
+- [Slot capacity compounds through nested repetition levels and stops at the operand group](sources/group-list-and-capacity-probes.md#src-filled-field-count-deep-capacity)
 <a id="src-group-count-list-extent"></a>
-- [A group-count list's extent is its operand list, and a starred member breaks that](sources/group-and-iteration-probes.md#src-group-count-list-extent)
+- [A group-count list's extent is its operand list, and a starred member breaks that](sources/group-list-and-capacity-probes.md#src-group-count-list-extent)
 
 <a id="src-group-count-unavailability"></a>
-- [A group error makes a filled-group count unknown only when that group has no admitted content](sources/group-and-iteration-probes.md#src-group-count-unavailability)
+- [A group error makes a filled-group count unknown only when that group has no admitted content](sources/group-list-and-capacity-probes.md#src-group-count-unavailability)
 
 <a id="src-group-count-static-gates-both-arms"></a>
-- [The group-count static gate table is the same on both arms](sources/group-and-iteration-probes.md#src-group-count-static-gates-both-arms)
+- [The group-count static gate table is the same on both arms](sources/group-list-and-capacity-probes.md#src-group-count-static-gates-both-arms)
 <a id="src-group-count-gates-repeatable-scope"></a>
-- [The group-count gate table survives a repeatable declaring group, and a filter refuses a group operand](sources/group-and-iteration-probes.md#src-group-count-gates-repeatable-scope)
+- [The group-count gate table survives a repeatable declaring group, and a filter refuses a group operand](sources/group-list-and-capacity-probes.md#src-group-count-gates-repeatable-scope)
 
 <a id="src-repeatability-declaration-domain"></a>
-- [A repeatable group always carries a finite maximum, and absence means nonrepeatable](sources/group-and-iteration-probes.md#src-repeatability-declaration-domain)
+- [A repeatable group always carries a finite maximum, and absence means nonrepeatable](sources/group-list-and-capacity-probes.md#src-repeatability-declaration-domain)
 <a id="src-repeatability-domain-peer-measurement"></a>
 - [The `repeatability` domain is `> 0` and `1` is admitted, measured by a12-dmkits](sources/inbound-group-operand-batches.md#src-repeatability-domain-peer-measurement)
 <a id="src-erroneous-member-quantifier-undecidable"></a>
@@ -344,19 +344,19 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Mandatory-information derivation reads a 32-bit-narrowed threshold](sources/rule-set-meta-information.md#src-mandatory-information-narrowing)
 
 <a id="src-over-limit-computation-target"></a>
-- [An over-limit row receives no computed value](sources/group-and-iteration-probes.md#src-over-limit-computation-target)
+- [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)
 <a id="src-distinct-count-first-operand-class"></a>
-- [`NumberOfDifferentValues` classifies by its first operand](sources/group-and-iteration-probes.md#src-distinct-count-first-operand-class)
+- [`NumberOfDifferentValues` classifies by its first operand](sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)
 <a id="src-capacity-consumer-sweep"></a>
-- [The declared-capacity extent reaches the last four operand-stream consumers](sources/group-and-iteration-probes.md#src-capacity-consumer-sweep)
+- [The declared-capacity extent reaches the last four operand-stream consumers](sources/group-list-and-capacity-probes.md#src-capacity-consumer-sweep)
 <a id="src-over-limit-finding-text"></a>
 - [`zuGrosseZeile` renders no coordinate, and two over-limit groups report independently](sources/over-repetition-probes.md#src-over-limit-finding-text)
 <a id="src-starred-group-count-computation"></a>
 - [The computation arm counts a starred repeatable group's instantiated rows](sources/group-and-iteration-probes.md#src-starred-group-count-computation)
 <a id="src-partial-coverage-group-operands"></a>
-- [The count needs every operand field covered, where the presence predicates read what they can see](sources/group-and-iteration-probes.md#src-partial-coverage-group-operands)
+- [The count needs every operand field covered, where the presence predicates read what they can see](sources/group-list-and-capacity-probes.md#src-partial-coverage-group-operands)
 <a id="src-starred-group-quantifier-capacity"></a>
-- [The threshold quantifiers read the in-capacity extent, and an instantiated row is filled](sources/group-and-iteration-probes.md#src-starred-group-quantifier-capacity)
+- [The threshold quantifiers read the in-capacity extent, and an instantiated row is filled](sources/group-list-and-capacity-probes.md#src-starred-group-quantifier-capacity)
 <a id="src-address-dialect-selector"></a>
 - [An unbound repeatable level is what selects a message pointer's slash spelling](sources/message-and-pointer-probes.md#src-address-dialect-selector)
 <a id="src-repeatable-descendant-group-count"></a>
@@ -398,7 +398,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 ### Group and iteration source checkpoints
 
-Two shards carry these: locally measured probes in [`group-and-iteration-probes.md`](sources/group-and-iteration-probes.md) and reconciled inbound batches in [`inbound-group-operand-batches.md`](sources/inbound-group-operand-batches.md). Each entry below links to the shard that owns it.
+Three shards carry these: locally measured probes split between [`group-and-iteration-probes.md`](sources/group-and-iteration-probes.md) and [`group-list-and-capacity-probes.md`](sources/group-list-and-capacity-probes.md), plus reconciled inbound batches in [`inbound-group-operand-batches.md`](sources/inbound-group-operand-batches.md). Each entry below links to the shard that owns it.
 
 <a id="inbound-entity-list-group-operand-validator-cardinality-and-cleared-value-batch"></a>
 - [Inbound entity-list group-operand, validator-cardinality, and cleared-value batch](sources/inbound-group-operand-batches.md#inbound-entity-list-group-operand-validator-cardinality-and-cleared-value-batch)
@@ -413,7 +413,7 @@ Two shards carry these: locally measured probes in [`group-and-iteration-probes.
 <a id="src-current-repetition-computation-dependency"></a>
 - [Computation `CurrentRepetition` structural dependency](sources/group-and-iteration-probes.md#src-current-repetition-computation-dependency)
 <a id="src-group-list-rnu-admission-correction"></a>
-- [Group-list and RNU admission correction](sources/group-and-iteration-probes.md#src-group-list-rnu-admission-correction)
+- [Group-list and RNU admission correction](sources/group-list-and-capacity-probes.md#src-group-list-rnu-admission-correction)
 <a id="src-entity-list-group-gates"></a>
 - [Entity-list group gates](sources/inbound-group-operand-batches.md#src-entity-list-group-gates)
 <a id="src-field-values-not-unique-group-admission"></a>
