@@ -34,6 +34,31 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-08-31-17"></a>
+### `SPEC-2026-08-31-17` — the two threshold quantifiers read the in-capacity extent, and an instantiated row is filled whatever its cells hold
+
+- `status`: pending
+- `clause`: [`02-logic-and-formal-errors.md`](../spec/02-logic-and-formal-errors.md), the count-zero / count-≥1 starred-group bullet
+- `delta`: the bullet said *each instantiated row*, which read alone admits an over-limit one. It now says **in-capacity**, on these two operators rather than by carrying [`SPEC-2026-08-31-10`](#spec-2026-08-31-10)'s extent rule to carriers that entry did not name. The second half — a created-but-empty row still counts — was already stated and is now measured on them too.
+- `evidence`: two `:adapter:kernelProbe` requests, nine documents, both codegen strategies, `enginesAgree: true` ([checkpoint](sources/group-and-iteration-probes.md#src-starred-group-quantifier-capacity)). Over a `max 3` group: four rows leave `AtLeastOneGroupFilled` firing VALUE, `NoGroupFilled` silent, and a `NumberOfFilledGroups == n` ladder firing at `3`.
+- `separator`: three rows with one filled cell and two empty answer `3`. A content-reading account predicts `1` there; every other document in the batch answers alike under both accounts.
+- `local-consequence`: none. `hasInstantiatedRow` already includes the concrete repeatable row and [`StarGroupElaboration.lean`](../A12Kernel/Conformance/StarGroupElaboration.lean) already locks both quantifier outcomes on a created-but-empty row; the change is assurance, from internally reasoned to Kernel-measured.
+- `acceptance`: a12-dmkits narrows the same bullet, or reports that its own account admits an over-limit row there.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+<a id="spec-2026-08-31-16"></a>
+### `SPEC-2026-08-31-16` — a message pointer has two spellings, and an unbound repeatable level is what selects between them
+
+- `status`: pending
+- `clause`: [`01-data-model.md`](../spec/01-data-model.md), a new paragraph after the `referenced`-pointer depth rule
+- `delta`: new behavior the clause did not name at all. A `referenced` or `fillToFix` entry is written either bare with repetition one elided, or slash-led with nothing elided and each unbound iterated level marked `[0]` beside concrete bound ancestors — and **one message routinely carries both**. The selector is whether the resolved path passes a repeatable level the rule's iteration left unbound. The consequence for a consumer is that a pointer type must represent two address kinds, and that the authored operand form is **not** recoverable from a pointer.
+- `evidence`: 22 retained artifacts re-read for the census and the exclusions ([dialect checkpoint](sources/temporal-and-message-probes.md#src-message-address-dialects)), plus one new `validateFull` run for the deciding prediction ([selector checkpoint](sources/temporal-and-message-probes.md#src-address-dialect-selector)).
+- `separator`: the star is excluded by a fixed group operand reaching the slash spelling; depth by one capture emitting both spellings at one repeatable depth; expansion by two references inside a single `Having` that defeat its strict and its slot reading in turn. The surviving account then predicted **bare** for a group expanding to non-repeatable fields only, and the run returned bare on both strategies.
+- `claim-limit`: the surviving account of the four this project could name, with one confirmed prediction on a carrier chosen to separate it — not a proof that no fifth property covaries. Stated in the clause as the selector because it is what a reimplementer must build; the denominator is at the checkpoint.
+- `local-consequence`: none yet. This project models only the field half of a message pointer; `MessagePointer` widening is [SG10](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration)'s.
+- `acceptance`: a12-dmkits reconciles the two spellings, or reports that its own pointer renderer normalizes them and therefore cannot corroborate — its formatter is known to elide nothing, which is exactly the transformation that hides the distinction.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-08-31-15"></a>
 ### `SPEC-2026-08-31-15` — a group operand's expansion tracks its repeatable ancestor's firing row, and that half is no longer unwitnessed
 

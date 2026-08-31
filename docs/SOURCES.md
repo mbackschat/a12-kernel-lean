@@ -336,6 +336,10 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [`zuGrosseZeile` renders no coordinate, and two over-limit groups report independently](sources/over-repetition-probes.md#src-over-limit-finding-text)
 <a id="src-starred-group-count-computation"></a>
 - [The computation arm counts a starred repeatable group's instantiated rows](sources/group-and-iteration-probes.md#src-starred-group-count-computation)
+<a id="src-starred-group-quantifier-capacity"></a>
+- [The threshold quantifiers read the in-capacity extent, and an instantiated row is filled](sources/group-and-iteration-probes.md#src-starred-group-quantifier-capacity)
+<a id="src-address-dialect-selector"></a>
+- [An unbound repeatable level is what selects a message pointer's slash spelling](sources/temporal-and-message-probes.md#src-address-dialect-selector)
 <a id="src-repeatable-descendant-group-count"></a>
 - [A repeatable descendant makes its shell count structurally](sources/group-and-iteration-probes.md#src-repeatable-descendant-group-count)
 <a id="src-deep-repeatable-descendant-group-count"></a>

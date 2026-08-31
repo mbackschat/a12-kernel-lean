@@ -1,0 +1,203 @@
+{
+  "header" : {
+    "id" : "Fill_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Fill_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Fill",
+        "name" : "Fill",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Fill/Shell",
+            "name" : "Shell",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Fill/Shell/Rows",
+                "name" : "Rows",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Fill/Shell/Rows/A",
+                    "name" : "A",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Fill/W",
+            "name" : "W",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Fill/Other",
+            "name" : "Other",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Fill/Other/B",
+                "name" : "B",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Fill/LIVE",
+            "name" : "LIVE",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "LIVE",
+              "errorCondition" : "FieldFilled(/Fill/W)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "LIVE"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Fill/NGF",
+            "name" : "NGF",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NGF",
+              "errorCondition" : "FieldFilled(/Fill/W) And NoGroupFilled(/Fill/Shell/Rows*)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NGF"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Fill/ALOGF",
+            "name" : "ALOGF",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "ALOGF",
+              "errorCondition" : "FieldFilled(/Fill/W) And AtLeastOneGroupFilled(/Fill/Shell/Rows*)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "ALOGF"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Fill/NFG0",
+            "name" : "NFG0",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NFG0",
+              "errorCondition" : "FieldFilled(/Fill/W) And NumberOfFilledGroups(/Fill/Shell/Rows*) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NFG0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Fill/NFG1",
+            "name" : "NFG1",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NFG1",
+              "errorCondition" : "FieldFilled(/Fill/W) And NumberOfFilledGroups(/Fill/Shell/Rows*) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NFG1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Fill/NFG2",
+            "name" : "NFG2",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NFG2",
+              "errorCondition" : "FieldFilled(/Fill/W) And NumberOfFilledGroups(/Fill/Shell/Rows*) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NFG2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Fill/NFG3",
+            "name" : "NFG3",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NFG3",
+              "errorCondition" : "FieldFilled(/Fill/W) And NumberOfFilledGroups(/Fill/Shell/Rows*) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NFG3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Fill/NFG4",
+            "name" : "NFG4",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NFG4",
+              "errorCondition" : "FieldFilled(/Fill/W) And NumberOfFilledGroups(/Fill/Shell/Rows*) == 4",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NFG4"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

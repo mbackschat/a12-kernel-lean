@@ -1,0 +1,5 @@
+{"model":"Fill_DM.json","locale":"en_US","observe":["validateFull"],
+ "rows":[{"name":"rows-3-one-filled","document":"rows-3-one-filled.json"},
+         {"name":"rows-3-all-empty","document":"rows-3-all-empty.json"},
+         {"name":"rows-3-bare","document":"rows-3-bare.json"},
+         {"name":"rows-1-filled","document":"rows-1-filled.json"}]}

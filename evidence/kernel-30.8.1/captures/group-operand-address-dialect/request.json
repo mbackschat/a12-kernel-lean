@@ -1,0 +1,3 @@
+{"model":"Kind_DM.json","locale":"en_US","observe":["validateFull"],
+ "rows":[{"name":"same-value-fires","document":"same.json"},
+         {"name":"two-values-control","document":"differ.json"}]}

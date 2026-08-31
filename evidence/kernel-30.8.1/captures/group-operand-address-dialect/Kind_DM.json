@@ -1,0 +1,221 @@
+{
+  "header" : {
+    "id" : "Kind_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Kind_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Kind",
+        "name" : "Kind",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Kind/MixedG",
+            "name" : "MixedG",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Kind/MixedG/MNum",
+                "name" : "MNum",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Kind/MixedG/MStr",
+                "name" : "MStr",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Kind/NumG",
+            "name" : "NumG",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Kind/NumG/N1",
+                "name" : "N1",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Kind/NumG/N2",
+                "name" : "N2",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Kind/StrG",
+            "name" : "StrG",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Kind/StrG/S1",
+                "name" : "S1",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Kind/StrG/S2",
+                "name" : "S2",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Kind/W",
+            "name" : "W",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Kind/D1",
+            "name" : "D1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Kind/B1",
+            "name" : "B1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Kind/B2",
+            "name" : "B2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Kind/D2",
+            "name" : "D2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Kind/MixedRev",
+            "name" : "MixedRev",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Kind/MixedRev/RStr",
+                "name" : "RStr",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Kind/MixedRev/RNum",
+                "name" : "RNum",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Kind/SDIAL",
+            "name" : "SDIAL",
+            "Rule" : {
+              "errorEntityRelPath" : "../StrG/S1",
+              "errorCode" : "SDIAL",
+              "errorCondition" : "NumberOfDifferentValues(/Kind/StrG) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "SDIAL"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

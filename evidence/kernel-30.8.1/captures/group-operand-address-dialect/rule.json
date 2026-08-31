@@ -1,0 +1,3 @@
+{"group":"/Kind","field":"/Kind/StrG/S1","code":"SDIAL",
+ "condition":"NumberOfDifferentValues(/Kind/StrG) == 1",
+ "messages":[{"locale":"en_US","text":"SDIAL"}]}
