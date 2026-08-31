@@ -1635,7 +1635,7 @@ Treatment. When a failure arm has no witness, **derive one from the throw site b
 
 ## LF120 — the claim class follows the logical form, not the subject; a negative claim about an instrument is still reachability
 
-> Date: 2026-08-31. Sections: §5 and §9. Basis: a dated dmtool feedback note, retracted by its successor the same day and both since retired; the [Base Year store checkpoint](sources/cross-layer-routes.md#src-base-year-yearless-store) is the surviving record. The wrong claim is quoted in full below, so the finding does not depend on the retired note.
+> Date: 2026-08-31. Sections: §5 and §9. Basis: a dated dmtool feedback note, retracted by its successor the same day and both since retired; the [Base Year store checkpoint](sources/computation-placement-and-constant-probes.md#src-base-year-yearless-store) is the surviving record. The wrong claim is quoted in full below, so the finding does not depend on the retired note.
 
 This project's claim-discharge table says reachability is **measurement only** and that reading never discharges it, and it bans the phrasings that hide an undischarged one. That discipline was applied carefully to every kernel claim in the session that produced this finding. Then the same session wrote, about `dmtool`, *"No verb sets it. `model new` has no option, no `model` subcommand modifies it, and it is not a `group add` or `field add` property."* The setter is `dmtool config modify --base-year`, documented in that subcommand's own `--help`, and it had existed all along.
 
@@ -1733,7 +1733,7 @@ Treatment. When a domain, bound, or admission rule is about to enter `spec/`, na
 
 ## LF127 — a surface that composes has no finite enumeration, so counting refused spellings never discharges "no witness"
 
-> Date: 2026-08-31. Sections: §9 and §12. Basis: the [family-gate checkpoint](sources/cross-layer-routes.md#src-constant-literal-family-gate)'s `authorable` and `authorable-corrected` rows, and the [composition checkpoint](sources/cross-layer-routes.md#src-temporal-constant-literal-composition)'s `datetime-witness` row.
+> Date: 2026-08-31. Sections: §9 and §12. Basis: the [family-gate checkpoint](sources/computation-placement-and-constant-probes.md#src-constant-literal-family-gate)'s `authorable` and `authorable-corrected` rows, and the [composition checkpoint](sources/computation-placement-and-constant-probes.md#src-temporal-constant-literal-composition)'s `datetime-witness` row.
 
 A batch audit of constant-literal admission measured a complete 2×2 that admitted `"05.03.2024"` against a date-shaped format and `"12:30:00"` against `HH:mm:ss`. In the same round it tried three DATETIME spellings — `"2024-03-05T12:30:00"`, `"05.03.2024 12:30:00"`, and a hyphenated range literal — found all three refused, and recorded *DATETIME and DATERANGE have no witness*. The witness is `"05.03.2024T12:30:00"`: the round's own two admitted literals, joined by `T`. It was never tried, and a12-dmkits found it.
 

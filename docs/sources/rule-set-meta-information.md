@@ -1,6 +1,6 @@
 # Rule-set meta-information source checkpoints
 
-Checkpoints for the Kernel's rule-collection analysis services — derivations over a rule set rather than over a document. Document-level validation and computation routes stay in [`cross-layer-routes.md`](cross-layer-routes.md); [`../SOURCES.md`](../SOURCES.md) remains the anchor registry for both.
+Checkpoints for the Kernel's rule-collection analysis services — derivations over a rule set rather than over a document. Document-level validation and computation routes start at the [`cross-layer-routes.md`](cross-layer-routes.md) overview; [`../SOURCES.md`](../SOURCES.md) remains the anchor registry for both and routes detailed checkpoints to their family shards.
 
 <a id="src-mandatory-information-narrowing"></a>
 #### Mandatory-information derivation reads a **32-bit-narrowed** threshold, measured locally 2026-08-31

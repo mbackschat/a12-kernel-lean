@@ -312,11 +312,11 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-date-range-plural-year-class"></a>
 - [Plural DateRange overlap year class and fragment operands, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-plural-year-class)
 <a id="src-2026-08-30-reconciliation"></a>
-- [Reviewed 2026-08-30 a12-dmkits reconciliation, retraction, and instrument answers](sources/cross-layer-routes.md#src-2026-08-30-reconciliation)
+- [Reviewed 2026-08-30 a12-dmkits reconciliation, retraction, and instrument answers](sources/computation-placement-and-constant-probes.md#src-2026-08-30-reconciliation)
 <a id="src-2026-08-29-reconciliation"></a>
-- [Reviewed 2026-08-29 a12-dmkits reconciliation and correction batch](sources/cross-layer-routes.md#src-2026-08-29-reconciliation)
+- [Reviewed 2026-08-29 a12-dmkits reconciliation and correction batch](sources/computation-placement-and-constant-probes.md#src-2026-08-29-reconciliation)
 <a id="src-date-range-direct-list-cross-group-sources"></a>
-- [A direct-list `FirstFilledValue` places its sources freely](sources/cross-layer-routes.md#src-date-range-direct-list-cross-group-sources)
+- [A direct-list `FirstFilledValue` places its sources freely](sources/computation-placement-and-constant-probes.md#src-date-range-direct-list-cross-group-sources)
 <a id="src-starred-operand-message-polarity"></a>
 - [A computation's message type follows what can still grow](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity)
 <a id="src-filled-field-count-nested-capacity"></a>
@@ -482,69 +482,69 @@ Two shards carry these: locally measured probes in [`group-and-iteration-probes.
 <a id="computation-definition-execution-and-result"></a>
 - [Computation definition, execution, and result](sources/cross-layer-routes.md#computation-definition-execution-and-result)
 <a id="src-fixed-computation-target-scope"></a>
-- [Fixed target owns cross-group computation scope](sources/cross-layer-routes.md#src-fixed-computation-target-scope)
+- [Fixed target owns cross-group computation scope](sources/computation-placement-and-constant-probes.md#src-fixed-computation-target-scope)
 <a id="src-cross-group-computation-authoring-block"></a>
-- [Cross-group computation placement is unauthorable through the structured verbs](sources/cross-layer-routes.md#src-cross-group-computation-authoring-block)
+- [Cross-group computation placement is unauthorable through the structured verbs](sources/computation-placement-and-constant-probes.md#src-cross-group-computation-authoring-block)
 <a id="src-computation-declaring-group-gate"></a>
-- [Computation declaring group: containment gate and target-owned execution](sources/cross-layer-routes.md#src-computation-declaring-group-gate)
+- [Computation declaring group: containment gate and target-owned execution](sources/computation-placement-and-constant-probes.md#src-computation-declaring-group-gate)
 <a id="src-cross-group-repeatable-constant-target"></a>
-- [A repeatable target declared cross-group iterates from its own scope](sources/cross-layer-routes.md#src-cross-group-repeatable-constant-target)
+- [A repeatable target declared cross-group iterates from its own scope](sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)
 <a id="src-repeatable-string-constant-target-check"></a>
-- [A String constant its target rejects keeps the exact attempted value](sources/cross-layer-routes.md#src-repeatable-string-constant-target-check)
+- [A String constant its target rejects keeps the exact attempted value](sources/computation-placement-and-constant-probes.md#src-repeatable-string-constant-target-check)
 <a id="src-repeatable-number-constant-target-check"></a>
-- [A Number constant: scale refuses at authoring, range errors per row](sources/cross-layer-routes.md#src-repeatable-number-constant-target-check)
+- [A Number constant: scale refuses at authoring, range errors per row](sources/computation-placement-and-constant-probes.md#src-repeatable-number-constant-target-check)
 <a id="src-repeatable-number-constant-scale-rendering"></a>
-- [A Number constant's scale is read twice, differently: the gate keeps trailing zeros, the store strips them and pads](sources/cross-layer-routes.md#src-repeatable-number-constant-scale-rendering)
+- [A Number constant's scale is read twice, differently: the gate keeps trailing zeros, the store strips them and pads](sources/computation-placement-and-constant-probes.md#src-repeatable-number-constant-scale-rendering)
 
 <a id="src-date-constant-target-formatting"></a>
-- [A Date constant is admitted by its own spelling and stored in the target's format, with no target check at either time](sources/cross-layer-routes.md#src-date-constant-target-formatting)
+- [A Date constant is admitted by its own spelling and stored in the target's format, with no target check at either time](sources/computation-placement-and-constant-probes.md#src-date-constant-target-formatting)
 
 <a id="src-constant-literal-family-gate"></a>
-- [A bare constant's admission is gated by the target's declared format string, never its kind](sources/cross-layer-routes.md#src-constant-literal-family-gate)
+- [A bare constant's admission is gated by the target's declared format string, never its kind](sources/computation-placement-and-constant-probes.md#src-constant-literal-family-gate)
 <a id="src-temporal-constant-literal-composition"></a>
-- [The temporal literal vocabulary composes, and the Base Year gate reads year disagreement](sources/cross-layer-routes.md#src-temporal-constant-literal-composition)
+- [The temporal literal vocabulary composes, and the Base Year gate reads year disagreement](sources/computation-placement-and-constant-probes.md#src-temporal-constant-literal-composition)
 
 <a id="src-component-omitting-date-formats"></a>
-- [A component-omitting date target needs every component its format names, and the Base Year supplies the year](sources/cross-layer-routes.md#src-component-omitting-date-formats)
+- [A component-omitting date target needs every component its format names, and the Base Year supplies the year](sources/computation-placement-and-constant-probes.md#src-component-omitting-date-formats)
 
 <a id="src-base-year-yearless-store"></a>
-- [A declared Base Year gates a yearless target's authoring and contributes nothing to its store](sources/cross-layer-routes.md#src-base-year-yearless-store)
+- [A declared Base Year gates a yearless target's authoring and contributes nothing to its store](sources/computation-placement-and-constant-probes.md#src-base-year-yearless-store)
 <a id="src-fixed-target-star-placement"></a>
-- [Fixed computation target under a star operand: no placement gate](sources/cross-layer-routes.md#src-fixed-target-star-placement)
+- [Fixed computation target under a star operand: no placement gate](sources/computation-placement-and-constant-probes.md#src-fixed-target-star-placement)
 <a id="src-unsuppressed-assignment-scale-reach"></a>
-- [The unsuppressed assignment-scale overflow has no authored witness](sources/cross-layer-routes.md#src-unsuppressed-assignment-scale-reach)
+- [The unsuppressed assignment-scale overflow has no authored witness](sources/computation-placement-and-constant-probes.md#src-unsuppressed-assignment-scale-reach)
 <a id="src-repeatable-string-application"></a>
-- [Finite one- and two-level String separate-destination application, measured locally 2026-08-26](sources/cross-layer-routes.md#src-repeatable-string-application)
+- [Finite one- and two-level String separate-destination application, measured locally 2026-08-26](sources/evaluation-and-application-routes.md#src-repeatable-string-application)
 <a id="src-repeatable-number-aggregate-cascade"></a>
-- [Repeatable Number producer and aggregate cascade](sources/cross-layer-routes.md#src-repeatable-number-aggregate-cascade)
+- [Repeatable Number producer and aggregate cascade](sources/evaluation-and-application-routes.md#src-repeatable-number-aggregate-cascade)
 <a id="src-repeatable-numeric-wrappers-extrema"></a>
-- [Repeatable numeric wrappers and extrema](sources/cross-layer-routes.md#src-repeatable-numeric-wrappers-extrema)
+- [Repeatable numeric wrappers and extrema](sources/evaluation-and-application-routes.md#src-repeatable-numeric-wrappers-extrema)
 <a id="src-operation-valued-extrema"></a>
-- [Operation-valued extrema](sources/cross-layer-routes.md#src-operation-valued-extrema)
+- [Operation-valued extrema](sources/evaluation-and-application-routes.md#src-operation-valued-extrema)
 <a id="src-aggregate-repeatable-suffixes"></a>
-- [Aggregate-to-repeatable suffixes](sources/cross-layer-routes.md#src-aggregate-repeatable-suffixes)
+- [Aggregate-to-repeatable suffixes](sources/evaluation-and-application-routes.md#src-aggregate-repeatable-suffixes)
 <a id="src-nested-current-repetition-cascades"></a>
-- [Nested `CurrentRepetition` cascades](sources/cross-layer-routes.md#src-nested-current-repetition-cascades)
+- [Nested `CurrentRepetition` cascades](sources/evaluation-and-application-routes.md#src-nested-current-repetition-cascades)
 <a id="src-scalar-mixed-consumer-first-dependency-order"></a>
-- [Consumer-first mixed scalar dependency order, measured locally 2026-08-25](sources/cross-layer-routes.md#src-scalar-mixed-consumer-first-dependency-order)
+- [Consumer-first mixed scalar dependency order, measured locally 2026-08-25](sources/evaluation-and-application-routes.md#src-scalar-mixed-consumer-first-dependency-order)
 <a id="src-numeric-extremum-call-boundary"></a>
-- [Numeric extremum call boundary](sources/cross-layer-routes.md#src-numeric-extremum-call-boundary)
+- [Numeric extremum call boundary](sources/evaluation-and-application-routes.md#src-numeric-extremum-call-boundary)
 <a id="src-custom-validity-route"></a>
-- [Custom validity source route](sources/cross-layer-routes.md#src-custom-validity-route)
+- [Custom validity source route](sources/evaluation-and-application-routes.md#src-custom-validity-route)
 <a id="src-field-values-not-unique-route"></a>
-- [`FieldValuesNotUnique` source route](sources/cross-layer-routes.md#src-field-values-not-unique-route)
+- [`FieldValuesNotUnique` source route](sources/evaluation-and-application-routes.md#src-field-values-not-unique-route)
 <a id="src-fieldless-numeric-computation"></a>
-- [Fieldless repeatable numeric computation](sources/cross-layer-routes.md#src-fieldless-numeric-computation)
+- [Fieldless repeatable numeric computation](sources/evaluation-and-application-routes.md#src-fieldless-numeric-computation)
 <a id="src-addressed-numeric-binary"></a>
-- [Addressed numeric binary computation](sources/cross-layer-routes.md#src-addressed-numeric-binary)
+- [Addressed numeric binary computation](sources/evaluation-and-application-routes.md#src-addressed-numeric-binary)
 <a id="src-number-repeatable-first-filled"></a>
-- [Sibling-star Number `FirstFilledValue` target admission and ordered runtime, measured locally 2026-08-27](sources/cross-layer-routes.md#src-number-repeatable-first-filled)
+- [Sibling-star Number `FirstFilledValue` target admission and ordered runtime, measured locally 2026-08-27](sources/evaluation-and-application-routes.md#src-number-repeatable-first-filled)
 <a id="src-computed-target-reference"></a>
-- [Computed-target reference source route](sources/cross-layer-routes.md#src-computed-target-reference)
+- [Computed-target reference source route](sources/evaluation-and-application-routes.md#src-computed-target-reference)
 <a id="src-temporal-construction-route"></a>
-- [Temporal construction and calendar profiles](sources/cross-layer-routes.md#src-temporal-construction-route)
+- [Temporal construction and calendar profiles](sources/temporal-and-message-probes.md#src-temporal-construction-route)
 <a id="src-message-construction-route"></a>
-- [Message construction](sources/cross-layer-routes.md#src-message-construction-route)
+- [Message construction](sources/message-and-pointer-probes.md#src-message-construction-route)
 
 ### Inbound provenance checkpoints
 
