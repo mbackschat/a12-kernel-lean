@@ -105,6 +105,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 
+<a id="spec-2026-08-31-05"></a>
+### `SPEC-2026-08-31-05` — a formally erroneous field is not relevant, in either kind of validation
+
+- `status`: pending
+- `clause`: [`10-validation-and-polarity.md`](../spec/10-validation-and-polarity.md), beside the relevant-set definition
+- `delta`: the clause defined the relevant set by screen membership and the `Global` flag. The kernel's own account adds a third condition present in **both** rows of its table: a field whose value leads to a formal error is not relevant. Full validation carries the same clause, so this is not a partial-validation rule.
+- `consequence`: a malformed operand is **dropped from the list** rather than counted on either side of a quantifier's "at least one filled / at least one not filled" test. That reaches the same answer as classifying it neither-filled-nor-empty, but from the list's definition instead of the operand's classification, which is the direction a reimplementer is more likely to get right for the *full* validation case.
+- `basis`: **source-grounded, not measured.** It is read from the kernel's business documentation, which the source hierarchy places below runtime behavior. This project's existing group-presence and field-presence projections already agree with it, so it corroborates rather than corrects; no clause changed.
+- `evidence`: none of this project's own. Recorded as source-grounded so a later measurement can promote or refute it rather than finding an unattributed claim.
+- `limit`: the kernel's table covers the quantifier family's relevant list. It says nothing about whether a group operand of `NumberOfFilledGroups` acquires a partial-relevance notion from the same mechanism, which stays open — see the route limit below.
+- `route limit`: this project cannot measure partial validation at all. The accepted `:adapter:kernelProbe` request schema admits exactly `validateFull` and `compute`, and a12-dmkits' `KernelAdapter` exposes `validateFull` as its only validation entry point. Reaching `validatePart` would need a new adapter capability, not a probe request; it is recorded here so a later session does not re-derive the limit.
+- `acceptance`: a12-dmkits confirms the erroneous-field exclusion applies to full validation and not only to partial, or supplies the contrary measurement.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
+
 <a id="spec-2026-08-31-01"></a>
 ### `SPEC-2026-08-31-01` — a filled-group count is unavailable only where an operand's presence is undecided, not on any error
 
