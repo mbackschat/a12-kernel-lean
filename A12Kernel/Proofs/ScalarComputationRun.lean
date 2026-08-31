@@ -259,6 +259,56 @@ theorem scalarComputationPair_execute
       pair.execution.execute world patterns input := by
   rfl
 
+/-- Analyze always sees the exact caller-authored three-target order. -/
+@[simp] theorem scalarComputationTriple_authoredTargetFields
+    (triple : CheckedScalarComputationTriple model) :
+    triple.authoredTargetFields =
+      [triple.authoredFirst.targetField, triple.authoredSecond.targetField,
+        triple.authoredThird.targetField] := by
+  rfl
+
+/-- A checked triple's selected order is one of the six exact authored-step permutations rather than a reconstructed or family-erased plan. -/
+theorem scalarComputationTriple_executionUsesCandidate
+    (triple : CheckedScalarComputationTriple model) :
+    triple.execution.steps ∈ scalarComputationTripleExecutionCandidates
+      triple.authoredFirst triple.authoredSecond triple.authoredThird := by
+  exact triple.executionUsesCandidate
+
+/-- Triple certification changes only dependency order: every authored typed step occurs exactly once in execution. -/
+theorem scalarComputationTriple_executionSteps_perm
+    (triple : CheckedScalarComputationTriple model) :
+    triple.execution.steps.Perm
+      [triple.authoredFirst, triple.authoredSecond, triple.authoredThird] := by
+  have candidate := triple.executionUsesCandidate
+  simp only [scalarComputationTripleExecutionCandidates, List.mem_cons,
+    List.not_mem_nil, or_false] at candidate
+  rcases candidate with h | h | h | h | h | h
+  · rw [h]
+  · rw [h]
+    exact List.Perm.cons _ (List.Perm.swap _ _ [])
+  · rw [h]
+    exact List.Perm.swap _ _ [_]
+  · rw [h]
+    exact (List.Perm.cons _ (List.Perm.swap _ _ [])).trans
+      (List.Perm.swap _ _ [_])
+  · rw [h]
+    exact (List.Perm.swap _ _ [_]).trans
+      (List.Perm.cons _ (List.Perm.swap _ _ []))
+  · rw [h]
+    exact (List.Perm.swap _ _ [_]).trans
+      ((List.Perm.cons _ (List.Perm.swap _ _ [])).trans
+        (List.Perm.swap _ _ [_]))
+
+/-- Triple execution is exactly the established typed mixed-run execution. -/
+theorem scalarComputationTriple_execute
+    (triple : CheckedScalarComputationTriple model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    triple.execute world patterns input =
+      triple.execution.execute world patterns input := by
+  rfl
+
 /-- Pre-schedule analysis preserves every candidate target exactly and in authored order. -/
 @[simp] theorem analyzeScalarComputationSteps_targets
     (steps : List (CheckedScalarComputationStep model)) :

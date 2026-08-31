@@ -188,6 +188,79 @@ def executionTargetFields (pair : CheckedScalarComputationPair model) :
 
 end CheckedScalarComputationPair
 
+/-- The six possible orders of exactly three authored scalar steps, with the authored order first. This is the bounded three-target boundary rather than a general dependency scheduler. -/
+def scalarComputationTripleExecutionCandidates
+    (first second third : CheckedScalarComputationStep model) :
+    List (List (CheckedScalarComputationStep model)) :=
+  [[first, second, third],
+    [first, third, second],
+    [second, first, third],
+    [second, third, first],
+    [third, first, second],
+    [third, second, first]]
+
+private def certifyFirstScalarComputationRun
+    (fallback : ScalarComputationRunPlanError)
+    (candidates : List (List (CheckedScalarComputationStep model))) :
+    Except ScalarComputationRunPlanError
+      { run : CheckedScalarComputationRun model // run.steps ∈ candidates } :=
+  match candidates with
+  | [] => .error fallback
+  | candidate :: remaining =>
+      match certifyScalarComputationRunWithSteps candidate with
+      | .ok run => .ok ⟨run.1, by
+          simp only [List.mem_cons]
+          exact Or.inl run.2⟩
+      | .error cause =>
+          match cause with
+          | .forwardDependency _ _ =>
+              match certifyFirstScalarComputationRun cause remaining with
+              | .error cause => .error cause
+              | .ok run => .ok ⟨run.1, List.mem_cons_of_mem _ run.2⟩
+          | _ => .error cause
+
+/-- Exactly three authored scalar steps together with the first dependency-valid order among their six permutations. Analysis retains the authored order while execution reuses the finite checked run. -/
+structure CheckedScalarComputationTriple (model : FlatModel) where
+  private mk ::
+  authoredFirst : CheckedScalarComputationStep model
+  authoredSecond : CheckedScalarComputationStep model
+  authoredThird : CheckedScalarComputationStep model
+  execution : CheckedScalarComputationRun model
+  executionUsesCandidate :
+    execution.steps ∈ scalarComputationTripleExecutionCandidates
+      authoredFirst authoredSecond authoredThird
+
+/-- Certify the bounded authored triple by checking its six possible orders in authored-stable order. A non-ordering defect is returned immediately; forward dependencies select the next candidate. -/
+def certifyScalarComputationTriple
+    (first second third : CheckedScalarComputationStep model) :
+    Except ScalarComputationRunPlanError
+      (CheckedScalarComputationTriple model) :=
+  match certifyFirstScalarComputationRun
+      .empty (scalarComputationTripleExecutionCandidates first second third) with
+  | .error cause => .error cause
+  | .ok execution => .ok {
+      authoredFirst := first
+      authoredSecond := second
+      authoredThird := third
+      execution := execution.1
+      executionUsesCandidate := execution.2
+    }
+
+namespace CheckedScalarComputationTriple
+
+/-- Target identities in caller-authored order for Analyze consumers. -/
+def authoredTargetFields (triple : CheckedScalarComputationTriple model) :
+    List FieldId :=
+  [triple.authoredFirst.targetField, triple.authoredSecond.targetField,
+    triple.authoredThird.targetField]
+
+/-- Target identities in the certified checked execution order. -/
+def executionTargetFields (triple : CheckedScalarComputationTriple model) :
+    List FieldId :=
+  triple.execution.steps.map (·.targetField)
+
+end CheckedScalarComputationTriple
+
 /-- One completed rich target outcome with its family and target identity retained. -/
 inductive ScalarComputationOutcome where
   | string (target : FieldId) (outcome : StringTargetOutcome)
@@ -348,5 +421,17 @@ def execute (pair : CheckedScalarComputationPair model)
   pair.execution.execute world patterns input
 
 end CheckedScalarComputationPair
+
+namespace CheckedScalarComputationTriple
+
+/-- Execute the dependency-ordered triple through the existing typed mixed-run evaluator. -/
+def execute (triple : CheckedScalarComputationTriple model)
+    (world : World)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    Except ScalarComputationRunFault (List ScalarComputationOutcome) :=
+  triple.execution.execute world patterns input
+
+end CheckedScalarComputationTriple
 
 end A12Kernel

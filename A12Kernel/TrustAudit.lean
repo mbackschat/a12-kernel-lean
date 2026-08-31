@@ -2040,6 +2040,10 @@ run_cmd do
 #print axioms A12Kernel.scalarComputationPairExecutionSteps_preserved
 #print axioms A12Kernel.scalarComputationPair_executionSteps
 #print axioms A12Kernel.scalarComputationPair_execute
+#print axioms A12Kernel.scalarComputationTriple_authoredTargetFields
+#print axioms A12Kernel.scalarComputationTriple_executionUsesCandidate
+#print axioms A12Kernel.scalarComputationTriple_executionSteps_perm
+#print axioms A12Kernel.scalarComputationTriple_execute
 #print axioms A12Kernel.analyzeScalarComputationSteps_targets
 #print axioms A12Kernel.analyzeScalarComputationSteps_kinds
 #print axioms A12Kernel.analyzeScalarComputationSteps_dependencies

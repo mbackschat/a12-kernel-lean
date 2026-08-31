@@ -170,6 +170,10 @@ private def secondNumberFromFirstNumber :=
   (numberTable? secondNumberId [(holding,
     numberField "FirstNumber")]).get (by native_decide)
 
+private def secondNumberValue :=
+  (numberTable? secondNumberId [(holding, literalNumber 9)]).get
+    (by native_decide)
+
 private def stringCell (field : FieldId) (stored : String) :
     ClassifiedCellInput :=
   { address := { field, path := [] }
@@ -235,6 +239,20 @@ private def pairOutcomes?
   let pair ← (certifyScalarComputationPair first second).toOption
   let input ← checkedDocument cells
   (pair.execute world prepared.patterns input).toOption
+
+private def tripleTargetOrders?
+    (first second third : CheckedScalarComputationStep model) :
+    Option (List FieldId × List FieldId) := do
+  let triple ← (certifyScalarComputationTriple first second third).toOption
+  pure (triple.authoredTargetFields, triple.executionTargetFields)
+
+private def tripleOutcomes?
+    (first second third : CheckedScalarComputationStep model)
+    (cells : List ClassifiedCellInput := []) :
+    Option (List ScalarComputationOutcome) := do
+  let triple ← (certifyScalarComputationTriple first second third).toOption
+  let input ← checkedDocument cells
+  (triple.execute world prepared.patterns input).toOption
 
 private def dependencySummary
     (steps : List (CheckedScalarComputationStep model)) :=
@@ -488,6 +506,38 @@ example :
     (certifyScalarComputationPair
       (.string firstStringFromNumber)
       (.number firstNumberFromStringOnly)).toOption = none := by
+  native_decide
+
+/- A reverse-authored three-step chain selects its sole dependency order and reads every fresh completion instead of stale target state. -/
+example :
+    tripleTargetOrders? (.string secondStringFromNumberOnly)
+        (.number firstNumberFromStringOnly) (.string firstStringValue) =
+      some ([secondStringId, firstNumberId, firstStringId],
+        [firstStringId, firstNumberId, secondStringId]) ∧
+    tripleOutcomes? (.string secondStringFromNumberOnly)
+        (.number firstNumberFromStringOnly) (.string firstStringValue) [
+          stringCell firstStringId "STALE",
+          numberCell firstNumberId 80,
+          stringCell secondStringId "OLD"] =
+      some [
+        .string firstStringId
+          (.accepted { text := "7", nonempty := by decide }),
+        .number firstNumberId
+          (.accepted { unscaled := 7, scale := 0 }),
+        .string secondStringId
+          (.accepted { text := "7", nonempty := by decide })] := by
+  native_decide
+
+/- Three independent authored steps retain their order, while the complete three-target cycle has no certified permutation. -/
+example :
+    tripleTargetOrders? (.string firstStringValue)
+        (.number firstNumberValue) (.number secondNumberValue) =
+      some ([firstStringId, firstNumberId, secondNumberId],
+        [firstStringId, firstNumberId, secondNumberId]) ∧
+    (certifyScalarComputationTriple
+      (.string firstStringFromSecondNumber)
+      (.number firstNumberFromStringOnly)
+      (.number secondNumberFromFirstNumber)).toOption = none := by
   native_decide
 
 /- The kernel-calibrated consumer-first representative reads the fresh producer, preserves an unread invalid producer behind the selected safe row, poisons a reached read, and treats empty Number input as zero. -/
