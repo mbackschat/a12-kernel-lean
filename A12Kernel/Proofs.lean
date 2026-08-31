@@ -38,6 +38,7 @@ import A12Kernel.Proofs.BerlinLegacyCalendarArithmetic
 import A12Kernel.Proofs.BerlinLegacyTimeZone
 import A12Kernel.Proofs.BooleanConstantComputation
 import A12Kernel.Proofs.RepeatableDateConstantComputation
+import A12Kernel.Proofs.RepeatableDateTimeConstantComputation
 import A12Kernel.Proofs.RepeatableTimeConstantComputation
 import A12Kernel.Proofs.RepeatableNumberConstantComputation
 import A12Kernel.Proofs.RepeatableStringConstantComputation

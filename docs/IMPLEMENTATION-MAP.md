@@ -339,6 +339,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Repeatable ordinary String constant](implementation/repeatable-computations.md#cap-repeatable-string-constant-computation)
 <a id="cap-repeatable-time-constant-computation"></a>
 - [Repeatable Time constant](implementation/repeatable-computations.md#cap-repeatable-time-constant-computation)
+<a id="cap-repeatable-datetime-constant-computation"></a>
+- [Repeatable DateTime constant](implementation/repeatable-computations.md#cap-repeatable-datetime-constant-computation)
 <a id="cap-repeatable-date-constant-computation"></a>
 - [Repeatable Date constant](implementation/repeatable-computations.md#cap-repeatable-date-constant-computation)
 <a id="cap-repeatable-number-constant-computation"></a>
