@@ -1,0 +1,29 @@
+{
+ "model": "Unavail_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "u0-baseline",
+   "document": "u0-baseline.json"
+  },
+  {
+   "name": "u1-inner-rows",
+   "document": "u1-inner-rows.json"
+  },
+  {
+   "name": "u2-star-capacity",
+   "document": "u2-star-capacity.json"
+  },
+  {
+   "name": "u3-fixed-invalid",
+   "document": "u3-fixed-invalid.json"
+  },
+  {
+   "name": "u4-star-invalid",
+   "document": "u4-star-invalid.json"
+  }
+ ]
+}

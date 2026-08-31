@@ -1490,7 +1490,8 @@ run_cmd do
 #print axioms A12Kernel.groupListPresenceTally_partition
 #print axioms A12Kernel.groupPresenceTally_partition
 #print axioms A12Kernel.validationFillOutcome_conservative_fired_iff
-#print axioms A12Kernel.erroneousHead_makesFilledGroupCountUnknown
+#print axioms A12Kernel.undecidedHead_makesFilledGroupCountUnknown
+#print axioms A12Kernel.filledGroupCount_indifferentToErrorOnDecidedGroup
 #print axioms A12Kernel.relativeRequiredness_uses_positivePresence
 #print axioms A12Kernel.admitsGroupContent_le_presentForComputation
 #print axioms A12Kernel.presentForComputation_eq_admitsGroupContent_of_clean

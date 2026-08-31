@@ -303,6 +303,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A group `NumberOfFilledFields` moves against declared slot capacity, not declared field count](sources/group-and-iteration-probes.md#src-filled-field-count-nested-capacity)
 <a id="src-group-count-list-extent"></a>
 - [A group-count list's extent is its operand list, and a starred member breaks that](sources/group-and-iteration-probes.md#src-group-count-list-extent)
+
+<a id="src-group-count-unavailability"></a>
+- [A group error makes a filled-group count unknown only when that group has no admitted content](sources/group-and-iteration-probes.md#src-group-count-unavailability)
 <a id="src-starred-group-count-computation"></a>
 - [The computation arm counts a starred repeatable group's instantiated rows](sources/group-and-iteration-probes.md#src-starred-group-count-computation)
 <a id="src-repeatable-descendant-group-count"></a>

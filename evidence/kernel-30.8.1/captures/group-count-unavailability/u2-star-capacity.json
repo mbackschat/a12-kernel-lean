@@ -1,0 +1,32 @@
+{
+ "Probe": {
+  "G1": {
+   "A": "a",
+   "Num": null
+  },
+  "Rows": [
+   {
+    "R": null,
+    "RNum": null,
+    "Inner": [
+     {
+      "I": "i"
+     },
+     {
+      "I": "i"
+     }
+    ]
+   },
+   {
+    "R": null,
+    "RNum": null,
+    "Inner": []
+   },
+   {
+    "R": null,
+    "RNum": null,
+    "Inner": []
+   }
+  ]
+ }
+}

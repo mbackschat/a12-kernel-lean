@@ -106,12 +106,16 @@ private def atom? : Option (OrderedNumericValidationAtom model) :=
   atomOf? [fixedOperand, starredOperand]
 
 /-- The fixed member's own presence state, supplied the way the checked-document boundary supplies
-it. Only its content varies here; erroneous and nonrelevant states belong to the shared group-count
-unavailability rule and are not this carrier's subject. -/
-private def fixedState (content : Bool) : GroupPresenceState :=
+it. `errored` adds a malformed sibling beside the content cell, which is what the shared
+unavailability rule reads; nonrelevant coverage is not this carrier's subject. -/
+private def fixedState (content : Bool) (errored : Bool := false) : GroupPresenceState :=
   ({ descendantCells :=
-       [formalCheck { kind := .string }
-         (if content then .parsed (.str "a") else .empty)]
+       formalCheck { kind := .string }
+           (if content then .parsed (.str "a") else .empty) ::
+         (if errored then
+            [formalCheck { kind := .number { scale := 0, signed := false } }
+              (.rejected .malformed)]
+          else [])
      hasInstantiatedRow := false
      structuralError := false
      relevance := .fullyRelevant } : ResolvedGroupPresenceInput).derive
@@ -123,7 +127,8 @@ private def cell (path : List Nat) : ClassifiedCellInput :=
 
 private def countWith (source : Option (OrderedNumericValidationAtom model))
     (content : Bool) (instantiated : List RowAddr)
-    (filled : List (List Nat) := []) : Option NumericArithmeticOutcome := do
+    (filled : List (List Nat) := []) (errored : Bool := false) :
+    Option NumericArithmeticOutcome := do
   let atom ← source
   let document ← (checkDocument prepared "en_US" {
     instantiatedRows := instantiated
@@ -132,7 +137,7 @@ private def countWith (source : Option (OrderedNumericValidationAtom model))
     scalar := {
       fields := document.flatContext
       groups := fun path =>
-        if path == ["Probe", "G1"] then some (fixedState content) else none }
+        if path == ["Probe", "G1"] then some (fixedState content errored) else none }
     outer := []
     input := .checked document }
   match atom.resolveAddressed context with
@@ -143,8 +148,9 @@ private def rowsUpTo (count : Nat) : List RowAddr :=
   (List.range count).map fun index => { group := 10, path := [index + 1] }
 
 private def count (content : Bool) (rows : Nat)
-    (filled : List (List Nat) := []) : Option NumericArithmeticOutcome :=
-  countWith atom? content (rowsUpTo rows) filled
+    (filled : List (List Nat) := []) (errored : Bool := false) :
+    Option NumericArithmeticOutcome :=
+  countWith atom? content (rowsUpTo rows) filled errored
 
 /- Contributions add: the fixed member gives zero or one and the starred member gives its row count,
 so one filled group beside zero, one, two, and three rows counts one, two, three, and four. The
@@ -222,6 +228,19 @@ example : (countWith (atomOf? [starredOperand, otherStar]) false
 
 /- Placement admits the star from an ancestor of its own group, which is the only shape measured. -/
 example : (comparison? [fixedOperand, starredOperand]).isSome = true := by
+  native_decide
+
+/- The mixed carrier inherits the shared unavailability rule, and the kernel confirms both of its
+legs on this very shape. A fixed member whose content is already admitted keeps contributing its one
+however its other descendants failed; a fixed member whose only non-empty descendant is malformed
+takes the whole mixed count with it rather than contributing zero. The middle row is the separator —
+the same document with the malformed sibling removed — so the second row's absence is the error and
+not the empty content. Measured on both codegen strategies at the [unavailability
+checkpoint](../../docs/SOURCES.md#src-group-count-unavailability). -/
+example : (count true 2 (errored := true), count false 2, count false 2 (errored := true)) =
+    (some (.value 3 { canGrow := true, canShrink := false }),
+     some (.value 2 { canGrow := true, canShrink := false }),
+     none) := by
   native_decide
 
 end A12Kernel.Conformance.MixedFilledGroupCount

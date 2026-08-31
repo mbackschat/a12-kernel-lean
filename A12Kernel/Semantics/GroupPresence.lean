@@ -235,9 +235,19 @@ def availableWithFillability? (result : FilledGroupCount)
 
 end FilledGroupCount
 
+/-- `NumberOfFilledGroups` over resolved fixed groups: one decided presence per operand, summed,
+    with an undecided operand taking the whole count rather than contributing zero.
+
+    Each operand is read through `asGroupListPresence`, the same decided-presence projection the
+    group-list predicates use, so this count cannot answer more strictly than `AllGroupsFilled` over
+    the same states. That matters because it was once its own re-derivation and disagreed: a formal
+    error blocks only the *negative* answer, so a group whose content is already admitted stays
+    filled however its other descendants failed, and only a group with no admitted content is left
+    undecided by one. Measured on both codegen strategies at the [unavailability
+    checkpoint](../../docs/SOURCES.md#src-group-count-unavailability). -/
 def numberOfFilledGroups (states : List GroupPresenceState) : FilledGroupCount :=
-  if states.any (fun state => state.erroneous || !(state.relevance == .fullyRelevant)) then .unknown
-  else .value (states.countP fun state => state.content)
+  if states.any (fun state => state.asGroupListPresence == .unavailable) then .unknown
+  else .value (states.countP fun state => state.asGroupListPresence == .filled)
 
 /-- One validation-arm operand of a filled-group count whose list may carry a star. A fixed member
     keeps its resolved presence state, whose unavailability or nonrelevance makes the whole count
@@ -255,13 +265,15 @@ inductive ValidationGroupCountOperand where
 
 /-- What one validation operand adds once the count is known to be available. -/
 def ValidationGroupCountOperand.contribution : ValidationGroupCountOperand → Nat
-  | .fixed state => if state.content then 1 else 0
+  | .fixed state => if state.asGroupListPresence == .filled then 1 else 0
   | .starredRows rows => rows
 
-/-- Whether one operand makes the whole count unavailable. Only a fixed member can: a starred
-    member's rows are structural, and no measurement here gives a star its own unknown. -/
+/-- Whether one operand makes the whole count unavailable. Only a fixed member can, and only when
+    its own presence is undecided — the shared fixed-only condition, not a second copy of it. A
+    starred member's rows are structural, and an invalid cell inside a row leaves both the row and
+    the count untouched. -/
 def ValidationGroupCountOperand.unavailable : ValidationGroupCountOperand → Bool
-  | .fixed state => state.erroneous || !(state.relevance == .fullyRelevant)
+  | .fixed state => state.asGroupListPresence == .unavailable
   | .starredRows _ => false
 
 /-- The validation-arm `NumberOfFilledGroups` over an operand list that may carry a star. One

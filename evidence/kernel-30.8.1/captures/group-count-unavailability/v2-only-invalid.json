@@ -1,0 +1,12 @@
+{
+ "Probe": {
+  "G1": {
+   "A": null,
+   "Num": "not-a-number"
+  },
+  "G2": {
+   "B": "b"
+  },
+  "Rows": []
+ }
+}

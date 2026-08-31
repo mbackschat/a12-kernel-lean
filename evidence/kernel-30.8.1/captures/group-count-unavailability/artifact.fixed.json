@@ -1,0 +1,336 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "1be2d603c90be578fe7ea0de0b8c515cb2a479c4",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Unavail_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "v0-clean",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "F3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F3",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "U4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "U4",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ]
+            },
+            {
+              "code" : "U5",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "U5",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "F3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F3",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "U4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "U4",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ]
+            },
+            {
+              "code" : "U5",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "U5",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v1-fixed-invalid",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "F3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F3",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "U4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "U4",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ]
+            },
+            {
+              "code" : "U5",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "U5",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/G1/Num",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Probe/G1/Num"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "F3",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "F3",
+              "referenced" : [
+                "Probe/G1/A",
+                "Probe/G1/Num",
+                "Probe/G2/B",
+                "Probe/G2/Num2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "U4",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "U4",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ]
+            },
+            {
+              "code" : "U5",
+              "field" : "Probe/G1/A",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "U5",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Inner[0]/I",
+                "/Probe[1]/Rows[0]/R",
+                "/Probe[1]/Rows[0]/RNum",
+                "Probe/G1/A",
+                "Probe/G1/Num"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/G1/Num",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Probe/G1/Num"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v2-only-invalid",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/G1/Num",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Probe/G1/Num"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/G1/Num",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The value must be integer.",
+              "referenced" : [
+                "Probe/G1/Num"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

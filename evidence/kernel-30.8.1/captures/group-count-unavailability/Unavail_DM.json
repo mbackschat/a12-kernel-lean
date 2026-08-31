@@ -1,0 +1,242 @@
+{
+  "header" : {
+    "id" : "Unavail_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Unavail_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/G1",
+            "name" : "G1",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/G1/A",
+                "name" : "A",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/G1/Num",
+                "name" : "Num",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/Rows/Inner",
+                "name" : "Inner",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Inner/I",
+                    "name" : "I",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/R",
+                "name" : "R",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RNum",
+                "name" : "RNum",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/U2",
+            "name" : "U2",
+            "Rule" : {
+              "errorEntityRelPath" : "../G1/A",
+              "errorCode" : "U2",
+              "errorCondition" : "NumberOfFilledGroups(G1, Rows*) < 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "U2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/U3",
+            "name" : "U3",
+            "Rule" : {
+              "errorEntityRelPath" : "../G1/A",
+              "errorCode" : "U3",
+              "errorCondition" : "NumberOfFilledGroups(G1, Rows*) < 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "U3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/U4",
+            "name" : "U4",
+            "Rule" : {
+              "errorEntityRelPath" : "../G1/A",
+              "errorCode" : "U4",
+              "errorCondition" : "NumberOfFilledGroups(G1, Rows*) < 4",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "U4"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/U5",
+            "name" : "U5",
+            "Rule" : {
+              "errorEntityRelPath" : "../G1/A",
+              "errorCode" : "U5",
+              "errorCondition" : "NumberOfFilledGroups(G1, Rows*) < 5",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "U5"
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/G2",
+            "name" : "G2",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/G2/B",
+                "name" : "B",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/G2/Num2",
+                "name" : "Num2",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F1",
+            "name" : "F1",
+            "Rule" : {
+              "errorEntityRelPath" : "../G1/A",
+              "errorCode" : "F1",
+              "errorCondition" : "NumberOfFilledGroups(G1, G2) < 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F2",
+            "name" : "F2",
+            "Rule" : {
+              "errorEntityRelPath" : "../G1/A",
+              "errorCode" : "F2",
+              "errorCondition" : "NumberOfFilledGroups(G1, G2) < 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F3",
+            "name" : "F3",
+            "Rule" : {
+              "errorEntityRelPath" : "../G1/A",
+              "errorCode" : "F3",
+              "errorCondition" : "NumberOfFilledGroups(G1, G2) < 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F3"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

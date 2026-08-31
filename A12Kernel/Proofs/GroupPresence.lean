@@ -64,11 +64,31 @@ theorem validationFillOutcome_conservative_fired_iff
       outcome = .fired polarity := by
   cases outcome <;> simp [ValidationFillOutcome.asConservativeVerdict]
 
-theorem erroneousHead_makesFilledGroupCountUnknown
+/-- An operand whose presence was never decided takes the whole count with it. The hypothesis is
+    the point: `erroneous` alone does **not** imply it, which is what the count once assumed. -/
+theorem undecidedHead_makesFilledGroupCountUnknown
     (state : GroupPresenceState) (rest : List GroupPresenceState)
-    (erroneous : state.erroneous = true) :
+    (undecided : state.asGroupListPresence = .unavailable) :
     numberOfFilledGroups (state :: rest) = .unknown := by
-  simp [numberOfFilledGroups, erroneous]
+  simp [numberOfFilledGroups, undecided]
+
+/-- The measured asymmetry, stated where it can be reused: over a group whose content is already
+    admitted, a formal error is invisible to the count. Marking such a group erroneous moves neither
+    its availability nor its contribution, because the decided-presence projection reaches `filled`
+    without consulting the error at all. -/
+theorem filledGroupCount_indifferentToErrorOnDecidedGroup
+    (state : GroupPresenceState) (rest : List GroupPresenceState)
+    (filled : state.definitelyFilled = true) :
+    numberOfFilledGroups ({ state with erroneous := true } :: rest) =
+      numberOfFilledGroups (state :: rest) := by
+  have ignoresError : ({ state with erroneous := true } : GroupPresenceState).definitelyFilled
+      = state.definitelyFilled := rfl
+  have updated : ({ state with erroneous := true } : GroupPresenceState).asGroupListPresence
+      = .filled := by
+    simp [GroupPresenceState.asGroupListPresence, ignoresError, filled]
+  have original : state.asGroupListPresence = .filled := by
+    simp [GroupPresenceState.asGroupListPresence, filled]
+  simp [numberOfFilledGroups, updated, original]
 
 theorem relativeRequiredness_uses_positivePresence (state : GroupPresenceState) :
     state.activatesRelativeRequiredness = state.definitelyFilled := rfl

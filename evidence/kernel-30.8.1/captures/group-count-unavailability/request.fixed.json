@@ -1,0 +1,21 @@
+{
+ "model": "Unavail_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "v0-clean",
+   "document": "v0-clean.json"
+  },
+  {
+   "name": "v1-fixed-invalid",
+   "document": "v1-fixed-invalid.json"
+  },
+  {
+   "name": "v2-only-invalid",
+   "document": "v2-only-invalid.json"
+  }
+ ]
+}

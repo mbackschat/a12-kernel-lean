@@ -600,7 +600,35 @@ example : (checkedGroupCount? (groupCountComparison
   }) = some (.fired .omission) := by
   native_decide
 
-/- A formal group error, partial relevance, or missing resolved state makes the complete numeric source unavailable rather than inventing a partial count or a `FormalCause`. -/
+/- An *undecided* group, invisible absence under partial coverage, or missing resolved state makes
+   the complete numeric source unavailable rather than inventing a partial count or a `FormalCause`.
+   Undecided is the operative word: the erroneous operand here carries no admitted content, which is
+   what leaves its presence open. -/
+example : checkedGroupCount?.map (fun checked =>
+    (checked.core.evalSelected {
+      fields := model.checkContext (raw .empty .empty)
+      groups := twoGroupContext
+        ["Order", "Details"] (groupState false true)
+        ["Order", "Preferences"] (groupState true false)
+    },
+    checked.core.evalSelected {
+      fields := model.checkContext (raw .empty .empty)
+      groups := twoGroupContext
+        ["Order", "Details"] (groupState false false .partlyRelevant)
+        ["Order", "Preferences"] (groupState true false)
+    },
+    checked.core.evalSelected {
+      fields := model.checkContext (raw .empty .empty)
+      groups := groupContext
+        ["Order", "Details"] (groupState true false)
+    })) = some (.unknown, .unknown, .unknown) := by
+  native_decide
+
+/- The separating control on the same route: once content is admitted, the group's own formal error
+   is invisible to the count, which fires exactly as over two clean groups. Visible content decides
+   a partly covered group for the same reason. Both are measured at the [unavailability
+   checkpoint](../../docs/SOURCES.md#src-group-count-unavailability) only for the error dimension;
+   the coverage dimension follows the shared decided-presence projection. -/
 example : checkedGroupCount?.map (fun checked =>
     (checked.core.evalSelected {
       fields := model.checkContext (raw .empty .empty)
@@ -613,12 +641,7 @@ example : checkedGroupCount?.map (fun checked =>
       groups := twoGroupContext
         ["Order", "Details"] (groupState true false .partlyRelevant)
         ["Order", "Preferences"] (groupState true false)
-    },
-    checked.core.evalSelected {
-      fields := model.checkContext (raw .empty .empty)
-      groups := groupContext
-        ["Order", "Details"] (groupState true false)
-    })) = some (.unknown, .unknown, .unknown) := by
+    })) = some (.fired .value, .fired .value) := by
   native_decide
 
 /- Fixed group counts require at least two distinct non-root, nonrepeatable groups. The checked source also retains each group subtree for whole-rule reference validation. -/

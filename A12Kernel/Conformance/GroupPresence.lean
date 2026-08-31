@@ -101,10 +101,30 @@ example :
       .fired .omission, .fired .omission) := by
   native_decide
 
--- The plain numeric count is stricter than the list tally.
-example : numberOfFilledGroups [admittedAndErroneous, cleanFilled] = .unknown := by native_decide
+/- The count reads each operand through the same decided-presence projection the group-list
+   predicates use, so it cannot be stricter than `AllGroupsFilled` over the same states. An error
+   blocks only the *negative* answer: an already admitted content decides the group filled however
+   its siblings failed, while a group whose sole non-empty descendant is malformed leaves presence
+   undecided and takes the whole count with it. Measured on both codegen strategies at the
+   [unavailability checkpoint](../../docs/SOURCES.md#src-group-count-unavailability), where the
+   threshold rule fires with the invalid sibling present and goes silent when the invalid cell
+   stands alone. -/
+example : numberOfFilledGroups [admittedAndErroneous, cleanFilled] = .value 2 := by native_decide
+example : numberOfFilledGroups [malformedOnly, cleanFilled] = .unknown := by native_decide
+
+/- The same pair on the second operand. The kernel repeats both answers there, so neither operand
+   position nor a document-global error is the cause; only the erroneous group's own content is. -/
+example : numberOfFilledGroups [cleanFilled, admittedAndErroneous] = .value 2 := by native_decide
+example : numberOfFilledGroups [cleanFilled, malformedOnly] = .unknown := by native_decide
+
 example : numberOfFilledGroups [cleanFilled, cleanEmpty] = .value 1 := by native_decide
-example : numberOfFilledGroups [state [valid] false false .partlyRelevant] = .unknown := by native_decide
+
+/- Coverage is the other dimension and is *not* what the checkpoint measured. Visible content still
+   decides a partly covered group, matching `groupFilled` above; invisible absence does not. -/
+example : numberOfFilledGroups [state [valid] false false .partlyRelevant] = .value 1 := by
+  native_decide
+example : numberOfFilledGroups [state [empty] false false .partlyRelevant] = .unknown := by
+  native_decide
 
 /- A fixed group is one declared entity, not one entity per descendant. One filled descendant makes
    a half-filled group count as given; exhausting both declared group operands makes the count fixed. -/
