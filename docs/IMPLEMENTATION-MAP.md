@@ -327,6 +327,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Checked direct-field formal-input inventory](implementation/computations.md#cap-checked-direct-field-formal-input)
 <a id="cap-selected-computation-preliminary"></a>
 - [Selected computation-preliminary whole calls](implementation/computations.md#cap-selected-computation-preliminary)
+<a id="cap-selected-computation-preliminary-assurance"></a>
+- [Selected computation-preliminary whole calls — assurance](implementation/computations.md#cap-selected-computation-preliminary-assurance)
 <a id="cap-result-and-application"></a>
 - [Result and application](implementation/computations.md#cap-result-and-application)
 <a id="cap-fixed-string-firstfilledvalue-result-application"></a>

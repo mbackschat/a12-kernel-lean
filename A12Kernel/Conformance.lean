@@ -202,6 +202,7 @@ import A12Kernel.Conformance.ParallelNumericRun
 import A12Kernel.Conformance.ParallelNumericSameGroupGuard
 import A12Kernel.Conformance.ParallelNumericScaleSuppression
 import A12Kernel.Conformance.ParallelNumericThreeGroupOperands
+import A12Kernel.Conformance.ParallelOverLimitTarget
 import A12Kernel.Conformance.ParallelPresenceRule
 import A12Kernel.Conformance.PartialDateInput
 import A12Kernel.Conformance.PartialValidation

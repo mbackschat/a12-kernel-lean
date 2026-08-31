@@ -55,6 +55,11 @@ structure ParallelNumericTargetCoverage where
   environment : Env
   address : CellAddr
   indexInvalid : Bool
+  /-- The row lies beyond its own group's declared repeatability. It stays in this inventory rather
+  than being dropped from it, because the Kernel writes a clear there: measured on this carrier with
+  a **resolvable** join at the excess row, which separates capacity exclusion from an empty
+  execution domain ([`SPEC-2026-08-31-08`](../../../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md)). -/
+  overLimit : Bool
   deriving Repr, DecidableEq
 
 /-- The repeatable Number fragment of the public computation result. Collection order is not public. -/
@@ -124,11 +129,11 @@ def WellFormed (route : CheckedParallelNumericTargetRoute model) : Prop :=
     (route.sourceDeclaration.repeatableScope ==
       model.repeatableScopeForGroupPath route.groups.rightGroup.path) = true
 
-/-- Enumerate exactly the in-capacity physically instantiated target rows from the checked document. An over-limit row carries no index entry, so it is outside this route's execution domain; its own clear is unmeasured for this carrier. The target declaration owns the complete scope; callers cannot supply environments or fabricate rows. The inherited document order is an internal canonicalization because Kernel clearing order is not observable. -/
+/-- Enumerate every physically instantiated target row from the checked document, over-limit rows included. The two dispositions are taken later: execution skips an over-limit row and clearing writes one. Enumerating only in-capacity rows here would collapse the distinction the Kernel draws, since a dropped row and a cleared row differ exactly on a seeded cell. The target declaration owns the complete scope; callers cannot supply environments or fabricate rows. The inherited document order is an internal canonicalization because Kernel clearing order is not observable. -/
 def targetEnvironments (route : CheckedParallelNumericTargetRoute model)
     (checked : CheckedDocument model) :
     Except ActualRowEnvironmentError (List Env) :=
-  checked.inCapacityRowEnvironments
+  checked.actualRowEnvironments
     route.targetDeclaration.repeatableScope
 
 /-- Derive one checked index side's cause-blind invalid-mark plan. The target's complete scope remains the coverage domain for every observed group. -/
@@ -193,6 +198,9 @@ def targetCoverageWithMarks
       environment
       address := { field := route.targetField, path }
       indexInvalid := coveredByTarget || coveredByOperand
+      overLimit :=
+        preliminary.base.environmentOverLimit
+          route.targetDeclaration.repeatableScope environment
     }
 
 /-- Derive both checked mark sets and project every actual target through their shared coverage decision. -/
@@ -209,7 +217,30 @@ def targetCoverage
       |>.mapError (ParallelNumericTargetCoverageError.marking .operand)
   route.targetCoverageWithMarks preliminary targetMarks operandMarks
 
-/-- Project both checked index sides to exact source-filled target addresses. A runtime invalid mark remains private unless it covers a target whose immutable source value is nonempty. -/
+/-- Whether one classified target contributes a public clear, and at which address.
+
+    A target is cleared when a runtime invalid mark on either index side covers it, or when its row
+    lies beyond the group's declared repeatability. Either way the clear stays private unless the
+    target's immutable source value is nonempty, so the result reports a value the Kernel removes
+    rather than an intent to remove one.
+
+    Named rather than inlined because the clearing law reasons about this step at every classified
+    target; an anonymous lambda there is not addressable by a rewrite. -/
+def clearCandidate (base : CheckedDocument model)
+    (target : ParallelNumericTargetCoverage) :
+    Except ParallelNumericClearingError (Option CellAddr) := do
+  if !target.indexInvalid && !target.overLimit then
+    pure none
+  else
+    let source ←
+      base.numericTargetStateAt target.address
+        |>.mapError ParallelNumericClearingError.sourceTarget
+    if source.sourceIdentity.isSome then
+      pure (some target.address)
+    else
+      pure none
+
+/-- Project every actual target to the addresses this route clears: one covered by a runtime invalid mark on either index side, and one beyond its group's declared repeatability. Both remain private unless the target's immutable source value is nonempty, so a clear reports a value the Kernel removes rather than an intent. There is no short circuit on an empty mark set, because an over-limit row clears in a document whose every index column is clean. -/
 def clearedSourceTargets
     (route : CheckedParallelNumericTargetRoute model)
     (preliminary : CheckedIndexPreliminary model) :
@@ -220,27 +251,14 @@ def clearedSourceTargets
   let operandMarks ←
     route.invalidIndexMarks preliminary .operand
       |>.mapError (ParallelNumericClearingError.marking .operand)
-  if targetMarks.isEmpty && operandMarks.isEmpty then
-    pure ParallelNumericClearingView.empty
-  else
-    let coverage ←
-      route.targetCoverageWithMarks preliminary targetMarks operandMarks
-        |>.mapError fun
-          | .marking side error => .marking side error
-          | .targetRows error => .targetRows error
-          | .targetEnvironment error => .targetEnvironment error
-    let candidates ← coverage.mapM fun target => do
-      if !target.indexInvalid then
-        pure none
-      else
-        let source ←
-          preliminary.base.numericTargetStateAt target.address
-            |>.mapError ParallelNumericClearingError.sourceTarget
-        if source.sourceIdentity.isSome then
-          pure (some target.address)
-        else
-          pure none
-    pure { cleared := candidates.filterMap id }
+  let coverage ←
+    route.targetCoverageWithMarks preliminary targetMarks operandMarks
+      |>.mapError fun
+        | .marking side error => .marking side error
+        | .targetRows error => .targetRows error
+        | .targetEnvironment error => .targetEnvironment error
+  let candidates ← coverage.mapM (clearCandidate preliminary.base)
+  pure { cleared := candidates.filterMap id }
 
 end CheckedParallelNumericTargetRoute
 

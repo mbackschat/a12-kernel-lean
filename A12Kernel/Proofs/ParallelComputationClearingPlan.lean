@@ -33,8 +33,6 @@ theorem parallelNumericTargetRouteEnvironments_cells_irrelevant
     route.targetEnvironments left =
       route.targetEnvironments right := by
   simp [CheckedParallelNumericTargetRoute.targetEnvironments,
-    CheckedDocument.inCapacityRowEnvironments,
-    CheckedDocument.environmentOverLimit,
     CheckedDocument.actualRowEnvironments, rows]
 
 /-- Target-instance enumeration depends on checked physical row topology, never on placed target-cell payloads. -/
@@ -59,6 +57,16 @@ theorem parallelNumericTargetRouteInvalidIndexMarks_noTargets
   unfold CheckedParallelNumericTargetRoute.invalidIndexMarks
   rw [empty]
   rfl
+
+/-- A step that answers `none` at every element of a list makes the whole `mapM` a constant `none`
+list. Stated here because the clearing law below is its only consumer. -/
+private theorem exceptMapM_const_none {α β ε : Type} {f : α → Except ε (Option β)} :
+    ∀ {l : List α}, (∀ a ∈ l, f a = .ok none) → l.mapM f = .ok (l.map fun _ => none)
+  | [], _ => rfl
+  | a :: rest, h => by
+      rw [List.mapM_cons, h a (List.mem_cons_self ..),
+        exceptMapM_const_none (fun b member => h b (List.mem_cons_of_mem a member))]
+      rfl
 
 /-- Every successful coverage entry retains the checked route's target field. -/
 theorem parallelNumericTargetRoute_coverageWithMarks_owns_target
@@ -102,6 +110,9 @@ theorem parallelNumericTargetRoute_coverageWithMarks_owns_target
               environment
               address := { field := route.targetField, path }
               indexInvalid := coveredByTarget || coveredByOperand
+              overLimit :=
+                preliminary.base.environmentOverLimit
+                  route.targetDeclaration.repeatableScope environment
             } : ParallelNumericTargetCoverage)) = .ok coverage := by
         simpa [environments, Except.mapError, Bind.bind,
           Except.bind] using covered
@@ -179,6 +190,9 @@ theorem parallelNumericTargetRoute_coverageWithMarks_addresses_nodup
           environment
           address := { field := route.targetField, path }
           indexInvalid := coveredByTarget || coveredByOperand
+          overLimit :=
+            preliminary.base.environmentOverLimit
+              route.targetDeclaration.repeatableScope environment
         }
       have mapped : environments.mapM action = .ok coverage := by
         change
@@ -202,6 +216,9 @@ theorem parallelNumericTargetRoute_coverageWithMarks_addresses_nodup
               environment
               address := { field := route.targetField, path }
               indexInvalid := coveredByTarget || coveredByOperand
+              overLimit :=
+                preliminary.base.environmentOverLimit
+                  route.targetDeclaration.repeatableScope environment
             } : ParallelNumericTargetCoverage)) =
               .ok coverage
         exact covered
@@ -271,7 +288,7 @@ theorem parallelNumericTargetRoute_coverageWithMarks_addresses_nodup
       have coverageEnvironmentsNodup :
           (coverage.map (·.environment)).Nodup := by
         rw [environmentProjection]
-        exact checkedDocument_inCapacityRowEnvironments_nodup
+        exact checkedDocument_actualRowEnvironments_nodup
           preliminary.base
           route.targetDeclaration.repeatableScope
           environments environmentsResult
@@ -291,13 +308,13 @@ theorem parallelNumericTargetRoute_coverageWithMarks_addresses_nodup
         rw [← environmentProjection]
         exact List.mem_map.mpr ⟨right, rightMember, rfl⟩
       have leftLevels :=
-        checkedDocument_inCapacityRowEnvironment_scope
+        checkedDocument_actualRowEnvironment_scope
           preliminary.base
           route.targetDeclaration.repeatableScope
           environments environmentsResult
           left.environment leftEnvironmentMember
       have rightLevels :=
-        checkedDocument_inCapacityRowEnvironment_scope
+        checkedDocument_actualRowEnvironment_scope
           preliminary.base
           route.targetDeclaration.repeatableScope
           environments environmentsResult
@@ -398,32 +415,98 @@ theorem parallelNumericInvalidIndexMarks_noTargets
   apply parallelNumericTargetRouteInvalidIndexMarks_noTargets
   exact empty
 
+/-- Clean index columns clear nothing **on an in-capacity target inventory**. The capacity
+condition is not decoration: an over-limit row is cleared in a document whose every index column is
+clean, so the earlier unconditional reading of this law was false and is corrected here rather than
+narrowed by a hypothesis that happens to hold ([`SPEC-2026-08-31-08`](../../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md)). -/
 theorem parallelNumericTargetRouteClearing_noMarks
     (route : CheckedParallelNumericTargetRoute model)
     (preliminary : CheckedIndexPreliminary model)
     (targetClean :
       route.invalidIndexMarks preliminary .target = .ok [])
     (operandClean :
-      route.invalidIndexMarks preliminary .operand = .ok []) :
+      route.invalidIndexMarks preliminary .operand = .ok [])
+    (environments : List Env)
+    (rows : route.targetEnvironments preliminary.base = .ok environments)
+    (coverage : List ParallelNumericTargetCoverage)
+    (covered :
+      route.targetCoverageWithMarks preliminary [] [] = .ok coverage)
+    (inCapacity : ∀ environment ∈ environments,
+      preliminary.base.environmentOverLimit
+        route.targetDeclaration.repeatableScope environment = false) :
     route.clearedSourceTargets preliminary =
       .ok ParallelNumericClearingView.empty := by
+  have mapped :
+      environments.mapM (fun environment => do
+        let path ←
+          Except.mapError ParallelNumericTargetCoverageError.targetEnvironment
+            (environment.pathForScope route.targetDeclaration.repeatableScope)
+        let coveredByTarget ←
+          Except.mapError ParallelNumericTargetCoverageError.targetEnvironment
+            ((route.markPlanFor .target).coversAny environment [])
+        let coveredByOperand ←
+          Except.mapError ParallelNumericTargetCoverageError.targetEnvironment
+            ((route.markPlanFor .operand).coversAny environment [])
+        pure ({
+          environment
+          address := { field := route.targetField, path }
+          indexInvalid := coveredByTarget || coveredByOperand
+          overLimit :=
+            preliminary.base.environmentOverLimit
+              route.targetDeclaration.repeatableScope environment
+        } : ParallelNumericTargetCoverage)) = .ok coverage := by
+    unfold CheckedParallelNumericTargetRoute.targetCoverageWithMarks at covered
+    rw [rows] at covered
+    simpa [Except.mapError, Bind.bind, Except.bind] using covered
+  have quiet :
+      ∀ target ∈ coverage,
+        target.indexInvalid = false ∧ target.overLimit = false := by
+    apply exceptMapM_all_of_step (mapped := mapped)
+    intro environment member target executed
+    cases path :
+        environment.pathForScope
+          route.targetDeclaration.repeatableScope with
+    | error error =>
+        simp [path, Except.mapError, Bind.bind, Except.bind] at executed
+    | ok addressPath =>
+        simp [path, ParallelComputationMarkPlan.coversAny,
+          Except.mapError, Bind.bind, Pure.pure, Except.bind] at executed
+        cases executed
+        exact ⟨rfl, inCapacity environment member⟩
+  have candidates :
+      coverage.mapM
+          (CheckedParallelNumericTargetRoute.clearCandidate preliminary.base) =
+        .ok (coverage.map fun _ => none) :=
+    exceptMapM_const_none (fun target member => by
+      have properties := quiet target member
+      simp [CheckedParallelNumericTargetRoute.clearCandidate,
+        properties.1, properties.2, Pure.pure, Except.pure])
   unfold CheckedParallelNumericTargetRoute.clearedSourceTargets
   rw [targetClean, operandClean]
-  rfl
+  simp only [Except.mapError, Bind.bind, Except.bind]
+  rw [covered]
+  simp [candidates, ParallelNumericClearingView.empty, Pure.pure, Except.pure]
 
-/-- Clean columns cannot produce a public clear, regardless of target row topology or source payloads. -/
+/-- The same law at the checked plan. Source payloads are still irrelevant; target row topology is **not**, because a row beyond the declared repeatability clears with no mark anywhere. -/
 theorem parallelNumericClearing_noMarks
     (plan : CheckedParallelNumericClearingPlan model)
     (preliminary : CheckedIndexPreliminary model)
     (targetClean :
       plan.invalidIndexMarks preliminary .target = .ok [])
     (operandClean :
-      plan.invalidIndexMarks preliminary .operand = .ok []) :
+      plan.invalidIndexMarks preliminary .operand = .ok [])
+    (environments : List Env)
+    (rows : plan.targetEnvironments preliminary.base = .ok environments)
+    (coverage : List ParallelNumericTargetCoverage)
+    (covered :
+      plan.asTargetRoute.targetCoverageWithMarks preliminary [] [] = .ok coverage)
+    (inCapacity : ∀ environment ∈ environments,
+      preliminary.base.environmentOverLimit
+        plan.targetDeclaration.repeatableScope environment = false) :
     plan.clearedSourceTargets preliminary =
-      .ok ParallelNumericClearingView.empty := by
-  apply parallelNumericTargetRouteClearing_noMarks
-  · exact targetClean
-  · exact operandClean
+      .ok ParallelNumericClearingView.empty :=
+  parallelNumericTargetRouteClearing_noMarks plan.asTargetRoute preliminary
+    targetClean operandClean environments rows coverage covered inCapacity
 
 @[simp] theorem parallelNumericClearingMark_targetScope
     (plan : CheckedParallelNumericClearingPlan model)

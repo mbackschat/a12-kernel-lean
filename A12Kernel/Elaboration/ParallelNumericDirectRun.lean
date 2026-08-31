@@ -345,7 +345,7 @@ def executableTargets
   let additionallyInvalid :=
     (additionalCoverage.flatten.filter (·.indexInvalid)).map (·.address)
   pure (primaryCoverage.filter fun target =>
-    !target.indexInvalid &&
+    !target.indexInvalid && !target.overLimit &&
       !additionallyInvalid.contains target.address)
 
 /-- Execute every existing target row not covered by any participating group's checked invalid-index marks. Collection order is the checked document's private canonicalization. -/
