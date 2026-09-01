@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericComputation.Core
+import A12Kernel.Elaboration.FirstFilledStarSource
 import A12Kernel.Semantics.ComputationSelfValidation
 
 /-! # Checked inputs to a computed target's self-validation message
@@ -62,6 +63,29 @@ def referencedFieldsForFilledGroupCount (model : FlatModel)
 
 namespace CheckedNumberEntitySource
 
+/-- Narrow a checked Number source to the measured plain-star `Sum` carrier.
+
+    The shared direct-single-star predicate owns the one-axis declaration shape. This narrowing
+    adds the operator-local requirements: one authored operand and a finite declared capacity. -/
+def plainStarSumCarrier? (checked : CheckedNumberEntitySource model) :
+    Option (CheckedStarNumberSource model × Nat) :=
+  match checked.first, checked.rest with
+  | .star source, [] =>
+      if source.source.isDirectSingleStar then
+        source.source.path.axes.head?.bind fun axis =>
+          axis.repeatability.map fun capacity => (source, capacity)
+      else
+        none
+  | _, _ => none
+
+/-- The referenced fields of the measured plain-star `Sum` message.
+
+    A field operand names that field alone, never its enclosing group's siblings; the computed
+    target is included. This is authored-shape inventory and therefore needs no document. -/
+def plainStarSumReferencedFields? (checked : CheckedNumberEntitySource model)
+    (target : FieldId) : Option (List FieldId) :=
+  checked.plainStarSumCarrier?.map fun carrier => [carrier.1.field.id, target]
+
 /-- Derive the implicit-message growth channel for the measured checked `Sum` carrier.
 
     The closed carrier is exactly one plain Number star declared directly in one reopened axis
@@ -71,25 +95,16 @@ namespace CheckedNumberEntitySource
 def plainStarSumGrowth? (checked : CheckedNumberEntitySource model)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (Option ComputationOperandGrowth) :=
-  match checked.first, checked.rest with
-  | .star source, [] =>
-      match source.source.path.axes, source.source.declaration.repeatableScope with
-      | [axis], [level] =>
-          if source.source.path.firstStar == 0 && axis.level == level then
-            match axis.repeatability with
-            | none => pure none
-            | some capacity => do
-                let resolved ← checked.first.resolveCheckedValidationOperand document outer
-                let side := resolved.inCapacityValueListSideAt .computation
-                match side.available with
-                | .error _ => pure none
-                | .ok _ =>
-                    pure (some (.starredRowValues side.cells.length capacity
-                      (!side.hasEmpty)))
-          else
-            pure none
-      | _, _ => pure none
-  | _, _ => pure none
+  match checked.plainStarSumCarrier? with
+  | none => pure none
+  | some (_, capacity) => do
+      let resolved ← checked.first.resolveCheckedValidationOperand document outer
+      let side := resolved.inCapacityValueListSideAt .computation
+      match side.available with
+      | .error _ => pure none
+      | .ok _ =>
+          pure (some (.starredRowValues side.cells.length capacity
+            (!side.hasEmpty)))
 
 end CheckedNumberEntitySource
 

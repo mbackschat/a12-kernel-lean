@@ -83,6 +83,18 @@ private def growthIn (sourceModel : FlatModel)
 private def growth (data : DocumentData) : Option (Option ComputationOperandGrowth) :=
   growthIn boundedModel plainSum data
 
+private def referencedIn (sourceModel : FlatModel)
+    (expression : AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource)) :
+    Option (Option (List FieldId)) :=
+  match elaborateNumberEntityComputationOperation
+      sourceModel ["Root"] targetId expression with
+  | .error _ => none
+  | .ok checked =>
+      match checked.core.expression with
+      | .atom (.numeric (.aggregate .sum source)) =>
+          some (source.plainStarSumReferencedFields? targetId)
+      | _ => none
+
 private def verdict (stored computed : Rat) (data : DocumentData) : Option Verdict :=
   match growth data with
   | some (some channel) => some (computedNumberSelfValidation stored computed [channel])
@@ -117,11 +129,24 @@ example :
 example : growth malformedData = some none := by
   native_decide
 
+/- The inventory follows the field operand, not its enclosing group: `ProductRight` is a sibling. -/
+example :
+    referencedIn boundedModel plainSum =
+      some (some [repeatedId, targetId]) := by
+  native_decide
+
 /- The bounded carrier refuses every shape whose movement rule remains outside the measured profile. -/
 example :
     growthIn model plainSum (documentData 3 3) = some none ∧
       growthIn boundedModel filteredSum (documentData 3 3) = some none ∧
       growthIn boundedModel directSum (documentData 0 0) = some none := by
+  native_decide
+
+/- Inventory and growth share the exact measured carrier rather than widening independently. -/
+example :
+    referencedIn model plainSum = some none ∧
+      referencedIn boundedModel filteredSum = some none ∧
+      referencedIn boundedModel directSum = some none := by
   native_decide
 
 end A12Kernel.Conformance.NumericComputation.SumSelfValidationMessage
