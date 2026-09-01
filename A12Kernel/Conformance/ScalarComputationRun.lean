@@ -161,6 +161,17 @@ private def producerSecond :=
   (numberTable? firstNumberId [(always,
     numberField "InputNumber")]).get (by native_decide)
 
+private def numericConsumer :=
+  (stringTable? firstStringId [
+    (.fieldFilled gateId, .literal "5"),
+    (.fieldNotFilled gateId,
+      .fieldValueAsString (bare "FirstNumber"))]).get
+        (by native_decide)
+
+private def secondNumberFromStringOnly :=
+  (numberTable? secondNumberId [(always,
+    asNumber "FirstString")]).get (by native_decide)
+
 private def secondNumberFromString :=
   (numberTable? secondNumberId [(holding,
     .binary .add (asNumber "FirstString")
@@ -246,14 +257,6 @@ private def tripleTargetOrders?
   let triple ← (certifyScalarComputationTriple first second third).toOption
   pure (triple.authoredTargetFields, triple.executionTargetFields)
 
-private def tripleOutcomes?
-    (first second third : CheckedScalarComputationStep model)
-    (cells : List ClassifiedCellInput := []) :
-    Option (List ScalarComputationOutcome) := do
-  let triple ← (certifyScalarComputationTriple first second third).toOption
-  let input ← checkedDocument cells
-  (triple.execute world prepared.patterns input).toOption
-
 private def dependencySummary
     (steps : List (CheckedScalarComputationStep model)) :=
   (analyzeScalarComputationSteps steps).map fun analysis =>
@@ -269,6 +272,12 @@ private def numberStringNumber : List (CheckedScalarComputationStep model) :=
     .string firstStringFromNumber,
     .number secondNumberFromString]
 
+private def formalFinding (field : FieldId)
+    (cause : FormalCause) : ComputationFormalInputFinding := {
+  address := { field, path := [] }
+  cause
+}
+
 private structure ResultSummary where
   stringWithoutErrors : List (FieldId × String)
   stringWithChanges : List (FieldId × String)
@@ -277,6 +286,7 @@ private structure ResultSummary where
   numberWithoutErrors : List (FieldId × StoredNumber)
   numberWithChanges : List (FieldId × StoredNumber)
   numberCleared : List FieldId
+  formalErrorsInOperands : List ComputationFormalInputFinding
   deriving Repr, DecidableEq
 
 private def resultSummary?
@@ -285,21 +295,22 @@ private def resultSummary?
     Option ResultSummary := do
   let run ← (certifyScalarComputationRun steps).toOption
   let input ← checkedDocument cells
-  let view ← (run.executeResult world prepared.patterns input
+  let view ← (run.executeResultWithFormalInputs world prepared.patterns input
     (fun _ => ()) [] ([] : List Unit)).toOption
   pure {
-    stringWithoutErrors := view.string.withoutErrors.map fun item =>
+    stringWithoutErrors := view.scalar.string.withoutErrors.map fun item =>
       (item.targetField, item.value.text)
-    stringWithChanges := view.string.withChanges.map fun item =>
+    stringWithChanges := view.scalar.string.withChanges.map fun item =>
       (item.targetField, item.value.text)
-    stringErrors := view.string.withErrors.map fun item =>
+    stringErrors := view.scalar.string.withErrors.map fun item =>
       (item.targetField, item.attempted.text, item.cause)
-    stringCleared := view.string.cleared
-    numberWithoutErrors := view.number.withoutErrors.map fun item =>
+    stringCleared := view.scalar.string.cleared
+    numberWithoutErrors := view.scalar.number.withoutErrors.map fun item =>
       (item.targetField, item.value)
-    numberWithChanges := view.number.withChanges.map fun item =>
+    numberWithChanges := view.scalar.number.withChanges.map fun item =>
       (item.targetField, item.value)
-    numberCleared := view.number.cleared
+    numberCleared := view.scalar.number.cleared
+    formalErrorsInOperands := view.formalErrorsInOperands
   }
 
 /- Both alternating orders consume completed typed values instead of stale target cells, while ordinary String and Number reads stay on the immutable document paths. -/
@@ -362,6 +373,7 @@ example :
         numberWithChanges :=
           [(firstNumberId, { unscaled := 9, scale := 0 })]
         numberCleared := []
+        formalErrorsInOperands := []
       } ∧
     resultSummary? numberStringNumber [
       stringCell inputStringId "2",
@@ -378,6 +390,7 @@ example :
           (secondNumberId, { unscaled := 9, scale := 0 })]
         numberWithChanges := []
         numberCleared := []
+        formalErrorsInOperands := []
       } := by
   native_decide
 
@@ -400,6 +413,7 @@ example :
         numberWithChanges :=
           [(firstNumberId, { unscaled := 0, scale := 0 })]
         numberCleared := []
+        formalErrorsInOperands := []
       } := by
   native_decide
 
@@ -420,6 +434,7 @@ example :
         numberWithoutErrors := []
         numberWithChanges := []
         numberCleared := [firstNumberId]
+        formalErrorsInOperands := []
       } := by
   native_decide
 
@@ -508,24 +523,86 @@ example :
       (.number firstNumberFromStringOnly)).toOption = none := by
   native_decide
 
-/- A reverse-authored three-step chain selects its sole dependency order and reads every fresh completion instead of stale target state. -/
+/- The Kernel packet at `src-scalar-mixed-reverse-authored-triple` separates fresh completion, an unreached malformed source, reached poison, and empty zero through the reverse-authored Number-to-String-to-Number chain. Its unguarded alternatives are represented here by the total clean-Gate split supported by the current condition fragment; malformed Gate behavior and exact formal-dependency identity remain outside this case. -/
 example :
-    tripleTargetOrders? (.string secondStringFromNumberOnly)
-        (.number firstNumberFromStringOnly) (.string firstStringValue) =
-      some ([secondStringId, firstNumberId, firstStringId],
-        [firstStringId, firstNumberId, secondStringId]) ∧
-    tripleOutcomes? (.string secondStringFromNumberOnly)
-        (.number firstNumberFromStringOnly) (.string firstStringValue) [
-          stringCell firstStringId "STALE",
-          numberCell firstNumberId 80,
-          stringCell secondStringId "OLD"] =
-      some [
-        .string firstStringId
-          (.accepted { text := "7", nonempty := by decide }),
-        .number firstNumberId
-          (.accepted { unscaled := 7, scale := 0 }),
-        .string secondStringId
-          (.accepted { text := "7", nonempty := by decide })] := by
+    tripleTargetOrders? (.number secondNumberFromStringOnly)
+        (.string numericConsumer) (.number producerSecond) =
+      some ([secondNumberId, firstStringId, firstNumberId],
+        [firstNumberId, firstStringId, secondNumberId]) ∧
+    resultSummary? [.number producerSecond, .string numericConsumer,
+        .number secondNumberFromStringOnly] [
+          numberCell inputNumberId 7,
+          numberCell firstNumberId 90,
+          stringCell firstStringId "90",
+          numberCell secondNumberId 90] =
+      some {
+        stringWithoutErrors := [(firstStringId, "7")]
+        stringWithChanges := [(firstStringId, "7")]
+        stringErrors := []
+        stringCleared := []
+        numberWithoutErrors := [
+          (firstNumberId, { unscaled := 7, scale := 0 }),
+          (secondNumberId, { unscaled := 7, scale := 0 })]
+        numberWithChanges := [
+          (firstNumberId, { unscaled := 7, scale := 0 }),
+          (secondNumberId, { unscaled := 7, scale := 0 })]
+        numberCleared := []
+        formalErrorsInOperands := []
+      } ∧
+    resultSummary? [.number producerSecond, .string numericConsumer,
+        .number secondNumberFromStringOnly] [
+          malformedNumberCell inputNumberId,
+          stringCell firstStringId "90",
+          numberCell secondNumberId 90,
+          stringCell gateId "select-literal",
+          numberCell firstNumberId 90] =
+      some {
+        stringWithoutErrors := [(firstStringId, "5")]
+        stringWithChanges := [(firstStringId, "5")]
+        stringErrors := []
+        stringCleared := []
+        numberWithoutErrors := [
+          (secondNumberId, { unscaled := 5, scale := 0 })]
+        numberWithChanges := [
+          (secondNumberId, { unscaled := 5, scale := 0 })]
+        numberCleared := [firstNumberId]
+        formalErrorsInOperands := [formalFinding inputNumberId .malformed]
+      } ∧
+    resultSummary? [.number producerSecond, .string numericConsumer,
+        .number secondNumberFromStringOnly] [
+          malformedNumberCell inputNumberId,
+          stringCell firstStringId "90",
+          numberCell secondNumberId 90,
+          numberCell firstNumberId 90] =
+      some {
+        stringWithoutErrors := []
+        stringWithChanges := []
+        stringErrors := []
+        stringCleared := [firstStringId]
+        numberWithoutErrors := []
+        numberWithChanges := []
+        numberCleared := [firstNumberId, secondNumberId]
+        formalErrorsInOperands := [formalFinding inputNumberId .malformed]
+      } ∧
+    resultSummary? [.number producerSecond, .string numericConsumer,
+        .number secondNumberFromStringOnly] [
+          stringCell firstStringId "90",
+          numberCell secondNumberId 90,
+          numberCell firstNumberId 90] =
+      some {
+        stringWithoutErrors := [(firstStringId, "0")]
+        stringWithChanges := [(firstStringId, "0")]
+        stringErrors := []
+        stringCleared := []
+        numberWithoutErrors := [
+          (firstNumberId, { unscaled := 0, scale := 0 }),
+          (secondNumberId, { unscaled := 0, scale := 0 })]
+        numberWithChanges := [
+          (firstNumberId, { unscaled := 0, scale := 0 }),
+          (secondNumberId, { unscaled := 0, scale := 0 })]
+        numberCleared := []
+        formalErrorsInOperands := []
+      } := by
   native_decide
 
 /- Three independent authored steps retain their order, while the complete three-target cycle has no certified permutation. -/
@@ -779,12 +856,6 @@ example :
     .fail (.string firstStringValue) member pending enabled
       failingString_evaluated
   exact ⟨failed, .failed failed⟩
-
-private def formalFinding (field : FieldId)
-    (cause : FormalCause) : ComputationFormalInputFinding := {
-  address := { field, path := [] }
-  cause
-}
 
 private structure MixedFormalInputSummary where
   planOperands : List FieldId

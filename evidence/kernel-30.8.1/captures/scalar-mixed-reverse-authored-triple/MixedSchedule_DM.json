@@ -1,0 +1,149 @@
+{
+  "header" : {
+    "id" : "MixedSchedule_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MixedSchedule_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Schedule",
+        "name" : "Schedule",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Schedule/Base",
+            "name" : "Base",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Schedule/Gate",
+            "name" : "Gate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Schedule/Consumer",
+            "name" : "Consumer",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Use decimal digits."
+                  } ],
+                  "maxLength" : 15,
+                  "pattern" : "[0-9]+"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Schedule/Producer",
+            "name" : "Producer",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Schedule/Final",
+            "name" : "Final",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Schedule/FinalFirst",
+            "name" : "FinalFirst",
+            "Computation" : {
+              "computedFieldRelPath" : "../Final",
+              "computationAlternatives" : [ {
+                "operation" : "FieldValueAsNumber(Consumer)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Convert the completed consumer value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Schedule/ConsumerSecond",
+            "name" : "ConsumerSecond",
+            "Computation" : {
+              "computedFieldRelPath" : "../Consumer",
+              "computationAlternatives" : [ {
+                "precondition" : "FieldFilled(Gate)",
+                "operation" : "\"5\""
+              }, {
+                "precondition" : "FieldNotFilled(Gate)",
+                "operation" : "FieldValueAsString(Producer)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Select a numeric literal or the completed producer."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Schedule/ProducerThird",
+            "name" : "ProducerThird",
+            "Computation" : {
+              "computedFieldRelPath" : "../Producer",
+              "computationAlternatives" : [ {
+                "operation" : "[Base]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Project the base value."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

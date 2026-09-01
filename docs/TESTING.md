@@ -24,6 +24,7 @@ The marked entries below are the exact machine-read reviewed-exception map. `rev
 
 <!-- lean-source-hygiene-exceptions:start -->
 <!-- lean-source-hygiene-exception: A12Kernel/Conformance/DateRangeComparison.lean | review-threshold | The cohesive DateRange construction-equality family reuses private model and document fixtures across exact, fragment, yearless, and mixed cases; splitting it would duplicate or expose those fixtures without isolating a useful build target. -->
+<!-- lean-source-hygiene-exception: A12Kernel/Conformance/ScalarComputationRun.lean | review-threshold | The cohesive finite scalar-run family reuses private model, checked-table, pattern, and document fixtures across execution, result, formal-input, and bounded-order cases; splitting the calibration would duplicate or expose those fixtures without isolating a useful build target. -->
 <!-- lean-source-hygiene-exception: A12Kernel/TrustAudit.lean | exceptional-ceiling | The exhaustive theorem-root presentation and environment audit remain one Lean session to avoid repeated process startup and duplicate environment loading; this file contains only audit-driver setup and registry commands, never semantics or conformance fixtures. -->
 <!-- lean-source-hygiene-exceptions:end -->
 
