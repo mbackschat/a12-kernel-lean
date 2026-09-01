@@ -656,9 +656,10 @@ def resolvedComputationSide
     and the starred form answers the same way on its own
     [probe](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent). An
     unfiltered starred Boolean field likewise projects only its in-capacity rows under both Boolean
-    constants ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-boolean-starred-field-capacity)).
-    Filtered Boolean stars and Confirm stars retain the complete projection because neither carrier
-    is measured. -/
+    constants ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-boolean-starred-field-capacity)),
+    and the distinct unfiltered Confirm carrier does the same under `True`
+    ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-confirm-starred-field-capacity)).
+    Filtered Boolean and Confirm stars retain the complete projection because neither is measured. -/
 def resolvedCheckedValidationSide
     (checked : CheckedBooleanValueCountOperand model expected)
     (document : CheckedDocument model) (outer : Env) :
@@ -680,9 +681,8 @@ def resolvedCheckedValidationSide
   let addressed := match checked with
     | .group _ => core.inCapacityAddressedCells
     | .star source =>
-        match source.filter, source.source.declaration.policy.kind with
-        | none, .boolean => core.inCapacityAddressedCells
-        | _, _ => core.addressedCells
+        if source.filter.isNone then core.inCapacityAddressedCells
+        else core.addressedCells
     | .field _ => core.addressedCells
   pure {
     cells := addressed.map fun cell =>

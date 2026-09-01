@@ -170,13 +170,12 @@ theorem checkedBooleanValueCountGroup_resolvedCheckedValidationSide
         hasNonRelevant := core.hasNonRelevant }) := by
   rfl
 
-/-- An unfiltered checked Boolean star selects the in-capacity addressed cells before projecting
-    their canonical tokens. -/
-theorem checkedBooleanValueCount_plainBooleanStar_usesCapacityProjection
+/-- An unfiltered checked Boolean or Confirm star selects the in-capacity addressed cells before
+    projecting their canonical tokens. -/
+theorem checkedBooleanValueCount_plainStar_usesCapacityProjection
     (source : CheckedBooleanValueCountStarSource model expected)
     (document : CheckedDocument model) (outer : Env) :
     source.filter = none →
-    source.source.declaration.policy.kind = .boolean →
     (CheckedBooleanValueCountOperand.star source).resolvedCheckedValidationSide
         document outer = (do
       let core ← source.source.resolveCheckedValidationEntityOperandCore
@@ -187,11 +186,11 @@ theorem checkedBooleanValueCount_plainBooleanStar_usesCapacityProjection
         hasUninstantiatedTail := core.hasUninstantiatedTail
         hasHaving := core.hasHaving
         hasNonRelevant := core.hasNonRelevant }) := by
-  intro unfiltered boolean
+  intro unfiltered
   cases resolved : source.source.resolveCheckedValidationEntityOperandCore
       document outer none <;>
     simp [CheckedBooleanValueCountOperand.resolvedCheckedValidationSide,
-      unfiltered, boolean, Except.map, resolved] <;>
+      unfiltered, Except.map, resolved] <;>
     rfl
 
 /-- Every declaration retained by an operand admitted under `False` is Boolean; Confirm is

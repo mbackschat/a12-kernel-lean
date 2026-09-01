@@ -482,20 +482,24 @@ private def evaluatedCheckedBooleanCapacityStar
       cells }).toOption
   (checked.evaluateCheckedDocumentValidation document []).toOption
 
-private def evaluatedCheckedConfirmCapacityStar : Option NumericOperand := do
+private def evaluatedCheckedConfirmCapacityStar
+    (present : List Bool) : Option NumericOperand := do
   let checked ←
     (elaborateBooleanValueCountSource booleanCapacityModel ["Flags"] true
       confirmCapacityStar).toOption
+  let rows := present.mapIdx fun index _ =>
+    { group := 20, path := [index + 1] }
+  let cells := (present.mapIdx fun index value =>
+    if value then
+      some {
+        address := { field := confirmCapacityField.id, path := [index + 1] }
+        stored := "true"
+        raw := .parsed (.conf true) }
+    else none).filterMap id
   let document ←
     (checkDocument booleanCapacityPrepared "en_US" {
-      instantiatedRows := [
-        { group := 20, path := [1] },
-        { group := 20, path := [2] },
-        { group := 20, path := [3] }]
-      cells := [{
-        address := { field := confirmCapacityField.id, path := [3] }
-        stored := "true"
-        raw := .parsed (.conf true) }] }).toOption
+      instantiatedRows := rows
+      cells }).toOption
   (checked.evaluateCheckedDocumentValidation document []).toOption
 
 /- Stored and category accesses on one physical Enumeration are distinct exact references, and the selected category domain owns literal admission. -/
@@ -602,10 +606,16 @@ example :
         some (.value 0 .fixed) := by
   native_decide
 
-/- The Boolean measurement does not widen the distinct Confirm declaration carrier. Its prior
-   complete-view result remains explicit until a separate Kernel observation settles that branch. -/
+/- A plain starred Confirm field uses the measured in-capacity extent on its distinct `True`-only
+   carrier: an over-limit confirmation does not contribute, while in-capacity confirmations count
+   normally ([checkpoint](../../docs/SOURCES.md#src-confirm-starred-field-capacity)). -/
 example :
-    evaluatedCheckedConfirmCapacityStar = some (.unknown .overRepetition) := by
+    evaluatedCheckedConfirmCapacityStar [false, false, true] =
+        some (.value 0 .growOnly) ∧
+      evaluatedCheckedConfirmCapacityStar [true, false, false] =
+        some (.value 1 .growOnly) ∧
+      evaluatedCheckedConfirmCapacityStar [true, true, false] =
+        some (.value 2 .fixed) := by
   native_decide
 
 /- The observed String carrier does not silently widen the unmeasured Enumeration carrier. Its
