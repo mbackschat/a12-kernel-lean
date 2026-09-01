@@ -279,9 +279,10 @@ example :
 
 /-! ### The leaf's own checked sources
 
-Each retains its own operand type rather than the Number entity operand, and two of the three carry
-their filter as an `Option` field instead of a distinct constructor — so the filtered-star refusal
-has to be made again per family, not inherited. -/
+Each retains its own operand type rather than the Number entity operand. Token and Boolean/Confirm
+carry their filters as `Option` fields, but only the measured token carrier projects one; the
+Boolean/Confirm carrier still refuses independently, as does Number through its distinct
+constructor. -/
 
 private def tokenValueCountCondition?
     (source? : Option (CheckedTokenValueCountSource ordinaryIterationModel)) :
@@ -312,14 +313,47 @@ example :
 private def filteredTokenValueCountSource? :
     Option (CheckedTokenValueCountSource ordinaryIterationModel) :=
   (elaborateTokenValueCountSource ordinaryIterationModel ["Order", "Sections"] "A" {
-    first := .starHaving deeperInnerTokenStar .stored innerAmountSelfHaving
+    first := .starHaving deeperInnerTokenStar .stored (.compareNumbers .notEqual
+      { origin := .inner
+        field := ordinaryPath ["Order", "Sections", "Items"] "InnerAmount" }
+      { origin := .outer
+        field := ordinaryPath ["Order", "Sections"] "OuterAmount" })
     rest := [] }).toOption
 
-/- The optional-filter representation must not let a filtered star through where the Number entity
-   operand's distinct constructor is refused. Both refuse. -/
+/- The selected token and unmarked candidate reference share the reopened coordinate, while `$`
+   stays at the captured firing row. This is the exact token-family witness at the message-pointer
+   checkpoint; Number and Boolean/Confirm have no corresponding observation and remain refused. -/
 example :
-    conditionReferenceError? (tokenValueCountCondition? filteredTokenValueCountSource?)
-      [(10, 2)] = some .filteredStarOperand := by
+    conditionReferences? (tokenValueCountCondition? filteredTokenValueCountSource?)
+      [(10, 2)] = some [
+      { field := innerToken.id, coordinates := [.concrete 2, .wildcard] },
+      { field := innerAmount.id, coordinates := [.concrete 2, .wildcard] },
+      { field := outerAmount.id, coordinates := [.concrete 2] }] := by
+  native_decide
+
+private def filteredTokenWithRepetitionSource? :
+    Option (CheckedTokenValueCountSource ordinaryIterationModel) :=
+  (elaborateTokenValueCountSource ordinaryIterationModel ["Order", "Sections"] "A" {
+    first := .starHaving deeperInnerTokenStar .stored (.and
+      (.compareNumbers .notEqual
+        { origin := .inner
+          field := ordinaryPath ["Order", "Sections", "Items"] "InnerAmount" }
+        { origin := .outer
+          field := ordinaryPath ["Order", "Sections"] "OuterAmount" })
+      (.compareRepetitions .notEqual
+        { origin := .inner
+          group := .path { base := .absolute, groups := ["Order", "Sections", "Items"] } }
+        { origin := .outer
+          group := .path { base := .absolute, groups := ["Order", "Sections"] } }))
+    rest := [] }).toOption
+
+/- `CurrentRepetition` changes filter truth but contributes no field pointer. -/
+example :
+    conditionReferences? (tokenValueCountCondition? filteredTokenWithRepetitionSource?)
+      [(10, 2)] = some [
+      { field := innerToken.id, coordinates := [.concrete 2, .wildcard] },
+      { field := innerAmount.id, coordinates := [.concrete 2, .wildcard] },
+      { field := outerAmount.id, coordinates := [.concrete 2] }] := by
   native_decide
 
 /- A row-paired product references both starred value fields. Its certificate forces one shared
@@ -596,6 +630,39 @@ private def booleanCountReferences? (environment : Env) :
 example :
     booleanCountReferences? [] =
       some [{ field := rowFlag.id, coordinates := [.wildcard] }] := by
+  native_decide
+
+private def filteredBooleanCountReferenceError? :
+    Option ReferenceProjectionError := do
+  let source ← (elaborateBooleanValueCountSource countModel ["Count"] true {
+    first := .starHaving {
+      base := .absolute
+      groups := [{ name := "Count" }, { name := "Rows", starred := true }]
+      field := "RowFlag" } (.compareNumbers .notEqual
+        { origin := .inner
+          field := { base := .absolute, groups := ["Count", "Rows"], field := "RowAmount" } }
+        { origin := .outer
+          field := { base := .absolute, groups := ["Count", "Fixed"], field := "FixedAmount" } })
+    rest := [] }).toOption
+  let core : OrderedNumericComparison countModel := {
+    op := .ordinary .greater
+    left := .atom (.booleanValueCount source)
+    right := .literal { value := 0, authoredScale := 0 } }
+  if hCore : core.wellFormedInBool ["Count"] .sameGroupAddressed = true then do
+    let condition ← (CheckedValidationCondition.fromOrderedNumeric {
+      rowGroup := ["Count"]
+      operandScope := .sameGroupAddressed
+      core
+      modelWellFormed := by native_decide
+      wellFormed := hCore }).toOption
+    match condition.core.referencePointers [] with
+    | .error error => some error
+    | .ok _ => none
+  else
+    none
+
+/- The token observation does not silently widen the Boolean/Confirm carrier. -/
+example : filteredBooleanCountReferenceError? = some .filteredStarOperand := by
   native_decide
 
 end A12Kernel.Conformance.ValidationRule.OrdinaryReference

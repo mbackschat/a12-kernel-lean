@@ -7,19 +7,20 @@ A fired validation message carries the field instances its rule *refers to*, and
 
 Coordinate assignment follows one rule. A repeatable level fixed by the rule's iteration scope is concrete at the firing instance; a level the star reopened, and every axis below it, is wildcard. Both facts are Kernel-locked upstream at a12-dmkits `bbbbf48e`; [`SOURCES.md`](../../../docs/SOURCES.md) owns that provenance.
 
-Two boundaries are deliberate. Membership is total over the fragment it classifies and **fails closed everywhere else**, so an unsupported operand can never be silently read as "no reference". And this projection is not attached to `FlatRuleMessage`: the emitted record still has no reference channel, because a caller that holds a fired outcome also holds the rule and its environment. [`SG10`](../../../docs/SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration) owns the remaining channel work, the filtered-star operand, and the pointer-shape exclusion.
+Two boundaries are deliberate. Membership is total over the fragment it classifies and **fails closed everywhere else**, so an unsupported operand can never be silently read as "no reference". And this projection is not attached to `FlatRuleMessage`: the emitted record still has no reference channel, because a caller that holds a fired outcome also holds the rule and its environment. [`SG10`](../../../docs/SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration) owns the remaining channel work, the Number and Boolean/Confirm filtered-star carriers, and the pointer-shape exclusion.
 -/
 
 namespace A12Kernel
 
 /-- Why one structural reference projection has no answer. No case means an empty reference set: the leaf, atom, or operand family is outside the current fragment, a filtered star's operand coordinates are unpinned, or the firing environment does not bind a level the reference needs.
 
-    There is deliberately no unresolvable-field case. Every membership route starts from the model's own declarations rather than from a bare identifier, so a reference either has a declaration or is not reported at all. -/
+    `incoherentHavingField` is fail-closed protection for the one route whose checked representation retains a resolved Number field rather than its declaration. [`CheckedStarHaving.wellFormed`](A12Kernel.CheckedStarHaving.wellFormed) makes it unreachable for an elaborated filter. -/
 inductive ReferenceProjectionError where
   | unclassifiedLeaf
   | unclassifiedAtom
   | unclassifiedOperand
   | filteredStarOperand
+  | incoherentHavingField (field : FieldId)
   | unreopenedReference (field : FieldId)
   | binding (error : EnvBindingError)
   deriving Repr, DecidableEq
@@ -120,9 +121,53 @@ def CheckedNumberEntitySource.referencePointers
   (·.flatten) <$>
     source.operands.mapM (CheckedNumberEntityOperand.referencePointers environment)
 
+private def havingNumberReferencePointer (source : CheckedStarFieldPath model)
+    (environment : Env) (reference : HavingNumberRef) :
+    Except ReferenceProjectionError MessagePointer := do
+  let declaration ← match model.lookupUniqueId reference.field.id with
+    | .ok declaration =>
+        if declaration.toNumberField? == some reference.field then
+          pure declaration
+        else
+          throw (.incoherentHavingField reference.field.id)
+    | .error _ => throw (.incoherentHavingField reference.field.id)
+  match reference.origin with
+  | .outer => concreteFieldPointer declaration environment
+  | .inner =>
+      if declaration.repeatableScope.length ≤ source.path.firstStar then
+        concreteFieldPointer declaration environment
+      else
+        reopenedFieldPointer declaration source.path.firstStar environment
+
+private def correlatedHavingReferencePointers (source : CheckedStarFieldPath model)
+    (environment : Env) : CorrelatedHaving →
+    Except ReferenceProjectionError (List MessagePointer)
+  | .leaf (.compareNumbers _ left right) => do
+      pure [← havingNumberReferencePointer source environment left,
+        ← havingNumberReferencePointer source environment right]
+  | .leaf (.compareRepetitions _ _ _) => pure []
+  | .and left right | .or left right => do
+      pure ((← correlatedHavingReferencePointers source environment left) ++
+        (← correlatedHavingReferencePointers source environment right))
+
+/- Project the Number-field dependencies of one checked token filter. Keeping this operation at the token source makes its carrier boundary type-enforced: Number and Boolean/Confirm sources cannot call it merely because they also contain a `CheckedStarHaving`. -/
+private def tokenFilterReferencePointers
+    (source : CheckedTokenStarSource model) (environment : Env) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  match source.filter with
+  | none => pure []
+  | some having =>
+      correlatedHavingReferencePointers source.source environment having.condition
+
+/-- A token star retains its selected source whether or not a filter adds dependencies. -/
+def CheckedTokenStarSource.referencePointers (source : CheckedTokenStarSource model)
+    (environment : Env) : Except ReferenceProjectionError (List MessagePointer) := do
+  let selected ← starFieldPointer source.source environment
+  pure (selected :: (← tokenFilterReferencePointers source environment))
+
 /-- A projection-bearing token operand references its **declaring** field. The stored-versus-category choice is not part of a reference: `MessagePointer` has no projection slot, and the channel reports field instances.
 
-    The filter lives in an `Option` field rather than its own constructor here, so the filtered-star refusal has to be made explicitly instead of falling out of the match. It is the same refusal, for the same unwitnessed-coordinates reason.
+    A measured filtered star adds the filter's Number-field operands. Unmarked references at or below the reopened level keep the candidate wildcard, while `$` references use the captured firing environment and stay concrete. Repetition-only leaves contribute no field pointer. This is intentionally token-specific: the Number and Boolean/Confirm carriers remain refused until their own observations establish that the same assignment crosses those representation boundaries.
 
     A group slot contributes its whole recursive expansion through the shared projection, which is why this is list-valued where a field-denoting slot contributes exactly one pointer. -/
 def CheckedTokenEntityOperand.referencePointers (environment : Env) :
@@ -130,9 +175,7 @@ def CheckedTokenEntityOperand.referencePointers (environment : Env) :
       Except ReferenceProjectionError (List MessagePointer)
   | .field source =>
       (concreteFieldPointer source.declaration environment).map ([·])
-  | .star source =>
-      if source.filter.isSome then .error .filteredStarOperand
-      else (starFieldPointer source.source environment).map ([·])
+  | .star source => source.referencePointers environment
   | .group slot => slot.source.referencePointers environment
 
 def CheckedTokenValueCountSource.referencePointers
@@ -141,9 +184,7 @@ def CheckedTokenValueCountSource.referencePointers
   (·.flatten) <$> checked.source.operands.mapM
     (CheckedTokenEntityOperand.referencePointers environment)
 
-/-- The Boolean/Confirm companion carries the identical operand shape, including the optional
-    filter and group slot, so it makes the identical decision. Its fixed canonical-token
-    projection is invisible here for the same reason the token projection is. -/
+/-- The Boolean/Confirm companion has the same optional-filter shape, but it does not inherit the token carrier's measured coordinate account and therefore still refuses a filter. Its fixed canonical-token projection is invisible here for the same reason the token projection is. -/
 def CheckedBooleanValueCountOperand.referencePointers (environment : Env) :
     CheckedBooleanValueCountOperand model expected →
       Except ReferenceProjectionError (List MessagePointer)

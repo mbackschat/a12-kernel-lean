@@ -113,6 +113,33 @@ theorem starFieldPointer_arity (checked : CheckedStarFieldPath model)
       checked.declaration.repeatableScope.length :=
   reopenedFieldPointer_arity _ _ _ _ projected
 
+/-- A successful token-star projection always retains the selected field pointer. Explain consumers may therefore inspect additional `Having` dependencies without losing the value source that the filter selected. -/
+theorem checkedTokenEntityOperand_star_sourcePointer
+    (source : CheckedTokenStarSource model) (environment : Env)
+    (pointers : List MessagePointer)
+    (projected :
+      CheckedTokenEntityOperand.referencePointers environment (.star source) =
+        .ok pointers) :
+    ∃ pointer,
+      starFieldPointer source.source environment = .ok pointer ∧
+        pointer ∈ pointers := by
+  change source.referencePointers environment = .ok pointers at projected
+  unfold CheckedTokenStarSource.referencePointers at projected
+  cases selectedProjection : starFieldPointer source.source environment with
+  | error error =>
+      rw [selectedProjection] at projected
+      simp only [Bind.bind, Except.bind] at projected
+      cases projected
+  | ok selected =>
+      rw [selectedProjection] at projected
+      refine ⟨selected, rfl, ?_⟩
+      simp only [Bind.bind, Except.bind, pure, Except.pure] at projected
+      split at projected
+      · cases projected
+      · simp only [Except.ok.injEq] at projected
+        rw [← projected]
+        simp
+
 private theorem mapM_concreteFieldPointer_exact (environment : Env) :
     ∀ (declarations : List FlatFieldDecl) (pointers : List MessagePointer),
       declarations.mapM (concreteFieldPointer · environment) = .ok pointers →
