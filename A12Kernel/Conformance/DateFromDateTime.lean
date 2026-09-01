@@ -79,8 +79,7 @@ example :
         extracted.instant == moment.instant)) = some (true, false) := by
   native_decide
 
-/- A Date, a Time, and an absent value are not this operator's source: only a DateTime payload extracts,
-which is the runtime half of the measured `MVK_WRONG_DATE_FORMAT_FOR_OP` refusal. -/
+/- A Date payload is not this operator's runtime source. This negative matches the measured full-Date static format control; it establishes no diagnostic for a plain Time source. -/
 example :
     (do
       let moment ← momentAt berlin 2024 6 15 13 45 0
@@ -96,11 +95,7 @@ example :
           ⟨0, 0, 0, by decide⟩ .storedGregorian) = none := by
   native_decide
 
-/-! ## Static admission
-
-Every row is `KERNEL_CONFIRMED` at 30.8.1 through `rule add --dry-run`. The Kernel reports one class,
-`MVK_WRONG_DATE_FORMAT_FOR_OP`, for each refused source; the arms below are finer so a consumer can say
-which requirement failed. -/
+/-! ## Static admission -/
 
 private def momentField : FlatFieldDecl := {
   id := 1
@@ -125,8 +120,30 @@ private def dateField : FlatFieldDecl :=
     policy := { kind := .temporal .date TemporalComponents.fullDate }
     temporalTargetPolicy := some { format := "yyyy-MM-dd", partialMode := .full } }
 
+private def textField : FlatFieldDecl := {
+  id := 4
+  groupPath := ["Order"]
+  name := "Code"
+  policy := { kind := .string }
+  stringPolicy := { lineBreaksPermitted := true } }
+
+private def timeField : FlatFieldDecl := {
+  id := 5
+  groupPath := ["Order"]
+  name := "WallTime"
+  policy := { kind := .temporal .time TemporalComponents.time }
+  temporalTargetPolicy := some { format := "HH:mm:ss", partialMode := .full } }
+
+private def dateOnlyDateTimeField : FlatFieldDecl := {
+  id := 6
+  groupPath := ["Order"]
+  name := "DateOnlyMoment"
+  policy := { kind := .temporal .dateTime TemporalComponents.fullDate }
+  temporalTargetPolicy := some { format := "yyyy-MM-dd", partialMode := .full } }
+
 private def model (zoneId : String := "Europe/Berlin") : FlatModel := {
-  fields := [momentField, clockField, dateField]
+  fields := [momentField, clockField, dateField, textField, timeField,
+    dateOnlyDateTimeField]
   timeZoneId := zoneId }
 
 private def elabError? (field : FieldId) (zoneId : String := "Europe/Berlin") :
@@ -135,13 +152,33 @@ private def elabError? (field : FieldId) (zoneId : String := "Europe/Berlin") :
   | .ok _ => none
   | .error error => some error
 
+private def diagnostic? (field : FieldId) : Option KernelStaticDiagnostic :=
+  (elabError? field).bind DateFromDateTimeElabError.diagnostic?
+
 /- The complete DateTime source is admitted; the degenerate time-only declaration and a plain Date field
 are refused, which is the pair the Kernel reports under one code at the operator. The two refusals stay
 distinguishable here: an incomplete component set is not a wrong kind. -/
 example :
-    (elaborateDateFromDateTime (model) 1).isOk = true ∧
+    (model.validate).isOk = true ∧
+      (elaborateDateFromDateTime (model) 1).isOk = true ∧
       elabError? 2 = some (.sourceComponents 2 TemporalComponents.time) ∧
-      elabError? 3 = some (.sourceKind 3 .date) := by
+      elabError? 3 =
+        some (.sourceKind 3 .date TemporalComponents.fullDate) ∧
+      elabError? 5 =
+        some (.sourceKind 5 .time TemporalComponents.time) ∧
+      elabError? 6 =
+        some (.sourceComponents 6 TemporalComponents.fullDate) := by
+  native_decide
+
+/- Exact measured diagnostic controls are retained beside both locally representable unmeasured temporal branches and the separate unknown-field resolution branch. -/
+example :
+    diagnostic? 4 = some .noDate ∧
+      diagnostic? 2 = some .wrongDateFormatForOp ∧
+      diagnostic? 3 = some .wrongDateFormatForOp ∧
+      diagnostic? 5 = none ∧
+      diagnostic? 6 = none ∧
+      diagnostic? 9 = none ∧
+      KernelStaticDiagnostic.noDate.kernelCode = "MVK_NO_DATE" := by
   native_decide
 
 /- A source the model does not declare is a resolution failure rather than a format one. -/

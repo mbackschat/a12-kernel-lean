@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Elaboration.FullDateComputationApplication
+import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.DateFromDateTime
 
 /-! # Checked `DateFromDateTime`
@@ -8,11 +9,7 @@ Static admission for the Date-valued DateTime component extractor. What it evalu
 [`Semantics/DateFromDateTime.lean`](../Semantics/DateFromDateTime.lean); what a *legal* model may write
 is here.
 
-**One source gate serves both component extractors.** Measured at kernel 30.8.1, the Kernel wants a
-complete DateTime for `DateFromDateTime` exactly as it does for `TimeFromDateTime`, and refuses anything
-else at the operator itself: a DateTime declared with the degenerate time-only format and a plain Date
-field are both `MVK_WRONG_DATE_FORMAT_FOR_OP`. So the predicate below is the shared owner and
-`TimeFromDateTime`'s existing gate delegates to it rather than restating it.
+**One source gate serves both component extractors.** Measured at kernel 30.8.1, the Kernel wants a complete DateTime for `DateFromDateTime` exactly as it does for `TimeFromDateTime`. A non-temporal source reports `MVK_NO_DATE` on the reviewed seven-kind denominator, while a DateTime declared with the degenerate time-only format and a plain full-Date field both report `MVK_WRONG_DATE_FORMAT_FOR_OP`; other temporal-profile diagnostics remain unmeasured. The predicate below is the shared owner and `TimeFromDateTime`'s existing gate delegates to it rather than restating it.
 
 **The result is a Date, and that is measured rather than assumed.** It compares against a Date field, a
 Date literal position, `Today`, and another extraction, and it is admitted as a Date-addition operand;
@@ -99,17 +96,36 @@ def checkBoundCompleteDateTimeSource
           else
             .error (.scopeMismatch readingPath sourceDeclaration.path)
 
-/-- Static refusal before a `DateFromDateTime` read is admitted. The Kernel reports one class,
-`MVK_WRONG_DATE_FORMAT_FOR_OP`, for every source shape below; the arms are split finer here so a
-consumer can say *which* requirement failed while still mapping them all to that one code. -/
+/-- Static refusal before a `DateFromDateTime` read is admitted. Local causes stay finer than the exact measured Kernel projection so unmeasured temporal formats and structural failures remain visibly unmapped. -/
 inductive DateFromDateTimeElabError where
   | source (error : ResolveError)
   | sourceNotTemporal (field : FieldId)
   | sourceKind (field : FieldId) (actual : TemporalKind)
+      (components : TemporalComponents)
   /-- A DateTime whose component set is incomplete, which is the degenerate time-only declaration. -/
   | sourceComponents (field : FieldId) (actual : TemporalComponents)
   | unsupportedZone (zoneId : String)
   deriving Repr, DecidableEq
+
+namespace DateFromDateTimeElabError
+
+/-- Project only the reviewed `DateFromDateTime` diagnostic denominator and temporal controls. Every non-temporal `FlatFieldDecl` is one of the seven authorable measured kinds; unknown-field resolution is separate. Full Date and the previously measured time-only DateTime are the exact format controls, while adjacent temporal profiles remain unmapped. -/
+def diagnostic? :
+    DateFromDateTimeElabError → Option KernelStaticDiagnostic
+  | .sourceNotTemporal _ => some .noDate
+  | .sourceKind _ .date components =>
+      if components == TemporalComponents.fullDate then
+        some .wrongDateFormatForOp
+      else
+        none
+  | .sourceComponents _ components =>
+      if components == TemporalComponents.time then
+        some .wrongDateFormatForOp
+      else
+        none
+  | _ => none
+
+end DateFromDateTimeElabError
 
 /-- One checked `DateFromDateTime` read: a complete-DateTime source and the model zone its extracted
 Date's own midnight is resolved in. -/
@@ -128,7 +144,7 @@ def elaborateDateFromDateTime (model : FlatModel) (sourceField : FieldId) :
   | none => throw (.sourceNotTemporal sourceField)
   | some source =>
       if source.kind != .dateTime then
-        throw (.sourceKind sourceField source.kind)
+        throw (.sourceKind sourceField source.kind source.components)
       else if !source.components.isFullDateTime then
         throw (.sourceComponents sourceField source.components)
       else
