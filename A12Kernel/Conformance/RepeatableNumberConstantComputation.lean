@@ -66,11 +66,15 @@ private def prepared : PreparedFlatStringContext model builtinStringPatternCompi
   (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler model).toOption.get (by native_decide)
 
-private def rows (count : Nat) : Option (CheckedDocument model) :=
+private def document (count : Nat) (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument model) :=
   (checkDocument prepared "en_US" {
     instantiatedRows :=
       (List.range count).map fun index => { group := 10, path := [index + 1] }
-    cells := [] }).toOption
+    cells }).toOption
+
+private def rows (count : Nat) : Option (CheckedDocument model) :=
+  document count []
 
 private def outcomes? (declaringGroup : GroupPath) (target : FieldId)
     (constant : StoredNumber) (count : Nat) :
@@ -114,6 +118,32 @@ example : (outcomes? ["Probe"] bounded.id { unscaled := 99, scale := 0 } 2,
              outcome := .rejected { unscaled := 99, scale := 0 } .aboveMaximum }],
      some [{ targetField := { field := bounded.id, path := [1] }
              outcome := .accepted { unscaled := 5, scale := 0 } }]) := by
+  native_decide
+
+private def rejectedAppliedStates? :
+    Option (List CellAddr × NumericTargetState × NumericTargetState) := do
+  let operation ← (checkRepeatableNumberConstantComputation model ["Probe"] bounded.id
+    { unscaled := 99, scale := 0 }).toOption
+  let source ← rows 2
+  let destination ← document 2 [{
+    address := { field := bounded.id, path := [1] }
+    stored := "5"
+    raw := .parsed (.num 5)
+    numericDecimal := some { unscaled := 5, scale := 0 }
+  }]
+  let view ← (operation.executeResult source ([] : List Bool)).toOption
+  let applied ← view.applyToChecked destination |>.toOption
+  pure (view.numeric.withErrors.map (·.targetField),
+    applied.stateAt { field := bounded.id, path := [1] },
+    applied.stateAt { field := bounded.id, path := [2] })
+
+/- The carrier-specific Kernel observation stops at the retained rejected payload, so this is an
+internal phase-composition lock: the same two ERRORED actions clear a placed destination value but
+do not materialize an absent target. Keeping the public error addresses beside both applied states
+separates result projection from application instead of reconstructing either from the other. -/
+example : rejectedAppliedStates? = some (
+    [{ field := bounded.id, path := [1] }, { field := bounded.id, path := [2] }],
+    .presentEmpty, .absent) := by
   native_decide
 
 /- The two refusal grounds are checked at **different times**, and that is the shape of this family.

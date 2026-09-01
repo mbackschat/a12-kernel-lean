@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.AddressedRepeatableTarget
+import A12Kernel.Elaboration.NumericComputation.RunApplication
 import A12Kernel.Elaboration.NumericComputation.SourceTarget
 import A12Kernel.Elaboration.NumericComputation.RunResult
 import A12Kernel.Elaboration.StaticDiagnostic
@@ -156,5 +157,18 @@ def executeResult (operation : CheckedRepeatableNumberConstantComputation model)
   }
 
 end CheckedRepeatableNumberConstantComputation
+
+namespace RepeatableNumberConstantComputationRunView
+
+/-- Apply retained exact-address Number actions to a separate checked destination certified by the
+same model index as the originating constant operation. -/
+def applyToChecked
+    (view : RepeatableNumberConstantComputationRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    Except NumericComputationDocumentApplicationError
+      (NumericComputationApplicationProjection model) :=
+  view.numeric.applyToChecked destination
+
+end RepeatableNumberConstantComputationRunView
 
 end A12Kernel
