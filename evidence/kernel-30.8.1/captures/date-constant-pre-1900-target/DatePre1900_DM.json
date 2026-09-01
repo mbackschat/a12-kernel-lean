@@ -1,0 +1,101 @@
+{
+  "header" : {
+    "id" : "DatePre1900_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "DatePre1900_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Guarded",
+                "name" : "Guarded",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd",
+                      "youngerThan1900Check" : true
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Unguarded",
+                "name" : "Unguarded",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/GuardedComp",
+            "name" : "GuardedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/Guarded",
+              "computationAlternatives" : [ {
+                "operation" : "\"31.12.1899\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "guarded pre-1900 constant"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/UnguardedComp",
+            "name" : "UnguardedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/Unguarded",
+              "computationAlternatives" : [ {
+                "operation" : "\"31.12.1899\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "unguarded pre-1900 constant"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

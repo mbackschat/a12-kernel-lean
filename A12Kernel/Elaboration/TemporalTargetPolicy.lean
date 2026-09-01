@@ -327,11 +327,11 @@ namespace CheckedOmittedComponentDateTarget
 /-- Render one literal civil Date into this target's declared component subset, then apply the
 declaration's **own** ordered additional-check and floor gates.
 
-    Reusing those gates here is an assumption rather than a measurement: the constant rows covered
-    only targets with no additional check, so what a `yyyy` target declaring the pre-1900 check does
-    with a 1899 constant is unobserved. The gates are declaration-owned and the flag sits on the
-    policy whatever the format, which is why they are applied rather than dropped; the exclusion is
-    recorded beside the carrier's coverage entry so the assumption is visible rather than silent. -/
+    Reusing those gates here is an assumption rather than a measurement: the component-omitting
+    constant rows covered only targets with no additional check, so what a `yyyy` target declaring
+    the pre-1900 check does with a 1899 constant is unobserved. The gates are declaration-owned and
+    the flag sits on the policy whatever the format, which is why they are applied rather than
+    dropped; the exclusion is recorded beside the carrier's coverage entry. -/
 def evaluateCivil (target : CheckedOmittedComponentDateTarget model)
     (date : CivilDate) : FullDateTargetOutcome :=
   let stored := target.format.renderCivil date

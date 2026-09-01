@@ -9,12 +9,12 @@ The Kernel admits a bare Date constant into a repeatable target from the target'
 any ancestor of it, and writes it once per instantiated target row, exactly as the three sibling
 constant families do ([checkpoint](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)).
 
-**This family's target is checked at neither time, which is a third timing rather than a variant of
-the sibling two.** An ordinary String constant is checked entirely at runtime and a Number constant
-splits its two grounds across authoring and runtime; a Date constant meets no target check on either
-side. Nothing about the target's declared format participates in admission — one literal is admitted
-into `dd.MM.yyyy`, `yyyy-MM-dd`, and `yyyy` targets alike — and nothing errors at runtime
-([checkpoint](../../docs/SOURCES.md#src-date-constant-target-formatting)).
+**The target's exact format is a rendering rather than a spelling-equality gate, but the target is not
+unchecked.** Its temporal component family and Base-Year state participate in admission, while its
+measured opt-in pre-1900 policy runs after rendering. One literal is admitted into `dd.MM.yyyy`,
+`yyyy-MM-dd`, and `yyyy` targets alike; a guarded ISO target then retains an attempted pre-1900 value
+as errored while its otherwise identical unguarded sibling accepts it
+([checkpoints](../../docs/SOURCES.md#src-date-constant-pre-1900-target)).
 
 What decides admission is the **literal's own spelling**, upstream of this carrier: a token counts as
 a Date constant only when it is a double-quoted, zero-padded, calendar-*real* `DD.MM.YYYY`, so
@@ -88,9 +88,9 @@ def evaluateCivil (target : CheckedDateConstantTarget model)
 end CheckedDateConstantTarget
 
 /-- One repeatable renderable Date target, contained in its declaring group, and the
-already-classified calendar date every one of its physical rows receives. There is no admission gate
-between the two: the constant is admitted whatever the target declares, and the declared format is a
-rendering rather than a constraint. -/
+already-classified calendar date every one of its physical rows receives. Target refinement has
+already enforced temporal-component and Base-Year admission; the exact declared spelling is a
+rendering rather than an equality constraint, and evaluation still applies the target policy. -/
 structure CheckedRepeatableDateConstantComputation (model : FlatModel) where
   private mk ::
   checkedTarget : CheckedAddressedRepeatableTarget model
@@ -99,8 +99,9 @@ structure CheckedRepeatableDateConstantComputation (model : FlatModel) where
   sameTarget : dateTarget.field = checkedTarget.targetField
   constant : CivilDate
 
-/-- Check carrier-neutral repeatable placement, then refine the target to the renderable FULL Date
-subset. No third gate follows, because the Kernel applies none to the constant. -/
+/-- Check carrier-neutral repeatable placement, then refine the target to the renderable Date subset.
+That refinement owns temporal-component and Base-Year admission. No constant-specific gate follows;
+execution delegates the target's runtime policy to the selected target certificate. -/
 def checkRepeatableDateConstantComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (constant : CivilDate) :

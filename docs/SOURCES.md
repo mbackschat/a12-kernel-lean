@@ -517,7 +517,10 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [A Number constant's scale is read twice, differently: the gate keeps trailing zeros, the store strips them and pads](sources/computation-placement-and-constant-probes.md#src-repeatable-number-constant-scale-rendering)
 
 <a id="src-date-constant-target-formatting"></a>
-- [A Date constant is admitted by its own spelling and stored in the target's format, with no target check at either time](sources/computation-placement-and-constant-probes.md#src-date-constant-target-formatting)
+- [A Date constant is classified by its own spelling and stored in the target's format](sources/computation-placement-and-constant-probes.md#src-date-constant-target-formatting)
+
+<a id="src-date-constant-pre-1900-target"></a>
+- [A Date constant reaches the target's opt-in pre-1900 policy after rendering](sources/computation-placement-and-constant-probes.md#src-date-constant-pre-1900-target)
 
 <a id="src-constant-literal-family-gate"></a>
 - [A bare constant's admission is gated by the target's declared format string, never its kind](sources/computation-placement-and-constant-probes.md#src-constant-literal-family-gate)

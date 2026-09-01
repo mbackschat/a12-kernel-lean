@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-01-01"></a>
+### `SPEC-2026-09-01-01` — a Date constant reaches the target's opt-in pre-1900 policy after rendering
+
+- `status`: pending
+- `supersedes`: [`SPEC-2026-08-31-02`](#spec-2026-08-31-02)'s universal “no target check at either time” claim only. Its measured literal classification and target-format rendering remain unchanged.
+- `clause`: [`09-computations.md`](../spec/09-computations.md), the constant-families row
+- `delta`: correction. A Date constant need not match the target's exact format, but it is not unchecked. Component-family and Base-Year compatibility participate in admission; after rendering, the measured opt-in pre-1900 policy still applies. Other target-policy branches retain their separately stated evidence status.
+- `evidence`: the [pre-1900 Date-constant checkpoint](sources/computation-placement-and-constant-probes.md#src-date-constant-pre-1900-target), one structured dmtool-authored model, Kernel-confirmed static validity, and one two-row runtime request on both codegen strategies at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`.
+- `separator`: two repeatable ISO Date targets differ only in `rejectBefore1900`. The same `"31.12.1899"` constant retains `1899-12-31` as ERRORED on the guarded target and as an accepted value on the unguarded target, never cleared. An unchecked-Date account makes the two outcomes identical.
+- `local-consequence`: Lean already delegates constants to the shared target evaluator and its existing conformance case expects this pair, so executable semantics do not change. The canonical prose, source comment, assurance record, and open-gap inventory are narrowed to the measured account.
+- `limit`: one complete ISO target shape, one value below 1900 but above the Gregorian floor, one repeatable level, and no precondition, seed, or applied-document observation. Reuse on a component-omitting target remains an explicit local assumption.
+- `acceptance`: a12-dmkits reproduces the guarded/unguarded runtime pair on an independently authored carrier and narrows the earlier universal timing claim, or supplies a contrary separating observation.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-08-31-18"></a>
 ### `SPEC-2026-08-31-18` — under partial coverage the filled-group count needs every operand field, where the presence predicates read what they can see
 
