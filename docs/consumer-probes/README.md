@@ -15,7 +15,7 @@ Retained Kernel evidence separately bounds correspondence to A12 Kernel 30.8.1. 
 3. Use a fresh context and ordinary task-appropriate tooling. Consumer code remains disposable outside the repository unless a later shipment decision explicitly adopts it.
 4. Reconcile every claimed result against the Lean authority. A consumer's tests and self-reported PASS do not certify the result.
 5. Classify the run as `green`, `amber`, `red`, or `blocked`. `green` means the exact bounded task worked cheaply; `amber` means useful output exists but the claimed relation needs a larger bridge, certificate, or trust boundary; `red` means the task or handover failed; `blocked` means an unavailable external prerequisite prevented the experiment.
-6. Record implementation time, implementation/test lines, dependencies, capability-local versus reusable machinery, semantic questions, guessed branches, checker cost, and wrong-account sensitivity. Git owns superseded report text; each type document keeps only the compact run ledger and current conclusion needed to compare consumer types.
+6. Record implementation time, implementation/test lines, dependencies, capability-local versus reusable machinery, semantic questions, guessed branches, checker cost, and wrong-account sensitivity. Every new or materially rerun row also records its exact execution timestamp and committed semantic basis under the directory-scoped [run-identity discipline](CLAUDE.md#run-identity). Git owns superseded report text; each type document keeps only the compact run ledger and current conclusion needed to compare consumer types.
 
 ## Portfolio
 
