@@ -77,6 +77,69 @@ private def indexedRuleGroupModel : FlatModel := {
   repeatableGroups := [{ items with indexField := some skuId }]
 }
 
+private def countDecl : FlatFieldDecl := {
+  id := 5
+  groupPath := ["Order", "Items"]
+  name := "Count"
+  policy := { kind := .number { scale := 0, signed := false } }
+  repeatableScope := [10]
+}
+
+private def unitWeightDecl : FlatFieldDecl := {
+  id := 6
+  groupPath := ["Order", "Items"]
+  name := "UnitWeight"
+  policy := { kind := .number { scale := 2, signed := false } }
+  repeatableScope := [10]
+}
+
+private def indexedFieldCountModel : FlatModel := {
+  fields := [skuDecl, countDecl, unitWeightDecl]
+  repeatableGroups := [{ items with indexField := some skuId }]
+}
+
+private def otherSkuDecl : FlatFieldDecl := {
+  id := 7
+  groupPath := ["Order", "OtherItems"]
+  name := "Sku"
+  policy := { kind := .string }
+  repeatableScope := [20]
+}
+
+private def otherWeightDecl : FlatFieldDecl := {
+  id := 8
+  groupPath := ["Order", "OtherItems"]
+  name := "UnitWeight"
+  policy := { kind := .number { scale := 2, signed := false } }
+  repeatableScope := [20]
+}
+
+private def twoIndexedGroupModel : FlatModel := {
+  fields := [skuDecl, countDecl, otherSkuDecl, otherWeightDecl]
+  repeatableGroups := [
+    { items with indexField := some skuId },
+    { level := 20, path := ["Order", "OtherItems"], indexField := some 7 }]
+}
+
+private def itemTarget (field : String) : SurfaceFieldPath := {
+  base := .absolute
+  groups := ["Order", "Items"]
+  field
+}
+
+private def otherItemTarget (field : String) : SurfaceFieldPath := {
+  base := .absolute
+  groups := ["Order", "OtherItems"]
+  field
+}
+
+private def filledFieldSemanticIndexPair :
+    SurfaceFilledFieldCountSemanticIndexPair := {
+  firstTarget := itemTarget "Count"
+  secondTarget := itemTarget "UnitWeight"
+  token := "SKU-1"
+}
+
 private def ruleGroupSemanticIndex : SurfaceRuleGroupSemanticIndex := {
   token := "SKU-1"
 }
@@ -141,6 +204,27 @@ private def checkedRuleGroupSemanticIndex? :
   (elaborateRuleGroupSemanticIndexSource indexedRuleGroupModel
     ["Order", "Items"] ruleGroupSemanticIndex).toOption
 
+private def checkedFilledFieldSemanticIndexPair? :
+    Option (CheckedFilledFieldCountSemanticIndexPair indexedFieldCountModel) :=
+  (elaborateFilledFieldCountSemanticIndexPair indexedFieldCountModel ["Order"]
+    filledFieldSemanticIndexPair).toOption
+
+private def filledFieldSemanticIndexPairError? :
+    Option FilledFieldCountSemanticIndexPairElabError :=
+  match elaborateFilledFieldCountSemanticIndexPair indexedFieldCountModel ["Order"]
+      { filledFieldSemanticIndexPair with secondTarget := itemTarget "Count" } with
+  | .ok _ => none
+  | .error error => some error
+
+private def crossGroupFilledFieldSemanticIndexPairError? :
+    Option FilledFieldCountSemanticIndexPairElabError :=
+  match elaborateFilledFieldCountSemanticIndexPair twoIndexedGroupModel ["Order"] {
+      firstTarget := itemTarget "Count"
+      secondTarget := otherItemTarget "UnitWeight"
+      token := "SKU-1" } with
+  | .ok _ => none
+  | .error error => some error
+
 private def checked : CheckedNumberSemanticIndexSource model :=
   {
     toCheckedSemanticIndexSource := {
@@ -189,6 +273,30 @@ example : checkedRuleGroupSemanticIndex?.map (fun checked =>
       checked.selection.group.path == ["Order", "Items"] &&
       checked.selection.indexDeclaration == skuDecl &&
       checked.selection.key == .literal (.text "SKU-1")) = some true := by
+  native_decide
+
+/- The measured `NumberOfFilledFields` carrier retains the two selected declarations in authored
+order and one exact group/index/token identity. Runtime counting is deliberately absent. -/
+example : checkedFilledFieldSemanticIndexPair?.map (fun checked =>
+    checked.first.targetDeclaration == countDecl &&
+      checked.second.targetDeclaration == unitWeightDecl &&
+      checked.first.group == checked.second.group &&
+      checked.first.indexDeclaration == skuDecl &&
+      checked.second.indexDeclaration == skuDecl &&
+      checked.first.key == .literal (.text "SKU-1") &&
+      checked.second.key == .literal (.text "SKU-1")) = some true := by
+  native_decide
+
+/- Reusing one selected target twice is outside the reviewed pair and cannot manufacture a checked
+two-field carrier merely because each individual semantic-index source is valid. -/
+example : filledFieldSemanticIndexPairError? =
+    some (.duplicateTarget countDecl.path) := by
+  native_decide
+
+/- Two independently valid selected fields from different indexed groups stay outside the exact
+pair carrier instead of being normalized into an unordered model-wide set. -/
+example : crossGroupFilledFieldSemanticIndexPairError? =
+    some (.differentGroup ["Order", "Items"] ["Order", "OtherItems"]) := by
   native_decide
 
 /- An otherwise present but unindexed containing group reaches the measured semantic-index refusal

@@ -19,6 +19,25 @@ theorem semanticIndex_missingIndex_requiresCarrierProjection
     SemanticIndexElabError.diagnostic? (.missingIndexField group) = none := by
   rfl
 
+/-- The checked filled-field pair has one semantic-index selection identity while retaining two
+distinct target declarations in authored order. -/
+theorem checkedFilledFieldCountSemanticIndexPair_identity
+    (checked : CheckedFilledFieldCountSemanticIndexPair model) :
+    checked.first.group = checked.second.group ∧
+      checked.first.indexDeclaration = checked.second.indexDeclaration ∧
+      checked.first.key = .literal (.text checked.token) ∧
+      checked.second.key = .literal (.text checked.token) ∧
+      checked.first.targetDeclaration.id ≠ checked.second.targetDeclaration.id := by
+  constructor
+  · simpa using checked.sharedGroup
+  constructor
+  · simpa using checked.sharedIndex
+  constructor
+  · simpa using checked.firstKeyRetained
+  constructor
+  · simpa using checked.secondKeyRetained
+  · simpa using checked.distinctTargets
+
 /-- The document-backed route delegates key policy to the same semantic-index evaluator after the
 shared checked column has been projected, at every index kind. -/
 theorem checkedSemanticIndex_preliminary_delegates

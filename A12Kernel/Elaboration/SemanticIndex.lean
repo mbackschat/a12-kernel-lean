@@ -45,6 +45,15 @@ structure SurfaceRuleGroupSemanticIndex where
   token : String
   deriving Repr, DecidableEq
 
+/-- The exact reviewed two-field `NumberOfFilledFields` carrier: two authored target paths, one
+exact-text semantic-index key, and no runtime count claim. Other arities and key forms have distinct
+surface types or no representation ([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)). -/
+structure SurfaceFilledFieldCountSemanticIndexPair where
+  firstTarget : SurfaceFieldPath
+  secondTarget : SurfaceFieldPath
+  token : String
+  deriving Repr, DecidableEq
+
 /-- The Number surface retained for the reduced raw-context route, whose literal is a numeric value. -/
 abbrev SurfaceNumberSemanticIndexKey := SurfaceSemanticIndexKey
 abbrev SurfaceNumberSemanticIndex := SurfaceSemanticIndex
@@ -83,6 +92,14 @@ def ruleGroupDiagnostic? : SemanticIndexElabError → Option KernelStaticDiagnos
   | error => error.diagnostic?
 
 end SemanticIndexElabError
+
+inductive FilledFieldCountSemanticIndexPairElabError where
+  | first (error : SemanticIndexElabError)
+  | second (error : SemanticIndexElabError)
+  | differentGroup (first second : GroupPath)
+  | duplicateTarget (path : List String)
+  | incoherentCore
+  deriving Repr, DecidableEq
 
 inductive CheckedSemanticIndexKey where
   | literal (token : SemanticIndexKey)
@@ -158,6 +175,19 @@ def numericIndex (checked : CheckedSemanticIndexSource model) : Bool :=
   | _ => false
 
 end CheckedSemanticIndexSource
+
+/-- The checked ordered pair admitted on the measured `NumberOfFilledFields` carrier. Each member is
+an ordinary checked semantic-index source; the extra witnesses retain the pair's shared selection
+identity and distinct target declarations without evaluating a count. -/
+structure CheckedFilledFieldCountSemanticIndexPair (model : FlatModel) where
+  token : String
+  first : CheckedSemanticIndexSource model
+  second : CheckedSemanticIndexSource model
+  sharedGroup : (first.group == second.group) = true
+  sharedIndex : (first.indexDeclaration == second.indexDeclaration) = true
+  firstKeyRetained : (first.key == .literal (.text token)) = true
+  secondKeyRetained : (second.key == .literal (.text token)) = true
+  distinctTargets : (first.targetDeclaration.id != second.targetDeclaration.id) = true
 
 /-- The reduced raw-context instance: that route rebuilds the column from a one-group scan rather
 than projecting the shared one, so it needs a Number index and a Number target. -/
@@ -288,6 +318,47 @@ def elaborateSemanticIndexSource (model : FlatModel)
         }
       else
         throw .incoherentCore
+
+/-- Certify the exact reviewed pair of index-selected fields for `NumberOfFilledFields`. The two
+ordinary sources are checked independently, then narrowed to one group/index/token identity and two
+distinct targets; the wrapper supplies no runtime field-count evaluator. -/
+def elaborateFilledFieldCountSemanticIndexPair (model : FlatModel)
+    (declaringGroup : GroupPath)
+    (authored : SurfaceFilledFieldCountSemanticIndexPair) :
+    Except FilledFieldCountSemanticIndexPairElabError
+      (CheckedFilledFieldCountSemanticIndexPair model) := do
+  let first ← elaborateSemanticIndexSource model declaringGroup {
+      target := authored.firstTarget
+      key := .literal (.text authored.token) }
+    |>.mapError .first
+  let second ← elaborateSemanticIndexSource model declaringGroup {
+      target := authored.secondTarget
+      key := .literal (.text authored.token) }
+    |>.mapError .second
+  if hGroup : first.group == second.group then
+    if hIndex : first.indexDeclaration == second.indexDeclaration then
+      if hFirstKey : first.key == .literal (.text authored.token) then
+        if hSecondKey : second.key == .literal (.text authored.token) then
+          if hDistinct : first.targetDeclaration.id != second.targetDeclaration.id then
+            pure {
+              token := authored.token
+              first
+              second
+              sharedGroup := hGroup
+              sharedIndex := hIndex
+              firstKeyRetained := hFirstKey
+              secondKeyRetained := hSecondKey
+              distinctTargets := hDistinct }
+          else
+            throw (.duplicateTarget first.targetDeclaration.path)
+        else
+          throw .incoherentCore
+      else
+        throw .incoherentCore
+    else
+      throw .incoherentCore
+  else
+    throw (.differentGroup first.group.path second.group.path)
 
 /-- Refine the general source to the reduced raw-context route's Number index and Number target. -/
 def elaborateNumberSemanticIndexSource (model : FlatModel)

@@ -199,20 +199,6 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `completion-gate`: every legal reference resolves deterministically, every illegal form receives the correct static class, and rendering round-trips for the supported surface.
 - `route-state`: discovery-required
 
-<a id="gap-sg9-filled-field-semantic-index-pair"></a>
-#### Indexed field pair in `NumberOfFilledFields`
-
-- `state`: open
-- `missing`: certify the reviewed ordered pair of two distinct index-selected fields under one exact-text group/index/key identity for `NumberOfFilledFields`.
-- `baseline`: the semantic-index owner already checks each selected target against its model-owned group, index declaration, and key; the field-count owner already defines count behavior after observations exist, but no checked carrier joins the two boundaries.
-- `evidence`: the [reviewed semantic-index carrier checkpoint](SOURCES.md#src-pr2-semantic-index-carrier-matrix) Kernel-locks `Items/Count For "SKU-1", Items/UnitWeight For "SKU-1"` on `NumberOfFilledFields` in that authored order.
-- `consumer`: Analyze and Transform need both selected declarations, their authored order, and the shared group/index/token identity so a rewrite cannot erase either suffix or lower the pair to illegal direct repeatable reads.
-- `limit`: other arities, different groups or keys, duplicate targets, numeric or field-valued keys, runtime count evaluation, comparison movement, stars, filters, and other carriers remain outside this static certificate.
-- `route-state`: verified
-- `red-locus`: [`SemanticIndexElaboration.lean`](../A12Kernel/Conformance/SemanticIndexElaboration.lean) owns checked semantic-index source and exact carrier separators.
-- `green-locus`: [`SemanticIndex.lean`](../A12Kernel/Elaboration/SemanticIndex.lean) owns model/index/key validation and carrier-specific selection certificates.
-- `supporting-locus`: [`SemanticIndexElaboration.lean`](../A12Kernel/Proofs/SemanticIndexElaboration.lean) owns checked selection laws.
-
 ### SG10 — message construction and formal-output integration
 
 - `state`: open

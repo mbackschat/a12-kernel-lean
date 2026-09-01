@@ -1544,6 +1544,7 @@ run_cmd do
 #print axioms A12Kernel.checkedSemanticIndex_preliminary_delegates
 #print axioms A12Kernel.checkedRuleGroupSemanticIndex_selectsRuleGroup
 #print axioms A12Kernel.semanticIndex_missingIndex_requiresCarrierProjection
+#print axioms A12Kernel.checkedFilledFieldCountSemanticIndexPair_identity
 #print axioms A12Kernel.semanticIndexDateRangeBoundPart_resolve_factors
 #print axioms A12Kernel.semanticIndexDateRangeBoundPart_resolve_context
 #print axioms A12Kernel.semanticIndexDateRangeBoundPart_resolve_wrongKind
