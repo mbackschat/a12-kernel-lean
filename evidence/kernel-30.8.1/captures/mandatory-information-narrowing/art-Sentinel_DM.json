@@ -1,0 +1,40 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "47952f81e13fc63dd72d16f2bbbd24e8bb024654",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Sentinel_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [ ],
+  "mandatoryInformation" : {
+    "mandatory" : [
+      "/Sentinel/A",
+      "/Sentinel/B",
+      "/Sentinel/GeZero",
+      "/Sentinel/GtMinusTwo",
+      "/Sentinel/NarrowOne",
+      "/Sentinel/ReverseZero"
+    ],
+    "mandatoryForRootGroup" : [
+      "/Sentinel/A",
+      "/Sentinel/B",
+      "/Sentinel/GeZero",
+      "/Sentinel/GtMinusTwo",
+      "/Sentinel/NarrowOne",
+      "/Sentinel/ReverseZero"
+    ],
+    "mandatoryRootGroups" : [
+      "Sentinel"
+    ]
+  }
+}

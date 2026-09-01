@@ -1,0 +1,270 @@
+{
+  "header" : {
+    "id" : "Sentinel_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Sentinel_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Sentinel",
+        "name" : "Sentinel",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Sentinel/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Sentinel/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Sentinel/GeZero",
+            "name" : "GeZero",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Sentinel/GeMinusOne",
+            "name" : "GeMinusOne",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Sentinel/GtMinusTwo",
+            "name" : "GtMinusTwo",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Sentinel/GtMinusOne",
+            "name" : "GtMinusOne",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Sentinel/ReverseZero",
+            "name" : "ReverseZero",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Sentinel/ReverseMinusOne",
+            "name" : "ReverseMinusOne",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Sentinel/NarrowOne",
+            "name" : "NarrowOne",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Sentinel/NarrowMinusOne",
+            "name" : "NarrowMinusOne",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Sentinel/BASE_A",
+            "name" : "BASE_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "BASE_A",
+              "errorCondition" : "FieldNotFilled(A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "BASE_A"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Sentinel/BASE_B",
+            "name" : "BASE_B",
+            "Rule" : {
+              "errorEntityRelPath" : "../B",
+              "errorCode" : "BASE_B",
+              "errorCondition" : "FieldNotFilled(B)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "BASE_B"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Sentinel/GE_ZERO",
+            "name" : "GE_ZERO",
+            "Rule" : {
+              "errorEntityRelPath" : "../GeZero",
+              "errorCode" : "GE_ZERO",
+              "errorCondition" : "NumberOfFilledFields(A, B) >= 0 And FieldNotFilled(GeZero)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GE_ZERO"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Sentinel/GE_MINUS_ONE",
+            "name" : "GE_MINUS_ONE",
+            "Rule" : {
+              "errorEntityRelPath" : "../GeMinusOne",
+              "errorCode" : "GE_MINUS_ONE",
+              "errorCondition" : "NumberOfFilledFields(A, B) >= -1 And FieldNotFilled(GeMinusOne)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GE_MINUS_ONE"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Sentinel/GT_MINUS_TWO",
+            "name" : "GT_MINUS_TWO",
+            "Rule" : {
+              "errorEntityRelPath" : "../GtMinusTwo",
+              "errorCode" : "GT_MINUS_TWO",
+              "errorCondition" : "NumberOfFilledFields(A, B) > -2 And FieldNotFilled(GtMinusTwo)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GT_MINUS_TWO"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Sentinel/GT_MINUS_ONE",
+            "name" : "GT_MINUS_ONE",
+            "Rule" : {
+              "errorEntityRelPath" : "../GtMinusOne",
+              "errorCode" : "GT_MINUS_ONE",
+              "errorCondition" : "NumberOfFilledFields(A, B) > -1 And FieldNotFilled(GtMinusOne)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "GT_MINUS_ONE"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Sentinel/REVERSE_ZERO",
+            "name" : "REVERSE_ZERO",
+            "Rule" : {
+              "errorEntityRelPath" : "../ReverseZero",
+              "errorCode" : "REVERSE_ZERO",
+              "errorCondition" : "0 <= NumberOfFilledFields(A, B) And FieldNotFilled(ReverseZero)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "REVERSE_ZERO"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Sentinel/REVERSE_MINUS_ONE",
+            "name" : "REVERSE_MINUS_ONE",
+            "Rule" : {
+              "errorEntityRelPath" : "../ReverseMinusOne",
+              "errorCode" : "REVERSE_MINUS_ONE",
+              "errorCondition" : "-1 <= NumberOfFilledFields(A, B) And FieldNotFilled(ReverseMinusOne)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "REVERSE_MINUS_ONE"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Sentinel/NARROW_ONE",
+            "name" : "NARROW_ONE",
+            "Rule" : {
+              "errorEntityRelPath" : "../NarrowOne",
+              "errorCode" : "NARROW_ONE",
+              "errorCondition" : "NumberOfFilledFields(A, B) >= 4294967297 And FieldNotFilled(NarrowOne)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NARROW_ONE"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Sentinel/NARROW_MINUS_ONE",
+            "name" : "NARROW_MINUS_ONE",
+            "Rule" : {
+              "errorEntityRelPath" : "../NarrowMinusOne",
+              "errorCode" : "NARROW_MINUS_ONE",
+              "errorCondition" : "NumberOfFilledFields(A, B) >= 4294967295 And FieldNotFilled(NarrowMinusOne)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "NARROW_MINUS_ONE"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
