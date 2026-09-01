@@ -105,6 +105,14 @@ private def nestedArithmetic (op : NumericArithmeticOp)
     SurfaceAddressedNumberExtremumLeaf :=
   .arithmetic op left right
 
+private def nestedDivision (left right : SurfaceAddressedNumberArithmeticOperand) :
+    SurfaceAddressedNumberExtremumLeaf :=
+  .division left right
+
+private def nestedPower (base exponent : SurfaceAddressedNumberArithmeticOperand) :
+    SurfaceAddressedNumberExtremumLeaf :=
+  .power base exponent
+
 private def nestedWrappedExtremum (op : NumericExtremumOp)
     (first : SurfaceAddressedNumberExtremumLeaf)
     (rest : List SurfaceAddressedNumberExtremumLeaf) :
@@ -592,6 +600,55 @@ example :
       (nestedWrappedExtremum .minimum
         (nestedArithmetic .multiply (fld "A") (lit (3 / 2) 1))
         [.literal { value := 1, authoredScale := 0 }]) []).isSome = true := by
+  native_decide
+
+/- Nested division retains unknown scale, suppression, domain failure, and inner read order through both selectors. -/
+example :
+    (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
+        target.id
+        (nestedWrappedExtremum .minimum
+          (nestedDivision (fld "A") (fld "B"))
+          [.literal { value := 3, authoredScale := 0 }])
+        [field "C"] .minimum with
+      | .error (.scaleMismatch 2 summary) => summary.scale == .unknown
+      | _ => false) = true ∧
+    suppressedOutcomesInto? target .minimum
+      (nestedWrappedExtremum .minimum
+        (nestedDivision (fld "A") (fld "B"))
+        [.literal { value := 3, authoredScale := 0 }]) [field "C"] = some [
+      (addr target.id 1, .accepted (stored 15 1)),
+      (addr target.id 2, .accepted (stored (-2) 0)),
+      (addr target.id 3, .accepted (stored 0 0)),
+      (addr target.id 4, .invalidNoValue .calculationValue),
+      (addr target.id 5, .invalidNoValue .calculationValue),
+      (addr target.id 6, .inheritedPoison .malformed),
+      (addr target.id 7, .inheritedPoison .declaredConstraint),
+      (addr target.id 8, .accepted (stored 3 0))
+    ] := by
+  native_decide
+
+/- Nested power keeps its exponent gate and nonexpandable result scale, while runtime-invalid integral exponents remain domain failures. -/
+example :
+    (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
+        zeroScale.id
+        (nestedWrappedExtremum .minimum
+          (nestedPower (fld "A") (fld "B")) []) [] .minimum with
+      | .error (.invalidPowerExponentScale 1 (.exact 1)) => true
+      | _ => false) = true ∧
+    (operation? zeroScale
+      (nestedWrappedExtremum .minimum
+        (nestedPower (lit 2 0) (lit 2 0))
+        [.literal { value := 3, authoredScale := 0 }]) []).isSome = true ∧
+    (operation? target
+      (nestedWrappedExtremum .minimum
+        (nestedPower (lit 2 0) (lit 2 0))
+        [.literal { value := 3, authoredScale := 0 }]) []).isNone = true ∧
+    outcomesInto? zeroScale .minimum
+      (nestedWrappedExtremum .minimum
+        (nestedPower (lit 2 0) (lit 1001 0))
+        [.literal { value := 3, authoredScale := 0 }]) [] =
+      some ((List.range 8).map fun row =>
+        (addr zeroScale.id (row + 1), .invalidNoValue .calculationValue)) := by
   native_decide
 
 private inductive InnerShape where

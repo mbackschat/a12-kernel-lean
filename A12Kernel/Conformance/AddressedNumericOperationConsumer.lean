@@ -226,6 +226,14 @@ private def nestedArithmetic (op : NumericArithmeticOp) (left right : String) :
     SurfaceAddressedNumberExtremumLeaf :=
   .arithmetic op (.field (bare left)) (.field (bare right))
 
+private def nestedDivision (left right : String) :
+    SurfaceAddressedNumberExtremumLeaf :=
+  .division (.field (bare left)) (.field (bare right))
+
+private def nestedPower (base exponent : String) :
+    SurfaceAddressedNumberExtremumLeaf :=
+  .power (.field (bare base)) (.field (bare exponent))
+
 /-- One constant-only product: an operand that reads no field, so a list of only these references nothing at all. -/
 private def extremumConstantProduct (left right : Rat)
     (leftScale rightScale : Int) : SurfaceAddressedNumberExtremumOperand :=
@@ -681,6 +689,51 @@ example :
         (.extremum .minimum
           (nestedArithmetic .subtract "Amount" "Selected")
           [.literal { value := 0, authoredScale := 0 }])
+        [extremumField "Converted"]) = none := by
+  native_decide
+
+/- Analyze keeps nested division and power as distinct complete leaves with the same ordered dependencies and outer structure. -/
+example :
+    analyzed? (suppressedExtremumLeaf? .minimum rounded0
+      (.extremum .minimum (nestedDivision "Amount" "Selected")
+        [.literal { value := 3, authoredScale := 0 }])
+      [extremumField "Converted"]) =
+      some {
+        targetField := rounded0.id
+        sourceFields := [amount.id, selected.id, converted.id]
+        scope := [10]
+        suppressExactScaleWarning := true
+        parameters := .extremum .minimum
+          { scale := .unknown, canExpandScale := false }
+          [.extremum .minimum
+            [.division (.field amount.id) (.field selected.id),
+              .literal { value := 3, authoredScale := 0 }],
+            .field converted.id]
+      } ∧
+    analyzed? (suppressedExtremumLeaf? .minimum rounded0
+      (.extremum .minimum (nestedPower "Amount" "Selected")
+        [.literal { value := 3, authoredScale := 0 }])
+      [extremumField "Converted"]) =
+      some {
+        targetField := rounded0.id
+        sourceFields := [amount.id, selected.id, converted.id]
+        scope := [10]
+        suppressExactScaleWarning := true
+        parameters := .extremum .minimum
+          { scale := .unknown, canExpandScale := false }
+          [.extremum .minimum
+            [.power (.field amount.id) (.field selected.id),
+              .literal { value := 3, authoredScale := 0 }],
+            .field converted.id]
+      } ∧
+    fingerprintMatch?
+      (suppressedExtremumLeaf? .minimum rounded0
+        (.extremum .minimum (nestedDivision "Amount" "Selected")
+          [.literal { value := 3, authoredScale := 0 }])
+        [extremumField "Converted"])
+      (suppressedExtremumLeaf? .minimum rounded0
+        (.extremum .minimum (nestedPower "Amount" "Selected")
+          [.literal { value := 3, authoredScale := 0 }])
         [extremumField "Converted"]) = none := by
   native_decide
 

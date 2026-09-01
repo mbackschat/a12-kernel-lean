@@ -1976,6 +1976,8 @@ run_cmd do
 #print axioms A12Kernel.checkedAddressedNumberExtremumLeaf_abs
 #print axioms A12Kernel.checkedAddressedNumberExtremumLeaf_round
 #print axioms A12Kernel.checkedAddressedNumberExtremumLeaf_arithmetic
+#print axioms A12Kernel.checkedAddressedNumberExtremumLeaf_division
+#print axioms A12Kernel.checkedAddressedNumberExtremumLeaf_power
 #print axioms A12Kernel.checkedAddressedNumberNestedExtremum_sourceCertified
 #print axioms A12Kernel.checkedAddressedNumberExtremumOperand_sourceCertified
 #print axioms A12Kernel.checkedAddressedNumberExtremum_sourceField_ne_targetField

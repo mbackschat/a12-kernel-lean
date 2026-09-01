@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.AddressedNumberExtremum
 
 /-! # Bounded addressed numeric-operation Analyze/Transform view
 
-This internal consumer view covers the completed repeatable textual conversions and direct-Number field, `Abs`, Round, and bounded operand-list extrema over direct fields, operand-local `Abs`/Round/arithmetic/division/power children over field-or-literal operands, one nested extremum over direct/local-wrapper/ordinary-arithmetic/literal leaves, and at most one immediate literal per extremum call. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, decides candidate target-scale legality from the fingerprint through the elaborator's own gate, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
+This internal consumer view covers the completed repeatable textual conversions and direct-Number field, `Abs`, Round, and bounded operand-list extrema over direct fields, operand-local `Abs`/Round/arithmetic/division/power children over field-or-literal operands, one nested extremum over direct/local-wrapper/ordinary-arithmetic/division/power/literal leaves, and at most one immediate literal per extremum call. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, decides candidate target-scale legality from the fingerprint through the elaborator's own gate, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
 -/
 
 namespace A12Kernel
@@ -39,6 +39,8 @@ inductive AddressedNumberNestedExtremumLeafIdentity where
   | round (field : FieldId) (mode : DecimalRoundingMode) (places : Nat)
   | arithmetic (operation : NumericArithmeticOp)
       (left right : AddressedNumberArithmeticOperandIdentity)
+  | division (left right : AddressedNumberArithmeticOperandIdentity)
+  | power (base exponent : AddressedNumberArithmeticOperandIdentity)
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
 
@@ -150,6 +152,12 @@ private def extremumOperandIdentity :
         | .arithmetic arithmetic child =>
             let inner := arithmeticChildIdentity child
             .arithmetic arithmetic inner.1 inner.2
+        | .division child =>
+            let inner := arithmeticChildIdentity child
+            .division inner.1 inner.2
+        | .power operation =>
+            let inner := arithmeticChildIdentity operation.child
+            .power inner.1 inner.2
         | .literal decoded => .literal decoded)
   | .literal decoded => .literal decoded
 

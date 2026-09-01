@@ -33,6 +33,12 @@ theorem checkedAddressedNumberExtremumLeaf_sourceCertified
   | arithmetic _ child =>
       simpa [CheckedAddressedNumberExtremumLeaf.sources] using
         checkedAddressedNumberArithmeticChild_sourceCertified child
+  | division child =>
+      simpa [CheckedAddressedNumberExtremumLeaf.sources] using
+        checkedAddressedNumberArithmeticChild_sourceCertified child
+  | power operation =>
+      simpa [CheckedAddressedNumberExtremumLeaf.sources] using
+        checkedAddressedNumberArithmeticChild_sourceCertified operation.child
   | literal _ => simp [CheckedAddressedNumberExtremumLeaf.sources]
 
 /-- A nested absolute-value leaf preserves its field's static scale and delegates evaluation to the established result-domain wrapper. -/
@@ -68,6 +74,28 @@ theorem checkedAddressedNumberExtremumLeaf_arithmetic
       (CheckedAddressedNumberExtremumLeaf.arithmetic operation
           child).evaluateAtEnvironment input environment =
         child.evaluateAtEnvironment operation input environment := by
+  exact ⟨rfl, rfl⟩
+
+/-- A nested division leaf delegates unknown scale and ordered evaluation to the established checked child. -/
+theorem checkedAddressedNumberExtremumLeaf_division
+    (child : CheckedAddressedNumberArithmeticChild model)
+    (input : CheckedDocument model) (environment : Env) :
+    CheckedAddressedNumberExtremumLeaf.scaleSummary (.division child) =
+        NumericScaleSummary.binary .divide child.operandSummaries.1
+          child.operandSummaries.2 ∧
+      (CheckedAddressedNumberExtremumLeaf.division child).evaluateAtEnvironment
+          input environment = child.evaluateDivisionAtEnvironment input environment := by
+  exact ⟨rfl, rfl⟩
+
+/-- A nested power leaf retains its certified summary and delegates staged evaluation to the established checked child. -/
+theorem checkedAddressedNumberExtremumLeaf_power
+    (operation : CheckedAddressedNumberPowerOperand model)
+    (input : CheckedDocument model) (environment : Env) :
+    CheckedAddressedNumberExtremumLeaf.scaleSummary (.power operation) =
+        operation.summary ∧
+      (CheckedAddressedNumberExtremumLeaf.power operation).evaluateAtEnvironment
+          input environment =
+        operation.child.evaluatePowerAtEnvironment input environment := by
   exact ⟨rfl, rfl⟩
 
 /-- Every dependency retained by a nested extremum keeps its direct Number witness. -/

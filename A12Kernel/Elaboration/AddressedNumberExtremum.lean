@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.NumericExpression
 
 /-! # Repeatable bounded Number extrema
 
-This capsule retains a nonempty ordered list containing one or more checked Number sources, permits operand-local absolute-value, rounding, one arithmetic, division, or power node over two field-or-literal operands, or one nested extremum over direct, absolute-value, rounded, ordinary-arithmetic, or literal leaves, and admits at most one immediate decoded literal per extremum call. It delegates each local transformation and the authored-order folds to the existing scalar semantics, then reuses the shared exact-address target owner.
+This capsule retains a nonempty ordered list containing one or more checked Number sources, permits operand-local absolute-value, rounding, one arithmetic, division, or power node over two field-or-literal operands, or one nested extremum over direct, absolute-value, rounded, ordinary-arithmetic, division, power, or literal leaves, and admits at most one immediate decoded literal per extremum call. It delegates each local transformation and the authored-order folds to the existing scalar semantics, then reuses the shared exact-address target owner.
 -/
 
 namespace A12Kernel
@@ -14,7 +14,7 @@ inductive SurfaceAddressedNumberArithmeticOperand where
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
 
-/-- One bounded leaf of a nested operand-list extremum. This separate surface admits the same direct, unary, and ordinary-arithmetic operations already completed at the outer level without opening recursive nesting or wider binary families. -/
+/-- One bounded leaf of a nested operand-list extremum. This separate surface admits the same direct, unary, ordinary-arithmetic, division, and power operations already completed at the outer level without opening recursive nesting or wider binary families. -/
 inductive SurfaceAddressedNumberExtremumLeaf where
   | field (reference : SurfaceFieldPath)
   | abs (reference : SurfaceFieldPath)
@@ -22,10 +22,12 @@ inductive SurfaceAddressedNumberExtremumLeaf where
       (places : RoundingPlaces)
   | arithmetic (operation : NumericArithmeticOp)
       (left right : SurfaceAddressedNumberArithmeticOperand)
+  | division (left right : SurfaceAddressedNumberArithmeticOperand)
+  | power (base exponent : SurfaceAddressedNumberArithmeticOperand)
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
 
-/-- The bounded addressed surface admits direct Number fields, operand-local `Abs`, Round, one ordinary arithmetic, division, or power node over two field-or-literal operands, one nested extremum over direct/unary-wrapper/ordinary-arithmetic/literal leaves, and one immediate decoded literal in the outer list. Wider numeric operations remain with the scalar expression owner. -/
+/-- The bounded addressed surface admits direct Number fields, operand-local `Abs`, Round, one ordinary arithmetic, division, or power node over two field-or-literal operands, one nested extremum over direct/unary-wrapper/ordinary-arithmetic/division/power/literal leaves, and one immediate decoded literal in the outer list. Wider numeric operations remain with the scalar expression owner. -/
 inductive SurfaceAddressedNumberExtremumOperand where
   | field (reference : SurfaceFieldPath)
   | abs (reference : SurfaceFieldPath)
@@ -144,6 +146,23 @@ def evaluateAtEnvironment (child : CheckedAddressedNumberArithmeticChild model)
     (NumericComputationResult.combineReached fun left right =>
       .value (operation.eval left right)) input environment
 
+/-- Evaluate division in authored operand order through the existing scalar partial operation. -/
+def evaluateDivisionAtEnvironment
+    (child : CheckedAddressedNumberArithmeticChild model)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedNumberExtremumFault NumericComputationResult :=
+  child.evaluateAtEnvironmentUsing
+    (NumericComputationResult.combineReached fun left right =>
+      NumericComputationResult.ofArithmetic (divideNumeric left right))
+    input environment
+
+/-- Evaluate power in authored operand order through the existing staged scalar operation. -/
+def evaluatePowerAtEnvironment
+    (child : CheckedAddressedNumberArithmeticChild model)
+    (input : CheckedDocument model) (environment : Env) :
+    Except AddressedNumberExtremumFault NumericComputationResult :=
+  child.evaluateAtEnvironmentUsing NumericComputationResult.evalPower input environment
+
 end CheckedAddressedNumberArithmeticChild
 
 /-- One statically admitted power operand with its derived scale retained for the enclosing list. -/
@@ -163,6 +182,8 @@ inductive CheckedAddressedNumberExtremumLeaf (model : FlatModel) where
       (mode : DecimalRoundingMode) (places : RoundingPlaces)
   | arithmetic (operation : NumericArithmeticOp)
       (child : CheckedAddressedNumberArithmeticChild model)
+  | division (child : CheckedAddressedNumberArithmeticChild model)
+  | power (operation : CheckedAddressedNumberPowerOperand model)
   | literal (decoded : DecodedNumericLiteral)
 
 namespace CheckedAddressedNumberExtremumLeaf
@@ -173,6 +194,8 @@ def sources : CheckedAddressedNumberExtremumLeaf model →
   | .field source | .abs source => [source]
   | .round source _ _ => [source]
   | .arithmetic _ child => child.sources
+  | .division child => child.sources
+  | .power operation => operation.child.sources
   | .literal _ => []
 
 /-- The leaf's contribution to its immediate extremum call. -/
@@ -181,6 +204,10 @@ def scaleSummary : CheckedAddressedNumberExtremumLeaf model →
   | .field source | .abs source => .field source.source.info.scale
   | .round _ _ places => .rounded places.val
   | .arithmetic operation child => child.scaleSummary operation
+  | .division child =>
+      NumericScaleSummary.binary .divide child.operandSummaries.1
+        child.operandSummaries.2
+  | .power operation => operation.summary
   | .literal decoded => NumericScaleSummary.constant decoded.authoredScale
 
 /-- Only a literal authored directly in this nested call consumes its literal budget. -/
@@ -201,6 +228,8 @@ def evaluateAtEnvironment
       return (← source.evaluateAtEnvironment input environment).round mode places
   | .arithmetic operation child =>
       child.evaluateAtEnvironment operation input environment
+  | .division child => child.evaluateDivisionAtEnvironment input environment
+  | .power operation => operation.child.evaluatePowerAtEnvironment input environment
   | .literal decoded => pure (.value decoded.value)
 
 end CheckedAddressedNumberExtremumLeaf
@@ -315,14 +344,8 @@ def evaluateAtEnvironment
   | .round source mode places =>
       return (← source.evaluateAtEnvironment input environment).round mode places
   | .arithmetic operation child => child.evaluateAtEnvironment operation input environment
-  | .division child =>
-      child.evaluateAtEnvironmentUsing
-        (NumericComputationResult.combineReached fun left right =>
-          NumericComputationResult.ofArithmetic (divideNumeric left right))
-        input environment
-  | .power operation =>
-      operation.child.evaluateAtEnvironmentUsing NumericComputationResult.evalPower
-        input environment
+  | .division child => child.evaluateDivisionAtEnvironment input environment
+  | .power operation => operation.child.evaluatePowerAtEnvironment input environment
   | .extremum operation => operation.evaluateAtEnvironment input environment
   | .literal decoded => pure (.value decoded.value)
 
@@ -409,19 +432,27 @@ private def checkNumberBinaryOperand
   pure (wrap (← checkNumberArithmeticChild model declaringGroup targetField
     position left right))
 
-private def checkNumberPowerOperand
+private def checkNumberPowerChild
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (position : Nat) (base exponent : SurfaceAddressedNumberArithmeticOperand) :
     Except AddressedNumberExtremumElabError
-      (CheckedAddressedNumberExtremumOperand model) := do
+      (CheckedAddressedNumberPowerOperand model) := do
   let child ←
     checkNumberArithmeticChild model declaringGroup targetField position base exponent
   let summaries := child.operandSummaries
   match hSummary : NumericScaleSummary.power? summaries.1 summaries.2
       child.hasSimpleNonnegativeLiteralExponent with
   | some summary =>
-      pure (.power { child, summary, summaryCertified := hSummary })
+      pure { child, summary, summaryCertified := hSummary }
   | none => throw (.invalidPowerExponentScale position summaries.2.scale)
+
+private def checkNumberPowerOperand
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (position : Nat) (base exponent : SurfaceAddressedNumberArithmeticOperand) :
+    Except AddressedNumberExtremumElabError
+      (CheckedAddressedNumberExtremumOperand model) := do
+  pure (.power (← checkNumberPowerChild model declaringGroup targetField
+    position base exponent))
 
 private def checkNumberNestedLeaf
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
@@ -447,6 +478,14 @@ private def checkNumberNestedLeaf
       let child ←
         checkNumberArithmeticChild model declaringGroup targetField position left right
       pure (.arithmetic operation child)
+  | .division left right => do
+      let child ←
+        checkNumberArithmeticChild model declaringGroup targetField position left right
+      pure (.division child)
+  | .power base exponent => do
+      let operation ←
+        checkNumberPowerChild model declaringGroup targetField position base exponent
+      pure (.power operation)
   | .literal decoded => pure (.literal decoded)
 
 private def checkNumberNestedLeaves
