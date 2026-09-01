@@ -1,0 +1,210 @@
+{
+  "header" : {
+    "id" : "FilteredStarCapacity_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "FilteredStarCapacity_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Label",
+                "name" : "Label",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Flag",
+                "name" : "Flag",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Confirmed",
+                "name" : "Confirmed",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "ConfirmType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Err",
+            "name" : "Err",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/STRING0",
+            "name" : "STRING0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "STRING0",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfValueInFields(\"X\" In /Probe/Rows*/Label Having CurrentRepetition(/Probe/Rows) == CurrentRepetition(/Probe/Rows)) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "STRING0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/STRING1",
+            "name" : "STRING1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "STRING1",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfValueInFields(\"X\" In /Probe/Rows*/Label Having CurrentRepetition(/Probe/Rows) == CurrentRepetition(/Probe/Rows)) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "STRING1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/STRING2",
+            "name" : "STRING2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "STRING2",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfValueInFields(\"X\" In /Probe/Rows*/Label Having CurrentRepetition(/Probe/Rows) == CurrentRepetition(/Probe/Rows)) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "STRING2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/BOOLEAN0",
+            "name" : "BOOLEAN0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "BOOLEAN0",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfValueInFields(True In /Probe/Rows*/Flag Having CurrentRepetition(/Probe/Rows) == CurrentRepetition(/Probe/Rows)) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "BOOLEAN0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/BOOLEAN1",
+            "name" : "BOOLEAN1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "BOOLEAN1",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfValueInFields(True In /Probe/Rows*/Flag Having CurrentRepetition(/Probe/Rows) == CurrentRepetition(/Probe/Rows)) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "BOOLEAN1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/BOOLEAN2",
+            "name" : "BOOLEAN2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "BOOLEAN2",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfValueInFields(True In /Probe/Rows*/Flag Having CurrentRepetition(/Probe/Rows) == CurrentRepetition(/Probe/Rows)) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "BOOLEAN2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/CONFIRM0",
+            "name" : "CONFIRM0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "CONFIRM0",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfValueInFields(True In /Probe/Rows*/Confirmed Having CurrentRepetition(/Probe/Rows) == CurrentRepetition(/Probe/Rows)) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "CONFIRM0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/CONFIRM1",
+            "name" : "CONFIRM1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "CONFIRM1",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfValueInFields(True In /Probe/Rows*/Confirmed Having CurrentRepetition(/Probe/Rows) == CurrentRepetition(/Probe/Rows)) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "CONFIRM1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/CONFIRM2",
+            "name" : "CONFIRM2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "CONFIRM2",
+              "errorCondition" : "FieldFilled(/Probe/Err) And NumberOfValueInFields(True In /Probe/Rows*/Confirmed Having CurrentRepetition(/Probe/Rows) == CurrentRepetition(/Probe/Rows)) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "CONFIRM2"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

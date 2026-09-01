@@ -1,0 +1,20 @@
+{
+  "Probe": {
+    "Err": "e",
+    "Rows": [
+      {
+        "Label": "A",
+        "Flag": false
+      },
+      {
+        "Label": "A",
+        "Flag": false
+      },
+      {
+        "Label": "X",
+        "Flag": true,
+        "Confirmed": true
+      }
+    ]
+  }
+}

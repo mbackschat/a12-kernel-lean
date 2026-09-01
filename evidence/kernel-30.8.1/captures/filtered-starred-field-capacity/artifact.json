@@ -1,0 +1,540 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "b9e7fbdc6b4806e15945bf7f993c04724a83437c",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FilteredStarCapacity_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "over-limit-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "BOOLEAN0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "BOOLEAN0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Flag"
+              ]
+            },
+            {
+              "code" : "CONFIRM0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CONFIRM0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Confirmed",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Confirmed"
+              ]
+            },
+            {
+              "code" : "STRING0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "STRING0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Label",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Label"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Confirmed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Rows[3]/Confirmed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Rows[3]/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Label",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Rows[3]/Label"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "BOOLEAN0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "BOOLEAN0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Flag"
+              ]
+            },
+            {
+              "code" : "CONFIRM0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CONFIRM0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Confirmed",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Confirmed"
+              ]
+            },
+            {
+              "code" : "STRING0",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "STRING0",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Label",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Label"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Confirmed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Rows[3]/Confirmed"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Rows[3]/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Label",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Rows[3]/Label"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "in-capacity-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "BOOLEAN1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "BOOLEAN1",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Flag"
+              ]
+            },
+            {
+              "code" : "CONFIRM1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CONFIRM1",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Confirmed",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Confirmed"
+              ]
+            },
+            {
+              "code" : "STRING1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "STRING1",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Label",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Label"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Rows[3]/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Label",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Rows[3]/Label"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "BOOLEAN1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "BOOLEAN1",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Flag"
+              ]
+            },
+            {
+              "code" : "CONFIRM1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CONFIRM1",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Confirmed",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Confirmed"
+              ]
+            },
+            {
+              "code" : "STRING1",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "STRING1",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Label",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Label"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Rows[3]/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Label",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Rows[3]/Label"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "two-in-capacity",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "BOOLEAN2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "BOOLEAN2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Flag"
+              ]
+            },
+            {
+              "code" : "CONFIRM2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CONFIRM2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Confirmed",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Confirmed"
+              ]
+            },
+            {
+              "code" : "STRING2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "STRING2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Label",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Label"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Rows[3]/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Label",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Rows[3]/Label"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "BOOLEAN2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "BOOLEAN2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Flag",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Flag"
+              ]
+            },
+            {
+              "code" : "CONFIRM2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "CONFIRM2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Confirmed",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Confirmed"
+              ]
+            },
+            {
+              "code" : "STRING2",
+              "field" : "Probe/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "STRING2",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Label",
+                "Probe/Err"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Label"
+              ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Flag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Rows[3]/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Probe/Rows[3]/Label",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The index for group '/Probe/Rows' was specified with 3, but at most 2 is allowed.",
+              "referenced" : [
+                "Probe/Rows[3]/Label"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Probe/Rows[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "The row number is bigger than the maximum allowed value.",
+              "referenced" : [
+                "Probe/Rows[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -409,6 +409,27 @@ private def evaluatedCheckedCapacityStar
       cells }).toOption
   (checked.evaluateCheckedDocumentValidation document []).toOption
 
+private def capacityAllRowsHaving (root : String) : SurfaceCorrelatedHaving :=
+  let group : SurfaceGroupReference := .path {
+    base := .absolute
+    groups := [root, "Rows"] }
+  .compareRepetitions .equal
+    { origin := .inner, group }
+    { origin := .inner, group }
+
+private def evaluatedCheckedFilteredCapacityStar
+    (values : List String) : Option NumericOperand := do
+  let checked ←
+    (elaborateTokenValueCountSource capacityModel ["Form"] "X"
+      (stringStar (some (capacityAllRowsHaving "Form")))).toOption
+  let rows := values.mapIdx fun index _ => capacityRow (index + 1)
+  let cells := values.mapIdx fun index value => capacityCell (index + 1) value
+  let document ←
+    (checkDocument capacityPrepared "en_US" {
+      instantiatedRows := rows
+      cells }).toOption
+  (checked.evaluateCheckedDocumentValidation document []).toOption
+
 private def evaluatedCheckedCapacityEnumerationStar
     (values : List String) : Option NumericOperand := do
   let checked ←
@@ -461,6 +482,22 @@ private def confirmCapacityStar : SurfaceBooleanValueCountSource :=
       field := "Confirmed" }
     rest := [] }
 
+private def confirmCapacityStarHaving : SurfaceBooleanValueCountSource :=
+  { first := .starHaving {
+      base := .absolute
+      groups := [{ name := "Flags" }, { name := "Rows", starred := true }]
+      field := "Confirmed" }
+      (capacityAllRowsHaving "Flags")
+    rest := [] }
+
+private def booleanCapacityStarHaving : SurfaceBooleanValueCountSource :=
+  { first := .starHaving {
+      base := .absolute
+      groups := [{ name := "Flags" }, { name := "Rows", starred := true }]
+      field := "Selected" }
+      (capacityAllRowsHaving "Flags")
+    rest := [] }
+
 private def booleanCapacityCell
     (index : Nat) (value : Bool) : ClassifiedCellInput :=
   { address := { field := booleanCapacityField.id, path := [index] }
@@ -482,11 +519,46 @@ private def evaluatedCheckedBooleanCapacityStar
       cells }).toOption
   (checked.evaluateCheckedDocumentValidation document []).toOption
 
+private def evaluatedCheckedFilteredBooleanCapacityStar
+    (expected : Bool) (values : List Bool) : Option NumericOperand := do
+  let checked ←
+    (elaborateBooleanValueCountSource booleanCapacityModel ["Flags"] expected
+      booleanCapacityStarHaving).toOption
+  let rows := values.mapIdx fun index _ =>
+    { group := 20, path := [index + 1] }
+  let cells := values.mapIdx fun index value =>
+    booleanCapacityCell (index + 1) value
+  let document ←
+    (checkDocument booleanCapacityPrepared "en_US" {
+      instantiatedRows := rows
+      cells }).toOption
+  (checked.evaluateCheckedDocumentValidation document []).toOption
+
 private def evaluatedCheckedConfirmCapacityStar
     (present : List Bool) : Option NumericOperand := do
   let checked ←
     (elaborateBooleanValueCountSource booleanCapacityModel ["Flags"] true
       confirmCapacityStar).toOption
+  let rows := present.mapIdx fun index _ =>
+    { group := 20, path := [index + 1] }
+  let cells := (present.mapIdx fun index value =>
+    if value then
+      some {
+        address := { field := confirmCapacityField.id, path := [index + 1] }
+        stored := "true"
+        raw := .parsed (.conf true) }
+    else none).filterMap id
+  let document ←
+    (checkDocument booleanCapacityPrepared "en_US" {
+      instantiatedRows := rows
+      cells }).toOption
+  (checked.evaluateCheckedDocumentValidation document []).toOption
+
+private def evaluatedCheckedFilteredConfirmCapacityStar
+    (present : List Bool) : Option NumericOperand := do
+  let checked ←
+    (elaborateBooleanValueCountSource booleanCapacityModel ["Flags"] true
+      confirmCapacityStarHaving).toOption
   let rows := present.mapIdx fun index _ =>
     { group := 20, path := [index + 1] }
   let cells := (present.mapIdx fun index value =>
@@ -616,6 +688,30 @@ example :
         some (.value 1 .growOnly) ∧
       evaluatedCheckedConfirmCapacityStar [true, true, false] =
         some (.value 2 .fixed) := by
+  native_decide
+
+/- A structural `Having` that selects every instantiated row still contributes no over-limit value.
+   The over-limit-only match is excluded from the String, Boolean, and Confirm counts, while
+   selected in-capacity matches retain the established filter movement. -/
+example :
+    evaluatedCheckedFilteredCapacityStar ["A", "A", "X"] =
+        some (.value 0 .growOnly) ∧
+      evaluatedCheckedFilteredCapacityStar ["X", "A", "A"] =
+        some (.value 1 .both) ∧
+      evaluatedCheckedFilteredCapacityStar ["X", "X", "A"] =
+        some (.value 2 .both) ∧
+      evaluatedCheckedFilteredBooleanCapacityStar true [false, false, true] =
+        some (.value 0 .growOnly) ∧
+      evaluatedCheckedFilteredBooleanCapacityStar true [true, false, false] =
+        some (.value 1 .both) ∧
+      evaluatedCheckedFilteredBooleanCapacityStar true [true, true, false] =
+        some (.value 2 .both) ∧
+      evaluatedCheckedFilteredConfirmCapacityStar [false, false, true] =
+        some (.value 0 .growOnly) ∧
+      evaluatedCheckedFilteredConfirmCapacityStar [true, false, false] =
+        some (.value 1 .both) ∧
+      evaluatedCheckedFilteredConfirmCapacityStar [true, true, false] =
+        some (.value 2 .both) := by
   native_decide
 
 /- The observed String carrier does not silently widen the unmeasured Enumeration carrier. Its

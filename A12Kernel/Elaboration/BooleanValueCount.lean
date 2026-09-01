@@ -654,12 +654,14 @@ def resolvedComputationSide
     repeatability, and `1` on the control one index lower
     ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep)),
     and the starred form answers the same way on its own
-    [probe](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent). An
-    unfiltered starred Boolean field likewise projects only its in-capacity rows under both Boolean
+    [probe](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent). A
+    starred Boolean field likewise projects only its in-capacity rows under both Boolean
     constants ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-boolean-starred-field-capacity)),
-    and the distinct unfiltered Confirm carrier does the same under `True`
+    and the distinct Confirm carrier does the same under `True`
     ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-confirm-starred-field-capacity)).
-    Filtered Boolean and Confirm stars retain the complete projection because neither is measured. -/
+    The filtered forms apply the same projection to the result of their structural
+    `CurrentRepetition` filter
+    ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-filtered-starred-field-capacity)). -/
 def resolvedCheckedValidationSide
     (checked : CheckedBooleanValueCountOperand model expected)
     (document : CheckedDocument model) (outer : Env) :
@@ -680,9 +682,7 @@ def resolvedCheckedValidationSide
         pure (core, hasUninstantiatedTail)
   let addressed := match checked with
     | .group _ => core.inCapacityAddressedCells
-    | .star source =>
-        if source.filter.isNone then core.inCapacityAddressedCells
-        else core.addressedCells
+    | .star _ => core.inCapacityAddressedCells
     | .field _ => core.addressedCells
   pure {
     cells := addressed.map fun cell =>
