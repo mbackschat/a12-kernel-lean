@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.SemanticIndex
+import A12Kernel.Elaboration.FieldEntityList
 
 /-! # Checked one-group semantic-index conformance
 
@@ -121,6 +122,18 @@ private def twoIndexedGroupModel : FlatModel := {
     { level := 20, path := ["Order", "OtherItems"], indexField := some 7 }]
 }
 
+private def customerNameDecl : FlatFieldDecl := {
+  id := 9
+  groupPath := ["Order"]
+  name := "CustomerName"
+  policy := { kind := .string }
+}
+
+private def indexedGroupFillModel : FlatModel := {
+  fields := [skuDecl, countDecl, unitWeightDecl, customerNameDecl]
+  repeatableGroups := [{ items with indexField := some skuId }]
+}
+
 private def itemTarget (field : String) : SurfaceFieldPath := {
   base := .absolute
   groups := ["Order", "Items"]
@@ -138,6 +151,15 @@ private def filledFieldSemanticIndexPair :
   firstTarget := itemTarget "Count"
   secondTarget := itemTarget "UnitWeight"
   token := "SKU-1"
+}
+
+private def indexedGroupFillSurface
+    (operator : IndexedGroupFieldFillOperator) :
+    SurfaceIndexedGroupFieldFillPair := {
+  operator
+  group := { base := .absolute, groups := ["Order", "Items"] }
+  token := "SKU-1"
+  field := { base := .absolute, groups := ["Order"], field := "CustomerName" }
 }
 
 private def ruleGroupSemanticIndex : SurfaceRuleGroupSemanticIndex := {
@@ -225,6 +247,24 @@ private def crossGroupFilledFieldSemanticIndexPairError? :
   | .ok _ => none
   | .error error => some error
 
+private def checkedIndexedGroupFill?
+    (operator : IndexedGroupFieldFillOperator) :
+    Option (CheckedIndexedGroupFieldFillPair indexedGroupFillModel) :=
+  (elaborateIndexedGroupFieldFillPair indexedGroupFillModel ["Order"]
+    (indexedGroupFillSurface operator)).toOption
+
+private def unindexedGroupFillDiagnosticCode? : Option String :=
+  match elaborateFieldEntityShape indexedGroupFillModel ["Order"] {
+      first := .group (.path {
+        base := .absolute
+        groups := ["Order", "Items"] })
+      rest := [.field {
+        base := .absolute
+        groups := ["Order"]
+        field := "CustomerName" }] } with
+  | .ok _ => none
+  | .error error => error.diagnostic?.map KernelStaticDiagnostic.kernelCode
+
 private def checked : CheckedNumberSemanticIndexSource model :=
   {
     toCheckedSemanticIndexSource := {
@@ -297,6 +337,25 @@ example : filledFieldSemanticIndexPairError? =
 pair carrier instead of being normalized into an unordered model-wide set. -/
 example : crossGroupFilledFieldSemanticIndexPairError? =
     some (.differentGroup ["Order", "Items"] ["Order", "OtherItems"]) := by
+  native_decide
+
+/- Both and only the reviewed field-fill operators preserve the selected group first and the direct
+field second, with the exact index declaration and token available to checked consumers. -/
+example : [IndexedGroupFieldFillOperator.allFieldsFilled,
+    .noFieldFilled].map (fun operator =>
+      (checkedIndexedGroupFill? operator).map (fun checked =>
+        (checked.operator, checked.groupPath,
+          checked.selection.indexDeclaration, checked.selection.key,
+          checked.field))) = [
+      some (.allFieldsFilled, ["Order", "Items"], skuDecl,
+        .literal (.text "SKU-1"), customerNameDecl),
+      some (.noFieldFilled, ["Order", "Items"], skuDecl,
+        .literal (.text "SKU-1"), customerNameDecl)] := by
+  native_decide
+
+/- Dropping `For` sends the otherwise identical repeatable group/direct-field pair back through the
+shared entity-list wildcard gate instead of inheriting indexed admission. -/
+example : unindexedGroupFillDiagnosticCode? = some "MVK_NO_WILDCARD" := by
   native_decide
 
 /- An otherwise present but unindexed containing group reaches the measured semantic-index refusal

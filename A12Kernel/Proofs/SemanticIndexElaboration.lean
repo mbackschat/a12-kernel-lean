@@ -38,6 +38,28 @@ theorem checkedFilledFieldCountSemanticIndexPair_identity
   · simpa using checked.secondKeyRetained
   · simpa using checked.distinctTargets
 
+/-- The indexed-group field-fill surface is closed to the two Kernel-locked carriers. -/
+theorem indexedGroupFieldFillOperator_exhaustive
+    (operator : IndexedGroupFieldFillOperator) :
+    operator = .allFieldsFilled ∨ operator = .noFieldFilled := by
+  cases operator <;> simp
+
+/-- A checked indexed-group/direct-field pair retains one exact text selection and one independently
+owned nonrepeatable direct field outside that selected group. -/
+theorem checkedIndexedGroupFieldFillPair_identity
+    (checked : CheckedIndexedGroupFieldFillPair model) :
+    checked.selection.group.path = checked.groupPath ∧
+      checked.selection.key = .literal (.text checked.token) ∧
+      model.fields.contains checked.field = true ∧
+      checked.field.repeatableScope.isEmpty = true ∧
+      (!checked.selection.group.path.isPrefixOf checked.field.groupPath) = true := by
+  constructor
+  · simpa using checked.groupSelected
+  constructor
+  · simpa using checked.keyRetained
+  exact ⟨checked.fieldOwned, checked.fieldNonrepeatable,
+    checked.fieldOutsideSelection⟩
+
 /-- The document-backed route delegates key policy to the same semantic-index evaluator after the
 shared checked column has been projected, at every index kind. -/
 theorem checkedSemanticIndex_preliminary_delegates

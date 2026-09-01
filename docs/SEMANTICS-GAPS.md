@@ -199,21 +199,6 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `completion-gate`: every legal reference resolves deterministically, every illegal form receives the correct static class, and rendering round-trips for the supported surface.
 - `route-state`: discovery-required
 
-<a id="gap-sg9-indexed-group-field-fill-pair"></a>
-#### Indexed group pair for field-fill quantifiers
-
-- `state`: open
-- `missing`: certify an index-selected group followed by one direct field for exactly `AllFieldsFilled` and `NoFieldFilled`, retaining the same unindexed repeatable-group pair's `MVK_NO_WILDCARD` refusal.
-- `baseline`: the semantic-index owner checks group/index/key selection, and the shared field-entity checker already resolves direct fields and rejects an unstarred repeatable group with `MVK_NO_WILDCARD`; no carrier composes those two checked routes.
-- `evidence`: the [reviewed semantic-index carrier checkpoint](SOURCES.md#src-pr2-semantic-index-carrier-matrix) Kernel-locks both admitted operators on `Items For "SKU-1", CustomerName` and the unindexed `AllFieldsFilled(Items, CustomerName)` refusal.
-- `consumer`: Analyze and Transform need the operator, selected group, direct field, authored order, and exact index/token identity so a rewrite cannot erase `For`, replace row selection with group expansion, or transfer admission to another quantifier.
-- `limit`: runtime field-fill evaluation, other operators or operand orders, other arities, numeric or field-valued keys, nested indices, stars, filters, and index-selected fields remain outside this static certificate.
-- `route-state`: verified
-- `red-locus`: [`SemanticIndexElaboration.lean`](../A12Kernel/Conformance/SemanticIndexElaboration.lean) owns checked semantic-index carrier separators.
-- `green-locus`: [`SemanticIndex.lean`](../A12Kernel/Elaboration/SemanticIndex.lean) owns group/index/key validation and carrier-specific selection certificates.
-- `supporting-locus`: [`FieldEntityList.lean`](../A12Kernel/Elaboration/FieldEntityList.lean) owns the direct-field resolver and unindexed group refusal.
-- `supporting-locus`: [`SemanticIndexElaboration.lean`](../A12Kernel/Proofs/SemanticIndexElaboration.lean) owns checked selection laws.
-
 ### SG10 — message construction and formal-output integration
 
 - `state`: open

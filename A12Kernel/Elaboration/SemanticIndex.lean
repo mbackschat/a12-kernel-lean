@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CheckedIndexColumn
+import A12Kernel.Elaboration.FieldEntityList
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Semantics.RepetitionNotUnique
 import A12Kernel.Semantics.SemanticIndex
@@ -54,6 +55,24 @@ structure SurfaceFilledFieldCountSemanticIndexPair where
   token : String
   deriving Repr, DecidableEq
 
+/-- The two reviewed field-fill carriers that accept one index-selected group followed by one direct
+field. Keeping the operator closed here prevents the static admission from transferring to another
+quantifier ([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)). -/
+inductive IndexedGroupFieldFillOperator where
+  | allFieldsFilled
+  | noFieldFilled
+  deriving Repr, DecidableEq
+
+/-- The exact reviewed indexed-group/direct-field authoring shape. Stars, filters, selected fields,
+additional operands, and reversed order have no representation in this certificate
+([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)). -/
+structure SurfaceIndexedGroupFieldFillPair where
+  operator : IndexedGroupFieldFillOperator
+  group : SurfaceGroupPath
+  token : String
+  field : SurfaceFieldPath
+  deriving Repr, DecidableEq
+
 /-- The Number surface retained for the reduced raw-context route, whose literal is a numeric value. -/
 abbrev SurfaceNumberSemanticIndexKey := SurfaceSemanticIndexKey
 abbrev SurfaceNumberSemanticIndex := SurfaceSemanticIndex
@@ -98,6 +117,13 @@ inductive FilledFieldCountSemanticIndexPairElabError where
   | second (error : SemanticIndexElabError)
   | differentGroup (first second : GroupPath)
   | duplicateTarget (path : List String)
+  | incoherentCore
+  deriving Repr, DecidableEq
+
+inductive IndexedGroupFieldFillPairElabError where
+  | groupReference (error : SingleGroupElabError)
+  | semanticIndex (error : SemanticIndexElabError)
+  | fieldEntity (error : FieldEntityShapeElabError)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -189,6 +215,21 @@ structure CheckedFilledFieldCountSemanticIndexPair (model : FlatModel) where
   secondKeyRetained : (second.key == .literal (.text token)) = true
   distinctTargets : (first.targetDeclaration.id != second.targetDeclaration.id) = true
 
+/-- Static authoring certificate for the reviewed indexed-group/direct-field pair. It retains the
+operator and authored order together with the selected group, index declaration, exact-text key, and
+direct nonrepeatable field; it supplies no field-fill evaluator. -/
+structure CheckedIndexedGroupFieldFillPair (model : FlatModel) where
+  operator : IndexedGroupFieldFillOperator
+  groupPath : GroupPath
+  token : String
+  selection : CheckedSemanticIndexSelection model
+  field : FlatFieldDecl
+  groupSelected : (selection.group.path == groupPath) = true
+  keyRetained : (selection.key == .literal (.text token)) = true
+  fieldOwned : model.fields.contains field = true
+  fieldNonrepeatable : field.repeatableScope.isEmpty = true
+  fieldOutsideSelection : (!selection.group.path.isPrefixOf field.groupPath) = true
+
 /-- The reduced raw-context instance: that route rebuilds the column from a one-group scan rather
 than projecting the shared one, so it needs a Number index and a Number target. -/
 structure CheckedNumberSemanticIndexSource (model : FlatModel)
@@ -264,6 +305,35 @@ private def elaborateSemanticIndexSelectionWithValidatedModel
   else
     throw .incoherentCore
 
+private structure CheckedTextSemanticIndexGroupSelection (model : FlatModel) where
+  groupPath : GroupPath
+  token : String
+  selection : CheckedSemanticIndexSelection model
+  groupSelected : (selection.group.path == groupPath) = true
+  keyRetained : (selection.key == .literal (.text token)) = true
+
+/-- Select an exact group by a literal text key after model validation. Both reviewed group-valued
+carriers use this core; their operator and diagnostic boundaries remain carrier-specific. -/
+private def elaborateTextSemanticIndexGroupSelectionWithValidatedModel
+    (model : FlatModel) (declaringGroup groupPath : GroupPath) (token : String)
+    (hModel : model.validate = .ok ()) :
+    Except SemanticIndexElabError (CheckedTextSemanticIndexGroupSelection model) := do
+  if !model.hasGroupPath groupPath then
+    throw (.resolve (.unknownRepeatableGroup groupPath))
+  let group ← match model.repeatableGroups.find?
+      (fun candidate => candidate.path == groupPath) with
+    | some group => pure group
+    | none => throw (.missingIndexField groupPath)
+  let selection ← elaborateSemanticIndexSelectionWithValidatedModel model declaringGroup
+    group (.literal (.text token)) hModel
+  if hSelected : selection.group.path == groupPath then
+    if hKey : selection.key == .literal (.text token) then
+      pure { groupPath, token, selection, groupSelected := hSelected, keyRetained := hKey }
+    else
+      throw .incoherentCore
+  else
+    throw .incoherentCore
+
 /-- Certify the reviewed literal semantic-index suffix on `RuleGroup`. A known nonrepeatable group
 has no index declaration and therefore reaches the same missing-index class as an unindexed
 repeatable group; an unknown group still fails as a resolution error
@@ -274,18 +344,12 @@ def elaborateRuleGroupSemanticIndexSource (model : FlatModel)
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
-      if !model.hasGroupPath declaringGroup then
-        throw (.resolve (.unknownRepeatableGroup declaringGroup))
-      let group ← match model.repeatableGroups.find?
-          (fun candidate => candidate.path == declaringGroup) with
-        | some group => pure group
-        | none => throw (.missingIndexField declaringGroup)
-      let selection ← elaborateSemanticIndexSelectionWithValidatedModel model declaringGroup
-        group (.literal (.text authored.token)) hModel
-      if hSelected : selection.group.path == declaringGroup then
-        pure { ruleGroup := declaringGroup, selection, groupSelected := hSelected }
-      else
-        throw .incoherentCore
+      let checked ← elaborateTextSemanticIndexGroupSelectionWithValidatedModel model
+        declaringGroup declaringGroup authored.token hModel
+      pure {
+        ruleGroup := checked.groupPath
+        selection := checked.selection
+        groupSelected := checked.groupSelected }
 
 /-- Resolve the target first, then require its exact one-level repeatable group, its declared index
 field of any kind, and a literal whose identity domain matches that index or a nonrepeatable field
@@ -359,6 +423,49 @@ def elaborateFilledFieldCountSemanticIndexPair (model : FlatModel)
       throw .incoherentCore
   else
     throw (.differentGroup first.group.path second.group.path)
+
+/-- Certify the reviewed `AllFieldsFilled`/`NoFieldFilled` indexed-group pair. Group selection and
+direct-field resolution reuse their existing checked owners, while this carrier retains order and
+prevents the direct operand from collapsing into the selected group's expansion. Runtime truth and
+polarity remain outside the certificate. -/
+def elaborateIndexedGroupFieldFillPair (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceIndexedGroupFieldFillPair) :
+    Except IndexedGroupFieldFillPairElabError
+      (CheckedIndexedGroupFieldFillPair model) :=
+  match hModel : model.validate with
+  | .error error => .error (.semanticIndex (.resolve error))
+  | .ok () => do
+      let groupPath ← authored.group.resolveAgainst declaringGroup
+        |>.mapError .groupReference
+      let checkedGroup ← elaborateTextSemanticIndexGroupSelectionWithValidatedModel model
+        declaringGroup groupPath authored.token hModel
+        |>.mapError .semanticIndex
+      let resolvedField ← resolveFieldEntityOperandIn model declaringGroup []
+        (.field authored.field .stored) |>.mapError .fieldEntity
+      let field ← match resolvedField with
+        | .field declaration .stored => pure declaration
+        | _ => throw .incoherentCore
+      if hOwned : model.fields.contains field = true then
+        if hNonrepeatable : field.repeatableScope.isEmpty = true then
+          if hOutside :
+              (!checkedGroup.selection.group.path.isPrefixOf field.groupPath) = true then
+            pure {
+              operator := authored.operator
+              groupPath := checkedGroup.groupPath
+              token := checkedGroup.token
+              selection := checkedGroup.selection
+              field
+              groupSelected := checkedGroup.groupSelected
+              keyRetained := checkedGroup.keyRetained
+              fieldOwned := hOwned
+              fieldNonrepeatable := hNonrepeatable
+              fieldOutsideSelection := hOutside }
+          else
+            throw .incoherentCore
+        else
+          throw .incoherentCore
+      else
+        throw .incoherentCore
 
 /-- Refine the general source to the reduced raw-context route's Number index and Number target. -/
 def elaborateNumberSemanticIndexSource (model : FlatModel)
