@@ -32,6 +32,11 @@ private def probeModel : FlatModel :=
       { level := 10, path := ["Probe", "Rows"] },
       { level := 11, path := ["Probe", "Coupons"] }] }
 
+private def indexedProbeModel : FlatModel :=
+  { probeModel with repeatableGroups := [
+      { level := 10, path := ["Probe", "Rows"], indexField := some 2 },
+      { level := 11, path := ["Probe", "Coupons"] }] }
+
 private def key (groups : List String) (field : String) : SurfaceFieldPath :=
   { base := .absolute, groups, field }
 
@@ -53,6 +58,24 @@ private def refusesParallelAt (rowGroup : GroupPath) (first : SurfaceFieldPath) 
 
 private def diagnostic? (first : SurfaceFieldPath) (rest : List SurfaceFieldPath := []) : Option KernelStaticDiagnostic :=
   diagnosticAt ["Probe"] first rest
+
+private def indexedRnuUse
+    (token : String := "SKU-1") : SurfaceRepetitionNotUniqueSemanticIndexUse := {
+  target := key ["Probe", "Rows"] "RowVal"
+  token
+}
+
+private def indexedRnuRefusal?
+    (token : String := "SKU-1") :
+    Option (CheckedRepetitionNotUniqueSemanticIndexRefusal indexedProbeModel) :=
+  (elaborateRepetitionNotUniqueSemanticIndexRefusal indexedProbeModel ["Probe"] 2
+    (indexedRnuUse token)).toOption
+
+private def indexedRnuDiagnostic?
+    (sourceModel : FlatModel := indexedProbeModel) (errorField : FieldId := 2) :
+    Option KernelStaticDiagnostic :=
+  projectRepetitionNotUniqueSemanticIndexDiagnostic? sourceModel ["Probe"] errorField
+    (indexedRnuUse "SKU-1")
 
 /- One key repeated draws the exact-duplicate class, the same one a repeated group-list operand
    draws — the operand relation is shared across families rather than restated per operator. -/
@@ -93,6 +116,44 @@ example :
   native_decide
 
 example : diagnostic? (key ["Probe", "Rows"] "RowNum") = none := by
+  native_decide
+
+/- The otherwise-valid RNU key and semantic-index selection return the measured carrier refusal and
+   its exact external code. -/
+example : indexedRnuDiagnostic? = some .semanticIndexNotAllowed ∧
+    indexedRnuDiagnostic?.map (·.kernelCode) =
+      some "MVK_SEMANTIC_INDEX_NOT_ALLOWED" := by
+  native_decide
+
+/- The checked refusal retains one exact field, group, index, and token before projecting that
+   refusal. -/
+example : indexedRnuRefusal?.map (fun checked =>
+    checked.source.firstKey.fieldId) = some 2 ∧
+    indexedRnuRefusal?.map (fun checked =>
+      checked.selection.targetDeclaration.id) = some 2 ∧
+    indexedRnuRefusal?.map (fun checked =>
+      checked.selection.indexDeclaration.id) = some 2 ∧
+    indexedRnuRefusal?.map (fun checked =>
+      checked.selection.group.path) = some ["Probe", "Rows"] ∧
+    indexedRnuRefusal?.map (fun checked =>
+      checked.selection.key) =
+        some (CheckedSemanticIndexKey.literal (.text "SKU-1")) := by
+  native_decide
+
+/- The checked refusal retains the caller's exact token rather than specializing the measured
+   `SKU-1` row. This is an internal identity guard, not wider Kernel correspondence. -/
+example : (indexedRnuRefusal? "SKU-2").map
+    (fun checked => checked.selection.key) =
+      some (.literal (.text "SKU-2")) := by
+  native_decide
+
+/- An unindexed target, a different error field, and a rule already placed at the repeated group do
+   not inherit the measured carrier code. The last keeps the otherwise-valid semantic-index side
+   from replacing the RNU source check. -/
+example : indexedRnuDiagnostic? probeModel = none ∧
+    indexedRnuDiagnostic? indexedProbeModel 3 = none ∧
+    projectRepetitionNotUniqueSemanticIndexDiagnostic? indexedProbeModel
+      ["Probe", "Rows"] 2 (indexedRnuUse "SKU-1") = none := by
   native_decide
 
 /- At the repeated rule group, both path spellings draw the third missing-repeatable shape. -/

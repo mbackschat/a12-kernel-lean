@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.StarNumber
 import A12Kernel.Elaboration.CheckedStarDocument
+import A12Kernel.Elaboration.SemanticIndex
 import A12Kernel.Semantics.EnumerationRepetitionNotUnique
 import A12Kernel.Semantics.RepetitionNotUnique
 
@@ -34,6 +35,14 @@ structure SurfaceRepetitionNotUniqueSource where
   firstKey : SurfaceFieldPath
   restKeys : List SurfaceFieldPath
   scope : SurfaceRepetitionNotUniqueScope := .default
+  deriving Repr, DecidableEq
+
+/-- The exact reviewed sole RNU key with a literal text semantic-index suffix. Composite keys,
+field-valued keys, other literal domains, and runtime duplicate evaluation have no representation
+here ([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)). -/
+structure SurfaceRepetitionNotUniqueSemanticIndexUse where
+  target : SurfaceFieldPath
+  token : String
   deriving Repr, DecidableEq
 
 inductive RepetitionNotUniqueElabError where
@@ -163,6 +172,30 @@ structure CheckedRepetitionNotUniqueSource (model : FlatModel) where
   referenceLevelOwned :
     ((topology.path.axes.drop topology.path.firstStar).head?.map
       (·.level)) = some referenceGroup.level
+
+/-- One otherwise-valid sole RNU key and one valid exact-text semantic-index selection certified as
+the same target, reference group, and error field before the carrier-specific refusal is projected.
+It supplies no indexed RNU evaluator. -/
+structure CheckedRepetitionNotUniqueSemanticIndexRefusal (model : FlatModel) where
+  declaringGroup : GroupPath
+  errorField : FieldId
+  token : String
+  source : CheckedRepetitionNotUniqueSource model
+  selection : CheckedSemanticIndexSource model
+  ruleGroupRetained : (source.ruleGroup == declaringGroup) = true
+  referenceGroupSelected : (source.referenceGroup == selection.group) = true
+  targetSelected :
+    (source.firstKey.source.declaration == selection.targetDeclaration) = true
+  errorFieldSelected : (selection.targetDeclaration.id == errorField) = true
+  keyRetained : (selection.key == .literal (.text token)) = true
+
+inductive RepetitionNotUniqueSemanticIndexRefusalError where
+  | repetitionNotUnique (error : RepetitionNotUniqueElabError)
+  | semanticIndex (error : SemanticIndexElabError)
+  | selectionGroupMismatch (repetition semanticIndex : GroupPath)
+  | errorFieldMismatch (expected actual : FieldId)
+  | incoherentCore
+  deriving Repr, DecidableEq
 
 private def resolveRepetitionKeyDeclarations (model : FlatModel)
     (declaringGroup : GroupPath) : List SurfaceFieldPath →
@@ -392,6 +425,69 @@ def elaborateRepetitionNotUniqueSource (model : FlatModel)
                 else throw .incoherentCore
           else
             throw .incoherentCore
+
+/-- Certify the exact sole indexed RNU key as an otherwise-valid RNU source and semantic-index
+selection before returning the measured carrier refusal. The executable RNU source remains
+index-free. -/
+def elaborateRepetitionNotUniqueSemanticIndexRefusal (model : FlatModel)
+    (declaringGroup : GroupPath) (errorField : FieldId)
+    (authored : SurfaceRepetitionNotUniqueSemanticIndexUse) :
+    Except RepetitionNotUniqueSemanticIndexRefusalError
+      (CheckedRepetitionNotUniqueSemanticIndexRefusal model) := do
+  let source ← elaborateRepetitionNotUniqueSource model declaringGroup {
+      firstKey := authored.target
+      restKeys := [] }
+    |>.mapError .repetitionNotUnique
+  let selection ← elaborateSemanticIndexSource model declaringGroup {
+      target := authored.target
+      key := .literal (.text authored.token) }
+    |>.mapError .semanticIndex
+  if hRuleGroup : source.ruleGroup == declaringGroup then
+    if hReference : source.referenceGroup == selection.group then
+      if hTarget : source.firstKey.source.declaration ==
+          selection.targetDeclaration then
+        if hErrorField : selection.targetDeclaration.id == errorField then
+          if hKey : selection.key == .literal (.text authored.token) then
+            pure {
+              declaringGroup
+              errorField
+              token := authored.token
+              source
+              selection
+              ruleGroupRetained := hRuleGroup
+              referenceGroupSelected := hReference
+              targetSelected := hTarget
+              errorFieldSelected := hErrorField
+              keyRetained := hKey }
+          else
+            throw .incoherentCore
+        else
+          throw (.errorFieldMismatch selection.targetDeclaration.id errorField)
+      else
+        throw .incoherentCore
+    else
+      throw (.selectionGroupMismatch source.referenceGroup.path selection.group.path)
+  else
+    throw .incoherentCore
+
+namespace CheckedRepetitionNotUniqueSemanticIndexRefusal
+
+/-- The exact carrier diagnostic measured after both component certificates succeed. -/
+def diagnostic (_ : CheckedRepetitionNotUniqueSemanticIndexRefusal model) :
+    KernelStaticDiagnostic :=
+  .semanticIndexNotAllowed
+
+end CheckedRepetitionNotUniqueSemanticIndexRefusal
+
+/-- Project the exact refusal without assigning its code to an invalid selection, an unsupported
+RNU key, a different error field, or a wider repetition topology. -/
+def projectRepetitionNotUniqueSemanticIndexDiagnostic? (model : FlatModel)
+    (declaringGroup : GroupPath) (errorField : FieldId)
+    (authored : SurfaceRepetitionNotUniqueSemanticIndexUse) :
+    Option KernelStaticDiagnostic :=
+  match elaborateRepetitionNotUniqueSemanticIndexRefusal model declaringGroup errorField authored with
+  | .ok checked => some checked.diagnostic
+  | .error _ => none
 
 namespace CheckedRepetitionNotUniqueSource
 

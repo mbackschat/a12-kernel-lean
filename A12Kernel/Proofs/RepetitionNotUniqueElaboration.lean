@@ -93,6 +93,27 @@ theorem checkedRepetitionNotUnique_referenceLevel
         some checked.referenceGroup.level :=
   checked.referenceLevelOwned
 
+/-- The indexed-key refusal certificate preserves the exact RNU target, semantic-index selection,
+error field, and authored text key that justified its carrier-specific diagnostic. -/
+theorem checkedRepetitionNotUniqueSemanticIndexRefusal_identity
+    (checked : CheckedRepetitionNotUniqueSemanticIndexRefusal model) :
+    (checked.source.ruleGroup == checked.declaringGroup) = true ∧
+      (checked.source.referenceGroup == checked.selection.group) = true ∧
+      (checked.source.firstKey.source.declaration ==
+        checked.selection.targetDeclaration) = true ∧
+      (checked.selection.targetDeclaration.id == checked.errorField) = true ∧
+      (checked.selection.key == .literal (.text checked.token)) = true := by
+  exact ⟨checked.ruleGroupRetained, checked.referenceGroupSelected,
+    checked.targetSelected, checked.errorFieldSelected, checked.keyRetained⟩
+
+/-- Every checked instance projects the exact measured carrier diagnostic; invalid or wider shapes
+cannot construct this certificate. -/
+@[simp]
+theorem checkedRepetitionNotUniqueSemanticIndexRefusal_diagnostic
+    (checked : CheckedRepetitionNotUniqueSemanticIndexRefusal model) :
+    checked.diagnostic = .semanticIndexNotAllowed := by
+  rfl
+
 /-- An inferred default reference group contributes no field references beyond the authored key fields, even though the checked source retains that resolved group for evaluation. -/
 theorem checkedRepetitionNotUnique_referencesField_inferred
     (checked : CheckedRepetitionNotUniqueSource model)
