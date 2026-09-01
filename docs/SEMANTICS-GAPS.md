@@ -185,7 +185,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `state`: open
 - `missing`: bilingual parser and renderer paths, lexical and dot syntax, semantic indices, globals, nested or multiple stars, wider RNU `@From`, and remaining diagnostics must resolve through one checked namespace.
 - `baseline`: [§10](IMPLEMENTATION-MAP.md#10--paths-and-references) owns implemented paths. The [cross-clause diagnostic owner](IMPLEMENTATION-MAP.md#cross-clause-implementation-notes) owns exact projections and explicit unmapped refusals.
-- `remaining`: nested or different repeatable scopes, parallel RNU mapping, other group-list or count shapes and arities, parser-level `SumOfProducts` star and `Having` refusals with exact diagnostic projection, other assembly refusals, and executable newly admitted conditions.
+- `remaining`: nested or different repeatable scopes, parallel RNU mapping, other group-list or count shapes and arities, parser-level `SumOfProducts` star and `Having` refusals with exact diagnostic projection, other assembly refusals, executable newly admitted conditions, and embedding the checked correlated direct-field source in the complete nested-`Having` grammar and runtime.
 - `remaining`: reviewed PR2 evidence closes three semantic-index surface cells without making their Lean authoring routes exist: indexed fields/groups are admitted only on the measured entity-list carriers; `NumberOfFilledGroups` and `RepetitionNotUnique` retain their semantic-index refusals; and `RuleGroup For "key"` selects an indexed containing group. The current checked semantic-index core begins after selection, the field-entity surface has no indexed operand, and `RuleGroup` carries no suffix.
 - `remaining`: fixed nonrepeatable descendants and wider comparison, computation, partial-validation, arithmetic-wrapper, and parser forms of `CurrentRepetition`.
 - `remaining`: computation has no semantic-index source that can represent direct reads of a computed field or naming it as an index key.
@@ -198,21 +198,6 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `entry-gate`: complete one bounded source packet and separator matrix for the selected path or index family.
 - `completion-gate`: every legal reference resolves deterministically, every illegal form receives the correct static class, and rendering round-trips for the supported surface.
 - `route-state`: discovery-required
-
-<a id="gap-sg9-having-correlated-direct-identity"></a>
-#### Correlated direct-operand identity inside `Having`
-
-- `state`: open
-- `missing`: give nested aggregate calls inside `Having` a checked direct-field source whose exact operand identity retains `$`; the authored pair `($P, P)` must survive while `(P, P)` reports `MVK_DUPLICATE_PARAM1`.
-- `baseline`: the shared entity-list checker already owns direct-field identity, authored encounter order, duplicate projection, and the multiple-operand gate; the correlation owner already separates candidate and captured environments but its narrow filter grammar cannot retain a nested aggregate source.
-- `evidence`: the [reviewed correlated-operand checkpoint](SOURCES.md#src-pr2-correlated-operand-identity) Kernel-locks `($P, P)` and `(P, P)` under `Sum`, `NumberOfFilledFields`, and `NumberOfDifferentValues` in that authored order.
-- `consumer`: Analyze and Transform need the resolved declaration plus its filter origin so a rewrite cannot erase `$`, reject a legal pair as duplicate, or emit an illegal duplicate pair.
-- `limit`: runtime evaluation of the nested aggregate, wider nested expression grammar, the reverse pair, and `($P, $P)` remain outside the Kernel-correspondence claim.
-- `route-state`: verified
-- `red-locus`: [`CorrelationElaboration.lean`](../A12Kernel/Conformance/CorrelationElaboration.lean) owns checked filter-authoring separators.
-- `green-locus`: [`FieldEntityList.lean`](../A12Kernel/Elaboration/FieldEntityList.lean) owns direct entity-list identity, duplicate precedence, and diagnostic projection.
-- `supporting-locus`: [`Correlation.lean`](../A12Kernel/Elaboration/Correlation.lean) owns origin-sensitive candidate/outer scope resolution.
-- `supporting-locus`: [`CorrelationElaboration.lean`](../A12Kernel/Proofs/CorrelationElaboration.lean) owns checked correlation laws.
 
 ### SG10 — message construction and formal-output integration
 

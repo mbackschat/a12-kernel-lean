@@ -481,6 +481,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Derived numeric scale admission](implementation/cross-clause.md#cap-derived-numeric-scale-admission)
 <a id="cap-normalized-messagepointer"></a>
 - [Normalized `MessagePointer`](implementation/cross-clause.md#cap-normalized-messagepointer)
+<a id="cap-having-correlated-direct-field-identity"></a>
+- [Correlated direct-field identity inside `Having`](implementation/cross-clause.md#cap-having-correlated-direct-field-identity)
 <a id="cap-shared-entity-list-group-admission"></a>
 - [Shared entity-list group admission](implementation/cross-clause.md#cap-shared-entity-list-group-admission)
 <a id="cap-number-group-aggregates"></a>

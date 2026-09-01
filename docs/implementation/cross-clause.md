@@ -138,6 +138,16 @@ These stable names help when a query crosses numbered clauses. Their capability 
 
 - `owner-and-boundary`: [`MessagePointer.lean`](../../A12Kernel/Semantics/MessagePointer.lean) owns resolved field identity plus concrete/wildcard/unknown repetition coordinates. Four completed consumers: validation, computation, registered custom-field, and reached custom-condition error channels. Exact `CellAddr` embeds losslessly but remains a separate type; a bound pointer recovers it, while every successfully reopened pointer contains a wildcard and provably cannot. This exact-versus-partial shape is the measured address-kind distinction, and deliberately does not retain whether an authored star or group expansion produced it.
 
+<a id="cap-having-correlated-direct-field-identity"></a>
+#### Correlated direct-field identity inside `Having`
+
+- `state`: implemented for the direct field-list source nested inside a filter.
+- `boundary`: candidate and captured references resolve against their own available repetition scope, then exact identity retains origin, resolved declaration, and read form through one authored encounter scan. `($P, P)` therefore survives with both operands in order while `(P, P)` reaches the shared `MVK_DUPLICATE_PARAM1` projection.
+- `owner`: [`FieldEntityList.lean`](../../A12Kernel/Elaboration/FieldEntityList.lean) owns the surface, checked source, and shared duplicate scan; [`Correlation.lean`](../../A12Kernel/Elaboration/Correlation.lean) owns the candidate/captured scope choice.
+- `case`: [`CorrelationElaboration.lean`](../../A12Kernel/Conformance/CorrelationElaboration.lean) separates origin erasure, identity erasure, and slot-order dependence.
+- `proof`: [`havingDirectField_inner_outer_pair_unique`](../../A12Kernel/Proofs/CorrelationElaboration.lean) and its reverse-order sibling establish origin-sensitive uniqueness for every resolved declaration and read form.
+- `assurance`: E/P close the checked direct-source identity. Kernel L covers `($P, P)` and `(P, P)` in that authored order under `Sum`, `NumberOfFilledFields`, and `NumberOfDifferentValues` at the [reviewed source checkpoint](../SOURCES.md#src-pr2-correlated-operand-identity). The reverse pair and `($P, $P)` have internal typed locks only; carrier kind gates, embedding in the complete filter grammar, runtime aggregation, and wider nested expressions remain open; C/X/Q none.
+
 
 ### SG5 group-operand capabilities
 

@@ -98,7 +98,7 @@ private def repeatableScopeAvailable :
       required == available &&
         repeatableScopeAvailable requiredRest availableRest
 
-private def HavingOrigin.availableLevels (origin : HavingOrigin)
+def HavingOrigin.availableLevels (origin : HavingOrigin)
     (candidateLevels outerLevels : List RepeatableLevel) : List RepeatableLevel :=
   match origin with
   | .inner => candidateLevels

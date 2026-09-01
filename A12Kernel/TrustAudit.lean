@@ -489,6 +489,8 @@ run_cmd do
 
 #print axioms A12Kernel.checkedSingleCorrelatedRule_wellFormed
 #print axioms A12Kernel.checkedSingleCorrelatedRule_modelWellFormed
+#print axioms A12Kernel.havingDirectField_inner_outer_pair_unique
+#print axioms A12Kernel.havingDirectField_outer_inner_pair_unique
 #print axioms A12Kernel.checkedSingleCorrelatedRule_conjunctive
 #print axioms A12Kernel.ruleGroupReference_resolves
 #print axioms A12Kernel.starredRuleGroupReference_rejected

@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Correlation
+import A12Kernel.Elaboration.FieldEntityList
 
 /-! # Checked single-group correlation-elaboration conformance locks -/
 
@@ -157,6 +157,55 @@ private def havingOf
 private def errorOf : Except ε α → Option ε
   | .ok _ => none
   | .error error => some error
+
+private def havingDirectRef (origin : HavingOrigin) (field : SurfaceFieldPath) :
+    SurfaceHavingDirectFieldOperand :=
+  { origin, field }
+
+private def havingDirectSource (first second : SurfaceHavingDirectFieldOperand) :
+    SurfaceHavingDirectFieldSource :=
+  { first, rest := [second] }
+
+private def elaborateHavingDirectPair (firstOrigin secondOrigin : HavingOrigin)
+    (firstField : String := "Count") (secondField : String := "Count") :=
+  elaborateHavingDirectFieldSource model ["Order"] [items.level] [items.level]
+    (havingDirectSource
+      (havingDirectRef firstOrigin (absolute items.path firstField))
+      (havingDirectRef secondOrigin (absolute items.path secondField)))
+
+private def havingDirectPairSnapshot
+    (result : Except FieldEntityShapeElabError
+      (CheckedHavingDirectFieldSource model)) :
+    Option (List (HavingOrigin × FieldId × FieldEntityReadForm)) := do
+  let checked ← result.toOption
+  pure (checked.operands.map fun operand =>
+    (operand.origin, operand.declaration.id, operand.form))
+
+/- The reviewed Kernel separator retains different exact identities after both paths resolve to the
+   same declaration ([checkpoint](../../docs/SOURCES.md#src-pr2-correlated-operand-identity)). -/
+example : havingDirectPairSnapshot
+    (elaborateHavingDirectPair .outer .inner) =
+      some [(.outer, countDecl.id, .stored), (.inner, countDecl.id, .stored)] := by
+  native_decide
+
+/- Removing only `$` turns the same authored pair into the shared direct-duplicate class. -/
+example : errorOf (elaborateHavingDirectPair .inner .inner) =
+    some (.duplicateOperand countDecl.id) ∧
+    (errorOf (elaborateHavingDirectPair .inner .inner)).bind
+      FieldEntityShapeElabError.diagnostic? = some .duplicateParam1 := by
+  native_decide
+
+/- Typed-surface controls retain identity independently of slot order, while equal outer origins
+   remain a duplicate. Kernel correspondence for these two controls is intentionally unclaimed. -/
+example : (elaborateHavingDirectPair .inner .outer).isOk = true ∧
+    errorOf (elaborateHavingDirectPair .outer .outer) =
+      some (.duplicateOperand countDecl.id) := by
+  native_decide
+
+/- Origin is one identity component rather than the whole identity: two current-row declarations
+   remain distinct. -/
+example : (elaborateHavingDirectPair .inner .inner "Count" "Weight").isOk = true := by
+  native_decide
 
 private def resolvedGroupOf : Except SingleGroupElabError GroupPath → Option GroupPath
   | .ok path => some path

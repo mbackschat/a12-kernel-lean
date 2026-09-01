@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Correlation
+import A12Kernel.Elaboration.FieldEntityList
 
 /-! # A12Kernel.Proofs.CorrelationElaboration — checked repeatable-binding invariants -/
 
@@ -15,6 +15,28 @@ theorem checkedSingleCorrelatedRule_modelWellFormed
     (checked : CheckedSingleCorrelatedRule model) :
     model.validate.isOk = true :=
   checked.modelWellFormed
+
+/-- Candidate and captured reads of the same declaration are distinct exact operands. This is the
+    reusable identity law behind the reviewed `$P, P` authoring row
+    ([checkpoint](../../docs/SOURCES.md#src-pr2-correlated-operand-identity)); carrier kind gates
+    remain separate. -/
+theorem havingDirectField_inner_outer_pair_unique
+    (model : FlatModel) (declaration : FlatFieldDecl) (form : FieldEntityReadForm) :
+    firstDuplicateResolvedHavingDirectField? [
+      ({ origin := .inner, declaration, form } :
+        ResolvedHavingDirectFieldOperand model),
+      { origin := .outer, declaration, form }] = none := by
+  rfl
+
+/-- The identity law is independent of authored slot order. This internal theorem does not claim
+    Kernel correspondence for the unmeasured reverse order. -/
+theorem havingDirectField_outer_inner_pair_unique
+    (model : FlatModel) (declaration : FlatFieldDecl) (form : FieldEntityReadForm) :
+    firstDuplicateResolvedHavingDirectField? [
+      ({ origin := .outer, declaration, form } :
+        ResolvedHavingDirectFieldOperand model),
+      { origin := .inner, declaration, form }] = none := by
+  rfl
 
 /-- The checked one-group route cannot be forged with resolved-only `Or`; its core stays inside the conjunction-only authored surface. -/
 theorem checkedSingleCorrelatedRule_conjunctive

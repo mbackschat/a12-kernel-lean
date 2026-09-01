@@ -36,6 +36,23 @@ structure SurfaceFieldEntitySource where
   rest : List SurfaceFieldEntityOperand
   deriving Repr, DecidableEq
 
+/-- One direct field operand authored inside a `Having` expression. The origin is part of the
+    operand rather than ambient filter state because `$P` and `P` are different exact operands even
+    when both paths resolve to the same declaration
+    ([checkpoint](../../docs/SOURCES.md#src-pr2-correlated-operand-identity)). -/
+structure SurfaceHavingDirectFieldOperand where
+  origin : HavingOrigin
+  field : SurfaceFieldPath
+  form : FieldEntityReadForm := .stored
+  deriving Repr, DecidableEq
+
+/-- A nonempty direct field list nested inside `Having`. Carrier-specific kind gates remain outside
+    this shared authoring shape. -/
+structure SurfaceHavingDirectFieldSource where
+  first : SurfaceHavingDirectFieldOperand
+  rest : List SurfaceHavingDirectFieldOperand
+  deriving Repr, DecidableEq
+
 /-- One kind-neutral resolved slot. Family-specific certification occurs only after the complete list has passed the star, duplicate, and cardinality gates.
 
     A starred group retains the terminal-repeatable source only. A star above a nonrepeatable terminal is a third repetition shape that no retained observation covers on this carrier, so resolution refuses it without naming a class. -/
@@ -289,20 +306,25 @@ def ResolvedFieldEntityOperand.exactIdentity? :
       .starredGroupPresence _ => none
 
 /-- Report the first exact duplicate whose second occurrence completes in authored encounter order. -/
-private def firstDuplicateResolvedEntityOperandFrom?
-    (seen : List ResolvedFieldEntityIdentity) :
-    List (ResolvedFieldEntityOperand model) → Option ResolvedFieldEntityIdentity
+private def firstDuplicateInEncounterOrderFrom? [BEq β]
+    (identity? : α → Option β) (seen : List β) : List α → Option β
   | [] => none
   | operand :: remaining =>
-      match operand.exactIdentity? with
-      | none => firstDuplicateResolvedEntityOperandFrom? seen remaining
+      match identity? operand with
+      | none => firstDuplicateInEncounterOrderFrom? identity? seen remaining
       | some identity =>
           if seen.contains identity then some identity
-          else firstDuplicateResolvedEntityOperandFrom? (identity :: seen) remaining
+          else firstDuplicateInEncounterOrderFrom? identity? (identity :: seen) remaining
+
+/-- Report the identity whose repeated occurrence arrives first. Unlike a lookahead scan, this
+    preserves authored encounter order when two different identities both repeat. -/
+def firstDuplicateInEncounterOrder? [BEq β] (identity? : α → Option β)
+    (operands : List α) : Option β :=
+  firstDuplicateInEncounterOrderFrom? identity? [] operands
 
 def firstDuplicateResolvedEntityOperand? :
     List (ResolvedFieldEntityOperand model) → Option ResolvedFieldEntityIdentity :=
-  firstDuplicateResolvedEntityOperandFrom? []
+  firstDuplicateInEncounterOrder? ResolvedFieldEntityOperand.exactIdentity?
 
 /-- Report the first authored ancestor/descendant pair, naming both paths in authored order. -/
 def firstResolvedOperandOverlap? :
@@ -419,6 +441,101 @@ def elaborateFieldEntityShape (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
   elaborateFieldEntityShapeIn model declaringGroup [] authored
+
+/-- One direct `Having` operand after origin-sensitive scope resolution. The resolved declaration,
+    read form, and origin together are its exact authored identity. -/
+structure ResolvedHavingDirectFieldOperand (model : FlatModel) where
+  origin : HavingOrigin
+  declaration : FlatFieldDecl
+  form : FieldEntityReadForm
+  deriving Repr, DecidableEq
+
+structure HavingDirectFieldIdentity where
+  origin : HavingOrigin
+  field : FieldId
+  form : FieldEntityReadForm
+  deriving Repr, DecidableEq
+
+def ResolvedHavingDirectFieldOperand.exactIdentity
+    (operand : ResolvedHavingDirectFieldOperand model) : HavingDirectFieldIdentity :=
+  { origin := operand.origin, field := operand.declaration.id, form := operand.form }
+
+def firstDuplicateResolvedHavingDirectField? :
+    List (ResolvedHavingDirectFieldOperand model) → Option HavingDirectFieldIdentity :=
+  firstDuplicateInEncounterOrder? fun operand => some operand.exactIdentity
+
+/-- A resolved direct list nested in `Having`. It retains both environment scopes for Analyze and
+    Transform consumers while certifying model validity, list multiplicity, and exact uniqueness. -/
+structure CheckedHavingDirectFieldSource (model : FlatModel) where
+  first : ResolvedHavingDirectFieldOperand model
+  rest : List (ResolvedHavingDirectFieldOperand model)
+  candidateLevels : List RepeatableLevel
+  capturedLevels : List RepeatableLevel
+  modelWellFormed : model.validate.isOk = true
+  requiredMultiplicity : (!rest.isEmpty) = true
+  uniqueExactOperands :
+    firstDuplicateResolvedHavingDirectField? (first :: rest) = none
+
+namespace CheckedHavingDirectFieldSource
+
+def operands (checked : CheckedHavingDirectFieldSource model) :
+    List (ResolvedHavingDirectFieldOperand model) :=
+  checked.first :: checked.rest
+
+end CheckedHavingDirectFieldSource
+
+private def resolveHavingDirectFieldOperand (model : FlatModel)
+    (declaringGroup : GroupPath) (candidateLevels capturedLevels : List RepeatableLevel)
+    (authored : SurfaceHavingDirectFieldOperand) :
+    Except FieldEntityShapeElabError (ResolvedHavingDirectFieldOperand model) := do
+  let resolved ← model.resolveFieldDeclarationUnchecked declaringGroup authored.field
+    |>.mapError .resolve
+  let declaration ← resolved.requireRepetitionBoundBy
+      (authored.origin.availableLevels candidateLevels capturedLevels)
+    |>.mapError .resolve
+  pure { origin := authored.origin, declaration, form := authored.form }
+
+private def resolveHavingDirectFieldOperands (model : FlatModel)
+    (declaringGroup : GroupPath) (candidateLevels capturedLevels : List RepeatableLevel) :
+    List SurfaceHavingDirectFieldOperand →
+      Except FieldEntityShapeElabError
+        (List (ResolvedHavingDirectFieldOperand model))
+  | [] => pure []
+  | operand :: remaining => do
+      pure ((← resolveHavingDirectFieldOperand model declaringGroup candidateLevels
+        capturedLevels operand) ::
+        (← resolveHavingDirectFieldOperands model declaringGroup candidateLevels
+          capturedLevels remaining))
+
+/-- Check a direct field list nested inside `Having`. Resolution selects the candidate or captured
+    scope per operand before one shared exact-identity scan; carrier-specific kind and runtime gates
+    intentionally remain with the containing aggregate. -/
+def elaborateHavingDirectFieldSource (model : FlatModel)
+    (declaringGroup : GroupPath) (candidateLevels capturedLevels : List RepeatableLevel)
+    (authored : SurfaceHavingDirectFieldSource) :
+    Except FieldEntityShapeElabError (CheckedHavingDirectFieldSource model) :=
+  match hModel : model.validate with
+  | .error error => .error (.resolve error)
+  | .ok () => do
+      let first ← resolveHavingDirectFieldOperand model declaringGroup candidateLevels
+        capturedLevels authored.first
+      let rest ← resolveHavingDirectFieldOperands model declaringGroup candidateLevels
+        capturedLevels authored.rest
+      match hDuplicate :
+          firstDuplicateResolvedHavingDirectField? (first :: rest) with
+      | some identity => throw (.duplicateOperand identity.field)
+      | none =>
+          if hMultiplicity : !rest.isEmpty then
+            pure {
+              first
+              rest
+              candidateLevels
+              capturedLevels
+              modelWellFormed := by rw [hModel]; rfl
+              requiredMultiplicity := hMultiplicity
+              uniqueExactOperands := hDuplicate }
+          else
+            throw .tooFewFields
 
 /-- Every operand kind resolves only against a representable declaring group, so a checked
     entity-list shape certifies its declaring group without re-testing it.
