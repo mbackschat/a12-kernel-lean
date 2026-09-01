@@ -5,7 +5,7 @@ import A12Kernel.Semantics.NumericComparison
 
 /-! # Checked group-star consumers
 
-This capsule resolves a starred group path through the shared model-derived topology. A terminal repeatable group retains the established structural-row interpretation used by the two legal group predicates and `NumberOfFilledGroups`; partial numeric counting applies the local reduced-universal group-path account that reproduces the measured fifth outcome pattern. A nonrepeatable terminal retains its exact group path so checked validation can derive the existing descendant-content/error product once per topology-produced environment. Partial predicate relevance, filters, computation's ordered scan, and whole-rule orchestration remain outside.
+This capsule resolves a starred group path through the shared model-derived topology. A terminal repeatable group retains the established structural-row interpretation used by the two legal group predicates and `NumberOfFilledGroups`, with all three consumers restricted to instantiated in-capacity rows. Partial numeric counting applies the local reduced-universal group-path account that reproduces the measured fifth outcome pattern, while the measured sole-star threshold carrier selects exact relevant in-capacity group rows. A nonrepeatable terminal retains its exact group path so checked full validation can derive the existing descendant-content/error product once per in-capacity topology environment. Partial nonrepeatable terminals, mixed or repeated partial lists, filters, computation's ordered scan, and whole-rule orchestration remain outside.
 -/
 
 namespace A12Kernel
@@ -184,11 +184,26 @@ def StarredGroupFillQuantifier.toGroupFillQuantifier :
   | .noGroupFilled => .noGroupFilled
   | .atLeastOneGroupFilled => .atLeastOneGroupFilled
 
-/-- Every instantiated terminal row is structural group content, including a created-but-empty or over-limit row. -/
+/-- Select the only two group-list quantifiers whose single starred operand has a measured partial route. -/
+def GroupFillQuantifier.toStarredGroupFillQuantifier? :
+    GroupFillQuantifier → Option StarredGroupFillQuantifier
+  | .noGroupFilled => some .noGroupFilled
+  | .atLeastOneGroupFilled => some .atLeastOneGroupFilled
+  | .allGroupsFilled | .notAllGroupsFilled
+  | .groupsNotCollectivelyFilled => none
+
+/-- Every row supplied by the carrier is structural group content, including a created-but-empty row. Capacity selection belongs to the checked call site. -/
 def StarredGroupFillQuantifier.evalCount (operator : StarredGroupFillQuantifier)
     (count : Nat) : ValidationFillOutcome :=
   operator.toGroupFillQuantifier.evalTally
     (GroupListPresenceTally.filledOnly count)
+
+/-- Resolve the shared topology and retain only environments within every declared repeatability. -/
+def StarPath.inCapacityEnvironments (path : StarPath)
+    (document : Document) (outer : Env) : Except StarAddressingError (List Env) := do
+  let resolved ← path.resolve document outer
+  pure (resolved.environments.filter fun environment =>
+    !StarAxes.environmentOverLimit path.axes environment)
 
 namespace CheckedStarredGroupSource
 
@@ -220,25 +235,46 @@ def rowCount (checked : CheckedStarredGroupSource model)
   let resolved ← checked.resolvedTopology document outer
   pure resolved.environments.length
 
-/-- Count only topology rows within every declared repeatability. Numeric starred group counts use this evaluation domain while structural group-presence predicates continue to observe every instantiated row through `rowCount`. -/
+/-- Count only topology rows within every declared repeatability. -/
 def inCapacityRowCount (checked : CheckedStarredGroupSource model)
     (document : Document) (outer : Env) : Except StarAddressingError Nat := do
-  let resolved ← checked.resolvedTopology document outer
-  pure (resolved.environments.countP fun environment =>
-    !StarAxes.environmentOverLimit checked.path.axes environment)
+  pure (← checked.path.inCapacityEnvironments document outer).length
 
-/-- Evaluate either legal sole-star group predicate from the shared structural row count. -/
+/-- Select the partial-validation in-capacity row count when the caller either covers the whole
+    starred extent or names at least one concrete in-capacity group row. A selection confined to
+    over-limit rows is unavailable rather than an empty operand. -/
+def partialInCapacityRowCount? (checked : CheckedStarredGroupSource model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope) :
+    Except StarAddressingError (Option Nat) := do
+  let environments ← checked.path.inCapacityEnvironments document outer
+  if checked.allRowsRelevant scope outer then
+    pure (some environments.length)
+  else
+    let relevant := environments.filter fun environment =>
+      scope.coversCell model checked.group.path environment
+    if relevant.isEmpty then pure none else pure (some relevant.length)
+
+/-- Evaluate either legal sole-star group predicate from the instantiated in-capacity row count. -/
 def evaluateFull (checked : CheckedStarredGroupSource model)
     (operator : StarredGroupFillQuantifier) (document : Document) (outer : Env) :
     Except StarAddressingError ValidationFillOutcome := do
-  pure (operator.evalCount (← checked.rowCount document outer))
+  pure (operator.evalCount (← checked.inCapacityRowCount document outer))
 
-/-- The sole-star numeric form excludes over-limit rows while retaining them in the structural topology used by group-presence predicates. -/
+/-- Evaluate the measured single-star partial carrier without treating an unavailable selected
+    extent as zero rows. -/
+def evaluatePartialQuantifier (checked : CheckedStarredGroupSource model)
+    (operator : StarredGroupFillQuantifier) (document : Document) (outer : Env)
+    (scope : ValidationRelevanceScope) : Except StarAddressingError Verdict := do
+  match ← checked.partialInCapacityRowCount? document outer scope with
+  | some count => pure (operator.evalCount count).asConservativeVerdict
+  | none => pure .unknown
+
+/-- The sole-star numeric form counts the same instantiated in-capacity rows as the threshold predicates. -/
 def numberOfFilledGroups (checked : CheckedStarredGroupSource model)
     (document : Document) (outer : Env) : Except StarAddressingError FilledGroupCount := do
   pure (.value (← checked.inCapacityRowCount document outer))
 
-/-- Compare the structural row count against the terminal group's declared extent when that extent
+/-- Compare the in-capacity structural row count against the terminal group's declared extent when that extent
     is retained by the checked model. A model without a finite retained extent yields `none` rather
     than acquiring an unmeasured movement rule. -/
 def numberOfFilledGroupsOperand? (checked : CheckedStarredGroupSource model)
@@ -260,6 +296,15 @@ def evaluatePartialNumberOfFilledGroups
     pure .nonRelevant
 
 end CheckedStarredGroupSource
+
+namespace CheckedStarredGroupPresenceSource
+
+/-- Resolve a nonrepeatable group terminal only at in-capacity environments of its starred ancestry. -/
+def inCapacityEnvironments (checked : CheckedStarredGroupPresenceSource model)
+    (document : Document) (outer : Env) : Except StarAddressingError (List Env) :=
+  checked.path.inCapacityEnvironments document outer
+
+end CheckedStarredGroupPresenceSource
 
 /-- Re-spell an ordinary group path as a star plan whose **terminal** group carries the wildcard,
     which is the only starred group-operand shape measured for this operator. A path navigating by

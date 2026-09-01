@@ -44,7 +44,7 @@ theorem validationCondition_groupList_fired_iff
   exact validationFillOutcome_conservative_fired_iff
     (operator.evalPresence states) polarity
 
-/-- A nonrepeatable terminal below starred ancestry consumes the canonical topology and classifies each concrete environment through the existing checked group-product owner. -/
+/-- A nonrepeatable terminal below starred ancestry classifies each in-capacity environment through the existing checked group-product owner. -/
 theorem resolvedGroupListOperand_starredGroupPresence_checked
     (model : FlatModel)
     (source : CheckedStarredGroupPresenceSource model)
@@ -53,10 +53,10 @@ theorem resolvedGroupListOperand_starredGroupPresence_checked
     (ResolvedGroupListOperand.starredGroupPresence source).evalAddressedTally {
         scalar, outer, input := .checked document
       } = (do
-        let topology ←
-          (source.resolvedTopology document.source.toDocument outer)
+        let environments ←
+          (source.inCapacityEnvironments document.source.toDocument outer)
             |>.mapError CheckedAddressingError.addressing
-        let states ← topology.environments.mapM fun environment => do
+        let states ← environments.mapM fun environment => do
           let input ←
             (document.groupPresenceInput source.groupPath environment
               .fullyRelevant false).mapError CheckedAddressingError.group

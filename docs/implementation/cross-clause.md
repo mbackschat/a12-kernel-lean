@@ -54,7 +54,10 @@ These stable names help when a query crosses numbered clauses. Their capability 
 <a id="cap-checked-group-star-terminals"></a>
 #### Checked group-star terminals
 
-- `owner-and-boundary`: [`StarGroup.lean`](../../A12Kernel/Elaboration/StarGroup.lean) distinguishes terminal repeatable-row counts from one evaluation per selected starred ancestor for a nonrepeatable terminal. Structural predicates retain every instantiated terminal row, while the numeric starred-group count excludes rows beyond declared capacity and uses the reduced-universal partial gate at the group operand path.
+- `owner-and-boundary`: [`StarGroup.lean`](../../A12Kernel/Elaboration/StarGroup.lean) distinguishes terminal repeatable-row counts from one evaluation per selected starred ancestor for a nonrepeatable terminal. Both threshold predicates and the numeric starred-group count select the shared instantiated in-capacity extent before tallying; the physical topology still retains over-limit rows.
+- `boundary`: Full validation covers terminal repeatable stars and nonrepeatable terminals below starred ancestry. Partial validation covers a sole terminal-repeatable star: a fully covered extent counts every in-capacity row, a concrete relevant in-capacity row counts structurally whatever its cells hold, and a selection confined to over-limit rows is unavailable rather than an empty operand. The checked-rule addressed partial entry traverses that leaf without collapsing structural failures into semantic UNKNOWN. Partial nonrepeatable terminals and mixed or repeated starred lists remain unsupported.
+- `assurance`: E closes the named full boundary and the one-level `/Order/Lines*` partial carrier at the [starred-group capacity checkpoint](../SOURCES.md#src-starred-group-quantifier-capacity). P and executable conformance state the generic in-capacity projection exactly; multi-level partial execution remains external-evidence pending rather than inheriting the one-level observation.
+- `remains`: Kernel calibration of multi-level partial terminal stars, wider partial behavior, and mixed lists remains with [SG13](../SEMANTICS-GAPS.md#sg13--group-list-and-group-count-completion).
 
 <a id="cap-fixed-group-bound-repeatable-ancestry"></a>
 #### Fixed groups under bound repeatable ancestry

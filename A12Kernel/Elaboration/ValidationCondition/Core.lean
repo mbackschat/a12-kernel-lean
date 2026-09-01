@@ -366,16 +366,17 @@ def ResolvedGroupListOperand.evalAddressedTally
         | .legacy document _ => document
         | .checked checked => checked.source.toDocument
         | .partialView checked _ => checked.source.toDocument
-      let count ← (source.rowCount document context.outer).mapError .addressing
+      let count ←
+        (source.inCapacityRowCount document context.outer).mapError .addressing
       pure (GroupListPresenceTally.filledOnly count)
   | .starredGroupPresence source =>
       match context.input with
       | .legacy _ _ => .error (.checkedDocumentRequired source.groupPath)
       | .checked document | .partialView document _ => do
-          let topology ←
-            (source.resolvedTopology document.source.toDocument context.outer)
+          let environments ←
+            (source.inCapacityEnvironments document.source.toDocument context.outer)
               |>.mapError .addressing
-          let states ← topology.environments.mapM fun environment => do
+          let states ← environments.mapM fun environment => do
             let input ←
               (document.groupPresenceInput source.groupPath environment
                 .fullyRelevant false).mapError .group

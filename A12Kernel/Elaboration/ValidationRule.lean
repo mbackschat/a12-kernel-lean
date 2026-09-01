@@ -210,7 +210,7 @@ def evalFull (rule : CheckedResolvedValidationRule model)
       { fields := (prepared.checkContext locale raw).withWorld prepared.world, groups }
       hasContent)
 
-/-- Execute one checked nonrepeatable rule under kernel 30.8.1 partial validation. The observational admission normal form makes every filtered rule skip, global fields augment the caller scope for the independent error-field gate, relevant rules bypass the full-validation content gate, and out-of-set leaf reads remain UNKNOWN inside the existing connective evaluator. Kernel dispatches by error field before entering the generated rule method; that unobservable internal order is not represented here. -/
+/-- Execute one checked nonrepeatable scalar rule under kernel 30.8.1 partial validation. The observational admission normal form makes every filtered rule skip, global fields augment the caller scope for the independent error-field gate, relevant rules bypass the full-validation content gate, and out-of-set leaf reads remain UNKNOWN inside the existing connective evaluator. An addressed condition uses `evalAddressedPartial` instead. Kernel dispatches by error field before entering the generated rule method; that unobservable internal order is not represented here. -/
 def evalPartial (rule : CheckedResolvedValidationRule model)
     (prepared : PreparedFlatStringContext model compilePattern)
     (locale : String) (raw : RawFlatContext) (groups : GroupPresenceContext)
@@ -331,6 +331,30 @@ private def evalOrdinaryPartialAdmittedAt
     | some result => result.mapError .conditionAddressing
     | none => throw .unsupportedCondition
   pure (rule.core.emitAt errorPath verdict)
+
+/-- Execute one checked nonrepeatable addressed rule against the normalized partial document view. The scalar iteration plan fixes the empty environment and root error path; filtering and error-field relevance still gate execution before addressed leaf reads, while unsupported shapes and addressing failures remain structural errors outside semantic UNKNOWN. -/
+def evalAddressedPartial
+    (rule : CheckedResolvedValidationRule model)
+    (checked : CheckedDocument model)
+    (scope : ValidationRelevanceScope) :
+    Except OrdinaryRepeatableRuleEvaluationError PartialRuleOutcome := do
+  if rule.hasHaving then
+    pure .skipped
+  else
+    match rule.ordinaryIterationPlan with
+    | .once _ | .rows _ => throw .unsupportedCondition
+    | .scalar =>
+        if !rule.supportsOrdinaryRepeatablePartial then
+          throw .unsupportedCondition
+        let preliminary ←
+          checked.applyPartialGeneratedPreliminaryForScope scope
+            |>.mapError .preliminary
+        if !preliminary.relevance.coversFieldAtBoundLevels model
+            rule.errorField rule.partialErrorBoundLevels [] then
+          pure .skipped
+        else
+          pure (.evaluated
+            (← rule.evalOrdinaryPartialAdmittedAt preliminary [] [] none))
 
 /-- Prepare each branch-independent RNU relation once per existing bound prefix. Partial scope excludes incomplete composite keys before reads; full scope retains every topology row. The checked source and rule must agree on the complete deepest-row iteration scope. -/
 private def repetitionNotUniqueResults

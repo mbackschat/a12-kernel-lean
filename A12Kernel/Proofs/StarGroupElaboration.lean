@@ -273,17 +273,21 @@ theorem checkedStarredGroupSource_rowCount_of_resolved
   rw [resolution]
   rfl
 
-/-- Both legal predicates consume the same successful topology cardinality without a second row walk. -/
+/-- Both legal predicates consume the same successful in-capacity topology cardinality. -/
 theorem checkedStarredGroupSource_evaluateFull_of_resolved
     (checked : CheckedStarredGroupSource model)
     (operator : StarredGroupFillQuantifier) (document : Document)
     (outer : Env) (resolved : ResolvedStarTopology)
     (resolution : checked.resolvedTopology document outer = .ok resolved) :
     checked.evaluateFull operator document outer =
-      .ok (operator.evalCount resolved.environments.length) := by
+      .ok (operator.evalCount (resolved.environments.filter fun environment =>
+        !StarAxes.environmentOverLimit checked.path.axes environment).length) := by
+  have pathResolution : checked.path.resolve document outer = .ok resolved := by
+    simpa [CheckedStarredGroupSource.resolvedTopology] using resolution
   unfold CheckedStarredGroupSource.evaluateFull
-    CheckedStarredGroupSource.rowCount
-  rw [resolution]
+    CheckedStarredGroupSource.inCapacityRowCount
+    StarPath.inCapacityEnvironments
+  rw [pathResolution]
   rfl
 
 /-- The starred numeric count consumes only the successful topology's in-capacity rows. -/
@@ -292,11 +296,14 @@ theorem checkedStarredGroupSource_numberOfFilledGroups_of_resolved
     (outer : Env) (resolved : ResolvedStarTopology)
     (resolution : checked.resolvedTopology document outer = .ok resolved) :
     checked.numberOfFilledGroups document outer =
-      .ok (.value (resolved.environments.countP fun environment =>
-        !StarAxes.environmentOverLimit checked.path.axes environment)) := by
+      .ok (.value (resolved.environments.filter fun environment =>
+        !StarAxes.environmentOverLimit checked.path.axes environment).length) := by
+  have pathResolution : checked.path.resolve document outer = .ok resolved := by
+    simpa [CheckedStarredGroupSource.resolvedTopology] using resolution
   unfold CheckedStarredGroupSource.numberOfFilledGroups
     CheckedStarredGroupSource.inCapacityRowCount
-  rw [resolution]
+    StarPath.inCapacityEnvironments
+  rw [pathResolution]
   rfl
 
 end A12Kernel

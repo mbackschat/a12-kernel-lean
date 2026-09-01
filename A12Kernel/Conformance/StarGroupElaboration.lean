@@ -111,6 +111,27 @@ private def repeatedOutcomeOf (operator : GroupFillQuantifier)
   | .ok verdict => some (occurrences, verdict)
   | .error _ => none
 
+private def partialOutcomeOf (operator : GroupFillQuantifier)
+    (rows : List RowAddr) (scope : ValidationRelevanceScope) : Option Verdict := do
+  let operand : SurfaceGroupListOperand :=
+    .starredGroup (absoluteSource false true true)
+  let checked ←
+    (CheckedValidationCondition.fromGroupList
+      model amount.groupPath operator [operand]).toOption
+  let leaf ← match checked.core with
+    | .leaf leaf => some leaf
+    | _ => none
+  let scalar := model.checkContext { read := fun _ => .empty }
+  let result ← leaf.evalAddressedPartial? {
+      scalar := {
+        fields := scalar
+        groups := GroupPresenceContext.unavailable }
+      outer := []
+      input := .legacy (document rows) (fun _ field => scalar.read field)
+    } scope (fun _ => true)
+      (fun _ _ => .error (.checkedDocumentRequired [])) none
+  result.toOption
+
 private def countResultOf (source : SurfaceStarGroupPath) (rows : List RowAddr)
     (outer : Env := []) : Option FilledGroupCount :=
   match checkedOf source with
@@ -137,6 +158,17 @@ private def nestedRows : List RowAddr :=
     { group := 20, path := [1, 2] }, { group := 10, path := [1] },
     { group := 20, path := [1, 1] }]
 
+private def fourItemRows : List RowAddr :=
+  [{ group := 10, path := [1] },
+    { group := 20, path := [1, 1] }, { group := 20, path := [1, 2] },
+    { group := 20, path := [1, 3] }, { group := 20, path := [1, 4] }]
+
+private def onlyItem (row : Nat) : ValidationRelevanceScope :=
+  .partialSet [{
+    path := items.path
+    indices := [.all, .all, .concrete 1, .concrete row]
+  }]
+
 /- Checked lowering retains the terminal group and the exact first-star plan. -/
 example :
     resultOf (relativeSource false true) = some (20,
@@ -145,6 +177,24 @@ example :
     resultOf (relativeSource true true) = some (20,
       { axes := [{ level := 10, repeatability := some 2 },
           { level := 20, repeatability := some 3 }], firstStar := 0 }) := by
+  native_decide
+
+/- Partial validation restricts the threshold pair to relevant in-capacity rows. A selected
+   in-capacity empty row is structural content; selecting only the over-limit row or no group row
+   leaves the operand unavailable rather than turning the empty-domain predicate on. -/
+example :
+    partialOutcomeOf .atLeastOneGroupFilled fourItemRows (onlyItem 2) =
+      some (.fired .value) ∧
+    partialOutcomeOf .noGroupFilled fourItemRows (onlyItem 2) =
+      some .unknown ∧
+    partialOutcomeOf .atLeastOneGroupFilled fourItemRows (onlyItem 4) =
+      some .unknown ∧
+    partialOutcomeOf .noGroupFilled fourItemRows (onlyItem 4) =
+      some .unknown ∧
+    partialOutcomeOf .atLeastOneGroupFilled fourItemRows (.partialSet []) =
+      some .unknown ∧
+    partialOutcomeOf .noGroupFilled fourItemRows (.partialSet []) =
+      some .unknown := by
   native_decide
 
 /- A created-but-empty terminal row is structural content: no cell read is involved. -/
@@ -191,7 +241,7 @@ example :
     countOf (relativeSource false true) nestedRows [(10, 2)] = some 1 := by
   native_decide
 
-/- Sequential over-limit rows remain instantiated structural content, while the numeric starred count excludes them from its evaluation domain. -/
+/- The physical topology retains sequential over-limit rows, while the semantic count excludes them from its evaluation domain. -/
 example :
     let rows := [{ group := 10, path := [1] },
       { group := 20, path := [1, 1] }, { group := 20, path := [1, 2] },
@@ -200,14 +250,9 @@ example :
       countResultOf (absoluteSource false true true) rows = some (.value 3) := by
   native_decide
 
-/- The carrier that would separate the quantifiers' two candidate extents is outside this document
-   domain, which is why no case above distinguishes them: instantiated rows at a level must form a
-   prefix, so every representable over-limit document keeps an in-capacity row and the structural and
-   in-capacity readings coincide on all of them. Only the numeric count's narrower extent is
-   observable here. a12-dmkits cannot reach that carrier either — its builder materializes the prefix,
-   measured at `b145ce565` where instantiating row 3 of a capacity-2 group makes the count read 2 —
-   so the quantifiers' extent is unreached on both routes rather than settled. The refusal is the
-   honest lock: it records the boundary instead of asserting an extent this domain cannot witness. -/
+/- A terminal repeatable row cannot separate the capacity accounts through a sparse topology:
+   instantiated rows at one level must form a prefix. The independently measured descendant-only
+   carrier in `StarredGroupPresence` settles the semantic extent without weakening this invariant. -/
 example :
     let onlyOverLimitRow := [{ group := 10, path := [1] }, { group := 20, path := [1, 4] }]
     contextErrorOf (absoluteSource false true true) onlyOverLimitRow =

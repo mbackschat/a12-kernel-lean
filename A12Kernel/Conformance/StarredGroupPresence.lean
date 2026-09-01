@@ -82,6 +82,8 @@ private def evaluate? (operator : GroupFillQuantifier)
 private def section1 : RowAddr := { group := 10, path := [1] }
 private def item11 : RowAddr := { group := 20, path := [1, 1] }
 private def item12 : RowAddr := { group := 20, path := [1, 2] }
+private def item13 : RowAddr := { group := 20, path := [1, 3] }
+private def item14 : RowAddr := { group := 20, path := [1, 4] }
 private def option111 : RowAddr := { group := 30, path := [1, 1, 1] }
 
 private def emptyDetails : DocumentData :=
@@ -120,6 +122,14 @@ private def filledWithMalformedPeer : DocumentData :=
       raw := .parsed (.str "filled")
     }] }
 
+private def overLimitDetailsOnly : DocumentData :=
+  { instantiatedRows := [section1, item11, item12, item13, item14]
+    cells := [{
+      address := { field := detailValue.id, path := [1, 4] }
+      stored := "over-limit"
+      raw := .parsed (.str "over-limit")
+    }] }
+
 /- An instantiated starred ancestor does not by itself fill its nonrepeatable terminal. -/
 example :
     evaluate? .atLeastOneGroupFilled emptyDetails = some (.verdict .unknown) ∧
@@ -141,6 +151,16 @@ example :
       some (.verdict (.fired .value)) ∧
     evaluate? .noGroupFilled filledWithMalformedPeer =
       some (.verdict .unknown) := by
+  native_decide
+
+/- A descendant present only below an over-limit parent is outside both threshold quantifiers.
+   The empty in-capacity prefix is the separator: a physical-topology account would make the
+   positive form fire and the zero form stay silent. Kernel-locked at a12-dmkits `abe50e717`. -/
+example :
+    evaluate? .atLeastOneGroupFilled overLimitDetailsOnly =
+      some (.verdict .unknown) ∧
+    evaluate? .noGroupFilled overLimitDetailsOnly =
+      some (.verdict (.fired .omission)) := by
   native_decide
 
 end A12Kernel.Conformance.StarredGroupPresence

@@ -97,6 +97,71 @@ private def onlyOther : ValidationRelevanceScope :=
 private def nothing : ValidationRelevanceScope :=
   .partialSet []
 
+private def lineValue : FlatFieldDecl :=
+  { id := 202
+    groupPath := ["Order", "Lines"]
+    name := "Value"
+    policy := { kind := .string }
+    repeatableScope := [10] }
+
+private def lines : RepeatableGroupDecl :=
+  { level := 10, path := ["Order", "Lines"], repeatability := some 2 }
+
+private def capacityModel : FlatModel :=
+  { fields := [errorField false, lineValue], repeatableGroups := [lines] }
+
+private def capacityRule? (operator : GroupFillQuantifier) :
+    Option (CheckedResolvedValidationRule capacityModel) := do
+  let guard ←
+    (elaborate capacityModel ["Order"] errorFilled).toOption
+  let checkedGuard ← (CheckedValidationCondition.fromFlat guard).toOption
+  let checkedQuantifier ←
+    (CheckedValidationCondition.fromGroupList capacityModel ["Order"] operator [
+      .starredGroup {
+        base := .absolute
+        groups := [
+          { name := "Order" },
+          { name := "Lines", starred := true }
+        ]
+      }
+    ]).toOption
+  let condition ← (checkedGuard.and checkedQuantifier).toOption
+  (assembleResolvedValidationRule capacityModel condition
+    (errorField false).id "capacity" .error { parts := [] }).toOption
+
+private def capacityDocument : DocumentData :=
+  { instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 10, path := [2] },
+      { group := 10, path := [3] }
+    ]
+    cells := [{
+      address := { field := (errorField false).id, path := [] }
+      stored := "1"
+      raw := .parsed (.num 1)
+    }] }
+
+private def capacityScope (row : Option Nat) : ValidationRelevanceScope :=
+  .partialSet ([{
+    path := (errorField false).path
+    indices := [.all, .all]
+  }] ++ row.toList.map fun coordinate => {
+    path := lines.path
+    indices := [.all, .concrete coordinate]
+  })
+
+private def addressedCapacityVerdict? (operator : GroupFillQuantifier)
+    (row : Option Nat) : Option Verdict := do
+  let rule ← capacityRule? operator
+  let prepared ←
+    (prepareFlatStringContext world builtinStringPatternCompiler
+      capacityModel).toOption
+  let checked ← (checkDocument prepared "en_US" capacityDocument).toOption
+  let .evaluated outcome ←
+    (rule.evalAddressedPartial checked (capacityScope row)).toOption
+    | none
+  some outcome.verdict
+
 /- A global error field is auto-relevant before the rule gate; the same non-global rule remains skipped. -/
 example :
     partialVerdict? true bothFilled rawBothFilled onlyOther =
@@ -119,6 +184,24 @@ example :
       some (some (.fired .omission)) ∧
     fullVerdict? true emptyAmountIsZero rawEmpty false =
       some .notFired := by
+  native_decide
+
+/- The complete checked-rule API preserves the measured one-level partial capacity boundary. An
+   in-capacity group row enters the threshold extent; an over-limit-only or absent selection remains
+   semantic UNKNOWN rather than becoming an empty operand. -/
+example :
+    addressedCapacityVerdict? .atLeastOneGroupFilled (some 2) =
+      some (.fired .value) ∧
+    addressedCapacityVerdict? .noGroupFilled (some 2) =
+      some .unknown ∧
+    addressedCapacityVerdict? .atLeastOneGroupFilled (some 3) =
+      some .unknown ∧
+    addressedCapacityVerdict? .noGroupFilled (some 3) =
+      some .unknown ∧
+    addressedCapacityVerdict? .atLeastOneGroupFilled none =
+      some .unknown ∧
+    addressedCapacityVerdict? .noGroupFilled none =
+      some .unknown := by
   native_decide
 
 end A12Kernel.Conformance.ValidationRule.Partial
