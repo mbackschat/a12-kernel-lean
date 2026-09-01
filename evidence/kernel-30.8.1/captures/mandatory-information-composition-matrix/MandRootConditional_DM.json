@@ -1,0 +1,72 @@
+{
+  "header" : {
+    "id" : "MandRootConditional_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandRootConditional_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandRootConditional",
+        "name" : "MandRootConditional",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandRootConditional/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandRootConditional/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandRootConditional/ROOT_CONDITIONAL",
+            "name" : "ROOT_CONDITIONAL",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "ROOT_CONDITIONAL",
+              "errorCondition" : "GroupFilled(/MandRootConditional) And FieldNotFilled(A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "ROOT_CONDITIONAL"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

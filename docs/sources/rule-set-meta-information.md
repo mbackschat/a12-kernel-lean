@@ -66,3 +66,36 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 | `warning-not-filled` | `c113493fa7537eff5e824355690bbe59889f0e98a16038e59334784b10009694` | `35229ed792d4aa8cbf1913e93a2d648e6488299b875fd03e7bc238aec540cdcb` | `011fba556c7bb92a4a817f941110b81cb49c3796a9ecb68a44a38496b3b996f1` |
 
 - `sync`: **no `spec/` change and no checked carrier yet.** The matrix closes a finite discovery slice but not the rule-set collector or its composition semantics; [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) remains the owner.
+
+<a id="src-mandatory-information-composition-matrix"></a>
+#### Mandatory-information derivation distinguishes root-relative fields and closes finite dependency chains, measured locally on 2026-09-01
+
+- `revision`: seven model-level `mandatoryInformation` requests at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`; the sibling checkout was clean and unchanged before and after. The already prepared source-matched launcher, every retained structured rule read-back, and every Kernel-confirmed `model check` report dmtool `0.13.0` and Kernel `30.8.1`; every artifact reports the same versions, exact source revision, and source state `CLEAN`. No request contains a document or row.
+- `question`: can `mandatoryForRootGroup` differ from global `mandatory`, does a root-mandatory seed promote that conditional field globally, and do field-dependency chains reach the same finite answer when their rule names place dependents before seeds?
+- `shorthand`: `A`, `B`, and `C` below name the corresponding absolute fields in each single-purpose model; `root` names that model's root group; `—` is the observed empty set.
+
+| Case | Rules in rule-name order | `mandatory` | `mandatoryForRootGroup` | `mandatoryRootGroups` |
+|---|---|---|---|---|
+| `field-conditional` | `FieldFilled(A) And FieldNotFilled(B)` | — | — | — |
+| `field-chain-forward` | `FieldNotFilled(A)`; `FieldFilled(A) And FieldNotFilled(B)` | A, B | A, B | root |
+| `field-chain-reverse` | `FieldFilled(A) And FieldNotFilled(B)`; `FieldNotFilled(A)` | A, B | A, B | root |
+| `field-chain-two-hop` | `FieldFilled(B) And FieldNotFilled(C)`; `FieldFilled(A) And FieldNotFilled(B)`; `FieldNotFilled(A)` | A, B, C | A, B, C | root |
+| `field-chain-broken` | `FieldFilled(C) And FieldNotFilled(B)`; `FieldNotFilled(A)` | A | A | root |
+| `root-conditional` | `GroupFilled(root) And FieldNotFilled(A)` | — | A | — |
+| `root-seeded` | `GroupFilled(root) And FieldNotFilled(A)`; `GroupNotFilled(root)` | A | A | root |
+
+- `separators`: `root-conditional` is the first retained case where the two field sets differ, so a carrier must preserve them independently. Adding only the root seed promotes `A` into global `mandatory` and adds the root. The forward and reverse two-rule cases have the same final sets, while the reverse-named two-hop case reaches `C`; the broken-chain control with an unmet `C` guard retains only seed `A`. These are finite closure observations, not a general rule-order theorem.
+- `limit`: one nonrepeatable root with two or three String fields; ERROR rules only; direct `FieldFilled`, `FieldNotFilled`, `GroupFilled`, and `GroupNotFilled` conjunctions; at most three rules and two dependency edges. Not measured here: cycles, disjunction during closure, repeated or indexed fields or roots, nested groups, filters, semantic indices, parallel iteration, cross-root references, generated required rules, or additional rule families.
+- `bytes`: [`mandatory-information-composition-matrix/`](../../evidence/kernel-30.8.1/captures/mandatory-information-composition-matrix/) retains seven model/request/artifact triples. The hashes below pin every retained input and observation; these are bounded raw captures with no typed local replay, so they establish neither `L` nor `C` coverage.
+
+| Case | Model SHA-256 | Request SHA-256 | Artifact SHA-256 |
+|---|---|---|---|
+| `field-chain-broken` | `7a4ec5ae400bd6d01f2cd8919ae4697dcedd4df9544b4a17bc833942bb333337` | `0d17b6b67d1f1d4d4d36374fdcafaca480e762b0012b1209f877ef3f8079d57c` | `81adf0d1f9074cf04b05ff9a4facd14587c31f6f76879cead7462f329fad6785` |
+| `field-chain-forward` | `8515e3a3e7e25d858d8d8246aa5bc3951d3f350f0d2d3a6534fa41696192eb4c` | `832188f2fd1f94bbf8e0747389b5e6ceef2dd4b360f40833347829766787dc46` | `d7a9ecf7fb545fc826deedb0ad6b31fb4f2c0a10b1392e0289db2f138c3c52f2` |
+| `field-chain-reverse` | `adf58aa8a804952fbe2548b2633f5ad53fac104fe7389b778f78d020f777167e` | `91683671505fdf90be405db6a66b07066da759a0ec5cb3e7a0f71549190de44a` | `5b84b76e16898554a6ee5c23d6a371333870cfdb07aebc5b3bc216437aba9dfc` |
+| `field-chain-two-hop` | `db1c43a883371539477d2906eca0f02154f5c6d8bb3c68dbcd965ebaed78483c` | `f4aa153513c557a1e2254f4aa75295c8826fddef64b01077e88639f5a2c0c0b4` | `53e3e78b020477391f0fd40928e6f3eb1a1defbc4ce22682fdde5b1a311a982e` |
+| `field-conditional` | `fda5fb2aa6329e854132c3faf9c3768e961329bc2cb576577219b2b09575cf00` | `ef93f02c222240900bfb2f8fc9f791ea98c35a1b4ab74c88cbcf6a09d774e659` | `07d166890ad7c54d070fa762a53f41a26f8ffea1831fd3ac05ebcdfbf2ee06c9` |
+| `root-conditional` | `dc33b50baef087ce835d0a9f831a217a094a3b3222c7f0be33a63b001a4a58d0` | `eb754e5c89ae7d70533ca6665f632dda4e604e209774c521da55ca8f557ce084` | `d9594e7329bd618ea465bb39979a8b50475d528bc91f263b4dd711fe26ef0f9e` |
+| `root-seeded` | `f298d154499ffe6a51a5dae248690725189caf47fa10b624ab390a1f8b6923b6` | `da67701eb91dea767c85ff6ccf6434107464bcdfb170230c406746513750b82b` | `aef7d25c8f2f5b037dc061ac7d3e5ef62e06f6bc253d0960ed459f3214a1044a` |
+
+- `sync`: **no `spec/` change and no checked carrier yet.** The matrix settles a flat root-relative and dependency-closure slice, while [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) retains the wider collector obligation.

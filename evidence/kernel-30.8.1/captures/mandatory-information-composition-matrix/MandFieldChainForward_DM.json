@@ -1,0 +1,86 @@
+{
+  "header" : {
+    "id" : "MandFieldChainForward_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandFieldChainForward_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandFieldChainForward",
+        "name" : "MandFieldChainForward",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandFieldChainForward/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldChainForward/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldChainForward/A_SEED",
+            "name" : "A_SEED",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "A_SEED",
+              "errorCondition" : "FieldNotFilled(A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "A_SEED"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldChainForward/B_CHAIN",
+            "name" : "B_CHAIN",
+            "Rule" : {
+              "errorEntityRelPath" : "../B",
+              "errorCode" : "B_CHAIN",
+              "errorCondition" : "FieldFilled(A) And FieldNotFilled(B)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "B_CHAIN"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

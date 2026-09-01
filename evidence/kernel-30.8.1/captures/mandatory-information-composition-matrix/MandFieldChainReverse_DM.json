@@ -1,0 +1,86 @@
+{
+  "header" : {
+    "id" : "MandFieldChainReverse_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandFieldChainReverse_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandFieldChainReverse",
+        "name" : "MandFieldChainReverse",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandFieldChainReverse/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldChainReverse/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldChainReverse/A_CHAIN",
+            "name" : "A_CHAIN",
+            "Rule" : {
+              "errorEntityRelPath" : "../B",
+              "errorCode" : "A_CHAIN",
+              "errorCondition" : "FieldFilled(A) And FieldNotFilled(B)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "A_CHAIN"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldChainReverse/B_SEED",
+            "name" : "B_SEED",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "B_SEED",
+              "errorCondition" : "FieldNotFilled(A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "B_SEED"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

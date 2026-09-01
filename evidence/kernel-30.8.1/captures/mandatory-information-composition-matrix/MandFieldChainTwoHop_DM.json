@@ -1,0 +1,109 @@
+{
+  "header" : {
+    "id" : "MandFieldChainTwoHop_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandFieldChainTwoHop_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandFieldChainTwoHop",
+        "name" : "MandFieldChainTwoHop",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandFieldChainTwoHop/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldChainTwoHop/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldChainTwoHop/C",
+            "name" : "C",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldChainTwoHop/A_C_FROM_B",
+            "name" : "A_C_FROM_B",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "A_C_FROM_B",
+              "errorCondition" : "FieldFilled(B) And FieldNotFilled(C)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "A_C_FROM_B"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldChainTwoHop/B_B_FROM_A",
+            "name" : "B_B_FROM_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../B",
+              "errorCode" : "B_B_FROM_A",
+              "errorCondition" : "FieldFilled(A) And FieldNotFilled(B)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "B_B_FROM_A"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldChainTwoHop/C_SEED_A",
+            "name" : "C_SEED_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "C_SEED_A",
+              "errorCondition" : "FieldNotFilled(A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "C_SEED_A"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -352,6 +352,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Mandatory-information derivation reads a 32-bit-narrowed threshold](sources/rule-set-meta-information.md#src-mandatory-information-narrowing)
 <a id="src-mandatory-information-presence-matrix"></a>
 - [Mandatory-information derivation separates field, root-only, and ignored rule shapes](sources/rule-set-meta-information.md#src-mandatory-information-presence-matrix)
+<a id="src-mandatory-information-composition-matrix"></a>
+- [Mandatory-information derivation distinguishes root-relative fields and finite dependency closure](sources/rule-set-meta-information.md#src-mandatory-information-composition-matrix)
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)

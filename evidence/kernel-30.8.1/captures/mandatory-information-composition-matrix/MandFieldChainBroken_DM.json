@@ -1,0 +1,95 @@
+{
+  "header" : {
+    "id" : "MandFieldChainBroken_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandFieldChainBroken_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandFieldChainBroken",
+        "name" : "MandFieldChainBroken",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandFieldChainBroken/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldChainBroken/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldChainBroken/C",
+            "name" : "C",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldChainBroken/A_B_FROM_C",
+            "name" : "A_B_FROM_C",
+            "Rule" : {
+              "errorEntityRelPath" : "../B",
+              "errorCode" : "A_B_FROM_C",
+              "errorCondition" : "FieldFilled(C) And FieldNotFilled(B)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "A_B_FROM_C"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldChainBroken/B_SEED_A",
+            "name" : "B_SEED_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "B_SEED_A",
+              "errorCondition" : "FieldNotFilled(A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "B_SEED_A"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

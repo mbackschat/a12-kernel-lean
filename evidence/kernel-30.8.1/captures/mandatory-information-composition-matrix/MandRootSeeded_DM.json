@@ -1,0 +1,86 @@
+{
+  "header" : {
+    "id" : "MandRootSeeded_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandRootSeeded_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandRootSeeded",
+        "name" : "MandRootSeeded",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandRootSeeded/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandRootSeeded/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandRootSeeded/A_ROOT_CONDITIONAL",
+            "name" : "A_ROOT_CONDITIONAL",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "A_ROOT_CONDITIONAL",
+              "errorCondition" : "GroupFilled(/MandRootSeeded) And FieldNotFilled(A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "A_ROOT_CONDITIONAL"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandRootSeeded/B_ROOT_SEED",
+            "name" : "B_ROOT_SEED",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "B_ROOT_SEED",
+              "errorCondition" : "GroupNotFilled(/MandRootSeeded)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "B_ROOT_SEED"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
