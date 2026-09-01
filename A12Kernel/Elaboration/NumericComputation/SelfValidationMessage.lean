@@ -1,10 +1,14 @@
 import A12Kernel.Elaboration.NumericComputation.Core
+import A12Kernel.Semantics.ComputationSelfValidation
 
-/-! # The referenced-field inventory of a computed target's self-validation message
+/-! # Checked inputs to a computed target's self-validation message
 
-A computed Number target whose value disagrees with its stored cell carries a formal message naming
-the cells behind it. This module owns **which fields** that message names for a
-`NumberOfFilledGroups` target. It constructs no pointer coordinates, no text, and no message.
+A computed Number target whose value disagrees with its stored cell carries a formal message. This
+module owns two checked projections into that message: the fields named by a
+`NumberOfFilledGroups` target and the growth channel of the measured plain-star `Sum` carrier. It
+constructs no pointer coordinates, text, or message.
+
+## Referenced fields
 
 The extent is each operand's **own reach**. Every operand of this operator is a group, so each names
 the fields anywhere in its subtree at any depth and however many there are, which is exactly what
@@ -53,5 +57,40 @@ end CheckedGroupCountOperand
 def referencedFieldsForFilledGroupCount (model : FlatModel)
     (operands : List (CheckedGroupCountOperand model)) (target : FieldId) : List FieldId :=
   operands.flatMap (·.referencedFields model) ++ [target]
+
+/-! ## Plain-star `Sum` growth -/
+
+namespace CheckedNumberEntitySource
+
+/-- Derive the implicit-message growth channel for the measured checked `Sum` carrier.
+
+    The closed carrier is exactly one plain Number star declared directly in one reopened axis
+    with finite capacity. The immutable checked document supplies the same in-capacity cells that
+    aggregate evaluation reads. Filtered, nested, mixed, direct, unbounded, and formally
+    unavailable sources return `none`; structural checked-document failures remain explicit. -/
+def plainStarSumGrowth? (checked : CheckedNumberEntitySource model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError (Option ComputationOperandGrowth) :=
+  match checked.first, checked.rest with
+  | .star source, [] =>
+      match source.source.path.axes, source.source.declaration.repeatableScope with
+      | [axis], [level] =>
+          if source.source.path.firstStar == 0 && axis.level == level then
+            match axis.repeatability with
+            | none => pure none
+            | some capacity => do
+                let resolved ← checked.first.resolveCheckedValidationOperand document outer
+                let side := resolved.inCapacityValueListSideAt .computation
+                match side.available with
+                | .error _ => pure none
+                | .ok _ =>
+                    pure (some (.starredRowValues side.cells.length capacity
+                      (!side.hasEmpty)))
+          else
+            pure none
+      | _, _ => pure none
+  | _, _ => pure none
+
+end CheckedNumberEntitySource
 
 end A12Kernel

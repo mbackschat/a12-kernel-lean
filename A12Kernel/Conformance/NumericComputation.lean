@@ -8,6 +8,7 @@ import A12Kernel.Conformance.NumericComputation.StarredGroupCount
 import A12Kernel.Conformance.NumericComputation.FormalInput
 import A12Kernel.Conformance.NumericComputation.LaterValidation
 import A12Kernel.Conformance.NumericComputation.Repeatable
+import A12Kernel.Conformance.NumericComputation.SumSelfValidationMessage
 import A12Kernel.Conformance.NumericComputation.Table
 import A12Kernel.Conformance.NumericComputation.RunPlan
 import A12Kernel.Conformance.NumericComputation.SourceTarget
