@@ -53,6 +53,13 @@ theorem checkedNumericProductAggregate_samePath
     checked.left.source.path = checked.right.source.path :=
   checked.samePath
 
+/-- Every unstarred repeatable ancestor of a checked product pair lies in the pair's declaring scope. This is the static availability certificate; callers still supply the corresponding runtime environment. -/
+theorem checkedNumericProductAggregate_bindingScopeBound
+    (checked : CheckedNumericProductAggregate model) :
+    checked.left.source.bindingScope.isPrefixOf
+      (model.repeatableScopeForGroupPath checked.declaringGroup) = true :=
+  checked.bindingScopeBound
+
 /-- The checked pair's result scale is exactly the existing multiplication summary of its two declaration scales. -/
 theorem checkedNumericProductAggregate_scaleSummary
     (checked : CheckedNumericProductAggregate model) :

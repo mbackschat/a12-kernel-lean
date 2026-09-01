@@ -416,7 +416,7 @@ The format rule then gained a witness independent of its closest pair, at `96d0c
 - `admission-claim`: both fields' immediate owning group must be the same. That group may be fixed below a repeated ancestor, so `Lines*/Packaging/Weight` paired with itself is admitted, while `Lines*/Qty` paired with `Lines*/Packaging/Weight` is refused even though both share `Lines*`.
 - `diagnostic-claim`: differing owning groups report `MVK_DIFFERENT_GROUPS`; an unstarred repeatable level or a star above the lowest repeatable level reports `MVK_NO_WILDCARD`; multiple stars report `MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED`; `Having` reports `MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED`; and a path with no repeatable level reports `MVK_REPEATABLE_LEVEL_REQUIRED`.
 - `evidence-limit`: static admission and diagnostics only. This revision supplies no runtime observation.
-- `local-disposition`: Lean already compared each declaration's immediate `groupPath`; two new controls lock the accepted fixed-descendant pair and rejected shared-starred-ancestor pair. Its parser-independent star-only surface cannot represent every rejected spelling or project every exact external code, which remains SG9 work.
+- `local-consequence`: the bounded pair matrix is implemented with exact diagnostic projection under [Number aggregates](../IMPLEMENTATION-MAP.md#cap-number-aggregates); wider aggregate/path shapes remain outside this checkpoint.
 - `sync`: inbound correction already committed and reviewed in a12-dmkits; no outbound ledger entry.
 
 <a id="src-count-partial-extent"></a>

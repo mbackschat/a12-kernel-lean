@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, date-extraction source admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, and the whole-rule error-field reference gate. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes and bounded `SumOfProducts` pair matrix, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, date-extraction source admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, and the whole-rule error-field reference gate. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -38,8 +38,16 @@ inductive KernelStaticDiagnostic where
   | duplicateParam1
   /-- The **indirect** arm: two operands overlap by ancestor and descendant. It fires between two wildcarded references where the direct arm does not, and between a group and a field below it. -/
   | duplicateParam2
+  /-- The measured `SumOfProducts` pair resolves two Number operand paths whose immediate owning groups differ. This includes a plain field outside the starred owner; sharing a starred ancestor is also insufficient, while two fixed descendants of one owner are admitted. -/
+  | differentGroups
   /-- A repeatable group was reached without its required star address, either as an unstarred group operand or below an earlier star. Measured on the group-list quantifiers and, on conditions character-identical apart from the missing `*`, on the shared entity list. -/
   | noWildcard
+  /-- The measured `SumOfProducts` operand writes stars at more than one repeatable level. A sole star at the lowest level remains the admitted spelling. -/
+  | wildcardOnlyAtLowestLevelAllowed
+  /-- The measured `SumOfProducts` pair adds `Having` to either otherwise-admissible starred operand. This is the carrier's exact refusal; ordinary aggregate lists retain their separate filtered-star route. -/
+  | wildcardAtLowestLevelRequired
+  /-- The measured `SumOfProducts` pair consists of two Number fields below no repeatable level at all. -/
+  | repeatableLevelRequired
   /-- A star was written on a **nonrepeatable** group operand, which has no level to reopen. The opposite arm of the class above, and a separate class rather than a shared wildcard refusal. -/
   | invalidWildcard
   /-- A starred group operand appeared under a quantifier that forbids one. Distinct from the scalar-presence wildcard class below, which the same star draws through a different carrier. -/
@@ -132,8 +140,14 @@ def kernelCode : KernelStaticDiagnostic → String
   | .paramSizeInvalidGN => "MVK_PARAMSIZE_INVALIDGN"
   | .duplicateParam1 => "MVK_DUPLICATE_PARAM1"
   | .duplicateParam2 => "MVK_DUPLICATE_PARAM2"
+  | .differentGroups => "MVK_DIFFERENT_GROUPS"
   | .paramSizeInvalid2 => "MVK_PARAMSIZE_INVALID2"
   | .noWildcard => "MVK_NO_WILDCARD"
+  | .wildcardOnlyAtLowestLevelAllowed =>
+      "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED"
+  | .wildcardAtLowestLevelRequired =>
+      "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED"
+  | .repeatableLevelRequired => "MVK_REPEATABLE_LEVEL_REQUIRED"
   | .invalidWildcard => "MVK_INVALID_WILDCARD"
   | .noWildcardsGAllowed => "MVK_NO_WILDCARDS_G_ALLOWED"
   | .noWildcardsAllowed => "MVK_NO_WILDCARDS_ALLOWED"
@@ -182,7 +196,9 @@ def all : List KernelStaticDiagnostic :=
     .fieldNotInRuleGroup,
     .paramSizeInvalidN,
     .paramSizeInvalidGN, .paramSizeInvalid2, .duplicateParam1, .duplicateParam2,
-    .noWildcard, .invalidWildcard, .noWildcardsGAllowed, .noWildcardsAllowed,
+    .differentGroups, .noWildcard, .wildcardOnlyAtLowestLevelAllowed,
+    .wildcardAtLowestLevelRequired, .repeatableLevelRequired,
+    .invalidWildcard, .noWildcardsGAllowed, .noWildcardsAllowed,
     .noGroupsAllowed,
     .invalidEntity, .rootGroupReferenced, .rootGroupWithOtherParameters,
     .repeatableGroupMissing, .negativeConditionInIteration,

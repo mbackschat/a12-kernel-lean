@@ -5,7 +5,7 @@ import A12Kernel.Semantics.NumericAggregate
 
 /-! # Checked Number aggregate lowering
 
-The established direct route resolves one unfiltered list of at least two distinct nonrepeatable Number fields into the aggregate atom used by checked numeric expressions. The ordinary entity-list route reuses the shared checked direct/plain-star/filtered-star source, resolves each slot lazily in authored order, and delegates the resulting cells through one resolver-parametric scan to the same aggregate folds. `SumOfProducts` instead checks exactly two Number stars whose fields have the same immediate owning group and whose lowest-repeatable topology is identical, resolves that shared topology once, and exposes full/partial validation plus a phase-indexed checked-cell fold. The owning group may be a fixed descendant of the starred group. The full-validation faces of both checked sources reach generated computation validation through its bounded addressed context; unfiltered Number aggregates also reach ordinary partial rules through the call-local partial-view route, while `SumOfProducts` reaches ordinary addressed rules through the immutable checked-document projection. Group operands and concrete syntax remain outside.
+The established direct route resolves one unfiltered list of at least two distinct nonrepeatable Number fields into the aggregate atom used by checked numeric expressions. The ordinary entity-list route reuses the shared checked direct/plain-star/filtered-star source, resolves each slot lazily in authored order, and delegates the resulting cells through one resolver-parametric scan to the same aggregate folds. `SumOfProducts` instead checks exactly two unfiltered Number stars whose fields have the same immediate owning group and whose lowest-repeatable topology is identical, requires every unstarred repeatable ancestor to lie in the declaring scope, resolves that shared topology once, and exposes full/partial validation plus a phase-indexed checked-cell fold. The owning group may be a fixed descendant of the starred group. The full-validation faces of both checked sources reach generated computation validation through its bounded addressed context; unfiltered Number aggregates also reach ordinary partial rules through the call-local partial-view route, while `SumOfProducts` reaches ordinary addressed rules through the immutable checked-document projection. Group operands and concrete syntax remain outside.
 -/
 
 namespace A12Kernel
@@ -29,61 +29,134 @@ inductive PartialValidationNumberAggregateViewResult where
   | result (result : PartialValidationNumberAggregateResult)
   deriving Repr, DecidableEq
 
-/-- A parser-independent `SumOfProducts` pair. Its two operands are fields, not ordinary entity-list slots: filters, groups, and direct fields are unrepresentable here. -/
+/-- A parser-independent `SumOfProducts` pair. Each operand retains its authored wildcard path and an optional correlated filter; the checked carrier accepts only two unfiltered Number paths with the measured lowest-level star shape. Groups remain unrepresentable here. -/
 structure SurfaceNumericProductAggregate where
   left : SurfaceStarFieldPath
   right : SurfaceStarFieldPath
+  leftHaving : Option SurfaceCorrelatedHaving := none
+  rightHaving : Option SurfaceCorrelatedHaving := none
   deriving Repr, DecidableEq
 
 /-- Fail-closed errors specific to the paired-row aggregate boundary. -/
 inductive NumericProductAggregateElabError where
   | source (error : StarNumberElabError)
   | differentGroups (left right : GroupPath)
-  | wildcardNotLowest (path : List String)
+  | noWildcard (path : List String)
+  | wildcardOnlyAtLowestLevel (path : List String)
+  | wildcardAtLowestLevelRequired
+  | repeatableLevelRequired
   | incompatibleTopology
   deriving Repr, DecidableEq
 
-/-- Two Number-star declarations certified against one model, one immediate owning group, and one identical lowest-repeatable-star plan. Runtime row alignment follows from this shared plan rather than from zipping independently expanded lists. -/
+/-- Exact Kernel class for each measured `SumOfProducts` refusal. Unresolved paths, kind errors, and the defensive topology branch remain deliberately unmapped. -/
+def NumericProductAggregateElabError.diagnostic? :
+    NumericProductAggregateElabError → Option KernelStaticDiagnostic
+  | .differentGroups _ _ => some .differentGroups
+  | .noWildcard _ => some .noWildcard
+  | .wildcardOnlyAtLowestLevel _ => some .wildcardOnlyAtLowestLevelAllowed
+  | .wildcardAtLowestLevelRequired => some .wildcardAtLowestLevelRequired
+  | .repeatableLevelRequired => some .repeatableLevelRequired
+  | .source _ | .incompatibleTopology => none
+
+/-- Two Number-star declarations certified against one model, one immediate owning group, one declaring scope that binds every unstarred repeatable ancestor, and one identical lowest-repeatable-star plan. Runtime row alignment follows from this shared plan rather than from zipping independently expanded lists. -/
 structure CheckedNumericProductAggregate (model : FlatModel) where
+  declaringGroup : GroupPath
   left : CheckedStarNumberSource model
   right : CheckedStarNumberSource model
   sameGroup : left.source.declaration.groupPath = right.source.declaration.groupPath
   lowestStar : left.source.path.firstStar + 1 = left.source.path.axes.length
   samePath : left.source.path = right.source.path
+  bindingScopeBound :
+    left.source.bindingScope.isPrefixOf
+      (model.repeatableScopeForGroupPath declaringGroup) = true
 
-private def CheckedStarNumberSource.starsOnlyLowest
-    (checked : CheckedStarNumberSource model) : Bool :=
-  checked.source.path.firstStar + 1 == checked.source.path.axes.length
+private structure CheckedNumericProductOperand (model : FlatModel)
+    (declaringGroup : GroupPath) where
+  source : CheckedStarNumberSource model
+  lowestStar : source.source.path.firstStar + 1 = source.source.path.axes.length
+  bindingScopeBound :
+    source.source.bindingScope.isPrefixOf
+      (model.repeatableScopeForGroupPath declaringGroup) = true
 
-/-- Check both fields through the established Number-star owner, then require the Kernel's same-owning-group and lowest-star pair shape. One validated model supplies the common model-zone and non-starred ancestors are supplied once by the later outer environment. -/
+private inductive NumericProductOperandShape (model : FlatModel)
+    (declaringGroup : GroupPath) where
+  | fixed (declaration : FlatFieldDecl)
+  | starred (checked : CheckedNumericProductOperand model declaringGroup)
+
+private def NumericProductOperandShape.groupPath :
+    NumericProductOperandShape model declaringGroup → GroupPath
+  | .fixed declaration => declaration.groupPath
+  | .starred checked => checked.source.source.declaration.groupPath
+
+/-- Resolve one Number field while retaining the pair carrier's three measured wildcard states: no repeatable level, exactly the lowest unbound level starred, or a refusal with its exact class. Generic star lowering remains carrier-neutral because other consumers may legitimately receive the outer binding from their own context. -/
+private def elaborateNumericProductOperand (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceStarFieldPath) :
+    Except NumericProductAggregateElabError
+      (NumericProductOperandShape model declaringGroup) := do
+  let declaration ← model.resolveFieldDeclaration declaringGroup authored.toFieldPath
+    |>.mapError fun error => .source (.path (.resolve error))
+  match declaration.toNumberField? with
+  | none => throw (.source (.fieldNotNumber declaration.path))
+  | some _ =>
+      match elaborateStarNumberSource model declaringGroup authored with
+      | .error (.path (.missingWildcard _)) =>
+          if declaration.repeatableScope.isEmpty then
+            pure (.fixed declaration)
+          else
+            throw (.noWildcard declaration.path)
+      | .error (.path (.iterationBelowWildcard path)) =>
+          throw (.noWildcard path)
+      | .error error => throw (.source error)
+      | .ok source =>
+          if hBound : source.source.bindingScope.isPrefixOf
+              (model.repeatableScopeForGroupPath declaringGroup) = true then
+            if hLowest : source.source.path.firstStar + 1 =
+                source.source.path.axes.length then
+              pure (.starred {
+                source := source
+                lowestStar := hLowest
+                bindingScopeBound := hBound })
+            else
+              throw (.wildcardOnlyAtLowestLevel source.source.declaration.path)
+          else
+            throw (.noWildcard source.source.declaration.path)
+
+/-- Check two Number fields through the established star owner, then require the Kernel's same-owning-group and exact lowest-star pair shape. -/
+private def elaborateNumericProductAggregateCore (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceNumericProductAggregate) :
+    Except NumericProductAggregateElabError
+      (CheckedNumericProductAggregate model) := do
+  let left ← elaborateNumericProductOperand model declaringGroup authored.left
+  let right ← elaborateNumericProductOperand model declaringGroup authored.right
+  if hGroup : left.groupPath = right.groupPath then
+    match left, right with
+    | .fixed _, .fixed _ => throw .repeatableLevelRequired
+    | .starred left, .starred right =>
+        if hPath : left.source.source.path = right.source.source.path then
+          pure {
+            declaringGroup
+            left := left.source
+            right := right.source
+            sameGroup := by
+              simpa [NumericProductOperandShape.groupPath] using hGroup
+            lowestStar := left.lowestStar
+            samePath := hPath
+            bindingScopeBound := left.bindingScopeBound }
+        else
+          throw .incompatibleTopology
+    | _, _ => throw .incompatibleTopology
+  else
+    throw (.differentGroups left.groupPath right.groupPath)
+
+/-- Admit the executable pair only after its underlying unfiltered declarations pass every shape gate. `Having` is rejected at this carrier boundary without interpreting the filter. -/
 def elaborateNumericProductAggregate (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceNumericProductAggregate) :
     Except NumericProductAggregateElabError
       (CheckedNumericProductAggregate model) := do
-  let left ← elaborateStarNumberSource model declaringGroup authored.left
-    |>.mapError .source
-  let right ← elaborateStarNumberSource model declaringGroup authored.right
-    |>.mapError .source
-  if hGroup : left.source.declaration.groupPath =
-      right.source.declaration.groupPath then
-    if hLeft : left.starsOnlyLowest then
-      if hRight : right.starsOnlyLowest then
-        if hPath : left.source.path = right.source.path then
-          pure {
-            left
-            right
-            sameGroup := hGroup
-            lowestStar := by simpa [CheckedStarNumberSource.starsOnlyLowest] using hLeft
-            samePath := hPath }
-        else
-          throw .incompatibleTopology
-      else
-        throw (.wildcardNotLowest right.source.declaration.path)
-    else
-      throw (.wildcardNotLowest left.source.declaration.path)
-  else
-    throw (.differentGroups left.source.declaration.groupPath
-      right.source.declaration.groupPath)
+  let checked ← elaborateNumericProductAggregateCore model declaringGroup authored
+  match authored.leftHaving, authored.rightHaving with
+  | none, none => pure checked
+  | _, _ => throw .wildcardAtLowestLevelRequired
 
 namespace CheckedNumericProductAggregate
 

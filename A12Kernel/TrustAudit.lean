@@ -1361,6 +1361,7 @@ run_cmd do
 #print axioms A12Kernel.resolvedNumericAggregate_pair_scaleSummary
 #print axioms A12Kernel.resolvedNumericAggregate_distinctCount_scaleSummary
 #print axioms A12Kernel.checkedNumericProductAggregate_samePath
+#print axioms A12Kernel.checkedNumericProductAggregate_bindingScopeBound
 #print axioms A12Kernel.checkedNumericProductAggregate_scaleSummary
 #print axioms A12Kernel.checkedNumericProductAggregate_evaluateAt_of_resolved
 #print axioms A12Kernel.checkedNumericAggregate_sameCells

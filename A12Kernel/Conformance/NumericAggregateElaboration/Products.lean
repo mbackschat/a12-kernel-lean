@@ -7,6 +7,52 @@ namespace A12Kernel.Conformance.NumericAggregateElaboration.Products
 open A12Kernel
 open A12Kernel.Conformance.NumericAggregateElaboration.Support
 
+private def plainProductPath (groups : List String) (field : String) :
+    SurfaceStarFieldPath :=
+  { base := .absolute
+    groups := groups.map fun name => { name }
+    field }
+
+private def outerOnlyNestedProductStar : SurfaceStarFieldPath :=
+  { base := .absolute
+    groups := [
+      { name := "Form" },
+      { name := "Rows", starred := true },
+      { name := "Details" }]
+    field := "Amount" }
+
+private def productHaving : SurfaceCorrelatedHaving :=
+  .compareNumbers .equal
+    { origin := .inner, field := absolute ["Form", "Rows"] "FilterLeft" }
+    { origin := .inner, field := absolute ["Form", "Rows"] "FilterRight" }
+
+private def productDiagnosticCode? (left right : SurfaceStarFieldPath)
+    (declaringGroup : GroupPath := ["Form"])
+    (leftHaving : Option SurfaceCorrelatedHaving := none)
+    (rightHaving : Option SurfaceCorrelatedHaving := none) : Option String :=
+  match elaborateNumericProductAggregate productModel declaringGroup {
+      left, right, leftHaving, rightHaving } with
+  | .ok _ => none
+  | .error error => error.diagnostic?.map KernelStaticDiagnostic.kernelCode
+
+private inductive ProductAuthoringView where
+  | accepted
+  | refused (diagnostic : Option String)
+  deriving Repr, DecidableEq
+
+private def productAuthoringView (left right : SurfaceStarFieldPath) :
+    ProductAuthoringView :=
+  match elaborateNumericProductAggregate productModel ["Form"] { left, right } with
+  | .ok _ => .accepted
+  | .error error =>
+      .refused (error.diagnostic?.map KernelStaticDiagnostic.kernelCode)
+
+/- The `Having` refusal controls use an independently admissible same-scale row filter. -/
+example :
+    (elaborateStarNumberHavingSource productModel ["Form"] aggregateStar
+      productHaving).isOk = true := by
+  native_decide
+
 /- The dedicated pair admits exactly two Number stars from one owning group, permits the same wildcarded field twice as the A12 checker does, and rejects a different owning group or wrong kind. -/
 example :
     productErrorOf aggregateStar aggregateStar = none ∧
@@ -26,11 +72,73 @@ example :
           ["Form", "Rows", "Packaging"]) := by
   native_decide
 
-/- Only the lowest repeatable level may be starred. A named outer row plus an inner star remains legal. -/
+/- Only the lowest repeatable level may be starred. An inner-only star also requires its outer row to be bound by the declaring scope. -/
 example :
     productErrorOf (nestedProductStar true) (nestedProductStar true) =
-        some (.wildcardNotLowest nestedRepeated.path) ∧
-      productErrorOf (nestedProductStar false) (nestedProductStar false) = none := by
+        some (.wildcardOnlyAtLowestLevel nestedRepeated.path) ∧
+      productErrorOf (nestedProductStar false) (nestedProductStar false) =
+        some (.noWildcard nestedRepeated.path) := by
+  native_decide
+
+/- The public error plus optional diagnostic projection gives Explain and Transform three distinct
+answers: admitted, mapped refusal, and insufficient information for an unmeasured refusal. -/
+example :
+    productAuthoringView aggregateStar (productStar "Price") = .accepted ∧
+      productAuthoringView aggregateStar
+          (plainProductPath ["Form", "Rows"] "Price") =
+        .refused (some "MVK_NO_WILDCARD") ∧
+      productAuthoringView aggregateStar (productStar "Label") =
+        .refused none := by
+  native_decide
+
+/- The measured static matrix distinguishes each authored wildcard shape before any runtime
+topology exists, including the root rule's missing outer binding. The final bound-outer positive is
+an internal scope-certificate control and carries no separate Kernel-correspondence claim. -/
+example :
+    productDiagnosticCode? aggregateStar (productStar "Amount" "Other") =
+        some "MVK_DIFFERENT_GROUPS" ∧
+      productDiagnosticCode? aggregateStar packagedWeightStar =
+        some "MVK_DIFFERENT_GROUPS" ∧
+      productDiagnosticCode? aggregateStar
+          (plainProductPath ["Form"] "UnsignedA") =
+        some "MVK_DIFFERENT_GROUPS" ∧
+      productDiagnosticCode? aggregateStar
+          (plainProductPath ["Form", "Rows"] "Price") =
+        some "MVK_NO_WILDCARD" ∧
+      productDiagnosticCode? aggregateStar (nestedProductStar false) =
+        some "MVK_NO_WILDCARD" ∧
+      productDiagnosticCode? outerOnlyNestedProductStar
+          outerOnlyNestedProductStar = some "MVK_NO_WILDCARD" ∧
+      productDiagnosticCode? (nestedProductStar true) (nestedProductStar true) =
+        some "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED" ∧
+      productDiagnosticCode?
+          (plainProductPath ["Form"] "UnsignedA")
+          (plainProductPath ["Form"] "SignedB") =
+        some "MVK_REPEATABLE_LEVEL_REQUIRED" ∧
+      productDiagnosticCode? aggregateStar (productStar "Price")
+          (leftHaving := some productHaving) =
+        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+      productDiagnosticCode? aggregateStar (productStar "Price")
+          (rightHaving := some productHaving) =
+        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+      productDiagnosticCode? aggregateStar (productStar "Price") = none ∧
+      productDiagnosticCode? packagedWeightStar packagedWeightStar = none ∧
+      productDiagnosticCode? (nestedProductStar false) (nestedProductStar false)
+          ["Form", "Rows"] = none := by
+  native_decide
+
+/- The five external classes remain independently enumerable rather than collapsing static
+refusals into one generic authoring failure. -/
+example :
+    KernelStaticDiagnostic.differentGroups.kernelCode =
+        "MVK_DIFFERENT_GROUPS" ∧
+      KernelStaticDiagnostic.noWildcard.kernelCode = "MVK_NO_WILDCARD" ∧
+      KernelStaticDiagnostic.wildcardOnlyAtLowestLevelAllowed.kernelCode =
+        "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED" ∧
+      KernelStaticDiagnostic.wildcardAtLowestLevelRequired.kernelCode =
+        "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+      KernelStaticDiagnostic.repeatableLevelRequired.kernelCode =
+        "MVK_REPEATABLE_LEVEL_REQUIRED" := by
   native_decide
 
 /- Both fields are read from each shared canonical environment: 2·3 + 4·5 is 26, not a cross-paired 22. -/
