@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ValidationRuleGroupOperand
+import A12Kernel.Elaboration.SemanticIndex
 
 /-! # Rule-owned unstarred repeatable group diagnostic matrix -/
 
@@ -57,6 +58,22 @@ private def repeatableRootModel : FlatModel :=
         policy := { kind := .number unsigned } }]
     repeatableGroups := [{ level := 40, path := ["Parcels"] }] }
 
+private def skuDecl : FlatFieldDecl := {
+  id := 10
+  groupPath := ["Shipment", "Parcels"]
+  name := "Sku"
+  policy := { kind := .string }
+  repeatableScope := [10]
+}
+
+private def semanticIndexModel : FlatModel := {
+  fields := skuDecl :: model.fields
+  repeatableGroups := [{
+    level := 10
+    path := ["Shipment", "Parcels"]
+    indexField := some skuDecl.id }]
+}
+
 private def group (groups : GroupPath) : SurfaceGroupReference :=
   .path { base := .absolute, groups }
 
@@ -78,11 +95,61 @@ private def groupCount (rowGroup : GroupPath) (errorField : FieldId)
   projectFilledGroupCountGreaterZeroRuleAdmission
     model rowGroup errorField groups
 
+private def indexedGroupCountUse : SurfaceFilledGroupCountSemanticIndexUse := {
+  group := { base := .absolute, groups := ["Shipment", "Parcels"] }
+  token := "SKU-1"
+}
+
+private def indexedGroupCountAdmission : RuleGroupOperandStaticAdmission :=
+  projectFilledGroupCountSemanticIndexRuleAdmission semanticIndexModel ["Shipment"] 1
+    indexedGroupCountUse
+
+private def indexedGroupCountCode? : Option String :=
+  match indexedGroupCountAdmission with
+  | .rejected diagnostic => some diagnostic.kernelCode
+  | .admitted | .unmapped => none
+
+private def indexedGroupSelection? :
+    Option (CheckedTextSemanticIndexGroupSelection semanticIndexModel) :=
+  (elaborateTextSemanticIndexGroupSelection semanticIndexModel ["Shipment"]
+    indexedGroupCountUse.group indexedGroupCountUse.token).toOption
+
+private def alternateGroupSelection? :
+    Option (CheckedTextSemanticIndexGroupSelection semanticIndexModel) :=
+  (elaborateTextSemanticIndexGroupSelection semanticIndexModel ["Shipment"]
+    indexedGroupCountUse.group "SKU-2").toOption
+
 /- The error field is the sole moving discriminator for the same ordinary group reference. -/
 example :
     groupFilled ["Shipment"] 1 =
         .rejected .noWildcard ∧
       groupFilled ["Shipment"] 3 = .admitted := by
+  native_decide
+
+/- The semantic index is independently valid and retained, while this exact sole filled-group count
+carrier refuses it by carrier identity rather than by losing the group, index declaration, or key. -/
+example : (indexedGroupCountAdmission, indexedGroupCountCode?,
+    indexedGroupSelection?.map fun checked =>
+      (checked.groupPath, checked.selection.indexDeclaration,
+        checked.selection.key)) =
+    (.rejected .semanticIndexNotAllowed, some "MVK_SEMANTIC_INDEX_NOT_ALLOWED",
+      some (["Shipment", "Parcels"], skuDecl,
+        .literal (.text "SKU-1"))) := by
+  native_decide
+
+/- The shared selector retains its caller's token rather than specializing the exact Kernel row's
+`SKU-1`; this is an internal identity guard, not wider carrier correspondence. -/
+example : alternateGroupSelection?.map (fun checked => checked.selection.key) =
+    some (.literal (.text "SKU-2")) := by
+  native_decide
+
+/- An unindexed group and the unmeasured inside-error-field locus stay unmapped on this indexed
+projector; neither is silently assigned the outside-locus carrier code. -/
+example :
+    projectFilledGroupCountSemanticIndexRuleAdmission model ["Shipment"] 1
+        indexedGroupCountUse = .unmapped ∧
+      projectFilledGroupCountSemanticIndexRuleAdmission semanticIndexModel ["Shipment"] 3
+        indexedGroupCountUse = .unmapped := by
   native_decide
 
 /- The exact positive quantifier shapes follow the same locus rule. -/

@@ -102,6 +102,10 @@ inductive KernelStaticDiagnostic where
   | semanticIndexContainedInIndex
   /-- `RuleGroup For "key"` selected a containing group that declares no semantic-index field. This carrier-specific projection is calibrated independently of other semantic-index surfaces ([checkpoint](../../docs/SOURCES.md#src-pr2-rulegroup-semantic-index)). -/
   | noIndexField
+  /-- A valid semantic-index suffix appears in an operator slot that forbids semantic indexing. The
+  class is carrier-specific rather than an invalid-index result
+  ([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)). -/
+  | semanticIndexNotAllowed
   /-- A rule's error text uses a **semantic index** its condition does not use the same way. The gate's subject is the index rather than the field: measured, a keyed parameter naming a field absent from the condition is admitted whenever the condition keys that group by that key, so the field's own membership is required only of an *unkeyed* parameter, which is refused `INVALID_FIELD` instead. The pairing is exact in both directions — a keyed condition operand does not license an unkeyed parameter, and a differently keyed one does not license this key. No clause produces it yet: the modeled message fragment is nonrepeatable, so it declares no index to pair. -/
   | indexForErrorTextInvalid
   /-- A computation assigns an Enumeration target a literal naming no value in its selected domain. This is the one constant family whose target constrains the literal's **value** statically: every other measured kind either renders the constant into the declared format or checks nothing until runtime, while an undeclared token here never reaches runtime at all. The code names a *comparison* because the check is the generated equality's, not the assignment's. -/
@@ -162,6 +166,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidDateRangeFormat => "MVK_INVALID_DATE_RANGE_FORMAT"
   | .semanticIndexContainedInIndex => "MVK_SEMANTIC_INDEX_CONTAINED_IN_INDEX"
   | .noIndexField => "MVK_NO_INDEX_FIELD"
+  | .semanticIndexNotAllowed => "MVK_SEMANTIC_INDEX_NOT_ALLOWED"
   | .indexForErrorTextInvalid => "MVK_INDEX_FOR_ERROR_TEXT_INVALID"
 
 /-- Every established class, so a consumer can enumerate the covered surface and a law can quantify over it. -/
@@ -185,7 +190,7 @@ def all : List KernelStaticDiagnostic :=
     .invalidParameterForDateRangeComparison, .dateWithAndWithoutYear,
     .invalidDateRangeFormat, .invalidCompareToDateRange, .wrongDateFormatForOp,
     .invalidCompareToDate, .noDate, .semanticIndexContainedInIndex,
-    .noIndexField, .indexForErrorTextInvalid]
+    .noIndexField, .semanticIndexNotAllowed, .indexForErrorTextInvalid]
 
 end KernelStaticDiagnostic
 

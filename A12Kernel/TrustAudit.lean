@@ -1023,6 +1023,7 @@ run_cmd do
 #print axioms A12Kernel.oneLevelUnstarredGroup_inside_positive_admitted
 #print axioms A12Kernel.oneLevelUnstarredGroup_inside_counts_separate
 #print axioms A12Kernel.oneLevelUnstarredGroup_carrier_nonlaw
+#print axioms A12Kernel.filledGroupCountSemanticIndex_locus_separates
 #print axioms A12Kernel.checkedValidationRule_scalar_rejects_addressed
 #print axioms A12Kernel.checkedValidationRule_partial_filtered_skips
 #print axioms A12Kernel.checkedValidationRule_partial_evaluated
@@ -1545,6 +1546,7 @@ run_cmd do
 #print axioms A12Kernel.checkedRuleGroupSemanticIndex_selectsRuleGroup
 #print axioms A12Kernel.semanticIndex_missingIndex_requiresCarrierProjection
 #print axioms A12Kernel.checkedFilledFieldCountSemanticIndexPair_identity
+#print axioms A12Kernel.checkedTextSemanticIndexGroupSelection_identity
 #print axioms A12Kernel.indexedGroupFieldFillOperator_exhaustive
 #print axioms A12Kernel.checkedIndexedGroupFieldFillPair_identity
 #print axioms A12Kernel.semanticIndexDateRangeBoundPart_resolve_factors

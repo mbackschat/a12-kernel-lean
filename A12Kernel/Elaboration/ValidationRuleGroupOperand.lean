@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ValidationRule
+import A12Kernel.Elaboration.SemanticIndex
 
 /-! # Rule-owned static admission for one-level unstarred repeatable group uses
 
@@ -23,6 +24,23 @@ inductive OneLevelGroupErrorLocus where
   | outside
   | inside
   deriving Repr, DecidableEq
+
+/-- The exact sole indexed-group operand measured under `NumberOfFilledGroups(...) > 0`. Wider
+arity, comparison, and key shapes have no representation here. -/
+structure SurfaceFilledGroupCountSemanticIndexUse where
+  group : SurfaceGroupPath
+  token : String
+  deriving Repr, DecidableEq
+
+namespace OneLevelGroupErrorLocus
+
+/-- Preserve the unmeasured inside-error-field locus while projecting the exact outside refusal. -/
+def filledGroupCountSemanticIndexAdmission :
+    OneLevelGroupErrorLocus → RuleGroupOperandStaticAdmission
+  | .outside => .rejected .semanticIndexNotAllowed
+  | .inside => .unmapped
+
+end OneLevelGroupErrorLocus
 
 /-- The exact positive-presence and greater-than-zero count shapes in the maintained matrix. Authored order is part of the paired shapes. -/
 inductive OneLevelUnstarredGroupUse where
@@ -152,5 +170,25 @@ def projectFilledGroupCountGreaterZeroRuleAdmission
             .unmapped
       | none => .unmapped
   | _ => .unmapped
+
+/-- Project the exact valid text-indexed group under `NumberOfFilledGroups(...) > 0`. The group and
+index are checked independently before the carrier refusal, so an invalid selection cannot inherit
+the measured carrier code. Runtime counting remains absent. -/
+def projectFilledGroupCountSemanticIndexRuleAdmission
+    (model : FlatModel) (declaringGroup : GroupPath)
+    (errorField : FieldId) (authored : SurfaceFilledGroupCountSemanticIndexUse) :
+    RuleGroupOperandStaticAdmission :=
+  match resolveOneLevelUnstarredGroupBinding? model declaringGroup errorField
+      (.path authored.group) with
+  | none => .unmapped
+  | some binding =>
+      match elaborateTextSemanticIndexGroupSelection model declaringGroup
+          authored.group authored.token with
+      | .error _ => .unmapped
+      | .ok checked =>
+          if checked.groupPath == binding.reference.path then
+            binding.locus.filledGroupCountSemanticIndexAdmission
+          else
+            .unmapped
 
 end A12Kernel

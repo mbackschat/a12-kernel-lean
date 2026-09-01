@@ -305,15 +305,18 @@ private def elaborateSemanticIndexSelectionWithValidatedModel
   else
     throw .incoherentCore
 
-private structure CheckedTextSemanticIndexGroupSelection (model : FlatModel) where
+/-- One exact group selected by a literal text key, retaining the resolved group, index declaration,
+and authored token for carrier-specific static checks. -/
+structure CheckedTextSemanticIndexGroupSelection (model : FlatModel) where
   groupPath : GroupPath
   token : String
   selection : CheckedSemanticIndexSelection model
   groupSelected : (selection.group.path == groupPath) = true
   keyRetained : (selection.key == .literal (.text token)) = true
 
-/-- Select an exact group by a literal text key after model validation. Both reviewed group-valued
-carriers use this core; their operator and diagnostic boundaries remain carrier-specific. -/
+/-- Select an exact group by a literal text key after model validation. Rule groups, indexed
+group-field fill checks, and indexed filled-group counts share this core while retaining their
+carrier-specific operator and diagnostic boundaries. -/
 private def elaborateTextSemanticIndexGroupSelectionWithValidatedModel
     (model : FlatModel) (declaringGroup groupPath : GroupPath) (token : String)
     (hModel : model.validate = .ok ()) :
@@ -333,6 +336,18 @@ private def elaborateTextSemanticIndexGroupSelectionWithValidatedModel
       throw .incoherentCore
   else
     throw .incoherentCore
+
+/-- Resolve and certify one literal text-indexed group. Carrier-specific acceptance, refusal, and
+runtime behavior remain with the caller. -/
+def elaborateTextSemanticIndexGroupSelection (model : FlatModel)
+    (declaringGroup : GroupPath) (authoredGroup : SurfaceGroupPath) (token : String) :
+    Except SemanticIndexElabError (CheckedTextSemanticIndexGroupSelection model) :=
+  match hModel : model.validate with
+  | .error error => .error (.resolve error)
+  | .ok () => do
+      let groupPath ← authoredGroup.resolveAgainst declaringGroup |>.mapError .group
+      elaborateTextSemanticIndexGroupSelectionWithValidatedModel model declaringGroup
+        groupPath token hModel
 
 /-- Certify the reviewed literal semantic-index suffix on `RuleGroup`. A known nonrepeatable group
 has no index declaration and therefore reaches the same missing-index class as an unindexed

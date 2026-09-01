@@ -34,4 +34,13 @@ theorem oneLevelUnstarredGroup_carrier_nonlaw :
       atLeastOneSole.admission .inside := by
   decide
 
+/-- The reviewed outside-error-field carrier has its exact refusal, while the unmeasured inside
+locus remains explicitly unmapped rather than inheriting it. -/
+theorem filledGroupCountSemanticIndex_locus_separates :
+    OneLevelGroupErrorLocus.outside.filledGroupCountSemanticIndexAdmission =
+        .rejected KernelStaticDiagnostic.semanticIndexNotAllowed ∧
+      OneLevelGroupErrorLocus.inside.filledGroupCountSemanticIndexAdmission =
+        .unmapped := by
+  exact ⟨rfl, rfl⟩
+
 end A12Kernel

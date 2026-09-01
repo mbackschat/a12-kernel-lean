@@ -199,21 +199,6 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `completion-gate`: every legal reference resolves deterministically, every illegal form receives the correct static class, and rendering round-trips for the supported surface.
 - `route-state`: discovery-required
 
-<a id="gap-sg9-filled-group-count-semantic-index-refusal"></a>
-#### Filled-group count semantic-index refusal
-
-- `state`: open
-- `missing`: project the exact `NumberOfFilledGroups(Items For "SKU-1") > 0` authoring refusal as `MVK_SEMANTIC_INDEX_NOT_ALLOWED` without adding a runtime count form.
-- `baseline`: the rule-owned group-operand projector already checks the measured one-level group and outside error-field locus, while the semantic-index owner checks exact-text group/index/token selection; no carrier composes those owners or exposes this diagnostic class.
-- `evidence`: the [reviewed semantic-index carrier checkpoint](SOURCES.md#src-pr2-semantic-index-carrier-matrix) Kernel-locks the sole indexed group under `NumberOfFilledGroups`.
-- `consumer`: Explain and Transform need the exact group, index declaration, token, carrier, and diagnostic identity so a rejected indexed operand cannot be rewritten as an unindexed group or confused with the separately admitted field-count carrier.
-- `limit`: one non-root one-level repeatable group, one exact-text literal key, an outside nonrepeatable error field, the sole operand, and `> 0`; other comparisons, arities, key forms, repetition loci, diagnostic precedence, and runtime evaluation remain outside.
-- `route-state`: verified
-- `red-locus`: [`GroupOperandDiagnostic.lean`](../A12Kernel/Conformance/ValidationRule/GroupOperandDiagnostic.lean) owns the exact carrier refusal and neighboring unindexed controls.
-- `green-locus`: [`ValidationRuleGroupOperand.lean`](../A12Kernel/Elaboration/ValidationRuleGroupOperand.lean) owns rule-locus-specific static admission.
-- `supporting-locus`: [`SemanticIndex.lean`](../A12Kernel/Elaboration/SemanticIndex.lean) owns checked exact-text group/index/token selection, and [`StaticDiagnostic.lean`](../A12Kernel/Elaboration/StaticDiagnostic.lean) owns exact Kernel codes.
-- `supporting-locus`: [`ValidationRuleGroupOperand.lean`](../A12Kernel/Proofs/ValidationRuleGroupOperand.lean) owns the carrier law.
-
 ### SG10 — message construction and formal-output integration
 
 - `state`: open

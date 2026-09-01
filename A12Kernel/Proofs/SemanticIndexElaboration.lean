@@ -38,6 +38,15 @@ theorem checkedFilledFieldCountSemanticIndexPair_identity
   · simpa using checked.secondKeyRetained
   · simpa using checked.distinctTargets
 
+/-- Every checked text-indexed group retains the exact resolved group and authored literal key. -/
+theorem checkedTextSemanticIndexGroupSelection_identity
+    (checked : CheckedTextSemanticIndexGroupSelection model) :
+    checked.selection.group.path = checked.groupPath ∧
+      checked.selection.key = .literal (.text checked.token) := by
+  constructor
+  · simpa using checked.groupSelected
+  · simpa using checked.keyRetained
+
 /-- The indexed-group field-fill surface is closed to the two Kernel-locked carriers. -/
 theorem indexedGroupFieldFillOperator_exhaustive
     (operator : IndexedGroupFieldFillOperator) :
