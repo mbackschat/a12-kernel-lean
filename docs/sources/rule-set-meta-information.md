@@ -16,3 +16,53 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 - `limit`: one nonrepeatable root with two established mandatory inputs and one target per count guard, `en_US`, no repetition and no `Having`. The matrix covers direct strict and inclusive comparisons plus the reversed inclusive form at the `EvaluatorVisitor` site; reversed strict comparison is not measured. Not measured: repeatable lists, the four `z > 0` collector sites beyond the earlier standalone-root-group shape, non-count rule families, or the complete composition rules for the three returned sets.
 - `bytes`: [`mandatory-information-narrowing/`](../../evidence/kernel-30.8.1/captures/mandatory-information-narrowing/), eleven models with their requests and artifacts. The sentinel model, request, and artifact SHA-256 values are `f86a99451ff9c2279ca0b37b041c64bd2079a1bbfdd24f6703490f8420921d3d`, `46547d33b56c8435a1e2bd70b528a1ed0d5e120eec12424d35059c2f867d8699`, and `4523927ab35446f29a2005332867f6946be84594c58f1ceb7bf4313a830932ab`. The earlier isolating pair remains `< 3` against `< 4294967295`, with model hashes `87b9e61ae169ef051a6281d89a4f61ddb1170249e2a241aec81d656e0b50d4fb` and `d030f7d70631db76cfe64d99438fd213a48774c01e84e673283020bcd21f5948` and artifact hashes `ba63424d1cff1452eacaaee17eb1677f0dd244c99a1a679520b404591402afc7` and `2a98fde10a5069ecb78e006b5f5294dac4ec91f2188391e5b66a6b41ec94433f`. These are bounded raw captures with no typed local replay, so they establish neither `L` nor `C` coverage.
 - `sync`: **no `spec/` change.** [`spec/`](../../spec/) has no section for rule-set meta-information, and opening one remains a scope decision rather than a clause edit; [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) owns the broader obligation. [`EXP-2026-08-30-01`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#exp-2026-08-30-01) is resolved locally against these retained bytes.
+
+<a id="src-mandatory-information-presence-matrix"></a>
+#### Mandatory-information derivation separates field contributions, root-only contributions, and ignored rule shapes, measured locally on 2026-09-01
+
+- `revision`: fifteen model-level `mandatoryInformation` requests at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`; the sibling checkout was clean and unchanged before and after. The source-preparation route returned the exact matching JVM launcher; `dmtool --version` and every artifact report dmtool `0.13.0`, Kernel `30.8.1` built and runtime, and source state `CLEAN`. Every retained model passed persisted structured rule read-back and Kernel-confirmed `model check` before capture. No request contains a document or row.
+- `question`: before choosing a checked carrier, which standalone presence rule shapes contribute fields, only their root group, or nothing to `mandatory`, `mandatoryForRootGroup`, and `mandatoryRootGroups`; and do severity or one `Having` filter change that classification?
+- `shorthand`: `A`, `B`, and `Note` below name the corresponding absolute fields in each single-purpose model; `root` names that model's root group; `—` is the observed empty set.
+
+| Case | Condition | Severity | `mandatory` | `mandatoryForRootGroup` | `mandatoryRootGroups` |
+|---|---|---|---|---|---|
+| `field-not-filled` | `FieldNotFilled(A)` | ERROR | A | A | root |
+| `field-filled` | `FieldFilled(A)` | ERROR | — | — | — |
+| `or-not-filled` | `FieldNotFilled(A) Or FieldNotFilled(B)` | ERROR | A, B | A, B | root |
+| `and-not-filled` | `FieldNotFilled(A) And FieldNotFilled(B)` | ERROR | — | — | root |
+| `not-all` | `NotAllFieldsFilled(A, B)` | ERROR | A, B | A, B | root |
+| `no-field` | `NoFieldFilled(A, B)` | ERROR | — | — | root |
+| `not-exactly-one` | `NotExactlyOneFieldFilled(A, B)` | ERROR | — | — | root |
+| `not-collectively` | `FieldsNotCollectivelyFilled(A, B)` | ERROR | — | — | — |
+| `at-least-one` | `AtLeastOneFieldFilled(A, B)` | ERROR | — | — | — |
+| `all-filled` | `AllFieldsFilled(A, B)` | ERROR | — | — | — |
+| `group-not-filled` | `GroupNotFilled(root)` | ERROR | — | — | root |
+| `group-filled` | `GroupFilled(root)` | ERROR | — | — | — |
+| `warning-not-filled` | `FieldNotFilled(A)` | WARNING | — | — | — |
+| `having-control` | `FieldNotFilled(Note) Or NoFieldFilled(Rows*/Value)` | ERROR | Note | Note | root |
+| `having-filtered` | `FieldNotFilled(Note) Or NoFieldFilled(Rows*/Value Having [Rows/Tag] == "hot")` | ERROR | — | — | — |
+
+- `separators`: the negative and positive singleton field forms separate field contribution from no contribution; `Or` and `And` over the same two negative leaves separate field-set contribution from root-only contribution; the direct negative quantifiers cover all three result classes. ERROR `FieldNotFilled` against the corresponding WARNING form separates the measured severity arm. In the paired repeatable-child models, the filtered shape loses even the independent `Note` contribution retained by its unfiltered counterpart; this finite observation does not by itself identify the internal rejection step.
+- `sets`: for all fifteen measured standalone rules, `mandatory` and `mandatoryForRootGroup` are equal. This is a property of the matrix, not a general equivalence claim; the wider service remains open precisely because cross-rule and root-relative composition may separate them.
+- `limit`: one nonrepeatable root with two String fields for the flat cases; one repeatable child at maximum two with String `Value` and `Tag` for the filtered pair; `en_US`; ERROR and one WARNING control. Not measured here: INFO, multiple-rule interaction or closure, generated required rules, semantic-index operands, parallel iteration, cross-root references, concrete row indices, nested repetition, additional filters, count predicates already owned by the narrowing checkpoint, or every source-recognized rule family.
+- `bytes`: [`mandatory-information-presence-matrix/`](../../evidence/kernel-30.8.1/captures/mandatory-information-presence-matrix/) retains fifteen model/request/artifact triples. The hashes below pin every retained input and observation; these are bounded raw captures with no typed local replay, so they establish neither `L` nor `C` coverage.
+
+| Case | Model SHA-256 | Request SHA-256 | Artifact SHA-256 |
+|---|---|---|---|
+| `all-filled` | `71507e0d761502f22973f9090d14678b031f33ce692cbc99140592316a48ba33` | `4a0d8ec87e6f54d7e75d3b452c185e94fabc461e213e173df2019b989324ab22` | `4a3a876fe9a6e0f954510529d883bd7e7b0766cbacc086883333a23ca3966d43` |
+| `and-not-filled` | `231691cacff37e5bf6b1d78cd789cdb61d0c9038099773120a0cec3627326c22` | `58bbc96d1d04acffe2449ecb0661933b5ef573e0162e4809e42c904e3b68acb6` | `f24af7b8fcbb4da2158dbd8de59bb6a24f6c3e7c843b57327b22c3c550701bdd` |
+| `at-least-one` | `d0007d237ae579c8dd76d83186c45adf9a7428225611cadd16b5049133b26df2` | `180a2cba6299aea801be51331c03fc1dba9e3c8a88c1879471d0b2675e63562a` | `310ecc7ffa510e3fd2aecb8555c184ef5ab7089d903d4cfbf43fea9bed54e402` |
+| `field-filled` | `ecfd9bae615c3f008fa24a264a97b223246a7ae9d910b296c1d13c2b1429a55a` | `525146697759fc36f0aebdd45491faf0b54451041b84b624029fe966f0591391` | `87eb4b578da774e6fa80bdec5014c5f809709088df4b7d32450791101fd1c285` |
+| `field-not-filled` | `b72b4fc631c061d6f09bafb278a69050c4ae27b6c94b5b4b09c784aff65fad76` | `870edc95c65630117d0db4424185eb02fae4cc9e6bbb97986385aeac65c3e22f` | `f542b1158ca2d22808dd5b3960c46071d5451d08f49450e05422266217ecd3fc` |
+| `group-filled` | `084ae9b224c7a3a12ec82a24c12b3ddb13d95343ed49a064d4ef37e46a854440` | `81d645e2efe4a68d204203a34b35bfa49dbbca0374bd337419fc98e17530f9aa` | `579d9575c1b826c3405f6c9f2a7f852edccb3a1421734a685992b843df90340a` |
+| `group-not-filled` | `f9a4b5a1caab829d5fc5e067b53cb78634befd4c008e055bfd6c1d1b7fcd4a58` | `ab0468e29638e20940666b3eb1fa695d116dc0b2f17884e8a0b98d2c90ebe6a0` | `91e17d4014a94965c43b462ba1d2c9f6713b0026bdca155470926c3ad00f4732` |
+| `having-control` | `5879a073ba26e4bc5ef240fd2c18afbf311d19ad9481a2e6b7549828f04c979e` | `2ad569678e673150a0df21e57d04774b8671a5ee8ef39149a01ccbc4a1480881` | `0f4782cf70968aceb3b2b956bc7c405d1d72c270869fb4af994149708e9779ae` |
+| `having-filtered` | `a195e8f28254bf1b191118bbceb9b7c216d8dbca6ff5a593ec972b4ef2010098` | `1f8155cc2fd034ecb891ebc4b76f8452048d98508e333dd661e82e96cefaa558` | `2691663e4f35489a761c398a8f243237fb91cdfd4c604d1f8f20473c07303885` |
+| `no-field` | `7c8f47e6ddf1d6c44a355a59ab184ea4fe6b6b79ceeb107208afdaf8ab9255b1` | `3c9bc86457a383ba0cbfd5c55d80d2f6ed63f272685550e2887b96946ea7627b` | `ff03fd2bb237b3b93dc438cdf9a0296271c65ff4a0907d14bdca6a6cc0eabafd` |
+| `not-all` | `09af5c0a2173d386f52e21aa97b9a2940f6d339c74ddd036af09f4d980df72e8` | `4b8e4f342aeacdaf1669326096e503234e82d578a230c760a7d50962c525017e` | `28d99461932852f2a93d2836db02168c752c507c0880753bb90297b5d97b2841` |
+| `not-collectively` | `e8a89601fdb7723659e4890b4a54163d12448145e124f68b00b6945d7b617379` | `f70d832879ffc822faa205568766d4a2415a65d6b5f1ad84d1ab2d8587b0da45` | `00ed92e0e3aae4f950767ea0f57aaf7bc132dfd2f30b2248d7d7b351e616015e` |
+| `not-exactly-one` | `b1213c448d69b024e0968bd13ecc054fbf52850e47932dfe737f2decaea04f71` | `85c530f1b8d2bffa159d10f1ab15f731ecdf9811af3000d1532b671ceade11d1` | `2b1d299ce0d452110c528aa96757b9207f8403975cd578a15b6beedbd2aca7c5` |
+| `or-not-filled` | `e4befb517e13d05664c5ada2c83933ccf93ee2c1a0fb1d3b8560cf5439939a56` | `4c11779349e4a57dbd5b4b6abbc5e6acb30c02a81609cddecf8944a85149d7c9` | `54a9238dc9b9c19cbdf5e0960d62d241269be3e992766f08226253722917b56b` |
+| `warning-not-filled` | `c113493fa7537eff5e824355690bbe59889f0e98a16038e59334784b10009694` | `35229ed792d4aa8cbf1913e93a2d648e6488299b875fd03e7bc238aec540cdcb` | `011fba556c7bb92a4a817f941110b81cb49c3796a9ecb68a44a38496b3b996f1` |
+
+- `sync`: **no `spec/` change and no checked carrier yet.** The matrix closes a finite discovery slice but not the rule-set collector or its composition semantics; [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) remains the owner.

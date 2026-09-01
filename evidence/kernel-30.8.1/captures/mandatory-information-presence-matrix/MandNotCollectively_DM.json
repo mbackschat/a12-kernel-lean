@@ -1,0 +1,72 @@
+{
+  "header" : {
+    "id" : "MandNotCollectively_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandNotCollectively_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandNotCollectively",
+        "name" : "MandNotCollectively",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandNotCollectively/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandNotCollectively/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandNotCollectively/MAND_NOT_COLLECTIVELY",
+            "name" : "MAND_NOT_COLLECTIVELY",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "MAND_NOT_COLLECTIVELY",
+              "errorCondition" : "FieldsNotCollectivelyFilled(A, B)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "MAND_NOT_COLLECTIVELY"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

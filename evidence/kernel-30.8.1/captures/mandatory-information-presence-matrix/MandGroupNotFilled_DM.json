@@ -1,0 +1,72 @@
+{
+  "header" : {
+    "id" : "MandGroupNotFilled_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandGroupNotFilled_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandGroupNotFilled",
+        "name" : "MandGroupNotFilled",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandGroupNotFilled/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandGroupNotFilled/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandGroupNotFilled/MAND_GROUP_NOT_FILLED",
+            "name" : "MAND_GROUP_NOT_FILLED",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "MAND_GROUP_NOT_FILLED",
+              "errorCondition" : "GroupNotFilled(/MandGroupNotFilled)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "MAND_GROUP_NOT_FILLED"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

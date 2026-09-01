@@ -1,0 +1,89 @@
+{
+  "header" : {
+    "id" : "MandHavingFiltered_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandHavingFiltered_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandHavingFiltered",
+        "name" : "MandHavingFiltered",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandHavingFiltered/Note",
+            "name" : "Note",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/MandHavingFiltered/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/MandHavingFiltered/Rows/Value",
+                "name" : "Value",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/MandHavingFiltered/Rows/Tag",
+                "name" : "Tag",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandHavingFiltered/MAND_HAVING_FILTERED",
+            "name" : "MAND_HAVING_FILTERED",
+            "Rule" : {
+              "errorEntityRelPath" : "../Note",
+              "errorCode" : "MAND_HAVING_FILTERED",
+              "errorCondition" : "FieldNotFilled(Note) Or NoFieldFilled(Rows*/Value Having [Rows/Tag] == \"hot\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "MAND_HAVING_FILTERED"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
