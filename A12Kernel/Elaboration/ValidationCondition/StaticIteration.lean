@@ -274,14 +274,22 @@ def ordinaryNumericAtomFieldDeclarations?
 private def ordinaryNumericAtomIterationScope
     (model : FlatModel) (source : NumericValidationAtom) :
     Except RuleIterationScopeError (Option (List RepeatableLevel)) :=
-  match ordinaryNumericAtomFieldDeclarations? model source with
-  | none => pure none
-  | some declarations =>
-      mergeIterationScopeList (declarations.map fun declaration =>
-        if declaration.repeatableScope.isEmpty then
+  match source with
+  | .filledGroupCount groups =>
+      mergeIterationScopeList (groups.map fun reference =>
+        if reference.boundRepeatableScope.isEmpty then
           none
         else
-          some declaration.repeatableScope)
+          some reference.boundRepeatableScope)
+  | _ =>
+      match ordinaryNumericAtomFieldDeclarations? model source with
+      | none => pure none
+      | some declarations =>
+          mergeIterationScopeList (declarations.map fun declaration =>
+            if declaration.repeatableScope.isEmpty then
+              none
+            else
+              some declaration.repeatableScope)
 
 private def orderedNumericAtomIterationScope :
     OrderedNumericValidationAtom model →

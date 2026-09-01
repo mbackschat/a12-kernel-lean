@@ -167,12 +167,15 @@ def CheckedNumericProductAggregate.referencePointers
   pure [← starFieldPointer checked.left.source environment,
     ← starFieldPointer checked.right.source environment]
 
-/-- The complete ordered atom family. Every constructor is classified, so the only refusals reaching a caller from here are the sievability gate's fixed group count and a filtered star; there is no catch-all, and a new atom must state its own projection.
+/-- The complete ordered atom family. Every constructor is classified, so the only refusals reaching a caller from here are an unsupported sieve shape and a filtered star; there is no catch-all, and a new atom must state its own projection.
 
-    Number entity lists share one operand projection; each token-family source keeps its own, because their operand types are distinct and their filter is an optional field rather than a constructor. Every delegated scalar atom is sieved on the same terms as the scalar leaf, including its refusal of the fixed group count. Under addressed admission a delegated declaration may be repeatable but is bound by the rule's own iteration scope, so it projects concretely; nothing in the delegated arm reopens a level. -/
+    Number entity lists share one operand projection; each token-family source keeps its own, because their operand types are distinct and their filter is an optional field rather than a constructor. The fixed group count traverses each retained group explicitly, preserving a concrete bound ancestor and wildcarding deeper reopened levels. Every other delegated scalar atom is sieved on the same terms as the scalar leaf. Under addressed admission a delegated declaration may be repeatable but is bound by the rule's own iteration scope, so it projects concretely; nothing else in the delegated arm reopens a level. -/
 def OrderedNumericValidationAtom.referencePointers (environment : Env) :
     OrderedNumericValidationAtom model →
       Except ReferenceProjectionError (List MessagePointer)
+  | .ordinary (.filledGroupCount groups) =>
+      (·.flatten) <$> groups.mapM fun reference =>
+        fixedGroupPointers model reference environment
   | .ordinary source =>
       sievedFieldPointers model
         (fun declaration => source.referencesField model declaration.id)
@@ -216,7 +219,7 @@ def ResolvedGroupListOperand.referencePointers (environment : Env) :
 
 /-- Two membership strategies, chosen by whether a family can carry a starred operand.
 
-    A family that can must be traversed explicitly, so that each operand reaches the coordinate rule that fits it. A family that cannot is sieved instead, on the terms [`sievedFieldPointers`](A12Kernel.sievedFieldPointers) states. Both sieved families qualify structurally: the flat fragment's leaves and the scalar numeric fragment's atoms each hold resolved single-field declarations, fixed Number field lists, or fixed group references whose resolution rejects both the starred `RuleGroup` and a repeatable ordinary path, and each family's `referencesField` covers every constructor with no catch-all.
+    A family that can must be traversed explicitly, so that each operand reaches the coordinate rule that fits it. A family that cannot is sieved instead, on the terms [`sievedFieldPointers`](A12Kernel.sievedFieldPointers) states. Both sieved families qualify structurally: the flat fragment's leaves and the scalar numeric fragment's atoms each hold resolved single-field declarations, fixed Number field lists, or scalar fixed group references, and each family's `referencesField` covers every constructor with no catch-all. The addressed ordered fixed-group count above traverses its operands explicitly because its bound ancestor is concrete while a deeper repeatable descendant remains wildcarded.
 
     Star-freedom licenses the *coordinate* rule but not every arm's *membership* meaning, so the numeric leaf is sieved only once every atom passes [`NumericValidationAtom.sievableReference`](A12Kernel.NumericValidationAtom.sievableReference). A single refused atom refuses the whole leaf, because a sieve cannot report part of a predicate.
 

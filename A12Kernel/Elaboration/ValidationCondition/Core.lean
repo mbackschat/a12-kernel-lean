@@ -136,16 +136,20 @@ def overlaps (left right : ResolvedGroupListOperand model) : Bool :=
   | .starredGroup source => overlapsStarred source.group.path right
   | .starredGroupPresence source => overlapsStarred source.groupPath right
 
-/-- The captured repeatable prefix of a starred group operand; direct operands contribute no ordinary rule-iteration scope. -/
+/-- The repeatable scope already bound by a fixed child, or the captured repeatable prefix of a
+starred group operand. Ordinary scalar operands contribute no rule-iteration scope. -/
 def iterationScope :
     ResolvedGroupListOperand model → Option (List RepeatableLevel)
+  | .group reference =>
+      let scope := reference.boundRepeatableScope
+      if scope.isEmpty then none else some scope
   | .starredGroup source =>
       let scope := source.path.bindingScope
       if scope.isEmpty then none else some scope
   | .starredGroupPresence source =>
       let scope := source.path.bindingScope
       if scope.isEmpty then none else some scope
-  | .field _ | .group _ => none
+  | .field _ => none
 
 end ResolvedGroupListOperand
 
@@ -346,10 +350,17 @@ def ResolvedGroupListOperand.evalAddressedTally
       else
         .unavailable])
   | .group reference =>
-      pure (GroupListPresenceTally.ofStates [match context.scalar.groups
-          reference.path with
-        | some state => state.asGroupListPresence
-        | none => .unavailable])
+      match context.input with
+      | .legacy _ _ | .partialView _ _ =>
+          pure (GroupListPresenceTally.ofStates [match context.scalar.groups
+              reference.path with
+            | some state => state.asGroupListPresence
+            | none => .unavailable])
+      | .checked document => do
+          let input ←
+            (document.groupPresenceInput reference.path context.outer
+              .fullyRelevant false).mapError .group
+          pure (GroupListPresenceTally.ofStates [input.derive.asGroupListPresence])
   | .starredGroup source => do
       let document := match context.input with
         | .legacy document _ => document
@@ -429,7 +440,8 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
   | .groupPresence _ reference =>
       !(model.repeatableScopeForGroupPath reference.path).isEmpty
   | .groupList _ operands =>
-      operands.any ResolvedGroupListOperand.isStarred
+      operands.any fun operand =>
+        operand.isStarred || operand.iterationScope.isSome
   | .repeatableFieldPresence _ _ => true
   | .repetitionNotUnique _ => true
   | .guardedRootCurrentRepetition _ _ _ => false

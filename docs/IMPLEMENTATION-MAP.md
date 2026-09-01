@@ -461,6 +461,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Resolved group presence, both arms](implementation/cross-clause.md#cap-resolved-group-presence-both-arms)
 <a id="cap-checked-group-star-terminals"></a>
 - [Checked group-star terminals](implementation/cross-clause.md#cap-checked-group-star-terminals)
+<a id="cap-fixed-group-bound-repeatable-ancestry"></a>
+- [Fixed groups under bound repeatable ancestry](implementation/cross-clause.md#cap-fixed-group-bound-repeatable-ancestry)
 <a id="cap-mixed-validation-filled-group-count"></a>
 - [Mixed validation `NumberOfFilledGroups`](implementation/cross-clause.md#cap-mixed-validation-filled-group-count)
 <a id="cap-resolved-date-range-overlap-truth-admission-and-scans"></a>

@@ -183,7 +183,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
             throw (NumericValidationElabError.starredGroupCountOperand
               ((SurfaceGroupCountOperand.firstStarred? operands).getD
                 { base := .absolute, groups := [] }))
-      let groups ← model.resolveFixedGroupReferences rowGroup surfaces
+      let groups ← model.resolveRuleBoundFixedGroupReferences rowGroup surfaces
         |>.mapError NumericValidationElabError.ofFixedGroupReferenceError
       if groups.length < 2 then
         throw .groupCountNeedsMultipleOperands

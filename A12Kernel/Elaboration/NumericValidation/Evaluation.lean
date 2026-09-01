@@ -255,7 +255,17 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
   match atom with
   | .ordinary source =>
       if source.allRelevant (addressedDirectRelevant context) then
-        resolveAddressedOrdinary source context
+        match source, context.input with
+        | .filledGroupCount groups, .checked document => do
+            let states ← groups.mapM fun reference =>
+              (document.groupPresenceInput reference.path context.outer
+                .fullyRelevant false).mapError .group
+            let resolvedGroups : GroupPresenceContext := fun path =>
+              (groups.zip states).find? (fun entry => entry.1.path == path)
+                |>.map (fun entry => entry.2.derive)
+            pure ({ context.scalar with groups := resolvedGroups }
+              |>.resolveNumericValidationAtom source)
+        | _, _ => resolveAddressedOrdinary source context
       else
         pure (.error .nonRelevant)
   | .firstFilled source =>

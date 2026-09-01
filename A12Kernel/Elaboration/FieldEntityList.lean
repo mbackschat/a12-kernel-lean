@@ -126,9 +126,11 @@ def isStarred : CheckedEntityGroupSource model → Bool
   | .fixed _ => false
   | .starred _ | .starredPresence _ => true
 
-/-- Repeatable levels the surrounding rule environment must already bind. A fixed group reopens no level here; either starred terminal shape binds only the levels above its first star. -/
+/-- Repeatable levels the surrounding rule environment must already bind. A fixed child retains the
+exact scope certified by shared group resolution; either starred terminal shape binds only the
+levels above its first star. -/
 def bindingScope : CheckedEntityGroupSource model → List RepeatableLevel
-  | .fixed _ => []
+  | .fixed reference => reference.boundRepeatableScope
   | .starred source => source.path.bindingScope
   | .starredPresence source => source.path.bindingScope
 

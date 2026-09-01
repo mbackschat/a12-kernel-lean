@@ -100,6 +100,8 @@ def summary : OrderedNumericValidationAtom model → NumericScaleSummary
 
 /-- An ordinary direct atom needs addressed evaluation exactly when any checked field declaration is repeatable. Specialized sources retain their established addressed criteria. -/
 def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
+  | .ordinary (.filledGroupCount groups) =>
+      groups.any fun reference => !reference.boundRepeatableScope.isEmpty
   | .ordinary source =>
       (addressedNumericValidationFieldIds source).any fun field =>
           match model.lookupUniqueId field with
@@ -211,6 +213,7 @@ def OrderedNumericComparison.requiresAddressedValidation
 /-- Whether partial addressed evaluation has an exact interpretation for an atom. Ordinary atoms use per-field relevance; entity-list aggregates use their source-owned extent relevance. `false` is structural unsupported information, never numeric UNKNOWN. -/
 def OrderedNumericValidationAtom.supportsAddressedPartial :
     OrderedNumericValidationAtom model → Bool
+  | .ordinary (.filledGroupCount _) => false
   | .ordinary _ | .aggregate _ _ => true
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
   | .booleanValueCount _ | .sumOfProducts _ | .filledGroupCountMixed _ => false

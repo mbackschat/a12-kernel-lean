@@ -348,7 +348,8 @@ private def resolveGroupListOperand (model : FlatModel) (rowGroup : GroupPath) :
         (model.resolveNonrepeatableFieldUnchecked rowGroup reference).mapError .fieldReference
       pure (.field declaration)
   | .group reference => do
-      let resolved ← model.resolveFixedGroupReference rowGroup reference
+      let resolved ←
+        model.resolveRuleBoundFixedGroupReference rowGroup reference
         |>.mapError ValidationConditionAssemblyError.ofFixedGroupReferenceError
       pure (.group resolved)
   | .starredGroup reference => do

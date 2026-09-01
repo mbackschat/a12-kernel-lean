@@ -1,0 +1,232 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "47952f81e13fc63dd72d16f2bbbd24e8bb024654",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FixedAncestorCarriers_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "first-full",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GROUP_LIST_CARRIER",
+              "field" : "Probe/Outer/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "group-list carrier row",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer/Flat/FlatA",
+                "Probe/Outer/Marker",
+                "Probe/Outer/Peer/PeerA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NUMERIC_CARRIER",
+              "field" : "Probe/Outer/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "numeric carrier row",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer/Flat/FlatA",
+                "Probe/Outer/Marker",
+                "Probe/Outer/Peer/PeerA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Outer/CountTarget",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/Outer[2]/CountTarget",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GROUP_LIST_CARRIER",
+              "field" : "Probe/Outer/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "group-list carrier row",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer/Flat/FlatA",
+                "Probe/Outer/Marker",
+                "Probe/Outer/Peer/PeerA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NUMERIC_CARRIER",
+              "field" : "Probe/Outer/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "numeric carrier row",
+              "referenced" : [
+                "/Probe[1]/Outer[1]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer/Flat/FlatA",
+                "Probe/Outer/Marker",
+                "Probe/Outer/Peer/PeerA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Outer/CountTarget",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Probe/Outer[2]/CountTarget",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "second-full",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GROUP_LIST_CARRIER",
+              "field" : "Probe/Outer[2]/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "group-list carrier row",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer[2]/Flat/FlatA",
+                "Probe/Outer[2]/Marker",
+                "Probe/Outer[2]/Peer/PeerA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NUMERIC_CARRIER",
+              "field" : "Probe/Outer[2]/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "numeric carrier row",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer[2]/Flat/FlatA",
+                "Probe/Outer[2]/Marker",
+                "Probe/Outer[2]/Peer/PeerA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Outer/CountTarget",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/Outer[2]/CountTarget",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GROUP_LIST_CARRIER",
+              "field" : "Probe/Outer[2]/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "group-list carrier row",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer[2]/Flat/FlatA",
+                "Probe/Outer[2]/Marker",
+                "Probe/Outer[2]/Peer/PeerA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NUMERIC_CARRIER",
+              "field" : "Probe/Outer[2]/Marker",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "numeric carrier row",
+              "referenced" : [
+                "/Probe[1]/Outer[2]/Flat[1]/Rows[0]/RowR",
+                "Probe/Outer[2]/Flat/FlatA",
+                "Probe/Outer[2]/Marker",
+                "Probe/Outer[2]/Peer/PeerA"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Outer/CountTarget",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Probe/Outer[2]/CountTarget",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

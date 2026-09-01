@@ -385,7 +385,8 @@ def NumericValidationAtom.admitted
           | .modelWideNonrepeatable | .modelWideCheckedComputation =>
               model.admitsNumberModelWide field
   | .filledGroupCount groups =>
-      scope != .sameGroupAddressed &&
+      (scope != .sameGroupAddressed ||
+        groups.all (fun reference => !reference.boundRepeatableScope.isEmpty)) &&
         1 < groups.length &&
         !groups.any ResolvedGroupReference.isRoot &&
         (ResolvedGroupReferences.firstOverlap? groups).isNone &&

@@ -23,6 +23,14 @@ private def otherRowValue : FlatFieldDecl :=
   { id := 8, groupPath := ["Order", "OtherRows"], name := "Y",
     policy := { kind := .number unsigned }, repeatableScope := [30] }
 
+private def flatRowValue : FlatFieldDecl :=
+  { id := 9, groupPath := ["Order", "Items", "Flat"], name := "A",
+    policy := { kind := .number unsigned }, repeatableScope := [10] }
+
+private def peerRowValue : FlatFieldDecl :=
+  { id := 10, groupPath := ["Order", "Items", "Peer"], name := "B",
+    policy := { kind := .number unsigned }, repeatableScope := [10] }
+
 private def model : FlatModel :=
   { fields := [
       { id := u.id, groupPath := ["Order"], name := "U",
@@ -38,7 +46,9 @@ private def model : FlatModel :=
       { id := p.id, groupPath := ["Order", "Preferences"], name := "P",
         policy := { kind := .number unsigned } },
       nestedValue,
-      otherRowValue]
+      otherRowValue,
+      flatRowValue,
+      peerRowValue]
     repeatableGroups := [
       { level := 10, path := ["Order", "Items"] },
       { level := 20, path := ["Order", "Items", "Lines"] },
@@ -326,6 +336,14 @@ private def groupListError? (operator : GroupFillQuantifier)
   | .ok _ => none
   | .error error => some error
 
+private def rowBoundGroupListScope? :
+    Option (Option (List RepeatableLevel)) := do
+  let checked ← (CheckedValidationCondition.fromGroupList model
+    ["Order", "Items"] .allGroupsFilled [
+      groupOperand ["Order", "Items", "Flat"],
+      groupOperand ["Order", "Items", "Peer"]]).toOption
+  checked.core.ordinaryIterationScope.toOption
+
 /- A mixed tree combines an ordinary presence leaf with a checked numeric-expression leaf through the same connective semantics. -/
 example : verdictOf (.parsed (.num 1)) (.parsed (.num 2)) =
     some (.fired .value) := by
@@ -518,6 +536,11 @@ example :
       groupOperand ["Order", "Items"],
       groupOperand ["Order", "Details"]] =
       some (.repeatableGroupRequiresAddress ["Order", "Items"]) := by
+  native_decide
+
+/- Fixed child groups whose repeatable ancestry is already bound by the declaring rule iterate at
+that exact enclosing scope. The strict-prefix refusal above remains the separating control. -/
+example : rowBoundGroupListScope? = some (some [10]) := by
   native_decide
 
 /- The mixed-star matrix separates addressed-mode admission, scalar refusal, plain-field and created-empty-row witnesses, zero-row omission, both legal polarities, forbidden operators, and structural binding failure. -/

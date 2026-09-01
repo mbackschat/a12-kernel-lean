@@ -1,0 +1,162 @@
+{
+  "header" : {
+    "id" : "FixedAncestorCarriers_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "FixedAncestorCarriers_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Outer",
+            "name" : "Outer",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/Outer/Flat",
+                "name" : "Flat",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Outer/Flat/FlatA",
+                    "name" : "FlatA",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Group",
+                    "id" : "/Probe/Outer/Flat/Rows",
+                    "name" : "Rows",
+                    "Group" : {
+                      "repeatability" : 2,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Probe/Outer/Flat/Rows/RowR",
+                        "name" : "RowR",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "StringType"
+                          }
+                        }
+                      } ]
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Outer/Peer",
+                "name" : "Peer",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Outer/Peer/PeerA",
+                    "name" : "PeerA",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Outer/Marker",
+                "name" : "Marker",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Outer/CountTarget",
+                "name" : "CountTarget",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Probe/Outer/RowLocalGroupCount",
+                "name" : "RowLocalGroupCount",
+                "Computation" : {
+                  "computedFieldRelPath" : "../CountTarget",
+                  "computationAlternatives" : [ {
+                    "operation" : "NumberOfFilledGroups(Flat, Peer)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "row-local group count differs"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Probe/Outer/NumericCarrier",
+                "name" : "NumericCarrier",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Marker",
+                  "errorCode" : "NUMERIC_CARRIER",
+                  "errorCondition" : "FieldFilled(Marker) And NumberOfFilledGroups(Flat, Peer) == 2",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "numeric carrier row"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Probe/Outer/GroupListCarrier",
+                "name" : "GroupListCarrier",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Marker",
+                  "errorCode" : "GROUP_LIST_CARRIER",
+                  "errorCondition" : "FieldFilled(Marker) And AllFieldsFilled(Flat, Peer)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "group-list carrier row"
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -147,20 +147,20 @@ private def finishFilledFieldCountGroupSource (model : FlatModel)
     | [] => throw (.emptyGroup source.groupPath)
     | first :: rest => pure { source, first, rest, expansionOwned := hExpansion }
 
-/-- Admit one measured fixed nonrepeatable ordinary path group through the shared entity-list shape gates. -/
+/-- Admit one measured fixed nonrepeatable ordinary path group. This carrier opts into the exact
+rule-bound scope directly; the shared entity-list resolver stays scalar for its unmeasured token,
+Boolean, temporal, and aggregate consumers. -/
 def elaborateFilledFieldCountFixedGroupValidationSource (model : FlatModel)
     (declaringGroup : GroupPath)
     (authored : SurfaceFilledFieldCountFixedGroupValidationSource) :
     Except FilledFieldCountGroupElabError
       (CheckedFilledFieldCountGroupSource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup {
-    first := .group (.path authored.group)
-    rest := [] }
-    |>.mapError .shape
-  match shape.first with
-  | .group reference =>
+  match model.validate with
+  | .error error => throw (.shape (.resolve error))
+  | .ok () =>
+      let reference ← model.resolveRuleBoundFixedGroupReference declaringGroup
+        (.path authored.group) |>.mapError fun error => .shape (.groupReference error)
       finishFilledFieldCountGroupSource model (.fixed reference)
-  | _ => throw .incoherentCore
 
 /-- Admit one measured terminal repeatable starred group without admitting the separate starred-ancestor/nonrepeatable-terminal shape. -/
 def elaborateFilledFieldCountStarredGroupValidationSource (model : FlatModel)

@@ -1,0 +1,9 @@
+{
+  "model":"FixedAncestorCarriers_DM.json",
+  "locale":"en_US",
+  "observe":["validateFull","compute"],
+  "rows":[
+    {"name":"first-full","document":"first-full.json"},
+    {"name":"second-full","document":"second-full.json"}
+  ]
+}

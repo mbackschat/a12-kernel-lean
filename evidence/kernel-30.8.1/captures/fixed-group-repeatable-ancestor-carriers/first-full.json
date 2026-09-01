@@ -1,0 +1,15 @@
+{
+  "Probe": {
+    "Outer": [
+      {
+        "Marker": "m1",
+        "Flat": {"FlatA":"a1","Rows":[{"RowR":"r11"},{"RowR":"r12"}]},
+        "Peer": {"PeerA":"p1"}
+      },
+      {
+        "Marker": "m2",
+        "Flat": {"FlatA":"a2"}
+      }
+    ]
+  }
+}
