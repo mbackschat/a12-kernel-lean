@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.AddressedNumberExtremum
 
 /-! # Bounded addressed numeric-operation Analyze/Transform view
 
-This internal consumer view covers the completed repeatable textual conversions and direct-Number field, `Abs`, Round, and bounded operand-list extrema over direct fields, operand-local `Abs`/Round/arithmetic children over field-or-literal operands, one nested extremum over direct field-or-literal leaves, and at most one immediate literal per extremum call. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, decides candidate target-scale legality from the fingerprint through the elaborator's own gate, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
+This internal consumer view covers the completed repeatable textual conversions and direct-Number field, `Abs`, Round, and bounded operand-list extrema over direct fields, operand-local `Abs`/Round/arithmetic/division/power children over field-or-literal operands, one nested extremum over direct field-or-literal leaves, and at most one immediate literal per extremum call. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, decides candidate target-scale legality from the fingerprint through the elaborator's own gate, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
 -/
 
 namespace A12Kernel
@@ -40,6 +40,8 @@ inductive AddressedNumberExtremumOperandIdentity where
       (places : Nat)
   | arithmetic (operation : NumericArithmeticOp)
       (left right : AddressedNumberArithmeticOperandIdentity)
+  | division (left right : AddressedNumberArithmeticOperandIdentity)
+  | power (base exponent : AddressedNumberArithmeticOperandIdentity)
   | extremum (operation : NumericExtremumOp)
       (operands : List AddressedNumberArithmeticOperandIdentity)
   | literal (decoded : DecodedNumericLiteral)
@@ -77,6 +79,7 @@ structure AddressedNumericOperationAnalysis where
   sourceFields : List FieldId
   scope : List RepeatableLevel
   targetPolicy : NumericTargetPolicy
+  suppressExactScaleWarning : Bool := false
   parameters : AddressedNumericOperationParameters
   deriving Repr, DecidableEq
 
@@ -85,7 +88,8 @@ namespace AddressedNumericOperationAnalysis
 /-- Whether a candidate declared target scale is admissible for this analyzed operation, decided from the retained fingerprint alone through the same gate the elaborator applies. A retargeting consumer therefore needs no re-elaboration and cannot invent a second admission rule. -/
 def admitsTargetScale (analysis : AddressedNumericOperationAnalysis)
     (scale : Nat) : Bool :=
-  exactNumericScaleComparisonAllowedWithSuppression false
+  exactNumericScaleComparisonAllowedWithSuppression
+    analysis.suppressExactScaleWarning
     (NumericScaleSummary.field scale)
     analysis.parameters.derivedScaleSummary
 
@@ -121,6 +125,12 @@ private def extremumOperandIdentity :
   | .arithmetic operation child =>
       let inner := arithmeticChildIdentity child
       .arithmetic operation inner.1 inner.2
+  | .division child =>
+      let inner := arithmeticChildIdentity child
+      .division inner.1 inner.2
+  | .power operation =>
+      let inner := arithmeticChildIdentity operation.child
+      .power inner.1 inner.2
   | .extremum operation =>
       .extremum operation.op (operation.orderedOperands.map fun
         | .field source => .field source.placement.sourceDeclaration.id
@@ -171,6 +181,7 @@ def analyze :
       sourceFields := operation.sourceFields
       scope := operation.target.targetDeclaration.repeatableScope
       targetPolicy := operation.target.targetPolicy
+      suppressExactScaleWarning := operation.suppressExactScaleWarning
       parameters := .extremum operation.op operation.scaleSummary
         (operation.orderedOperands.map extremumOperandIdentity)
     }

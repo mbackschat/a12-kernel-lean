@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.AddressedNumericOperationConsumer
 
 /-! # Addressed numeric-operation Analyze/Transform probe
 
-The bounded probe consumes checked repeatable conversion, direct Number, root `Abs`, root Round, and field/literal/operand-local-wrapper/one-level-nested operand-list extrema. It recovers exact bounded read/write impact, compares transformation-sensitive fingerprints without claiming equivalence, and exercises exact identity as the sole admitted Transform.
+The bounded probe consumes checked repeatable conversion, direct Number, root `Abs`, root Round, and field/literal/operand-local-wrapper/one-level-nested operand-list extrema, including division and power children. It recovers exact bounded read/write impact, compares transformation-sensitive fingerprints without claiming equivalence, and exercises exact identity as the sole admitted Transform.
 -/
 
 namespace A12Kernel.Conformance.AddressedNumericOperationConsumer
@@ -172,6 +172,16 @@ private def extremumMultiplication (left right : String) :
     SurfaceAddressedNumberExtremumOperand :=
   .arithmetic .multiply (.field (bare left)) (.field (bare right))
 
+private def extremumDivision (left right : String) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .division (.field (bare left)) (.field (bare right))
+
+private def extremumPower (base exponent : String) :
+    SurfaceAddressedNumberExtremumOperand :=
+  .power
+    (.field (bare base))
+    (.field (bare exponent))
+
 /-- One product whose right operand is an immediate literal carrying its own authored scale. Identity-Transform preservation is not rechecked per case: `identityTransform_analyze` owns it universally. -/
 private def extremumMultiplicationLiteral (left : String)
     (value : Rat) (authoredScale : Int) :
@@ -190,6 +200,16 @@ private def literalExtremumLeaf? (op : NumericExtremumOp)
   let operation ←
     (checkAddressedNumberExtremumOperands model ["Order", "Rows"]
       target.id first rest op).toOption
+  pure (.extremum operation)
+
+private def suppressedExtremumLeaf? (op : NumericExtremumOp)
+    (target : FlatFieldDecl)
+    (first : SurfaceAddressedNumberExtremumOperand)
+    (rest : List SurfaceAddressedNumberExtremumOperand) :
+    Option (CheckedAddressedNumericOperation model) := do
+  let operation ←
+    (checkAddressedNumberExtremumOperands model ["Order", "Rows"] target.id
+      first rest op (suppressExactScaleWarning := true)).toOption
   pure (.extremum operation)
 
 private def places0 : RoundingPlaces := ⟨0, by decide⟩
@@ -211,6 +231,7 @@ private structure AnalysisSummary where
   targetField : FieldId
   sourceFields : List FieldId
   scope : List RepeatableLevel
+  suppressExactScaleWarning : Bool := false
   parameters : AddressedNumericOperationParameters
   deriving Repr, DecidableEq
 
@@ -223,6 +244,7 @@ private def analyzed?
       targetField := analysis.targetField
       sourceFields := analysis.sourceFields
       scope := analysis.scope
+      suppressExactScaleWarning := analysis.suppressExactScaleWarning
       parameters := analysis.parameters
     }
 
@@ -523,6 +545,42 @@ example :
       (literalExtremumLeaf? .minimum sameScaleTarget
         (extremumField "Converted")
         [extremumMultiplication "Amount" "Selected"]) = none := by
+  native_decide
+
+/- Analyze retains division rather than flattening it into ordinary arithmetic, preserves its ordered dependencies and unknown scale, and carries the authored warning suppression into the only target-scale decision procedure. -/
+example :
+    analyzed? (suppressedExtremumLeaf? .minimum rounded0
+      (extremumDivision "Amount" "Selected")
+      [extremumLiteral 3 0]) =
+      some {
+        targetField := rounded0.id
+        sourceFields := [amount.id, selected.id]
+        scope := [10]
+        suppressExactScaleWarning := true
+        parameters := .extremum .minimum
+          { scale := .unknown, canExpandScale := false }
+          [.division (.field amount.id) (.field selected.id),
+            .literal { value := 3, authoredScale := 0 }]
+      } ∧
+    admittedScales? (suppressedExtremumLeaf? .minimum rounded0
+      (extremumDivision "Amount" "Selected")
+      [extremumLiteral 3 0]) = some (List.range 15) := by
+  native_decide
+
+/- Analyze retains power, both ordered field dependencies, unknown derived scale, and warning suppression. A division over the same fields cannot share its fingerprint. -/
+example :
+    analyzed? (suppressedExtremumLeaf? .minimum rounded0
+      (extremumPower "Amount" "Selected") [extremumLiteral 3 0]) =
+      some {
+        targetField := rounded0.id
+        sourceFields := [amount.id, selected.id]
+        scope := [10]
+        suppressExactScaleWarning := true
+        parameters := .extremum .minimum
+          { scale := .unknown, canExpandScale := false }
+          [.power (.field amount.id) (.field selected.id),
+            .literal { value := 3, authoredScale := 0 }]
+      } := by
   native_decide
 
 /- An inner literal is retained as an operand identity, not folded into the derived scale: two products differing only in the literal's authored scale keep distinct fingerprints even though their values agree, and moving the literal to the other inner position also stays distinct. -/

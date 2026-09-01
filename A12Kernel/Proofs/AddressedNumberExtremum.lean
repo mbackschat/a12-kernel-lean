@@ -55,6 +55,12 @@ theorem checkedAddressedNumberExtremumOperand_sourceCertified
   | arithmetic _ child =>
       simpa [CheckedAddressedNumberExtremumOperand.sources] using
         checkedAddressedNumberArithmeticChild_sourceCertified child
+  | division child =>
+      simpa [CheckedAddressedNumberExtremumOperand.sources] using
+        checkedAddressedNumberArithmeticChild_sourceCertified child
+  | power operation =>
+      simpa [CheckedAddressedNumberExtremumOperand.sources] using
+        checkedAddressedNumberArithmeticChild_sourceCertified operation.child
   | extremum operation =>
       simpa [CheckedAddressedNumberExtremumOperand.sources] using
         checkedAddressedNumberNestedExtremum_sourceCertified operation
@@ -190,7 +196,8 @@ theorem checkedAddressedNumberExtremum_sound
       (∀ source ∈ operation.orderedOperands.flatMap
           CheckedAddressedNumberExtremumOperand.sources,
         source.placement.targetField = operation.target.targetField) ∧
-      exactNumericScaleComparisonAllowedWithSuppression false
+      exactNumericScaleComparisonAllowedWithSuppression
+        operation.suppressExactScaleWarning
         (NumericScaleSummary.field operation.target.targetPolicy.info.scale)
         operation.scaleSummary = true := by
   refine ⟨?_, operation.sourcesShareTarget, operation.targetAdmitted⟩

@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.NumericExpression
 
 /-! # Repeatable bounded Number extrema
 
-This capsule retains a nonempty ordered list containing one or more checked Number sources, permits operand-local absolute-value, rounding, one arithmetic node over two field-or-literal operands, or one nested extremum over direct field-or-literal leaves, and admits at most one immediate decoded literal per extremum call. It delegates each local transformation and the authored-order folds to the existing scalar semantics, then reuses the shared exact-address target owner.
+This capsule retains a nonempty ordered list containing one or more checked Number sources, permits operand-local absolute-value, rounding, one arithmetic, division, or power node over two field-or-literal operands, or one nested extremum over direct field-or-literal leaves, and admits at most one immediate decoded literal per extremum call. It delegates each local transformation and the authored-order folds to the existing scalar semantics, then reuses the shared exact-address target owner.
 -/
 
 namespace A12Kernel
@@ -14,7 +14,7 @@ inductive SurfaceAddressedNumberArithmeticOperand where
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
 
-/-- The bounded addressed surface admits direct Number fields, operand-local `Abs`, Round, one arithmetic node over two field-or-literal operands, one nested extremum over direct field-or-literal leaves, and one immediate decoded literal in the outer list. Wider numeric operations remain with the scalar expression owner. -/
+/-- The bounded addressed surface admits direct Number fields, operand-local `Abs`, Round, one ordinary arithmetic, division, or power node over two field-or-literal operands, one nested extremum over direct field-or-literal leaves, and one immediate decoded literal in the outer list. Wider numeric operations remain with the scalar expression owner. -/
 inductive SurfaceAddressedNumberExtremumOperand where
   | field (reference : SurfaceFieldPath)
   | abs (reference : SurfaceFieldPath)
@@ -22,6 +22,8 @@ inductive SurfaceAddressedNumberExtremumOperand where
       (places : RoundingPlaces)
   | arithmetic (operation : NumericArithmeticOp)
       (left right : SurfaceAddressedNumberArithmeticOperand)
+  | division (left right : SurfaceAddressedNumberArithmeticOperand)
+  | power (base exponent : SurfaceAddressedNumberArithmeticOperand)
   | extremum (operation : NumericExtremumOp) (first : SurfaceAddressedNumberArithmeticOperand)
       (rest : List SurfaceAddressedNumberArithmeticOperand)
   | literal (decoded : DecodedNumericLiteral)
@@ -77,6 +79,12 @@ def scaleSummary (child : CheckedAddressedNumberArithmeticChild model)
   let operands := child.operandSummaries
   NumericScaleSummary.binary operation.scaleBinaryOp operands.1 operands.2
 
+/-- The power scale exception recognizes only a nonnegative literal in the authored exponent position. -/
+def hasSimpleNonnegativeLiteralExponent :
+    CheckedAddressedNumberArithmeticChild model → Bool
+  | .fieldLiteral _ decoded | .literals _ decoded => decide (0 ≤ decoded.value)
+  | .fields _ | .literalField _ _ => false
+
 end CheckedAddressedNumberArithmeticChild
 
 /-- The bounded direct and unary-wrapper operations that can currently own a checked addressed Number source inside an extremum operand list. -/
@@ -90,6 +98,7 @@ inductive AddressedNumberExtremumElabError where
   | target (cause : AddressedNumericPlacementElabError)
   | source (position : Nat) (cause : AddressedNumberSourceElabError)
   | pair (position : Nat) (cause : AddressedNumberPairElabError)
+  | invalidPowerExponentScale (position : Nat) (actual : ScaleInfo)
   | tooManyLiterals
   | incoherentTarget
   | scaleMismatch (target : Nat) (result : NumericScaleSummary)
@@ -99,13 +108,13 @@ abbrev AddressedNumberExtremumFault := AddressedNumericLeafFault
 
 namespace CheckedAddressedNumberArithmeticChild
 
-/-- Evaluate one arithmetic child at an already-certified row. A field pair delegates both ordered reads to the shared pair evaluator; a literal side contributes its exact decoded value at its authored position without a row read, so poison and empty-as-zero come only from a retained source. A constant-only child reads nothing at all and is therefore constant across rows. -/
-def evaluateAtEnvironment (child : CheckedAddressedNumberArithmeticChild model)
-    (operation : NumericArithmeticOp) (input : CheckedDocument model)
+/-- Evaluate one binary child at an already-certified row. A field pair delegates both ordered reads to the shared pair evaluator; a literal side contributes its exact decoded value at its authored position without a row read, so poison and empty-as-zero come only from a retained source. A constant-only child reads nothing at all and is therefore constant across rows. -/
+def evaluateAtEnvironmentUsing (child : CheckedAddressedNumberArithmeticChild model)
+    (combine : NumericComputationResult → NumericComputationResult →
+      NumericComputationResult)
+    (input : CheckedDocument model)
     (environment : Env) :
     Except AddressedNumberExtremumFault NumericComputationResult :=
-  let combine := NumericComputationResult.combineReached fun left right =>
-    .value (operation.eval left right)
   match child with
   | .fields pair => pair.evaluateAtEnvironment input combine environment
   | .fieldLiteral source decoded =>
@@ -115,7 +124,25 @@ def evaluateAtEnvironment (child : CheckedAddressedNumberArithmeticChild model)
   | .literals left right =>
       pure (combine (.value left.value) (.value right.value))
 
+/-- Evaluate an ordinary arithmetic child through its existing scalar operation. -/
+def evaluateAtEnvironment (child : CheckedAddressedNumberArithmeticChild model)
+    (operation : NumericArithmeticOp) (input : CheckedDocument model)
+    (environment : Env) :
+    Except AddressedNumberExtremumFault NumericComputationResult :=
+  child.evaluateAtEnvironmentUsing
+    (NumericComputationResult.combineReached fun left right =>
+      .value (operation.eval left right)) input environment
+
 end CheckedAddressedNumberArithmeticChild
+
+/-- One statically admitted power operand with its derived scale retained for the enclosing list. -/
+structure CheckedAddressedNumberPowerOperand (model : FlatModel) where
+  private mk ::
+  child : CheckedAddressedNumberArithmeticChild model
+  summary : NumericScaleSummary
+  summaryCertified : NumericScaleSummary.power?
+    child.operandSummaries.1 child.operandSummaries.2
+    child.hasSimpleNonnegativeLiteralExponent = some summary
 
 /-- One direct field-or-literal leaf of a nested addressed Number extremum. Keeping this type separate bounds nesting to one level and prevents wrappers or arithmetic children from being admitted by accident. -/
 inductive CheckedAddressedNumberExtremumLeaf (model : FlatModel) where
@@ -210,6 +237,8 @@ inductive CheckedAddressedNumberExtremumOperand (model : FlatModel) where
       (mode : DecimalRoundingMode) (places : RoundingPlaces)
   | arithmetic (operation : NumericArithmeticOp)
       (child : CheckedAddressedNumberArithmeticChild model)
+  | division (child : CheckedAddressedNumberArithmeticChild model)
+  | power (operation : CheckedAddressedNumberPowerOperand model)
   | extremum (operation : CheckedAddressedNumberNestedExtremum model)
   | literal (decoded : DecodedNumericLiteral)
 
@@ -221,6 +250,8 @@ def sources : CheckedAddressedNumberExtremumOperand model →
   | .field source | .abs source => [source]
   | .round source _ _ => [source]
   | .arithmetic _ child => child.sources
+  | .division child => child.sources
+  | .power operation => operation.child.sources
   | .extremum operation => operation.sources
   | .literal _ => []
 
@@ -234,6 +265,10 @@ def scaleSummary : CheckedAddressedNumberExtremumOperand model →
   | .field source | .abs source => .field source.source.info.scale
   | .round _ _ places => .rounded places.val
   | .arithmetic operation child => child.scaleSummary operation
+  | .division child =>
+      let summaries := child.operandSummaries
+      NumericScaleSummary.binary .divide summaries.1 summaries.2
+  | .power operation => operation.summary
   | .extremum operation => operation.scaleSummary
   | .literal decoded => NumericScaleSummary.constant decoded.authoredScale
 
@@ -254,6 +289,14 @@ def evaluateAtEnvironment
   | .round source mode places =>
       return (← source.evaluateAtEnvironment input environment).round mode places
   | .arithmetic operation child => child.evaluateAtEnvironment operation input environment
+  | .division child =>
+      child.evaluateAtEnvironmentUsing
+        (NumericComputationResult.combineReached fun left right =>
+          NumericComputationResult.ofArithmetic (divideNumeric left right))
+        input environment
+  | .power operation =>
+      operation.child.evaluateAtEnvironmentUsing NumericComputationResult.evalPower
+        input environment
   | .extremum operation => operation.evaluateAtEnvironment input environment
   | .literal decoded => pure (.value decoded.value)
 
@@ -283,9 +326,10 @@ structure CheckedAddressedNumberExtremum (model : FlatModel) where
         CheckedAddressedNumberExtremumOperand.sources,
       source.placement.targetField = target.targetField
   op : NumericExtremumOp
-  /-- Target admission is the shared `==`/`!=` scale predicate, not equality: an equal derived scale passes, and a smaller derived scale passes only while the whole list retains multiplicative-constant capability. -/
+  suppressExactScaleWarning : Bool
+  /-- Target admission uses the shared scale predicate: suppression admits any summary; otherwise exact equality or capable smaller-scale padding is required. -/
   targetAdmitted :
-    exactNumericScaleComparisonAllowedWithSuppression false
+    exactNumericScaleComparisonAllowedWithSuppression suppressExactScaleWarning
         (NumericScaleSummary.field target.targetPolicy.info.scale)
         (addressedNumberExtremumOperandsScaleSummary first rest) = true
 
@@ -303,30 +347,55 @@ private def checkNumberSourceOperand
     | .abs => .abs numberSource
     | .round mode places => .round numberSource mode places
 
-private def checkNumberArithmeticOperand
+private def checkNumberArithmeticChild
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (position : Nat) (operation : NumericArithmeticOp) :
+    (position : Nat) :
     SurfaceAddressedNumberArithmeticOperand →
       SurfaceAddressedNumberArithmeticOperand →
       Except AddressedNumberExtremumElabError
-        (CheckedAddressedNumberExtremumOperand model)
+        (CheckedAddressedNumberArithmeticChild model)
   | .field left, .field right => do
       let pair ←
         checkAddressedNumberPair model declaringGroup targetField left right
           |>.mapError (.pair position)
-      pure (.arithmetic operation (.fields pair))
+      pure (.fields pair)
   | .field left, .literal decoded => do
       let source ←
         checkAddressedNumberSource model declaringGroup targetField left
           |>.mapError (.source position)
-      pure (.arithmetic operation (.fieldLiteral source decoded))
+      pure (.fieldLiteral source decoded)
   | .literal decoded, .field right => do
       let source ←
         checkAddressedNumberSource model declaringGroup targetField right
           |>.mapError (.source position)
-      pure (.arithmetic operation (.literalField decoded source))
+      pure (.literalField decoded source)
   | .literal left, .literal right =>
-      pure (.arithmetic operation (.literals left right))
+      pure (.literals left right)
+
+private def checkNumberBinaryOperand
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (position : Nat)
+    (wrap : CheckedAddressedNumberArithmeticChild model →
+      CheckedAddressedNumberExtremumOperand model)
+    (left right : SurfaceAddressedNumberArithmeticOperand) :
+    Except AddressedNumberExtremumElabError
+      (CheckedAddressedNumberExtremumOperand model) := do
+  pure (wrap (← checkNumberArithmeticChild model declaringGroup targetField
+    position left right))
+
+private def checkNumberPowerOperand
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (position : Nat) (base exponent : SurfaceAddressedNumberArithmeticOperand) :
+    Except AddressedNumberExtremumElabError
+      (CheckedAddressedNumberExtremumOperand model) := do
+  let child ←
+    checkNumberArithmeticChild model declaringGroup targetField position base exponent
+  let summaries := child.operandSummaries
+  match hSummary : NumericScaleSummary.power? summaries.1 summaries.2
+      child.hasSimpleNonnegativeLiteralExponent with
+  | some summary =>
+      pure (.power { child, summary, summaryCertified := hSummary })
+  | none => throw (.invalidPowerExponentScale position summaries.2.scale)
 
 private def checkNumberNestedLeaf
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
@@ -385,8 +454,13 @@ private def checkNumberOperand
       checkNumberSourceOperand model declaringGroup targetField position
         (.round mode places) reference
   | .arithmetic operation left right =>
-      checkNumberArithmeticOperand model declaringGroup targetField position
-        operation left right
+      checkNumberBinaryOperand model declaringGroup targetField position
+        (.arithmetic operation) left right
+  | .division left right =>
+      checkNumberBinaryOperand model declaringGroup targetField position
+        .division left right
+  | .power base exponent =>
+      checkNumberPowerOperand model declaringGroup targetField position base exponent
   | .extremum operation first rest =>
       checkNumberNestedExtremum model declaringGroup targetField position
         operation first rest
@@ -405,12 +479,11 @@ private def checkNumberOperands
         checkNumberOperands model declaringGroup targetField (position + 1) rest
       pure (checked :: tail)
 
-/-- Validate the bounded ordered operand list against one checked target. No operand has to be field-backed: a constant-only list still iterates at the target's own repeatable scope. -/
-def checkAddressedNumberExtremumOperands
+private def checkAddressedNumberExtremumOperandsUsing
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (firstOperand : SurfaceAddressedNumberExtremumOperand)
     (restOperands : List SurfaceAddressedNumberExtremumOperand)
-    (op : NumericExtremumOp) :
+    (op : NumericExtremumOp) (suppressExactScaleWarning : Bool) :
     Except AddressedNumberExtremumElabError
       (CheckedAddressedNumberExtremum model) := do
   let target ←
@@ -426,7 +499,8 @@ def checkAddressedNumberExtremumOperands
         CheckedAddressedNumberExtremumOperand.sources,
         source.placement.targetField = target.targetField then
       let summary := addressedNumberExtremumOperandsScaleSummary first rest
-      if hScale : exactNumericScaleComparisonAllowedWithSuppression false
+      if hScale : exactNumericScaleComparisonAllowedWithSuppression
+          suppressExactScaleWarning
           (NumericScaleSummary.field target.targetPolicy.info.scale)
           summary = true then
         pure {
@@ -436,6 +510,7 @@ def checkAddressedNumberExtremumOperands
           atMostOneLiteral := hLiterals
           sourcesShareTarget := hTargets
           op
+          suppressExactScaleWarning
           targetAdmitted := hScale
         }
       else
@@ -444,6 +519,17 @@ def checkAddressedNumberExtremumOperands
       throw .incoherentTarget
   else
     throw .tooManyLiterals
+
+/-- Validate the bounded ordered operand list through the shared exact-scale gate. No operand has to be field-backed: a constant-only list still iterates at the target's own repeatable scope. -/
+def checkAddressedNumberExtremumOperands
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (firstOperand : SurfaceAddressedNumberExtremumOperand)
+    (restOperands : List SurfaceAddressedNumberExtremumOperand)
+    (op : NumericExtremumOp) (suppressExactScaleWarning : Bool := false) :
+    Except AddressedNumberExtremumElabError
+      (CheckedAddressedNumberExtremum model) :=
+  checkAddressedNumberExtremumOperandsUsing model declaringGroup targetField
+    firstOperand restOperands op suppressExactScaleWarning
 
 def checkAddressedNumberExtremumList
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
@@ -505,7 +591,12 @@ def execute (operation : CheckedAddressedNumberExtremum model)
     (input : CheckedDocument model) :
     Except AddressedNumberExtremumFault
       (List (SourcedNumericTargetOutcome CellAddr)) :=
-  operation.target.executeAtEnvironment input (operation.evaluateAtEnvironment input)
+  if operation.suppressExactScaleWarning then
+    operation.target.executeAtEnvironmentScaleWarningSuppressed input
+      (operation.evaluateAtEnvironment input)
+  else
+    operation.target.executeAtEnvironment input
+      (operation.evaluateAtEnvironment input)
 
 def executeResult
     (operation : CheckedAddressedNumberExtremum model)

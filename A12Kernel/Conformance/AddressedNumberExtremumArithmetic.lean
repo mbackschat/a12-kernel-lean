@@ -64,6 +64,12 @@ private def arith (op : NumericArithmeticOp)
     SurfaceAddressedNumberExtremumOperand :=
   .arithmetic op left right
 
+private def division (left right : SurfaceAddressedNumberArithmeticOperand) :
+    SurfaceAddressedNumberExtremumOperand := .division left right
+
+private def power (base exponent : SurfaceAddressedNumberArithmeticOperand) :
+    SurfaceAddressedNumberExtremumOperand := .power base exponent
+
 private def addition (left right : String) :
     SurfaceAddressedNumberExtremumOperand :=
   arith .add (fld left) (fld right)
@@ -169,6 +175,74 @@ private def outcomesInto? (targetField : FlatFieldDecl)
   let input ← input?
   let outcomes ← (operation.execute input).toOption
   pure (outcomes.map fun outcome => (outcome.targetField, outcome.outcome))
+
+private def suppressedOutcomesInto? (targetField : FlatFieldDecl)
+    (op : NumericExtremumOp)
+    (first : SurfaceAddressedNumberExtremumOperand)
+    (rest : List SurfaceAddressedNumberExtremumOperand) :
+    Option (List (CellAddr × NumericTargetOutcome)) := do
+  let operation ←
+    (checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
+      targetField.id first rest op (suppressExactScaleWarning := true)).toOption
+  let input ← input?
+  let outcomes ← (operation.execute input).toOption
+  pure (outcomes.map fun outcome => (outcome.targetField, outcome.outcome))
+
+/- Division and power are complete numeric operands rather than flattened arithmetic tags. Division
+needs the computation's exact-scale suppression because its derived scale is unknown; a power
+rejects a nonintegral declared exponent scale and retains the narrow literal-exponent scale. -/
+example :
+    (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
+        zeroScale.id (division (fld "A") (fld "B")) [field "C"] .minimum with
+      | .error (.scaleMismatch 0 summary) => summary.scale == .unknown
+      | _ => false) = true ∧
+    (checkAddressedNumberExtremumOperands model ["Probe", "Rows"] zeroScale.id
+      (division (fld "A") (fld "B")) [field "C"] .minimum
+      (suppressExactScaleWarning := true)).isOk = true ∧
+    (match checkAddressedNumberExtremumOperands model ["Probe", "Rows"]
+        zeroScale.id (power (fld "A") (fld "B")) [field "C"] .minimum with
+      | .error (.invalidPowerExponentScale 1 (.exact 1)) => true
+      | _ => false) = true := by
+  native_decide
+
+/- A domain-invalid child absorbs through `Min` or `Max` in either list position under `spec/09-computations.md` §3.2. It is neither replaced by the clean sibling nor mistaken for an inherited operand poison; ordinary values and the authored first-poison behavior remain unchanged. -/
+example : suppressedOutcomesInto? target .minimum
+    (division (fld "A") (fld "B")) [field "C"] = some [
+      (addr target.id 1, .accepted (stored 15 1)),
+      (addr target.id 2, .accepted (stored (-2) 0)),
+      (addr target.id 3, .accepted (stored 0 0)),
+      (addr target.id 4, .invalidNoValue .calculationValue),
+      (addr target.id 5, .invalidNoValue .calculationValue),
+      (addr target.id 6, .inheritedPoison .malformed),
+      (addr target.id 7, .inheritedPoison .declaredConstraint),
+      (addr target.id 8,
+        .rejected (stored 3333333333333333 15) .totalDigitsTooLong)] := by
+  native_decide
+
+/- A later outer poison replaces an already reached domain failure; domain invalidity is a retained numeric result until the enclosing authored-order scan reaches that poison. -/
+example : suppressedOutcomesInto? zeroScale .minimum
+    (division (lit 1 0) (lit 0 0)) [field "B"] =
+    some ((List.range 8).map fun row =>
+      (addr zeroScale.id (row + 1), if row = 5 || row = 6 then
+        .inheritedPoison .declaredConstraint
+      else .invalidNoValue .calculationValue)) := by
+  native_decide
+
+/- The staged power delegate retains an ordinary accepted control as well as runtime-domain failure in both outer positions. -/
+example :
+    outcomesInto? zeroScale .minimum
+      (power (lit 2 0) (lit 2 0)) [literal 3 0] =
+      some ((List.range 8).map fun row =>
+        (addr zeroScale.id (row + 1), .accepted (stored 3 0))) ∧
+    outcomesInto? zeroScale .minimum
+      (power (lit 2 0) (lit 1001 0)) [literal 3 0] =
+      some ((List.range 8).map fun row =>
+        (addr zeroScale.id (row + 1), .invalidNoValue .calculationValue)) ∧
+    outcomesInto? zeroScale .maximum
+      (literal 3 0) [power (lit 2 0) (lit 1001 0)] =
+      some ((List.range 8).map fun row =>
+        (addr zeroScale.id (row + 1), .invalidNoValue .calculationValue)) := by
+  native_decide
 
 /- A field-pair addition is one bounded outer operand. Its result scale is the maximum inner source scale, while a literal sibling can raise the outer target scale. -/
 example :
