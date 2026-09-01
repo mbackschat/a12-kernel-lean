@@ -21,11 +21,11 @@ Retained Kernel evidence separately bounds correspondence to A12 Kernel 30.8.1. 
 
 | Consumer type | Current status | Current bounded tasks |
 |---|---|---|
-| [Execute](EXECUTE.md) | green | Exact-address DateTime and repeatable Number constant application, generated numeric-table evaluation/application, selected-preliminary execution across Boolean, token, String, and temporal carriers plus three composition seams, explicit Number/String validation after one- and two-level application, and materialized generated Number targets |
+| [Execute](EXECUTE.md) | green | Exact-address DateTime and repeatable Number constant application, addressed extrema with division/power domain and target-policy preservation, generated numeric-table evaluation/application, selected-preliminary execution across Boolean, token, String, and temporal carriers plus three composition seams, explicit Number/String validation after one- and two-level application, and materialized generated Number targets |
 | [Translate](TRANSLATE.md) | green | Computed-target refusal to exact external diagnostic or typed local refusal |
-| [Transform](TRANSFORM.md) | green | Checked numeric-operation identity plus fixed Boolean/Confirm declaration relocation under an exact runtime observation relation |
+| [Transform](TRANSFORM.md) | green | Checked numeric-operation identity, including addressed division/power/suppression fingerprints, plus fixed Boolean/Confirm declaration relocation under an exact runtime observation relation |
 | [Compile](COMPILE.md) | green | Specialized finite condition, generated numeric-table, selected-preliminary whole calls, three selected conversion-composition plans, and addressed multi-star Number selection with exact bounded refinement |
-| [Analyze](ANALYZE.md) | green; broader graph reconstruction amber | SMT-backed presence reachability, checked numeric-table cycle analysis, generated-computation phase-alias safety, and heterogeneous fixed scalar declaration placement |
+| [Analyze](ANALYZE.md) | green; broader graph reconstruction amber | SMT-backed presence reachability, addressed extremum scale/capability and ordered identity, checked numeric-table cycle analysis, generated-computation phase-alias safety, and heterogeneous fixed scalar declaration placement |
 | [Verify](VERIFY.md) | green | Proof-bearing same-field contradiction certificate and counterexample boundary |
 | [Synthesize](SYNTHESIZE.md) | green | SMT-produced presence witness replayed through Lean semantics |
 | [Qualify](QUALIFY.md) | green | Four independent DateTime consumer mutations and restoration |
