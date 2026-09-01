@@ -6,55 +6,52 @@ import A12Kernel.Semantics.ComputationSelfValidation
 /-! # Checked inputs to a computed target's self-validation message
 
 A computed Number target whose value disagrees with its stored cell carries a formal message. This
-module owns the fields named by a `NumberOfFilledGroups` target and the reference and growth
-projections of the measured plain-star `Sum` carrier. It constructs no text or message.
+module owns the checked reference projections of the measured `NumberOfFilledGroups` and
+plain-star `Sum` carriers plus the latter's growth projection. It constructs no text or message.
 
-## Referenced fields
+## Referenced pointers
 
 The extent is each operand's **own reach**. Every operand of this operator is a group, so each names
 the fields anywhere in its subtree at any depth and however many there are, which is exactly what
-the count reads, and both
-operand forms use that one extent — the message does not distinguish a fixed operand from a starred
-one, the distinction living in the coordinates rather than the field set. Do not carry the subtree
-rule to a **field** operand of another carrier: a `Sum` over one flattened field is measured to name
-that field alone and not its sibling.
+the count reads, and both operand forms use that one extent. Fixed and starred groups differ in
+their coordinates rather than their projected field set. Do not carry the subtree rule to a
+**field** operand of another carrier: a `Sum` over one flattened field is measured to name that
+field alone and not its sibling.
 
 Two properties matter to a consumer and neither is visible from the type. It is an **authored-shape
 inventory, not a reached-cell trace**, and the sharp form of that is invariance: the set is
 byte-identical between a document with no instantiated row and one whose every row cell is filled,
 which a partially-read account cannot produce. And the channel is a **set** — the retained observations arrive ordered by
 their rendered spelling, which is the capture's normalization rather than a Kernel guarantee, so no
-order is claimed here.
+order is claimed here. Both carriers project through the shared checked source owners, and their
+field inventories are derived from those pointers rather than kept as second owners.
 
-The measured plain-star `Sum` additionally projects through the shared checked reference owner, so
-its source field carries an unbound coordinate while its nonrepeatable computed target stays exact.
-Its field inventory is the field projection of those pointers rather than a second owner.
+The group-count projection recursively expands each fixed or starred group. Reopened levels stay
+wildcarded while fixed fields and the nonrepeatable computed target stay exact. The plain-star `Sum`
+likewise retains the source wildcard and exact target.
 -/
 
 namespace A12Kernel
 
 namespace CheckedGroupCountOperand
 
-/-- The fields this operand names in the target's self-validation message.
+/-- Project one group-count operand through the shared group-reference owner.
 
-    The whole subtree at any depth, measured on a group whose only field lies two levels below it
-    and again on one whose only content is a repeatable descendant. A group's own depth therefore
-    does not bound what the message reports. -/
-def referencedFields (operand : CheckedGroupCountOperand model) (model' : FlatModel) :
-    List FieldId :=
-  (model'.groupSubtreeFields operand.groupPath).map (·.id)
+    The operand retains the same resolved fixed or checked starred certificate as
+    [`CheckedEntityGroupSource`], so this adapter introduces no coordinate rule of its own. The
+    computation-message observation in [`spec/10`](../../../spec/10-validation-and-polarity.md#41-the-same-rule-fires-either-type)
+    covers the fixed-versus-wildcard distinction on this carrier. -/
+def referencePointers (operand : CheckedGroupCountOperand model) (environment : Env) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  match operand with
+  | .fixed reference =>
+      CheckedEntityGroupSource.referencePointers (model := model)
+        (.fixed reference) environment
+  | .starred source =>
+      CheckedEntityGroupSource.referencePointers (model := model)
+        (.starred source) environment
 
 end CheckedGroupCountOperand
-
-/-- Every field a `NumberOfFilledGroups` target's self-validation message names.
-
-    The operands' subtree fields together with the computed target itself. A repeated operand
-    contributes its fields once per authored position, matching the fold; deduplication is a
-    consumer's choice and is deliberately not made here, since the channel's own multiplicity is
-    unmeasured. -/
-def referencedFieldsForFilledGroupCount (model : FlatModel)
-    (operands : List (CheckedGroupCountOperand model)) (target : FieldId) : List FieldId :=
-  operands.flatMap (·.referencedFields model) ++ [target]
 
 /-! ## Plain-star `Sum` projections -/
 
@@ -98,6 +95,25 @@ def plainStarSumGrowth? (checked : CheckedNumberEntitySource model)
 end CheckedNumberEntitySource
 
 namespace CheckedNumericComputationOperation
+
+/-- Derive the formal-message pointers for either checked filled-group-count operation shape.
+
+    Fixed-only and star-bearing authored lists elaborate to different atom constructors but retain
+    the same [`CheckedGroupCountOperand`] certificates here. Each operand delegates to the shared
+    group-pointer owner, and the checked nonrepeatable Number target contributes one exact pointer.
+    The list order is deterministic only; the observed message channel is a set. -/
+def filledGroupCountReferencedPointers?
+    (checked : CheckedNumericComputationOperation model) :
+    Except ReferenceProjectionError (Option (List MessagePointer)) :=
+  let project (operands : List (CheckedGroupCountOperand model)) := do
+    let operandPointers ← (·.flatten) <$> operands.mapM (·.referencePointers [])
+    pure (some (operandPointers ++ [
+      MessagePointer.ofCellAddr { field := checked.core.target.id, path := [] }]))
+  match checked.core.expression with
+  | .atom (.numeric (.filledGroupCount groups)) =>
+      project (groups.map CheckedGroupCountOperand.fixed)
+  | .atom (.filledGroupCountMixed operands) => project operands
+  | _ => pure none
 
 /-- Derive the formal-message pointers for the measured plain-star `Sum` carrier.
 

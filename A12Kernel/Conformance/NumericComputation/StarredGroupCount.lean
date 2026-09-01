@@ -213,6 +213,50 @@ private def countOf (operands : List SurfaceGroupCountOperand)
 private def mixedList : List SurfaceGroupCountOperand :=
   [fixedOperand ["Probe", "Flat"], starredOperand]
 
+private def referencedIn (target : FlatModel) (computedTarget : FieldId)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom) :
+    Option (Option (List MessagePointer)) :=
+  match elaborateNumericComputationOperation target ["Probe"] computedTarget expression with
+  | .error _ => none
+  | .ok checked => checked.filledGroupCountReferencedPointers?.toOption
+
+private def referenced (target : FlatModel) (computedTarget : FieldId)
+    (operands : List SurfaceGroupCountOperand) : Option (Option (List MessagePointer)) :=
+  referencedIn target computedTarget (.atom (.filledGroupCount operands))
+
+/- The fixed field stays exact, the starred field is wildcarded, and the target is exact. -/
+example :
+    referenced model targetId mixedList = some (some [
+      { field := flatValueId, coordinates := [] },
+      { field := rowValueId, coordinates := [.wildcard] },
+      { field := targetId, coordinates := [] }]) := by
+  native_decide
+
+/- Recursive expansion preserves each operand's own boundary instead of projecting group pointers. -/
+example :
+    referenced gateModel gateTarget
+      [fixedOperand ["Probe", "Flat"], gateStar ["Probe", "Rows"]] = some (some [
+        { field := flatValueId, coordinates := [] },
+        { field := gateNested, coordinates := [.wildcard] },
+        { field := rowValueId, coordinates := [.wildcard] },
+        { field := gateInner, coordinates := [.wildcard, .wildcard] },
+        { field := gateTarget, coordinates := [] }]) := by
+  native_decide
+
+/- Fixed-only group counts share the same checked-operation producer. -/
+example :
+    referenced model targetId
+      [fixedOperand ["Probe", "Flat"], fixedOperand ["Probe", "Other"]] = some (some [
+        { field := flatValueId, coordinates := [] },
+        { field := otherValueId, coordinates := [] },
+        { field := targetId, coordinates := [] }]) := by
+  native_decide
+
+/- The query classifies the checked operation rather than treating every Number result as a count. -/
+example :
+    referencedIn model targetId (.literal { value := 1, authoredScale := 0 }) = some none := by
+  native_decide
+
 private def scalarCountOf (operands : List SurfaceGroupCountOperand) :
     Option NumericComputationFault :=
   match elaborateNumericComputationOperation model ["Probe"] targetId
@@ -443,18 +487,12 @@ example : typeOf 5 (growthOf mixedList false 5) = some (.fired .omission) := by
 /- **The inventory is an authored shape, not a reached-cell trace.** A starred operand names its
    row field with no document in hand at all — the function takes none — which is why the measured
    no-row documents still list `Rows`' field. Both operand forms use the one subtree extent, so the
-   fixed and starred halves are indistinguishable in the field set; the difference the Kernel does
-   render lives in the coordinates, which this project does not model. -/
+   fixed and starred halves are indistinguishable after the pointer result is projected to fields;
+   their exact-versus-wildcard coordinate distinction remains in the owning result above. -/
 example :
-    (match elaborateNumericComputationOperation model ["Probe"] targetId
-        (.atom (.filledGroupCount mixedList)) with
-      | .error _ => none
-      | .ok checked =>
-          match checked.core.expression with
-          | .atom (.filledGroupCountMixed operands) =>
-              some (referencedFieldsForFilledGroupCount model operands targetId)
-          | _ => none) =
-      some [flatValueId, rowValueId, targetId] := by
+    ((referenced model targetId mixedList).map fun pointers? =>
+        pointers?.map fun pointers => pointers.map (·.field)) =
+      some (some [flatValueId, rowValueId, targetId]) := by
   native_decide
 
 /- **An over-limit row adds no headroom, and the producer is where that is decided.** Six and seven

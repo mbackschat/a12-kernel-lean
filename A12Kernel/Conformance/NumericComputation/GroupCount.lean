@@ -838,18 +838,32 @@ example :
 
 /-! ## The self-validation message's referenced fields
 
-The measured message names its operands' subtree fields at any depth plus the computed target. The
-channel is a set, so the **order** below is this project's own — authored operand order with the
+The measured message names its operands' subtree pointers at any depth plus the computed target.
+The channel is a set, so the **order** below is this project's own — authored operand order with the
 target last — and carries no external claim.
 -/
+
+private def fixedSurfaceGroup (path : GroupPath) : SurfaceGroupCountOperand :=
+  .fixed (.path { base := .absolute, groups := path })
+
+private def selfValidationPointersIn (source : FlatModel) :
+    Option (Option (List MessagePointer)) :=
+  let target := withComputedTarget source
+  match elaborateNumericComputationOperation target ["Root"] computedTargetId
+      (.atom (.filledGroupCount [
+        fixedSurfaceGroup ["Root", "Shell"],
+        fixedSurfaceGroup ["Root", "Preferences"]])) with
+  | .error _ => none
+  | .ok checked => checked.filledGroupCountReferencedPointers?.toOption
 
 /- The nested shell, reproducing the measured inventory: a group whose only field lies two levels
    below it still names that field, so a group's own depth does not bound what the message
    reports. -/
 example :
-    referencedFieldsForFilledGroupCount shellModel
-        [.fixed shellGroup, .fixed preferencesGroup] computedTargetId =
-      [shellClauseId, preferencesChoiceId, computedTargetId] := by
+    selfValidationPointersIn shellModel = some (some [
+      { field := shellClauseId, coordinates := [] },
+      { field := preferencesChoiceId, coordinates := [] },
+      { field := computedTargetId, coordinates := [] }]) := by
   native_decide
 
 /- **The extent is wider than any one route's admitted evaluation.** With the shell's descendant
@@ -859,9 +873,10 @@ example :
    and takes no document at all, so the inventory must not be derived from any evaluation's own
    descendants. -/
 example :
-    referencedFieldsForFilledGroupCount repeatableShellModel
-        [.fixed shellGroup] computedTargetId =
-      [shellClauseId, computedTargetId] := by
+    selfValidationPointersIn repeatableShellModel = some (some [
+      { field := shellClauseId, coordinates := [.wildcard] },
+      { field := preferencesChoiceId, coordinates := [] },
+      { field := computedTargetId, coordinates := [] }]) := by
   native_decide
 
 end A12Kernel.Conformance.NumericComputation.GroupCount
