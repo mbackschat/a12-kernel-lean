@@ -1,13 +1,13 @@
 import A12Kernel.Elaboration.NumericComputation.Core
 import A12Kernel.Elaboration.CheckedStarShape
+import A12Kernel.Elaboration.ValidationCondition.Reference
 import A12Kernel.Semantics.ComputationSelfValidation
 
 /-! # Checked inputs to a computed target's self-validation message
 
 A computed Number target whose value disagrees with its stored cell carries a formal message. This
-module owns two checked projections into that message: the fields named by a
-`NumberOfFilledGroups` target and the growth channel of the measured plain-star `Sum` carrier. It
-constructs no pointer coordinates, text, or message.
+module owns the fields named by a `NumberOfFilledGroups` target and the reference and growth
+projections of the measured plain-star `Sum` carrier. It constructs no text or message.
 
 ## Referenced fields
 
@@ -26,12 +26,9 @@ which a partially-read account cannot produce. And the channel is a **set** — 
 their rendered spelling, which is the capture's normalization rather than a Kernel guarantee, so no
 order is claimed here.
 
-Only the field half is modelled, and that is this project's boundary rather than the observation's.
-Each named cell also carries repetition coordinates in two spellings — bare for a repetition-free
-address, and carrying its axes for one crossing a repeatable group, where the starred axis is
-**unbound** rather than a row index. That value is measured off the Kernel pointer's own repetition
-indexes and is invariant in the row count, so the domain question is answered; representing it here
-belongs to [`SEMANTICS-GAPS.md`](../../../docs/SEMANTICS-GAPS.md)'s SG10.
+The measured plain-star `Sum` additionally projects through the shared checked reference owner, so
+its source field carries an unbound coordinate while its nonrepeatable computed target stays exact.
+Its field inventory is the field projection of those pointers rather than a second owner.
 -/
 
 namespace A12Kernel
@@ -59,7 +56,7 @@ def referencedFieldsForFilledGroupCount (model : FlatModel)
     (operands : List (CheckedGroupCountOperand model)) (target : FieldId) : List FieldId :=
   operands.flatMap (·.referencedFields model) ++ [target]
 
-/-! ## Plain-star `Sum` growth -/
+/-! ## Plain-star `Sum` projections -/
 
 namespace CheckedNumberEntitySource
 
@@ -77,14 +74,6 @@ def plainStarSumCarrier? (checked : CheckedNumberEntitySource model) :
       else
         none
   | _, _ => none
-
-/-- The referenced fields of the measured plain-star `Sum` message.
-
-    A field operand names that field alone, never its enclosing group's siblings; the computed
-    target is included. This is authored-shape inventory and therefore needs no document. -/
-def plainStarSumReferencedFields? (checked : CheckedNumberEntitySource model)
-    (target : FieldId) : Option (List FieldId) :=
-  checked.plainStarSumCarrier?.map fun carrier => [carrier.1.field.id, target]
 
 /-- Derive the implicit-message growth channel for the measured checked `Sum` carrier.
 
@@ -107,5 +96,31 @@ def plainStarSumGrowth? (checked : CheckedNumberEntitySource model)
             (!side.hasEmpty)))
 
 end CheckedNumberEntitySource
+
+namespace CheckedNumericComputationOperation
+
+/-- Derive the formal-message pointers for the measured plain-star `Sum` carrier.
+
+    The source delegates to [`CheckedNumberEntitySource.referencePointers`] so the reopened axis
+    remains wildcarded, matching the computation-message coordinate observation in
+    [`spec/10`](../../../spec/10-validation-and-polarity.md#41-the-same-rule-fires-either-type).
+    The checked computation target is admitted only as a nonrepeatable Number field by
+    [`FlatModel.admitsNumericComputationTarget`], so its pointer is the exact empty path. The list
+    order is deterministic only; the observed message channel is a set. Filtered, nested, mixed,
+    direct, unbounded, and non-`Sum` shapes remain outside this projection. -/
+def plainStarSumReferencedPointers?
+    (checked : CheckedNumericComputationOperation model) :
+    Except ReferenceProjectionError (Option (List MessagePointer)) :=
+  match checked.core.expression with
+  | .atom (.numeric (.aggregate .sum source)) =>
+      match source.plainStarSumCarrier? with
+      | none => pure none
+      | some _ => do
+          let sourcePointers ← source.referencePointers []
+          pure (some (sourcePointers ++ [
+            MessagePointer.ofCellAddr { field := checked.core.target.id, path := [] }]))
+  | _ => pure none
+
+end CheckedNumericComputationOperation
 
 end A12Kernel

@@ -1,6 +1,6 @@
 import A12Kernel.Conformance.NumericComputation.Support
 
-/-! # Checked `Sum` self-validation message growth
+/-! # Checked `Sum` self-validation message growth and references
 
 This capsule closes the measured one-level plain-star `Sum` carrier. It starts from an elaborated
 Number computation and one immutable checked document, then derives the exact growth channel used
@@ -21,6 +21,12 @@ private def boundedModel : FlatModel :=
 private def plainSum :
     AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource) :=
   .atom (.aggregate .sum {
+    first := .star repeatedStarPath
+    rest := [] })
+
+private def plainMin :
+    AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource) :=
+  .atom (.aggregate .minimum {
     first := .star repeatedStarPath
     rest := [] })
 
@@ -85,15 +91,17 @@ private def growth (data : DocumentData) : Option (Option ComputationOperandGrow
 
 private def referencedIn (sourceModel : FlatModel)
     (expression : AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource)) :
-    Option (Option (List FieldId)) :=
+    Option (Option (List MessagePointer)) :=
   match elaborateNumberEntityComputationOperation
       sourceModel ["Root"] targetId expression with
   | .error _ => none
-  | .ok checked =>
-      match checked.core.expression with
-      | .atom (.numeric (.aggregate .sum source)) =>
-          some (source.plainStarSumReferencedFields? targetId)
-      | _ => none
+  | .ok checked => checked.plainStarSumReferencedPointers?.toOption
+
+private def referencedFieldsIn (sourceModel : FlatModel)
+    (expression : AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource)) :
+    Option (Option (List FieldId)) :=
+  (referencedIn sourceModel expression).map fun pointers? =>
+    pointers?.map fun pointers => pointers.map (·.field)
 
 private def verdict (stored computed : Rat) (data : DocumentData) : Option Verdict :=
   match growth data with
@@ -129,9 +137,17 @@ example :
 example : growth malformedData = some none := by
   native_decide
 
-/- The inventory follows the field operand, not its enclosing group: `ProductRight` is a sibling. -/
+/- The existing source-pointer owner supplies the wildcard, while the fixed target stays exact. -/
 example :
     referencedIn boundedModel plainSum =
+      some (some [
+        { field := repeatedId, coordinates := [.wildcard] },
+        { field := targetId, coordinates := [] }]) := by
+  native_decide
+
+/- The field inventory is one projection of those pointers; `ProductRight` is an excluded sibling. -/
+example :
+    referencedFieldsIn boundedModel plainSum =
       some (some [repeatedId, targetId]) := by
   native_decide
 
@@ -146,7 +162,8 @@ example :
 example :
     referencedIn model plainSum = some none ∧
       referencedIn boundedModel filteredSum = some none ∧
-      referencedIn boundedModel directSum = some none := by
+      referencedIn boundedModel directSum = some none ∧
+      referencedIn boundedModel plainMin = some none := by
   native_decide
 
 end A12Kernel.Conformance.NumericComputation.SumSelfValidationMessage
