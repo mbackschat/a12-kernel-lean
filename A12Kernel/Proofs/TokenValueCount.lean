@@ -170,6 +170,30 @@ theorem checkedBooleanValueCountGroup_resolvedCheckedValidationSide
         hasNonRelevant := core.hasNonRelevant }) := by
   rfl
 
+/-- An unfiltered checked Boolean star selects the in-capacity addressed cells before projecting
+    their canonical tokens. -/
+theorem checkedBooleanValueCount_plainBooleanStar_usesCapacityProjection
+    (source : CheckedBooleanValueCountStarSource model expected)
+    (document : CheckedDocument model) (outer : Env) :
+    source.filter = none →
+    source.source.declaration.policy.kind = .boolean →
+    (CheckedBooleanValueCountOperand.star source).resolvedCheckedValidationSide
+        document outer = (do
+      let core ← source.source.resolveCheckedValidationEntityOperandCore
+        document outer none
+      pure {
+        cells := core.inCapacityAddressedCells.map fun cell =>
+          booleanValueCountCellAt .validation cell.cell
+        hasUninstantiatedTail := core.hasUninstantiatedTail
+        hasHaving := core.hasHaving
+        hasNonRelevant := core.hasNonRelevant }) := by
+  intro unfiltered boolean
+  cases resolved : source.source.resolveCheckedValidationEntityOperandCore
+      document outer none <;>
+    simp [CheckedBooleanValueCountOperand.resolvedCheckedValidationSide,
+      unfiltered, boolean, Except.map, resolved] <;>
+    rfl
+
 /-- Every declaration retained by an operand admitted under `False` is Boolean; Confirm is
     admitted only by `True`. This is list-valued because a group slot owns its whole expansion. -/
 theorem checkedBooleanValueCount_false_fields_boolean

@@ -464,6 +464,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [Starred field operand extent across the extrema, distinct count, and value count](sources/group-and-iteration-probes.md#src-starred-field-operand-extent)
 <a id="src-token-starred-field-capacity"></a>
 - [Plain starred String value-count capacity](sources/group-and-iteration-probes.md#src-token-starred-field-capacity)
+<a id="src-boolean-starred-field-capacity"></a>
+- [Plain starred Boolean value-count capacity](sources/group-and-iteration-probes.md#src-boolean-starred-field-capacity)
 <a id="src-capacity-projection-computation-arm"></a>
 - [Declared-capacity projection on the computation arm](sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm)
 <a id="src-starred-field-operand-peer-reproduction"></a>

@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-01-04"></a>
+### `SPEC-2026-09-01-04` — a plain starred Boolean value count excludes over-limit matches under both constants
+
+- `status`: pending
+- `clause`: [`04-numbers-and-decimals.md`](../spec/04-numbers-and-decimals.md), the `NumberOfValueInFields` paragraph
+- `delta`: full validation of `NumberOfValueInFields(True In Rows*/Flag)` and its `False` counterpart reads only the instantiated rows within `Rows`' declared capacity. An over-limit Boolean contributes to neither count, while its structural over-repetition findings remain visible independently.
+- `evidence`: the [plain starred Boolean value-count checkpoint](sources/group-and-iteration-probes.md#src-boolean-starred-field-capacity), one structured dmtool-authored capacity-2 model and one three-document `:adapter:kernelProbe` request at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`, with both Kernel strategies agreeing on every row.
+- `separator`: `false, false, true` fires the exact-zero `True` rule and exact-two `False` rule; moving the sole `true` into capacity fires both exact-one rules; `true, true, false` fires the exact-two `True` rule and exact-zero `False` rule. The former complete checked-cell path predicts aggregate unavailability and no Boolean count-rule message on all three documents.
+- `local-consequence`: `CheckedBooleanValueCountOperand.resolvedCheckedValidationSide` now selects the in-capacity addressed cells for an unfiltered starred Boolean declaration. Direct operands, filtered Boolean stars, and Confirm stars retain their prior complete projection because this observation does not cover them.
+- `limit`: one ordinary Boolean declaration, one repetition level, capacity 2, both constants, three filled rows, and full validation. No claim transfers to filtered Boolean stars, Confirm, malformed or empty content, partial validation, checked computation, or nesting below the star.
+- `acceptance`: a12-dmkits reproduces the over-limit-only and in-capacity controls under both Boolean constants on an independently authored carrier, then states the in-capacity extent without widening it to filtered or Confirm carriers; or supplies a contrary separating observation.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-01-03"></a>
 ### `SPEC-2026-09-01-03` — a plain starred String value count excludes over-limit matches
 

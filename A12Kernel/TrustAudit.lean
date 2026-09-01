@@ -2398,6 +2398,7 @@ run_cmd do
 #print axioms A12Kernel.classifyStoredConfirmText_ne_false
 #print axioms A12Kernel.checkedBooleanValueCountGroup_expansion_complete
 #print axioms A12Kernel.checkedBooleanValueCountGroup_resolvedCheckedValidationSide
+#print axioms A12Kernel.checkedBooleanValueCount_plainBooleanStar_usesCapacityProjection
 #print axioms A12Kernel.checkedBooleanValueCount_false_fields_boolean
 #print axioms A12Kernel.checkedBooleanValueCount_scaleSummary
 #print axioms A12Kernel.firstFilledBoolean_exhausted_noValue

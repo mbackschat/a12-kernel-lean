@@ -423,6 +423,81 @@ private def evaluatedCheckedCapacityEnumerationStar
       cells }).toOption
   (checked.evaluateCheckedDocumentValidation document []).toOption
 
+private def booleanCapacityField : FlatFieldDecl :=
+  { id := 30
+    groupPath := ["Flags", "Rows"]
+    name := "Selected"
+    policy := { kind := .boolean }
+    repeatableScope := [20] }
+
+private def confirmCapacityField : FlatFieldDecl :=
+  { id := 31
+    groupPath := ["Flags", "Rows"]
+    name := "Confirmed"
+    policy := { kind := .confirm }
+    repeatableScope := [20] }
+
+private def booleanCapacityModel : FlatModel :=
+  { fields := [booleanCapacityField, confirmCapacityField]
+    repeatableGroups := [{
+      level := 20, path := ["Flags", "Rows"], repeatability := some 2 }] }
+
+private def booleanCapacityPrepared :
+    PreparedFlatStringContext booleanCapacityModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler booleanCapacityModel).toOption.get (by native_decide)
+
+private def booleanCapacityStar : SurfaceBooleanValueCountSource :=
+  { first := .star {
+      base := .absolute
+      groups := [{ name := "Flags" }, { name := "Rows", starred := true }]
+      field := "Selected" }
+    rest := [] }
+
+private def confirmCapacityStar : SurfaceBooleanValueCountSource :=
+  { first := .star {
+      base := .absolute
+      groups := [{ name := "Flags" }, { name := "Rows", starred := true }]
+      field := "Confirmed" }
+    rest := [] }
+
+private def booleanCapacityCell
+    (index : Nat) (value : Bool) : ClassifiedCellInput :=
+  { address := { field := booleanCapacityField.id, path := [index] }
+    stored := booleanValueCountToken value
+    raw := .parsed (.bool value) }
+
+private def evaluatedCheckedBooleanCapacityStar
+    (expected : Bool) (values : List Bool) : Option NumericOperand := do
+  let checked ←
+    (elaborateBooleanValueCountSource booleanCapacityModel ["Flags"] expected
+      booleanCapacityStar).toOption
+  let rows := values.mapIdx fun index _ =>
+    { group := 20, path := [index + 1] }
+  let cells := values.mapIdx fun index value =>
+    booleanCapacityCell (index + 1) value
+  let document ←
+    (checkDocument booleanCapacityPrepared "en_US" {
+      instantiatedRows := rows
+      cells }).toOption
+  (checked.evaluateCheckedDocumentValidation document []).toOption
+
+private def evaluatedCheckedConfirmCapacityStar : Option NumericOperand := do
+  let checked ←
+    (elaborateBooleanValueCountSource booleanCapacityModel ["Flags"] true
+      confirmCapacityStar).toOption
+  let document ←
+    (checkDocument booleanCapacityPrepared "en_US" {
+      instantiatedRows := [
+        { group := 20, path := [1] },
+        { group := 20, path := [2] },
+        { group := 20, path := [3] }]
+      cells := [{
+        address := { field := confirmCapacityField.id, path := [3] }
+        stored := "true"
+        raw := .parsed (.conf true) }] }).toOption
+  (checked.evaluateCheckedDocumentValidation document []).toOption
+
 /- Stored and category accesses on one physical Enumeration are distinct exact references, and the selected category domain owns literal admission. -/
 example :
     sourceError "A" storedAndCategorySource = none ∧
@@ -507,6 +582,30 @@ example :
         some (.value 1 .fixed) ∧
       evaluatedCheckedCapacityStar ["X", "X", "A"] =
         some (.value 2 .fixed) := by
+  native_decide
+
+/- A plain starred Boolean field has the same measured capacity extent on its own carrier: a `True`
+   match found only over limit contributes nothing, while the two in-capacity controls count normally
+   ([checkpoint](../../docs/SOURCES.md#src-boolean-starred-field-capacity)). -/
+example :
+    evaluatedCheckedBooleanCapacityStar true [false, false, true] =
+        some (.value 0 .fixed) ∧
+      evaluatedCheckedBooleanCapacityStar true [true, false, false] =
+        some (.value 1 .fixed) ∧
+      evaluatedCheckedBooleanCapacityStar true [true, true, false] =
+        some (.value 2 .fixed) ∧
+      evaluatedCheckedBooleanCapacityStar false [false, false, true] =
+        some (.value 2 .fixed) ∧
+      evaluatedCheckedBooleanCapacityStar false [true, false, false] =
+        some (.value 1 .fixed) ∧
+      evaluatedCheckedBooleanCapacityStar false [true, true, false] =
+        some (.value 0 .fixed) := by
+  native_decide
+
+/- The Boolean measurement does not widen the distinct Confirm declaration carrier. Its prior
+   complete-view result remains explicit until a separate Kernel observation settles that branch. -/
+example :
+    evaluatedCheckedConfirmCapacityStar = some (.unknown .overRepetition) := by
   native_decide
 
 /- The observed String carrier does not silently widen the unmeasured Enumeration carrier. Its
