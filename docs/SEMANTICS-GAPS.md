@@ -84,11 +84,29 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `state`: open
 - `missing`: close remaining numeric authoring shapes, computation wrappers, repeated and group aggregates, temporal or aggregate overloads, concrete ingestion and rendering, and partial or repeatable integration through the shared owners.
 - `baseline`: [§5](IMPLEMENTATION-MAP.md#5--numbers-and-decimals) owns scalar and addressed numeric execution. The bounded group capabilities start at [shared admission](IMPLEMENTATION-MAP.md#cap-shared-entity-list-group-admission).
-- `remaining`: deeper nested calls; aggregate-valued operands; and power beyond the bounded field-or-literal child now admitted inside addressed extrema, including nested or grouped addressed power.
+- `remaining`: deeper nested calls; aggregate-valued operands; and power beyond the bounded field-or-literal child now admitted inside addressed extrema, including grouped addressed power.
+- `remaining`: bounded field-or-literal division and power inside one-level nested extrema are isolated at the [nested-extremum domain-operation gap](#gap-sg5-nested-extremum-domain-operations).
 - `remaining`: host wire ingestion, remaining group or addressed expression placements, third-level external correlation, and external calibration of operand shapes beyond direct Number copy.
 - `discriminator`: keep authored literal scale, derived scale, warning suppression, source scope, target scope, and operator-local poison timing independent.
 - `consumer`: Execute and Transform require exact tree shape, rounding stages, target policy, and unsafe-reassociation boundaries.
 - `forbidden`: do not introduce a general recursive expression tree until two completed semantic users require the same representation.
+
+<a id="gap-sg5-nested-extremum-domain-operations"></a>
+#### Nested-extremum division and power leaves
+
+- `state`: open
+- `missing`: admit one division or power node over two field-or-immediate-literal operands as a bounded leaf of the existing one-level nested `Min`/`Max` call without flattening either call boundary or erasing arithmetic domain failure.
+- `baseline`: [numeric wrappers and extrema](IMPLEMENTATION-MAP.md#cap-numeric-wrappers-and-extrema) owns outer division/power and the nonrecursive nested direct/local-wrapper/arithmetic/literal leaf.
+- `evidence-needed`: exact combined addressed admission and runtime remain external evidence pending; internal execution follows the canonical [complete-number-like-operand](../spec/04-numbers-and-decimals.md#4-other-numeric-constraints) and [domain-failure](../spec/04-numbers-and-decimals.md#3-arithmetic-domain-failures-are-consumer-sensitive) clauses.
+- `discriminator`: preserve division's unknown scale and suppression requirement, power's exponent-scale gate and nonexpandable summary, domain failure, inner operand order, nested selector and leaf order, and outer selector and operand order independently.
+- `consumer`: Execute and Analyze must distinguish nested division from power and retain their exact ordered operands, target-scale decision, and domain result; Transform remains identity-only.
+- `forbidden`: do not admit a wider child grammar, aggregate, another extremum, grouped power, or recursive expression through this route.
+- `route-state`: verified
+- `red-locus`: [`AddressedNumberExtremumArithmetic.lean`](../A12Kernel/Conformance/AddressedNumberExtremumArithmetic.lean) owns the missing constructors plus suppression, exponent, domain, and order separators.
+- `green-locus`: [`AddressedNumberExtremum.lean`](../A12Kernel/Elaboration/AddressedNumberExtremum.lean) owns the bounded nested leaves, shared child/power checking, scale, sources, and evaluation.
+- `supporting-locus`: [`AddressedNumberExtremum.lean`](../A12Kernel/Proofs/AddressedNumberExtremum.lean) owns source certification plus scale/evaluation specialization.
+- `supporting-locus`: [`AddressedNumericOperationConsumer.lean`](../A12Kernel/Elaboration/AddressedNumericOperationConsumer.lean) owns exact nested division/power identity.
+- `route-limit`: one nonrecursive division or power child over the already checked field-or-literal pair; no wider nesting or operation family.
 
 <a id="gap-sg5-unstarred-repeatable-group-presence-reference"></a>
 #### Unstarred repeatable group-presence reference
