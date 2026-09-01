@@ -186,10 +186,11 @@ def resolvedComputationAggregateSide
 
 /-- Resolve one validation aggregate slot from the immutable checked document. Validation filters evaluate every candidate before the first target classification; target reads then stop at the first formal cause.
 
-    A plain **star** and a **group** operand each narrow to their declared-capacity extent, for the
-    same measured reason: a row beyond its group's declared repeatability is not in the domain the
-    operand denotes, so its cell is neither aggregated nor able to make the aggregate unavailable. A
-    field and a filtered star keep the complete formal-cell view.
+    A plain or filtered **star** and a **group** operand each narrow to their declared-capacity extent:
+    a row beyond its group's declared repeatability is not in the domain the operand denotes, so its
+    selected value cell is neither aggregated nor able to make the aggregate unavailable. A direct
+    field keeps the complete formal-cell view. The filtered Number branch is an internally selected
+    operand-domain account with external evidence pending; it establishes no filter/capacity order.
 
     One resolver serves every validation aggregate consumer — `Sum`, the extrema, the distinct count,
     and the value count. `Sum` and the group form were measured first, and the remaining consumers
@@ -212,9 +213,9 @@ def resolvedCheckedDocumentValidationAggregateSide
   do
     let resolved ← checked.resolveCheckedValidationOperand document outer
     let side := match checked with
-      | .star _ | .group _ => resolved.inCapacityValueListSideAt .validation
-      | .field _ | .starHaving _ =>
-          resolved.valueListSideAt .validation
+      | .star _ | .starHaving _ | .group _ =>
+          resolved.inCapacityValueListSideAt .validation
+      | .field _ => resolved.valueListSideAt .validation
     match side.available with
     | .error cause => pure (.inr (.unknown cause))
     | .ok () => pure (.inl side)

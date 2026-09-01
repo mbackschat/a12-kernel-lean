@@ -246,6 +246,51 @@ def checkedDocumentValueCountSnapshot
     | .ok operand => .result operand
     | .error cause => .error cause)
 
+def aggregateCapacityHaving : SurfaceCorrelatedHaving :=
+  let group : SurfaceGroupReference := .path {
+    base := .absolute
+    groups := ["Form", "Rows"] }
+  .compareRepetitions .equal
+    { origin := .inner, group }
+    { origin := .inner, group }
+
+def checkedFilteredCapacityFixture (values : List Nat) :
+    Option (CheckedNumberEntitySource model × CheckedDocument model) := do
+  let prepared ←
+    (prepareFlatStringContext aggregateWorld builtinStringPatternCompiler
+      model).toOption
+  let source ← (elaborateNumberEntitySource model ["Form"]
+    (aggregateSource
+      (.starHaving aggregateStar aggregateCapacityHaving) [])).toOption
+  let rows := values.mapIdx fun index _ =>
+    { group := 10, path := [index + 1] }
+  let cells := values.mapIdx fun index value => {
+    address := { field := repeated.id, path := [index + 1] }
+    stored := toString value
+    raw := .parsed (.num value) }
+  let document ←
+    (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
+  pure (source, document)
+
+def checkedFilteredCapacityAggregateSnapshot
+    (op : NumericAggregateOp) (values : List Nat) : Option NumericOperand := do
+  let (source, document) ← checkedFilteredCapacityFixture values
+  (source.evaluateCheckedDocumentValidationAggregate op document []).toOption
+
+def checkedFilteredCapacityCompleteAvailability
+    (values : List Nat) : Option Bool := do
+  let (source, document) ← checkedFilteredCapacityFixture values
+  let resolved ←
+    (source.first.resolveCheckedValidationOperand document []).toOption
+  pure (match (resolved.valueListSideAt .validation).available with
+    | .error _ => false
+    | .ok () => true)
+
+def checkedFilteredCapacityValueCountSnapshot
+    (values : List Nat) : Option NumericOperand := do
+  let (source, document) ← checkedFilteredCapacityFixture values
+  (source.evaluateCheckedDocumentValueCountValidation 7 document []).toOption
+
 structure NumberEntityConsumerSlot where
   field : FieldId
   repeated : Bool
@@ -356,6 +401,27 @@ example :
       some (.result (.value 1 .both)) ∧
     checkedDocumentValueCountSnapshot true true =
       some (.result (.value 1 .both)) := by
+  native_decide
+
+/- A structural filter does not reintroduce an over-capacity Number cell into any aggregate. The
+   shared in-capacity side fixes all four folds, while selected matches retain value-count movement. -/
+example :
+    checkedFilteredCapacityCompleteAvailability [5, 5, 5, 7] =
+        some false ∧
+      checkedFilteredCapacityAggregateSnapshot .sum [5, 5, 5, 7] =
+        some (.value 15 .both) ∧
+      checkedFilteredCapacityAggregateSnapshot .minimum [5, 5, 5, 7] =
+        some (.value 5 .both) ∧
+      checkedFilteredCapacityAggregateSnapshot .maximum [5, 5, 5, 7] =
+        some (.value 5 .both) ∧
+      checkedFilteredCapacityAggregateSnapshot .distinctCount [5, 5, 5, 7] =
+        some (.value 1 .both) ∧
+      checkedFilteredCapacityValueCountSnapshot [5, 5, 5, 7] =
+        some (.value 0 .growOnly) ∧
+      checkedFilteredCapacityValueCountSnapshot [7, 5, 5, 5] =
+        some (.value 1 .both) ∧
+      checkedFilteredCapacityValueCountSnapshot [7, 7, 5, 5] =
+        some (.value 2 .both) := by
   native_decide
 
 /- Partial checked-document evaluation preserves concrete direct relevance, wildcard star extent, and rule-level filter skip for both accumulators. -/

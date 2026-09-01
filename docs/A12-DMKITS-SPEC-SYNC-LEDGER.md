@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-02-04"></a>
+### `SPEC-2026-09-02-04` — filtered Number aggregate stars use the in-capacity value extent in full validation
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md`](../spec/07-repetition-and-iteration.md), the over-capacity evaluation-domain clause; [`04-numbers-and-decimals.md`](../spec/04-numbers-and-decimals.md), the `NumberOfValueInFields` starred-field clause
+- `delta`: the internally selected full-validation account applies the declared-capacity projection to a filtered Number star before `Sum`, `MinValue`, `MaxValue`, `NumberOfDifferentValues`, or `NumberOfValueInFields` consumes its selected value side. An over-limit selected Number contributes neither a value nor formal poison to those results; independent structural findings remain document-owned.
+- `basis`: **project-selected operand-domain consistency, not Kernel correspondence.** Plain Number stars and group operands already use the shared in-capacity projection on these consumers, while exact structurally filtered String, Boolean, and Confirm value counts use it on separately measured carriers. Those observations motivate but do not discharge this Number-carrier branch.
+- `separator`: with capacity three, the structurally filtered values `[5, 5, 5, 7]` produce `15`, `5`, `5`, `1`, and `0` for the five operators. The prior complete checked-cell view reaches the over-limit formal cell and makes every result unavailable. Moving one or two `7` values into capacity additionally fixes value-count movement at `.both` rather than the over-limit-only `.growOnly` zero.
+- `local-consequence`: `CheckedNumberEntityOperand.resolvedCheckedDocumentValidationAggregateSide` selects `inCapacityValueListSideAt` for plain and filtered stars plus group operands. Direct fields retain the complete side; filtered computation and partial-validation routes are unchanged.
+- `limit`: one Number declaration, one repetition level, capacity three, valid scale-0 values, the reflexive `CurrentRepetition` filter, and checked full validation. No Kernel observation is retained, and no claim transfers to filter/capacity order, another filter, nested stars, partial validation, checked computation, Enumeration/category, malformed selected in-capacity content, or message rendering.
+- `acceptance`: a12-dmkits aligns its language-neutral filtered Number aggregate account with the declared-capacity operand extent without upgrading it to Kernel-confirmed, or supplies a contrary separating Kernel observation.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-02-03"></a>
 ### `SPEC-2026-09-02-03` — admitted group content decides the scalar negative-presence leaf before an independent error
 

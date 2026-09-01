@@ -166,7 +166,7 @@ theorem checkedNumberEntityOperand_aggregateSide_delegates
         filteredSource.resolvedValueSide document outer filterRead starRead := by
   exact ⟨rfl, rfl, rfl⟩
 
-/-- Full-validation aggregate and value-count consumers obtain their one-operand side from the rich checked projection, then retain the established first-formal-cause terminal result. A plain star and a group operand narrow to their declared-capacity extent; a field and a filtered star keep the complete formal-cell view. -/
+/-- Full-validation aggregate and value-count consumers obtain their one-operand side from the rich checked projection, then retain the established first-formal-cause terminal result. Plain and filtered stars plus group operands narrow to their declared-capacity extent; only a direct field keeps the complete formal-cell view. -/
 theorem checkedNumberEntityOperand_checkedValidationAggregate_usesRichProjection
     (checked : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env) :
@@ -174,12 +174,28 @@ theorem checkedNumberEntityOperand_checkedValidationAggregate_usesRichProjection
       (do
         let resolved ← checked.resolveCheckedValidationOperand document outer
         let side := match checked with
-          | .star _ | .group _ => resolved.inCapacityValueListSideAt .validation
-          | .field _ | .starHaving _ =>
-              resolved.valueListSideAt .validation
+          | .star _ | .starHaving _ | .group _ =>
+              resolved.inCapacityValueListSideAt .validation
+          | .field _ => resolved.valueListSideAt .validation
         match side.available with
         | .error cause => pure (.inr (.unknown cause))
         | .ok () => pure (.inl side)) := by
+  rfl
+
+/-- A filtered Number star applies the declared-capacity projection to its selected value side before
+    every full-validation aggregate or value-count consumer classifies availability. -/
+theorem checkedNumberEntityFilteredStar_checkedValidationAggregate_usesCapacityProjection
+    (source : CheckedStarNumberHavingSource model)
+    (document : CheckedDocument model) (outer : Env) :
+    (CheckedNumberEntityOperand.starHaving source).resolvedCheckedDocumentValidationAggregateSide
+        document outer = (do
+      let resolved ←
+        (CheckedNumberEntityOperand.starHaving source).resolveCheckedValidationOperand
+          document outer
+      let side := resolved.inCapacityValueListSideAt .validation
+      match side.available with
+      | .error cause => pure (.inr (.unknown cause))
+      | .ok () => pure (.inl side)) := by
   rfl
 
 /-- A checked Number group computation uses the same operand-bounded rich projection as validation,
