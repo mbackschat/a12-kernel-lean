@@ -131,7 +131,7 @@ These stable names help when a query crosses numbered clauses. Their capability 
 <a id="cap-normalized-messagepointer"></a>
 #### Normalized `MessagePointer`
 
-- `owner-and-boundary`: [`MessagePointer.lean`](../../A12Kernel/Semantics/MessagePointer.lean) owns resolved field identity plus concrete/wildcard/unknown repetition coordinates. Four completed consumers: validation, computation, registered custom-field, and reached custom-condition error channels. Exact `CellAddr` embeds losslessly but remains a separate type, so wildcard and unknown never project as exact cells.
+- `owner-and-boundary`: [`MessagePointer.lean`](../../A12Kernel/Semantics/MessagePointer.lean) owns resolved field identity plus concrete/wildcard/unknown repetition coordinates. Four completed consumers: validation, computation, registered custom-field, and reached custom-condition error channels. Exact `CellAddr` embeds losslessly but remains a separate type; a bound pointer recovers it, while every successfully reopened pointer contains a wildcard and provably cannot. This exact-versus-partial shape is the measured address-kind distinction, and deliberately does not retain whether an authored star or group expansion produced it.
 
 
 ### SG5 group-operand capabilities
