@@ -6,7 +6,7 @@ This vocabulary is therefore part of the semantic account rather than an error-m
 
 Distinguish this from `A12Kernel.Reference.Support.DiagnosticCode`, which is the public reference process's own transport-level rejection surface (bad JSON, unsupported version, resource limit). That vocabulary describes *this project's* protocol boundary; this one describes the *Kernel's* model check.
 
-Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, and the whole-rule error-field reference gate. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
+Scope: the codes below cover the established field-list operand-admission including the shared entity list's group-scope slot, DateRange full-year/yearless mismatch, the plural String-literal value list's Date-group refusal, the bounded `FirstFilledValue` Confirm refusal, Boolean/Confirm constant computation target admission, and the Number aggregates' op-keyed expansion-kind classes, fixed filled-group computation-admission, computed Number, ordinary String, and ordinary Enumeration target admission, including the bounded Enumeration category-target distinction, computed-Date partial-target, String pattern-comparison, raw-String length-admission, date-extraction source admission, group-list quantifier admission, one syntax-sensitive iteration-condition class, `RepetitionNotUnique` key admission, and the whole-rule error-field reference gate. Coverage, per-mapping evidence status, and remaining families belong to [`IMPLEMENTATION-MAP.md`](../../docs/IMPLEMENTATION-MAP.md); [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md) owns the open axis.
 -/
 
 namespace A12Kernel
@@ -90,6 +90,8 @@ inductive KernelStaticDiagnostic where
   | dateWithAndWithoutYear
   /-- Two temporal operands of a direct comparison disagree on year presence, or on whether they carry a date at all, with no Base Year to supply the missing year. -/
   | invalidCompareToDate
+  /-- A measured date extractor received an authorable non-temporal field declaration. The established denominator is exact per carrier and excludes `UNKNOWN`, which has no authorable counterpart. -/
+  | noDate
   /-- A date-component extractor was applied to a source whose declared format does not expose that component. Quarter counts as the month, so the four extractors gate on three components. -/
   | wrongDateFormatForOp
   /-- Two stored DateRange operands of an equality expose different date-component sets. Lexical spelling does not enter it, so both spellings of one component set cross freely and the refusal is symmetric in the authored order and identical for `==` and `!=`. -/
@@ -152,6 +154,7 @@ def kernelCode : KernelStaticDiagnostic → String
       "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON"
   | .dateWithAndWithoutYear => "MVK_DATE_WITH_AND_WITHOUT_YEAR"
   | .invalidCompareToDate => "MVK_INVALID_COMPARE_TO_DATE"
+  | .noDate => "MVK_NO_DATE"
   | .wrongDateFormatForOp => "MVK_WRONG_DATE_FORMAT_FOR_OP"
   | .invalidCompareToDateRange => "MVK_INVALID_COMPARE_TO_DATE_RANGE"
   | .invalidDateRangeFormat => "MVK_INVALID_DATE_RANGE_FORMAT"
@@ -178,7 +181,7 @@ def all : List KernelStaticDiagnostic :=
     .errorSemanticIndexOrCategoryForErrorField, .invalidDateType, .noDateRange,
     .invalidParameterForDateRangeComparison, .dateWithAndWithoutYear,
     .invalidDateRangeFormat, .invalidCompareToDateRange, .wrongDateFormatForOp,
-    .invalidCompareToDate, .semanticIndexContainedInIndex,
+    .invalidCompareToDate, .noDate, .semanticIndexContainedInIndex,
     .indexForErrorTextInvalid]
 
 end KernelStaticDiagnostic

@@ -21,6 +21,20 @@ private def resolveTemporalNumericField (model : FlatModel) (rowGroup : GroupPat
       else throw (.incompatibleTemporalSource declaration.path)
   | none => throw (.incompatibleTemporalSource declaration.path)
 
+/-- Scalar and addressed validation resolve declarations under different locus rules but share the same extractor gate and diagnostic split, so the common certification begins only after resolution. -/
+private def checkTemporalNumericPartField (model : FlatModel)
+    (declaration : FlatFieldDecl) (part : TemporalNumericPart) :
+    Except NumericValidationElabError FlatTemporalField :=
+  match declaration.toTemporalField? with
+  | some field =>
+      if part.admittedBy field model.hasBaseYear then
+        pure field
+      else
+        throw (.temporalFieldPartNotExposed declaration.path part
+          field.kind field.components)
+  | none =>
+      throw (.temporalFieldPartSourceNotTemporal declaration.path part)
+
 private def resolveDateDifferenceOperandWith
     (model : FlatModel)
     (resolveField : SurfaceFieldPath →
@@ -83,8 +97,11 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
       | some year => pure (.baseYearDatePart year source part)
       | none => throw .baseYearNotDeclared
   | .temporalFieldPart reference part => do
-      let field ← resolveTemporalNumericField model rowGroup reference
-        (fun source => part.admittedBy source model.hasBaseYear)
+      let declaration ←
+        (model.resolveField rowGroup reference).mapError .resolve
+      if declaration.groupPath != rowGroup then
+        throw (.fieldOutsideRowGroup declaration.path rowGroup)
+      let field ← checkTemporalNumericPartField model declaration part
       pure (.temporalFieldPart field part)
   | .dateRangeBoundPart reference bound part => do
       let declaration ←
@@ -217,13 +234,8 @@ private def resolveAddressedNumericAtom (model : FlatModel)
   | .temporalFieldPart reference part => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup reference
-      match declaration.toTemporalField? with
-      | some field =>
-          if part.admittedBy field model.hasBaseYear then
-            pure (.temporalFieldPart field part)
-          else
-            throw (.incompatibleTemporalSource declaration.path)
-      | none => throw (.incompatibleTemporalSource declaration.path)
+      let field ← checkTemporalNumericPartField model declaration part
+      pure (.temporalFieldPart field part)
   | .dateRangeBoundPart reference bound part => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup reference

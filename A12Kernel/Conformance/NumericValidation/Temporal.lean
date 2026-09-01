@@ -7,6 +7,20 @@ namespace A12Kernel.Conformance.NumericValidation.Temporal
 open A12Kernel
 open A12Kernel.Conformance.NumericValidation.Support
 
+private def fullDateField : FlatFieldDecl := {
+  id := 24
+  groupPath := ["Order"]
+  name := "Date"
+  policy := { kind := .temporal .date TemporalComponents.fullDate } }
+
+private def dateCarrierModel : FlatModel :=
+  { model with fields := fullDateField :: model.fields }
+
+private def temporalPartDiagnostic? (surface : SurfaceNumericComparison)
+    (sourceModel : FlatModel := model) : Option KernelStaticDiagnostic :=
+  (errorOf surface sourceModel).bind
+    NumericValidationElabError.temporalFieldPartDiagnostic?
+
 /- Direct temporal component functions enter the same checked scale-0 numeric tree. DateTime supplies either half, while empty remains the symmetric numeric zero. -/
 example :
     verdictOf (comparison .equal (dateFieldPart "DateTime" .day) 25)
@@ -19,16 +33,31 @@ example :
         (temporalRaw 8 .empty) = some (.fired .omission) := by
   native_decide
 
-/- Component presence, family compatibility, and the Base-Year year supplement are checked before runtime reads. -/
+/- Component presence, family compatibility, and the Base-Year year supplement are checked before runtime reads. The exact diagnostic projection distinguishes the measured non-temporal `YearFromDate` carrier and full-Date `HoursFromTime` control while leaving adjacent unmeasured pairs unmapped. -/
 example :
     errorOf (comparison .equal (dateFieldPart "Time" .day) 1) =
-        some (.incompatibleTemporalSource ["Order", "Time"]) ∧
+        some (.temporalFieldPartNotExposed ["Order", "Time"] (.date .day)
+          .time timeComponents) ∧
       errorOf (comparison .equal (timeFieldPart "NoYear" .hour) 1) =
-        some (.incompatibleTemporalSource ["Order", "NoYear"]) ∧
+        some (.temporalFieldPartNotExposed ["Order", "NoYear"] (.time .hour)
+          .date monthDayComponents) ∧
       errorOf (comparison .equal (dateFieldPart "NoYear" .year) 2024) =
-        some (.incompatibleTemporalSource ["Order", "NoYear"]) ∧
+        some (.temporalFieldPartNotExposed ["Order", "NoYear"] (.date .year)
+          .date monthDayComponents) ∧
       errorOf (comparison .equal (dateFieldPart "NoYear" .year) 2024)
-        baseYearModel = none := by
+        baseYearModel = none ∧
+      temporalPartDiagnostic?
+        (comparison .equal (dateFieldPart "Code" .year) 2024) =
+          some .noDate ∧
+      temporalPartDiagnostic?
+        (comparison .equal (timeFieldPart "Date" .hour) 1)
+        dateCarrierModel = some .wrongDateFormatForOp ∧
+      temporalPartDiagnostic?
+        (comparison .equal (timeFieldPart "NoYear" .hour) 1) = none ∧
+      temporalPartDiagnostic?
+        (comparison .equal (dateFieldPart "Time" .day) 1) = none ∧
+      temporalPartDiagnostic?
+        (comparison .equal (dateFieldPart "Code" .day) 1) = none := by
   native_decide
 
 /- Direct temporal components admit both numeric operation-form wrappers. Rounding preserves symmetric missingness, while `Abs` makes missing zero unable to shrink. -/

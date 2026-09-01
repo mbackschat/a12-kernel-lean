@@ -111,6 +111,13 @@ inductive NumericValidationElabError where
   | fieldValueAsNumberEnumeration (path : List String)
       (error : EnumerationOperandError)
   | incompatibleTemporalSource (path : List String)
+  /-- A direct temporal-component extractor received a non-temporal declaration. The requested part remains explicit because only measured extractor carriers may project a Kernel class. -/
+  | temporalFieldPartSourceNotTemporal (path : List String)
+      (part : TemporalNumericPart)
+  /-- A temporal declaration does not expose a direct extractor's requested component. Kind and components preserve the exact measured carrier/control rather than widening the diagnostic to adjacent formats. -/
+  | temporalFieldPartNotExposed (path : List String)
+      (part : TemporalNumericPart) (kind : TemporalKind)
+      (components : TemporalComponents)
   | incompatibleDateDifference
   | unsupportedCalendarProfile (zoneId : String)
   | baseYearNotDeclared
@@ -151,6 +158,17 @@ reports differently. -/
 def dateRangeBoundPartDiagnostic? :
     NumericValidationElabError → Option KernelStaticDiagnostic
   | .dateRangeBoundPartNotExposed _ _ => some .wrongDateFormatForOp
+  | _ => none
+
+/-- Project only the exact reviewed direct-extractor diagnostic controls. The flat declaration universe's non-temporal branch is the seven authorable kinds measured for `YearFromDate`; `UNKNOWN` has no constructor here. The format projection is deliberately narrower: only full-Date `HoursFromTime` is measured, so adjacent extractors and partial Date declarations remain unmapped. -/
+def temporalFieldPartDiagnostic? :
+    NumericValidationElabError → Option KernelStaticDiagnostic
+  | .temporalFieldPartSourceNotTemporal _ (.date .year) => some .noDate
+  | .temporalFieldPartNotExposed _ (.time .hour) .date components =>
+      if components == TemporalComponents.fullDate then
+        some .wrongDateFormatForOp
+      else
+        none
   | _ => none
 
 end NumericValidationElabError
