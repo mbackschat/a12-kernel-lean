@@ -186,7 +186,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `missing`: bilingual parser and renderer paths, lexical and dot syntax, semantic indices, globals, nested or multiple stars, wider RNU `@From`, and remaining diagnostics must resolve through one checked namespace.
 - `baseline`: [§10](IMPLEMENTATION-MAP.md#10--paths-and-references) owns implemented paths. The [cross-clause diagnostic owner](IMPLEMENTATION-MAP.md#cross-clause-implementation-notes) owns exact projections and explicit unmapped refusals.
 - `remaining`: nested or different repeatable scopes, parallel RNU mapping, other group-list or count shapes and arities, parser-level `SumOfProducts` star and `Having` refusals with exact diagnostic projection, other assembly refusals, executable newly admitted conditions, and embedding the checked correlated direct-field source in the complete nested-`Having` grammar and runtime.
-- `remaining`: reviewed PR2 evidence closes three semantic-index surface cells without making their Lean authoring routes exist: indexed fields/groups are admitted only on the measured entity-list carriers; `NumberOfFilledGroups` and `RepetitionNotUnique` retain their semantic-index refusals; and `RuleGroup For "key"` selects an indexed containing group. The current checked semantic-index core begins after selection, the field-entity surface has no indexed operand, and `RuleGroup` carries no suffix.
+- `remaining`: reviewed PR2 evidence closes two semantic-index surface cells without making their Lean authoring routes exist: indexed fields/groups are admitted only on the measured entity-list carriers, while `NumberOfFilledGroups` and `RepetitionNotUnique` retain their semantic-index refusals. The current checked semantic-index core begins after selection and the field-entity surface has no indexed operand.
 - `remaining`: fixed nonrepeatable descendants and wider comparison, computation, partial-validation, arithmetic-wrapper, and parser forms of `CurrentRepetition`.
 - `remaining`: computation has no semantic-index source that can represent direct reads of a computed field or naming it as an index key.
 - `remaining`: an empty **nonrepeatable** group is kernel-valid ([checkpoint](SOURCES.md#src-empty-declared-group)) and `FlatModel` cannot express one, because it represents a group only through its fields or its own repeatable declaration. The message group position's root gate is the one that would diverge if the input could be built, reporting its undeclared-root class where the Kernel reports the ordinary group class. Lifting it means giving groups their own declaration list, a core-type change needing owner approval, so no local work proceeds on that route. Select it only when a named consumer needs an empty group represented; an importer or refactoring round-trip is the likeliest first.
@@ -198,6 +198,21 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `entry-gate`: complete one bounded source packet and separator matrix for the selected path or index family.
 - `completion-gate`: every legal reference resolves deterministically, every illegal form receives the correct static class, and rendering round-trips for the supported surface.
 - `route-state`: discovery-required
+
+<a id="gap-sg9-rulegroup-semantic-index"></a>
+#### Literal semantic-index selection of `RuleGroup`
+
+- `state`: open
+- `missing`: certify `RuleGroup For "key"` as selection of the rule's indexed containing group and project `MVK_NO_INDEX_FIELD` when that group declares no index.
+- `baseline`: the semantic-index owner already validates a literal key against a model-owned index declaration, while the group-reference owner separately preserves bare `RuleGroup` origin and rejects `RuleGroup*`.
+- `evidence`: the [reviewed `RuleGroup` semantic-index checkpoint](SOURCES.md#src-pr2-rulegroup-semantic-index) Kernel-locks one indexed containing-group admission, the otherwise identical unindexed refusal, and the unchanged wildcard refusal.
+- `consumer`: Analyze and Transform need the selected group, its index declaration, and the exact literal identity so a rewrite cannot ignore the suffix or reinterpret it as a positional selector.
+- `limit`: selected-row runtime presence, field-valued keys, nested indices, carrier execution, and any wildcard-plus-index combination remain outside this static certificate.
+- `route-state`: verified
+- `red-locus`: [`SemanticIndexElaboration.lean`](../A12Kernel/Conformance/SemanticIndexElaboration.lean) owns checked semantic-index source and diagnostic separators.
+- `green-locus`: [`SemanticIndex.lean`](../A12Kernel/Elaboration/SemanticIndex.lean) owns model/index/key validation and checked selection certificates.
+- `supporting-locus`: [`SingleGroupElaboration.lean`](../A12Kernel/Proofs/SingleGroupElaboration.lean) owns the unchanged `RuleGroup*` refusal law.
+- `supporting-locus`: [`StaticDiagnostic.lean`](../A12Kernel/Elaboration/StaticDiagnostic.lean) owns exact Kernel diagnostic identities.
 
 ### SG10 — message construction and formal-output integration
 
