@@ -492,3 +492,39 @@ These are reviewed inbound corrections already committed in a12-dmkits; they upd
 - `corroboration`: two of comparability's three cells are visible in this project's own retained [multiplicity artifact](over-repetition-probes.md#src-over-limit-finding-multiplicity) without a new run, which is why the Lean cases can lock them here rather than cite the peer. Its probe model's computations name `/Probe/ShellDeep`, `/Probe/ShellDeep/Mid*`, and `/Probe/ShellOne` and **none names `/Probe/Tri`**; its two-independent document holds an over-limit row under each and reports eight validation findings against four operand errors, all four under the named one. The **upward** cell has no witness in those bytes and stays the peer's.
 - `reach`: **the peer's handback names where this project's claims now sit in text this project cannot watch**, which is the blast radius of any later retraction here. Its `KF58` cites this project's empty-domain retraction as the reason its own claim covers the whole aggregate family rather than `Sum`; its `KF188` cites [`LF114`](../LEAN-FINDINGS.md) as the reason its group-operand extent is measured on a two-field group; and two of its differential tests name this project's ledger entries and both retractions as row provenance. Its report states that no schema description, help text, or public API documentation carries a clause of this project's from that batch. Recorded because a retraction here now has a known set of downstream surfaces rather than an unknown one — the retraction this project issued today had already reached the peer before it was withdrawn.
 - `sync`: **inbound and already reviewed upstream, so it opens no outbound entry.** It updates the disposition of the existing [`SPEC-2026-08-31-11`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-08-31-11) in place.
+
+### Reviewed PR #2 static-semantics correction batch, inbound 2026-09-01
+
+The reviewed a12-dmkits integration revision is `b9e7fbdc6b4806e15945bf7f993c04724a83437c`, integrating reviewed PR head `0566dc9086eeb26dc95a564cc07bffb0ae941941` against base `0e8221a6319ee4d949b92c4a14aa4668f13c8fdb`. Each record below was read from that exact integration revision. These are inbound corrections already committed and reviewed in a12-dmkits, so they update canonical clauses and provenance without creating an outbound ledger entry.
+
+<a id="src-pr2-correlated-operand-identity"></a>
+#### Correlated direct-operand identity inside `Having`
+
+- `route`: [`AggregateSlotLawsTest`](../../../a12-rulekit/src/test/java/io/github/mbackschat/a12/dm/rulekit/validate/laws/AggregateSlotLawsTest.java), methods `theOuterCorrelationSplitsAnOperandsIdentityInsideAFilter` and `theUnmarkedPairInTheSameFilterIsStillADuplicate`, reaches the real Kernel; [`AggregateCorrelatedOperandTest`](../../../a12-rulekit/src/test/java/io/github/mbackschat/a12/dm/rulekit/dsl/operators/AggregateCorrelatedOperandTest.java) is the typed clean-room lock.
+- `claim`: inside `Having`, the authored direct pair `($P, P)` is admitted under `Sum`, `NumberOfFilledFields`, and `NumberOfDifferentValues`, while `(P, P)` reports `MVK_DUPLICATE_PARAM1`. The `$` marker therefore participates in exact operand identity and is not erased before this duplicate decision.
+- `limit`: only `$P, P` in that authored order is Kernel-locked by this integration. The reverse order and `($P, $P)` have typed-surface coverage but no Kernel observation here, so the canonical clause does not state their verdict.
+- `consequence`: [`spec/07`](../../spec/07-repetition-and-iteration.md) now preserves correlation in the direct-operand identity clause. No runtime aggregation or filter-order claim follows from this static row.
+
+<a id="src-pr2-distinct-count-kind-families"></a>
+#### `NumberOfDifferentValues` Custom and DateFragment families
+
+- `route`: [`NumberOfDifferentValuesKindLawsTest`](../../../a12-rulekit/src/test/java/io/github/mbackschat/a12/dm/rulekit/validate/laws/NumberOfDifferentValuesKindLawsTest.java) reaches the real Kernel through the maintained model checker route.
+- `claim`: Custom pairs with Custom, String, and stored Enumeration; Custom beside Number reports `MVK_STRING_ENUM_AND_NON_STRING_ENUM`. Two DateFragment operands with the same component set are admitted; DateFragment beside text reports `MVK_DATE_AND_NONDATE`, and two fragments with differing component sets report `MVK_DATEFORMATS_NOT_COMPATIBLE`. These rows place Custom in the existing textual class and DateFragment in the existing date-like class rather than creating new classes.
+- `limit`: the rows settle static family admission and the named refusal classes. They do not measure Custom value identity, DateFragment runtime aggregation, or any operator other than `NumberOfDifferentValues`.
+- `consequence`: [`spec/07`](../../spec/07-repetition-and-iteration.md) adds the two kinds to the existing families and leaves runtime identity outside the measured boundary.
+
+<a id="src-pr2-semantic-index-carrier-matrix"></a>
+#### Semantic-index entity-slot carrier matrix
+
+- `route`: [`SemanticIndexSlotLawsTest`](../../../a12-rulekit/src/test/java/io/github/mbackschat/a12/dm/rulekit/validate/laws/SemanticIndexSlotLawsTest.java), especially `numberOfFilledFieldsAcceptsASemanticIndex`, `anIndexSelectedGroupIsAdmittedInTheCommonEntityList`, and `theSameGroupOperandUnindexedIsRefused`, reaches the real Kernel and retains the negative controls in the same file.
+- `claim`: `NumberOfFilledFields` admits index-selected field operands. The common entity list admits an index-selected group under `AllFieldsFilled` and `NoFieldFilled`; the same repeatable group without an index or star reports `MVK_NO_WILDCARD`. `NumberOfFilledGroups` and `RepetitionNotUnique` report `MVK_SEMANTIC_INDEX_NOT_ALLOWED`, and an index below a star reports `MVK_SEMANTIC_INDEX_AND_WILDCARD`.
+- `limit`: this is an exact carrier matrix, not a general semantic-index admission rule. The file also measures indexed group refusals in two correlated `FirstFilledValue` filter shapes, but those rows are not promoted into the canonical matrix because the handoff did not request a broader correlated-group clause.
+- `consequence`: [`spec/07`](../../spec/07-repetition-and-iteration.md) owns the operator slots and cross-links [`spec/08`](../../spec/08-paths-and-references.md)'s established row-selection semantics.
+
+<a id="src-pr2-rulegroup-semantic-index"></a>
+#### `RuleGroup` literal semantic-index suffix
+
+- `route`: [`DirectiveLawsTest`](../../../a12-rulekit/src/test/java/io/github/mbackschat/a12/dm/rulekit/validate/laws/DirectiveLawsTest.java), method `aSemanticIndexSuffixSelectsTheRulesContainingGroup`, reaches the real Kernel; [`RuleGroupEntitySuffixParseTest`](../../../a12-rulekit/interpreter/src/commonTest/kotlin/io/github/mbackschat/a12/dm/interpreter/RuleGroupEntitySuffixParseTest.kt) locks retention and binding of the suffix in the clean-room parser.
+- `claim`: `GroupFilled(RuleGroup For "SKU-1")` is admitted when the rule's containing `/Order/Items` group declares `Sku` as its index field. The identical suffix on unindexed `/Order` reaches ordinary semantic-index validation and reports `MVK_NO_INDEX_FIELD`; `RuleGroup*` remains invalid.
+- `limit`: the rows establish static selection through the existing semantic-index mechanism. They do not measure selected-row runtime presence, field-valued keys, nested index levels, or any new positional selector.
+- `consequence`: [`spec/08`](../../spec/08-paths-and-references.md) now records the suffix on `RuleGroup` and cross-links the containing-group and semantic-index clauses.

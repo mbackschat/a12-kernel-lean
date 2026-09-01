@@ -9,7 +9,7 @@ Path resolution reads a cell *relative to the current repetition context* ([`01-
 ## 1. Absolute, relative, and short-name references
 
 - **Keyword-named fields must be quoted.** A field or group named like a keyword (`And`, `Date`, `Today`, …) is single-quoted in a path: `FieldFilled(Order/'Date')`.
-- **`RuleGroup`** references the rule's own containing group as an entity: `GroupFilled(RuleGroup)` validates and **counts as referencing the error field** ([§9](07-repetition-and-iteration.md)); a `*` on it is rejected.
+- **`RuleGroup`** references the rule's own containing group as an entity: `GroupFilled(RuleGroup)` validates and **counts as referencing the error field** ([§9](07-repetition-and-iteration.md)). When that group declares an index field, `RuleGroup For "key"` uses the ordinary semantic-index suffix: `GroupFilled(RuleGroup For "SKU-1")` is admitted for an indexed `/Order/Items` rule group, while the same suffix on unindexed `/Order` reports `MVK_NO_INDEX_FIELD`. `RuleGroup*` remains rejected.
 - Paths are **absolute** (`/Order/Quantity`) or **relative** (`../Other`). Relative paths within a rule's group are shorter and survive the group being moved.
 - **The one combination that *requires* absolute:** the `*` may not be attached to a relative `..` step (`MVK_INVALID_WILDCARD_REL`). A named segment reached after walking upward may still be starred, so `../Items*/Count` is legal; `..*/Budget`, which tries to reopen the ancestor step itself, must instead use an absolute path such as `/Project/Milestones*/Budget`.
 - A field may be referenced by a **bare short name** (`[Quantity]`). Direct lookup under the declaring group is always attempted; the model-wide fallback requires `fieldRefByShortNameAllowed`, whose kernel default is off.
@@ -55,6 +55,8 @@ The language has **no positional row addressing** — no `[Field At n]`, no neig
 
 The semantic index is **unsupported** in several combinations: multiple repetition layers, several index fields, under an asterisk, and with certain predicates. One of those combinations has its own class: a **field-valued key read from inside the indexed group itself** is refused `MVK_SEMANTIC_INDEX_CONTAINED_IN_INDEX`, so a rule iterating that group cannot key the lookup by its current row's own field. The same lookup keyed by a field outside the group, or by a literal, is admitted from that iterating locus.
 
+Admission after selection is operator-specific. An indexed field is admitted by `NumberOfFilledFields`; an indexed group is admitted by `AllFieldsFilled` and `NoFieldFilled`, while the corresponding unindexed repeatable group reports `MVK_NO_WILDCARD`. `NumberOfFilledGroups` and `RepetitionNotUnique` instead refuse semantic-index operands with `MVK_SEMANTIC_INDEX_NOT_ALLOWED`, and an index below `*` reports `MVK_SEMANTIC_INDEX_AND_WILDCARD`. `RuleGroup For "key"` uses this same selector for the containing group rather than introducing another addressing mechanism. No admission verdict transfers to an operator absent from this measured matrix; [§9](07-repetition-and-iteration.md) owns the group/entity-list carrier clauses.
+
 Index-key identity belongs to the declared index field. For a **Number** index field, both each admitted stored key and the requested literal or field-valued key are normalized numerically before lookup, so decimal spellings such as `5` and `5.00` select the same row. This lookup normalization does not widen literal authoring: a `For` literal is first format-checked against the index field's declaration during code generation and is rejected with `MVK_INDEX_VALUE_INVALID` when it does not fit. Thus a field with `minFractionalDigits = 2` rejects `For "250"` even though an admitted `For "250.00"` and stored numeric `250` would normalize to the same lookup key. For every non-Number index field, lookup uses exact internally stored text instead; a String key that visibly resembles a Number is not numerically normalized. Empty and formally invalid index keys do not become selectable entries, and duplicate participants are unavailable rather than resolved by row order — measured as **UNKNOWN** rather than empty, separated by a presence operand that fires on a no-match and stays silent on a duplicate, with the index reporting `uniqueIndex` on each participating index cell. A formally invalid *matched* cell reads UNKNOWN the same way, reporting only its own class.
 
 ### 4.1 What a semantic-index read yields
@@ -75,7 +77,7 @@ Index-key identity belongs to the declared index field. For a **Number** index f
 
 ## Checklist for §10
 
-- [ ] Keyword-named segments quoted; `RuleGroup` = the rule's group and counts as an error-field reference; no `*` on it.
+- [ ] Keyword-named segments quoted; `RuleGroup` = the rule's group and counts as an error-field reference; its ordinary semantic-index suffix requires an index field, and no `*` is allowed on it.
 - [ ] A star on a `..` step is rejected (`MVK_INVALID_WILDCARD_REL`) — force absolute for that ancestor repetition; a later named segment after `../` may be starred.
 - [ ] Bare-name resolution: declaring group → flag-gated model-wide unique field lookup (distinct not-unique error, never a silent pick), with no implicit ancestor walk; `..Name` name is a validation label only.
 - [ ] `*` flatten requires every lower repeatable level to also `*`.

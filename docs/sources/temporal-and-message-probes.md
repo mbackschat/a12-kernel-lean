@@ -518,6 +518,15 @@
 - `local-shape-evidence`: the separate [direct-list checkpoint](../SOURCES.md#src-date-range-direct-first-filled) retains local Kernel packets for dotted/dash exact and the four slash-fragment profiles; this evidence does not widen the peer differential's denominator or either constructor-target claim.
 - `sync`: all six returned ledger entries are accepted at this revision. The declaration, interpretation, operand-grid, loader, and computation-admission facts are inbound from an already committed and reviewed a12-dmkits revision, so they create no new outbound ledger entry.
 
+<a id="src-pr2-date-extraction-diagnostics"></a>
+#### Date-extraction diagnostic matrix, reviewed inbound 2026-09-01
+
+- `revision`: a12-dmkits reviewed integration `b9e7fbdc6b4806e15945bf7f993c04724a83437c`, integrating reviewed PR head `0566dc9086eeb26dc95a564cc07bffb0ae941941` against base `0e8221a6319ee4d949b92c4a14aa4668f13c8fdb`.
+- `route`: [`DateExtractionLawsTest`](../../../a12-rulekit/src/test/java/io/github/mbackschat/a12/dm/rulekit/validate/laws/DateExtractionLawsTest.java), especially `everyRepresentableNonPointKindIsNotADateOnBothCarriers`, `aWrongTemporalKindIsAFormatRefusal`, and `splittingAPlainDateIntoItsDatePartIsAFormatRefusal`, reaches the real Kernel. [`DateExtractionOperandKindTest`](../../../a12-rulekit/src/test/java/io/github/mbackschat/a12/dm/rulekit/dsl/operators/DateExtractionOperandKindTest.java) locks the exact typed denominator and leaves UNKNOWN delegated.
+- `claim`: `YearFromDate` and `DateFromDateTime` each report `MVK_NO_DATE` for Number, String, Enumeration, Boolean, Confirm, DateRange, and Custom operands. A temporal declaration lacking the requested component instead reports `MVK_WRONG_DATE_FORMAT_FOR_OP`, measured by `HoursFromTime(Date)` and `DateFromDateTime(Date)` against admitted controls; the declared format rather than field kind supplies the temporal capability.
+- `limit`: UNKNOWN has no authorable A12 counterpart in this Kernel route. The seven-kind denominator covers only the two named public carriers and does not transfer to unmeasured extractors.
+- `consequence`: [`spec/05`](../../spec/05-dates-and-time.md) replaces the former single-class blanket statement with the measured kind-versus-format split. This inbound reviewed correction creates no outbound ledger entry.
+
 <a id="src-temporal-construction-route"></a>
 
 ### Temporal construction and calendar profiles
