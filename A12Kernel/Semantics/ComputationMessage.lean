@@ -15,7 +15,8 @@ structure ComputationFormalMessage (Payload : Type) where
   payload : Payload
   deriving Repr, DecidableEq
 
-/-- Stable kernel error code for a value-less computed Number failure. -/
+/-- Stable Kernel error code for a computed-target failure with no computed instance, measured on
+Number invalidity and a DateTime gap constant. -/
 def berechnungsWertFehler : String := "berechnungsWertFehler"
 
 /-- Exact-pointer partition of the single computation message stream. Input order is preserved in both projections. -/

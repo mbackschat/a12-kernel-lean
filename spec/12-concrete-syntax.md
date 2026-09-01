@@ -25,7 +25,7 @@ The complete bilingual spelling table is source-characterized by the kernel's [`
 | number | `123`, `-1.5`, `0.000` | decimal separator is always `.`; literals are **scale-exempt** in `==`/`!=` ([§5](04-numbers-and-decimals.md)); ≤ 15 digits |
 | date constant | `"31.12.2024"` | `DD.MM.YYYY`, day-first, always `.`; **a string literal matching this shape *is* a date** ([§6](05-dates-and-time.md)) |
 | omitted-year date | `"13.07."` | trailing dot, and it is load-bearing — `"13.07"` is not a date; completes against the model **Base Year** only where the target carries a year ([§10](09-computations.md)) |
-| date-time constant | `"05.03.2024T12:30:00"` | the date constant, a literal `T`, and the clock constant, concatenated; `"2024-03-05T12:30:00"` and the space-separated form are **not** date-times |
+| date-time constant | `"05.03.2024T12:30:00"` | the date constant, a literal `T`, and the clock constant, concatenated; `"2024-03-05T12:30:00"` and the space-separated form are **not** date-times; after this spelling classifies, static checking of a spring-forward gap can still depend on the JVM default zone ([§10](09-computations.md)) |
 | string | `"abc"` | double-quoted; a **date-shaped** content is a date, an **ISO-shaped** `"2024-12-31"` stays a string; `""` is *not* an empty-string value ([§2](03-empty-and-required.md)) |
 | boolean / confirm const | `True` / `False` | compared to Boolean/Confirm fields per [§1](02-logic-and-formal-errors.md) |
 | value list | `( "A", "B" )` / `( 1, 2, 3 )` | string list or number list, introduced by the `In` separator (see §4) |

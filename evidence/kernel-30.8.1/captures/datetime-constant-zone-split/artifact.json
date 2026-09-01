@@ -1,0 +1,114 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "b9e7fbdc6b4806e15945bf7f993c04724a83437c",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "DateTimeConstant_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "two-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Rows/Ordinary",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05T12:30:00"
+              },
+              {
+                "field" : "Probe/Rows[2]/Ordinary",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05T12:30:00"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Probe/Rows/Gap",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The calculated value is not valid for the field.",
+                "referenced" : [
+                  "Probe/Rows/Gap"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Probe/Rows[2]/Gap",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The calculated value is not valid for the field.",
+                "referenced" : [
+                  "Probe/Rows[2]/Gap"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Probe/Rows/Ordinary",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05T12:30:00"
+              },
+              {
+                "field" : "Probe/Rows[2]/Ordinary",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05T12:30:00"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Probe/Rows/Gap",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The calculated value is not valid for the field.",
+                "referenced" : [
+                  "Probe/Rows/Gap"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Probe/Rows[2]/Gap",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "The calculated value is not valid for the field.",
+                "referenced" : [
+                  "Probe/Rows[2]/Gap"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

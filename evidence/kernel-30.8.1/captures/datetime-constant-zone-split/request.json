@@ -1,0 +1,11 @@
+{
+  "model": "DateTimeConstant_DM.json",
+  "locale": "en_US",
+  "observe": ["validateFull", "compute"],
+  "rows": [
+    {
+      "name": "two-rows",
+      "document": "d2.json"
+    }
+  ]
+}

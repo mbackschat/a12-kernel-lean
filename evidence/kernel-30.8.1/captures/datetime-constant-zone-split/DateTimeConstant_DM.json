@@ -1,0 +1,100 @@
+{
+  "header" : {
+    "id" : "DateTimeConstant_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "DateTimeConstant_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Ordinary",
+                "name" : "Ordinary",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateTimeType",
+                    "DateTimeType" : {
+                      "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Gap",
+                "name" : "Gap",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateTimeType",
+                    "DateTimeType" : {
+                      "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/OrdinaryComp",
+            "name" : "OrdinaryComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/Ordinary",
+              "computationAlternatives" : [ {
+                "operation" : "\"05.03.2024T12:30:00\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "ordinary DateTime constant"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/GapComp",
+            "name" : "GapComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/Gap",
+              "computationAlternatives" : [ {
+                "operation" : "\"31.03.2024T02:30:00\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "gap DateTime constant"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-01-02"></a>
+### `SPEC-2026-09-01-02` — a DateTime constant has separate static host-zone and runtime model-zone verdicts
+
+- `status`: pending
+- `clause`: [`09-computations.md`](../spec/09-computations.md), the constant-families row; [`12-concrete-syntax.md`](../spec/12-concrete-syntax.md), the DateTime literal row
+- `delta`: correction and extension. The admitted `"05.03.2024T12:30:00"` literal stores `2024-03-05T12:30:00` per target row. A spring-forward gap does not bypass zone handling: the static model verdict depends on the JVM default zone, while runtime applies the admitted label against the model zone. Under that runtime refusal there is no computation outcome and one addressed `berechnungsWertFehler` `VALUE_ERROR` in `formalErrorsInOperands` per in-capacity target row.
+- `evidence`: the [DateTime constant zone-split checkpoint](sources/computation-placement-and-constant-probes.md#src-datetime-constant-zone-split), one structured dmtool-authored Berlin model checked under UTC and Berlin JVM defaults, and one two-row runtime request under the UTC JVM on both codegen strategies at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`.
+- `separator`: the model bytes and declared Berlin zone remain fixed. Changing only the JVM default changes the static verdict for `"31.03.2024T02:30:00"`; keeping the admitting UTC JVM and running that model yields ordinary outcomes but no gap outcomes, with two exact row-addressed residuals. A host-zone-only, model-zone-only, unconditional-store, errored-outcome, or clear account fails at least one row.
+- `local-consequence`: the repeatable DateTime constant run now has separate outcome and residual channels. Runtime resolves the wall label through the checked model profile, renders a resolvable label, and projects an unresolved one only as an addressed value finding. The unconditional-acceptance theorem and gap-store case are removed; their replacements prove each resolution branch and retain exact two-row conformance.
+- `limit`: one complete DateTime format, one ordinary label, one 2024 spring-forward gap, one declared model zone, two JVM-default-zone settings, and two instantiated rows. Not measured: overlap selection, other formats or declared kinds, unresolved over-capacity behavior, a precondition or seed, applied state, or localized generated messages. The observation fixes the two verdict dependencies, not the Kernel's internal conversion mechanism.
+- `acceptance`: a12-dmkits reproduces the fixed-model JVM-zone static discriminator and the ordinary-outcome/gap-residual runtime pair on an independently authored carrier, then records the two phases without collapsing either zone into the other; or supplies a contrary separating observation.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-01-01"></a>
 ### `SPEC-2026-09-01-01` — a Date constant reaches the target's opt-in pre-1900 policy after rendering
 

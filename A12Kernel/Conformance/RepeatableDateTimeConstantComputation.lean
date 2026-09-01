@@ -5,9 +5,8 @@ import A12Kernel.Elaboration.CheckedDocument
 
 The Kernel rows behind the placement and admission cases are the [cross-group carrier](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)
 and [literal-composition](../../docs/SOURCES.md#src-temporal-constant-literal-composition) checkpoints.
-The **stored text is not among them**: the composition checkpoint took static admission only, so the
-rendering these cases lock is this project's account of the declared format rather than an observation
-of this carrier.
+The [zone-split checkpoint](../../docs/SOURCES.md#src-datetime-constant-zone-split) additionally fixes
+the stored text and the model-zone gap refusal on this exact carrier.
 -/
 
 namespace A12Kernel.Conformance.RepeatableDateTimeConstantComputation
@@ -61,23 +60,28 @@ private def marchFifth : LocalDateTime :=
 private def gapLabel : LocalDateTime :=
   (LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by native_decide)
 
+private def run? (declaringGroup : GroupPath) (target : FieldId) (count : Nat)
+    (constant : LocalDateTime := marchFifth) :
+    Option RepeatableDateTimeConstantComputationRun :=
+  (checkRepeatableDateTimeConstantComputation model declaringGroup target
+    constant).toOption.bind fun operation =>
+      (rows count).bind fun input => (operation.execute input).toOption
+
 private def outcome? (declaringGroup : GroupPath) (target : FieldId)
     (constant : LocalDateTime := marchFifth) : Option DateTimeTargetOutcome :=
-  (checkRepeatableDateTimeConstantComputation model declaringGroup target
-    constant).toOption.map (·.outcome)
+  (run? declaringGroup target 1 constant).bind fun run =>
+    run.outcomes.head?.map fun entry => entry.outcome
 
 private def outcomes? (declaringGroup : GroupPath) (target : FieldId) (count : Nat) :
     Option (List RepeatableDateTimeConstantComputationOutcome) :=
-  (checkRepeatableDateTimeConstantComputation model declaringGroup target
-    marchFifth).toOption.bind fun operation =>
-      (rows count).bind fun input => (operation.execute input).toOption
+  (run? declaringGroup target count).map (·.outcomes)
 
 private def stored (text : String) (nonempty : text ≠ "" := by decide) : StoredDateTime :=
   { text, nonempty }
 
 /- **The literal's spelling and the target's format differ, and the target's format wins.** The Kernel
-   admits the day-first `"05.03.2024T12:30:00"` into this `yyyy-MM-dd'T'HH:mm:ss` target; what it
-   stores there is unmeasured, and this expected text is the declared format's own rendering. -/
+   admits the day-first `"05.03.2024T12:30:00"` into this `yyyy-MM-dd'T'HH:mm:ss` target and stores
+   exactly this ISO text on both codegen strategies. -/
 example : outcome? ["Probe"] stamp.id = some (.accepted (stored "2024-03-05T12:30:00")) := by
   native_decide
 
@@ -96,14 +100,40 @@ example : (outcomes? ["Probe"] stamp.id 2, outcomes? ["Probe", "Rows"] stamp.id 
      some []) := by
   native_decide
 
-/- **The separator that makes this family more than a copy of the Date one.** `gapLabel` names no
-   instant in this model's zone, which the second component states outright. A carrier that resolved
-   the constant through the zone the way `CheckedDateTimeTarget.evaluate` resolves a computed instant
-   would have nothing to render here; this one stores the label, because a constant never becomes an
-   `Instant`. -/
+/- Successful rows populate no residual channel. -/
+example : (run? ["Probe"] stamp.id 2).map (·.formalErrorsInOperands) = some [] := by
+  native_decide
+
+/- The inherited capacity branch is retained on this result shape: the first three rows store, the
+   fourth clears, and no residual is manufactured. -/
+example : (run? ["Probe"] stamp.id 4).map (fun run =>
+    (run.outcomes,
+      run.formalErrorsInOperands)) =
+    some ([
+      { targetField := { field := stamp.id, path := [1] }
+        outcome := .accepted (stored "2024-03-05T12:30:00") },
+      { targetField := { field := stamp.id, path := [2] }
+        outcome := .accepted (stored "2024-03-05T12:30:00") },
+      { targetField := { field := stamp.id, path := [3] }
+        outcome := .accepted (stored "2024-03-05T12:30:00") },
+      { targetField := { field := stamp.id, path := [4] }
+        outcome := .noValue }], []) := by
+  native_decide
+
+/- A spring-forward gap label produces no computed outcome in the model zone. -/
 example : (outcome? ["Probe"] stamp.id gapLabel,
     (ModelZone.ConcreteProfile.resolveLocal? .europeBerlin gapLabel).isSome) =
-    (some (.accepted (stored "2024-03-31T02:30:00")), false) := by
+    (none, false) := by
+  native_decide
+
+/- The failure is retained once per in-capacity target row in the API-named residual channel, even
+   though a constant has no operands. It is not a poison outcome or a clear. -/
+example : (run? ["Probe"] stamp.id 2 gapLabel).map (fun run =>
+    (run.outcomes,
+      run.formalErrorsInOperands.map fun finding =>
+        (finding.targetField, finding.errorCode))) =
+    some ([], [({ field := stamp.id, path := [1] }, berechnungsWertFehler),
+      ({ field := stamp.id, path := [2] }, berechnungsWertFehler)]) := by
   native_decide
 
 /- Placement is containment: the target's own group and every ancestor admit it, and only a group the

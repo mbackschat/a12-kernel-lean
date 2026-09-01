@@ -2,12 +2,13 @@ import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Elaboration.NumericComputation.RunResult
 import A12Kernel.Elaboration.StaticDiagnostic
+import A12Kernel.Semantics.ComputationMessage
 
 /-! # DateTime constant computation into a repeatable target
 
 The Kernel admits a bare DateTime constant into a repeatable target from the target's own group and
-from any ancestor of it, and writes it once per instantiated target row, exactly as the four sibling
-constant families do ([checkpoint](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)).
+from any ancestor of it, with execution addressed from the target's row scope exactly as for the four
+sibling constant families ([checkpoint](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)).
 
 **The literal's spelling owes nothing to the format the target renders into.** `"05.03.2024T12:30:00"`
 — the German date literal, `T`, and the clock literal concatenated — is admitted into a target whose
@@ -16,18 +17,11 @@ project's renderer admits ([checkpoint](../../docs/SOURCES.md#src-temporal-const
 Admission is static and the literal is upstream of this carrier, which takes an already-classified
 `LocalDateTime`; `spec/12` owns the lexical rule.
 
-**A constant never becomes an `Instant`, so the model zone cannot reach it.** This is the whole
-semantic content of the family and it is what separates it from the computed DateTime carriers, which
-resolve an exact instant through `ConcreteProfile.localDateTime?` and can fail when no local label
-exists. A constant arrives already a wall label: it reaches `DateTimeTargetFormat.render` directly, so
-a label inside a spring-forward gap — one `ConcreteProfile.resolveLocal?` maps to no instant at all —
-still stores. `DateTimeTargetOutcome` therefore carries no evaluation fault and no rejection branch on
-this route.
-
-The rendered text is `external evidence pending`: the composition checkpoint took static admission
-only, and no runtime row places this constant in a store. The rendering claimed here is the declared
-format's own, the same one the Date and Time siblings had measured for theirs, which is a reuse of a
-mechanism across a carrier boundary rather than an observation of this one ([`LF116`](../../docs/LEAN-FINDINGS.md)).
+The constant remains a wall label for storage, but the model zone still validates that label at
+runtime. A resolvable label renders directly in the target format. A spring-forward gap produces no
+computed outcome and one `berechnungsWertFehler` residual at each in-capacity target row. The static
+model verdict has a separate host-zone dependency upstream of this carrier
+([checkpoint](../../docs/SOURCES.md#src-datetime-constant-zone-split)).
 
 Like the Time sibling this carrier reuses `CheckedDateTimeTarget`, which requires `kind = .dateTime`.
 The measured family gate reads the declared **format string** and not the field's kind, so the carrier
@@ -56,8 +50,8 @@ def diagnostic? :
 end RepeatableDateTimeConstantComputationElabError
 
 /-- One repeatable complete-DateTime target, contained in its declaring group, and the literal wall
-label every one of its physical rows receives. There is no admission gate between the two beyond the
-target's own format, and no runtime check at all. -/
+label attempted at each in-capacity row. Target refinement owns static format admission; the model
+zone validates the already-classified label at runtime. -/
 structure CheckedRepeatableDateTimeConstantComputation (model : FlatModel) where
   private mk ::
   checkedTarget : CheckedAddressedRepeatableTarget model
@@ -67,7 +61,7 @@ structure CheckedRepeatableDateTimeConstantComputation (model : FlatModel) where
   constant : LocalDateTime
 
 /-- Check carrier-neutral repeatable placement, then refine the target to the renderable complete
-DateTime subset. No third gate follows, because the Kernel applies none to the constant. -/
+DateTime subset. Runtime model-zone validation remains in execution rather than this static gate. -/
 def checkRepeatableDateTimeConstantComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (constant : LocalDateTime) :
@@ -90,37 +84,89 @@ inductive RepeatableDateTimeConstantComputationFault where
   | targetEnvironment (cause : EnvBindingError)
   deriving Repr, DecidableEq
 
+/-- One target address whose constant label is invalid in the model zone. The public Kernel channel
+reports this as the fixed `berechnungsWertFehler` code despite the computation having no operands. -/
+structure RepeatableDateTimeConstantValueFinding where
+  targetField : CellAddr
+  deriving Repr, DecidableEq
+
+namespace RepeatableDateTimeConstantValueFinding
+
+def errorCode (_ : RepeatableDateTimeConstantValueFinding) : String :=
+  berechnungsWertFehler
+
+end RepeatableDateTimeConstantValueFinding
+
 /-- One rendered constant retained under its exact target address. -/
 structure RepeatableDateTimeConstantComputationOutcome where
   targetField : CellAddr
   outcome : DateTimeTargetOutcome
   deriving Repr, DecidableEq
 
+private inductive RepeatableDateTimeConstantComputationAttempt where
+  | outcome (value : RepeatableDateTimeConstantComputationOutcome)
+  | invalidValue (finding : RepeatableDateTimeConstantValueFinding)
+
+/-- The two public computation channels this carrier can populate. Invalid local labels have no
+computed outcome and remain in the API-named residual channel. -/
+structure RepeatableDateTimeConstantComputationRun where
+  outcomes : List RepeatableDateTimeConstantComputationOutcome
+  formalErrorsInOperands : List RepeatableDateTimeConstantValueFinding
+  deriving Repr, DecidableEq
+
 namespace CheckedRepeatableDateTimeConstantComputation
 
-/-- The one row-independent outcome. The constant is already a local label, so this bypasses the
-zone resolution `CheckedDateTimeTarget.evaluate` performs for a computed instant and can neither fail
-nor depend on the model's zone. -/
-def outcome (operation : CheckedRepeatableDateTimeConstantComputation model) :
-    DateTimeTargetOutcome :=
-  .accepted
-    (DateTimeTargetFormat.render operation.dateTimeTarget.format operation.constant)
+/-- Resolve the literal label in the model zone. A resolvable label stores in its authored local
+components; a gap has no computed outcome and is reported separately by `execute`. -/
+def outcome? (operation : CheckedRepeatableDateTimeConstantComputation model) :
+    Option DateTimeTargetOutcome :=
+  match operation.dateTimeTarget.profile.resolveLocal? operation.constant with
+  | none => none
+  | some _ =>
+      some (.accepted
+        (DateTimeTargetFormat.render operation.dateTimeTarget.format operation.constant))
 
-/-- Write the constant once per **in-capacity** target row, in document order, and only a clear at
-each over-limit row. A group with no instantiated row yields no outcome at all. -/
+/-- Attempt the constant once per **in-capacity** target row, in document order, and emit only a clear
+at each over-limit row. A group with no instantiated row yields neither outcome nor residual. -/
 def execute (operation : CheckedRepeatableDateTimeConstantComputation model)
     (input : CheckedDocument model) :
     Except RepeatableDateTimeConstantComputationFault
-      (List RepeatableDateTimeConstantComputationOutcome) :=
+      RepeatableDateTimeConstantComputationRun := do
   let field := operation.checkedTarget.targetField
   let scope := operation.checkedTarget.declaration.repeatableScope
-  let at? (outcome : DateTimeTargetOutcome) (environment : Env) :
+  let addressAt? (environment : Env) :
       Except RepeatableDateTimeConstantComputationFault
-        RepeatableDateTimeConstantComputationOutcome :=
+        CellAddr :=
     match environment.pathForScope scope with
     | .error cause => .error (.targetEnvironment cause)
-    | .ok path => .ok { targetField := { field, path }, outcome }
-  input.computationRowOutcomes scope .targetRows (at? .noValue) (at? operation.outcome)
+    | .ok path => .ok { field, path }
+  let overCapacity (environment : Env) :
+      Except RepeatableDateTimeConstantComputationFault
+        RepeatableDateTimeConstantComputationAttempt := do
+    let targetField ← addressAt? environment
+    pure (RepeatableDateTimeConstantComputationAttempt.outcome
+      { targetField, outcome := .noValue })
+  let inCapacity (environment : Env) :
+      Except RepeatableDateTimeConstantComputationFault
+        RepeatableDateTimeConstantComputationAttempt := do
+    let targetField ← addressAt? environment
+    match operation.outcome? with
+    | some outcome =>
+        pure (RepeatableDateTimeConstantComputationAttempt.outcome
+          { targetField, outcome })
+    | none =>
+        pure (RepeatableDateTimeConstantComputationAttempt.invalidValue
+          { targetField })
+  let attempts ←
+    input.computationRowOutcomes scope .targetRows overCapacity inCapacity
+  pure {
+    outcomes := attempts.filterMap fun
+      | RepeatableDateTimeConstantComputationAttempt.outcome outcome => some outcome
+      | RepeatableDateTimeConstantComputationAttempt.invalidValue _ => none
+    formalErrorsInOperands := attempts.filterMap fun
+      | RepeatableDateTimeConstantComputationAttempt.outcome _ => none
+      | RepeatableDateTimeConstantComputationAttempt.invalidValue finding => some finding
+  }
 
 end CheckedRepeatableDateTimeConstantComputation
 

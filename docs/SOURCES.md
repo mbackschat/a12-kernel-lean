@@ -527,6 +527,9 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="src-temporal-constant-literal-composition"></a>
 - [The temporal literal vocabulary composes, and the Base Year gate reads year disagreement](sources/computation-placement-and-constant-probes.md#src-temporal-constant-literal-composition)
 
+<a id="src-datetime-constant-zone-split"></a>
+- [A DateTime constant is checked against two different zones at two different phases](sources/computation-placement-and-constant-probes.md#src-datetime-constant-zone-split)
+
 <a id="src-component-omitting-date-formats"></a>
 - [A component-omitting date target needs every component its format names, and the Base Year supplies the year](sources/computation-placement-and-constant-probes.md#src-component-omitting-date-formats)
 
