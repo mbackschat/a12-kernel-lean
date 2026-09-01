@@ -186,7 +186,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `missing`: bilingual parser and renderer paths, lexical and dot syntax, semantic indices, globals, nested or multiple stars, wider RNU `@From`, and remaining diagnostics must resolve through one checked namespace.
 - `baseline`: [§10](IMPLEMENTATION-MAP.md#10--paths-and-references) owns implemented paths. The [cross-clause diagnostic owner](IMPLEMENTATION-MAP.md#cross-clause-implementation-notes) owns exact projections and explicit unmapped refusals.
 - `remaining`: nested or different repeatable scopes, parallel RNU mapping, other group-list or count shapes and arities, parser-level `SumOfProducts` star and `Having` refusals with exact diagnostic projection, other assembly refusals, executable newly admitted conditions, and embedding the checked correlated direct-field source in the complete nested-`Having` grammar and runtime.
-- `remaining`: reviewed PR2 evidence still leaves the `NumberOfFilledGroups` and `RepetitionNotUnique` semantic-index refusals without Lean authoring routes.
+- `remaining`: reviewed PR2 evidence still leaves the `RepetitionNotUnique` semantic-index refusal without a Lean authoring route.
 - `remaining`: fixed nonrepeatable descendants and wider comparison, computation, partial-validation, arithmetic-wrapper, and parser forms of `CurrentRepetition`.
 - `remaining`: computation has no semantic-index source that can represent direct reads of a computed field or naming it as an index key.
 - `remaining`: an empty **nonrepeatable** group is kernel-valid ([checkpoint](SOURCES.md#src-empty-declared-group)) and `FlatModel` cannot express one, because it represents a group only through its fields or its own repeatable declaration. The message group position's root gate is the one that would diverge if the input could be built, reporting its undeclared-root class where the Kernel reports the ordinary group class. Lifting it means giving groups their own declaration list, a core-type change needing owner approval, so no local work proceeds on that route. Select it only when a named consumer needs an empty group represented; an importer or refactoring round-trip is the likeliest first.
@@ -198,6 +198,21 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `entry-gate`: complete one bounded source packet and separator matrix for the selected path or index family.
 - `completion-gate`: every legal reference resolves deterministically, every illegal form receives the correct static class, and rendering round-trips for the supported surface.
 - `route-state`: discovery-required
+
+<a id="gap-sg9-filled-group-count-semantic-index-refusal"></a>
+#### Filled-group count semantic-index refusal
+
+- `state`: open
+- `missing`: project the exact `NumberOfFilledGroups(Items For "SKU-1") > 0` authoring refusal as `MVK_SEMANTIC_INDEX_NOT_ALLOWED` without adding a runtime count form.
+- `baseline`: the rule-owned group-operand projector already checks the measured one-level group and outside error-field locus, while the semantic-index owner checks exact-text group/index/token selection; no carrier composes those owners or exposes this diagnostic class.
+- `evidence`: the [reviewed semantic-index carrier checkpoint](SOURCES.md#src-pr2-semantic-index-carrier-matrix) Kernel-locks the sole indexed group under `NumberOfFilledGroups`.
+- `consumer`: Explain and Transform need the exact group, index declaration, token, carrier, and diagnostic identity so a rejected indexed operand cannot be rewritten as an unindexed group or confused with the separately admitted field-count carrier.
+- `limit`: one non-root one-level repeatable group, one exact-text literal key, an outside nonrepeatable error field, the sole operand, and `> 0`; other comparisons, arities, key forms, repetition loci, diagnostic precedence, and runtime evaluation remain outside.
+- `route-state`: verified
+- `red-locus`: [`GroupOperandDiagnostic.lean`](../A12Kernel/Conformance/ValidationRule/GroupOperandDiagnostic.lean) owns the exact carrier refusal and neighboring unindexed controls.
+- `green-locus`: [`ValidationRuleGroupOperand.lean`](../A12Kernel/Elaboration/ValidationRuleGroupOperand.lean) owns rule-locus-specific static admission.
+- `supporting-locus`: [`SemanticIndex.lean`](../A12Kernel/Elaboration/SemanticIndex.lean) owns checked exact-text group/index/token selection, and [`StaticDiagnostic.lean`](../A12Kernel/Elaboration/StaticDiagnostic.lean) owns exact Kernel codes.
+- `supporting-locus`: [`ValidationRuleGroupOperand.lean`](../A12Kernel/Proofs/ValidationRuleGroupOperand.lean) owns the carrier law.
 
 ### SG10 — message construction and formal-output integration
 
