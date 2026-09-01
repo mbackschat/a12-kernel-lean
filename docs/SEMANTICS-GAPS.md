@@ -199,21 +199,6 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `completion-gate`: every legal reference resolves deterministically, every illegal form receives the correct static class, and rendering round-trips for the supported surface.
 - `route-state`: discovery-required
 
-<a id="gap-sg9-rulegroup-semantic-index"></a>
-#### Literal semantic-index selection of `RuleGroup`
-
-- `state`: open
-- `missing`: certify `RuleGroup For "key"` as selection of the rule's indexed containing group and project `MVK_NO_INDEX_FIELD` when that group declares no index.
-- `baseline`: the semantic-index owner already validates a literal key against a model-owned index declaration, while the group-reference owner separately preserves bare `RuleGroup` origin and rejects `RuleGroup*`.
-- `evidence`: the [reviewed `RuleGroup` semantic-index checkpoint](SOURCES.md#src-pr2-rulegroup-semantic-index) Kernel-locks one indexed containing-group admission, the otherwise identical unindexed refusal, and the unchanged wildcard refusal.
-- `consumer`: Analyze and Transform need the selected group, its index declaration, and the exact literal identity so a rewrite cannot ignore the suffix or reinterpret it as a positional selector.
-- `limit`: selected-row runtime presence, field-valued keys, nested indices, carrier execution, and any wildcard-plus-index combination remain outside this static certificate.
-- `route-state`: verified
-- `red-locus`: [`SemanticIndexElaboration.lean`](../A12Kernel/Conformance/SemanticIndexElaboration.lean) owns checked semantic-index source and diagnostic separators.
-- `green-locus`: [`SemanticIndex.lean`](../A12Kernel/Elaboration/SemanticIndex.lean) owns model/index/key validation and checked selection certificates.
-- `supporting-locus`: [`SingleGroupElaboration.lean`](../A12Kernel/Proofs/SingleGroupElaboration.lean) owns the unchanged `RuleGroup*` refusal law.
-- `supporting-locus`: [`StaticDiagnostic.lean`](../A12Kernel/Elaboration/StaticDiagnostic.lean) owns exact Kernel diagnostic identities.
-
 ### SG10 — message construction and formal-output integration
 
 - `state`: open

@@ -38,6 +38,13 @@ structure SurfaceSemanticIndex where
   key : SurfaceSemanticIndexKey
   deriving Repr, DecidableEq
 
+/-- The measured exact-text literal semantic-index suffix on the reserved `RuleGroup` entity.
+Keeping this surface distinct excludes unmeasured numeric literals, field-valued keys, and
+wildcard-plus-index combinations ([checkpoint](../../docs/SOURCES.md#src-pr2-rulegroup-semantic-index)). -/
+structure SurfaceRuleGroupSemanticIndex where
+  token : String
+  deriving Repr, DecidableEq
+
 /-- The Number surface retained for the reduced raw-context route, whose literal is a numeric value. -/
 abbrev SurfaceNumberSemanticIndexKey := SurfaceSemanticIndexKey
 abbrev SurfaceNumberSemanticIndex := SurfaceSemanticIndex
@@ -68,6 +75,13 @@ def diagnostic? : SemanticIndexElabError → Option KernelStaticDiagnostic
   | .resolve error => error.diagnostic?
   | _ => none
 
+/-- Exact diagnostic projection measured for the `RuleGroup` literal suffix. A missing index on
+other carriers requires its own evidence before it can inherit this code
+([checkpoint](../../docs/SOURCES.md#src-pr2-rulegroup-semantic-index)). -/
+def ruleGroupDiagnostic? : SemanticIndexElabError → Option KernelStaticDiagnostic
+  | .missingIndexField _ => some .noIndexField
+  | error => error.diagnostic?
+
 end SemanticIndexElabError
 
 inductive CheckedSemanticIndexKey where
@@ -96,6 +110,25 @@ def observe (key : CheckedSemanticIndexKey) (model : FlatModel)
   | .field source => observeCell phase ((model.checkContext raw).read source.id)
 
 end CheckedSemanticIndexKey
+
+/-- The shared checked selection core before a carrier chooses whether it reads one field or retains
+the selected group itself. -/
+structure CheckedSemanticIndexSelection (model : FlatModel) where
+  group : RepeatableGroupDecl
+  indexDeclaration : FlatFieldDecl
+  key : CheckedSemanticIndexKey
+  modelWellFormed : model.validate.isOk = true
+  groupOwned : model.repeatableGroups.contains group = true
+  indexDeclared : (group.indexField == some indexDeclaration.id) = true
+  indexOwned : model.admitsSingleGroupDeclaration group indexDeclaration = true
+  keyOwned : key.admittedBy model = true
+
+/-- A literal semantic index statically selecting the exact group that contains the authored rule.
+Runtime row presence remains outside this certificate. -/
+structure CheckedRuleGroupSemanticIndexSource (model : FlatModel) where
+  ruleGroup : GroupPath
+  selection : CheckedSemanticIndexSelection model
+  groupSelected : (selection.group.path == ruleGroup) = true
 
 /-- A semantic-index source certified against one exact target group, its declared index field, one
 selected target declaration in that group, and a literal or dynamic key. The index and target kinds
@@ -149,6 +182,81 @@ def targetField (checked : CheckedNumberSemanticIndexSource model) :
 
 end CheckedNumberSemanticIndexSource
 
+private def elaborateSemanticIndexSelectionWithValidatedModel
+    (model : FlatModel) (declaringGroup : GroupPath)
+    (group : RepeatableGroupDecl) (authored : SurfaceSemanticIndexKey)
+    (hModel : model.validate = .ok ()) :
+    Except SemanticIndexElabError (CheckedSemanticIndexSelection model) := do
+  let indexId ← match group.indexField with
+    | some indexId => pure indexId
+    | none => throw (.missingIndexField group.path)
+  let indexDeclaration ← model.lookupUniqueId indexId |>.mapError .resolve
+  let numericIndex := match indexDeclaration.policy.kind with
+    | .number _ => true
+    | _ => false
+  let key ← match authored with
+    | .literal token =>
+        -- The literal identity domain is owned by the declared index column, not by its carrier.
+        match token, numericIndex with
+        | .number _, true | .text _, false => pure (.literal token)
+        | _, _ =>
+            throw (.indexKeyDomainMismatch indexDeclaration.path token)
+    | .field reference =>
+        let declaration ← model.resolveFieldDeclarationUnchecked
+          declaringGroup reference |>.mapError .resolve
+        if group.path.isPrefixOf declaration.groupPath then
+          throw (.keyContainedInIndexedGroup declaration.path group.path)
+        else
+          let checkedDeclaration ← declaration.requireNonrepeatable
+            |>.mapError .resolve
+          pure (.field checkedDeclaration)
+  if hGroup : model.repeatableGroups.contains group = true then
+    if hDeclared : group.indexField == some indexDeclaration.id then
+      if hIndexOwned :
+          model.admitsSingleGroupDeclaration group indexDeclaration = true then
+        if hKeyOwned : key.admittedBy model = true then
+          pure {
+            group
+            indexDeclaration
+            key
+            modelWellFormed := by rw [hModel]; rfl
+            groupOwned := hGroup
+            indexDeclared := hDeclared
+            indexOwned := hIndexOwned
+            keyOwned := hKeyOwned
+          }
+        else
+          throw .incoherentCore
+      else
+        throw .incoherentCore
+    else
+      throw .incoherentCore
+  else
+    throw .incoherentCore
+
+/-- Certify the reviewed literal semantic-index suffix on `RuleGroup`. A known nonrepeatable group
+has no index declaration and therefore reaches the same missing-index class as an unindexed
+repeatable group; an unknown group still fails as a resolution error
+([checkpoint](../../docs/SOURCES.md#src-pr2-rulegroup-semantic-index)). -/
+def elaborateRuleGroupSemanticIndexSource (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceRuleGroupSemanticIndex) :
+    Except SemanticIndexElabError (CheckedRuleGroupSemanticIndexSource model) :=
+  match hModel : model.validate with
+  | .error error => .error (.resolve error)
+  | .ok () => do
+      if !model.hasGroupPath declaringGroup then
+        throw (.resolve (.unknownRepeatableGroup declaringGroup))
+      let group ← match model.repeatableGroups.find?
+          (fun candidate => candidate.path == declaringGroup) with
+        | some group => pure group
+        | none => throw (.missingIndexField declaringGroup)
+      let selection ← elaborateSemanticIndexSelectionWithValidatedModel model declaringGroup
+        group (.literal (.text authored.token)) hModel
+      if hSelected : selection.group.path == declaringGroup then
+        pure { ruleGroup := declaringGroup, selection, groupSelected := hSelected }
+      else
+        throw .incoherentCore
+
 /-- Resolve the target first, then require its exact one-level repeatable group, its declared index
 field of any kind, and a literal whose identity domain matches that index or a nonrepeatable field
 key. -/
@@ -162,59 +270,22 @@ def elaborateSemanticIndexSource (model : FlatModel)
         declaringGroup authored.target |>.mapError .resolve
       let group ← model.lookupUniqueRepeatablePath targetDeclaration.groupPath
         |>.mapError .resolve
-      let indexId ← match group.indexField with
-        | some indexId => pure indexId
-        | none => throw (.missingIndexField group.path)
-      let indexDeclaration ← model.lookupUniqueId indexId |>.mapError .resolve
-      let numericIndex := match indexDeclaration.policy.kind with
-        | .number _ => true
-        | _ => false
-      let key ← match authored.key with
-        | .literal token =>
-            -- The literal's identity domain must be the index field's own; a numeric token against a
-            -- text-identity index would silently never match, which is worse than a refusal.
-            match token, numericIndex with
-            | .number _, true | .text _, false => pure (.literal token)
-            | _, _ =>
-                throw (.indexKeyDomainMismatch indexDeclaration.path token)
-        | .field reference =>
-            -- Resolve without the nonrepeatable gate so a key inside the indexed group reports its
-            -- own measured class rather than the generic repeatable-reference one.
-            let declaration ← model.resolveFieldDeclarationUnchecked
-              declaringGroup reference |>.mapError .resolve
-            if group.path.isPrefixOf declaration.groupPath then
-              throw (.keyContainedInIndexedGroup declaration.path group.path)
-            else
-              let checkedDeclaration ← declaration.requireNonrepeatable
-                |>.mapError .resolve
-              pure (.field checkedDeclaration)
-      if hGroup : model.repeatableGroups.contains group = true then
-        if hDeclared : group.indexField == some indexDeclaration.id then
-          if hIndexOwned :
-              model.admitsSingleGroupDeclaration group indexDeclaration = true then
-            if hTargetOwned :
-                model.admitsSingleGroupDeclaration group targetDeclaration = true then
-              if hKeyOwned : key.admittedBy model = true then
-                pure {
-                  group
-                  indexDeclaration
-                  targetDeclaration
-                  key
-                  modelWellFormed := by rw [hModel]; rfl
-                  groupOwned := hGroup
-                  indexDeclared := hDeclared
-                  indexOwned := hIndexOwned
-                  targetOwned := hTargetOwned
-                  keyOwned := hKeyOwned
-                }
-              else
-                throw .incoherentCore
-            else
-              throw .incoherentCore
-          else
-            throw .incoherentCore
-        else
-          throw .incoherentCore
+      let selection ← elaborateSemanticIndexSelectionWithValidatedModel model declaringGroup
+        group authored.key hModel
+      if hTargetOwned :
+          model.admitsSingleGroupDeclaration selection.group targetDeclaration = true then
+        pure {
+          group := selection.group
+          indexDeclaration := selection.indexDeclaration
+          targetDeclaration
+          key := selection.key
+          modelWellFormed := selection.modelWellFormed
+          groupOwned := selection.groupOwned
+          indexDeclared := selection.indexDeclared
+          indexOwned := selection.indexOwned
+          targetOwned := hTargetOwned
+          keyOwned := selection.keyOwned
+        }
       else
         throw .incoherentCore
 

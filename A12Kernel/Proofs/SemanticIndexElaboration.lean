@@ -5,6 +5,20 @@ import A12Kernel.Proofs.SemanticIndex
 
 namespace A12Kernel
 
+/-- The checked literal suffix cannot drift from `RuleGroup` to a child or sibling group: its
+certificate identifies the exact containing group supplied to elaboration. -/
+theorem checkedRuleGroupSemanticIndex_selectsRuleGroup
+    (checked : CheckedRuleGroupSemanticIndexSource model) :
+    checked.selection.group.path = checked.ruleGroup := by
+  simpa using checked.groupSelected
+
+/-- The exact missing-index code is carrier-specific: the general semantic-index error remains
+unmapped until a checked carrier supplies its own measured projection. -/
+theorem semanticIndex_missingIndex_requiresCarrierProjection
+    (group : GroupPath) :
+    SemanticIndexElabError.diagnostic? (.missingIndexField group) = none := by
+  rfl
+
 /-- The document-backed route delegates key policy to the same semantic-index evaluator after the
 shared checked column has been projected, at every index kind. -/
 theorem checkedSemanticIndex_preliminary_delegates

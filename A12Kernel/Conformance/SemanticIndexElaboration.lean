@@ -62,6 +62,25 @@ private def model : FlatModel := {
   repeatableGroups := [items]
 }
 
+private def skuId : FieldId := 4
+
+private def skuDecl : FlatFieldDecl := {
+  id := skuId
+  groupPath := ["Order", "Items"]
+  name := "Sku"
+  policy := { kind := .string }
+  repeatableScope := [10]
+}
+
+private def indexedRuleGroupModel : FlatModel := {
+  fields := [skuDecl, targetDecl, selectorDecl]
+  repeatableGroups := [{ items with indexField := some skuId }]
+}
+
+private def ruleGroupSemanticIndex : SurfaceRuleGroupSemanticIndex := {
+  token := "SKU-1"
+}
+
 private def authored (key : Rat) : SurfaceSemanticIndex := {
   target := {
     base := .absolute
@@ -117,6 +136,11 @@ private def semanticIndexErrorOf {value : Type} :
   | .ok _ => none
   | .error error => some error
 
+private def checkedRuleGroupSemanticIndex? :
+    Option (CheckedRuleGroupSemanticIndexSource indexedRuleGroupModel) :=
+  (elaborateRuleGroupSemanticIndexSource indexedRuleGroupModel
+    ["Order", "Items"] ruleGroupSemanticIndex).toOption
+
 private def checked : CheckedNumberSemanticIndexSource model :=
   {
     toCheckedSemanticIndexSource := {
@@ -156,6 +180,41 @@ private def fieldChecked : CheckedNumberSemanticIndexSource model :=
 /- The authored route reconstructs that exact checked source from model-owned metadata. -/
 example :
     (elaborateNumberSemanticIndexSource model ["Order"] (authored 5)).isOk = true := by
+  native_decide
+
+/- The literal suffix selects the containing group through its model-owned index declaration and
+retains the exact token for Analyze/Transform consumers. It does not claim a runtime selected row. -/
+example : checkedRuleGroupSemanticIndex?.map (fun checked =>
+    checked.ruleGroup == ["Order", "Items"] &&
+      checked.selection.group.path == ["Order", "Items"] &&
+      checked.selection.indexDeclaration == skuDecl &&
+      checked.selection.key == .literal (.text "SKU-1")) = some true := by
+  native_decide
+
+/- An otherwise present but unindexed containing group reaches the measured semantic-index refusal
+rather than silently erasing the suffix into bare `RuleGroup`. -/
+example :
+    semanticIndexErrorOf
+        (elaborateRuleGroupSemanticIndexSource model ["Order"]
+          ruleGroupSemanticIndex) =
+      some (.missingIndexField ["Order"]) ∧
+    (semanticIndexErrorOf
+        (elaborateRuleGroupSemanticIndexSource model ["Order"]
+          ruleGroupSemanticIndex)).bind
+        SemanticIndexElabError.ruleGroupDiagnostic? =
+      some .noIndexField ∧
+    KernelStaticDiagnostic.noIndexField.kernelCode = "MVK_NO_INDEX_FIELD" := by
+  native_decide
+
+/- The suffix does not widen the reserved keyword's surface: bare `RuleGroup` still resolves to the
+declaring group, while `RuleGroup*` still reaches its dedicated refusal before semantic indexing. -/
+example :
+    (match ((.ruleGroup false : SurfaceGroupReference).resolveAgainst ["Order"]),
+        ((.ruleGroup true : SurfaceGroupReference).resolveAgainst ["Order"]) with
+    | .ok bare, .error starred =>
+        bare.path == ["Order"] && bare.origin == .ruleGroup &&
+          starred == .wildcardOnRuleGroup
+    | _, _ => false) = true := by
   native_decide
 
 /- Numeric key equality is value-based: 5 and 5.00 select the same admitted row. -/
