@@ -186,7 +186,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `missing`: bilingual parser and renderer paths, lexical and dot syntax, semantic indices, globals, nested or multiple stars, wider RNU `@From`, and remaining diagnostics must resolve through one checked namespace.
 - `baseline`: [§10](IMPLEMENTATION-MAP.md#10--paths-and-references) owns implemented paths. The [cross-clause diagnostic owner](IMPLEMENTATION-MAP.md#cross-clause-implementation-notes) owns exact projections and explicit unmapped refusals.
 - `remaining`: nested or different repeatable scopes, parallel RNU mapping, other group-list or count shapes and arities, parser-level `SumOfProducts` star and `Having` refusals with exact diagnostic projection, other assembly refusals, executable newly admitted conditions, and embedding the checked correlated direct-field source in the complete nested-`Having` grammar and runtime.
-- `remaining`: reviewed PR2 evidence still leaves the index-selected group cell without a Lean authoring route on the common entity-list carriers, while `NumberOfFilledGroups` and `RepetitionNotUnique` retain their semantic-index refusals. The current field-entity surface has no index-selected group operand.
+- `remaining`: reviewed PR2 evidence still leaves the `NumberOfFilledGroups` and `RepetitionNotUnique` semantic-index refusals without Lean authoring routes.
 - `remaining`: fixed nonrepeatable descendants and wider comparison, computation, partial-validation, arithmetic-wrapper, and parser forms of `CurrentRepetition`.
 - `remaining`: computation has no semantic-index source that can represent direct reads of a computed field or naming it as an index key.
 - `remaining`: an empty **nonrepeatable** group is kernel-valid ([checkpoint](SOURCES.md#src-empty-declared-group)) and `FlatModel` cannot express one, because it represents a group only through its fields or its own repeatable declaration. The message group position's root gate is the one that would diverge if the input could be built, reporting its undeclared-root class where the Kernel reports the ordinary group class. Lifting it means giving groups their own declaration list, a core-type change needing owner approval, so no local work proceeds on that route. Select it only when a named consumer needs an empty group represented; an importer or refactoring round-trip is the likeliest first.
@@ -198,6 +198,21 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `entry-gate`: complete one bounded source packet and separator matrix for the selected path or index family.
 - `completion-gate`: every legal reference resolves deterministically, every illegal form receives the correct static class, and rendering round-trips for the supported surface.
 - `route-state`: discovery-required
+
+<a id="gap-sg9-indexed-group-field-fill-pair"></a>
+#### Indexed group pair for field-fill quantifiers
+
+- `state`: open
+- `missing`: certify an index-selected group followed by one direct field for exactly `AllFieldsFilled` and `NoFieldFilled`, retaining the same unindexed repeatable-group pair's `MVK_NO_WILDCARD` refusal.
+- `baseline`: the semantic-index owner checks group/index/key selection, and the shared field-entity checker already resolves direct fields and rejects an unstarred repeatable group with `MVK_NO_WILDCARD`; no carrier composes those two checked routes.
+- `evidence`: the [reviewed semantic-index carrier checkpoint](SOURCES.md#src-pr2-semantic-index-carrier-matrix) Kernel-locks both admitted operators on `Items For "SKU-1", CustomerName` and the unindexed `AllFieldsFilled(Items, CustomerName)` refusal.
+- `consumer`: Analyze and Transform need the operator, selected group, direct field, authored order, and exact index/token identity so a rewrite cannot erase `For`, replace row selection with group expansion, or transfer admission to another quantifier.
+- `limit`: runtime field-fill evaluation, other operators or operand orders, other arities, numeric or field-valued keys, nested indices, stars, filters, and index-selected fields remain outside this static certificate.
+- `route-state`: verified
+- `red-locus`: [`SemanticIndexElaboration.lean`](../A12Kernel/Conformance/SemanticIndexElaboration.lean) owns checked semantic-index carrier separators.
+- `green-locus`: [`SemanticIndex.lean`](../A12Kernel/Elaboration/SemanticIndex.lean) owns group/index/key validation and carrier-specific selection certificates.
+- `supporting-locus`: [`FieldEntityList.lean`](../A12Kernel/Elaboration/FieldEntityList.lean) owns the direct-field resolver and unindexed group refusal.
+- `supporting-locus`: [`SemanticIndexElaboration.lean`](../A12Kernel/Proofs/SemanticIndexElaboration.lean) owns checked selection laws.
 
 ### SG10 — message construction and formal-output integration
 
