@@ -28,8 +28,9 @@ ordered pre-1900 and Gregorian-floor gates. A **component-omitting** target rend
 `yyyy` stores `2024`, `yyyy-MM` stores `2024-03`, and `yyyyMM` stores `202403`, the discarded
 components reported nowhere. That is one measured rule with the complete one, so the carrier admits
 both target shapes through a single dispatch rather than two carriers. The **yearless** `MM` and
-`MM-dd` stay excluded: the Kernel refuses a Date constant for them unless the model declares a Base
-Year, and what such a target then stores is unmeasured.
+`MM-dd` targets require the model's Base Year for admission but render no year from it: the measured
+stores are `03` and `03-05` for the same March 5 constant
+([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)).
 -/
 
 namespace A12Kernel
@@ -38,7 +39,7 @@ inductive RepeatableDateConstantComputationElabError where
   | target (cause : AddressedRepeatableTargetElabError)
   /-- Neither the complete nor the component-omitting refinement admitted the target. Both causes are
   retained because they refuse for different reasons and a consumer cannot recover one from the
-  other: a yearless format fails both, and so does a non-Date kind. -/
+  other: a yearless format without a Base Year fails both, and so does a non-Date kind. -/
   | targetNotRenderableDate (complete : FullDateTargetElabError)
       (omitting : OmittedComponentDateTargetElabError)
   deriving Repr, DecidableEq
