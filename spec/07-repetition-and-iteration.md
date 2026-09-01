@@ -155,9 +155,9 @@ Under full relevance, the scalar predicates are exactly:
 | no | no | false | true |
 | no | yes | false | unknown/non-firing |
 | yes | no | true | false |
-| yes | yes | true | unknown/non-firing |
+| yes | yes | true | false |
 
-`GroupNotFilled` is therefore not Boolean negation of `GroupFilled`. Group-list tally and plain numeric group-count consumption are specified in [§1](02-logic-and-formal-errors.md#a4-fill-quantifiers-group-scopes-and-the-two-iteration-ranges).
+Admitted content decides `GroupNotFilled` false before an independent error is considered; a content-free erroneous group remains unknown. This leaf distinction is the project's selected internally coherent account rather than a Kernel observation: within this theory, final condition evaluation collapses both unknown and false leaves to non-firing, so its rule/document message projection does not separate the two accounts. `GroupNotFilled` is therefore not Boolean negation of `GroupFilled`. Group-list tally and plain numeric group-count consumption are specified in [§1](02-logic-and-formal-errors.md#a4-fill-quantifiers-group-scopes-and-the-two-iteration-ranges).
 
 Under partial validation, any relevant descendant gives each ancestor group at least `PARTIAL` relevance. Admitted content observed in that relevant slice is enough to establish `GroupFilled`; absence requires `FULL` relevance plus no content and no error. `FULL` relevance comes from an explicitly relevant group or ancestor, or complete relevant coverage of all declared descendant fields across deeper repeatable axes. One relevant empty descendant cannot prove absence.
 

@@ -560,17 +560,18 @@ example :
       some [.fired .value] := by
   native_decide
 
-/- A fully selected repeatable group distinguishes clean content from both reached formal error and cause-free suppressed-default error through the same partial preliminary view. -/
+/- A fully selected instantiated repeatable group remains present through reached formal error
+   and cause-free suppressed-default error in the same partial preliminary view. -/
 example :
     partialGroupVerdicts? partialGroupNotFilledRule?
         (partialGroupData (some ("1", .parsed (.enum "1"))))
         [relevantPartialGroup] = some [.notFired] ∧
     partialGroupVerdicts? partialGroupNotFilledRule?
         (partialGroupData (some ("bad", .rejected .malformed)))
-        [relevantPartialGroup] = some [.unknown] ∧
+        [relevantPartialGroup] = some [.notFired] ∧
     partialGroupVerdicts? partialGroupNotFilledRule?
         (partialGroupData none) [relevantPartialGroup] =
-      some [.unknown] := by
+      some [.notFired] := by
   native_decide
 
 /- Ordinary partial reads consume the same relevance-scoped duplicate relation as generated uniqueness. Selecting both equal index cells makes both reads UNKNOWN; selecting only row 1 removes the absent partner from the relation, so row 1 fires and row 2 remains a rule-level skip. -/

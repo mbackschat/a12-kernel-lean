@@ -34,7 +34,7 @@ example : malformedOnly.groupNotFilled = .unknown := by native_decide
 
 example : admittedAndErroneous = { content := true, erroneous := true, relevance := .fullyRelevant } := by native_decide
 example : admittedAndErroneous.groupFilled = .fired .value := by native_decide
-example : admittedAndErroneous.groupNotFilled = .unknown := by native_decide
+example : admittedAndErroneous.groupNotFilled = .notFired := by native_decide
 
 -- A duplicate-index value was admitted before uniqueness marked it erroneous.
 example : state [duplicate] false false =

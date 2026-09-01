@@ -72,10 +72,11 @@ def GroupPresenceState.groupFilled (state : GroupPresenceState) : Verdict :=
   else if state.content then .fired .value
   else .notFired
 
-/-- `GroupNotFilled`: absence is positive only under full, clean coverage. -/
+/-- `GroupNotFilled`: admitted content decides the negative predicate false through the
+    shared positive-presence projection; absence is positive only under full, clean coverage. -/
 def GroupPresenceState.groupNotFilled (state : GroupPresenceState) : Verdict :=
-  if state.erroneous || state.relevance == .noneRelevant then .unknown
-  else if state.content then .notFired
+  if state.definitelyFilled then .notFired
+  else if state.erroneous || state.relevance == .noneRelevant then .unknown
   else if state.relevance == .fullyRelevant then .fired .omission
   else .unknown
 

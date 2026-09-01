@@ -17,7 +17,14 @@ theorem groupNotFilled_fired_iff (state : GroupPresenceState) :
   cases state with
   | mk content erroneous relevance =>
       cases content <;> cases erroneous <;> cases relevance <;>
-        simp [GroupPresenceState.groupNotFilled]
+        simp [GroupPresenceState.groupNotFilled, GroupPresenceState.definitelyFilled]
+
+/-- Once the shared positive-presence projection decides a group filled, an independent error
+    cannot make the negative scalar predicate unknown. -/
+theorem groupNotFilled_notFired_of_definitelyFilled
+    (state : GroupPresenceState) (filled : state.definitelyFilled = true) :
+    state.groupNotFilled = .notFired := by
+  simp [GroupPresenceState.groupNotFilled, filled]
 
 theorem groupPresence_rowContent_admitted (input : ResolvedGroupPresenceInput)
     (row : input.hasInstantiatedRow = true) : input.derive.content = true := by

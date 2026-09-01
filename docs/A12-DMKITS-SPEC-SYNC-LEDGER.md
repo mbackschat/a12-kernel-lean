@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-02-03"></a>
+### `SPEC-2026-09-02-03` — admitted group content decides the scalar negative-presence leaf before an independent error
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md`](../spec/07-repetition-and-iteration.md), the scalar group-presence truth table
+- `delta`: for a relevant group carrying both admitted content and an independent error, scalar `GroupNotFilled` answers false rather than unknown. A content-free erroneous group remains unknown, and the positive `GroupFilled` answer is unchanged.
+- `basis`: **project-selected internal consistency, not Kernel correspondence.** The group tally and filled-group count already classify admitted content as filled independently of the error flag. The scalar negative leaf now tests that same positive-presence projection first, and `groupNotFilled_notFired_of_definitelyFilled` proves the selected result.
+- `separator`: an Explain consumer observing the leaf distinguishes `.notFired` from `.unknown`. Within the theory's pure verdict evaluator, the rule-message projection does not: `ConditionTree.evalVerdict_collapseUnknown` proves every condition-tree shape collapses both leaves to non-firing. The theorem does not equate the raw verdicts or cover structural-error evaluation.
+- `local-consequence`: `GroupPresenceState.groupNotFilled` checks `definitelyFilled` before the raw error condition. Full and checked conformance retain the admitted-content-plus-error case beside the content-free-error control.
+- `limit`: no Kernel leaf observation is retained for the changed branch. Within this theory, rule/document message output does not distinguish the branch; no claim is made about whether another Kernel-facing instrument exposes it. The entry claims no change to firing, message, partial-absence, tally, count, or formal-error behavior.
+- `acceptance`: a12-dmkits aligns any language-neutral or independently observable scalar-leaf account with the decided-positive projection, or supplies a contrary leaf-observable witness. Rule-level non-firing alone does not distinguish the accounts.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-02-02"></a>
 ### `SPEC-2026-09-02-02` — filtered starred String, Boolean, and Confirm value counts exclude over-limit matches
 

@@ -1497,6 +1497,7 @@ run_cmd do
 #print axioms A12Kernel.validationRelevanceScope_withGlobals_covers_global
 #print axioms A12Kernel.groupFilled_fired_iff
 #print axioms A12Kernel.groupNotFilled_fired_iff
+#print axioms A12Kernel.groupNotFilled_notFired_of_definitelyFilled
 #print axioms A12Kernel.groupPresence_rowContent_admitted
 #print axioms A12Kernel.groupPresence_silentError_erroneous
 #print axioms A12Kernel.checkedCell_duplicate_preservesGroupAdmission

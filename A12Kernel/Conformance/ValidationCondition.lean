@@ -398,7 +398,8 @@ example : (checkedRuleGroup? .filled).map (fun checked =>
     } true) = some (.fired .value) := by
   native_decide
 
-/- `GroupNotFilled` fires only for a fully visible clean empty group; a formal group error makes the reached leaf unknown. -/
+/- `GroupNotFilled` fires only for a fully visible clean empty group. An error leaves
+   content-free absence unknown, while admitted content decides the negative leaf false. -/
 example : (checkedRuleGroup? .notFilled).map (fun checked =>
     (checked.core.evalFull {
       fields := model.checkContext (raw .empty .empty)
@@ -407,7 +408,11 @@ example : (checkedRuleGroup? .notFilled).map (fun checked =>
     checked.core.evalFull {
       fields := model.checkContext (raw .empty .empty)
       groups := groupContext ["Order"] (groupState false true)
-    } false)) = some (.fired .omission, .unknown) := by
+    } false,
+    checked.core.evalFull {
+      fields := model.checkContext (raw .empty .empty)
+      groups := groupContext ["Order"] (groupState true true)
+    } false)) = some (.fired .omission, .unknown, .notFired) := by
   native_decide
 
 /- Ordinary resolved group paths use the same leaf mechanism, while missing resolved runtime state is unavailable rather than false. -/
