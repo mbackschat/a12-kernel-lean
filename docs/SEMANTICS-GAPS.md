@@ -157,7 +157,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `baseline`: [§7](IMPLEMENTATION-MAP.md#7--strings-and-patterns), [§8](IMPLEMENTATION-MAP.md#8--enumerations-and-value-lists), and [String/Enumeration distinct count](IMPLEMENTATION-MAP.md#stringenumeration-distinct-count) own the implemented surface.
 - `remaining`: model-owned checked message-template authoring before raw interpolation, remaining grapheme restrictions, and surrogate-splitting reachability.
 - `remaining`: registered-Custom consumers and repeatable computed target families beyond the bounded exact-address `FirstFilledValue` carrier.
-- `remaining`: `NumberOfDifferentValues` now has reviewed static evidence that Custom joins its String/stored-Enumeration family. The checked token carrier can already consume a caller-prepared Custom String without resampling its validator, but exact Custom admission and execution are not yet locked at that operator and external runtime identity remains unmeasured.
+- `remaining`: external runtime identity, registered-validator whole-call integration, and wildcard or group Custom operands for `NumberOfDifferentValues`.
 - `remaining`: Custom beside String in `FieldValuesNotUnique`, plus stored-text versus decoded identity calibration for temporal declarations beyond the measured default Date profile.
 - `remaining`: Custom validity over Enumeration and extensible-Enumeration operands, its operand field, wildcard, and value-validation static gates, and `ValidationCondition` leaf integration.
 - `remaining`: determine whether an unregistered declared Custom type is statically rejected, raised at runtime, or degraded. The current checked declaration remains a local narrowing until measured.

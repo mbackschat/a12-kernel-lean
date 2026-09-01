@@ -55,6 +55,11 @@ private def directNumber : FlatFieldDecl :=
   { id := 3, groupPath := ["Form"], name := "Amount",
     policy := { kind := .number { scale := 0, signed := false } } }
 
+private def directCustom : FlatFieldDecl :=
+  { id := 7, groupPath := ["Form"], name := "CustomCode",
+    policy := { kind := .string },
+    customType := some { name := "ReviewCode" } }
+
 private def repeatedString : FlatFieldDecl :=
   { id := 4
     groupPath := ["Form", "Rows"]
@@ -79,7 +84,7 @@ private def repeatedNumber : FlatFieldDecl :=
 
 private def model : FlatModel :=
   { fields := [directString, directEnumeration, directNumber, repeatedString,
-      repeatedEnumeration, repeatedNumber]
+      repeatedEnumeration, repeatedNumber, directCustom]
     repeatableGroups := [{
       level := 10, path := ["Form", "Rows"], repeatability := some 3 }] }
 
@@ -108,12 +113,14 @@ private def document (rows : List RowIndex) : Document :=
   { instantiatedRows := rows.map fun row => { group := 10, path := [row] }
     rawCells := fun _ => none }
 
-private def directRead (stringCell enumerationCell : RawCell) :
+private def directRead (stringCell enumerationCell : RawCell)
+    (customCell : CheckedCell := checkAdmittedRawCell .empty) :
     FieldId → CheckedCell
   | id =>
       if id == directString.id then directString.checkRaw stringCell
       else if id == directEnumeration.id then
         directEnumeration.checkRaw enumerationCell
+      else if id == directCustom.id then customCell
       else malformedCheckedCell
 
 private def rowCell (a b c : RawCell) (environment : Env) : RawCell :=
@@ -146,13 +153,14 @@ private def checkedErrorOf (authored : SurfaceTokenDistinctCountSource) :
 
 private def evaluatedOf (authored : SurfaceTokenDistinctCountSource)
     (rows : List RowIndex) (stringCell enumerationCell : RawCell)
-    (stringCells enumerationCells numberCells : RawCell × RawCell × RawCell) :
+    (stringCells enumerationCells numberCells : RawCell × RawCell × RawCell)
+    (customCell : CheckedCell := checkAdmittedRawCell .empty) :
     Option NumericOperand :=
   match elaborateTokenDistinctCountSource model ["Form"] authored with
   | .error _ => none
   | .ok checked =>
       match checked.evaluateDistinctValidation (document rows) []
-          (directRead stringCell enumerationCell)
+          (directRead stringCell enumerationCell customCell)
           (starRead stringCells enumerationCells numberCells) with
       | .ok result => some result
       | .error _ => none
@@ -173,6 +181,9 @@ private def partialOf (authored : SurfaceTokenDistinctCountSource)
 private def directMixed : SurfaceTokenDistinctCountSource :=
   source (.field (directPath "Code")) [.field (directPath "Priority")]
 
+private def directCustomMixed : SurfaceTokenDistinctCountSource :=
+  source (.field (directPath "CustomCode")) [.field (directPath "Code")]
+
 private def stringStar (having : Option SurfaceCorrelatedHaving := none) :
     SurfaceTokenDistinctCountSource :=
   match having with
@@ -185,6 +196,16 @@ private def enumerationStar : SurfaceTokenDistinctCountSource :=
 /- String and ordinary Enumeration share stored-token identity after declaration-owned checking. -/
 example : evaluatedOf directMixed [] (.parsed (.str "A")) (.parsed (.enum "A"))
     emptyCells emptyCells emptyCells = some (.value 1 .fixed) := by
+  native_decide
+
+/- Reviewed static admission places Custom in the textual family. Runtime identity here is internal and consumes a caller-prepared checked Custom value, so the operator neither invokes nor assumes a registered validator. -/
+example :
+    model.validate.isOk = true ∧
+      checkedErrorOf directCustomMixed = none ∧
+      evaluatedOf directCustomMixed [] (.parsed (.str "A")) .empty
+        emptyCells emptyCells emptyCells
+        (checkAdmittedRawCell (.parsed (.str "A"))) =
+          some (.value 1 .fixed) := by
   native_decide
 
 /- Evaluated String CRLF normalization happens once before exact token identity. -/
