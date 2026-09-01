@@ -355,8 +355,12 @@ def evaluateValidation (checked : CheckedTokenValueCountSource model)
     for `NumberOfValueInFields("KEEP" In G)` when the only matching cell sits beyond its group's
     declared repeatability, and `1` on the control one index lower
     ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep)).
-    The starred form answers the same way on its own
-    [probe](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent). -/
+    The starred group form answers the same way on its own
+    [probe](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent). An
+    unfiltered starred String field also excludes an over-limit-only match: with capacity two the
+    kernel answers `0`, while moving that match into row one answers `1`
+    ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-token-starred-field-capacity)).
+    Filtered stars retain the complete projection because that carrier remains unmeasured. -/
 def evaluateCheckedDocumentValidation
     (checked : CheckedTokenValueCountSource model)
     (document : CheckedDocument model) (outer : Env) :
@@ -368,7 +372,13 @@ def evaluateCheckedDocumentValidation
       match operand with
       | .group _ =>
           pure (.inl (resolved.inCapacityValueListSideAt .validation))
-      | .field _ | .star _ =>
+      | .star source =>
+          match source.filter, source.operand with
+          | none, .string _ =>
+              pure (.inl (resolved.inCapacityValueListSideAt .validation))
+          | _, _ =>
+              pure (.inl (resolved.valueListSideAt .validation))
+      | .field _ =>
           pure (.inl (resolved.valueListSideAt .validation))
 
 /-- Computation shares the same checked source and count fold while each filtered slot uses the computation iterator's one-kept-successor traversal. -/

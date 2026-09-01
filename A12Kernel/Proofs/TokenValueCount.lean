@@ -64,6 +64,29 @@ theorem checkedTokenValueCountGroup_checkedComputation_usesCapacityProjection
       pure (evalValueCountAggregate checked.expected side)) := by
   rfl
 
+/-- Checked token value-count validation narrows group operands and unfiltered starred fields to
+    declared capacity, while direct and filtered operands retain their existing projection. -/
+theorem checkedTokenValueCount_checkedValidation_usesMeasuredProjection
+    (checked : CheckedTokenValueCountSource model)
+    (document : CheckedDocument model) (outer : Env) :
+    checked.evaluateCheckedDocumentValidation document outer =
+      evalResolvedValueCountOperands checked.expected checked.source.operands
+        (fun operand => do
+          let resolved ←
+            operand.resolveCheckedValidationOperand document outer
+          match operand with
+          | .group _ =>
+              pure (.inl (resolved.inCapacityValueListSideAt .validation))
+          | .star source =>
+              match source.filter, source.operand with
+              | none, .string _ =>
+                  pure (.inl (resolved.inCapacityValueListSideAt .validation))
+              | _, _ =>
+                  pure (.inl (resolved.valueListSideAt .validation))
+          | .field _ =>
+              pure (.inl (resolved.valueListSideAt .validation))) := by
+  rfl
+
 /-- Each measured checked Boolean-group computation specializes the shared in-capacity addressed
     projection before applying canonical constant-specific token classification. -/
 theorem checkedBooleanValueCountStarredGroup_checkedComputation_usesCapacityProjection

@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-01-03"></a>
+### `SPEC-2026-09-01-03` — a plain starred String value count excludes over-limit matches
+
+- `status`: pending
+- `clause`: [`04-numbers-and-decimals.md`](../spec/04-numbers-and-decimals.md), the `NumberOfValueInFields` paragraph
+- `delta`: full validation of `NumberOfValueInFields("X" In Rows*/Label)` reads only the instantiated rows within `Rows`' declared capacity. A matching String cell in an over-limit row contributes nothing, while its structural over-repetition findings remain visible independently.
+- `evidence`: the [plain starred String value-count checkpoint](sources/group-and-iteration-probes.md#src-token-starred-field-capacity), one structured dmtool-authored capacity-2 model and one three-document `:adapter:kernelProbe` request at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`, with both Kernel strategies agreeing on every row.
+- `separator`: rows one and two contain no `"X"`, and over-limit row three contains the only match. This project's former complete checked-cell path predicts aggregate unavailability and no count-rule message, while a raw-value complete-domain account predicts count `1`; the Kernel fires the exact-count-zero rule. Moving the match into row one fires the exact-count-one rule, and filling both in-capacity rows with the match fires the exact-count-two control.
+- `local-consequence`: `CheckedTokenValueCountSource.evaluateCheckedDocumentValidation` now selects `inCapacityValueListSideAt` for an unfiltered starred token field as well as for a group operand. Direct fields and filtered stars remain on the complete projection because this observation does not cover them.
+- `limit`: one ordinary value-validating String declaration, one repetition level, capacity 2, exact stored token identity, and full validation. No claim transfers to filtered stars, Enumeration/category or Boolean carriers, malformed content, partial validation, checked computation, or nesting below the star.
+- `acceptance`: a12-dmkits reproduces the over-limit-only match and its in-capacity control on an independently authored String carrier, then states the in-capacity extent without widening it to the unmeasured carriers; or supplies a contrary separating observation.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-01-02"></a>
 ### `SPEC-2026-09-01-02` — a DateTime constant has separate static host-zone and runtime model-zone verdicts
 

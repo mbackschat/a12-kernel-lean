@@ -372,6 +372,57 @@ private def evaluatedPartialOf (expected : String)
       | .ok result => some result
       | .error _ => none
 
+private def capacityModel : FlatModel :=
+  { fields := [repeatedString, repeatedEnumeration]
+    repeatableGroups := [{
+      level := 10, path := ["Form", "Rows"], repeatability := some 2 }] }
+
+private def capacityPrepared :
+    PreparedFlatStringContext capacityModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler capacityModel).toOption.get (by native_decide)
+
+private def capacityRow (index : Nat) : RowAddr :=
+  { group := 10, path := [index] }
+
+private def capacityCell (index : Nat) (value : String) : ClassifiedCellInput :=
+  { address := { field := repeatedString.id, path := [index] }
+    stored := value
+    raw := .parsed (.str value) }
+
+private def capacityEnumerationCell
+    (index : Nat) (value : String) : ClassifiedCellInput :=
+  { address := { field := repeatedEnumeration.id, path := [index] }
+    stored := value
+    raw := .parsed (.enum value) }
+
+private def evaluatedCheckedCapacityStar
+    (values : List String) : Option NumericOperand := do
+  let checked ←
+    (elaborateTokenValueCountSource capacityModel ["Form"] "X"
+      (stringStar)).toOption
+  let rows := values.mapIdx fun index _ => capacityRow (index + 1)
+  let cells := values.mapIdx fun index value => capacityCell (index + 1) value
+  let document ←
+    (checkDocument capacityPrepared "en_US" {
+      instantiatedRows := rows
+      cells }).toOption
+  (checked.evaluateCheckedDocumentValidation document []).toOption
+
+private def evaluatedCheckedCapacityEnumerationStar
+    (values : List String) : Option NumericOperand := do
+  let checked ←
+    (elaborateTokenValueCountSource capacityModel ["Form"] "A"
+      enumerationStar).toOption
+  let rows := values.mapIdx fun index _ => capacityRow (index + 1)
+  let cells := values.mapIdx fun index value =>
+    capacityEnumerationCell (index + 1) value
+  let document ←
+    (checkDocument capacityPrepared "en_US" {
+      instantiatedRows := rows
+      cells }).toOption
+  (checked.evaluateCheckedDocumentValidation document []).toOption
+
 /- Stored and category accesses on one physical Enumeration are distinct exact references, and the selected category domain owns literal admission. -/
 example :
     sourceError "A" storedAndCategorySource = none ∧
@@ -444,6 +495,26 @@ example :
         ((.parsed (.str "A")), (.parsed (.str "A")), .empty)
         emptyCells emptyCells =
       some (.value 2 .growOnly) := by
+  native_decide
+
+/- A plain starred String field counts only in-capacity cells. With capacity two, an over-limit-only
+   match answers zero while moving the match into row one answers one
+   ([checkpoint](../../docs/SOURCES.md#src-token-starred-field-capacity)). -/
+example :
+    evaluatedCheckedCapacityStar ["A", "A", "X"] =
+        some (.value 0 .fixed) ∧
+      evaluatedCheckedCapacityStar ["X", "A", "A"] =
+        some (.value 1 .fixed) ∧
+      evaluatedCheckedCapacityStar ["X", "X", "A"] =
+        some (.value 2 .fixed) := by
+  native_decide
+
+/- The observed String carrier does not silently widen the unmeasured Enumeration carrier. Its
+   previous complete-view result remains the explicit internal boundary until separate evidence
+   settles that projection. -/
+example :
+    evaluatedCheckedCapacityEnumerationStar ["B", "B", "A"] =
+      some (.unknown .overRepetition) := by
   native_decide
 
 /- Filter provenance remains per selected cell in validation and computation: only a selected current match can later shrink the count. -/

@@ -1,0 +1,21 @@
+{
+  "model": "TokenStarCapacity_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "over-limit-only",
+      "document": "over-limit-only.json"
+    },
+    {
+      "name": "in-capacity-only",
+      "document": "in-capacity-only.json"
+    },
+    {
+      "name": "two-in-capacity",
+      "document": "two-in-capacity.json"
+    }
+  ]
+}
