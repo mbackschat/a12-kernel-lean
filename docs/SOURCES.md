@@ -131,6 +131,10 @@ The main reusable roots are:
 
 This table names search loci, not semantic conclusions. The canonical account remains in [`spec/`](../spec/), and exact Lean coverage remains in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
 
+### Reviewed numeric-scale continuity
+
+Clean a12-dmkits revision `0e303b56cc1a605b1daee6fadc46408258fdf8d9` retains the accepted `SPEC-2026-07-19-09` account at all three maintained evidence routes: [`NumericScaleSummary`](../../a12-rulekit/rulekit/src/main/java/io/github/mbackschat/a12/dm/rulekit/dsl/NumericScaleSummary.java) returns a non-expandable summary from every power branch, [`NumericScaleGateTest`](../../a12-rulekit/src/test/java/io/github/mbackschat/a12/dm/rulekit/dsl/operators/NumericScaleGateTest.java) separates the narrow known-scale power from an expandable literal result, and the [`§5 numeric-scale finding`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf43) states that power remains non-capable even when the scale-0 exception derives a known scale. This reviewed inbound continuity makes the capability sentence in [`spec/04`](../spec/04-numbers-and-decimals.md#1-scale-gates----checked-at-parse-time) explicit without creating another outbound sync-ledger request.
+
 ### Reviewed pointer and operator-domain batch
 
 a12-dmkits revisions `ffe0066bedcef9d8dbf8b4881986ec1b419e4543`, `751d45b082697ba718b2d5ecd571ff20ce3e00e0`, and `61705844fd4766eb0fa5c2900da7d4508e6cb3ac` separate exact document pointers from `PartiallyKnownDocumentMultiPointer`, route every message-address channel through the latter, and retain the kernel-factory matrix in [`A12PointerKernelDomainDiffTest`](../../a12-rulekit/adapter/src/test/java/io/github/mbackschat/a12/dm/adapter/laws/A12PointerKernelDomainDiffTest.java). That test distinguishes value factories, the exact string codec, message construction, exact conversion, the root, assertion-dependent production behavior, and the raw arity asymmetry instead of attributing one entry point's rule to every pointer type.
