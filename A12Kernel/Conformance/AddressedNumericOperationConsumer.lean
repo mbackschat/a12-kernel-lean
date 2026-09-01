@@ -222,6 +222,10 @@ private def nestedRound (name : String) (mode : DecimalRoundingMode)
     (places : RoundingPlaces) : SurfaceAddressedNumberExtremumLeaf :=
   .round (bare name) mode places
 
+private def nestedArithmetic (op : NumericArithmeticOp) (left right : String) :
+    SurfaceAddressedNumberExtremumLeaf :=
+  .arithmetic op (.field (bare left)) (.field (bare right))
+
 /-- One constant-only product: an operand that reads no field, so a list of only these references nothing at all. -/
 private def extremumConstantProduct (left right : Rat)
     (leftScale rightScale : Int) : SurfaceAddressedNumberExtremumOperand :=
@@ -641,6 +645,42 @@ example :
       (literalExtremumLeaf? .minimum sameScaleTarget
         (.extremum .minimum (nestedRound "Selected" .floor places0)
           [nestedAbs "Amount"])
+        [extremumField "Converted"]) = none := by
+  native_decide
+
+/- Analyze keeps an arithmetic leaf inside the nested selector and distinguishes its ordered children without flattening either call. -/
+example :
+    analyzed? (literalExtremumLeaf? .minimum sameScaleTarget
+      (.extremum .minimum
+        (nestedArithmetic .subtract "Selected" "Amount")
+        [.literal { value := 0, authoredScale := 0 }])
+      [extremumField "Converted"]) =
+      some {
+        targetField := sameScaleTarget.id
+        sourceFields := [selected.id, amount.id, converted.id]
+        scope := [10]
+        parameters := .extremum .minimum
+          { scale := .exact 2, canExpandScale := false }
+          [.extremum .minimum
+            [.arithmetic .subtract (.field selected.id) (.field amount.id),
+              .literal { value := 0, authoredScale := 0 }],
+            .field converted.id]
+      } ∧
+    (analyzed? (literalExtremumLeaf? .minimum sameScaleTarget
+      (.extremum .minimum
+        (nestedArithmetic .subtract "Amount" "Selected")
+        [.literal { value := 0, authoredScale := 0 }])
+      [extremumField "Converted"])).isSome = true ∧
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (.extremum .minimum
+          (nestedArithmetic .subtract "Selected" "Amount")
+          [.literal { value := 0, authoredScale := 0 }])
+        [extremumField "Converted"])
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (.extremum .minimum
+          (nestedArithmetic .subtract "Amount" "Selected")
+          [.literal { value := 0, authoredScale := 0 }])
         [extremumField "Converted"]) = none := by
   native_decide
 

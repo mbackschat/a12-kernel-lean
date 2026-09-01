@@ -30,6 +30,9 @@ theorem checkedAddressedNumberExtremumLeaf_sourceCertified
       simp [CheckedAddressedNumberExtremumLeaf.sources, source.sourceCertified]
   | round source _ _ =>
       simp [CheckedAddressedNumberExtremumLeaf.sources, source.sourceCertified]
+  | arithmetic _ child =>
+      simpa [CheckedAddressedNumberExtremumLeaf.sources] using
+        checkedAddressedNumberArithmeticChild_sourceCertified child
   | literal _ => simp [CheckedAddressedNumberExtremumLeaf.sources]
 
 /-- A nested absolute-value leaf preserves its field's static scale and delegates evaluation to the established result-domain wrapper. -/
@@ -53,6 +56,18 @@ theorem checkedAddressedNumberExtremumLeaf_round
       (CheckedAddressedNumberExtremumLeaf.round source mode places).evaluateAtEnvironment
         input environment =
         (do return (← source.evaluateAtEnvironment input environment).round mode places) := by
+  exact ⟨rfl, rfl⟩
+
+/-- A nested arithmetic leaf delegates its scale and ordered evaluation to the established checked field-or-literal child. -/
+theorem checkedAddressedNumberExtremumLeaf_arithmetic
+    (operation : NumericArithmeticOp)
+    (child : CheckedAddressedNumberArithmeticChild model)
+    (input : CheckedDocument model) (environment : Env) :
+    CheckedAddressedNumberExtremumLeaf.scaleSummary
+        (.arithmetic operation child) = child.scaleSummary operation ∧
+      (CheckedAddressedNumberExtremumLeaf.arithmetic operation
+          child).evaluateAtEnvironment input environment =
+        child.evaluateAtEnvironment operation input environment := by
   exact ⟨rfl, rfl⟩
 
 /-- Every dependency retained by a nested extremum keeps its direct Number witness. -/

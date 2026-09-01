@@ -85,28 +85,10 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `missing`: close remaining numeric authoring shapes, computation wrappers, repeated and group aggregates, temporal or aggregate overloads, concrete ingestion and rendering, and partial or repeatable integration through the shared owners.
 - `baseline`: [§5](IMPLEMENTATION-MAP.md#5--numbers-and-decimals) owns scalar and addressed numeric execution. The bounded group capabilities start at [shared admission](IMPLEMENTATION-MAP.md#cap-shared-entity-list-group-admission).
 - `remaining`: deeper nested calls; aggregate-valued operands; and power beyond the bounded field-or-literal child now admitted inside addressed extrema, including nested or grouped addressed power.
-- `remaining`: bounded field-or-literal arithmetic inside one-level nested extrema is isolated at the [nested-extremum arithmetic gap](#gap-sg5-nested-extremum-arithmetic).
 - `remaining`: host wire ingestion, remaining group or addressed expression placements, third-level external correlation, and external calibration of operand shapes beyond direct Number copy.
 - `discriminator`: keep authored literal scale, derived scale, warning suppression, source scope, target scope, and operator-local poison timing independent.
 - `consumer`: Execute and Transform require exact tree shape, rounding stages, target policy, and unsafe-reassociation boundaries.
 - `forbidden`: do not introduce a general recursive expression tree until two completed semantic users require the same representation.
-
-<a id="gap-sg5-nested-extremum-arithmetic"></a>
-#### Nested-extremum arithmetic leaves
-
-- `state`: open
-- `missing`: admit one ordinary arithmetic node over two field-or-immediate-literal operands as a bounded leaf of the existing one-level nested `Min`/`Max` call without flattening either call boundary.
-- `baseline`: [numeric wrappers and extrema](IMPLEMENTATION-MAP.md#cap-numeric-wrappers-and-extrema) owns the existing outer arithmetic child and the nonrecursive nested direct/local-wrapper/literal leaf.
-- `evidence-needed`: exact combined addressed runtime remains external evidence pending; internal execution must follow the canonical complete-number-like-operand clause in [`spec/04`](../spec/04-numbers-and-decimals.md#4-other-numeric-constraints).
-- `discriminator`: preserve the inner arithmetic operator and operand order, its derived scale and literal capability, the nested selector and leaf order, and the outer selector and operand order as distinct layers.
-- `consumer`: Execute and Analyze must distinguish a nested subtraction from flattening or reassociation and retain its exact dependencies and fingerprint; Transform remains identity-only.
-- `forbidden`: do not admit division, power, aggregate, another extremum, or a recursive expression child through this route.
-- `route-state`: verified
-- `red-locus`: [`AddressedNumberExtremumArithmetic.lean`](../A12Kernel/Conformance/AddressedNumberExtremumArithmetic.lean) owns the first missing-constructor and execution separators.
-- `green-locus`: [`AddressedNumberExtremum.lean`](../A12Kernel/Elaboration/AddressedNumberExtremum.lean) owns the bounded nested leaf, checking, scale, sources, and evaluation.
-- `supporting-locus`: [`AddressedNumberExtremum.lean`](../A12Kernel/Proofs/AddressedNumberExtremum.lean) owns source certification plus scale/evaluation specialization.
-- `supporting-locus`: [`AddressedNumericOperationConsumer.lean`](../A12Kernel/Elaboration/AddressedNumericOperationConsumer.lean) owns the exact nested arithmetic identity.
-- `route-limit`: one nonrecursive ordinary `+`, `−`, or `×` child over the already checked field-or-literal pair; no wider nesting or operation family.
 
 <a id="gap-sg5-unstarred-repeatable-group-presence-reference"></a>
 #### Unstarred repeatable group-presence reference

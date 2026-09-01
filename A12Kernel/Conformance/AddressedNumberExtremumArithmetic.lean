@@ -100,6 +100,11 @@ private def nestedRound (name : String) (mode : DecimalRoundingMode)
     (places : RoundingPlaces) : SurfaceAddressedNumberExtremumLeaf :=
   .round (bare name) mode places
 
+private def nestedArithmetic (op : NumericArithmeticOp)
+    (left right : SurfaceAddressedNumberArithmeticOperand) :
+    SurfaceAddressedNumberExtremumLeaf :=
+  .arithmetic op left right
+
 private def nestedWrappedExtremum (op : NumericExtremumOp)
     (first : SurfaceAddressedNumberExtremumLeaf)
     (rest : List SurfaceAddressedNumberExtremumLeaf) :
@@ -567,6 +572,26 @@ example :
         (nestedRound "B" .floor zeroPlaces) []) []).isSome = true ∧
     (operation? zeroScale
       (nestedExtremum .minimum (fld "B") []) []).isNone = true := by
+  native_decide
+
+/- A nested subtraction keeps its own operand order, selector, scale, poison timing, and literal budget before the outer selector runs. -/
+example :
+    outcomes? (nestedWrappedExtremum .minimum
+        (nestedArithmetic .subtract (fld "B") (fld "A"))
+        [.literal { value := 0, authoredScale := 0 }]) [field "C"] = some [
+      (addr target.id 1, .accepted (stored (-75) 2)),
+      (addr target.id 2, .accepted (stored (-2) 0)),
+      (addr target.id 3, .accepted (stored 0 0)),
+      (addr target.id 4, .accepted (stored (-2) 0)),
+      (addr target.id 5, .accepted (stored 0 0)),
+      (addr target.id 6, .inheritedPoison .declaredConstraint),
+      (addr target.id 7, .inheritedPoison .declaredConstraint),
+      (addr target.id 8, .accepted (stored (-14) 0))
+    ] ∧
+    (operation? preciseTarget
+      (nestedWrappedExtremum .minimum
+        (nestedArithmetic .multiply (fld "A") (lit (3 / 2) 1))
+        [.literal { value := 1, authoredScale := 0 }]) []).isSome = true := by
   native_decide
 
 private inductive InnerShape where
