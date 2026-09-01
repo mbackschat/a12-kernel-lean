@@ -48,12 +48,13 @@ theorem stringAlternatives_holdingHead_evaluates
     (context : StringComputationContext)
     (head : ComputationAlternative StringExpr)
     (remaining : List (ComputationAlternative StringExpr))
-    (holds : head.precondition.eval context = .holds) :
+    (guard : ComputationCondition) (guarded : head.precondition = some guard)
+    (holds : guard.eval context = .holds) :
     ({ computation with alternatives := head :: remaining }).evaluateOutcome context =
       (computation.selectedStep head.operation).evaluateOutcome context := by
   simp only [StringAlternativeComputation.evaluateOutcome,
     StringAlternativeComputation.evaluateOutcomeWithPattern,
-    ComputationAlternative.selectFirst, holds,
+    ComputationAlternative.selectFirst, guarded, holds,
     StringAlternativeComputation.selectedStep,
     StringComputationStep.evaluateOutcome, StringFieldPolicy.checkTarget]
   cases hResult : head.operation.evaluate context <;> simp
@@ -64,11 +65,14 @@ theorem stringAlternatives_holdingHead_suffixIrrelevant
     (context : StringComputationContext)
     (head : ComputationAlternative StringExpr)
     (firstSuffix secondSuffix : List (ComputationAlternative StringExpr))
-    (holds : head.precondition.eval context = .holds) :
+    (guard : ComputationCondition) (guarded : head.precondition = some guard)
+    (holds : guard.eval context = .holds) :
     ({ computation with alternatives := head :: firstSuffix }).evaluateOutcome context =
       ({ computation with alternatives := head :: secondSuffix }).evaluateOutcome context := by
-  rw [stringAlternatives_holdingHead_evaluates computation context head firstSuffix holds,
-    stringAlternatives_holdingHead_evaluates computation context head secondSuffix holds]
+  rw [stringAlternatives_holdingHead_evaluates computation context head firstSuffix
+      guard guarded holds,
+    stringAlternatives_holdingHead_evaluates computation context head secondSuffix
+      guard guarded holds]
 
 /-- A holding head whose selected expression produces no value cannot fall through to any suffix. -/
 theorem stringAlternatives_selectedNoValue_doesNotFallThrough
@@ -76,13 +80,14 @@ theorem stringAlternatives_selectedNoValue_doesNotFallThrough
     (context : StringComputationContext)
     (head : ComputationAlternative StringExpr)
     (remaining : List (ComputationAlternative StringExpr))
-    (holds : head.precondition.eval context = .holds)
+    (guard : ComputationCondition) (guarded : head.precondition = some guard)
+    (holds : guard.eval context = .holds)
     (noValue :
       (computation.selectedStep head.operation).evaluateOutcome context = .ok .noValue) :
     ({ computation with alternatives := head :: remaining }).evaluateOutcome context =
       .ok .noValue := by
-  rw [stringAlternatives_holdingHead_evaluates computation context head remaining holds,
-    noValue]
+  rw [stringAlternatives_holdingHead_evaluates computation context head remaining
+      guard guarded holds, noValue]
 
 /-- Completed target outcome is projected against the one shared prior state only after selection and operation evaluation finish. -/
 theorem stringAlternatives_evaluate_of_outcome
@@ -107,7 +112,7 @@ theorem stringAlternatives_holdingCommon_preserves
   rw [alternativeSelection_holdingCommon_preserves context common
     computation.alternatives commonHolds]
 
-/-- A clean non-holding common precondition produces quiet no-value for every guarded String table, before any alternative-specific guard or operation can contribute. -/
+/-- A clean non-holding common precondition produces quiet no-value for every String table, before any alternative-specific guard or operation can contribute. -/
 theorem stringAlternatives_notTrueCommon_noValue
     (computation : StringAlternativeComputation)
     (context : StringComputationContext) (common : ComputationCondition)
@@ -120,7 +125,7 @@ theorem stringAlternatives_notTrueCommon_noValue
   rw [alternativeSelection_notTrueCommon_noMatch context common
     computation.alternatives commonNotTrue]
 
-/-- On a nonempty guarded String table, common-precondition poison becomes target poison before selection can reach an otherwise-safe operation. -/
+/-- On a nonempty String table, common-precondition poison becomes target poison before selection can reach an otherwise-safe operation. -/
 theorem stringAlternatives_poisonedCommon_preserves
     (computation : StringAlternativeComputation)
     (context : StringComputationContext) (common : ComputationCondition)

@@ -4,9 +4,9 @@ import A12Kernel.Semantics.StringAlternatives
 
 /-! # Checked nonrepeatable String computation tables
 
-This capsule certifies an already-resolved, nonempty guarded String table against one validated flat model. Every row reuses the existing checked String operation, direct-presence condition tree, first-match selector, declaration-owned target policy, and resolved evaluator. The table stores one target and policy rather than repeating them per row, while every row retains its computation declaration group until the runtime-only projection.
+This capsule certifies an already-resolved, nonempty String table against one validated flat model. A sole row may omit its precondition; every row in a multi-row source table must retain a direct-presence condition tree. Rows reuse the existing checked String operation, first-match selector, declaration-owned target policy, and resolved evaluator. The table stores one target and policy rather than repeating them per row, while every row retains its computation declaration group until the runtime-only projection.
 
-The guard fragment admits any nonrepeatable scalar declaration, including raw String presence, but no repeatable reference. Common-precondition distribution has already happened before this boundary. Unguarded singleton authoring, scheduling, result projection, application, and validation remain separate.
+The guard fragment admits any nonrepeatable scalar declaration, including raw String presence, but no repeatable reference. Common-precondition distribution has already happened before this boundary. Scheduling, result projection, application, and validation remain separate.
 -/
 
 namespace A12Kernel
@@ -14,11 +14,12 @@ namespace A12Kernel
 /-- One row after its checked operation has been consolidated into the table's shared target. -/
 structure CheckedStringComputationAlternative (model : FlatModel) (target : FieldId) where
   declaringGroup : GroupPath
-  precondition : ComputationCondition
+  precondition : Option ComputationCondition
   expression : CheckedStringExpr model
   declaringGroupValid : GroupPath.isValid declaringGroup = true
-  guardWellFormed : precondition.WellFormed model
-  guardExcludesTarget : precondition.referencesField target = false
+  guardWellFormed : precondition.all (·.wellFormedBool model) = true
+  guardExcludesTarget : precondition.all
+    (fun guard => !guard.referencesField target) = true
   expressionExcludesTarget : expression.core.referencesField target = false
 
 namespace CheckedStringComputationAlternative
@@ -29,7 +30,7 @@ def toResolved (alternative : CheckedStringComputationAlternative model target) 
 
 end CheckedStringComputationAlternative
 
-/-- A nonempty guarded table with one model-owned nonrepeatable String target and policy. -/
+/-- A nonempty table with one model-owned nonrepeatable String target and policy. -/
 structure CheckedStringComputationTable (model : FlatModel) where
   targetField : FieldId
   targetPolicy : StringFieldPolicy
@@ -40,18 +41,22 @@ structure CheckedStringComputationTable (model : FlatModel) where
 
 inductive StringComputationTableError where
   | empty
+  | unguardedAlternative (alternative : Nat)
   | targetMismatch (alternative : Nat) (expected actual : FieldId)
   | guardNotAdmitted (alternative : Nat)
   | guardTargetReference (alternative : Nat)
   deriving Repr, DecidableEq
 
 private def certifyStringComputationAlternative
-    (target : FieldId) (alternativeIndex : Nat)
+    (target : FieldId) (alternativeIndex : Nat) (guardRequired : Bool)
     (alternative : ComputationAlternative (CheckedStringComputationOperation model)) :
     Except StringComputationTableError (CheckedStringComputationAlternative model target) := do
   if hSameTarget : alternative.operation.targetField = target then
-    if hGuard : alternative.precondition.wellFormedBool model = true then
-      if hTarget : alternative.precondition.referencesField target = false then
+    if guardRequired && alternative.precondition.isNone then
+      throw (.unguardedAlternative alternativeIndex)
+    else if hGuard : alternative.precondition.all (·.wellFormedBool model) = true then
+      if hTarget : alternative.precondition.all
+          (fun guard => !guard.referencesField target) = true then
         pure {
           declaringGroup := alternative.operation.declaringGroup
           precondition := alternative.precondition
@@ -70,17 +75,18 @@ private def certifyStringComputationAlternative
     throw (.targetMismatch alternativeIndex target alternative.operation.targetField)
 
 private def certifyStringComputationAlternatives
-    (target : FieldId) :
+    (target : FieldId) (guardRequired : Bool) :
     Nat → List (ComputationAlternative (CheckedStringComputationOperation model)) →
       Except StringComputationTableError (List (CheckedStringComputationAlternative model target))
   | _, [] => pure []
   | alternativeIndex, alternative :: remaining => do
-      let checked ← certifyStringComputationAlternative target alternativeIndex alternative
-      let checkedRemaining ← certifyStringComputationAlternatives target
+      let checked ← certifyStringComputationAlternative target alternativeIndex
+        guardRequired alternative
+      let checkedRemaining ← certifyStringComputationAlternatives target guardRequired
         (alternativeIndex + 1) remaining
       pure (checked :: checkedRemaining)
 
-/-- Consolidate a nonempty list of already-checked String operations into one model-certified guarded table. Alternative positions are one-based. -/
+/-- Consolidate a nonempty list of already-checked String operations into one model-certified table. Alternative positions are one-based. -/
 def certifyStringComputationTable
     (alternatives : List (ComputationAlternative
       (CheckedStringComputationOperation model))) :
@@ -90,8 +96,11 @@ def certifyStringComputationTable
   | first :: remaining => do
       let target := first.operation.targetField
       let policy := first.operation.targetPolicy
-      let checkedFirst ← certifyStringComputationAlternative target 1 first
-      let checkedRemaining ← certifyStringComputationAlternatives target 2 remaining
+      let guardRequired := !remaining.isEmpty
+      let checkedFirst ← certifyStringComputationAlternative target 1
+        guardRequired first
+      let checkedRemaining ← certifyStringComputationAlternatives target
+        guardRequired 2 remaining
       pure {
         targetField := target
         targetPolicy := policy

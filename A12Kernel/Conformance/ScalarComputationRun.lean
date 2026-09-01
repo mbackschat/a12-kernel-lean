@@ -54,7 +54,7 @@ private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
 private def stringTable? (target : FieldId)
-    (rows : List (ComputationCondition × StringExpr SurfaceFieldPath)) :
+    (rows : List (Option ComputationCondition × StringExpr SurfaceFieldPath)) :
     Option (CheckedStringComputationTable model) := do
   let alternatives ← rows.mapM fun (guard, expression) => do
     let operation ← (elaborateStringComputationOperation
@@ -65,7 +65,7 @@ private def stringTable? (target : FieldId)
 
 private def numberTable? (target : FieldId)
     (rows : List
-      (ComputationCondition × AuthoredNumericExpr SurfaceNumericAtom)) :
+      (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericAtom)) :
     Option (CheckedNumericComputationTable model) := do
   let alternatives ← rows.mapM fun (guard, expression) => do
     let operation ← (elaborateNumericTargetComputationOperation
@@ -89,16 +89,13 @@ private def numberField (field : String) :
 
 private def holding : ComputationCondition := .fieldNotFilled gateId
 
-private def always : ComputationCondition :=
-  .or (.fieldFilled gateId) (.fieldNotFilled gateId)
-
 private def firstStringValue :=
   (stringTable? firstStringId [(holding, .literal "7")]).get
     (by native_decide)
 
 private def emptyFirstString :=
   (stringTable? firstStringId [
-    (.fieldFilled gateId, .literal "7")]).get
+    (some (.fieldFilled gateId), .literal "7")]).get
       (by native_decide)
 
 private def invalidFirstString :=
@@ -152,24 +149,24 @@ private def firstStringFromSecondNumber :=
 
 private def consumerFirst :=
   (stringTable? secondStringId [
-    (.fieldFilled gateId, .literal "SAFE"),
-    (.fieldNotFilled gateId,
+    (some (.fieldFilled gateId), .literal "SAFE"),
+    (some (.fieldNotFilled gateId),
       .fieldValueAsString (bare "FirstNumber"))]).get
         (by native_decide)
 
 private def producerSecond :=
-  (numberTable? firstNumberId [(always,
+  (numberTable? firstNumberId [(none,
     numberField "InputNumber")]).get (by native_decide)
 
 private def numericConsumer :=
   (stringTable? firstStringId [
-    (.fieldFilled gateId, .literal "5"),
-    (.fieldNotFilled gateId,
+    (some (.fieldFilled gateId), .literal "5"),
+    (some (.fieldNotFilled gateId),
       .fieldValueAsString (bare "FirstNumber"))]).get
         (by native_decide)
 
 private def secondNumberFromStringOnly :=
-  (numberTable? secondNumberId [(always,
+  (numberTable? secondNumberId [(none,
     asNumber "FirstString")]).get (by native_decide)
 
 private def secondNumberFromString :=
@@ -523,12 +520,19 @@ example :
       (.number firstNumberFromStringOnly)).toOption = none := by
   native_decide
 
-/- The Kernel packet at `src-scalar-mixed-reverse-authored-triple` separates fresh completion, an unreached malformed source, reached poison, and empty zero through the reverse-authored Number-to-String-to-Number chain. Its unguarded alternatives are represented here by the total clean-Gate split supported by the current condition fragment; malformed Gate behavior and exact formal-dependency identity remain outside this case. -/
+/- The Kernel packet at `src-scalar-mixed-reverse-authored-triple` separates fresh completion, an unreached malformed source, reached poison, and empty zero through the reverse-authored Number-to-String-to-Number chain. The internal table now represents its singleton unguarded alternatives directly, so Analyze exposes no invented Gate dependency and a malformed Gate cannot poison the producer; those two extra separators are internal and make no wider Kernel-correspondence claim. -/
 example :
     tripleTargetOrders? (.number secondNumberFromStringOnly)
         (.string numericConsumer) (.number producerSecond) =
       some ([secondNumberId, firstStringId, firstNumberId],
         [firstNumberId, firstStringId, secondNumberId]) ∧
+    dependencySummary [
+      .number secondNumberFromStringOnly,
+      .string numericConsumer,
+      .number producerSecond] = [
+        (secondNumberId, .number, [firstStringId]),
+        (firstStringId, .string, [firstNumberId, gateId]),
+        (firstNumberId, .number, [inputNumberId])] ∧
     resultSummary? [.number producerSecond, .string numericConsumer,
         .number secondNumberFromStringOnly] [
           numberCell inputNumberId 7,
@@ -548,6 +552,25 @@ example :
           (secondNumberId, { unscaled := 7, scale := 0 })]
         numberCleared := []
         formalErrorsInOperands := []
+      } ∧
+    resultSummary? [.number producerSecond, .string numericConsumer,
+        .number secondNumberFromStringOnly] [
+          numberCell inputNumberId 7,
+          malformedStringCell gateId,
+          numberCell firstNumberId 90,
+          stringCell firstStringId "90",
+          numberCell secondNumberId 90] =
+      some {
+        stringWithoutErrors := []
+        stringWithChanges := []
+        stringErrors := []
+        stringCleared := [firstStringId]
+        numberWithoutErrors := [
+          (firstNumberId, { unscaled := 7, scale := 0 })]
+        numberWithChanges := [
+          (firstNumberId, { unscaled := 7, scale := 0 })]
+        numberCleared := [secondNumberId]
+        formalErrorsInOperands := [formalFinding gateId .malformed]
       } ∧
     resultSummary? [.number producerSecond, .string numericConsumer,
         .number secondNumberFromStringOnly] [

@@ -32,6 +32,15 @@ private def literalRow? (guard : ComputationCondition) (target : FieldId)
     operation := operation
   }
 
+private def unguardedLiteralRow? (target : FieldId)
+    (value : Rat) : Option NumericRow := do
+  let operation ← operation? target
+    (.literal { value, authoredScale := 0 })
+  pure {
+    precondition := none
+    operation := operation
+  }
+
 private def literalRowAt? (declaringGroup : GroupPath)
     (guard : ComputationCondition) (target : FieldId)
     (value : Rat) : Option NumericRow := do
@@ -103,6 +112,17 @@ example :
       literalRow? (.fieldNotFilled laterId) targetId 1,
       alteredPolicyRow? (.fieldNotFilled laterId)] =
         some (.targetPolicyMismatch 2) := by
+  native_decide
+
+/- Only a sole alternative may omit its precondition, and it selects directly without reading a guard field. -/
+example :
+    tableOutcome? [unguardedLiteralRow? targetId 3] =
+      some (.supported (.accepted { unscaled := 3, scale := 0 })) ∧
+    tableError? [unguardedLiteralRow? targetId 3,
+      literalRow? (.fieldNotFilled laterId) targetId 4] =
+        some (.unguardedAlternative 1) ∧
+    tableError? [literalRow? (.fieldNotFilled laterId) targetId 3,
+      unguardedLiteralRow? targetId 4] = some (.unguardedAlternative 2) := by
   native_decide
 
 /- Same-target table assembly retains each row's definition placement even though target-owned runtime

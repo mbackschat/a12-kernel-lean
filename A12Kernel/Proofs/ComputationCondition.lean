@@ -159,25 +159,37 @@ theorem alternativeSelection_empty_is_noMatch
       ([] : List (ComputationAlternative Operation)) context = .noMatch := by
   rfl
 
-/-- A holding head selects its operation without consulting the remaining alternatives. -/
+/-- An unguarded head selects its operation directly without consulting the context or remaining alternatives. -/
+theorem alternativeSelection_unguardedHead_selects
+    (context : ScalarComputationContext)
+    (head : ComputationAlternative Operation)
+    (remaining : List (ComputationAlternative Operation))
+    (unguarded : head.precondition = none) :
+    ComputationAlternative.selectFirst (head :: remaining) context =
+      .selected head.operation := by
+  simp [ComputationAlternative.selectFirst, unguarded]
+
+/-- A holding guarded head selects its operation without consulting the remaining alternatives. -/
 theorem alternativeSelection_holdingHead_selects
     (context : ScalarComputationContext)
     (head : ComputationAlternative Operation)
     (remaining : List (ComputationAlternative Operation))
-    (holds : head.precondition.eval context = .holds) :
+    (guard : ComputationCondition) (guarded : head.precondition = some guard)
+    (holds : guard.eval context = .holds) :
     ComputationAlternative.selectFirst (head :: remaining) context =
       .selected head.operation := by
-  simp only [ComputationAlternative.selectFirst, holds]
+  simp [ComputationAlternative.selectFirst, guarded, holds]
 
 /-- A clean non-matching head delegates selection to the remaining alternatives. -/
 theorem alternativeSelection_notTrueHead_continues
     (context : ScalarComputationContext)
     (head : ComputationAlternative Operation)
     (remaining : List (ComputationAlternative Operation))
-    (notTrue : head.precondition.eval context = .notTrue) :
+    (guard : ComputationCondition) (guarded : head.precondition = some guard)
+    (notTrue : guard.eval context = .notTrue) :
     ComputationAlternative.selectFirst (head :: remaining) context =
       ComputationAlternative.selectFirst remaining context := by
-  simp only [ComputationAlternative.selectFirst, notTrue]
+  simp [ComputationAlternative.selectFirst, guarded, notTrue]
 
 /-- A poisoned head aborts selection with the same cause and leaves the remaining alternatives unread. -/
 theorem alternativeSelection_poisonedHead_aborts
@@ -185,10 +197,11 @@ theorem alternativeSelection_poisonedHead_aborts
     (head : ComputationAlternative Operation)
     (remaining : List (ComputationAlternative Operation))
     (cause : FormalCause)
-    (poisoned : head.precondition.eval context = .poison cause) :
+    (guard : ComputationCondition) (guarded : head.precondition = some guard)
+    (poisoned : guard.eval context = .poison cause) :
     ComputationAlternative.selectFirst (head :: remaining) context =
       .poison cause := by
-  simp only [ComputationAlternative.selectFirst, poisoned]
+  simp [ComputationAlternative.selectFirst, guarded, poisoned]
 
 /-- Selection has no match exactly when every declared alternative is reached and cleanly not true. -/
 theorem alternativeSelection_noMatch_iff
@@ -196,29 +209,38 @@ theorem alternativeSelection_noMatch_iff
     (alternatives : List (ComputationAlternative Operation)) :
     ComputationAlternative.selectFirst alternatives context = .noMatch ↔
       ∀ alternative ∈ alternatives,
-        alternative.precondition.eval context = .notTrue := by
+        ∃ guard, alternative.precondition = some guard ∧
+          guard.eval context = .notTrue := by
   induction alternatives with
   | nil =>
       simp [ComputationAlternative.selectFirst]
   | cons head remaining inductionHypothesis =>
-      cases headResult : head.precondition.eval context with
-      | holds =>
-          simp [ComputationAlternative.selectFirst, headResult]
-      | notTrue =>
-          simp [ComputationAlternative.selectFirst, headResult, inductionHypothesis]
-      | poison cause =>
-          simp [ComputationAlternative.selectFirst, headResult]
+      cases guarded : head.precondition with
+      | none => simp [ComputationAlternative.selectFirst, guarded]
+      | some guard =>
+          cases headResult : guard.eval context with
+          | holds =>
+              simp [ComputationAlternative.selectFirst, guarded, headResult]
+          | notTrue =>
+              simp [ComputationAlternative.selectFirst, guarded, headResult,
+                inductionHypothesis]
+          | poison cause =>
+              simp [ComputationAlternative.selectFirst, guarded, headResult]
 
 /-- Declaration order is observable when two holding alternatives carry different operations. -/
 theorem alternativeSelection_holdingOrderObservable
     (context : ScalarComputationContext)
     (first second : ComputationAlternative Operation)
-    (firstHolds : first.precondition.eval context = .holds)
-    (secondHolds : second.precondition.eval context = .holds)
+    (firstGuard secondGuard : ComputationCondition)
+    (firstGuarded : first.precondition = some firstGuard)
+    (secondGuarded : second.precondition = some secondGuard)
+    (firstHolds : firstGuard.eval context = .holds)
+    (secondHolds : secondGuard.eval context = .holds)
     (different : first.operation ≠ second.operation) :
     ComputationAlternative.selectFirst [first, second] context ≠
       ComputationAlternative.selectFirst [second, first] context := by
-  simp only [ComputationAlternative.selectFirst, firstHolds, secondHolds]
+  simp only [ComputationAlternative.selectFirst, firstGuarded, secondGuarded,
+    firstHolds, secondHolds]
   intro same
   injection same with sameOperation
   exact different sameOperation
@@ -227,16 +249,19 @@ theorem alternativeSelection_holdingOrderObservable
 theorem alternativeSelection_holdingPoisonOrderObservable
     (context : ScalarComputationContext)
     (holding poisonous : ComputationAlternative Operation)
-    (cause : FormalCause)
-    (holds : holding.precondition.eval context = .holds)
-    (poisoned : poisonous.precondition.eval context = .poison cause) :
+    (holdingGuard poisonousGuard : ComputationCondition) (cause : FormalCause)
+    (holdingGuarded : holding.precondition = some holdingGuard)
+    (poisonousGuarded : poisonous.precondition = some poisonousGuard)
+    (holds : holdingGuard.eval context = .holds)
+    (poisoned : poisonousGuard.eval context = .poison cause) :
     ComputationAlternative.selectFirst [holding, poisonous] context ≠
       ComputationAlternative.selectFirst [poisonous, holding] context := by
-  simp only [ComputationAlternative.selectFirst, holds, poisoned]
+  simp only [ComputationAlternative.selectFirst, holdingGuarded,
+    poisonousGuarded, holds, poisoned]
   intro impossible
   cases impossible
 
-/-- Omitting a common precondition is definitionally the identity on an already-guarded alternative table. -/
+/-- Omitting a common precondition is definitionally the identity on an alternative table. -/
 theorem expandCommonPrecondition_none
     (alternatives : List (ComputationAlternative Operation)) :
     ComputationAlternative.expandCommonPrecondition none alternatives =
@@ -253,7 +278,7 @@ theorem expandCommonPrecondition_preserves_operations
   cases commonPrecondition <;>
     simp [ComputationAlternative.expandCommonPrecondition]
 
-/-- A holding common precondition leaves the existing first-match result unchanged for every guarded alternative table. -/
+/-- A holding common precondition leaves the existing first-match result unchanged for every alternative table. -/
 theorem alternativeSelection_holdingCommon_preserves
     (context : ScalarComputationContext) (common : ComputationCondition)
     (alternatives : List (ComputationAlternative Operation))
@@ -265,16 +290,24 @@ theorem alternativeSelection_holdingCommon_preserves
   induction alternatives with
   | nil => rfl
   | cons head remaining inductionHypothesis =>
-      simp only [ComputationAlternative.expandCommonPrecondition, List.map_cons,
-        ComputationAlternative.selectFirst, ComputationCondition.eval_and, commonHolds]
-      cases headResult : head.precondition.eval context with
-      | holds => rfl
-      | notTrue =>
-          simpa [ComputationAlternative.expandCommonPrecondition] using
-            inductionHypothesis
-      | poison cause => rfl
+      cases head with
+      | mk precondition operation =>
+          cases precondition with
+          | none =>
+              simp [ComputationAlternative.expandCommonPrecondition,
+                ComputationAlternative.selectFirst, commonHolds]
+          | some guard =>
+              simp only [ComputationAlternative.expandCommonPrecondition,
+                List.map_cons, ComputationAlternative.selectFirst,
+                ComputationCondition.eval_and, commonHolds]
+              cases headResult : guard.eval context with
+              | holds => rfl
+              | notTrue =>
+                  simpa [ComputationAlternative.expandCommonPrecondition] using
+                    inductionHypothesis
+              | poison cause => rfl
 
-/-- A clean non-holding common precondition makes every guarded table a clean no-match without evaluating any alternative-specific guard. -/
+/-- A clean non-holding common precondition makes every table a clean no-match without evaluating any alternative-specific guard. -/
 theorem alternativeSelection_notTrueCommon_noMatch
     (context : ScalarComputationContext) (common : ComputationCondition)
     (alternatives : List (ComputationAlternative Operation))
@@ -285,11 +318,15 @@ theorem alternativeSelection_notTrueCommon_noMatch
   induction alternatives with
   | nil => rfl
   | cons head remaining inductionHypothesis =>
-      simp only [ComputationAlternative.expandCommonPrecondition, List.map_cons,
-        ComputationAlternative.selectFirst, ComputationCondition.eval_and,
-        commonNotTrue]
-      simpa [ComputationAlternative.expandCommonPrecondition] using
-        inductionHypothesis
+      cases head with
+      | mk precondition operation =>
+          cases precondition <;>
+            simp only [ComputationAlternative.expandCommonPrecondition,
+              List.map_cons, ComputationAlternative.selectFirst,
+              ComputationCondition.eval_and, commonNotTrue]
+          all_goals
+            simpa [ComputationAlternative.expandCommonPrecondition] using
+              inductionHypothesis
 
 /-- On a nonempty table, a poisoned common precondition aborts at the first expanded guard before its alternative-specific guard can contribute. -/
 theorem alternativeSelection_poisonedCommon_aborts
@@ -301,7 +338,11 @@ theorem alternativeSelection_poisonedCommon_aborts
     ComputationAlternative.selectFirst
         (ComputationAlternative.expandCommonPrecondition
           (some common) (head :: remaining)) context = .poison cause := by
-  simp [ComputationAlternative.expandCommonPrecondition,
-    ComputationAlternative.selectFirst, ComputationCondition.eval_and, commonPoison]
+  cases head with
+  | mk precondition operation =>
+      cases precondition <;>
+        simp [ComputationAlternative.expandCommonPrecondition,
+          ComputationAlternative.selectFirst, ComputationCondition.eval_and,
+          commonPoison]
 
 end A12Kernel

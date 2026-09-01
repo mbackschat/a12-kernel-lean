@@ -93,8 +93,10 @@ theorem stringOutcomeOverlay_holdingNumberHead_suffixIrrelevant
     (firstSuffix secondSuffix : List
       (ComputationAlternative
         (CheckedNumericTargetComputationOperation model)))
+    (guard : ComputationCondition)
+    (guarded : head.precondition = some guard)
     (holds :
-      head.precondition.eval
+      guard.eval
         (StringComputationContext.withDependencyCell
           context producer dependency) = .holds) :
     ComputationAlternative.selectFirst (head :: firstSuffix)
@@ -103,7 +105,7 @@ theorem stringOutcomeOverlay_holdingNumberHead_suffixIrrelevant
       ComputationAlternative.selectFirst (head :: secondSuffix)
         (StringComputationContext.withDependencyCell
           context producer dependency) := by
-  rw [alternativeSelection_holdingHead_selects _ _ firstSuffix holds,
-    alternativeSelection_holdingHead_selects _ _ secondSuffix holds]
+  rw [alternativeSelection_holdingHead_selects _ _ firstSuffix guard guarded holds,
+    alternativeSelection_holdingHead_selects _ _ secondSuffix guard guarded holds]
 
 end A12Kernel

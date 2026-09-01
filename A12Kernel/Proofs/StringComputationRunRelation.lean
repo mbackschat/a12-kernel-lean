@@ -17,7 +17,14 @@ theorem checkedStringComputationTable_excludes_target
     CheckedStringComputationAlternative.referencesField,
     List.any_eq_false]
   intro alternative member
-  simp [alternative.guardExcludesTarget, alternative.expressionExcludesTarget]
+  have guardExcludes :
+      alternative.precondition.any
+        (·.referencesField table.targetField) = false := by
+    cases guard : alternative.precondition with
+    | none => rfl
+    | some condition =>
+        simpa [guard] using alternative.guardExcludesTarget
+  simp [guardExcludes, alternative.expressionExcludesTarget]
 
 /-- Successful atomic evaluation cannot substitute another target into a completion. -/
 theorem stringComputationRun_evaluateTable_target

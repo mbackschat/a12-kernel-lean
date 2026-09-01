@@ -625,6 +625,7 @@ run_cmd do
 #print axioms A12Kernel.computationAnd_operandOrderObservable
 #print axioms A12Kernel.computationOr_operandOrderObservable
 #print axioms A12Kernel.alternativeSelection_empty_is_noMatch
+#print axioms A12Kernel.alternativeSelection_unguardedHead_selects
 #print axioms A12Kernel.alternativeSelection_holdingHead_selects
 #print axioms A12Kernel.alternativeSelection_notTrueHead_continues
 #print axioms A12Kernel.alternativeSelection_poisonedHead_aborts

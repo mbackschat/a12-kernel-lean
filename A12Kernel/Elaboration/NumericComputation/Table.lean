@@ -3,20 +3,21 @@ import A12Kernel.Elaboration.NumericComputation.Target
 
 /-! # Checked Number computation tables
 
-This capsule consolidates a nonempty guarded table of already-checked Number target operations. Every row must retain the same target and complete target policy. Selection reuses the shared first-match owner and delegates only the selected operation to the existing scalar Numeric evaluator.
+This capsule consolidates a nonempty table of already-checked Number target operations. A sole source row may omit its precondition; every row in a multi-row source table must be guarded. Every row retains the same target and complete target policy. Selection reuses the shared first-match owner and delegates only the selected operation to the existing scalar Numeric evaluator.
 -/
 
 namespace A12Kernel
 
-/-- One guarded Number row certified against the table's shared target and target policy. The complete checked operation is retained because assignment-scale admission and warning suppression are target-specific. -/
+/-- One Number row certified against the table's shared target and target policy. The complete checked operation is retained because assignment-scale admission and warning suppression are target-specific. -/
 structure CheckedNumericComputationAlternative (model : FlatModel)
     (target : FieldId) (policy : NumericTargetPolicy) where
-  precondition : ComputationCondition
+  precondition : Option ComputationCondition
   operation : CheckedNumericTargetComputationOperation model
   targetMatches : operation.operation.core.target.id = target
   policyMatches : operation.policy = policy
-  guardWellFormed : precondition.WellFormed model
-  guardExcludesTarget : precondition.referencesField target = false
+  guardWellFormed : precondition.all (·.wellFormedBool model) = true
+  guardExcludesTarget : precondition.all
+    (fun guard => !guard.referencesField target) = true
 
 namespace CheckedNumericComputationAlternative
 
@@ -28,7 +29,7 @@ def toSelectable (alternative :
 
 end CheckedNumericComputationAlternative
 
-/-- A nonempty guarded Number table with one model-owned target and complete policy. -/
+/-- A nonempty Number table with one model-owned target and complete policy. -/
 structure CheckedNumericComputationTable (model : FlatModel) where
   targetField : FieldId
   targetPolicy : NumericTargetPolicy
@@ -38,6 +39,7 @@ structure CheckedNumericComputationTable (model : FlatModel) where
 
 inductive NumericComputationTableError where
   | empty
+  | unguardedAlternative (alternative : Nat)
   | targetMismatch (alternative : Nat) (expected actual : FieldId)
   | targetPolicyMismatch (alternative : Nat)
   | guardNotAdmitted (alternative : Nat)
@@ -46,15 +48,18 @@ inductive NumericComputationTableError where
 
 private def certifyNumericComputationAlternative
     (target : FieldId) (policy : NumericTargetPolicy) (alternativeIndex : Nat)
+    (guardRequired : Bool)
     (alternative : ComputationAlternative
       (CheckedNumericTargetComputationOperation model)) :
     Except NumericComputationTableError
       (CheckedNumericComputationAlternative model target policy) := do
   if hTarget : alternative.operation.operation.core.target.id = target then
     if hPolicy : alternative.operation.policy = policy then
-      if hGuard : alternative.precondition.wellFormedBool model = true then
-        if hGuardTarget :
-            alternative.precondition.referencesField target = false then
+      if guardRequired && alternative.precondition.isNone then
+        throw (.unguardedAlternative alternativeIndex)
+      else if hGuard : alternative.precondition.all (·.wellFormedBool model) = true then
+        if hGuardTarget : alternative.precondition.all
+            (fun guard => !guard.referencesField target) = true then
           pure {
             precondition := alternative.precondition
             operation := alternative.operation
@@ -83,10 +88,11 @@ def certifyNumericComputationTable
   | first :: remaining => do
       let target := first.operation.operation.core.target.id
       let policy := first.operation.policy
+      let guardRequired := !remaining.isEmpty
       let checkedFirst ←
-        certifyNumericComputationAlternative target policy 1 first
+        certifyNumericComputationAlternative target policy 1 guardRequired first
       let checkedRemaining ← remaining.zipIdx.mapM fun (alternative, index) =>
-        certifyNumericComputationAlternative target policy (index + 2)
+        certifyNumericComputationAlternative target policy (index + 2) guardRequired
           alternative
       pure {
         targetField := target

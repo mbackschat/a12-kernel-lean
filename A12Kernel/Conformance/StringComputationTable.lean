@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.StringComputationTable
+import A12Kernel.Elaboration.StringComputationRunPlan
 
 /-! # Checked String-computation table locks
 
@@ -53,6 +53,10 @@ private def alternative (guard : ComputationCondition) (op : CheckedStringComput
     ComputationAlternative (CheckedStringComputationOperation model) :=
   { precondition := guard, operation := op }
 
+private def unguarded (op : CheckedStringComputationOperation model) :
+    ComputationAlternative (CheckedStringComputationOperation model) :=
+  { precondition := none, operation := op }
+
 private def tableError
     (alternatives : List (ComputationAlternative
       (CheckedStringComputationOperation model))) :
@@ -67,6 +71,13 @@ private def tableOutcome
     (context : StringComputationContext) : Option StringTargetOutcome := do
   let table ← (certifyStringComputationTable alternatives).toOption
   (table.evaluateOutcomeWithPattern none context).toOption
+
+private def tableReferencesField
+    (alternatives : List (ComputationAlternative
+      (CheckedStringComputationOperation model)))
+    (field : FieldId) : Option Bool := do
+  let table ← (certifyStringComputationTable alternatives).toOption
+  pure (table.referencesField field)
 
 private def tableDeclaringGroups
     (alternatives : List (ComputationAlternative
@@ -93,8 +104,22 @@ private def otherLiteral : CheckedStringComputationOperation model :=
 private def rulesLiteral : CheckedStringComputationOperation model :=
   (operationAt ["Rules"] target.id (.literal "RULES")).get (by native_decide)
 
-/- Empty guarded tables are unrepresentable after certification. -/
+/- Empty tables are unrepresentable after certification. -/
 example : tableError [] = some .empty := by
+  native_decide
+
+/- Only a sole alternative may omit its precondition. It selects without consulting a malformed field that a fabricated tautological guard would read. -/
+example :
+    tableOutcome [unguarded copySource]
+        (context (.parsed (.str "VALUE")) (.rejected .malformed)) =
+      some (.accepted ⟨"VALUE", by decide⟩) ∧
+    tableReferencesField [unguarded copySource] source.id = some true ∧
+    tableReferencesField [unguarded copySource] rawGate.id = some false ∧
+    tableError [unguarded copySource,
+      alternative (.fieldNotFilled rawGate.id) literalFallback] =
+        some (.unguardedAlternative 1) ∧
+    tableError [alternative (.fieldNotFilled rawGate.id) copySource,
+      unguarded literalFallback] = some (.unguardedAlternative 2) := by
   native_decide
 
 /- An unresolved guard ID cannot cross the checked table boundary. -/

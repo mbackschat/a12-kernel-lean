@@ -26,7 +26,7 @@ private def tableWithPolicy? (target : FieldId)
     model ["Root"] target expression).toOption
   let operation ← (core.attachTargetPolicy policy).toOption
   (certifyNumericComputationTable [
-    { precondition := .fieldNotFilled laterId, operation }]).toOption
+    { precondition := some (.fieldNotFilled laterId), operation }]).toOption
 
 private def completeTable?
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
@@ -34,7 +34,7 @@ private def completeTable?
   let operation ← (elaborateCompleteNumericTargetComputationOperation
     model ["Root"] targetId expression).toOption
   (certifyNumericComputationTable [
-    { precondition := .fieldNotFilled laterId, operation }]).toOption
+    { precondition := some (.fieldNotFilled laterId), operation }]).toOption
 
 private def repeatableTable? :=
   completeTable? surfaceRepeatableFirstFilled

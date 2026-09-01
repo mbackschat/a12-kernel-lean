@@ -12,11 +12,24 @@ Numeric, typed String/stored-Enumeration, and Boolean/Confirm value counts retai
 
 namespace A12Kernel
 
-/-- One computation alternative with validation-only tolerance metadata. First-match computation selection deliberately consumes only the inherited precondition and operation. -/
-structure GeneratedComputationAlternative (Operation : Type) extends
-    ComputationAlternative Operation where
+/-- One guarded computation alternative with validation-only tolerance metadata. First-match computation selection consumes only the required precondition and operation. -/
+structure GeneratedComputationAlternative (Operation : Type) where
+  precondition : ComputationCondition
+  operation : Operation
   tolerance : Option NumericToleranceRange := none
   deriving Repr, DecidableEq
+
+namespace GeneratedComputationAlternative
+
+/-- Erase validation-only tolerance while retaining the required guarded-row shape. -/
+def toComputationAlternative
+    (alternative : GeneratedComputationAlternative Operation) :
+    ComputationAlternative Operation := {
+  precondition := some alternative.precondition
+  operation := alternative.operation
+}
+
+end GeneratedComputationAlternative
 
 /-- The sole source alternative may omit its precondition. It remains distinct from a guarded row so the semantic core never fabricates an always-true condition. -/
 structure SingleGeneratedComputationAlternative (Operation : Type) where
@@ -55,20 +68,15 @@ end GuardedGeneratedComputationAlternatives
 
 namespace SingleGeneratedComputationAlternative
 
-/-- Select the sole operation directly only when both source guards are absent. Every present guard still uses the shared ordered selector and common-precondition expansion. -/
+/-- Reuse the shared selector for the complete optional singleton-guard shape. -/
 def selectFirst (alternative : SingleGeneratedComputationAlternative Operation)
     (commonPrecondition : Option ComputationCondition)
     (context : ScalarComputationContext) :
     ComputationAlternativeSelection Operation :=
-  match alternative.precondition, commonPrecondition with
-  | none, none => .selected alternative.operation
-  | none, some common =>
-      ComputationAlternative.selectFirst
-        [{ precondition := common, operation := alternative.operation }] context
-  | some precondition, common =>
-      ComputationAlternative.selectFirst
-        (ComputationAlternative.expandCommonPrecondition common
-          [{ precondition, operation := alternative.operation }]) context
+  ComputationAlternative.selectFirst
+    (ComputationAlternative.expandCommonPrecondition commonPrecondition
+      [{ precondition := alternative.precondition
+         operation := alternative.operation }]) context
 
 end SingleGeneratedComputationAlternative
 

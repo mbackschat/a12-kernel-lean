@@ -2,14 +2,14 @@ import A12Kernel.Semantics.StringCascade
 
 /-! # A12Kernel.Semantics.StringAlternatives — one resolved String alternative table
 
-This capsule implements the resolved runtime boundary of [`spec/09-computations.md` §5](../../spec/09-computations.md#5-where-a-computation-runs--scope-and-the-parallel-join) by composing the existing operation-neutral first-match selector with one already-resolved nonrepeatable String target. An optional common precondition lowers by left-conjoining it to each guarded alternative before that same selector runs. Selection completes before the chosen expression is evaluated: no match is clean no-value, selection poison is target poison, and a selected expression is evaluated exactly once without outcome-driven fallback.
+This capsule implements the resolved runtime boundary of [`spec/09-computations.md` §5](../../spec/09-computations.md#5-where-a-computation-runs--scope-and-the-parallel-join) by composing the existing operation-neutral first-match selector with one already-resolved nonrepeatable String target. An optional common precondition becomes the guard of an unguarded row or is left-conjoined to an existing guard before that same selector runs. Selection completes before the chosen expression is evaluated: no match is clean no-value, selection poison is target poison, and a selected expression is evaluated exactly once without outcome-driven fallback.
 
-The caller supplies a model-legal guarded table and an already-resolved common condition when present. Empty lists are totalized but not claimed authorable. Unguarded-singleton lowering, model checks, paths, repeats, same-target table assembly, scheduling, and generated validation remain separate.
+The caller supplies a model-legal table and an already-resolved common condition when present. Empty lists are totalized but not claimed authorable. Model checks, source-table cardinality, paths, repeats, same-target table assembly, scheduling, and generated validation remain separate.
 -/
 
 namespace A12Kernel
 
-/-- One resolved guarded String alternative table and its shared target state. Target and prior state are not duplicated in each alternative. -/
+/-- One resolved String alternative table and its shared target state. Target and prior state are not duplicated in each alternative. -/
 structure StringAlternativeComputation where
   targetField : FieldId
   alternatives : List (ComputationAlternative StringExpr)
@@ -19,7 +19,7 @@ structure StringAlternativeComputation where
 
 namespace StringAlternativeComputation
 
-/-- Lower an optional whole-computation precondition by left-conjoining it to every already-guarded alternative. The returned table stays in the existing first-match core. -/
+/-- Lower an optional whole-computation precondition into every alternative. The returned table stays in the existing first-match core. -/
 def withCommonPrecondition (computation : StringAlternativeComputation)
     (commonPrecondition : Option ComputationCondition) :
     StringAlternativeComputation :=

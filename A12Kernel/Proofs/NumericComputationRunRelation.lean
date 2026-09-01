@@ -38,7 +38,7 @@ private theorem checkedNumericComputationOperation_excludes_target
 private theorem checkedNumericComputationAlternative_excludes_target
     (alternative :
       CheckedNumericComputationAlternative model target policy) :
-    (alternative.toSelectable.precondition.referencesField target ||
+    (alternative.toSelectable.precondition.any (·.referencesField target) ||
         alternative.toSelectable.operation.referencesField target) = false := by
   have operationExcludes :
       alternative.operation.referencesField target = false := by
@@ -51,8 +51,15 @@ private theorem checkedNumericComputationAlternative_excludes_target
       _ = false :=
         checkedNumericComputationOperation_excludes_target
           alternative.operation
-  simp [CheckedNumericComputationAlternative.toSelectable,
-    alternative.guardExcludesTarget, operationExcludes]
+  rw [Bool.or_eq_false_iff]
+  constructor
+  · change alternative.precondition.any (·.referencesField target) = false
+    cases guard : alternative.precondition with
+    | none => rfl
+    | some condition =>
+        simpa [guard] using alternative.guardExcludesTarget
+  · simpa [CheckedNumericComputationAlternative.toSelectable] using
+      operationExcludes
 
 theorem checkedNumericComputationTable_excludes_target
     (table : CheckedNumericComputationTable model) :

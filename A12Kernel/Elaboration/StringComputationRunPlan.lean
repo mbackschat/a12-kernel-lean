@@ -3,24 +3,24 @@ import A12Kernel.Elaboration.StringComputationTable
 
 /-! # Checked nonrepeatable String computation run plans
 
-This capsule certifies a finite supplied-order list of checked String tables. The low-level certifier requires unique targets. The authored-table entry point first flattens repeated targets into the first target occurrence while preserving every guarded row's encounter order, then applies the same dependency check. A table may read another computed target only after that target's consolidated table. Ordinary input reads are not part of the scheduling graph.
+This capsule certifies a finite supplied-order list of checked String tables. The low-level certifier requires unique targets. The authored-table entry point first flattens repeated targets into the first target occurrence while preserving every row's encounter order, then applies the same dependency check. A table may read another computed target only after that target's consolidated table. Ordinary input reads are not part of the scheduling graph.
 -/
 
 namespace A12Kernel
 
 namespace CheckedStringComputationAlternative
 
-/-- Whether either side of one checked guarded row reads the named field. -/
+/-- Whether either side of one checked row reads the named field. An unguarded row contributes no condition dependency. -/
 def referencesField (alternative : CheckedStringComputationAlternative model target)
     (field : FieldId) : Bool :=
-  alternative.precondition.referencesField field ||
+  alternative.precondition.any (·.referencesField field) ||
     alternative.expression.core.referencesField field
 
 end CheckedStringComputationAlternative
 
 namespace CheckedStringComputationTable
 
-/-- Whether any guarded row reads the named field. -/
+/-- Whether any row reads the named field. -/
 def referencesField (table : CheckedStringComputationTable model)
     (field : FieldId) : Bool :=
   table.selectableAlternatives.any (·.referencesField field)

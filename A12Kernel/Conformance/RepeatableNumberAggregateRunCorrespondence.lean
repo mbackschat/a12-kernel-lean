@@ -89,7 +89,7 @@ private def table? (target guard : FieldId)
   let operation ← (elaborateCompleteNumericTargetComputationOperation
     model ["Order"] target expression).toOption
   (certifyNumericComputationTable [{
-    precondition := .fieldFilled guard
+    precondition := some (.fieldFilled guard)
     operation
   }]).toOption
 

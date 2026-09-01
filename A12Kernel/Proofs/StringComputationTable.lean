@@ -8,14 +8,17 @@ These laws expose the certificate and erasure boundary used by the later checked
 
 namespace A12Kernel
 
-/-- Every checked row retains a model-admitted direct-presence guard. -/
+/-- Every present checked-row guard is a model-admitted direct-presence condition. -/
 theorem checkedStringComputationAlternative_guard_wellFormed
-    (alternative : CheckedStringComputationAlternative model target) : alternative.precondition.WellFormed model :=
+    (alternative : CheckedStringComputationAlternative model target) :
+    alternative.precondition.all (·.wellFormedBool model) = true :=
   alternative.guardWellFormed
 
-/-- Every checked row excludes its own target from the guard before evaluation. -/
+/-- Every present checked-row guard excludes its own target before evaluation. -/
 theorem checkedStringComputationAlternative_excludes_target
-    (alternative : CheckedStringComputationAlternative model target) : alternative.precondition.referencesField target = false :=
+    (alternative : CheckedStringComputationAlternative model target) :
+    alternative.precondition.all
+      (fun guard => !guard.referencesField target) = true :=
   alternative.guardExcludesTarget
 
 /-- Every checked row also retains operation-side target exclusion after target consolidation. -/

@@ -86,7 +86,7 @@ private def numberTable? (target : FieldId)
   let operation ← (elaborateCompleteNumericTargetComputationOperation
     model ["Order"] target expression).toOption
   (certifyNumericComputationTable [{
-    precondition := .fieldFilled label.id
+    precondition := some (.fieldFilled label.id)
     operation
   }]).toOption
 
@@ -112,7 +112,7 @@ private def seededNumberTable? :
   let operation ← (elaborateCompleteNumericTargetComputationOperation
     model ["Order"] doubled.id (rootNumber "Total")).toOption
   (certifyNumericComputationTable [{
-    precondition := .fieldNotFilled gate.id
+    precondition := some (.fieldNotFilled gate.id)
     operation
   }]).toOption
 

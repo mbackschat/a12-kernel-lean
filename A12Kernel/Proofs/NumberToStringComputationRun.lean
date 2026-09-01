@@ -84,8 +84,10 @@ theorem numericOutcomeOverlay_holdingHead_suffixIrrelevant
     (head : ComputationAlternative StringExpr)
     (firstSuffix secondSuffix :
       List (ComputationAlternative StringExpr))
+    (guard : ComputationCondition)
+    (guarded : head.precondition = some guard)
     (holds :
-      head.precondition.eval
+      guard.eval
         (context.withDependencyCell producer
           (StringDependencyCell.ofNumericOutcome outcome)) = .holds) :
     ({ computation with alternatives := head :: firstSuffix }).evaluateOutcome
@@ -98,6 +100,6 @@ theorem numericOutcomeOverlay_holdingHead_suffixIrrelevant
     computation
     (context.withDependencyCell producer
       (StringDependencyCell.ofNumericOutcome outcome))
-    head firstSuffix secondSuffix holds
+    head firstSuffix secondSuffix guard guarded holds
 
 end A12Kernel

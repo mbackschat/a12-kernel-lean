@@ -56,7 +56,7 @@ def supportsScalarEvaluation
 def referencesField (table : CheckedNumericComputationTable model)
     (field : FieldId) : Bool :=
   table.selectableAlternatives.any fun alternative =>
-    alternative.precondition.referencesField field ||
+    alternative.precondition.any (·.referencesField field) ||
       alternative.operation.referencesField field
 
 end CheckedNumericComputationTable
