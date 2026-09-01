@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.CheckedIndexColumn
 import A12Kernel.Elaboration.FieldEntityList
 import A12Kernel.Elaboration.SingleGroup
+import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.RepetitionNotUnique
 import A12Kernel.Semantics.SemanticIndex
 
@@ -52,6 +53,14 @@ surface types or no representation ([checkpoint](../../docs/SOURCES.md#src-pr2-s
 structure SurfaceFilledFieldCountSemanticIndexPair where
   firstTarget : SurfaceFieldPath
   secondTarget : SurfaceFieldPath
+  token : String
+  deriving Repr, DecidableEq
+
+/-- The exact reviewed one-level starred Number target with a literal text semantic-index suffix.
+Other target kinds, repetition topologies, and key forms have no representation in this certificate
+([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)). -/
+structure SurfaceStarredNumberSemanticIndexUse where
+  target : SurfaceStarFieldPath
   token : String
   deriving Repr, DecidableEq
 
@@ -124,6 +133,15 @@ inductive IndexedGroupFieldFillPairElabError where
   | groupReference (error : SingleGroupElabError)
   | semanticIndex (error : SemanticIndexElabError)
   | fieldEntity (error : FieldEntityShapeElabError)
+  | incoherentCore
+  deriving Repr, DecidableEq
+
+inductive StarredNumberSemanticIndexRefusalError where
+  | starPath (error : StarPathElabError)
+  | semanticIndex (error : SemanticIndexElabError)
+  | targetNotNumber (path : List String)
+  | unsupportedTopology (levels : List RepeatableLevel)
+      (firstStar selectedLevel : Nat)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -229,6 +247,22 @@ structure CheckedIndexedGroupFieldFillPair (model : FlatModel) where
   fieldOwned : model.fields.contains field = true
   fieldNonrepeatable : field.repeatableScope.isEmpty = true
   fieldOutsideSelection : (!selection.group.path.isPrefixOf field.groupPath) = true
+
+/-- One valid starred Number field and one valid exact-text semantic-index selection certified as
+the same one-level target before the path-specific refusal is projected. It supplies no indexed
+star evaluator. -/
+structure CheckedStarredNumberSemanticIndexRefusal (model : FlatModel) where
+  token : String
+  starred : CheckedStarFieldPath model
+  selection : CheckedSemanticIndexSource model
+  field : FlatNumberField
+  targetSelected : (starred.declaration == selection.targetDeclaration) = true
+  targetNumber : starred.declaration.toNumberField? = some field
+  groupSelected : (selection.group.path == starred.declaration.groupPath) = true
+  oneLevel :
+    (starred.path.axes.map (·.level) == [selection.group.level]) = true
+  firstStarAtSelectedLevel : (starred.path.firstStar == 0) = true
+  keyRetained : (selection.key == .literal (.text token)) = true
 
 /-- The reduced raw-context instance: that route rebuilds the column from a one-group scan rather
 than projecting the shared one, so it needs a Number index and a Number target. -/
@@ -481,6 +515,70 @@ def elaborateIndexedGroupFieldFillPair (model : FlatModel)
           throw .incoherentCore
       else
         throw .incoherentCore
+
+/-- Certify the exact one-level starred Number target and its otherwise-valid literal text
+semantic-index selection before returning the measured wildcard/index refusal. -/
+def elaborateStarredNumberSemanticIndexRefusal (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceStarredNumberSemanticIndexUse) :
+    Except StarredNumberSemanticIndexRefusalError
+      (CheckedStarredNumberSemanticIndexRefusal model) := do
+  let starred ← elaborateStarFieldPath model declaringGroup authored.target
+    |>.mapError .starPath
+  let selection ← elaborateSemanticIndexSource model declaringGroup {
+      target := authored.target.toFieldPath
+      key := .literal (.text authored.token) }
+    |>.mapError .semanticIndex
+  if hTarget : starred.declaration == selection.targetDeclaration then
+    match hNumber : starred.declaration.toNumberField? with
+    | none => throw (.targetNotNumber starred.declaration.path)
+    | some field =>
+        if hGroup : selection.group.path == starred.declaration.groupPath then
+          if hLevel : starred.path.axes.map (·.level) == [selection.group.level] then
+            if hFirstStar : starred.path.firstStar == 0 then
+              if hKey : selection.key == .literal (.text authored.token) then
+                pure {
+                  token := authored.token
+                  starred
+                  selection
+                  field
+                  targetSelected := hTarget
+                  targetNumber := hNumber
+                  groupSelected := hGroup
+                  oneLevel := hLevel
+                  firstStarAtSelectedLevel := hFirstStar
+                  keyRetained := hKey }
+              else
+                throw .incoherentCore
+            else
+              throw (.unsupportedTopology
+                (starred.path.axes.map (·.level)) starred.path.firstStar
+                selection.group.level)
+          else
+            throw (.unsupportedTopology
+              (starred.path.axes.map (·.level)) starred.path.firstStar
+              selection.group.level)
+        else
+          throw .incoherentCore
+  else
+    throw .incoherentCore
+
+namespace CheckedStarredNumberSemanticIndexRefusal
+
+/-- The exact path diagnostic measured after both component certificates succeed. -/
+def diagnostic (_ : CheckedStarredNumberSemanticIndexRefusal model) :
+    KernelStaticDiagnostic :=
+  .semanticIndexAndWildcard
+
+end CheckedStarredNumberSemanticIndexRefusal
+
+/-- Project the exact refusal without assigning its code to an invalid index selection, an
+unstarred path, a non-Number target, or a wider repetition topology. -/
+def projectStarredNumberSemanticIndexDiagnostic? (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceStarredNumberSemanticIndexUse) :
+    Option KernelStaticDiagnostic :=
+  match elaborateStarredNumberSemanticIndexRefusal model declaringGroup authored with
+  | .ok checked => some checked.diagnostic
+  | .error _ => none
 
 /-- Refine the general source to the reduced raw-context route's Number index and Number target. -/
 def elaborateNumberSemanticIndexSource (model : FlatModel)

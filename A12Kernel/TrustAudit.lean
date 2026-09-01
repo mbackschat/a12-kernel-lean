@@ -1549,6 +1549,8 @@ run_cmd do
 #print axioms A12Kernel.checkedTextSemanticIndexGroupSelection_identity
 #print axioms A12Kernel.indexedGroupFieldFillOperator_exhaustive
 #print axioms A12Kernel.checkedIndexedGroupFieldFillPair_identity
+#print axioms A12Kernel.checkedStarredNumberSemanticIndexRefusal_identity
+#print axioms A12Kernel.checkedStarredNumberSemanticIndexRefusal_diagnostic
 #print axioms A12Kernel.semanticIndexDateRangeBoundPart_resolve_factors
 #print axioms A12Kernel.semanticIndexDateRangeBoundPart_resolve_context
 #print axioms A12Kernel.semanticIndexDateRangeBoundPart_resolve_wrongKind

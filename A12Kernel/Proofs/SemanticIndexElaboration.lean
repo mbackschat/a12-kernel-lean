@@ -69,6 +69,36 @@ theorem checkedIndexedGroupFieldFillPair_identity
   exact ⟨checked.fieldOwned, checked.fieldNonrepeatable,
     checked.fieldOutsideSelection⟩
 
+/-- The starred-index refusal certificate retains one exact Number target, selected group, star
+level, and authored text key. -/
+theorem checkedStarredNumberSemanticIndexRefusal_identity
+    (checked : CheckedStarredNumberSemanticIndexRefusal model) :
+    checked.starred.declaration = checked.selection.targetDeclaration ∧
+      checked.starred.declaration.toNumberField? = some checked.field ∧
+      checked.selection.group.path = checked.starred.declaration.groupPath ∧
+      checked.starred.path.axes.map (·.level) = [checked.selection.group.level] ∧
+      checked.starred.path.firstStar = 0 ∧
+      checked.selection.key = .literal (.text checked.token) := by
+  constructor
+  · simpa using checked.targetSelected
+  constructor
+  · exact checked.targetNumber
+  constructor
+  · simpa using checked.groupSelected
+  constructor
+  · simpa using checked.oneLevel
+  constructor
+  · simpa using checked.firstStarAtSelectedLevel
+  · simpa using checked.keyRetained
+
+/-- Every checked instance projects the exact measured path diagnostic; invalid or wider shapes
+cannot construct this certificate. -/
+@[simp]
+theorem checkedStarredNumberSemanticIndexRefusal_diagnostic
+    (checked : CheckedStarredNumberSemanticIndexRefusal model) :
+    checked.diagnostic = .semanticIndexAndWildcard := by
+  rfl
+
 /-- The document-backed route delegates key policy to the same semantic-index evaluator after the
 shared checked column has been projected, at every index kind. -/
 theorem checkedSemanticIndex_preliminary_delegates

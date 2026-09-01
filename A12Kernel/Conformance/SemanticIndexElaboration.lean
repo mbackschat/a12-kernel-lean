@@ -153,6 +153,16 @@ private def filledFieldSemanticIndexPair :
   token := "SKU-1"
 }
 
+private def starredSemanticIndexUse
+    (field : String := "Count") (token : String := "SKU-1")
+    (starred : Bool := true) : SurfaceStarredNumberSemanticIndexUse := {
+  target := {
+    base := .absolute
+    groups := [{ name := "Order" }, { name := "Items", starred }]
+    field }
+  token
+}
+
 private def indexedGroupFillSurface
     (operator : IndexedGroupFieldFillOperator) :
     SurfaceIndexedGroupFieldFillPair := {
@@ -265,6 +275,18 @@ private def unindexedGroupFillDiagnosticCode? : Option String :=
   | .ok _ => none
   | .error error => error.diagnostic?.map KernelStaticDiagnostic.kernelCode
 
+private def starredSemanticIndexRefusal?
+    (token : String := "SKU-1") :
+    Option (CheckedStarredNumberSemanticIndexRefusal indexedFieldCountModel) :=
+  (elaborateStarredNumberSemanticIndexRefusal indexedFieldCountModel ["Order"]
+    (starredSemanticIndexUse (token := token))).toOption
+
+private def starredSemanticIndexDiagnostic?
+    (sourceModel : FlatModel := indexedFieldCountModel)
+    (authored : SurfaceStarredNumberSemanticIndexUse := starredSemanticIndexUse) :
+    Option KernelStaticDiagnostic :=
+  projectStarredNumberSemanticIndexDiagnostic? sourceModel ["Order"] authored
+
 private def checked : CheckedNumberSemanticIndexSource model :=
   {
     toCheckedSemanticIndexSource := {
@@ -356,6 +378,38 @@ example : [IndexedGroupFieldFillOperator.allFieldsFilled,
 /- Dropping `For` sends the otherwise identical repeatable group/direct-field pair back through the
 shared entity-list wildcard gate instead of inheriting indexed admission. -/
 example : unindexedGroupFillDiagnosticCode? = some "MVK_NO_WILDCARD" := by
+  native_decide
+
+/- The one-level starred Number target and otherwise-valid text semantic-index selection retain the
+   same declaration, group, index, and token before the path-specific refusal is projected. -/
+example : starredSemanticIndexDiagnostic? = some .semanticIndexAndWildcard ∧
+    starredSemanticIndexDiagnostic?.map (·.kernelCode) =
+      some "MVK_SEMANTIC_INDEX_AND_WILDCARD" ∧
+    starredSemanticIndexRefusal?.map (fun checked =>
+      (checked.starred.declaration.id, checked.selection.targetDeclaration.id,
+        checked.selection.group.path, checked.selection.indexDeclaration.id,
+        checked.selection.key)) =
+      some (countDecl.id, countDecl.id, ["Order", "Items"], skuDecl.id,
+        CheckedSemanticIndexKey.literal (.text "SKU-1")) := by
+  native_decide
+
+/- The certificate retains the authored token rather than specializing the measured `SKU-1` row.
+   This is an internal identity guard, not wider Kernel correspondence. -/
+example : (starredSemanticIndexRefusal? "SKU-2").map
+    (fun checked => checked.selection.key) =
+      some (.literal (.text "SKU-2")) := by
+  native_decide
+
+/- An unindexed group, an unstarred target, and a non-Number target do not inherit the measured
+   starred Number carrier code. -/
+example :
+    let unindexedModel : FlatModel := {
+      indexedFieldCountModel with repeatableGroups := [{ items with indexField := none }] }
+    starredSemanticIndexDiagnostic? unindexedModel = none ∧
+      starredSemanticIndexDiagnostic? indexedFieldCountModel
+        (starredSemanticIndexUse (starred := false)) = none ∧
+      starredSemanticIndexDiagnostic? indexedFieldCountModel
+        (starredSemanticIndexUse (field := "Sku")) = none := by
   native_decide
 
 /- An otherwise present but unindexed containing group reaches the measured semantic-index refusal
