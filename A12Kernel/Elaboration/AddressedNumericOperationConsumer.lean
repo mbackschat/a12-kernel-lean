@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.AddressedNumberExtremum
 
 /-! # Bounded addressed numeric-operation Analyze/Transform view
 
-This internal consumer view covers the completed repeatable textual conversions and direct-Number field, `Abs`, Round, and bounded operand-list extrema over direct fields, operand-local `Abs`/Round/arithmetic/division/power children over field-or-literal operands, one nested extremum over direct field-or-literal leaves, and at most one immediate literal per extremum call. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, decides candidate target-scale legality from the fingerprint through the elaborator's own gate, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
+This internal consumer view covers the completed repeatable textual conversions and direct-Number field, `Abs`, Round, and bounded operand-list extrema over direct fields, operand-local `Abs`/Round/arithmetic/division/power children over field-or-literal operands, one nested extremum over direct/local-wrapper/literal leaves, and at most one immediate literal per extremum call. It projects their exact bounded read/write footprint and transformation-sensitive fingerprint from checked operations, compares fingerprints without claiming equivalence, decides candidate target-scale legality from the fingerprint through the elaborator's own gate, and exposes only exact identity as a Transform. It adds no evaluator, recursive rewrite system, solver, protocol, command, or shipment.
 -/
 
 namespace A12Kernel
@@ -32,6 +32,14 @@ inductive AddressedNumberArithmeticOperandIdentity where
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
 
+/-- One bounded nested-extremum leaf identity. It mirrors the non-recursive checked leaf rather than reusing the binary-child identity or opening a recursive fingerprint. -/
+inductive AddressedNumberNestedExtremumLeafIdentity where
+  | field (field : FieldId)
+  | abs (field : FieldId)
+  | round (field : FieldId) (mode : DecimalRoundingMode) (places : Nat)
+  | literal (decoded : DecodedNumericLiteral)
+  deriving Repr, DecidableEq
+
 /-- One bounded operand identity retained for consumer-visible extrema order. -/
 inductive AddressedNumberExtremumOperandIdentity where
   | field (field : FieldId)
@@ -43,7 +51,7 @@ inductive AddressedNumberExtremumOperandIdentity where
   | division (left right : AddressedNumberArithmeticOperandIdentity)
   | power (base exponent : AddressedNumberArithmeticOperandIdentity)
   | extremum (operation : NumericExtremumOp)
-      (operands : List AddressedNumberArithmeticOperandIdentity)
+      (operands : List AddressedNumberNestedExtremumLeafIdentity)
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
 
@@ -134,6 +142,9 @@ private def extremumOperandIdentity :
   | .extremum operation =>
       .extremum operation.op (operation.orderedOperands.map fun
         | .field source => .field source.placement.sourceDeclaration.id
+        | .abs source => .abs source.placement.sourceDeclaration.id
+        | .round source mode places =>
+            .round source.placement.sourceDeclaration.id mode places.val
         | .literal decoded => .literal decoded)
   | .literal decoded => .literal decoded
 

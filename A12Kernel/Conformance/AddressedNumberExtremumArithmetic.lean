@@ -86,7 +86,27 @@ private def nestedExtremum (op : NumericExtremumOp)
     (first : SurfaceAddressedNumberArithmeticOperand)
     (rest : List SurfaceAddressedNumberArithmeticOperand) :
     SurfaceAddressedNumberExtremumOperand :=
+  let toLeaf : SurfaceAddressedNumberArithmeticOperand →
+      SurfaceAddressedNumberExtremumLeaf
+    | .field reference => .field reference
+    | .literal decoded => .literal decoded
+  .extremum op (toLeaf first) (rest.map toLeaf)
+
+private def nestedAbs (name : String) :
+    SurfaceAddressedNumberExtremumLeaf :=
+  .abs (bare name)
+
+private def nestedRound (name : String) (mode : DecimalRoundingMode)
+    (places : RoundingPlaces) : SurfaceAddressedNumberExtremumLeaf :=
+  .round (bare name) mode places
+
+private def nestedWrappedExtremum (op : NumericExtremumOp)
+    (first : SurfaceAddressedNumberExtremumLeaf)
+    (rest : List SurfaceAddressedNumberExtremumLeaf) :
+    SurfaceAddressedNumberExtremumOperand :=
   .extremum op first rest
+
+private def zeroPlaces : RoundingPlaces := ⟨0, by decide⟩
 
 private def field (name : String) : SurfaceAddressedNumberExtremumOperand :=
   .field (bare name)
@@ -521,6 +541,32 @@ example :
     (outcomes? (nestedExtremum .minimum (fld "A") [fld "B"])
         [field "C"] >>= (·[5]?)) =
       some (addr target.id 6, .inheritedPoison .malformed) := by
+  native_decide
+
+/- Nested wrappers retain their own operation, scale, and authored read order before the outer selector runs. -/
+example :
+    outcomes? (nestedWrappedExtremum .minimum (nestedAbs "A")
+        [nestedRound "B" .floor zeroPlaces]) [field "C"] = some [
+      (addr target.id 1, .accepted (stored 1 0)),
+      (addr target.id 2, .accepted (stored (-2) 0)),
+      (addr target.id 3, .accepted (stored 0 0)),
+      (addr target.id 4, .accepted (stored 0 0)),
+      (addr target.id 5, .accepted (stored 0 0)),
+      (addr target.id 6, .inheritedPoison .malformed),
+      (addr target.id 7, .inheritedPoison .declaredConstraint),
+      (addr target.id 8, .accepted (stored 6 0))
+    ] ∧
+    (outcomes? (nestedWrappedExtremum .minimum
+        (nestedRound "B" .floor zeroPlaces) [nestedAbs "A"])
+        [field "C"] >>= (·[5]?)) =
+      some (addr target.id 6, .inheritedPoison .declaredConstraint) ∧
+    (outcomes? (nestedWrappedExtremum .minimum (nestedAbs "C") []) [] >>=
+        (·[1]?)) = some (addr target.id 2, .accepted (stored 2 0)) ∧
+    (operation? zeroScale
+      (nestedWrappedExtremum .minimum
+        (nestedRound "B" .floor zeroPlaces) []) []).isSome = true ∧
+    (operation? zeroScale
+      (nestedExtremum .minimum (fld "B") []) []).isNone = true := by
   native_decide
 
 private inductive InnerShape where

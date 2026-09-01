@@ -215,6 +215,13 @@ private def suppressedExtremumLeaf? (op : NumericExtremumOp)
 private def places0 : RoundingPlaces := ⟨0, by decide⟩
 private def places1 : RoundingPlaces := ⟨1, by decide⟩
 
+private def nestedAbs (name : String) : SurfaceAddressedNumberExtremumLeaf :=
+  .abs (bare name)
+
+private def nestedRound (name : String) (mode : DecimalRoundingMode)
+    (places : RoundingPlaces) : SurfaceAddressedNumberExtremumLeaf :=
+  .round (bare name) mode places
+
 /-- One constant-only product: an operand that reads no field, so a list of only these references nothing at all. -/
 private def extremumConstantProduct (left right : Rat)
     (leftScale rightScale : Int) : SurfaceAddressedNumberExtremumOperand :=
@@ -581,6 +588,60 @@ example :
           [.power (.field amount.id) (.field selected.id),
             .literal { value := 3, authoredScale := 0 }]
       } := by
+  native_decide
+
+/- Analyze retains nested wrapper identity and leaf order rather than flattening the child into outer operands. -/
+example :
+    analyzed? (literalExtremumLeaf? .minimum sameScaleTarget
+      (.extremum .minimum (nestedAbs "Amount")
+        [nestedRound "Selected" .floor places0])
+      [extremumField "Converted"]) =
+      some {
+        targetField := sameScaleTarget.id
+        sourceFields := [amount.id, selected.id, converted.id]
+        scope := [10]
+        parameters := .extremum .minimum
+          { scale := .exact 2, canExpandScale := false }
+          [.extremum .minimum
+            [.abs amount.id, .round selected.id .floor 0],
+            .field converted.id]
+      } ∧
+    analyzed? (literalExtremumLeaf? .minimum sameScaleTarget
+      (.extremum .minimum (nestedAbs "Amount")
+        [nestedRound "Selected" .ceiling places1])
+      [extremumField "Converted"]) =
+      some {
+        targetField := sameScaleTarget.id
+        sourceFields := [amount.id, selected.id, converted.id]
+        scope := [10]
+        parameters := .extremum .minimum
+          { scale := .exact 2, canExpandScale := false }
+          [.extremum .minimum
+            [.abs amount.id, .round selected.id .ceiling 1],
+            .field converted.id]
+      } ∧
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (.extremum .minimum (nestedAbs "Amount")
+          [nestedRound "Selected" .floor places0])
+        [extremumField "Converted"])
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (.extremum .minimum (nestedAbs "Amount")
+          [nestedRound "Selected" .ceiling places1])
+        [extremumField "Converted"]) = none ∧
+    (analyzed? (literalExtremumLeaf? .minimum sameScaleTarget
+      (.extremum .minimum (nestedRound "Selected" .floor places0)
+        [nestedAbs "Amount"])
+      [extremumField "Converted"])).isSome = true ∧
+    fingerprintMatch?
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (.extremum .minimum (nestedAbs "Amount")
+          [nestedRound "Selected" .floor places0])
+        [extremumField "Converted"])
+      (literalExtremumLeaf? .minimum sameScaleTarget
+        (.extremum .minimum (nestedRound "Selected" .floor places0)
+          [nestedAbs "Amount"])
+        [extremumField "Converted"]) = none := by
   native_decide
 
 /- An inner literal is retained as an operand identity, not folded into the derived scale: two products differing only in the literal's authored scale keep distinct fingerprints even though their values agree, and moving the literal to the other inner position also stays distinct. -/

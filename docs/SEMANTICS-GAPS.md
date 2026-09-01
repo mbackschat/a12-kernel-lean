@@ -84,7 +84,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - `state`: open
 - `missing`: close remaining numeric authoring shapes, computation wrappers, repeated and group aggregates, temporal or aggregate overloads, concrete ingestion and rendering, and partial or repeatable integration through the shared owners.
 - `baseline`: [§5](IMPLEMENTATION-MAP.md#5--numbers-and-decimals) owns scalar and addressed numeric execution. The bounded group capabilities start at [shared admission](IMPLEMENTATION-MAP.md#cap-shared-entity-list-group-admission).
-- `remaining`: deeper nested calls; wrapper-, nested-arithmetic-, and aggregate-valued operands; and power beyond the bounded field-or-literal child now admitted inside addressed extrema, including nested or grouped addressed power.
+- `remaining`: deeper nested calls; nested-arithmetic- and aggregate-valued operands; and power beyond the bounded field-or-literal child now admitted inside addressed extrema, including nested or grouped addressed power.
 - `remaining`: host wire ingestion, remaining group or addressed expression placements, third-level external correlation, and external calibration of operand shapes beyond direct Number copy.
 - `discriminator`: keep authored literal scale, derived scale, warning suppression, source scope, target scope, and operator-local poison timing independent.
 - `consumer`: Execute and Transform require exact tree shape, rounding stages, target policy, and unsafe-reassociation boundaries.

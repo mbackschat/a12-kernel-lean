@@ -26,9 +26,34 @@ theorem checkedAddressedNumberExtremumLeaf_sourceCertified
     ∀ source ∈ leaf.sources,
       source.placement.sourceDeclaration.toNumberField? = some source.source := by
   cases leaf with
-  | field source =>
+  | field source | abs source =>
+      simp [CheckedAddressedNumberExtremumLeaf.sources, source.sourceCertified]
+  | round source _ _ =>
       simp [CheckedAddressedNumberExtremumLeaf.sources, source.sourceCertified]
   | literal _ => simp [CheckedAddressedNumberExtremumLeaf.sources]
+
+/-- A nested absolute-value leaf preserves its field's static scale and delegates evaluation to the established result-domain wrapper. -/
+theorem checkedAddressedNumberExtremumLeaf_abs
+    (source : CheckedAddressedNumberSource model)
+    (input : CheckedDocument model) (environment : Env) :
+    CheckedAddressedNumberExtremumLeaf.scaleSummary (.abs source) =
+        .field source.source.info.scale ∧
+      (CheckedAddressedNumberExtremumLeaf.abs source).evaluateAtEnvironment
+        input environment =
+        (do return (← source.evaluateAtEnvironment input environment).absolute) := by
+  exact ⟨rfl, rfl⟩
+
+/-- A nested rounding leaf fixes the authored result scale and delegates evaluation to the established rounding wrapper. -/
+theorem checkedAddressedNumberExtremumLeaf_round
+    (source : CheckedAddressedNumberSource model)
+    (mode : DecimalRoundingMode) (places : RoundingPlaces)
+    (input : CheckedDocument model) (environment : Env) :
+    CheckedAddressedNumberExtremumLeaf.scaleSummary
+        (.round source mode places) = .rounded places.val ∧
+      (CheckedAddressedNumberExtremumLeaf.round source mode places).evaluateAtEnvironment
+        input environment =
+        (do return (← source.evaluateAtEnvironment input environment).round mode places) := by
+  exact ⟨rfl, rfl⟩
 
 /-- Every dependency retained by a nested extremum keeps its direct Number witness. -/
 theorem checkedAddressedNumberNestedExtremum_sourceCertified

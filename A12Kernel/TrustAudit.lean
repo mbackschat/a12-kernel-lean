@@ -1973,6 +1973,8 @@ run_cmd do
 #print axioms A12Kernel.checkedAddressedNumberRound_sound
 #print axioms A12Kernel.checkedAddressedNumberArithmeticChild_sourceCertified
 #print axioms A12Kernel.checkedAddressedNumberExtremumLeaf_sourceCertified
+#print axioms A12Kernel.checkedAddressedNumberExtremumLeaf_abs
+#print axioms A12Kernel.checkedAddressedNumberExtremumLeaf_round
 #print axioms A12Kernel.checkedAddressedNumberNestedExtremum_sourceCertified
 #print axioms A12Kernel.checkedAddressedNumberExtremumOperand_sourceCertified
 #print axioms A12Kernel.checkedAddressedNumberExtremum_sourceField_ne_targetField

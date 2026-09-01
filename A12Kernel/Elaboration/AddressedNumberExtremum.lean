@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.NumericExpression
 
 /-! # Repeatable bounded Number extrema
 
-This capsule retains a nonempty ordered list containing one or more checked Number sources, permits operand-local absolute-value, rounding, one arithmetic, division, or power node over two field-or-literal operands, or one nested extremum over direct field-or-literal leaves, and admits at most one immediate decoded literal per extremum call. It delegates each local transformation and the authored-order folds to the existing scalar semantics, then reuses the shared exact-address target owner.
+This capsule retains a nonempty ordered list containing one or more checked Number sources, permits operand-local absolute-value, rounding, one arithmetic, division, or power node over two field-or-literal operands, or one nested extremum over direct, absolute-value, rounded, or literal leaves, and admits at most one immediate decoded literal per extremum call. It delegates each local transformation and the authored-order folds to the existing scalar semantics, then reuses the shared exact-address target owner.
 -/
 
 namespace A12Kernel
@@ -14,7 +14,16 @@ inductive SurfaceAddressedNumberArithmeticOperand where
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
 
-/-- The bounded addressed surface admits direct Number fields, operand-local `Abs`, Round, one ordinary arithmetic, division, or power node over two field-or-literal operands, one nested extremum over direct field-or-literal leaves, and one immediate decoded literal in the outer list. Wider numeric operations remain with the scalar expression owner. -/
+/-- One bounded leaf of a nested operand-list extremum. This separate surface admits the same direct and unary field operations already completed at the outer level without opening recursive nesting or binary children. -/
+inductive SurfaceAddressedNumberExtremumLeaf where
+  | field (reference : SurfaceFieldPath)
+  | abs (reference : SurfaceFieldPath)
+  | round (reference : SurfaceFieldPath) (mode : DecimalRoundingMode)
+      (places : RoundingPlaces)
+  | literal (decoded : DecodedNumericLiteral)
+  deriving Repr, DecidableEq
+
+/-- The bounded addressed surface admits direct Number fields, operand-local `Abs`, Round, one ordinary arithmetic, division, or power node over two field-or-literal operands, one nested extremum over direct/unary-wrapper/literal leaves, and one immediate decoded literal in the outer list. Wider numeric operations remain with the scalar expression owner. -/
 inductive SurfaceAddressedNumberExtremumOperand where
   | field (reference : SurfaceFieldPath)
   | abs (reference : SurfaceFieldPath)
@@ -24,8 +33,8 @@ inductive SurfaceAddressedNumberExtremumOperand where
       (left right : SurfaceAddressedNumberArithmeticOperand)
   | division (left right : SurfaceAddressedNumberArithmeticOperand)
   | power (base exponent : SurfaceAddressedNumberArithmeticOperand)
-  | extremum (operation : NumericExtremumOp) (first : SurfaceAddressedNumberArithmeticOperand)
-      (rest : List SurfaceAddressedNumberArithmeticOperand)
+  | extremum (operation : NumericExtremumOp) (first : SurfaceAddressedNumberExtremumLeaf)
+      (rest : List SurfaceAddressedNumberExtremumLeaf)
   | literal (decoded : DecodedNumericLiteral)
   deriving Repr, DecidableEq
 
@@ -144,9 +153,12 @@ structure CheckedAddressedNumberPowerOperand (model : FlatModel) where
     child.operandSummaries.1 child.operandSummaries.2
     child.hasSimpleNonnegativeLiteralExponent = some summary
 
-/-- One direct field-or-literal leaf of a nested addressed Number extremum. Keeping this type separate bounds nesting to one level and prevents wrappers or arithmetic children from being admitted by accident. -/
+/-- One bounded leaf of a nested addressed Number extremum. Keeping this type separate bounds nesting to one level and prevents arithmetic children or another extremum from being admitted by accident. -/
 inductive CheckedAddressedNumberExtremumLeaf (model : FlatModel) where
   | field (source : CheckedAddressedNumberSource model)
+  | abs (source : CheckedAddressedNumberSource model)
+  | round (source : CheckedAddressedNumberSource model)
+      (mode : DecimalRoundingMode) (places : RoundingPlaces)
   | literal (decoded : DecodedNumericLiteral)
 
 namespace CheckedAddressedNumberExtremumLeaf
@@ -154,13 +166,15 @@ namespace CheckedAddressedNumberExtremumLeaf
 /-- The optional field dependency read by this leaf. -/
 def sources : CheckedAddressedNumberExtremumLeaf model →
     List (CheckedAddressedNumberSource model)
-  | .field source => [source]
+  | .field source | .abs source => [source]
+  | .round source _ _ => [source]
   | .literal _ => []
 
 /-- The leaf's contribution to its immediate extremum call. -/
 def scaleSummary : CheckedAddressedNumberExtremumLeaf model →
     NumericScaleSummary
-  | .field source => .field source.source.info.scale
+  | .field source | .abs source => .field source.source.info.scale
+  | .round _ _ places => .rounded places.val
   | .literal decoded => NumericScaleSummary.constant decoded.authoredScale
 
 /-- Only a literal authored directly in this nested call consumes its literal budget. -/
@@ -168,18 +182,22 @@ def isImmediateLiteral : CheckedAddressedNumberExtremumLeaf model → Bool
   | .literal _ => true
   | _ => false
 
-/-- Evaluate one direct nested leaf at the target-owned row. -/
+/-- Evaluate one bounded nested leaf at the target-owned row. -/
 def evaluateAtEnvironment
     (leaf : CheckedAddressedNumberExtremumLeaf model)
     (input : CheckedDocument model) (environment : Env) :
     Except AddressedNumberExtremumFault NumericComputationResult :=
   match leaf with
   | .field source => source.evaluateAtEnvironment input environment
+  | .abs source =>
+      return (← source.evaluateAtEnvironment input environment).absolute
+  | .round source mode places =>
+      return (← source.evaluateAtEnvironment input environment).round mode places
   | .literal decoded => pure (.value decoded.value)
 
 end CheckedAddressedNumberExtremumLeaf
 
-/-- One nested `Min` or `Max` call whose ordered direct leaves own an independent immediate-literal budget. -/
+/-- One nested `Min` or `Max` call whose ordered bounded leaves own an independent immediate-literal budget. -/
 structure CheckedAddressedNumberNestedExtremum (model : FlatModel) where
   private mk ::
   op : NumericExtremumOp
@@ -399,7 +417,7 @@ private def checkNumberPowerOperand
 
 private def checkNumberNestedLeaf
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (position : Nat) : SurfaceAddressedNumberArithmeticOperand →
+    (position : Nat) : SurfaceAddressedNumberExtremumLeaf →
       Except AddressedNumberExtremumElabError
         (CheckedAddressedNumberExtremumLeaf model)
   | .field reference => do
@@ -407,11 +425,21 @@ private def checkNumberNestedLeaf
         checkAddressedNumberSource model declaringGroup targetField reference
           |>.mapError (.source position)
       pure (.field source)
+  | .abs reference => do
+      let source ←
+        checkAddressedNumberSource model declaringGroup targetField reference
+          |>.mapError (.source position)
+      pure (.abs source)
+  | .round reference mode places => do
+      let source ←
+        checkAddressedNumberSource model declaringGroup targetField reference
+          |>.mapError (.source position)
+      pure (.round source mode places)
   | .literal decoded => pure (.literal decoded)
 
 private def checkNumberNestedLeaves
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (position : Nat) : List SurfaceAddressedNumberArithmeticOperand →
+    (position : Nat) : List SurfaceAddressedNumberExtremumLeaf →
       Except AddressedNumberExtremumElabError
         (List (CheckedAddressedNumberExtremumLeaf model))
   | [] => pure []
@@ -425,8 +453,8 @@ private def checkNumberNestedLeaves
 private def checkNumberNestedExtremum
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (position : Nat) (op : NumericExtremumOp)
-    (firstOperand : SurfaceAddressedNumberArithmeticOperand)
-    (restOperands : List SurfaceAddressedNumberArithmeticOperand) :
+    (firstOperand : SurfaceAddressedNumberExtremumLeaf)
+    (restOperands : List SurfaceAddressedNumberExtremumLeaf) :
     Except AddressedNumberExtremumElabError
       (CheckedAddressedNumberExtremumOperand model) := do
   let first ←
