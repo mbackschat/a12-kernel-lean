@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.CheckedStarDocument
-import A12Kernel.Elaboration.FirstFilledStarSource
+import A12Kernel.Elaboration.CheckedStarShape
 import A12Kernel.Elaboration.StringComputation
 import A12Kernel.Elaboration.StringComputationRunApplication
 import A12Kernel.Semantics.FirstFilledValue

@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.NumericComputation.Core
-import A12Kernel.Elaboration.FirstFilledStarSource
+import A12Kernel.Elaboration.CheckedStarShape
 import A12Kernel.Semantics.ComputationSelfValidation
 
 /-! # Checked inputs to a computed target's self-validation message

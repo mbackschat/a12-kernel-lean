@@ -1,10 +1,10 @@
 import A12Kernel.Elaboration.StarPath
 
-/-! # Checked starred source shapes for `FirstFilledValue` computation -/
+/-! # Shared checked starred source shapes -/
 
 namespace A12Kernel.CheckedStarFieldPath
 
-/-- Whether this checked field is declared directly in exactly one reopened repeatable group. This is the shared bounded shape used by scalar `FirstFilledValue` computation carriers. -/
+/-- Whether this checked field is declared directly in exactly one reopened repeatable group. This is the shared bounded shape used by one-axis checked computation carriers. -/
 def isDirectSingleStar (checked : CheckedStarFieldPath model) : Bool :=
   match checked.path.axes, checked.declaration.repeatableScope with
   | [axis], [level] =>

@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.CheckedStarDocument
-import A12Kernel.Elaboration.FirstFilledStarSource
+import A12Kernel.Elaboration.CheckedStarShape
 
 /-! # Shared direct-star temporal `FirstFilledValue` computation shape -/
 
