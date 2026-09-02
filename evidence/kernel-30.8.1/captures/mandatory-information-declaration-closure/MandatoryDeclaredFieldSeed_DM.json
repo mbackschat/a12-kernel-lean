@@ -1,0 +1,84 @@
+{
+  "header" : {
+    "id" : "MandatoryDeclaredFieldSeed_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandatoryDeclaredFieldSeed_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/FieldSeed",
+        "name" : "FieldSeed",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/FieldSeed/ParentRequired",
+            "name" : "ParentRequired",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              },
+              "requirednessConfig" : {
+                "mode" : "relativeToParent"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/FieldSeed/Seed",
+            "name" : "Seed",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/FieldSeed/OptionalControl",
+            "name" : "OptionalControl",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/FieldSeed/FieldSeedRule",
+            "name" : "FieldSeedRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Seed",
+              "errorCode" : "FIELD_SEED",
+              "errorCondition" : "FieldNotFilled(/FieldSeed/Seed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Seed is required."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

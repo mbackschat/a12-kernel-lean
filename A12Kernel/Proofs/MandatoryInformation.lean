@@ -62,6 +62,18 @@ theorem deriveCheckedMandatoryInformation_declared_parent_matches_root_guard :
       ] := by
   decide
 
+/-- A measured authored root seed promotes parent-present declaration requiredness through the settled root-guarded closure. -/
+theorem deriveCheckedMandatoryInformation_declared_parent_closes_from_root_seed :
+    deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .groupNotFilled "Form",
+        .declaredFieldRequirement .ifParentPresent "DeclaredField"
+      ] =
+      deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .groupNotFilled "Form",
+        .rootGuardedNotFilled "Form" "DeclaredField"
+      ] := by
+  decide
+
 /-- Existential and universal field-list guards reach their concrete successful fixed points in either authored order. -/
 theorem deriveCheckedMandatoryInformation_field_list_guards_close_reverse_authored :
     deriveCheckedMandatoryInformation (fun _ : String => "Form") [

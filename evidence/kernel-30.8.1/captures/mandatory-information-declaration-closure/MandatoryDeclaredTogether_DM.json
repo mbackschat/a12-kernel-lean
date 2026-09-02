@@ -1,0 +1,73 @@
+{
+  "header" : {
+    "id" : "MandatoryDeclaredTogether_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandatoryDeclaredTogether_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Together",
+        "name" : "Together",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Together/AlwaysRequired",
+            "name" : "AlwaysRequired",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              },
+              "requirednessConfig" : {
+                "mode" : "absoluteOrRelativeToNextRepAncestor"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Together/ParentRequired",
+            "name" : "ParentRequired",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              },
+              "requirednessConfig" : {
+                "mode" : "relativeToParent"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Together/OptionalControl",
+            "name" : "OptionalControl",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

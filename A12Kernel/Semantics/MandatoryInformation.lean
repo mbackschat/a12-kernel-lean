@@ -317,10 +317,18 @@ private def MandatoryRule.isDeclaredFieldRequirement :
   | .declaredFieldRequirement _ _ => true
   | _ => false
 
-/-- Keep declaration-derived requirements on the two isolated one-field observations; interaction with authored or sibling declaration rules remains unmeasured. -/
+private def MandatoryRule.isDeclaredRequirementClosureRule :
+    MandatoryRule Field Root → Bool
+  | .declaredFieldRequirement _ _
+  | .fieldNotFilled _
+  | .groupNotFilled _ => true
+  | _ => false
+
+/-- Declaration-derived requirements share root closure only with the measured direct field and root seeds; wider authored interactions remain unmeasured. -/
 private def hasSupportedDeclaredFieldRequirementShape
     (rules : List (MandatoryRule Field Root)) : Bool :=
-  !rules.any MandatoryRule.isDeclaredFieldRequirement || rules.length == 1
+  !rules.any MandatoryRule.isDeclaredFieldRequirement ||
+    rules.all MandatoryRule.isDeclaredRequirementClosureRule
 
 private def hasSingleRootTopology [DecidableEq Root] (rootOf : Field → Root)
     (rules : List (MandatoryRule Field Root)) : Bool :=

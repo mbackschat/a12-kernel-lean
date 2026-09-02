@@ -58,6 +58,25 @@ private def declaredRequiredCases : List (List (MandatoryRule String String) ×
     result [] ["ParentRequired"] [])
 ]
 
+private def declaredRequirementClosureCases : List (List (MandatoryRule String String) ×
+    Option (MandatoryInformation String String)) := [
+  ([
+      .declaredFieldRequirement .always "AlwaysRequired",
+      .declaredFieldRequirement .ifParentPresent "ParentRequired"
+    ], result
+      ["AlwaysRequired", "ParentRequired"]
+      ["AlwaysRequired", "ParentRequired"]
+      ["Form"]),
+  ([
+      .groupNotFilled "Form",
+      .declaredFieldRequirement .ifParentPresent "ParentRequired"
+    ], result ["ParentRequired"] ["ParentRequired"] ["Form"]),
+  ([
+      .fieldNotFilled "Seed",
+      .declaredFieldRequirement .ifParentPresent "ParentRequired"
+    ], result ["Seed", "ParentRequired"] ["Seed", "ParentRequired"] ["Form"])
+]
+
 private def deriveFieldCycleKernelBatch? :
     Option (MandatoryInformation String String) :=
   derive [
@@ -93,16 +112,16 @@ example : measuredCases.all (fun (rules, expected) => derive rules == expected) 
 example : declaredRequiredCases.all (fun (rules, expected) => derive rules == expected) := by
   native_decide
 
-/- Declaration-derived requirements remain isolated until their interaction with authored or sibling declaration rules is measured. -/
-example :
-    derive [
-        .declaredFieldRequirement .always "A",
-        .fieldGuardedNotFilled "A" "B"
-      ] = none ∧
-      derive [
-        .declaredFieldRequirement .always "A",
-        .declaredFieldRequirement .ifParentPresent "B"
-      ] = none := by
+/- Unconditional declaration, root, and direct-field seeds each promote a parent-present declaration through the same root closure. -/
+example : declaredRequirementClosureCases.all (fun (rules, expected) =>
+    derive rules == expected) := by
+  native_decide
+
+/- Declaration-derived requirements remain isolated from wider authored guards until that interaction is measured. -/
+example : derive [
+    .declaredFieldRequirement .always "A",
+    .fieldGuardedNotFilled "A" "B"
+  ] = none := by
   native_decide
 
 /- The retained two-node cycle batch closes the seeded component and leaves the unseeded component inert; the same direct-edge mechanism closes a three-node internal control. -/

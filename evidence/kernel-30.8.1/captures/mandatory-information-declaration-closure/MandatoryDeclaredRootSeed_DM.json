@@ -1,0 +1,75 @@
+{
+  "header" : {
+    "id" : "MandatoryDeclaredRootSeed_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandatoryDeclaredRootSeed_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/RootSeed",
+        "name" : "RootSeed",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/RootSeed/ParentRequired",
+            "name" : "ParentRequired",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              },
+              "requirednessConfig" : {
+                "mode" : "relativeToParent"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/RootSeed/OptionalControl",
+            "name" : "OptionalControl",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/RootSeed/RootSeedRule",
+            "name" : "RootSeedRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../ParentRequired",
+              "errorCode" : "ROOT_SEED",
+              "errorCondition" : "GroupNotFilled(/RootSeed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Root is required."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
