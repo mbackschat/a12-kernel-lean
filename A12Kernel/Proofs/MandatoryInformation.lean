@@ -112,31 +112,43 @@ theorem deriveCheckedMandatoryInformation_ignores_cross_root_rule :
       ] := by
   decide
 
-/-- The measured unfiltered repeatable presence matrix reduces each exact operator/connective cell to its established flat result without erasing the retained starred identity. -/
+/-- The measured unfiltered direct-unindexed-repeatable-child presence matrix reduces each exact operator/connective cell to its established flat result without erasing the retained starred identity. -/
 theorem deriveCheckedMandatoryInformation_unfiltered_repeatable_presence_matrix :
     let derive := deriveCheckedMandatoryInformation (fun _ : String => "Form")
     derive [
-        .unfilteredRepeatableFieldPresenceComposition .disjunction .noFieldFilled
+        .unfilteredRepeatableFieldPresenceComposition
+          .directUnindexedChildOfNonrepeatableRoot
+          .disjunction .noFieldFilled
           "Note" "Rows/Value"
       ] = derive [.fieldNotFilled "Note"] ∧
     derive [
-        .unfilteredRepeatableFieldPresenceComposition .conjunction .noFieldFilled
+        .unfilteredRepeatableFieldPresenceComposition
+          .directUnindexedChildOfNonrepeatableRoot
+          .conjunction .noFieldFilled
           "Note" "Rows/Value"
       ] = derive [.conjoinedFieldNotFilled ["Note", "Rows/Value"]] ∧
     derive [
-        .unfilteredRepeatableFieldPresenceComposition .disjunction .notAllFieldsFilled
+        .unfilteredRepeatableFieldPresenceComposition
+          .directUnindexedChildOfNonrepeatableRoot
+          .disjunction .notAllFieldsFilled
           "Note" "Rows/Value"
       ] = derive [.disjoinedFieldNotFilled ["Note", "Rows/Value"]] ∧
     derive [
-        .unfilteredRepeatableFieldPresenceComposition .conjunction .notAllFieldsFilled
+        .unfilteredRepeatableFieldPresenceComposition
+          .directUnindexedChildOfNonrepeatableRoot
+          .conjunction .notAllFieldsFilled
           "Note" "Rows/Value"
       ] = derive [.conjoinedFieldNotFilled ["Note", "Rows/Value"]] ∧
     derive [
-        .unfilteredRepeatableFieldPresenceComposition .disjunction .atLeastOneFieldFilled
+        .unfilteredRepeatableFieldPresenceComposition
+          .directUnindexedChildOfNonrepeatableRoot
+          .disjunction .atLeastOneFieldFilled
           "Note" "Rows/Value"
       ] = derive [.fieldNotFilled "Note"] ∧
     derive [
-        .unfilteredRepeatableFieldPresenceComposition .conjunction .atLeastOneFieldFilled
+        .unfilteredRepeatableFieldPresenceComposition
+          .directUnindexedChildOfNonrepeatableRoot
+          .conjunction .atLeastOneFieldFilled
           "Note" "Rows/Value"
       ] = derive [.ignored (.atLeastOneFieldFilled ["Note", "Rows/Value"])] := by
   decide

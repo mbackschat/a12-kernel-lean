@@ -2,7 +2,7 @@ import A12Kernel.Semantics.MandatoryInformation
 
 /-! # Mandatory-information derivation locks
 
-These cases cover the measured flat, nonrepeatable contributing ERROR-rule fragment, the exact unfiltered repeatable singleton-field presence matrix, the exact singleton WARNING/INFO severity exclusions, declaration-derived field-required modes and root closure, one model-derived optional repeatable String index requirement, one generated direct nonrepeatable scale-0 Number-copy validation, checked filtered, semantic-indexed, parallel-iterated, and cross-root whole-rule exclusions, and the bounded filled-count and distinct-count slices. The latter captures externally separate referenced-field exclusion, while the executable identities additionally contribute no roots. The cases deliberately exclude wider repetition, index internals and wider indexed shapes, filter internals, other generated rules, and contributing cross-root forms. -/
+These cases cover the measured flat, nonrepeatable contributing ERROR-rule fragment, the exact unfiltered singleton-field presence matrix over one direct unindexed repeatable child of a nonrepeatable root, the exact singleton WARNING/INFO severity exclusions, declaration-derived field-required modes and root closure, one model-derived optional repeatable String index requirement, one generated direct nonrepeatable scale-0 Number-copy validation, checked filtered, semantic-indexed, parallel-iterated, and cross-root whole-rule exclusions, and the bounded filled-count and distinct-count slices. The latter captures externally separate referenced-field exclusion, while the executable identities additionally contribute no roots. The cases deliberately exclude wider repetition, index internals and wider indexed shapes, filter internals, other generated rules, and contributing cross-root forms. -/
 
 namespace A12Kernel.Conformance.MandatoryInformation
 
@@ -96,17 +96,29 @@ private def crossRootKernelBatch : List (MandatoryRule String String) := [
 
 private def repeatablePresenceKernelCases : List (List (MandatoryRule String String) ×
     Option (MandatoryInformation String String)) := [
-  ([.unfilteredRepeatableFieldPresenceComposition .disjunction .noFieldFilled
+  ([.unfilteredRepeatableFieldPresenceComposition
+      .directUnindexedChildOfNonrepeatableRoot
+      .disjunction .noFieldFilled
       "Note" "Rows/Value"], result ["Note"] ["Note"] ["Form"]),
-  ([.unfilteredRepeatableFieldPresenceComposition .conjunction .noFieldFilled
+  ([.unfilteredRepeatableFieldPresenceComposition
+      .directUnindexedChildOfNonrepeatableRoot
+      .conjunction .noFieldFilled
       "Note" "Rows/Value"], result [] [] ["Form"]),
-  ([.unfilteredRepeatableFieldPresenceComposition .disjunction .notAllFieldsFilled
+  ([.unfilteredRepeatableFieldPresenceComposition
+      .directUnindexedChildOfNonrepeatableRoot
+      .disjunction .notAllFieldsFilled
       "Note" "Rows/Value"], result ["Note", "Rows/Value"] ["Note", "Rows/Value"] ["Form"]),
-  ([.unfilteredRepeatableFieldPresenceComposition .conjunction .notAllFieldsFilled
+  ([.unfilteredRepeatableFieldPresenceComposition
+      .directUnindexedChildOfNonrepeatableRoot
+      .conjunction .notAllFieldsFilled
       "Note" "Rows/Value"], result [] [] ["Form"]),
-  ([.unfilteredRepeatableFieldPresenceComposition .disjunction .atLeastOneFieldFilled
+  ([.unfilteredRepeatableFieldPresenceComposition
+      .directUnindexedChildOfNonrepeatableRoot
+      .disjunction .atLeastOneFieldFilled
       "Note" "Rows/Value"], result ["Note"] ["Note"] ["Form"]),
-  ([.unfilteredRepeatableFieldPresenceComposition .conjunction .atLeastOneFieldFilled
+  ([.unfilteredRepeatableFieldPresenceComposition
+      .directUnindexedChildOfNonrepeatableRoot
+      .conjunction .atLeastOneFieldFilled
       "Note" "Rows/Value"], result [] [] [])
 ]
 
@@ -214,11 +226,21 @@ example :
     repeatablePresenceKernelCases.all (fun (rules, expected) =>
       derive rules == expected) ∧
     derive [
-      .unfilteredRepeatableFieldPresenceComposition .disjunction .noFieldFilled
+      .unfilteredRepeatableFieldPresenceComposition
+        .directUnindexedChildOfNonrepeatableRoot
+        .disjunction .noFieldFilled
         "Note" "Rows/Value"
     ] ≠ derive [
       .disjoinedFieldNotFilled ["Note", "Rows/Value"]
     ] := by
+  native_decide
+
+/- Nested repeatable descendants remain distinguishable from the measured direct child and fail closed. -/
+example :
+    derive [
+      .unfilteredRepeatableFieldPresenceComposition .outsideMeasuredScope
+        .disjunction .notAllFieldsFilled "Note" "Rows/Subrows/Value"
+    ] = none := by
   native_decide
 
 /- The generated requirement for an optional repeatable index field contributes nothing, leaves a direct control visible, and does not promote a parent-present declaration globally. -/
