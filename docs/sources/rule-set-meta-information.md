@@ -112,6 +112,24 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 - `bytes`: [`mandatory-information-field-cycles/`](../../evidence/kernel-30.8.1/captures/mandatory-information-field-cycles/) retains the model, request, and artifact. Their SHA-256 values are `bf961036cf210df4c7e2f0228b4b192f52ae57c808366dc978572e4ab75d3df5`, `f5c4c9810ab8f7049badfe2961293b40b25ce03c9606fef2758924256422bbc1`, and `e0c9e87298bdf74aa32fbd25709faca1a315e12a408ad18ebe77ee99ac87e455`. This is a bounded raw capture with no typed local replay, so it establishes neither `L` nor `C` coverage.
 - `sync`: **no `spec/` change.** [`spec/`](../../spec/) still has no rule-set meta-information section; [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) owns the wider obligation, and the [implementation map](../IMPLEMENTATION-MAP.md#cap-flat-mandatory-information) owns the checked slice.
 
+<a id="src-mandatory-information-declared-required"></a>
+#### Mandatory-information derivation separates unconditional and parent-present field declarations, measured locally on 2026-09-02
+
+- `revision`: two model-level `mandatoryInformation` requests at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`; the source-matched launcher, structured field read-back, Kernel-confirmed `model check`, and both artifacts report dmtool `0.13.0` and Kernel `30.8.1` built and runtime. The models were created and changed only through structured `dmtool` verbs, each request carries no document or row, and immediate repeats were byte-identical.
+- `question`: with no authored rule, does a nonrepeatable String field declared `required: true` or `required: ifParentPresent` contribute to the three public mandatory-information sets, and does an otherwise identical optional sibling remain absent?
+- `model`: the unconditional model contains `AlwaysRequired` and `OptionalControl`; the parent-present model contains `ParentRequired` and its own `OptionalControl`. Each model has one nonrepeatable root, two String fields, and zero authored rules. Keeping the two declaration modes in separate models prevents the unconditional root contribution from promoting the parent-present field globally.
+- `claim`: the unconditional model returns only `AlwaysRequired` in both field sets and its root in `mandatoryRootGroups`. The parent-present model returns an empty global field set, only `ParentRequired` in `mandatoryForRootGroup`, and no mandatory root. Both optional controls remain absent. These values establish declaration-derived requiredness without choosing whether the Kernel internally scans the declaration or materializes an additional rule.
+- `separators`: treating both declaration modes as unconditional adds the parent-present field globally and makes its root mandatory; ignoring parent presence removes its root-relative field; treating every declared field as required adds either optional control. Separate models keep these differences observable without relying on cross-rule closure.
+- `limit`: one isolated required declaration plus one optional String control per nonrepeatable single-root model, `en_US`, and no authored rules. Coexisting required modes, interaction with authored rules, repeatable or index fields, nested groups, custom required messages, other field kinds, generated computation validation, filters, indices, and wider topology remain outside.
+- `bytes`: [`mandatory-information-generated-required/`](../../evidence/kernel-30.8.1/captures/mandatory-information-generated-required/) retains both model/request/artifact triples. These are bounded raw captures with no typed local replay, so they establish neither `L` nor `C` coverage.
+
+| Case | Model SHA-256 | Request SHA-256 | Artifact SHA-256 |
+|---|---|---|---|
+| `always` | `d37b13ee31357fa1bd99f035141898ade2c12ea51e6aa8f83f3ffb2096c5a31a` | `2680cafb72d77152c7989787173803ff8538c0d1ec93a3f5d1066304b7abfe64` | `fd10b67bb3ec7cb63928ccf85e2a46c29417efde69a9fb030b62ea6db69618ec` |
+| `if-parent-present` | `98022574933e42ba48ae6666bb3e256a6f4916b8d6ddd40b5e8c85cc015cf798` | `fe2f0b43c2c6af1a32fff3e896168cfe45583eb1eeb6bfc6ed8e7944c3f43225` | `010e8da336e55110685ba5ee48cefb0317e02b1bccc4ae40a52e2fea2f7c66de` |
+
+- `sync`: **no `spec/` change.** [`spec/`](../../spec/) still has no rule-set meta-information section; [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) owns the wider obligation, and the [implementation map](../IMPLEMENTATION-MAP.md#cap-flat-mandatory-information) owns the checked slice.
+
 <a id="src-mandatory-information-field-list-cycles"></a>
 #### Mandatory-information derivation closes seeded existential and universal field-list cycles without self-support, measured locally on 2026-09-02
 

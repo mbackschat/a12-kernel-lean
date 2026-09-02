@@ -370,6 +370,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Mandatory-information derivation admits false filled-count guards](sources/rule-set-meta-information.md#src-mandatory-information-false-count-guards)
 <a id="src-mandatory-information-count-seed-cardinality"></a>
 - [Mandatory-information derivation returns the zero-, one-, and two-seed filled-count results](sources/rule-set-meta-information.md#src-mandatory-information-count-seed-cardinality)
+<a id="src-mandatory-information-declared-required"></a>
+- [Mandatory-information derivation separates unconditional and parent-present field declarations](sources/rule-set-meta-information.md#src-mandatory-information-declared-required)
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)

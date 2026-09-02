@@ -2,7 +2,7 @@ import A12Kernel.Semantics.NumericLiteral
 
 /-! # Mandatory-information derivation
 
-This module models the measured flat, nonrepeatable rule fragment of the model-level mandatory-information service. The input retains the normalized rule shape, including ignored WARNING and INFO severity, and the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values and keeps filled-count and distinct-count rules separate where their guard behavior differs. The filled-field guard slice retains existential versus universal rule identity, and finite field-guard cycles participate in the same monotone closure as acyclic chains. Repetition, concrete or semantic indices, filter internals, generated rules, cross-root references, wider root topology, wider count sites, and wider Boolean formulas remain outside this carrier. -/
+This module models the measured flat, nonrepeatable rule fragment of the model-level mandatory-information service. The input retains normalized authored rule shape and the two measured declaration-derived field-required modes, including ignored WARNING and INFO severity, and the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values and keeps filled-count and distinct-count rules separate where their guard behavior differs. The filled-field guard slice retains existential versus universal rule identity, and finite field-guard cycles participate in the same monotone closure as acyclic chains. Repetition, concrete or semantic indices, filter internals, generated index rules, cross-root references, wider root topology, wider count sites, and wider Boolean formulas remain outside this carrier. -/
 
 namespace A12Kernel
 
@@ -53,6 +53,12 @@ private def holds [DecidableEq Field] (guard : MandatoryFieldListGuard)
 
 end MandatoryFieldListGuard
 
+/-- Field declaration modes whose mandatory-information result is measured in the flat carrier. -/
+inductive DeclaredFieldRequirement where
+  | always
+  | ifParentPresent
+  deriving Repr, DecidableEq
+
 /-- Measured rule shapes that remain visible to Analyze and Explain but have no contribution in this fragment. -/
 inductive IgnoredMandatoryRule (Field Root : Type) where
   | fieldFilled (field : Field)
@@ -65,8 +71,9 @@ inductive IgnoredMandatoryRule (Field Root : Type) where
   | filtered (fields : List Field)
   deriving Repr, DecidableEq
 
-/-- Normalized, measured rule shapes for flat mandatory-information derivation. Constructors preserve the authored distinction even where two shapes have the same derived effect. -/
+/-- Normalized, measured inputs for flat mandatory-information derivation. Constructors preserve declaration and authored-rule distinctions even where two shapes have the same derived effect. -/
 inductive MandatoryRule (Field Root : Type) where
+  | declaredFieldRequirement (requirement : DeclaredFieldRequirement) (field : Field)
   | fieldNotFilled (field : Field)
   | disjoinedFieldNotFilled (fields : List Field)
   | conjoinedFieldNotFilled (fields : List Field)
@@ -131,6 +138,7 @@ private def countThresholdValue : Option CheckedMandatoryCountThreshold → Int
 
 private def MandatoryRule.referencedRoots (rootOf : Field → Root) :
     MandatoryRule Field Root → List Root
+  | .declaredFieldRequirement _ field
   | .fieldNotFilled field => [rootOf field]
   | .disjoinedFieldNotFilled fields
   | .conjoinedFieldNotFilled fields
@@ -160,6 +168,12 @@ private def MandatoryRule.referencedRoots (rootOf : Field → Root) :
 private def MandatoryRule.apply [DecidableEq Field] [DecidableEq Root]
     (rootOf : Field → Root) (state : State Field Root) :
     MandatoryRule Field Root → State Field Root
+  | .declaredFieldRequirement .always field => state.addFields rootOf [field]
+  | .declaredFieldRequirement .ifParentPresent field =>
+      if rootOf field ∈ state.roots then
+        state.addFields rootOf [field]
+      else
+        state
   | .fieldNotFilled field => state.addFields rootOf [field]
   | .disjoinedFieldNotFilled fields
   | .notAllFieldsFilled fields => state.addFields rootOf fields
@@ -246,6 +260,7 @@ private def directFieldSeeds [DecidableEq Field]
     | _ => seeds) []
 
 private def MandatoryRule.mentionedFields : MandatoryRule Field Root → List Field
+  | .declaredFieldRequirement _ field
   | .fieldNotFilled field => [field]
   | .disjoinedFieldNotFilled fields
   | .conjoinedFieldNotFilled fields
@@ -297,6 +312,16 @@ private def hasSupportedCountShapes [DecidableEq Field]
   let seeds := directFieldSeeds rules
   rules.all (MandatoryRule.hasSupportedCountShape rules seeds)
 
+private def MandatoryRule.isDeclaredFieldRequirement :
+    MandatoryRule Field Root → Bool
+  | .declaredFieldRequirement _ _ => true
+  | _ => false
+
+/-- Keep declaration-derived requirements on the two isolated one-field observations; interaction with authored or sibling declaration rules remains unmeasured. -/
+private def hasSupportedDeclaredFieldRequirementShape
+    (rules : List (MandatoryRule Field Root)) : Bool :=
+  !rules.any MandatoryRule.isDeclaredFieldRequirement || rules.length == 1
+
 private def hasSingleRootTopology [DecidableEq Root] (rootOf : Field → Root)
     (rules : List (MandatoryRule Field Root)) : Bool :=
   match referencedRoots rootOf rules with
@@ -326,6 +351,7 @@ def deriveCheckedMandatoryInformation [DecidableEq Field] [DecidableEq Root]
   if rules.all MandatoryInformationDerivation.MandatoryRule.hasNonemptyLists &&
       rules.all MandatoryInformationDerivation.MandatoryRule.hasSupportedFieldListGuardShape &&
       MandatoryInformationDerivation.hasSupportedCountShapes rules &&
+      MandatoryInformationDerivation.hasSupportedDeclaredFieldRequirementShape rules &&
       MandatoryInformationDerivation.hasSingleRootTopology rootOf rules then
     some (deriveMandatoryInformation rootOf rules)
   else

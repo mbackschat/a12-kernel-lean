@@ -2,7 +2,7 @@ import A12Kernel.Semantics.MandatoryInformation
 
 /-! # Mandatory-information derivation locks
 
-These cases cover the measured flat, nonrepeatable ERROR-rule fragment, the exact singleton WARNING/INFO severity exclusions, the measured whole-rule rejection for one filtered shape, and the bounded filled-count and distinct-count slices. They deliberately exclude repetition, indices, filter internals, generated rules, and cross-root references. -/
+These cases cover the measured flat, nonrepeatable ERROR-rule fragment, the exact singleton WARNING/INFO severity exclusions, the two isolated declaration-derived field-required modes, the measured whole-rule rejection for one filtered shape, and the bounded filled-count and distinct-count slices. They deliberately exclude repetition, indices, filter internals, wider generated rules, and cross-root references. -/
 
 namespace A12Kernel.Conformance.MandatoryInformation
 
@@ -50,6 +50,14 @@ private def measuredCases : List (List (MandatoryRule String String) ×
   ([.rootGuardedNotFilled "Form" "A", .groupNotFilled "Form"], result ["A"] ["A"] ["Form"])
 ]
 
+private def declaredRequiredCases : List (List (MandatoryRule String String) ×
+    Option (MandatoryInformation String String)) := [
+  ([.declaredFieldRequirement .always "AlwaysRequired"],
+    result ["AlwaysRequired"] ["AlwaysRequired"] ["Form"]),
+  ([.declaredFieldRequirement .ifParentPresent "ParentRequired"],
+    result [] ["ParentRequired"] [])
+]
+
 private def deriveFieldCycleKernelBatch? :
     Option (MandatoryInformation String String) :=
   derive [
@@ -79,6 +87,22 @@ private def deriveFieldListCycleKernelBatch? :
 
 /- One finite decision table locks field, root-only, ignored, closure, and guard branches. -/
 example : measuredCases.all (fun (rules, expected) => derive rules == expected) := by
+  native_decide
+
+/- Declaration-derived field-required modes retain their origin and separate global from root-relative contribution. -/
+example : declaredRequiredCases.all (fun (rules, expected) => derive rules == expected) := by
+  native_decide
+
+/- Declaration-derived requirements remain isolated until their interaction with authored or sibling declaration rules is measured. -/
+example :
+    derive [
+        .declaredFieldRequirement .always "A",
+        .fieldGuardedNotFilled "A" "B"
+      ] = none ∧
+      derive [
+        .declaredFieldRequirement .always "A",
+        .declaredFieldRequirement .ifParentPresent "B"
+      ] = none := by
   native_decide
 
 /- The retained two-node cycle batch closes the seeded component and leaves the unseeded component inert; the same direct-edge mechanism closes a three-node internal control. -/

@@ -42,6 +42,26 @@ theorem deriveCheckedMandatoryInformation_root_seed_promotes_target :
         mandatory := ["A"], mandatoryForRootGroup := ["A"], mandatoryRootGroups := ["Form"] } := by
   decide
 
+/-- An isolated unconditional declaration requirement preserves the settled direct negative-field derivation. -/
+theorem deriveCheckedMandatoryInformation_declared_always_matches_authored
+    [DecidableEq Field] [DecidableEq Root]
+    (rootOf : Field → Root) (field : Field) :
+    deriveCheckedMandatoryInformation rootOf [
+        .declaredFieldRequirement .always field
+      ] =
+      deriveCheckedMandatoryInformation rootOf [.fieldNotFilled field] := by
+  rfl
+
+/-- An isolated parent-present declaration requirement preserves the settled root-guarded derivation at the field's root. -/
+theorem deriveCheckedMandatoryInformation_declared_parent_matches_root_guard :
+    deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .declaredFieldRequirement .ifParentPresent "DeclaredField"
+      ] =
+      deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .rootGuardedNotFilled "Form" "DeclaredField"
+      ] := by
+  decide
+
 /-- Existential and universal field-list guards reach their concrete successful fixed points in either authored order. -/
 theorem deriveCheckedMandatoryInformation_field_list_guards_close_reverse_authored :
     deriveCheckedMandatoryInformation (fun _ : String => "Form") [
