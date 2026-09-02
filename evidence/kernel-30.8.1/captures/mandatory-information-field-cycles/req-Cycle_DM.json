@@ -1,0 +1,7 @@
+{
+  "model": "Cycle_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "mandatoryInformation"
+  ]
+}

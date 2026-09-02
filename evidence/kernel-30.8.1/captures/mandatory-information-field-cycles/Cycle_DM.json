@@ -1,0 +1,146 @@
+{
+  "header" : {
+    "id" : "Cycle_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Cycle_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Cycle",
+        "name" : "Cycle",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Cycle/SeedA",
+            "name" : "SeedA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Cycle/SeedB",
+            "name" : "SeedB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Cycle/IdleA",
+            "name" : "IdleA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Cycle/IdleB",
+            "name" : "IdleB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cycle/A_SEED_A_TO_B",
+            "name" : "A_SEED_A_TO_B",
+            "Rule" : {
+              "errorEntityRelPath" : "../SeedB",
+              "errorCode" : "A_SEED_A_TO_B",
+              "errorCondition" : "FieldFilled(SeedA) And FieldNotFilled(SeedB)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "A_SEED_A_TO_B"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cycle/B_SEED_B_TO_A",
+            "name" : "B_SEED_B_TO_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../SeedA",
+              "errorCode" : "B_SEED_B_TO_A",
+              "errorCondition" : "FieldFilled(SeedB) And FieldNotFilled(SeedA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "B_SEED_B_TO_A"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cycle/C_IDLE_A_TO_B",
+            "name" : "C_IDLE_A_TO_B",
+            "Rule" : {
+              "errorEntityRelPath" : "../IdleB",
+              "errorCode" : "C_IDLE_A_TO_B",
+              "errorCondition" : "FieldFilled(IdleA) And FieldNotFilled(IdleB)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "C_IDLE_A_TO_B"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cycle/D_IDLE_B_TO_A",
+            "name" : "D_IDLE_B_TO_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../IdleA",
+              "errorCode" : "D_IDLE_B_TO_A",
+              "errorCondition" : "FieldFilled(IdleB) And FieldNotFilled(IdleA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "D_IDLE_B_TO_A"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Cycle/Z_SEED_A",
+            "name" : "Z_SEED_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../SeedA",
+              "errorCode" : "Z_SEED_A",
+              "errorCondition" : "FieldNotFilled(SeedA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Z_SEED_A"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

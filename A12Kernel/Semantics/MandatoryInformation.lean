@@ -2,7 +2,7 @@ import A12Kernel.Semantics.NumericLiteral
 
 /-! # Mandatory-information derivation
 
-This module models the measured flat, nonrepeatable rule fragment of the model-level mandatory-information service. The input retains the normalized rule shape, including ignored WARNING and INFO severity, and the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values and keeps filled-count and distinct-count rules separate where their guard behavior differs. The filled-field guard slice retains existential versus universal rule identity. Repetition, concrete or semantic indices, filter internals, generated rules, cross-root references, wider root topology, cycles, wider count sites, and wider Boolean formulas remain outside this carrier. -/
+This module models the measured flat, nonrepeatable rule fragment of the model-level mandatory-information service. The input retains the normalized rule shape, including ignored WARNING and INFO severity, and the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values and keeps filled-count and distinct-count rules separate where their guard behavior differs. The filled-field guard slice retains existential versus universal rule identity, and finite cycles of direct field guards participate in the same monotone closure as acyclic chains. Repetition, concrete or semantic indices, filter internals, generated rules, cross-root references, wider root topology, field-list guard cycles, wider count sites, and wider Boolean formulas remain outside this carrier. -/
 
 namespace A12Kernel
 
@@ -224,6 +224,13 @@ private def fieldDependencyEdges : List (MandatoryRule Field Root) →
       premises.map (·, target) ++ fieldDependencyEdges rules
   | _ :: rules => fieldDependencyEdges rules
 
+private def fieldListDependencyEdges : List (MandatoryRule Field Root) →
+    List (Field × Field)
+  | [] => []
+  | .fieldListGuardedNotFilled premises _ target :: rules =>
+      premises.map (·, target) ++ fieldListDependencyEdges rules
+  | _ :: rules => fieldListDependencyEdges rules
+
 private def reaches [DecidableEq Field] (edges : List (Field × Field)) :
     Nat → Field → Field → Bool
   | 0, current, target => current == target
@@ -231,10 +238,10 @@ private def reaches [DecidableEq Field] (edges : List (Field × Field)) :
       current == target || edges.any (fun (premise, successor) =>
         premise == current && reaches edges fuel successor target)
 
-private def hasAcyclicFieldDependencies [DecidableEq Field]
+private def hasSupportedFieldDependencyShape [DecidableEq Field]
     (rules : List (MandatoryRule Field Root)) : Bool :=
   let edges := fieldDependencyEdges rules
-  edges.all (fun (premise, target) =>
+  (fieldListDependencyEdges rules).all (fun (premise, target) =>
     !reaches edges edges.length target premise)
 
 private def MandatoryRule.hasNonemptyLists : MandatoryRule Field Root → Bool
@@ -341,15 +348,15 @@ private def deriveMandatoryInformation [DecidableEq Field] [DecidableEq Root]
     mandatoryRootGroups := global.roots
   }
 
-/-- Checked consumer entry for the measured fragment. Empty multi-field forms, multiple or crossing roots, and cyclic field dependencies return `none` rather than inheriting unmeasured collector behavior. -/
+/-- Checked consumer entry for the measured fragment. Empty multi-field forms, multiple or crossing roots, and unmeasured field-list dependency cycles return `none` rather than inheriting collector behavior. -/
 def deriveCheckedMandatoryInformation [DecidableEq Field] [DecidableEq Root]
     (rootOf : Field → Root) (rules : List (MandatoryRule Field Root)) :
     Option (MandatoryInformation Field Root) :=
   if rules.all MandatoryInformationDerivation.MandatoryRule.hasNonemptyLists &&
       rules.all MandatoryInformationDerivation.MandatoryRule.hasSupportedFieldListGuardShape &&
+      MandatoryInformationDerivation.hasSupportedFieldDependencyShape rules &&
       MandatoryInformationDerivation.hasSupportedCountShapes rules &&
-      MandatoryInformationDerivation.hasSingleRootTopology rootOf rules &&
-      MandatoryInformationDerivation.hasAcyclicFieldDependencies rules then
+      MandatoryInformationDerivation.hasSingleRootTopology rootOf rules then
     some (deriveMandatoryInformation rootOf rules)
   else
     none

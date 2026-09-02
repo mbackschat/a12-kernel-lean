@@ -50,8 +50,30 @@ private def measuredCases : List (List (MandatoryRule String String) ×
   ([.rootGuardedNotFilled "Form" "A", .groupNotFilled "Form"], result ["A"] ["A"] ["Form"])
 ]
 
+private def deriveFieldCycleKernelBatch? :
+    Option (MandatoryInformation String String) :=
+  derive [
+    .fieldGuardedNotFilled "SeedA" "SeedB",
+    .fieldGuardedNotFilled "SeedB" "SeedA",
+    .fieldGuardedNotFilled "IdleA" "IdleB",
+    .fieldGuardedNotFilled "IdleB" "IdleA",
+    .fieldNotFilled "SeedA"
+  ]
+
 /- One finite decision table locks field, root-only, ignored, closure, and guard branches. -/
 example : measuredCases.all (fun (rules, expected) => derive rules == expected) := by
+  native_decide
+
+/- The retained two-node cycle batch closes the seeded component and leaves the unseeded component inert; the same direct-edge mechanism closes a three-node internal control. -/
+example :
+    deriveFieldCycleKernelBatch? =
+        result ["SeedA", "SeedB"] ["SeedA", "SeedB"] ["Form"] ∧
+      derive [
+        .fieldGuardedNotFilled "A" "B",
+        .fieldGuardedNotFilled "B" "C",
+        .fieldGuardedNotFilled "C" "A",
+        .fieldNotFilled "A"
+      ] = result ["A", "B", "C"] ["A", "B", "C"] ["Form"] := by
   native_decide
 
 /- Severity remains authored identity: only the ERROR negative field rule contributes. -/
@@ -70,10 +92,11 @@ example :
         MandatoryInformation.mandatoryForRootGroup := by
   native_decide
 
-/- Cycles, wider root topology, cross-root guards, and empty multi-field forms fail closed. -/
+/- A seeded two-node cycle closes, while wider root topology, cross-root guards, and empty multi-field forms fail closed. -/
 example :
     deriveCheckedMandatoryInformation rootOf
-        [.fieldGuardedNotFilled "A" "B", .fieldGuardedNotFilled "B" "A", .fieldNotFilled "A"] = none ∧
+        [.fieldGuardedNotFilled "A" "B", .fieldGuardedNotFilled "B" "A", .fieldNotFilled "A"] =
+          result ["A", "B"] ["A", "B"] ["Form"] ∧
       deriveCheckedMandatoryInformation splitRoot
         [.fieldNotFilled "A", .fieldNotFilled "B"] = none ∧
       deriveCheckedMandatoryInformation splitRoot
@@ -136,7 +159,7 @@ example :
       ["Form"] := by
   native_decide
 
-/- Empty or duplicate lists, cyclic field-list dependencies, and cross-root targets remain outside the checked flat slice. -/
+/- Empty or duplicate lists, unmeasured field-list dependency cycles, and cross-root targets remain outside the checked flat slice. -/
 example :
     derive [.fieldListGuardedNotFilled [] .atLeastOneFilled "Target"] = none ∧
       derive [.fieldListGuardedNotFilled ["A", "A"] .allFilled "Target"] = none ∧
