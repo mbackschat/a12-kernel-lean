@@ -2,7 +2,7 @@ import A12Kernel.Semantics.NumericLiteral
 
 /-! # Mandatory-information derivation
 
-This module models the measured flat, nonrepeatable contributing fragment of the model-level mandatory-information service plus checked whole-rule no-contribution identities. The input retains normalized authored rule shape, the two measured declaration-derived field-required modes, the generated requirement for one optional repeatable String index field, and the generated validation for one direct nonrepeatable scale-0 Number copy, including ignored WARNING and INFO severity; the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values and keeps filled-count and distinct-count rules separate where their guard behavior differs. The filled-field guard slice retains existential versus universal rule identity, and finite field-guard cycles participate in the same monotone closure as acyclic chains. The semantic-indexed, parallel-iterated, and cross-root captures establish referenced-field exclusion; the checked identities additionally contribute no roots, with only the cross-root capture separating its non-control root. Wider repetition, concrete indices, wider semantic-index shapes, filter internals, other generated index and computation-validation shapes, contributing cross-root rules, wider root topology, wider count sites, and wider Boolean formulas remain outside this carrier. -/
+This module models the measured flat, nonrepeatable contributing fragment of the model-level mandatory-information service plus one exact unfiltered repeatable negative disjunction and checked whole-rule no-contribution identities. The input retains normalized authored rule shape, the two measured declaration-derived field-required modes, the generated requirement for one optional repeatable String index field, and the generated validation for one direct nonrepeatable scale-0 Number copy, including ignored WARNING and INFO severity; the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values and keeps filled-count and distinct-count rules separate where their guard behavior differs. The filled-field guard slice retains existential versus universal rule identity, and finite field-guard cycles participate in the same monotone closure as acyclic chains. The semantic-indexed, parallel-iterated, and cross-root captures establish referenced-field exclusion; the checked identities additionally contribute no roots, with only the cross-root capture separating its non-control root. Wider repetition, concrete indices, wider semantic-index shapes, filter internals, other generated index and computation-validation shapes, contributing cross-root rules, wider root topology, wider count sites, and wider Boolean formulas remain outside this carrier. -/
 
 namespace A12Kernel
 
@@ -90,6 +90,8 @@ inductive MandatoryRule (Field Root : Type) where
   | rootGuardedNotFilled (premise : Root) (target : Field)
   | fieldListGuardedNotFilled (premises : List Field)
       (guard : MandatoryFieldListGuard) (target : Field)
+  | unfilteredRepeatableNoFieldFilledDisjunction
+      (field repeatableField : Field)
   | countLessThan (fields : List Field)
       (threshold : Option CheckedMandatoryCountThreshold)
   | countGuardedNotFilled (fields : List Field)
@@ -155,6 +157,8 @@ private def MandatoryRule.referencedRoots (rootOf : Field → Root) :
   | .rootGuardedNotFilled premise target => [premise, rootOf target]
   | .fieldListGuardedNotFilled premises _ target =>
       premises.map rootOf ++ [rootOf target]
+  | .unfilteredRepeatableNoFieldFilledDisjunction field repeatableField =>
+      [rootOf field, rootOf repeatableField]
   | .countLessThan fields _
   | .differentValuesLessThan fields _ => fields.map rootOf
   | .countGuardedNotFilled fields _ _ target =>
@@ -207,6 +211,8 @@ private def MandatoryRule.apply [DecidableEq Field] [DecidableEq Root]
         state.addFields rootOf [target]
       else
         state
+  | .unfilteredRepeatableNoFieldFilledDisjunction field _ =>
+      state.addFields rootOf [field]
   | .countLessThan fields threshold
   | .differentValuesLessThan fields threshold =>
       if 0 < countThresholdValue threshold then
@@ -285,6 +291,8 @@ private def MandatoryRule.countShapeFields : MandatoryRule Field Root → List F
   | .fieldGuardedNotFilled premise target => [premise, target]
   | .rootGuardedNotFilled _ target => [target]
   | .fieldListGuardedNotFilled premises _ target => premises ++ [target]
+  | .unfilteredRepeatableNoFieldFilledDisjunction field repeatableField =>
+      [field, repeatableField]
   | .countLessThan fields _
   | .differentValuesLessThan fields _ => fields
   | .countGuardedNotFilled fields _ _ target => fields ++ [target]

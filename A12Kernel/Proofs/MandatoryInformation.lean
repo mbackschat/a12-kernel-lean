@@ -112,6 +112,16 @@ theorem deriveCheckedMandatoryInformation_ignores_cross_root_rule :
       ] := by
   decide
 
+/-- The measured unfiltered repeatable `NoFieldFilled` branch contributes no field beyond its ordinary negative disjunct. -/
+theorem deriveCheckedMandatoryInformation_unfiltered_repeatable_no_field_filled_disjunction :
+    deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .unfilteredRepeatableNoFieldFilledDisjunction "Note" "Rows/Value"
+      ] =
+      deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .fieldNotFilled "Note"
+      ] := by
+  decide
+
 /-- The measured generated requirement for an optional repeatable index field is inert beside a direct control and cannot promote a parent-present declaration globally. -/
 theorem deriveCheckedMandatoryInformation_ignores_generated_optional_repeatable_string_index_field :
     deriveCheckedMandatoryInformation (fun _ : String => "Form") [
