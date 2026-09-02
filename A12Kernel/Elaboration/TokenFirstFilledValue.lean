@@ -183,6 +183,42 @@ private def resolveCheckedFirstFilledValidationSide
   pure ((← source.resolveCheckedValidationOperand document outer)
     |>.inCapacityValueListSideAt .validation)
 
+/-- Whether the checked token source contains only direct or starred field operands. Group-bearing
+    sources retain the separate bounded group evaluator, and category-projected Enumeration
+    sources remain outside this stored-token route. -/
+def supportsCheckedDirectStarFirstFilledValidation
+    (checked : CheckedTokenEntitySource model) : Bool :=
+  checked.operands.all fun
+    | .group _ => false
+    | .field source => source.projectionRef == .stored
+    | .star source => source.projectionRef == .stored
+
+private def scanCheckedFirstFilledValidationOperands
+    (document : CheckedDocument model) (outer : Env) :
+    List (CheckedTokenEntityOperand model) → FirstFilledScanState →
+      Except CheckedAddressingError FirstFilledTokenResult
+  | [], _ => pure .noValue
+  | operand :: remaining, state => do
+      let side ← resolveCheckedFirstFilledValidationSide operand document outer
+      match scanFirstFilledItems id side.cells (state.enterOperand side) with
+      | .inl next =>
+          scanCheckedFirstFilledValidationOperands document outer remaining next
+      | .inr result => pure result.asToken
+
+/-- Evaluate one already-admitted direct/plain-star/filtered-star token source against the immutable
+    checked document. Each reached slot selects its in-capacity projection before the common lazy
+    scan; a terminal value or formal cause hides every later slot and its addressing work. Group
+    operands retain their separately bounded checked-document route and return `none` here. -/
+def evaluateCheckedDirectStarFirstFilledValidation?
+    (checked : CheckedTokenEntitySource model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError (Option FirstFilledTokenResult) :=
+  if checked.supportsCheckedDirectStarFirstFilledValidation then do
+    pure (some (← scanCheckedFirstFilledValidationOperands document outer
+      checked.operands {}))
+  else
+    pure none
+
 /-- Evaluate the measured full-validation group fragments through the immutable checked document.
     One fixed group whose authored terminal is nonrepeatable, including its recursive repeatable
     descendants, and one direct single-level group star are complete operand lists; the measured

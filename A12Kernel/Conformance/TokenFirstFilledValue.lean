@@ -61,7 +61,9 @@ private def directString : FlatFieldDecl :=
 private def directEnumeration : FlatFieldDecl :=
   { id := 2, groupPath := ["Form"], name := "Priority",
     policy := { kind := .enumeration },
-    enumeration := some { storedTokens := ["A", "B", "A\nB"] } }
+    enumeration := some {
+      storedTokens := ["A", "B", "A\nB"]
+      categories := [{ name := "Band", tokens := ["HIGH", "LOW", "MULTI"] }] } }
 
 private def directNumber : FlatFieldDecl :=
   { id := 3, groupPath := ["Form"], name := "Amount",
@@ -95,9 +97,18 @@ private def rawGroupString : FlatFieldDecl :=
 private def rawGroupNumber : FlatFieldDecl :=
   { directNumber with id := 8, groupPath := ["Form", "RawMixed"] }
 
+private def repeatedEnumeration : FlatFieldDecl :=
+  { id := 9
+    groupPath := ["Form", "Rows"]
+    name := "Kind"
+    policy := { kind := .enumeration }
+    enumeration := directEnumeration.enumeration
+    repeatableScope := [10] }
+
 private def model : FlatModel :=
   { fields := [directString, directEnumeration, directNumber, repeatedString,
-      repeatedNumber, rawString, rawGroupString, rawGroupNumber]
+      repeatedNumber, rawString, rawGroupString, rawGroupNumber,
+      repeatedEnumeration]
     repeatableGroups := [{
       level := 10, path := ["Form", "Rows"], repeatability := some 3 }] }
 
@@ -132,6 +143,9 @@ private def stringStar (having : Option SurfaceCorrelatedHaving := none) :
 private def starThenEnumeration : SurfaceFirstFilledTokenSource :=
   source (.star (starPath "Label")) [.field (directPath "Priority")]
 
+private def enumerationStar : SurfaceFirstFilledTokenSource :=
+  source (.star (starPath "Kind")) []
+
 private def directThenStar : SurfaceFirstFilledTokenSource :=
   source (.field (directPath "Code")) [.star (starPath "Label")]
 
@@ -139,6 +153,22 @@ private def selfFilter : SurfaceCorrelatedHaving :=
   .compareNumbers .equal
     { origin := .inner, field := repeatedPath "Guard" }
     { origin := .inner, field := repeatedPath "Guard" }
+
+private def allRowsFilter : SurfaceCorrelatedHaving :=
+  let group : SurfaceGroupReference := .path {
+    base := .absolute
+    groups := ["Form", "Rows"] }
+  .compareRepetitions .equal
+    { origin := .inner, group }
+    { origin := .inner, group }
+
+private def filteredStarThenEnumeration : SurfaceFirstFilledTokenSource :=
+  source (.starHaving (starPath "Label") allRowsFilter)
+    [.field (directPath "Priority")]
+
+private def projectedCategorySource : SurfaceProjectedTokenEntitySource :=
+  { first := .field (.category (directPath "Priority") "Band")
+    rest := [.field (.direct (directPath "Code"))] }
 
 private def document (rows : List RowIndex) : Document :=
   { instantiatedRows := rows.map fun row => { group := 10, path := [row] }
@@ -172,6 +202,52 @@ private def starRead (stringCells numberCells : RawCell × RawCell × RawCell)
 
 private def emptyCells : RawCell × RawCell × RawCell :=
   (.empty, .empty, .empty)
+
+private def checkedPrepared :
+    PreparedFlatStringContext model builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption.get (by native_decide)
+
+private def checkedRow (index : Nat) : RowAddr :=
+  { group := 10, path := [index] }
+
+private def checkedDirectEnumerationCell (value : String) : ClassifiedCellInput :=
+  { address := { field := directEnumeration.id, path := [] }
+    stored := value
+    raw := .parsed (.enum value) }
+
+private def checkedDirectStringCell (value : String) : ClassifiedCellInput :=
+  { address := { field := directString.id, path := [] }
+    stored := value
+    raw := .parsed (.str value) }
+
+private def checkedRepeatedStringCell
+    (index : Nat) (raw : RawCell) (stored : String) : ClassifiedCellInput :=
+  { address := { field := repeatedString.id, path := [index] }
+    stored
+    raw }
+
+private def checkedRepeatedEnumerationCell
+    (index : Nat) (value : String) : ClassifiedCellInput :=
+  { address := { field := repeatedEnumeration.id, path := [index] }
+    stored := value
+    raw := .parsed (.enum value) }
+
+private def evaluatedCheckedOf (authored : SurfaceFirstFilledTokenSource)
+    (rowCount : Nat) (cells : List ClassifiedCellInput) :
+    Option (Option FirstFilledTokenResult) := do
+  let checked ← (elaborateFirstFilledTokenSource model ["Form"] authored).toOption
+  let document ← (checkDocument checkedPrepared "en_US" {
+    instantiatedRows := (List.range rowCount).map fun index =>
+      checkedRow (index + 1)
+    cells }).toOption
+  (checked.evaluateCheckedDirectStarFirstFilledValidation? document []).toOption
+
+private def projectedCategorySupport : Option Bool := do
+  let checked ←
+    (elaborateProjectedTokenEntitySource model ["Form"]
+      projectedCategorySource).toOption
+  pure checked.supportsCheckedDirectStarFirstFilledValidation
 
 private def checkedErrorOf (authored : SurfaceFirstFilledTokenSource) :
     Option FirstFilledTokenElabError :=
@@ -243,6 +319,56 @@ example : evaluatedOf (stringStar (some selfFilter)) [1] .full .empty .empty
     (.parsed (.str "A"), .empty, .empty)
     (.parsed (.num 1), .empty, .empty) =
       some (.evaluated (.value "A" true)) := by
+  native_decide
+
+/- Checked full validation excludes the over-limit-only token before the lazy scan, reaches the
+   direct fallback with not-given polarity, and still lets an in-capacity token hide that fallback. -/
+example :
+    evaluatedCheckedOf starThenEnumeration 4 [
+      checkedDirectEnumerationCell "B",
+      checkedRepeatedStringCell 4 (.parsed (.str "A")) "A"] =
+        some (some (.value "B" true)) ∧
+      evaluatedCheckedOf starThenEnumeration 4 [
+        checkedDirectEnumerationCell "B",
+        checkedRepeatedStringCell 1 (.parsed (.str "A")) "A"] =
+          some (some (.value "A" false)) := by
+  native_decide
+
+/- The route admits a stored Enumeration star, keeps capacity exclusion distinct from semantic
+   exhaustion, and rejects a category-projected source before evaluation. -/
+example :
+    evaluatedCheckedOf enumerationStar 4 [
+      checkedRepeatedEnumerationCell 4 "A"] =
+        some (some .noValue) ∧
+      evaluatedCheckedOf enumerationStar 4 [
+        checkedRepeatedEnumerationCell 1 "A"] =
+          some (some (.value "A" false)) ∧
+      projectedCategorySupport = some false := by
+  native_decide
+
+/- A cell-independent true filter proves the over-limit token was selected before capacity removes
+   it; the in-capacity control proves the same filter can still select a deciding token. -/
+example :
+    evaluatedCheckedOf filteredStarThenEnumeration 4 [
+      checkedDirectEnumerationCell "B",
+      checkedRepeatedStringCell 4 (.parsed (.str "A")) "A"] =
+        some (some (.value "B" true)) ∧
+      evaluatedCheckedOf filteredStarThenEnumeration 4 [
+        checkedDirectEnumerationCell "B",
+        checkedRepeatedStringCell 1 (.parsed (.str "A")) "A"] =
+          some (some (.value "A" true)) := by
+  native_decide
+
+/- A terminal direct value hides a later checked star failure; removing that prefix reaches the
+   same formal cell and keeps it distinct from clean exhaustion. -/
+example :
+    evaluatedCheckedOf directThenStar 1 [
+      checkedDirectStringCell "A",
+      checkedRepeatedStringCell 1 (.rejected .malformed) "bad"] =
+        some (some (.value "A" false)) ∧
+      evaluatedCheckedOf directThenStar 1 [
+        checkedRepeatedStringCell 1 (.rejected .malformed) "bad"] =
+          some (some (.unavailable .malformed)) := by
   native_decide
 
 /- Partial relevance is checked before classifying the reached target cell. -/
