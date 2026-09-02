@@ -1,0 +1,76 @@
+{
+  "header" : {
+    "id" : "MandatoryGeneratedIndex_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandatoryGeneratedIndex_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/GeneratedIndex",
+        "name" : "GeneratedIndex",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/GeneratedIndex/Control",
+            "name" : "Control",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/GeneratedIndex/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/GeneratedIndex/Rows/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/GeneratedIndex/Rows/Value",
+                "name" : "Value",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "Key"
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -112,6 +112,24 @@ theorem deriveCheckedMandatoryInformation_ignores_cross_root_rule :
       ] := by
   decide
 
+/-- The measured generated requirement for an optional repeatable index field is inert beside a direct control and cannot promote a parent-present declaration globally. -/
+theorem deriveCheckedMandatoryInformation_ignores_generated_optional_repeatable_string_index_field :
+    deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .ignored (.generatedOptionalRepeatableStringIndexField "Rows/Key"),
+        .fieldNotFilled "Control"
+      ] =
+      deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .fieldNotFilled "Control"
+      ] ∧
+    deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .ignored (.generatedOptionalRepeatableStringIndexField "Rows/Key"),
+        .declaredFieldRequirement .ifParentPresent "ParentRequired"
+      ] =
+      deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .declaredFieldRequirement .ifParentPresent "ParentRequired"
+      ] := by
+  decide
+
 /-- Existential and universal field-list guards reach their concrete successful fixed points in either authored order. -/
 theorem deriveCheckedMandatoryInformation_field_list_guards_close_reverse_authored :
     deriveCheckedMandatoryInformation (fun _ : String => "Form") [
