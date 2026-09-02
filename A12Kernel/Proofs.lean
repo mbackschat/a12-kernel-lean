@@ -147,6 +147,7 @@ import A12Kernel.Proofs.Iteration
 import A12Kernel.Proofs.LegalCharset
 import A12Kernel.Proofs.LegalCharsetElaboration
 import A12Kernel.Proofs.MessagePointer
+import A12Kernel.Proofs.MandatoryInformation
 import A12Kernel.Proofs.ModelZone
 import A12Kernel.Proofs.NumberEntityList
 import A12Kernel.Proofs.NumberEntityValueList

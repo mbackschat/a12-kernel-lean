@@ -65,7 +65,7 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 | `or-not-filled` | `e4befb517e13d05664c5ada2c83933ccf93ee2c1a0fb1d3b8560cf5439939a56` | `4c11779349e4a57dbd5b4b6abbc5e6acb30c02a81609cddecf8944a85149d7c9` | `54a9238dc9b9c19cbdf5e0960d62d241269be3e992766f08226253722917b56b` |
 | `warning-not-filled` | `c113493fa7537eff5e824355690bbe59889f0e98a16038e59334784b10009694` | `35229ed792d4aa8cbf1913e93a2d648e6488299b875fd03e7bc238aec540cdcb` | `011fba556c7bb92a4a817f941110b81cb49c3796a9ecb68a44a38496b3b996f1` |
 
-- `sync`: **no `spec/` change and no checked carrier yet.** The matrix closes a finite discovery slice but not the rule-set collector or its composition semantics; [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) remains the owner.
+- `sync`: **no `spec/` change.** The matrix closes a finite discovery slice but not the full rule-set collector or its composition semantics; [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) owns the wider obligation, and the [implementation map](../IMPLEMENTATION-MAP.md#cap-flat-mandatory-information) owns current checked coverage.
 
 <a id="src-mandatory-information-composition-matrix"></a>
 #### Mandatory-information derivation distinguishes root-relative fields and closes finite dependency chains, measured locally on 2026-09-01
@@ -98,4 +98,4 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 | `root-conditional` | `dc33b50baef087ce835d0a9f831a217a094a3b3222c7f0be33a63b001a4a58d0` | `eb754e5c89ae7d70533ca6665f632dda4e604e209774c521da55ca8f557ce084` | `d9594e7329bd618ea465bb39979a8b50475d528bc91f263b4dd711fe26ef0f9e` |
 | `root-seeded` | `f298d154499ffe6a51a5dae248690725189caf47fa10b624ab390a1f8b6923b6` | `da67701eb91dea767c85ff6ccf6434107464bcdfb170230c406746513750b82b` | `aef7d25c8f2f5b037dc061ac7d3e5ef62e06f6bc253d0960ed459f3214a1044a` |
 
-- `sync`: **no `spec/` change and no checked carrier yet.** The matrix settles a flat root-relative and dependency-closure slice, while [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) retains the wider collector obligation.
+- `sync`: **no `spec/` change.** The matrix settles a flat root-relative and dependency-closure slice, while [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) retains the wider collector obligation and the [implementation map](../IMPLEMENTATION-MAP.md#cap-flat-mandatory-information) owns current checked coverage.
