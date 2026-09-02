@@ -1,0 +1,146 @@
+{
+  "header" : {
+    "id" : "LongerDirectCycle",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Cycle_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/LongerDirectCycle",
+        "name" : "LongerDirectCycle",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/LongerDirectCycle/SeedA",
+            "name" : "SeedA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/LongerDirectCycle/SeedB",
+            "name" : "SeedB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/LongerDirectCycle/IdleA",
+            "name" : "IdleA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/LongerDirectCycle/IdleB",
+            "name" : "IdleB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/LongerDirectCycle/A_SEED_A_TO_B",
+            "name" : "A_SEED_A_TO_B",
+            "Rule" : {
+              "errorEntityRelPath" : "../SeedB",
+              "errorCode" : "A_SEED_A_TO_B",
+              "errorCondition" : "FieldFilled(SeedA) And FieldNotFilled(SeedB)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "A_SEED_A_TO_B"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/LongerDirectCycle/B_IDLE_A_TO_SEED_A",
+            "name" : "B_IDLE_A_TO_SEED_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../SeedA",
+              "errorCode" : "B_SEED_B_TO_A",
+              "errorCondition" : "FieldFilled(/LongerDirectCycle/IdleA) And FieldNotFilled(/LongerDirectCycle/SeedA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "B_SEED_B_TO_A"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/LongerDirectCycle/C_SEED_B_TO_IDLE_B",
+            "name" : "C_SEED_B_TO_IDLE_B",
+            "Rule" : {
+              "errorEntityRelPath" : "../IdleB",
+              "errorCode" : "C_IDLE_A_TO_B",
+              "errorCondition" : "FieldFilled(/LongerDirectCycle/SeedB) And FieldNotFilled(/LongerDirectCycle/IdleB)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "C_IDLE_A_TO_B"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/LongerDirectCycle/D_IDLE_B_TO_A",
+            "name" : "D_IDLE_B_TO_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../IdleA",
+              "errorCode" : "D_IDLE_B_TO_A",
+              "errorCondition" : "FieldFilled(IdleB) And FieldNotFilled(IdleA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "D_IDLE_B_TO_A"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/LongerDirectCycle/Z_SEED_A",
+            "name" : "Z_SEED_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../SeedA",
+              "errorCode" : "Z_SEED_A",
+              "errorCondition" : "FieldNotFilled(SeedA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Z_SEED_A"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

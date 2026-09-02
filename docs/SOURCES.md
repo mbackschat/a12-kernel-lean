@@ -360,6 +360,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Mandatory-information derivation closes a seeded direct field cycle and leaves an unseeded cycle inert](sources/rule-set-meta-information.md#src-mandatory-information-field-cycles)
 <a id="src-mandatory-information-field-list-cycles"></a>
 - [Mandatory-information derivation closes seeded existential and universal field-list cycles without self-support](sources/rule-set-meta-information.md#src-mandatory-information-field-list-cycles)
+<a id="src-mandatory-information-longer-cycles"></a>
+- [Mandatory-information derivation closes exact four-node direct and multi-list-edge cycles without self-support](sources/rule-set-meta-information.md#src-mandatory-information-longer-cycles)
 <a id="src-mandatory-information-field-list-guards"></a>
 - [Mandatory-information derivation distinguishes existential and universal filled-field guards](sources/rule-set-meta-information.md#src-mandatory-information-field-list-guards)
 <a id="src-mandatory-information-distinct-count"></a>

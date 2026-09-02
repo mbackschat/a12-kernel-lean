@@ -177,6 +177,34 @@ private def deriveFieldListCycleKernelBatch? :
     .fieldNotFilled "AllTrueSupport"
   ]
 
+private def deriveLongerDirectCycleKernelBatch? :
+    Option (MandatoryInformation String String) :=
+  derive [
+    .fieldGuardedNotFilled "SeedA" "SeedB",
+    .fieldGuardedNotFilled "IdleA" "SeedA",
+    .fieldGuardedNotFilled "SeedB" "IdleB",
+    .fieldGuardedNotFilled "IdleB" "IdleA",
+    .fieldNotFilled "SeedA"
+  ]
+
+private def deriveMultiListEdgeCycleKernelBatch? :
+    Option (MandatoryInformation String String) :=
+  derive [
+    .fieldListGuardedNotFilled ["IdleA", "AllFalseSupport"]
+      .atLeastOneFilled "AnyA",
+    .fieldListGuardedNotFilled ["IdleB", "AllTrueSupport"]
+      .atLeastOneFilled "IdleA",
+    .fieldListGuardedNotFilled ["AllFalseA", "AllFalseSupport"]
+      .allFilled "AllFalseB",
+    .fieldListGuardedNotFilled ["AnyB", "IdleSupport"]
+      .atLeastOneFilled "IdleB",
+    .fieldListGuardedNotFilled ["AllFalseB", "AllTrueSupport"]
+      .allFilled "AllFalseA",
+    .fieldListGuardedNotFilled ["AnyA", "AnySupport"]
+      .atLeastOneFilled "AnyB",
+    .fieldNotFilled "AnyA"
+  ]
+
 /- One finite decision table locks field, root-only, ignored, closure, and guard branches. -/
 example : measuredCases.all (fun (rules, expected) => derive rules == expected) := by
   native_decide
@@ -278,6 +306,16 @@ example :
       ["AnyA", "AllFalseA", "AllTrueA", "AllTrueSupport", "AnyB", "AllTrueB"]
       ["AnyA", "AllFalseA", "AllTrueA", "AllTrueSupport", "AnyB", "AllTrueB"]
       ["Form"] := by
+  native_decide
+
+/- The longer Kernel batches close a four-node direct cycle and a reverse-authored four-node list-guard cycle while leaving its unseeded universal component inert. -/
+example :
+    deriveLongerDirectCycleKernelBatch? = result
+        ["SeedA", "SeedB", "IdleB", "IdleA"]
+        ["SeedA", "SeedB", "IdleB", "IdleA"] ["Form"] ∧
+      deriveMultiListEdgeCycleKernelBatch? = result
+        ["AnyA", "AnyB", "IdleB", "IdleA"]
+        ["AnyA", "AnyB", "IdleB", "IdleA"] ["Form"] := by
   native_decide
 
 /- Severity remains authored identity: only the ERROR negative field rule contributes. -/

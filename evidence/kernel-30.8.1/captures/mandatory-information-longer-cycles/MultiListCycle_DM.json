@@ -1,0 +1,246 @@
+{
+  "header" : {
+    "id" : "MultiListCycle",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "ListCycle_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MultiListCycle",
+        "name" : "MultiListCycle",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MultiListCycle/AnyA",
+            "name" : "AnyA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MultiListCycle/AnySupport",
+            "name" : "AnySupport",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MultiListCycle/AnyB",
+            "name" : "AnyB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MultiListCycle/AllFalseA",
+            "name" : "AllFalseA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MultiListCycle/AllFalseSupport",
+            "name" : "AllFalseSupport",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MultiListCycle/AllFalseB",
+            "name" : "AllFalseB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MultiListCycle/AllTrueA",
+            "name" : "AllTrueA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MultiListCycle/AllTrueSupport",
+            "name" : "AllTrueSupport",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MultiListCycle/AllTrueB",
+            "name" : "AllTrueB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MultiListCycle/IdleA",
+            "name" : "IdleA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MultiListCycle/IdleSupport",
+            "name" : "IdleSupport",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MultiListCycle/IdleB",
+            "name" : "IdleB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MultiListCycle/D_ANY_A_TO_ANY_B",
+            "name" : "D_ANY_A_TO_ANY_B",
+            "Rule" : {
+              "errorEntityRelPath" : "../AnyB",
+              "errorCode" : "A_ANY_FORWARD",
+              "errorCondition" : "AtLeastOneFieldFilled(AnyA, AnySupport) And FieldNotFilled(AnyB)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "A_ANY_FORWARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MultiListCycle/A_IDLE_A_TO_ANY_A",
+            "name" : "A_IDLE_A_TO_ANY_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../AnyA",
+              "errorCode" : "B_ANY_BACK",
+              "errorCondition" : "AtLeastOneFieldFilled(/MultiListCycle/IdleA, /MultiListCycle/AllFalseSupport) And FieldNotFilled(/MultiListCycle/AnyA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "B_ANY_BACK"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MultiListCycle/C_ALL_FALSE_FORWARD",
+            "name" : "C_ALL_FALSE_FORWARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../AllFalseB",
+              "errorCode" : "C_ALL_FALSE_FORWARD",
+              "errorCondition" : "AllFieldsFilled(AllFalseA, AllFalseSupport) And FieldNotFilled(AllFalseB)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "C_ALL_FALSE_FORWARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MultiListCycle/D_ALL_FALSE_BACK",
+            "name" : "D_ALL_FALSE_BACK",
+            "Rule" : {
+              "errorEntityRelPath" : "../AllFalseA",
+              "errorCode" : "D_ALL_FALSE_BACK",
+              "errorCondition" : "AllFieldsFilled(/MultiListCycle/AllFalseB, /MultiListCycle/AllTrueSupport) And FieldNotFilled(/MultiListCycle/AllFalseA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "D_ALL_FALSE_BACK"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MultiListCycle/C_ANY_B_TO_IDLE_B",
+            "name" : "C_ANY_B_TO_IDLE_B",
+            "Rule" : {
+              "errorEntityRelPath" : "../IdleB",
+              "errorCode" : "G_IDLE_FORWARD",
+              "errorCondition" : "AtLeastOneFieldFilled(/MultiListCycle/AnyB, /MultiListCycle/IdleSupport) And FieldNotFilled(/MultiListCycle/IdleB)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "G_IDLE_FORWARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MultiListCycle/B_IDLE_B_TO_IDLE_A",
+            "name" : "B_IDLE_B_TO_IDLE_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../IdleA",
+              "errorCode" : "H_IDLE_BACK",
+              "errorCondition" : "AtLeastOneFieldFilled(/MultiListCycle/IdleB, /MultiListCycle/AllTrueSupport) And FieldNotFilled(/MultiListCycle/IdleA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "H_IDLE_BACK"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MultiListCycle/Z_ANY_A",
+            "name" : "Z_ANY_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../AnyA",
+              "errorCode" : "Z_ANY_A",
+              "errorCondition" : "FieldNotFilled(AnyA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Z_ANY_A"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
