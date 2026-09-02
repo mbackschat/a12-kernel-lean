@@ -351,6 +351,32 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 
 - `sync`: **no `spec/` change.** This exact batch closes SG14's first dependency-derived filled-count route but not the complete collector; [`spec/`](../../spec/) still has no rule-set meta-information section.
 
+<a id="src-mandatory-information-count-chain"></a>
+#### Mandatory-information derivation closes one filled-count target-to-operand chain, measured locally on 2026-09-02
+
+- `revision`: three model-level `mandatoryInformation` requests at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`; source-shipped dmtool `0.13.0`, fully typed structured read-backs, Kernel-confirmed `model check` results, and all artifacts report Kernel `30.8.1` built and runtime. Structured model and root-group renames plus rule modification, removal, and rename verbs emitted every model from the retained dependency-true model. No request or artifact carries a document or row.
+- `question`: when a reverse-named downstream `NumberOfFilledFields(ZeroTarget, OneB) >= n And FieldNotFilled(OneTarget)` rule precedes the direct seeds and an upstream `NumberOfFilledFields(TwoA, TwoB) >= 2 And FieldNotFilled(ZeroTarget)` rule, may the upstream count target become an operand of the downstream count, and does a missing premise suppress only its dependent suffix?
+- `models`: the true model uses downstream threshold `1` and direct seeds `TwoA` and `TwoB`. The downstream-false model changes only that threshold to `2`. The upstream-false model restores threshold `1` and removes only the `TwoB` seed. In all three, `A_DOWNSTREAM` sorts before both seed rules and `Z_UPSTREAM`; `OneB` remains isolated.
+
+| Case | `mandatory` and `mandatoryForRootGroup` | `mandatoryRootGroups` |
+|---|---|---|
+| `chain-true` | `TwoA`, `TwoB`, `ZeroTarget`, `OneTarget` | root |
+| `chain-downstream-false` | `TwoA`, `TwoB`, `ZeroTarget` | root |
+| `chain-upstream-false` | `TwoA` | root |
+
+- `claim`: the true artifact includes both count targets despite the downstream rule sorting before every source that can establish it. Raising only the downstream threshold preserves `ZeroTarget` while omitting `OneTarget`; removing one upstream seed suppresses both targets while retaining the surviving direct field. This exact batch establishes one filled-count target reused as one downstream filled-count operand without identifying the Kernel's private traversal mechanism.
+- `separators`: a one-pass account omits `OneTarget` from the true arm after encountering the downstream rule too early. A direct-seed-only operand policy refuses the chain instead of returning any retained set. Treating the isolated listed `OneB` as mandatory adds `OneTarget` to the downstream-false arm, while manufacturing the missing `TwoB` adds both targets to the upstream-false arm.
+- `limit`: one nonrepeatable root per model, nine String declarations, ERROR severity, two duplicate-free two-field count-on-left inclusive `>=` guards, scale-0 thresholds `1` and `2`, exactly one target-to-operand edge across five distinct field roles, downstream-first rule-name order, one or two direct upstream seeds, one isolated downstream operand, and `en_US`. Forward-authored order, no upstream seed, longer or branching count chains, cross-role aliases, other comparisons, distinct count, other dependencies or reuse roles, repetition, indices, filters, generated rules, wider formulas, cross-root references, and cycles remain outside Kernel correspondence.
+- `bytes`: [`mandatory-information-count-chain/`](../../evidence/kernel-30.8.1/captures/mandatory-information-count-chain/) retains all three model/request/artifact triples. These are bounded raw captures with no typed replay, so they establish neither L nor C.
+
+| Case | Model SHA-256 | Request SHA-256 | Artifact SHA-256 |
+|---|---|---|---|
+| `chain-true` | `49ad595b11ca669822be08da4d46c0b41b313fe547a5eae5ffda1e2dfe8cdc63` | `21176f351161efabfc73e5e8cf29d5e68a9fb6d3a78e2428c3a81658979703f4` | `57ea76bff416b0cd352b7e544928359d6a4c664d25500635d4a2f59fa9bff724` |
+| `chain-downstream-false` | `aab7155b8a5713e2d3b27e055eeaf0a62f8889f053c6a28ce09b5175ae2a83dd` | `0c7e7a32e61a8c995a78aa1bd42f83d9dd1edfa07cddb2501e3d47d2937393cc` | `01249053e1a5ffa065c4fe54ab0148d85d741754cf7afefd5553ad81345d30d1` |
+| `chain-upstream-false` | `f517ea99b637e087def7f12c78a348bf16494f2d28fe2593beafd703db881fbe` | `df0be74a6d992271c79ed789070bb196051843ab651698a79d06b26c73f7ecf3` | `d9be726fd8215d58352878db62cca37fa6702cbaec52272b33da10773e87b4e5` |
+
+- `sync`: **no `spec/` change.** This exact batch closes SG14's first count-target-to-count-operand route but not the complete collector; [`spec/`](../../spec/) still has no rule-set meta-information section.
+
 <a id="src-mandatory-information-count-target-only"></a>
 #### Mandatory-information derivation returns an isolated true count target and its root, measured locally on 2026-09-02
 

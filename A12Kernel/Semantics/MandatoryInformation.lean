@@ -2,7 +2,7 @@ import A12Kernel.Semantics.NumericLiteral
 
 /-! # Mandatory-information derivation
 
-This module models the measured flat, nonrepeatable contributing fragment of the model-level mandatory-information service plus the exact unfiltered singleton-field presence matrix over one direct unindexed repeatable child of a nonrepeatable root and checked whole-rule no-contribution identities. The input retains normalized authored rule shape, the two measured declaration-derived field-required modes, the generated requirement for one optional repeatable String index field, and the generated validation for one direct nonrepeatable scale-0 Number copy, including ignored WARNING and INFO severity; the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values, keeps filled-count and distinct-count rules separate where their guard behavior differs, accepts the exact field-guard dependency roles measured for one filled-count operand and its target, and retains the measured isolated distinct-count comparison matrix as no-contribution. The filled-field guard slice retains existential versus universal rule identity, and finite field-guard cycles participate in the same monotone closure as acyclic chains. The semantic-indexed, parallel-iterated, and cross-root captures establish referenced-field exclusion; the checked identities additionally contribute no roots, with only the cross-root capture separating its non-control root. Wider repetition, concrete indices, wider semantic-index shapes, filter internals, other generated index and computation-validation shapes, contributing cross-root rules, wider root topology, wider count sites, and wider Boolean formulas remain outside this carrier. -/
+This module models the measured flat, nonrepeatable contributing fragment of the model-level mandatory-information service plus the exact unfiltered singleton-field presence matrix over one direct unindexed repeatable child of a nonrepeatable root and checked whole-rule no-contribution identities. The input retains normalized authored rule shape, the two measured declaration-derived field-required modes, the generated requirement for one optional repeatable String index field, and the generated validation for one direct nonrepeatable scale-0 Number copy, including ignored WARNING and INFO severity; the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values, keeps filled-count and distinct-count rules separate where their guard behavior differs, accepts the exact field-guard dependency roles measured for one filled-count operand and its target plus one reverse-authored target-to-count-operand chain, and retains the measured isolated distinct-count comparison matrix as no-contribution. The filled-field guard slice retains existential versus universal rule identity, and finite field-guard cycles participate in the same monotone closure as acyclic chains. The semantic-indexed, parallel-iterated, and cross-root captures establish referenced-field exclusion; the checked identities additionally contribute no roots, with only the cross-root capture separating its non-control root. Wider repetition, concrete indices, wider semantic-index shapes, filter internals, other generated index and computation-validation shapes, contributing cross-root rules, wider root topology, wider count sites, and wider Boolean formulas remain outside this carrier. -/
 
 namespace A12Kernel
 
@@ -419,22 +419,79 @@ private def fieldGuardPremiseCount [DecidableEq Field]
         if premise = field then count + 1 else count
     | _ => count) 0
 
+private def isMeasuredCountTargetOperand [DecidableEq Field]
+    (rules : List (MandatoryRule Field Root)) (field : Field) : Bool :=
+  countGuardTargetCount rules field == 1 &&
+    countGuardOperandCount rules field == 1 &&
+    fieldMentionCount rules field == 2
+
 private def isSupportedCountOperand [DecidableEq Field]
     (rules : List (MandatoryRule Field Root)) (seeds : List Field)
     (field : Field) : Bool :=
   field ∈ seeds || fieldMentionCount rules field == 1 ||
     (countGuardOperandCount rules field == 1 &&
       directSeededFieldGuardTargetCount rules seeds field == 1 &&
-      fieldMentionCount rules field == 2)
+      fieldMentionCount rules field == 2) ||
+    isMeasuredCountTargetOperand rules field
 
 private def isSupportedCountTarget [DecidableEq Field]
     (rules : List (MandatoryRule Field Root)) (field : Field) : Bool :=
   let targetCount := countGuardTargetCount rules field
   let premiseCount := fieldGuardPremiseCount rules field
-  targetCount == 1 &&
-    fieldMentionCount rules field == targetCount + premiseCount
+  (targetCount == 1 &&
+    fieldMentionCount rules field == targetCount + premiseCount) ||
+    isMeasuredCountTargetOperand rules field
 
-/-- Keep each count guard on its measured shape. Filled-count operands are direct singleton seeds, otherwise isolated, or the target of one direct-seeded field guard; its target may be isolated or feed ordinary field guards. Distinct-count guards accept exactly the two-operand direct-seed `>= 2` shape and the measured isolated target-only adjacent pair for each comparison spelling, including authored scale. Explanation-only generated identities participate in topology but not count-shape isolation, and wider dependency or reuse roles stay outside this slice. -/
+private def hasCountTargetOperandRole [DecidableEq Field]
+    (rules : List (MandatoryRule Field Root)) : Bool :=
+  rules.any fun
+    | .countGuardedNotFilled _ _ _ target =>
+        countGuardOperandCount rules target != 0
+    | _ => false
+
+private def matchesMeasuredCountTargetOperandChain
+    [DecidableEq Field]
+    (downstreamFields upstreamFields : List Field)
+    (downstreamComparison upstreamComparison : MandatoryCountGuardComparison)
+    (downstreamThreshold upstreamThreshold : Option CheckedMandatoryCountThreshold)
+    (downstreamTarget upstreamTarget : Field) (seeds : List Field) : Bool :=
+  match downstreamFields, upstreamFields with
+  | [bridge, downstreamOther], [left, right] =>
+      [bridge, downstreamOther, downstreamTarget, left, right].eraseDups.length == 5 &&
+        bridge == upstreamTarget &&
+        downstreamComparison == .countGreaterEqual &&
+        upstreamComparison == .countGreaterEqual &&
+        (hasAuthoredScaleZeroThreshold downstreamThreshold 1 ||
+          hasAuthoredScaleZeroThreshold downstreamThreshold 2) &&
+        hasAuthoredScaleZeroThreshold upstreamThreshold 2 &&
+        (seeds == [left] || seeds == [left, right])
+  | _, _ => false
+
+private def hasSupportedCountTargetOperandShape [DecidableEq Field]
+    (rules : List (MandatoryRule Field Root)) : Bool :=
+  if !hasCountTargetOperandRole rules then
+    true
+  else
+    match rules with
+    | [.countGuardedNotFilled downstreamFields downstreamComparison
+          downstreamThreshold downstreamTarget,
+        .fieldNotFilled left,
+        .countGuardedNotFilled upstreamFields upstreamComparison
+          upstreamThreshold upstreamTarget] =>
+        matchesMeasuredCountTargetOperandChain downstreamFields upstreamFields
+          downstreamComparison upstreamComparison downstreamThreshold
+          upstreamThreshold downstreamTarget upstreamTarget [left]
+    | [.countGuardedNotFilled downstreamFields downstreamComparison
+          downstreamThreshold downstreamTarget,
+        .fieldNotFilled left, .fieldNotFilled right,
+        .countGuardedNotFilled upstreamFields upstreamComparison
+          upstreamThreshold upstreamTarget] =>
+        matchesMeasuredCountTargetOperandChain downstreamFields upstreamFields
+          downstreamComparison upstreamComparison downstreamThreshold
+          upstreamThreshold downstreamTarget upstreamTarget [left, right]
+    | _ => false
+
+/-- Keep each count guard on its measured shape. Filled-count operands are direct singleton seeds, otherwise isolated, the target of one direct-seeded field guard, or the upstream target in the exact two-stage reverse-authored count chain; a count target may otherwise be isolated or feed ordinary field guards. Distinct-count guards accept exactly the two-operand direct-seed `>= 2` shape and the measured isolated target-only adjacent pair for each comparison spelling, including authored scale. Explanation-only generated identities participate in topology but not count-shape isolation, and wider dependency or reuse roles stay outside this slice. -/
 private def MandatoryRule.hasSupportedCountShape [DecidableEq Field]
     (rules : List (MandatoryRule Field Root)) (seeds : List Field) :
     MandatoryRule Field Root → Bool
@@ -512,6 +569,7 @@ def deriveCheckedMandatoryInformation [DecidableEq Field] [DecidableEq Root]
       rules.all MandatoryInformationDerivation.MandatoryRule.hasSupportedFieldListGuardShape &&
       rules.all MandatoryInformationDerivation.MandatoryRule.hasSupportedRepeatablePresenceScope &&
       MandatoryInformationDerivation.hasSupportedCountShapes rules &&
+      MandatoryInformationDerivation.hasSupportedCountTargetOperandShape rules &&
       MandatoryInformationDerivation.hasSupportedDeclaredFieldRequirementShape rules &&
       MandatoryInformationDerivation.hasSingleRootTopology rootOf rules then
     some (deriveMandatoryInformation rootOf rules)

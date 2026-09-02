@@ -376,6 +376,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Mandatory-information derivation returns the zero-, one-, and two-seed filled-count results](sources/rule-set-meta-information.md#src-mandatory-information-count-seed-cardinality)
 <a id="src-mandatory-information-count-dependencies"></a>
 - [Mandatory-information derivation closes through a dependency-derived filled-count operand and reused target](sources/rule-set-meta-information.md#src-mandatory-information-count-dependencies)
+<a id="src-mandatory-information-count-chain"></a>
+- [Mandatory-information derivation closes one filled-count target-to-operand chain](sources/rule-set-meta-information.md#src-mandatory-information-count-chain)
 <a id="src-mandatory-information-count-target-only"></a>
 - [Mandatory-information derivation returns an isolated true count target and its root](sources/rule-set-meta-information.md#src-mandatory-information-count-target-only)
 <a id="src-mandatory-information-distinct-target-only"></a>

@@ -1,0 +1,7 @@
+{
+  "model": "CountChainDownstreamFalse_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "mandatoryInformation"
+  ]
+}
