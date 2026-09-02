@@ -52,6 +52,8 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
       comparison.supportsAddressedPartial
   | .groupList operator [.starredGroup _] =>
       operator.toStarredGroupFillQuantifier?.isSome
+  | .groupList operator [.starredGroupPresence _] =>
+      operator.toStarredGroupFillQuantifier?.isSome
   | .repetitionNotUnique _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => false
@@ -128,6 +130,22 @@ def evalAddressedPartial?
                   document.source.toDocument
             (source.evaluatePartialQuantifier starredOperator document
               context.outer scope).mapError .addressing
+  | .groupList operator [.starredGroupPresence source] =>
+      match operator.toStarredGroupFillQuantifier? with
+      | none => none
+      | some _ =>
+          some do
+            let document := match context.input with
+              | .legacy document _ => document
+              | .checked checked | .partialView checked _ =>
+                  checked.source.toDocument
+            let environments ←
+              (source.inCapacityEnvironments document context.outer)
+                |>.mapError .addressing
+            let states ← environments.mapM fun environment => do
+              let input ← resolveGroup source.groupPath environment
+              pure input.derive.asGroupListPresence
+            pure (operator.evalPresence states).asConservativeVerdict
   | .repetitionNotUnique _ =>
       some (match repetitionNotUniqueResult? with
         | some result =>

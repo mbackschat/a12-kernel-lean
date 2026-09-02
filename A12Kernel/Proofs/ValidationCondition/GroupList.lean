@@ -112,6 +112,46 @@ theorem validationCondition_groupList_addressing_failure
   rw [validationCondition_groupList_evalAddressed, fails]
   rfl
 
+/-- A sole nonrepeatable terminal below starred ancestry has partial support exactly for the two quantifiers admitted on every sole starred group operand. -/
+@[simp]
+theorem validationConditionLeaf_starredGroupPresence_partialSupport
+    (model : FlatModel) (operator : GroupFillQuantifier)
+    (source : CheckedStarredGroupPresenceSource model) :
+    (ValidationConditionLeaf.groupList operator
+      [.starredGroupPresence source]).supportsAddressedPartial =
+        operator.toStarredGroupFillQuantifier?.isSome := by
+  rfl
+
+/-- Partial evaluation selects the source's in-capacity ancestry environments, delegates each terminal to the caller's relevance-aware group-product resolver, and combines those classifications through the shared quantifier table. -/
+theorem validationConditionLeaf_starredGroupPresence_partialDelegates
+    (model : FlatModel) (operator : GroupFillQuantifier)
+    (source : CheckedStarredGroupPresenceSource model)
+    (context : AddressedValidationEvaluationContext model)
+    (scope : ValidationRelevanceScope) (isRelevant : FlatRelevance)
+    (resolveGroup :
+      GroupPath → Env →
+        Except CheckedAddressingError ResolvedGroupPresenceInput)
+    (result? : Option RepetitionNotUniqueResult) :
+    (ValidationConditionLeaf.groupList operator
+      [.starredGroupPresence source]).evalAddressedPartial?
+        context scope isRelevant resolveGroup result? =
+      (match operator.toStarredGroupFillQuantifier? with
+      | none => none
+      | some _ =>
+          some do
+            let document := match context.input with
+              | .legacy document _ => document
+              | .checked checked | .partialView checked _ =>
+                  checked.source.toDocument
+            let environments ←
+              (source.inCapacityEnvironments document context.outer)
+                |>.mapError CheckedAddressingError.addressing
+            let states ← environments.mapM fun environment => do
+              let input ← resolveGroup source.groupPath environment
+              pure input.derive.asGroupListPresence
+            pure (operator.evalPresence states).asConservativeVerdict) := by
+  rfl
+
 /-- A group-list leaf exposes exactly the captured prefix of its checked starred operands as its ordinary rule-iteration scope. -/
 @[simp]
 theorem validationCondition_groupList_iterationScope

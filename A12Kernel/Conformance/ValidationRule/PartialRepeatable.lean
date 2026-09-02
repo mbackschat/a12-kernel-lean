@@ -304,6 +304,23 @@ private def partialGroupNotFilledRule? :
   (assembleResolvedValidationRule partialGroupModel condition
     partialGroupError.id "partialGroupNotFilled" .error { parts := [] }).toOption
 
+private def partialTerminalGroupStar : SurfaceStarGroupPath :=
+  { base := .absolute
+    groups := [
+      { name := "Order" },
+      { name := "Sections", starred := true },
+      { name := "Details" }
+    ] }
+
+private def partialTerminalGroupRule?
+    (operator : GroupFillQuantifier) :
+    Option (CheckedResolvedValidationRule partialGroupModel) := do
+  let condition ←
+    (CheckedValidationCondition.fromGroupList partialGroupModel ["Order"]
+      operator [.starredGroup partialTerminalGroupStar]).toOption
+  (assembleResolvedValidationRule partialGroupModel condition
+    selectedDetail.id "partialTerminalGroup" .error { parts := [] }).toOption
+
 private def partialIndexFilledRule? :
     Option (CheckedResolvedValidationRule partialGroupModel) := do
   let condition ←
@@ -331,6 +348,10 @@ private def partialIndexNumericRule? :
 private def partialGroupCell (field : FlatFieldDecl)
     (stored : String) (raw : RawCell) : ClassifiedCellInput :=
   { address := { field := field.id, path := [1] }, stored, raw }
+
+private def partialGroupCellAt (field : FlatFieldDecl) (coordinate : Nat)
+    (stored : String) (raw : RawCell) : ClassifiedCellInput :=
+  { address := { field := field.id, path := [coordinate] }, stored, raw }
 
 private def partialGroupData
     (index : Option (String × RawCell))
@@ -397,6 +418,21 @@ private def partialGroupVerdicts?
         match row.2 with
         | .skipped => none
         | .evaluated outcome => some outcome.verdict
+
+private def partialTerminalGroupVerdict?
+    (operator : GroupFillQuantifier) (data : DocumentData)
+    (relevant : List RelevantEntityPattern) : Option Verdict := do
+  let rule ← partialTerminalGroupRule? operator
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      partialGroupModel).toOption
+  let checked ← (checkDocument prepared "en_US" data).toOption
+  let preliminary ←
+    (checked.applyPartialGeneratedPreliminary relevant).toOption
+  let result ← (rule.evalOrdinaryOncePartialPrepared preliminary).toOption
+  match result with
+  | .skipped => none
+  | .evaluated _ outcome => some outcome.verdict
 
 private def partialIndexSnapshot?
     (relevant : List RelevantEntityPattern)
@@ -572,6 +608,63 @@ example :
     partialGroupVerdicts? partialGroupNotFilledRule?
         (partialGroupData none) [relevantPartialGroup] =
       some [.notFired] := by
+  native_decide
+
+/- One visible filled descendant decides a partly covered terminal group as filled. The positive
+   quantifier fires while the negative quantifier observes the same product as UNKNOWN. -/
+example :
+    partialTerminalGroupVerdict? .atLeastOneGroupFilled
+        { instantiatedRows := [{ group := 10, path := [1] }]
+          cells := [partialGroupCell selectedDetail "9" (.parsed (.num 9))] }
+        [relevantPartialGroupField selectedDetail] =
+      some (.fired .value) ∧
+    partialTerminalGroupVerdict? .noGroupFilled
+        { instantiatedRows := [{ group := 10, path := [1] }]
+          cells := [partialGroupCell selectedDetail "9" (.parsed (.num 9))] }
+        [relevantPartialGroupField selectedDetail] =
+      some .unknown := by
+  native_decide
+
+/- Complete coverage of both empty descendants settles the group as empty. Partial coverage without
+   a filled witness remains unavailable and makes the negative quantifier UNKNOWN. -/
+example :
+    partialTerminalGroupVerdict? .noGroupFilled
+        { instantiatedRows := [{ group := 10, path := [1] }], cells := [] }
+        [relevantPartialGroupField selectedDetail,
+          relevantPartialGroupField otherDetail] =
+      some (.fired .omission) ∧
+    partialTerminalGroupVerdict? .noGroupFilled
+        { instantiatedRows := [{ group := 10, path := [1] }], cells := [] }
+        [relevantPartialGroupField selectedDetail] =
+      some .unknown := by
+  native_decide
+
+/- A filled in-capacity group decides the existential quantifier despite an unavailable peer. -/
+example :
+    partialTerminalGroupVerdict? .atLeastOneGroupFilled {
+        instantiatedRows := [
+          { group := 10, path := [1] },
+          { group := 10, path := [2] }]
+        cells := [
+          partialGroupCell selectedDetail "9" (.parsed (.num 9))]
+      } [relevantPartialGroupField selectedDetail] =
+      some (.fired .value) := by
+  native_decide
+
+/- Capacity selection precedes descendant classification. A filled third row cannot defeat the two
+   fully covered empty groups inside the declared extent. -/
+example :
+    partialTerminalGroupVerdict? .noGroupFilled {
+        instantiatedRows := [
+          { group := 10, path := [1] },
+          { group := 10, path := [2] },
+          { group := 10, path := [3] }]
+        cells := [
+          partialGroupCellAt selectedDetail 3 "9" (.parsed (.num 9))]
+      } [
+        RelevantEntityPattern.allInstances selectedDetail.path,
+        RelevantEntityPattern.allInstances otherDetail.path] =
+      some (.fired .omission) := by
   native_decide
 
 /- Ordinary partial reads consume the same relevance-scoped duplicate relation as generated uniqueness. Selecting both equal index cells makes both reads UNKNOWN; selecting only row 1 removes the absent partner from the relation, so row 1 fires and row 2 remains a rule-level skip. -/
