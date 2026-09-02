@@ -2,7 +2,7 @@ import A12Kernel.Semantics.MandatoryInformation
 
 /-! # Mandatory-information derivation locks
 
-These cases cover the measured flat, nonrepeatable contributing ERROR-rule fragment, one exact unfiltered repeatable negative disjunction, the exact singleton WARNING/INFO severity exclusions, declaration-derived field-required modes and root closure, one model-derived optional repeatable String index requirement, one generated direct nonrepeatable scale-0 Number-copy validation, checked filtered, semantic-indexed, parallel-iterated, and cross-root whole-rule exclusions, and the bounded filled-count and distinct-count slices. The latter captures externally separate referenced-field exclusion, while the executable identities additionally contribute no roots. The cases deliberately exclude wider repetition, index internals and wider indexed shapes, filter internals, other generated rules, and contributing cross-root forms. -/
+These cases cover the measured flat, nonrepeatable contributing ERROR-rule fragment, the exact unfiltered repeatable singleton-field presence matrix, the exact singleton WARNING/INFO severity exclusions, declaration-derived field-required modes and root closure, one model-derived optional repeatable String index requirement, one generated direct nonrepeatable scale-0 Number-copy validation, checked filtered, semantic-indexed, parallel-iterated, and cross-root whole-rule exclusions, and the bounded filled-count and distinct-count slices. The latter captures externally separate referenced-field exclusion, while the executable identities additionally contribute no roots. The cases deliberately exclude wider repetition, index internals and wider indexed shapes, filter internals, other generated rules, and contributing cross-root forms. -/
 
 namespace A12Kernel.Conformance.MandatoryInformation
 
@@ -94,9 +94,20 @@ private def crossRootKernelBatch : List (MandatoryRule String String) := [
   .fieldNotFilled "Applicant/Control"
 ]
 
-private def unfilteredRepeatableNoFieldFilledDisjunctionKernelBatch :
-    List (MandatoryRule String String) := [
-  .unfilteredRepeatableNoFieldFilledDisjunction "Note" "Rows/Value"
+private def repeatablePresenceKernelCases : List (List (MandatoryRule String String) ×
+    Option (MandatoryInformation String String)) := [
+  ([.unfilteredRepeatableFieldPresenceComposition .disjunction .noFieldFilled
+      "Note" "Rows/Value"], result ["Note"] ["Note"] ["Form"]),
+  ([.unfilteredRepeatableFieldPresenceComposition .conjunction .noFieldFilled
+      "Note" "Rows/Value"], result [] [] ["Form"]),
+  ([.unfilteredRepeatableFieldPresenceComposition .disjunction .notAllFieldsFilled
+      "Note" "Rows/Value"], result ["Note", "Rows/Value"] ["Note", "Rows/Value"] ["Form"]),
+  ([.unfilteredRepeatableFieldPresenceComposition .conjunction .notAllFieldsFilled
+      "Note" "Rows/Value"], result [] [] ["Form"]),
+  ([.unfilteredRepeatableFieldPresenceComposition .disjunction .atLeastOneFieldFilled
+      "Note" "Rows/Value"], result ["Note"] ["Note"] ["Form"]),
+  ([.unfilteredRepeatableFieldPresenceComposition .conjunction .atLeastOneFieldFilled
+      "Note" "Rows/Value"], result [] [] [])
 ]
 
 private def generatedIndexKernelCases : List (List (MandatoryRule String String) ×
@@ -198,13 +209,16 @@ example :
         ] := by
   native_decide
 
-/- The exact unfiltered repeatable negative branch contributes no field of its own while preserving the ordinary disjunct. -/
+/- The unfiltered repeatable presence matrix preserves both operator and connective identity rather than flattening every starred branch into an ordinary negative field. -/
 example :
-    derive unfilteredRepeatableNoFieldFilledDisjunctionKernelBatch =
-        result ["Note"] ["Note"] ["Form"] ∧
-      derive unfilteredRepeatableNoFieldFilledDisjunctionKernelBatch ≠ derive [
-        .disjoinedFieldNotFilled ["Note", "Rows/Value"]
-      ] := by
+    repeatablePresenceKernelCases.all (fun (rules, expected) =>
+      derive rules == expected) ∧
+    derive [
+      .unfilteredRepeatableFieldPresenceComposition .disjunction .noFieldFilled
+        "Note" "Rows/Value"
+    ] ≠ derive [
+      .disjoinedFieldNotFilled ["Note", "Rows/Value"]
+    ] := by
   native_decide
 
 /- The generated requirement for an optional repeatable index field contributes nothing, leaves a direct control visible, and does not promote a parent-present declaration globally. -/

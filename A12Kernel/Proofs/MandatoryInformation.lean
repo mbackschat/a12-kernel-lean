@@ -112,14 +112,33 @@ theorem deriveCheckedMandatoryInformation_ignores_cross_root_rule :
       ] := by
   decide
 
-/-- The measured unfiltered repeatable `NoFieldFilled` branch contributes no field beyond its ordinary negative disjunct. -/
-theorem deriveCheckedMandatoryInformation_unfiltered_repeatable_no_field_filled_disjunction :
-    deriveCheckedMandatoryInformation (fun _ : String => "Form") [
-        .unfilteredRepeatableNoFieldFilledDisjunction "Note" "Rows/Value"
-      ] =
-      deriveCheckedMandatoryInformation (fun _ : String => "Form") [
-        .fieldNotFilled "Note"
-      ] := by
+/-- The measured unfiltered repeatable presence matrix reduces each exact operator/connective cell to its established flat result without erasing the retained starred identity. -/
+theorem deriveCheckedMandatoryInformation_unfiltered_repeatable_presence_matrix :
+    let derive := deriveCheckedMandatoryInformation (fun _ : String => "Form")
+    derive [
+        .unfilteredRepeatableFieldPresenceComposition .disjunction .noFieldFilled
+          "Note" "Rows/Value"
+      ] = derive [.fieldNotFilled "Note"] ∧
+    derive [
+        .unfilteredRepeatableFieldPresenceComposition .conjunction .noFieldFilled
+          "Note" "Rows/Value"
+      ] = derive [.conjoinedFieldNotFilled ["Note", "Rows/Value"]] ∧
+    derive [
+        .unfilteredRepeatableFieldPresenceComposition .disjunction .notAllFieldsFilled
+          "Note" "Rows/Value"
+      ] = derive [.disjoinedFieldNotFilled ["Note", "Rows/Value"]] ∧
+    derive [
+        .unfilteredRepeatableFieldPresenceComposition .conjunction .notAllFieldsFilled
+          "Note" "Rows/Value"
+      ] = derive [.conjoinedFieldNotFilled ["Note", "Rows/Value"]] ∧
+    derive [
+        .unfilteredRepeatableFieldPresenceComposition .disjunction .atLeastOneFieldFilled
+          "Note" "Rows/Value"
+      ] = derive [.fieldNotFilled "Note"] ∧
+    derive [
+        .unfilteredRepeatableFieldPresenceComposition .conjunction .atLeastOneFieldFilled
+          "Note" "Rows/Value"
+      ] = derive [.ignored (.atLeastOneFieldFilled ["Note", "Rows/Value"])] := by
   decide
 
 /-- The measured generated requirement for an optional repeatable index field is inert beside a direct control and cannot promote a parent-present declaration globally. -/

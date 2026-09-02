@@ -67,6 +67,37 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 
 - `sync`: **no `spec/` change.** The matrix closes a finite discovery slice but not the full rule-set collector or its composition semantics; [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) owns the wider obligation, and the [implementation map](../IMPLEMENTATION-MAP.md#cap-flat-mandatory-information) owns current checked coverage.
 
+<a id="src-mandatory-information-repeatable-presence"></a>
+#### Mandatory-information derivation preserves connective and starred presence-operator identity, measured locally on 2026-09-02
+
+- `revision`: five new model-level `mandatoryInformation` requests at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`, plus the [presence matrix's](#src-mandatory-information-presence-matrix) retained `NoFieldFilled`/`Or` control at that same revision. Every artifact reports dmtool `0.13.0`, Kernel `30.8.1` built and runtime, and source state `CLEAN`; the sibling checkout remained unchanged.
+- `preparation`: source-shipped dmtool emitted every new model through structured `model rename` from the retained control and changed only its condition through structured `rule modify`. Persisted structured rule read-back reproduced every exact condition, and `model check` returned Kernel-confirmed valid for all five models. Immediate artifact repeats were byte-identical.
+- `question`: when one ordinary `FieldNotFilled(Note)` is composed with a singleton unfiltered starred-field presence quantifier, do `And` and `Or` differ, and may the collector collapse `NoFieldFilled`, `NotAllFieldsFilled`, and `AtLeastOneFieldFilled` because their runtime truth can coincide on a singleton list?
+
+| Starred branch | Connective | `mandatory` and `mandatoryForRootGroup` | `mandatoryRootGroups` |
+|---|---|---|---|
+| `NoFieldFilled(Rows*/Value)` | `Or` | `Note` | root |
+| `NoFieldFilled(Rows*/Value)` | `And` | — | root |
+| `NotAllFieldsFilled(Rows*/Value)` | `Or` | `Note`, `Rows/Value` | root |
+| `NotAllFieldsFilled(Rows*/Value)` | `And` | — | root |
+| `AtLeastOneFieldFilled(Rows*/Value)` | `Or` | `Note` | root |
+| `AtLeastOneFieldFilled(Rows*/Value)` | `And` | — | — |
+
+- `claim`: both connective and operator identity are observable in the derived sets. `Or` with `NotAllFieldsFilled` makes the repeatable `Rows/Value` field mandatory, unlike the otherwise identical `NoFieldFilled` and `AtLeastOneFieldFilled` rows. `And` with either negative quantifier contributes only the root, while `And` with the positive quantifier contributes nothing. The collector therefore cannot normalize the singleton starred operators by runtime truth or apply one connective-independent rule.
+- `separators`: the three `Or` rows isolate the starred operator while holding connective, ordinary disjunct, fields, root, capacity, and severity fixed; `NotAllFieldsFilled` alone adds `Rows/Value`. The three `And` rows independently separate negative root-only contribution from positive no-contribution. Each operator's `Or`/`And` pair fixes connective polarity without changing either operand.
+- `limit`: one nonrepeatable root with fixed String `Note`, one unindexed repeatable child of maximum two with one String `Value`, one ERROR rule, singleton unfiltered starred lists, and `en_US`. Additional operands, nested repetition, filters, semantic indices, concrete indices, independent later rules, other logical compositions, rule execution, and wider topology remain outside.
+- `bytes`: [`mandatory-information-repeatable-presence/`](../../evidence/kernel-30.8.1/captures/mandatory-information-repeatable-presence/) retains the five new model/request/artifact triples; the `NoFieldFilled`/`Or` control remains pinned in the preceding presence-matrix table. These are bounded raw captures with no typed replay, so they establish neither L nor C.
+
+| Case | Model SHA-256 | Request SHA-256 | Artifact SHA-256 |
+|---|---|---|---|
+| `no-field-and` | `a1ad6c786f6007794c65ffe46590346aff85ec31afe7976bafdbe96cb9980da0` | `c0d668a01096a7132f83399848ba9da3fe58146f3a858bffb73e54db473b04ed` | `8c9f868cb7d32b429bee5ddbf03aa4d9c63c10161cdb4eb233981017cb31d541` |
+| `not-all-or` | `c564d4614d9570664e6a79b6edfa6aefe448620f0647064310f54adcdbaa75a2` | `dec4d5a9b53b6dca9055267f9bc3526f7bae11e4a1e1fb3cc0c823de28567b00` | `411f2a8a7660175153c79b34e76c1ba7d07f75a691dd97aaf8642c8440177b42` |
+| `not-all-and` | `69a0328296970a711557690d5324828c59b8d6d1ca116694949074d2271d2350` | `69775e442cc40ab487456c8b24a0edaca1e57957ef0552aaeee485d8f130ddc9` | `14c6070b0eb7258912472ff3df2da33dc3537c0435c760f46e3281369cf6e953` |
+| `at-least-one-or` | `eadadfc9d3f5053a77c79e888cc329eb9f79cf1fe9d9c632ef794ca4340ec527` | `3dd637aa93fdd549c44c7f9b33ac6d8be4241a3e943b0093ac3df3fb5efa7116` | `bd7109668669b2554800d7847f490ff0ecd80d0d11f8422f4e0efd4a490a3522` |
+| `at-least-one-and` | `9152cbea78c685654f719d12bbff326f4c994f0bd19705736c24956510359f24` | `09dcff226019c88b29ee2b05b430b49e8a3e251d823d50406d0826628114cfbf` | `8d0e20720335db1c2bfcf10253911951734ff0c7820e08fe1ab993b3a449bbc9` |
+
+- `sync`: **no `spec/` change.** This exact matrix extends SG14's checked carrier but does not define the complete repetition or rule-composition service; [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) remains open.
+
 <a id="src-mandatory-information-composition-matrix"></a>
 #### Mandatory-information derivation distinguishes root-relative fields and closes finite dependency chains, measured locally on 2026-09-01
 
