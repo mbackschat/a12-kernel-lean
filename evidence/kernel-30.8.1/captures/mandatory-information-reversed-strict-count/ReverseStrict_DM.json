@@ -1,0 +1,178 @@
+{
+  "header" : {
+    "id" : "ReverseStrict_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "ReverseStrict_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/ReverseStrict",
+        "name" : "ReverseStrict",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/ReverseStrict/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ReverseStrict/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ReverseStrict/StrictTrue",
+            "name" : "StrictTrue",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ReverseStrict/DirectSentinel",
+            "name" : "DirectSentinel",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ReverseStrict/WrappedSentinel",
+            "name" : "WrappedSentinel",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ReverseStrict/A_REVERSE_STRICT_TRUE",
+            "name" : "A_REVERSE_STRICT_TRUE",
+            "Rule" : {
+              "errorEntityRelPath" : "../StrictTrue",
+              "errorCode" : "A_REVERSE_STRICT_TRUE",
+              "errorCondition" : "-2 < NumberOfFilledFields(A, B) And FieldNotFilled(StrictTrue)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "A_REVERSE_STRICT_TRUE"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ReverseStrict/B_REVERSE_STRICT_SENTINEL",
+            "name" : "B_REVERSE_STRICT_SENTINEL",
+            "Rule" : {
+              "errorEntityRelPath" : "../DirectSentinel",
+              "errorCode" : "B_REVERSE_STRICT_SENTINEL",
+              "errorCondition" : "-1 < NumberOfFilledFields(A, B) And FieldNotFilled(DirectSentinel)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "B_REVERSE_STRICT_SENTINEL"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ReverseStrict/C_REVERSE_STRICT_WRAPPED_SENTINEL",
+            "name" : "C_REVERSE_STRICT_WRAPPED_SENTINEL",
+            "Rule" : {
+              "errorEntityRelPath" : "../WrappedSentinel",
+              "errorCode" : "C_REVERSE_STRICT_WRAPPED_SENTINEL",
+              "errorCondition" : "4294967295 < NumberOfFilledFields(A, B) And FieldNotFilled(WrappedSentinel)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "C_REVERSE_STRICT_WRAPPED_SENTINEL"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ReverseStrict/Z_BASE_A",
+            "name" : "Z_BASE_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "Z_BASE_A",
+              "errorCondition" : "FieldNotFilled(A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Z_BASE_A"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ReverseStrict/Z_BASE_B",
+            "name" : "Z_BASE_B",
+            "Rule" : {
+              "errorEntityRelPath" : "../B",
+              "errorCode" : "Z_BASE_B",
+              "errorCondition" : "FieldNotFilled(B)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Z_BASE_B"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ReverseStrict/WrappedOne",
+            "name" : "WrappedOne",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ReverseStrict/D_REVERSE_STRICT_WRAPPED_ONE",
+            "name" : "D_REVERSE_STRICT_WRAPPED_ONE",
+            "Rule" : {
+              "errorEntityRelPath" : "../WrappedOne",
+              "errorCode" : "D_REVERSE_STRICT_WRAPPED_ONE",
+              "errorCondition" : "4294967297 < NumberOfFilledFields(A, B) And FieldNotFilled(WrappedOne)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "D_REVERSE_STRICT_WRAPPED_ONE"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

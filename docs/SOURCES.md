@@ -360,6 +360,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Mandatory-information derivation preserves filled-count and distinct-count operator identity](sources/rule-set-meta-information.md#src-mandatory-information-distinct-count)
 <a id="src-mandatory-information-info-severity"></a>
 - [Mandatory-information derivation ignores INFO negative field rules](sources/rule-set-meta-information.md#src-mandatory-information-info-severity)
+<a id="src-mandatory-information-reversed-strict-count"></a>
+- [Mandatory-information derivation recognizes reversed strict filled-count guards](sources/rule-set-meta-information.md#src-mandatory-information-reversed-strict-count)
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)

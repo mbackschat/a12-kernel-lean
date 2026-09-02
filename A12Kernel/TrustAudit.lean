@@ -2148,6 +2148,7 @@ run_cmd do
 #print axioms A12Kernel.deriveCheckedMandatoryInformation_root_seed_promotes_target
 #print axioms A12Kernel.deriveCheckedMandatoryInformation_field_list_guards_close_reverse_authored
 #print axioms A12Kernel.deriveCheckedMandatoryInformation_count_root_operator_independent
+#print axioms A12Kernel.deriveCheckedMandatoryInformation_reversed_strict_count_guard
 #print axioms A12Kernel.checkMandatoryCountThreshold_sound
 #print axioms A12Kernel.exceptMapM_all_of_step
 #print axioms A12Kernel.exceptMapM_map_eq_of_step

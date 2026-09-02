@@ -294,15 +294,23 @@ example :
         result ["A", "B", "GtMinusTwo"] ["A", "B", "GtMinusTwo"] ["Form"] ∧
       deriveCountGuard? .literalLessEqualCount 0 "ReverseZero" =
         result ["A", "B", "ReverseZero"] ["A", "B", "ReverseZero"] ["Form"] ∧
+      deriveCountGuard? .literalLessThanCount (-2) "ReverseStrictTrue" =
+        result ["A", "B", "ReverseStrictTrue"] ["A", "B", "ReverseStrictTrue"] ["Form"] ∧
       deriveCountGuard? .countGreaterEqual (-1) "GeMinusOne" =
         result ["A", "B"] ["A", "B"] ["Form"] ∧
       deriveCountGuard? .countGreater (-1) "GtMinusOne" =
         result ["A", "B"] ["A", "B"] ["Form"] ∧
       deriveCountGuard? .literalLessEqualCount (-1) "ReverseMinusOne" =
         result ["A", "B"] ["A", "B"] ["Form"] ∧
+      deriveCountGuard? .literalLessThanCount (-1) "ReverseStrictMinusOne" =
+        result ["A", "B"] ["A", "B"] ["Form"] ∧
       deriveCountGuard? .countGreaterEqual 4294967297 "NarrowOne" =
         result ["A", "B", "NarrowOne"] ["A", "B", "NarrowOne"] ["Form"] ∧
+      deriveCountGuard? .literalLessThanCount 4294967297 "ReverseStrictNarrowOne" =
+        result ["A", "B", "ReverseStrictNarrowOne"] ["A", "B", "ReverseStrictNarrowOne"] ["Form"] ∧
       deriveCountGuard? .countGreaterEqual 4294967295 "NarrowMinusOne" =
+        result ["A", "B"] ["A", "B"] ["Form"] ∧
+      deriveCountGuard? .literalLessThanCount 4294967295 "ReverseStrictNarrowMinusOne" =
         result ["A", "B"] ["A", "B"] ["Form"] := by
   native_decide
 
@@ -320,6 +328,7 @@ example :
       deriveCountGuard? .countGreater 3 "FalseGuard" = none ∧
       deriveCountGuard? .countGreaterEqual 3 "FalseInclusive" = none ∧
       deriveCountGuard? .literalLessEqualCount 3 "FalseReverse" = none ∧
+      deriveCountGuard? .literalLessThanCount 2 "FalseReverseStrict" = none ∧
       derive [.countLessThan ["A", "A"] none] = none ∧
       derive [.countLessThan [] none] = none ∧
       derive [

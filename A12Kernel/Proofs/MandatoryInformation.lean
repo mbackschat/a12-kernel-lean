@@ -91,6 +91,21 @@ theorem deriveCheckedMandatoryInformation_count_root_operator_independent
       ] := by
   rfl
 
+/-- The reversed strict spelling shares the count-on-left strict guard result while retaining a distinct authored identity. -/
+theorem deriveCheckedMandatoryInformation_reversed_strict_count_guard
+    (threshold : Option CheckedMandatoryCountThreshold) :
+    deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .fieldNotFilled "A",
+        .fieldNotFilled "B",
+        .countGuardedNotFilled ["A", "B"] .countGreater threshold "Target"
+      ] =
+      deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .fieldNotFilled "A",
+        .fieldNotFilled "B",
+        .countGuardedNotFilled ["A", "B"] .literalLessThanCount threshold "Target"
+      ] := by
+  rfl
+
 /-- Checked construction retains the authored literal and pairs it with exactly the shared host conversion. -/
 theorem checkMandatoryCountThreshold_sound
     (authored : DecodedNumericLiteral)

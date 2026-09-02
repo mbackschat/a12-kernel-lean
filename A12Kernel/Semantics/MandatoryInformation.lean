@@ -19,11 +19,12 @@ def checkMandatoryCountThreshold (authored : DecodedNumericLiteral) :
   let narrowed ← authored.javaRoundedInt32?
   pure { authored, narrowed }
 
-/-- Measured count-guard spellings. The reversed inclusive form stays distinct even though it has the same numeric relation as count-on-left greater-or-equal. -/
+/-- Measured count-guard spellings. Reversed forms stay distinct even when they share a numeric relation with a count-on-left comparison. -/
 inductive MandatoryCountGuardComparison where
   | countGreaterEqual
   | countGreater
   | literalLessEqualCount
+  | literalLessThanCount
   deriving Repr, DecidableEq
 
 namespace MandatoryCountGuardComparison
@@ -32,7 +33,7 @@ private def holds (comparison : MandatoryCountGuardComparison)
     (count threshold : Int) : Bool :=
   match comparison with
   | .countGreaterEqual | .literalLessEqualCount => decide (threshold ≤ count)
-  | .countGreater => decide (threshold < count)
+  | .countGreater | .literalLessThanCount => decide (threshold < count)
 
 end MandatoryCountGuardComparison
 
