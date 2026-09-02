@@ -743,6 +743,9 @@ run_cmd do
 #print axioms A12Kernel.resolveAuthoredField_reified_delegates
 #print axioms A12Kernel.checkedFlatCondition_wellFormed
 #print axioms A12Kernel.checkedFlatCondition_modelWellFormed
+#print axioms A12Kernel.flatConditionLeaf_wellFormedBool_iff_legal
+#print axioms A12Kernel.flatCondition_wellFormedBool_iff_legal
+#print axioms A12Kernel.flatCondition_wellFormed_iff_legal
 #print axioms A12Kernel.elaborate_checkedFlatCondition_rowGroup
 #print axioms A12Kernel.rawString_toStringValueField_none
 #print axioms A12Kernel.rawString_toPresenceField

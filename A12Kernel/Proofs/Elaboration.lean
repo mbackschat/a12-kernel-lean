@@ -107,6 +107,169 @@ theorem checkedFlatCondition_modelWellFormed (checked : CheckedFlatCondition mod
     model.validate.isOk = true :=
   checked.modelWellFormed
 
+/-- The executable leaf checker decides exactly the declarative legality account. Both
+    directions carry weight: right-to-left rejects a checker that refuses a legal leaf, and
+    left-to-right rejects one that admits an illegal leaf. -/
+theorem flatConditionLeaf_wellFormedBool_iff_legal
+    (model : FlatModel) (leaf : FlatConditionLeaf) :
+    leaf.wellFormedBool model = true ↔ leaf.Legal model := by
+  cases leaf with
+  | compare comparison =>
+      simp only [FlatConditionLeaf.wellFormedBool]
+      exact ⟨FlatConditionLeaf.Legal.compare, fun legal => by cases legal; assumption⟩
+  | tokenValueList quantifier operands values =>
+      cases values with
+      | literals values =>
+          simp only [FlatConditionLeaf.wellFormedBool]
+          cases kindEq : model.tokenOperandListKind? operands with
+          | none =>
+              exact ⟨fun absurdity => by simp at absurdity,
+                fun legal => by cases legal <;> simp_all⟩
+          | some kind =>
+              cases kind with
+              | string =>
+                  simp only [Bool.and_true]
+                  constructor
+                  · intro checked
+                    have nonempty : values ≠ [] := by
+                      intro empty
+                      simp [empty] at checked
+                    exact .tokenLiteralsString nonempty kindEq
+                  · intro legal
+                    cases legal with
+                    | tokenLiteralsString nonempty _ =>
+                        cases values with
+                        | nil => exact absurd rfl nonempty
+                        | cons _ _ => rfl
+                    | tokenLiteralsEnumeration _ enumEq _ => simp_all
+              | enumeration =>
+                  constructor
+                  · intro checked
+                    have nonempty : values ≠ [] := by
+                      intro empty
+                      simp [empty] at checked
+                    exact .tokenLiteralsEnumeration nonempty kindEq
+                      (by
+                        have allowed := (Bool.and_eq_true _ _ |>.mp checked).2
+                        exact fun value member => List.all_eq_true.mp allowed value member)
+                  · intro legal
+                    cases legal with
+                    | tokenLiteralsString _ stringEq => simp_all
+                    | tokenLiteralsEnumeration nonempty _ allowed =>
+                        refine Bool.and_eq_true _ _ |>.mpr ⟨?_, ?_⟩
+                        · simpa using nonempty
+                        · exact List.all_eq_true.mpr fun value member => allowed value member
+      | fields valueOperands =>
+          simp only [FlatConditionLeaf.wellFormedBool]
+          cases kindEq : model.tokenOperandListKind? operands with
+          | none => exact ⟨fun absurdity => by simp at absurdity,
+              fun legal => by cases legal; simp_all⟩
+          | some kind =>
+              cases valueKindEq : model.tokenOperandListKind? valueOperands with
+              | none => exact ⟨fun absurdity => by simp at absurdity,
+                  fun legal => by cases legal; simp_all⟩
+              | some valueKind =>
+                  constructor
+                  · intro checked
+                    have parts := Bool.and_eq_true _ _ |>.mp checked
+                    have kindsAgree : kind = valueKind := by
+                      simpa using parts.1
+                    exact .tokenFields kindEq (kindsAgree ▸ valueKindEq)
+                      (by simpa using parts.2)
+                  · intro legal
+                    cases legal with
+                    | tokenFields leftEq rightEq noDuplicate =>
+                        rw [kindEq] at leftEq
+                        rw [valueKindEq] at rightEq
+                        have leftKind := Option.some.inj leftEq
+                        have rightKind := Option.some.inj rightEq
+                        subst leftKind
+                        subst rightKind
+                        refine Bool.and_eq_true _ _ |>.mpr ⟨?_, ?_⟩
+                        · simp
+                        · simpa using noDuplicate
+  | numberValueList quantifier operands values =>
+      cases values with
+      | literals values =>
+          simp only [FlatConditionLeaf.wellFormedBool]
+          constructor
+          · intro checked
+            have parts := Bool.and_eq_true _ _ |>.mp checked
+            have head := Bool.and_eq_true _ _ |>.mp parts.1
+            exact .numberLiterals (by simpa using (Bool.and_eq_true _ _ |>.mp head.1).1)
+              (Bool.and_eq_true _ _ |>.mp head.1).2 (by simpa using head.2)
+              (fun value member => by
+                have integral := List.all_eq_true.mp parts.2 value member
+                simpa using integral)
+          · intro legal
+            cases legal with
+            | numberLiterals single admitted nonempty integral =>
+                refine Bool.and_eq_true _ _ |>.mpr ⟨?_, ?_⟩
+                · refine Bool.and_eq_true _ _ |>.mpr ⟨?_, ?_⟩
+                  · exact Bool.and_eq_true _ _ |>.mpr ⟨by simpa using single, admitted⟩
+                  · cases values with
+                    | nil => exact absurd rfl nonempty
+                    | cons _ _ => rfl
+                · exact List.all_eq_true.mpr fun value member => by
+                    simpa using integral value member
+      | fields valueOperands =>
+          simp only [FlatConditionLeaf.wellFormedBool]
+          constructor
+          · intro checked
+            have parts := Bool.and_eq_true _ _ |>.mp checked
+            have head := Bool.and_eq_true _ _ |>.mp parts.1
+            exact .numberFields head.1 head.2 (by simpa using parts.2)
+          · intro legal
+            cases legal with
+            | numberFields left right noDuplicate =>
+                simp [left, right, noDuplicate]
+  | fieldFilled field =>
+      simp only [FlatConditionLeaf.wellFormedBool]
+      exact ⟨FlatConditionLeaf.Legal.fieldFilled, fun legal => by cases legal; assumption⟩
+  | fieldNotFilled field =>
+      simp only [FlatConditionLeaf.wellFormedBool]
+      exact ⟨FlatConditionLeaf.Legal.fieldNotFilled, fun legal => by cases legal; assumption⟩
+
+/-- Connective shape neither strengthens nor weakens admission, so the leaf bridge lifts to the
+    whole tree. -/
+theorem flatCondition_wellFormedBool_iff_legal
+    (model : FlatModel) (condition : FlatCondition) :
+    condition.wellFormedBool model = true ↔ condition.Legal model := by
+  induction condition with
+  | leaf value =>
+      simp only [FlatCondition.wellFormedBool, ConditionTree.allLeaves]
+      exact ⟨fun checked =>
+          .leaf ((flatConditionLeaf_wellFormedBool_iff_legal model value).mp checked),
+        fun legal => by
+          cases legal with
+          | leaf legalLeaf =>
+              exact (flatConditionLeaf_wellFormedBool_iff_legal model value).mpr legalLeaf⟩
+  | and left right leftIH rightIH =>
+      simp only [FlatCondition.wellFormedBool, ConditionTree.allLeaves] at *
+      exact ⟨fun checked =>
+          .and (leftIH.mp (Bool.and_eq_true _ _ |>.mp checked).1)
+            (rightIH.mp (Bool.and_eq_true _ _ |>.mp checked).2),
+        fun legal => by
+          cases legal with
+          | and legalLeft legalRight =>
+              exact Bool.and_eq_true _ _ |>.mpr ⟨leftIH.mpr legalLeft, rightIH.mpr legalRight⟩⟩
+  | or left right leftIH rightIH =>
+      simp only [FlatCondition.wellFormedBool, ConditionTree.allLeaves] at *
+      exact ⟨fun checked =>
+          .or (leftIH.mp (Bool.and_eq_true _ _ |>.mp checked).1)
+            (rightIH.mp (Bool.and_eq_true _ _ |>.mp checked).2),
+        fun legal => by
+          cases legal with
+          | or legalLeft legalRight =>
+              exact Bool.and_eq_true _ _ |>.mpr ⟨leftIH.mpr legalLeft, rightIH.mpr legalRight⟩⟩
+
+/-- The certificate carried by every checked flat condition is exactly the declarative account,
+    so a later stage may consume `Legal` without reasoning about the checker. -/
+theorem flatCondition_wellFormed_iff_legal
+    (model : FlatModel) (condition : FlatCondition) :
+    condition.WellFormed model ↔ condition.Legal model :=
+  flatCondition_wellFormedBool_iff_legal model condition
+
 /-- Surface elaboration retains its exact declaring group in the checked certificate. -/
 theorem elaborate_checkedFlatCondition_rowGroup
     (model : FlatModel) (declaringGroup : GroupPath)

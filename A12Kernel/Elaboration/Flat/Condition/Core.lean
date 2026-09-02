@@ -162,6 +162,61 @@ def FlatCondition.wellFormedBool (condition : FlatCondition) (model : FlatModel)
 def FlatCondition.WellFormed (condition : FlatCondition) (model : FlatModel) : Prop :=
   condition.wellFormedBool model = true
 
+/-- What static legality *means* for one flat leaf, stated from the canonical account in
+    [`spec/06-strings-and-enumerations.md`](../../../../spec/06-strings-and-enumerations.md)
+    rather than from `wellFormedBool`'s branch layout. Kind agreement appears here as one
+    shared witness and literal admission as an explicit quantifier, so the bridge theorem can
+    disagree with the checker instead of restating it. -/
+inductive FlatConditionLeaf.Legal (model : FlatModel) : FlatConditionLeaf → Prop where
+  | compare {comparison : FlatComparison} :
+      model.admitsComparison comparison = true →
+      FlatConditionLeaf.Legal model (.compare comparison)
+  | tokenLiteralsString {quantifier operands values} :
+      values ≠ [] →
+      model.tokenOperandListKind? operands = some .string →
+      FlatConditionLeaf.Legal model (.tokenValueList quantifier operands (.literals values))
+  | tokenLiteralsEnumeration {quantifier operands values} :
+      values ≠ [] →
+      model.tokenOperandListKind? operands = some .enumeration →
+      (∀ value ∈ values, model.enumerationLiteralAllowedByAny operands value = true) →
+      FlatConditionLeaf.Legal model (.tokenValueList quantifier operands (.literals values))
+  | tokenFields {quantifier operands valueOperands kind} :
+      model.tokenOperandListKind? operands = some kind →
+      model.tokenOperandListKind? valueOperands = some kind →
+      tokenOperandListHasDuplicate (operands ++ valueOperands) = false →
+      FlatConditionLeaf.Legal model (.tokenValueList quantifier operands (.fields valueOperands))
+  | numberLiterals {quantifier operands values} :
+      operands.length = 1 →
+      model.admitsNumberOperandList operands = true →
+      values ≠ [] →
+      -- Integrality restates the linked clause's §B.4 "Number literals are grammar-level integers
+      -- with an optional leading minus"; the single-operand bound above is its §B.3 "a multi-field
+      -- Number form has no literal-list shape". Neither is a Lean-side narrowing.
+      (∀ value ∈ values, value.den = 1) →
+      FlatConditionLeaf.Legal model (.numberValueList quantifier operands (.literals values))
+  | numberFields {quantifier operands valueOperands} :
+      model.admitsNumberOperandList operands = true →
+      model.admitsNumberOperandList valueOperands = true →
+      numberOperandListHasDuplicate (operands ++ valueOperands) = false →
+      FlatConditionLeaf.Legal model (.numberValueList quantifier operands (.fields valueOperands))
+  | fieldFilled {field} :
+      model.admitsField field = true →
+      FlatConditionLeaf.Legal model (.fieldFilled field)
+  | fieldNotFilled {field} :
+      model.admitsField field = true →
+      FlatConditionLeaf.Legal model (.fieldNotFilled field)
+
+/-- Connective shape does not weaken static admission, so tree legality is leafwise. -/
+inductive FlatCondition.Legal (model : FlatModel) : FlatCondition → Prop where
+  | leaf {value : FlatConditionLeaf} :
+      value.Legal model → FlatCondition.Legal model (.leaf value)
+  | and {left right : FlatCondition} :
+      FlatCondition.Legal model left → FlatCondition.Legal model right →
+      FlatCondition.Legal model (.and left right)
+  | or {left right : FlatCondition} :
+      FlatCondition.Legal model left → FlatCondition.Legal model right →
+      FlatCondition.Legal model (.or left right)
+
 /-- The only source-to-core result accepted by later stages. -/
 structure CheckedFlatCondition (model : FlatModel) where
   rowGroup : GroupPath
