@@ -127,7 +127,7 @@ All runtime message channels share A12's `PartiallyKnownDocumentMultiPointer`, w
 
 Clock-dependent semantics receive an explicit [`World`](../A12Kernel/Document.lean). Checking does not sample time. Evaluation samples the supplied instant and applies the checked model-zone profile. Pure and clock-dependent entry points stay distinct so a theorem cannot accidentally quantify over hidden host state.
 
-Resolved custom conditions receive an explicit pure total oracle and invocation data. The oracle is not stored in `World`: environmental time and a host callback registry have different ownership and proof obligations. Purity and totality do not imply locality, monotonicity, or stability under partial validation; consumers needing those properties must request an explicit oracle contract.
+Checked custom-condition authoring retains the lexer-distinguished unquoted or quote-escaped spelling beside its normalized callback key. The locale-specific reserved-terminal predicate stays caller-owned: quoting bypasses terminal classification but not the narrower quoted-name character grammar. Resolved custom conditions then receive an explicit pure total oracle and invocation data. The oracle is not stored in `World`: environmental time and a host callback registry have different ownership and proof obligations. Purity and totality do not imply locality, monotonicity, or stability under partial validation; consumers needing those properties must request an explicit oracle contract.
 
 ### Family data is the default derived-consumer boundary
 

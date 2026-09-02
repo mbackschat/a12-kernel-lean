@@ -116,12 +116,12 @@
 ### §14 — custom conditions
 
 <a id="cap-custom-condition-callback"></a>
-#### Custom-condition callback
+#### Custom-condition authoring and callback
 
-- `boundary`: One reached pure total callback with explicit data/relevance/formal channels and the shared partial error pointer; no hidden host registry in `World`
-- `owner`: [`CustomCondition.lean`](../../A12Kernel/Semantics/CustomCondition.lean), [`MessagePointer.lean`](../../A12Kernel/Semantics/MessagePointer.lean)
-- `assurance`: E/P/Q closed for the reached representation boundary; pointer-domain L at [source registry](../SOURCES.md); C/X none
-- `remains`: Name grammar, registration, host failure, rule orchestration: [SG11](../SEMANTICS-GAPS.md#sg11--custom-condition-checked-orchestration)
+- `boundary`: Checked authoring retains the lexer-distinguished unquoted or quote-escaped spelling and normalized callback key, enforces the exact `nameOhnePunkt` character classes, and delegates locale-specific reserved-terminal classification to the caller. The reached pure total callback then receives explicit data/relevance/formal channels and the shared partial error pointer; no hidden host registry enters `World`.
+- `owner`: checked authoring in [`Elaboration/CustomCondition.lean`](../../A12Kernel/Elaboration/CustomCondition.lean), reached evaluation in [`Semantics/CustomCondition.lean`](../../A12Kernel/Semantics/CustomCondition.lean), and the shared [`MessagePointer.lean`](../../A12Kernel/Semantics/MessagePointer.lean)
+- `assurance`: E/P closed for the checked-name boundary and E/P/Q for the reached representation; the reserved-unquoted rejection and quoted reservation independence are proved, pointer-domain L remains at the [source registry](../SOURCES.md), and C/X are absent
+- `remains`: locale terminal resolution, registration, pointer construction, host failure, and rule orchestration: [SG11](../SEMANTICS-GAPS.md#sg11--custom-condition-checked-orchestration)
 
 <a id="cap-custom-field-validation"></a>
 #### Custom-field validation

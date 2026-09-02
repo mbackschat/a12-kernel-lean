@@ -1657,6 +1657,8 @@ run_cmd do
 #print axioms A12Kernel.evalReachedCustomCondition_ne_unknown
 #print axioms A12Kernel.evalReachedCustomCondition_ne_omission
 #print axioms A12Kernel.customConditionCanFireOnEmpty_eq_true
+#print axioms A12Kernel.checkCustomConditionName_unquoted_reserved
+#print axioms A12Kernel.checkCustomConditionName_quoted_independent_of_reserved
 #print axioms A12Kernel.customCondition_purity_does_not_imply_data_locality
 #print axioms A12Kernel.customCondition_purity_does_not_imply_formal_monotonicity
 

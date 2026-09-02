@@ -71,6 +71,7 @@ import A12Kernel.Proofs.CurrentRepetitionNumberToStringRelation
 import A12Kernel.Proofs.CurrentRepetitionStringToNumber
 import A12Kernel.Proofs.CurrentRepetitionStringToNumberRelation
 import A12Kernel.Proofs.CustomCondition
+import A12Kernel.Proofs.CustomConditionElaboration
 import A12Kernel.Proofs.CustomFieldCause
 import A12Kernel.Proofs.CustomFieldContext
 import A12Kernel.Proofs.CustomFieldElaboration

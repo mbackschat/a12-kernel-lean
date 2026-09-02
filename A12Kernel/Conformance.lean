@@ -79,6 +79,7 @@ import A12Kernel.Conformance.CurrentRepetitionComputation
 import A12Kernel.Conformance.CurrentRepetitionNumberToString
 import A12Kernel.Conformance.CurrentRepetitionStringToNumber
 import A12Kernel.Conformance.CustomCondition
+import A12Kernel.Conformance.CustomConditionElaboration
 import A12Kernel.Conformance.CustomFieldCause
 import A12Kernel.Conformance.CustomFieldContext
 import A12Kernel.Conformance.CustomFieldElaboration

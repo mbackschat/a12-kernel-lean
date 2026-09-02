@@ -226,8 +226,8 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 
 - `state`: open
 - `missing`: registration, static restrictions, effective data, relevance, formal and pointer construction, host call order, messages, and whole-rule integration must surround the pure reached-leaf oracle without unsupported locality or monotonicity laws.
-- `baseline`: [§14](IMPLEMENTATION-MAP.md#14--custom-conditions) owns the pure successful callback leaf.
-- `remaining`: retain the exact `nameOhnePunkt` grammar and construct the shared message pointer around the reached callback.
+- `baseline`: [§14](IMPLEMENTATION-MAP.md#14--custom-conditions) owns the checked `nameOhnePunkt` spelling and normalized callback key plus the pure successful callback leaf. Locale-specific terminal classification remains an explicit input rather than a hard-coded keyword inventory.
+- `remaining`: resolve the locale terminal predicate and callback registration, then construct the shared message pointer around the reached callback.
 - `prerequisite`: checked document supplies data and SG10 supplies formal output. Host failures remain explicit integration outcomes unless Kernel behavior establishes otherwise.
 - `consumer`: Execute and Qualify require a concrete host contract and observable call discipline.
 - `completion-gate`: checked authoring and orchestration reproduce registration, eligibility, projection, order, failure, and message behavior while retaining current non-laws.

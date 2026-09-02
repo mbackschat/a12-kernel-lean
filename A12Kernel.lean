@@ -74,6 +74,7 @@ import A12Kernel.Semantics.EnumerationValueList
 import A12Kernel.Semantics.EnumerationRepetitionNotUnique
 import A12Kernel.Semantics.SemanticIndex
 import A12Kernel.Semantics.CustomCondition
+import A12Kernel.Elaboration.CustomCondition
 import A12Kernel.Semantics.StringAlternatives
 import A12Kernel.Semantics.StringPattern
 import A12Kernel.Semantics.StringFieldPolicy
