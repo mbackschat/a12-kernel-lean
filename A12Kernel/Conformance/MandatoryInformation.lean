@@ -334,7 +334,7 @@ example :
         MandatoryInformation.mandatoryForRootGroup := by
   native_decide
 
-/- A seeded two-node cycle closes, while wider root topology, cross-root guards, and empty multi-field forms fail closed. -/
+/- A seeded two-node cycle closes, while wider root topology, cross-root guards, and unmeasured flat-list shapes fail closed. -/
 example :
     deriveCheckedMandatoryInformation rootOf
         [.fieldGuardedNotFilled "A" "B", .fieldGuardedNotFilled "B" "A", .fieldNotFilled "A"] =
@@ -344,7 +344,14 @@ example :
       deriveCheckedMandatoryInformation splitRoot
         [.fieldGuardedNotFilled "A" "B"] = none ∧
       deriveCheckedMandatoryInformation (fun _ : String => "Second") [.rootGuardedNotFilled "First" "A"] = none ∧
-      derive [.notAllFieldsFilled []] = none := by
+      derive [.notAllFieldsFilled []] = none ∧
+      derive [.disjoinedFieldNotFilled ["A", "B", "C", "D"]] = none ∧
+      derive [.disjoinedFieldNotFilled ["A", "A", "B"]] = none ∧
+      derive [.disjoinedFieldNotFilled ["A", "A"]] = none ∧
+      derive [.conjoinedFieldNotFilled ["A"]] = none ∧
+      derive [.notAllFieldsFilled ["A", "B", "C"]] = none ∧
+      derive [.noFieldFilled ["A", "A"]] = none ∧
+      derive [.notExactlyOneFieldFilled ["A", "B", "C"]] = none := by
   native_decide
 
 private def fieldListGuardCases : List (List (MandatoryRule String String) ×

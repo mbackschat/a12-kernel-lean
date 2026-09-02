@@ -95,9 +95,8 @@ inductive IgnoredMandatoryRule (Field Root : Type) where
   | generatedDirectNonrepeatableScale0NumberCopyValidation (source target : Field)
   deriving Repr, DecidableEq
 
-/-- Measured pure negative-field Boolean shapes. The outer and inner connectives remain explicit because the collector does not simplify logically related formulas to one field contribution. -/
+/-- Measured two-level pure negative-field Boolean shapes. The outer and inner connectives remain explicit because the collector does not simplify logically related formulas to one field contribution. -/
 inductive MandatoryNegativeFieldFormula (Field : Type) where
-  | flatDisjunction (fields : List Field)
   | conjunctionOfDisjunctions (clauses : List (List Field))
   | disjunctionOfConjunctions (clauses : List (List Field))
   deriving Repr, DecidableEq
@@ -105,7 +104,6 @@ inductive MandatoryNegativeFieldFormula (Field : Type) where
 namespace MandatoryNegativeFieldFormula
 
 def referencedFields : MandatoryNegativeFieldFormula Field → List Field
-  | .flatDisjunction fields => fields
   | .conjunctionOfDisjunctions clauses
   | .disjunctionOfConjunctions clauses => clauses.flatten
 
@@ -120,8 +118,6 @@ private def hasOneSharedField [DecidableEq Field]
 
 /-- Admit only the retained Boolean-formula matrices rather than extrapolating to arbitrary nesting or arity. -/
 def hasMeasuredShape [DecidableEq Field] : MandatoryNegativeFieldFormula Field → Bool
-  | .flatDisjunction [first, second, third] =>
-      threeDistinct first second third
   | .conjunctionOfDisjunctions [[first, second], [third, fourth]] =>
       hasOneSharedField first second third fourth
   | .conjunctionOfDisjunctions [[left, right], [other]] =>
@@ -184,7 +180,6 @@ private def intersectPreservingLeft [DecidableEq α]
 
 private def negativeFormulaRequiredFields [DecidableEq Field] :
     MandatoryNegativeFieldFormula Field → List Field
-  | .flatDisjunction fields => fields
   | .conjunctionOfDisjunctions [] => []
   | .conjunctionOfDisjunctions (first :: rest) =>
       rest.foldl intersectPreservingLeft first
@@ -352,11 +347,6 @@ private def referencedRoots [DecidableEq Root] (rootOf : Field → Root)
     appendDistinct roots (MandatoryRule.referencedRoots rootOf rule)) []
 
 private def MandatoryRule.hasNonemptyLists : MandatoryRule Field Root → Bool
-  | .disjoinedFieldNotFilled fields
-  | .conjoinedFieldNotFilled fields
-  | .notAllFieldsFilled fields
-  | .noFieldFilled fields
-  | .notExactlyOneFieldFilled fields => !fields.isEmpty
   | .fieldListGuardedNotFilled premises _ _ => !premises.isEmpty
   | .negativeFieldFormula formula => !formula.referencedFields.isEmpty
   | .countLessThan fields _
@@ -370,6 +360,23 @@ private def MandatoryRule.hasNonemptyLists : MandatoryRule Field Root → Bool
   | .ignored (.semanticIndexed fields)
   | .ignored (.parallelIterated fields)
   | .ignored (.crossRoot fields) => !fields.isEmpty
+  | _ => true
+
+/-- Admit the exact retained flat multi-field rule arities without giving the disjunction a second representation. -/
+private def MandatoryRule.hasSupportedFlatFieldListShape [DecidableEq Field] :
+    MandatoryRule Field Root → Bool
+  | .disjoinedFieldNotFilled [first, second] => first != second
+  | .disjoinedFieldNotFilled [first, second, third] =>
+      MandatoryNegativeFieldFormula.threeDistinct first second third
+  | .conjoinedFieldNotFilled [first, second]
+  | .notAllFieldsFilled [first, second]
+  | .noFieldFilled [first, second]
+  | .notExactlyOneFieldFilled [first, second] => first != second
+  | .disjoinedFieldNotFilled _
+  | .conjoinedFieldNotFilled _
+  | .notAllFieldsFilled _
+  | .noFieldFilled _
+  | .notExactlyOneFieldFilled _ => false
   | _ => true
 
 private def MandatoryRule.hasSupportedFieldListGuardShape [DecidableEq Field] :
@@ -683,11 +690,12 @@ private def deriveMandatoryInformation [DecidableEq Field] [DecidableEq Root]
     mandatoryRootGroups := global.roots
   }
 
-/-- Checked consumer entry for the measured fragment. Empty multi-field forms, repeatable-presence shapes outside the exact direct unindexed child, and contributing or unclassified multiple-root shapes return `none`; the exact classified cross-root no-contribution identity remains admissible. -/
+/-- Checked consumer entry for the measured fragment. Unmeasured flat multi-field shapes, empty other multi-field forms, repeatable-presence shapes outside the exact direct unindexed child, and contributing or unclassified multiple-root shapes return `none`; the exact classified cross-root no-contribution identity remains admissible. -/
 def deriveCheckedMandatoryInformation [DecidableEq Field] [DecidableEq Root]
     (rootOf : Field → Root) (rules : List (MandatoryRule Field Root)) :
     Option (MandatoryInformation Field Root) :=
   if rules.all MandatoryInformationDerivation.MandatoryRule.hasNonemptyLists &&
+      rules.all MandatoryInformationDerivation.MandatoryRule.hasSupportedFlatFieldListShape &&
       rules.all MandatoryInformationDerivation.MandatoryRule.hasSupportedFieldListGuardShape &&
       rules.all MandatoryInformationDerivation.MandatoryRule.hasSupportedRepeatablePresenceScope &&
       MandatoryInformationDerivation.hasSupportedNegativeFieldFormulaShape rules &&
