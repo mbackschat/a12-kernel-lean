@@ -2,7 +2,7 @@ import A12Kernel.Semantics.NumericLiteral
 
 /-! # Mandatory-information derivation
 
-This module models the measured flat, nonrepeatable contributing fragment of the model-level mandatory-information service plus exact whole-rule no-contribution identities. The input retains normalized authored rule shape and the two measured declaration-derived field-required modes, including ignored WARNING and INFO severity, and the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values and keeps filled-count and distinct-count rules separate where their guard behavior differs. The filled-field guard slice retains existential versus universal rule identity, and finite field-guard cycles participate in the same monotone closure as acyclic chains. Exact semantic-indexed, parallel-iterated, and cross-root whole-rule exclusions are retained without modeling their internals. Wider repetition, concrete indices, wider semantic-index shapes, filter internals, generated index rules, contributing cross-root rules, wider root topology, wider count sites, and wider Boolean formulas remain outside this carrier. -/
+This module models the measured flat, nonrepeatable contributing fragment of the model-level mandatory-information service plus checked whole-rule no-contribution identities. The input retains normalized authored rule shape and the two measured declaration-derived field-required modes, including ignored WARNING and INFO severity, and the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values and keeps filled-count and distinct-count rules separate where their guard behavior differs. The filled-field guard slice retains existential versus universal rule identity, and finite field-guard cycles participate in the same monotone closure as acyclic chains. The semantic-indexed, parallel-iterated, and cross-root captures establish referenced-field exclusion; the checked identities additionally contribute no roots, with only the cross-root capture separating its non-control root. Wider repetition, concrete indices, wider semantic-index shapes, filter internals, generated index rules, contributing cross-root rules, wider root topology, wider count sites, and wider Boolean formulas remain outside this carrier. -/
 
 namespace A12Kernel
 
@@ -364,7 +364,7 @@ private def deriveMandatoryInformation [DecidableEq Field] [DecidableEq Root]
     mandatoryRootGroups := global.roots
   }
 
-/-- Checked consumer entry for the measured fragment. Empty multi-field forms and multiple or crossing roots return `none` rather than inheriting unmeasured collector behavior. -/
+/-- Checked consumer entry for the measured fragment. Empty multi-field forms and contributing or unclassified multiple-root shapes return `none`; the exact classified cross-root no-contribution identity remains admissible. -/
 def deriveCheckedMandatoryInformation [DecidableEq Field] [DecidableEq Root]
     (rootOf : Field → Root) (rules : List (MandatoryRule Field Root)) :
     Option (MandatoryInformation Field Root) :=

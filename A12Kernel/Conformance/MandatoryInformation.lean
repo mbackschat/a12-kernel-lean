@@ -2,7 +2,7 @@ import A12Kernel.Semantics.MandatoryInformation
 
 /-! # Mandatory-information derivation locks
 
-These cases cover the measured flat, nonrepeatable contributing ERROR-rule fragment, the exact singleton WARNING/INFO severity exclusions, declaration-derived field-required modes and root closure, filtered, semantic-indexed, parallel-iterated, and cross-root whole-rule exclusions, and the bounded filled-count and distinct-count slices. They deliberately exclude wider repetition, index internals and wider indexed shapes, filter internals, wider generated rules, and contributing cross-root forms. -/
+These cases cover the measured flat, nonrepeatable contributing ERROR-rule fragment, the exact singleton WARNING/INFO severity exclusions, declaration-derived field-required modes and root closure, checked filtered, semantic-indexed, parallel-iterated, and cross-root whole-rule exclusions, and the bounded filled-count and distinct-count slices. The latter captures externally separate referenced-field exclusion, while the executable identities additionally contribute no roots. The cases deliberately exclude wider repetition, index internals and wider indexed shapes, filter internals, wider generated rules, and contributing cross-root forms. -/
 
 namespace A12Kernel.Conformance.MandatoryInformation
 

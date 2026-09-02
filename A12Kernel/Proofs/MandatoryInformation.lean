@@ -74,7 +74,7 @@ theorem deriveCheckedMandatoryInformation_declared_parent_closes_from_root_seed 
       ] := by
   decide
 
-/-- The measured semantic-indexed rule contributes nothing as a whole while an independent direct requirement remains visible. -/
+/-- The checked semantic-indexed identity contributes nothing as a whole while the measured independent direct requirement remains visible. -/
 theorem deriveCheckedMandatoryInformation_ignores_semantic_indexed_rule :
     deriveCheckedMandatoryInformation (fun _ : String => "Form") [
         .ignored (.semanticIndexed ["Note", "Rows/Value"]),
@@ -85,7 +85,7 @@ theorem deriveCheckedMandatoryInformation_ignores_semantic_indexed_rule :
       ] := by
   decide
 
-/-- The measured parallel-iterated rule contributes nothing as a whole while an independent direct requirement remains visible. -/
+/-- The checked parallel-iterated identity contributes nothing as a whole while the measured independent direct requirement remains visible. -/
 theorem deriveCheckedMandatoryInformation_ignores_parallel_iterated_rule :
     deriveCheckedMandatoryInformation (fun _ : String => "Form") [
         .ignored (.parallelIterated ["Demand/Note", "Capacity/Units"]),
@@ -96,7 +96,7 @@ theorem deriveCheckedMandatoryInformation_ignores_parallel_iterated_rule :
       ] := by
   decide
 
-/-- The measured cross-root rule is excluded before root admission while an independent direct requirement remains visible. -/
+/-- The checked cross-root identity is excluded before root admission while the measured independent direct requirement remains visible. -/
 theorem deriveCheckedMandatoryInformation_ignores_cross_root_rule :
     let rootOf := fun field : String =>
       if field == "Applicant/Note" || field == "Applicant/Control" then
