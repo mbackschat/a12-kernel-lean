@@ -1,0 +1,81 @@
+{
+  "header" : {
+    "id" : "MandatoryBooleanCnfDisjoint_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandOrNotFilled_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandatoryBooleanCnfDisjoint",
+        "name" : "MandatoryBooleanCnfDisjoint",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandatoryBooleanCnfDisjoint/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandatoryBooleanCnfDisjoint/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandatoryBooleanCnfDisjoint/MANDATORY_BOOLEAN_CNF_DISJOINT",
+            "name" : "MANDATORY_BOOLEAN_CNF_DISJOINT",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "MAND_OR_NOT_FILLED",
+              "errorCondition" : "(FieldNotFilled(/MandatoryBooleanCnfDisjoint/A) Or FieldNotFilled(/MandatoryBooleanCnfDisjoint/B)) And FieldNotFilled(/MandatoryBooleanCnfDisjoint/C)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "MAND_OR_NOT_FILLED"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandatoryBooleanCnfDisjoint/C",
+            "name" : "C",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

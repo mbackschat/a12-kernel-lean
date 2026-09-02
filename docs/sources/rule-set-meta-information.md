@@ -131,6 +131,33 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 
 - `sync`: **no `spec/` change.** The matrix settles a flat root-relative and dependency-closure slice, while [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) retains the wider collector obligation and the [implementation map](../IMPLEMENTATION-MAP.md#cap-flat-mandatory-information) owns current checked coverage.
 
+<a id="src-mandatory-information-boolean-formulas"></a>
+#### Mandatory-information derivation preserves two-level negative-field Boolean structure, measured locally on 2026-09-02
+
+- `revision`: four model-level `mandatoryInformation` requests at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`; every artifact reports dmtool `0.13.0`, Kernel `30.8.1` built and runtime, and source state `CLEAN`. Source-shipped dmtool produced each model from the retained two-field disjunction through structured model/group/rule renames, one structured field addition, and structured condition replacement. Persisted rule read-back reproduced every formula exactly, every `model check` was Kernel-confirmed valid, and Gradle ran the local JVM probe offline. No request contains a document or row.
+- `question`: when the same three negative field leaves appear under one flat disjunction, a conjunction of disjunctions, or a disjunction of conjunctions, may mandatory-information derivation flatten or Boolean-simplify the formula before choosing field contributions?
+
+| Case | Authored formula | `mandatory` and `mandatoryForRootGroup` | `mandatoryRootGroups` |
+|---|---|---|---|
+| `cnf-shared` | `(NotFilled(A) Or NotFilled(B)) And (NotFilled(A) Or NotFilled(C))` | A | root |
+| `cnf-disjoint` | `(NotFilled(A) Or NotFilled(B)) And NotFilled(C)` | — | root |
+| `dnf-shared` | `(NotFilled(A) And NotFilled(B)) Or (NotFilled(A) And NotFilled(C))` | — | root |
+| `or-triple` | `NotFilled(A) Or NotFilled(B) Or NotFilled(C)` | A, B, C | root |
+
+- `claim`: authored connective nesting is observable in the returned field sets. The common `A` survives the two disjunctive clauses under the measured outer conjunction, while the same common field does not survive the measured outer disjunction of two conjunctive clauses. The flat three-way disjunction contributes all three fields, and the disjoint conjunction contributes only the root.
+- `separators`: `cnf-shared` against `cnf-disjoint` isolates clause intersection while holding the first clause fixed. `cnf-shared` against `dnf-shared` keeps the same three referenced fields and the same repeated `A` but changes both connective levels, refuting field-reference-only and common-leaf accounts. `or-triple` is the positive arity control.
+- `limit`: one nonrepeatable root, three distinct String fields, one ERROR rule, the exact four formulas above, and `en_US`. Unmeasured and fail-closed locally: moving the shared field away from the first position within a disjunctive clause, duplicates, four or more flat disjuncts, other clause counts or widths, mixed leaf families, dependency interaction, repetition, indices, filters, generated rules, cross-root references, and deeper nesting.
+- `bytes`: [`mandatory-information-boolean-formulas/`](../../evidence/kernel-30.8.1/captures/mandatory-information-boolean-formulas/) retains four model/request/artifact triples. These are bounded raw captures with no typed replay, so they establish neither `L` nor `C` coverage.
+
+| Case | Model SHA-256 | Request SHA-256 | Artifact SHA-256 |
+|---|---|---|---|
+| `cnf-shared` | `9b848b55fbe62dd6617fe0356233f6e6b701b7fc4de48c62102cf9b9be865bba` | `5c3c195c9fde3a9da685a9149497440246c233b012dac57e9042e68f84856a7f` | `24ee0395896964934f3d9fb8939fd482887d1f67546e3237a9861c8fcb8181c9` |
+| `cnf-disjoint` | `20ef5be7afa7c3634f2cc5577804f78904524ddb16a21e33c11a183fd64124ea` | `f4ebd9ba1de220f57539f3a00d42f0f69d3919a5c9fd206836e0c90227e710d8` | `87a66c42e08c7b07591ec4cf9f8e8e94aed2d477a9c9c62550805241a162776d` |
+| `dnf-shared` | `99dd0a6d34d592f4af9d9c9701fabae46aee628309e2953095705cacfc92a0cb` | `b6716fd62c7b86c950fef54a0509420d4f3fe03c3079c0ed57d433c712fe81a5` | `23fb796bca4c97d14fc20dae0f115b58e718150a740b2eed83d52d10f84ca640` |
+| `or-triple` | `5a45be28290f1c3a58fa0e8681ad0f0f72ced0c2738dee99ecb224ffb1d1a4bd` | `c23b0c89bfbcd07ed86849397ab133c77f0228ed35d4873291f35bf81c3984b6` | `47ff29e562d0bdd9f482faff8ed05d2de43d2e9c41b64e1d2a073bfcde7f0b0c` |
+
+- `sync`: **no `spec/` change.** The batch extends the checked SG14 carrier without defining arbitrary Boolean normalization or the complete rule-set collector; [`spec/`](../../spec/) still has no rule-set meta-information clause.
+
 <a id="src-mandatory-information-field-cycles"></a>
 #### Mandatory-information derivation closes a seeded direct field cycle and leaves an unseeded cycle inert, measured locally on 2026-09-02
 

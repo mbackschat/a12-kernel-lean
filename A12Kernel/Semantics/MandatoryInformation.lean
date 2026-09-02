@@ -2,7 +2,7 @@ import A12Kernel.Semantics.NumericLiteral
 
 /-! # Mandatory-information derivation
 
-This module models the measured flat, nonrepeatable contributing fragment of the model-level mandatory-information service plus the exact unfiltered singleton-field presence matrix over one direct unindexed repeatable child of a nonrepeatable root and checked whole-rule no-contribution identities. The input retains normalized authored rule shape, the two measured declaration-derived field-required modes, the generated requirement for one optional repeatable String index field, and the generated validation for one direct nonrepeatable scale-0 Number copy, including ignored WARNING and INFO severity; the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values, keeps filled-count and distinct-count rules separate where their guard behavior differs, accepts the exact field-guard dependency roles measured for one filled-count operand and its target plus one target-to-count-operand chain across six measured count/contiguous-seed category orders, and retains the measured isolated distinct-count comparison matrix as no-contribution. The filled-field guard slice retains existential versus universal rule identity, and finite field-guard cycles participate in the same monotone closure as acyclic chains. The semantic-indexed, parallel-iterated, and cross-root captures establish referenced-field exclusion; the checked identities additionally contribute no roots, with only the cross-root capture separating its non-control root. Wider repetition, concrete indices, wider semantic-index shapes, filter internals, other generated index and computation-validation shapes, contributing cross-root rules, wider root topology, wider count sites, and wider Boolean formulas remain outside this carrier. -/
+This module models the measured flat, nonrepeatable contributing fragment of the model-level mandatory-information service plus the exact unfiltered singleton-field presence matrix over one direct unindexed repeatable child of a nonrepeatable root and checked whole-rule no-contribution identities. The input retains normalized authored rule shape, the exact retained two-level negative-field Boolean matrix, the two measured declaration-derived field-required modes, the generated requirement for one optional repeatable String index field, and the generated validation for one direct nonrepeatable scale-0 Number copy, including ignored WARNING and INFO severity; the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values, keeps filled-count and distinct-count rules separate where their guard behavior differs, accepts the exact field-guard dependency roles measured for one filled-count operand and its target plus one target-to-count-operand chain across six measured count/contiguous-seed category orders, and retains the measured isolated distinct-count comparison matrix as no-contribution. The filled-field guard slice retains existential versus universal rule identity, and finite field-guard cycles participate in the same monotone closure as acyclic chains. The semantic-indexed, parallel-iterated, and cross-root captures establish referenced-field exclusion; the checked identities additionally contribute no roots, with only the cross-root capture separating its non-control root. Wider repetition, concrete indices, wider semantic-index shapes, filter internals, other generated index and computation-validation shapes, contributing cross-root rules, wider root topology, wider count sites, and Boolean formulas beyond the exact retained matrix remain outside this carrier. -/
 
 namespace A12Kernel
 
@@ -95,6 +95,41 @@ inductive IgnoredMandatoryRule (Field Root : Type) where
   | generatedDirectNonrepeatableScale0NumberCopyValidation (source target : Field)
   deriving Repr, DecidableEq
 
+/-- Measured pure negative-field Boolean shapes. The outer and inner connectives remain explicit because the collector does not simplify logically related formulas to one field contribution. -/
+inductive MandatoryNegativeFieldFormula (Field : Type) where
+  | flatDisjunction (fields : List Field)
+  | conjunctionOfDisjunctions (clauses : List (List Field))
+  | disjunctionOfConjunctions (clauses : List (List Field))
+  deriving Repr, DecidableEq
+
+namespace MandatoryNegativeFieldFormula
+
+def referencedFields : MandatoryNegativeFieldFormula Field → List Field
+  | .flatDisjunction fields => fields
+  | .conjunctionOfDisjunctions clauses
+  | .disjunctionOfConjunctions clauses => clauses.flatten
+
+private def threeDistinct [DecidableEq Field] (first second third : Field) : Bool :=
+  [first, second, third].eraseDups.length == 3
+
+/-- Admit only the four retained Boolean-formula cells rather than extrapolating to arbitrary nesting or arity. -/
+def hasMeasuredShape [DecidableEq Field] : MandatoryNegativeFieldFormula Field → Bool
+  | .flatDisjunction [first, second, third] =>
+      threeDistinct first second third
+  | .conjunctionOfDisjunctions [
+      [shared, leftOnly], [sharedAgain, rightOnly]
+    ] =>
+      shared == sharedAgain && threeDistinct shared leftOnly rightOnly
+  | .conjunctionOfDisjunctions [[left, right], [other]] =>
+      threeDistinct left right other
+  | .disjunctionOfConjunctions [
+      [shared, leftOnly], [sharedAgain, rightOnly]
+    ] =>
+      shared == sharedAgain && threeDistinct shared leftOnly rightOnly
+  | _ => false
+
+end MandatoryNegativeFieldFormula
+
 /-- Normalized, measured inputs for flat mandatory-information derivation. Constructors preserve declaration and authored-rule distinctions even where two shapes have the same derived effect. -/
 inductive MandatoryRule (Field Root : Type) where
   | declaredFieldRequirement (requirement : DeclaredFieldRequirement) (field : Field)
@@ -109,6 +144,7 @@ inductive MandatoryRule (Field Root : Type) where
   | rootGuardedNotFilled (premise : Root) (target : Field)
   | fieldListGuardedNotFilled (premises : List Field)
       (guard : MandatoryFieldListGuard) (target : Field)
+  | negativeFieldFormula (formula : MandatoryNegativeFieldFormula Field)
   | unfilteredRepeatableFieldPresenceComposition
       (scope : MandatoryRepeatablePresenceScope)
       (connective : MandatoryPresenceConnective)
@@ -139,6 +175,22 @@ namespace MandatoryInformationDerivation
 private def appendDistinct [DecidableEq α] (current additions : List α) : List α :=
   additions.foldl (fun result item =>
     if item ∈ result then result else result ++ [item]) current
+
+private def intersectPreservingLeft [DecidableEq α]
+    (left right : List α) : List α :=
+  left.filter (· ∈ right)
+
+private def negativeFormulaRequiredFields [DecidableEq Field] :
+    MandatoryNegativeFieldFormula Field → List Field
+  | .flatDisjunction fields => fields
+  | .conjunctionOfDisjunctions [] => []
+  | .conjunctionOfDisjunctions (first :: rest) =>
+      rest.foldl intersectPreservingLeft first
+  | .disjunctionOfConjunctions clauses =>
+      clauses.foldl (fun fields clause =>
+        match clause with
+        | [field] => appendDistinct fields [field]
+        | _ => fields) []
 
 private structure State (Field Root : Type) where
   fields : List Field := []
@@ -197,6 +249,7 @@ private def MandatoryRule.referencedRoots (rootOf : Field → Root) :
   | .rootGuardedNotFilled premise target => [premise, rootOf target]
   | .fieldListGuardedNotFilled premises _ target =>
       premises.map rootOf ++ [rootOf target]
+  | .negativeFieldFormula formula => formula.referencedFields.map rootOf
   | .unfilteredRepeatableFieldPresenceComposition _ _ _ field repeatableField =>
       [rootOf field, rootOf repeatableField]
   | .countLessThan fields _
@@ -251,6 +304,9 @@ private def MandatoryRule.apply [DecidableEq Field] [DecidableEq Root]
         state.addFields rootOf [target]
       else
         state
+  | .negativeFieldFormula formula =>
+      let rooted := state.addRoots (formula.referencedFields.map rootOf)
+      rooted.addFields rootOf (negativeFormulaRequiredFields formula)
   | .unfilteredRepeatableFieldPresenceComposition _ .disjunction
       .notAllFieldsFilled field repeatableField =>
       state.addFields rootOf [field, repeatableField]
@@ -300,6 +356,7 @@ private def MandatoryRule.hasNonemptyLists : MandatoryRule Field Root → Bool
   | .noFieldFilled fields
   | .notExactlyOneFieldFilled fields => !fields.isEmpty
   | .fieldListGuardedNotFilled premises _ _ => !premises.isEmpty
+  | .negativeFieldFormula formula => !formula.referencedFields.isEmpty
   | .countLessThan fields _
   | .differentValuesLessThan fields _
   | .countGuardedNotFilled fields _ _ _
@@ -324,6 +381,20 @@ private def MandatoryRule.hasSupportedRepeatablePresenceScope :
   | .unfilteredRepeatableFieldPresenceComposition .outsideMeasuredScope _ _ _ _ => false
   | _ => true
 
+private def MandatoryRule.isNegativeFieldFormula :
+    MandatoryRule Field Root → Bool
+  | .negativeFieldFormula _ => true
+  | _ => false
+
+private def hasSupportedNegativeFieldFormulaShape [DecidableEq Field]
+    (rules : List (MandatoryRule Field Root)) : Bool :=
+  if rules.any MandatoryRule.isNegativeFieldFormula then
+    match rules with
+    | [.negativeFieldFormula formula] => formula.hasMeasuredShape
+    | _ => false
+  else
+    true
+
 private def directFieldSeeds [DecidableEq Field]
     (rules : List (MandatoryRule Field Root)) : List Field :=
   rules.foldl (fun seeds rule =>
@@ -343,6 +414,7 @@ private def MandatoryRule.countShapeFields : MandatoryRule Field Root → List F
   | .fieldGuardedNotFilled premise target => [premise, target]
   | .rootGuardedNotFilled _ target => [target]
   | .fieldListGuardedNotFilled premises _ target => premises ++ [target]
+  | .negativeFieldFormula formula => formula.referencedFields
   | .unfilteredRepeatableFieldPresenceComposition _ _ _ field repeatableField =>
       [field, repeatableField]
   | .countLessThan fields _
@@ -616,6 +688,7 @@ def deriveCheckedMandatoryInformation [DecidableEq Field] [DecidableEq Root]
   if rules.all MandatoryInformationDerivation.MandatoryRule.hasNonemptyLists &&
       rules.all MandatoryInformationDerivation.MandatoryRule.hasSupportedFieldListGuardShape &&
       rules.all MandatoryInformationDerivation.MandatoryRule.hasSupportedRepeatablePresenceScope &&
+      MandatoryInformationDerivation.hasSupportedNegativeFieldFormulaShape rules &&
       MandatoryInformationDerivation.hasSupportedCountShapes rules &&
       MandatoryInformationDerivation.hasSupportedCountTargetOperandShape rules &&
       MandatoryInformationDerivation.hasSupportedDeclaredFieldRequirementShape rules &&

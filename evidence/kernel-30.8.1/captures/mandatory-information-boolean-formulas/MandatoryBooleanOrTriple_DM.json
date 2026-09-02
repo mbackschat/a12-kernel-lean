@@ -1,0 +1,81 @@
+{
+  "header" : {
+    "id" : "MandatoryBooleanOrTriple_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandOrNotFilled_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandatoryBooleanOrTriple",
+        "name" : "MandatoryBooleanOrTriple",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandatoryBooleanOrTriple/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandatoryBooleanOrTriple/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandatoryBooleanOrTriple/MANDATORY_BOOLEAN_OR_TRIPLE",
+            "name" : "MANDATORY_BOOLEAN_OR_TRIPLE",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "MAND_OR_NOT_FILLED",
+              "errorCondition" : "FieldNotFilled(/MandatoryBooleanOrTriple/A) Or FieldNotFilled(/MandatoryBooleanOrTriple/B) Or FieldNotFilled(/MandatoryBooleanOrTriple/C)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "MAND_OR_NOT_FILLED"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandatoryBooleanOrTriple/C",
+            "name" : "C",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -227,6 +227,20 @@ theorem deriveCheckedMandatoryInformation_field_list_guards_close_reverse_author
       } := by
   decide
 
+/-- Shared negative leaves do not make the measured CNF and DNF shapes interchangeable: connective nesting changes the derived field set. -/
+theorem deriveCheckedMandatoryInformation_negative_formula_connectives_matter :
+    deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .negativeFieldFormula (.conjunctionOfDisjunctions [
+          ["A", "B"], ["A", "C"]
+        ])
+      ] ≠
+      deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .negativeFieldFormula (.disjunctionOfConjunctions [
+          ["A", "B"], ["A", "C"]
+        ])
+      ] := by
+  decide
+
 /-- Filled-count and distinct-count standalone rules have the same checked root contribution for every retained threshold. -/
 theorem deriveCheckedMandatoryInformation_count_root_operator_independent
     (threshold : Option CheckedMandatoryCountThreshold) :

@@ -1,0 +1,5 @@
+{
+  "model": "MandatoryBooleanCnfShared_DM.json",
+  "locale": "en_US",
+  "observe": ["mandatoryInformation"]
+}

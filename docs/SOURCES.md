@@ -356,6 +356,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Mandatory-information derivation preserves connective and starred presence-operator identity](sources/rule-set-meta-information.md#src-mandatory-information-repeatable-presence)
 <a id="src-mandatory-information-composition-matrix"></a>
 - [Mandatory-information derivation distinguishes root-relative fields and finite dependency closure](sources/rule-set-meta-information.md#src-mandatory-information-composition-matrix)
+<a id="src-mandatory-information-boolean-formulas"></a>
+- [Mandatory-information derivation preserves two-level negative-field Boolean structure](sources/rule-set-meta-information.md#src-mandatory-information-boolean-formulas)
 <a id="src-mandatory-information-field-cycles"></a>
 - [Mandatory-information derivation closes a seeded direct field cycle and leaves an unseeded cycle inert](sources/rule-set-meta-information.md#src-mandatory-information-field-cycles)
 <a id="src-mandatory-information-field-list-cycles"></a>

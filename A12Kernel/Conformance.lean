@@ -175,6 +175,7 @@ import A12Kernel.Conformance.LegalCharset
 import A12Kernel.Conformance.LegalCharsetElaboration
 import A12Kernel.Conformance.MessagePointer
 import A12Kernel.Conformance.MandatoryInformation
+import A12Kernel.Conformance.MandatoryInformationBooleanFormula
 import A12Kernel.Conformance.MandatoryInformationCountChain
 import A12Kernel.Conformance.ModelZone
 import A12Kernel.Conformance.NestedIteratedDateRangeCondition
