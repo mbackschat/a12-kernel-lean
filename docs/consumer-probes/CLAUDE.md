@@ -2,14 +2,24 @@
 
 These directory-scoped instructions supplement the repository root [`CLAUDE.md`](../../CLAUDE.md) and the documentation instructions in [`../CLAUDE.md`](../CLAUDE.md).
 
-Before editing a lab record, read the laboratory [`README.md`](README.md#common-protocol) and the probe type's frozen task and acceptance boundary.
+Before starting or recording a probe, read the laboratory [`README.md`](README.md#common-protocol), its [run-record contract](README.md#run-record-format), and the probe type's frozen task and acceptance boundary.
 
-## Run identity
+## Frozen basis
 
-- Every new probe run and every material rerun must record `Executed at` and `Semantic basis` in its lab-ledger row. Use table columns with those exact names so every row remains independently identifiable.
-- Record `Executed at` when the retained run finishes, using an RFC 3339 timestamp with a numeric UTC offset, for example `2026-09-01T14:25:00+02:00`.
-- Record `Semantic basis` as the exact 40-character commit returned by `git rev-parse HEAD` for the frozen repository material supplied to the consumer. Run `git status --short` first and retain a lab row only from a clean committed basis; exploratory dirty-worktree results must be rerun after the semantic material is committed.
-- When first extending a legacy table that lacks these columns, add both columns and write `not recorded` for historical rows whose identity is not already proven by retained evidence.
-- Never infer or backfill a run timestamp or semantic basis from a file modification time, a conversation date, the current `HEAD`, or a later report commit.
+- Give every new task contract a stable explicit anchor in its consumer-type document. Commit the task, finite acceptance boundary, wrong accounts, and exclusions before exposing them to the isolated consumer.
+- Immediately before the handover, require `git status --short` to be empty and record the exact 40-character commit returned by `git rev-parse HEAD`. That commit is the `semantic-basis` for all repository material supplied to the consumer.
+- Do not qualify an exploratory dirty-worktree result. Commit the frozen material and rerun it.
 
-Keep the existing compact result and cost discipline. The timestamp identifies when the consumer ran; the semantic basis identifies what it tested; Git history identifies when the report itself changed.
+## Run timing
+
+- Capture `started-at` immediately before the isolated consumer receives the frozen handover.
+- Capture `finished-at` immediately after the consumer returns its final output and before root reconciliation begins.
+- Record both as RFC 3339 timestamps with numeric UTC offsets, for example `2026-09-01T14:25:00+02:00`, and record their measured elapsed time as integer `duration-seconds`.
+- If a timestamp was not captured at its boundary, do not estimate it from a later clock reading. Rerun before qualifying the result.
+
+## Reporting
+
+- Give each run a unique stable `run-` anchor and use the keyed record in the [run-record contract](README.md#run-record-format). Do not add another prose-heavy row to a legacy lab table.
+- Use exactly one status from `green`, `amber`, `red`, or `blocked`. A corrected or materially changed run receives a new run ID rather than a composite status or an overwritten record.
+- Never infer or backfill timing, semantic basis, cost, oracle, or consumer access from file metadata, a conversation date, the current `HEAD`, or a later report commit.
+- Keep each field claim-local. Git history owns superseded text; the type document owns the current bounded result and any still-material earlier comparator.
