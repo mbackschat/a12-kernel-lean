@@ -130,6 +130,24 @@ theorem deriveCheckedMandatoryInformation_ignores_generated_optional_repeatable_
       ] := by
   decide
 
+/-- The measured generated validation for a direct nonrepeatable Number copy is inert beside direct and parent-present controls. -/
+theorem deriveCheckedMandatoryInformation_ignores_generated_direct_number_copy_validation :
+    deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .ignored (.generatedDirectNumberCopyValidation "Source" "Target"),
+        .fieldNotFilled "Control"
+      ] =
+      deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .fieldNotFilled "Control"
+      ] ∧
+    deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .ignored (.generatedDirectNumberCopyValidation "Source" "Target"),
+        .declaredFieldRequirement .ifParentPresent "ParentRequired"
+      ] =
+      deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .declaredFieldRequirement .ifParentPresent "ParentRequired"
+      ] := by
+  decide
+
 /-- Existential and universal field-list guards reach their concrete successful fixed points in either authored order. -/
 theorem deriveCheckedMandatoryInformation_field_list_guards_close_reverse_authored :
     deriveCheckedMandatoryInformation (fun _ : String => "Form") [

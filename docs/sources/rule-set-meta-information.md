@@ -204,6 +204,25 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 
 - `sync`: **no `spec/` change.** [`spec/`](../../spec/) still has no rule-set meta-information section; [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) owns the wider obligation, and the [implementation map](../IMPLEMENTATION-MAP.md#cap-flat-mandatory-information) owns the checked slice.
 
+<a id="src-mandatory-information-generated-computation-validation"></a>
+#### A direct nonrepeatable Number copy's generated validation contributes nothing and supplies no global root seed, measured locally on 2026-09-02
+
+- `revision`: three model-level `mandatoryInformation` requests at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`; every artifact reports dmtool `0.13.0` and Kernel `30.8.1` built and runtime. Each source model was emitted through structured `model rename -o` from its corresponding generated-index checkpoint control, then extended only through structured field and computation verbs. Persisted computation read-back and Kernel-confirmed `model check` succeeded; no request carries a document or row, and immediate repeats were byte-identical.
+- `question`: does the implicit validation generated for one unconditional direct nonrepeatable Number copy contribute its source or target to either mandatory field set, add their root, preserve a later authored contribution, or seed global promotion of a same-root parent-present declaration?
+- `model`: all three models extend their paired generated-index checkpoint baseline with scale-0 Number `Source` and `Target` fields plus one unconditional `Target := Source` computation and localized self-validation message. The computation-only pair has no authored rule or other declaration; the direct-control pair retains `FieldNotFilled(Control)`; the parent-present pair retains the `relativeToParent` String declaration.
+- `claim`: every result is byte-for-byte the same as its paired no-computation baseline. The computation-only case returns all three sets empty. The direct-control case returns exactly `Control` in both field sets and `GeneratedIndex` in the root set. The parent-present case returns global fields and roots empty and only `ParentRequired` in `mandatoryForRootGroup`. The generated validation identity therefore contributes no returned member, leaves a later supported authored rule visible, and does not supply a global root seed.
+- `separators`: treating the generated validation's source or target as mandatory adds a field; treating either reference as a global root seed promotes `ParentRequired` into `mandatory` and adds the root; rejecting or ignoring the whole collection loses `Control`; and erasing the generated identity from Analyze/Explain cannot distinguish a computed target from an otherwise identical declaration even though their checked query result agrees.
+- `limit`: one unconditional direct copy between same-root nonrepeatable scale-0 Number fields, one generated localized message, and the already measured optional String index baseline, with separate direct-control and parent-present compositions. This establishes only the model-level mandatory-information result, not generated validation execution or its internal condition. Constants, arithmetic, multiple or guarded alternatives, tolerances, other target families, repeatable targets or operands, cross-group placement, filters, indices in the computation, multiple computations, and wider topology remain outside.
+- `bytes`: [`mandatory-information-generated-computation-validation/`](../../evidence/kernel-30.8.1/captures/mandatory-information-generated-computation-validation/) retains all three model/request/artifact triples. These are bounded raw captures with no typed local replay, so they establish neither `L` nor `C` coverage.
+
+| Case | Model SHA-256 | Request SHA-256 | Artifact SHA-256 |
+|---|---|---|---|
+| `computation-only` | `91e883936c5757c99083210d9f414840d113d89388d43f4f58ed3449795aac80` | `a23c271f65f1bf6c27ba86d3cbe3414b568da5138ba9c8c6f990967a6cd354fa` | `ed8554ba5e098566d8e7d1711ba984f54eabf38ce42e79f209f732b44efa0129` |
+| `direct-control` | `7d049ee7abea32ad9b965fe579c5bd22e994053a814b6fe385f42f8d9a9f7980` | `262d6dc9cba7298136637f0b4de92102cf5726d964f8bd6d1294aeceb6375315` | `149727d2052f71a9001e71cbdffae6e3204d8bfdae5596636124110c7d9ee0c6` |
+| `parent-present` | `62f803331669c89e28cadc0c216af07a42b620ea4bbb57a10775049af55f6316` | `c5edbd2421e6d0a63a2794c2b3f75573ec6930db8a67aaad28c93524dff2c957` | `c1425da78cdf5f991551ce97678823bf3baf979dd54ffca68ae0f362b0dddfbe` |
+
+- `sync`: **no `spec/` change.** [`spec/`](../../spec/) still has no rule-set meta-information section; [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) owns the wider obligation, and the [implementation map](../IMPLEMENTATION-MAP.md#cap-flat-mandatory-information) owns the checked slice.
+
 <a id="src-mandatory-information-field-list-cycles"></a>
 #### Mandatory-information derivation closes seeded existential and universal field-list cycles without self-support, measured locally on 2026-09-02
 

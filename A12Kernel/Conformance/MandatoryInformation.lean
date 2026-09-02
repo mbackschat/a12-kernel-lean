@@ -2,7 +2,7 @@ import A12Kernel.Semantics.MandatoryInformation
 
 /-! # Mandatory-information derivation locks
 
-These cases cover the measured flat, nonrepeatable contributing ERROR-rule fragment, the exact singleton WARNING/INFO severity exclusions, declaration-derived field-required modes and root closure, one model-derived optional repeatable String index requirement, checked filtered, semantic-indexed, parallel-iterated, and cross-root whole-rule exclusions, and the bounded filled-count and distinct-count slices. The latter captures externally separate referenced-field exclusion, while the executable identities additionally contribute no roots. The cases deliberately exclude wider repetition, index internals and wider indexed shapes, filter internals, other generated rules, and contributing cross-root forms. -/
+These cases cover the measured flat, nonrepeatable contributing ERROR-rule fragment, the exact singleton WARNING/INFO severity exclusions, declaration-derived field-required modes and root closure, one model-derived optional repeatable String index requirement, one generated direct Number-copy validation, checked filtered, semantic-indexed, parallel-iterated, and cross-root whole-rule exclusions, and the bounded filled-count and distinct-count slices. The latter captures externally separate referenced-field exclusion, while the executable identities additionally contribute no roots. The cases deliberately exclude wider repetition, index internals and wider indexed shapes, filter internals, other generated rules, and contributing cross-root forms. -/
 
 namespace A12Kernel.Conformance.MandatoryInformation
 
@@ -107,6 +107,21 @@ private def generatedIndexKernelCases : List (List (MandatoryRule String String)
     ], result [] ["ParentRequired"] [])
 ]
 
+private def generatedComputationValidationKernelCases :
+    List (List (MandatoryRule String String) ×
+      Option (MandatoryInformation String String)) := [
+  ([.ignored (.generatedDirectNumberCopyValidation "Source" "Target")],
+    result [] [] []),
+  ([
+      .ignored (.generatedDirectNumberCopyValidation "Source" "Target"),
+      .fieldNotFilled "Control"
+    ], result ["Control"] ["Control"] ["Form"]),
+  ([
+      .ignored (.generatedDirectNumberCopyValidation "Source" "Target"),
+      .declaredFieldRequirement .ifParentPresent "ParentRequired"
+    ], result [] ["ParentRequired"] [])
+]
+
 private def deriveFieldCycleKernelBatch? :
     Option (MandatoryInformation String String) :=
   derive [
@@ -180,6 +195,11 @@ example :
 
 /- The generated requirement for an optional repeatable index field contributes nothing, leaves a direct control visible, and does not promote a parent-present declaration globally. -/
 example : generatedIndexKernelCases.all (fun (rules, expected) =>
+    derive rules == expected) := by
+  native_decide
+
+/- The generated validation for one direct Number copy contributes nothing, leaves a direct control visible, and does not promote a parent-present declaration globally. -/
+example : generatedComputationValidationKernelCases.all (fun (rules, expected) =>
     derive rules == expected) := by
   native_decide
 
