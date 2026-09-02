@@ -1,0 +1,163 @@
+{
+  "header" : {
+    "id" : "CountChainOrderSUDOneSeed",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "CountSeeds_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/CountChainOrderSUDOneSeed",
+        "name" : "CountChainOrderSUDOneSeed",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/CountChainOrderSUDOneSeed/ZeroA",
+            "name" : "ZeroA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountChainOrderSUDOneSeed/ZeroB",
+            "name" : "ZeroB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountChainOrderSUDOneSeed/ZeroTarget",
+            "name" : "ZeroTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountChainOrderSUDOneSeed/OneA",
+            "name" : "OneA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountChainOrderSUDOneSeed/OneB",
+            "name" : "OneB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountChainOrderSUDOneSeed/OneTarget",
+            "name" : "OneTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountChainOrderSUDOneSeed/TwoA",
+            "name" : "TwoA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountChainOrderSUDOneSeed/TwoB",
+            "name" : "TwoB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountChainOrderSUDOneSeed/TwoTarget",
+            "name" : "TwoTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/CountChainOrderSUDOneSeed/M_UPSTREAM",
+            "name" : "M_UPSTREAM",
+            "Rule" : {
+              "errorEntityRelPath" : "../ZeroTarget",
+              "errorCode" : "A_ZERO_GUARD",
+              "errorCondition" : "NumberOfFilledFields(/CountChainOrderSUDOneSeed/TwoA, /CountChainOrderSUDOneSeed/TwoB) >= 2 And FieldNotFilled(/CountChainOrderSUDOneSeed/ZeroTarget)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "A_ZERO_GUARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/CountChainOrderSUDOneSeed/Z_DOWNSTREAM",
+            "name" : "Z_DOWNSTREAM",
+            "Rule" : {
+              "errorEntityRelPath" : "../OneTarget",
+              "errorCode" : "B_ONE_GUARD",
+              "errorCondition" : "NumberOfFilledFields(/CountChainOrderSUDOneSeed/ZeroTarget, /CountChainOrderSUDOneSeed/OneB) >= 1 And FieldNotFilled(/CountChainOrderSUDOneSeed/OneTarget)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "B_ONE_GUARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/CountChainOrderSUDOneSeed/A_TWO_A",
+            "name" : "A_TWO_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../TwoA",
+              "errorCode" : "Z_TWO_A",
+              "errorCondition" : "FieldNotFilled(/CountChainOrderSUDOneSeed/TwoA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Z_TWO_A"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -377,6 +377,41 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 
 - `sync`: **no `spec/` change.** This exact batch closes SG14's first count-target-to-count-operand route but not the complete collector; [`spec/`](../../spec/) still has no rule-set meta-information section.
 
+<a id="src-mandatory-information-count-chain-orders"></a>
+#### Mandatory-information count-chain closure is stable across all six measured category orders, measured locally on 2026-09-02
+
+- `revision`: eleven model-level `mandatoryInformation` requests at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`; source-shipped dmtool `0.13.0`, fully typed structured read-backs, Kernel-confirmed `model check` results, and every artifact reports Kernel `30.8.1` built and runtime. Structured model, root-group, and rule renames emitted each two-seed model from the retained true chain; structured rule removal emitted the corresponding one-seed model by removing only the second seed. The threshold-2 one-seed cross-product came from the retained downstream-false model through the same rename-and-remove route. No request or artifact carries a document or row.
+- `question`: after the first checkpoint fixed downstream-seeds-upstream order, do the same exact target-to-operand edge and thresholds close identically when the downstream count, contiguous direct-seed block, and upstream count occupy each of the other five category orders, in both one- and two-seed states; and does the canonical threshold-2 arm retain its one-seed suffix?
+
+| Rule-name category order | Two direct seeds | One direct seed |
+|---|---|---|
+| downstream-upstream-seeds | `TwoA`, `TwoB`, `ZeroTarget`, `OneTarget`; root | `TwoA`; root |
+| seeds-downstream-upstream | `TwoA`, `TwoB`, `ZeroTarget`, `OneTarget`; root | `TwoA`; root |
+| seeds-upstream-downstream | `TwoA`, `TwoB`, `ZeroTarget`, `OneTarget`; root | `TwoA`; root |
+| upstream-downstream-seeds | `TwoA`, `TwoB`, `ZeroTarget`, `OneTarget`; root | `TwoA`; root |
+| upstream-seeds-downstream | `TwoA`, `TwoB`, `ZeroTarget`, `OneTarget`; root | `TwoA`; root |
+
+- `claim`: every remaining two-seed order returns both count targets in both field sets, and every matching one-seed order returns only the surviving direct seed in both field sets; the canonical threshold-2 one-seed cross-product also returns only that seed, and every artifact returns its root. Together with the preceding downstream-seeds-upstream captures, these observations cover all six permutations of the three measured rule categories without identifying the Kernel's private traversal mechanism.
+- `separators`: an order-sensitive admission account refuses at least one new model, while a single authored-order scan loses one or both targets whenever their prerequisites sort later. Treating the listed but unseeded `TwoB` as present or manufacturing it changes every one-seed arm from `TwoA` alone to the two-target closure.
+- `limit`: one nonrepeatable root per model, nine String declarations, ERROR severity, one scale-0 upstream `>= 2` count, one scale-0 downstream `>= 1` count, exactly one target-to-first-operand edge across five distinct field roles, one contiguous seed block ordered `TwoA` then optional `TwoB`, all six category orders when combined with the preceding checkpoint, the downstream-seeds-upstream threshold-2 arm in both seed cardinalities, and `en_US`. Swapped or interleaved seed rules, downstream threshold `2` in the other five orders, zero seeds, longer or branching chains, cross-role aliases, other comparisons, distinct count, other dependencies or reuse roles, repetition, indices, filters, generated rules, wider formulas, cross-root references, and cycles remain outside Kernel correspondence.
+- `bytes`: [`mandatory-information-count-chain-orders/`](../../evidence/kernel-30.8.1/captures/mandatory-information-count-chain-orders/) retains all eleven model/request/artifact triples. These are bounded raw captures with no typed replay, so they establish neither L nor C.
+
+| Order / seed state | Model SHA-256 | Request SHA-256 | Artifact SHA-256 |
+|---|---|---|---|
+| `DUS / two` | `a87b86e190d3d6be9f105cbdf4bc31425643b41ab9b27e459fa86acd70f2eab1` | `1e02154e0aaf976bb13dea9529dc39d23502d425d5361e3638503748f2756f76` | `2e0834ed1549ea5e398cf8da5cf268b0ff177f848c4e33482dbba311ca110157` |
+| `DUS / one` | `0757e03070c8862be9104f5f363c578caf0099e23381e453cba89473aa2ffac5` | `239a5a6b6febff882c82e818bb747b053e22af9e08abaaea344719e03b384da6` | `e6c08ccac943407e4879616365e6ec7abec787d1007322c808c12f0b19d3a3d9` |
+| `SDU / two` | `ff5c67d5bbc00c151eff596261a194f493064cc4b9ce7b52ed20ebf8f6508d3d` | `90a07a42102e9c8cd76d42a5866955d78fde1c572c9ae711ee8551a9929165b5` | `8fb8274069b5e760e230626094ecf2eddf9f4b8863e24763af7c5b6812cbef49` |
+| `SDU / one` | `a200204b86b09b11ca7a10c4f0354e109d2056aeaefe72acc1ed85bc5812c2d8` | `f26222032001f60ee74b621d78efd394d593f338a081b0c0b00f1b09bcde9fb6` | `97a4a466c453dc983b4af98e7e6d5c603af9e709d0baca9e7887f9e4b0ec07ce` |
+| `SUD / two` | `f7afe5ff03b9779a3bbbd11620aad592f773bb023819f4288a2bea170a1df02c` | `9bd805f4ca62cd2f944153865feeb992eda7518427fb019d5cc1bdc663737522` | `3efe432d43dc05c2a51b7d4429823452e8aed3227247cb9f82d0113b1317991a` |
+| `SUD / one` | `d4b1fbf9193a22cf9758dae947a8e85f8f0ad99b8d21ec256951297aebeb44ff` | `77e0f838e1560d233a043d894466d643f3383f9100802057ae28c9639f627cf8` | `fc1821b00ca316cc3dfaf692f885d6f8c87ba2b88b82b3fdec893621ed5f1650` |
+| `UDS / two` | `cc71705ac75e32a86ae301d05858f3b8e6bf34f78333fd38014d08e5935d036c` | `5bd23fa8df6237f6c6a522ca69f0247f2c54b4b503b1b8ff3dfd19e8996a4a44` | `aa6470d55e0baa3feef48d2c9b8148c2dd0c808299d04117e3d34852a42bcc95` |
+| `UDS / one` | `3b581669d25dfded6de48f01505c89cbac968eb4087e5208fe5d319b1888bf1d` | `bffb26eb4b93f542fa903c15ab88c608ffcc4410146a22a6dfb45109f9416c13` | `8c00a6f7b15b0ca66d4aeb76b7414dfa1df4db5ee5c84e5b52190198db165c1b` |
+| `USD / two` | `1646755c87cf9e453ee152a46dde4e98ae23efb0e06428a0a5392f2e642b8d1d` | `b38059124e2c4c37272375e96c2e7d50c612e2cc83eb2dd5c1c7dff16b880a6d` | `e61d7a311447937277bf90b5339ad7ec5ac5226173a6e7c11a70468cd0db60b0` |
+| `USD / one` | `e39e4e9fee587543350fba93602ac5cc745bfd0b4daff906d11d631527f12843` | `c4695cb2d402151a6635e5aa5f5b81a7f19f399950a016344b684892940d17b5` | `81822f1ad84ef6d8ef594c8ca6d630a7c70f562bb8ec797b6136190077f6a628` |
+| `DSU / downstream 2 / one` | `af54f1079fbe1f0a78d7b674bd1e4b02c5e5afe94fa3716c94647658b2449d6d` | `0ff9f49c5d68b699e6e1b266cfb1cdd81fe3825e550576f99315a41c403f397a` | `4439cb89023e3a0673e24ce80a77f16853ee6efee4ba70cad30b10c97a83337f` |
+
+- `sync`: **no `spec/` change.** This exact batch removes category order from SG14's measured two-stage count-chain restriction but does not close the complete collector; [`spec/`](../../spec/) still has no rule-set meta-information section.
+
 <a id="src-mandatory-information-count-target-only"></a>
 #### Mandatory-information derivation returns an isolated true count target and its root, measured locally on 2026-09-02
 
