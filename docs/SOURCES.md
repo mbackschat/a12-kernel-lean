@@ -170,6 +170,17 @@ Reading that revision also settled the premise a12-dmkits had flagged: no kernel
 
 The reviewed revisions are inbound provenance and create no new outbound request. Their accepted corrections land in [`spec/02`](../spec/02-logic-and-formal-errors.md) and [`spec/10`](../spec/10-validation-and-polarity.md), while the existing ledger entries retain the reconciliation dispositions.
 
+### Reviewed custom-field-type, leaf-observability, and filtered-carrier batch
+
+a12-dmkits revision `989f33bae` on `main` disposes all ten outbound entries of 2026-09-01 and 2026-09-02, arriving as a dated handback note rather than over the peer channel because no session here was reachable when it was written. Every claim in it names a lock inline, and each was resolved here by `git show` and `git ls-tree` on the revision before any disposition was written, per [`LF84`](LEAN-FINDINGS.md) rule 3.
+
+Two of its results correct or extend clauses of this project. [`CustomFieldTypeSpiInvocationLawsTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/CustomFieldTypeSpiInvocationLawsTest.kt) supplies the **full-check qualifier** the unregistered-validator paragraph lacked, the factory-versus-registry alternatives correction, and the codec's single opt-in caller — the [SPI checkpoint](sources/evaluation-and-application-routes.md#src-custom-field-type-spi) owns them.
+[`FilteredStarCapacityExtentDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/FilteredStarCapacityExtentDiffTest.kt) reproduces the filtered capacity extent and shows the **OMISSION polarity reaches all eight filtered carriers unconditionally**, aggregates included, where this project had measured only the three token counts; the [filtered-capacity checkpoint](sources/group-and-iteration-probes.md#src-filtered-starred-field-capacity) owns that row.
+
+[`GroupNotFilledErroneousLeafDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/GroupNotFilledErroneousLeafDiffTest.kt) establishes that the message-typing channel is blind to the disputed negative-presence leaf on both disjunct polarities, leaving the two estates' accounts a free choice rather than a disagreement; [`SPEC-2026-09-02-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-02-03) carries the remaining discriminator. The six remaining entries reproduced first-run on independently authored carriers.
+
+All are inbound from a committed reviewed revision and create no outbound request by the rule above.
+
 ## Provenance checkpoint index
 
 Search stable `src-` anchors in this hub, then follow the link to the bounded family shard. Exact revisions and source-level claim limits remain in those records.
@@ -615,6 +626,9 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [Reverse-authored mixed scalar triple, measured locally 2026-09-01](sources/evaluation-and-application-routes.md#src-scalar-mixed-reverse-authored-triple)
 <a id="src-numeric-extremum-call-boundary"></a>
 - [Numeric extremum call boundary](sources/evaluation-and-application-routes.md#src-numeric-extremum-call-boundary)
+<a id="src-custom-field-type-spi"></a>
+- [Custom field type SPI: full-check raise and the codec's single opt-in caller](sources/evaluation-and-application-routes.md#src-custom-field-type-spi)
+
 <a id="src-custom-validity-route"></a>
 - [Custom validity source route](sources/evaluation-and-application-routes.md#src-custom-validity-route)
 <a id="src-field-values-not-unique-route"></a>
