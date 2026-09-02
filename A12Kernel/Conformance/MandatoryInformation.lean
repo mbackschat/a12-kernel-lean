@@ -60,6 +60,23 @@ private def deriveFieldCycleKernelBatch? :
     .fieldNotFilled "SeedA"
   ]
 
+private def deriveFieldListCycleKernelBatch? :
+    Option (MandatoryInformation String String) :=
+  derive [
+    .fieldListGuardedNotFilled ["AnyA", "AnySupport"] .atLeastOneFilled "AnyB",
+    .fieldGuardedNotFilled "AnyB" "AnyA",
+    .fieldListGuardedNotFilled ["AllFalseA", "AllFalseSupport"] .allFilled "AllFalseB",
+    .fieldGuardedNotFilled "AllFalseB" "AllFalseA",
+    .fieldListGuardedNotFilled ["AllTrueA", "AllTrueSupport"] .allFilled "AllTrueB",
+    .fieldGuardedNotFilled "AllTrueB" "AllTrueA",
+    .fieldListGuardedNotFilled ["IdleA", "IdleSupport"] .atLeastOneFilled "IdleB",
+    .fieldGuardedNotFilled "IdleB" "IdleA",
+    .fieldNotFilled "AnyA",
+    .fieldNotFilled "AllFalseA",
+    .fieldNotFilled "AllTrueA",
+    .fieldNotFilled "AllTrueSupport"
+  ]
+
 /- One finite decision table locks field, root-only, ignored, closure, and guard branches. -/
 example : measuredCases.all (fun (rules, expected) => derive rules == expected) := by
   native_decide
@@ -74,6 +91,14 @@ example :
         .fieldGuardedNotFilled "C" "A",
         .fieldNotFilled "A"
       ] = result ["A", "B", "C"] ["A", "B", "C"] ["Form"] := by
+  native_decide
+
+/- The retained list-cycle batch preserves existential versus universal truth and leaves an unseeded component inert. -/
+example :
+    deriveFieldListCycleKernelBatch? = result
+      ["AnyA", "AllFalseA", "AllTrueA", "AllTrueSupport", "AnyB", "AllTrueB"]
+      ["AnyA", "AllFalseA", "AllTrueA", "AllTrueSupport", "AnyB", "AllTrueB"]
+      ["Form"] := by
   native_decide
 
 /- Severity remains authored identity: only the ERROR negative field rule contributes. -/
@@ -159,14 +184,14 @@ example :
       ["Form"] := by
   native_decide
 
-/- Empty or duplicate lists, unmeasured field-list dependency cycles, and cross-root targets remain outside the checked flat slice. -/
+/- Empty or duplicate lists and cross-root targets remain outside the checked flat slice; an unseeded field-list cycle is accepted but inert. -/
 example :
     derive [.fieldListGuardedNotFilled [] .atLeastOneFilled "Target"] = none ∧
       derive [.fieldListGuardedNotFilled ["A", "A"] .allFilled "Target"] = none ∧
       derive [
         .fieldListGuardedNotFilled ["B"] .atLeastOneFilled "A",
         .fieldGuardedNotFilled "A" "B"
-      ] = none ∧
+      ] = result [] [] [] ∧
       deriveCheckedMandatoryInformation splitRoot [
         .fieldNotFilled "A",
         .fieldListGuardedNotFilled ["A"] .atLeastOneFilled "B"

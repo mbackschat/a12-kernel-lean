@@ -1,0 +1,316 @@
+{
+  "header" : {
+    "id" : "ListCycle_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "ListCycle_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/ListCycle",
+        "name" : "ListCycle",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/ListCycle/AnyA",
+            "name" : "AnyA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ListCycle/AnySupport",
+            "name" : "AnySupport",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ListCycle/AnyB",
+            "name" : "AnyB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ListCycle/AllFalseA",
+            "name" : "AllFalseA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ListCycle/AllFalseSupport",
+            "name" : "AllFalseSupport",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ListCycle/AllFalseB",
+            "name" : "AllFalseB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ListCycle/AllTrueA",
+            "name" : "AllTrueA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ListCycle/AllTrueSupport",
+            "name" : "AllTrueSupport",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ListCycle/AllTrueB",
+            "name" : "AllTrueB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ListCycle/IdleA",
+            "name" : "IdleA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ListCycle/IdleSupport",
+            "name" : "IdleSupport",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/ListCycle/IdleB",
+            "name" : "IdleB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ListCycle/A_ANY_FORWARD",
+            "name" : "A_ANY_FORWARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../AnyB",
+              "errorCode" : "A_ANY_FORWARD",
+              "errorCondition" : "AtLeastOneFieldFilled(AnyA, AnySupport) And FieldNotFilled(AnyB)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "A_ANY_FORWARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ListCycle/B_ANY_BACK",
+            "name" : "B_ANY_BACK",
+            "Rule" : {
+              "errorEntityRelPath" : "../AnyA",
+              "errorCode" : "B_ANY_BACK",
+              "errorCondition" : "FieldFilled(AnyB) And FieldNotFilled(AnyA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "B_ANY_BACK"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ListCycle/C_ALL_FALSE_FORWARD",
+            "name" : "C_ALL_FALSE_FORWARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../AllFalseB",
+              "errorCode" : "C_ALL_FALSE_FORWARD",
+              "errorCondition" : "AllFieldsFilled(AllFalseA, AllFalseSupport) And FieldNotFilled(AllFalseB)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "C_ALL_FALSE_FORWARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ListCycle/D_ALL_FALSE_BACK",
+            "name" : "D_ALL_FALSE_BACK",
+            "Rule" : {
+              "errorEntityRelPath" : "../AllFalseA",
+              "errorCode" : "D_ALL_FALSE_BACK",
+              "errorCondition" : "FieldFilled(AllFalseB) And FieldNotFilled(AllFalseA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "D_ALL_FALSE_BACK"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ListCycle/E_ALL_TRUE_FORWARD",
+            "name" : "E_ALL_TRUE_FORWARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../AllTrueB",
+              "errorCode" : "E_ALL_TRUE_FORWARD",
+              "errorCondition" : "AllFieldsFilled(AllTrueA, AllTrueSupport) And FieldNotFilled(AllTrueB)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "E_ALL_TRUE_FORWARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ListCycle/F_ALL_TRUE_BACK",
+            "name" : "F_ALL_TRUE_BACK",
+            "Rule" : {
+              "errorEntityRelPath" : "../AllTrueA",
+              "errorCode" : "F_ALL_TRUE_BACK",
+              "errorCondition" : "FieldFilled(AllTrueB) And FieldNotFilled(AllTrueA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F_ALL_TRUE_BACK"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ListCycle/G_IDLE_FORWARD",
+            "name" : "G_IDLE_FORWARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../IdleB",
+              "errorCode" : "G_IDLE_FORWARD",
+              "errorCondition" : "AtLeastOneFieldFilled(IdleA, IdleSupport) And FieldNotFilled(IdleB)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "G_IDLE_FORWARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ListCycle/H_IDLE_BACK",
+            "name" : "H_IDLE_BACK",
+            "Rule" : {
+              "errorEntityRelPath" : "../IdleA",
+              "errorCode" : "H_IDLE_BACK",
+              "errorCondition" : "FieldFilled(IdleB) And FieldNotFilled(IdleA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "H_IDLE_BACK"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ListCycle/Z_ANY_A",
+            "name" : "Z_ANY_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../AnyA",
+              "errorCode" : "Z_ANY_A",
+              "errorCondition" : "FieldNotFilled(AnyA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Z_ANY_A"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ListCycle/Z_FALSE_A",
+            "name" : "Z_FALSE_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../AllFalseA",
+              "errorCode" : "Z_FALSE_A",
+              "errorCondition" : "FieldNotFilled(AllFalseA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Z_FALSE_A"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ListCycle/Z_TRUE_A",
+            "name" : "Z_TRUE_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../AllTrueA",
+              "errorCode" : "Z_TRUE_A",
+              "errorCondition" : "FieldNotFilled(AllTrueA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Z_TRUE_A"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/ListCycle/Z_TRUE_SUPPORT",
+            "name" : "Z_TRUE_SUPPORT",
+            "Rule" : {
+              "errorEntityRelPath" : "../AllTrueSupport",
+              "errorCode" : "Z_TRUE_SUPPORT",
+              "errorCondition" : "FieldNotFilled(AllTrueSupport)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Z_TRUE_SUPPORT"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
