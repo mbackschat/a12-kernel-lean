@@ -199,6 +199,24 @@ private def deriveDistinctCountKernelBatch? :
     .fieldNotFilled "B"
   ]
 
+private def deriveFalseCountKernelBatch? :
+    Option (MandatoryInformation String String) := do
+  let two ← checkedThreshold? 2
+  let three ← checkedThreshold? 3
+  let one ← checkedThreshold? 1
+  derive [
+    .countGuardedNotFilled ["A", "B"] .countGreaterEqual (some two) "GeTrue",
+    .countGuardedNotFilled ["A", "B"] .countGreaterEqual (some three) "GeFalse",
+    .countGuardedNotFilled ["A", "B"] .countGreater (some one) "GtTrue",
+    .countGuardedNotFilled ["A", "B"] .countGreater (some two) "GtFalse",
+    .countGuardedNotFilled ["A", "B"] .literalLessEqualCount (some two) "ReverseLeTrue",
+    .countGuardedNotFilled ["A", "B"] .literalLessEqualCount (some three) "ReverseLeFalse",
+    .countGuardedNotFilled ["A", "B"] .literalLessThanCount (some one) "ReverseLtTrue",
+    .countGuardedNotFilled ["A", "B"] .literalLessThanCount (some two) "ReverseLtFalse",
+    .fieldNotFilled "A",
+    .fieldNotFilled "B"
+  ]
+
 private def deriveCrossRootDifferentValuesGuard? :
     Option (MandatoryInformation String String) := do
   let threshold ← checkedThreshold? 2
@@ -325,10 +343,14 @@ example :
       deriveCheckedMandatoryInformation rootOf [
         .countGuardedNotFilled ["A", "B"] .countGreaterEqual none "Target"
       ] = none ∧
-      deriveCountGuard? .countGreater 3 "FalseGuard" = none ∧
-      deriveCountGuard? .countGreaterEqual 3 "FalseInclusive" = none ∧
-      deriveCountGuard? .literalLessEqualCount 3 "FalseReverse" = none ∧
-      deriveCountGuard? .literalLessThanCount 2 "FalseReverseStrict" = none ∧
+      deriveCountGuard? .countGreater 2 "FalseGuard" =
+        result ["A", "B"] ["A", "B"] ["Form"] ∧
+      deriveCountGuard? .countGreaterEqual 3 "FalseInclusive" =
+        result ["A", "B"] ["A", "B"] ["Form"] ∧
+      deriveCountGuard? .literalLessEqualCount 3 "FalseReverse" =
+        result ["A", "B"] ["A", "B"] ["Form"] ∧
+      deriveCountGuard? .literalLessThanCount 2 "FalseReverseStrict" =
+        result ["A", "B"] ["A", "B"] ["Form"] ∧
       derive [.countLessThan ["A", "A"] none] = none ∧
       derive [.countLessThan [] none] = none ∧
       derive [
@@ -357,6 +379,14 @@ example :
         .countGuardedNotFilled ["A", "B"] .countGreaterEqual none "Target"
       ] = none ∧
       checkedThreshold? (2 / 5) 0 = none := by
+  native_decide
+
+/- All four measured comparison spellings admit their false arm without manufacturing a target, even when every guard is authored before its direct seeds. -/
+example :
+    deriveFalseCountKernelBatch? = result
+      ["A", "B", "GeTrue", "GtTrue", "ReverseLeTrue", "ReverseLtTrue"]
+      ["A", "B", "GeTrue", "GtTrue", "ReverseLeTrue", "ReverseLtTrue"]
+      ["Form"] := by
   native_decide
 
 /- A measured count target is neither produced elsewhere nor an input to wider dependency closure. -/
