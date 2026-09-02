@@ -2145,6 +2145,7 @@ run_cmd do
 #print axioms A12Kernel.deriveCheckedMandatoryInformation_groupNotFilled_has_no_fields
 #print axioms A12Kernel.deriveCheckedMandatoryInformation_root_guard_requires_global_seed
 #print axioms A12Kernel.deriveCheckedMandatoryInformation_root_seed_promotes_target
+#print axioms A12Kernel.checkMandatoryCountThreshold_sound
 #print axioms A12Kernel.exceptMapM_all_of_step
 #print axioms A12Kernel.exceptMapM_map_eq_of_step
 #print axioms A12Kernel.env_pathForScope_complete_nodup

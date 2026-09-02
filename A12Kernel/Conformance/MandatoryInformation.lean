@@ -2,7 +2,7 @@ import A12Kernel.Semantics.MandatoryInformation
 
 /-! # Mandatory-information derivation locks
 
-These cases cover the measured flat, nonrepeatable ERROR-rule fragment plus the measured whole-rule rejection for one filtered shape. They deliberately exclude count thresholds, repetition, indices, filter internals, generated rules, and cross-root references. -/
+These cases cover the measured flat, nonrepeatable ERROR-rule fragment plus the measured whole-rule rejection for one filtered shape and the bounded count-threshold slice. They deliberately exclude repetition, indices, filter internals, generated rules, and cross-root references. -/
 
 namespace A12Kernel.Conformance.MandatoryInformation
 
@@ -10,6 +10,7 @@ open A12Kernel
 
 private def rootOf (_ : String) : String := "Form"
 private def splitRoot (field : String) : String := if field == "A" then "First" else "Second"
+private def countSplitRoot (field : String) : String := if field == "Target" then "Second" else "First"
 
 private def derive (rules : List (MandatoryRule String String)) :
     Option (MandatoryInformation String String) :=
@@ -70,6 +71,134 @@ example :
         [.fieldGuardedNotFilled "A" "B"] = none ∧
       deriveCheckedMandatoryInformation (fun _ : String => "Second") [.rootGuardedNotFilled "First" "A"] = none ∧
       derive [.notAllFieldsFilled []] = none := by
+  native_decide
+
+private def checkedThreshold? (value : Rat) (authoredScale : Int := 0) :
+    Option CheckedMandatoryCountThreshold :=
+  checkMandatoryCountThreshold { value, authoredScale }
+
+private def deriveCountLess? (value : Rat) (authoredScale : Int := 0) :
+    Option (MandatoryInformation String String) := do
+  let threshold ← checkedThreshold? value authoredScale
+  derive [.countLessThan ["A", "B"] (some threshold)]
+
+private def deriveCountGuard? (comparison : MandatoryCountGuardComparison)
+    (value : Rat) (target : String) :
+    Option (MandatoryInformation String String) := do
+  let threshold ← checkedThreshold? value
+  derive [
+    .fieldNotFilled "A",
+    .fieldNotFilled "B",
+    .countGuardedNotFilled ["A", "B"] comparison (some threshold) target
+  ]
+
+private def deriveWithThreshold? (value : Rat)
+    (rules : CheckedMandatoryCountThreshold →
+      List (MandatoryRule String String)) :
+    Option (MandatoryInformation String String) := do
+  let threshold ← checkedThreshold? value
+  derive (rules threshold)
+
+/- The checked threshold retains the authored literal even when host narrowing produces the same `-1` used for no numeric bound. -/
+example :
+    (checkedThreshold? 4294967295).map (fun threshold =>
+      (threshold.authored, threshold.narrowed)) =
+        some ({ value := 4294967295, authoredScale := 0 }, -1) := by
+  native_decide
+
+/- Standalone count-root contribution follows the narrowed host value's positive partition, not exact mathematical magnitude. -/
+example :
+    deriveCountLess? 1 = result [] [] ["Form"] ∧
+      deriveCountLess? 3 = result [] [] ["Form"] ∧
+      deriveCountLess? 0 = result [] [] [] ∧
+      deriveCountLess? (-1) = result [] [] [] ∧
+      deriveCountLess? 4294967295 = result [] [] [] ∧
+      deriveCountLess? 4294967296 = result [] [] [] ∧
+      deriveCountLess? 4294967297 = result [] [] ["Form"] ∧
+      deriveCountLess? 4294967299 = result [] [] ["Form"] ∧
+      deriveCountLess? (-6 / 10) 1 = result [] [] [] := by
+  native_decide
+
+/- Every measured count-guard spelling admits a true guard except when the checked threshold carries the `-1` sentinel. -/
+example :
+    deriveCountGuard? .countGreaterEqual 0 "GeZero" =
+        result ["A", "B", "GeZero"] ["A", "B", "GeZero"] ["Form"] ∧
+      deriveCountGuard? .countGreater (-2) "GtMinusTwo" =
+        result ["A", "B", "GtMinusTwo"] ["A", "B", "GtMinusTwo"] ["Form"] ∧
+      deriveCountGuard? .literalLessEqualCount 0 "ReverseZero" =
+        result ["A", "B", "ReverseZero"] ["A", "B", "ReverseZero"] ["Form"] ∧
+      deriveCountGuard? .countGreaterEqual (-1) "GeMinusOne" =
+        result ["A", "B"] ["A", "B"] ["Form"] ∧
+      deriveCountGuard? .countGreater (-1) "GtMinusOne" =
+        result ["A", "B"] ["A", "B"] ["Form"] ∧
+      deriveCountGuard? .literalLessEqualCount (-1) "ReverseMinusOne" =
+        result ["A", "B"] ["A", "B"] ["Form"] ∧
+      deriveCountGuard? .countGreaterEqual 4294967297 "NarrowOne" =
+        result ["A", "B", "NarrowOne"] ["A", "B", "NarrowOne"] ["Form"] ∧
+      deriveCountGuard? .countGreaterEqual 4294967295 "NarrowMinusOne" =
+        result ["A", "B"] ["A", "B"] ["Form"] := by
+  native_decide
+
+/- No bound shares the evaluator sentinel outcome without sharing the checked authored-literal identity; unseeded or malformed count guards fail closed. -/
+example :
+    derive [.countLessThan ["A", "B"] none] = result [] [] [] ∧
+      derive [
+        .fieldNotFilled "A",
+        .fieldNotFilled "B",
+        .countGuardedNotFilled ["A", "B"] .countGreaterEqual none "Target"
+      ] = result ["A", "B"] ["A", "B"] ["Form"] ∧
+      deriveCheckedMandatoryInformation rootOf [
+        .countGuardedNotFilled ["A", "B"] .countGreaterEqual none "Target"
+      ] = none ∧
+      deriveCountGuard? .countGreater 3 "FalseGuard" = none ∧
+      deriveCountGuard? .countGreaterEqual 3 "FalseInclusive" = none ∧
+      deriveCountGuard? .literalLessEqualCount 3 "FalseReverse" = none ∧
+      derive [.countLessThan ["A", "A"] none] = none ∧
+      derive [.countLessThan [] none] = none ∧
+      derive [
+        .fieldNotFilled "A",
+        .fieldNotFilled "B",
+        .countGuardedNotFilled ["A", "A"] .countGreaterEqual none "Target"
+      ] = none ∧
+      derive [
+        .countGuardedNotFilled [] .countGreaterEqual none "Target"
+      ] = none ∧
+      derive [
+        .fieldNotFilled "A",
+        .countGuardedNotFilled ["A", "B"] .countGreaterEqual none "Target"
+      ] = none ∧
+      derive [
+        .fieldNotFilled "A",
+        .fieldNotFilled "B",
+        .countGuardedNotFilled ["A", "B"] .countGreaterEqual none "A"
+      ] = none ∧
+      deriveCheckedMandatoryInformation splitRoot [
+        .countLessThan ["A", "B"] none
+      ] = none ∧
+      deriveCheckedMandatoryInformation countSplitRoot [
+        .fieldNotFilled "A",
+        .fieldNotFilled "B",
+        .countGuardedNotFilled ["A", "B"] .countGreaterEqual none "Target"
+      ] = none ∧
+      checkedThreshold? (2 / 5) 0 = none := by
+  native_decide
+
+/- A measured count target is neither produced elsewhere nor an input to wider dependency closure. -/
+example :
+    deriveWithThreshold? (-1) (fun threshold => [
+      .fieldNotFilled "A",
+      .fieldNotFilled "B",
+      .disjoinedFieldNotFilled ["Target", "C"],
+      .countGuardedNotFilled ["A", "B"] .countGreaterEqual
+        (some threshold) "Target"
+    ]) = none ∧
+      deriveWithThreshold? 0 (fun threshold => [
+        .fieldNotFilled "A",
+        .fieldNotFilled "B",
+        .fieldGuardedNotFilled "Target" "Dependent",
+        .countGuardedNotFilled ["A", "B"] .countGreaterEqual
+          (some threshold) "Target"
+      ]) = none := by
   native_decide
 
 end A12Kernel.Conformance.MandatoryInformation

@@ -30,4 +30,19 @@ theorem deriveCheckedMandatoryInformation_root_seed_promotes_target :
         mandatory := ["A"], mandatoryForRootGroup := ["A"], mandatoryRootGroups := ["Form"] } := by
   decide
 
+/-- Checked construction retains the authored literal and pairs it with exactly the shared host conversion. -/
+theorem checkMandatoryCountThreshold_sound
+    (authored : DecodedNumericLiteral)
+    (threshold : CheckedMandatoryCountThreshold)
+    (checked : checkMandatoryCountThreshold authored = some threshold) :
+    threshold.authored = authored ∧
+      authored.javaRoundedInt32? = some threshold.narrowed := by
+  unfold checkMandatoryCountThreshold at checked
+  cases converted : authored.javaRoundedInt32? with
+  | none => simp [converted] at checked
+  | some narrowed =>
+      simp [converted] at checked
+      subst threshold
+      simp
+
 end A12Kernel

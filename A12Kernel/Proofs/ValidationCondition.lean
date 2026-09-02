@@ -13,7 +13,8 @@ theorem decodedNumericLiteral_negative_scale_has_no_iterationHostInt32
     (value : Rat) (scale : Int) (negative : scale < 0) :
     DecodedNumericLiteral.iterationHostInt32?
       { value, authoredScale := scale } = none := by
-  simp [DecodedNumericLiteral.iterationHostInt32?, negative]
+  simp [DecodedNumericLiteral.iterationHostInt32?,
+    DecodedNumericLiteral.javaRoundedInt32?, negative]
 
 /-- Once both checked scales certify the same finite decimal value, redundant trailing-zero spelling cannot change the kernel host integer. -/
 theorem decodedNumericLiteral_iterationHostInt32_scale_invariant
@@ -31,6 +32,7 @@ theorem decodedNumericLiteral_iterationHostInt32_scale_invariant
         value, authoredScale := rightScale
       } := by
   simp only [DecodedNumericLiteral.iterationHostInt32?,
+    DecodedNumericLiteral.javaRoundedInt32?,
     Int.not_lt.mpr leftNonnegative, Int.not_lt.mpr rightNonnegative,
     leftDecimal, rightDecimal, ↓reduceIte]
 

@@ -1,8 +1,40 @@
+import A12Kernel.Semantics.NumericLiteral
+
 /-! # Mandatory-information derivation
 
-This module models the measured flat, nonrepeatable rule fragment of the model-level mandatory-information service. The input retains the normalized rule shape, and the output keeps global fields, root-relative fields, and mandatory roots independent. Count comparisons, repetition, concrete or semantic indices, filter internals, generated rules, cross-root references, wider root topology, cycles, and wider Boolean formulas remain outside this carrier. -/
+This module models the measured flat, nonrepeatable rule fragment of the model-level mandatory-information service. The input retains the normalized rule shape, and the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values. Repetition, concrete or semantic indices, filter internals, generated rules, cross-root references, wider root topology, cycles, wider count sites, and wider Boolean formulas remain outside this carrier. -/
 
 namespace A12Kernel
+
+/-- One numeric count threshold after exact decimal decoding and the measured host conversion. The private constructor prevents an authored literal from being paired with an unrelated narrowed value. -/
+structure CheckedMandatoryCountThreshold where
+  private mk ::
+  authored : DecodedNumericLiteral
+  narrowed : Int
+  deriving Repr, DecidableEq
+
+/-- Check one authored finite-decimal threshold without replacing its identity by the narrowed host integer. -/
+def checkMandatoryCountThreshold (authored : DecodedNumericLiteral) :
+    Option CheckedMandatoryCountThreshold := do
+  let narrowed ← authored.javaRoundedInt32?
+  pure { authored, narrowed }
+
+/-- Measured count-guard spellings. The reversed inclusive form stays distinct even though it has the same numeric relation as count-on-left greater-or-equal. -/
+inductive MandatoryCountGuardComparison where
+  | countGreaterEqual
+  | countGreater
+  | literalLessEqualCount
+  deriving Repr, DecidableEq
+
+namespace MandatoryCountGuardComparison
+
+private def holds (comparison : MandatoryCountGuardComparison)
+    (count threshold : Int) : Bool :=
+  match comparison with
+  | .countGreaterEqual | .literalLessEqualCount => decide (threshold ≤ count)
+  | .countGreater => decide (threshold < count)
+
+end MandatoryCountGuardComparison
 
 /-- Measured rule shapes that remain visible to Analyze and Explain but have no contribution in this fragment. -/
 inductive IgnoredMandatoryRule (Field Root : Type) where
@@ -26,6 +58,11 @@ inductive MandatoryRule (Field Root : Type) where
   | groupNotFilled (root : Root)
   | fieldGuardedNotFilled (premise target : Field)
   | rootGuardedNotFilled (premise : Root) (target : Field)
+  | countLessThan (fields : List Field)
+      (threshold : Option CheckedMandatoryCountThreshold)
+  | countGuardedNotFilled (fields : List Field)
+      (comparison : MandatoryCountGuardComparison)
+      (threshold : Option CheckedMandatoryCountThreshold) (target : Field)
   | ignored (rule : IgnoredMandatoryRule Field Root)
   deriving Repr, DecidableEq
 
@@ -58,6 +95,15 @@ private def State.addFields [DecidableEq Field] [DecidableEq Root]
     roots := appendDistinct state.roots (fields.map rootOf)
   }
 
+private def State.countFields [DecidableEq Field] (state : State Field Root)
+    (fields : List Field) : Int :=
+  fields.foldl (fun count field =>
+    if field ∈ state.fields then count + 1 else count) 0
+
+private def countThresholdValue : Option CheckedMandatoryCountThreshold → Int
+  | none => -1
+  | some threshold => threshold.narrowed
+
 private def MandatoryRule.referencedRoots (rootOf : Field → Root) :
     MandatoryRule Field Root → List Root
   | .fieldNotFilled field => [rootOf field]
@@ -69,6 +115,9 @@ private def MandatoryRule.referencedRoots (rootOf : Field → Root) :
   | .groupNotFilled root => [root]
   | .fieldGuardedNotFilled premise target => [rootOf premise, rootOf target]
   | .rootGuardedNotFilled premise target => [premise, rootOf target]
+  | .countLessThan fields _ => fields.map rootOf
+  | .countGuardedNotFilled fields _ _ target =>
+      fields.map rootOf ++ [rootOf target]
   | .ignored (.fieldFilled field)
   | .ignored (.warningFieldNotFilled field) => [rootOf field]
   | .ignored (.fieldsNotCollectivelyFilled fields)
@@ -94,6 +143,18 @@ private def MandatoryRule.apply [DecidableEq Field] [DecidableEq Root]
         state
   | .rootGuardedNotFilled premise target =>
       if premise ∈ state.roots then
+        state.addFields rootOf [target]
+      else
+        state
+  | .countLessThan fields threshold =>
+      if 0 < countThresholdValue threshold then
+        state.addRoots (fields.map rootOf)
+      else
+        state
+  | .countGuardedNotFilled fields comparison threshold target =>
+      let thresholdValue := countThresholdValue threshold
+      if thresholdValue != -1 &&
+          comparison.holds (state.countFields fields) thresholdValue then
         state.addFields rootOf [target]
       else
         state
@@ -142,11 +203,64 @@ private def MandatoryRule.hasNonemptyLists : MandatoryRule Field Root → Bool
   | .notAllFieldsFilled fields
   | .noFieldFilled fields
   | .notExactlyOneFieldFilled fields => !fields.isEmpty
+  | .countLessThan fields _
+  | .countGuardedNotFilled fields _ _ _ => !fields.isEmpty
   | .ignored (.fieldsNotCollectivelyFilled fields)
   | .ignored (.atLeastOneFieldFilled fields)
   | .ignored (.allFieldsFilled fields)
   | .ignored (.filtered fields) => !fields.isEmpty
   | _ => true
+
+private def directFieldSeeds [DecidableEq Field]
+    (rules : List (MandatoryRule Field Root)) : List Field :=
+  rules.foldl (fun seeds rule =>
+    match rule with
+    | .fieldNotFilled field => appendDistinct seeds [field]
+    | _ => seeds) []
+
+private def MandatoryRule.mentionedFields : MandatoryRule Field Root → List Field
+  | .fieldNotFilled field => [field]
+  | .disjoinedFieldNotFilled fields
+  | .conjoinedFieldNotFilled fields
+  | .notAllFieldsFilled fields
+  | .noFieldFilled fields
+  | .notExactlyOneFieldFilled fields => fields
+  | .groupNotFilled _ => []
+  | .fieldGuardedNotFilled premise target => [premise, target]
+  | .rootGuardedNotFilled _ target => [target]
+  | .countLessThan fields _ => fields
+  | .countGuardedNotFilled fields _ _ target => fields ++ [target]
+  | .ignored (.fieldFilled field)
+  | .ignored (.warningFieldNotFilled field) => [field]
+  | .ignored (.fieldsNotCollectivelyFilled fields)
+  | .ignored (.atLeastOneFieldFilled fields)
+  | .ignored (.allFieldsFilled fields)
+  | .ignored (.filtered fields) => fields
+  | .ignored (.groupFilled _) => []
+
+private def fieldMentionCount [DecidableEq Field]
+    (rules : List (MandatoryRule Field Root)) (field : Field) : Nat :=
+  rules.foldl (fun count rule =>
+    (MandatoryRule.mentionedFields rule).foldl (fun count mentioned =>
+      if mentioned = field then count + 1 else count) count) 0
+
+/-- Keep the count guard on its measured shape: a duplicate-free list of direct singleton seeds and a target mentioned only in its own guard position. Wider dependency closure stays outside this slice. -/
+private def MandatoryRule.hasSupportedCountShape [DecidableEq Field]
+    (rules : List (MandatoryRule Field Root)) (seeds : List Field) :
+    MandatoryRule Field Root → Bool
+  | .countLessThan fields _ => fields.eraseDups == fields
+  | .countGuardedNotFilled fields comparison threshold target =>
+      let thresholdValue := countThresholdValue threshold
+      fields.eraseDups == fields && fields.all (· ∈ seeds) &&
+        fieldMentionCount rules target == 1 &&
+        (thresholdValue == -1 ||
+          comparison.holds (Int.ofNat fields.length) thresholdValue)
+  | _ => true
+
+private def hasSupportedCountShapes [DecidableEq Field]
+    (rules : List (MandatoryRule Field Root)) : Bool :=
+  let seeds := directFieldSeeds rules
+  rules.all (MandatoryRule.hasSupportedCountShape rules seeds)
 
 private def hasSingleRootTopology [DecidableEq Root] (rootOf : Field → Root)
     (rules : List (MandatoryRule Field Root)) : Bool :=
@@ -175,6 +289,7 @@ def deriveCheckedMandatoryInformation [DecidableEq Field] [DecidableEq Root]
     (rootOf : Field → Root) (rules : List (MandatoryRule Field Root)) :
     Option (MandatoryInformation Field Root) :=
   if rules.all MandatoryInformationDerivation.MandatoryRule.hasNonemptyLists &&
+      MandatoryInformationDerivation.hasSupportedCountShapes rules &&
       MandatoryInformationDerivation.hasSingleRootTopology rootOf rules &&
       MandatoryInformationDerivation.hasAcyclicFieldDependencies rules then
     some (deriveMandatoryInformation rootOf rules)
