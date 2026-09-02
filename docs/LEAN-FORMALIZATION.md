@@ -219,8 +219,9 @@ The supplied case studies were treated as starting points, not the completed res
 | [Veil](https://github.com/verse-lab/veil) | One framework combines specification, executable/model-checking feedback, SMT automation, interactive proof, and realistic case studies; its [`Action/Theory.lean`](https://github.com/verse-lab/veil/blob/main/Veil/DSL/Action/Theory.lean) explicitly documents an incomplete `Wp`-to-big-step conversion and the termination/success assumptions needed by soundness results | Make counterexample discovery and checked witnesses first-class beside proofs, and document incompleteness at the conversion site rather than only in project-level caveats |
 | [KLR](https://github.com/leanprover/KLR) | A family of ML-kernel languages is translated into a common representation with a precise operational semantics and program logic, while the README openly calls its current CPython-based source-gathering path complex and brittle | Keep A12 surface ingestion and semantic core separate, but avoid a generic IR or foreign-parser bridge until a real consumer and preservation theorem justify it |
 | [SampCert](https://github.com/leanprover/SampCert) | A substantial Mathlib-backed verified implementation is deployed in AWS Clean Rooms and separates executable sampler code, probability semantics, deep mathematical proofs, and extraction support | A separate Mathlib proof target can be pragmatic rather than architectural failure; deployment or extraction creates a new correspondence boundary that must be verified separately from the source theorem |
+| [Warblre](https://github.com/LindenRegex/Warblre) (Rocq, not Lean) | A mechanization of ECMAScript regex semantics keeps faithfulness auditable by quoting the normative standard beside each clause and machine-checking that alignment in CI: [`specification_check`](https://github.com/LindenRegex/Warblre/tree/main/specification_check) scrapes ECMA-262 §22.2 and diffs a rendered clause alignment against a recorded expected output, so every intentional omission is declared at its own site by a `WILDCARD`/`[OMITTED]` marker and the gate rejects only *undeclared* divergence. Its proof spine claims no correspondence to the engine it is differentially tested against: safety, termination, one optimization, and a bridge from the executable early-error checker to an independently written inductive predicate ([`Pass_Regex`](https://github.com/LindenRegex/Warblre/blob/main/mechanization/props/EarlyErrors.v)) | Adopt the declaration-at-site discipline for exclusions rather than the scraping tool, which has no target here: A12's behavioural authority is a copyleft-or-commercial implementation, not a quotable standard, so [`spec/`](../spec/) is authored distillation and the [spec-sync ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md) does the job Warblre's alignment check does. Its checker↔predicate pair is the model for required static legality, where this project's `WellFormed` predicates are reflected Booleans (`checker = true`) that no soundness direction can falsify. Its oracle is free and in-process, which is why its ~1,000 test lines carry the assurance our authored separating cases must |
 
-These projects sharpen the selection criterion: include a case as a primary precedent only when its trust and semantics problem resembles A12's; otherwise extract one technique and retain the mismatch. Cedar is therefore primary. CvxLean strengthens the transformation vocabulary, Veil the counterexample workflow, Strata and KLR the surface/core boundary, and SampCert the dependency/deployment strategy.
+These projects sharpen the selection criterion: include a case as a primary precedent only when its trust and semantics problem resembles A12's; otherwise extract one technique and retain the mismatch. Cedar is therefore primary. CvxLean strengthens the transformation vocabulary, Veil the counterexample workflow, Strata and KLR the surface/core boundary, SampCert the dependency/deployment strategy, and Warblre the auditable-exclusion and static-legality-characterization discipline.
 
 ## 10. Cross-study findings
 
@@ -430,19 +431,20 @@ A duplicate flat judgment was deliberately not added because it would restate th
 
 ## 15. Study sources
 
-Repository claims in this review were checked against shallow local clones at the following revisions on 2026-07-12. Inline links favor readable default-branch locations; this table fixes the audited state when those branches later move.
+Repository claims in this review were checked against shallow local clones at the revisions below, on the recorded date. Inline links favor readable default-branch locations; this table fixes the audited state when those branches later move.
 
-| Repository | Audited revision |
-|---|---|
-| Cedar specification | [`3977eb4`](https://github.com/cedar-policy/cedar-spec/tree/3977eb4f017b421b7ac0b31ea4635e1dd36ce3ef) |
-| Radix | [`617b67e`](https://github.com/leodemoura/RadixExperiment/tree/617b67eb09681ca98e19759b48978866dcafeb17) |
-| Verity | [`e57064c`](https://github.com/lfglabs-dev/verity/tree/e57064c1db487da9e0f15adfdb616ff45025f451) |
-| Lean4Lean | [`8865b15`](https://github.com/digama0/lean4lean/tree/8865b155abbf68d3a827fb3568bf6839780163c2) |
-| `do` Unchained supplement | [`353fad8`](https://github.com/Kha/do-supplement/tree/353fad821a6bdfe2efb0762abdb0e4cee74ba9a2) |
-| Strata | [`e912c9b`](https://github.com/strata-org/Strata/tree/e912c9bba0ad82244185e9c75b9535a6aedbd0f3) |
-| CvxLean | [`c62c2f2`](https://github.com/verified-optimization/CvxLean/tree/c62c2f292c6420f31a12e738ebebdfed50f6f840) |
-| Veil | [`6a12daa`](https://github.com/verse-lab/veil/tree/6a12daa8d3e0e8a9808a40ecab17ca030b557063) |
-| KLR | [`7ccd18c`](https://github.com/leanprover/KLR/tree/7ccd18c174b2f4bd896bb6025eae7ded1386fa7d) |
+| Repository | Audited revision | Audited |
+|---|---|---|
+| Cedar specification | [`3977eb4`](https://github.com/cedar-policy/cedar-spec/tree/3977eb4f017b421b7ac0b31ea4635e1dd36ce3ef) | 2026-07-12 |
+| Radix | [`617b67e`](https://github.com/leodemoura/RadixExperiment/tree/617b67eb09681ca98e19759b48978866dcafeb17) | 2026-07-12 |
+| Verity | [`e57064c`](https://github.com/lfglabs-dev/verity/tree/e57064c1db487da9e0f15adfdb616ff45025f451) | 2026-07-12 |
+| Lean4Lean | [`8865b15`](https://github.com/digama0/lean4lean/tree/8865b155abbf68d3a827fb3568bf6839780163c2) | 2026-07-12 |
+| `do` Unchained supplement | [`353fad8`](https://github.com/Kha/do-supplement/tree/353fad821a6bdfe2efb0762abdb0e4cee74ba9a2) | 2026-07-12 |
+| Strata | [`e912c9b`](https://github.com/strata-org/Strata/tree/e912c9bba0ad82244185e9c75b9535a6aedbd0f3) | 2026-07-12 |
+| CvxLean | [`c62c2f2`](https://github.com/verified-optimization/CvxLean/tree/c62c2f292c6420f31a12e738ebebdfed50f6f840) | 2026-07-12 |
+| Veil | [`6a12daa`](https://github.com/verse-lab/veil/tree/6a12daa8d3e0e8a9808a40ecab17ca030b557063) | 2026-07-12 |
+| KLR | [`7ccd18c`](https://github.com/leanprover/KLR/tree/7ccd18c174b2f4bd896bb6025eae7ded1386fa7d) | 2026-07-12 |
+| Warblre | [`4321379`](https://github.com/LindenRegex/Warblre/tree/4321379b887d590a42759818f6d9b1fd2351688e) | 2026-09-02 |
 | SampCert | [`6e2392c`](https://github.com/leanprover/SampCert/tree/6e2392c165652063fefc628d8f047b77ca393b0f) |
 | Verso | [`8649419`](https://github.com/leanprover/verso/tree/86494197017df60fb4a30a6637294426e6d17a7f) |
 | Verso Blueprint | [`dac5295`](https://github.com/leanprover/verso-blueprint/tree/dac52958052093bdf5013a3cf17b8fc7aed90694) |
