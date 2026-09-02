@@ -15,7 +15,7 @@
 
 - `boundary`: Finite built-in Java-pattern profiles, injected model-complete matchers, legal-character membership, and exact condition-pattern diagnostics for every represented non-String left kind plus both pattern-admission stages. Unmeasured local refusals project to `none`; the canonical right-slot field diagnostic has no local projection because the checked surface requires a String constant structurally
 - `owner`: [`StringPattern.lean`](../../A12Kernel/Semantics/StringPattern.lean), [`StringPattern.lean`](../../A12Kernel/Elaboration/StringPattern.lean), [`LegalCharset.lean`](../../A12Kernel/Semantics/LegalCharset.lean)
-- `assurance`: E/P closed for stated profiles; clean dmtool `0.12.1` at a12-dmkits [source registry](../SOURCES.md) Kernel-confirms the 22-case accepted, invalid-source, complete left-kind, and wrong-right-slot matrix for both operators; runtime L partial; C none
+- `assurance`: E/P closed for stated profiles; clean dmtool `0.12.1` at a12-dmkits [source registry](../SOURCES.md) Kernel-confirms the 22-case accepted, invalid-source, complete left-kind, and wrong-right-slot matrix for both operators; runtime L partial; C none. **Read admission and execution separately here:** the matrix above is admission, while the only compiler this repository supplies answers for `[0-9]+` alone, so every other admitted pattern on a value-validating String fails closed at checked lowering unless a host compiler is injected
 - `remains`: Arbitrary pattern/custom integration and repeatable pattern operands: [SG7](../SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion)
 
 <a id="cap-string-target-policy"></a>

@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-02-05"></a>
+### `SPEC-2026-09-02-05` — a registered custom field type is a triple, and its conversion arm is unobserved on both estates
+
+- `status`: pending
+- `not-forwarded`: no a12-dmkits session was reachable when this entry was written; forward the id and this anchor at the next opportunity.
+- `clause`: [`06-strings-and-enumerations.md`](../spec/06-strings-and-enumerations.md#a3-custom-field-type-validation), the custom field-type validation section
+- `delta`: the clause described the acceptance decision alone. It now also records that the kernel 30.8.1 SPI declares a **bidirectional display/internal conversion** beside acceptance, that acceptance's complete input list is the value, the two declared bounds, the effective locale, and the stored/display mode, and that the current interface is `ICustomFieldValidator` while the predecessor carrying a per-declaration configuration map is deprecated for removal. It states the consumer consequence: an evaluator must accept a registry of triples as host input, and an analysis may treat acceptance as an uninterpreted predicate because locality is structural — while noting that determinism is a contract expectation rather than a guarantee, since a validator instance is host-constructed and may carry state.
+- `basis`: **source read of the SPI at the pinned version, not a runtime observation.** No claim is made about whether, where, or in which direction the engine invokes either conversion; the clause says so explicitly and the [locks index](sources/kernel-locks.md#src-kernel-lock-index) records the conversion arm as a deliberate non-lock.
+- `separator`: none, and deliberately so. This is a claim about the extension point's shape, for which no document separates accounts; the behavioral question it exposes — whether a custom-typed cell therefore has two texts — is filed as an open obligation rather than answered.
+- `local-consequence`: none. The codec stays unmodelled, the acceptance arm is unchanged, and [SG7](SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion) carries the open invocation question with an explicit instruction not to place the codec before it is measured.
+- `limit`: one interface read at kernel 30.8.1. Nothing here establishes invocation, ordering against the declared length and charset checks, whether the display arm participates in formal checking, or what a conversion's own error message does when acceptance succeeds.
+- `acceptance`: a12-dmkits reconciles its custom field-type account with the triple shape, **or** supplies what this project cannot reach — evidence that the engine does or does not invoke either conversion. Its interpreter hosts custom field types, so it may already hold that observation.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-02-04"></a>
 ### `SPEC-2026-09-02-04` — filtered Number aggregate stars use the in-capacity value extent in full validation
 

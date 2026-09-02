@@ -24,5 +24,7 @@ This index preserves assurance distinctions that the implementation map's `L` di
 | Kept-successor filter lookahead | Kernel-locked by `FirstFilledValueKeptSuccessorDiffTest` S1–S4. |
 | Groovy condition-line splitting | Kernel-locked by `ConditionLineSplitDiffTest`, including route engagement. |
 | Groovy calculation-closure splitting | Kernel-locked by `CalculationClosureSplitDiffTest`, including later-chunk winners and no-winner clearing. |
+| Custom field-type acceptance arm | Kernel-locked by the peer's `CustomFieldTypeContextDiffTest`, `CustomFieldTypeRejectionCodeDiffTest`, and `CustomFieldTypeMessageDiffTest` across both strategies, including per-cell observation cardinality. |
+| Custom field-type conversion arm | **Source-read only, deliberately not locked.** The 30.8.1 SPI declares display-to-internal and internal-to-display conversions beside acceptance; no retained observation shows whether, where, or in which direction the engine invokes either, so no behavioral claim is made. Reading the interface establishes the shape a consumer must host, not the engine's use of it. |
 
 “Not assessed,” “source-confirmed but not Kernel-locked,” and “no known observable discriminator” are different assurance states. Exact retained observation identities remain in [`EVIDENCE.md`](../EVIDENCE.md).
