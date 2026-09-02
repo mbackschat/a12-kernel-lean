@@ -378,6 +378,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A semantic-indexed operand excludes its entire rule from mandatory-information derivation](sources/rule-set-meta-information.md#src-mandatory-information-semantic-index)
 <a id="src-mandatory-information-parallel-iteration"></a>
 - [A parallel-iterated rule contributes no mandatory information](sources/rule-set-meta-information.md#src-mandatory-information-parallel-iteration)
+<a id="src-mandatory-information-cross-root"></a>
+- [A cross-root negative disjunction contributes no mandatory information](sources/rule-set-meta-information.md#src-mandatory-information-cross-root)
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)

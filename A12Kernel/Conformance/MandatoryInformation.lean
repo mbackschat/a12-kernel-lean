@@ -2,7 +2,7 @@ import A12Kernel.Semantics.MandatoryInformation
 
 /-! # Mandatory-information derivation locks
 
-These cases cover the measured flat, nonrepeatable contributing ERROR-rule fragment, the exact singleton WARNING/INFO severity exclusions, declaration-derived field-required modes and root closure, filtered, semantic-indexed, and parallel-iterated whole-rule exclusions, and the bounded filled-count and distinct-count slices. They deliberately exclude wider repetition, index internals and wider indexed shapes, filter internals, wider generated rules, and cross-root references. -/
+These cases cover the measured flat, nonrepeatable contributing ERROR-rule fragment, the exact singleton WARNING/INFO severity exclusions, declaration-derived field-required modes and root closure, filtered, semantic-indexed, parallel-iterated, and cross-root whole-rule exclusions, and the bounded filled-count and distinct-count slices. They deliberately exclude wider repetition, index internals and wider indexed shapes, filter internals, wider generated rules, and contributing cross-root forms. -/
 
 namespace A12Kernel.Conformance.MandatoryInformation
 
@@ -11,6 +11,8 @@ open A12Kernel
 private def rootOf (_ : String) : String := "Form"
 private def splitRoot (field : String) : String := if field == "A" then "First" else "Second"
 private def countSplitRoot (field : String) : String := if field == "Target" then "Second" else "First"
+private def crossRootOf (field : String) : String :=
+  if field == "Applicant/Note" || field == "Applicant/Control" then "Applicant" else "Decision"
 
 private def derive (rules : List (MandatoryRule String String)) :
     Option (MandatoryInformation String String) :=
@@ -87,6 +89,11 @@ private def parallelIterationKernelBatch : List (MandatoryRule String String) :=
   .fieldNotFilled "Control"
 ]
 
+private def crossRootKernelBatch : List (MandatoryRule String String) := [
+  .ignored (.crossRoot ["Applicant/Note", "Decision/Other"]),
+  .fieldNotFilled "Applicant/Control"
+]
+
 private def deriveFieldCycleKernelBatch? :
     Option (MandatoryInformation String String) :=
   derive [
@@ -145,6 +152,17 @@ example :
         .fieldNotFilled "Demand/Note",
         .fieldNotFilled "Control"
       ] := by
+  native_decide
+
+/- Cross-root references exclude their entire rule before root admission; the independent direct rule remains visible. -/
+example :
+    deriveCheckedMandatoryInformation crossRootOf crossRootKernelBatch =
+        result ["Applicant/Control"] ["Applicant/Control"] ["Applicant"] ∧
+      deriveCheckedMandatoryInformation crossRootOf crossRootKernelBatch ≠
+        deriveCheckedMandatoryInformation crossRootOf [
+          .fieldNotFilled "Applicant/Note",
+          .fieldNotFilled "Applicant/Control"
+        ] := by
   native_decide
 
 /- Declaration-derived requirements remain isolated from wider authored guards until that interaction is measured. -/

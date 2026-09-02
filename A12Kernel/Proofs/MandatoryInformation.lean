@@ -96,6 +96,22 @@ theorem deriveCheckedMandatoryInformation_ignores_parallel_iterated_rule :
       ] := by
   decide
 
+/-- The measured cross-root rule is excluded before root admission while an independent direct requirement remains visible. -/
+theorem deriveCheckedMandatoryInformation_ignores_cross_root_rule :
+    let rootOf := fun field : String =>
+      if field == "Applicant/Note" || field == "Applicant/Control" then
+        "Applicant"
+      else
+        "Decision"
+    deriveCheckedMandatoryInformation rootOf [
+        .ignored (.crossRoot ["Applicant/Note", "Decision/Other"]),
+        .fieldNotFilled "Applicant/Control"
+      ] =
+      deriveCheckedMandatoryInformation rootOf [
+        .fieldNotFilled "Applicant/Control"
+      ] := by
+  decide
+
 /-- Existential and universal field-list guards reach their concrete successful fixed points in either authored order. -/
 theorem deriveCheckedMandatoryInformation_field_list_guards_close_reverse_authored :
     deriveCheckedMandatoryInformation (fun _ : String => "Form") [

@@ -2,7 +2,7 @@ import A12Kernel.Semantics.NumericLiteral
 
 /-! # Mandatory-information derivation
 
-This module models the measured flat, nonrepeatable contributing fragment of the model-level mandatory-information service plus exact whole-rule no-contribution identities. The input retains normalized authored rule shape and the two measured declaration-derived field-required modes, including ignored WARNING and INFO severity, and the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values and keeps filled-count and distinct-count rules separate where their guard behavior differs. The filled-field guard slice retains existential versus universal rule identity, and finite field-guard cycles participate in the same monotone closure as acyclic chains. Exact semantic-indexed and parallel-iterated whole-rule exclusions are retained without modeling their iteration internals. Wider repetition, concrete indices, wider semantic-index shapes, filter internals, generated index rules, cross-root references, wider root topology, wider count sites, and wider Boolean formulas remain outside this carrier. -/
+This module models the measured flat, nonrepeatable contributing fragment of the model-level mandatory-information service plus exact whole-rule no-contribution identities. The input retains normalized authored rule shape and the two measured declaration-derived field-required modes, including ignored WARNING and INFO severity, and the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values and keeps filled-count and distinct-count rules separate where their guard behavior differs. The filled-field guard slice retains existential versus universal rule identity, and finite field-guard cycles participate in the same monotone closure as acyclic chains. Exact semantic-indexed, parallel-iterated, and cross-root whole-rule exclusions are retained without modeling their internals. Wider repetition, concrete indices, wider semantic-index shapes, filter internals, generated index rules, contributing cross-root rules, wider root topology, wider count sites, and wider Boolean formulas remain outside this carrier. -/
 
 namespace A12Kernel
 
@@ -71,6 +71,7 @@ inductive IgnoredMandatoryRule (Field Root : Type) where
   | filtered (fields : List Field)
   | semanticIndexed (fields : List Field)
   | parallelIterated (fields : List Field)
+  | crossRoot (fields : List Field)
   deriving Repr, DecidableEq
 
 /-- Normalized, measured inputs for flat mandatory-information derivation. Constructors preserve declaration and authored-rule distinctions even where two shapes have the same derived effect. -/
@@ -167,6 +168,7 @@ private def MandatoryRule.referencedRoots (rootOf : Field → Root) :
   | .ignored (.filtered fields)
   | .ignored (.semanticIndexed fields)
   | .ignored (.parallelIterated fields) => fields.map rootOf
+  | .ignored (.crossRoot _) => []
   | .ignored (.groupFilled root) => [root]
 
 private def MandatoryRule.apply [DecidableEq Field] [DecidableEq Root]
@@ -249,7 +251,8 @@ private def MandatoryRule.hasNonemptyLists : MandatoryRule Field Root → Bool
   | .ignored (.allFieldsFilled fields)
   | .ignored (.filtered fields)
   | .ignored (.semanticIndexed fields)
-  | .ignored (.parallelIterated fields) => !fields.isEmpty
+  | .ignored (.parallelIterated fields)
+  | .ignored (.crossRoot fields) => !fields.isEmpty
   | _ => true
 
 private def MandatoryRule.hasSupportedFieldListGuardShape [DecidableEq Field] :
@@ -289,7 +292,8 @@ private def MandatoryRule.mentionedFields : MandatoryRule Field Root → List Fi
   | .ignored (.allFieldsFilled fields)
   | .ignored (.filtered fields)
   | .ignored (.semanticIndexed fields)
-  | .ignored (.parallelIterated fields) => fields
+  | .ignored (.parallelIterated fields)
+  | .ignored (.crossRoot fields) => fields
   | .ignored (.groupFilled _) => []
 
 private def fieldMentionCount [DecidableEq Field]

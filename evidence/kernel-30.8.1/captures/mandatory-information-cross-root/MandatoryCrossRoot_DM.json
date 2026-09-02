@@ -1,0 +1,103 @@
+{
+  "header" : {
+    "id" : "MandatoryCrossRoot_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "permit-multi-root-sections",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Applicant",
+        "name" : "Applicant",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Applicant/Note",
+            "name" : "Note",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Applicant/Control",
+            "name" : "Control",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Applicant/ACrossRootRule",
+            "name" : "ACrossRootRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Note",
+              "errorCode" : "CROSS_ROOT_RULE",
+              "errorCondition" : "FieldNotFilled(/Applicant/Note) Or FieldNotFilled(/Decision/Other)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Cross-root rule."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Applicant/ZControlRule",
+            "name" : "ZControlRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Control",
+              "errorCode" : "CONTROL_RULE",
+              "errorCondition" : "FieldNotFilled(/Applicant/Control)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Control is required."
+              } ]
+            }
+          } ]
+        }
+      }, {
+        "type" : "Group",
+        "id" : "/Decision",
+        "name" : "Decision",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Decision/Other",
+            "name" : "Other",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
