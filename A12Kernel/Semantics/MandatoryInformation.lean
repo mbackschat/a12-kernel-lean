@@ -2,7 +2,7 @@ import A12Kernel.Semantics.NumericLiteral
 
 /-! # Mandatory-information derivation
 
-This module models the measured flat, nonrepeatable rule fragment of the model-level mandatory-information service. The input retains the normalized rule shape, and the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values and keeps filled-count and distinct-count rules separate where their guard behavior differs. The filled-field guard slice retains existential versus universal rule identity. Repetition, concrete or semantic indices, filter internals, generated rules, cross-root references, wider root topology, cycles, wider count sites, and wider Boolean formulas remain outside this carrier. -/
+This module models the measured flat, nonrepeatable rule fragment of the model-level mandatory-information service. The input retains the normalized rule shape, including ignored WARNING and INFO severity, and the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values and keeps filled-count and distinct-count rules separate where their guard behavior differs. The filled-field guard slice retains existential versus universal rule identity. Repetition, concrete or semantic indices, filter internals, generated rules, cross-root references, wider root topology, cycles, wider count sites, and wider Boolean formulas remain outside this carrier. -/
 
 namespace A12Kernel
 
@@ -60,6 +60,7 @@ inductive IgnoredMandatoryRule (Field Root : Type) where
   | allFieldsFilled (fields : List Field)
   | groupFilled (root : Root)
   | warningFieldNotFilled (field : Field)
+  | infoFieldNotFilled (field : Field)
   | filtered (fields : List Field)
   deriving Repr, DecidableEq
 
@@ -147,7 +148,8 @@ private def MandatoryRule.referencedRoots (rootOf : Field → Root) :
   | .differentValuesGuardedNotFilled fields _ _ target =>
       fields.map rootOf ++ [rootOf target]
   | .ignored (.fieldFilled field)
-  | .ignored (.warningFieldNotFilled field) => [rootOf field]
+  | .ignored (.warningFieldNotFilled field)
+  | .ignored (.infoFieldNotFilled field) => [rootOf field]
   | .ignored (.fieldsNotCollectivelyFilled fields)
   | .ignored (.atLeastOneFieldFilled fields)
   | .ignored (.allFieldsFilled fields)
@@ -280,7 +282,8 @@ private def MandatoryRule.mentionedFields : MandatoryRule Field Root → List Fi
   | .countGuardedNotFilled fields _ _ target => fields ++ [target]
   | .differentValuesGuardedNotFilled fields _ _ target => fields ++ [target]
   | .ignored (.fieldFilled field)
-  | .ignored (.warningFieldNotFilled field) => [field]
+  | .ignored (.warningFieldNotFilled field)
+  | .ignored (.infoFieldNotFilled field) => [field]
   | .ignored (.fieldsNotCollectivelyFilled fields)
   | .ignored (.atLeastOneFieldFilled fields)
   | .ignored (.allFieldsFilled fields)

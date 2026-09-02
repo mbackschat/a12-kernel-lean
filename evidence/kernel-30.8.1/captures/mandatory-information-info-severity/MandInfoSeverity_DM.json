@@ -1,0 +1,86 @@
+{
+  "header" : {
+    "id" : "MandInfoSeverity_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandInfoSeverity_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandInfoSeverity",
+        "name" : "MandInfoSeverity",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandInfoSeverity/InfoField",
+            "name" : "InfoField",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandInfoSeverity/ErrorField",
+            "name" : "ErrorField",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandInfoSeverity/A_InfoRule",
+            "name" : "A_InfoRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../InfoField",
+              "errorCode" : "A_INFO_RULE",
+              "errorCondition" : "FieldNotFilled(InfoField)",
+              "severity" : "INFO",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "info"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandInfoSeverity/B_ErrorRule",
+            "name" : "B_ErrorRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../ErrorField",
+              "errorCode" : "B_ERROR_RULE",
+              "errorCondition" : "FieldNotFilled(ErrorField)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "error"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

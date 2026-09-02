@@ -17,6 +17,18 @@ theorem deriveCheckedMandatoryInformation_groupNotFilled_has_no_fields
       [.groupNotFilled root] = some { mandatory := [], mandatoryForRootGroup := [], mandatoryRootGroups := [root] } := by
   rfl
 
+/-- An INFO negative field rule retains its authored identity without participating in mandatory derivation. -/
+theorem deriveCheckedMandatoryInformation_ignores_info_severity :
+    deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+      .ignored (.infoFieldNotFilled "InfoField"),
+      .fieldNotFilled "ErrorField"
+    ] = some {
+      mandatory := ["ErrorField"],
+      mandatoryForRootGroup := ["ErrorField"],
+      mandatoryRootGroups := ["Form"]
+    } := by
+  decide
+
 /-- A root premise is interpreted only by root-relative analysis until a global root seed exists. -/
 theorem deriveCheckedMandatoryInformation_root_guard_requires_global_seed :
     deriveCheckedMandatoryInformation (fun _ : String => "Form")

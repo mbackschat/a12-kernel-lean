@@ -2,7 +2,7 @@ import A12Kernel.Semantics.MandatoryInformation
 
 /-! # Mandatory-information derivation locks
 
-These cases cover the measured flat, nonrepeatable ERROR-rule fragment plus the measured whole-rule rejection for one filtered shape and the bounded filled-count and distinct-count slices. They deliberately exclude repetition, indices, filter internals, generated rules, and cross-root references. -/
+These cases cover the measured flat, nonrepeatable ERROR-rule fragment, the exact singleton WARNING/INFO severity exclusions, the measured whole-rule rejection for one filtered shape, and the bounded filled-count and distinct-count slices. They deliberately exclude repetition, indices, filter internals, generated rules, and cross-root references. -/
 
 namespace A12Kernel.Conformance.MandatoryInformation
 
@@ -27,6 +27,7 @@ private def ignoredRules : List (MandatoryRule String String) := [
   .ignored (.allFieldsFilled ["A", "B"]),
   .ignored (.groupFilled "Form"),
   .ignored (.warningFieldNotFilled "A"),
+  .ignored (.infoFieldNotFilled "A"),
   .ignored (.filtered ["A"])
 ]
 
@@ -51,6 +52,14 @@ private def measuredCases : List (List (MandatoryRule String String) ×
 
 /- One finite decision table locks field, root-only, ignored, closure, and guard branches. -/
 example : measuredCases.all (fun (rules, expected) => derive rules == expected) := by
+  native_decide
+
+/- Severity remains authored identity: only the ERROR negative field rule contributes. -/
+example :
+    derive [
+      .ignored (.infoFieldNotFilled "InfoField"),
+      .fieldNotFilled "ErrorField"
+    ] = result ["ErrorField"] ["ErrorField"] ["Form"] := by
   native_decide
 
 /- The two field sets are not interchangeable, even in this smallest measured fragment. -/

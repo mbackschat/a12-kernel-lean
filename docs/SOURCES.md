@@ -358,6 +358,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Mandatory-information derivation distinguishes existential and universal filled-field guards](sources/rule-set-meta-information.md#src-mandatory-information-field-list-guards)
 <a id="src-mandatory-information-distinct-count"></a>
 - [Mandatory-information derivation preserves filled-count and distinct-count operator identity](sources/rule-set-meta-information.md#src-mandatory-information-distinct-count)
+<a id="src-mandatory-information-info-severity"></a>
+- [Mandatory-information derivation ignores INFO negative field rules](sources/rule-set-meta-information.md#src-mandatory-information-info-severity)
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)
