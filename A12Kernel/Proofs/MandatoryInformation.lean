@@ -30,6 +30,44 @@ theorem deriveCheckedMandatoryInformation_root_seed_promotes_target :
         mandatory := ["A"], mandatoryForRootGroup := ["A"], mandatoryRootGroups := ["Form"] } := by
   decide
 
+/-- Existential and universal field-list guards reach their concrete successful fixed points in either authored order. -/
+theorem deriveCheckedMandatoryInformation_field_list_guards_close_reverse_authored :
+    deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .fieldListGuardedNotFilled ["A", "B"] .atLeastOneFilled "Target",
+        .fieldNotFilled "A"
+      ] = some {
+        mandatory := ["A", "Target"],
+        mandatoryForRootGroup := ["A", "Target"],
+        mandatoryRootGroups := ["Form"]
+      } ∧
+      deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .fieldNotFilled "A",
+        .fieldListGuardedNotFilled ["A", "B"] .atLeastOneFilled "Target"
+      ] = some {
+        mandatory := ["A", "Target"],
+        mandatoryForRootGroup := ["A", "Target"],
+        mandatoryRootGroups := ["Form"]
+      } ∧
+      deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .fieldListGuardedNotFilled ["A", "B"] .allFilled "Target",
+        .fieldNotFilled "A",
+        .fieldNotFilled "B"
+      ] = some {
+        mandatory := ["A", "B", "Target"],
+        mandatoryForRootGroup := ["A", "B", "Target"],
+        mandatoryRootGroups := ["Form"]
+      } ∧
+      deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .fieldNotFilled "A",
+        .fieldNotFilled "B",
+        .fieldListGuardedNotFilled ["A", "B"] .allFilled "Target"
+      ] = some {
+        mandatory := ["A", "B", "Target"],
+        mandatoryForRootGroup := ["A", "B", "Target"],
+        mandatoryRootGroups := ["Form"]
+      } := by
+  decide
+
 /-- Checked construction retains the authored literal and pairs it with exactly the shared host conversion. -/
 theorem checkMandatoryCountThreshold_sound
     (authored : DecodedNumericLiteral)

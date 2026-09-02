@@ -2,7 +2,7 @@ import A12Kernel.Semantics.NumericLiteral
 
 /-! # Mandatory-information derivation
 
-This module models the measured flat, nonrepeatable rule fragment of the model-level mandatory-information service. The input retains the normalized rule shape, and the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values. Repetition, concrete or semantic indices, filter internals, generated rules, cross-root references, wider root topology, cycles, wider count sites, and wider Boolean formulas remain outside this carrier. -/
+This module models the measured flat, nonrepeatable rule fragment of the model-level mandatory-information service. The input retains the normalized rule shape, and the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values, and the filled-field guard slice retains existential versus universal rule identity. Repetition, concrete or semantic indices, filter internals, generated rules, cross-root references, wider root topology, cycles, wider count sites, and wider Boolean formulas remain outside this carrier. -/
 
 namespace A12Kernel
 
@@ -36,6 +36,22 @@ private def holds (comparison : MandatoryCountGuardComparison)
 
 end MandatoryCountGuardComparison
 
+/-- Flat filled-field guard identities whose entailment may expose a mandatory target. -/
+inductive MandatoryFieldListGuard where
+  | atLeastOneFilled
+  | allFilled
+  deriving Repr, DecidableEq
+
+namespace MandatoryFieldListGuard
+
+private def holds [DecidableEq Field] (guard : MandatoryFieldListGuard)
+    (mandatory premises : List Field) : Bool :=
+  match guard with
+  | .atLeastOneFilled => premises.any (· ∈ mandatory)
+  | .allFilled => premises.all (· ∈ mandatory)
+
+end MandatoryFieldListGuard
+
 /-- Measured rule shapes that remain visible to Analyze and Explain but have no contribution in this fragment. -/
 inductive IgnoredMandatoryRule (Field Root : Type) where
   | fieldFilled (field : Field)
@@ -58,6 +74,8 @@ inductive MandatoryRule (Field Root : Type) where
   | groupNotFilled (root : Root)
   | fieldGuardedNotFilled (premise target : Field)
   | rootGuardedNotFilled (premise : Root) (target : Field)
+  | fieldListGuardedNotFilled (premises : List Field)
+      (guard : MandatoryFieldListGuard) (target : Field)
   | countLessThan (fields : List Field)
       (threshold : Option CheckedMandatoryCountThreshold)
   | countGuardedNotFilled (fields : List Field)
@@ -115,6 +133,8 @@ private def MandatoryRule.referencedRoots (rootOf : Field → Root) :
   | .groupNotFilled root => [root]
   | .fieldGuardedNotFilled premise target => [rootOf premise, rootOf target]
   | .rootGuardedNotFilled premise target => [premise, rootOf target]
+  | .fieldListGuardedNotFilled premises _ target =>
+      premises.map rootOf ++ [rootOf target]
   | .countLessThan fields _ => fields.map rootOf
   | .countGuardedNotFilled fields _ _ target =>
       fields.map rootOf ++ [rootOf target]
@@ -143,6 +163,11 @@ private def MandatoryRule.apply [DecidableEq Field] [DecidableEq Root]
         state
   | .rootGuardedNotFilled premise target =>
       if premise ∈ state.roots then
+        state.addFields rootOf [target]
+      else
+        state
+  | .fieldListGuardedNotFilled premises guard target =>
+      if guard.holds state.fields premises then
         state.addFields rootOf [target]
       else
         state
@@ -182,6 +207,8 @@ private def fieldDependencyEdges : List (MandatoryRule Field Root) →
   | [] => []
   | .fieldGuardedNotFilled premise target :: rules =>
       (premise, target) :: fieldDependencyEdges rules
+  | .fieldListGuardedNotFilled premises _ target :: rules =>
+      premises.map (·, target) ++ fieldDependencyEdges rules
   | _ :: rules => fieldDependencyEdges rules
 
 private def reaches [DecidableEq Field] (edges : List (Field × Field)) :
@@ -203,12 +230,19 @@ private def MandatoryRule.hasNonemptyLists : MandatoryRule Field Root → Bool
   | .notAllFieldsFilled fields
   | .noFieldFilled fields
   | .notExactlyOneFieldFilled fields => !fields.isEmpty
+  | .fieldListGuardedNotFilled premises _ _ => !premises.isEmpty
   | .countLessThan fields _
   | .countGuardedNotFilled fields _ _ _ => !fields.isEmpty
   | .ignored (.fieldsNotCollectivelyFilled fields)
   | .ignored (.atLeastOneFieldFilled fields)
   | .ignored (.allFieldsFilled fields)
   | .ignored (.filtered fields) => !fields.isEmpty
+  | _ => true
+
+private def MandatoryRule.hasSupportedFieldListGuardShape [DecidableEq Field] :
+    MandatoryRule Field Root → Bool
+  | .fieldListGuardedNotFilled premises _ _ =>
+      premises.eraseDups == premises
   | _ => true
 
 private def directFieldSeeds [DecidableEq Field]
@@ -228,6 +262,7 @@ private def MandatoryRule.mentionedFields : MandatoryRule Field Root → List Fi
   | .groupNotFilled _ => []
   | .fieldGuardedNotFilled premise target => [premise, target]
   | .rootGuardedNotFilled _ target => [target]
+  | .fieldListGuardedNotFilled premises _ target => premises ++ [target]
   | .countLessThan fields _ => fields
   | .countGuardedNotFilled fields _ _ target => fields ++ [target]
   | .ignored (.fieldFilled field)
@@ -289,6 +324,7 @@ def deriveCheckedMandatoryInformation [DecidableEq Field] [DecidableEq Root]
     (rootOf : Field → Root) (rules : List (MandatoryRule Field Root)) :
     Option (MandatoryInformation Field Root) :=
   if rules.all MandatoryInformationDerivation.MandatoryRule.hasNonemptyLists &&
+      rules.all MandatoryInformationDerivation.MandatoryRule.hasSupportedFieldListGuardShape &&
       MandatoryInformationDerivation.hasSupportedCountShapes rules &&
       MandatoryInformationDerivation.hasSingleRootTopology rootOf rules &&
       MandatoryInformationDerivation.hasAcyclicFieldDependencies rules then

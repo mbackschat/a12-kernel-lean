@@ -73,6 +73,74 @@ example :
       derive [.notAllFieldsFilled []] = none := by
   native_decide
 
+private def fieldListGuardCases : List (List (MandatoryRule String String) ×
+    Option (MandatoryInformation String String)) := [
+  ([
+      .fieldListGuardedNotFilled ["A", "B"] .atLeastOneFilled "Target",
+      .fieldNotFilled "A"
+    ], result ["A", "Target"] ["A", "Target"] ["Form"]),
+  ([
+      .fieldListGuardedNotFilled ["A", "B"] .allFilled "Target",
+      .fieldNotFilled "A",
+      .fieldNotFilled "B"
+    ], result ["A", "B", "Target"] ["A", "B", "Target"] ["Form"]),
+  ([
+      .fieldNotFilled "A",
+      .fieldListGuardedNotFilled ["A", "B"] .atLeastOneFilled "Target"
+    ], result ["A", "Target"] ["A", "Target"] ["Form"]),
+  ([
+      .fieldNotFilled "A",
+      .fieldListGuardedNotFilled ["A", "B"] .allFilled "Target"
+    ], result ["A"] ["A"] ["Form"]),
+  ([
+      .fieldNotFilled "C",
+      .fieldListGuardedNotFilled ["A", "B"] .atLeastOneFilled "Target"
+    ], result ["C"] ["C"] ["Form"])
+]
+
+/- The flat existential and universal list guards close in either authored order and remain distinct when only one premise is mandatory. -/
+example :
+    fieldListGuardCases.all (fun (rules, expected) => derive rules == expected) ∧
+      derive [
+        .fieldNotFilled "A",
+        .fieldListGuardedNotFilled ["A", "B"] .atLeastOneFilled "Target"
+      ] ≠ derive [
+        .fieldNotFilled "A",
+        .fieldListGuardedNotFilled ["A", "B"] .allFilled "Target"
+      ] := by
+  native_decide
+
+/- The retained Kernel batch keeps both guard identities and both truth values in one reverse-authored ruleset. -/
+example :
+    derive [
+      .fieldListGuardedNotFilled ["A1", "B1"] .atLeastOneFilled "TAnyTrue",
+      .fieldListGuardedNotFilled ["A3", "B3"] .allFilled "TAllTrue",
+      .fieldListGuardedNotFilled ["A4", "B4"] .allFilled "TAllFalse",
+      .fieldListGuardedNotFilled ["A2", "B2"] .atLeastOneFilled "TAnyFalse",
+      .fieldNotFilled "A1",
+      .fieldNotFilled "A3",
+      .fieldNotFilled "B3",
+      .fieldNotFilled "A4"
+    ] = result
+      ["A1", "A3", "B3", "A4", "TAnyTrue", "TAllTrue"]
+      ["A1", "A3", "B3", "A4", "TAnyTrue", "TAllTrue"]
+      ["Form"] := by
+  native_decide
+
+/- Empty or duplicate lists, cyclic field-list dependencies, and cross-root targets remain outside the checked flat slice. -/
+example :
+    derive [.fieldListGuardedNotFilled [] .atLeastOneFilled "Target"] = none ∧
+      derive [.fieldListGuardedNotFilled ["A", "A"] .allFilled "Target"] = none ∧
+      derive [
+        .fieldListGuardedNotFilled ["B"] .atLeastOneFilled "A",
+        .fieldGuardedNotFilled "A" "B"
+      ] = none ∧
+      deriveCheckedMandatoryInformation splitRoot [
+        .fieldNotFilled "A",
+        .fieldListGuardedNotFilled ["A"] .atLeastOneFilled "B"
+      ] = none := by
+  native_decide
+
 private def checkedThreshold? (value : Rat) (authoredScale : Int := 0) :
     Option CheckedMandatoryCountThreshold :=
   checkMandatoryCountThreshold { value, authoredScale }

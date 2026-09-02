@@ -354,6 +354,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Mandatory-information derivation separates field, root-only, and ignored rule shapes](sources/rule-set-meta-information.md#src-mandatory-information-presence-matrix)
 <a id="src-mandatory-information-composition-matrix"></a>
 - [Mandatory-information derivation distinguishes root-relative fields and finite dependency closure](sources/rule-set-meta-information.md#src-mandatory-information-composition-matrix)
+<a id="src-mandatory-information-field-list-guards"></a>
+- [Mandatory-information derivation distinguishes existential and universal filled-field guards](sources/rule-set-meta-information.md#src-mandatory-information-field-list-guards)
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)

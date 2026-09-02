@@ -1,0 +1,260 @@
+{
+  "header" : {
+    "id" : "MandFieldListGuards_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandFieldListGuards_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandFieldListGuards",
+        "name" : "MandFieldListGuards",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandFieldListGuards/A1",
+            "name" : "A1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldListGuards/B1",
+            "name" : "B1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldListGuards/TAnyTrue",
+            "name" : "TAnyTrue",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldListGuards/A2",
+            "name" : "A2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldListGuards/B2",
+            "name" : "B2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldListGuards/TAnyFalse",
+            "name" : "TAnyFalse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldListGuards/A3",
+            "name" : "A3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldListGuards/B3",
+            "name" : "B3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldListGuards/TAllTrue",
+            "name" : "TAllTrue",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldListGuards/A4",
+            "name" : "A4",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldListGuards/B4",
+            "name" : "B4",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandFieldListGuards/TAllFalse",
+            "name" : "TAllFalse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldListGuards/A_ANY_TRUE_GUARD",
+            "name" : "A_ANY_TRUE_GUARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../TAnyTrue",
+              "errorCode" : "ANY_TRUE_GUARD",
+              "errorCondition" : "AtLeastOneFieldFilled(A1, B1) And FieldNotFilled(TAnyTrue)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "ANY_TRUE_GUARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldListGuards/B_ALL_TRUE_GUARD",
+            "name" : "B_ALL_TRUE_GUARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../TAllTrue",
+              "errorCode" : "ALL_TRUE_GUARD",
+              "errorCondition" : "AllFieldsFilled(A3, B3) And FieldNotFilled(TAllTrue)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "ALL_TRUE_GUARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldListGuards/C_ALL_FALSE_GUARD",
+            "name" : "C_ALL_FALSE_GUARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../TAllFalse",
+              "errorCode" : "ALL_FALSE_GUARD",
+              "errorCondition" : "AllFieldsFilled(A4, B4) And FieldNotFilled(TAllFalse)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "ALL_FALSE_GUARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldListGuards/D_ANY_FALSE_GUARD",
+            "name" : "D_ANY_FALSE_GUARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../TAnyFalse",
+              "errorCode" : "ANY_FALSE_GUARD",
+              "errorCondition" : "AtLeastOneFieldFilled(A2, B2) And FieldNotFilled(TAnyFalse)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "ANY_FALSE_GUARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldListGuards/Z1_SEED_A1",
+            "name" : "Z1_SEED_A1",
+            "Rule" : {
+              "errorEntityRelPath" : "../A1",
+              "errorCode" : "SEED_A1",
+              "errorCondition" : "FieldNotFilled(A1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "SEED_A1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldListGuards/Z2_SEED_A3",
+            "name" : "Z2_SEED_A3",
+            "Rule" : {
+              "errorEntityRelPath" : "../A3",
+              "errorCode" : "SEED_A3",
+              "errorCondition" : "FieldNotFilled(A3)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "SEED_A3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldListGuards/Z3_SEED_B3",
+            "name" : "Z3_SEED_B3",
+            "Rule" : {
+              "errorEntityRelPath" : "../B3",
+              "errorCode" : "SEED_B3",
+              "errorCondition" : "FieldNotFilled(B3)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "SEED_B3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandFieldListGuards/Z4_SEED_A4",
+            "name" : "Z4_SEED_A4",
+            "Rule" : {
+              "errorEntityRelPath" : "../A4",
+              "errorCode" : "SEED_A4",
+              "errorCondition" : "FieldNotFilled(A4)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "SEED_A4"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
