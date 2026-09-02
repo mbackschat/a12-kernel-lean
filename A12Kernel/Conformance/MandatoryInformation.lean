@@ -2,7 +2,7 @@ import A12Kernel.Semantics.MandatoryInformation
 
 /-! # Mandatory-information derivation locks
 
-These cases cover the measured flat, nonrepeatable ERROR-rule fragment, the exact singleton WARNING/INFO severity exclusions, declaration-derived field-required modes and root closure, one filtered and one semantic-indexed whole-rule exclusion, and the bounded filled-count and distinct-count slices. They deliberately exclude repetition, index internals and wider indexed shapes, filter internals, wider generated rules, and cross-root references. -/
+These cases cover the measured flat, nonrepeatable contributing ERROR-rule fragment, the exact singleton WARNING/INFO severity exclusions, declaration-derived field-required modes and root closure, filtered, semantic-indexed, and parallel-iterated whole-rule exclusions, and the bounded filled-count and distinct-count slices. They deliberately exclude wider repetition, index internals and wider indexed shapes, filter internals, wider generated rules, and cross-root references. -/
 
 namespace A12Kernel.Conformance.MandatoryInformation
 
@@ -82,6 +82,11 @@ private def semanticIndexKernelBatch : List (MandatoryRule String String) := [
   .fieldNotFilled "Control"
 ]
 
+private def parallelIterationKernelBatch : List (MandatoryRule String String) := [
+  .ignored (.parallelIterated ["Demand/Note", "Capacity/Units"]),
+  .fieldNotFilled "Control"
+]
+
 private def deriveFieldCycleKernelBatch? :
     Option (MandatoryInformation String String) :=
   derive [
@@ -128,6 +133,16 @@ example :
         result ["Control"] ["Control"] ["Form"] ∧
       derive semanticIndexKernelBatch ≠ derive [
         .disjoinedFieldNotFilled ["Note", "Rows/Value"],
+        .fieldNotFilled "Control"
+      ] := by
+  native_decide
+
+/- A parallel iteration excludes its entire rule rather than exposing an ordinary negative leaf; the independent direct rule remains visible. -/
+example :
+    derive parallelIterationKernelBatch =
+        result ["Control"] ["Control"] ["Form"] ∧
+      derive parallelIterationKernelBatch ≠ derive [
+        .fieldNotFilled "Demand/Note",
         .fieldNotFilled "Control"
       ] := by
   native_decide

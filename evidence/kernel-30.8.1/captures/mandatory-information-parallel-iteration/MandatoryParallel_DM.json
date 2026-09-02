@@ -1,0 +1,140 @@
+{
+  "header" : {
+    "id" : "MandatoryParallel_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandatoryParallel_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Parallel",
+        "name" : "Parallel",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Parallel/Control",
+            "name" : "Control",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Parallel/Demand",
+            "name" : "Demand",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Parallel/Demand/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Parallel/Demand/Units",
+                "name" : "Units",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Parallel/Demand/Note",
+                "name" : "Note",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Parallel/Demand/AParallelRule",
+                "name" : "AParallelRule",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "PARALLEL_RULE",
+                  "errorCondition" : "GroupFilled(/Parallel/Demand) And FieldNotFilled(/Parallel/Demand/Note) And FieldFilled(/Parallel/Capacity/Units)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Parallel rule."
+                  } ]
+                }
+              } ],
+              "indexFieldName" : "Key"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Parallel/Capacity",
+            "name" : "Capacity",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Parallel/Capacity/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Parallel/Capacity/Units",
+                "name" : "Units",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "Key"
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Parallel/ZControlRule",
+            "name" : "ZControlRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Control",
+              "errorCode" : "CONTROL_RULE",
+              "errorCondition" : "FieldNotFilled(/Parallel/Control)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Control is required."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
