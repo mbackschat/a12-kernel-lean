@@ -35,6 +35,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-02-06"></a>
+### `SPEC-2026-09-02-06` — the unregistered-validator runtime account is peer-sourced and unverified, and its measured neighbour disagrees
+
+- `status`: pending
+- `not-forwarded`: no a12-dmkits session was reachable when this entry was written; forward the id and this anchor at the next opportunity.
+- `clause`: [`06-strings-and-enumerations.md`](../spec/06-strings-and-enumerations.md#a3-custom-field-type-validation), the unregistered-validator paragraph
+- `delta`: **a recorded confidence limit, not a rule change.** The clause said that kernel 30.8.1 does not reject a missing registration at model parse and that a relevant concrete cell reaching an unregistered validator makes the validation call fail loudly. That runtime half entered here through an a12-dmkits handback at this project's commit `18a7b1c4`, carries no retained observation of this project's own, and no checkpoint cites it. The clause now says so and points at [SG7](SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion), which had been carrying the same question as unanswered — the two owners had been readable as contradicting each other, which is what prompted this entry.
+- `discriminator`: the nearest surface that *is* measured answers differently in kind. On the explicit `Valid`/`Invalid` predicate an unregistered type name fires **both** polarities as ordinary `VALUE_ERROR` rule messages on a filled String field, with nothing raised, and the no-factory and empty-factory registration states are indistinguishable ([checkpoint](sources/evaluation-and-application-routes.md#src-custom-validity-route)). That is the explicit predicate rather than the declaration-driven formal check, so it does not refute the clause. It is stronger than a contrast, though: [`EXP-2026-08-04-01`](archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md#exp-2026-08-04-01--an-unregistered-predefined-type-may-raise-rather-than-fire-both-polarities) put precisely the reading *"the lookup raises a validator-missing exception when the name is absent rather than degrading leniently"* to a measurement on that neighbouring surface and it was **refuted at the observable** — nothing raised in any of the eight cells, on both codegen strategies. A source-shaped raise prediction has therefore already failed once in this family, which is why the same prediction on this clause's surface is the one most in need of a measurement rather than the one to assume.
+- `local-consequence`: none behavioral. The Lean account continues to require the validator name in `World`, which stays a deliberate local narrowing.
+- `acceptance`: a12-dmkits confirms which observation stands behind its handback account — a retained capture, an interpreter behavior, or a source reading — or reports that it too carries the claim unmeasured. Either answer settles whether `spec/` may keep stating the runtime half without a qualifier.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-02-05"></a>
 ### `SPEC-2026-09-02-05` — a registered custom field type is a triple, and its conversion arm is unobserved on both estates
 
