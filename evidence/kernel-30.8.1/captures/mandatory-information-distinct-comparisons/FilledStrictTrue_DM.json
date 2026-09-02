@@ -1,0 +1,135 @@
+{
+  "header" : {
+    "id" : "FilledStrictTrue_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "CountSeeds_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/FilledStrictTrue",
+        "name" : "FilledStrictTrue",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/FilledStrictTrue/ZeroA",
+            "name" : "ZeroA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/FilledStrictTrue/ZeroB",
+            "name" : "ZeroB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/FilledStrictTrue/ZeroTarget",
+            "name" : "ZeroTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/FilledStrictTrue/OneA",
+            "name" : "OneA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/FilledStrictTrue/OneB",
+            "name" : "OneB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/FilledStrictTrue/OneTarget",
+            "name" : "OneTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/FilledStrictTrue/TwoA",
+            "name" : "TwoA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/FilledStrictTrue/TwoB",
+            "name" : "TwoB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/FilledStrictTrue/TwoTarget",
+            "name" : "TwoTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/FilledStrictTrue/A_ZERO_GUARD",
+            "name" : "A_ZERO_GUARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../ZeroTarget",
+              "errorCode" : "A_ZERO_GUARD",
+              "errorCondition" : "NumberOfFilledFields(/FilledStrictTrue/ZeroA, /FilledStrictTrue/ZeroB) > -2 And FieldNotFilled(/FilledStrictTrue/ZeroTarget)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "A_ZERO_GUARD"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

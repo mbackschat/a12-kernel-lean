@@ -1,0 +1,7 @@
+{
+  "model": "FilledReverseInclusiveTrue_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "mandatoryInformation"
+  ]
+}

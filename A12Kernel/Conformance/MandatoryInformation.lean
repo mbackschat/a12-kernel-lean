@@ -602,6 +602,13 @@ example :
       deriveWithThreshold? 2 (fun threshold => [
         .fieldNotFilled "A",
         .fieldNotFilled "B",
+        .fieldGuardedNotFilled "A" "Other",
+        .differentValuesGuardedNotFilled ["A", "B"] .countGreaterEqual
+          (some threshold) "Target"
+      ]) = none ∧
+      deriveWithThreshold? 2 (fun threshold => [
+        .fieldNotFilled "A",
+        .fieldNotFilled "B",
         .differentValuesGuardedNotFilled ["A", "B"] .countGreaterEqual
           (some threshold) "Target",
         .ignored (.fieldFilled "Target")
@@ -760,6 +767,62 @@ example :
       .differentValuesGuardedNotFilled ["A", "B", "C"] .countGreaterEqual
         (some threshold) "Target"
     ]) = none := by
+  native_decide
+
+/- The remaining isolated distinct-count comparison spellings retain their exact adjacent threshold pairs while contributing nothing. -/
+example :
+    deriveWithThreshold? (-2) (fun threshold => [
+      .differentValuesGuardedNotFilled ["A", "B"] .countGreater
+        (some threshold) "Target"
+    ]) = result [] [] [] ∧
+    deriveWithThreshold? 0 (fun threshold => [
+      .differentValuesGuardedNotFilled ["A", "B"] .countGreater
+        (some threshold) "Target"
+    ]) = result [] [] [] ∧
+    deriveWithThreshold? 0 (fun threshold => [
+      .differentValuesGuardedNotFilled ["A", "B"] .literalLessEqualCount
+        (some threshold) "Target"
+    ]) = result [] [] [] ∧
+    deriveWithThreshold? 1 (fun threshold => [
+      .differentValuesGuardedNotFilled ["A", "B"] .literalLessEqualCount
+        (some threshold) "Target"
+    ]) = result [] [] [] ∧
+    deriveWithThreshold? (-2) (fun threshold => [
+      .differentValuesGuardedNotFilled ["A", "B"] .literalLessThanCount
+        (some threshold) "Target"
+    ]) = result [] [] [] ∧
+    deriveWithThreshold? 0 (fun threshold => [
+      .differentValuesGuardedNotFilled ["A", "B"] .literalLessThanCount
+        (some threshold) "Target"
+    ]) = result [] [] [] ∧
+    deriveWithThreshold? (-1) (fun threshold => [
+      .differentValuesGuardedNotFilled ["A", "B"] .countGreater
+        (some threshold) "Target"
+    ]) = none ∧
+    deriveWithThreshold? (-3) (fun threshold => [
+      .differentValuesGuardedNotFilled ["A", "B"] .literalLessThanCount
+        (some threshold) "Target"
+    ]) = none ∧
+    deriveWithThreshold? 4294967296 (fun threshold => [
+      .differentValuesGuardedNotFilled ["A", "B"] .literalLessEqualCount
+        (some threshold) "Target"
+    ]) = none := by
+  native_decide
+
+/- The true filled-count controls separate every newly retained distinct-count spelling from operator collapse. -/
+example :
+    deriveWithThreshold? (-2) (fun threshold => [
+      .countGuardedNotFilled ["A", "B"] .countGreater
+        (some threshold) "Target"
+    ]) = result ["Target"] ["Target"] ["Form"] ∧
+    deriveWithThreshold? 0 (fun threshold => [
+      .countGuardedNotFilled ["A", "B"] .literalLessEqualCount
+        (some threshold) "Target"
+    ]) = result ["Target"] ["Target"] ["Form"] ∧
+    deriveWithThreshold? (-2) (fun threshold => [
+      .countGuardedNotFilled ["A", "B"] .literalLessThanCount
+        (some threshold) "Target"
+    ]) = result ["Target"] ["Target"] ["Form"] := by
   native_decide
 
 /- A count target reused by a disjunction and a count operand reached through a deeper dependency stay outside the measured shape, while ordinary downstream field guards consume the admitted count result. -/

@@ -387,6 +387,38 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 
 - `sync`: **no `spec/` change.** This exact batch closes SG14's first isolated distinct-count target pair but not the complete rule-set collector; [`spec/`](../../spec/) still has no rule-set meta-information section.
 
+<a id="src-mandatory-information-distinct-comparisons"></a>
+#### Mandatory-information derivation preserves the isolated distinct-count comparison matrix, measured locally on 2026-09-02
+
+- `revision`: nine model-level `mandatoryInformation` requests at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`; source-shipped dmtool `0.13.0`, Kernel-confirmed `model check` results, and every artifact reports Kernel `30.8.1` built and runtime. Structured model and root-group renames plus `rule modify` emitted all nine models from the retained target-only controls. The three count-on-left strict rules have fully typed structured read-backs. The six literal-on-left rules read back exact canonical text as `Opaque`: dmtool's F10 converter does not handle a comparison whose left side is a numeric literal, although the structured modification and Kernel gate both succeed.
+- `question`: do the remaining strict, reversed-inclusive, and reversed-strict isolated `NumberOfDifferentValues` target guards retain their authored comparison and adjacent true/false thresholds as accepted no-contribution identities, or may the collector reuse filled-count target entailment?
+- `models`: each model declares one nonrepeatable root and nine String fields. Its sole ERROR rule references two isolated operands and one isolated target, leaving six fields unreferenced. Six distinct-count models cover `count > -2`/`count > 0`, `0 <= count`/`1 <= count`, and `-2 < count`/`0 < count`; three otherwise parallel filled-count controls retain the true arm of each spelling.
+
+| Spelling | Distinct-count pair | True filled-count control |
+|---|---|---|
+| `count > literal` | `-2`: empty; `0`: empty | target in both field sets plus root |
+| `literal <= count` | `0`: empty; `1`: empty | target in both field sets plus root |
+| `literal < count` | `-2`: empty; `0`: empty | target in both field sets plus root |
+
+- `claim`: every distinct-count artifact returns three empty sets, while each true filled-count control returns only its target in both field sets plus its root. Together with the earlier inclusive pair, the exact isolated target-only matrix therefore preserves all four authored comparison spellings while keeping distinct-count target contribution separate from filled count. The checked accepted-empty boundary reproduces these exact service outcomes without identifying a private Kernel refusal or evaluation mechanism.
+- `separators`: collapsing distinct count into filled count adds the target and root in each true arm. Collapsing a true/false adjacent pair by comparison truth changes no distinct-count set but erases authored Explain identity. Reading only the narrowed threshold admits unmeasured aliases, while reading `-1` as an ordinary strict threshold ignores the established sentinel boundary.
+- `limit`: one nonrepeatable root per model, String fields, ERROR severity, one duplicate-free two-field count list, isolated operands and target, the six exact distinct-count forms and three filled-count controls above, present scale-0 thresholds, and `en_US`. Other bounds, authored scales, absent and sentinel thresholds, operand or target reuse, list sizes, seeded roles outside the existing exact `>= 2` branch, repetition, indices, filters, generated rules, wider formulas, cross-root references, and cycles remain outside this observation.
+- `bytes`: [`mandatory-information-distinct-comparisons/`](../../evidence/kernel-30.8.1/captures/mandatory-information-distinct-comparisons/) retains all nine model/request/artifact triples. These are bounded raw captures with no typed replay, so they establish neither L nor C.
+
+| Case | Model SHA-256 | Request SHA-256 | Artifact SHA-256 |
+|---|---|---|---|
+| `distinct-strict-true` | `1fc41881e80671f1fa30d2417f9b25a5b3c6fdbdd55d9e01d30637e774658d20` | `427b8178535fb437d0b2734a352b4b74712d5a05ec15abe95cf2d167c4b3b8d5` | `83d9fca780a38990f522864baedabb4a302b03518e2b13da682dfc7d39c8a007` |
+| `distinct-strict-false` | `fb8386bf4d9a6f8b644dc93b399f9b824e5e86b34b1518664860a14ca3277eea` | `824d6a24a223d6c89e5735799967bfec5bf78e21278a98481ca77cbacd3e1eb4` | `fbc278f81ff8adcb247983efae8ed9bbde128e779991dfdc5d24281a95cc0993` |
+| `distinct-reverse-inclusive-true` | `089af4a35a3bf2a28a7634f0fd68095f80c0559d35a1d2242bd326a8c1b0331e` | `264fee19fe1a59f0e3f0b3893c505f3b4b38b5b84939b7431a8f6215db2e2449` | `10769bfdf5209de82c391b230e621a7e89ad4392ea488c4370b97603cab436ba` |
+| `distinct-reverse-inclusive-false` | `fc8a1cf8a6bbf42f9fecbe4291ec5e7b5a81ddaddf5188e080d308ed4fffdba9` | `d137e7a74cde5abd817ebd6cf6af336a7eda0d26ebe924a97fb32c3ba3114b7b` | `a5a9f3f60280bf4f1ef33a2c6d7ba14df49fe2df65e84f0c998e0a222740bd7c` |
+| `distinct-reverse-strict-true` | `b590ca335a2b11939428112dd2c25c2f0e9c4685cbef43eeff8b63de09e9d31f` | `93bea4f2f0ab6cc000f1863e60573fcf4824f5619bb3abb8a96ce7e98a71ef99` | `aabf128c714ecdca890e235fd7d677b5f204cc42a9f975f6769cbb25e2d4d93d` |
+| `distinct-reverse-strict-false` | `7be4e42ae2ee79af117b0dd6886725b46e42515291fca154bdb046b6af3ddd63` | `cb2719c65bc931e7c15b6cb5b37508b4322d46e1ac2f36b6d87b55f396aed029` | `b1b340df6216cfc3398f0565a21e9f2f046e49cbfaf2388e372142f5cb7c5bbb` |
+| `filled-strict-true` | `0151bdec252bc6f38702b835b3fa0021f4d52b55b993f3e0f535e935352fdf46` | `2510b11c5c1b81a41d77f3c5d685d828dfcca0e4612ab8b124ea985e15f30c0b` | `ab53d314bf5c1f241a389f2dae0d56c8d459701e8d5fb81a07d59470ac738d7a` |
+| `filled-reverse-inclusive-true` | `240911764d0618ca4ffe38730e48ef70bdd681686580eec24fbc6de78ed7bfb7` | `c117800a30e35043d5bb6f14a4439f47b794a2c8ae79f25c644dfeb1ece6b238` | `b685b7b04631b7b5a478e28c58a76e5a1dc3778a747d9e078f44bd9c2c71f30b` |
+| `filled-reverse-strict-true` | `a7fd10959d5eb97eb4146a948a928bbb93370eb8b69d8bcf85c8e7fe048e86b4` | `db3ec7a1610821c1b26ddf3c57b3090ae68cd5200607271c72ee07331531f9c4` | `de7f1e958145260ad8cde214f1027a2d28cb7d96c9e5c391600a28624b4ed471` |
+
+- `sync`: **no `spec/` change.** This exact batch closes SG14's isolated distinct-count comparison-spelling item but not the complete rule-set collector; [`spec/`](../../spec/) still has no rule-set meta-information section.
+
 <a id="src-mandatory-information-info-severity"></a>
 #### Mandatory-information derivation ignores INFO negative field rules, measured locally on 2026-09-02
 

@@ -1,0 +1,135 @@
+{
+  "header" : {
+    "id" : "DistinctReverseStrictFalse_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "CountSeeds_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/DistinctReverseStrictFalse",
+        "name" : "DistinctReverseStrictFalse",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/DistinctReverseStrictFalse/ZeroA",
+            "name" : "ZeroA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/DistinctReverseStrictFalse/ZeroB",
+            "name" : "ZeroB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/DistinctReverseStrictFalse/ZeroTarget",
+            "name" : "ZeroTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/DistinctReverseStrictFalse/OneA",
+            "name" : "OneA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/DistinctReverseStrictFalse/OneB",
+            "name" : "OneB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/DistinctReverseStrictFalse/OneTarget",
+            "name" : "OneTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/DistinctReverseStrictFalse/TwoA",
+            "name" : "TwoA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/DistinctReverseStrictFalse/TwoB",
+            "name" : "TwoB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/DistinctReverseStrictFalse/TwoTarget",
+            "name" : "TwoTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/DistinctReverseStrictFalse/A_ZERO_GUARD",
+            "name" : "A_ZERO_GUARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../ZeroTarget",
+              "errorCode" : "A_ZERO_GUARD",
+              "errorCondition" : "0 < NumberOfDifferentValues(/DistinctReverseStrictFalse/ZeroA, /DistinctReverseStrictFalse/ZeroB) And FieldNotFilled(/DistinctReverseStrictFalse/ZeroTarget)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "A_ZERO_GUARD"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

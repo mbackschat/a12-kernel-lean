@@ -380,6 +380,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Mandatory-information derivation returns an isolated true count target and its root](sources/rule-set-meta-information.md#src-mandatory-information-count-target-only)
 <a id="src-mandatory-information-distinct-target-only"></a>
 - [Mandatory-information derivation keeps isolated distinct-count targets inert](sources/rule-set-meta-information.md#src-mandatory-information-distinct-target-only)
+<a id="src-mandatory-information-distinct-comparisons"></a>
+- [Mandatory-information derivation preserves the isolated distinct-count comparison matrix](sources/rule-set-meta-information.md#src-mandatory-information-distinct-comparisons)
 <a id="src-mandatory-information-declared-required"></a>
 - [Mandatory-information derivation separates unconditional and parent-present field declarations](sources/rule-set-meta-information.md#src-mandatory-information-declared-required)
 <a id="src-mandatory-information-declaration-closure"></a>
