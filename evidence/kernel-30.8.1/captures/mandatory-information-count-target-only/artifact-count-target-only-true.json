@@ -1,0 +1,30 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "b9e7fbdc6b4806e15945bf7f993c04724a83437c",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "CountTargetOnlyTrue_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [ ],
+  "mandatoryInformation" : {
+    "mandatory" : [
+      "/CountTargetOnlyTrue/ZeroTarget"
+    ],
+    "mandatoryForRootGroup" : [
+      "/CountTargetOnlyTrue/ZeroTarget"
+    ],
+    "mandatoryRootGroups" : [
+      "CountTargetOnlyTrue"
+    ]
+  }
+}

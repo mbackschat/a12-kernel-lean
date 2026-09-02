@@ -725,6 +725,18 @@ example :
     ]) = result ["TwoA", "OneA"] ["TwoA", "OneA"] ["Form"] := by
   native_decide
 
+/- The target-only Kernel pair separates an entailed zero threshold from the adjacent false threshold without making either isolated operand mandatory. -/
+example :
+    deriveWithThreshold? 0 (fun threshold => [
+      .countGuardedNotFilled ["A", "B"] .countGreaterEqual
+        (some threshold) "Target"
+    ]) = result ["Target"] ["Target"] ["Form"] ∧
+    deriveWithThreshold? 1 (fun threshold => [
+      .countGuardedNotFilled ["A", "B"] .countGreaterEqual
+        (some threshold) "Target"
+    ]) = result [] [] [] := by
+  native_decide
+
 /- A count target reused by a disjunction and a count operand reached through a deeper dependency stay outside the measured shape, while ordinary downstream field guards consume the admitted count result. -/
 example :
     deriveWithThreshold? (-1) (fun threshold => [

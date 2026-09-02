@@ -351,6 +351,24 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 
 - `sync`: **no `spec/` change.** This exact batch closes SG14's first dependency-derived filled-count route but not the complete collector; [`spec/`](../../spec/) still has no rule-set meta-information section.
 
+<a id="src-mandatory-information-count-target-only"></a>
+#### Mandatory-information derivation returns an isolated true count target and its root, measured locally on 2026-09-02
+
+- `revision`: two model-level `mandatoryInformation` requests at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`; source-shipped dmtool `0.13.0`, fully typed structured model read-backs, Kernel-confirmed `model check` results, and both artifacts report Kernel `30.8.1` built and runtime. The true model was emitted from the retained seed-cardinality model through structured model and group rename, rule modify, and rule remove verbs; the false model was emitted from it by the same structured rename route and one rule modification. Neither request carries a document or row, and immediate repeats were byte-identical.
+- `question`: when a ruleset contains only `NumberOfFilledFields(A, B) >= n And FieldNotFilled(Target)`, do isolated operands remain non-mandatory while the adjacent thresholds `n = 0` and `n = 1` separate target and root contribution?
+- `models`: each model has one nonrepeatable root, two isolated count operands, one target, and one ERROR rule. The true arm carries the present threshold `0`; the otherwise identical false arm carries `1`. No field has a direct or guarded seed.
+- `claim`: the true artifact returns exactly `Target` in both field sets and its root in `mandatoryRootGroups`, omitting both operands. The false artifact returns three empty sets. These exact outcomes close the previously unqualified target-only root separator without identifying the Kernel's private implementation.
+- `separators`: treating listed operands as mandatory adds `A` and `B` in both arms. Ignoring an otherwise isolated count guard empties the true arm, omitting its target and root. Deriving fields without their root omits the true arm's root, while ignoring comparison truth adds the target and root to the false arm.
+- `limit`: one nonrepeatable root per model, String fields, ERROR severity, one duplicate-free two-field filled-count list, count-on-left inclusive `>=`, isolated operands and target, present scale-0 thresholds `0` and `1`, and `en_US`. Other comparisons, list sizes, count operators, absent and sentinel thresholds, operand or target reuse, repetition, indices, filters, generated rules, wider formulas, cross-root references, and cycles remain outside this observation.
+- `bytes`: [`mandatory-information-count-target-only/`](../../evidence/kernel-30.8.1/captures/mandatory-information-count-target-only/) retains both model/request/artifact triples. These are bounded raw captures with no typed replay, so they establish neither L nor C.
+
+| Case | Model SHA-256 | Request SHA-256 | Artifact SHA-256 |
+|---|---|---|---|
+| `target-only-true` | `811d660af9febc4217c787cf2d8a03efa7dc0836db64e0bd4f956f1aaadf94bb` | `cc8b0fa40d5b72970474ed3ca5e8fdaa86760cca8fcd5596c7c91447cde21776` | `dcfb9c2b7bd9f68e16cf8968f2389324945ee9021231f3db987542004d2cc808` |
+| `target-only-false` | `30ebf8d7ef15ba2cfdaaeb22960efdc80949befe65707211707af00cfc2eb580` | `0d40abf41f8e2e56b23807f69449037a1b950ed0a474a85dffe2ce603b800971` | `9afe2995e303cc9bf8ac0901fd84ffe4c2f97baea2525a5ba76d6818c54df7c3` |
+
+- `sync`: **no `spec/` change.** This exact batch closes SG14's target-only root separator but not the complete rule-set collector; [`spec/`](../../spec/) still has no rule-set meta-information section.
+
 <a id="src-mandatory-information-info-severity"></a>
 #### Mandatory-information derivation ignores INFO negative field rules, measured locally on 2026-09-02
 
