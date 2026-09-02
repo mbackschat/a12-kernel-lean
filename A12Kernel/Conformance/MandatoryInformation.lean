@@ -701,7 +701,31 @@ example :
       ["Form"] := by
   native_decide
 
-/- A measured count target is neither produced elsewhere nor an input to wider dependency closure. -/
+/- The Kernel count-dependency pair entails the count target and both downstream fields only when the dependency-derived operand and direct operand are both available. -/
+example :
+    deriveWithThreshold? 2 (fun threshold => [
+      .countGuardedNotFilled ["OneA", "TwoB"] .countGreaterEqual
+        (some threshold) "ZeroTarget",
+      .fieldGuardedNotFilled "ZeroTarget" "OneTarget",
+      .fieldGuardedNotFilled "ZeroTarget" "TwoTarget",
+      .fieldGuardedNotFilled "TwoA" "OneA",
+      .fieldNotFilled "TwoA",
+      .fieldNotFilled "TwoB"
+    ]) = result
+      ["TwoA", "TwoB", "OneA", "ZeroTarget", "OneTarget", "TwoTarget"]
+      ["TwoA", "TwoB", "OneA", "ZeroTarget", "OneTarget", "TwoTarget"]
+      ["Form"] ∧
+    deriveWithThreshold? 2 (fun threshold => [
+      .countGuardedNotFilled ["OneA", "TwoB"] .countGreaterEqual
+        (some threshold) "ZeroTarget",
+      .fieldGuardedNotFilled "ZeroTarget" "OneTarget",
+      .fieldGuardedNotFilled "ZeroTarget" "TwoTarget",
+      .fieldGuardedNotFilled "TwoA" "OneA",
+      .fieldNotFilled "TwoA"
+    ]) = result ["TwoA", "OneA"] ["TwoA", "OneA"] ["Form"] := by
+  native_decide
+
+/- A count target reused by a disjunction and a count operand reached through a deeper dependency stay outside the measured shape, while ordinary downstream field guards consume the admitted count result. -/
 example :
     deriveWithThreshold? (-1) (fun threshold => [
       .fieldNotFilled "A",
@@ -710,13 +734,22 @@ example :
       .countGuardedNotFilled ["A", "B"] .countGreaterEqual
         (some threshold) "Target"
     ]) = none ∧
+      deriveWithThreshold? 2 (fun threshold => [
+        .countGuardedNotFilled ["A", "B"] .countGreaterEqual
+          (some threshold) "Target",
+        .fieldGuardedNotFilled "Seed" "A",
+        .fieldGuardedNotFilled "PreSeed" "Seed",
+        .fieldNotFilled "PreSeed",
+        .fieldNotFilled "B"
+      ]) = none ∧
       deriveWithThreshold? 0 (fun threshold => [
         .fieldNotFilled "A",
         .fieldNotFilled "B",
         .fieldGuardedNotFilled "Target" "Dependent",
         .countGuardedNotFilled ["A", "B"] .countGreaterEqual
           (some threshold) "Target"
-      ]) = none := by
+      ]) = result ["A", "B", "Target", "Dependent"]
+        ["A", "B", "Target", "Dependent"] ["Form"] := by
   native_decide
 
 end A12Kernel.Conformance.MandatoryInformation

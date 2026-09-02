@@ -1,0 +1,191 @@
+{
+  "header" : {
+    "id" : "CountDependencyFalse_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "CountSeeds_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/CountDependencyFalse",
+        "name" : "CountDependencyFalse",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/CountDependencyFalse/ZeroA",
+            "name" : "ZeroA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountDependencyFalse/ZeroB",
+            "name" : "ZeroB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountDependencyFalse/ZeroTarget",
+            "name" : "ZeroTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountDependencyFalse/OneA",
+            "name" : "OneA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountDependencyFalse/OneB",
+            "name" : "OneB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountDependencyFalse/OneTarget",
+            "name" : "OneTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountDependencyFalse/TwoA",
+            "name" : "TwoA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountDependencyFalse/TwoB",
+            "name" : "TwoB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountDependencyFalse/TwoTarget",
+            "name" : "TwoTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/CountDependencyFalse/A_ZERO_GUARD",
+            "name" : "A_ZERO_GUARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../ZeroTarget",
+              "errorCode" : "A_ZERO_GUARD",
+              "errorCondition" : "NumberOfFilledFields(/CountDependencyFalse/OneA, /CountDependencyFalse/TwoB) >= 2 And FieldNotFilled(/CountDependencyFalse/ZeroTarget)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "A_ZERO_GUARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/CountDependencyFalse/B_ONE_GUARD",
+            "name" : "B_ONE_GUARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../OneTarget",
+              "errorCode" : "B_ONE_GUARD",
+              "errorCondition" : "FieldFilled(/CountDependencyFalse/ZeroTarget) And FieldNotFilled(/CountDependencyFalse/OneTarget)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "B_ONE_GUARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/CountDependencyFalse/C_TWO_GUARD",
+            "name" : "C_TWO_GUARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../TwoTarget",
+              "errorCode" : "C_TWO_GUARD",
+              "errorCondition" : "FieldFilled(/CountDependencyFalse/ZeroTarget) And FieldNotFilled(/CountDependencyFalse/TwoTarget)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "C_TWO_GUARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/CountDependencyFalse/Z_ONE_A",
+            "name" : "Z_ONE_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../OneA",
+              "errorCode" : "Z_ONE_A",
+              "errorCondition" : "FieldFilled(/CountDependencyFalse/TwoA) And FieldNotFilled(/CountDependencyFalse/OneA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Z_ONE_A"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/CountDependencyFalse/Z_TWO_A",
+            "name" : "Z_TWO_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../TwoA",
+              "errorCode" : "Z_TWO_A",
+              "errorCondition" : "FieldNotFilled(/CountDependencyFalse/TwoA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Z_TWO_A"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
