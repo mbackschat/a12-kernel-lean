@@ -149,6 +149,18 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 
 - `sync`: **no `spec/` change.** [`spec/`](../../spec/) still has no rule-set meta-information section; [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) owns the wider obligation, and the [implementation map](../IMPLEMENTATION-MAP.md#cap-flat-mandatory-information) owns the checked slice.
 
+<a id="src-mandatory-information-semantic-index"></a>
+#### A semantic-indexed operand excludes its entire rule from mandatory-information derivation, measured locally on 2026-09-02
+
+- `revision`: one model-level `mandatoryInformation` request at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`; persisted structured rule read-back, Kernel-confirmed `model check`, and the artifact report dmtool `0.13.0` and Kernel `30.8.1` built and runtime. The model was created and changed only through structured `dmtool` verbs, the request carries no document or row, and an immediate repeat was byte-identical.
+- `question`: when one ERROR rule disjoins an ordinary `FieldNotFilled(Note)` leaf with a keyed `FieldNotFilled(Rows/Value For "k1")` leaf, does mandatory-information derivation retain the ordinary leaf, drop only the indexed leaf, or exclude the whole rule?
+- `model`: one nonrepeatable root contains ordinary `Control` and `Note` fields plus repeatable `Rows` at maximum two, indexed by `Key`, with a `Value` field. `AIndexedRule` is the disjunction above and names `Note` as its error field; separate later-sorting `ZControlRule` directly requires `Control`.
+- `claim`: all three returned sets contain only the direct control contribution: both field sets are exactly `/SemanticIndex/Control`, and the root set is exactly `SemanticIndex`. Neither the ordinary `Note` leaf nor the keyed `Rows/Value` leaf contributes on this semantic-indexed rule shape.
+- `separators`: dropping only the keyed leaf retains `Note`; treating the rule as an ordinary disjunction adds both referenced fields; ignoring every rule loses the independent `Control` result.
+- `limit`: one literal-key semantic index into one repeatable indexed group, one ordinary sibling leaf in the same disjunction, one independent direct control rule, one nonrepeatable root, and `en_US`. Other index expressions, concrete row indices, nesting, repetition topology, conjunction, filters, parallel iteration, interaction with other recognized rule families, and generated index rules remain outside.
+- `bytes`: [`mandatory-information-semantic-index/`](../../evidence/kernel-30.8.1/captures/mandatory-information-semantic-index/) retains the model, request, and artifact. Their SHA-256 values are `fb2ceba45e97fa1cd191dfc16478418fa268bbf5c200e955c2161a578c7cd3c1`, `6f01e593796fe03d6986ce36c0b7c7349bed604df0dea60dbf57ed1425fb7692`, and `a93b172db336b5986a1d86f84e2a14a798192ac2a42289fa694110da97588efb`. This is a bounded raw capture with no typed local replay, so it establishes neither `L` nor `C` coverage.
+- `sync`: **no `spec/` change.** [`spec/`](../../spec/) still has no rule-set meta-information section; [SG14](../SEMANTICS-GAPS.md#sg14--mandatory-information-derivation) owns the wider obligation, and the [implementation map](../IMPLEMENTATION-MAP.md#cap-flat-mandatory-information) owns the checked slice.
+
 <a id="src-mandatory-information-field-list-cycles"></a>
 #### Mandatory-information derivation closes seeded existential and universal field-list cycles without self-support, measured locally on 2026-09-02
 

@@ -2,7 +2,7 @@ import A12Kernel.Semantics.MandatoryInformation
 
 /-! # Mandatory-information derivation locks
 
-These cases cover the measured flat, nonrepeatable ERROR-rule fragment, the exact singleton WARNING/INFO severity exclusions, the two isolated declaration-derived field-required modes, the measured whole-rule rejection for one filtered shape, and the bounded filled-count and distinct-count slices. They deliberately exclude repetition, indices, filter internals, wider generated rules, and cross-root references. -/
+These cases cover the measured flat, nonrepeatable ERROR-rule fragment, the exact singleton WARNING/INFO severity exclusions, declaration-derived field-required modes and root closure, one filtered and one semantic-indexed whole-rule exclusion, and the bounded filled-count and distinct-count slices. They deliberately exclude repetition, index internals and wider indexed shapes, filter internals, wider generated rules, and cross-root references. -/
 
 namespace A12Kernel.Conformance.MandatoryInformation
 
@@ -77,6 +77,11 @@ private def declaredRequirementClosureCases : List (List (MandatoryRule String S
     ], result ["Seed", "ParentRequired"] ["Seed", "ParentRequired"] ["Form"])
 ]
 
+private def semanticIndexKernelBatch : List (MandatoryRule String String) := [
+  .ignored (.semanticIndexed ["Note", "Rows/Value"]),
+  .fieldNotFilled "Control"
+]
+
 private def deriveFieldCycleKernelBatch? :
     Option (MandatoryInformation String String) :=
   derive [
@@ -115,6 +120,16 @@ example : declaredRequiredCases.all (fun (rules, expected) => derive rules == ex
 /- Unconditional declaration, root, and direct-field seeds each promote a parent-present declaration through the same root closure. -/
 example : declaredRequirementClosureCases.all (fun (rules, expected) =>
     derive rules == expected) := by
+  native_decide
+
+/- A semantic index excludes its entire rule rather than only the indexed leaf; the independent direct rule remains visible. -/
+example :
+    derive semanticIndexKernelBatch =
+        result ["Control"] ["Control"] ["Form"] ∧
+      derive semanticIndexKernelBatch ≠ derive [
+        .disjoinedFieldNotFilled ["Note", "Rows/Value"],
+        .fieldNotFilled "Control"
+      ] := by
   native_decide
 
 /- Declaration-derived requirements remain isolated from wider authored guards until that interaction is measured. -/

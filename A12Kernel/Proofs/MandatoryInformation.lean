@@ -74,6 +74,17 @@ theorem deriveCheckedMandatoryInformation_declared_parent_closes_from_root_seed 
       ] := by
   decide
 
+/-- The measured semantic-indexed rule contributes nothing as a whole while an independent direct requirement remains visible. -/
+theorem deriveCheckedMandatoryInformation_ignores_semantic_indexed_rule :
+    deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .ignored (.semanticIndexed ["Note", "Rows/Value"]),
+        .fieldNotFilled "Control"
+      ] =
+      deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .fieldNotFilled "Control"
+      ] := by
+  decide
+
 /-- Existential and universal field-list guards reach their concrete successful fixed points in either authored order. -/
 theorem deriveCheckedMandatoryInformation_field_list_guards_close_reverse_authored :
     deriveCheckedMandatoryInformation (fun _ : String => "Form") [

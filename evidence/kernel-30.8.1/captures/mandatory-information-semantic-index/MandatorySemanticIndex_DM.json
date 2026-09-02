@@ -1,0 +1,113 @@
+{
+  "header" : {
+    "id" : "MandatorySemanticIndex_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandatorySemanticIndex_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/SemanticIndex",
+        "name" : "SemanticIndex",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/SemanticIndex/Control",
+            "name" : "Control",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/SemanticIndex/Note",
+            "name" : "Note",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/SemanticIndex/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/SemanticIndex/Rows/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/SemanticIndex/Rows/Value",
+                "name" : "Value",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "Key"
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/SemanticIndex/AIndexedRule",
+            "name" : "AIndexedRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Note",
+              "errorCode" : "INDEXED_RULE",
+              "errorCondition" : "FieldNotFilled(/SemanticIndex/Note) Or FieldNotFilled(/SemanticIndex/Rows/Value For \"k1\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Indexed rule."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/SemanticIndex/ZControlRule",
+            "name" : "ZControlRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Control",
+              "errorCode" : "CONTROL_RULE",
+              "errorCondition" : "FieldNotFilled(/SemanticIndex/Control)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Control is required."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

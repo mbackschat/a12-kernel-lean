@@ -374,6 +374,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Mandatory-information derivation separates unconditional and parent-present field declarations](sources/rule-set-meta-information.md#src-mandatory-information-declared-required)
 <a id="src-mandatory-information-declaration-closure"></a>
 - [Parent-present field declarations close from declaration, root, and direct-field seeds](sources/rule-set-meta-information.md#src-mandatory-information-declaration-closure)
+<a id="src-mandatory-information-semantic-index"></a>
+- [A semantic-indexed operand excludes its entire rule from mandatory-information derivation](sources/rule-set-meta-information.md#src-mandatory-information-semantic-index)
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)
