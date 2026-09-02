@@ -297,14 +297,15 @@ private def fieldMentionCount [DecidableEq Field]
     (MandatoryRule.mentionedFields rule).foldl (fun count mentioned =>
       if mentioned = field then count + 1 else count) count) 0
 
-/-- Keep the count guard on its measured shape: a duplicate-free list of direct singleton seeds and a target mentioned only in its own guard position. Comparison truth decides contribution rather than admission; wider dependency closure stays outside this slice. -/
+/-- Keep the count guard on its measured shape: a duplicate-free list whose operands are direct singleton seeds or otherwise isolated, and a target mentioned only in its own guard position. Comparison truth decides contribution rather than admission; wider dependency closure stays outside this slice. -/
 private def MandatoryRule.hasSupportedCountShape [DecidableEq Field]
     (rules : List (MandatoryRule Field Root)) (seeds : List Field) :
     MandatoryRule Field Root → Bool
   | .countLessThan fields _
   | .differentValuesLessThan fields _ => fields.eraseDups == fields
   | .countGuardedNotFilled fields _ _ target =>
-      fields.eraseDups == fields && fields.all (· ∈ seeds) &&
+      fields.eraseDups == fields &&
+        fields.all (fun field => field ∈ seeds || fieldMentionCount rules field == 1) &&
         fieldMentionCount rules target == 1
   | .differentValuesGuardedNotFilled fields comparison threshold target =>
       let thresholdValue := countThresholdValue threshold

@@ -1,0 +1,205 @@
+{
+  "header" : {
+    "id" : "CountSeeds_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "CountSeeds_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/CountSeeds",
+        "name" : "CountSeeds",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/CountSeeds/ZeroA",
+            "name" : "ZeroA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountSeeds/ZeroB",
+            "name" : "ZeroB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountSeeds/ZeroTarget",
+            "name" : "ZeroTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountSeeds/OneA",
+            "name" : "OneA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountSeeds/OneB",
+            "name" : "OneB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountSeeds/OneTarget",
+            "name" : "OneTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountSeeds/TwoA",
+            "name" : "TwoA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountSeeds/TwoB",
+            "name" : "TwoB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/CountSeeds/TwoTarget",
+            "name" : "TwoTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/CountSeeds/A_ZERO_GUARD",
+            "name" : "A_ZERO_GUARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../ZeroTarget",
+              "errorCode" : "A_ZERO_GUARD",
+              "errorCondition" : "NumberOfFilledFields(ZeroA, ZeroB) >= 2 And FieldNotFilled(ZeroTarget)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "A_ZERO_GUARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/CountSeeds/B_ONE_GUARD",
+            "name" : "B_ONE_GUARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../OneTarget",
+              "errorCode" : "B_ONE_GUARD",
+              "errorCondition" : "NumberOfFilledFields(OneA, OneB) >= 2 And FieldNotFilled(OneTarget)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "B_ONE_GUARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/CountSeeds/C_TWO_GUARD",
+            "name" : "C_TWO_GUARD",
+            "Rule" : {
+              "errorEntityRelPath" : "../TwoTarget",
+              "errorCode" : "C_TWO_GUARD",
+              "errorCondition" : "NumberOfFilledFields(TwoA, TwoB) >= 2 And FieldNotFilled(TwoTarget)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "C_TWO_GUARD"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/CountSeeds/Z_ONE_A",
+            "name" : "Z_ONE_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../OneA",
+              "errorCode" : "Z_ONE_A",
+              "errorCondition" : "FieldNotFilled(OneA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Z_ONE_A"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/CountSeeds/Z_TWO_A",
+            "name" : "Z_TWO_A",
+            "Rule" : {
+              "errorEntityRelPath" : "../TwoA",
+              "errorCode" : "Z_TWO_A",
+              "errorCondition" : "FieldNotFilled(TwoA)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Z_TWO_A"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/CountSeeds/Z_TWO_B",
+            "name" : "Z_TWO_B",
+            "Rule" : {
+              "errorEntityRelPath" : "../TwoB",
+              "errorCode" : "Z_TWO_B",
+              "errorCondition" : "FieldNotFilled(TwoB)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Z_TWO_B"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -217,6 +217,21 @@ private def deriveFalseCountKernelBatch? :
     .fieldNotFilled "B"
   ]
 
+private def deriveCountSeedCardinalityKernelBatch? :
+    Option (MandatoryInformation String String) := do
+  let two ← checkedThreshold? 2
+  derive [
+    .countGuardedNotFilled ["ZeroA", "ZeroB"] .countGreaterEqual
+      (some two) "ZeroTarget",
+    .countGuardedNotFilled ["OneA", "OneB"] .countGreaterEqual
+      (some two) "OneTarget",
+    .countGuardedNotFilled ["TwoA", "TwoB"] .countGreaterEqual
+      (some two) "TwoTarget",
+    .fieldNotFilled "OneA",
+    .fieldNotFilled "TwoA",
+    .fieldNotFilled "TwoB"
+  ]
+
 private def deriveCrossRootDifferentValuesGuard? :
     Option (MandatoryInformation String String) := do
   let threshold ← checkedThreshold? 2
@@ -332,7 +347,7 @@ example :
         result ["A", "B"] ["A", "B"] ["Form"] := by
   native_decide
 
-/- No bound shares the evaluator sentinel outcome without sharing the checked authored-literal identity; unseeded or malformed count guards fail closed. -/
+/- No bound shares the evaluator sentinel outcome without sharing the checked authored-literal identity; isolated unseeded operands remain admissible while malformed or reused operands fail closed. -/
 example :
     derive [.countLessThan ["A", "B"] none] = result [] [] [] ∧
       derive [
@@ -342,7 +357,7 @@ example :
       ] = result ["A", "B"] ["A", "B"] ["Form"] ∧
       deriveCheckedMandatoryInformation rootOf [
         .countGuardedNotFilled ["A", "B"] .countGreaterEqual none "Target"
-      ] = none ∧
+      ] = result [] [] [] ∧
       deriveCountGuard? .countGreater 2 "FalseGuard" =
         result ["A", "B"] ["A", "B"] ["Form"] ∧
       deriveCountGuard? .countGreaterEqual 3 "FalseInclusive" =
@@ -364,7 +379,7 @@ example :
       derive [
         .fieldNotFilled "A",
         .countGuardedNotFilled ["A", "B"] .countGreaterEqual none "Target"
-      ] = none ∧
+      ] = result ["A"] ["A"] ["Form"] ∧
       derive [
         .fieldNotFilled "A",
         .fieldNotFilled "B",
@@ -386,6 +401,14 @@ example :
     deriveFalseCountKernelBatch? = result
       ["A", "B", "GeTrue", "GtTrue", "ReverseLeTrue", "ReverseLtTrue"]
       ["A", "B", "GeTrue", "GtTrue", "ReverseLeTrue", "ReverseLtTrue"]
+      ["Form"] := by
+  native_decide
+
+/- The retained seed-cardinality batch admits isolated zero- and one-seed guards without manufacturing their unmet targets, while the two-seed control entails its target. -/
+example :
+    deriveCountSeedCardinalityKernelBatch? = result
+      ["OneA", "TwoA", "TwoB", "TwoTarget"]
+      ["OneA", "TwoA", "TwoB", "TwoTarget"]
       ["Form"] := by
   native_decide
 
