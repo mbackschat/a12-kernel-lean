@@ -1,0 +1,81 @@
+{
+  "header" : {
+    "id" : "MandatoryBooleanCnfPosition12",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandOrNotFilled_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandatoryBooleanCnfPosition12",
+        "name" : "MandatoryBooleanCnfPosition12",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandatoryBooleanCnfPosition12/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandatoryBooleanCnfPosition12/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandatoryBooleanCnfPosition12/MANDATORY_BOOLEAN_CNF_POSITION_12",
+            "name" : "MANDATORY_BOOLEAN_CNF_POSITION_12",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "MAND_OR_NOT_FILLED",
+              "errorCondition" : "(FieldNotFilled(/MandatoryBooleanCnfPosition12/A) Or FieldNotFilled(/MandatoryBooleanCnfPosition12/B)) And (FieldNotFilled(/MandatoryBooleanCnfPosition12/C) Or FieldNotFilled(/MandatoryBooleanCnfPosition12/A))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "MAND_OR_NOT_FILLED"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandatoryBooleanCnfPosition12/C",
+            "name" : "C",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

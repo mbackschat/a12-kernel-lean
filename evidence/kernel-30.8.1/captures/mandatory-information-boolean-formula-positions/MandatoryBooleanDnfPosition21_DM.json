@@ -1,0 +1,81 @@
+{
+  "header" : {
+    "id" : "MandatoryBooleanDnfPosition21",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandOrNotFilled_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandatoryBooleanDnfPosition21",
+        "name" : "MandatoryBooleanDnfPosition21",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandatoryBooleanDnfPosition21/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandatoryBooleanDnfPosition21/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandatoryBooleanDnfPosition21/MANDATORY_BOOLEAN_DNF_POSITION_21",
+            "name" : "MANDATORY_BOOLEAN_DNF_POSITION_21",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "MAND_OR_NOT_FILLED",
+              "errorCondition" : "(FieldNotFilled(/MandatoryBooleanDnfPosition21/B) And FieldNotFilled(/MandatoryBooleanDnfPosition21/A)) Or (FieldNotFilled(/MandatoryBooleanDnfPosition21/A) And FieldNotFilled(/MandatoryBooleanDnfPosition21/C))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "MAND_OR_NOT_FILLED"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandatoryBooleanDnfPosition21/C",
+            "name" : "C",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

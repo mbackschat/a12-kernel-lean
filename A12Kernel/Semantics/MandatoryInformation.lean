@@ -112,20 +112,22 @@ def referencedFields : MandatoryNegativeFieldFormula Field → List Field
 private def threeDistinct [DecidableEq Field] (first second third : Field) : Bool :=
   [first, second, third].eraseDups.length == 3
 
-/-- Admit only the four retained Boolean-formula cells rather than extrapolating to arbitrary nesting or arity. -/
+/-- Recognize a two-clause, width-two matrix with one field shared in any measured operand position. -/
+private def hasOneSharedField [DecidableEq Field]
+    (first second third fourth : Field) : Bool :=
+  first != second && third != fourth &&
+    [first, second, third, fourth].eraseDups.length == 3
+
+/-- Admit only the retained Boolean-formula matrices rather than extrapolating to arbitrary nesting or arity. -/
 def hasMeasuredShape [DecidableEq Field] : MandatoryNegativeFieldFormula Field → Bool
   | .flatDisjunction [first, second, third] =>
       threeDistinct first second third
-  | .conjunctionOfDisjunctions [
-      [shared, leftOnly], [sharedAgain, rightOnly]
-    ] =>
-      shared == sharedAgain && threeDistinct shared leftOnly rightOnly
+  | .conjunctionOfDisjunctions [[first, second], [third, fourth]] =>
+      hasOneSharedField first second third fourth
   | .conjunctionOfDisjunctions [[left, right], [other]] =>
       threeDistinct left right other
-  | .disjunctionOfConjunctions [
-      [shared, leftOnly], [sharedAgain, rightOnly]
-    ] =>
-      shared == sharedAgain && threeDistinct shared leftOnly rightOnly
+  | .disjunctionOfConjunctions [[first, second], [third, fourth]] =>
+      hasOneSharedField first second third fourth
   | _ => false
 
 end MandatoryNegativeFieldFormula

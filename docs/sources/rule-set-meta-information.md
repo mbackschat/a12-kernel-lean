@@ -146,7 +146,7 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 
 - `claim`: authored connective nesting is observable in the returned field sets. The common `A` survives the two disjunctive clauses under the measured outer conjunction, while the same common field does not survive the measured outer disjunction of two conjunctive clauses. The flat three-way disjunction contributes all three fields, and the disjoint conjunction contributes only the root.
 - `separators`: `cnf-shared` against `cnf-disjoint` isolates clause intersection while holding the first clause fixed. `cnf-shared` against `dnf-shared` keeps the same three referenced fields and the same repeated `A` but changes both connective levels, refuting field-reference-only and common-leaf accounts. `or-triple` is the positive arity control.
-- `limit`: one nonrepeatable root, three distinct String fields, one ERROR rule, the exact four formulas above, and `en_US`. Unmeasured and fail-closed locally: moving the shared field away from the first position within a disjunctive clause, duplicates, four or more flat disjuncts, other clause counts or widths, mixed leaf families, dependency interaction, repetition, indices, filters, generated rules, cross-root references, and deeper nesting.
+- `limit`: one nonrepeatable root, three distinct String fields, one ERROR rule, the exact four formulas above, and `en_US`. The [position successor](#src-mandatory-information-boolean-formula-positions) closes the other shared-field positions in the two-clause, width-two CNF/DNF matrices. Duplicate flat disjuncts, clause-local duplicates, other shared-field multiplicities, four or more flat disjuncts, other clause counts or widths, mixed leaf families, dependency interaction, repetition, indices, filters, generated rules, cross-root references, and deeper nesting remain unmeasured and fail-closed locally.
 - `bytes`: [`mandatory-information-boolean-formulas/`](../../evidence/kernel-30.8.1/captures/mandatory-information-boolean-formulas/) retains four model/request/artifact triples. These are bounded raw captures with no typed replay, so they establish neither `L` nor `C` coverage.
 
 | Case | Model SHA-256 | Request SHA-256 | Artifact SHA-256 |
@@ -157,6 +157,39 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 | `or-triple` | `5a45be28290f1c3a58fa0e8681ad0f0f72ced0c2738dee99ecb224ffb1d1a4bd` | `c23b0c89bfbcd07ed86849397ab133c77f0228ed35d4873291f35bf81c3984b6` | `47ff29e562d0bdd9f482faff8ed05d2de43d2e9c41b64e1d2a073bfcde7f0b0c` |
 
 - `sync`: **no `spec/` change.** The batch extends the checked SG14 carrier without defining arbitrary Boolean normalization or the complete rule-set collector; [`spec/`](../../spec/) still has no rule-set meta-information clause.
+
+<a id="src-mandatory-information-boolean-formula-positions"></a>
+#### Mandatory-information 2×2 negative-field formulas ignore shared-field position, measured locally on 2026-09-02
+
+- `revision`: six model-level `mandatoryInformation` requests at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`; every artifact reports dmtool `0.13.0`, Kernel `30.8.1` built and runtime, and source state `CLEAN`. Source-shipped dmtool derived each model from the retained shared CNF or DNF through structured model/group/rule renames and structured condition replacement. Persisted rule read-back reproduced every formula exactly, every `model check` was Kernel-confirmed valid, and Gradle ran the local JVM probe offline. No request contains a document or row.
+- `question`: in an exact two-clause, width-two negative-field CNF or DNF with three distinct fields and one field shared between the clauses, does the shared field's first/second operand position change the derived sets?
+
+`12`, `21`, and `22` name the shared field's one-based position in the first and second clause. The earlier [Boolean-formula checkpoint](#src-mandatory-information-boolean-formulas) supplies the `11` cell.
+
+| Case | Authored shared-field positions | `mandatory` and `mandatoryForRootGroup` | `mandatoryRootGroups` |
+|---|---|---|---|
+| `cnf-position-12` | `12` | A | root |
+| `cnf-position-21` | `21` | A | root |
+| `cnf-position-22` | `22` | A | root |
+| `dnf-position-12` | `12` | — | root |
+| `dnf-position-21` | `21` | — | root |
+| `dnf-position-22` | `22` | — | root |
+
+- `claim`: across the complete four-position matrix formed with the earlier `11` controls, the exact 2×2 CNF contributes the shared field and the exact 2×2 DNF contributes no field; both contribute the root. Operand position therefore does not change these returned sets, without choosing an internal collector algorithm or extending the claim to another Boolean shape.
+- `separators`: within each connective, the `12`, `21`, and `22` cases independently move the shared field while holding clause count, widths, referenced fields, and root fixed. Across connectives, each position pair retains the same ordered leaves but separates the CNF field contribution from the DNF root-only result.
+- `limit`: one nonrepeatable root, three distinct String fields, one ERROR rule, two clauses of width two, exactly one shared field, and `en_US`. Whole-clause ordering, clause-local duplicates, zero or two shared fields, other clause counts or widths, mixed leaves, formula composition with other rules, dependencies, repetition, indices, filters, generated rules, cross-root references, and deeper nesting remain outside external correspondence.
+- `bytes`: [`mandatory-information-boolean-formula-positions/`](../../evidence/kernel-30.8.1/captures/mandatory-information-boolean-formula-positions/) retains six model/request/artifact triples. These are bounded raw captures with no typed replay, so they establish neither `L` nor `C` coverage.
+
+| Case | Model SHA-256 | Request SHA-256 | Artifact SHA-256 |
+|---|---|---|---|
+| `cnf-position-12` | `1954563db633363bbff5172df61c4ab9f9fa271a74240c466f75126536d37419` | `c1071cfd90d5b038efd4917fb25d737f83dda1f4447188a22bc8a2fe5c129dab` | `1e32e563f9075b174416b315785628cb03f1f074e11a2dd6e52efe15e2d967f0` |
+| `cnf-position-21` | `861b47e1c8ecd53fb342205614f732578edff3363ab11dc804f34dfe6b6f522e` | `c8b3a374342af9998fae12dc48ab77b5c30b78aeee462343c6855d23e0b0566c` | `2587d4c5367ef600b47081a6ea7957145295d40ceeef646ce429a3780a7a4e99` |
+| `cnf-position-22` | `563157d6aac5a00b850f95b90484ccc0007bce697e5ac16e902b3f0be0c9c9ad` | `1945cca0de37c2224db2229a561372c7482e819b986d287e58a338877726d4fa` | `d10543ceab516f27931dcd4a51d8dea99601f40049cde323ad3487a1b59e9627` |
+| `dnf-position-12` | `8f20da56c6f3f6bc6fa7e567664ca96ce0bf458476d654348474f756f90b984f` | `a2340039cfee9e32545a315b8d3bff3f0865de6e8218baa053dbf1038cbcdc44` | `fcc01f6299b7cbb4b205693eb8bac1932ff85624c3577659c604f52be6d80667` |
+| `dnf-position-21` | `d57ed7d6915c76903d58a6bb84ffad741bdc90b8569786163fc1e5aa1cbed535` | `1610a8063008eb7789765e82d8a03977c34dd0d772076c1f4433339acbc1d19f` | `ad34a7e546ed73ae09ec66885ead79b4006241061d390565a873508d1b468a8b` |
+| `dnf-position-22` | `ea60e988a6e5c024b62f87ee507d1c36c1c0d37a745a9dad9c86b84d6de9e902` | `b199bf202f9f828d4f5a92694eb3cade8bc76266602e1b350f0ea119ba9aa63b` | `35838e7e807d7ba6ff01b33c9eb36b5742f079a027e45e13ad005640a6f99da2` |
+
+- `sync`: **no `spec/` change.** The position matrix narrows SG14's open Boolean-formula obligation without defining wider formula normalization or the complete rule-set collector; [`spec/`](../../spec/) still has no rule-set meta-information clause.
 
 <a id="src-mandatory-information-field-cycles"></a>
 #### Mandatory-information derivation closes a seeded direct field cycle and leaves an unseeded cycle inert, measured locally on 2026-09-02
