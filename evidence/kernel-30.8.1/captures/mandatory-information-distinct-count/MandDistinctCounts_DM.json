@@ -1,0 +1,160 @@
+{
+  "header" : {
+    "id" : "MandDistinctCounts_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MandDistinctCounts_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/MandDistinctCounts",
+        "name" : "MandDistinctCounts",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/MandDistinctCounts/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandDistinctCounts/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandDistinctCounts/FilledTarget",
+            "name" : "FilledTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/MandDistinctCounts/DistinctTarget",
+            "name" : "DistinctTarget",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandDistinctCounts/A_DistinctGuard",
+            "name" : "A_DistinctGuard",
+            "Rule" : {
+              "errorEntityRelPath" : "../DistinctTarget",
+              "errorCode" : "A_DISTINCT_GUARD",
+              "errorCondition" : "NumberOfDifferentValues(A, B) >= 2 And FieldNotFilled(DistinctTarget)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "distinct guard"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandDistinctCounts/B_FilledGuard",
+            "name" : "B_FilledGuard",
+            "Rule" : {
+              "errorEntityRelPath" : "../FilledTarget",
+              "errorCode" : "B_FILLED_GUARD",
+              "errorCondition" : "NumberOfFilledFields(A, B) >= 2 And FieldNotFilled(FilledTarget)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filled guard"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandDistinctCounts/C_DistinctRoot",
+            "name" : "C_DistinctRoot",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "C_DISTINCT_ROOT",
+              "errorCondition" : "NumberOfDifferentValues(A, B) < 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "distinct root"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandDistinctCounts/D_FilledRoot",
+            "name" : "D_FilledRoot",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "D_FILLED_ROOT",
+              "errorCondition" : "NumberOfFilledFields(A, B) < 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filled root"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandDistinctCounts/Y_SeedA",
+            "name" : "Y_SeedA",
+            "Rule" : {
+              "errorEntityRelPath" : "../A",
+              "errorCode" : "Y_SEED_A",
+              "errorCondition" : "FieldNotFilled(A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "seed A"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/MandDistinctCounts/Z_SeedB",
+            "name" : "Z_SeedB",
+            "Rule" : {
+              "errorEntityRelPath" : "../B",
+              "errorCode" : "Z_SEED_B",
+              "errorCondition" : "FieldNotFilled(B)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "seed B"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

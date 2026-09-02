@@ -2,7 +2,7 @@ import A12Kernel.Semantics.MandatoryInformation
 
 /-! # Mandatory-information derivation locks
 
-These cases cover the measured flat, nonrepeatable ERROR-rule fragment plus the measured whole-rule rejection for one filtered shape and the bounded count-threshold slice. They deliberately exclude repetition, indices, filter internals, generated rules, and cross-root references. -/
+These cases cover the measured flat, nonrepeatable ERROR-rule fragment plus the measured whole-rule rejection for one filtered shape and the bounded filled-count and distinct-count slices. They deliberately exclude repetition, indices, filter internals, generated rules, and cross-root references. -/
 
 namespace A12Kernel.Conformance.MandatoryInformation
 
@@ -160,6 +160,46 @@ private def deriveCountGuard? (comparison : MandatoryCountGuardComparison)
     .countGuardedNotFilled ["A", "B"] comparison (some threshold) target
   ]
 
+private def deriveDifferentValuesLess? (value : Rat) :
+    Option (MandatoryInformation String String) := do
+  let threshold ← checkedThreshold? value
+  derive [.differentValuesLessThan ["A", "B"] (some threshold)]
+
+private def deriveDifferentValuesGuard? (value : Rat) (target : String) :
+    Option (MandatoryInformation String String) := do
+  let threshold ← checkedThreshold? value
+  derive [
+    .fieldNotFilled "A",
+    .fieldNotFilled "B",
+    .differentValuesGuardedNotFilled ["A", "B"] .countGreaterEqual
+      (some threshold) target
+  ]
+
+private def deriveDistinctCountKernelBatch? :
+    Option (MandatoryInformation String String) := do
+  let rootThreshold ← checkedThreshold? 1
+  let guardThreshold ← checkedThreshold? 2
+  derive [
+    .differentValuesGuardedNotFilled ["A", "B"] .countGreaterEqual
+      (some guardThreshold) "DistinctTarget",
+    .countGuardedNotFilled ["A", "B"] .countGreaterEqual
+      (some guardThreshold) "FilledTarget",
+    .differentValuesLessThan ["A", "B"] (some rootThreshold),
+    .countLessThan ["A", "B"] (some rootThreshold),
+    .fieldNotFilled "A",
+    .fieldNotFilled "B"
+  ]
+
+private def deriveCrossRootDifferentValuesGuard? :
+    Option (MandatoryInformation String String) := do
+  let threshold ← checkedThreshold? 2
+  deriveCheckedMandatoryInformation countSplitRoot [
+    .fieldNotFilled "A",
+    .fieldNotFilled "B",
+    .differentValuesGuardedNotFilled ["A", "B"] .countGreaterEqual
+      (some threshold) "Target"
+  ]
+
 private def deriveWithThreshold? (value : Rat)
     (rules : CheckedMandatoryCountThreshold →
       List (MandatoryRule String String)) :
@@ -185,6 +225,56 @@ example :
       deriveCountLess? 4294967297 = result [] [] ["Form"] ∧
       deriveCountLess? 4294967299 = result [] [] ["Form"] ∧
       deriveCountLess? (-6 / 10) 1 = result [] [] [] := by
+  native_decide
+
+/- Filled-count and distinct-count rules share standalone root contribution, but only the filled-count comparison can enable a mandatory target in this checked slice. -/
+example :
+    deriveCountLess? 1 = deriveDifferentValuesLess? 1 ∧
+      deriveCountGuard? .countGreaterEqual 2 "FilledTarget" =
+        result ["A", "B", "FilledTarget"] ["A", "B", "FilledTarget"] ["Form"] ∧
+      deriveDifferentValuesGuard? 2 "DistinctTarget" =
+        result ["A", "B"] ["A", "B"] ["Form"] ∧
+      deriveDistinctCountKernelBatch? =
+        result ["A", "B", "FilledTarget"] ["A", "B", "FilledTarget"] ["Form"] := by
+  native_decide
+
+/- The distinct-count guard admits only the exact duplicate-free, direct-seed, isolated-target, non-sentinel true-comparison shape measured by the batch. -/
+example :
+    derive [.differentValuesLessThan ["A", "A"] none] = none ∧
+      derive [.differentValuesLessThan [] none] = none ∧
+      deriveDifferentValuesGuard? (-1) "SentinelTarget" = none ∧
+      deriveDifferentValuesGuard? 3 "FalseTarget" = none ∧
+      derive [
+        .fieldNotFilled "A",
+        .fieldNotFilled "B",
+        .differentValuesGuardedNotFilled ["A", "B"] .countGreaterEqual
+          none "AbsentTarget"
+      ] = none ∧
+      deriveWithThreshold? 2 (fun threshold => [
+        .differentValuesGuardedNotFilled ["A", "B"] .countGreaterEqual
+          (some threshold) "Target"
+      ]) = none ∧
+      deriveWithThreshold? 2 (fun threshold => [
+        .fieldNotFilled "A",
+        .fieldNotFilled "B",
+        .differentValuesGuardedNotFilled ["A", "A"] .countGreaterEqual
+          (some threshold) "Target"
+      ]) = none ∧
+      deriveWithThreshold? 2 (fun threshold => [
+        .fieldNotFilled "Seed",
+        .fieldGuardedNotFilled "Seed" "A",
+        .fieldNotFilled "B",
+        .differentValuesGuardedNotFilled ["A", "B"] .countGreaterEqual
+          (some threshold) "Target"
+      ]) = none ∧
+      deriveWithThreshold? 2 (fun threshold => [
+        .fieldNotFilled "A",
+        .fieldNotFilled "B",
+        .differentValuesGuardedNotFilled ["A", "B"] .countGreaterEqual
+          (some threshold) "Target",
+        .ignored (.fieldFilled "Target")
+      ]) = none ∧
+      deriveCrossRootDifferentValuesGuard? = none := by
   native_decide
 
 /- Every measured count-guard spelling admits a true guard except when the checked threshold carries the `-1` sentinel. -/

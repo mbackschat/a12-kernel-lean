@@ -68,6 +68,17 @@ theorem deriveCheckedMandatoryInformation_field_list_guards_close_reverse_author
       } := by
   decide
 
+/-- Filled-count and distinct-count standalone rules have the same checked root contribution for every retained threshold. -/
+theorem deriveCheckedMandatoryInformation_count_root_operator_independent
+    (threshold : Option CheckedMandatoryCountThreshold) :
+    deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .countLessThan ["A", "B"] threshold
+      ] =
+      deriveCheckedMandatoryInformation (fun _ : String => "Form") [
+        .differentValuesLessThan ["A", "B"] threshold
+      ] := by
+  rfl
+
 /-- Checked construction retains the authored literal and pairs it with exactly the shared host conversion. -/
 theorem checkMandatoryCountThreshold_sound
     (authored : DecodedNumericLiteral)
