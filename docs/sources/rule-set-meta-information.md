@@ -369,6 +369,24 @@ Checkpoints for the Kernel's rule-collection analysis services — derivations o
 
 - `sync`: **no `spec/` change.** This exact batch closes SG14's target-only root separator but not the complete rule-set collector; [`spec/`](../../spec/) still has no rule-set meta-information section.
 
+<a id="src-mandatory-information-distinct-target-only"></a>
+#### Mandatory-information derivation keeps isolated distinct-count targets inert, measured locally on 2026-09-02
+
+- `revision`: two model-level `mandatoryInformation` requests at clean a12-dmkits `b9e7fbdc6b4806e15945bf7f993c04724a83437c`; source-shipped dmtool `0.13.0`, fully typed structured model read-backs, Kernel-confirmed `model check` results, and both artifacts report Kernel `30.8.1` built and runtime. The true model was emitted from the retained filled-count target-only model through structured model and group rename plus rule modification; the false model was emitted from it by the same structured rename route and one threshold modification. Neither request carries a document or row, and immediate repeats were byte-identical.
+- `question`: does replacing `NumberOfFilledFields` by `NumberOfDifferentValues` in the isolated target-only `>= 0`/`>= 1` pair preserve the filled-count target/root result, or does the distinct-count identity contribute nothing in both arms?
+- `models`: each model declares one nonrepeatable root and nine String fields. Its sole ERROR `NumberOfDifferentValues(A, B) >= n And FieldNotFilled(Target)` rule references two isolated operands and one target, leaving six fields unreferenced. The captures use different model, root, and path identities; after normalizing those systematic names, the rule bodies differ only at the present scale-0 threshold, `0` versus `1`. No field has a direct or guarded seed.
+- `claim`: both artifacts return three empty sets. In particular, the threshold-zero distinct-count arm omits the target and root that the otherwise identical filled-count arm contributes, while neither distinct-count operand leaks into a field set. These exact outcomes retain the operator deviation without identifying the Kernel's private implementation.
+- `separators`: collapsing distinct count into filled count adds `Target` and the root to the threshold-zero arm. Treating listed operands as mandatory adds both operands in both arms. A checked account that refuses every isolated distinct-count guard returns no result instead of the retained admitted empty identity; that admission is a local checked boundary over the exact external empty-set outcome, not a claim about a Kernel refusal state.
+- `limit`: one nonrepeatable root per model, String fields, ERROR severity, one duplicate-free two-field distinct-count list, count-on-left inclusive `>=`, isolated operands and target, present scale-0 thresholds `0` and `1`, and `en_US`. Other comparisons, bounds, list sizes, operand or target reuse, absence and sentinel thresholds, repetition, indices, filters, generated rules, wider formulas, cross-root references, and cycles remain outside this observation.
+- `bytes`: [`mandatory-information-distinct-target-only/`](../../evidence/kernel-30.8.1/captures/mandatory-information-distinct-target-only/) retains both model/request/artifact triples. These are bounded raw captures with no typed replay, so they establish neither L nor C.
+
+| Case | Model SHA-256 | Request SHA-256 | Artifact SHA-256 |
+|---|---|---|---|
+| `distinct-target-only-true` | `4263113066626f006e80db3dfc421b088e01baff828bb7f75850a1378cc60b99` | `517172db0570e2878f6e7e769d96dc3e060389530d7d2a3ad444530d3e1dcf92` | `44fbcbcff55b7c4456cd27a133af60ed9072e834ffe58bcecbce622f10c4a907` |
+| `distinct-target-only-false` | `fd889d8bb347d5ebebf03c10c15b0e9e3ee808e66c0d8db258c88c50b58445cf` | `e6b36ae99e311f461005f005b1125fb1155d1441416050eee13e28a347655270` | `37e09f59dcbd17c59daeab4361796b32f11ac9c5424c6f9d2e1877d38f69afd2` |
+
+- `sync`: **no `spec/` change.** This exact batch closes SG14's first isolated distinct-count target pair but not the complete rule-set collector; [`spec/`](../../spec/) still has no rule-set meta-information section.
+
 <a id="src-mandatory-information-info-severity"></a>
 #### Mandatory-information derivation ignores INFO negative field rules, measured locally on 2026-09-02
 

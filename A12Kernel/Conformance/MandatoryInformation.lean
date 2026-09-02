@@ -569,11 +569,12 @@ example :
         result ["A", "B", "FilledTarget"] ["A", "B", "FilledTarget"] ["Form"] := by
   native_decide
 
-/- The distinct-count guard admits only the exact duplicate-free, direct-seed, isolated-target, non-sentinel true-comparison shape measured by the batch. -/
+/- The distinct-count guard admits only the exact two-operand authored-scale-zero direct-seed `>= 2` shape and isolated target-only `>= 0`/`>= 1` pair. -/
 example :
-    derive [.differentValuesLessThan ["A", "A"] none] = none ∧
+      derive [.differentValuesLessThan ["A", "A"] none] = none ∧
       derive [.differentValuesLessThan [] none] = none ∧
       deriveDifferentValuesGuard? (-1) "SentinelTarget" = none ∧
+      deriveDifferentValuesGuard? 0 "ZeroTarget" = none ∧
       deriveDifferentValuesGuard? 3 "FalseTarget" = none ∧
       derive [
         .fieldNotFilled "A",
@@ -735,6 +736,30 @@ example :
       .countGuardedNotFilled ["A", "B"] .countGreaterEqual
         (some threshold) "Target"
     ]) = result [] [] [] := by
+  native_decide
+
+/- The exact two-operand distinct-count target-only pair contributes nothing; a narrowed alias and wider operand-list sizes remain outside it. -/
+example :
+    deriveWithThreshold? 0 (fun threshold => [
+      .differentValuesGuardedNotFilled ["A", "B"] .countGreaterEqual
+        (some threshold) "Target"
+    ]) = result [] [] [] ∧
+    deriveWithThreshold? 1 (fun threshold => [
+      .differentValuesGuardedNotFilled ["A", "B"] .countGreaterEqual
+        (some threshold) "Target"
+    ]) = result [] [] [] ∧
+    deriveWithThreshold? 4294967296 (fun threshold => [
+      .differentValuesGuardedNotFilled ["A", "B"] .countGreaterEqual
+        (some threshold) "Target"
+    ]) = none ∧
+    deriveWithThreshold? 0 (fun threshold => [
+      .differentValuesGuardedNotFilled ["A"] .countGreaterEqual
+        (some threshold) "Target"
+    ]) = none ∧
+    deriveWithThreshold? 0 (fun threshold => [
+      .differentValuesGuardedNotFilled ["A", "B", "C"] .countGreaterEqual
+        (some threshold) "Target"
+    ]) = none := by
   native_decide
 
 /- A count target reused by a disjunction and a count operand reached through a deeper dependency stay outside the measured shape, while ordinary downstream field guards consume the admitted count result. -/
