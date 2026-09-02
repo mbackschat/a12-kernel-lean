@@ -2,7 +2,7 @@ import A12Kernel.Semantics.NumericLiteral
 
 /-! # Mandatory-information derivation
 
-This module models the measured flat, nonrepeatable contributing fragment of the model-level mandatory-information service plus checked whole-rule no-contribution identities. The input retains normalized authored rule shape, the two measured declaration-derived field-required modes, the generated requirement for one optional repeatable String index field, and the generated validation for one direct nonrepeatable Number copy, including ignored WARNING and INFO severity; the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values and keeps filled-count and distinct-count rules separate where their guard behavior differs. The filled-field guard slice retains existential versus universal rule identity, and finite field-guard cycles participate in the same monotone closure as acyclic chains. The semantic-indexed, parallel-iterated, and cross-root captures establish referenced-field exclusion; the checked identities additionally contribute no roots, with only the cross-root capture separating its non-control root. Wider repetition, concrete indices, wider semantic-index shapes, filter internals, other generated index and computation-validation shapes, contributing cross-root rules, wider root topology, wider count sites, and wider Boolean formulas remain outside this carrier. -/
+This module models the measured flat, nonrepeatable contributing fragment of the model-level mandatory-information service plus checked whole-rule no-contribution identities. The input retains normalized authored rule shape, the two measured declaration-derived field-required modes, the generated requirement for one optional repeatable String index field, and the generated validation for one direct nonrepeatable scale-0 Number copy, including ignored WARNING and INFO severity; the output keeps global fields, root-relative fields, and mandatory roots independent. The bounded count slice retains authored literals separately from their narrowed host values and keeps filled-count and distinct-count rules separate where their guard behavior differs. The filled-field guard slice retains existential versus universal rule identity, and finite field-guard cycles participate in the same monotone closure as acyclic chains. The semantic-indexed, parallel-iterated, and cross-root captures establish referenced-field exclusion; the checked identities additionally contribute no roots, with only the cross-root capture separating its non-control root. Wider repetition, concrete indices, wider semantic-index shapes, filter internals, other generated index and computation-validation shapes, contributing cross-root rules, wider root topology, wider count sites, and wider Boolean formulas remain outside this carrier. -/
 
 namespace A12Kernel
 
@@ -73,7 +73,7 @@ inductive IgnoredMandatoryRule (Field Root : Type) where
   | parallelIterated (fields : List Field)
   | crossRoot (fields : List Field)
   | generatedOptionalRepeatableStringIndexField (field : Field)
-  | generatedDirectNumberCopyValidation (source target : Field)
+  | generatedDirectNonrepeatableScale0NumberCopyValidation (source target : Field)
   deriving Repr, DecidableEq
 
 /-- Normalized, measured inputs for flat mandatory-information derivation. Constructors preserve declaration and authored-rule distinctions even where two shapes have the same derived effect. -/
@@ -165,7 +165,7 @@ private def MandatoryRule.referencedRoots (rootOf : Field → Root) :
   | .ignored (.warningFieldNotFilled field)
   | .ignored (.infoFieldNotFilled field)
   | .ignored (.generatedOptionalRepeatableStringIndexField field) => [rootOf field]
-  | .ignored (.generatedDirectNumberCopyValidation source target) =>
+  | .ignored (.generatedDirectNonrepeatableScale0NumberCopyValidation source target) =>
       [rootOf source, rootOf target]
   | .ignored (.fieldsNotCollectivelyFilled fields)
   | .ignored (.atLeastOneFieldFilled fields)
@@ -273,7 +273,7 @@ private def directFieldSeeds [DecidableEq Field]
     | .fieldNotFilled field => appendDistinct seeds [field]
     | _ => seeds) []
 
-private def MandatoryRule.mentionedFields : MandatoryRule Field Root → List Field
+private def MandatoryRule.countShapeFields : MandatoryRule Field Root → List Field
   | .declaredFieldRequirement _ field
   | .fieldNotFilled field => [field]
   | .disjoinedFieldNotFilled fields
@@ -291,9 +291,9 @@ private def MandatoryRule.mentionedFields : MandatoryRule Field Root → List Fi
   | .differentValuesGuardedNotFilled fields _ _ target => fields ++ [target]
   | .ignored (.fieldFilled field)
   | .ignored (.warningFieldNotFilled field)
-  | .ignored (.infoFieldNotFilled field)
-  | .ignored (.generatedOptionalRepeatableStringIndexField field) => [field]
-  | .ignored (.generatedDirectNumberCopyValidation source target) => [source, target]
+  | .ignored (.infoFieldNotFilled field) => [field]
+  | .ignored (.generatedOptionalRepeatableStringIndexField _)
+  | .ignored (.generatedDirectNonrepeatableScale0NumberCopyValidation _ _) => []
   | .ignored (.fieldsNotCollectivelyFilled fields)
   | .ignored (.atLeastOneFieldFilled fields)
   | .ignored (.allFieldsFilled fields)
@@ -306,10 +306,10 @@ private def MandatoryRule.mentionedFields : MandatoryRule Field Root → List Fi
 private def fieldMentionCount [DecidableEq Field]
     (rules : List (MandatoryRule Field Root)) (field : Field) : Nat :=
   rules.foldl (fun count rule =>
-    (MandatoryRule.mentionedFields rule).foldl (fun count mentioned =>
+    (MandatoryRule.countShapeFields rule).foldl (fun count mentioned =>
       if mentioned = field then count + 1 else count) count) 0
 
-/-- Keep the count guard on its measured shape: a duplicate-free list whose operands are direct singleton seeds or otherwise isolated, and a target mentioned only in its own guard position. Comparison truth decides contribution rather than admission; wider dependency closure stays outside this slice. -/
+/-- Keep the count guard on its measured shape: a duplicate-free list whose operands are direct singleton seeds or otherwise isolated, and a target mentioned only in its own guard position. Explanation-only generated identities participate in topology but not count-shape isolation. Comparison truth decides contribution rather than admission; wider dependency closure stays outside this slice. -/
 private def MandatoryRule.hasSupportedCountShape [DecidableEq Field]
     (rules : List (MandatoryRule Field Root)) (seeds : List Field) :
     MandatoryRule Field Root → Bool
@@ -342,7 +342,7 @@ private def MandatoryRule.isDeclaredRequirementClosureRule :
   | .fieldNotFilled _
   | .groupNotFilled _
   | .ignored (.generatedOptionalRepeatableStringIndexField _)
-  | .ignored (.generatedDirectNumberCopyValidation _ _) => true
+  | .ignored (.generatedDirectNonrepeatableScale0NumberCopyValidation _ _) => true
   | _ => false
 
 /-- Declaration-derived requirements share root closure only with the measured direct field and root seeds; wider authored interactions remain unmeasured. -/

@@ -130,17 +130,17 @@ theorem deriveCheckedMandatoryInformation_ignores_generated_optional_repeatable_
       ] := by
   decide
 
-/-- The measured generated validation for a direct nonrepeatable Number copy is inert beside direct and parent-present controls. -/
-theorem deriveCheckedMandatoryInformation_ignores_generated_direct_number_copy_validation :
+/-- The measured generated validation for a direct nonrepeatable scale-0 Number copy is inert beside direct and parent-present controls. -/
+theorem deriveCheckedMandatoryInformation_ignores_generated_direct_nonrepeatable_scale0_number_copy_validation :
     deriveCheckedMandatoryInformation (fun _ : String => "Form") [
-        .ignored (.generatedDirectNumberCopyValidation "Source" "Target"),
+        .ignored (.generatedDirectNonrepeatableScale0NumberCopyValidation "Source" "Target"),
         .fieldNotFilled "Control"
       ] =
       deriveCheckedMandatoryInformation (fun _ : String => "Form") [
         .fieldNotFilled "Control"
       ] ∧
     deriveCheckedMandatoryInformation (fun _ : String => "Form") [
-        .ignored (.generatedDirectNumberCopyValidation "Source" "Target"),
+        .ignored (.generatedDirectNonrepeatableScale0NumberCopyValidation "Source" "Target"),
         .declaredFieldRequirement .ifParentPresent "ParentRequired"
       ] =
       deriveCheckedMandatoryInformation (fun _ : String => "Form") [

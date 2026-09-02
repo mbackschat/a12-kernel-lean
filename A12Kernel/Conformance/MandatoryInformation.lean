@@ -2,7 +2,7 @@ import A12Kernel.Semantics.MandatoryInformation
 
 /-! # Mandatory-information derivation locks
 
-These cases cover the measured flat, nonrepeatable contributing ERROR-rule fragment, the exact singleton WARNING/INFO severity exclusions, declaration-derived field-required modes and root closure, one model-derived optional repeatable String index requirement, one generated direct Number-copy validation, checked filtered, semantic-indexed, parallel-iterated, and cross-root whole-rule exclusions, and the bounded filled-count and distinct-count slices. The latter captures externally separate referenced-field exclusion, while the executable identities additionally contribute no roots. The cases deliberately exclude wider repetition, index internals and wider indexed shapes, filter internals, other generated rules, and contributing cross-root forms. -/
+These cases cover the measured flat, nonrepeatable contributing ERROR-rule fragment, the exact singleton WARNING/INFO severity exclusions, declaration-derived field-required modes and root closure, one model-derived optional repeatable String index requirement, one generated direct nonrepeatable scale-0 Number-copy validation, checked filtered, semantic-indexed, parallel-iterated, and cross-root whole-rule exclusions, and the bounded filled-count and distinct-count slices. The latter captures externally separate referenced-field exclusion, while the executable identities additionally contribute no roots. The cases deliberately exclude wider repetition, index internals and wider indexed shapes, filter internals, other generated rules, and contributing cross-root forms. -/
 
 namespace A12Kernel.Conformance.MandatoryInformation
 
@@ -110,14 +110,14 @@ private def generatedIndexKernelCases : List (List (MandatoryRule String String)
 private def generatedComputationValidationKernelCases :
     List (List (MandatoryRule String String) ×
       Option (MandatoryInformation String String)) := [
-  ([.ignored (.generatedDirectNumberCopyValidation "Source" "Target")],
+  ([.ignored (.generatedDirectNonrepeatableScale0NumberCopyValidation "Source" "Target")],
     result [] [] []),
   ([
-      .ignored (.generatedDirectNumberCopyValidation "Source" "Target"),
+      .ignored (.generatedDirectNonrepeatableScale0NumberCopyValidation "Source" "Target"),
       .fieldNotFilled "Control"
     ], result ["Control"] ["Control"] ["Form"]),
   ([
-      .ignored (.generatedDirectNumberCopyValidation "Source" "Target"),
+      .ignored (.generatedDirectNonrepeatableScale0NumberCopyValidation "Source" "Target"),
       .declaredFieldRequirement .ifParentPresent "ParentRequired"
     ], result [] ["ParentRequired"] [])
 ]
@@ -198,7 +198,7 @@ example : generatedIndexKernelCases.all (fun (rules, expected) =>
     derive rules == expected) := by
   native_decide
 
-/- The generated validation for one direct Number copy contributes nothing, leaves a direct control visible, and does not promote a parent-present declaration globally. -/
+/- The generated validation for one direct nonrepeatable scale-0 Number copy contributes nothing, leaves a direct control visible, and does not promote a parent-present declaration globally. -/
 example : generatedComputationValidationKernelCases.all (fun (rules, expected) =>
     derive rules == expected) := by
   native_decide
@@ -330,6 +330,30 @@ example :
 private def checkedThreshold? (value : Rat) (authoredScale : Int := 0) :
     Option CheckedMandatoryCountThreshold :=
   checkMandatoryCountThreshold { value, authoredScale }
+
+private def deriveGeneratedIndexCountIsolation? :
+    Option (MandatoryInformation String String) := do
+  let threshold ← checkedThreshold? 1
+  derive [
+    .ignored (.generatedOptionalRepeatableStringIndexField "A"),
+    .countGuardedNotFilled ["A", "B"] .countGreaterEqual
+      (some threshold) "GuardTarget"
+  ]
+
+private def deriveGeneratedCopyCountIsolation? :
+    Option (MandatoryInformation String String) := do
+  let threshold ← checkedThreshold? 1
+  derive [
+    .ignored (.generatedDirectNonrepeatableScale0NumberCopyValidation "A" "GeneratedTarget"),
+    .countGuardedNotFilled ["A", "B"] .countGreaterEqual
+      (some threshold) "GuardTarget"
+  ]
+
+/- Generated explanation references do not turn an otherwise isolated count operand into a reused field. -/
+example :
+    deriveGeneratedIndexCountIsolation? = result [] [] [] ∧
+      deriveGeneratedCopyCountIsolation? = result [] [] [] := by
+  native_decide
 
 private def deriveCountLess? (value : Rat) (authoredScale : Int := 0) :
     Option (MandatoryInformation String String) := do

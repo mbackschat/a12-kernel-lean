@@ -383,7 +383,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-mandatory-information-generated-index"></a>
 - [A generated optional repeatable String index requirement contributes nothing and supplies no global root seed](sources/rule-set-meta-information.md#src-mandatory-information-generated-index)
 <a id="src-mandatory-information-generated-computation-validation"></a>
-- [A direct nonrepeatable Number copy's generated validation contributes nothing and supplies no global root seed](sources/rule-set-meta-information.md#src-mandatory-information-generated-computation-validation)
+- [A direct nonrepeatable scale-0 Number copy's generated validation contributes nothing and supplies no global root seed](sources/rule-set-meta-information.md#src-mandatory-information-generated-computation-validation)
 
 <a id="src-over-limit-computation-target"></a>
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)
