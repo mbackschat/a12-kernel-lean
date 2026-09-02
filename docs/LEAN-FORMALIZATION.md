@@ -302,6 +302,8 @@ For every root claim, record:
 
 “Sound,” “complete,” “safe,” “equivalent,” and “verified” are summaries, never substitutes for these details.
 
+A published mechanization supplies the specimen. At the audited Warblre revision, [`props/Definitions.v`](https://github.com/LindenRegex/Warblre/blob/4321379b887d590a42759818f6d9b1fd2351688e/mechanization/props/Definitions.v) declares `lookahead_correctness`, `lookbehind_correctness`, `negativeLookahead_correctness`, and `negativeLookbehind_correctness` at lines 49, 53, 70, and 74; each is proved by `intros ? ? ? ? ? G. cbn. rewrite -> G. reflexivity.`, and each states only that compiling a lookaround equals a combinator defined in that same file — nothing about matching, and the file itself carries the comment `(* Check this definition *)` above the negative pair. The naming is locally defensible, because that module's job is to mirror semantics clauses as reusable combinators, and that is precisely the point: a reader scanning theorem names cannot separate a definitional unfolding from a semantic correctness result, so the statement and not the label has to be the record.
+
 ### 12.2 Define relations before proving monotonicity
 
 The important theorem vocabulary should be explicit data or propositions, not English hidden in comments. Likely foundations include:
