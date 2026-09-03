@@ -150,7 +150,15 @@ theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
               (reference.resolveInAt .validation context frame).evalDirectString op expected <;>
             simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
               CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
-              CorrelatedHavingLeaf.stringComparisonTruth, verdict]
+              CorrelatedHavingLeaf.verdictTruth, verdict]
+      | presence polarity reference =>
+          -- Same shape: presence truth is the same verdict projection over the shared observation
+          -- consumers, so the verdict alone decides the bridge.
+          cases verdict :
+              polarity.evalObservation (reference.observeInAt .validation context frame) <;>
+            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
+              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
+              CorrelatedHavingLeaf.verdictTruth, verdict]
   | and left right leftInduction rightInduction =>
       change K.and (CorrelatedHaving.evalTruthIn left context frame)
           (CorrelatedHaving.evalTruthIn right context frame) = .tru ↔

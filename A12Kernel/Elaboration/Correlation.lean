@@ -26,6 +26,13 @@ structure SurfaceHavingStringRef where
   field : SurfaceFieldPath
   deriving Repr, DecidableEq
 
+/-- A surface presence filter reference. Presence accepts any declared field, so no kind projection
+    stands between this path and the checked reference. -/
+structure SurfaceHavingPresenceRef where
+  origin : HavingOrigin
+  field : SurfaceFieldPath
+  deriving Repr, DecidableEq
+
 inductive SurfaceCorrelatedHaving where
   | compareNumbers (op : SurfaceComparisonOp)
       (left right : SurfaceHavingNumberRef)
@@ -38,6 +45,11 @@ inductive SurfaceCorrelatedHaving where
       project models nowhere, so this is consistency rather than a local narrowing. -/
   | compareStrings (op : EqualityOp) (reference : SurfaceHavingStringRef)
       (expected : String)
+  /-- `FieldFilled` or `FieldNotFilled`. The negative polarity is authorable here because the
+      kernel admits it inside a filter without the iteration-negativity refusal that governs a
+      rule's own condition. -/
+  | presence (polarity : HavingPresencePolarity)
+      (reference : SurfaceHavingPresenceRef)
   | and (left right : SurfaceCorrelatedHaving)
   deriving Repr, DecidableEq
 
@@ -153,21 +165,28 @@ private def resolveHavingRepetitionInGroup
     throw (.repetitionGroupMismatch group.path resolved.path)
   pure { origin, level := group.level }
 
-private def elaborateHavingCoreWith
-    (resolveNumber : HavingOrigin → SurfaceFieldPath →
-      Except CorrelationElabError ResolvedNumberRef)
-    (resolveRepetition : HavingOrigin → SurfaceGroupReference →
-      Except CorrelationElabError HavingRepetitionRef)
-    (resolveString : HavingOrigin → SurfaceFieldPath →
-      Except CorrelationElabError HavingStringRef) :
+/-- The per-leaf reference resolvers one filter route supplies. They travel as a bundle because
+    each route chooses all of them together, and a route that admits no String or presence leaf
+    supplies a refusing resolver rather than a different combinator. -/
+private structure HavingLeafResolvers where
+  number : HavingOrigin → SurfaceFieldPath →
+    Except CorrelationElabError ResolvedNumberRef
+  repetition : HavingOrigin → SurfaceGroupReference →
+    Except CorrelationElabError HavingRepetitionRef
+  string : HavingOrigin → SurfaceFieldPath →
+    Except CorrelationElabError HavingStringRef
+  presence : HavingOrigin → SurfaceFieldPath →
+    Except CorrelationElabError HavingPresenceRef
+
+private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
     SurfaceCorrelatedHaving →
     Except CorrelationElabError ConjunctiveCorrelatedHaving
   | .compareNumbers op left right => do
       let coreOp ← match op.toCorrelation? with
         | some coreOp => pure coreOp
         | none => throw (.unsupportedOperator op)
-      let leftResolved ← resolveNumber left.origin left.field
-      let rightResolved ← resolveNumber right.origin right.field
+      let leftResolved ← resolvers.number left.origin left.field
+      let rightResolved ← resolvers.number right.origin right.field
       if !coreOp.acceptsScales leftResolved.core.field rightResolved.core.field then
         throw (.equalityScaleMismatch
           leftResolved.declaration.path leftResolved.core.field.info.scale
@@ -181,19 +200,22 @@ private def elaborateHavingCoreWith
         | none => throw (.unsupportedOperator op)
       pure {
         condition := .compareRepetitions coreOp
-          (← resolveRepetition left.origin left.group)
-          (← resolveRepetition right.origin right.group)
+          (← resolvers.repetition left.origin left.group)
+          (← resolvers.repetition right.origin right.group)
         conjunctive := rfl }
   | .compareStrings op reference expected => do
       pure {
         condition := .compareStringLiteral op
-          (← resolveString reference.origin reference.field) expected
+          (← resolvers.string reference.origin reference.field) expected
+        conjunctive := rfl }
+  | .presence polarity reference => do
+      pure {
+        condition := .presence polarity
+          (← resolvers.presence reference.origin reference.field)
         conjunctive := rfl }
   | .and left right => do
-      let leftCore ←
-        elaborateHavingCoreWith resolveNumber resolveRepetition resolveString left
-      let rightCore ←
-        elaborateHavingCoreWith resolveNumber resolveRepetition resolveString right
+      let leftCore ← elaborateHavingCoreWith resolvers left
+      let rightCore ← elaborateHavingCoreWith resolvers right
       pure {
         condition := .and leftCore.condition rightCore.condition
         conjunctive := by
@@ -203,11 +225,12 @@ private def elaborateHavingCoreWith
 private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) (authored : SurfaceCorrelatedHaving) :
     Except CorrelationElabError CorrelatedHaving := do
-  let checked ← elaborateHavingCoreWith
-    (model.resolveHavingNumberInGroup declaringGroup group)
-    (resolveHavingRepetitionInGroup declaringGroup group)
-    (fun _ _ => throw .stringLeafOutsideStarRoute)
-    authored
+  let checked ← elaborateHavingCoreWith {
+    number := model.resolveHavingNumberInGroup declaringGroup group
+    repetition := resolveHavingRepetitionInGroup declaringGroup group
+    -- The legacy one-group route admits neither newer leaf; both fail closed here.
+    string := fun _ _ => throw .stringLeafOutsideStarRoute
+    presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored
   pure checked.condition
 
 private def FlatModel.resolveHavingNumberInEnvironment (model : FlatModel)
@@ -243,6 +266,20 @@ private def FlatModel.resolveHavingStringInEnvironment (model : FlatModel)
       declaration.repeatableScope)
   pure { origin, field }
 
+/-- Resolve one presence filter reference. Presence accepts any declared field, so this checks the
+    declaration's existence and its availability in the chosen environment, with no kind gate. -/
+private def FlatModel.resolveHavingPresenceInEnvironment (model : FlatModel)
+    (declaringGroup : GroupPath) (candidateLevels outerLevels : List RepeatableLevel)
+    (origin : HavingOrigin) (reference : SurfaceFieldPath) :
+    Except CorrelationElabError HavingPresenceRef := do
+  let declaration ←
+    (model.resolveFieldDeclarationUnchecked declaringGroup reference).mapError .resolve
+  let available := origin.availableLevels candidateLevels outerLevels
+  if !repeatableScopeAvailable declaration.repeatableScope available then
+    throw (.fieldOutsideEnvironment origin declaration.path available
+      declaration.repeatableScope)
+  pure { origin, field := declaration.id }
+
 private def FlatModel.resolveHavingRepetitionInEnvironment (model : FlatModel)
     (declaringGroup : GroupPath) (candidateLevels outerLevels : List RepeatableLevel)
     (origin : HavingOrigin) (reference : SurfaceGroupReference) :
@@ -259,8 +296,9 @@ def CorrelatedHavingLeaf.equalityScalesAgree : CorrelatedHavingLeaf → Bool
   | .compareNumbers op left right =>
       op.acceptsScales left.field right.field
   | .compareRepetitions _ _ _ => true
-  -- Text carries no declared scale, so the numeric scale law has nothing to say about this leaf.
-  | .compareStringLiteral _ _ _ => true
+  -- Neither text nor presence carries a declared scale, so the numeric scale law has nothing to
+  -- say about either leaf.
+  | .compareStringLiteral _ _ _ | .presence _ _ => true
 
 /-- Every leaf under the shared connective tree satisfies the static scale law. -/
 def CorrelatedHaving.equalityScalesAgree (condition : CorrelatedHaving) : Bool :=
@@ -274,10 +312,10 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
       op.acceptsScales left.field right.field
   | .compareRepetitions _ left right =>
       left.level == group.level && right.level == group.level
-  -- The legacy one-group adapter admits only the leaves it was built for. A String leaf reaches
-  -- the checked-star route instead, so refusing it here fails closed rather than extending an
-  -- adapter no current consumer needs it on.
-  | .compareStringLiteral _ _ _ => false
+  -- The legacy one-group adapter admits only the leaves it was built for. The String and presence
+  -- leaves reach the checked-star route instead, so refusing them here fails closed rather than
+  -- extending an adapter no current consumer needs them on.
+  | .compareStringLiteral _ _ _ | .presence _ _ => false
 
 def CorrelatedHaving.wellFormedForSingleGroup (condition : CorrelatedHaving)
     (model : FlatModel) (group : RepeatableGroupDecl) : Bool :=
@@ -317,6 +355,14 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
         (right.origin.availableLevels candidateLevels outerLevels).contains right.level
   | .compareStringLiteral _ reference _ =>
       model.admitsHavingStringInEnvironment candidateLevels outerLevels reference
+  | .presence _ reference =>
+      match model.lookupUniqueId reference.field with
+      | .error _ => false
+      | .ok declaration =>
+          -- Presence reads any declared field, so this checks existence and environment
+          -- availability only; there is no kind projection to satisfy.
+          repeatableScopeAvailable declaration.repeatableScope
+            (reference.origin.availableLevels candidateLevels outerLevels)
 
 /-- Static environment admission for a resolved filter tree. Candidate references must be available in every topology-produced candidate environment; `$` references must be available in the captured rule environment. -/
 def CorrelatedHaving.wellFormedForEnvironments (condition : CorrelatedHaving)
@@ -348,6 +394,11 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
         (right.origin == .inner && reopenedLevels.contains right.level)
   | .compareStringLiteral _ reference _ =>
       reference.reachesReopenedLevel model reopenedLevels
+  | .presence _ reference =>
+      match reference.origin, model.lookupUniqueId reference.field with
+      | .inner, .ok declaration =>
+          declaration.repeatableScope.any reopenedLevels.contains
+      | _, _ => false
 
 /-- A legal star filter must depend on at least one unmarked reference at a level actually reopened by that starred operand. Bound-only or `$`-only trees do not establish an iteration to filter. -/
 def CorrelatedHaving.reachesReopenedLevel (condition : CorrelatedHaving)
@@ -376,11 +427,16 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
   let candidateLevels := source.path.axes.map (·.level)
   let reopenedLevels := candidateLevels.drop source.path.firstStar
   let outerLevels := model.repeatableScopeForGroupPath declaringGroup
-  let checked ← elaborateHavingCoreWith
-    (model.resolveHavingNumberInEnvironment declaringGroup candidateLevels outerLevels)
-    (model.resolveHavingRepetitionInEnvironment declaringGroup candidateLevels outerLevels)
-    (model.resolveHavingStringInEnvironment declaringGroup candidateLevels outerLevels)
-    authored
+  let checked ← elaborateHavingCoreWith {
+    number :=
+      model.resolveHavingNumberInEnvironment declaringGroup candidateLevels outerLevels
+    repetition :=
+      model.resolveHavingRepetitionInEnvironment declaringGroup candidateLevels outerLevels
+    string :=
+      model.resolveHavingStringInEnvironment declaringGroup candidateLevels outerLevels
+    presence :=
+      model.resolveHavingPresenceInEnvironment declaringGroup candidateLevels
+        outerLevels } authored
   let condition := checked.condition
   if hReopened : condition.reachesReopenedLevel model reopenedLevels = true then
     if hWellFormed :

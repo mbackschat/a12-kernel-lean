@@ -104,6 +104,8 @@ private def correlatedHavingOuterIterationScopes
         outerHavingRepetitionIterationScope outerLevels right]
   | .leaf (.compareStringLiteral _ reference _) =>
       [outerHavingFieldIterationScope model reference.origin reference.field.id]
+  | .leaf (.presence _ reference) =>
+      [outerHavingFieldIterationScope model reference.origin reference.field]
   | .and left right | .or left right =>
       correlatedHavingOuterIterationScopes model outerLevels left ++
         correlatedHavingOuterIterationScopes model outerLevels right

@@ -287,4 +287,65 @@ example : tagCount? "K" [
 example : source? (some numberThroughStringLeaf) = none := by
   native_decide
 
+/- The presence leaves. Both polarities are Kernel-retained at the same checkpoint over clean
+   cells, where they are exact complements: each keeps precisely the rows the other drops, and the
+   two counts sum to the row count. -/
+
+private def tagFilled : SurfaceCorrelatedHaving :=
+  .presence .filled { origin := .inner, field := repeatedPath "Tag" }
+
+private def tagNotFilled : SurfaceCorrelatedHaving :=
+  .presence .notFilled { origin := .inner, field := repeatedPath "Tag" }
+
+private def flagFilled : SurfaceCorrelatedHaving :=
+  .presence .filled { origin := .inner, field := repeatedPath "Flag" }
+
+private def flagNotFilled : SurfaceCorrelatedHaving :=
+  .presence .notFilled { origin := .inner, field := repeatedPath "Flag" }
+
+private def bothTagged : List ClassifiedCellInput := [
+  num amount.id 1 7, text tag.id 1 "K",
+  num amount.id 2 9, text tag.id 2 "K"]
+
+private def neitherTagged : List ClassifiedCellInput := [
+  num amount.id 1 7,
+  num amount.id 2 9]
+
+private def oneTagged : List ClassifiedCellInput := [
+  num amount.id 1 7, text tag.id 1 "K",
+  num amount.id 2 9]
+
+example : countWith? (some tagFilled) bothTagged = some (.value 2) := by
+  native_decide
+
+example : countWith? (some tagNotFilled) bothTagged = some (.value 0) := by
+  native_decide
+
+example : countWith? (some tagFilled) neitherTagged = some (.value 0) := by
+  native_decide
+
+example : countWith? (some tagNotFilled) neitherTagged = some (.value 2) := by
+  native_decide
+
+/-- One row each way, so the two polarities split the rows rather than one of them collapsing. -/
+example : countWith? (some tagFilled) oneTagged = some (.value 1) := by
+  native_decide
+
+example : countWith? (some tagNotFilled) oneTagged = some (.value 1) := by
+  native_decide
+
+/-- **Internal, not Kernel-retained:** no measurement covers a formally unavailable presence
+    operand. On this theory's account both polarities delegate to the shared observation consumers,
+    which answer unknown there, so the row drops under *either* polarity and the two stop being
+    complements — the counts sum to one row short rather than to the row count. -/
+example : countWith? (some flagFilled) [
+    num amount.id 1 7, num flag.id 1 1,
+    num amount.id 2 9, bad flag.id 2] = some (.value 1) := by
+  native_decide
+
+example : countWith? (some flagNotFilled) [
+    num amount.id 1 7, num flag.id 1 1,
+    num amount.id 2 9, bad flag.id 2] = some (.value 0) := by
+  native_decide
+
 end A12Kernel

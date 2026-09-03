@@ -344,6 +344,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A non-true `Having` conjunct drops its own row, and the empty-as-zero rule does not reach a malformed operand](sources/group-and-iteration-probes.md#src-having-filter-nontrue-row)
 <a id="src-having-filter-condition-grammar"></a>
 - [A `Having` condition is the ordinary condition grammar, and every refusal reached is an ordinary one](sources/group-and-iteration-probes.md#src-having-filter-condition-grammar)
+<a id="src-having-filter-presence-leaf"></a>
+- [Both presence polarities are real per-row filter predicates and exact complements over clean cells](sources/group-and-iteration-probes.md#src-having-filter-presence-leaf)
 
 <a id="src-starred-operand-message-polarity"></a>
 - [A computation's message type follows what can still grow](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity)

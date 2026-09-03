@@ -69,9 +69,9 @@ theorem correlatedHaving_wellFormed_equalityScalesAgree
               rfl
       | compareRepetitions =>
           rfl
-      | compareStringLiteral =>
-          -- Vacuous: the legacy one-group predicate refuses a String leaf outright, so this
-          -- branch's hypothesis is `false = true`. The scale law itself admits the leaf.
+      | compareStringLiteral | presence =>
+          -- Vacuous: the legacy one-group predicate refuses both leaves outright, so each
+          -- branch's hypothesis is `false = true`. The scale law itself admits them.
           simp [CorrelatedHaving.wellFormedForSingleGroup, ConditionTree.allLeaves,
             CorrelatedHavingLeaf.wellFormedForSingleGroup] at wellFormed
   | and left right leftIh rightIh =>

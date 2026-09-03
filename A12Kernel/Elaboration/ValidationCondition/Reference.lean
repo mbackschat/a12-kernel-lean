@@ -169,6 +169,12 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
   | .leaf (.compareRepetitions _ _ _) => pure []
   | .leaf (.compareStringLiteral _ reference _) => do
       pure [← havingStringReferencePointer source environment reference]
+  | .leaf (.presence _ reference) => do
+      -- Presence names any declared field, so its coherence check is existence alone.
+      let declaration ← match model.lookupUniqueId reference.field with
+        | .ok declaration => pure declaration
+        | .error _ => throw (.incoherentHavingField reference.field)
+      pure [← havingFieldPointerFor source environment declaration reference.origin]
   | .and left right | .or left right => do
       pure ((← correlatedHavingReferencePointers source environment left) ++
         (← correlatedHavingReferencePointers source environment right))
