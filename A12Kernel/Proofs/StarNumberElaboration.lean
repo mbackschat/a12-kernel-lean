@@ -16,12 +16,6 @@ theorem checkedStarNumberHavingSource_wellFormed
       (checked.source.source.path.axes.map (·.level)) checked.outerLevels = true :=
   checked.filter.wellFormed
 
-/-- A checked authored filter remains inside the conjunction-only surface fragment even though the resolved filter core also supports `Or`. -/
-theorem checkedStarNumberHavingSource_conjunctive
-    (checked : CheckedStarNumberHavingSource model) :
-    checked.having.isConjunctive = true :=
-  checked.filter.authored.conjunctive
-
 /-- A checked authored filter depends on at least one unmarked reference at a level actually reopened by its star. -/
 theorem checkedStarNumberHavingSource_reachesReopenedLevel
     (checked : CheckedStarNumberHavingSource model) :

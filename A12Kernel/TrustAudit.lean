@@ -469,6 +469,7 @@ run_cmd do
 #print axioms A12Kernel.correlatedHaving_truthIn_iff_holdsIn
 #print axioms A12Kernel.correlatedHaving_truth_iff_holds
 #print axioms A12Kernel.correlatedHaving_keepsEnvironment_iff_holdsIn
+#print axioms A12Kernel.correlatedHaving_or_keepsEnvironment
 #print axioms A12Kernel.correlatedHaving_mem_selectEnvironments_iff
 #print axioms A12Kernel.correlatedHaving_selectResolving_headError
 #print axioms A12Kernel.env_uniqueRowAt_zero
@@ -1437,7 +1438,6 @@ run_cmd do
 #print axioms A12Kernel.validationRelevanceScope_groupRelevance_empty
 #print axioms A12Kernel.checkedStarNumberSource_ancestry
 #print axioms A12Kernel.checkedStarNumberHavingSource_wellFormed
-#print axioms A12Kernel.checkedStarNumberHavingSource_conjunctive
 #print axioms A12Kernel.checkedStarNumberHavingSource_reachesReopenedLevel
 #print axioms A12Kernel.checkedStarNumberHavingSource_resolvedValueSide
 #print axioms A12Kernel.checkedStarNumberSource_overLimit

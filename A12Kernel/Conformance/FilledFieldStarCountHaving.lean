@@ -374,4 +374,38 @@ example : countWith? (some flagFilled) [
     num amount.id 2 9, bad flag.id 2] = some (.value 0) := by
   native_decide
 
+/- A disjunctive filter. The filter's condition is the ordinary strong-Kleene tree, so a true
+   disjunct dominates an unavailable one and keeps its row — which is what separates the filter
+   position from the computation arm, where a reached invalid read aborts instead. Every row is
+   Kernel-retained; row 2 of each document names no filter operand, so it is definitely dropped and
+   the count reads as the first row's own survival. -/
+
+private def flagOrTagFilled : SurfaceCorrelatedHaving :=
+  .or
+    (.presence .filled { origin := .inner, field := repeatedPath "Flag" })
+    (.presence .filled { origin := .inner, field := repeatedPath "Tag" })
+
+/-- Unavailable `Or` true keeps the row: the healthy disjunct decides. -/
+example : countWith? (some flagOrTagFilled) [
+    num amount.id 1 7, bad flag.id 1, text tag.id 1 "K",
+    num amount.id 2 9] = some (.value 1) := by
+  native_decide
+
+/-- Unavailable `Or` false drops it, so the row above survived on its true disjunct rather than on
+    the filter tolerating an unavailable operand anywhere. -/
+example : countWith? (some flagOrTagFilled) [
+    num amount.id 1 7, bad flag.id 1,
+    num amount.id 2 9] = some (.value 0) := by
+  native_decide
+
+example : countWith? (some flagOrTagFilled) [
+    num amount.id 1 7, num flag.id 1 1,
+    num amount.id 2 9] = some (.value 1) := by
+  native_decide
+
+example : countWith? (some flagOrTagFilled) [
+    num amount.id 1 7,
+    num amount.id 2 9] = some (.value 0) := by
+  native_decide
+
 end A12Kernel

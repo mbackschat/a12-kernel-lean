@@ -294,11 +294,12 @@ private def correlationElaborationResult : CorrelationElabError →
       pure (.make .fieldKindMismatch "$.rule"
         (Json.mkObj [("path", toJson path), ("expected", toJson "number")]))
   -- The public filter vocabulary carries `compareNumbers`, `compareRepetitions`, and `and` only
-  -- (`CorrelatedHavingFormTag.fromTag?`), so no request can build a String leaf and neither
-  -- String-specific arm is reachable on this route. Reaching one means the checked core and the
-  -- wire vocabulary disagree, which is what `incoherentCore` reports; the public diagnostic
-  -- vocabulary is deliberately left unchanged rather than widened for an unreachable arm.
-  | .fieldNotStringValue _ | .stringLeafOutsideStarRoute => throw .incoherentCore
+  -- (`CorrelatedHavingFormTag.all`), so no request can build a String leaf, a presence leaf, or a
+  -- disjunction, and none of these arms is reachable on this route. Reaching one means the checked
+  -- core and the wire vocabulary disagree, which is what `incoherentCore` reports; the public
+  -- diagnostic vocabulary is deliberately left unchanged rather than widened for unreachable arms.
+  | .fieldNotStringValue _ | .stringLeafOutsideStarRoute
+  | .disjunctionOutsideStarRoute => throw .incoherentCore
   | .fieldOutsideGroup origin fieldPath expectedGroup =>
       pure (.make .fieldOutsideGroup "$.rule.having"
         (Json.mkObj [("origin", toJson (havingOriginTag origin)),

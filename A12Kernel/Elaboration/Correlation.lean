@@ -51,6 +51,10 @@ inductive SurfaceCorrelatedHaving where
   | presence (polarity : HavingPresencePolarity)
       (reference : SurfaceHavingPresenceRef)
   | and (left right : SurfaceCorrelatedHaving)
+  /-- Disjunction inside a filter. The filter's condition is the ordinary condition production, so
+      this is a strong-Kleene `Or` and a true disjunct dominates an unavailable one, keeping its
+      row. The legacy one-group route still refuses it; only the star route admits it. -/
+  | or (left right : SurfaceCorrelatedHaving)
   deriving Repr, DecidableEq
 
 /-- The exact admitted validation shape: the error target is the outer Number guard, and the starred consumer is filtered by a genuinely correlated `Having`. Requiring `errorField = guardField` is this capsule's routing boundary, not a claim that every kernel rule has that shape. -/
@@ -73,6 +77,10 @@ inductive CorrelationElabError where
   /-- A String leaf reached a route that admits only the numeric and repetition leaves. The legacy
       one-group adapter is the only such route; it fails closed here rather than being widened. -/
   | stringLeafOutsideStarRoute
+  /-- A disjunctive filter reached the legacy one-group route, whose well-formedness predicate
+      admits a conjunctive core only. The kernel admits `Or` in this position and the star route
+      does too; this arm keeps the narrow route honest rather than silently reshaping the tree. -/
+  | disjunctionOutsideStarRoute
   | fieldOutsideGroup (origin : HavingOrigin)
       (fieldPath expectedGroup : List String)
   | fieldScopeMismatch (fieldPath : List String)
@@ -116,11 +124,6 @@ def CorrelatedHaving.isConjunctive (condition : CorrelatedHaving) : Bool :=
       CorrelatedHaving.isConjunctive left &&
         CorrelatedHaving.isConjunctive right
   | .or _ _ => false
-
-/-- A resolved filter whose connective shape is in the image of the narrow authored surface. -/
-structure ConjunctiveCorrelatedHaving where
-  condition : CorrelatedHaving
-  conjunctive : condition.isConjunctive = true
 
 private def repeatableScopeAvailable :
     List RepeatableLevel → List RepeatableLevel → Bool
@@ -180,7 +183,7 @@ private structure HavingLeafResolvers where
 
 private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
     SurfaceCorrelatedHaving →
-    Except CorrelationElabError ConjunctiveCorrelatedHaving
+    Except CorrelationElabError CorrelatedHaving
   | .compareNumbers op left right => do
       let coreOp ← match op.toCorrelation? with
         | some coreOp => pure coreOp
@@ -191,47 +194,43 @@ private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
         throw (.equalityScaleMismatch
           leftResolved.declaration.path leftResolved.core.field.info.scale
           rightResolved.declaration.path rightResolved.core.field.info.scale)
-      pure {
-        condition := .compareNumbers coreOp leftResolved.core rightResolved.core
-        conjunctive := rfl }
+      pure (.compareNumbers coreOp leftResolved.core rightResolved.core)
   | .compareRepetitions op left right => do
       let coreOp ← match op.toCorrelation? with
         | some coreOp => pure coreOp
         | none => throw (.unsupportedOperator op)
-      pure {
-        condition := .compareRepetitions coreOp
-          (← resolvers.repetition left.origin left.group)
-          (← resolvers.repetition right.origin right.group)
-        conjunctive := rfl }
+      pure (.compareRepetitions coreOp
+        (← resolvers.repetition left.origin left.group)
+        (← resolvers.repetition right.origin right.group))
   | .compareStrings op reference expected => do
-      pure {
-        condition := .compareStringLiteral op
-          (← resolvers.string reference.origin reference.field) expected
-        conjunctive := rfl }
+      pure (.compareStringLiteral op
+        (← resolvers.string reference.origin reference.field) expected)
   | .presence polarity reference => do
-      pure {
-        condition := .presence polarity
-          (← resolvers.presence reference.origin reference.field)
-        conjunctive := rfl }
+      pure (.presence polarity
+        (← resolvers.presence reference.origin reference.field))
   | .and left right => do
-      let leftCore ← elaborateHavingCoreWith resolvers left
-      let rightCore ← elaborateHavingCoreWith resolvers right
-      pure {
-        condition := .and leftCore.condition rightCore.condition
-        conjunctive := by
-          simp [CorrelatedHaving.isConjunctive, leftCore.conjunctive,
-            rightCore.conjunctive] }
+      pure (.and (← elaborateHavingCoreWith resolvers left)
+        (← elaborateHavingCoreWith resolvers right))
+  | .or left right => do
+      pure (.or (← elaborateHavingCoreWith resolvers left)
+        (← elaborateHavingCoreWith resolvers right))
 
 private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) (authored : SurfaceCorrelatedHaving) :
     Except CorrelationElabError CorrelatedHaving := do
-  let checked ← elaborateHavingCoreWith {
+  let condition ← elaborateHavingCoreWith {
     number := model.resolveHavingNumberInGroup declaringGroup group
     repetition := resolveHavingRepetitionInGroup declaringGroup group
     -- The legacy one-group route admits neither newer leaf; both fail closed here.
     string := fun _ _ => throw .stringLeafOutsideStarRoute
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored
-  pure checked.condition
+  -- Disjunction is refused here too: this route's well-formedness predicate requires a conjunctive
+  -- core, and refusing at this arm names that cause instead of failing later as an unexplained
+  -- incoherence.
+  if condition.isConjunctive then
+    pure condition
+  else
+    throw .disjunctionOutsideStarRoute
 
 private def FlatModel.resolveHavingNumberInEnvironment (model : FlatModel)
     (declaringGroup : GroupPath) (candidateLevels outerLevels : List RepeatableLevel)
@@ -408,17 +407,17 @@ def CorrelatedHaving.reachesReopenedLevel (condition : CorrelatedHaving)
 /-- One filter resolved and certified against the exact candidate/captured environments of a checked star path. -/
 structure CheckedStarHaving (model : FlatModel)
     (source : CheckedStarFieldPath model) (declaringGroup : GroupPath) where
-  authored : ConjunctiveCorrelatedHaving
-  wellFormed : authored.condition.wellFormedForEnvironments model
+  authored : CorrelatedHaving
+  wellFormed : authored.wellFormedForEnvironments model
     (source.path.axes.map (·.level))
     (model.repeatableScopeForGroupPath declaringGroup) = true
-  reachesReopenedLevel : authored.condition.reachesReopenedLevel model
+  reachesReopenedLevel : authored.reachesReopenedLevel model
     ((source.path.axes.map (·.level)).drop source.path.firstStar) = true
 
 def CheckedStarHaving.condition
     (checked : CheckedStarHaving model source declaringGroup) :
     CorrelatedHaving :=
-  checked.authored.condition
+  checked.authored
 
 /-- Lower the source-closed Number/repetition-comparison filter fragment against one validated star plan. The result retains the shared filter tree and exact candidate/captured environment split; wider filter leaves remain outside this fragment. -/
 def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
@@ -427,7 +426,7 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
   let candidateLevels := source.path.axes.map (·.level)
   let reopenedLevels := candidateLevels.drop source.path.firstStar
   let outerLevels := model.repeatableScopeForGroupPath declaringGroup
-  let checked ← elaborateHavingCoreWith {
+  let condition ← elaborateHavingCoreWith {
     number :=
       model.resolveHavingNumberInEnvironment declaringGroup candidateLevels outerLevels
     repetition :=
@@ -437,12 +436,11 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     presence :=
       model.resolveHavingPresenceInEnvironment declaringGroup candidateLevels
         outerLevels } authored
-  let condition := checked.condition
   if hReopened : condition.reachesReopenedLevel model reopenedLevels = true then
     if hWellFormed :
         condition.wellFormedForEnvironments model candidateLevels outerLevels = true then
       pure {
-        authored := checked
+        authored := condition
         wellFormed := hWellFormed
         reachesReopenedLevel := hReopened }
     else

@@ -346,6 +346,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A `Having` condition is the ordinary condition grammar, and every refusal reached is an ordinary one](sources/group-and-iteration-probes.md#src-having-filter-condition-grammar)
 <a id="src-having-filter-presence-leaf"></a>
 - [Both presence polarities are real per-row filter predicates and exact complements over clean cells](sources/group-and-iteration-probes.md#src-having-filter-presence-leaf)
+<a id="src-having-filter-disjunction"></a>
+- [A filter's `Or` is strong-Kleene, so a true disjunct keeps its row against an unavailable one](sources/group-and-iteration-probes.md#src-having-filter-disjunction)
 
 <a id="src-starred-operand-message-polarity"></a>
 - [A computation's message type follows what can still grow](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity)

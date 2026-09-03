@@ -63,6 +63,23 @@ private theorem K.or_eq_tru_iff (left right : K) :
     K.or left right = .tru ↔ left = .tru ∨ right = .tru := by
   cases left <;> cases right <;> decide
 
+/-- A disjunctive filter keeps exactly the candidates either disjunct keeps, so a true disjunct
+    keeps its row whatever the other one answers — including UNKNOWN, which cannot suppress it. This
+    replaces the conjunctivity certificate the authored surface used to carry, and it is the
+    universal form of the retained rows where an unavailable operand beside a true one keeps its row
+    while the same operand beside a false one drops it
+    ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-having-filter-disjunction)). -/
+theorem correlatedHaving_or_keepsEnvironment (left right : CorrelatedHaving)
+    (context : CorrelationContext) (outerEnv innerEnv : Env) :
+    CorrelatedHaving.keepsEnvironment (.or left right) context outerEnv innerEnv
+      = (left.keepsEnvironment context outerEnv innerEnv
+        || right.keepsEnvironment context outerEnv innerEnv) := by
+  simp only [CorrelatedHaving.keepsEnvironment, CorrelatedHaving.evalTruthIn,
+    ConditionTree.evalK]
+  cases left.evalK (CorrelatedHavingLeaf.evalTruthIn context { innerEnv, outerEnv }) <;>
+    cases right.evalK (CorrelatedHavingLeaf.evalTruthIn context { innerEnv, outerEnv }) <;>
+      simp [K.or]
+
 private theorem anyFilledTruth_congr (field : FlatNumberField)
     (left right : SingleGroupValidationContext) (rows : List RowIndex)
     (agree : ∀ row, row ∈ rows →
