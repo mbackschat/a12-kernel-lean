@@ -1,5 +1,16 @@
 # Group and iteration source checkpoints
 
+<a id="src-string-inequality-empty-operand"></a>
+#### An absent String operand suppresses its comparison under inequality too, measured locally 2026-09-03
+
+- `revision`: `:adapter:kernelProbe`, sibling `git status --short` empty before and after each run. a12-dmkits `acced5d6012b15c0c3145d2a236e61bf2ad74246` on `main` with `source.state: CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `validateFull` on both codegen strategies with `enginesAgree: true` on every row. One model, four documents over two runs, four rules: `[Aux/Good] != "K"` and `== "K"` directly, and `NumberOfFilledFields(Lines*/Qty Having [Lines/Sku] != "K")` laddered against `== 0` and `> 0`.
+- `question`: [`spec/03` §2](../../spec/03-empty-and-required.md) states that a comparison over a `notEvaluated` operand short-circuits to not-fired, and puts String in the primitive default tier. The [String-leaf rows](#src-having-filter-nontrue-row) measured only `==`, where a suppressed operand and a participating empty one are **indistinguishable** — both fail a nonempty literal. Inequality is the one operator that separates them, since a participating empty would differ from any nonempty literal and therefore fire.
+- `claim`: **suppression, so the clause holds on the String carrier under the negated operator.** With `Good` absent, `!=` stays silent and `==` stays silent. Both live controls fire on the same rules: `Good` = `"X"` fires `!=`, and `Good` = `"K"` fires `==`. A participating-empty account predicts `!=` firing on the absent document and is refuted there.
+- `filter-position`: the same rule inside a filter behaves identically, with its **own** positive control rather than by composition. `Sku` absent beside `Sku` = `"K"` keeps neither row, so the count is 0 — and `Sku` = `"X"` keeps its row for a count of 1, which is what establishes that the zeros are suppression and not an inert rule. The first three documents' zeros alone would not have separated those.
+- `invalid-operand-not-run`: a **formally invalid** String operand stays unmeasured, and inequality does not settle it either: an unknown leaf and a suppressed one both drop the row under `!=`, so this operator separates *participating* from *non-participating* rather than unknown from clean-false. It would also need a String declaration carrying a constraint a value can violate, which this model has not. Recorded as a free choice on the same grounds as the [presence leaf's invalid operand](#src-having-filter-presence-leaf), not as a pending run.
+- `limit`: one String kind with no declared constraint, `validateFull` only, one literal. Not measured: a present-empty String operand under `!=` — this theory encodes the no-empty-String rule as absence, so it collapses onto the absent row here — an empty literal on the right of `!=`, an Enumeration carrier under the same operator, and the computation arm.
+- `sync`: locally originated, and it **confirms** an existing clause rather than correcting one, so no ledger entry. Had `!=` fired, `spec/03`'s primitive default tier would have needed a String exception.
+
 <a id="src-having-filter-disjunction"></a>
 #### A filter's `Or` is strong-Kleene, so a true disjunct keeps its row against an unavailable one, measured locally 2026-09-03
 

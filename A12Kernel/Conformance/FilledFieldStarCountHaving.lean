@@ -220,6 +220,9 @@ private def tagEquals (expected : String) : SurfaceCorrelatedHaving :=
 private def numberThroughStringLeaf : SurfaceCorrelatedHaving :=
   .compareStrings .equal { origin := .inner, field := repeatedPath "Amount" } "K"
 
+private def tagDiffers (expected : String) : SurfaceCorrelatedHaving :=
+  .compareStrings .notEqual { origin := .inner, field := repeatedPath "Tag" } expected
+
 private def text (field row : Nat) (value : String) : ClassifiedCellInput :=
   { address := { field, path := [row] }
     stored := value
@@ -285,6 +288,33 @@ example : tagCount? "K" [
 /-- The leaf resolves through the model-owned String **value** capability rather than accepting any
     declaration, so a Number field named through it is refused at elaboration. -/
 example : source? (some numberThroughStringLeaf) = none := by
+  native_decide
+
+/- Inequality is the one operator that separates an operand which *participates* with an empty value
+   from one that suppresses its comparison, because a participating empty would differ from any
+   nonempty literal and so keep its row. It suppresses: an absent operand answers not-fired under
+   `!=` exactly as under `==`. Kernel-retained on both the direct comparison surface and here, each
+   with its own live positive control, so the zeros below are suppression rather than an inert rule.
+   [`spec/03`](../../spec/03-empty-and-required.md)'s primitive default tier owns the rule; these
+   rows are its String carrier under the negated operator. -/
+
+/-- Both operands absent: `!=` keeps neither row, though a participating empty would keep both. -/
+example : countWith? (some (tagDiffers "K")) [
+    num amount.id 1 7,
+    num amount.id 2 9] = some (.value 0) := by
+  native_decide
+
+/-- The positive control on the same filter: a present operand differing from the literal keeps its
+    row, so the leaf is live and `!=` really does fire. -/
+example : countWith? (some (tagDiffers "K")) [
+    num amount.id 1 7, text tag.id 1 "X",
+    num amount.id 2 9] = some (.value 1) := by
+  native_decide
+
+/-- And a matching operand fails `!=`, which is the ordinary false rather than a suppression. -/
+example : countWith? (some (tagDiffers "K")) [
+    num amount.id 1 7, text tag.id 1 "K",
+    num amount.id 2 9] = some (.value 0) := by
   native_decide
 
 /- The presence leaves. Both polarities are Kernel-retained at the same checkpoint over clean

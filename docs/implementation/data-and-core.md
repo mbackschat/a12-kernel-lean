@@ -72,6 +72,7 @@
 - `boundary`: Nonrepeatable equality/inequality with explicit no-value behavior; stored Boolean/Confirm text admits only the fixed lowercase tokens, ignores declared `@NotInD` display tokens, retains exact formal causes/codes, and is certified against its stored text by checked-document construction
 - `owner`: [`ScalarText.lean`](../../A12Kernel/Semantics/ScalarText.lean), [`ScalarEquality.lean`](../../A12Kernel/Semantics/ScalarEquality.lean), [`CheckedDocument.lean`](../../A12Kernel/Elaboration/CheckedDocument.lean), [`Flat/Condition/`](../../A12Kernel/Elaboration/Flat/Condition/)
 - `assurance`: E/P closed for ordinary stored Boolean/Confirm and admitted scalar values; upstream L for token ingestion; selected C/X for Boolean/Confirm
+- `assurance`: the String operand's **no-value** rule is Kernel-retained under both operators at the [inequality checkpoint](../sources/group-and-iteration-probes.md#src-string-inequality-empty-operand). Inequality is the operator that could have refuted it, since a participating empty would differ from any nonempty literal and fire; it stays silent while both live controls fire. A formally invalid String operand remains unmeasured and inequality cannot settle it, because an unknown leaf and a suppressed one both fail to fire.
 - `remains`: Wider String policy: [SG7](../SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion)
 
 <a id="cap-number-comparison-and-empty-polarity"></a>
