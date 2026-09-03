@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.FilledFieldStarCount
 A row-local `Having` selects candidates before `NumberOfFilledFields` reads any cell, so a non-true
 filter drops exactly its own row and the count answers over the survivors rather than becoming
 unavailable. The retained Kernel rows are the filter-true, filter-false, filter-operand-malformed,
-and mixed selections at the [non-true-row checkpoint](../../docs/sources/group-and-iteration-probes.md#src-having-filter-nontrue-row).
+and mixed selections at the [non-true-row checkpoint](../../docs/sources/having-filter-probes.md#src-having-filter-nontrue-row).
 
 Two case pairs carry the load. The **read-order** pair changes only the second row's `Other` cell,
 so the same malformed *counted* cell is dropped with its row in one document and counted in the
@@ -85,7 +85,7 @@ private def tagPresent (origin : HavingOrigin) : SurfaceCorrelatedHaving :=
    **not** bind the filtered list's own iterated level, so a filter whose only reference is
    outer-origin is refused, while one in-scope conjunct beside the identical outer leaf admits it.
    The Kernel reports `MVK_NO_ITERATION_FOR_WILDCARD` for the refused form
-   ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-outer-origin-filter-leaves)). -/
+   ([checkpoint](../../docs/sources/having-filter-probes.md#src-outer-origin-filter-leaves)). -/
 
 private def correlatedSourceError? (having : Option SurfaceCorrelatedHaving) :
     Option FilledFieldStarCountElabError :=
@@ -109,7 +109,7 @@ example : (correlatedSource? (some (tagPresent .inner))).isSome = true := by
    satisfies it alone — measured on the Kernel, which admits a filter whose only condition is
    `CurrentRepetition(Rows) != CurrentRepetition($Rows)` and refuses the same comparison with both
    sides marked
-   ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-self-exclusion-and-nested-filter-runtime)).
+   ([checkpoint](../../docs/sources/having-filter-probes.md#src-self-exclusion-and-nested-filter-runtime)).
    That matters because `spec/01` states a `CurrentRepetition` operand contributes no field pointer
    at all, so a gate implemented over the reference expansion would refuse both forms. The pair
    isolates the marker as the whole difference. -/

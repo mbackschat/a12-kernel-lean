@@ -26,6 +26,18 @@ theorem env_pathForScope_length (environment : Env)
               subst path
               simp [induction tail remaining]
 
+/-- Two environments agreeing at every level of a scope project that scope identically, failures
+    included. This is the step that turns level-wise agreement into address equality. -/
+theorem env_pathForScope_congr (left right : Env) (scope : List RepeatableLevel)
+    (agree : ∀ level ∈ scope, left.bindingAt level = right.bindingAt level) :
+    left.pathForScope scope = right.pathForScope scope := by
+  induction scope with
+  | nil => rfl
+  | cons level levels induction =>
+      have tail : left.pathForScope levels = right.pathForScope levels :=
+        induction fun named member => agree named (List.mem_cons_of_mem _ member)
+      simp only [Env.pathForScope, agree level List.mem_cons_self, tail]
+
 /-- One positive singleton binding projects to its exact coordinate; no positional default is involved. -/
 theorem env_pathForScope_singleton (level : RepeatableLevel) (coordinate : Nat)
     (positive : coordinate ≠ 0) :
@@ -111,5 +123,91 @@ theorem starPath_boundEnvironment_duplicate (axis : StarAxis)
     (read : Env → ValueListCell kind) (hasHaving : Bool) :
     (resolved.toResolvedSide read hasHaving).hasUninstantiatedTail = resolved.domain.hasOpenTail := by
   rfl
+
+/-! ### A candidate environment differs from its captured prefix only where the path reopens
+
+This is why a filter's `$` marker is **semantically redundant** on a level the starred operand does
+not reopen: the candidate environment inherits that level's coordinate from the bound prefix
+unchanged, so the marked and unmarked spellings resolve the same address. The kernel admits both
+spellings there and they fire on identical rows
+([checkpoint](../../docs/sources/having-filter-probes.md#src-bare-outer-reference-redundant-marker)).
+Stating it here rather than at the filter keeps it a property of the addressing, which is where the
+inheritance actually happens. -/
+
+/-- Extending an environment cannot change a level the extension does not bind. `bindingAt` filters
+    by level, so the extension contributes nothing to the filtered list. -/
+theorem env_bindingAt_append_unbound (base extension : Env) (level : RepeatableLevel)
+    (unbound : ∀ binding ∈ extension, binding.1 ≠ level) :
+    (base ++ extension).bindingAt level = base.bindingAt level := by
+  have empty : extension.filter (fun binding => binding.1 == level) = [] := by
+    rw [List.filter_eq_nil_iff]
+    intro binding member
+    simpa using unbound binding member
+  simp only [Env.bindingAt, List.filter_append, empty, List.append_nil]
+
+mutual
+  /-- Every leaf environment of a reopened tree agrees with its bound prefix at any level the tree's
+      own axes do not name. -/
+  theorem starDomain_environments_agreeOutside
+      {levels : List RepeatableLevel} {base : Env} {domain : ReopenedStarDomain}
+      {environments : List Env}
+      (correspondence :
+        ReopenedStarDomain.EnvironmentCorrespondence levels base domain environments)
+      (level : RepeatableLevel) (outside : level ∉ levels) :
+      ∀ candidate ∈ environments, candidate.bindingAt level = base.bindingAt level := by
+    cases correspondence with
+    | selected base =>
+        intro candidate member
+        cases List.mem_singleton.1 member
+        rfl
+    | repeatable axisLevel levels base repeatability rows environments rowCorrespondence =>
+        exact starRows_environments_agreeOutside rowCorrespondence level
+          (fun named => outside (List.mem_cons_of_mem _ named))
+          (fun named => outside (named ▸ List.mem_cons_self))
+
+  /-- The sibling companion. Each row's child extends the same prefix by its own axis level only. -/
+  theorem starRows_environments_agreeOutside
+      {axisLevel : RepeatableLevel} {levels : List RepeatableLevel} {base : Env}
+      {rows : ReopenedStarRows} {environments : List Env}
+      (correspondence :
+        ReopenedStarRows.EnvironmentCorrespondence axisLevel levels base rows environments)
+      (level : RepeatableLevel) (outsideDeeper : level ∉ levels)
+      (outsideAxis : level ≠ axisLevel) :
+      ∀ candidate ∈ environments, candidate.bindingAt level = base.bindingAt level := by
+    cases correspondence with
+    | nil => intro candidate member; cases member
+    | cons axisLevel levels base coordinate child rest childEnvironments restEnvironments
+        childCorrespondence restCorrespondence =>
+        intro candidate member
+        rcases List.mem_append.1 member with fromChild | fromRest
+        · have inherited := starDomain_environments_agreeOutside childCorrespondence level
+            outsideDeeper candidate fromChild
+          rw [inherited]
+          exact env_bindingAt_append_unbound base [(axisLevel, coordinate)] level
+            (by
+              intro binding member
+              cases List.mem_singleton.1 member
+              exact fun named => outsideAxis named.symm)
+        · exact starRows_environments_agreeOutside restCorrespondence level outsideDeeper
+            outsideAxis candidate fromRest
+end
+
+/-- The consumer-facing form: for a level the resolved path does **not** reopen, every candidate
+    environment carries the bound prefix's own coordinate. A filter reference whose declared scope
+    avoids the reopened levels therefore resolves identically marked or unmarked. -/
+theorem starPath_resolve_agreeOutsideReopened
+    (path : StarPath) (document : Document) (outer bound : Env)
+    (resolved : ResolvedStarTopology)
+    (resolution : path.resolve document outer = .ok resolved)
+    (boundEnvironment : path.boundEnvironment outer = .ok bound)
+    (level : RepeatableLevel)
+    (outside : level ∉ (path.axes.drop path.firstStar).map (·.level)) :
+    ∀ candidate ∈ resolved.environments,
+      candidate.bindingAt level = bound.bindingAt level := by
+  obtain ⟨actual, actualBound, correspondence⟩ :=
+    StarPath.resolve_environmentCorrespondence path document outer resolved resolution
+  rw [boundEnvironment] at actualBound
+  cases actualBound
+  exact starDomain_environments_agreeOutside correspondence level outside
 
 end A12Kernel

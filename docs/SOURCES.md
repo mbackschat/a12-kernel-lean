@@ -181,9 +181,9 @@ Two of its results correct or extend clauses of this project. [`CustomFieldTypeS
 
 All are inbound from a committed reviewed revision and create no outbound request by the rule above.
 
-Revision `033fe3ef6` follows from that exchange and settles one question this project raised rather than one it reported. Asked whether `SPEC-2026-09-02-03`'s remaining discriminator is authorable at all, a12-dmkits measured it: a group-presence leaf **is** admitted inside a field-list filter, and the gate that refuses an out-of-scope condition is one gate about **scope** rather than two gates about groups. That refutes a speculation this project had written into [`spec/07`](../spec/07-repetition-and-iteration.md) — a filter naming a different group's field draws the same `MVK_NO_ITERATION_FOR_WILDCARD` and not a refusal of its own — and leaves the entry's discriminator a document run away. The [filter-condition checkpoint](sources/group-and-iteration-probes.md#src-having-filter-condition-scope) owns the rows, the denominator, and the untested `$` remedy.
+Revision `033fe3ef6` follows from that exchange and settles one question this project raised rather than one it reported. Asked whether `SPEC-2026-09-02-03`'s remaining discriminator is authorable at all, a12-dmkits measured it: a group-presence leaf **is** admitted inside a field-list filter, and the gate that refuses an out-of-scope condition is one gate about **scope** rather than two gates about groups. That refutes a speculation this project had written into [`spec/07`](../spec/07-repetition-and-iteration.md) — a filter naming a different group's field draws the same `MVK_NO_ITERATION_FOR_WILDCARD` and not a refusal of its own — and leaves the entry's discriminator a document run away. The [filter-condition checkpoint](sources/having-filter-probes.md#src-having-filter-condition-scope) owns the rows, the denominator, and the untested `$` remedy.
 
-That document run happened locally on 2026-09-03 and **refuted the discriminator's own premise** rather than settling the leaf: a non-true `Having` conjunct drops its own row and leaves the aggregate available, so the filter position collapses false and unknown exactly as firing and message typing already did. The [non-true-row checkpoint](sources/group-and-iteration-probes.md#src-having-filter-nontrue-row) owns that measurement, the empty-versus-malformed separator it produced, and the local prior art that made the premise refutable without a run.
+That document run happened locally on 2026-09-03 and **refuted the discriminator's own premise** rather than settling the leaf: a non-true `Having` conjunct drops its own row and leaves the aggregate available, so the filter position collapses false and unknown exactly as firing and message typing already did. The [non-true-row checkpoint](sources/having-filter-probes.md#src-having-filter-nontrue-row) owns that measurement, the empty-versus-malformed separator it produced, and the local prior art that made the premise refutable without a run.
 
 ## Provenance checkpoint index
 
@@ -339,33 +339,35 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-date-range-direct-list-cross-group-sources"></a>
 - [A direct-list `FirstFilledValue` places its sources freely](sources/computation-placement-and-constant-probes.md#src-date-range-direct-list-cross-group-sources)
 <a id="src-having-filter-condition-scope"></a>
-- [A `Having` condition must bind the filtered list's own iterated level, and admits a group-presence leaf](sources/group-and-iteration-probes.md#src-having-filter-condition-scope)
+- [A `Having` condition must bind the filtered list's own iterated level, and admits a group-presence leaf](sources/having-filter-probes.md#src-having-filter-condition-scope)
 <a id="src-having-filter-nontrue-row"></a>
-- [A non-true `Having` conjunct drops its own row, and the empty-as-zero rule does not reach a malformed operand](sources/group-and-iteration-probes.md#src-having-filter-nontrue-row)
+- [A non-true `Having` conjunct drops its own row, and the empty-as-zero rule does not reach a malformed operand](sources/having-filter-probes.md#src-having-filter-nontrue-row)
 <a id="src-having-filter-condition-grammar"></a>
-- [A `Having` condition is the ordinary condition grammar, and every refusal reached is an ordinary one](sources/group-and-iteration-probes.md#src-having-filter-condition-grammar)
+- [A `Having` condition is the ordinary condition grammar, and every refusal reached is an ordinary one](sources/having-filter-probes.md#src-having-filter-condition-grammar)
 <a id="src-having-filter-presence-leaf"></a>
-- [Both presence polarities are real per-row filter predicates and exact complements over clean cells](sources/group-and-iteration-probes.md#src-having-filter-presence-leaf)
+- [Both presence polarities are real per-row filter predicates and exact complements over clean cells](sources/having-filter-probes.md#src-having-filter-presence-leaf)
 <a id="src-having-filter-disjunction"></a>
-- [A filter's `Or` is strong-Kleene, so a true disjunct keeps its row against an unavailable one](sources/group-and-iteration-probes.md#src-having-filter-disjunction)
+- [A filter's `Or` is strong-Kleene, so a true disjunct keeps its row against an unavailable one](sources/having-filter-probes.md#src-having-filter-disjunction)
 <a id="src-string-inequality-empty-operand"></a>
-- [An absent String operand suppresses its comparison under inequality too](sources/group-and-iteration-probes.md#src-string-inequality-empty-operand)
+- [An absent String operand suppresses its comparison under inequality too](sources/having-filter-probes.md#src-string-inequality-empty-operand)
 <a id="src-filtered-aggregate-computation-arm"></a>
-- [A filtered aggregate's computation arm poisons on a reached operand and never reads an excluded one](sources/group-and-iteration-probes.md#src-filtered-aggregate-computation-arm)
+- [A filtered aggregate's computation arm poisons on a reached operand and never reads an excluded one](sources/having-filter-probes.md#src-filtered-aggregate-computation-arm)
 <a id="src-and-order-computation-arm"></a>
-- [A filter's conjunction short-circuits on a false operand too, so the computation arm's order sensitivity is not the disjunction's alone](sources/group-and-iteration-probes.md#src-and-order-computation-arm)
+- [A filter's conjunction short-circuits on a false operand too, so the computation arm's order sensitivity is not the disjunction's alone](sources/having-filter-probes.md#src-and-order-computation-arm)
 <a id="src-self-exclusion-and-nested-filter-runtime"></a>
-- [`CurrentRepetition` self-exclusion is an exact complement pair, `$` binds a per-row computed target, and a nested `Or` selects its own rows](sources/group-and-iteration-probes.md#src-self-exclusion-and-nested-filter-runtime)
+- [`CurrentRepetition` self-exclusion is an exact complement pair, `$` binds a per-row computed target, and a nested `Or` selects its own rows](sources/having-filter-probes.md#src-self-exclusion-and-nested-filter-runtime)
+<a id="src-bare-outer-reference-redundant-marker"></a>
+- [On a level the star does not reopen, the `$` marker is admitted, redundant, and not what satisfies the scope gate](sources/having-filter-probes.md#src-bare-outer-reference-redundant-marker)
 <a id="src-correlated-filter-runtime"></a>
-- [`$` binds the captured outer row and the candidate set includes it](sources/group-and-iteration-probes.md#src-correlated-filter-runtime)
+- [`$` binds the captured outer row and the candidate set includes it](sources/having-filter-probes.md#src-correlated-filter-runtime)
 <a id="src-pattern-invalid-string-cell"></a>
 - [A pattern or length violation makes the cell formally invalid on the validation arm](sources/evaluation-and-application-routes.md#src-pattern-invalid-string-cell)
 <a id="src-filter-condition-carrier-independence"></a>
-- [The filter is checked and evaluated identically on every operand carrier](sources/group-and-iteration-probes.md#src-filter-condition-carrier-independence)
+- [The filter is checked and evaluated identically on every operand carrier](sources/having-filter-probes.md#src-filter-condition-carrier-independence)
 <a id="src-nested-correlated-filter-and-poison-scope"></a>
-- [Multi-level correlation matches the one-level account, the scope gate is syntactic, and computation poison is per instance](sources/group-and-iteration-probes.md#src-nested-correlated-filter-and-poison-scope)
+- [Multi-level correlation matches the one-level account, the scope gate is syntactic, and computation poison is per instance](sources/having-filter-probes.md#src-nested-correlated-filter-and-poison-scope)
 <a id="src-outer-origin-filter-leaves"></a>
-- [A `$`-marked reference does not bind the filtered level, and both newer leaves read the captured row](sources/group-and-iteration-probes.md#src-outer-origin-filter-leaves)
+- [A `$`-marked reference does not bind the filtered level, and both newer leaves read the captured row](sources/having-filter-probes.md#src-outer-origin-filter-leaves)
 
 <a id="src-starred-operand-message-polarity"></a>
 - [A computation's message type follows what can still grow](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity)

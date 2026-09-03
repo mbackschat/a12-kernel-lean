@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CheckedStarDocument
+import A12Kernel.Proofs.StarAddressing
 
 namespace A12Kernel
 
@@ -100,5 +101,21 @@ theorem resolvedCheckedEntityOperandCore_inCapacity_sublist
   intro addressed member
   unfold ResolvedCheckedEntityOperandCore.inCapacityAddressedCells
   simp [List.mem_filter, member]
+
+/-- A field's address depends on its environment **only** at its own declared repeatable scope, so
+    two environments agreeing there address the same cell whatever else they bind. Together with
+    `starPath_resolve_agreeOutsideReopened` this is why a filter's `$` marker changes nothing on a
+    level the starred operand does not reopen: candidate and captured environments agree at exactly
+    the levels such a field's scope can name. -/
+theorem cellAddress_congr_onScope (checked : CheckedDocument model)
+    (left right : Env) (field : FieldId) (declaration : FlatFieldDecl)
+    (lookup : model.lookupUniqueId field = .ok declaration)
+    (agree : ∀ level ∈ declaration.repeatableScope,
+      left.bindingAt level = right.bindingAt level) :
+    checked.cellAddress left field = checked.cellAddress right field := by
+  unfold CheckedDocument.cellAddress
+  rw [lookup]
+  simp only [Except.mapError, bind, Except.bind]
+  rw [env_pathForScope_congr left right declaration.repeatableScope agree]
 
 end A12Kernel

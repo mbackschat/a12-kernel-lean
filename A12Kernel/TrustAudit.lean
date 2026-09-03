@@ -1425,6 +1425,11 @@ run_cmd do
 #print axioms A12Kernel.reopenedStar_toResolvedSide_missingPotential
 #print axioms A12Kernel.env_pathForScope_length
 #print axioms A12Kernel.env_pathForScope_singleton
+#print axioms A12Kernel.env_pathForScope_congr
+#print axioms A12Kernel.env_bindingAt_append_unbound
+#print axioms A12Kernel.starDomain_environments_agreeOutside
+#print axioms A12Kernel.starRows_environments_agreeOutside
+#print axioms A12Kernel.starPath_resolve_agreeOutsideReopened
 #print axioms A12Kernel.starPath_firstAxis_reopens
 #print axioms A12Kernel.starPath_boundEnvironment_single
 #print axioms A12Kernel.starPath_boundEnvironment_duplicate
@@ -2132,6 +2137,7 @@ run_cmd do
 #print axioms A12Kernel.resolveCheckedValidationEntityOperandCore_addressing_error
 #print axioms A12Kernel.resolveCheckedField_empty_topology
 #print axioms A12Kernel.resolvedCheckedEntityOperandCore_inCapacity_sublist
+#print axioms A12Kernel.cellAddress_congr_onScope
 #print axioms A12Kernel.indexPreliminary_mandatory_contract
 #print axioms A12Kernel.indexPreliminary_unique_contract
 #print axioms A12Kernel.checkedIndexPreliminary_preserves_parsed

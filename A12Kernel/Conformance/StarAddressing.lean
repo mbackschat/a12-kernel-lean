@@ -8,6 +8,9 @@ private def outer : StarAxis := { level := 10, repeatability := some 2 }
 private def inner : StarAxis := { level := 20, repeatability := some 2 }
 private def allRows : StarPath := { axes := [outer, inner], firstStar := 0 }
 
+/-- The same two axes with only the inner level starred: level `10` is bound, `20` is reopened. -/
+private def innerStarOnly : StarPath := { allRows with firstStar := 1 }
+
 private def partialDocument : Document where
   instantiatedRows := [
     { group := 20, path := [1, 2] },
@@ -88,16 +91,16 @@ example : envsAndTail allRows completeDocument [] = some (
   native_decide
 
 /- A level above the first star remains bound by identity; deeper outer bindings are discarded. -/
-example : envsAndTail { allRows with firstStar := 1 } partialDocument [(10, 2), (20, 9)] =
+example : envsAndTail innerStarOnly partialDocument [(10, 2), (20, 9)] =
     some ([[(10, 2), (20, 1)]], true) := by
   native_decide
 
 /- Bound outer levels use the shared named lookup: unrelated binding order is irrelevant, while a duplicate required level fails structurally. -/
 example :
-    envsAndTail { allRows with firstStar := 1 } partialDocument
+    envsAndTail innerStarOnly partialDocument
         [(30, 9), (10, 2), (20, 9)] =
       some ([[(10, 2), (20, 1)]], true) ∧
-    rejectsAs (.duplicateBinding 10) { allRows with firstStar := 1 }
+    rejectsAs (.duplicateBinding 10) innerStarOnly
       partialDocument [(10, 1), (10, 2)] := by
   native_decide
 
@@ -162,5 +165,31 @@ example :
       [] [] .selectedLeaf [] := by
   intro correspondence
   cases correspondence
+
+/- A one-star path over the same two-level tree: level `10` is **bound** and level `20` is reopened.
+   Every candidate inherits the bound coordinate at `10` unchanged and varies only at `20`, which is
+   why a filter's `$` marker is redundant on a non-reopened level — the Kernel admits both spellings
+   there and they fire on identical rows
+   ([checkpoint](../../docs/sources/having-filter-probes.md#src-bare-outer-reference-redundant-marker)).
+   `starPath_resolve_agreeOutsideReopened` is the universal form; these two rows are the separator,
+   because a *single* captured coordinate would satisfy the agreement vacuously. -/
+
+example : (innerStarOnly.boundEnvironment [(10, 2)]).toOption = some [(10, 2)] := by
+  native_decide
+
+example :
+    envsAndTail innerStarOnly completeDocument [(10, 2)]
+      = some ([[(10, 2), (20, 1)], [(10, 2), (20, 2)]], false) := by
+  native_decide
+
+/-- The other captured row moves every candidate's inherited coordinate with it, so the inheritance
+    is read from the prefix rather than fixed by the document. -/
+example :
+    envsAndTail innerStarOnly completeDocument [(10, 1)]
+      = some ([[(10, 1), (20, 1)], [(10, 1), (20, 2)]], false) := by
+  native_decide
+
+example : (innerStarOnly.axes.drop innerStarOnly.firstStar).map (·.level) = [20] := by
+  native_decide
 
 end A12Kernel.Conformance.StarAddressing

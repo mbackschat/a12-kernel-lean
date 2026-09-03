@@ -68,7 +68,7 @@ private theorem K.or_eq_tru_iff (left right : K) :
     replaces the conjunctivity certificate the authored surface used to carry, and it is the
     universal form of the retained rows where an unavailable operand beside a true one keeps its row
     while the same operand beside a false one drops it
-    ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-having-filter-disjunction)). -/
+    ([checkpoint](../../docs/sources/having-filter-probes.md#src-having-filter-disjunction)). -/
 theorem correlatedHaving_or_keepsEnvironment (left right : CorrelatedHaving)
     (context : CorrelationContext) (outerEnv innerEnv : Env) :
     CorrelatedHaving.keepsEnvironment (.or left right) context outerEnv innerEnv
