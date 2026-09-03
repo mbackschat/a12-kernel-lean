@@ -630,6 +630,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 
 <a id="src-constant-literal-family-gate"></a>
 - [A bare constant's admission is gated by the target's declared format string, never its kind](sources/computation-placement-and-constant-probes.md#src-constant-literal-family-gate)
+<a id="src-temporal-format-gate-not-component-sets"></a>
+- [The temporal admission gate reads family and year agreement, never component sets](sources/computation-placement-and-constant-probes.md#src-temporal-format-gate-not-component-sets)
 <a id="src-temporal-constant-literal-composition"></a>
 - [The temporal literal vocabulary composes, and the Base Year gate reads year disagreement](sources/computation-placement-and-constant-probes.md#src-temporal-constant-literal-composition)
 

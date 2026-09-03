@@ -281,7 +281,18 @@ structure CheckedOmittedComponentDateTarget (model : FlatModel) where
   /-- A yearless target exists only in a model that declares a Base Year, so no consumer can build
   one the Kernel would refuse. "Yearless" is `carriesYear` failing — the Base Year requirement *is*
   year-absence, not a second classification of it. The Base Year is consumed **here and nowhere
-  else**: it gates this certificate and reaches no part of the rendering. -/
+  else**: it gates this certificate and reaches no part of the rendering.
+
+  Read the direction precisely, because the converse is false. The Kernel's rule is symmetric over
+  the **pair**: a Base Year is required exactly when the constant and the target disagree about
+  carrying a year, so a *yearless* constant reaches a yearless target with no Base Year declared —
+  measured, admitted, storing the month alone
+  ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-format-gate-not-component-sets)).
+  This field states the requirement on the target alone, which is sound only because every constant
+  reaching it is year-bearing by construction: `DateParts.year` is an `Int`, not an option, so the
+  yearless literal is unrepresentable as a Date constant here. A carrier that gains a yearless
+  constant must move the requirement onto the pair rather than reuse this field, which would refuse
+  a declaration the Kernel accepts. -/
   baseYearWhenYearless :
     (!format.carriesYear && !model.hasBaseYear) = false
 
