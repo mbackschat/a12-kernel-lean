@@ -356,6 +356,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A filter's conjunction short-circuits on a false operand too, so the computation arm's order sensitivity is not the disjunction's alone](sources/having-filter-probes.md#src-and-order-computation-arm)
 <a id="src-self-exclusion-and-nested-filter-runtime"></a>
 - [`CurrentRepetition` self-exclusion is an exact complement pair, `$` binds a per-row computed target, and a nested `Or` selects its own rows](sources/having-filter-probes.md#src-self-exclusion-and-nested-filter-runtime)
+<a id="src-presence-leaf-operand-kinds"></a>
+- [The presence leaf reads the same three states on a temporal, Enumeration, DateRange, and Boolean operand](sources/having-filter-probes.md#src-presence-leaf-operand-kinds)
 <a id="src-bare-outer-reference-redundant-marker"></a>
 - [On a level the star does not reopen, the `$` marker is admitted, redundant, and not what satisfies the scope gate](sources/having-filter-probes.md#src-bare-outer-reference-redundant-marker)
 <a id="src-correlated-filter-runtime"></a>
