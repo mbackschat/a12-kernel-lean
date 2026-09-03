@@ -181,6 +181,8 @@ Two of its results correct or extend clauses of this project. [`CustomFieldTypeS
 
 All are inbound from a committed reviewed revision and create no outbound request by the rule above.
 
+Revision `033fe3ef6` follows from that exchange and settles one question this project raised rather than one it reported. Asked whether `SPEC-2026-09-02-03`'s remaining discriminator is authorable at all, a12-dmkits measured it: a group-presence leaf **is** admitted inside a field-list filter, and the gate that refuses an out-of-scope condition is one gate about **scope** rather than two gates about groups. That refutes a speculation this project had written into [`spec/07`](../spec/07-repetition-and-iteration.md) — a filter naming a different group's field draws the same `MVK_NO_ITERATION_FOR_WILDCARD` and not a refusal of its own — and leaves the entry's discriminator a document run away. The [filter-condition checkpoint](sources/group-and-iteration-probes.md#src-having-filter-condition-scope) owns the rows, the denominator, and the untested `$` remedy.
+
 ## Provenance checkpoint index
 
 Search stable `src-` anchors in this hub, then follow the link to the bounded family shard. Exact revisions and source-level claim limits remain in those records.
@@ -334,6 +336,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Reviewed 2026-08-29 a12-dmkits reconciliation and correction batch](sources/computation-placement-and-constant-probes.md#src-2026-08-29-reconciliation)
 <a id="src-date-range-direct-list-cross-group-sources"></a>
 - [A direct-list `FirstFilledValue` places its sources freely](sources/computation-placement-and-constant-probes.md#src-date-range-direct-list-cross-group-sources)
+<a id="src-having-filter-condition-scope"></a>
+- [A `Having` condition must bind the filtered list's own iterated level, and admits a group-presence leaf](sources/group-and-iteration-probes.md#src-having-filter-condition-scope)
+
 <a id="src-starred-operand-message-polarity"></a>
 - [A computation's message type follows what can still grow](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity)
 <a id="src-filled-field-count-nested-capacity"></a>
