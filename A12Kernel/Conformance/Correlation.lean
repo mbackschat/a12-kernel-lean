@@ -637,4 +637,51 @@ example :
       { innerEnv := resolvingCandidate 1, outerEnv := [] }) = .computation .holds := by
   native_decide
 
+/- The String-equality leaf on the computation arm. An **absent** operand suppresses the comparison
+   into an ordinary non-truth rather than poisoning, which is the branch that separates suppression
+   from unavailability on this arm: only the latter aborts. Kernel-retained on the same channel that
+   measured the presence leaf, where a filter naming an absent String drops its row and the
+   aggregate still computes. A formally unavailable String stays unmeasured — the poison branch here
+   is this theory's account, shared with every other checked String consumer. -/
+
+private def stringHaving (expected : String) : CorrelatedHaving :=
+  CorrelatedHaving.compareStringLiteral .equal
+    { origin := .inner, field := { id := marker.id } } expected
+
+private def textCell (value : String) : CheckedCell :=
+  { rawPresent := true, parsed := some (.str value), findings := [] }
+
+private def stringContext (cell : CheckedCell) :
+    ResolvingCorrelationContext ResolvingProbeError where
+  read _ field := if field == marker.id then .ok cell else .ok resolvingCell
+  bindingError := .binding
+
+example :
+    computationSnapshot ((stringHaving "K").evalComputationInResolving
+      (stringContext (textCell "K"))
+      { innerEnv := resolvingCandidate 1, outerEnv := [] }) = .computation .holds := by
+  native_decide
+
+example :
+    computationSnapshot ((stringHaving "K").evalComputationInResolving
+      (stringContext (textCell "X"))
+      { innerEnv := resolvingCandidate 1, outerEnv := [] }) = .computation .notTrue := by
+  native_decide
+
+/-- The absent operand: non-true, **not** poison, so the enclosing aggregate stays computable. -/
+example :
+    computationSnapshot ((stringHaving "K").evalComputationInResolving
+      (stringContext emptyResolvingCell)
+      { innerEnv := resolvingCandidate 1, outerEnv := [] }) = .computation .notTrue := by
+  native_decide
+
+/-- The nearest contrast, and the reason the row above is worth locking: an *unavailable* operand
+    does poison. This arm is internal — no measurement reaches a formally invalid String here. -/
+example :
+    computationSnapshot ((stringHaving "K").evalComputationInResolving
+      (stringContext poisonedResolvingCell)
+      { innerEnv := resolvingCandidate 1, outerEnv := [] }) =
+      .computation (.poison .malformed) := by
+  native_decide
+
 end A12Kernel.Conformance.Correlation
