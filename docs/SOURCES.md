@@ -355,7 +355,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-correlated-filter-runtime"></a>
 - [`$` binds the captured outer row and the candidate set includes it](sources/group-and-iteration-probes.md#src-correlated-filter-runtime)
 <a id="src-filter-condition-carrier-independence"></a>
-- [The filter's condition is checked identically on every operand carrier](sources/group-and-iteration-probes.md#src-filter-condition-carrier-independence)
+- [The filter is checked and evaluated identically on every operand carrier](sources/group-and-iteration-probes.md#src-filter-condition-carrier-independence)
 <a id="src-nested-correlated-filter-and-poison-scope"></a>
 - [Multi-level correlation matches the one-level account, the scope gate is syntactic, and computation poison is per instance](sources/group-and-iteration-probes.md#src-nested-correlated-filter-and-poison-scope)
 <a id="src-outer-origin-filter-leaves"></a>
