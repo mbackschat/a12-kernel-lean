@@ -334,10 +334,11 @@ example : countWith? (some tagFilled) oneTagged = some (.value 1) := by
 example : countWith? (some tagNotFilled) oneTagged = some (.value 1) := by
   native_decide
 
-/-- **Internal, not Kernel-retained:** no measurement covers a formally unavailable presence
-    operand. On this theory's account both polarities delegate to the shared observation consumers,
-    which answer unknown there, so the row drops under *either* polarity and the two stop being
-    complements — the counts sum to one row short rather than to the row count. -/
+/- A formally unavailable presence operand is non-true under *both* polarities, so it drops its row
+   either way and the two counts stop being complements — they sum to one row short. Every row of
+   this block is Kernel-retained at the same checkpoint. -/
+
+/-- One clean and one unavailable operand: only the clean row's polarity keeps anything. -/
 example : countWith? (some flagFilled) [
     num amount.id 1 7, num flag.id 1 1,
     num amount.id 2 9, bad flag.id 2] = some (.value 1) := by
@@ -345,6 +346,31 @@ example : countWith? (some flagFilled) [
 
 example : countWith? (some flagNotFilled) [
     num amount.id 1 7, num flag.id 1 1,
+    num amount.id 2 9, bad flag.id 2] = some (.value 0) := by
+  native_decide
+
+/-- Both operands unavailable: **neither** polarity keeps a row, which is what distinguishes an
+    unknown leaf from a false one being negated into a true one. -/
+example : countWith? (some flagFilled) [
+    num amount.id 1 7, bad flag.id 1,
+    num amount.id 2 9, bad flag.id 2] = some (.value 0) := by
+  native_decide
+
+example : countWith? (some flagNotFilled) [
+    num amount.id 1 7, bad flag.id 1,
+    num amount.id 2 9, bad flag.id 2] = some (.value 0) := by
+  native_decide
+
+/-- Absence and formal unavailability side by side in one document, which is the separator against
+    the most tempting wrong account: an **absent** operand makes `FieldNotFilled` true and keeps its
+    row, while an unavailable one does not. Treating unavailable as absent would answer two here. -/
+example : countWith? (some flagNotFilled) [
+    num amount.id 1 7,
+    num amount.id 2 9, bad flag.id 2] = some (.value 1) := by
+  native_decide
+
+example : countWith? (some flagFilled) [
+    num amount.id 1 7,
     num amount.id 2 9, bad flag.id 2] = some (.value 0) := by
   native_decide
 
