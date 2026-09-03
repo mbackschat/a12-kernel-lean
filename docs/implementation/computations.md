@@ -1,5 +1,7 @@
 # Computation capabilities
 
+Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [hub's record-key legend](../IMPLEMENTATION-MAP.md#record-key-legend).
+
 ### §11 — calculations and formal checking
 
 The scalar, fixed, and nonrepeatable half. Exact-address repeatable families live in [`repeatable-computations.md`](repeatable-computations.md).

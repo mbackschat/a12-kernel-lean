@@ -1,5 +1,7 @@
 # String and enumeration capabilities
 
+Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [hub's record-key legend](../IMPLEMENTATION-MAP.md#record-key-legend).
+
 ### §7 — strings and patterns
 
 <a id="cap-string-value-and-length"></a>

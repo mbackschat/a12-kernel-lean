@@ -68,6 +68,8 @@ Capability records state the current `L` boundary. The reusable lock and deliber
 <a id="excludednext"></a>
 <a id="excluded-boundary-and-gap-links"></a>
 
+<a id="record-key-legend"></a>
+
 This is the operational lookup layer. Search the exact capability or type, then read its keyed record:
 
 - `boundary` states the implemented semantic boundary, not a historical milestone.

@@ -1,5 +1,7 @@
 # Repeatable computation capabilities
 
+Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [hub's record-key legend](../IMPLEMENTATION-MAP.md#record-key-legend).
+
 The exact-address repeatable half of §11. Scalar, fixed, and nonrepeatable computation families, together with the shared plan, formal-input, result, and generated-validation records these entries delegate to, stay in [`computations.md`](computations.md).
 
 ### §11 — calculations and formal checking

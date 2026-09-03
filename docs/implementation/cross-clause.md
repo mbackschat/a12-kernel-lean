@@ -1,5 +1,7 @@
 # Cross-clause capabilities and gates
 
+Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [hub's record-key legend](../IMPLEMENTATION-MAP.md#record-key-legend).
+
 ## Cross-clause owners
 
 <a id="cross-clause-implementation-notes"></a>

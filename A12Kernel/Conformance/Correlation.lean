@@ -637,6 +637,56 @@ example :
       { innerEnv := resolvingCandidate 1, outerEnv := [] }) = .computation .holds := by
   native_decide
 
+/- The same asymmetry at the **other** connective, with the dominating operand's polarity flipped:
+   a conjunction short-circuits on a *false* operand where a disjunction short-circuits on a true
+   one. Locking only the `Or` pair above would leave the account consistent with a conjunction that
+   evaluates both operands eagerly, which is the mistake a consumer reordering `And` operands would
+   make. -/
+
+private def poisonedAndEmptyContext :
+    ResolvingCorrelationContext ResolvingProbeError where
+  read _ field :=
+    if field == marker.id then .ok poisonedResolvingCell
+    else if field == payload.id then .ok emptyResolvingCell
+    else .ok resolvingCell
+  bindingError := .binding
+
+private def falseThenPoisoned : CorrelatedHaving :=
+  .and
+    (CorrelatedHaving.presence .filled { origin := .inner, field := payload.id })
+    (CorrelatedHaving.presence .filled { origin := .inner, field := marker.id })
+
+private def poisonedThenFalse : CorrelatedHaving :=
+  .and
+    (CorrelatedHaving.presence .filled { origin := .inner, field := marker.id })
+    (CorrelatedHaving.presence .filled { origin := .inner, field := payload.id })
+
+/-- Validation drops the candidate under **either** spelling: the false conjunct dominates. -/
+example :
+    truthSnapshot (falseThenPoisoned.evalTruthInResolving poisonedAndEmptyContext
+      { innerEnv := resolvingCandidate 1, outerEnv := [] }) = .truth .fls := by
+  native_decide
+
+example :
+    truthSnapshot (poisonedThenFalse.evalTruthInResolving poisonedAndEmptyContext
+      { innerEnv := resolvingCandidate 1, outerEnv := [] }) = .truth .fls := by
+  native_decide
+
+/-- Computation drops the candidate when the false operand is authored first, because the
+    unavailable one is never read. -/
+example :
+    computationSnapshot (falseThenPoisoned.evalComputationInResolving poisonedAndEmptyContext
+      { innerEnv := resolvingCandidate 1, outerEnv := [] }) = .computation .notTrue := by
+  native_decide
+
+/-- Reordering the same two operands poisons instead, so an operand swap that validation cannot
+    observe changes the computation outcome. -/
+example :
+    computationSnapshot (poisonedThenFalse.evalComputationInResolving poisonedAndEmptyContext
+      { innerEnv := resolvingCandidate 1, outerEnv := [] }) =
+      .computation (.poison .malformed) := by
+  native_decide
+
 /- Both newer leaves at **outer** origin read the captured environment, not the candidate. The
    kernel run that established this was authored against exactly this wiring, and a candidate-origin
    mis-wiring would pass every other case in this family, because every one of them binds the same

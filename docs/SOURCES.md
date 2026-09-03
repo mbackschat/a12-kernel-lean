@@ -352,6 +352,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [An absent String operand suppresses its comparison under inequality too](sources/group-and-iteration-probes.md#src-string-inequality-empty-operand)
 <a id="src-filtered-aggregate-computation-arm"></a>
 - [A filtered aggregate's computation arm poisons on a reached operand and never reads an excluded one](sources/group-and-iteration-probes.md#src-filtered-aggregate-computation-arm)
+<a id="src-and-order-computation-arm"></a>
+- [A filter's conjunction short-circuits on a false operand too, so the computation arm's order sensitivity is not the disjunction's alone](sources/group-and-iteration-probes.md#src-and-order-computation-arm)
 <a id="src-correlated-filter-runtime"></a>
 - [`$` binds the captured outer row and the candidate set includes it](sources/group-and-iteration-probes.md#src-correlated-filter-runtime)
 <a id="src-pattern-invalid-string-cell"></a>

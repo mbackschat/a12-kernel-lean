@@ -125,6 +125,93 @@ theorem correlatedHaving_selectEnvironments_and_comm (left right : CorrelatedHav
   intro candidate _
   simp only [correlatedHaving_and_keepsEnvironment, Bool.and_comm]
 
+/-! ### Rewrite laws a source-to-source consumer needs
+
+A Transform consumer that canonicalizes filter conditions asked three questions the root-level
+commutativity laws above do not answer, and each is answered here: whether a rewrite keeps the model
+**legal**, whether equal truth is enough to conclude equal **selection**, and whether a swap at a
+**nested** node is covered. The first is the one such a tool needs first, because a rewrite that
+preserves meaning but produces a rejected model is worse than no rewrite. -/
+
+/-- The existential leaf fold is blind to a node's operand order, at either connective, because it
+    combines its subtrees with a commutative Boolean operator. -/
+theorem conditionTree_anyLeaf_swap {Leaf : Type} (predicate : Leaf → Bool)
+    (left right : ConditionTree Leaf) :
+    (ConditionTree.or left right).anyLeaf predicate
+        = (ConditionTree.or right left).anyLeaf predicate ∧
+      (ConditionTree.and left right).anyLeaf predicate
+        = (ConditionTree.and right left).anyLeaf predicate := by
+  constructor <;> simp only [ConditionTree.anyLeaf] <;> exact Bool.or_comm _ _
+
+/-- The universal leaf fold is blind to operand order for the same reason. -/
+theorem conditionTree_allLeaves_swap {Leaf : Type} (predicate : Leaf → Bool)
+    (left right : ConditionTree Leaf) :
+    (ConditionTree.or left right).allLeaves predicate
+        = (ConditionTree.or right left).allLeaves predicate ∧
+      (ConditionTree.and left right).allLeaves predicate
+        = (ConditionTree.and right left).allLeaves predicate := by
+  constructor <;> simp only [ConditionTree.allLeaves] <;> exact Bool.and_comm _ _
+
+/-- **Admission invariance, at either connective.** Swapping a filter node's operands changes
+    neither environment well-formedness nor the reopened-level requirement, so a canonicalizing
+    rewrite cannot turn an admitted filter into a rejected one at that node. Both predicates are
+    leaf folds, so this holds for the reopened-level gate exactly because that gate is a syntactic
+    occurrence check rather than a reachability analysis. Stated over both connectives because the
+    shipped one-group suite is conjunction-only and would otherwise inherit nothing. -/
+theorem correlatedHaving_admission_swap (model : FlatModel)
+    (candidateLevels outerLevels reopenedLevels : List RepeatableLevel)
+    (left right : CorrelatedHaving) :
+    (CorrelatedHaving.wellFormedForEnvironments (.or left right)
+          model candidateLevels outerLevels
+        = CorrelatedHaving.wellFormedForEnvironments (.or right left)
+          model candidateLevels outerLevels ∧
+      CorrelatedHaving.reachesReopenedLevel (.or left right) model reopenedLevels
+        = CorrelatedHaving.reachesReopenedLevel (.or right left) model reopenedLevels) ∧
+      (CorrelatedHaving.wellFormedForEnvironments (.and left right)
+            model candidateLevels outerLevels
+          = CorrelatedHaving.wellFormedForEnvironments (.and right left)
+            model candidateLevels outerLevels ∧
+        CorrelatedHaving.reachesReopenedLevel (.and left right) model reopenedLevels
+          = CorrelatedHaving.reachesReopenedLevel (.and right left) model reopenedLevels) := by
+  refine ⟨⟨?_, ?_⟩, ?_, ?_⟩
+  · exact (conditionTree_allLeaves_swap _ left right).1
+  · exact (conditionTree_anyLeaf_swap _ left right).1
+  · exact (conditionTree_allLeaves_swap _ left right).2
+  · exact (conditionTree_anyLeaf_swap _ left right).2
+
+/-- **The truth-to-selection bridge.** Two filter conditions agreeing on truth at every frame select
+    the same candidates, in the same order. A consumer proving a rewrite correct needs exactly this
+    step and would otherwise have to read `selectEnvironments`'s definition to believe it. -/
+theorem correlatedHaving_selectEnvironments_congr
+    (first second : CorrelatedHaving) (context : CorrelationContext) (outerEnv : Env)
+    (candidates : List Env)
+    (agree : ∀ frame : CorrelationFrame,
+      first.evalTruthIn context frame = second.evalTruthIn context frame) :
+    first.selectEnvironments context outerEnv candidates
+      = second.selectEnvironments context outerEnv candidates := by
+  simp only [CorrelatedHaving.selectEnvironments]
+  refine List.filter_congr ?_
+  intro candidate _
+  simp only [CorrelatedHaving.keepsEnvironment,
+    agree { innerEnv := candidate, outerEnv }]
+
+/-- A swap at any **nested** node is covered too, which the root-level laws did not reach. The
+    representative the consumer named is `.and (.or a b) c`; the proof is the bridge above plus
+    strong-Kleene commutativity at the rewritten node, so the same argument covers any single swap
+    at any depth. -/
+theorem correlatedHaving_selectEnvironments_nested_swap
+    (a b c : CorrelatedHaving) (context : CorrelationContext) (outerEnv : Env)
+    (candidates : List Env) :
+    CorrelatedHaving.selectEnvironments (.and (.or a b) c) context outerEnv candidates
+      = CorrelatedHaving.selectEnvironments (.and (.or b a) c) context outerEnv candidates := by
+  refine correlatedHaving_selectEnvironments_congr _ _ _ _ _ ?_
+  intro frame
+  simp only [CorrelatedHaving.evalTruthIn, ConditionTree.evalK]
+  cases a.evalK (CorrelatedHavingLeaf.evalTruthIn context frame) <;>
+    cases b.evalK (CorrelatedHavingLeaf.evalTruthIn context frame) <;>
+      cases c.evalK (CorrelatedHavingLeaf.evalTruthIn context frame) <;>
+        simp [K.or, K.and]
+
 private theorem anyFilledTruth_congr (field : FlatNumberField)
     (left right : SingleGroupValidationContext) (rows : List RowIndex)
     (agree : ∀ row, row ∈ rows →

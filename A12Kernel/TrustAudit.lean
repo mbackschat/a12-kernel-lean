@@ -473,6 +473,11 @@ run_cmd do
 #print axioms A12Kernel.correlatedHaving_and_keepsEnvironment
 #print axioms A12Kernel.correlatedHaving_selectEnvironments_or_comm
 #print axioms A12Kernel.correlatedHaving_selectEnvironments_and_comm
+#print axioms A12Kernel.conditionTree_anyLeaf_swap
+#print axioms A12Kernel.conditionTree_allLeaves_swap
+#print axioms A12Kernel.correlatedHaving_admission_swap
+#print axioms A12Kernel.correlatedHaving_selectEnvironments_congr
+#print axioms A12Kernel.correlatedHaving_selectEnvironments_nested_swap
 #print axioms A12Kernel.correlatedHaving_mem_selectEnvironments_iff
 #print axioms A12Kernel.correlatedHaving_selectResolving_headError
 #print axioms A12Kernel.env_uniqueRowAt_zero

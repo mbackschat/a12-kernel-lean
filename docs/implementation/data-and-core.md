@@ -1,5 +1,7 @@
 # Checked data and clauses 1 to 4
 
+Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [hub's record-key legend](../IMPLEMENTATION-MAP.md#record-key-legend).
+
 ### Immutable checked-document construction
 
 <a id="cap-physical-document-topology"></a>

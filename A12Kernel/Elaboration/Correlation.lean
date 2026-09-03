@@ -118,7 +118,9 @@ private structure ResolvedNumberRef where
   declaration : FlatFieldDecl
   core : HavingNumberRef
 
-/-- Whether a resolved filter uses only leaves and conjunction, exactly the connective subset exposed by `SurfaceCorrelatedHaving`. -/
+/-- Whether a resolved filter uses only leaves and conjunction. This is narrower than the authored
+surface, which also carries `.or`. The legacy one-group route is the only consumer, at both its
+elaboration arm and its own well-formedness predicate; the star route takes the full surface. -/
 def CorrelatedHaving.isConjunctive (condition : CorrelatedHaving) : Bool :=
   match condition with
   | .leaf _ => true
