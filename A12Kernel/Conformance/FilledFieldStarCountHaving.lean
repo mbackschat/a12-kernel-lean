@@ -69,6 +69,34 @@ private def source? (having : Option SurfaceCorrelatedHaving) :
     Option (CheckedFilledFieldStarSource model) :=
   (elaborateFilledFieldStarSource model ["Form"] starPath having).toOption
 
+/-- The same route declared **in** the repeatable group, so the filter has a captured outer
+    environment to bind. Every other case in this module uses the nonrepeatable declaring group,
+    where an outer-origin reference has no environment at all and is refused for that reason
+    instead — which is why the scope rule below needs its own entry point rather than reusing
+    `source?`. -/
+private def correlatedSource? (having : Option SurfaceCorrelatedHaving) :
+    Option (CheckedFilledFieldStarSource model) :=
+  (elaborateFilledFieldStarSource model ["Form", "Rows"] starPath having).toOption
+
+private def tagPresent (origin : HavingOrigin) : SurfaceCorrelatedHaving :=
+  .presence .filled { origin, field := repeatedPath "Tag" }
+
+/- The filter's scope rule, measured on the Kernel and matched here: a `$`-marked reference does
+   **not** bind the filtered list's own iterated level, so a filter whose only reference is
+   outer-origin is refused, while one in-scope conjunct beside the identical outer leaf admits it.
+   The Kernel reports `MVK_NO_ITERATION_FOR_WILDCARD` for the refused form
+   ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-outer-origin-filter-leaves)). -/
+
+example : correlatedSource? (some (tagPresent .outer)) = none := by
+  native_decide
+
+example : (correlatedSource? (some (.and (tagPresent .inner) (tagPresent .outer)))).isSome
+    = true := by
+  native_decide
+
+example : (correlatedSource? (some (tagPresent .inner))).isSome = true := by
+  native_decide
+
 private def prepared :
     PreparedFlatStringContext model builtinStringPatternCompiler :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }

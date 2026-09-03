@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-03-04"></a>
+### `SPEC-2026-09-03-04` — a `$`-marked reference does not bind the filtered list's iterated level
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation), replacing that paragraph's `Not measured` sentence about the `$` marker with the measured field-leaf rule and a narrowed residue.
+- `delta`: §3 already carried the scope gate — a filter needs a reference into the filtered list's own iterated level — and explicitly recorded the marker's status as unmeasured. It is now measured for a **field** leaf: a `$`-marked reference does not satisfy the gate. The rule follows the marker's meaning, which is why it is worth stating rather than merely recording: `$` pins a reference to the captured outer repetition and thereby moves it out of the filtered level, so it cannot be the reference that binds that level.
+- `basis`: two `apply` transactions and one `:adapter:kernelProbe` run at a12-dmkits `acced5d6012b15c0c3145d2a236e61bf2ad74246`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `state: CLEAN`, both codegen strategies agreeing. The [outer-origin checkpoint](../docs/sources/group-and-iteration-probes.md#src-outer-origin-filter-leaves) owns the rows.
+- `separator`: the refusal is isolated rather than attributed from one row. Both leaves are refused as a **sole** condition with `MVK_NO_ITERATION_FOR_WILDCARD` naming the filter site, and adding one in-scope conjunct beside the **identical** outer leaf admits the whole condition — so the cause is the missing in-scope reference and not the marked leaf, which the refusal alone would not have distinguished.
+- `residue`: an out-of-scope **group** leaf as a sole condition under the marker stays unmeasured, and the clause still says so. That is the same question the earlier scope paragraph left open; this entry narrows it to the group carrier rather than closing it.
+- `local-consequence`: none behavioral. This project's elaboration already refuses a sole outer-origin filter through its reopened-level requirement and admits the mixed conjunct, and both outcomes are now locked through a declaring group inside the repeatable level.
+- `acceptance`: a12-dmkits confirms its filter scope check treats a `$`-marked reference as out-of-scope for the binding requirement, or reports that its own checker admits a sole marked reference. A peer that erases the marker before the scope check would admit it and should say so.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-03-03"></a>
 ### `SPEC-2026-09-03-03` — a filter's connectives are commutative on validation and order-sensitive on computation
 
