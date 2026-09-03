@@ -150,6 +150,7 @@ import A12Kernel.Conformance.FieldEntityGroupOperand
 import A12Kernel.Conformance.FilledFieldCount
 import A12Kernel.Conformance.FilledFieldGroupCount
 import A12Kernel.Conformance.FilledFieldStarCount
+import A12Kernel.Conformance.FilledFieldStarCountHaving
 import A12Kernel.Conformance.FirstFilledValue
 import A12Kernel.Conformance.FirstFilledValueElaboration
 import A12Kernel.Conformance.FlatEnumeration
