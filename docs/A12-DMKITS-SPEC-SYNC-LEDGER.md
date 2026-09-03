@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-03-05"></a>
+### `SPEC-2026-09-03-05` — the filter's in-scope requirement is a syntactic occurrence check over any reopened level
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation), extending the scope-gate paragraph that [`SPEC-2026-09-03-04`](#spec-2026-09-03-04) narrowed.
+- `delta`: three properties of the gate, none previously stated. It accepts a reference at **any** level the operand reopens, so a two-star operand's filter may bind only the outer starred level. It is **connective-blind**, so an in-scope reference under `Or` satisfies it even though the filter can be satisfied without consulting that operand — an occurrence check, not a satisfiability or dominance analysis. And `$` may only name a level the enclosing rule iteration **binds**: a marked reference to a level the operand's own star reopens draws `MVK_NO_WILDCARD`, since the captured environment has no coordinate there.
+- `basis`: eight `rule check` decisions and two `:adapter:kernelProbe` runs over a fresh two-level model at a12-dmkits `acced5d6012b15c0c3145d2a236e61bf2ad74246`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `state: CLEAN`, both codegen strategies agreeing, model `KERNEL_CONFIRMED` with zero diagnostics. The [nested checkpoint](../docs/sources/group-and-iteration-probes.md#src-nested-correlated-filter-and-poison-scope) owns the rows.
+- `separator`: the marker rule is isolated by holding the marker fixed and varying only the level — `[$…/Items/Qty]` under an `Items` star is refused while `[$…/Lines/Cap]` in the same filter is admitted, so the verdict follows the level's binding rather than the marker's presence. The connective-blindness row is the one that makes the check syntactic rather than semantic, since an `Or` whose other disjunct can satisfy the filter alone is still admitted. Every shape carries the error-field conjunct, without which all eight collapse to `MVK_ERROR_FIELD_NOT_REFERENCED` and establish nothing.
+- `also-measured-no-request`: multi-level outer correlation itself behaves exactly as the one-level case, and computation poison is per computed instance with the aborted target **cleared**. Both confirm existing clauses — [`spec/09` §12](../spec/09-computations.md)'s spanning-star rule and §3.1's operand table — so they are recorded as provenance and raise no question for the peer.
+- `local-consequence`: none. This project's gate already is an occurrence check over inner-origin leaves at any reopened level, for structural reasons rather than by coincidence, and the marker rule falls out of the captured environment's availability test.
+- `acceptance`: a12-dmkits confirms its filter scope check accepts any reopened level and ignores connective position, and refuses a marked reference to a star-reopened level. A peer that requires the lowest reopened level, or that analyses satisfiability, would diverge on the `Or` row and should say so.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-03-04"></a>
 ### `SPEC-2026-09-03-04` — a `$`-marked reference does not bind the filtered list's iterated level
 
