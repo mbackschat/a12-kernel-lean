@@ -470,6 +470,9 @@ run_cmd do
 #print axioms A12Kernel.correlatedHaving_truth_iff_holds
 #print axioms A12Kernel.correlatedHaving_keepsEnvironment_iff_holdsIn
 #print axioms A12Kernel.correlatedHaving_or_keepsEnvironment
+#print axioms A12Kernel.correlatedHaving_and_keepsEnvironment
+#print axioms A12Kernel.correlatedHaving_selectEnvironments_or_comm
+#print axioms A12Kernel.correlatedHaving_selectEnvironments_and_comm
 #print axioms A12Kernel.correlatedHaving_mem_selectEnvironments_iff
 #print axioms A12Kernel.correlatedHaving_selectResolving_headError
 #print axioms A12Kernel.env_uniqueRowAt_zero

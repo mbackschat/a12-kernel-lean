@@ -80,6 +80,46 @@ theorem correlatedHaving_or_keepsEnvironment (left right : CorrelatedHaving)
     cases right.evalK (CorrelatedHavingLeaf.evalTruthIn context { innerEnv, outerEnv }) <;>
       simp [K.or]
 
+/-- The `And` counterpart of the union law: a conjunctive filter keeps exactly the candidates both
+    conjuncts keep. -/
+theorem correlatedHaving_and_keepsEnvironment (left right : CorrelatedHaving)
+    (context : CorrelationContext) (outerEnv innerEnv : Env) :
+    CorrelatedHaving.keepsEnvironment (.and left right) context outerEnv innerEnv
+      = (left.keepsEnvironment context outerEnv innerEnv
+        && right.keepsEnvironment context outerEnv innerEnv) := by
+  simp only [CorrelatedHaving.keepsEnvironment, CorrelatedHaving.evalTruthIn,
+    ConditionTree.evalK]
+  cases left.evalK (CorrelatedHavingLeaf.evalTruthIn context { innerEnv, outerEnv }) <;>
+    cases right.evalK (CorrelatedHavingLeaf.evalTruthIn context { innerEnv, outerEnv }) <;>
+      simp [K.and]
+
+/-- **The preservation law a rule-refactoring consumer needs.** On the validation arm, selection is
+    invariant under swapping either connective's operands: the two laws above reduce selection to a
+    Boolean combination of the operands' own selections, and `&&`/`||` commute. So a transformation
+    that reorders a filter's operands selects the same rows, at every candidate, in every document.
+    Its exact scope matters — this is the **validation** arm only. The computation arm reads left to
+    right and aborts on the first reached poison, so the same reordering is *not* result-preserving
+    there; that non-law is Kernel-measured and witnessed in
+    [`Conformance/Correlation.lean`](../Conformance/Correlation.lean)
+    ([`SPEC-2026-09-03-03`](../../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-03-03)). -/
+theorem correlatedHaving_selectEnvironments_or_comm (left right : CorrelatedHaving)
+    (context : CorrelationContext) (outerEnv : Env) (candidates : List Env) :
+    CorrelatedHaving.selectEnvironments (.or left right) context outerEnv candidates
+      = CorrelatedHaving.selectEnvironments (.or right left) context outerEnv candidates := by
+  simp only [CorrelatedHaving.selectEnvironments]
+  refine List.filter_congr ?_
+  intro candidate _
+  simp only [correlatedHaving_or_keepsEnvironment, Bool.or_comm]
+
+theorem correlatedHaving_selectEnvironments_and_comm (left right : CorrelatedHaving)
+    (context : CorrelationContext) (outerEnv : Env) (candidates : List Env) :
+    CorrelatedHaving.selectEnvironments (.and left right) context outerEnv candidates
+      = CorrelatedHaving.selectEnvironments (.and right left) context outerEnv candidates := by
+  simp only [CorrelatedHaving.selectEnvironments]
+  refine List.filter_congr ?_
+  intro candidate _
+  simp only [correlatedHaving_and_keepsEnvironment, Bool.and_comm]
+
 private theorem anyFilledTruth_congr (field : FlatNumberField)
     (left right : SingleGroupValidationContext) (rows : List RowIndex)
     (agree : ∀ row, row ∈ rows →
