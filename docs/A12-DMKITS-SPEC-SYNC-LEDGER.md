@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-03-09"></a>
+### `SPEC-2026-09-03-09` — the two clear-kinds part ways at a plain operand read, and poison crosses a join
+
+- `status`: pending
+- `clause`: [`09-computations.md`](../spec/09-computations.md), the paragraph following the cascade read-rules.
+- `delta`: §11's cascade rule — a silently cleared upstream target reads EMPTY, a poisoned one poisons the reader — was stated only for reads reaching **inside** a downstream `Having` filter or precondition quantifier. It governs a **plain operand read** as well, and that is the whole observable difference between the two clear-kinds. Three additions follow: **poison crosses a join** rather than being substituted away, so a join over one poisoned and one clean operand clears; a consumer **cannot read the kind off the producer's own reported state**, since both surface as cleared-and-not-errored; and one failing branch does not abort the plan.
+- `basis`: two `:adapter:kernelProbe` runs with `observe: ["validateFull", "compute"]` over seven documents at a12-dmkits `acced5d6012b15c0c3145d2a236e61bf2ad74246`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `state: CLEAN`, both codegen strategies agreeing on every row, `model check` valid with zero diagnostics. The [diamond checkpoint](sources/evaluation-and-application-routes.md#src-diamond-dependency-clear-kinds) owns the rows and the model.
+- `separator`: one four-deep diamond — `P = [Base]`, `A = [P]`, `B = [Alt]`, `Final = [A] + [B]` — held fixed across three producer states. Clean gives `7, 7, 5, 12`. A producer cleared by an **unmet precondition**, with no malformed cell anywhere, gives `A = 0` and `Final = 5`. A producer cleared by a **malformed source** clears `A` and `Final` while `B` still answers `5`. The absent-source row is the third leg and answers `0, 0, 5, 5`, which is what separates empty substitution from poison on the identical join rather than by appeal to the join's shape.
+- `consumer-consequence`: an Execute or Compile consumer that models clearing as one state computes `5` where the Kernel clears, on a document with no error in it that the consumer can point to. One that reads the target's `errored` flag to predict propagation is wrong on the malformed row, because that flag does not carry the distinction.
+- `local-consequence`: none behavioral; the account already made exactly this split and now has external evidence for it. `NumericTargetOutcome.dependencyObservation` maps `.noValue` to `.empty` and `.rejected`/`.invalidNoValue`/`.inheritedPoison` to `.poisoned`, with every arm asserted in [`Conformance/NumericDependency.lean`](../A12Kernel/Conformance/NumericDependency.lean). The round also supplies the missing witness for this project's standing rule against using deltas as the dependency overlay: `NumericDelta` collapses all three invalid classes into one `.cleared`, which is the collapse the Kernel's dependents refuse.
+- `acceptance`: a12-dmkits confirms its interpreter reads a precondition-cleared producer as empty and a source-invalid one as poison at a plain operand position, and clears a join over one poisoned operand, or reports the row where it diverges. A peer with a single clear state fails the precondition row or the malformed row, whichever way it resolved the collapse.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-03-08"></a>
 ### `SPEC-2026-09-03-08` — the temporal constant gate reads family and year agreement, never component sets, and one code covers both refusal grounds
 

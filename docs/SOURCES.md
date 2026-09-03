@@ -661,6 +661,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [Nested `CurrentRepetition` cascades](sources/evaluation-and-application-routes.md#src-nested-current-repetition-cascades)
 <a id="src-scalar-mixed-consumer-first-dependency-order"></a>
 - [Consumer-first mixed scalar dependency order, measured locally 2026-08-25](sources/evaluation-and-application-routes.md#src-scalar-mixed-consumer-first-dependency-order)
+<a id="src-diamond-dependency-clear-kinds"></a>
+- [A four-deep dependency diamond orders correctly, and a silently cleared producer reads EMPTY where an errored one poisons](sources/evaluation-and-application-routes.md#src-diamond-dependency-clear-kinds)
 <a id="src-scalar-mixed-reverse-authored-triple"></a>
 - [Reverse-authored mixed scalar triple, measured locally 2026-09-01](sources/evaluation-and-application-routes.md#src-scalar-mixed-reverse-authored-triple)
 <a id="src-numeric-extremum-call-boundary"></a>
