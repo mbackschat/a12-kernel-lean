@@ -354,6 +354,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A filtered aggregate's computation arm poisons on a reached operand and never reads an excluded one](sources/group-and-iteration-probes.md#src-filtered-aggregate-computation-arm)
 <a id="src-correlated-filter-runtime"></a>
 - [`$` binds the captured outer row and the candidate set includes it](sources/group-and-iteration-probes.md#src-correlated-filter-runtime)
+<a id="src-pattern-invalid-string-cell"></a>
+- [A pattern violation makes the cell formally invalid on the validation arm](sources/evaluation-and-application-routes.md#src-pattern-invalid-string-cell)
 <a id="src-filter-condition-carrier-independence"></a>
 - [The filter is checked and evaluated identically on every operand carrier](sources/group-and-iteration-probes.md#src-filter-condition-carrier-independence)
 <a id="src-nested-correlated-filter-and-poison-scope"></a>
