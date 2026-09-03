@@ -47,7 +47,8 @@ theorem directStringOperand_readsNormalized (context : FlatContext)
     context.resolveDirectStringComparisonOperand field =
       .value (normalizeEvaluatedString text) true := by
   simp [FlatContext.resolveDirectStringComparisonOperand,
-    FlatContext.observeValidationAt, read, formalCheck, nonempty, observeCell]
+    FlatContext.resolveStringComparisonOperandAt,
+    read, formalCheck, nonempty, observeCell]
 
 /-- A checked String value-list operand consumes the same normalized cache as direct comparison, changing only the consumer-specific cell vocabulary. -/
 theorem stringValueListCell_readsNormalized (context : FlatContext)
@@ -66,8 +67,10 @@ theorem stringValueListCell_empty (context : FlatContext)
     (field : FlatStringField)
     (empty : context.observeValidationAt field.id = .empty) :
     (FlatTextFieldOperand.string field).valueListCell context = .empty := by
+  simp only [FlatContext.observeValidationAt, FlatContext.observeAt] at empty
   simp [FlatTextFieldOperand.valueListCell, FlatTextFieldOperand.resolve,
-    FlatContext.resolveDirectStringComparisonOperand, empty,
+    FlatContext.resolveDirectStringComparisonOperand,
+    FlatContext.resolveStringComparisonOperandAt, empty,
     SimpleComparisonOperand.asTokenValueListCell]
 
 /-- String `Length` counts the cached normalized text supplied by the checked read for its resolved field. -/

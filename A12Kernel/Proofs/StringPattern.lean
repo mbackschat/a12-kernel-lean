@@ -58,6 +58,7 @@ theorem resolvedStringPattern_readsNormalized (context : FlatContext)
         (.value (normalizeEvaluatedString text) true) := by
   simp [FlatContext.evalResolvedStringPattern,
     FlatContext.resolveDirectStringComparisonOperand,
-    FlatContext.observeValidationAt, read, formalCheck, nonempty, observeCell]
+    FlatContext.resolveStringComparisonOperandAt,
+    read, formalCheck, nonempty, observeCell]
 
 end A12Kernel

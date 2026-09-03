@@ -11,7 +11,11 @@ theorem directEmptyStringComparison_notFired (context : FlatContext)
     (field : FlatStringField) (op : EqualityOp) (expected : String)
     (empty : context.observeValidationAt field.id = .empty) :
     (FlatComparison.string op field expected).eval context = .notFired := by
-  simp [FlatComparison.eval, FlatContext.resolveDirectStringComparisonOperand, empty,
+  -- The phase-generic String resolution normalizes the goal to `observeCell .validation`, so the
+  -- phase-specific hypothesis is put in that same form before it can rewrite.
+  simp only [FlatContext.observeValidationAt, FlatContext.observeAt] at empty
+  simp [FlatComparison.eval, FlatContext.resolveDirectStringComparisonOperand,
+    FlatContext.resolveStringComparisonOperandAt, empty,
     SimpleComparisonOperand.evalDirectString]
 
 /-- An empty direct String literal suppresses both equality operators after a clean nonempty field value has been reached. -/

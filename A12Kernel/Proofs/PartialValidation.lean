@@ -117,7 +117,7 @@ private theorem textFieldOperand_resolve_agreesOn
         simpa [FlatTextFieldOperand.field, FlatField.id] using relevant)
       simp_all [FlatTextFieldOperand.resolve,
         FlatContext.resolveDirectStringComparisonOperand,
-        FlatContext.observeValidationAt]
+        FlatContext.resolveStringComparisonOperandAt]
   | enumeration operand =>
       have readEq := agreement operand.field.id (by
         simpa [FlatTextFieldOperand.field, FlatField.id] using relevant)
@@ -386,7 +386,7 @@ theorem partialSelected_agreesOn
                 FlatComparison.fields, FlatField.id] using relevant)
             simp_all [FlatComparison.eval,
               FlatContext.resolveDirectStringComparisonOperand,
-              FlatContext.observeValidationAt]
+              FlatContext.resolveStringComparisonOperandAt]
         | stringLength op field expected =>
             have readEq := agreement field.id (by
               simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,

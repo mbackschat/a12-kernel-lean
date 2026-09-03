@@ -295,15 +295,23 @@ def FlatContext.resolveConfirmComparisonOperand
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
-def FlatContext.resolveDirectStringComparisonOperand (context : FlatContext)
-    (field : FlatStringField) :
+/-- Resolve one String field for direct comparison at a chosen phase, mirroring the numeric pair
+    above. There are no empty String *values*, so a present-empty cell and an absent one both
+    resolve to `notEvaluated` and neither can satisfy an equality. -/
+def FlatContext.resolveStringComparisonOperandAt (context : FlatContext)
+    (phase : Phase) (field : FlatStringField) :
     SimpleComparisonOperand String :=
-  match context.observeValidationAt field.id with
+  match context.observeAt phase field.id with
   | .empty => .notEvaluated
   | .value (.str value) => if value.isEmpty then .notEvaluated else .value value true
   | .value _ => .unknown .malformed
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
+
+def FlatContext.resolveDirectStringComparisonOperand (context : FlatContext)
+    (field : FlatStringField) :
+    SimpleComparisonOperand String :=
+  context.resolveStringComparisonOperandAt .validation field
 
 /-- Read one already-checked evaluated String as its UTF-16 numeric length. Both validation and computation reuse this projection after selecting their own phase observation. -/
 @[simp]
