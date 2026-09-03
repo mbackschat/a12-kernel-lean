@@ -586,4 +586,55 @@ example :
       .error (.read marker.id) := by
   native_decide
 
+/- A filter's disjunction is **commutative on the validation arm and order-sensitive on the
+   computation arm**, which is the same asymmetry stated twice. Validation evaluates both disjuncts
+   into strong-Kleene truth, where a true one dominates an unavailable one from either side.
+   Computation reads left to right and the first reached poison aborts, so a clean true on the left
+   decides before the unavailable operand is read while the reverse spelling poisons. Both spellings
+   are Kernel-retained on one document whose cells never change, so authored order is the whole
+   difference. A tool that reorders disjuncts preserves validation and changes computation. -/
+
+private def poisonedResolvingCell : CheckedCell :=
+  { rawPresent := true, parsed := none, findings := [.malformed] }
+
+private def markerPoisonedContext :
+    ResolvingCorrelationContext ResolvingProbeError where
+  read _ field :=
+    if field == marker.id then .ok poisonedResolvingCell else .ok resolvingCell
+  bindingError := .binding
+
+private def poisonedThenFilled : CorrelatedHaving :=
+  .or
+    (CorrelatedHaving.presence .filled { origin := .inner, field := marker.id })
+    (CorrelatedHaving.presence .filled { origin := .inner, field := payload.id })
+
+private def filledThenPoisoned : CorrelatedHaving :=
+  .or
+    (CorrelatedHaving.presence .filled { origin := .inner, field := payload.id })
+    (CorrelatedHaving.presence .filled { origin := .inner, field := marker.id })
+
+/-- Validation keeps the candidate under **either** spelling: the filled disjunct dominates. -/
+example :
+    truthSnapshot (poisonedThenFilled.evalTruthInResolving markerPoisonedContext
+      { innerEnv := resolvingCandidate 1, outerEnv := [] }) = .truth .tru := by
+  native_decide
+
+example :
+    truthSnapshot (filledThenPoisoned.evalTruthInResolving markerPoisonedContext
+      { innerEnv := resolvingCandidate 1, outerEnv := [] }) = .truth .tru := by
+  native_decide
+
+/-- Computation poisons when the unavailable operand is authored first. -/
+example :
+    computationSnapshot (poisonedThenFilled.evalComputationInResolving markerPoisonedContext
+      { innerEnv := resolvingCandidate 1, outerEnv := [] }) =
+      .computation (.poison .malformed) := by
+  native_decide
+
+/-- And holds when the clean true is authored first, because the right operand is never read. -/
+example :
+    computationSnapshot (filledThenPoisoned.evalComputationInResolving markerPoisonedContext
+      { innerEnv := resolvingCandidate 1, outerEnv := [] }) = .computation .holds := by
+  native_decide
+
 end A12Kernel.Conformance.Correlation

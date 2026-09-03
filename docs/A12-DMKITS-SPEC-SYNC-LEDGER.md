@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-03-03"></a>
+### `SPEC-2026-09-03-03` — a filter's connectives are commutative on validation and order-sensitive on computation
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation), the new arm-asymmetry paragraph immediately above the direct plain-field cardinality rule.
+- `delta`: §3 already said `Having` selection happens before the target read, and that the kept-successor order decides which reached failure occurs first. It did not say that the filter's **own** connectives behave differently on the two arms. They do: validation evaluates the filter as a strong-Kleene tree, where a true disjunct dominates an unavailable one from either side, while computation reads left to right and aborts on the first reached poison. So authored operand order is unobservable on one arm and decisive on the other.
+- `basis`: `:adapter:kernelProbe` with `observe: ["validateFull", "compute"]` at a12-dmkits `acced5d6012b15c0c3145d2a236e61bf2ad74246`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `state: CLEAN`, both codegen strategies agreeing on every row. The [disjunction](../docs/sources/group-and-iteration-probes.md#src-having-filter-disjunction) and [computation-arm](../docs/sources/group-and-iteration-probes.md#src-filtered-aggregate-computation-arm) checkpoints own the rows.
+- `separator`: the two spellings run against **one** document whose cells never change — malformed `Amt`, present `Sku` — so authored order is the only difference. `Having (FieldFilled(Amt) Or FieldFilled(Sku))` yields no computed outcome; `Having (FieldFilled(Sku) Or FieldFilled(Amt))` computes its value. The same document's validation count is available under both spellings, which is what makes this an arm asymmetry rather than a poison rule.
+- `consumer-consequence`: this is the load-bearing half for a rule-refactoring or normalizing consumer. Reordering a filter's disjuncts is verdict-preserving on validation and **not** result-preserving on computation, so a transformation proved sound against validation alone is unsound for computations. The eager `formalErrorsInOperands` inventory reports the malformed cell in every case, including the one that computes successfully, so it cannot stand in as an abort predicate.
+- `local-consequence`: none behavioral. The Lean `evalTruthIn`/`evalComputationIn` split already implements both arms, and [`Conformance/Correlation.lean`](../A12Kernel/Conformance/Correlation.lean) now locks all four cells of the two-arm, two-order matrix.
+- `acceptance`: a12-dmkits confirms its interpreter reproduces both spellings on both arms, or reports the row where it diverges. A peer whose filter evaluation shares one evaluator across arms would fail the computation half and should say so.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-03-02"></a>
 ### `SPEC-2026-09-03-02` — a `Having` condition is the ordinary condition grammar, and its refusals are the ordinary ones
 
