@@ -35,6 +35,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-03-02"></a>
+### `SPEC-2026-09-03-02` — a `Having` condition is the ordinary condition grammar, and its refusals are the ordinary ones
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation), the new filter-grammar paragraph opening the section
+- `delta`: §3's prose described the filter through `$` correlation and Number comparisons, which reads as the filter's shape rather than as an addition to it. The clause now states that the condition is the **ordinary production** and names what is measured admitted inside one — String equality against a literal or another String field, `FieldFilled` and `FieldNotFilled` with no iteration-negativity refusal, Number `!=`, `And`, `Or`, parentheses, a bare outer scalar reference without `$`, and a group-presence leaf — and that both refusals reached are general rules applying in this position rather than filter-specific gates.
+- `basis`: eighteen `rule check` decisions over one model at a12-dmkits `acced5d6012b15c0c3145d2a236e61bf2ad74246`, `dmtool` 0.13.0, Kernel `30.8.1`, `state: CLEAN`. The [condition-grammar checkpoint](sources/group-and-iteration-probes.md#src-having-filter-condition-grammar) owns the rows and limits. Static admission only.
+- `separator`: `MVK_BRACKET_MISSING` is measured for the same unbracketed `And`/`Or` mix **inside** the filter and at the rule's top level, so it is [`spec/02` §A.1](../spec/02-logic-and-formal-errors.md) holding here rather than a new gate; and the comparison-type refusal is isolated by a single-leaf filter carrying neither connective nor parentheses, which is what separates it from the two wrong causes the first batches suggested.
+- `local-consequence`: none behavioral. This project's `SurfaceCorrelatedHaving` stays deliberately narrow, and the excluded leaves are now named and measured as admitted rather than left as "wider filter leaves"; widening it becomes ordinary work with a verified route.
+- `acceptance`: a12-dmkits confirms its filter reaches the full condition evaluator and that these leaves are admitted, or names a leaf its own estate refuses in that position. A peer whose filter accepts only comparisons rejects models the kernel admits.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-03-01"></a>
 ### `SPEC-2026-09-03-01` — a non-true `Having` conjunct drops its own row, and the empty-as-zero rule does not reach a malformed operand
 

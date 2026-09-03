@@ -342,6 +342,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A `Having` condition must bind the filtered list's own iterated level, and admits a group-presence leaf](sources/group-and-iteration-probes.md#src-having-filter-condition-scope)
 <a id="src-having-filter-nontrue-row"></a>
 - [A non-true `Having` conjunct drops its own row, and the empty-as-zero rule does not reach a malformed operand](sources/group-and-iteration-probes.md#src-having-filter-nontrue-row)
+<a id="src-having-filter-condition-grammar"></a>
+- [A `Having` condition is the ordinary condition grammar, and every refusal reached is an ordinary one](sources/group-and-iteration-probes.md#src-having-filter-condition-grammar)
 
 <a id="src-starred-operand-message-polarity"></a>
 - [A computation's message type follows what can still grow](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity)
