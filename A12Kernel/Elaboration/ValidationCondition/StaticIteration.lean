@@ -64,19 +64,26 @@ private def repeatableScopeThrough :
       else
         (repeatableScopeThrough remaining target).map (level :: ·)
 
-private def outerHavingNumberIterationScope
-    (model : FlatModel) (reference : HavingNumberRef) :
+/-- An outer filter reference contributes its declaration's scope whatever the reference's kind, so
+    this reads the origin and the field id rather than a kind-specific reference type. -/
+private def outerHavingFieldIterationScope
+    (model : FlatModel) (origin : HavingOrigin) (fieldId : FieldId) :
     Option (List RepeatableLevel) :=
-  match reference.origin with
+  match origin with
   | .inner => none
   | .outer =>
-      match model.lookupUniqueId reference.field.id with
+      match model.lookupUniqueId fieldId with
       | .error _ => none
       | .ok declaration =>
           if declaration.repeatableScope.isEmpty then
             none
           else
             some declaration.repeatableScope
+
+private def outerHavingNumberIterationScope
+    (model : FlatModel) (reference : HavingNumberRef) :
+    Option (List RepeatableLevel) :=
+  outerHavingFieldIterationScope model reference.origin reference.field.id
 
 private def outerHavingRepetitionIterationScope
     (outerLevels : List RepeatableLevel)
@@ -95,6 +102,8 @@ private def correlatedHavingOuterIterationScopes
   | .leaf (.compareRepetitions _ left right) =>
       [outerHavingRepetitionIterationScope outerLevels left,
         outerHavingRepetitionIterationScope outerLevels right]
+  | .leaf (.compareStringLiteral _ reference _) =>
+      [outerHavingFieldIterationScope model reference.origin reference.field.id]
   | .and left right | .or left right =>
       correlatedHavingOuterIterationScopes model outerLevels left ++
         correlatedHavingOuterIterationScopes model outerLevels right

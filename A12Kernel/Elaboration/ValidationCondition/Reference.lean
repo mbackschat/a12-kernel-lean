@@ -121,6 +121,19 @@ def CheckedNumberEntitySource.referencePointers
   (·.flatten) <$>
     source.operands.mapM (CheckedNumberEntityOperand.referencePointers environment)
 
+/-- Choose the pointer spelling for one filter reference. This depends only on the origin and the
+    declaration's own scope depth against the operand's first star, never on the field's kind. -/
+private def havingFieldPointerFor (source : CheckedStarFieldPath model)
+    (environment : Env) (declaration : FlatFieldDecl) (origin : HavingOrigin) :
+    Except ReferenceProjectionError MessagePointer :=
+  match origin with
+  | .outer => concreteFieldPointer declaration environment
+  | .inner =>
+      if declaration.repeatableScope.length ≤ source.path.firstStar then
+        concreteFieldPointer declaration environment
+      else
+        reopenedFieldPointer declaration source.path.firstStar environment
+
 private def havingNumberReferencePointer (source : CheckedStarFieldPath model)
     (environment : Env) (reference : HavingNumberRef) :
     Except ReferenceProjectionError MessagePointer := do
@@ -131,13 +144,21 @@ private def havingNumberReferencePointer (source : CheckedStarFieldPath model)
         else
           throw (.incoherentHavingField reference.field.id)
     | .error _ => throw (.incoherentHavingField reference.field.id)
-  match reference.origin with
-  | .outer => concreteFieldPointer declaration environment
-  | .inner =>
-      if declaration.repeatableScope.length ≤ source.path.firstStar then
-        concreteFieldPointer declaration environment
-      else
-        reopenedFieldPointer declaration source.path.firstStar environment
+  havingFieldPointerFor source environment declaration reference.origin
+
+/-- The String counterpart. Only the coherence projection differs from the numeric reference, so
+    the pointer choice itself stays in one place. -/
+private def havingStringReferencePointer (source : CheckedStarFieldPath model)
+    (environment : Env) (reference : HavingStringRef) :
+    Except ReferenceProjectionError MessagePointer := do
+  let declaration ← match model.lookupUniqueId reference.field.id with
+    | .ok declaration =>
+        if declaration.toStringValueField? == some reference.field then
+          pure declaration
+        else
+          throw (.incoherentHavingField reference.field.id)
+    | .error _ => throw (.incoherentHavingField reference.field.id)
+  havingFieldPointerFor source environment declaration reference.origin
 
 private def correlatedHavingReferencePointers (source : CheckedStarFieldPath model)
     (environment : Env) : CorrelatedHaving →
@@ -146,6 +167,8 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
       pure [← havingNumberReferencePointer source environment left,
         ← havingNumberReferencePointer source environment right]
   | .leaf (.compareRepetitions _ _ _) => pure []
+  | .leaf (.compareStringLiteral _ reference _) => do
+      pure [← havingStringReferencePointer source environment reference]
   | .and left right | .or left right => do
       pure ((← correlatedHavingReferencePointers source environment left) ++
         (← correlatedHavingReferencePointers source environment right))

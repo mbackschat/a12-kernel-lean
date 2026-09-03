@@ -143,6 +143,14 @@ theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
             simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
               CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
               CorrelationComparisonOp.evalRows, leftResolved, rightResolved]
+      | compareStringLiteral op reference expected =>
+          -- The String leaf's truth is a projection of the shared direct-String verdict, so the
+          -- bridge is decided by that verdict alone rather than by the operand's own cases.
+          cases verdict :
+              (reference.resolveInAt .validation context frame).evalDirectString op expected <;>
+            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
+              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
+              CorrelatedHavingLeaf.stringComparisonTruth, verdict]
   | and left right leftInduction rightInduction =>
       change K.and (CorrelatedHaving.evalTruthIn left context frame)
           (CorrelatedHaving.evalTruthIn right context frame) = .tru ↔

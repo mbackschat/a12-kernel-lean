@@ -34,6 +34,13 @@ structure HavingNumberRef where
   field : FlatNumberField
   deriving Repr, DecidableEq
 
+/-- A String filter reference. Its own kind is carried here rather than being widened out of the
+    numeric reference, because the two resolve through different operand domains. -/
+structure HavingStringRef where
+  origin : HavingOrigin
+  field : FlatStringField
+  deriving Repr, DecidableEq
+
 /-- A structural repetition reference retains the resolved level. The one-group capsule
     previously erased it because only one coordinate existed. -/
 structure HavingRepetitionRef where
@@ -82,6 +89,11 @@ inductive CorrelatedHavingLeaf where
       (left right : HavingNumberRef)
   | compareRepetitions (op : CorrelationComparisonOp)
       (left right : HavingRepetitionRef)
+  /-- A String field against a literal. The operator is an `EqualityOp` rather than the wider
+      comparison type because the kernel refuses a String field in a numeric ordering comparison,
+      so the exclusion is carried by this type instead of by a runtime check. -/
+  | compareStringLiteral (op : EqualityOp) (reference : HavingStringRef)
+      (expected : String)
   deriving Repr, DecidableEq
 
 /-- A correlated filter reuses the common connective tree while retaining its environment-sensitive leaf domain. -/
@@ -97,11 +109,16 @@ def compareRepetitions (op : CorrelationComparisonOp)
     (left right : HavingRepetitionRef) : CorrelatedHaving :=
   .leaf (.compareRepetitions op left right)
 
-/-- Number fields read by the filter in first authored occurrence order. Repetition-only leaves contribute no field dependency. -/
+def compareStringLiteral (op : EqualityOp) (reference : HavingStringRef)
+    (expected : String) : CorrelatedHaving :=
+  .leaf (.compareStringLiteral op reference expected)
+
+/-- Fields read by the filter in first authored occurrence order. Repetition-only leaves contribute no field dependency, and a String leaf contributes its single reference. -/
 def fieldIds : CorrelatedHaving → List FieldId
   | .leaf (.compareNumbers _ left right) =>
       [left.field.id, right.field.id].eraseDups
   | .leaf (.compareRepetitions _ _ _) => []
+  | .leaf (.compareStringLiteral _ reference _) => [reference.field.id]
   | .and left right | .or left right =>
       (fieldIds left ++ fieldIds right).eraseDups
 
@@ -121,10 +138,12 @@ private def HavingOrigin.isOuter : HavingOrigin → Bool
 private def CorrelatedHavingLeaf.usesInner : CorrelatedHavingLeaf → Bool
   | .compareNumbers _ left right => left.origin.isInner || right.origin.isInner
   | .compareRepetitions _ left right => left.origin.isInner || right.origin.isInner
+  | .compareStringLiteral _ reference _ => reference.origin.isInner
 
 private def CorrelatedHavingLeaf.usesOuter : CorrelatedHavingLeaf → Bool
   | .compareNumbers _ left right => left.origin.isOuter || right.origin.isOuter
   | .compareRepetitions _ left right => left.origin.isOuter || right.origin.isOuter
+  | .compareStringLiteral _ reference _ => reference.origin.isOuter
 
 def CorrelatedHaving.usesInner (condition : CorrelatedHaving) : Bool :=
   condition.anyLeaf CorrelatedHavingLeaf.usesInner
@@ -193,6 +212,34 @@ def HavingNumberRef.resolveInAtResolving (reference : HavingNumberRef)
     | .value amount _ => .value amount
     | .unknown cause => .unknown cause)
 
+/-- Resolve one String filter reference through the selected environment and phase. There are no
+    empty String values, so an absent and a present-empty cell both arrive as `notEvaluated` and
+    neither can satisfy an equality; formal invalidity keeps its cause. -/
+def HavingStringRef.resolveInAt (reference : HavingStringRef) (phase : Phase)
+    (context : CorrelationContext) (frame : CorrelationFrame) :
+    SimpleComparisonOperand String :=
+  let rowContext : FlatContext :=
+    { read := context.read (frame.envAt reference.origin) }
+  rowContext.resolveStringComparisonOperandAt phase reference.field
+
+/-- Resolve the same String reference without collapsing a structural addressed-read failure into a formal cell observation. -/
+def HavingStringRef.resolveInAtResolving (reference : HavingStringRef)
+    (phase : Phase) (context : ResolvingCorrelationContext Error)
+    (frame : CorrelationFrame) :
+    Except Error (SimpleComparisonOperand String) := do
+  let cell ← context.read (frame.envAt reference.origin) reference.field.id
+  let rowContext : FlatContext := { read := fun _ => cell }
+  pure (rowContext.resolveStringComparisonOperandAt phase reference.field)
+
+/-- Project the shared direct-String equality verdict into the filter's truth domain. Reusing that
+    evaluator is what keeps the empty-operand and empty-literal rules in one place. The filter's
+    selector keeps only `tru`, so no channel distinguishes the `fls` chosen here for an empty
+    operand from `unknown`; this projection therefore asserts nothing beyond non-truth. -/
+def CorrelatedHavingLeaf.stringComparisonTruth : Verdict → K
+  | .fired _ => .tru
+  | .notFired => .fls
+  | .unknown => .unknown
+
 /-- Resolve one repetition reference through the structural addressed channel. -/
 def CorrelationFrame.rowAtResolving (frame : CorrelationFrame)
     (context : ResolvingCorrelationContext Error)
@@ -254,6 +301,9 @@ def CorrelatedHavingLeaf.evalTruthIn (context : CorrelationContext)
       op.evalOperands (left.resolveIn context frame) (right.resolveIn context frame)
   | .compareRepetitions op left right =>
       op.evalRows (frame.rowAt? left) (frame.rowAt? right)
+  | .compareStringLiteral op reference expected =>
+      CorrelatedHavingLeaf.stringComparisonTruth
+        ((reference.resolveInAt .validation context frame).evalDirectString op expected)
 
 /-- Truth of a correlated filter. Numeric empty operands use the comparison-local zero substitution; invalid operands are unknown; only the later selector decides that unknown is not kept. Connectives use the shared strong-Kleene tree evaluator. -/
 def CorrelatedHaving.evalTruthIn (condition : CorrelatedHaving)
@@ -272,6 +322,10 @@ def CorrelatedHavingLeaf.evalTruthInResolving
       pure (op.evalRows
         (some (← frame.rowAtResolving context left))
         (some (← frame.rowAtResolving context right)))
+  | .compareStringLiteral op reference expected => do
+      pure (CorrelatedHavingLeaf.stringComparisonTruth
+        ((← reference.resolveInAtResolving .validation context frame).evalDirectString
+          op expected))
 
 /-- Evaluate one validation filter tree without converting addressed failure to UNKNOWN. -/
 def CorrelatedHaving.evalTruthInResolving (condition : CorrelatedHaving)
@@ -300,6 +354,14 @@ def CorrelatedHavingLeaf.evalComputationIn (context : CorrelationContext)
           | none => .notTrue
           | some rightRow =>
               if op.holdsRow leftRow rightRow then .holds else .notTrue
+  | .compareStringLiteral op reference expected =>
+      match reference.resolveInAt .computation context frame with
+      | .unknown cause => .poison cause
+      | .notEvaluated => .notTrue
+      | .value actual given =>
+          match (SimpleComparisonOperand.value actual given).evalDirectString op expected with
+          | .fired _ => .holds
+          | _ => .notTrue
 
 /-- Computation filters reuse the common connective tree but preserve first reached poison instead of validation's unknown-as-drop projection. -/
 def CorrelatedHaving.evalComputationIn (condition : CorrelatedHaving)
@@ -325,6 +387,15 @@ def CorrelatedHavingLeaf.evalComputationInResolving
       let leftRow ← frame.rowAtResolving context left
       let rightRow ← frame.rowAtResolving context right
       pure (if op.holdsRow leftRow rightRow then .holds else .notTrue)
+  | .compareStringLiteral op reference expected => do
+      match ← reference.resolveInAtResolving .computation context frame with
+      | .unknown cause => pure (.poison cause)
+      | .notEvaluated => pure .notTrue
+      | .value actual given =>
+          pure (match
+              (SimpleComparisonOperand.value actual given).evalDirectString op expected with
+            | .fired _ => .holds
+            | _ => .notTrue)
 
 /-- Evaluate one computation filter tree without converting addressed failure to poison or clean non-holding. -/
 def CorrelatedHaving.evalComputationInResolving
@@ -457,6 +528,10 @@ def CorrelatedHavingLeaf.HoldsIn (context : CorrelationContext)
         frame.rowAt? left = some leftRow ∧
         frame.rowAt? right = some rightRow ∧
         op.holdsRow leftRow rightRow = true
+  | .compareStringLiteral op reference expected =>
+      ∃ polarity,
+        (reference.resolveInAt .validation context frame).evalDirectString op expected
+          = .fired polarity
 
 /-- Declarative truth predicate for the correlated filter. Atomic comparisons are stated over resolved values/rows independently of the executable `Bool`; connective structure mirrors the shared tree. -/
 def CorrelatedHaving.HoldsIn (condition : CorrelatedHaving)

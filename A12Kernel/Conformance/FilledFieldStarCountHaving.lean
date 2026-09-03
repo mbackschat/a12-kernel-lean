@@ -40,8 +40,15 @@ private def other : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } }
     repeatableScope := [10] }
 
+private def tag : FlatFieldDecl :=
+  { id := 4
+    groupPath := ["Form", "Rows"]
+    name := "Tag"
+    policy := { kind := .string }
+    repeatableScope := [10] }
+
 private def model : FlatModel :=
-  { fields := [amount, flag, other]
+  { fields := [amount, flag, other, tag]
     repeatableGroups := [{
       level := 10, path := ["Form", "Rows"], repeatability := some 5 }] }
 
@@ -81,12 +88,14 @@ private def bad (field row : Nat) : ClassifiedCellInput :=
     stored := "bad"
     raw := .rejected .malformed }
 
+private def documentWith? (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
+
 private def countWith? (having : Option SurfaceCorrelatedHaving)
     (cells : List ClassifiedCellInput) : Option FilledFieldCount := do
   let source ← source? having
-  let document ← (checkDocument prepared "en_US" {
-    instantiatedRows := rows
-    cells }).toOption
+  let document ← documentWith? cells
   (source.evaluateFilledFieldCountValidation document []).toOption
 
 private def filteredCount? (cells : List ClassifiedCellInput) :
@@ -198,6 +207,84 @@ example : partialCountWith? (some flagEqualsOther) filterOperandsRelevant =
     doing rather than missing coverage. -/
 example : partialCountWith? none filterOperandsRelevant =
     some (.evaluated (.value 2)) := by
+  native_decide
+
+/- The String-equality filter leaf. Its Kernel runtime is retained at the same checkpoint: an
+   absent or present-empty operand fails the equality and drops only its own row, which is a
+   different rule from the Number leaf, where an empty operand participates as zero and can
+   therefore satisfy its comparison. -/
+
+private def tagEquals (expected : String) : SurfaceCorrelatedHaving :=
+  .compareStrings .equal { origin := .inner, field := repeatedPath "Tag" } expected
+
+private def numberThroughStringLeaf : SurfaceCorrelatedHaving :=
+  .compareStrings .equal { origin := .inner, field := repeatedPath "Amount" } "K"
+
+private def text (field row : Nat) (value : String) : ClassifiedCellInput :=
+  { address := { field, path := [row] }
+    stored := value
+    raw := .parsed (.str value) }
+
+private def tagCount? (expected : String) (cells : List ClassifiedCellInput) :
+    Option FilledFieldCount :=
+  countWith? (some (tagEquals expected)) cells
+
+/-- Both rows carry the matching text, so both survive and both counted cells contribute. -/
+example : tagCount? "K" [
+    num amount.id 1 7, text tag.id 1 "K",
+    num amount.id 2 9, text tag.id 2 "K"] = some (.value 2) := by
+  native_decide
+
+/-- A non-matching row drops on its own, so the count comes from the matching row alone. -/
+example : tagCount? "K" [
+    num amount.id 1 7, text tag.id 1 "K",
+    num amount.id 2 9, text tag.id 2 "X"] = some (.value 1) := by
+  native_decide
+
+/-- An **absent** String operand fails the equality; the count is an ordinary zero, not unknown. -/
+example : tagCount? "K" [
+    num amount.id 1 7,
+    num amount.id 2 9] = some (.value 0) := by
+  native_decide
+
+/-- A present-empty String **cell** is not representable here, and that is the representation
+    boundary rather than a gap in the filter. `CheckedDocument` refuses an empty stored text, because
+    this theory encodes A12's "no empty String values" rule as absence instead of as an
+    empty-texted cell; the nonempty control on the same shape is accepted. So the Kernel's
+    present-empty input collapses onto the absent case above, which is why the two measured rows
+    share one case here. -/
+example : documentWith? [
+    num amount.id 1 7, text tag.id 1 "",
+    num amount.id 2 9, text tag.id 2 ""] = none := by
+  native_decide
+
+example : (documentWith? [
+    num amount.id 1 7, text tag.id 1 "K",
+    num amount.id 2 9, text tag.id 2 "K"]).isSome := by
+  native_decide
+
+/-- Mixing the two: the empty operand costs its own row and nothing else. -/
+example : tagCount? "K" [
+    num amount.id 1 7, text tag.id 1 "K",
+    num amount.id 2 9] = some (.value 1) := by
+  native_decide
+
+/-- The read-order pair again, now on the String leaf: row 2 is dropped, so its malformed counted
+    cell is never read. -/
+example : tagCount? "K" [
+    num amount.id 1 7, text tag.id 1 "K",
+    bad amount.id 2, text tag.id 2 "X"] = some (.value 1) := by
+  native_decide
+
+/-- The same malformed counted cell makes the count unavailable once its row is kept. -/
+example : tagCount? "K" [
+    num amount.id 1 7, text tag.id 1 "K",
+    bad amount.id 2, text tag.id 2 "K"] = some .unknown := by
+  native_decide
+
+/-- The leaf resolves through the model-owned String **value** capability rather than accepting any
+    declaration, so a Number field named through it is refused at elaboration. -/
+example : source? (some numberThroughStringLeaf) = none := by
   native_decide
 
 end A12Kernel
