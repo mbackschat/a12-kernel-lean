@@ -11,9 +11,12 @@ The partial-validation route applies the local reduced-universal account that ma
 
 namespace A12Kernel
 
-/-- Partial filled-field count evaluation distinguishes an unavailable operand extent from an evaluated count whose cells may still be formally unknown. -/
+/-- Partial filled-field count evaluation distinguishes an unavailable operand extent, a rule the
+    coverage gate skipped because its operand carries a filter, and an evaluated count whose cells
+    may still be formally unknown. -/
 inductive PartialValidationFilledFieldCountResult where
   | nonRelevant
+  | skippedHaving
   | evaluated (count : FilledFieldCount)
   deriving Repr, DecidableEq
 
@@ -103,6 +106,20 @@ def evaluateFilledFieldCountValidation
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError FilledFieldCount :=
   checked.source.countInCapacity document outer (checked.filter.map (·.condition))
+
+/-- Count a starred field under partial coverage. A filtered operand is skipped before topology and
+    cell reads, and the skip is **unconditional**: relevance over the filter's own operand fields
+    does not lift it, nor does relevance over the whole tree. An unfiltered operand falls through to
+    the reduced-universal extent gate. -/
+def evaluatePartialFilledFieldCountValidation
+    (checked : CheckedFilledFieldStarSource model)
+    (document : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope) :
+    Except CheckedAddressingError PartialValidationFilledFieldCountResult :=
+  if checked.hasHaving then
+    pure .skippedHaving
+  else
+    checked.source.evaluatePartialFilledFieldCountValidation document outer scope
 
 end CheckedFilledFieldStarSource
 

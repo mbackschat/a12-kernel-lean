@@ -166,4 +166,38 @@ example : unfilteredCount? [
     some (.value 1) := by
   native_decide
 
+/- Partial validation. The Kernel skips a filtered rule whatever the coverage: relevance over the
+   filter's own operands does not lift it, and neither does relevance over the whole tree. Only the
+   unfiltered count evaluates, which is what makes the skip a property of carrying a filter. -/
+
+private def allCells : List ClassifiedCellInput := [
+  num amount.id 1 7, num flag.id 1 1, num other.id 1 1,
+  num amount.id 2 9, num flag.id 2 1, num other.id 2 1]
+
+private def partialCountWith? (having : Option SurfaceCorrelatedHaving)
+    (scope : ValidationRelevanceScope) :
+    Option PartialValidationFilledFieldCountResult := do
+  let source ← source? having
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := rows
+    cells := allCells }).toOption
+  (source.evaluatePartialFilledFieldCountValidation document [] scope).toOption
+
+private def everyInstanceOf (field : FlatFieldDecl) : RelevantEntityPattern :=
+  RelevantEntityPattern.allInstances field.path
+
+private def filterOperandsRelevant : ValidationRelevanceScope :=
+  .partialSet [everyInstanceOf amount, everyInstanceOf flag, everyInstanceOf other]
+
+/-- A filtered operand is skipped even when every field its filter reads is relevant. -/
+example : partialCountWith? (some flagEqualsOther) filterOperandsRelevant =
+    some .skippedHaving := by
+  native_decide
+
+/-- The unfiltered operand over that same relevance evaluates, so the skip above is the filter's
+    doing rather than missing coverage. -/
+example : partialCountWith? none filterOperandsRelevant =
+    some (.evaluated (.value 2)) := by
+  native_decide
+
 end A12Kernel
