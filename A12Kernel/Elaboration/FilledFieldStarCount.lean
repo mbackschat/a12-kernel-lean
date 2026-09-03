@@ -6,7 +6,7 @@ import A12Kernel.Semantics.FieldFillQuantifier
 
 This boundary admits one starred field, plain or carrying a row-local `Having`, as the complete `NumberOfFilledFields` operand. Its evaluation domain excludes checked cells beneath declared-capacity violations, matching the exact single-level Kernel row, while in-cap emptiness and formal invalidity retain the existing validation count semantics. A filter selects candidates before any counted cell is read, so a non-true row drops and the count answers over the survivors instead of becoming unavailable.
 
-The partial-validation route applies the local reduced-universal account that matches the measured outcome pattern, and covers the **plain** star only: no observation places a filtered count under partial coverage, so that arm is absent rather than assumed from the token family's `skippedHaving` rule. Nested capacity, filtered capacity interaction, and nested partial relevance are internally executable or open accounts with external correspondence pending. Direct lists, group operands, computation, comparison movement, and raw-document execution remain outside.
+The partial-validation route applies the local reduced-universal account that matches the measured outcome pattern. A **filtered** count is skipped there unconditionally, which is measured rather than carried from the token family's rule: three relevance sets over one document — the counted field alone, the filter's own operand fields as well, and the whole root group — all skip it, so the gate is a property of carrying a filter and not of its operands being covered. Nested capacity, filtered capacity interaction, and nested partial relevance are internally executable or open accounts with external correspondence pending. Direct lists, group operands, computation, comparison movement, and raw-document execution remain outside.
 -/
 
 namespace A12Kernel
@@ -66,7 +66,7 @@ end CheckedStarFieldPath
 inductive FilledFieldStarCountElabError where
   | path (error : StarPathElabError)
   | having (error : CorrelationElabError)
-  deriving Repr
+  deriving Repr, DecidableEq
 
 /-- One checked `NumberOfFilledFields` star operand: the plain star plus an optional row-local
     filter. The filter type is indexed by this exact source and declaring group, so a checked filter

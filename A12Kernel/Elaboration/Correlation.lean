@@ -74,8 +74,10 @@ inductive CorrelationElabError where
   /-- The reference does not name a String field carrying evaluated values. A raw-mode String
       declaration reaches this arm too, matching every other checked String consumer. -/
   | fieldNotStringValue (path : List String)
-  /-- A String leaf reached a route that admits only the numeric and repetition leaves. The legacy
-      one-group adapter is the only such route; it fails closed here rather than being widened. -/
+  /-- A String **or presence** leaf reached a route that admits only the numeric and repetition
+      leaves. The legacy one-group adapter is the only such route; it fails closed here rather than
+      being widened. The name predates the presence leaf and is kept because it is a public
+      constructor; both leaves report through it, and the public evaluator maps them together. -/
   | stringLeafOutsideStarRoute
   /-- A disjunctive filter reached the legacy one-group route, whose well-formedness predicate
       admits a conjunctive core only. The kernel admits `Or` in this position and the star route

@@ -637,6 +637,67 @@ example :
       { innerEnv := resolvingCandidate 1, outerEnv := [] }) = .computation .holds := by
   native_decide
 
+/- Both newer leaves at **outer** origin read the captured environment, not the candidate. The
+   kernel run that established this was authored against exactly this wiring, and a candidate-origin
+   mis-wiring would pass every other case in this family, because every one of them binds the same
+   row on both sides. Each pair below fills the field on one side only, so the origin is the whole
+   difference. -/
+
+private def outerOnlyContext :
+    ResolvingCorrelationContext ResolvingProbeError where
+  read environment field :=
+    if field == marker.id then
+      .ok (if environment == resolvingCandidate 9 then resolvingCell else emptyResolvingCell)
+    else
+      .ok resolvingCell
+  bindingError := .binding
+
+private def presenceAt (origin : HavingOrigin) : CorrelatedHaving :=
+  CorrelatedHaving.presence .filled { origin, field := marker.id }
+
+private def stringAt (origin : HavingOrigin) : CorrelatedHaving :=
+  CorrelatedHaving.compareStringLiteral .equal
+    { origin, field := { id := marker.id } } "K"
+
+/-- Candidate row 1's operand is empty and captured row 9's is filled, so only the outer-origin
+    presence leaf holds. -/
+example :
+    truthSnapshot ((presenceAt .outer).evalTruthInResolving outerOnlyContext
+      { innerEnv := resolvingCandidate 1, outerEnv := resolvingCandidate 9 }) =
+      .truth .tru := by
+  native_decide
+
+example :
+    truthSnapshot ((presenceAt .inner).evalTruthInResolving outerOnlyContext
+      { innerEnv := resolvingCandidate 1, outerEnv := resolvingCandidate 9 }) =
+      .truth .fls := by
+  native_decide
+
+/-- The String leaf routes its origin the same way: only the captured row carries the matching text,
+    so the equality holds at outer origin and not at inner. -/
+private def textOnOuterContext :
+    ResolvingCorrelationContext ResolvingProbeError where
+  read environment field :=
+    if field == marker.id && environment == resolvingCandidate 9 then
+      .ok { rawPresent := true, parsed := some (.str "K"), findings := [] }
+    else if field == marker.id then
+      .ok { rawPresent := true, parsed := some (.str "X"), findings := [] }
+    else
+      .ok resolvingCell
+  bindingError := .binding
+
+example :
+    truthSnapshot ((stringAt .outer).evalTruthInResolving textOnOuterContext
+      { innerEnv := resolvingCandidate 1, outerEnv := resolvingCandidate 9 }) =
+      .truth .tru := by
+  native_decide
+
+example :
+    truthSnapshot ((stringAt .inner).evalTruthInResolving textOnOuterContext
+      { innerEnv := resolvingCandidate 1, outerEnv := resolvingCandidate 9 }) =
+      .truth .fls := by
+  native_decide
+
 /- The String-equality leaf on the computation arm. An **absent** operand suppresses the comparison
    into an ordinary non-truth rather than poisoning, which is the branch that separates suppression
    from unavailability on this arm: only the latter aborts. Kernel-retained on the same channel that
@@ -673,6 +734,35 @@ example :
     computationSnapshot ((stringHaving "K").evalComputationInResolving
       (stringContext emptyResolvingCell)
       { innerEnv := resolvingCandidate 1, outerEnv := [] }) = .computation .notTrue := by
+  native_decide
+
+/- `FieldNotFilled` on the computation arm. The negative polarity is a genuine predicate rather than
+   a negation of the positive one, so it needs its own rows here: it holds on a clean empty cell and
+   poisons on an unavailable one, which is where a Boolean negation of the positive leaf would
+   instead answer "holds". Internal only — the measured computation-arm rows use `FieldFilled`. -/
+
+example :
+    computationSnapshot ((CorrelatedHaving.presence .notFilled
+        { origin := .inner, field := marker.id }).evalComputationInResolving
+      (stringContext emptyResolvingCell)
+      { innerEnv := resolvingCandidate 1, outerEnv := [] }) = .computation .holds := by
+  native_decide
+
+example :
+    computationSnapshot ((CorrelatedHaving.presence .notFilled
+        { origin := .inner, field := marker.id }).evalComputationInResolving
+      (stringContext (textCell "K"))
+      { innerEnv := resolvingCandidate 1, outerEnv := [] }) = .computation .notTrue := by
+  native_decide
+
+/-- The separator against a negated positive leaf: both polarities **poison** on an unavailable
+    operand, so neither is the other's complement there. -/
+example :
+    computationSnapshot ((CorrelatedHaving.presence .notFilled
+        { origin := .inner, field := marker.id }).evalComputationInResolving
+      (stringContext poisonedResolvingCell)
+      { innerEnv := resolvingCandidate 1, outerEnv := [] }) =
+      .computation (.poison .malformed) := by
   native_decide
 
 /-- The nearest contrast, and the reason the row above is worth locking: an *unavailable* operand

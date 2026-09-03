@@ -323,6 +323,46 @@ example : errorOf (elaborateSingleCorrelatedRule model items.path
     some .wildcardOnRuleGroup := by
   native_decide
 
+/- The legacy one-group route's three refusals. It admits the numeric and repetition leaves joined
+   by conjunction and nothing else, and each newer form fails closed at its own arm rather than
+   being reshaped: without these cases the route's narrowness rests on reading the code. The kernel
+   admits all three inside a filter, so the narrowness is this route's, not the kernel's. -/
+
+example : errorOf (elaborateSingleCorrelatedRule model ["Order"]
+    (absoluteRule (.compareStrings .equal
+      { origin := .inner, field := absolute items.path "Count" } "K"))) =
+    some .stringLeafOutsideStarRoute := by
+  native_decide
+
+/-- The presence leaf reports through the same arm, whose name predates it. -/
+example : errorOf (elaborateSingleCorrelatedRule model ["Order"]
+    (absoluteRule (.presence .filled
+      { origin := .inner, field := absolute items.path "Count" }))) =
+    some .stringLeafOutsideStarRoute := by
+  native_decide
+
+/-- Disjunction is refused at its own arm, so the cause is named rather than surfacing later as an
+    unexplained incoherence. Both operands are leaves this route otherwise admits, which is what
+    makes the connective the whole difference. -/
+example : errorOf (elaborateSingleCorrelatedRule model ["Order"]
+    (absoluteRule (.or
+      (.compareNumbers .equal (numberRef .inner (absolute items.path "Count"))
+        (numberRef .outer (absolute items.path "Count")))
+      (.compareNumbers .equal (numberRef .inner (absolute items.path "Count"))
+        (numberRef .outer (absolute items.path "Count")))))) =
+    some .disjunctionOutsideStarRoute := by
+  native_decide
+
+/-- The control: the identical pair under `And` is admitted, so the refusal above is the
+    connective's and not the operands'. -/
+example : errorOf (elaborateSingleCorrelatedRule model ["Order"]
+    (absoluteRule (.and
+      (.compareNumbers .equal (numberRef .inner (absolute items.path "Count"))
+        (numberRef .outer (absolute items.path "Count")))
+      (.compareNumbers .equal (numberRef .inner (absolute items.path "Count"))
+        (numberRef .outer (absolute items.path "Count")))))) = none := by
+  native_decide
+
 -- Equality and inequality are scale-gated; ordering over the same pair is not.
 private def mismatched (op : SurfaceComparisonOp) : SurfaceCorrelatedHaving :=
   .compareNumbers op

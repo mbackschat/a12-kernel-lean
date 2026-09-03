@@ -87,7 +87,15 @@ private def tagPresent (origin : HavingOrigin) : SurfaceCorrelatedHaving :=
    The Kernel reports `MVK_NO_ITERATION_FOR_WILDCARD` for the refused form
    ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-outer-origin-filter-leaves)). -/
 
-example : correlatedSource? (some (tagPresent .outer)) = none := by
+private def correlatedSourceError? (having : Option SurfaceCorrelatedHaving) :
+    Option FilledFieldStarCountElabError :=
+  match elaborateFilledFieldStarSource model ["Form", "Rows"] starPath having with
+  | .ok _ => none
+  | .error error => some error
+
+/-- The exact arm, not a bare `none`: the filter reaches no reopened level. -/
+example : correlatedSourceError? (some (tagPresent .outer)) =
+    some (.having .missingInner) := by
   native_decide
 
 example : (correlatedSource? (some (.and (tagPresent .inner) (tagPresent .outer)))).isSome
@@ -231,6 +239,20 @@ example : partialCountWith? (some flagEqualsOther) filterOperandsRelevant =
     some .skippedHaving := by
   native_decide
 
+/-- `skippedHaving` is separated from the confusable arm rather than being the only one observed:
+    under a scope that covers nothing the operand reads, the **plain** route answers `nonRelevant`
+    while the filtered one still answers `skippedHaving`. So the filter's skip is not a relabelled
+    non-relevance, and the two arms are distinguishable on one scope. -/
+private def nothingRelevant : ValidationRelevanceScope :=
+  .partialSet [everyInstanceOf tag]
+
+example : partialCountWith? none nothingRelevant = some .nonRelevant := by
+  native_decide
+
+example : partialCountWith? (some flagEqualsOther) nothingRelevant =
+    some .skippedHaving := by
+  native_decide
+
 /-- The unfiltered operand over that same relevance evaluates, so the skip above is the filter's
     doing rather than missing coverage. -/
 example : partialCountWith? none filterOperandsRelevant =
@@ -246,7 +268,19 @@ private def tagEquals (expected : String) : SurfaceCorrelatedHaving :=
   .compareStrings .equal { origin := .inner, field := repeatedPath "Tag" } expected
 
 private def numberThroughStringLeaf : SurfaceCorrelatedHaving :=
+  .compareStrings .equal { origin := .inner, field := repeatedPath "Flag" } "K"
+
+/-- The same leaf naming the star's own target field. Kept beside the case above so the refusal is
+    attributable to the **kind** rather than to the reference coinciding with the counted field:
+    `Flag` is not the target and refuses identically. -/
+private def targetThroughStringLeaf : SurfaceCorrelatedHaving :=
   .compareStrings .equal { origin := .inner, field := repeatedPath "Amount" } "K"
+
+private def sourceError? (having : Option SurfaceCorrelatedHaving) :
+    Option FilledFieldStarCountElabError :=
+  match elaborateFilledFieldStarSource model ["Form"] starPath having with
+  | .ok _ => none
+  | .error error => some error
 
 private def tagDiffers (expected : String) : SurfaceCorrelatedHaving :=
   .compareStrings .notEqual { origin := .inner, field := repeatedPath "Tag" } expected
@@ -314,8 +348,16 @@ example : tagCount? "K" [
   native_decide
 
 /-- The leaf resolves through the model-owned String **value** capability rather than accepting any
-    declaration, so a Number field named through it is refused at elaboration. -/
-example : source? (some numberThroughStringLeaf) = none := by
+    declaration, so a Number field named through it is refused at elaboration — and the exact arm is
+    asserted, because a bare `none` is equally consistent with a scope or environment refusal. -/
+example : sourceError? (some numberThroughStringLeaf) =
+    some (.having (.fieldNotStringValue ["Form", "Rows", "Flag"])) := by
+  native_decide
+
+/-- The star's own target field refuses through the identical arm, so the kind is the cause rather
+    than the reference coinciding with the counted field. -/
+example : sourceError? (some targetThroughStringLeaf) =
+    some (.having (.fieldNotStringValue ["Form", "Rows", "Amount"])) := by
   native_decide
 
 /- Inequality is the one operator that separates an operand which *participates* with an empty value

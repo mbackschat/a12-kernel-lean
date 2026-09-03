@@ -93,14 +93,19 @@ theorem correlatedHaving_and_keepsEnvironment (left right : CorrelatedHaving)
     cases right.evalK (CorrelatedHavingLeaf.evalTruthIn context { innerEnv, outerEnv }) <;>
       simp [K.and]
 
-/-- **The preservation law a rule-refactoring consumer needs.** On the validation arm, selection is
-    invariant under swapping either connective's operands: the two laws above reduce selection to a
-    Boolean combination of the operands' own selections, and `&&`/`||` commute. So a transformation
-    that reorders a filter's operands selects the same rows, at every candidate, in every document.
-    Its exact scope matters — this is the **validation** arm only. The computation arm reads left to
-    right and aborts on the first reached poison, so the same reordering is *not* result-preserving
-    there; that non-law is Kernel-measured and witnessed in
-    [`Conformance/Correlation.lean`](../Conformance/Correlation.lean)
+/-- Swapping the **root** connective's two operands selects the same candidates: the two laws above
+    reduce selection to a Boolean combination of the operands' own selections, and `&&`/`||` commute.
+
+    Read the scope precisely, because a rule-refactoring consumer needs all three limits and the
+    statement carries only the first. **(1)** It is about `selectEnvironments`, the pure selector.
+    The addressed route `selectEnvironmentsResolving` is *not* invariant: its leaves may raise a
+    caller-owned structural read failure, and swapping two failing operands swaps which failure
+    surfaces, as `correlatedHaving_selectResolving_headError` below already describes. **(2)** It
+    swaps one node's operands and says nothing about a nested rewrite such as
+    `.and (.or a b) c → .and (.or b a) c`; no congruence result over the tree is proved here.
+    **(3)** It is the **validation** arm. The computation arm reads left to right and aborts on the
+    first reached poison, so the same swap is not result-preserving there — Kernel-measured, and
+    witnessed in [`Conformance/Correlation.lean`](../Conformance/Correlation.lean)
     ([`SPEC-2026-09-03-03`](../../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-03-03)). -/
 theorem correlatedHaving_selectEnvironments_or_comm (left right : CorrelatedHaving)
     (context : CorrelationContext) (outerEnv : Env) (candidates : List Env) :

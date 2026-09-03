@@ -121,8 +121,14 @@ def CheckedNumberEntitySource.referencePointers
   (·.flatten) <$>
     source.operands.mapM (CheckedNumberEntityOperand.referencePointers environment)
 
-/-- Choose the pointer spelling for one filter reference. This depends only on the origin and the
-    declaration's own scope depth against the operand's first star, never on the field's kind. -/
+/-- Choose the pointer spelling for one filter reference, from the origin and the declaration's own
+    scope depth against the operand's first star.
+
+    Kind-independence is a property of *this function* — no branch reads the policy — and not a
+    measured claim about the Kernel's pointer spelling for the newer leaves, which is unmeasured.
+    The String and presence leaves reuse this spelling because they reuse the mechanism; if a
+    measurement ever separates a carrier here, the divergence belongs in a per-kind branch rather
+    than in a second pointer builder. -/
 private def havingFieldPointerFor (source : CheckedStarFieldPath model)
     (environment : Env) (declaration : FlatFieldDecl) (origin : HavingOrigin) :
     Except ReferenceProjectionError MessagePointer :=

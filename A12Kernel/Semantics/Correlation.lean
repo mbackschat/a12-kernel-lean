@@ -283,8 +283,11 @@ def HavingPresencePolarity.evalObservation :
 /-- Project a shared verdict-producing evaluator into the filter's truth domain. Both the String
     equality and the presence leaves route through here, which keeps their empty-operand and
     formal-unavailability rules owned by the ordinary consumers instead of restated. The filter's
-    selector keeps only `tru`, so no channel distinguishes the `fls` this yields for a clean
-    non-match from `unknown`; the projection asserts nothing beyond non-truth. -/
+    **selector** keeps only `tru`, so it cannot distinguish the `fls` this yields for a clean
+    non-match from `unknown`. That is a property of the selector, not of this projection: filter
+    truth is exposed directly through `CorrelatedHaving.evalTruth`, where the two are separable and
+    a retained case asserts `unknown` on a malformed operand. So the distinction is preserved here
+    rather than collapsed, and only row selection is blind to it. -/
 def CorrelatedHavingLeaf.verdictTruth : Verdict → K
   | .fired _ => .tru
   | .notFired => .fls
