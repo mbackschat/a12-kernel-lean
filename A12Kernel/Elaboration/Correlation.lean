@@ -32,9 +32,10 @@ inductive SurfaceCorrelatedHaving where
   | compareRepetitions (op : SurfaceComparisonOp)
       (left right : SurfaceHavingRepetitionRef)
   /-- A String field against a literal. The operator slot is an `EqualityOp`, so a String ordering
-      comparison is unrepresentable here rather than refused during elaboration. That is a
-      deliberate narrowing: the kernel does refuse it, with `MVK_INVALID_TYPE_FOR_COMPARISON`, and
-      reproducing that class needs a diagnostic arm this fragment does not yet carry. -/
+      comparison is unrepresentable here rather than refused during elaboration — the same
+      treatment the ordinary String comparison surface gives it, and what `spec/04`'s
+      equality-only rule states. The kernel's `MVK_INVALID_TYPE_FOR_COMPARISON` is a class this
+      project models nowhere, so this is consistency rather than a local narrowing. -/
   | compareStrings (op : EqualityOp) (reference : SurfaceHavingStringRef)
       (expected : String)
   | and (left right : SurfaceCorrelatedHaving)
