@@ -533,4 +533,57 @@ example :
       .terminated 7 := by
   native_decide
 
+/- The computation arm's read-order pair. The filter decides a candidate before its target is read,
+   so a target the filter excludes is never consumed and whatever consuming it would have raised
+   never surfaces. Only the context differs between these two cases, so the excluded candidate's own
+   selection is the whole difference — the same shape as the validation arm's pair, and the
+   consequence that makes the eager formal-operand inventory a report rather than an abort. -/
+
+private def emptyResolvingCell : CheckedCell :=
+  { rawPresent := false, parsed := none, findings := [] }
+
+private def absentAtSecondContext :
+    ResolvingCorrelationContext ResolvingProbeError where
+  read environment field :=
+    if environment == resolvingCandidate 2 && field == marker.id then
+      .ok emptyResolvingCell
+    else
+      .ok resolvingCell
+  bindingError := .binding
+
+private def markerFilledHaving : CorrelatedHaving :=
+  CorrelatedHaving.presence .filled { origin := .inner, field := marker.id }
+
+private def failAtSecond : Nat → Env →
+    Except ResolvingProbeError (Nat ⊕ Nat) :=
+  fun count environment =>
+    if environment == resolvingCandidate 2 then .error (.read marker.id)
+    else .ok (.inl (count + 1))
+
+/-- Candidate 2's filter operand is absent, so it is dropped and its failing target is unread. -/
+example :
+    scanSnapshot (
+      markerFilledHaving.scanComputationResolving absentAtSecondContext []
+        failAtSecond
+        [resolvingCandidate 1, resolvingCandidate 2, resolvingCandidate 3] 0) =
+      .exhausted 2 := by
+  native_decide
+
+/- The control needs a context whose reads all succeed. `resolvingContext` would fail the *filter*
+   on every candidate, so the same expectation would hold for the wrong reason and establish
+   nothing about the target. -/
+private def allPresentContext :
+    ResolvingCorrelationContext ResolvingProbeError where
+  read _ _ := .ok resolvingCell
+  bindingError := .binding
+
+/-- With every operand present, candidate 2 is kept and the identical target failure surfaces. -/
+example :
+    scanSnapshot (
+      markerFilledHaving.scanComputationResolving allPresentContext []
+        failAtSecond
+        [resolvingCandidate 1, resolvingCandidate 2, resolvingCandidate 3] 0) =
+      .error (.read marker.id) := by
+  native_decide
+
 end A12Kernel.Conformance.Correlation

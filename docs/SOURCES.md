@@ -350,6 +350,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A filter's `Or` is strong-Kleene, so a true disjunct keeps its row against an unavailable one](sources/group-and-iteration-probes.md#src-having-filter-disjunction)
 <a id="src-string-inequality-empty-operand"></a>
 - [An absent String operand suppresses its comparison under inequality too](sources/group-and-iteration-probes.md#src-string-inequality-empty-operand)
+<a id="src-filtered-aggregate-computation-arm"></a>
+- [A filtered aggregate's computation arm poisons on a reached operand and never reads an excluded one](sources/group-and-iteration-probes.md#src-filtered-aggregate-computation-arm)
 
 <a id="src-starred-operand-message-polarity"></a>
 - [A computation's message type follows what can still grow](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity)
