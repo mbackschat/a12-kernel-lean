@@ -2044,7 +2044,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `07fb8c03f36a19e91eb018679e04dacbc95e57e1`
 - **Kernel behavior:** 30.8.1
-- **Canonical clauses:** [`07-repetition-and-iteration.md` §6](../../spec/07-repetition-and-iteration.md#6-repetitionnotunique-precisely), [`10-validation-and-polarity.md` §5](../../spec/10-validation-and-polarity.md#5-full-vs-partial-validation), and the message shape in [`01-data-model.md` §3.1](../../spec/01-data-model.md#31-rules-validation)
+- **Canonical clauses:** [`07-repetition-and-iteration.md` §6](../../spec/07-repetition-and-iteration.md#6-repetitionnotunique-precisely-), [`10-validation-and-polarity.md` §5](../../spec/10-validation-and-polarity.md#5-full-vs-partial-validation), and the message shape in [`01-data-model.md` §3.1](../../spec/01-data-model.md#31-rules-validation)
 - **Delta:** Complete the RNU account: it is an ordinary per-row 3VL leaf in every model-legal `And`/`Or` tree; partial duplicate construction admits a row only when every composite-key component is relevant; and RNU-owned `referenced`/`fillToFix` sets expand over every key in the complete duplicate cluster while independent branch references stay on the current row.
 - **Basis:** a12-dmkits IF149 and `RepetitionNotUniqueCompositionDiffTest`, `RepetitionNotUniqueExactnessDiffTest`, `PartialValidationRepetitionNotUniqueDiffTest`, and `RepetitionNotUniqueExactnessTest` at `07fb8c03` establish ordinary composition, typed keys, all-key relevance, peer-exact pointer sets, branch ownership, and VALUE/OMISSION projection across both kernel strategies and portable JVM/Node evaluation.
 - **Requested a12-dmkits reconciliation:** None. The exact reviewed revision replaced the positional recognizer with the ordinary predicate mechanism and already carries the focused handback tests.
@@ -2074,7 +2074,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Local revision:** introducing commit
 - **a12-dmkits basis revisions:** `ced53da4ab16ab0c34f105fe37598ed034038795`, `07fb8c03f36a19e91eb018679e04dacbc95e57e1`
 - **Kernel behavior:** 30.8.1
-- **Canonical clause:** [`07-repetition-and-iteration.md` §6 and checklist](../../spec/07-repetition-and-iteration.md#6-repetitionnotunique-precisely)
+- **Canonical clause:** [`07-repetition-and-iteration.md` §6 and checklist](../../spec/07-repetition-and-iteration.md#6-repetitionnotunique-precisely-)
 - **Delta:** A model-legal condition contains at most one `RepetitionNotUnique` leaf. A second is rejected after parsing with `MVK_INVALID_COMBINATION_OF_REPETITON_NOT_UNIQUE`; this is separate from the ordinary runtime 3VL semantics accepted under `SPEC-2026-07-19-20`.
 - **Basis:** kernel `ParserService` delegates to `AnalyseService.containsMultipleRepetitionNotUnique`; a12-dmkits's MVK ledger preserves the exact diagnostic and its RNU findings preserve the separate runtime mechanism.
 - **Requested a12-dmkits reconciliation:** None. a12-dmkits already owns this model-legality knowledge and delegates the gate to the kernel; its broader authoring/public capability work remains in its own existing backlog rather than becoming a duplicate sync request.
