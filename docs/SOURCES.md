@@ -354,6 +354,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A filtered aggregate's computation arm poisons on a reached operand and never reads an excluded one](sources/group-and-iteration-probes.md#src-filtered-aggregate-computation-arm)
 <a id="src-and-order-computation-arm"></a>
 - [A filter's conjunction short-circuits on a false operand too, so the computation arm's order sensitivity is not the disjunction's alone](sources/group-and-iteration-probes.md#src-and-order-computation-arm)
+<a id="src-self-exclusion-and-nested-filter-runtime"></a>
+- [`CurrentRepetition` self-exclusion is an exact complement pair, `$` binds a per-row computed target, and a nested `Or` selects its own rows](sources/group-and-iteration-probes.md#src-self-exclusion-and-nested-filter-runtime)
 <a id="src-correlated-filter-runtime"></a>
 - [`$` binds the captured outer row and the candidate set includes it](sources/group-and-iteration-probes.md#src-correlated-filter-runtime)
 <a id="src-pattern-invalid-string-cell"></a>

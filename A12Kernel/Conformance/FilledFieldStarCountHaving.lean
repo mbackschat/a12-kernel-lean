@@ -105,6 +105,36 @@ example : (correlatedSource? (some (.and (tagPresent .inner) (tagPresent .outer)
 example : (correlatedSource? (some (tagPresent .inner))).isSome = true := by
   native_decide
 
+/- The gate counts **unmarked references**, not field pointers, so a `CurrentRepetition` reference
+   satisfies it alone — measured on the Kernel, which admits a filter whose only condition is
+   `CurrentRepetition(Rows) != CurrentRepetition($Rows)` and refuses the same comparison with both
+   sides marked
+   ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-self-exclusion-and-nested-filter-runtime)).
+   That matters because `spec/01` states a `CurrentRepetition` operand contributes no field pointer
+   at all, so a gate implemented over the reference expansion would refuse both forms. The pair
+   isolates the marker as the whole difference. -/
+
+private def repeatedGroup (origin : HavingOrigin) : SurfaceHavingRepetitionRef :=
+  { origin, group := .path { base := .absolute, groups := ["Form", "Rows"] } }
+
+private def repetitionCompare (op : SurfaceComparisonOp)
+    (left right : HavingOrigin) : SurfaceCorrelatedHaving :=
+  .compareRepetitions op (repeatedGroup left) (repeatedGroup right)
+
+example : (correlatedSource? (some (repetitionCompare .notEqual .inner .outer))).isSome
+    = true := by
+  native_decide
+
+example : correlatedSourceError? (some (repetitionCompare .notEqual .outer .outer)) =
+    some (.having .missingInner) := by
+  native_decide
+
+/-- The reflexive unmarked spelling is admitted too, so the gate is about the marker rather than
+    about the comparison being non-trivial; the Kernel admits this one as well. -/
+example : (correlatedSource? (some (repetitionCompare .equal .inner .inner))).isSome
+    = true := by
+  native_decide
+
 private def prepared :
     PreparedFlatStringContext model builtinStringPatternCompiler :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }

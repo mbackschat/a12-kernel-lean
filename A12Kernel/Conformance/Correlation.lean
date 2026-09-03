@@ -824,4 +824,145 @@ example :
       .computation (.poison .malformed) := by
   native_decide
 
+/- The `CurrentRepetition` self-exclusion idiom at runtime, as a **complement pair**. The two
+   polarities partition the candidate set, and their counts sum to the unfiltered one — which is the
+   form that refutes both wrong accounts at once. An implicit self-exclusion makes the reflexive
+   spelling keep nothing; a marker-blind reading, comparing each candidate against itself, makes the
+   inequality keep nothing and the equality keep everything. Kernel-retained: the inequality's
+   count varies with *which* row is excluded, so no self-exclusion-blind account produces it. -/
+
+private def selfExcludedOnly : SingleCorrelatedStar :=
+  { valueField := count
+    having := checkedHaving
+      (.compareRepetitions .notEqual (repetition .inner) (repetition .outer))
+      (by decide) (by decide) }
+
+example :
+    (List.range 3).map (fun index =>
+        selfExcludedOnly.select (captured distinct (index + 1)))
+      = [[2, 3], [1, 3], [1, 2]] := by
+  native_decide
+
+/-- The reflexive spelling keeps exactly the captured row, and the two selections partition the
+    candidates on every outer row. The existing `repetitionEqualPayload` supplies the equality:
+    selection does not depend on the value field, so no second fixture is warranted. -/
+example : ∀ outerRow ∈ distinct.candidates,
+    (selfExcludedOnly.select (captured distinct outerRow)).length
+        + (repetitionEqualPayload.select (captured distinct outerRow)).length
+      = distinct.candidates.length := by
+  native_decide
+
+/- A **correlated** filter feeding a per-row computed target, at exact per-row values rather than
+   ladder thresholds. Neither arm can diverge on these documents because no cell is unavailable, so
+   one sum stands for both; the arms' divergence has its own cases above. The reversed reading of
+   `$` — marked as candidate, unmarked as captured — predicts `[0, 10, 30]` on the ascending keys
+   and `[50, 0, 20]` on the rotated ones, so each document refutes it on its own rather than by
+   agreeing with the other. -/
+
+private def correlatedGreater : SingleCorrelatedStar :=
+  { valueField := payload
+    having := checkedHaving
+      (.compareNumbers .lessThan outerCount innerCount) (by decide) (by decide) }
+
+private def ascendingKeys : SingleGroupValidationContext :=
+  correlatedConsumerContext [
+    (number 1, number 10), (number 2, number 20), (number 3, number 30)]
+
+private def rotatedKeys : SingleGroupValidationContext :=
+  correlatedConsumerContext [
+    (number 3, number 10), (number 1, number 20), (number 2, number 30)]
+
+example :
+    (List.range 3).map (fun index =>
+        NumberFold.sumRows ascendingKeys payload
+          (correlatedGreater.select (captured ascendingKeys (index + 1))))
+      = [.value 50, .value 30, .value 0] := by
+  native_decide
+
+example :
+    (List.range 3).map (fun index =>
+        NumberFold.sumRows rotatedKeys payload
+          (correlatedGreater.select (captured rotatedKeys (index + 1))))
+      = [.value 0, .value 40, .value 10] := by
+  native_decide
+
+/-- An all-dropped correlated selection folds an available zero rather than clearing, which is the
+    same answer the unfiltered fold gives an empty row set. -/
+example :
+    NumberFold.sumRows ascendingKeys payload
+        (correlatedGreater.select (captured ascendingKeys 3)) = .value 0 := by
+  native_decide
+
+/- A bracketed `Or` **nested under** `And`, which also mixes leaf kinds inside the disjunction. The
+   two flattenings are the wrong accounts a consumer reaches for, and each is locked here rather
+   than merely asserted: treating the tree as one conjunction of three leaves keeps nothing, and as
+   one disjunction keeps every row. Kernel-retained at the same count of two. -/
+
+private def nestedRow (index : RowIndex) : Env :=
+  [(items, index)]
+
+private def nestedText (value : String) : CheckedCell :=
+  { rawPresent := true, parsed := some (.str value), findings := [] }
+
+private def nestedAbsentText : CheckedCell :=
+  { rawPresent := false, parsed := none, findings := [] }
+
+/-- Per row: is the Number operand filled, is the String operand filled, and what the third
+    operand's text is. Row 3 satisfies neither disjunct and row 4 fails the conjunct. -/
+private def nestedSpec : RowIndex → Bool × Bool × String
+  | 1 => (true, true, "X")
+  | 2 => (true, false, "K")
+  | 3 => (true, false, "X")
+  | _ => (false, true, "K")
+
+private def nestedContext : CorrelationContext where
+  read environment field :=
+    let row := match environment with
+      | [(_, index)] => index
+      | _ => 0
+    let (numberFilled, textFilled, tag) := nestedSpec row
+    if field == count.id then
+      checkedNumber (if numberFilled then number 7 else .empty)
+    else if field == payload.id then
+      (if textFilled then nestedText "s" else nestedAbsentText)
+    else
+      nestedText tag
+
+private def nestedLeaves : CorrelatedHaving :=
+  .and
+    (CorrelatedHaving.presence .filled { origin := .inner, field := count.id })
+    (.or
+      (CorrelatedHaving.presence .filled { origin := .inner, field := payload.id })
+      (CorrelatedHaving.compareStringLiteral .equal
+        { origin := .inner, field := { id := marker.id } } "K"))
+
+private def flattenedToConjunction : CorrelatedHaving :=
+  .and
+    (CorrelatedHaving.presence .filled { origin := .inner, field := count.id })
+    (.and
+      (CorrelatedHaving.presence .filled { origin := .inner, field := payload.id })
+      (CorrelatedHaving.compareStringLiteral .equal
+        { origin := .inner, field := { id := marker.id } } "K"))
+
+private def flattenedToDisjunction : CorrelatedHaving :=
+  .or
+    (CorrelatedHaving.presence .filled { origin := .inner, field := count.id })
+    (.or
+      (CorrelatedHaving.presence .filled { origin := .inner, field := payload.id })
+      (CorrelatedHaving.compareStringLiteral .equal
+        { origin := .inner, field := { id := marker.id } } "K"))
+
+private def nestedCandidates : List Env :=
+  (List.range 4).map fun index => nestedRow (index + 1)
+
+example :
+    nestedLeaves.selectEnvironments nestedContext [] nestedCandidates
+      = [nestedRow 1, nestedRow 2] := by
+  native_decide
+
+example :
+    (flattenedToConjunction.selectEnvironments nestedContext [] nestedCandidates).length = 0 ∧
+      (flattenedToDisjunction.selectEnvironments nestedContext [] nestedCandidates).length = 4 := by
+  native_decide
+
 end A12Kernel.Conformance.Correlation
