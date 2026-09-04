@@ -503,6 +503,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A fixed group-count operand admits nested descendants](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-admission)
 <a id="src-empty-declared-group"></a>
 - [An empty declared group is kernel-valid](sources/group-and-iteration-probes.md#src-empty-declared-group)
+<a id="src-short-name-flag-gates-the-model-wide-tier"></a>
+- [`fieldRefByShortNameAllowed` gates the model-wide short-name tier and not the declaring-group one](sources/group-and-iteration-probes.md#src-short-name-flag-gates-the-model-wide-tier)
 <a id="src-multi-root-short-name-reach"></a>
 - [A model may declare more than one root group, and the short-name tier spans them](sources/group-and-iteration-probes.md#src-multi-root-short-name-reach)
 <a id="src-message-group-parameter"></a>
