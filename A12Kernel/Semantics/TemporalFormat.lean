@@ -192,6 +192,65 @@ def temporalAggregateFormatsCompatible (hasBaseYear : Bool)
   (left.hasDate == right.hasDate) &&
     (left.withBaseYear hasBaseYear == right.withBaseYear hasBaseYear)
 
+/-- The calendar or clock unit a two-operand temporal *operation* steps in, which decides
+which single component each of its operands must resolve. This is a different gate from
+the direct-comparison one above: a comparison never requires a particular component, only
+agreement, while an operation cannot step in a unit its operand does not carry. -/
+inductive TemporalOperationUnit where
+  | days
+  | months
+  | years
+  | hours
+  | minutes
+  | seconds
+  deriving Repr, DecidableEq
+
+namespace TemporalOperationUnit
+
+/-- The one component an operand must expose to be steppable in this unit. -/
+def requiredComponent : TemporalOperationUnit → (TemporalComponents → Bool)
+  | .days => TemporalComponents.day
+  | .months => TemporalComponents.month
+  | .years => TemporalComponents.year
+  | .hours => TemporalComponents.hour
+  | .minutes => TemporalComponents.minute
+  | .seconds => TemporalComponents.second
+
+/-- Whether one operand resolves this unit, reading the **Base-Year-supplemented** components.
+Supplementation genuinely feeds this gate rather than only the agreement one: a yearless pair
+is refused in `years` with no Base Year and admitted once the model declares one. It supplies
+the year alone, so a month-only operand stays unsteppable in `days` in a configured model. -/
+def operandResolves (unit : TemporalOperationUnit) (hasBaseYear : Bool)
+    (components : TemporalComponents) : Bool :=
+  unit.requiredComponent (components.withBaseYear hasBaseYear)
+
+/-- Why a temporal operation refuses an operand pair. The two grounds carry **different**
+Kernel codes — `MVK_WRONG_DATE_FORMAT_FOR_OP` for granularity and
+`MVK_DATE_WITH_AND_WITHOUT_YEAR` for year disagreement — and their order is measured rather
+than chosen: a month-only operand beside a year-bearing constant disagrees about the year as
+well, and the Kernel reports the granularity code. -/
+inductive OperandFault where
+  | granularity
+  | yearDisagreement
+  deriving Repr, DecidableEq
+
+/-- Classify one operand pair, granularity first. `none` is admission. -/
+def operandFault? (unit : TemporalOperationUnit) (hasBaseYear : Bool)
+    (left right : TemporalComponents) : Option OperandFault :=
+  if !(unit.operandResolves hasBaseYear left && unit.operandResolves hasBaseYear right) then
+    some .granularity
+  else if (left.withBaseYear hasBaseYear).year != (right.withBaseYear hasBaseYear).year then
+    some .yearDisagreement
+  else
+    none
+
+/-- Static admission for a two-operand temporal operation. -/
+def admitsOperands (unit : TemporalOperationUnit) (hasBaseYear : Bool)
+    (left right : TemporalComponents) : Bool :=
+  (unit.operandFault? hasBaseYear left right).isNone
+
+end TemporalOperationUnit
+
 /-- A DATE declaration format that omits at least one component. -/
 inductive OmittingDateFormat where
   /-- `yyyy` — the value is a whole calendar year. -/

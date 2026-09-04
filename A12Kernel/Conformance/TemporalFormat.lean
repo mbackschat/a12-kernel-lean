@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.Flat.Model
 
 /-! # Temporal format-admission executable locks
 
-**Three temporal format gates, measured to be genuinely different, with different codes.** They are kept
+**Four temporal format gates, measured to be genuinely different, with different codes.** They are kept
 apart here because a reader who unified any two of them would reject legal models:
 
 - *Direct comparison* tests **year presence** after optional Base-Year supplementation plus date-class
@@ -13,6 +13,11 @@ apart here because a reader who unified any two of them would reject legal model
 - *`FieldValuesNotUnique`* requires one identical declared **format string**, which no component-set rule
   can express. Its refusal is `MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED`, and its own owner holds that
   gate; the cases below only fix that the aggregate rule does **not** reproduce it.
+- *A two-operand temporal operation* requires each operand to resolve the **one component its unit steps
+  in**, and only then that the two agree about the year. The two grounds carry different codes —
+  `MVK_WRONG_DATE_FORMAT_FOR_OP` and `MVK_DATE_WITH_AND_WITHOUT_YEAR` — and their order is measured, not
+  chosen. This gate is neither weaker nor stronger than comparison: one input below is admitted by an
+  ordering comparison and refused by a day difference, and another the reverse.
 -/
 
 namespace A12Kernel.Conformance.TemporalFormat
@@ -30,6 +35,11 @@ private def fullDate : TemporalComponents :=
 
 private def monthDay : TemporalComponents :=
   { year := false, month := true, day := true, hour := false, minute := false, second := false }
+
+/-- `MM`: the one declared date format that resolves a month but no day, which is what makes it
+the separator for an operation's granularity gate. -/
+private def monthOnly : TemporalComponents :=
+  { year := false, month := true, day := false, hour := false, minute := false, second := false }
 
 private def fullDateTime : TemporalComponents :=
   { year := true, month := true, day := true, hour := true, minute := true, second := true }
@@ -269,5 +279,66 @@ example :
       temporalAggregateFormatsCompatible false monthDay fullDate = false ∧
       temporalAggregateFormatsCompatible true monthDay yearMonth = false := by
   native_decide
+
+/- **A temporal operation's operand gate is granularity, not year-bearing-ness.** `MM` is refused
+in `DifferenceInDays` because it resolves no day, while the yearless `MM-dd` is admitted against a
+yearless counterpart — so the refusal follows the missing component rather than the missing year.
+Measured at a12-dmkits `eded8263` on one model varying only the operand's declared format. A gate
+that demanded a complete date would refuse the admitted row. -/
+example :
+    TemporalOperationUnit.admitsOperands .days false monthOnly monthDay = false ∧
+      TemporalOperationUnit.admitsOperands .days false monthDay monthDay = true := by
+  decide
+
+/- **Granularity is decided before year agreement, and this pair is the only row that shows it.**
+`MM` beside a complete date disagrees about the year *as well* as lacking a day, and the Kernel
+reports `MVK_WRONG_DATE_FORMAT_FOR_OP` rather than `MVK_DATE_WITH_AND_WITHOUT_YEAR`. Checking
+agreement first would return the other fault on the identical input. -/
+example :
+    TemporalOperationUnit.operandFault? .days false monthOnly fullDate = some .granularity := by
+  decide
+
+/- **Year agreement is the second gate and carries its own code.** A complete date beside a
+yearless literal resolves the day on both sides and is still refused, which is the row a12-dmkits
+could not see: both of its rows used a year-free field, where the granularity gate fires first and
+masks this one. -/
+example :
+    TemporalOperationUnit.operandFault? .days false fullDate monthDay
+        = some .yearDisagreement ∧
+      TemporalOperationUnit.admitsOperands .days false fullDate fullDate = true := by
+  decide
+
+/- **A declared Base Year lifts the year-agreement gate here exactly as it does for a direct
+comparison.** The mixed pair above is admitted once the model declares one. Measured rather than
+inherited from the comparison carrier: the same reuse was wrong twice in this family already, and a
+gate that read raw years would refuse this row. -/
+example :
+    TemporalOperationUnit.admitsOperands .days true fullDate monthDay = true ∧
+      TemporalOperationUnit.admitsOperands .days false fullDate monthDay = false := by
+  decide
+
+/- **Supplementation feeds the granularity gate too, and supplies the year alone.** A yearless pair
+is refused in `years` with no Base Year and admitted once one is declared — so the Base Year makes
+an operand steppable in a unit it could not otherwise resolve. It never supplies a day, so the
+month-only operand stays refused in `days` in the very same configured model. That second row is
+what stops the first from being read as "a Base Year admits anything". -/
+example :
+    TemporalOperationUnit.admitsOperands .years false monthDay monthDay = false ∧
+      TemporalOperationUnit.admitsOperands .years true monthDay monthDay = true ∧
+      TemporalOperationUnit.admitsOperands .days true monthOnly monthDay = false := by
+  decide
+
+/- **The operation gate and the comparison gate are incomparable — neither implies the other**, which
+is why no consumer may derive one from the other in either direction. A month-only pair is admitted by
+an ordering comparison and refused by a day difference, because comparison never demands a particular
+component. A month-day-time operand beside a time-only one is the converse: the day difference's
+sibling `hours` unit admits it since both resolve an hour, while comparison refuses it for disagreeing
+about date class. Weakening this to "the operation gate is stronger" would be wrong on the second row. -/
+example :
+    (TemporalComparisonOp.admitsFormats .before false monthOnly monthOnly = true ∧
+        TemporalOperationUnit.admitsOperands .days false monthOnly monthOnly = false) ∧
+      (TemporalComparisonOp.admitsFormats .before false monthDayTime hoursMinutes = false ∧
+        TemporalOperationUnit.admitsOperands .hours false monthDayTime hoursMinutes = true) := by
+  decide
 
 end A12Kernel.Conformance.TemporalFormat

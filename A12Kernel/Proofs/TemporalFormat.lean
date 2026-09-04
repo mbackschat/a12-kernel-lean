@@ -143,4 +143,61 @@ theorem temporalTargetPolicy_valid_partial
       by_cases hFormat : policy.format = "" <;>
         simp_all [TemporalTargetPolicy.errorFor?]
 
+/-- A temporal operation's operand fault is independent of authored operand position, on both
+grounds. Measured on three pairs rather than asserted from the definition's shape: each ground
+reports the identical Kernel code in either order, and the admitted row survives reversal. -/
+theorem temporalOperation_operandFault_symmetric (unit : TemporalOperationUnit)
+    (hasBaseYear : Bool) (left right : TemporalComponents) :
+    unit.operandFault? hasBaseYear left right =
+      unit.operandFault? hasBaseYear right left := by
+  unfold TemporalOperationUnit.operandFault?
+  cases hLeft : unit.operandResolves hasBaseYear left
+  case false => simp
+  case true =>
+    cases hRight : unit.operandResolves hasBaseYear right
+    case false => simp
+    case true =>
+      cases hLeftYear : (left.withBaseYear hasBaseYear).year <;>
+        cases hRightYear : (right.withBaseYear hasBaseYear).year <;>
+        simp_all
+
+/-- Position independence carries to admission itself. -/
+theorem temporalOperation_admitsOperands_symmetric (unit : TemporalOperationUnit)
+    (hasBaseYear : Bool) (left right : TemporalComponents) :
+    unit.admitsOperands hasBaseYear left right =
+      unit.admitsOperands hasBaseYear right left := by
+  simp [TemporalOperationUnit.admitsOperands,
+    temporalOperation_operandFault_symmetric unit hasBaseYear left right]
+
+/-- `withBaseYear` only ever sets `year`, so a resolvable operand stays resolvable once a Base
+Year is declared, and a `years` operand becomes resolvable. -/
+private theorem temporalOperation_operandResolves_baseYear_monotone
+    (unit : TemporalOperationUnit) (components : TemporalComponents)
+    (resolved : unit.operandResolves false components = true) :
+    unit.operandResolves true components = true := by
+  cases unit <;>
+    simp_all [TemporalOperationUnit.operandResolves,
+      TemporalOperationUnit.requiredComponent, TemporalComponents.withBaseYear]
+
+/-- **Declaring a Base Year is purely permissive on this gate: it never refuses a pair the
+unconfigured model admits.** This is the property a consumer needs before adding one to an
+existing model, and it is not obvious from the two grounds — supplementation feeds *both* of
+them, so a naive reading fears it could equalize the years while disturbing granularity. It
+cannot: `withBaseYear` only ever sets `year`, so each operand's required component is monotone
+and the year comparison becomes `true == true`. The converse fails, which is the whole point of
+the Base Year here — a yearless pair is refused in `years` without one and admitted with one. -/
+theorem temporalOperation_admitsOperands_baseYear_monotone
+    (unit : TemporalOperationUnit) (left right : TemporalComponents)
+    (admitted : unit.admitsOperands false left right = true) :
+    unit.admitsOperands true left right = true := by
+  simp only [TemporalOperationUnit.admitsOperands, Option.isNone_iff_eq_none,
+    TemporalOperationUnit.operandFault?] at admitted ⊢
+  by_cases hLeft : unit.operandResolves false left = true
+  · by_cases hRight : unit.operandResolves false right = true
+    · have monoLeft := temporalOperation_operandResolves_baseYear_monotone unit left hLeft
+      have monoRight := temporalOperation_operandResolves_baseYear_monotone unit right hRight
+      simp [monoLeft, monoRight, TemporalComponents.withBaseYear]
+    · simp [hRight] at admitted
+  · simp [hLeft] at admitted
+
 end A12Kernel
