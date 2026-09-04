@@ -44,6 +44,10 @@ private def monthOnly : TemporalComponents :=
 private def fullDateTime : TemporalComponents :=
   { year := true, month := true, day := true, hour := true, minute := true, second := true }
 
+/-- Hour and minute without second. **No declared format reaches this set**: the Kernel refuses
+`HH:mm` on a Time, Date, and DateTime declaration alike, against an admitted `HH:mm:ss` control.
+The fixture is kept because the gates below are total functions whose behaviour here is defined
+and worth locking, not because a model can present it; the cases using it say so. -/
 private def hoursMinutes : TemporalComponents :=
   { year := false, month := false, day := false, hour := true, minute := true, second := false }
 
@@ -71,7 +75,10 @@ example :
       TemporalComparisonOp.equal.admitsFormats false fullDate fullDateTime = false := by
   decide
 
-/- Time comparison ignores a seconds-display mismatch; aggregate admission retains it. -/
+/- Time comparison ignores a seconds-display mismatch; aggregate admission retains it. Both halves
+lock the **total functions** on an input no legal model presents — `hoursMinutes` is unauthorable,
+per its own note above — so read this as fixing the two gates' disagreement, never as a reachable
+Time rule. -/
 example :
     TemporalComparisonOp.equal.admitsFormats false hoursMinutes hoursMinutesSeconds = true ∧
       temporalAggregateFormatsCompatible false hoursMinutes hoursMinutesSeconds = false := by
@@ -326,6 +333,37 @@ example :
     TemporalOperationUnit.admitsOperands .years false monthDay monthDay = false ∧
       TemporalOperationUnit.admitsOperands .years true monthDay monthDay = true ∧
       TemporalOperationUnit.admitsOperands .days true monthOnly monthDay = false := by
+  decide
+
+/- **The required component is the unit's own, separated on a single operand.** A `yyyy` field
+resolves a year and no month, and against the same complete-date counterpart it is admitted in
+`years` while `months` and `days` are both refused. A gate reading "the coarsest component
+present" or "a complete date" refuses the admitted row, and one reading date class alone admits
+all three. Measured at a12-dmkits `eded8263`, with all three complete-date controls admitted so
+no unit's channel is dead. -/
+example :
+    TemporalOperationUnit.admitsOperands .years false yearOnly fullDate = true ∧
+      TemporalOperationUnit.admitsOperands .months false yearOnly fullDate = false ∧
+      TemporalOperationUnit.admitsOperands .days false yearOnly fullDate = false := by
+  decide
+
+/- The same three units on a complete-date pair, which is what keeps the row above a statement
+about `yyyy` rather than about `months` and `days` being unreachable. -/
+example :
+    TemporalOperationUnit.admitsOperands .years false fullDate fullDate = true ∧
+      TemporalOperationUnit.admitsOperands .months false fullDate fullDate = true ∧
+      TemporalOperationUnit.admitsOperands .days false fullDate fullDate = true := by
+  decide
+
+/- **The clock units are implemented but have no separator on any legal model**, so this case
+locks the total function rather than a reachable row: every admitted time-bearing format carries
+hour, minute, and second together, and `HH:mm` is refused on every declaration kind. `hoursMinutes`
+is therefore unauthorable, and a consumer must not read this as a Kernel-reachable distinction. -/
+example :
+    TemporalOperationUnit.admitsOperands .seconds false hoursMinutes hoursMinutesSeconds
+        = false ∧
+      TemporalOperationUnit.admitsOperands .minutes false hoursMinutes hoursMinutesSeconds
+        = true := by
   decide
 
 /- **The operation gate and the comparison gate are incomparable — neither implies the other**, which

@@ -247,6 +247,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [What a rule-message parameter renders, measured locally 2026-08-24](sources/message-and-pointer-probes.md#src-rule-message-parameter-rendering)
 <a id="src-time-datetime-stored-input"></a>
 - [Stored Time and DateTime input causes, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-time-datetime-stored-input)
+<a id="src-temporal-operation-granularity-separability"></a>
+- [A temporal operation's operand gate needs the unit's own component, and only two of its axes are separable on declared formats](sources/temporal-and-message-probes.md#src-temporal-operation-granularity-separability)
 <a id="src-declared-format-temporal-input"></a>
 - [Declared-format temporal input correction and widened grid, reviewed inbound 2026-08-29](sources/temporal-and-message-probes.md#src-declared-format-temporal-input)
 <a id="src-temporal-format-vocabulary"></a>
