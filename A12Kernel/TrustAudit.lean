@@ -228,6 +228,8 @@ run_cmd do
 #print axioms A12Kernel.temporalComparison_admitsFormats_symmetric
 #print axioms A12Kernel.temporalComparison_admitsFormats_sameDateClass
 #print axioms A12Kernel.temporalAggregateFormatsCompatible_implies_comparison
+#print axioms A12Kernel.temporalYearPresenceAgrees_baseYear
+#print axioms A12Kernel.temporalYearPresence_shared_by_both_gates
 #print axioms A12Kernel.temporalOperation_operandFault_symmetric
 #print axioms A12Kernel.temporalOperation_admitsOperands_symmetric
 #print axioms A12Kernel.temporalOperation_admitsOperands_baseYear_monotone

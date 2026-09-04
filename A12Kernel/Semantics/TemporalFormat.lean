@@ -162,12 +162,18 @@ def TemporalComparisonOp.requiresSameTimePresence : TemporalComparisonOp → Boo
   | .equal | .notEqual => true
   | .before | .beforeOrEqual | .after | .afterOrEqual => false
 
+/-- Year presence after optional Base-Year supplementation: the one rule the direct-comparison
+gate and the temporal-operation operand gate genuinely share. It is factored rather than written
+twice because it is the rule this family keeps getting wrong in prose — a declared Base Year makes
+it **vacuous**, in both directions, which two separate accounts had stated unqualified. -/
+def temporalYearPresenceAgrees (hasBaseYear : Bool)
+    (left right : TemporalComponents) : Bool :=
+  (left.withBaseYear hasBaseYear).year == (right.withBaseYear hasBaseYear).year
+
 /-- Static admission for a direct temporal comparison. This intentionally does not require equal component sets. -/
 def TemporalComparisonOp.admitsFormats (op : TemporalComparisonOp)
     (hasBaseYear : Bool) (left right : TemporalComponents) : Bool :=
-  let leftWithYear := left.withBaseYear hasBaseYear
-  let rightWithYear := right.withBaseYear hasBaseYear
-  (leftWithYear.year == rightWithYear.year) &&
+  temporalYearPresenceAgrees hasBaseYear left right &&
     (left.hasDate == right.hasDate) &&
     (!op.requiresSameTimePresence || (left.hasTime == right.hasTime))
 
@@ -239,7 +245,7 @@ def operandFault? (unit : TemporalOperationUnit) (hasBaseYear : Bool)
     (left right : TemporalComponents) : Option OperandFault :=
   if !(unit.operandResolves hasBaseYear left && unit.operandResolves hasBaseYear right) then
     some .granularity
-  else if (left.withBaseYear hasBaseYear).year != (right.withBaseYear hasBaseYear).year then
+  else if !temporalYearPresenceAgrees hasBaseYear left right then
     some .yearDisagreement
   else
     none

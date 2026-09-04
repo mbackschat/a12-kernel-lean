@@ -9,7 +9,7 @@ theorem temporalComparison_admitsFormats_symmetric (op : TemporalComparisonOp)
     (hasBaseYear : Bool) (left right : TemporalComponents) :
     op.admitsFormats hasBaseYear left right =
       op.admitsFormats hasBaseYear right left := by
-  simp [TemporalComparisonOp.admitsFormats, Bool.beq_comm]
+  simp [TemporalComparisonOp.admitsFormats, temporalYearPresenceAgrees, Bool.beq_comm]
 
 /-- Base Year may equalize year presence, but direct comparison admission always preserves the operands' original date-versus-time class. -/
 theorem temporalComparison_admitsFormats_sameDateClass
@@ -17,7 +17,7 @@ theorem temporalComparison_admitsFormats_sameDateClass
     (left right : TemporalComponents)
     (admitted : op.admitsFormats hasBaseYear left right = true) :
     left.hasDate = right.hasDate := by
-  simp [TemporalComparisonOp.admitsFormats] at admitted
+  simp [TemporalComparisonOp.admitsFormats, temporalYearPresenceAgrees] at admitted
   exact admitted.1.2
 
 /-- Exact aggregate component compatibility is sufficient for every direct comparison operator. -/
@@ -31,7 +31,7 @@ theorem temporalAggregateFormatsCompatible_implies_comparison
     have componentTimeEq := congrArg TemporalComponents.hasTime compatible.right
     cases hasBaseYear <;>
       simpa [TemporalComponents.withBaseYear, TemporalComponents.hasTime] using componentTimeEq
-  simp [TemporalComparisonOp.admitsFormats, compatible, timeEq]
+  simp [TemporalComparisonOp.admitsFormats, temporalYearPresenceAgrees, compatible, timeEq]
 
 /-- Equality admission is stricter than directional admission only by its time-presence check. -/
 theorem temporalEqualFormats_implies_beforeFormats
@@ -76,8 +76,7 @@ theorem temporalEqual_admitsToday_hasNoTime
   cases hasBaseYear <;>
     simp_all [TemporalComparisonOp.admitsToday, TemporalComparisonOp.admitsFormats,
       TemporalComparisonOp.requiresSameTimePresence, TemporalComponents.today,
-      TemporalComponents.fullDate, TemporalComponents.withBaseYear,
-      TemporalComponents.hasTime]
+      TemporalComponents.fullDate, TemporalComponents.hasTime]
 
 /-- Base Year cannot become comparable to a time-only operand merely because year supplementation runs later. -/
 theorem temporalComparison_admitsBaseYear_hasDate
@@ -150,7 +149,7 @@ theorem temporalOperation_operandFault_symmetric (unit : TemporalOperationUnit)
     (hasBaseYear : Bool) (left right : TemporalComponents) :
     unit.operandFault? hasBaseYear left right =
       unit.operandFault? hasBaseYear right left := by
-  unfold TemporalOperationUnit.operandFault?
+  unfold TemporalOperationUnit.operandFault? temporalYearPresenceAgrees
   cases hLeft : unit.operandResolves hasBaseYear left
   case false => simp
   case true =>
@@ -191,7 +190,7 @@ theorem temporalOperation_admitsOperands_baseYear_monotone
     (admitted : unit.admitsOperands false left right = true) :
     unit.admitsOperands true left right = true := by
   simp only [TemporalOperationUnit.admitsOperands, Option.isNone_iff_eq_none,
-    TemporalOperationUnit.operandFault?] at admitted ⊢
+    TemporalOperationUnit.operandFault?, temporalYearPresenceAgrees] at admitted ⊢
   by_cases hLeft : unit.operandResolves false left = true
   · by_cases hRight : unit.operandResolves false right = true
     · have monoLeft := temporalOperation_operandResolves_baseYear_monotone unit left hLeft
@@ -199,5 +198,30 @@ theorem temporalOperation_admitsOperands_baseYear_monotone
       simp [monoLeft, monoRight, TemporalComponents.withBaseYear]
     · simp [hRight] at admitted
   · simp [hLeft] at admitted
+
+/-- **A declared Base Year makes year agreement vacuous.** One line, stated as a theorem because
+this is the qualification both this project's and a12-dmkits' prose asserted unqualified before
+either measured the configured quadrant: with a Base Year in scope no operand pair can disagree
+about the year, so neither gate below can refuse on that ground. -/
+theorem temporalYearPresenceAgrees_baseYear (left right : TemporalComponents) :
+    temporalYearPresenceAgrees true left right = true := by
+  simp [temporalYearPresenceAgrees, TemporalComponents.withBaseYear]
+
+/-- **The direct-comparison gate and the operation operand gate read the same year rule**, so a
+year disagreement refuses on both carriers and the two cannot silently diverge. This is the payoff
+of factoring the predicate rather than writing it twice: the gates differ in every other respect
+— granularity, date class, time presence, and their refusal codes — and agree on exactly this. -/
+theorem temporalYearPresence_shared_by_both_gates (op : TemporalComparisonOp)
+    (unit : TemporalOperationUnit) (hasBaseYear : Bool)
+    (left right : TemporalComponents)
+    (disagree : temporalYearPresenceAgrees hasBaseYear left right = false) :
+    op.admitsFormats hasBaseYear left right = false ∧
+      unit.admitsOperands hasBaseYear left right = false := by
+  refine ⟨by simp [TemporalComparisonOp.admitsFormats, disagree], ?_⟩
+  simp only [TemporalOperationUnit.admitsOperands, TemporalOperationUnit.operandFault?,
+    disagree]
+  cases hResolves :
+      (unit.operandResolves hasBaseYear left && unit.operandResolves hasBaseYear right) <;>
+    simp_all
 
 end A12Kernel

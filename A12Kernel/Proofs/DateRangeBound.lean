@@ -190,7 +190,8 @@ theorem dateRangeInputFormat_supportsDirectBound_eq_comparableWithFullDate
   cases comparison <;> cases format <;>
     cases baseYear <;>
     simp [DateRangeInputFormat.supportsDirectBound,
-      TemporalComparisonOp.admitsFormats, DateRangeInputFormat.components,
+      TemporalComparisonOp.admitsFormats, temporalYearPresenceAgrees,
+      DateRangeInputFormat.components,
       TemporalComponents.withBaseYear, TemporalComponents.hasDate,
       TemporalComponents.hasTime, TemporalComponents.fullDate,
       TemporalComparisonOp.requiresSameTimePresence]
