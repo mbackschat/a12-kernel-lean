@@ -533,4 +533,39 @@ example : firingErrorFor (emptyRaw [1, 1]) = some (.duplicateCandidate 1) := by
 example : successfulFiringRowsFor (emptyRaw [1]) = some [] := by
   native_decide
 
+/-! ## Repetition-reference binding sources
+
+`CurrentRepetition` has **two** binding sources and the marker selects which one must carry the
+coordinate: an unmarked reference reads the candidate environment, which an operand's own star
+populates, while a `$`-marked one reads the captured host environment. The cases below hold the
+level fixed at a star-reopened one and vary only the origins and whether the host binds it.
+-/
+
+private def repetitionAdmitted (candidateLevels outerLevels : List RepeatableLevel)
+    (left right : HavingOrigin) : Bool :=
+  CorrelatedHavingLeaf.wellFormedForEnvironments { fields := [] }
+    candidateLevels outerLevels
+    (.compareRepetitions .notEqual
+      { origin := left, level := 7 } { origin := right, level := 7 })
+
+/- **An operand's star binds an unmarked reference on its own**, so a filter carries one even when
+the host binds nothing; the marked spelling in the identical shape is refused, and is admitted once
+the host does bind the level. Measured against the Kernel at a12-dmkits `eded8263` from a rule at a
+nonrepeatable locus, where the aggregate collapses rows and the host therefore does not iterate. -/
+example :
+    repetitionAdmitted [7] [] .inner .inner = true ∧
+      repetitionAdmitted [7] [] .outer .outer = false ∧
+      repetitionAdmitted [7] [7] .outer .outer = true := by
+  native_decide
+
+/- **The self-exclusion pair's "both reopened and host-bound" requirement is a consequence, not a
+rule.** The comparison carries one reference of each kind, so it needs both sources at once: refused
+where the host binds nothing and admitted where it does, with the candidate side unchanged. Nothing
+in the clause encodes the conjunction — it falls out of the two sources above, which is why this pair
+is locked beside them rather than as a separate account. -/
+example :
+    repetitionAdmitted [7] [] .inner .outer = false ∧
+      repetitionAdmitted [7] [7] .inner .outer = true := by
+  native_decide
+
 end A12Kernel.Conformance.CorrelationElaboration
