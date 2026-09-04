@@ -843,6 +843,32 @@ example :
       = [[2, 3], [1, 3], [1, 2]] := by
   native_decide
 
+/-- Self-exclusion **nested under a disjunction** whose other disjunct is false on every candidate,
+built from repetition comparisons so no new fixture is needed: `inner = inner` is true everywhere and
+`inner < inner` is false everywhere. -/
+private def selfExcludedNested : SingleCorrelatedStar :=
+  { valueField := count
+    having := checkedHaving
+      (.and
+        (CorrelatedHaving.compareRepetitions .equal
+          (repetition .inner) (repetition .inner))
+        (.or
+          (CorrelatedHaving.compareRepetitions .notEqual
+            (repetition .inner) (repetition .outer))
+          (CorrelatedHaving.compareRepetitions .lessThan
+            (repetition .inner) (repetition .inner))))
+      (by decide) (by decide) }
+
+/-- Nesting it changes nothing, which is the claim: the exclusion still tracks the **evaluating** row
+    rather than a fixed one. Kernel-retained per row at a12-dmkits `eded8263`, where three rules over
+    values `1, 2, 4` fire `6`, `5`, `3` at rows 1, 2, 3 and the no-exclusion rung `7` stays silent —
+    distinct powers, so a fixed wrong exclusion would have fired one rung at every row. -/
+example :
+    (List.range 3).map (fun index =>
+        selfExcludedNested.select (captured distinct (index + 1)))
+      = [[2, 3], [1, 3], [1, 2]] := by
+  native_decide
+
 /-- The reflexive spelling keeps exactly the captured row, and the two selections partition the
     candidates on every outer row. The existing `repetitionEqualPayload` supplies the equality:
     selection does not depend on the value field, so no second fixture is warranted. -/

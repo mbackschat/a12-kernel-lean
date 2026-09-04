@@ -28,6 +28,17 @@ The filter's leaf domain, connectives, correlation, scope gate, and two-arm beha
 - `limit`: one Number carrier, one repetition level above the star, one aggregate, `validateFull` only. Not measured: the same pair on the computation arm, a level **two** levels above the star, a marked reference to a non-reopened level in a *nested* filter, and the group-leaf analogue.
 - `sync`: locally originated. The corrected reachability sentence goes outbound as [`SPEC-2026-09-03-07`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-03-07); the gate row **confirms** the existing scope-gate account and adds no request.
 
+<a id="src-nested-self-exclusion"></a>
+#### Self-exclusion survives nesting under a disjunction and still tracks the evaluating row, measured locally 2026-09-04
+
+- `revision`: a12-dmkits `eded826354916ab71634b204218464a52a06a46b`, the sibling checkout clean before and after. `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. Four kernel-validated `rule add` persists, `model check` valid, and one `:adapter:kernelProbe` run with `observe: ["validateFull"]`, both codegen strategies agreeing on every message and its address.
+- `question`: [SG17](../SEMANTICS-GAPS.md#sg17--having-filter-leaf-and-connective-completion)'s last seam item. Self-exclusion is retained unnested as an exact complement pair; what was open is whether it still applies once it sits **inside** a connective tree rather than being the whole condition, where a mis-flattening could drop it.
+- `claim`: **it applies unchanged, and the exclusion tracks the evaluating row rather than a fixed one.** With the filter `Base > 0 And (CurrentRepetition(Rows) != CurrentRepetition($Rows) Or Gate > 99)` and the other disjunct false on every row, per-row rules fire `6` at row 1, `5` at row 2 and `3` at row 3 over values `1, 2, 4`.
+- `separator`: the values are distinct powers of two, so each row's sum identifies its own excluded row uniquely and no coincidence is available. A **fixed** wrong exclusion — always dropping row 1, say — makes one rung fire at all three rows instead of three rungs firing once each. The no-exclusion rung `7` is persisted alongside and **never fires**, which is what shows the exclusion happened at all rather than the nesting having swallowed it.
+- `local-consequence`: none behavioral, and the lock reuses the family's fixtures rather than adding any. `selfExcludedNested` builds the false-everywhere disjunct from repetition comparisons already in the leaf domain — `inner = inner` is true everywhere, `inner < inner` false — and selects the identical `[[2,3],[1,3],[1,2]]` the unnested idiom selects, in [`Conformance/Correlation.lean`](../../A12Kernel/Conformance/Correlation.lean) beside the complement pair it mirrors.
+- `limit`: one nesting shape, one level of nesting around the exclusion, three rows, one aggregate, validation arm only, `en_US`. Not measured: self-exclusion nested under an `And` whose sibling is false, the same shape on the computation arm, and self-exclusion at two levels of repetition.
+- `sync`: **confirmatory.** [`spec/07` §3](../../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation) already states both the self-exclusion idiom and that a filter's condition is the ordinary production, so their composition is entailed rather than new; this adds the external row and opens no ledger entry.
+
 <a id="src-three-level-filter-nesting"></a>
 #### A filter's bracketing is honoured at three levels, separated from two flattenings by one document, measured locally 2026-09-04
 
