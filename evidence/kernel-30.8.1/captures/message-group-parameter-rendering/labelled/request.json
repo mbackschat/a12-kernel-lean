@@ -1,0 +1,13 @@
+{
+ "model": "Msg_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "fires-on-rows-2-and-3",
+   "document": "doc-rows23.json"
+  }
+ ]
+}
