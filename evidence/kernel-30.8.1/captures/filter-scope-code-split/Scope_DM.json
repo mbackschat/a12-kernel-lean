@@ -359,6 +359,18 @@
                 }
               } ]
             }
+          }, {
+            "type" : "Field",
+            "id" : "/Rep/Agg",
+            "name" : "Agg",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
           } ]
         }
       } ]

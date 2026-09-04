@@ -1,0 +1,15 @@
+{
+ "computedField": "/Rep/Agg",
+ "group": "/Rep",
+ "alternatives": [
+  {
+   "operation": "Sum(/Rep/Rows*/Base Having FieldFilled(/Rep/Other/Fee))"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "C2"
+  }
+ ]
+}

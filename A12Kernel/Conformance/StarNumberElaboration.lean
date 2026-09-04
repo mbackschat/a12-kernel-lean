@@ -431,4 +431,42 @@ example :
     | _ => false) = true := by
   native_decide
 
+/- The filter's two out-of-scope gates reach the **computation** arm unchanged, which is a claim
+   rather than an inheritance: this route lowers its filter through the same shared step as the
+   validation carriers, so agreement is what the shared step predicts and divergence is what the
+   two arms have already done elsewhere on evaluation. Measured on the Kernel through
+   `computation add --dry-run` over one aggregate source, and the arm reproduces the validation
+   2x2 row for row — the scope gate satisfiable by one in-scope conjunct, the other-iteration
+   prohibition not ([checkpoint](../../docs/sources/having-filter-probes.md#src-filter-scope-versus-iteration-gates)).
+   The two halves are taken on the two shapes this fixture already carries: `Sections/Limit` is an
+   unstarred repeatable **ancestor** on the operand's path with the outer star off, and
+   `Other/Amount` sits on a **sibling** repeatable level off it. -/
+
+private def surfacePresent (groups : List String) (field : String) : SurfaceCorrelatedHaving :=
+  .presence .filled { origin := .inner, field := { base := .absolute, groups, field } }
+
+private def surfaceInScope : SurfaceCorrelatedHaving :=
+  surfacePresent amount.groupPath "Amount"
+
+/-- Ancestor on the operand's path, sole: the satisfiable gate. -/
+example : havingErrorOf ["Shop"] (source (outerStar := false))
+    (surfacePresent sectionLimit.groupPath "Limit") = some (.having .missingInner) := by
+  native_decide
+
+example : havingErrorOf ["Shop"] (source (outerStar := false))
+    (.and (surfacePresent sectionLimit.groupPath "Limit") surfaceInScope) = none := by
+  native_decide
+
+/-- Sibling repeatable level, sole: the other arm, carrying both environments. -/
+example : havingErrorOf ["Shop"] (source (outerStar := false))
+    (surfacePresent otherAmount.groupPath "Amount") =
+      some (.having (.fieldOutsideEnvironment .inner otherAmount.path [10, 20] [30])) := by
+  native_decide
+
+/-- The row that makes it two gates on this arm too: the same in-scope conjunct does not rescue it. -/
+example : havingErrorOf ["Shop"] (source (outerStar := false))
+    (.and (surfacePresent otherAmount.groupPath "Amount") surfaceInScope) =
+      some (.having (.fieldOutsideEnvironment .inner otherAmount.path [10, 20] [30])) := by
+  native_decide
+
 end A12Kernel.Conformance.StarNumberElaboration

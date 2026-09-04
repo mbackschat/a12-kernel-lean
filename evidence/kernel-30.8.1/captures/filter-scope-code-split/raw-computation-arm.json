@@ -1,0 +1,147 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 6 ops; 3 of 6 exited nonzero (0 failed, 3 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 6,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "C1-nonrepeatable-sibling-sole",
+      "verb" : "computation",
+      "args" : [ "add", "comp-1.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_ITERATION_FOR_WILDCARD",
+          "summary" : "Rule with path '/Rep/AggComp': In filter conditions, iteration must be specified for at least one level, that specified asterisk for the filtered field. [MVK_NO_ITERATION_FOR_WILDCARD]",
+          "where" : {
+            "rule" : "/Rep/AggComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "C2-repeatable-sibling-sole",
+      "verb" : "computation",
+      "args" : [ "add", "comp-2.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ITERATION_IN_FILTER_CONDITION",
+          "summary" : "Rule with path '/Rep/AggComp': Error for 'Other' in '/Rep/Other/Fee': in filter conditions iterations are only allowed on levels, that specify an asterisk for the filtered field. [MVK_INVALID_ITERATION_IN_FILTER_CONDITION]",
+          "where" : {
+            "rule" : "/Rep/AggComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "C3-in-scope-control",
+      "verb" : "computation",
+      "args" : [ "add", "comp-3.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/AggComp",
+        "changed" : {
+          "computation" : "/Rep/AggComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "C4-repeatable-sibling-beside",
+      "verb" : "computation",
+      "args" : [ "add", "comp-4.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ITERATION_IN_FILTER_CONDITION",
+          "summary" : "Rule with path '/Rep/AggComp': Error for 'Other' in '/Rep/Other/Fee': in filter conditions iterations are only allowed on levels, that specify an asterisk for the filtered field. [MVK_INVALID_ITERATION_IN_FILTER_CONDITION]",
+          "where" : {
+            "rule" : "/Rep/AggComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "C5-nonrepeatable-sibling-beside",
+      "verb" : "computation",
+      "args" : [ "add", "comp-5.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/AggComp",
+        "changed" : {
+          "computation" : "/Rep/AggComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "C6-unfiltered-control",
+      "verb" : "computation",
+      "args" : [ "add", "comp-6.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/AggComp",
+        "changed" : {
+          "computation" : "/Rep/AggComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

@@ -1,0 +1,15 @@
+{
+ "computedField": "/Rep/Agg",
+ "group": "/Rep",
+ "alternatives": [
+  {
+   "operation": "Sum(/Rep/Rows*/Base)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "C6"
+  }
+ ]
+}

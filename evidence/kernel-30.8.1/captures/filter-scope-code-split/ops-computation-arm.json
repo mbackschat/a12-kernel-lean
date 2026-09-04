@@ -1,0 +1,68 @@
+[
+ {
+  "id": "C1-nonrepeatable-sibling-sole",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-1.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "C2-repeatable-sibling-sole",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-2.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "C3-in-scope-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-3.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "C4-repeatable-sibling-beside",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-4.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "C5-nonrepeatable-sibling-beside",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-5.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "C6-unfiltered-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-6.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ }
+]
