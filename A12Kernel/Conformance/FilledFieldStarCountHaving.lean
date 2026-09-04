@@ -603,4 +603,112 @@ example : siblingError? (.and (filledAt ["Form", "Other"] "Fee") (filledAt ["For
     = some (.having (.fieldOutsideEnvironment .inner ["Form", "Other", "Fee"] [10] [20])) := by
   native_decide
 
+/- The marker is redundant on an **ancestor** and load-bearing on a **sibling**, which is the axis
+   two peer clauses this project had already accepted were generalized across. Both were measured
+   with the referenced level always an unstarred ancestor on the operand's path, where path
+   membership and enclosing-binding never come apart; off that path the unmarked spelling is
+   refused whatever else the condition carries, while `$` clears the iteration gate and leaves the
+   satisfiable scope gate. Narrowed at reviewed a12-dmkits `ede777e55`
+   ([reconciliation](../../docs/sources/computation-placement-and-constant-probes.md#src-2026-09-05-second-reconciliation)).
+   The Kernel codes are `MVK_INVALID_ITERATION_IN_FILTER_CONDITION` for the refusals below and
+   `MVK_NO_ITERATION_FOR_WILDCARD` for the scope gate; a marker with no enclosing iteration to
+   capture draws `MVK_NO_WILDCARD` instead, which this error algebra reaches through the same arm
+   with an **empty** available-environment payload — the two Kernel codes are one arm here, told
+   apart by that payload rather than by the constructor. -/
+
+private def batch : RepeatableGroupDecl :=
+  { level := 5, path := ["Nest", "Batch"], repeatability := some 5 }
+
+private def batchRows : RepeatableGroupDecl :=
+  { level := 10, path := ["Nest", "Batch", "Rows"], repeatability := some 5 }
+
+private def nestedAmount : FlatFieldDecl :=
+  { id := 20, groupPath := batchRows.path, name := "Amount"
+    policy := { kind := .number { scale := 0, signed := false } }
+    repeatableScope := [batch.level, batchRows.level] }
+
+private def nestedTag : FlatFieldDecl :=
+  { id := 21, groupPath := batchRows.path, name := "Tag"
+    policy := { kind := .string }
+    repeatableScope := [batch.level, batchRows.level] }
+
+private def ancestorRef : FlatFieldDecl :=
+  { id := 22, groupPath := batch.path, name := "Ref"
+    policy := { kind := .string }
+    repeatableScope := [batch.level] }
+
+private def ancestorModel : FlatModel :=
+  { fields := [nestedAmount, nestedTag, ancestorRef]
+    repeatableGroups := [batch, batchRows] }
+
+example : ancestorModel.validate.isOk = true := by
+  native_decide
+
+private def nestedStarPath : SurfaceStarFieldPath :=
+  { base := .absolute
+    groups := [{ name := "Nest" }, { name := "Batch" }, { name := "Rows", starred := true }]
+    field := "Amount" }
+
+private def ancestorLeaf (origin : HavingOrigin) : SurfaceCorrelatedHaving :=
+  .presence .filled { origin, field := { base := .absolute, groups := batch.path, field := "Ref" } }
+
+private def nestedInScope : SurfaceCorrelatedHaving :=
+  .presence .filled
+    { origin := .inner, field := { base := .absolute, groups := batchRows.path, field := "Tag" } }
+
+private def ancestorError? (having : SurfaceCorrelatedHaving) :
+    Option FilledFieldStarCountElabError :=
+  match elaborateFilledFieldStarSource ancestorModel batch.path nestedStarPath (some having) with
+  | .ok _ => none
+  | .error error => some error
+
+/-- Ancestor, unmarked: the satisfiable gate, so the marker has nothing to do here. -/
+example : ancestorError? (ancestorLeaf .inner) = some (.having .missingInner) := by
+  native_decide
+
+/-- Ancestor, marked: the *same* arm, which is what makes the marker redundant on this level. -/
+example : ancestorError? (ancestorLeaf .outer) = some (.having .missingInner) := by
+  native_decide
+
+example : ancestorError? (.and (ancestorLeaf .inner) nestedInScope) = none := by
+  native_decide
+
+example : ancestorError? (.and (ancestorLeaf .outer) nestedInScope) = none := by
+  native_decide
+
+/- The sibling half of the same axis, with the rule hosted **inside** the off-path level so the
+   enclosing iteration binds it. That host is what separates the two spellings: it gives `$` an
+   outer coordinate to read, and it still does not rescue the unmarked reference. -/
+
+private def siblingFeeLeaf (origin : HavingOrigin) : SurfaceCorrelatedHaving :=
+  .presence .filled
+    { origin, field := { base := .absolute, groups := ["Form", "Other"], field := "Fee" } }
+
+private def hostedError? (having : SurfaceCorrelatedHaving) :
+    Option FilledFieldStarCountElabError :=
+  match elaborateFilledFieldStarSource siblingModel ["Form", "Other"] starPath (some having) with
+  | .ok _ => none
+  | .error error => some error
+
+/-- Unmarked, and the host iterates the very level named: still the iteration gate. -/
+example : hostedError? (.and (siblingFeeLeaf .inner) (filledAt ["Form", "Rows"] "Tag")) =
+    some (.having (.fieldOutsideEnvironment .inner ["Form", "Other", "Fee"] [10] [20])) := by
+  native_decide
+
+/-- Marked, same host: the iteration gate is cleared and only the scope gate is left. -/
+example : hostedError? (siblingFeeLeaf .outer) = some (.having .missingInner) := by
+  native_decide
+
+example : hostedError? (.and (siblingFeeLeaf .outer) (filledAt ["Form", "Rows"] "Tag")) = none := by
+  native_decide
+
+/-- The marker is not a general escape: with no enclosing iteration to capture, the available
+    environment is empty and the Kernel reports `MVK_NO_WILDCARD` rather than the filter code. -/
+example :
+    (match elaborateFilledFieldStarSource siblingModel ["Form"] starPath (some (siblingFeeLeaf .outer)) with
+     | .ok _ => none
+     | .error error => some error) =
+      some (.having (.fieldOutsideEnvironment .outer ["Form", "Other", "Fee"] [] [20])) := by
+  native_decide
+
 end A12Kernel
