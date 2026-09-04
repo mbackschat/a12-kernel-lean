@@ -305,6 +305,46 @@
                     "text" : "R7"
                   } ]
                 }
+              }, {
+                "type" : "Group",
+                "id" : "/Rep/Rows/Items",
+                "name" : "Items",
+                "Group" : {
+                  "repeatability" : 5,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Rep/Rows/Items/Val",
+                    "name" : "Val",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Rep/Rows/Other2",
+                "name" : "Other2",
+                "Group" : {
+                  "repeatability" : 5,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Rep/Rows/Other2/Val2",
+                    "name" : "Val2",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
               } ]
             }
           }, {

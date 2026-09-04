@@ -30,12 +30,22 @@ private def otherAmount : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } }
     repeatableScope := [30] }
 
+/-- A repeatable level **nested under** the operand's reopened outer level, and off its path. The
+    filter gate turns out not to care that its parent level is reopened. -/
+private def extraValue : FlatFieldDecl :=
+  { id := 11
+    groupPath := ["Shop", "Sections", "Extra"]
+    name := "Value"
+    policy := { kind := .number { scale := 0, signed := false } }
+    repeatableScope := [10, 40] }
+
 private def model : FlatModel :=
-  { fields := [amount, note, sectionLimit, otherAmount]
+  { fields := [amount, note, sectionLimit, otherAmount, extraValue]
     repeatableGroups := [
       { level := 20, path := ["Shop", "Sections", "Items"], repeatability := some 2 },
       { level := 10, path := ["Shop", "Sections"], repeatability := some 2 },
-      { level := 30, path := ["Shop", "Other"], repeatability := some 2 }] }
+      { level := 30, path := ["Shop", "Other"], repeatability := some 2 },
+      { level := 40, path := ["Shop", "Sections", "Extra"], repeatability := some 2 }] }
 
 private def source (field : String := "Amount") (outerStar : Bool := true) :
     SurfaceStarFieldPath :=
@@ -467,6 +477,36 @@ example : havingErrorOf ["Shop"] (source (outerStar := false))
 example : havingErrorOf ["Shop"] (source (outerStar := false))
     (.and (surfacePresent otherAmount.groupPath "Amount") surfaceInScope) =
       some (.having (.fieldOutsideEnvironment .inner otherAmount.path [10, 20] [30])) := by
+  native_decide
+
+/- The iteration gate reads **path membership and nothing weaker**, which needed its own witness
+   because a plausible rival account — that a level reachable from a reopened one is in reach — fits
+   every row measured before this one. It does not hold: a repeatable level nested *under* the
+   operand's own reopened outer level, but off its path, is refused sole and beside an in-scope
+   conjunct alike, while a field on the reopened outer level itself is admitted as the **sole**
+   condition with no conjunct needed. Both rows are Kernel-measured on a two-star operand
+   ([checkpoint](../../docs/sources/having-filter-probes.md#src-filter-scope-versus-iteration-gates)). -/
+
+example : model.validate.isOk = true := by
+  native_decide
+
+private def surfaceNestedSibling : SurfaceCorrelatedHaving :=
+  surfacePresent extraValue.groupPath "Value"
+
+/-- Nested under the reopened outer level and still refused: reachability is not membership. -/
+example : havingErrorOf ["Shop"] source surfaceNestedSibling =
+    some (.having (.fieldOutsideEnvironment .inner extraValue.path [10, 20] [10, 40])) := by
+  native_decide
+
+/-- The in-scope conjunct does not rescue it here either, so it is the iteration gate and not scope. -/
+example : havingErrorOf ["Shop"] source (.and surfaceNestedSibling surfaceInScope) =
+    some (.having (.fieldOutsideEnvironment .inner extraValue.path [10, 20] [10, 40])) := by
+  native_decide
+
+/-- The contrast that makes the row about membership: the **reopened outer** level's own field
+    satisfies the scope gate by itself, with both stars on and no conjunct beside it. -/
+example : havingErrorOf ["Shop"] source
+    (surfacePresent sectionLimit.groupPath "Limit") = none := by
   native_decide
 
 end A12Kernel.Conformance.StarNumberElaboration

@@ -1,0 +1,104 @@
+[
+ {
+  "id": "N1-nested-sibling-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "N1",
+   "--condition",
+   "Sum(/Rep/Rows*/Items*/Val Having FieldFilled(/Rep/Rows/Other2/Val2)) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "N2-nested-sibling-beside-in-scope",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "N2",
+   "--condition",
+   "Sum(/Rep/Rows*/Items*/Val Having (FieldFilled(/Rep/Rows/Other2/Val2) And [/Rep/Rows/Items/Val] > 0)) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "N3-reopened-outer-level-field-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "N3",
+   "--condition",
+   "Sum(/Rep/Rows*/Items*/Val Having [/Rep/Rows/Base] > 0) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "N4-in-scope-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "N4",
+   "--condition",
+   "Sum(/Rep/Rows*/Items*/Val Having [/Rep/Rows/Items/Val] > 0) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "N5-unfiltered-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "N5",
+   "--condition",
+   "Sum(/Rep/Rows*/Items*/Val) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "N6-off-path-outside-any-reopened-level",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "N6",
+   "--condition",
+   "Sum(/Rep/Rows*/Items*/Val Having (FieldFilled(/Rep/Other/Fee) And [/Rep/Rows/Items/Val] > 0)) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ }
+]
