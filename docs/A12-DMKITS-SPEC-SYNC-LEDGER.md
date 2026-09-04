@@ -46,7 +46,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `consumer-consequence`: a Translate or Compile consumer must key the group position's keyword table on the **condition** language rather than the display locale, and must not treat the retired words as unknown names — they carry their own code in both bundles, which is what tells an author the word was recognized and rejected rather than misspelled. A consumer offering to switch a model's condition language must also expect the Kernel to refuse while rules exist.
 - `local-consequence`: none behavioral. The Lean fragment already treats the parameter grammar's spellings as data rather than built in, with only five terminals differing between languages, so both directions were already expressible; what changes is that the rule now rests on both arms rather than one.
 - `acceptance`: a12-dmkits confirms the German keyword is admitted where the English ones are refused and the reverse, that a retired terminal keeps its own code under both languages, and that a language switch is refused while rules exist; or reports the row where it diverges. A peer keying the table on the display locale passes every English row and fails the German ones.
-- `forwarded`: pending — the peer session is reachable and mid-work on this project's previous entry, so this id follows once that clears.
+- `forwarded`: sent over the peer-session channel as the id plus its checkpoint anchor, with the retired-terminal row named as the one that separates language selection from recognition.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-09-05-02"></a>
