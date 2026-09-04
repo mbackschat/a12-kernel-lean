@@ -35,6 +35,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-04-05"></a>
+### `SPEC-2026-09-04-05` — the marker works on a group operand, and the group carrier obeys the field carrier's scope gate
+
+- `status`: pending
+- `clause`: [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation), replacing that paragraph's `Still not measured` sentence about a marked group leaf.
+- `delta`: the residue both estates recorded as open is closed, with the unsurprising answer stated rather than assumed. An out-of-scope **group** leaf as a filter's *sole* condition is refused `MVK_NO_ITERATION_FOR_WILDCARD` **whether or not** it carries the marker, and one in-scope conjunct admits either spelling. So `GroupFilled` reads the captured environment as a field reference does, and on a bound-but-not-reopened level the marker is redundant there too.
+- `basis`: five `rule check` verdicts in one `batch` on a two-level `dmtool`-authored model with a nonrepeatable subgroup, at a12-dmkits `eded826354916ab71634b204218464a52a06a46b`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, sibling clean before and after, every child `KERNEL_CONFIRMED`, `model check` valid. The [host-iteration checkpoint](sources/having-filter-probes.md#src-currentrepetition-host-iteration) owns the rows.
+- `separator`: the marker is isolated by measuring **both** spellings at each position. Sole condition: marked and unmarked are refused with the *same* code, which is what shows the missing in-scope reference is the cause rather than the marker — the refusal alone would not have distinguished them, and that is the same trap [`SPEC-2026-09-03-04`](#spec-2026-09-03-04) had to avoid on the field carrier. Beside one in-scope conjunct: both admitted, with the conjunct alone as the live control.
+- `why-it-still-needs-sending`: the answer is what either estate would have predicted, so this entry exists for the record rather than the surprise. a12-dmkits' own disposition on [`SPEC-2026-09-03-04`](#spec-2026-09-03-04) states that this residue "stays unmeasured on both sides" and survives that entry's acceptance, so it is a delta both records carry as open and neither can close alone.
+- `consumer-consequence`: small but real for a normalizing consumer — the group carrier needs no separate marker rule, and a consumer that special-cased it now has one fewer branch. A consumer that read the sole-condition refusal as "the marker is rejected here" would wrongly refuse the admitted conjunct forms.
+- `local-consequence`: none behavioral. This project's gate is an occurrence check over inner-origin leaves at any reopened level and never inspected the leaf's kind, so both carriers already took the same path; the residue was a gap in the *account*, not in the clause.
+- `acceptance`: a12-dmkits confirms both spellings of a sole out-of-scope group leaf are refused with the same code and both are admitted beside an in-scope conjunct, or reports the row where it diverges. A peer that erases the marker before the scope check passes all four rows and should say so, since that route reaches the same verdicts for a different reason.
+- `forwarded`: no a12-dmkits session was reachable, so this id travels by the dated note in the user's exchange directory, per the fallback route.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-04-04"></a>
 ### `SPEC-2026-09-04-04` — an empty candidate set produces no computation outcome, which is not the cleared shape
 
