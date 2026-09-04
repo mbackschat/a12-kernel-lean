@@ -568,4 +568,27 @@ example :
       repetitionAdmitted [7] [7] .inner .outer = true := by
   native_decide
 
+private def repetitionAdmittedAt (candidateLevels outerLevels : List RepeatableLevel)
+    (level : RepeatableLevel) (origin : HavingOrigin) : Bool :=
+  CorrelatedHavingLeaf.wellFormedForEnvironments { fields := [] }
+    candidateLevels outerLevels
+    (.compareRepetitions .notEqual
+      { origin, level } { origin, level })
+
+/- **The two sources compose at two levels, and the marker only matters on a reopened one.** A host
+that iterates the outer level over an operand starring only the inner one gives a candidate
+environment of both levels — the inner reopened, the outer inherited — against a captured
+environment of the outer alone. So on the **inner** level the marker decides admission, while on the
+**outer** level *both* spellings are admitted, which is the redundant-marker rule
+[`SPEC-2026-09-03-07`](../../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md) established for field references
+now holding for a repetition one. Measured as a full 2x2 against the Kernel at a12-dmkits `eded8263`,
+every row carrying the in-scope conjunct the filter's scope gate demands — without it the outer rows
+collapse to `MVK_NO_ITERATION_FOR_WILDCARD` and establish nothing about binding. -/
+example :
+    (repetitionAdmittedAt [1, 2] [1] 2 .inner = true ∧
+        repetitionAdmittedAt [1, 2] [1] 2 .outer = false) ∧
+      (repetitionAdmittedAt [1, 2] [1] 1 .inner = true ∧
+        repetitionAdmittedAt [1, 2] [1] 1 .outer = true) := by
+  native_decide
+
 end A12Kernel.Conformance.CorrelationElaboration
