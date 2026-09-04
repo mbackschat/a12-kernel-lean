@@ -179,6 +179,30 @@ theorem correlatedHaving_admission_swap (model : FlatModel)
   · exact (conditionTree_allLeaves_swap _ left right).2
   · exact (conditionTree_anyLeaf_swap _ left right).2
 
+/-- **The two static gates respond oppositely to an added conjunct, and that is why one of them
+    yields to a repair the other ignores.** The reopened-level gate is a leaf **disjunction**, so a
+    conjunct that reaches a reopened level satisfies it from either side; environment
+    well-formedness is a leaf **conjunction**, so a leaf whose reference resolves in neither
+    environment keeps the whole condition refused however much is added beside it. The Kernel draws
+    those two refusals apart — `MVK_NO_ITERATION_FOR_WILDCARD` for the first and
+    `MVK_INVALID_ITERATION_IN_FILTER_CONDITION` for the second — and an in-scope conjunct admits a
+    condition refused by the first while leaving one refused by the second refused
+    ([checkpoint](../../docs/sources/having-filter-probes.md#src-filter-scope-versus-iteration-gates)).
+    This generalizes those measured rows from two shapes to every condition: a consumer repairing a
+    filter by adding a reference is right about one gate and can never be right about the other. -/
+theorem correlatedHaving_conjunct_repairs_only_the_reopened_level_gate (model : FlatModel)
+    (candidateLevels outerLevels reopenedLevels : List RepeatableLevel)
+    (left right : CorrelatedHaving) :
+    (CorrelatedHaving.reachesReopenedLevel (.and left right) model reopenedLevels
+        = (CorrelatedHaving.reachesReopenedLevel left model reopenedLevels
+            || CorrelatedHaving.reachesReopenedLevel right model reopenedLevels)) ∧
+      (CorrelatedHaving.wellFormedForEnvironments left model candidateLevels outerLevels = false →
+        CorrelatedHaving.wellFormedForEnvironments (.and left right)
+          model candidateLevels outerLevels = false) := by
+  refine ⟨rfl, fun hLeft => ?_⟩
+  simp [CorrelatedHaving.wellFormedForEnvironments, ConditionTree.allLeaves] at hLeft ⊢
+  simp [hLeft]
+
 /-- **The truth-to-selection bridge.** Two filter conditions agreeing on truth at every frame select
     the same candidates, in the same order. A consumer proving a rewrite correct needs exactly this
     step and would otherwise have to read `selectEnvironments`'s definition to believe it. -/
