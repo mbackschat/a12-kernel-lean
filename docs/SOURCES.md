@@ -332,6 +332,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Starred yearless DateRange overlap, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-starred-yearless-overlap)
 <a id="src-date-range-plural-year-class"></a>
 - [Plural DateRange overlap year class and fragment operands, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-plural-year-class)
+<a id="src-2026-09-04-reconciliation"></a>
+- [Reviewed 2026-09-04 a12-dmkits handback adopting both temporal corrections, and refuting one claim of ours](sources/computation-placement-and-constant-probes.md#src-2026-09-04-reconciliation)
 <a id="src-2026-09-03-reconciliation"></a>
 - [Reviewed 2026-09-03 a12-dmkits handback on the nine `Having`, capture, and temporal entries](sources/computation-placement-and-constant-probes.md#src-2026-09-03-reconciliation)
 <a id="src-2026-08-30-reconciliation"></a>
