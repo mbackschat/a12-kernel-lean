@@ -100,6 +100,32 @@
                     "text" : "C0"
                   } ]
                 }
+              }, {
+                "type" : "Field",
+                "id" : "/Str_DM/Rows/Down",
+                "name" : "Down",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Str_DM/Rows/DownComp",
+                "name" : "DownComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Down",
+                  "computationAlternatives" : [ {
+                    "operation" : "Length(/Str_DM/Rows/Out)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "D0"
+                  } ]
+                }
               } ]
             }
           } ]

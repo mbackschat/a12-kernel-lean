@@ -17,7 +17,7 @@
   },
   "rows" : [
     {
-      "name" : "correlated-string-target",
+      "name" : "dependent-of-no-outcome",
       "enginesAgree" : true,
       "engines" : [
         {
@@ -26,10 +26,28 @@
           "computations" : {
             "outcomes" : [
               {
+                "field" : "Str_DM/Rows/Down",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
                 "field" : "Str_DM/Rows/Out",
                 "cleared" : false,
                 "errored" : false,
                 "value" : "B"
+              },
+              {
+                "field" : "Str_DM/Rows[2]/Down",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Str_DM/Rows[3]/Down",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
               },
               {
                 "field" : "Str_DM/Rows[3]/Out",
@@ -47,10 +65,28 @@
           "computations" : {
             "outcomes" : [
               {
+                "field" : "Str_DM/Rows/Down",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
                 "field" : "Str_DM/Rows/Out",
                 "cleared" : false,
                 "errored" : false,
                 "value" : "B"
+              },
+              {
+                "field" : "Str_DM/Rows[2]/Down",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Str_DM/Rows[3]/Down",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
               },
               {
                 "field" : "Str_DM/Rows[3]/Out",

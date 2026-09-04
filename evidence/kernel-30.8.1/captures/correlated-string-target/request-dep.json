@@ -7,7 +7,7 @@
  ],
  "rows": [
   {
-   "name": "correlated-string-target",
+   "name": "dependent-of-no-outcome",
    "document": "doc.json"
   }
  ]
