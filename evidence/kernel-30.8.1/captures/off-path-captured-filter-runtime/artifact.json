@@ -1,0 +1,172 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "61ff2f4a4efa7b81b1c338051a40cbf0dcc86d8b",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Cap_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "fee-filled-on-host-row-1-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "C0",
+              "field" : "Cap/Other[2]/OErr",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "C0",
+              "referenced" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate",
+                "Cap/Other[2]/Fee",
+                "Cap/Other[2]/OErr"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate",
+                "Cap/Other[2]/Fee"
+              ]
+            },
+            {
+              "code" : "C5",
+              "field" : "Cap/Other/OErr",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "C5",
+              "referenced" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate",
+                "Cap/Other/Fee",
+                "Cap/Other/OErr"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate",
+                "Cap/Other/Fee"
+              ]
+            },
+            {
+              "code" : "U5",
+              "field" : "Cap/Other/OErr",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "U5",
+              "referenced" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate",
+                "Cap/Other/OErr"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate"
+              ]
+            },
+            {
+              "code" : "U5",
+              "field" : "Cap/Other[2]/OErr",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "U5",
+              "referenced" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate",
+                "Cap/Other[2]/OErr"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "C0",
+              "field" : "Cap/Other[2]/OErr",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "C0",
+              "referenced" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate",
+                "Cap/Other[2]/Fee",
+                "Cap/Other[2]/OErr"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate",
+                "Cap/Other[2]/Fee"
+              ]
+            },
+            {
+              "code" : "C5",
+              "field" : "Cap/Other/OErr",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "C5",
+              "referenced" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate",
+                "Cap/Other/Fee",
+                "Cap/Other/OErr"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate",
+                "Cap/Other/Fee"
+              ]
+            },
+            {
+              "code" : "U5",
+              "field" : "Cap/Other/OErr",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "U5",
+              "referenced" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate",
+                "Cap/Other/OErr"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate"
+              ]
+            },
+            {
+              "code" : "U5",
+              "field" : "Cap/Other[2]/OErr",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "U5",
+              "referenced" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate",
+                "Cap/Other[2]/OErr"
+              ],
+              "fillToFix" : [
+                "/Cap[1]/Rows[0]/Base",
+                "/Cap[1]/Rows[0]/Gate"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

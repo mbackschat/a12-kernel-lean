@@ -366,6 +366,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A filtered aggregate's computation arm poisons on a reached operand and never reads an excluded one](sources/having-filter-probes.md#src-filtered-aggregate-computation-arm)
 <a id="src-and-order-computation-arm"></a>
 - [A filter's conjunction short-circuits on a false operand too, so the computation arm's order sensitivity is not the disjunction's alone](sources/having-filter-probes.md#src-and-order-computation-arm)
+<a id="src-off-path-captured-filter-runtime"></a>
+- [An admitted off-path `$` reference is evaluated per host row](sources/having-filter-probes.md#src-off-path-captured-filter-runtime)
+
 <a id="src-filter-scope-versus-iteration-gates"></a>
 - [A filter's scope gate and its other-iteration prohibition are two gates, separated by one conjunct](sources/having-filter-probes.md#src-filter-scope-versus-iteration-gates)
 

@@ -1,0 +1,12 @@
+{
+ "field": "/Cap/Other/OErr",
+ "group": "/Cap/Other",
+ "code": "C0",
+ "condition": "Sum(/Cap/Rows*/Base Having (FieldFilled($/Cap/Other/Fee) And [/Cap/Rows/Gate] > 0)) == 0 And FieldFilled(/Cap/Other/OErr)",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "C0"
+  }
+ ]
+}

@@ -1,0 +1,6 @@
+{
+ "model": "Cap_DM.json",
+ "locale": "en_US",
+ "observe": ["validateFull"],
+ "rows": [{"name": "fee-filled-on-host-row-1-only", "document": "doc.json"}]
+}

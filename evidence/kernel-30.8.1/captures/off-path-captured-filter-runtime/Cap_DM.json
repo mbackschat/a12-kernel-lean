@@ -1,0 +1,160 @@
+{
+  "header" : {
+    "id" : "Cap_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Cap_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Cap",
+        "name" : "Cap",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Cap/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Cap/Rows/Base",
+                "name" : "Base",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Cap/Rows/Gate",
+                "name" : "Gate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Cap/Other",
+            "name" : "Other",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Cap/Other/Fee",
+                "name" : "Fee",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Cap/Other/OErr",
+                "name" : "OErr",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Cap/Other/C5",
+                "name" : "C5",
+                "Rule" : {
+                  "errorEntityRelPath" : "../OErr",
+                  "errorCode" : "C5",
+                  "errorCondition" : "Sum(/Cap/Rows*/Base Having (FieldFilled($/Cap/Other/Fee) And [/Cap/Rows/Gate] > 0)) == 5 And FieldFilled(/Cap/Other/OErr)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "C5"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Cap/Other/C0",
+                "name" : "C0",
+                "Rule" : {
+                  "errorEntityRelPath" : "../OErr",
+                  "errorCode" : "C0",
+                  "errorCondition" : "Sum(/Cap/Rows*/Base Having (FieldFilled($/Cap/Other/Fee) And [/Cap/Rows/Gate] > 0)) == 0 And FieldFilled(/Cap/Other/OErr)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "C0"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Cap/Other/C7",
+                "name" : "C7",
+                "Rule" : {
+                  "errorEntityRelPath" : "../OErr",
+                  "errorCode" : "C7",
+                  "errorCondition" : "Sum(/Cap/Rows*/Base Having (FieldFilled($/Cap/Other/Fee) And [/Cap/Rows/Gate] > 0)) == 7 And FieldFilled(/Cap/Other/OErr)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "C7"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Cap/Other/U5",
+                "name" : "U5",
+                "Rule" : {
+                  "errorEntityRelPath" : "../OErr",
+                  "errorCode" : "U5",
+                  "errorCondition" : "Sum(/Cap/Rows*/Base Having [/Cap/Rows/Gate] > 0) == 5 And FieldFilled(/Cap/Other/OErr)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "U5"
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

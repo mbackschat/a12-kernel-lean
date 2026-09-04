@@ -1,0 +1,95 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : true,
+  "summary" : "dispatched 4 ops; all children exited zero",
+  "data" : {
+    "ops" : 4,
+    "dispatched" : true,
+    "allExitedZero" : true,
+    "results" : [ {
+      "op" : 0,
+      "id" : "C5",
+      "verb" : "rule",
+      "args" : [ "add", "rule-C5.json", "--model", "Cap_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "applied",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "added rule /Cap/Other/C5",
+        "changed" : {
+          "rule" : "/Cap/Other/C5"
+        },
+        "diagnostics" : [ ],
+        "written" : true,
+        "output" : "Cap_DM.json"
+      }
+    }, {
+      "op" : 1,
+      "id" : "C0",
+      "verb" : "rule",
+      "args" : [ "add", "rule-C0.json", "--model", "Cap_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "applied",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "added rule /Cap/Other/C0",
+        "changed" : {
+          "rule" : "/Cap/Other/C0"
+        },
+        "diagnostics" : [ ],
+        "written" : true,
+        "output" : "Cap_DM.json"
+      }
+    }, {
+      "op" : 2,
+      "id" : "C7",
+      "verb" : "rule",
+      "args" : [ "add", "rule-C7.json", "--model", "Cap_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "applied",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "added rule /Cap/Other/C7",
+        "changed" : {
+          "rule" : "/Cap/Other/C7"
+        },
+        "diagnostics" : [ ],
+        "written" : true,
+        "output" : "Cap_DM.json"
+      }
+    }, {
+      "op" : 3,
+      "id" : "U5",
+      "verb" : "rule",
+      "args" : [ "add", "rule-U5.json", "--model", "Cap_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "applied",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "added rule /Cap/Other/U5",
+        "changed" : {
+          "rule" : "/Cap/Other/U5"
+        },
+        "diagnostics" : [ ],
+        "written" : true,
+        "output" : "Cap_DM.json"
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}
