@@ -28,6 +28,17 @@ The filter's leaf domain, connectives, correlation, scope gate, and two-arm beha
 - `limit`: one Number carrier, one repetition level above the star, one aggregate, `validateFull` only. Not measured: the same pair on the computation arm, a level **two** levels above the star, a marked reference to a non-reopened level in a *nested* filter, and the group-leaf analogue.
 - `sync`: locally originated. The corrected reachability sentence goes outbound as [`SPEC-2026-09-03-07`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-03-07); the gate row **confirms** the existing scope-gate account and adds no request.
 
+<a id="src-three-level-filter-nesting"></a>
+#### A filter's bracketing is honoured at three levels, separated from two flattenings by one document, measured locally 2026-09-04
+
+- `revision`: a12-dmkits `eded826354916ab71634b204218464a52a06a46b`, the sibling checkout clean before and after, `state: CLEAN` in the artifact. `dmtool` 0.13.0, Kernel `30.8.1` built and runtime. Three `rule check` verdicts, four kernel-validated `rule add` persists, and one `:adapter:kernelProbe` run with `observe: ["validateFull"]`, both codegen strategies agreeing.
+- `question`: [SG17](../SEMANTICS-GAPS.md#sg17--having-filter-leaf-and-connective-completion) carried three-level disjunction nesting as open. The connective tree is structurally recursive here, so depth-generality is automatic in this theory — which is exactly why it needed an external row: a hand-written parser is where a depth limit or a wrong associativity would live.
+- `claim`: **the authored bracketing decides which rows survive at three levels.** A filter `Base > 0 And (Alt > 0 Or (Gate > 0 And Base > 5))` over four rows keeps exactly the two the correct reading keeps, and a `Sum` ladder fires only the `== 11` rung.
+- `separator`: the ladder is the point, not the value. Two realistic misreadings are given their own rungs on the same document and **neither fires**: flattening the middle `Or` into the outer conjunction gives `10`, and reading every connective as `Or` gives `12`. A one-rung probe would have been consistent with all three accounts, so the wrong rungs are what make the row informative.
+- `local-consequence`: none behavioral, and the cases moved rather than grew. `Conformance/Correlation.lean` crossed its 800-line target when the three-level case was added, so the connective-bracketing family was **split** into [`Conformance/CorrelatedHavingNesting.lean`](../../A12Kernel/Conformance/CorrelatedHavingNesting.lean) with its own fixtures, leaving the selection locks at 738 lines and needing no reviewed size exception. The new module locks the correct three-level selection and the leftward-associated misreading as an exact row list rather than a count.
+- `limit`: one nesting shape, three levels, four rows, one aggregate, `en_US`, validation arm only. Not measured: four or more levels, a three-level nesting on the computation arm, and a nesting whose leaves span operand kinds at every level.
+- `sync`: **confirmatory.** [`spec/07` §3](../../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation) already states that a filter's condition is the ordinary condition production, which entails ordinary bracketing at any depth; this adds the external row rather than a rule, so it opens no ledger entry.
+
 <a id="src-correlated-filter-string-computed-target"></a>
 #### A correlated filter drives a String computed target, and an empty candidate set produces no outcome, measured locally 2026-09-04
 

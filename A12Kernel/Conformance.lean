@@ -72,6 +72,7 @@ import A12Kernel.Conformance.ConstructedDateDynamic
 import A12Kernel.Conformance.ConstructedDateEvaluation
 import A12Kernel.Conformance.ConstructedDateShift
 import A12Kernel.Conformance.Correlation
+import A12Kernel.Conformance.CorrelatedHavingNesting
 import A12Kernel.Conformance.CorrelationElaboration
 import A12Kernel.Conformance.CurrentRepetitionAlternatingChain
 import A12Kernel.Conformance.CurrentRepetitionAlternatingEnumerationHaving
