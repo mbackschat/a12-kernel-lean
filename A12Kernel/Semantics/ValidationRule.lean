@@ -62,12 +62,18 @@ structure MessageCategoryInput where
   categoryToken : Option String
   deriving Repr, DecidableEq
 
-/-- One admitted group-position parameter, already resolved to the group it names. What the Kernel
-renders for such a parameter is **unmeasured** — the [group-parameter
-checkpoint](../../docs/SOURCES.md#src-message-group-parameter) covers static admission only — so the
-caller supplies the bytes and this boundary claims nothing about how a group becomes text. -/
+/-- One admitted group-position parameter, already resolved to the group it names, carrying what the
+Kernel renders for it: the **1-based repetition index** of that group in the firing row, and `1` for a
+nonrepeatable group ([checkpoint](../../docs/SOURCES.md#src-message-group-parameter-rendered-index)).
+The index is the row's own, not a firing ordinal — a rule firing on rows 2 and 3 renders `2` and `3`.
+
+Every group admissible in this fragment is nonrepeatable, so the value it carries is always `1`: the
+parameter's containment gate makes the named group a prefix of the rule's own row group, and this
+route's condition spine refuses a repeatable reference outright, so no repeatable rule host exists
+here to name one. The per-row arm is therefore stated by the spec and unreachable in this fragment
+rather than modelled and untested; it arrives with a repeatable rule host. -/
 structure MessageGroupInput where
-  text : String
+  repetitionIndex : Nat
   deriving Repr, DecidableEq
 
 /-- One already-decoded rule-message part. Field references and `$` syntax have been checked before this point; replacement strings are opaque and are never parsed again. -/
@@ -79,7 +85,7 @@ inductive MessageRenderPart where
   /-- The model's Base Year with the parameter's authored offset already applied. It carries no input
   record because nothing about it depends on the document or on a provider. -/
   | baseYear (year : Int)
-  /-- A group-position parameter whose admission is static and whose text is the caller's. -/
+  /-- A group-position parameter, which renders the firing row's coordinate for the named group. -/
   | group (input : MessageGroupInput)
   deriving Repr, DecidableEq
 
@@ -91,7 +97,7 @@ def render : MessageRenderPart → String
   | .fieldValue input => input.resolve
   | .fieldCategory input => input.categoryToken.getD ""
   | .baseYear year => toString year
-  | .group input => input.text
+  | .group input => toString input.repetitionIndex
 
 end MessageRenderPart
 

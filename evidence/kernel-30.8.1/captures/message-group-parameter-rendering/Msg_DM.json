@@ -1,0 +1,142 @@
+{
+  "header" : {
+    "id" : "Msg_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Msg_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Msg",
+        "name" : "Msg",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Msg/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Msg/Rows/Err",
+                "name" : "Err",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Msg/Rows/Marker",
+                "name" : "Marker",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Msg/Rows/G1",
+                "name" : "G1",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Err",
+                  "errorCode" : "G1",
+                  "errorCondition" : "FieldFilled(/Msg/Rows/Marker) And FieldFilled(/Msg/Rows/Err)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "[own=$#/Msg/Rows$]"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Msg/Rows/G2",
+                "name" : "G2",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Err",
+                  "errorCode" : "G2",
+                  "errorCondition" : "FieldFilled(/Msg/Rows/Marker) And FieldFilled(/Msg/Rows/Err)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "[root=$#/Msg$]"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Msg/Rows/G3",
+                "name" : "G3",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Err",
+                  "errorCode" : "G3",
+                  "errorCondition" : "FieldFilled(/Msg/Rows/Marker) And FieldFilled(/Msg/Rows/Err)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "[rg=$#RuleGroup$]"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Msg/Rows/G4",
+                "name" : "G4",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Err",
+                  "errorCode" : "G4",
+                  "errorCondition" : "FieldFilled(/Msg/Rows/Marker) And FieldFilled(/Msg/Rows/Err)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "[rtg=$#RootGroup$]"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Msg/Rows/G6",
+                "name" : "G6",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Err",
+                  "errorCode" : "G6",
+                  "errorCondition" : "FieldFilled(/Msg/Rows/Marker) And FieldFilled(/Msg/Rows/Err)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "[fld=$Marker$]"
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

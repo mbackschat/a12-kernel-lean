@@ -1,0 +1,276 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "388754f32b0348f48926f89adebe1bada1a91627",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Msg_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "fires-on-rows-2-and-3",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "G1",
+              "field" : "Msg/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[own=2]",
+              "referenced" : [
+                "Msg/Rows[2]/Err",
+                "Msg/Rows[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G1",
+              "field" : "Msg/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[own=3]",
+              "referenced" : [
+                "Msg/Rows[3]/Err",
+                "Msg/Rows[3]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G2",
+              "field" : "Msg/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[root=1]",
+              "referenced" : [
+                "Msg/Rows[2]/Err",
+                "Msg/Rows[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G2",
+              "field" : "Msg/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[root=1]",
+              "referenced" : [
+                "Msg/Rows[3]/Err",
+                "Msg/Rows[3]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G3",
+              "field" : "Msg/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[rg=2]",
+              "referenced" : [
+                "Msg/Rows[2]/Err",
+                "Msg/Rows[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G3",
+              "field" : "Msg/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[rg=3]",
+              "referenced" : [
+                "Msg/Rows[3]/Err",
+                "Msg/Rows[3]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G4",
+              "field" : "Msg/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[rtg=1]",
+              "referenced" : [
+                "Msg/Rows[2]/Err",
+                "Msg/Rows[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G4",
+              "field" : "Msg/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[rtg=1]",
+              "referenced" : [
+                "Msg/Rows[3]/Err",
+                "Msg/Rows[3]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G6",
+              "field" : "Msg/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[fld=Marker]",
+              "referenced" : [
+                "Msg/Rows[2]/Err",
+                "Msg/Rows[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G6",
+              "field" : "Msg/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[fld=Marker]",
+              "referenced" : [
+                "Msg/Rows[3]/Err",
+                "Msg/Rows[3]/Marker"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "G1",
+              "field" : "Msg/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[own=2]",
+              "referenced" : [
+                "Msg/Rows[2]/Err",
+                "Msg/Rows[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G1",
+              "field" : "Msg/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[own=3]",
+              "referenced" : [
+                "Msg/Rows[3]/Err",
+                "Msg/Rows[3]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G2",
+              "field" : "Msg/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[root=1]",
+              "referenced" : [
+                "Msg/Rows[2]/Err",
+                "Msg/Rows[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G2",
+              "field" : "Msg/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[root=1]",
+              "referenced" : [
+                "Msg/Rows[3]/Err",
+                "Msg/Rows[3]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G3",
+              "field" : "Msg/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[rg=2]",
+              "referenced" : [
+                "Msg/Rows[2]/Err",
+                "Msg/Rows[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G3",
+              "field" : "Msg/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[rg=3]",
+              "referenced" : [
+                "Msg/Rows[3]/Err",
+                "Msg/Rows[3]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G4",
+              "field" : "Msg/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[rtg=1]",
+              "referenced" : [
+                "Msg/Rows[2]/Err",
+                "Msg/Rows[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G4",
+              "field" : "Msg/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[rtg=1]",
+              "referenced" : [
+                "Msg/Rows[3]/Err",
+                "Msg/Rows[3]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G6",
+              "field" : "Msg/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[fld=Marker]",
+              "referenced" : [
+                "Msg/Rows[2]/Err",
+                "Msg/Rows[2]/Marker"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "G6",
+              "field" : "Msg/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[fld=Marker]",
+              "referenced" : [
+                "Msg/Rows[3]/Err",
+                "Msg/Rows[3]/Marker"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

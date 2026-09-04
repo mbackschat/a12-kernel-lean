@@ -1,0 +1,62 @@
+[
+ {
+  "id": "G1-own-group-path",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-G1.json",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "G2-root-group-path",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-G2.json",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "G3-rulegroup-keyword",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-G3.json",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "G4-rootgroup-keyword",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-G4.json",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "G5-lfdnr-keyword",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-G5.json",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "G6-field-name-control",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-G6.json",
+   "--model",
+   "Msg_DM.json"
+  ]
+ }
+]

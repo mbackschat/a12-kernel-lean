@@ -524,6 +524,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A model may declare more than one root group, and the short-name tier spans them](sources/group-and-iteration-probes.md#src-multi-root-short-name-reach)
 <a id="src-message-group-parameter"></a>
 - [The rule-message group parameter `$#…$`](sources/message-and-pointer-probes.md#src-message-group-parameter)
+<a id="src-message-group-parameter-rendered-index"></a>
+- [An admitted group parameter renders the firing row's repetition index](sources/message-and-pointer-probes.md#src-message-group-parameter-rendered-index)
+
 <a id="src-message-group-parameter-resolution"></a>
 - [How the rule-message group parameter resolves](sources/message-and-pointer-probes.md#src-message-group-parameter-resolution)
 <a id="src-dmtool-2026-08-22-instrument-handback"></a>

@@ -715,9 +715,6 @@ structure ValidationMessageInputs where
   /-- The field's current stored token. The category mapping is applied by the checked part, not by
   the caller, because the mapping is the declaration's and is measured. -/
   fieldStoredToken : FieldId → Option String
-  /-- The bytes an admitted group parameter renders as. They are the caller's because the Kernel's own
-  rendering for this position is unmeasured. -/
-  group : GroupPath → MessageGroupInput
 
 def CheckedValidationMessagePart.toRenderPart
     (inputs : ValidationMessageInputs) :
@@ -731,7 +728,10 @@ def CheckedValidationMessagePart.toRenderPart
           (inputs.fieldStoredToken access.reference.declaration.id).bind
             (access.projection.declaration.categoryTokenFor? access.category) }
   | .baseYear _ year _ => .baseYear year
-  | .group access => .group (inputs.group access.group)
+  -- The measured rendering is the named group's repetition index in the firing row. Every group
+  -- admissible here is nonrepeatable — see `MessageGroupInput` — so the index is the constant the
+  -- Kernel renders for that case, and no caller-supplied bytes enter the message any more.
+  | .group _ => .group { repetitionIndex := 1 }
 
 def CheckedValidationMessageTemplate.toRenderPlan
     (template : CheckedValidationMessageTemplate model condition)

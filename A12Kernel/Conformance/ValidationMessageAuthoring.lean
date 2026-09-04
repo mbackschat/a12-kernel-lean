@@ -208,7 +208,6 @@ private def baseYearRender? (template : String) : Option ResolvedMessageText := 
       { providerResult := none, modelLabel := none, debugDisplay := "A" }
     fieldValue := fun _ => { displayValue := none, defaultDisplay := "0" }
     fieldStoredToken := fun _ => none
-    group := fun _ => { text := "" }
   }).render
 
 /- The Base Year parameter applies its authored offset at authoring, because nothing about it depends
@@ -287,9 +286,6 @@ private def inputs : ValidationMessageInputs where
     else
       { displayValue := none, defaultDisplay := "" }
   fieldStoredToken field := if field == status.id then some "open" else none
-  -- The bytes are this fixture's, not the Kernel's: what an admitted group parameter renders is
-  -- unmeasured, so no case here asserts a rendered group.
-  group path := { text := String.intercalate "/" path }
 
 private def render? (template : String) : Option ResolvedMessageText := do
   let condition ← condition?
@@ -555,6 +551,27 @@ example :
         some true ∧
       pathTemplateError? ["Vendor", "Branch"] (bare "Label") "In $#/Order$" =
         some (.invalidGroupParameter "#/Order") := by
+  native_decide
+
+/- What an admitted **group** parameter renders, measured on the Kernel: the 1-based repetition index
+   of the named group in the firing row, and `1` for a nonrepeatable group. A three-row document
+   whose rule fires on rows 2 and 3 renders `2` and `3`, which separates the row's own index from a
+   firing ordinal
+   ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-parameter-rendered-index)).
+   Only the nonrepeatable arm is reachable here, and deliberately so: the parameter's containment gate
+   makes the named group a prefix of the rule's row group, and this route's condition spine refuses a
+   repeatable reference, so no repeatable rule host exists to name one. What these cases lock is that
+   the bytes are the **Kernel's constant** rather than the caller's, which is what they used to be. -/
+
+example : render? "[root=$#/Order$]" = some { text := "[root=1]" } := by
+  native_decide
+
+example : render? "[rtg=$#RootGroup$]" = some { text := "[rtg=1]" } := by
+  native_decide
+
+/-- The rule's own group is this model's root, so both endpoints of the ancestor chain coincide and
+    render alike — which is the Kernel's answer for a nonrepeatable host, not a collapse. -/
+example : render? "[rg=$#RuleGroup$]" = some { text := "[rg=1]" } := by
   native_decide
 
 end A12Kernel.Conformance.ValidationMessageAuthoring

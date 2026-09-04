@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-05-02"></a>
+### `SPEC-2026-09-05-02` — an admitted group parameter renders the firing row's repetition index, not a name or a path
+
+- `status`: pending
+- `clause`: [`11-messages-and-custom.md`](../spec/11-messages-and-custom.md), the group-position paragraph, which carried both admission gates and said nothing about what the position renders.
+- `delta`: the `$#…$` group position renders a **number**: the 1-based repetition index of the named group in the firing row, and the constant `1` for a nonrepeatable group. The two keyword shorthands render exactly as the paths they abbreviate. So the two parameter positions differ in what they *produce* and not only in what they admit — the name position renders a field's label or name, the group position a coordinate.
+- `basis`: one `model new` with a repeatable group and two fields, six `rule add` candidates (five persisted `KERNEL_CONFIRMED`, `$#LfdNr$` refused `INVALID_GROUP` as already recorded), `model check` valid with zero diagnostics, and one `:adapter:kernelProbe` run with `observe: ["validateFull"]` over a three-row document, at a12-dmkits `388754f32b0348f48926f89adebe1bada1a91627` with the artifact reporting `source.state: CLEAN`, both codegen strategies agreeing. The [checkpoint](sources/message-and-pointer-probes.md#src-message-group-parameter-rendered-index) owns the rows and retained bytes.
+- `separator`: the document fires the rule on rows **2 and 3** and not on row 1. That is what distinguishes the row's own coordinate from a **firing ordinal**, which predicts `1` and `2` and is refuted by the same pair of messages; a single firing row would have been consistent with both accounts and with a rendered row count besides. A `$Marker$` control in the same message renders the field's name, which separates the two positions by their output rather than by their grammar.
+- `consumer-consequence`: an Explain or Govern consumer rendering messages must produce a coordinate here, not a group label or path. One rendering a path would emit text no Kernel message contains, and one rendering a firing ordinal would be wrong on exactly the documents where several rows fire — the common case for a per-row rule, and silently right whenever only one row does.
+- `local-consequence`: the Lean fragment's caller-supplied bytes are **removed**, not merely documented: `MessageGroupInput` carries the measured index and `ValidationMessageInputs` loses its `group` provider, so arbitrary text can no longer enter a rendered message. Only the nonrepeatable arm is reachable in that fragment — the containment gate makes the named group a prefix of the rule's row group and this route's condition spine refuses a repeatable reference, so it has no repeatable rule host — and the cases lock exactly that arm. The per-row arm is spec-stated and unreachable there rather than modelled and untested.
+- `acceptance`: a12-dmkits confirms that an admitted group parameter renders the named group's repetition index in the firing row, `1` for a nonrepeatable group, with the keyword shorthands following their paths; or reports what it renders instead. A consumer rendering a label or path fails every row, and one rendering a firing ordinal passes the nonrepeatable rows and fails only the two per-row messages — which is why the rows-2-and-3 document is the one to run.
+- `forwarded`: pending — the peer session is reachable, so this id and its checkpoint anchor go over the channel rather than by note.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-05-01"></a>
 ### `SPEC-2026-09-05-01` — a filter's scope gate and its other-iteration prohibition are two gates, and only one of them a conjunct can satisfy
 
