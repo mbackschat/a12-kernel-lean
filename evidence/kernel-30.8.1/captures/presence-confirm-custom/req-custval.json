@@ -1,0 +1,13 @@
+{
+ "model": "Kinds_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "custom-declared-value-present",
+   "document": "doc-custval.json"
+  }
+ ]
+}
