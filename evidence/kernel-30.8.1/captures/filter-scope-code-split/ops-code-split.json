@@ -1,0 +1,87 @@
+[
+ {
+  "id": "R1-nonrepeatable-sibling-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "R1",
+   "--condition",
+   "Sum(/Rep/Rows*/Base Having FieldFilled(/Rep/Meta/Tag)) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "R2-repeatable-sibling-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "R2",
+   "--condition",
+   "Sum(/Rep/Rows*/Base Having FieldFilled(/Rep/Other/Fee)) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "R3-in-scope-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "R3",
+   "--condition",
+   "Sum(/Rep/Rows*/Base Having [/Rep/Rows/Gate] > 0) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "R4-repeatable-sibling-beside-in-scope",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "R4",
+   "--condition",
+   "Sum(/Rep/Rows*/Base Having (FieldFilled(/Rep/Other/Fee) And [/Rep/Rows/Gate] > 0)) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "R5-nonrepeatable-sibling-beside-in-scope",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "R5",
+   "--condition",
+   "Sum(/Rep/Rows*/Base Having (FieldFilled(/Rep/Meta/Tag) And [/Rep/Rows/Gate] > 0)) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ }
+]

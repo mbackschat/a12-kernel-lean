@@ -1,0 +1,124 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 5 ops; 3 of 5 exited nonzero (0 failed, 3 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 5,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "R1-nonrepeatable-sibling-sole",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "R1", "--condition", "Sum(/Rep/Rows*/Base Having FieldFilled(/Rep/Meta/Tag)) > 0 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_ITERATION_FOR_WILDCARD",
+          "summary" : "Rule with path '/Rep/CheckRule': In filter conditions, iteration must be specified for at least one level, that specified asterisk for the filtered field. [MVK_NO_ITERATION_FOR_WILDCARD]",
+          "where" : {
+            "rule" : "/Rep/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "R2-repeatable-sibling-sole",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "R2", "--condition", "Sum(/Rep/Rows*/Base Having FieldFilled(/Rep/Other/Fee)) > 0 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ITERATION_IN_FILTER_CONDITION",
+          "summary" : "Rule with path '/Rep/CheckRule': Error for 'Other' in '/Rep/Other/Fee': in filter conditions iterations are only allowed on levels, that specify an asterisk for the filtered field. [MVK_INVALID_ITERATION_IN_FILTER_CONDITION]",
+          "where" : {
+            "rule" : "/Rep/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "R3-in-scope-control",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "R3", "--condition", "Sum(/Rep/Rows*/Base Having [/Rep/Rows/Gate] > 0) > 0 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "R4-repeatable-sibling-beside-in-scope",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "R4", "--condition", "Sum(/Rep/Rows*/Base Having (FieldFilled(/Rep/Other/Fee) And [/Rep/Rows/Gate] > 0)) > 0 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_ITERATION_IN_FILTER_CONDITION",
+          "summary" : "Rule with path '/Rep/CheckRule': Error for 'Other' in '/Rep/Other/Fee': in filter conditions iterations are only allowed on levels, that specify an asterisk for the filtered field. [MVK_INVALID_ITERATION_IN_FILTER_CONDITION]",
+          "where" : {
+            "rule" : "/Rep/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "R5-nonrepeatable-sibling-beside-in-scope",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "R5", "--condition", "Sum(/Rep/Rows*/Base Having (FieldFilled(/Rep/Meta/Tag) And [/Rep/Rows/Gate] > 0)) > 0 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

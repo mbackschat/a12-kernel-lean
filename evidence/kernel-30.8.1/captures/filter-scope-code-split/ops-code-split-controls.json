@@ -1,0 +1,26 @@
+[
+ {
+  "id": "R6-repeatable-sibling-outside-any-filter",
+  "verb": "rule",
+  "args": ["check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "R6",
+           "--condition", "FieldFilled(/Rep/Other/Fee) And FieldFilled(/Rep/RootNum)"]
+ },
+ {
+  "id": "R7-filtered-operand-own-repeatable-group",
+  "verb": "rule",
+  "args": ["check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "R7",
+           "--condition", "Sum(/Rep/Other*/Fee Having [/Rep/Other/Fee] > 0) > 0 And FieldFilled(/Rep/RootNum)"]
+ },
+ {
+  "id": "R8-repeatable-sibling-marked-in-filter",
+  "verb": "rule",
+  "args": ["check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "R8",
+           "--condition", "Sum(/Rep/Rows*/Base Having (FieldFilled($/Rep/Other/Fee) And [/Rep/Rows/Gate] > 0)) > 0 And FieldFilled(/Rep/RootNum)"]
+ },
+ {
+  "id": "R9-two-stars-reopen-both-levels",
+  "verb": "rule",
+  "args": ["check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "R9",
+           "--condition", "Sum(/Rep/Rows*/Base Having (FieldFilled(/Rep/Other*/Fee) And [/Rep/Rows/Gate] > 0)) > 0 And FieldFilled(/Rep/RootNum)"]
+ }
+]

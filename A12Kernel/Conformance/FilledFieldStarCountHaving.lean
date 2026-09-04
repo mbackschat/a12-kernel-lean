@@ -538,4 +538,69 @@ example : countWith? (some flagOrTagFilled) [
     num amount.id 2 9] = some (.value 0) := by
   native_decide
 
+/- The two out-of-scope gates are **different gates**, separated on the Kernel by one conjunct.
+   A filter reference into a group the operand's star does not reopen is refused for one of two
+   reasons, and only one of them is satisfiable: a **nonrepeatable** other group's field passes leaf
+   resolution and then fails the filter's scope gate, so one in-scope conjunct beside it admits the
+   whole condition, while a field inside a **sibling repeatable** group needs an iteration the filter
+   cannot supply and is refused whatever else the condition carries. The Kernel reports
+   `MVK_NO_ITERATION_FOR_WILDCARD` for the first and `MVK_INVALID_ITERATION_IN_FILTER_CONDITION` for
+   the second, and a star inside the filter condition — the spelling that would supply the missing
+   iteration — is itself refused `MVK_NO_WILDCARDS_ALLOWED`
+   ([checkpoint](../../docs/sources/having-filter-probes.md#src-filter-scope-versus-iteration-gates)).
+   These four cases are that 2x2: the pair of shapes crossed with the presence of an in-scope
+   conjunct. Dropping the conjunct column would leave both refusals looking like one gate. -/
+
+private def siblingFee : FlatFieldDecl :=
+  { id := 10
+    groupPath := ["Form", "Other"]
+    name := "Fee"
+    policy := { kind := .string }
+    repeatableScope := [20] }
+
+private def nonrepeatableNote : FlatFieldDecl :=
+  { id := 11
+    groupPath := ["Form", "Meta"]
+    name := "Note"
+    policy := { kind := .string }
+    repeatableScope := [] }
+
+private def siblingModel : FlatModel :=
+  { fields := [amount, flag, other, tag, siblingFee, nonrepeatableNote]
+    repeatableGroups := [
+      { level := 10, path := ["Form", "Rows"], repeatability := some 5 },
+      { level := 20, path := ["Form", "Other"], repeatability := some 5 }] }
+
+example : siblingModel.validate.isOk = true := by
+  native_decide
+
+private def filledAt (groups : List String) (field : String) : SurfaceCorrelatedHaving :=
+  .presence .filled { origin := .inner, field := { base := .absolute, groups, field } }
+
+private def siblingError? (having : SurfaceCorrelatedHaving) :
+    Option FilledFieldStarCountElabError :=
+  match elaborateFilledFieldStarSource siblingModel ["Form"] starPath (some having) with
+  | .ok _ => none
+  | .error error => some error
+
+/-- Nonrepeatable other group, sole condition: the scope gate, which a conjunct can satisfy. -/
+example : siblingError? (filledAt ["Form", "Meta"] "Note") = some (.having .missingInner) := by
+  native_decide
+
+example : siblingError? (.and (filledAt ["Form", "Meta"] "Note") (filledAt ["Form", "Rows"] "Tag"))
+    = none := by
+  native_decide
+
+/-- Sibling repeatable group, sole condition: a different arm, carrying both environments so the
+    refusal names what was available rather than only that something was missing. -/
+example : siblingError? (filledAt ["Form", "Other"] "Fee") =
+    some (.having (.fieldOutsideEnvironment .inner ["Form", "Other", "Fee"] [10] [20])) := by
+  native_decide
+
+/-- The row that makes it two gates: the identical in-scope conjunct that rescues the case above
+    leaves this one refused, with the same arm. -/
+example : siblingError? (.and (filledAt ["Form", "Other"] "Fee") (filledAt ["Form", "Rows"] "Tag"))
+    = some (.having (.fieldOutsideEnvironment .inner ["Form", "Other", "Fee"] [10] [20])) := by
+  native_decide
+
 end A12Kernel
