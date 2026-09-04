@@ -1,0 +1,58 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "226b2be175133dff45413b0a0f604ea219ced85b",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Kinds_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "custom-declared-value-present",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "fault" : {
+            "observation" : "validateFull",
+            "chain" : [
+              {
+                "type" : "com.mgmtp.a12.model.repository.FaultException",
+                "message" : "Unable to invoke validation"
+              },
+              {
+                "type" : "com.mgmtp.a12.kernel.core.rt.a12internal.ValidatorException",
+                "message" : "Custom field validator 'Probe' missing."
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "fault" : {
+            "observation" : "validateFull",
+            "chain" : [
+              {
+                "type" : "com.mgmtp.a12.model.repository.FaultException",
+                "message" : "Unable to invoke validation"
+              },
+              {
+                "type" : "com.mgmtp.a12.kernel.core.rt.a12internal.ValidatorException",
+                "message" : "Custom field validator 'Probe' missing."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
