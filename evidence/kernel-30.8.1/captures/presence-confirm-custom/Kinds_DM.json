@@ -1,0 +1,327 @@
+{
+  "header" : {
+    "id" : "Rep_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Rep_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Rep",
+        "name" : "Rep",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Rep/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Rep/Rows/Base",
+                "name" : "Base",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rep/Rows/Alt",
+                "name" : "Alt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rep/Rows/Gate",
+                "name" : "Gate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rep/Rows/Err",
+                "name" : "Err",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rep/Rows/P",
+                "name" : "P",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rep/Rows/A",
+                "name" : "A",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rep/Rows/B",
+                "name" : "B",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rep/Rows/Final",
+                "name" : "Final",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Rep/Rows/PComp",
+                "name" : "PComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../P",
+                  "commonPrecondition" : "FieldFilled(/Rep/Rows/Gate)",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Rep/Rows/Base]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "C_P"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Rep/Rows/AComp",
+                "name" : "AComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../A",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Rep/Rows/P]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "C_A"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Rep/Rows/BComp",
+                "name" : "BComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../B",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Rep/Rows/Alt]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "C_B"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Rep/Rows/FinalComp",
+                "name" : "FinalComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Final",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Rep/Rows/A] + [/Rep/Rows/B]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "C_Final"
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rep/Rows/Conf",
+                "name" : "Conf",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "ConfirmType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rep/Rows/Flag",
+                "name" : "Flag",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rep/Rows/Cust",
+                "name" : "Cust",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "CustomFieldType",
+                    "CustomFieldType" : {
+                      "name" : "Probe"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Rep/Rows/P1",
+                "name" : "P1",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Err",
+                  "errorCode" : "P1",
+                  "errorCondition" : "Sum(/Rep/Rows*/Base Having FieldFilled(/Rep/Rows/Conf)) == 1 And FieldFilled(/Rep/Rows/Err)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "P1"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Rep/Rows/P2",
+                "name" : "P2",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Err",
+                  "errorCode" : "P2",
+                  "errorCondition" : "Sum(/Rep/Rows*/Base Having FieldFilled(/Rep/Rows/Cust)) == 2 And FieldFilled(/Rep/Rows/Err)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "P2"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Rep/Rows/P5",
+                "name" : "P5",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Err",
+                  "errorCode" : "P5",
+                  "errorCondition" : "Sum(/Rep/Rows*/Base Having FieldNotFilled(/Rep/Rows/Cust)) == 5 And FieldFilled(/Rep/Rows/Err)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "P5"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Rep/Rows/P3",
+                "name" : "P3",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Err",
+                  "errorCode" : "P3",
+                  "errorCondition" : "Sum(/Rep/Rows*/Base Having FieldFilled(/Rep/Rows/Flag)) == 3 And FieldFilled(/Rep/Rows/Err)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "P3"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Rep/Rows/R0",
+                "name" : "R0",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Err",
+                  "errorCode" : "R0",
+                  "errorCondition" : "Sum(/Rep/Rows*/Base Having FieldFilled(/Rep/Rows/Cust)) == 0 And FieldFilled(/Rep/Rows/Err)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "R0"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Rep/Rows/R7",
+                "name" : "R7",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Err",
+                  "errorCode" : "R7",
+                  "errorCondition" : "Sum(/Rep/Rows*/Base Having FieldNotFilled(/Rep/Rows/Cust)) == 7 And FieldFilled(/Rep/Rows/Err)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "R7"
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Rep/RootNum",
+            "name" : "RootNum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

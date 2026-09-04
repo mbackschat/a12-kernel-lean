@@ -1,0 +1,324 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "eded826354916ab71634b204218464a52a06a46b",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Kinds_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "custom-declared-value-absent",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "P1",
+              "field" : "Rep/Rows/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "P1",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Conf",
+                "Rep/Rows/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Conf"
+              ]
+            },
+            {
+              "code" : "P1",
+              "field" : "Rep/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "P1",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Conf",
+                "Rep/Rows[2]/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Conf"
+              ]
+            },
+            {
+              "code" : "P1",
+              "field" : "Rep/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "P1",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Conf",
+                "Rep/Rows[3]/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Conf"
+              ]
+            },
+            {
+              "code" : "R0",
+              "field" : "Rep/Rows/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "R0",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust",
+                "Rep/Rows/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust"
+              ]
+            },
+            {
+              "code" : "R0",
+              "field" : "Rep/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "R0",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust",
+                "Rep/Rows[2]/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust"
+              ]
+            },
+            {
+              "code" : "R0",
+              "field" : "Rep/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "R0",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust",
+                "Rep/Rows[3]/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust"
+              ]
+            },
+            {
+              "code" : "R7",
+              "field" : "Rep/Rows/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "R7",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust",
+                "Rep/Rows/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust"
+              ]
+            },
+            {
+              "code" : "R7",
+              "field" : "Rep/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "R7",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust",
+                "Rep/Rows[2]/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust"
+              ]
+            },
+            {
+              "code" : "R7",
+              "field" : "Rep/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "R7",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust",
+                "Rep/Rows[3]/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "P1",
+              "field" : "Rep/Rows/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "P1",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Conf",
+                "Rep/Rows/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Conf"
+              ]
+            },
+            {
+              "code" : "P1",
+              "field" : "Rep/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "P1",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Conf",
+                "Rep/Rows[2]/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Conf"
+              ]
+            },
+            {
+              "code" : "P1",
+              "field" : "Rep/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "P1",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Conf",
+                "Rep/Rows[3]/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Conf"
+              ]
+            },
+            {
+              "code" : "R0",
+              "field" : "Rep/Rows/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "R0",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust",
+                "Rep/Rows/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust"
+              ]
+            },
+            {
+              "code" : "R0",
+              "field" : "Rep/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "R0",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust",
+                "Rep/Rows[2]/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust"
+              ]
+            },
+            {
+              "code" : "R0",
+              "field" : "Rep/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "R0",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust",
+                "Rep/Rows[3]/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust"
+              ]
+            },
+            {
+              "code" : "R7",
+              "field" : "Rep/Rows/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "R7",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust",
+                "Rep/Rows/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust"
+              ]
+            },
+            {
+              "code" : "R7",
+              "field" : "Rep/Rows[2]/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "R7",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust",
+                "Rep/Rows[2]/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust"
+              ]
+            },
+            {
+              "code" : "R7",
+              "field" : "Rep/Rows[3]/Err",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "R7",
+              "referenced" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust",
+                "Rep/Rows[3]/Err"
+              ],
+              "fillToFix" : [
+                "/Rep[1]/Rows[0]/Base",
+                "/Rep[1]/Rows[0]/Cust"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
