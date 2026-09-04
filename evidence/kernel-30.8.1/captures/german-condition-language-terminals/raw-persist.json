@@ -1,0 +1,95 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : true,
+  "summary" : "dispatched 4 ops; all children exited zero",
+  "data" : {
+    "ops" : 4,
+    "dispatched" : true,
+    "allExitedZero" : true,
+    "results" : [ {
+      "op" : 0,
+      "id" : "D1-lfdnr",
+      "verb" : "rule",
+      "args" : [ "add", "rule-D1.json", "--model", "Ger_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "applied",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "added rule /Ger/Zeilen/D1",
+        "changed" : {
+          "rule" : "/Ger/Zeilen/D1"
+        },
+        "diagnostics" : [ ],
+        "written" : true,
+        "output" : "Ger_DM.json"
+      }
+    }, {
+      "op" : 1,
+      "id" : "D4-own-path",
+      "verb" : "rule",
+      "args" : [ "add", "rule-D4.json", "--model", "Ger_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "applied",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "added rule /Ger/Zeilen/D4",
+        "changed" : {
+          "rule" : "/Ger/Zeilen/D4"
+        },
+        "diagnostics" : [ ],
+        "written" : true,
+        "output" : "Ger_DM.json"
+      }
+    }, {
+      "op" : 2,
+      "id" : "D6-plain",
+      "verb" : "rule",
+      "args" : [ "add", "rule-D6.json", "--model", "Ger_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "applied",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "added rule /Ger/Zeilen/D6",
+        "changed" : {
+          "rule" : "/Ger/Zeilen/D6"
+        },
+        "diagnostics" : [ ],
+        "written" : true,
+        "output" : "Ger_DM.json"
+      }
+    }, {
+      "op" : 3,
+      "id" : "D7-root-path",
+      "verb" : "rule",
+      "args" : [ "add", "rule-D7.json", "--model", "Ger_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "applied",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "added rule /Ger/Zeilen/D7",
+        "changed" : {
+          "rule" : "/Ger/Zeilen/D7"
+        },
+        "diagnostics" : [ ],
+        "written" : true,
+        "output" : "Ger_DM.json"
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

@@ -1,0 +1,2 @@
+{"model": "Ger_DM.json", "locale": "de_DE", "observe": ["validateFull"],
+ "rows": [{"name": "feuert-auf-zeile-2-und-3", "document": "doc.json"}]}

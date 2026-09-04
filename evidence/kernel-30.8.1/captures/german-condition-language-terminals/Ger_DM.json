@@ -1,0 +1,128 @@
+{
+  "header" : {
+    "id" : "Ger_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "de_DE"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Ger_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "de_DE"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Ger",
+        "name" : "Ger",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Ger/Zeilen",
+            "name" : "Zeilen",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Ger/Zeilen/Wert",
+                "name" : "Wert",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Ger/Zeilen/Fehler",
+                "name" : "Fehler",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Ger/Zeilen/D1",
+                "name" : "D1",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Fehler",
+                  "errorCode" : "D1",
+                  "errorCondition" : "FeldAngegeben(/Ger/Zeilen/Wert) Und FeldAngegeben(/Ger/Zeilen/Fehler)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "de_DE",
+                    "text" : "[lfd=$#LfdNr$]"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Ger/Zeilen/D4",
+                "name" : "D4",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Fehler",
+                  "errorCode" : "D4",
+                  "errorCondition" : "FeldAngegeben(/Ger/Zeilen/Wert) Und FeldAngegeben(/Ger/Zeilen/Fehler)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "de_DE",
+                    "text" : "[own=$#/Ger/Zeilen$]"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Ger/Zeilen/D6",
+                "name" : "D6",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Fehler",
+                  "errorCode" : "D6",
+                  "errorCondition" : "FeldAngegeben(/Ger/Zeilen/Wert) Und FeldAngegeben(/Ger/Zeilen/Fehler)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "de_DE",
+                    "text" : "keine Parameter"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Ger/Zeilen/D7",
+                "name" : "D7",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Fehler",
+                  "errorCode" : "D7",
+                  "errorCondition" : "FeldAngegeben(/Ger/Zeilen/Wert) Und FeldAngegeben(/Ger/Zeilen/Fehler)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "de_DE",
+                    "text" : "[root=$#/Ger$]"
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-05-03"></a>
+### `SPEC-2026-09-05-03` — the group position's keyword set follows the condition language both ways, and the retired terminals follow it neither way
+
+- `status`: pending
+- `clause`: [`11-messages-and-custom.md`](../spec/11-messages-and-custom.md), the group-position paragraph, which stated the terminal-language rule from one arm only.
+- `delta`: three additions. The live keyword shorthands are selected by the **condition language in both directions** — on a German-condition model `$#LfdNr$` is admitted while `$#RuleGroup$` and `$#RootGroup$` draw `INVALID_GROUP`, exactly reversing the English verdicts — while the absolute-path spelling is admitted under either. A **retired** terminal is language-independent: `$#Zeile$` draws `PARAM_INVALID_IN_NEW_WORLD` under both languages, so the Kernel recognizes it in both bundles. And the condition language **cannot be switched once rules exist** in the other language: the change is refused with one `MVK_UNEXPECTED_TOKEN` per rule naming the keyword that no longer parses.
+- `basis`: one `model new` at `de_DE` configured before authoring, six `rule add --dry-run` candidates and four persists, plus the refused `config modify --condition-language` on the English model, at a12-dmkits `61ff2f4a4`, `dmtool` 0.13.0, Kernel `30.8.1`, every child `KERNEL_CONFIRMED`, `model check` valid with zero diagnostics. The [checkpoint](sources/message-and-pointer-probes.md#src-german-condition-language-terminals) owns the rows and retained bytes.
+- `separator`: the German batch carries its own controls rather than relying on the English rows: an absolute path and a parameterless message are admitted beside the refused English keywords, so the refusals are the keyword set's rather than the model's or the route's. The retired terminal is the row that separates *language selection* from *recognition* — a bundle that simply lacked the English words would refuse `$#Zeile$` with the unknown-group code, and it does not.
+- `consumer-consequence`: a Translate or Compile consumer must key the group position's keyword table on the **condition** language rather than the display locale, and must not treat the retired words as unknown names — they carry their own code in both bundles, which is what tells an author the word was recognized and rejected rather than misspelled. A consumer offering to switch a model's condition language must also expect the Kernel to refuse while rules exist.
+- `local-consequence`: none behavioral. The Lean fragment already treats the parameter grammar's spellings as data rather than built in, with only five terminals differing between languages, so both directions were already expressible; what changes is that the rule now rests on both arms rather than one.
+- `acceptance`: a12-dmkits confirms the German keyword is admitted where the English ones are refused and the reverse, that a retired terminal keeps its own code under both languages, and that a language switch is refused while rules exist; or reports the row where it diverges. A peer keying the table on the display locale passes every English row and fails the German ones.
+- `forwarded`: pending — the peer session is reachable and mid-work on this project's previous entry, so this id follows once that clears.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-05-02"></a>
 ### `SPEC-2026-09-05-02` — an admitted group parameter renders the firing row's repetition index, not a name or a path
 

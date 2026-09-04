@@ -1,0 +1,147 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 6 ops; 3 of 6 exited nonzero (0 failed, 3 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 6,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "D1-lfdnr-german-keyword",
+      "verb" : "rule",
+      "args" : [ "add", "rule-D1.json", "--dry-run", "--model", "Ger_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add rule /Ger/Zeilen/D1",
+        "changed" : {
+          "rule" : "/Ger/Zeilen/D1"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "D2-rulegroup-english-keyword",
+      "verb" : "rule",
+      "args" : [ "add", "rule-D2.json", "--dry-run", "--model", "Ger_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_GROUP",
+          "summary" : "Rule with path '/Ger/Zeilen/D2': Regel '/Ger/Zeilen/D2' spezifiziert für die Sprache Deutsch einen fehlerhaften Fehlertext. Fehlertext: '#RuleGroup' spezifiziert ungültigen Kontextnamen 'RuleGroup'. [INVALID_GROUP]",
+          "where" : {
+            "rule" : "/Ger/Zeilen/D2"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "D3-rootgroup-english-keyword",
+      "verb" : "rule",
+      "args" : [ "add", "rule-D3.json", "--dry-run", "--model", "Ger_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_GROUP",
+          "summary" : "Rule with path '/Ger/Zeilen/D3': Regel '/Ger/Zeilen/D3' spezifiziert für die Sprache Deutsch einen fehlerhaften Fehlertext. Fehlertext: '#RootGroup' spezifiziert ungültigen Kontextnamen 'RootGroup'. [INVALID_GROUP]",
+          "where" : {
+            "rule" : "/Ger/Zeilen/D3"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "D4-absolute-path-control",
+      "verb" : "rule",
+      "args" : [ "add", "rule-D4.json", "--dry-run", "--model", "Ger_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add rule /Ger/Zeilen/D4",
+        "changed" : {
+          "rule" : "/Ger/Zeilen/D4"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "D5-zeile-retired-terminal",
+      "verb" : "rule",
+      "args" : [ "add", "rule-D5.json", "--dry-run", "--model", "Ger_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "PARAM_INVALID_IN_NEW_WORLD",
+          "summary" : "Rule with path '/Ger/Zeilen/D5': Regel '/Ger/Zeilen/D5' spezifiziert für die Sprache Deutsch einen fehlerhaften Fehlertext. Der Parameter '#Zeile' darf in A12-DVs nicht verwendet werden. [PARAM_INVALID_IN_NEW_WORLD]",
+          "where" : {
+            "rule" : "/Ger/Zeilen/D5"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "D6-plain-text-control",
+      "verb" : "rule",
+      "args" : [ "add", "rule-D6.json", "--dry-run", "--model", "Ger_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add rule /Ger/Zeilen/D6",
+        "changed" : {
+          "rule" : "/Ger/Zeilen/D6"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

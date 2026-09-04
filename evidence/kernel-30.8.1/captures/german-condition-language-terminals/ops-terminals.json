@@ -1,0 +1,68 @@
+[
+ {
+  "id": "D1-lfdnr-german-keyword",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-D1.json",
+   "--dry-run",
+   "--model",
+   "Ger_DM.json"
+  ]
+ },
+ {
+  "id": "D2-rulegroup-english-keyword",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-D2.json",
+   "--dry-run",
+   "--model",
+   "Ger_DM.json"
+  ]
+ },
+ {
+  "id": "D3-rootgroup-english-keyword",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-D3.json",
+   "--dry-run",
+   "--model",
+   "Ger_DM.json"
+  ]
+ },
+ {
+  "id": "D4-absolute-path-control",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-D4.json",
+   "--dry-run",
+   "--model",
+   "Ger_DM.json"
+  ]
+ },
+ {
+  "id": "D5-zeile-retired-terminal",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-D5.json",
+   "--dry-run",
+   "--model",
+   "Ger_DM.json"
+  ]
+ },
+ {
+  "id": "D6-plain-text-control",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-D6.json",
+   "--dry-run",
+   "--model",
+   "Ger_DM.json"
+  ]
+ }
+]

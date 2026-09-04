@@ -527,6 +527,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A model may declare more than one root group, and the short-name tier spans them](sources/group-and-iteration-probes.md#src-multi-root-short-name-reach)
 <a id="src-message-group-parameter"></a>
 - [The rule-message group parameter `$#…$`](sources/message-and-pointer-probes.md#src-message-group-parameter)
+<a id="src-german-condition-language-terminals"></a>
+- [The group position's keyword set is selected by condition language in both directions, and the retired terminals are not](sources/message-and-pointer-probes.md#src-german-condition-language-terminals)
+
 <a id="src-message-group-parameter-rendered-index"></a>
 - [An admitted group parameter renders the firing row's repetition index](sources/message-and-pointer-probes.md#src-message-group-parameter-rendered-index)
 

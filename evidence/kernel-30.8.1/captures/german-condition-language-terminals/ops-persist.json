@@ -1,0 +1,42 @@
+[
+ {
+  "id": "D1-lfdnr",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-D1.json",
+   "--model",
+   "Ger_DM.json"
+  ]
+ },
+ {
+  "id": "D4-own-path",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-D4.json",
+   "--model",
+   "Ger_DM.json"
+  ]
+ },
+ {
+  "id": "D6-plain",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-D6.json",
+   "--model",
+   "Ger_DM.json"
+  ]
+ },
+ {
+  "id": "D7-root-path",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-D7.json",
+   "--model",
+   "Ger_DM.json"
+  ]
+ }
+]

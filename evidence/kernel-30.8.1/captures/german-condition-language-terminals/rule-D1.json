@@ -1,0 +1,12 @@
+{
+ "field": "/Ger/Zeilen/Fehler",
+ "group": "/Ger/Zeilen",
+ "code": "D1",
+ "condition": "FeldAngegeben(/Ger/Zeilen/Wert) Und FeldAngegeben(/Ger/Zeilen/Fehler)",
+ "messages": [
+  {
+   "locale": "de_DE",
+   "text": "[lfd=$#LfdNr$]"
+  }
+ ]
+}
