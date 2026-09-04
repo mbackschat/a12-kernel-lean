@@ -335,7 +335,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-date-range-plural-year-class"></a>
 - [Plural DateRange overlap year class and fragment operands, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-plural-year-class)
 <a id="src-2026-09-05-second-reconciliation"></a>
-- [Reviewed a12-dmkits letter accepting the two-gate entry, correcting its attribution, and narrowing two clauses this project had already accepted](sources/computation-placement-and-constant-probes.md#src-2026-09-05-second-reconciliation)
+- [Reviewed a12-dmkits letter accepting the two-gate entry, correcting its attribution, and narrowing two clauses this project had already accepted](sources/computation-placement-and-constant-probes.md#src-2026-09-05-second-reconciliation) — also the route for their shipped `dmtool operators Having` gate text, read by running the launcher at `ede777e55`
 
 <a id="src-2026-09-05-reconciliation"></a>
 - [Reviewed 2026-09-04 a12-dmkits letter closing all four outbound entries, correcting one clause of ours, and shipping all four instrument fixes](sources/computation-placement-and-constant-probes.md#src-2026-09-05-reconciliation)
