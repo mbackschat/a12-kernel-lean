@@ -1,0 +1,110 @@
+{
+  "header" : {
+    "id" : "Str_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Str_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Str_DM",
+        "name" : "Str_DM",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Str_DM/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Str_DM/Rows/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Str_DM/Rows/Name",
+                "name" : "Name",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 20
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Str_DM/Rows/Out",
+                "name" : "Out",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 20
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Str_DM/Rows/Err",
+                "name" : "Err",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Str_DM/Rows/OutComp",
+                "name" : "OutComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Out",
+                  "computationAlternatives" : [ {
+                    "operation" : "FirstFilledValue(/Str_DM/Rows*/Name Having [/Str_DM/Rows/Key] > [$/Str_DM/Rows/Key])"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "C0"
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -360,6 +360,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A filtered aggregate's computation arm poisons on a reached operand and never reads an excluded one](sources/having-filter-probes.md#src-filtered-aggregate-computation-arm)
 <a id="src-and-order-computation-arm"></a>
 - [A filter's conjunction short-circuits on a false operand too, so the computation arm's order sensitivity is not the disjunction's alone](sources/having-filter-probes.md#src-and-order-computation-arm)
+<a id="src-correlated-filter-string-computed-target"></a>
+- [A correlated filter drives a String computed target, and an empty candidate set produces no outcome](sources/having-filter-probes.md#src-correlated-filter-string-computed-target)
 <a id="src-currentrepetition-host-iteration"></a>
 - [`CurrentRepetition` is admitted exactly where the enclosing iteration binds its group](sources/having-filter-probes.md#src-currentrepetition-host-iteration)
 <a id="src-self-exclusion-and-nested-filter-runtime"></a>

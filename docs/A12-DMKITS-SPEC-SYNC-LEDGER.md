@@ -35,6 +35,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-04-04"></a>
+### `SPEC-2026-09-04-04` — an empty candidate set produces no computation outcome, which is not the cleared shape
+
+- `status`: pending
+- `clause`: [`09-computations.md` §3](../spec/09-computations.md), the value-combiner list, ahead of the `FirstFilledValue` stop-at-first rule.
+- `delta`: absence at a computed target has **two** shapes and the clause carried only one. A target row whose filtered candidate set is **empty** produces *no computation outcome at all*, where a precondition-cleared or source-invalid producer is reported present and cleared. §3 described `FirstFilledValue`'s stop-at-first reads and its clearing grounds but never the no-surviving-candidate case, so a reader had no way to predict which shape it takes.
+- `basis`: one `computation add --dry-run`, one persisted `computation add`, two `model check` runs, and two `:adapter:kernelProbe` runs with `observe: ["validateFull", "compute"]` at a12-dmkits `eded826354916ab71634b204218464a52a06a46b`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `state: CLEAN`, both codegen strategies agreeing on every row. The [String-target checkpoint](sources/having-filter-probes.md#src-correlated-filter-string-computed-target) owns the rows, the model, and the retained bytes.
+- `separator`: one per-row String target whose filter correlates against its own row, over keys `10, 30, 20`. The maximal-key row keeps no candidate and is **absent** from the reported outcomes, while the other two answer exact values. The contrast that makes it a shape rather than a reporting gap is the [dependency diamond](sources/evaluation-and-application-routes.md#src-diamond-dependency-clear-kinds), where a cleared producer is reported *present* with `cleared: true` through the same channel.
+- `addressing-control`: the absence is tied to the row by a second document rather than to a position. Descending keys `30, 20, 10` move the empty-candidate row to the front, and the absence moves with it while the remaining two rows answer at their own indices. Without that control the claim would rest on how the first repeatable instance is addressed, which the artifact renders without an index.
+- `consumer-consequence`: an Execute consumer that models both absences as "cleared" makes a downstream reader substitute empty where the Kernel produced nothing, and one that models both as "no outcome" loses the clear a dependent must observe. The two are distinguishable only at the producer, so a consumer has to carry the distinction from the moment it evaluates the aggregate.
+- `local-consequence`: the carrier half of this round **confirms** an existing clause rather than changing it — `spec/07` §3 states the filter with no carrier restriction, and a String computed target reproduces the correlation, the marker, and the repeatable-target capture with exact per-row values. Only the absence shape is new. No Lean clause distinguishes the two absences at a filtered aggregate today, so the representation obligation is recorded on [SG17](SEMANTICS-GAPS.md) rather than claimed here.
+- `acceptance`: a12-dmkits confirms its interpreter reports no outcome for a target row whose filtered candidate set is empty, and a present cleared outcome for a precondition or source-invalid clear, or reports the row where it diverges. A peer with one absence shape answers the empty-candidate row the same way it answers a clear, which the diamond rows already distinguish on its side.
+- `forwarded`: no a12-dmkits session was reachable, so this id travels by the dated note in the user's exchange directory, per the fallback route.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-04-03"></a>
 ### `SPEC-2026-09-04-03` — an operand's star binds an unmarked `CurrentRepetition`, so a non-iterating host may still carry one
 
