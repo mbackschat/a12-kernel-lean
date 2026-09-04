@@ -332,6 +332,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Starred yearless DateRange overlap, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-starred-yearless-overlap)
 <a id="src-date-range-plural-year-class"></a>
 - [Plural DateRange overlap year class and fragment operands, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-plural-year-class)
+<a id="src-2026-09-03-reconciliation"></a>
+- [Reviewed 2026-09-03 a12-dmkits handback on the nine `Having`, capture, and temporal entries](sources/computation-placement-and-constant-probes.md#src-2026-09-03-reconciliation)
 <a id="src-2026-08-30-reconciliation"></a>
 - [Reviewed 2026-08-30 a12-dmkits reconciliation, retraction, and instrument answers](sources/computation-placement-and-constant-probes.md#src-2026-08-30-reconciliation)
 <a id="src-2026-08-29-reconciliation"></a>
@@ -632,6 +634,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [A bare constant's admission is gated by the target's declared format string, never its kind](sources/computation-placement-and-constant-probes.md#src-constant-literal-family-gate)
 <a id="src-temporal-format-gate-not-component-sets"></a>
 - [The temporal admission gate reads family and year agreement, never component sets](sources/computation-placement-and-constant-probes.md#src-temporal-format-gate-not-component-sets)
+<a id="src-yearless-anchor-is-the-base-year"></a>
+- [A yearless temporal literal resolves against the model's Base Year, while its calendar check ignores that year](sources/computation-placement-and-constant-probes.md#src-yearless-anchor-is-the-base-year)
 <a id="src-temporal-constant-literal-composition"></a>
 - [The temporal literal vocabulary composes, and the Base Year gate reads year disagreement](sources/computation-placement-and-constant-probes.md#src-temporal-constant-literal-composition)
 

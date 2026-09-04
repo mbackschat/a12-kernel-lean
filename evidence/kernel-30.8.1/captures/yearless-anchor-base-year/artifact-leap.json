@@ -1,0 +1,126 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "c4864f70edb6f695d30545692403232aea7427a6",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Leap_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "leap-anchor-witnesses",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "L1",
+              "field" : "Gate_DM/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "L1",
+              "referenced" : [
+                "Gate_DM/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "L4",
+              "field" : "Gate_DM/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "L4",
+              "referenced" : [
+                "Gate_DM/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "L6",
+              "field" : "Gate_DM/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "L6",
+              "referenced" : [
+                "Gate_DM/Src",
+                "Gate_DM/YDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Gate_DM/MonthOnly",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "L1",
+              "field" : "Gate_DM/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "L1",
+              "referenced" : [
+                "Gate_DM/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "L4",
+              "field" : "Gate_DM/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "L4",
+              "referenced" : [
+                "Gate_DM/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "L6",
+              "field" : "Gate_DM/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "L6",
+              "referenced" : [
+                "Gate_DM/Src",
+                "Gate_DM/YDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Gate_DM/MonthOnly",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}
