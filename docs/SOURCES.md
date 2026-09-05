@@ -211,6 +211,17 @@ a12-dmkits revision `25191913b` on `main` (two commits from `31348a7db`, clean b
 
 Both results are inbound from a committed reviewed revision and create no outbound request. The peer notes one defect of their own that the same measurement exposed and deliberately left open as delegation under-reporting rather than a wrong answer, and it is theirs to hold.
 
+<a id="inbound-2026-09-05d"></a>
+### Reviewed 2026-09-05d handback — the DateTime family's cross-kind comparison, the last item open between the two projects
+
+a12-dmkits revision `0aca9e624` on `main` closes the one question both estates had recorded as open and neither owned. A **DATE** declared `yyyy-MM-dd'T'HH:mm:ss` is admitted against an ordinary DATE_TIME and refused `MVK_INVALID_COMPARE_TO_DATE` against an ordinary DATE; a **DATE_TIME** declared `yyyy-MM-dd` does the exact opposite; the two ordinary fields refuse each other as the control. Both admitted arms **run** tri-engine — equal operands fire, unequal stay silent — so neither admission verdict stands in for a runtime one. Oracle `checkConsistency` plus the three engines, carriers asserted from the model bytes to be the kinds they claim, locked in `adapter.laws.CrossKindTemporalComparisonGateDiffTest` beside the DATE/TIME 2x2 because it is one gate and one claim.
+
+**So the declared format decides the family across all three date-bearing kinds, with each kind on both sides of both outcomes in every family.** Neither project's DATE/TIME grid could give that, and neither could the peer's twelve-format classifier grid: it reaches a DATE_TIME *declaration* only for the classifier, so a comparison row read off it would have been the scope transfer both projects spent the week catching in each other. The peer measured it rather than leaving it correctly declined, on the ground that four rounds of naming it open had cost more than one model would.
+
+**This project's cases had already committed to the answer.** The ordinary comparison gate is one component-keyed function shared with the measured pair — `compareFields` reads the two component sets and carries the declared kinds into the operand without consulting them — so the account was live and merely unstated. The cases landed as *committed but unmeasured* and the confirmation arrived the same day, first run, every cell. What stays internal is the **equality/ordering split** across a cross-kind pair: the inbound rows measure equality only, and the pair equality refuses is ordering-comparable through the same gate.
+
+Inbound from a committed reviewed revision, so no outbound request. Nothing is now open between the two projects on this class.
+
 ## Provenance checkpoint index
 
 Search stable `src-` anchors in this hub, then follow the link to the bounded family shard. Exact revisions and source-level claim limits remain in those records.

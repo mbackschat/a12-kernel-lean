@@ -78,6 +78,18 @@ def recurringDateDecl : FlatFieldDecl :=
   { id := 12, groupPath := ["Order"], name := "RecurringDate",
     policy := { kind := .temporal .date monthDayComponents } }
 
+/-- The DateTime family's two cross-kind carriers: a **DATE_TIME** declared with a date-only format,
+    and a **DATE** declared with a full date-and-time one. Both are legal declarations, and the pair
+    is what makes the comparison gate's keying observable on this family rather than on the DATE/TIME
+    pair the Kernel rows cover. -/
+def stampAsDateDecl : FlatFieldDecl :=
+  { id := 13, groupPath := ["Order"], name := "StampAsDate",
+    policy := { kind := .temporal .dateTime dispatchDateComponents } }
+
+def dateAsStampDecl : FlatFieldDecl :=
+  { id := 14, groupPath := ["Order"], name := "DateAsStamp",
+    policy := { kind := .temporal .date dateTimeComponents } }
+
 def repeatableItems : RepeatableGroupDecl :=
   { level := 10, path := ["Order", "Items"] }
 
@@ -85,7 +97,7 @@ def model : FlatModel :=
   { fields := [quantityDecl, expressDecl, confirmDecl, ancestorLimitDecl,
       localLimitDecl, externalCodeDecl, repeatableCountDecl, noteDecl,
       dispatchDateDecl, arrivalDateDecl, eventTimeDecl, eventDateTimeDecl,
-      recurringDateDecl],
+      recurringDateDecl, stampAsDateDecl, dateAsStampDecl],
     repeatableGroups := [repeatableItems],
     fieldRefByShortNameAllowed := true }
 

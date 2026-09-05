@@ -57,6 +57,59 @@ example :
             ["Order", "DispatchDate"] ["Order", "EventDateTime"]) := by
   native_decide
 
+/-! ## The DateTime family's cross-kind comparison, Kernel-measured
+
+The declared format decides a temporal cell's family at admission, at the store, and at comparison,
+and it now does so across **all three** date-bearing kinds with each kind on both sides of both
+outcomes in every family ([inbound](../../../docs/SOURCES.md#inbound-2026-09-05d)). Neither estate's
+DATE/TIME grid could give that: a comparison row read off a classifier grid's DATE_TIME declaration
+would have been the scope transfer both projects spent the week catching.
+
+These rows had landed as a *committed but unmeasured* account, on the ground that the gate is one
+component-keyed function shared with the measured pair — `compareFields` reads the two component sets
+and carries the kinds into the operand without consulting them. The peer's 2x2 confirms every cell on
+an independently authored carrier, and both admitted arms run tri-engine, so the admission verdicts
+are not standing in for runtime ones.
+
+A **DATE_TIME** declared date-only compares with an ordinary DATE and is refused against a real
+DATE_TIME; a **DATE** declared date-and-time does the exact opposite. One direction alone would read
+as "DATE_TIME is permissive"; the pair rules that out. -/
+example :
+    (coreOf (elaborate model ["Order"]
+      (compareFields .equal "StampAsDate" "DispatchDate"))).isSome = true ∧
+    errorOf (elaborate model ["Order"]
+        (compareFields .equal "StampAsDate" "EventDateTime")) =
+      some (.temporalFormatsIncompatible
+        ["Order", "StampAsDate"] ["Order", "EventDateTime"]) ∧
+    (coreOf (elaborate model ["Order"]
+      (compareFields .equal "DateAsStamp" "EventDateTime"))).isSome = true ∧
+    errorOf (elaborate model ["Order"]
+        (compareFields .equal "DateAsStamp" "DispatchDate")) =
+      some (.temporalFormatsIncompatible
+        ["Order", "DateAsStamp"] ["Order", "DispatchDate"]) := by
+  native_decide
+
+/- The declared kind survives into the operand and takes no part in the decision, which is the whole
+   claim: the admitted cross-kind leaf carries `dateTime` beside `date` and was admitted anyway. -/
+example : coreOf (elaborate model ["Order"]
+    (compareFields .equal "StampAsDate" "DispatchDate")) =
+    some (.compare (.temporal .equal
+      (.fieldValue
+        { id := 13, kind := .dateTime, components := dispatchDateComponents })
+      (.fieldValue
+        { id := 8, kind := .date, components := dispatchDateComponents }))) := by
+  native_decide
+
+/- And the equality/ordering split cuts across the cross-kind case, which a reader would not predict:
+   the same pair equality refuses is **ordering**-comparable, because only equality requires matching
+   time presence. Without this row the refusal above would read as "these two never compare".
+
+   This row is **internal**: the inbound 2x2 measures equality only, so ordering across a cross-kind
+   pair is this project's own account through the one gate rather than a measured cell. -/
+example : (coreOf (elaborate model ["Order"]
+    (compareFields .less "DateAsStamp" "DispatchDate"))).isSome = true := by
+  native_decide
+
 /-! The core admits field/literal in either operand position for later expression lowering, but never the kernel-forbidden constant/constant comparison. -/
 example : model.admitsComparison
     (.temporal .equal
