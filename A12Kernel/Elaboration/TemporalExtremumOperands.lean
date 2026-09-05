@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.Flat.Condition.SurfaceSupport
 import A12Kernel.Elaboration.Flat.Model
+import A12Kernel.Elaboration.FieldEntityList
 
 /-! # A12Kernel.Elaboration.TemporalExtremumOperands — admission for `MinValue`/`MaxValue` over temporal operands
 
@@ -21,9 +22,15 @@ is why `TemporalComponents.withBaseYear` is applied to both sides rather than te
 case: a yearless `MM` then equals `yyyy-MM`, `MM-dd` equals a complete date, and both still differ
 from a year-only operand, which is exactly the measured boundary.
 
-Out of scope here, deliberately: the fold itself and therefore the value domain, group and starred
-operands, filters, and DATE_RANGE — whose allowlisted `(format, separator)` pair behaves the same way
-at the Kernel but which this flat model gives no component set to compare.
+Structure is delegated to the shared entity-list checker, so arity, the wildcard gate, and both
+duplicate arms behave here exactly as they do for the sibling carriers, and a group or starred
+operand is expressible; the component gate then reads a group's **expansion**, which is the extent
+the Kernel's own gate reads.
+
+Out of scope here, deliberately: the fold itself and therefore the value domain, filtered stars and
+starred-group presence slots — which this capsule declines rather than admit without elaborating
+their filter — and DATE_RANGE, whose allowlisted `(format, separator)` pair the Kernel treats the
+same way but which this flat model gives no component set to compare.
 -/
 
 namespace A12Kernel
@@ -35,9 +42,12 @@ inductive TemporalExtremumOperandElabError where
       (found expected : TemporalComponents)
   /-- A non-temporal operand. **No class is claimed**: the extrema admit Number, whose operands the Number entity list owns, so this arm means "not this family" and not "the Kernel refuses it". A String operand is separately measured to draw `MVK_NOT_SORTABLE`, but that verdict belongs to the kind gate rather than to this list. -/
   | notTemporal (path : List String) (actual : SurfaceScalarKind)
-  /-- An empty operand list, which no authored extremum produces. -/
-  | emptyOperands
-  | resolve (error : ResolveError)
+  /-- A group slot whose subtree declares no field, so no component set exists to agree on. -/
+  | groupExpansionEmpty (path : List String)
+  /-- A filtered star or a starred-group presence slot. Neither is refused by the Kernel; this capsule performs no filter elaboration, so it declines rather than admit one unchecked. -/
+  | unsupportedOperandForm (path : List String)
+  /-- The shared entity-list checker's own refusal: arity, the wildcard gate, and both duplicate arms. It is delegated rather than restated, because those gates do not vary by carrier. -/
+  | shape (error : FieldEntityShapeElabError)
   deriving Repr, DecidableEq
 
 /-- One admitted temporal operand list for an extremum, carrying the component set every member
@@ -46,8 +56,7 @@ inductive TemporalExtremumOperandElabError where
     The retained `components` is the **lifted** set, so a consumer reads the set the operands were
     actually compared on rather than any one declaration's. -/
 structure CheckedTemporalExtremumOperands (model : FlatModel) where
-  first : FlatFieldDecl
-  rest : List FlatFieldDecl
+  shape : CheckedFieldEntityShape model
   components : TemporalComponents
 
 namespace TemporalExtremumOperands
@@ -60,46 +69,66 @@ def componentsOf? (declaration : FlatFieldDecl) : Option TemporalComponents :=
   | .temporal _ components => some components
   | _ => none
 
-private def certifyOne (model : FlatModel) (expected : TemporalComponents)
-    (declaration : FlatFieldDecl) :
-    Except TemporalExtremumOperandElabError Unit :=
+/-- Every declaration one resolved operand contributes, in expansion order. A group slot contributes
+    its recursive subtree, which is what the Kernel's own gate reads; the two filtered forms are not
+    expanded here because this capsule performs no filter elaboration and admitting one unchecked
+    would be worse than refusing it. -/
+private def operandDeclarations (model : FlatModel) :
+    ResolvedFieldEntityOperand model →
+      Except TemporalExtremumOperandElabError (List FlatFieldDecl)
+  | .field declaration _ => pure [declaration]
+  | .star source => pure [source.declaration]
+  | .group reference =>
+      match model.groupSubtreeFields reference.path with
+      | [] => throw (.groupExpansionEmpty reference.path)
+      | fields => pure fields
+  | .starredGroup source =>
+      match model.groupSubtreeFields source.group.path with
+      | [] => throw (.groupExpansionEmpty source.group.path)
+      | fields => pure fields
+  | .starHaving source _ => throw (.unsupportedOperandForm source.declaration.path)
+  | .starredGroupPresence source => throw (.unsupportedOperandForm source.groupPath)
+
+private def liftedComponentsOf (model : FlatModel) (declaration : FlatFieldDecl) :
+    Except TemporalExtremumOperandElabError TemporalComponents :=
   match componentsOf? declaration with
   | none =>
-      throw (.notTemporal declaration.path
-        declaration.policy.kind.surfaceKind)
+      throw (.notTemporal declaration.path declaration.policy.kind.surfaceKind)
   | some components =>
-      let lifted := components.withBaseYear model.baseYear.isSome
-      if lifted == expected then
-        pure ()
-      else
-        throw (.incompatibleComponents declaration.path lifted expected)
+      pure (components.withBaseYear model.baseYear.isSome)
 
-private def certifyRest (model : FlatModel) (expected : TemporalComponents) :
+private def certifyAgainst (model : FlatModel) (expected : TemporalComponents) :
     List FlatFieldDecl → Except TemporalExtremumOperandElabError Unit
   | [] => pure ()
   | declaration :: rest => do
-      certifyOne model expected declaration
-      certifyRest model expected rest
+      let lifted ← liftedComponentsOf model declaration
+      if lifted == expected then
+        certifyAgainst model expected rest
+      else
+        throw (.incompatibleComponents declaration.path lifted expected)
 
 /-- Admit one authored temporal extremum operand list.
 
-    The **first** operand fixes the expected component set, which is a reporting choice and not a semantic one: every later operand must equal it, so the admitted lists are the same whichever member is read first. Only the path named in a refusal depends on the order. -/
-def elaborate (model : FlatModel) (sources : List FieldId) :
+    Structure delegates to the shared entity-list checker, so arity, the wildcard gate, and both duplicate arms behave here exactly as they do for the sibling carriers and a group or starred operand is expressible. What this capsule owns is the component-set gate on top of it, applied to every declaration each operand contributes — for a group, its whole recursive expansion, which is the extent the Kernel's own gate reads.
+
+    The **first** contributed declaration fixes the expected set. That is a reporting choice rather than a semantic one: every later declaration must equal it, so the admitted lists are the same whichever member is read first, and only the path named in a refusal depends on the order. -/
+def elaborate (model : FlatModel) (declaringGroup : GroupPath)
+    (authored : SurfaceFieldEntitySource) :
     Except TemporalExtremumOperandElabError
       (CheckedTemporalExtremumOperands model) := do
-  match sources with
-  | [] => throw .emptyOperands
-  | source :: rest =>
-      let first ← (model.lookupUniqueId source).mapError .resolve
-      let restDecls ←
-        rest.mapM fun id => (model.lookupUniqueId id).mapError .resolve
-      match componentsOf? first with
-      | none =>
-          throw (.notTemporal first.path first.policy.kind.surfaceKind)
-      | some components =>
-          let expected := components.withBaseYear model.baseYear.isSome
-          certifyRest model expected restDecls
-          pure { first, rest := restDecls, components := expected }
+  let shape ←
+    (elaborateFieldEntityShape model declaringGroup authored).mapError .shape
+  let declarations ←
+    (shape.first :: shape.rest).foldlM
+      (fun accumulated operand => do
+        pure (accumulated ++ (← operandDeclarations model operand)))
+      ([] : List FlatFieldDecl)
+  match declarations with
+  | [] => throw (.groupExpansionEmpty [])
+  | first :: rest =>
+      let expected ← liftedComponentsOf model first
+      certifyAgainst model expected rest
+      pure { shape, components := expected }
 
 end TemporalExtremumOperands
 
@@ -109,8 +138,9 @@ namespace TemporalExtremumOperandElabError
 def diagnostic? : TemporalExtremumOperandElabError → Option KernelStaticDiagnostic
   | .incompatibleComponents _ _ _ => some .dateFormatsNotCompatible
   | .notTemporal _ _ => none
-  | .emptyOperands => none
-  | .resolve error => error.diagnostic?
+  | .groupExpansionEmpty _ => none
+  | .unsupportedOperandForm _ => none
+  | .shape error => error.diagnostic?
 
 end TemporalExtremumOperandElabError
 

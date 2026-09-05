@@ -23,8 +23,9 @@ private def dateParts (year month day : Bool) : TemporalComponents :=
   { year, month, day, hour := false, minute := false, second := false }
 
 private def temporal (id : Nat) (name : String) (kind : TemporalKind)
-    (components : TemporalComponents) (format : String) : FlatFieldDecl :=
-  { id, groupPath := ["Probe"], name,
+    (components : TemporalComponents) (format : String)
+    (groupPath : GroupPath := ["Probe"]) : FlatFieldDecl :=
+  { id, groupPath, name,
     policy := { kind := .temporal kind components },
     temporalTargetPolicy := some { format } }
 
@@ -45,17 +46,59 @@ private def declarations : List FlatFieldDecl :=
     { id := 12, groupPath := ["Probe"], name := "Text",
       policy := { kind := .string } }]
 
-private def plainModel : FlatModel := { fields := declarations }
+/-- Two group slots whose expansions differ in exactly the thing under test. -/
+private def groupDeclarations : List FlatFieldDecl :=
+  [ temporal 20 "SameA" .date (dateParts true true true) "yyyy-MM-dd"
+      (groupPath := ["Probe", "Same"]),
+    temporal 21 "SameB" .date (dateParts true true true) "dd.MM.yyyy"
+      (groupPath := ["Probe", "Same"]),
+    temporal 22 "MixedA" .date (dateParts true true true) "yyyy-MM-dd"
+      (groupPath := ["Probe", "Mixed"]),
+    temporal 23 "MixedB" .date (dateParts true false false) "yyyy"
+      (groupPath := ["Probe", "Mixed"]) ]
+
+private def plainModel : FlatModel :=
+  { fields := declarations ++ groupDeclarations }
 
 private def baseYearModel : FlatModel :=
-  { fields := declarations, baseYear := some 2024 }
+  { fields := declarations ++ groupDeclarations, baseYear := some 2024 }
+
+private def fieldOperand (groups : GroupPath) (name : String) :
+    SurfaceFieldEntityOperand :=
+  .field { base := .absolute, groups, field := name }
+
+private def operandOf (source : FieldId) : SurfaceFieldEntityOperand :=
+  match (declarations ++ groupDeclarations).find? (·.id == source) with
+  | some declaration => fieldOperand declaration.groupPath declaration.name
+  | none => fieldOperand ["Probe"] "?"
+
+private def groupOperand (groups : GroupPath) : SurfaceFieldEntityOperand :=
+  .group (.path { base := .absolute, groups })
+
+private def sourceOf : List SurfaceFieldEntityOperand → SurfaceFieldEntitySource
+  | [] => { first := groupOperand ["Probe"], rest := [] }
+  | first :: rest => { first, rest }
+
+private def elaborateAt (model : FlatModel)
+    (operands : List SurfaceFieldEntityOperand) :=
+  TemporalExtremumOperands.elaborate model ["Probe"] (sourceOf operands)
 
 private def admitted (model : FlatModel) (sources : List FieldId) : Bool :=
-  (TemporalExtremumOperands.elaborate model sources).toOption.isSome
+  (elaborateAt model (sources.map operandOf)).toOption.isSome
 
 private def refusal? (model : FlatModel) (sources : List FieldId) :
     Option KernelStaticDiagnostic :=
-  match TemporalExtremumOperands.elaborate model sources with
+  match elaborateAt model (sources.map operandOf) with
+  | .ok _ => none
+  | .error error => error.diagnostic?
+
+private def groupAdmitted (model : FlatModel)
+    (operands : List SurfaceFieldEntityOperand) : Bool :=
+  (elaborateAt model operands).toOption.isSome
+
+private def groupRefusal? (model : FlatModel)
+    (operands : List SurfaceFieldEntityOperand) : Option KernelStaticDiagnostic :=
+  match elaborateAt model operands with
   | .ok _ => none
   | .error error => error.diagnostic?
 
@@ -129,6 +172,30 @@ order — but which lists are admitted does not. -/
 example : admitted plainModel [2, 1] = true := by native_decide
 
 example : refusal? plainModel [5, 1] = some .dateFormatsNotCompatible := by
+  native_decide
+
+/-! ## Group slots, and the shared checker underneath
+
+Structure is the shared entity-list checker's, so a group operand is a complete list by itself while
+a lone fixed field is not — and the component gate then reads the group's **expansion** rather than
+the group, which is the only way a heterogeneous subtree can be refused at all. -/
+
+example : groupAdmitted plainModel [groupOperand ["Probe", "Same"]] = true := by
+  native_decide
+
+example : groupRefusal? plainModel [groupOperand ["Probe", "Mixed"]] =
+    some .dateFormatsNotCompatible := by
+  native_decide
+
+/- A group beside a field of the same set is admitted, so the expansion joins the list rather than
+   being checked in isolation. -/
+example : groupAdmitted plainModel
+    [groupOperand ["Probe", "Same"], operandOf 1] = true := by
+  native_decide
+
+/- The shared arity gate is live underneath: one fixed field is not a list, and its class is the
+   shared checker's rather than this carrier's. -/
+example : groupRefusal? plainModel [operandOf 1] = some .paramSizeInvalidN := by
   native_decide
 
 /-! ## Outside this family, with nothing claimed
