@@ -474,6 +474,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-name-position-index-terminal"></a>
 - [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
 
+<a id="src-later-position-kinds-and-group-expansion-class"></a>
+- [A Boolean in a temporal extremum's later position draws `MVK_DATE_AND_NONDATE`; a mixed starred-group expansion draws `MVK_NOT_SORTABLE` instead](sources/evaluation-and-application-routes.md#src-later-position-kinds-and-group-expansion-class)
 <a id="src-filtered-star-temporal-carriers-and-binding-depth"></a>
 - [A `Having`-filtered star is admitted wherever a plain star is on all three temporal carriers, the component gate reads through it, and the binding relation re-derives independently](sources/evaluation-and-application-routes.md#src-filtered-star-temporal-carriers-and-binding-depth)
 <a id="src-distinct-count-component-set-and-locus"></a>

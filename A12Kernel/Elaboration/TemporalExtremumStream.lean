@@ -27,7 +27,7 @@ projection hands over the payload's retained instant rather than one rebuilt fro
 distinction that survives a zone transition. A component-omitting list —
 `yyyy-MM`, or a yearless set completed by a Base Year — is declined rather than folded, because its
 values are neither, and its element type is an interval this module does not yet carry
-([SG6](../../docs/SEMANTICS-GAPS.md)).
+([SG23](../../docs/SEMANTICS-GAPS.md#sg23--the-temporal-extrema-operand-gate-element-type-and-fold)).
 
 **Two routes, one reader each.** The flat route below takes a `FlatContext` and therefore only direct
 field operands; a star, group, or filtered operand denotes a row set that no flat context can
@@ -141,7 +141,7 @@ and the two accounts genuinely differ for it: an over-limit cell is formally una
 fold *aborts* on an unavailable operand where the sweep's uniqueness carrier merely skips one — so
 reading the complete view would answer UNKNOWN for a document the Kernel folds. No retained row
 exercises an over-limit extremum; the extent is taken from the sweep's operand-level mechanism, and
-that assumption is recorded with its evidence item in [SG6](../../docs/SEMANTICS-GAPS.md).
+that assumption is recorded with its evidence item in [SG23](../../docs/SEMANTICS-GAPS.md#sg23--the-temporal-extrema-operand-gate-element-type-and-fold).
 -/
 
 /-- Why an admitted operand list cannot be folded against an immutable checked document.

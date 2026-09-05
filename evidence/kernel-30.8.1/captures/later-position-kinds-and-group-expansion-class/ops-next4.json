@@ -1,0 +1,10 @@
+[
+ {"id":"1-boolean-in-later-position","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(FiledOn, Flag) > [FiledOn]","--code","U1"]},
+ {"id":"2-control-number-in-later-position","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(FiledOn, Amount) > [FiledOn]","--code","U2"]},
+ {"id":"3-control-string-in-later-position","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(FiledOn, SkuText) > [FiledOn]","--code","U3"]},
+ {"id":"4-min-boolean-later-symmetry","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MinValue(FiledOn, Flag) > [FiledOn]","--code","U4"]},
+ {"id":"5-starred-group-mixed-expansion","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe/Rows*) > [FiledOn]","--code","U5"]},
+ {"id":"6-starred-group-presence-terminal","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe/Rows*/Sub) > 0","--code","U6"]},
+ {"id":"7-control-leaf-through-star","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe/Rows*/Sub/Leaf) > 0","--code","U7"]},
+ {"id":"8-control-plain-numeric-group-star","verb":"rule","args":["check","--field","/Probe/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe/Other*) > 0","--code","U8"]}
+]

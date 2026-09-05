@@ -48,10 +48,13 @@ private def declarations : List FlatFieldDecl :=
       policy := { kind := .string } },
     { id := 13, groupPath := ["Probe"], name := "Amount",
       policy := { kind := .number { scale := 0, signed := false } } },
-    -- Boolean stands for the four kinds unmeasured at this gate; the point of the row is the
-    -- absent class, so any one of them serves and a second adds nothing.
     { id := 14, groupPath := ["Probe"], name := "Flag",
-      policy := { kind := .boolean } }]
+      policy := { kind := .boolean } },
+    -- Enumeration stands for the three kinds still unmeasured at this gate; the point of its row is
+    -- the absent class, so any one of them serves and a second adds nothing.
+    { id := 15, groupPath := ["Probe"], name := "Choice",
+      policy := { kind := .enumeration },
+      enumeration := some { storedTokens := ["a", "b"] } }]
 
 /-- Two group slots whose expansions differ in exactly the thing under test. -/
 private def groupDeclarations : List FlatFieldDecl :=
@@ -254,12 +257,24 @@ example : admitted plainModel [12, 1] = false := by native_decide
    class, so "later" means "not first" rather than "second". -/
 example : refusal? plainModel [1, 2, 12] = some .dateAndNonDate := by native_decide
 
-/- An unmeasured later kind is refused with **no** class. The four kinds outside this pair were not
-   observed at this position, and the Kernel's generalizing wording is its message text rather than
-   a row. -/
-example : refusal? plainModel [1, 14] = none := by native_decide
+/- Boolean in later position draws the same class, measured
+   ([checkpoint](../../docs/SOURCES.md#src-later-position-kinds-and-group-expansion-class)), and
+   `MinValue` agrees with `MaxValue` on it. Three kinds now share this class from three separate
+   families, which is what makes the Kernel's generalizing message text — *"if the first parameter is
+   a date than all parameters have to be dates"* — look like a rule rather than one pair's accident.
+   It is still text and not a row, so the three kinds below it stay unprojected. -/
+example : refusal? plainModel [1, 14] = some .dateAndNonDate := by native_decide
 
 example : admitted plainModel [1, 14] = false := by native_decide
+
+/- The three kinds still outside the measured set are refused with **no** class. Enumeration stands
+   for them here; each would need its own row, since the class is claimed per kind rather than read
+   off the message's wording. -/
+private def enumeration : FieldId := 15
+
+example : refusal? plainModel [1, enumeration] = none := by native_decide
+
+example : admitted plainModel [1, enumeration] = false := by native_decide
 
 /-! ## A filtered star is an operand like any other
 

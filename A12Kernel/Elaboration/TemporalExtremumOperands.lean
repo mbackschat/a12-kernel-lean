@@ -213,12 +213,14 @@ namespace TemporalExtremumOperandElabError
 def diagnostic? : TemporalExtremumOperandElabError → Option KernelStaticDiagnostic
   | .incompatibleComponents _ _ _ => some .dateFormatsNotCompatible
   | .firstNotTemporal _ _ => none
-  -- Measured for a Number and for a String in later position; the remaining four kinds are not,
-  -- and the Kernel's own generalizing text is its wording rather than an observation.
+  -- Measured for a Number, a String and a Boolean in later position, on both `MinValue` and
+  -- `MaxValue` ([checkpoint](../../docs/SOURCES.md#src-later-position-kinds-and-group-expansion-class)).
+  -- Three kinds from three families sharing one class is what makes the Kernel's generalizing text
+  -- read as a rule, but text is not a row, so the remaining three stay unprojected.
   | .laterNotTemporal _ actual =>
       match actual with
-      | .number | .string => some .dateAndNonDate
-      | .temporal _ | .enumeration | .boolean | .confirm | .dateRange => none
+      | .number | .string | .boolean => some .dateAndNonDate
+      | .temporal _ | .enumeration | .confirm | .dateRange => none
   | .groupExpansionEmpty _ => none
   | .unsupportedOperandForm _ => none
   | .shape error => error.diagnostic?
