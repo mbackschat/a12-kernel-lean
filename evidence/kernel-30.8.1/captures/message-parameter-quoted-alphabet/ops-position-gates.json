@@ -1,0 +1,79 @@
+[
+ {
+  "id": "S1-name-bad-root",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-S1.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "S2-name-bad-mid",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-S2.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "S3-name-bad-leaf",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-S3.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "S4-group-bad-root",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-S4.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "S5-group-bad-mid",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-S5.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "S6-control-name",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-S6.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ },
+ {
+  "id": "S7-control-group",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-S7.json",
+   "--dry-run",
+   "--model",
+   "Msg_DM.json"
+  ]
+ }
+]

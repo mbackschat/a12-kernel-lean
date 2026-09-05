@@ -393,6 +393,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-name-position-index-terminal"></a>
 - [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
 
+<a id="src-two-positions-share-the-root-gate"></a>
+- [Both parameter positions share one root gate and then split, the name position answering `INVALID_ENTITY` where the group position answers `INVALID_GROUP`](sources/message-and-pointer-probes.md#src-two-positions-share-the-root-gate)
+
 <a id="src-presence-confirm-custom-carriers"></a>
 - [The presence leaf admits Confirm and Custom, and an unregistered Custom type faults only on a present value](sources/having-filter-probes.md#src-presence-confirm-custom-carriers)
 <a id="src-nested-self-exclusion"></a>

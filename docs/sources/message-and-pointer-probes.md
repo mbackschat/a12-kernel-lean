@@ -11,6 +11,18 @@
 - `disposition`: [`SPEC-2026-09-05-02`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-05-02) is shipped on their side — `IG148` graduated to `IF323` and their interpreter now renders the position and agrees with both Kernel strategies. The bilingual half of [`SPEC-2026-09-05-03`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-05-03) is confirmed while its retired-terminal and language-switch claims stay open, and [`SPEC-2026-09-05-04`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-05-04)'s reading is conceded with their measurement still to come.
 - `limit`: every row here is the peer's measurement on the peer's carrier. This project reproduced none of it, so it is held on reviewed peer provenance exactly as its revision states, and the render rows inherit their tri-engine oracle rather than this project's.
 
+<a id="src-two-positions-share-the-root-gate"></a>
+#### Both parameter positions share one root gate and then split, the name position answering `INVALID_ENTITY` where the group position answers `INVALID_GROUP`, measured locally 2026-09-05
+
+- `revision`: launcher self-reported build a12-dmkits `226b2be175133dff45413b0a0f604ea219ced85b (dirty)`; `dmtool` 0.13.0, Kernel `30.8.1`. Seven `rule add --dry-run` children in one `batch`, every one `KERNEL_CONFIRMED`. Retained `raw-position-gates.json` SHA-256 `dca75ca2cade179b7ce662a8e69442104a14c1416ec780a3e32ac99add56d9b0`.
+- `question`: [`spec/11`](../../spec/11-messages-and-custom.md) states the two-gate resolution — root segment first, then the rest — for the **group** position only. Whether the name position shares that split is a carrier crossing rather than an instance ([`LF116`](../LEAN-FINDINGS.md)).
+- `claim`: **the root gate is shared and the second gate is position-specific.** A bad first segment draws `INVALID_ROOT_GROUP` in *both* positions, so the root check is one mechanism serving both. Below the root they differ: the name position draws `INVALID_ENTITY` and the group position `INVALID_GROUP`, on the same model and through the same route.
+- `name-position-does-not-localize`: `INVALID_ENTITY` is returned for a bad **middle** segment and a bad **leaf** alike, so below the root that position does not report where the path failed. The group position's `INVALID_GROUP` behaves the same way. Only the root is separated.
+- `controls`: the valid name-position and group-position parameters are both admitted in the same batch, so neither position is failing for a route or model reason.
+- `independent-agreement`: this reaches the same code split a12-dmkits reported from their own bilingual work — that the group position looks a word up as a group *name* and so answers `INVALID_GROUP` rather than the name position's `INVALID_ENTITY` — from a different direction, undeclared paths rather than other-language terminals. Two routes to one distinction is why it is recorded as a mechanism rather than a code table.
+- `limit`: static admission only, one model, `en_US`, rule carrier. Whether the shared root gate also holds on the computation message carrier is untested, though the terminal bundle is carrier-identical there.
+- `sync`: no entry. The code split confirms a12-dmkits' own observation, and the shared root gate adds a cell neither estate had recorded rather than contradicting one; it is carried to the peer in conversation rather than as a request, since nothing they ship states otherwise.
+
 <a id="src-name-position-index-terminal"></a>
 #### `index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all, measured locally 2026-09-05
 

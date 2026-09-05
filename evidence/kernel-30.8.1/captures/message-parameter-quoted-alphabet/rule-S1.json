@@ -1,0 +1,12 @@
+{
+ "field": "/Msg/Rows/Err",
+ "group": "/Msg/Rows",
+ "code": "S1",
+ "condition": "FieldFilled(/Msg/Rows/Marker) And FieldFilled(/Msg/Rows/Err)",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "[x=$/Nope/Rows/Marker$]"
+  }
+ ]
+}

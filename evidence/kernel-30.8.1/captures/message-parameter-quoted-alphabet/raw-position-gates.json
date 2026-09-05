@@ -1,0 +1,178 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 7 ops; 5 of 7 exited nonzero (0 failed, 5 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 7,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "S1-name-bad-root",
+      "verb" : "rule",
+      "args" : [ "add", "rule-S1.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_ROOT_GROUP",
+          "summary" : "Rule with path '/Msg/Rows/S1': The rule '/Msg/Rows/S1' specifies an incorrect error text for the language English. Rootgroup '/Nope' is not valid. [INVALID_ROOT_GROUP]",
+          "where" : {
+            "rule" : "/Msg/Rows/S1"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "S2-name-bad-mid",
+      "verb" : "rule",
+      "args" : [ "add", "rule-S2.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_ENTITY",
+          "summary" : "Rule with path '/Msg/Rows/S2': The rule '/Msg/Rows/S2' specifies an incorrect error text for the language English. The group or field '/Msg/Nope' is not valid. [INVALID_ENTITY]",
+          "where" : {
+            "rule" : "/Msg/Rows/S2"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "S3-name-bad-leaf",
+      "verb" : "rule",
+      "args" : [ "add", "rule-S3.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_ENTITY",
+          "summary" : "Rule with path '/Msg/Rows/S3': The rule '/Msg/Rows/S3' specifies an incorrect error text for the language English. The group or field '/Msg/Rows/Nope' is not valid. [INVALID_ENTITY]",
+          "where" : {
+            "rule" : "/Msg/Rows/S3"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "S4-group-bad-root",
+      "verb" : "rule",
+      "args" : [ "add", "rule-S4.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_ROOT_GROUP",
+          "summary" : "Rule with path '/Msg/Rows/S4': The rule '/Msg/Rows/S4' specifies an incorrect error text for the language English. Rootgroup '/Nope' is not valid. [INVALID_ROOT_GROUP]",
+          "where" : {
+            "rule" : "/Msg/Rows/S4"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "S5-group-bad-mid",
+      "verb" : "rule",
+      "args" : [ "add", "rule-S5.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "INVALID_GROUP",
+          "summary" : "Rule with path '/Msg/Rows/S5': The rule '/Msg/Rows/S5' specifies an incorrect error text for the language English. Error text: '#/Msg/Nope' specifies a group name '/Msg/Nope', which is not valid. [INVALID_GROUP]",
+          "where" : {
+            "rule" : "/Msg/Rows/S5"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "S6-control-name",
+      "verb" : "rule",
+      "args" : [ "add", "rule-S6.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add rule /Msg/Rows/S6",
+        "changed" : {
+          "rule" : "/Msg/Rows/S6"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "S7-control-group",
+      "verb" : "rule",
+      "args" : [ "add", "rule-S7.json", "--dry-run", "--model", "Msg_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add rule /Msg/Rows/S7",
+        "changed" : {
+          "rule" : "/Msg/Rows/S7"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}
