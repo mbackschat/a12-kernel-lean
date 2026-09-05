@@ -54,7 +54,15 @@ inductive TemporalExtremumOperandElabError where
   | laterNotTemporal (path : List String) (actual : SurfaceScalarKind)
   /-- A group slot whose subtree declares no field, so no component set exists to agree on. -/
   | groupExpansionEmpty (path : List String)
-  /-- A filtered star or a starred-group presence slot. Neither is refused by the Kernel; this capsule performs no filter elaboration, so it declines rather than admit one unchecked. -/
+  /-- A filtered star or a starred-group presence slot. This capsule performs no filter elaboration,
+      so it declines rather than admit one unchecked, and the decline **claims no Kernel class**:
+      whether the Kernel admits either form at this carrier is unmeasured. Stated that way on
+      purpose — the neighbouring DateRange-endpoint carrier refuses a starred operand outright with
+      `MVK_NO_WILDCARDS_ALLOWED` ([`spec/05`](../../spec/05-dates-and-time.md#8-date-ranges-and-overlap)), so the
+      carrier boundary is known to be real and reading this one off the extremum's plain-star
+      admission would be the crossing declined elsewhere in this family
+      ([`LF116`](../../docs/LEAN-FINDINGS.md)). Elaborating the filter here is therefore gated on a
+      measurement, not on this arm. -/
   | unsupportedOperandForm (path : List String)
   /-- The shared entity-list checker's own refusal: arity, the wildcard gate, and both duplicate arms. It is delegated rather than restated, because those gates do not vary by carrier. -/
   | shape (error : FieldEntityShapeElabError)
