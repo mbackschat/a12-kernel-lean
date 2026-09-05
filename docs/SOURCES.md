@@ -375,6 +375,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-currentrepetition-operand-carriers"></a>
 - [The operand is an ordinary Number expression wherever one is legal, while `$` is filter-only by site and no aggregate accepts it](sources/group-and-iteration-probes.md#src-currentrepetition-operand-carriers)
 
+<a id="src-filter-repetition-reference-reads-its-path"></a>
+- [A `CurrentRepetition` leaf answers both filter gates through its path's repeatable scope, so a nonrepeatable group under the star satisfies the scope gate alone](sources/having-filter-probes.md#src-filter-repetition-reference-reads-its-path)
+
 <a id="src-presence-confirm-custom-carriers"></a>
 - [The presence leaf admits Confirm and Custom, and an unregistered Custom type faults only on a present value](sources/having-filter-probes.md#src-presence-confirm-custom-carriers)
 <a id="src-nested-self-exclusion"></a>

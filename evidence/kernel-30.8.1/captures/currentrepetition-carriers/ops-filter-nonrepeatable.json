@@ -1,0 +1,104 @@
+[
+ {
+  "id": "F1-nonrep-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "F1",
+   "--condition",
+   "Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Meta) > 0) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "F2-nonrep-with-inscope",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "F2",
+   "--condition",
+   "Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Meta) > 0 And [/Rep/Rows/Gate] > 0) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "F3-control-rep-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "F3",
+   "--condition",
+   "Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Rows) > 0) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "F4-control-inscope",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "F4",
+   "--condition",
+   "Sum(/Rep/Rows*/Base Having [/Rep/Rows/Gate] > 0) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "F5-nonrep-descendant",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Desc_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "F5",
+   "--condition",
+   "Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Rows/Fixed) > 0 And [/Rep/Rows/Gate] > 0) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "F6-nonrep-desc-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Desc_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "F6",
+   "--condition",
+   "Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Rows/Fixed) > 0) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ }
+]
