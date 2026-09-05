@@ -82,9 +82,18 @@ private def repeatedNumber : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } }
     repeatableScope := [10] }
 
+private def directBoolean : FlatFieldDecl :=
+  { id := 8, groupPath := ["Form"], name := "Agreed",
+    policy := { kind := .boolean } }
+
+private def directConfirm : FlatFieldDecl :=
+  { id := 9, groupPath := ["Form"], name := "Signed",
+    policy := { kind := .confirm } }
+
 private def model : FlatModel :=
   { fields := [directString, directEnumeration, directNumber, repeatedString,
-      repeatedEnumeration, repeatedNumber, directCustom]
+      repeatedEnumeration, repeatedNumber, directCustom, directBoolean,
+      directConfirm]
     repeatableGroups := [{
       level := 10, path := ["Form", "Rows"], repeatability := some 3 }] }
 
@@ -270,16 +279,25 @@ example : partialOf (stringStar (some selfFilter)) [2] .full
     emptyCells emptyCells emptyCells = some .skippedHaving := by
   native_decide
 
-/- Shared shape checking rejects a singleton direct field and repeated direct references; family certification rejects Number. -/
+/- Shared shape checking rejects a singleton direct field and repeated direct references; family
+   certification rejects Number.
+
+   The third row is **Number-first**, and it stays an unclassed certification failure on purpose: a
+   list whose first operand is a Number was never this overload's, so the class belongs to the Number
+   consumer, which reports `MVK_NUMBER_AND_NON_NUMBER` for it. Reading a string-family code off this
+   row is the inference the positional split exists to block. -/
 example :
     checkedErrorOf (source (.field (directPath "Code")) []) =
-        some (.shape .tooFewFields) ∧
+        some (.source (.shape .tooFewFields)) ∧
       checkedErrorOf (source (.field (directPath "Code"))
         [.field (directPath "Code")]) =
-        some (.shape (.duplicateOperand directString.id)) ∧
+        some (.source (.shape (.duplicateOperand directString.id))) ∧
       checkedErrorOf (source (.field (directPath "Amount"))
         [.field (directPath "Code")]) =
-        some (.fieldKindMismatch directNumber.path .number) := by
+        some (.source (.fieldKindMismatch directNumber.path .number)) ∧
+      (checkedErrorOf (source (.field (directPath "Amount"))
+        [.field (directPath "Code")])).bind
+          TokenDistinctCountElabError.diagnostic? = none := by
   native_decide
 
 /- Wildcard occurrences remain independent authored slots, while the distinct set itself absorbs repeated values. -/
@@ -288,6 +306,69 @@ example : evaluatedOf
     [1, 2, 3] .empty .empty
     ((.parsed (.str "A")), (.parsed (.str "B")), (.parsed (.str "A")))
     emptyCells emptyCells = some (.value 2 .fixed) := by
+  native_decide
+
+/-! ## The operand-kind domain and the string-family half of the positional homogeneity pair
+
+`NumberOfDifferentValues` reports homogeneity from the family of its **first** operand, so the same
+illegal pair draws two codes selected by operand order alone; the Number-first half belongs to the
+Number consumer and is locked there ([checkpoint](../../docs/SOURCES.md#src-distinct-count-operand-domain)). -/
+
+/- **A Custom-declared operand is admitted here, and with the string family.** Both measured pairings
+   elaborate: Custom beside a String and Custom beside an Enumeration. This is the opposite answer
+   the custom-type validity predicate gives for the same declaration, which is why the admission is
+   locked rather than left to follow from Custom being a `.string` kind internally. -/
+example :
+    checkedErrorOf (source (.field (directPath "CustomCode"))
+      [.field (directPath "Code")]) = none ∧
+    checkedErrorOf (source (.field (directPath "CustomCode"))
+      [.field (directPath "Priority")]) = none := by
+  native_decide
+
+/- **String-family-first with a later Number draws the string-family code**, from all three members
+   of that family including Custom. Holding the offending Number fixed and varying only what precedes
+   it is what makes this positional: the mirror row above, with the Number first, stays unclassed. -/
+example :
+    (checkedErrorOf (source (.field (directPath "Code"))
+      [.field (directPath "Amount")])).bind
+        TokenDistinctCountElabError.diagnostic? =
+      some .stringEnumAndNonStringEnum ∧
+    (checkedErrorOf (source (.field (directPath "Priority"))
+      [.field (directPath "Amount")])).bind
+        TokenDistinctCountElabError.diagnostic? =
+      some .stringEnumAndNonStringEnum ∧
+    (checkedErrorOf (source (.field (directPath "CustomCode"))
+      [.field (directPath "Amount")])).bind
+        TokenDistinctCountElabError.diagnostic? =
+      some .stringEnumAndNonStringEnum := by
+  native_decide
+
+/- **The kind domain is checked before homogeneity, so Boolean and Confirm draw the domain code from
+   either position.** The contrast with the rows above is the whole point: a Number *later* draws the
+   homogeneity code, a Boolean later does not, because it was never a candidate member of any family
+   this operator admits. -/
+example :
+    (checkedErrorOf (source (.field (directPath "Agreed"))
+      [.field (directPath "Code")])).bind
+        TokenDistinctCountElabError.diagnostic? =
+      some .onlyStringEnumNumberCmpDateAllowed ∧
+    (checkedErrorOf (source (.field (directPath "Code"))
+      [.field (directPath "Agreed")])).bind
+        TokenDistinctCountElabError.diagnostic? =
+      some .onlyStringEnumNumberCmpDateAllowed ∧
+    (checkedErrorOf (source (.field (directPath "Code"))
+      [.field (directPath "Signed")])).bind
+        TokenDistinctCountElabError.diagnostic? =
+      some .onlyStringEnumNumberCmpDateAllowed := by
+  native_decide
+
+/- The domain code wins over homogeneity when both are available, which fixes their order rather than
+   leaving it to whichever check happens to run first. -/
+example :
+    (checkedErrorOf (source (.field (directPath "Code"))
+      [.field (directPath "Amount"), .field (directPath "Agreed")])).bind
+        TokenDistinctCountElabError.diagnostic? =
+      some .onlyStringEnumNumberCmpDateAllowed := by
   native_decide
 
 /- The result scale is exactly integral 0. -/
