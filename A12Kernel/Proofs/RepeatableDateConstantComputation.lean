@@ -66,7 +66,7 @@ theorem checkedRepeatableDateConstantComputation_accepted_rendersInTargetFormat
   cases hTarget : operation.dateTarget with
   | complete target =>
       simp only [hTarget, CheckedDateConstantTarget.evaluateCivil,
-        CheckedFullDateTarget.evaluateCivil] at accepted
+        CheckedDateFormatTarget.evaluateCivil] at accepted
       simp only [CheckedDateConstantTarget.renderCivil]
       split at accepted
       · exact absurd accepted (by simp)

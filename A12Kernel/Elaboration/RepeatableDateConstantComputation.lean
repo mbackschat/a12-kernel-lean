@@ -62,7 +62,7 @@ end RepeatableDateConstantComputationElabError
 /-- The two renderable Date target shapes, dispatched on the declared format exactly as the Kernel
 does. They share one outcome domain because they differ only in which components the store keeps. -/
 inductive CheckedDateConstantTarget (model : FlatModel) where
-  | complete (target : CheckedFullDateTarget model)
+  | complete (target : CheckedDateFormatTarget model)
   | omittedComponent (target : CheckedOmittedComponentDateTarget model)
 
 namespace CheckedDateConstantTarget
@@ -112,7 +112,7 @@ def checkRepeatableDateConstantComputation
       |>.mapError .target
   let scope := checkedTarget.declaration.repeatableScope
   let dateTarget ←
-    match elaborateFullDateTargetIn model scope targetField with
+    match elaborateDateFormatTargetIn model scope targetField with
     | .ok target => pure (CheckedDateConstantTarget.complete target)
     | .error complete =>
         match elaborateOmittedComponentDateTargetIn model scope targetField with

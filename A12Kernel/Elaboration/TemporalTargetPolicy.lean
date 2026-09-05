@@ -198,21 +198,48 @@ def partialTargetDiagnostic? :
 
 end FullDateTargetElabError
 
-/-- One checked FULL Date target with an executable format and concrete model-zone profile. Partial precision is a stored-input capability rejected by computation authoring. -/
-structure CheckedFullDateTarget (model : FlatModel) where
+/-- One renderable complete-Date target, admitted by its declared **format** alone — the Kernel's own rule at this position, the same one `CheckedClockFormatTarget` carries for clocks. -/
+structure CheckedDateFormatTarget (model : FlatModel) where
   checked : CheckedTemporalTargetPolicy model
   format : FullDateTargetFormat
   profile : ModelZone.ConcreteProfile
-  targetIsDate : checked.target.kind = .date
   precisionFull : checked.policy.partialMode = .full
   formatMatches :
     FullDateTargetFormat.ofSource? checked.policy.format = some format
   profileMatches :
     ModelZone.ConcreteProfile.ofId? checked.timeZoneId = some profile
 
+/-- The Date target **narrowed to a DATE declaration**, which is strictly narrower than the Kernel and retained for the same reason its clock sibling is: the cross-kind cell is measured for the repeatable-constant carrier alone, so the families sharing this certificate keep an honest exclusion until each earns its own row ([`LF116`](../../docs/LEAN-FINDINGS.md)). -/
+structure CheckedFullDateTarget (model : FlatModel)
+    extends CheckedDateFormatTarget model where
+  targetIsDate : checked.target.kind = .date
+
 namespace CheckedTemporalTargetPolicy
 
 /-- Refine a checked temporal target to the executable FULL Date subset. Partial precision, wider kinds, formats, and zones are explicit refusals. -/
+def toDateFormatTarget
+    (checked : CheckedTemporalTargetPolicy model) :
+    Except FullDateTargetElabError (CheckedDateFormatTarget model) :=
+  match hPrecision : checked.policy.partialMode with
+  | .full =>
+      match hFormat : FullDateTargetFormat.ofSource? checked.policy.format with
+      | none =>
+          throw (.unsupportedFormat checked.target.id checked.policy.format)
+      | some format =>
+          match hProfile :
+              ModelZone.ConcreteProfile.ofId? checked.timeZoneId with
+          | none => throw (.unsupportedZone checked.timeZoneId)
+          | some profile =>
+              pure {
+                checked
+                format
+                profile
+                precisionFull := hPrecision
+                formatMatches := hFormat
+                profileMatches := hProfile }
+  | mode => throw (.partialPrecision checked.target.id mode)
+
+/-- Refine a checked temporal target to the exact complete Date subset. The parent's fields are repeated rather than reused, because the kind proof is stated over the parent's `checked` and a monadic bind hides that it is the same declaration. -/
 def toFullDateTarget
     (checked : CheckedTemporalTargetPolicy model) :
     Except FullDateTargetElabError (CheckedFullDateTarget model) := do
@@ -243,6 +270,16 @@ def toFullDateTarget
 
 end CheckedTemporalTargetPolicy
 
+/-- Resolve and refine one model-owned complete-Date target by its declared format alone, with the repetition scope bound by the caller. This is the Kernel's own admission; `elaborateFullDateTargetIn` is its DATE-only narrowing. -/
+def elaborateDateFormatTargetIn
+    (model : FlatModel) (scope : List RepeatableLevel)
+    (targetField : FieldId) :
+    Except FullDateTargetElabError (CheckedDateFormatTarget model) := do
+  let checked ←
+    elaborateTemporalTargetPolicyIn model scope targetField
+      |>.mapError .targetPolicy
+  checked.toDateFormatTarget
+
 /-- Resolve and refine one model-owned full-Date target whose repetition scope is bound by the caller's reading environment. -/
 def elaborateFullDateTargetIn
     (model : FlatModel) (scope : List RepeatableLevel)
@@ -264,10 +301,10 @@ inductive FullDateTargetEvaluationFault where
   | localDateUnavailable (instant : Instant)
   deriving Repr, DecidableEq
 
-namespace CheckedFullDateTarget
+namespace CheckedDateFormatTarget
 
 /-- Render one real civil result before applying the target's ordered additional-check and universal-floor gates. The attempted text survives either rejection. -/
-def evaluateCivil (target : CheckedFullDateTarget model)
+def evaluateCivil (target : CheckedDateFormatTarget model)
     (date : CivilDate) : FullDateTargetOutcome :=
   let stored := target.format.renderCivil date
   if target.checked.policy.youngerThan1900Check &&
@@ -280,7 +317,7 @@ def evaluateCivil (target : CheckedFullDateTarget model)
 
 /-- Render and basic-check one already-selected full-Date computation result without classifying a delta or mutating a document. -/
 def evaluate
-    (target : CheckedFullDateTarget model) :
+    (target : CheckedDateFormatTarget model) :
     TemporalComputationResult →
       Except FullDateTargetEvaluationFault FullDateTargetOutcome
   | .noValue => pure .noValue
@@ -291,7 +328,7 @@ def evaluate
       | some date =>
           pure (target.evaluateCivil date.civil)
 
-end CheckedFullDateTarget
+end CheckedDateFormatTarget
 
 /-- Static refusal before a component-omitting Date target can execute. -/
 inductive OmittedComponentDateTargetElabError where

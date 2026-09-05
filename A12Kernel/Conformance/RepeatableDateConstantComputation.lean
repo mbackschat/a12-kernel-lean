@@ -35,6 +35,15 @@ private def monthDay := dateField 9 "DMonthDay" ["Probe", "Rows"] [10] "MM-dd"
 private def monthDayCompact := dateField 10 "DMonthDayC" ["Probe", "Rows"] [10] "MMdd"
 private def dayMonthCompact := dateField 11 "DDayMonthC" ["Probe", "Rows"] [10] "ddMM"
 
+/-- A **TIME** declaration whose declared format is date-shaped. The Kernel admits a date constant
+    into it and stores `2024-03-05`, because the gate at this position reads the declared format and
+    not the declared kind; this carrier is the one with a row for that cell, so it follows. -/
+private def dateShapedTime : FlatFieldDecl := {
+  id := 12, name := "TDate", groupPath := ["Probe", "Rows"], repeatableScope := [10]
+  policy := { kind := .temporal .time TemporalComponents.fullDate }
+  temporalTargetPolicy := some { format := "yyyy-MM-dd", partialMode := .full }
+}
+
 private def note := dateField 4 "Note" ["Probe", "Store"] []
 
 /-- A target that opts into the additional pre-1900 check, for the delegation case below. -/
@@ -42,7 +51,7 @@ private def guarded := dateField 5 "DGuarded" ["Probe", "Rows"] [10] "yyyy-MM-dd
 
 private def model : FlatModel := {
   fields := [iso, ger, year, yearMonth, compact, monthOnly, monthDay,
-    monthDayCompact, dayMonthCompact, note, guarded]
+    monthDayCompact, dayMonthCompact, note, guarded, dateShapedTime]
   repeatableGroups := [
     { level := 10, path := ["Probe", "Rows"], repeatability := some 3 }]
   timeZoneId := "UTC"
@@ -94,6 +103,14 @@ private def baseYearOutcome? (target : FieldId)
     (constant : CivilDate := march5) : Option FullDateTargetOutcome :=
   (checkRepeatableDateConstantComputation baseYearModel ["Probe"] target constant).toOption.map
     (·.outcome)
+
+/- **The declared kind carries no part of the rule, at either stage.** A TIME declaration whose
+   format is `yyyy-MM-dd` takes this date constant and stores `2024-03-05`, exactly as the DATE
+   declaration beside it does — measured on both admission and the store, which is why this carrier
+   takes the kind-independent certificate while its siblings keep the DATE-only narrowing. -/
+example : outcome? ["Probe"] dateShapedTime.id =
+    some (.accepted (stored "2024-03-05")) := by
+  native_decide
 
 /- **One constant stores two different texts.** The declared format is a rendering of the literal
    date, not a gate on it: the same `05.03.2024` reaches an ISO-declared target as `2024-03-05` and a

@@ -21,8 +21,8 @@ theorem fullDateTarget_evaluate_pre1900
   have before' :
       date.civil.Before FullDate.year1900Start.civil := by
     simpa [FullDate.before1900, FullDate.before] using before
-  simp [CheckedFullDateTarget.evaluate, localDate,
-    CheckedFullDateTarget.evaluateCivil, check, before',
+  simp [CheckedDateFormatTarget.evaluate, localDate,
+    CheckedDateFormatTarget.evaluateCivil, check, before',
     FullDateTargetFormat.render]
   rfl
 
@@ -34,7 +34,7 @@ theorem fullDateTarget_evaluateCivil_beforeGregorianFloor
     (beforeFloor : date.Before CivilDate.gregorianFloor) :
     target.evaluateCivil date =
       .errored (target.format.renderCivil date) .beforeGregorianFloor := by
-  simp [CheckedFullDateTarget.evaluateCivil, noAdditionalCheck,
+  simp [CheckedDateFormatTarget.evaluateCivil, noAdditionalCheck,
     beforeFloor]
 
 /-- Every executable computed-Date target carries the FULL-precision authoring certificate. -/
