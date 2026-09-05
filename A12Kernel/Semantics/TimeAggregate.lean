@@ -24,6 +24,23 @@ end TemporalExtremumOp
 /-- One already-expanded time-of-day aggregate side. -/
 abbrev ResolvedTimeAggregateSide := ResolvedTemporalAggregateSide TimeOfDay
 
+namespace CellObservation
+
+/-- Classify one phase-observed cell as a time-of-day extremum operand.
+
+    The Date sibling's rule, on this family's payload: an unspecified operand does not compete, and a
+    payload that is not a time — or is one whose decoded parts name no valid whole-second clock — fails
+    closed as malformed rather than being skipped, so a broken cell can never read as an absent one. -/
+def asTimeExtremumOperand :
+    CellObservation → SimpleComparisonOperand TimeOfDay
+  | .empty => .notEvaluated
+  | .value (.temporal (.time _ parts)) => .value parts true
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .unknown cause
+
+end CellObservation
+
 /-- Evaluate one resolved Time extremum as the shared classified comparison operand. -/
 def evalTimeExtremumAggregate (op : TemporalExtremumOp)
     (side : ResolvedTimeAggregateSide) : SimpleComparisonOperand TimeOfDay :=

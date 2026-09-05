@@ -71,4 +71,24 @@ theorem timeExtremum_tail_comparison_firing (op : TemporalExtremumOp)
       evalSymmetricComparison_missing_firing comparison.holdsTime
         selected expected false true (by decide) holds
 
+/-- The clock projection obeys the same rule, and the proof is the Date one's shape rather than its
+statement: the two families' payload arms differ, so this is a second obligation and not a
+specialization. -/
+theorem asTimeExtremumOperand_notEvaluated_iff_empty
+    (observation : CellObservation) :
+    observation.asTimeExtremumOperand = .notEvaluated ↔ observation = .empty := by
+  constructor
+  · intro projected
+    cases observation with
+    | empty => rfl
+    | value payload =>
+        cases payload with
+        | temporal value => cases value <;> cases projected
+        | _ => cases projected
+    | unknown _ => cases projected
+    | poison _ => cases projected
+  · intro isEmpty
+    subst isEmpty
+    rfl
+
 end A12Kernel

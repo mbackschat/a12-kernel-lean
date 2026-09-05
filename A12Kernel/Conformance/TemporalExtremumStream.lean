@@ -38,6 +38,17 @@ private def probeModel : FlatModel :=
       -- Admitted as an operand list, declined by the fold.
       dateField 4 "Month" yearMonth "yyyy-MM",
       dateField 5 "Month2" yearMonth "yyyy-MM",
+      { id := 7, groupPath := ["Probe"], name := "Clock",
+        policy := { kind := .temporal .time TemporalComponents.time },
+        temporalTargetPolicy := some { format := "HH:mm:ss" } },
+      { id := 9, groupPath := ["Probe"], name := "Clock2",
+        policy := { kind := .temporal .time TemporalComponents.time },
+        temporalTargetPolicy := some { format := "HH:mm:ss" } },
+      -- A DATE_TIME at the degenerate time-only format: a different kind, the same component set,
+      -- which is the pair the measured gate admits and a kind test would refuse.
+      { id := 8, groupPath := ["Probe"], name := "StampAsClock",
+        policy := { kind := .temporal .dateTime TemporalComponents.time },
+        temporalTargetPolicy := some { format := "HH:mm:ss" } },
       { id := 6, groupPath := ["Probe", "Rows"], name := "RowDate",
         policy := { kind := .temporal .date TemporalComponents.fullDate },
         temporalTargetPolicy := some { format := "yyyy-MM-dd" },
@@ -79,7 +90,7 @@ private def foldOf (names : List String) (op : TemporalExtremumOp)
     (cells : List (FieldId × RawCell)) :
     Option (SimpleComparisonOperand FullDate) := do
   let checked ← admitted? names
-  (TemporalExtremumStream.eval checked op
+  (TemporalExtremumStream.evalDate checked op
     (probeModel.checkContext (raw cells)) .validation).toOption
 
 private def ymd (year month day : Nat) : Option FullDate :=
@@ -151,12 +162,102 @@ example : foldOf ["A", "B"] .maximum [(1, dateCell 2024 3 5), (2, .empty)] =
     ((ymd 2024 3 5).map fun date => .value date false) := by
   native_decide
 
+/-! ## The clock family, through the same reader
+
+Adding a family is a projection and a component set, not a second reader, so the rows here are the
+ones that could differ: the clock's own selection and empty rule, and each family declining the
+other's list — which is what keeps one reader from accepting a value its element type cannot hold. -/
+
+private def timeCell (hour minute second : Nat) : RawCell :=
+  match TimeOfDay.ofHms? hour minute second with
+  | some parts => .parsed (.temporal (.time { epochMillis := 0 } parts))
+  | none => .empty
+
+private def clockFoldOf (names : List String) (op : TemporalExtremumOp)
+    (cells : List (FieldId × RawCell)) :
+    Option (SimpleComparisonOperand TimeOfDay) := do
+  let checked ← admitted? names
+  (TemporalExtremumStream.evalTime checked op
+    (probeModel.checkContext (raw cells)) .validation).toOption
+
+private def hms (hour minute second : Nat) : Option TimeOfDay :=
+  TimeOfDay.ofHms? hour minute second
+
+example : clockFoldOf ["Clock", "Clock2"] .maximum
+    [(7, timeCell 9 30 0), (9, timeCell 17 15 45)] =
+    ((hms 17 15 45).map fun time => .value time true) := by
+  native_decide
+
+example : clockFoldOf ["Clock", "Clock2"] .minimum
+    [(7, timeCell 9 30 0), (9, timeCell 17 15 45)] =
+    ((hms 9 30 0).map fun time => .value time true) := by
+  native_decide
+
+/- The clock family's own empty rule, so it is the Date rule and not a reimplementation: an absent
+   operand marks the result incomplete, and an all-empty list yields no value. -/
+example : clockFoldOf ["Clock", "Clock2"] .maximum [(7, timeCell 9 30 0)] =
+    ((hms 9 30 0).map fun time => .value time false) := by
+  native_decide
+
+example : clockFoldOf ["Clock", "Clock2"] .maximum [] = some .notEvaluated := by
+  native_decide
+
+/- A Date payload reaching the clock projection is malformed rather than skipped, which is the arm
+   that keeps the two families' domains apart at runtime as well as at the gate. -/
+example : clockFoldOf ["Clock", "Clock2"] .maximum
+    [(7, timeCell 9 30 0), (9, dateCell 2024 3 5)] =
+    some (.unknown .malformed) := by
+  native_decide
+
+/-! ### The cross-kind clock list is admitted and then unevaluable, one layer up
+
+A TIME beside a **DATE_TIME declared time-only** is the pair the measured component gate admits and a
+kind test would refuse, so the operand list is admitted here. The fold never sees a clock from it: this
+theory's checked cell is coherent by declared **kind**, so a DATE_TIME declaration cannot hold a
+time-of-day payload and the cell is malformed before any operator reads it. The Kernel stores a clock
+into exactly that field ([checkpoint](../../docs/SOURCES.md#src-datetime-carrier-stores-by-its-format)),
+so this is a narrowing of the cell layer rather than of the extrema, and it is recorded where it bites
+rather than where it originates. -/
+
+example : (admitted? ["Clock", "StampAsClock"]).isSome = true := by native_decide
+
+example : clockFoldOf ["Clock", "StampAsClock"] .maximum
+    [(7, timeCell 9 30 0), (8, timeCell 17 15 45)] =
+    some (.unknown .malformed) := by
+  native_decide
+
+/- The same list with the DATE_TIME cell **absent** folds normally, which places the refusal on that
+   cell's payload rather than on the operand or the list. -/
+example : clockFoldOf ["Clock", "StampAsClock"] .maximum [(7, timeCell 9 30 0)] =
+    ((hms 9 30 0).map fun time => .value time false) := by
+  native_decide
+
+/- Each family declines the other's list at the component gate, naming what it wanted and what it
+   found — the two directions, so neither reader is accidentally permissive. -/
+example : (do
+    let checked ← admitted? ["Clock", "StampAsClock"]
+    match TemporalExtremumStream.evalDate checked .maximum
+        (probeModel.checkContext (raw [])) .validation with
+    | .ok _ => none
+    | .error error => some error) =
+    some (.componentsMismatch TemporalComponents.fullDate TemporalComponents.time) := by
+  native_decide
+
+example : (do
+    let checked ← admitted? ["A", "B"]
+    match TemporalExtremumStream.evalTime checked .maximum
+        (probeModel.checkContext (raw [])) .validation with
+    | .ok _ => none
+    | .error error => some error) =
+    some (.componentsMismatch TemporalComponents.time TemporalComponents.fullDate) := by
+  native_decide
+
 /-! ## What this slice declines, and why each is a boundary rather than a verdict -/
 
 private def refusal? (names : List String) :
     Option TemporalExtremumStreamError := do
   let checked ← admitted? names
-  match TemporalExtremumStream.eval checked .maximum
+  match TemporalExtremumStream.evalDate checked .maximum
       (probeModel.checkContext (raw [])) .validation with
   | .ok _ => none
   | .error error => some error
@@ -165,7 +266,8 @@ private def refusal? (names : List String) :
    the split this capsule rests on: admission is measured, the ordering of such values is not. -/
 example : (admitted? ["Month", "Month2"]).isSome = true := by native_decide
 
-example : refusal? ["Month", "Month2"] = some (.notCompleteDate yearMonth) := by
+example : refusal? ["Month", "Month2"] =
+    some (.componentsMismatch TemporalComponents.fullDate yearMonth) := by
   native_decide
 
 /- Neither decline claims a Kernel class, because the Kernel admits both shapes. -/
@@ -192,7 +294,7 @@ private def starChecked? : Option (CheckedTemporalExtremumOperands probeModel) :
 example : starChecked?.isSome = true := by native_decide
 
 example : (starChecked?.map fun checked =>
-    match TemporalExtremumStream.eval checked .maximum
+    match TemporalExtremumStream.evalDate checked .maximum
         (probeModel.checkContext (raw [])) .validation with
     | .ok _ => none
     | .error error => some error) =
