@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-06-02"></a>
+### `SPEC-2026-09-06-02` — a temporal field may declare no format, and the Kernel resolves the default from its declared kind
+
+- `status`: pending
+- `clause`: [`05-dates-and-time.md` stored temporal conversion](../spec/05-dates-and-time.md)
+- `delta`: the clause assumed every temporal declaration carries a format. Measured: a DATE, TIME, or DATE_TIME with an **empty** type payload is kernel-valid, and the field then behaves as if it declared its kind's default format — complete date, full clock, and full stamp respectively.
+- `mechanism`: resolution reads the **kind**, and what it produces is a format *string* rather than an absence. Two rows carry that jointly and neither does alone: a format-less DATE beside a format-less DATE_TIME is refused `MVK_DATEFORMATS_NOT_COMPATIBLE`, so the three kinds do not share one default; and `FieldValuesNotUnique`, whose gate is the format **string**, admits a format-less DATE beside a declared `yyyy-MM-dd` field while refusing that same field beside a `dd.MM.yyyy` one — so the resolved value compares equal to the default spelling instead of being exempted from a string gate it has no string for.
+- `evidence`: one `model check` plus nine `rule check` children at a12-dmkits `1f2d4512bd92a28eb82091264de8c701004c1076` ([checkpoint](sources/evaluation-and-application-routes.md#src-temporal-declaration-without-a-format)).
+- `limit`: static admission only. Nothing here reads a stored value, so which text such a field's cells accept and how the resolved default renders on a computed target are untouched. The exact default **literal** is not exhibited: the rows pin its component set and its equality class at every gate measured, which is weaker than reading the string off the Kernel.
+- `surfaces`: any peer clause, loader, or checker that treats a missing temporal format as an error, as an absent format string, or as one default shared across the three kinds. A component-set carrier alone cannot see the third of those, since all three would differ from `yyyy-MM` identically.
+- `local-scope`: this project's flat model refuses an empty format string outright, so it currently **cannot represent** a legal declaration — the gate was recorded as a local property rather than a measured Kernel rule, and that caveat is now discharged in the wrong direction. [SG21](SEMANTICS-GAPS.md#sg21--the-declared-kindformat-split-across-temporal-carriers) carries the representation gap; no Lean clause changes here, because the resolution happens at model load and this project has no loader.
+- `acceptance`: a12-dmkits confirms the three defaults and the format-string equality on its own fixture, or supplies the contrary measurement — in particular the exact resolved literal, which its loader may be able to read off directly where these rows can only bound it.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-06-01"></a>
 ### `SPEC-2026-09-06-01` — `AtLeastOneDateRangeOverlaps` rejects every non-scalar form in its scalar slot with one class
 

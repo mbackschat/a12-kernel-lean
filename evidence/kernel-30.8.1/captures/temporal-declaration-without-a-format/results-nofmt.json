@@ -1,0 +1,198 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 9 ops; 3 of 9 exited nonzero (0 failed, 3 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 9,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-control-two-declared-full-dates",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(FiledOn, ClosedOn) > [FiledOn]", "--code", "Z1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-nofmt-date-beside-full-date",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(NoFmtDate, FiledOn) > [FiledOn]", "--code", "Z2" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-nofmt-date-beside-year-month",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(NoFmtDate, CoverFrom) > [FiledOn]", "--code", "Z3" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
+          "summary" : "Rule with path '/Probe4/CheckRule': Date formats not compatible for 'MaxValue': 'yyyy-MM-dd' and 'yyyy-MM' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "use DATE, TIME, or DATE_TIME fields with mutually compatible declared formats",
+          "explain" : "The largest of the listed values; unspecified fields are ignored. Over number fields it returns a number; over a date repetition list it returns the latest date."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "4-nofmt-time-beside-clock",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(NoFmtTime, Clock) > [Clock]", "--code", "Z4" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "5-nofmt-stamp-beside-datetime",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(NoFmtStamp, Stamp) > [Stamp]", "--code", "Z5" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "6-nofmt-date-alone-vs-nofmt-date",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(NoFmtDate, NoFmtStamp) > [FiledOn]", "--code", "Z6" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
+          "summary" : "Rule with path '/Probe4/CheckRule': Date formats not compatible for 'MaxValue': 'yyyy-MM-dd' and 'yyyy-MM-dd'T'HH:mm:ss' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "use DATE, TIME, or DATE_TIME fields with mutually compatible declared formats",
+          "explain" : "The largest of the listed values; unspecified fields are ignored. Over number fields it returns a number; over a date repetition list it returns the latest date."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "7-uniqueness-format-string-gate",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And FieldValuesNotUnique(NoFmtDate, FiledOn)", "--code", "Z7" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "8-control-uniqueness-two-declared",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And FieldValuesNotUnique(FiledOn, ClosedOn)", "--code", "Z8" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'FieldValuesNotUnique': It is only allowed to use string fields, enumerations, numbers (including amounts) and date fields with the same dateformat. Corrupt: 'ClosedOn'. [MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "this operand list is refused by KIND or by declared FORMAT, not by mixing categories. Boolean, Confirm, and DateRange operands are never admitted — compare something else, or use RepetitionNotUnique on a key field. Temporal operands (Date, Time, DateTime, DateFragment) are admitted only when ALL of them declare one IDENTICAL format string, so align the declared formats; note the gate reads the format and not the kind, so a Date declared yyyy and a DateFragment declared yyyy are a legal pair. This code also wins over the mixing code wherever the offending operand sits, because both gates read the whole list — so do not read it as a claim that the rest of the list is comparable",
+          "explain" : "True when the listed fields' values are not all distinct."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 8,
+      "id" : "9-direct-comparison-to-date-literal",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And [NoFmtDate] > [FiledOn]", "--code", "Z9" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

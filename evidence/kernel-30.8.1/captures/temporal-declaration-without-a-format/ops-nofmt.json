@@ -1,0 +1,11 @@
+[
+ {"id":"1-control-two-declared-full-dates","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And MaxValue(FiledOn, ClosedOn) > [FiledOn]","--code","Z1"]},
+ {"id":"2-nofmt-date-beside-full-date","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And MaxValue(NoFmtDate, FiledOn) > [FiledOn]","--code","Z2"]},
+ {"id":"3-nofmt-date-beside-year-month","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And MaxValue(NoFmtDate, CoverFrom) > [FiledOn]","--code","Z3"]},
+ {"id":"4-nofmt-time-beside-clock","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And MaxValue(NoFmtTime, Clock) > [Clock]","--code","Z4"]},
+ {"id":"5-nofmt-stamp-beside-datetime","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And MaxValue(NoFmtStamp, Stamp) > [Stamp]","--code","Z5"]},
+ {"id":"6-nofmt-date-alone-vs-nofmt-date","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And MaxValue(NoFmtDate, NoFmtStamp) > [FiledOn]","--code","Z6"]},
+ {"id":"7-uniqueness-format-string-gate","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And FieldValuesNotUnique(NoFmtDate, FiledOn)","--code","Z7"]},
+ {"id":"8-control-uniqueness-two-declared","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And FieldValuesNotUnique(FiledOn, ClosedOn)","--code","Z8"]},
+ {"id":"9-direct-comparison-to-date-literal","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","FieldFilled(SkuText) And [NoFmtDate] > [FiledOn]","--code","Z9"]}
+]
