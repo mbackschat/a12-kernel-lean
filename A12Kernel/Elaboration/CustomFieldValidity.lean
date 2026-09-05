@@ -112,7 +112,9 @@ namespace CheckedCustomFieldValidityLeaf
 
     The operand is read through the **checked** observation, so a formally invalid cell reaches the predicate as unavailable and never reaches the validator: a validator answering about the stored text of a cell the rest of the theory cannot read would contradict every other consumer of that cell.
 
-    `CellObservation.asText` maps a non-String payload to formally unavailable rather than absent. It sits beside the observation type because the semantic index's exact-text key read needs the identical meaning; this is its second user. -/
+    `CellObservation.asText` maps a non-String payload to formally unavailable rather than absent. It sits beside the observation type because the semantic index's exact-text key read needs the identical meaning; this is its second user.
+
+    **This function decides nothing about an Enumeration operand.** It forwards whatever payload the context's checked cell carries, so which text a validator sees for an Enumeration — the stored token or the display value — stays the caller's, and remains the open half of this family rather than being settled here by the projection's shape. -/
 def evalAt (leaf : CheckedCustomFieldValidityLeaf model)
     (context : FlatContext) (phase : Phase) : Verdict :=
   leaf.validity.eval leaf.operation
