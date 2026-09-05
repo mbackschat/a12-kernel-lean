@@ -334,6 +334,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Starred yearless DateRange overlap, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-starred-yearless-overlap)
 <a id="src-date-range-plural-year-class"></a>
 - [Plural DateRange overlap year class and fragment operands, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-plural-year-class)
+<a id="src-2026-09-05-german-shorthand-render-reconciliation"></a>
+- [Reviewed a12-dmkits handback rendering the German shorthands, closing the retired-terminal row, and confirming the computation carrier on render](sources/message-and-pointer-probes.md#src-2026-09-05-german-shorthand-render-reconciliation)
+
 <a id="src-2026-09-05-group-parameter-render-reconciliation"></a>
 - [Reviewed a12-dmkits handback completing the group position's bilingual table and separating the rendered coordinate on a doubly nested topology](sources/message-and-pointer-probes.md#src-2026-09-05-group-parameter-render-reconciliation)
 
