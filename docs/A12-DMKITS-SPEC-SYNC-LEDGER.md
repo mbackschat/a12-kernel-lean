@@ -47,6 +47,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `consumer-consequence`: a Translate or Compile consumer must bind the shorthand to whatever declaration owns the message, not to a rule. Getting this wrong refuses models the Kernel admits, and silently so, since every rule-carrier test still passes.
 - `local-consequence`: none behavioral; the fragment's message inputs carry no owner distinction to correct.
 - `acceptance`: a12-dmkits confirms that both keyword shorthands are admitted in a computation message and that the retired terminal keeps its own code there; or reports the row where it diverges. Static admission only — what the shorthand renders on that carrier is not claimed and stays unmeasured on both sides.
+- `forwarded`: sent over the peer-session channel as the id plus its checkpoint anchor, with the Kernel's own "Rule with path '…Comp'" wording named as the evidence for the ownership reading, and flagged as adjacent to their in-flight `IG148` work.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-09-05-05"></a>
@@ -61,6 +62,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `deliberately-unclaimed`: whether a *bare* hyphen or space is lexically accepted into one name, or merely reported as the raw argument after a parse failure, is **not** separated here — the witness would be a group bearing such a name, which the declaration rule forbids. Stated so the entry is not read as a claim about the bare lexer.
 - `local-consequence`: none behavioral. The fragment does not track the lexer's character position, which stays [SG10](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration)'s remaining item in that bundle.
 - `acceptance`: a12-dmkits confirms that a group cannot be declared with a digit-initial or hyphenated name, and that a quoted parameter segment containing such a character is refused at the lexer while its bare spelling reaches the group lookup; or reports the row where it diverges. Note there is no surface of yours this corrects — the `diagnostics` catalog carries `RK_*`/`LINT` codes only — so this is sent for reconciliation of the interpreter's parameter validation rather than as a catalog fix.
+- `forwarded`: sent over the peer-session channel as the id plus its checkpoint anchor, with the unclaimed bare-hyphen half called out explicitly so it is not read as resolved.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-09-05-04"></a>
