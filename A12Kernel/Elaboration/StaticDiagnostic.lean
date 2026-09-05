@@ -88,6 +88,16 @@ inductive KernelStaticDiagnostic where
   | notSortable
   /-- `NumberOfDifferentValues` received an operand list mixing its String/stored-Enumeration family with a non-member. -/
   | stringEnumAndNonStringEnum
+  /-- `NumberOfDifferentValues` received a **Number-first** operand list with a non-Number member.
+      The Kernel reports homogeneity from the family of the *first* operand, so this and
+      `stringEnumAndNonStringEnum` are the same illegal pair under two codes, selected by operand
+      order alone. -/
+  | numberAndNonNumber
+  /-- `NumberOfDifferentValues` received an operand outside its kind domain — a Boolean or Confirm.
+      Distinct from the confusably similar `onlyStringEnumNumberDateAllowed`, which is a **different
+      operator's** code: `FieldValuesNotUnique` draws that one for the same shape, and the two differ
+      only by a `CMP_` segment. -/
+  | onlyStringEnumNumberCmpDateAllowed
   /-- A computed Number operation's derived scale fails the shared target comparison gate. -/
   | invalidCompareDecimalPlaces
   /-- A computation directly references its own calculated field. -/
@@ -176,6 +186,9 @@ def kernelCode : KernelStaticDiagnostic → String
   | .noNumber => "MVK_NO_NUMBER"
   | .notSortable => "MVK_NOT_SORTABLE"
   | .stringEnumAndNonStringEnum => "MVK_STRING_ENUM_AND_NON_STRING_ENUM"
+  | .numberAndNonNumber => "MVK_NUMBER_AND_NON_NUMBER"
+  | .onlyStringEnumNumberCmpDateAllowed =>
+      "MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED"
   | .invalidCompareDecimalPlaces => "MVK_INVALID_COMPARE_DEC_PLACES"
   | .errorReferenceToCalculatedField =>
       "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
@@ -201,6 +214,7 @@ def kernelCode : KernelStaticDiagnostic → String
 def all : List KernelStaticDiagnostic :=
   [.invalidStringConstantForEnumComparison,
     .onlyStringEnumNumberDateAllowed, .onlyStringEnumNumberAllowed,
+    .numberAndNonNumber, .onlyStringEnumNumberCmpDateAllowed,
     .varyingTypesNotAllowed, .noBoolyAllowed, .invalidCompareToYes,
     .fieldNotInRuleGroup,
     .paramSizeInvalidN,

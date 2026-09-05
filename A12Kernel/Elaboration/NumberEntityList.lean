@@ -275,14 +275,37 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
       match op with
       | .minimum | .maximum =>
           if extremaRefuseKind actual then some .notSortable else none
-      | .sum | .distinctCount => none
+      -- A first operand that is not Number-valued means this list was never the Number family's, so
+      -- the Kernel routes it to another overload rather than refusing — except for the two kinds it
+      -- refuses under *every* overload. The distinct count's kind domain is string, enumeration,
+      -- number, and date/time, so a Boolean or Confirm first operand is refused outright
+      -- ([checkpoint](../../docs/SOURCES.md#src-distinct-count-operand-domain)). `Sum`'s own domain
+      -- is unmeasured, so it still projects nothing here.
+      | .distinctCount =>
+          match actual with
+          | .boolean | .confirm => some .onlyStringEnumNumberCmpDateAllowed
+          | _ => none
+      | .sum => none
   | .laterFieldKindMismatch _ actual =>
       match op with
       | .minimum | .maximum =>
           if extremaRefuseLaterKind actual then some .notSortable else none
-      -- `Sum` and the distinct count are not keyed by position in anything measured, and this arm
-      -- exists for the extrema; giving either a class here would be carried, not observed.
-      | .sum | .distinctCount => none
+      -- **The distinct count is keyed by position, and this arm is the position that determines it.**
+      -- Reaching a *later* arm implies the first operand already certified Number-valued, so the list
+      -- is Number-first, and Number-first with a non-Number member draws `MVK_NUMBER_AND_NON_NUMBER`
+      -- ([checkpoint](../../docs/SOURCES.md#src-distinct-count-operand-domain)). That is why the
+      -- class is available here and not at `groupExpansionNotNumber`, which carries the expansion's
+      -- kinds but not the whole list's first operand.
+      --
+      -- Boolean and Confirm keep the kind-domain code even in later position: they are outside the
+      -- operator's domain entirely, so the homogeneity rule never reaches them.
+      | .distinctCount =>
+          match actual with
+          | .boolean | .confirm => some .onlyStringEnumNumberCmpDateAllowed
+          | _ => some .numberAndNonNumber
+      -- `Sum` is not keyed by position in anything measured, and this arm exists for the extrema;
+      -- giving it a class here would be carried, not observed.
+      | .sum => none
   | .star _ | .groupExpansionEmpty _ | .groupExpansionMixedSign _
   | .incoherentCore => none
 

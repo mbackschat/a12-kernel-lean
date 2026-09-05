@@ -75,7 +75,11 @@ private def probeModel : FlatModel :=
       { id := 16, groupPath := ["Probe", "Rows", "Fixed"], name := "First",
         policy := { kind := .number unsigned }, repeatableScope := [10] },
       { id := 17, groupPath := ["Probe", "Rows", "Fixed"], name := "Second",
-        policy := { kind := .number unsigned }, repeatableScope := [10] }]
+        policy := { kind := .number unsigned }, repeatableScope := [10] },
+      { id := 18, groupPath := ["Probe", "Flags"], name := "Agreed",
+        policy := { kind := .boolean } },
+      { id := 19, groupPath := ["Probe", "Flags"], name := "Signed",
+        policy := { kind := .confirm } }]
     repeatableGroups := [
       { level := 10, path := ["Probe", "Rows"] },
       { level := 11, path := ["Probe", "Rows", "Fees"] },
@@ -482,9 +486,10 @@ example :
 This is the half that does **not** generalize. The star, arity, and duplicate gates above are the
 shared checker's and report the same class through every carrier; the kind gate asks what *this*
 operator does with the expansion's values, so a single group whose subtree contains a String is
-`MVK_NO_NUMBER` to `Sum`, `MVK_NOT_SORTABLE` to the extrema, and
-`MVK_STRING_ENUM_AND_NON_STRING_ENUM` to `NumberOfDifferentValues`. Reading one carrier's class off
-a sibling is exactly the inference these rows exist to block. -/
+`MVK_NO_NUMBER` to `Sum` and `MVK_NOT_SORTABLE` to the extrema. `NumberOfDifferentValues` is the
+member that claims **no** class from a group expansion, for the reason its own row below gives, and
+naming one here was the very reading that row records as removed. Reading one carrier's class off a
+sibling is exactly the inference these rows exist to block. -/
 
 private def aggregateDiagnostic? (op : NumericAggregateOp)
     (operands : List SurfaceFieldEntityOperand) :
@@ -519,6 +524,63 @@ example :
    them; projecting none is the narrowing this family already applies elsewhere. -/
 example :
     aggregateDiagnostic? .distinctCount [group ["Probe", "A"]] = none := by
+  native_decide
+
+/-! ## The distinct count's two homogeneity codes, and the domain that precedes them
+
+The class a group expansion cannot supply, an explicit list can. `NumberOfDifferentValues` reports
+homogeneity from the family of its **first** operand, so the same illegal pair draws two codes
+selected by operand order alone ([checkpoint](../../docs/SOURCES.md#src-distinct-count-operand-domain)).
+Reaching the later-operand arm at all implies the first operand certified Number-valued, which is
+exactly what makes the Number-first code available there and unavailable at the expansion arm. -/
+
+/- **Number-first with a later non-Number member draws the Number code.** The position is the whole
+   content of the claim: the offending operand is a String in both rows, and only its index differs.
+   Without the second row the first is consistent with "a String anywhere draws this code", which is
+   the reading that would put the wrong class on a String-first list. -/
+example :
+    aggregateDiagnostic? .distinctCount
+        [field ["Probe", "A"] "AVal", field ["Probe", "A", "Deep"] "DeepText"] =
+      some .numberAndNonNumber ∧
+    aggregateDiagnostic? .distinctCount
+        [field ["Probe", "A", "Deep"] "DeepText", field ["Probe", "A"] "AVal"] = none := by
+  native_decide
+
+/- The second row above is the routing fact, not an admission: a String-first list is not this
+   overload's at all, so the Number consumer declines to class it and the token overload owns it.
+   Projecting `MVK_STRING_ENUM_AND_NON_STRING_ENUM` from here would be that overload's class read off
+   this one. -/
+
+/- **The kind domain precedes homogeneity.** Boolean and Confirm are outside the operator's admitted
+   kinds entirely — string, enumeration, number, and date/time — so they draw the domain code from
+   either position rather than the positional homogeneity code. The two later-operand rows are what
+   separate the rules: a String later draws the Number code, a Boolean later does not.
+
+   The first-position row needs **two** flags rather than one, and that is the arity gate rather than
+   a quirk of this fixture: a single fixed field is refused `MVK_PARAMSIZE_INVALIDN` before any kind
+   is inspected, measured in the same batch. A one-operand row here would lock the arity code and say
+   nothing about the domain. -/
+example :
+    aggregateDiagnostic? .distinctCount
+        [field ["Probe", "Flags"] "Agreed", field ["Probe", "Flags"] "Signed"] =
+      some .onlyStringEnumNumberCmpDateAllowed ∧
+    aggregateDiagnostic? .distinctCount
+        [field ["Probe", "A"] "AVal", field ["Probe", "Flags"] "Agreed"] =
+      some .onlyStringEnumNumberCmpDateAllowed ∧
+    aggregateDiagnostic? .distinctCount
+        [field ["Probe", "A"] "AVal", field ["Probe", "Flags"] "Signed"] =
+      some .onlyStringEnumNumberCmpDateAllowed := by
+  native_decide
+
+/- The sibling carriers are unmoved, which is what keeps the rows above from being a change to the
+   shared gate. `Sum` still claims nothing from either position, and the extrema still report their
+   own ordering class for the same String that draws the distinct count's Number code. -/
+example :
+    aggregateDiagnostic? .sum
+        [field ["Probe", "A"] "AVal", field ["Probe", "A", "Deep"] "DeepText"] = none ∧
+    aggregateDiagnostic? .maximum
+        [field ["Probe", "A"] "AVal", field ["Probe", "A", "Deep"] "DeepText"] =
+      some .notSortable := by
   native_decide
 
 /- The pure-Number group is admitted under every one of them, which keeps the rows above pinned to
