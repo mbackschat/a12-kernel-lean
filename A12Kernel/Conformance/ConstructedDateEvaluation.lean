@@ -402,6 +402,27 @@ example :
           some (.unavailable .declaredConstraint) := by
   native_decide
 
+/- **The complete-Year position reads the stored text, and the decoded payload only for presence.**
+   A `yyyy` declaration's cell still admits a whole `DateValue`, because the cell model has no
+   partially known temporal arm and `Value.temporal` is the only carrier by which such a cell's
+   presence and formal state can reach a reader. That surplus precision is therefore not meaningful,
+   and this row is what keeps it from becoming meaningful by accident: the decoded year says 1999
+   while the stored text says 1963, and the answer is 1963. Narrowing the cell gate instead would
+   make a populated `yyyy` field observe as unavailable, so the invariant has to be locked here
+   rather than enforced there.
+
+   The second half is the same claim from the other side — the payload is still consulted for its
+   *kind*, so a Time payload under the same stored text is refused rather than silently parsed. -/
+example :
+    let sources : SurfaceConstructedDateComponents := {
+      day := .constant "15"
+      month := .constant "06"
+      year := .complete (.dateYearField 30) }
+    evaluateExtractorSources? sources [
+        temporalCell 30 "1963" (.parsed (.temporal (dateValue 1999 1 1)))] =
+          some (.resolved (.real { year := 1963, month := 6, day := 15 })) := by
+  native_decide
+
 private def amountOverZero : AuthoredNumericExpr SurfaceNumericAtom :=
   .binary .divide
     (.atom (.field amountPath))

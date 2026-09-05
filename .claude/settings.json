@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(lake test*)",
+      "Bash(lake exe checkCandidateConformance *)",
+      "Bash(lake exe checkReferenceProcess*)",
+      "Bash(lake exe checkBoundedProcess*)",
+      "Bash(./scripts/check-spec-sync.sh*)",
+      "Bash(./scripts/check-lean-trust.sh*)",
+      "Bash(./scripts/check-doc-hygiene.sh*)",
+      "Bash(./scripts/check-lean-source-hygiene.sh*)",
+      "Bash(shasum -a 256 *)",
+      "Bash(git ls-tree *)",
+      "Bash(git merge-base *)",
+      "Bash(git rev-list *)",
+      "Bash(git check-ignore *)"
+    ]
+  }
+}
