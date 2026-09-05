@@ -96,4 +96,60 @@ example : admitted 8 = false := by native_decide
 
 example : admission? 8 = none := by native_decide
 
+/-! ## The leaf reads its operand's **checked** cell, not the stored text
+
+Admission alone leaves the predicate unusable: `CustomFieldValidity.eval` consumes a
+`CellObservation String` that a caller had to build by hand. Pairing the admitted operand with the
+resolved name closes that, and the arm worth locking is the unavailable cell — a validator invoked
+on the raw text of a formally invalid cell would answer about a value the rest of the theory says
+is not readable at all. -/
+
+private def rejection : RegisteredCustomRejection where
+  projectCode := "PROJECT_CODE_INVALID"
+
+private def validator : RegisteredCustomFieldValidator := fun value context =>
+  if context == explicitCustomFieldValidationContext && value == "ok" then none
+  else some rejection
+
+private def world : World where
+  now := { epochMillis := 0 }
+  customFieldValidator? := fun name =>
+    if name == "ProjectCode" then some validator else none
+
+/-- Field 1 is the plain evaluated String; every other id reads empty. -/
+private def raw (value : RawCell) : RawFlatContext where
+  read id := if id == 1 then value else .empty
+
+private def leafVerdict? (operation : CustomFieldValidityOp) (cell : RawCell) :
+    Option Verdict :=
+  match elaborateCustomFieldValidityLeaf probeModel world 1 "ProjectCode" operation with
+  | .error _ => none
+  | .ok leaf => some (leaf.evalAt (probeModel.checkContext (raw cell)) .validation)
+
+/- The registered validator's own answer, both polarities, on a readable value. -/
+example : leafVerdict? .valid (.parsed (.str "ok")) = some (.fired .value) := by
+  native_decide
+
+example : leafVerdict? .invalid (.parsed (.str "ok")) = some .notFired := by
+  native_decide
+
+example : leafVerdict? .valid (.parsed (.str "bad")) = some .notFired := by
+  native_decide
+
+/- An absent cell is UNKNOWN before any registry contact, which the value-specified gate owns. -/
+example : leafVerdict? .valid .empty = some .unknown := by
+  native_decide
+
+/- A **formally invalid** cell — a String declaration holding a parsed number — is UNKNOWN under
+   both polarities. What this separates is *reading the checked observation* from *reading the
+   stored text*: the wrong implementation hands the validator a value and comes back with a verdict,
+   which the `bad` row above shows is a reachable answer here. It does **not** separate malformed
+   from absent, and cannot: the value-specified gate maps empty and unavailable alike to UNKNOWN, so
+   the two rows agree by design and neither polarity distinguishes them. -/
+example : leafVerdict? .valid (.parsed (.num 7)) = some .unknown := by
+  native_decide
+
+example : leafVerdict? .invalid (.parsed (.num 7)) = some .unknown := by
+  native_decide
+
 end A12Kernel.Conformance.CustomFieldValidityOperand

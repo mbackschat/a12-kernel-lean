@@ -108,16 +108,6 @@ def lookupTextObservation (column : ResolvedSemanticIndexColumn)
       else column.lookupValue phase value
   | .unknown cause | .poison cause => unavailableObservedKey phase cause
 
-/-- Project one phase-indexed key observation into the exact-text key domain. A payload of the wrong
-kind becomes formally unavailable rather than a silent no-match, because a key that cannot be read is
-not a key that is absent. -/
-def asTextKeyObservation : CellObservation → CellObservation String
-  | .empty => .empty
-  | .value (.str token) => .value token
-  | .value _ => .unknown .malformed
-  | .unknown cause => .unknown cause
-  | .poison cause => .poison cause
-
 /-- Read one admitted Number key by numeric value, independent of its authored or stored decimal spelling. -/
 def lookupNumberValue (column : ResolvedSemanticIndexColumn)
     (phase : Phase) (value : Rat) : CellObservation :=
@@ -139,7 +129,7 @@ def lookupObservationForIndex (column : ResolvedSemanticIndexColumn)
     (phase : Phase) (numericIndex : Bool) (key : CellObservation) :
     CellObservation :=
   if numericIndex then column.lookupNumberObservation phase key
-  else column.lookupTextObservation phase (asTextKeyObservation key)
+  else column.lookupTextObservation phase key.asText
 
 /-- Feed one resolved numeric-key validation lookup into the same direct-comparison empty and polarity rule as the exact-text entry point. -/
 def validationNumberKeyOperand (column : ResolvedSemanticIndexColumn)

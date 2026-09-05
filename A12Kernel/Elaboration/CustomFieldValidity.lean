@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.Flat.Condition.SurfaceSupport
+import A12Kernel.Elaboration.Flat.Context
 import A12Kernel.Elaboration.Flat.Model
 import A12Kernel.Semantics.CustomFieldValidity
 
@@ -83,5 +84,40 @@ def diagnostic? : CustomFieldValidityOperandElabError → Option KernelStaticDia
   | .resolve error => error.diagnostic?
 
 end CustomFieldValidityOperandElabError
+
+/-- Static refusal of a whole validity leaf. The two arms are independent gates, and their **order here asserts no precedence**: the nonempty-type-name refusal has never been observed beside an inadmissible operand, so which one the Kernel reports first is unmeasured. -/
+inductive CustomFieldValidityLeafElabError where
+  | operand (error : CustomFieldValidityOperandElabError)
+  | name (error : CustomFieldValidityElabError)
+  deriving Repr, DecidableEq
+
+/-- One complete explicit validity predicate: an admitted operand, the resolution outcome for its authored type name, and the polarity. This is what makes the family evaluable from a model and a context rather than from a hand-built observation. -/
+structure CheckedCustomFieldValidityLeaf (model : FlatModel) where
+  operand : CheckedCustomFieldValidityOperand model
+  validity : CheckedCustomFieldValidity
+  operation : CustomFieldValidityOp
+
+def elaborateCustomFieldValidityLeaf (model : FlatModel) (world : World)
+    (source : FieldId) (name : String) (operation : CustomFieldValidityOp) :
+    Except CustomFieldValidityLeafElabError
+      (CheckedCustomFieldValidityLeaf model) := do
+  let operand ←
+    (elaborateCustomFieldValidityOperand model source).mapError .operand
+  let validity ← (elaborateCustomFieldValidity world name).mapError .name
+  pure { operand, validity, operation }
+
+namespace CheckedCustomFieldValidityLeaf
+
+/-- Evaluate the predicate against one flat context.
+
+    The operand is read through the **checked** observation, so a formally invalid cell reaches the predicate as unavailable and never reaches the validator: a validator answering about the stored text of a cell the rest of the theory cannot read would contradict every other consumer of that cell.
+
+    `CellObservation.asText` maps a non-String payload to formally unavailable rather than absent. It sits beside the observation type because the semantic index's exact-text key read needs the identical meaning; this is its second user. -/
+def evalAt (leaf : CheckedCustomFieldValidityLeaf model)
+    (context : FlatContext) (phase : Phase) : Verdict :=
+  leaf.validity.eval leaf.operation
+    (context.observeAt phase leaf.operand.source).asText
+
+end CheckedCustomFieldValidityLeaf
 
 end A12Kernel

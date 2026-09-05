@@ -69,6 +69,20 @@ inductive CellObservation (α : Type := Value) where
   | poison  (cause : FormalCause)   -- computation face: aborts the computing instance
   deriving Repr, DecidableEq
 
+/-- Project a heterogeneous observation into the exact-text domain. A payload of the wrong kind
+    becomes **formally unavailable rather than absent**, because a value that cannot be read as text
+    is not a value that is missing, and the two answer differently at every consumer.
+
+    It lives here rather than with either caller because both need the same meaning and the same
+    result domain: the semantic index's exact-text key lookup, and the explicit validity predicates'
+    operand read. -/
+def CellObservation.asText : CellObservation → CellObservation String
+  | .empty => .empty
+  | .value (.str token) => .value token
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .poison cause
+
 -- Implemented in `A12Kernel.Semantics.Observation` as the total functions
 --   formalCheck : FieldPolicy → RawCell → CheckedCell
 --   observeCell : Phase → CheckedCell α → CellObservation α
