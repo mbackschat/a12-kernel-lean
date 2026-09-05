@@ -1,0 +1,86 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 3 ops; 2 of 3 exited nonzero (0 failed, 2 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 3,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-PRESENCE-vs-differing-component-set",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe2/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe2/Rows*/DateSub, CoverFrom) > [FiledOn]", "--code", "X1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATEFORMATS_NOT_COMPATIBLE",
+          "summary" : "Rule with path '/Probe2/CheckRule': Date formats not compatible for 'MaxValue': 'yyyy-MM-dd' and 'yyyy-MM' [MVK_DATEFORMATS_NOT_COMPATIBLE]",
+          "where" : {
+            "rule" : "/Probe2/CheckRule"
+          },
+          "fix" : "use DATE, TIME, or DATE_TIME fields with mutually compatible declared formats",
+          "explain" : "The largest of the listed values; unspecified fields are ignored. Over number fields it returns a number; over a date repetition list it returns the latest date."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-control-PRESENCE-vs-same-set-other-spelling",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe2/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe2/Rows*/DateSub, ClosedOn) > [FiledOn]", "--code", "X2" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-control-PRESENCE-first-vs-nondate",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe2/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe2/Rows*/DateSub, Flag) > [FiledOn]", "--code", "X3" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATE_AND_NONDATE",
+          "summary" : "Rule with path '/Probe2/CheckRule': At 'MaxValue': if the first parameter is a date than all parameters have to be dates. [MVK_DATE_AND_NONDATE]",
+          "where" : {
+            "rule" : "/Probe2/CheckRule"
+          },
+          "fix" : "the FIRST operand fixes the expected class and the reported code names THAT class, not the offender's — a temporal leader beside a non-temporal operand is MVK_DATE_AND_NONDATE, while the same two operands in the other order are MVK_NOT_SORTABLE. Make the list family-homogeneous rather than reordering it",
+          "explain" : "The largest of the listed values; unspecified fields are ignored. Over number fields it returns a number; over a date repetition list it returns the latest date."
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

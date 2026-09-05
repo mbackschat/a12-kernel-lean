@@ -1,0 +1,6 @@
+[
+ {"id":"1-PRESENCE-temporal-homogeneous","verb":"rule","args":["check","--field","/Probe2/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe2/Rows*/DateSub) > [FiledOn]","--code","W1"]},
+ {"id":"2-control-leaf-of-that-group-through-star","verb":"rule","args":["check","--field","/Probe2/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe2/Rows*/DateSub/OnlyDate) > [FiledOn]","--code","W2"]},
+ {"id":"3-control-same-group-unstarred","verb":"rule","args":["check","--field","/Probe2/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe2/Rows/DateSub) > [FiledOn]","--code","W3"]},
+ {"id":"4-control-starred-repeatable-group-temporal-only","verb":"rule","args":["check","--field","/Probe2/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe2/Rows*/DateSub, FiledOn) > [FiledOn]","--code","W4"]}
+]

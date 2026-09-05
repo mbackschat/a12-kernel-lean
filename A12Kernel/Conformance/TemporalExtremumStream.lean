@@ -99,7 +99,14 @@ private def probeModel : FlatModel :=
       -- filter at all, which the inner guard supplies; this is the captured half, so the fixture
       -- exercises a correlation rather than a row-local test.
       { id := 18, groupPath := ["Probe"], name := "Keep",
-        policy := { kind := .number { scale := 0, signed := false } } }]
+        policy := { kind := .number { scale := 0, signed := false } } },
+      -- A **nonrepeatable** group under a repeatable ancestor: the only shape that makes a starred
+      -- group resolve to the *presence* terminal rather than the repeatable one, so without it that
+      -- arm is unreachable from the surface and could not be exercised at all.
+      { id := 19, groupPath := ["Probe", "Rows", "Slot"], name := "SlotDate",
+        policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd" },
+        repeatableScope := [20] }]
     repeatableGroups := [
       { level := 20, path := ["Probe", "Rows"], repeatability := some 3 },
       { level := 30, path := ["Probe", "Full"], repeatability := some 2 },
@@ -572,6 +579,45 @@ example : addressedFoldOf [plainStarOperand] .maximum guardedRows guardedCells =
    document, same rows — only the filter differs, and the value changes. -/
 example : addressedFoldOf [filteredStarOperand] .maximum guardedRows guardedCells =
     ((ymd 2024 3 5).map fun date => .value date false) := by
+  native_decide
+
+/-! ### The starred group whose terminal is nonrepeatable
+
+The **presence** form is admitted by the gate and folds here, at the same depth as a starred
+repeatable group: both supply their star plan's `firstStar`, and the Boolean value-count carrier
+already resolves its presence operands through that owner, so the depth is a reuse with a completed
+second consumer rather than this module's reading of the star machinery.
+
+`Rows` declares capacity 3 and the rows below instantiate 2, so the selection is **not given** — the
+tail bit reaches the fold through the presence form exactly as it does through the plain star, which
+is the half a value-only row would not show. -/
+private def presenceOperand : SurfaceFieldEntityOperand :=
+  .starredGroup
+    { base := .absolute
+      groups := [{ name := "Probe" }, { name := "Rows", starred := true },
+        { name := "Slot" }] }
+
+example : addressedFoldOf [presenceOperand] .maximum
+    [{ group := 20, path := [1] }, { group := 20, path := [2] }]
+    [rowCell 19 1 2024 3 5, rowCell 19 2 2024 7 1] =
+    ((ymd 2024 7 1).map fun date => .value date false) := by
+  native_decide
+
+example : addressedFoldOf [presenceOperand] .minimum
+    [{ group := 20, path := [1] }, { group := 20, path := [2] }]
+    [rowCell 19 1 2024 3 5, rowCell 19 2 2024 7 1] =
+    ((ymd 2024 3 5).map fun date => .value date false) := by
+  native_decide
+
+/- Both rows are folded, not just the first: the later row alone would make `.minimum` agree with
+   `.maximum`, so the pair above already excludes a presence operand that reads one row. This row
+   pins the count directly by adding a third instantiated row that fills the capacity, which closes
+   the tail and turns the identical selection given. -/
+example : addressedFoldOf [presenceOperand] .maximum
+    [{ group := 20, path := [1] }, { group := 20, path := [2] },
+     { group := 20, path := [3] }]
+    [rowCell 19 1 2024 3 5, rowCell 19 2 2024 7 1, rowCell 19 3 2024 5 9] =
+    ((ymd 2024 7 1).map fun date => .value date true) := by
   native_decide
 
 /-! ### A fixed group, and the tail bit that decides which ones it may fold

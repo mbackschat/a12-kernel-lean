@@ -1,0 +1,5 @@
+[
+ {"id":"1-PRESENCE-vs-differing-component-set","verb":"rule","args":["check","--field","/Probe2/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe2/Rows*/DateSub, CoverFrom) > [FiledOn]","--code","X1"]},
+ {"id":"2-control-PRESENCE-vs-same-set-other-spelling","verb":"rule","args":["check","--field","/Probe2/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe2/Rows*/DateSub, ClosedOn) > [FiledOn]","--code","X2"]},
+ {"id":"3-control-PRESENCE-first-vs-nondate","verb":"rule","args":["check","--field","/Probe2/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe2/Rows*/DateSub, Flag) > [FiledOn]","--code","X3"]}
+]

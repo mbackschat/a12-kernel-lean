@@ -135,7 +135,14 @@ private def operandDeclarations (model : FlatModel) :
       match model.groupSubtreeFields source.group.path with
       | [] => throw (.groupExpansionEmpty source.group.path)
       | fields => pure fields
-  | .starredGroupPresence source => throw (.unsupportedOperandForm source.groupPath)
+  -- A star above a **nonrepeatable** terminal contributes its expansion exactly as a starred
+  -- repeatable group does, and the Kernel admits it: the component gate refuses a differing set
+  -- through it and admits the same set spelled otherwise, and its expansion fixes the leading class
+  -- for later operands.
+  | .starredGroupPresence source =>
+      match model.groupSubtreeFields source.groupPath with
+      | [] => throw (.groupExpansionEmpty source.groupPath)
+      | fields => pure fields
 
 /-- The authored filter of one operand, certified against that star's exact environments, or `none`.
 
@@ -213,14 +220,12 @@ namespace TemporalExtremumOperandElabError
 def diagnostic? : TemporalExtremumOperandElabError → Option KernelStaticDiagnostic
   | .incompatibleComponents _ _ _ => some .dateFormatsNotCompatible
   | .firstNotTemporal _ _ => none
-  -- Measured for a Number, a String and a Boolean in later position, on both `MinValue` and
-  -- `MaxValue` ([checkpoint](../../docs/SOURCES.md#src-later-position-kinds-and-group-expansion-class)).
-  -- Three kinds from three families sharing one class is what makes the Kernel's generalizing text
-  -- read as a rule, but text is not a row, so the remaining three stay unprojected.
-  | .laterNotTemporal _ actual =>
-      match actual with
-      | .number | .string | .boolean => some .dateAndNonDate
-      | .temporal _ | .enumeration | .confirm | .dateRange => none
+  -- Every kind is measured in the later position now, across two models and both extremum operators
+  -- ([checkpoint](../../docs/SOURCES.md#src-later-position-class-is-total-and-presence-is-admitted)),
+  -- so the projection no longer branches: the Kernel's generalizing message text turned out to be
+  -- the rule. A `.temporal` operand never reaches this arm — a temporal later operand that disagrees
+  -- is a component mismatch and carries its own class.
+  | .laterNotTemporal _ _ => some .dateAndNonDate
   | .groupExpansionEmpty _ => none
   | .unsupportedOperandForm _ => none
   | .shape error => error.diagnostic?

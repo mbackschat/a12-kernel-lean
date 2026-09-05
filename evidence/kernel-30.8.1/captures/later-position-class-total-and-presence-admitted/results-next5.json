@@ -1,0 +1,211 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 8 ops; 6 of 8 exited nonzero (0 failed, 6 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 8,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-control-model-loads-plain-date-extremum",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe2/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(FiledOn, ClosedOn) > [FiledOn]", "--code", "V1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-enumeration-in-later-position",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe2/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(FiledOn, Choice) > [FiledOn]", "--code", "V2" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATE_AND_NONDATE",
+          "summary" : "Rule with path '/Probe2/CheckRule': At 'MaxValue': if the first parameter is a date than all parameters have to be dates. [MVK_DATE_AND_NONDATE]",
+          "where" : {
+            "rule" : "/Probe2/CheckRule"
+          },
+          "fix" : "the FIRST operand fixes the expected class and the reported code names THAT class, not the offender's — a temporal leader beside a non-temporal operand is MVK_DATE_AND_NONDATE, while the same two operands in the other order are MVK_NOT_SORTABLE. Make the list family-homogeneous rather than reordering it",
+          "explain" : "The largest of the listed values; unspecified fields are ignored. Over number fields it returns a number; over a date repetition list it returns the latest date."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-confirm-in-later-position",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe2/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(FiledOn, Agreed) > [FiledOn]", "--code", "V3" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATE_AND_NONDATE",
+          "summary" : "Rule with path '/Probe2/CheckRule': At 'MaxValue': if the first parameter is a date than all parameters have to be dates. [MVK_DATE_AND_NONDATE]",
+          "where" : {
+            "rule" : "/Probe2/CheckRule"
+          },
+          "fix" : "the FIRST operand fixes the expected class and the reported code names THAT class, not the offender's — a temporal leader beside a non-temporal operand is MVK_DATE_AND_NONDATE, while the same two operands in the other order are MVK_NOT_SORTABLE. Make the list family-homogeneous rather than reordering it",
+          "explain" : "The largest of the listed values; unspecified fields are ignored. Over number fields it returns a number; over a date repetition list it returns the latest date."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "4-daterange-in-later-position",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe2/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(FiledOn, Span) > [FiledOn]", "--code", "V4" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATE_AND_NONDATE",
+          "summary" : "Rule with path '/Probe2/CheckRule': At 'MaxValue': if the first parameter is a date than all parameters have to be dates. [MVK_DATE_AND_NONDATE]",
+          "where" : {
+            "rule" : "/Probe2/CheckRule"
+          },
+          "fix" : "the FIRST operand fixes the expected class and the reported code names THAT class, not the offender's — a temporal leader beside a non-temporal operand is MVK_DATE_AND_NONDATE, while the same two operands in the other order are MVK_NOT_SORTABLE. Make the list family-homogeneous rather than reordering it",
+          "explain" : "The largest of the listed values; unspecified fields are ignored. Over number fields it returns a number; over a date repetition list it returns the latest date."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "5-control-boolean-later-on-this-model",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe2/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(FiledOn, Flag) > [FiledOn]", "--code", "V5" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATE_AND_NONDATE",
+          "summary" : "Rule with path '/Probe2/CheckRule': At 'MaxValue': if the first parameter is a date than all parameters have to be dates. [MVK_DATE_AND_NONDATE]",
+          "where" : {
+            "rule" : "/Probe2/CheckRule"
+          },
+          "fix" : "the FIRST operand fixes the expected class and the reported code names THAT class, not the offender's — a temporal leader beside a non-temporal operand is MVK_DATE_AND_NONDATE, while the same two operands in the other order are MVK_NOT_SORTABLE. Make the list family-homogeneous rather than reordering it",
+          "explain" : "The largest of the listed values; unspecified fields are ignored. Over number fields it returns a number; over a date repetition list it returns the latest date."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "6-starred-group-presence-TEMPORAL",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe2/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe2/Rows*/Sub) > [FiledOn]", "--code", "V6" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NOT_SORTABLE",
+          "summary" : "Rule with path '/Probe2/CheckRule': At 'MaxValue': Only numbers, amounts or dates are allowed to be used. [MVK_NOT_SORTABLE]",
+          "where" : {
+            "rule" : "/Probe2/CheckRule"
+          },
+          "fix" : "use at least two distinct sortable fields — numbers, or date-like fields sharing one temporal COMPONENT SET (DATE and DATE_FRAGMENT may mix; DATE beside TIME or DATE_TIME may not) — or one flattened sortable repetition list",
+          "explain" : "The largest of the listed values; unspecified fields are ignored. Over number fields it returns a number; over a date repetition list it returns the latest date."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "7-control-presence-subdate-through-star",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe2/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe2/Rows*/Sub/SubDate) > [FiledOn]", "--code", "V7" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "8-control-presence-numeric-terminal",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe2/SkuText", "--condition", "FieldFilled(SkuText) And MaxValue(/Probe2/Rows*/Sub) > 0", "--code", "V8" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NOT_SORTABLE",
+          "summary" : "Rule with path '/Probe2/CheckRule': At 'MaxValue': Only numbers, amounts or dates are allowed to be used. [MVK_NOT_SORTABLE]",
+          "where" : {
+            "rule" : "/Probe2/CheckRule"
+          },
+          "fix" : "use at least two distinct sortable fields — numbers, or date-like fields sharing one temporal COMPONENT SET (DATE and DATE_FRAGMENT may mix; DATE beside TIME or DATE_TIME may not) — or one flattened sortable repetition list",
+          "explain" : "The largest of the listed values; unspecified fields are ignored. Over number fields it returns a number; over a date repetition list it returns the latest date."
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

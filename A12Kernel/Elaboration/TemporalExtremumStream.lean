@@ -215,8 +215,21 @@ private def operandExtent (document : CheckedDocument model) (outer : Env)
             |>.map fun core => (core, core.hasUninstantiatedTail)
       | none =>
           throw (.declined (.operandNeedsAddressing source.declaration.path))
+  -- The **presence** terminal takes the same two questions at the same depth. `boundLevelCount`
+  -- gives both starred shapes their star plan's `firstStar`, and the Boolean value-count carrier
+  -- already resolves its presence operands through this exact owner — a completed second consumer
+  -- with the same meaning and result domain, which is what makes the depth a settled reuse here
+  -- rather than a reading of the star machinery.
   | .starredGroupPresence source =>
-      throw (.declined (.operandNeedsAddressing source.groupPath))
+      let declarations := model.groupSubtreeFields source.groupPath
+      let boundCount :=
+        (CheckedEntityGroupSource.starredPresence source).boundLevelCount
+      (do
+        let core ← document.resolveCheckedGroupEntityOperandCore outer
+          boundCount declarations
+        let tail ← document.resolveCheckedGroupUninstantiatedTail outer
+          boundCount declarations
+        pure (core, tail)).mapError .addressing
 
 /-- Read one admitted operand list against an immutable checked document.
 

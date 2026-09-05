@@ -267,12 +267,16 @@ example : refusal? plainModel [1, 14] = some .dateAndNonDate := by native_decide
 
 example : admitted plainModel [1, 14] = false := by native_decide
 
-/- The three kinds still outside the measured set are refused with **no** class. Enumeration stands
-   for them here; each would need its own row, since the class is claimed per kind rather than read
-   off the message's wording. -/
+/- **Every** kind draws it. Enumeration, Confirm and DATE_RANGE were the last three unmeasured, and
+   all three landed on this class beside a Boolean control on the same model
+   ([checkpoint](../../docs/SOURCES.md#src-later-position-class-is-total-and-presence-is-admitted)),
+   so the gate is now total in the later position rather than a set of measured kinds. Enumeration
+   stands for the three here because the projection no longer branches on kind at all — which is the
+   point: a row per kind would test the same constant. -/
 private def enumeration : FieldId := 15
 
-example : refusal? plainModel [1, enumeration] = none := by native_decide
+example : refusal? plainModel [1, enumeration] = some .dateAndNonDate := by
+  native_decide
 
 example : admitted plainModel [1, enumeration] = false := by native_decide
 
@@ -346,19 +350,39 @@ example :
       some .dateFormatsNotCompatible := by
   native_decide
 
-/- The negative control the fix must not widen: a starred **group presence** slot stays declined and
-   still claims no class, because no row measured it. Admission was measured for the filtered star
-   alone, and the two forms shared one arm before this change — so without this row the fix could
-   silently admit both and every row above would still pass. -/
+/-! ## A starred group whose terminal is nonrepeatable
+
+The **presence** form — a star above a group that is not itself a repeatable level — is admitted,
+and its component gate reads the expansion exactly as a starred repeatable group's does
+([checkpoint](../../docs/SOURCES.md#src-later-position-class-is-total-and-presence-is-admitted)).
+The measured control that makes this a property of the *star* rather than of the group is the same
+path read **without** one, which draws `MVK_NO_WILDCARD`.
+
+The rows below need a homogeneous temporal expansion under `Sub`, which is also the trap the
+measurement walked into: adding a date beside the existing Number made the expansion *mixed*, and
+the row then measured the mixed-expansion rule a second time instead of the form. -/
 private def presenceGroup : SurfaceFieldEntityOperand :=
   .starredGroup
     { base := .absolute
       groups := [{ name := "Probe" }, { name := "Rows", starred := true },
         { name := "Sub" }] }
 
+example : groupAdmitted starModel [presenceGroup] = true := by native_decide
+
+/- The gate reads its expansion: a differing set refuses, and the same set spelled otherwise is
+   admitted. Without the refusal row, admission alone is equally well explained by the form skipping
+   the gate — which would be a worse outcome than a refusal, since it would let a group operand
+   smuggle an incompatible declaration past it. -/
 example :
-    groupRefusal? starModel [presenceGroup] = none ∧
-      groupAdmitted starModel [presenceGroup] = false := by
+    groupRefusal? starModel [presenceGroup, operandOf 3] =
+        some .dateFormatsNotCompatible ∧
+      groupAdmitted starModel [presenceGroup, operandOf 2] = true := by
+  native_decide
+
+/- And its expansion fixes the leading class, so a non-temporal later operand draws the date class
+   rather than none — the presence form participates in the positional rule like any other. -/
+example :
+    groupRefusal? starModel [presenceGroup, operandOf 12] = some .dateAndNonDate := by
   native_decide
 
 end A12Kernel.Conformance.TemporalExtremumOperands

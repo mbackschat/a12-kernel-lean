@@ -1,0 +1,10 @@
+[
+ {"id":"1-control-model-loads-plain-date-extremum","verb":"rule","args":["check","--field","/Probe2/SkuText","--condition","FieldFilled(SkuText) And MaxValue(FiledOn, ClosedOn) > [FiledOn]","--code","V1"]},
+ {"id":"2-enumeration-in-later-position","verb":"rule","args":["check","--field","/Probe2/SkuText","--condition","FieldFilled(SkuText) And MaxValue(FiledOn, Choice) > [FiledOn]","--code","V2"]},
+ {"id":"3-confirm-in-later-position","verb":"rule","args":["check","--field","/Probe2/SkuText","--condition","FieldFilled(SkuText) And MaxValue(FiledOn, Agreed) > [FiledOn]","--code","V3"]},
+ {"id":"4-daterange-in-later-position","verb":"rule","args":["check","--field","/Probe2/SkuText","--condition","FieldFilled(SkuText) And MaxValue(FiledOn, Span) > [FiledOn]","--code","V4"]},
+ {"id":"5-control-boolean-later-on-this-model","verb":"rule","args":["check","--field","/Probe2/SkuText","--condition","FieldFilled(SkuText) And MaxValue(FiledOn, Flag) > [FiledOn]","--code","V5"]},
+ {"id":"6-starred-group-presence-TEMPORAL","verb":"rule","args":["check","--field","/Probe2/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe2/Rows*/Sub) > [FiledOn]","--code","V6"]},
+ {"id":"7-control-presence-subdate-through-star","verb":"rule","args":["check","--field","/Probe2/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe2/Rows*/Sub/SubDate) > [FiledOn]","--code","V7"]},
+ {"id":"8-control-presence-numeric-terminal","verb":"rule","args":["check","--field","/Probe2/SkuText","--condition","FieldFilled(SkuText) And MaxValue(/Probe2/Rows*/Sub) > 0","--code","V8"]}
+]
