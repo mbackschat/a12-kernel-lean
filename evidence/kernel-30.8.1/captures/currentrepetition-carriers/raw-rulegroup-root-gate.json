@@ -1,0 +1,135 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 6 ops; 1 of 6 exited nonzero (0 failed, 1 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 6,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "Z1-root-declared-plain",
+      "verb" : "computation",
+      "args" : [ "add", "comp-Z1.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/AltComp",
+        "changed" : {
+          "computation" : "/Rep/AltComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "Z2-root-declared-rulegroup",
+      "verb" : "computation",
+      "args" : [ "add", "comp-Z2.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the computation is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "RULEGROUP_IMMEDIATELY_BELOW_ROOT",
+          "summary" : "Rule with path '/Rep/RootNumComp': The rule '/Rep/RootNumComp' specifies an incorrect error text for the language English. The parameter '#RuleGroup' is not allowed in rules which are ordered right below the rootgroup. [RULEGROUP_IMMEDIATELY_BELOW_ROOT]",
+          "where" : {
+            "rule" : "/Rep/RootNumComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "Z3-below-root-rulegroup",
+      "verb" : "computation",
+      "args" : [ "add", "comp-Z3.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/Rows/AltComp",
+        "changed" : {
+          "computation" : "/Rep/Rows/AltComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "Z4-root-declared-plain-fixed",
+      "verb" : "computation",
+      "args" : [ "add", "comp-Z4.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/RootNumComp",
+        "changed" : {
+          "computation" : "/Rep/RootNumComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "Z5-root-declared-rootgroup",
+      "verb" : "computation",
+      "args" : [ "add", "comp-Z5.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/RootNumComp",
+        "changed" : {
+          "computation" : "/Rep/RootNumComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "Z6-root-declared-absolute",
+      "verb" : "computation",
+      "args" : [ "add", "comp-Z6.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/RootNumComp",
+        "changed" : {
+          "computation" : "/Rep/RootNumComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

@@ -1,0 +1,15 @@
+{
+ "computedField": "/Rep/Rows/Items/Val",
+ "group": "/Rep/Rows",
+ "alternatives": [
+  {
+   "operation": "7"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "row=[$#RuleGroup$] deep=[$#/Rep/Rows/Items$]"
+  }
+ ]
+}

@@ -1,0 +1,68 @@
+[
+ {
+  "id": "Z1-root-declared-plain",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Z1.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "Z2-root-declared-rulegroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Z2.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "Z3-below-root-rulegroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Z3.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "Z4-root-declared-plain-fixed",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Z4.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "Z5-root-declared-rootgroup",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Z5.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "Z6-root-declared-absolute",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Z6.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ }
+]

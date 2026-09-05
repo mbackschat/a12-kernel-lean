@@ -1,0 +1,35 @@
+[
+ {
+  "id": "Y1-root-declared-repeatable-target",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Y1.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "Y2-own-group-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Y2.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "Y3-unrelated-sibling-declaring",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Y3.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ }
+]

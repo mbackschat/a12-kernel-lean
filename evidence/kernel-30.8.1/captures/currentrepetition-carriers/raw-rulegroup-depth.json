@@ -1,0 +1,72 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : true,
+  "summary" : "dispatched 3 ops; all children exited zero",
+  "data" : {
+    "ops" : 3,
+    "dispatched" : true,
+    "allExitedZero" : true,
+    "results" : [ {
+      "op" : 0,
+      "id" : "W1-declaring-above-target-parent",
+      "verb" : "computation",
+      "args" : [ "add", "compw-W1.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/Rows/ValComp",
+        "changed" : {
+          "computation" : "/Rep/Rows/ValComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "W2-same-shape-plain",
+      "verb" : "computation",
+      "args" : [ "add", "compw-W2.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/Rows/ValComp",
+        "changed" : {
+          "computation" : "/Rep/Rows/ValComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "W3-declared-at-target-parent",
+      "verb" : "computation",
+      "args" : [ "add", "compw-W3.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/Rows/Items/ValComp",
+        "changed" : {
+          "computation" : "/Rep/Rows/Items/ValComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

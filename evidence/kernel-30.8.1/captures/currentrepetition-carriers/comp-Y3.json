@@ -1,0 +1,15 @@
+{
+ "computedField": "/Rep/Rows/Alt",
+ "group": "/Rep/Other",
+ "alternatives": [
+  {
+   "operation": "7"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "row=[$#RuleGroup$] v=[7]"
+  }
+ ]
+}

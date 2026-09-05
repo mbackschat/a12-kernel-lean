@@ -1,0 +1,86 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 3 ops; 2 of 3 exited nonzero (0 failed, 2 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 3,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "Y1-root-declared-repeatable-target",
+      "verb" : "computation",
+      "args" : [ "add", "comp-Y1.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the computation is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "RULEGROUP_IMMEDIATELY_BELOW_ROOT",
+          "summary" : "Rule with path '/Rep/AltComp': The rule '/Rep/AltComp' specifies an incorrect error text for the language English. The parameter '#RuleGroup' is not allowed in rules which are ordered right below the rootgroup. [RULEGROUP_IMMEDIATELY_BELOW_ROOT]",
+          "where" : {
+            "rule" : "/Rep/AltComp"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "Y2-own-group-control",
+      "verb" : "computation",
+      "args" : [ "add", "comp-Y2.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/Rows/AltComp",
+        "changed" : {
+          "computation" : "/Rep/Rows/AltComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "Y3-unrelated-sibling-declaring",
+      "verb" : "computation",
+      "args" : [ "add", "comp-Y3.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ERROR_FIELD_NOT_IN_RULEGROUP",
+          "summary" : "Rule with path '/Rep/Other/AltComp': The error field '/Rep/Rows/Alt' is not in the rule group, but the condition specifies iteration. [MVK_ERROR_FIELD_NOT_IN_RULEGROUP]",
+          "where" : {
+            "rule" : "/Rep/Other/AltComp"
+          },
+          "fix" : "Place the error field inside every repeatable group the rule iterates over. The condition references a per-row field, so the rule iterates and its error field must live in that repeatable group — either pick an error field inside it, or make the rule whole-document by aggregating the per-row operand (e.g. Sum(Group*/Field)) so it no longer iterates.",
+          "explain" : "A rule's iteration scope is the set of repeatable groups among the fields it references (including the error field); the error field must lie in every repeatably-referenced group, otherwise the per-row error has nowhere to attach."
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

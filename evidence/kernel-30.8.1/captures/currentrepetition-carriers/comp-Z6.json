@@ -1,0 +1,15 @@
+{
+ "computedField": "/Rep/RootNum",
+ "group": "/Rep",
+ "alternatives": [
+  {
+   "operation": "7"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "abs=[$#/Rep$]"
+  }
+ ]
+}

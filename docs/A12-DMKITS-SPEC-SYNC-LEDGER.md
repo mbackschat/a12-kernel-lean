@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-05-08"></a>
+### `SPEC-2026-09-05-08` — `$#RuleGroup$` alone is refused when its owning declaration sits directly in the root group
+
+- `status`: pending
+- `clause`: [`11-messages-and-custom.md`](../spec/11-messages-and-custom.md), the keyword-shorthand bullets, which stated both shorthands as admitted in the group position without a placement condition.
+- `delta`: a declaration sitting directly in the root group may not use the `RuleGroup` shorthand. The refusal is `RULEGROUP_IMMEDIATELY_BELOW_ROOT` and its text states the rule — *"The parameter '#RuleGroup' is not allowed in rules which are ordered right below the rootgroup."* The identical message one level down is admitted.
+- `basis`: twelve `computation add --dry-run` children across three `batch` runs, `dmtool` 0.13.0, Kernel `30.8.1`, every child `KERNEL_CONFIRMED`, the launcher self-reporting build `226b2be175133dff45413b0a0f604ea219ced85b (dirty)`. The [checkpoint](sources/message-and-pointer-probes.md#src-rulegroup-shorthand-root-gate) owns the rows and retained hashes.
+- `separator`: **the gate belongs to that one shorthand, not to the position or the placement.** From the same root-declared computation, the plain message, `$#RootGroup$`, and the **absolute** `$#/Rep$` naming that very group are all admitted; only `$#RuleGroup$` is refused. So the group is nameable there and the position works there — what is refused is the shorthand whose meaning would coincide with `RootGroup`. Three admissions against one refusal is what makes it a claim about the word.
+- `consumer-consequence`: this is live for you now, since you are rendering that shorthand on the computation carrier. An implementation admitting `RuleGroup` wherever the group position is legal accepts a model the Kernel refuses, and it will only show up on a declaration placed directly in the root group.
+- `also-useful-to-you`: a computation declared at `/Rep/Rows` writing `/Rep/Rows/Items/Val` is **admitted** carrying both `$#RuleGroup$` and the absolute `$#/Rep/Rows/Items$` in one message. That shape makes the declaring group and the computed field's parent differ while both are nameable in the same text, so one render decides which the shorthand anchors at — the case you recorded as unmeasured and declined to extrapolate. Offered as a fixture, not a claim: this project has measured its admission only.
+- `local-consequence`: none behavioral yet; the fragment's message inputs carry no placement condition, and the shorthand is data rather than built in.
+- `acceptance`: a12-dmkits confirms that a declaration directly in the root group refuses `$#RuleGroup$` while admitting `$#RootGroup$` and the absolute spelling of that same group; or reports the row where it diverges.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-05-07"></a>
 ### `SPEC-2026-09-05-07` — a computed temporal target is gated by its declared format alone; the declared kind does not participate
 

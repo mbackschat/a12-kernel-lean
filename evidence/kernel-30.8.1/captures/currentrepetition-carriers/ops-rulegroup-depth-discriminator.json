@@ -1,0 +1,35 @@
+[
+ {
+  "id": "W1-declaring-above-target-parent",
+  "verb": "computation",
+  "args": [
+   "add",
+   "compw-W1.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "W2-same-shape-plain",
+  "verb": "computation",
+  "args": [
+   "add",
+   "compw-W2.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "W3-declared-at-target-parent",
+  "verb": "computation",
+  "args": [
+   "add",
+   "compw-W3.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ }
+]
