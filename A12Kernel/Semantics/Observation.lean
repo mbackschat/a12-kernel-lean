@@ -110,14 +110,24 @@ def CheckedCell.WellFormed {α : Type} (cell : CheckedCell α) : Prop :=
 /-- Whether a parsed value is legal for a field kind. A stored `false` Confirm is not
     legal; `false` is only the comparison substitution for an empty Confirm. Canonical
     token spelling was decided by the preceding classifier, so accepting `.bool` here
-    neither makes the storage check case-insensitive nor honors declared display tokens. -/
+    neither makes the storage check case-insensitive nor honors declared display tokens.
+
+    **A temporal field's admitted family is its declared component set's, not its declared kind's.**
+    The two coincide for every ordinary declaration and part on a cross-kind one, where the Kernel
+    reads the format throughout — admission, the store, and value comparison alike — so an
+    `HH:mm:ss` DATE holds a clock and a `yyyy-MM-dd` TIME holds a date
+    ([checkpoint](../../docs/SOURCES.md#src-temporal-value-family-is-the-formats-not-the-kinds)).
+    Comparing against the declared kind instead made such a cell malformed, which is a wrong *value*
+    rather than a wrong diagnostic: every consumer then read UNKNOWN for a cell the Kernel stores and
+    compares. A component set naming neither family admits no temporal value. -/
 def FieldKind.accepts : FieldKind → Value → Bool
   | .number _, .num _ => true
   | .boolean, .bool _ => true
   | .confirm, .conf true => true
   | .string, .str _ => true
   | .enumeration, .enum _ => true
-  | .temporal expected _, .temporal actual => expected == actual.kind
+  | .temporal _ components, .temporal actual =>
+      components.family? == some actual.kind
   | .dateRange, .dateRange _ => true
   | _, _ => false
 

@@ -35,6 +35,22 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-05-13"></a>
+### `SPEC-2026-09-05-13` — a temporal field's **value family** is its declared format's, not its declared kind's
+
+- `status`: pending
+- `clause`: [`05-dates-and-time.md`](../spec/05-dates-and-time.md)'s component-omitting comparison paragraph, which gave the comparison gate without saying which of the declaration's two inputs it reads. [`spec/09`](../spec/09-computations.md) already carried the rule for computed-target admission and for the store.
+- `delta`: the format rule extends to **reading a cell as a value**. A DATE-declared field whose format is `HH:mm:ss` compares with a TIME field and is refused `MVK_INVALID_COMPARE_TO_DATE` against a `yyyy-MM-dd` DATE; a TIME-declared field whose format is `yyyy-MM-dd` does the exact opposite. So the declared kind carries no part of the rule at admission, at the store, or at comparison.
+- `basis`: five `rule check` rows on one model, a12-dmkits `d1c528273`, `dmtool` 0.13.0, Kernel `30.8.1`, every envelope `KERNEL_CONFIRMED`, the sibling clean before and after. The [checkpoint](sources/computation-placement-and-constant-probes.md#src-temporal-value-family-is-the-formats-not-the-kinds) owns the rows and the retained model hash.
+- `separator`: **each kind appears on both sides of both outcomes.** One direction alone reads as "TIME is permissive" or "DATE is permissive"; the pair rules both out and leaves the format. An ordinary TIME beside an ordinary DATE is refused, so no admission is the gate being absent.
+- `consumer-consequence`: an implementation keying a temporal cell's admitted payload on the declared kind marks a cell the Kernel stores and compares as **formally invalid**. That is a wrong value rather than a wrong diagnostic: every downstream consumer reads UNKNOWN, and no admission test catches it because the model is legal and the store succeeds.
+- `local-consequence`: **it refuted a Core-level clause shipped here.** `FieldKind.accepts` required a temporal payload's kind to equal the declared kind; it now compares against the family the declared component set names. The whole estate rebuilt green with no other case changing, so nothing had depended on the kind-keyed reading — which is exactly why it survived: the divergence is reachable only from a cross-kind declaration, and no fixture had one until the extrema needed the measured cross-kind clock pair.
+- `acceptance`: a12-dmkits confirms that a DATE-declared `HH:mm:ss` field compares with a TIME field and is refused against a date-formatted DATE, with the mirror for a TIME-declared `yyyy-MM-dd` field; or reports the row where it diverges.
+- `also-worth-checking-your-side`: if your interpreter's cell decoding or its typed field surface selects a temporal decoder by declared kind, the same divergence is present there and shows up only on a cross-kind declaration. This is the third place today the kind/format split has bitten one of us, after the computed-target certificate and the store.
+- `limit`: the DATE/TIME pair, equality only. The DateTime family's cross-kind comparison is untested, though its admission and store are measured.
+- `forwarded`: sent over the peer-session channel together with the entry id and checkpoint anchor.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-05-12"></a>
 ### `SPEC-2026-09-05-12` — a yearless stored day is bounded by its month's length in the **declared Base Year**, not by the month's greatest possible day
 

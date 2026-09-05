@@ -291,6 +291,23 @@ def TemporalComponents.withBaseYear (components : TemporalComponents)
     (hasBaseYear : Bool) : TemporalComponents :=
   if hasBaseYear then { components with year := true } else components
 
+/-- The temporal family a declared component set names, which is what decides a cell's value
+    domain — **not** the field's declared kind.
+
+    Measured in both directions and with controls: a DATE-declared field whose format is `HH:mm:ss`
+    compares with a TIME field and is refused against a Date one, while a TIME-declared field whose
+    format is `yyyy-MM-dd` compares with a Date field and is refused against a clock
+    ([checkpoint](../docs/SOURCES.md#src-temporal-value-family-is-the-formats-not-the-kinds)). So each
+    kind appears on both sides of both outcomes and the declared kind carries no part of the rule. A
+    set with neither date nor time components has no family and admits no temporal value. -/
+def TemporalComponents.family? (components : TemporalComponents) :
+    Option TemporalKind :=
+  match components.hasDate, components.hasTime with
+  | true, true => some .dateTime
+  | true, false => some .date
+  | false, true => some .time
+  | false, false => none
+
 /-- Full DateTime aggregate formats expose every date and time component. -/
 def TemporalComponents.isFullDateTime (components : TemporalComponents) : Bool :=
   components.year && components.month && components.day &&

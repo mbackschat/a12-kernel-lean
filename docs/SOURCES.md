@@ -420,6 +420,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-computed-temporal-target-reads-the-format-not-the-kind"></a>
 - [A computed temporal target is gated by its declared format string and not by its declared kind, on all three of the Time, Date, and DateTime families](sources/computation-placement-and-constant-probes.md#src-computed-temporal-target-reads-the-format-not-the-kind)
+<a id="src-temporal-value-family-is-the-formats-not-the-kinds"></a>
+- [A temporal field's value family is its declared format's, not its declared kind's](sources/computation-placement-and-constant-probes.md#src-temporal-value-family-is-the-formats-not-the-kinds)
 <a id="src-yearless-day-bound-reads-the-base-year"></a>
 - [A yearless stored day is bounded by its month's length in the declared Base Year](sources/computation-placement-and-constant-probes.md#src-yearless-day-bound-reads-the-base-year)
 <a id="src-datetime-carrier-stores-by-its-format"></a>

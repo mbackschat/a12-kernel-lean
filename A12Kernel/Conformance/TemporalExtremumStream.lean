@@ -209,47 +209,35 @@ example : clockFoldOf ["Clock", "Clock2"] .maximum
     some (.unknown .malformed) := by
   native_decide
 
-/-! ### The cross-kind clock list is admitted and then unevaluable, one layer up
+/-! ### The cross-kind clock list folds, which is the pair a kind test would have lost
 
 A TIME beside a **DATE_TIME declared time-only** is the pair the measured component gate admits and a
-kind test would refuse, so the operand list is admitted here. The fold never sees a clock from it: this
-theory's checked cell is coherent by declared **kind**, so a DATE_TIME declaration cannot hold a
-time-of-day payload and the cell is malformed before any operator reads it. The Kernel stores a clock
-into exactly that field ([checkpoint](../../docs/SOURCES.md#src-datetime-carrier-stores-by-its-format)),
-so this is a narrowing of the cell layer rather than of the extrema, and it is recorded where it bites
-rather than where it originates. -/
+kind test would refuse, and it reaches the fold because a temporal cell's admitted family is its
+declared component set's rather than its declared kind's — the Kernel reads the format at admission,
+at the store, and at value comparison alike
+([checkpoint](../../docs/SOURCES.md#src-temporal-value-family-is-the-formats-not-the-kinds)). These
+rows are the ones that would have gone silently wrong: before that correction the DATE_TIME cell was
+malformed, so the fold answered UNKNOWN for a list the Kernel folds. -/
 
 example : (admitted? ["Clock", "StampAsClock"]).isSome = true := by native_decide
 
 example : clockFoldOf ["Clock", "StampAsClock"] .maximum
     [(7, timeCell 9 30 0), (8, timeCell 17 15 45)] =
+    ((hms 17 15 45).map fun time => .value time true) := by
+  native_decide
+
+/- The cross-kind operand carrying the **selected** value, so the row is not passing because the TIME
+   operand happens to win. -/
+example : clockFoldOf ["Clock", "StampAsClock"] .minimum
+    [(7, timeCell 17 15 45), (8, timeCell 9 30 0)] =
+    ((hms 9 30 0).map fun time => .value time true) := by
+  native_decide
+
+/- And the DATE_TIME declaration still refuses a **date** payload, so the widening is to its format's
+   family and not to anything temporal. -/
+example : clockFoldOf ["Clock", "StampAsClock"] .maximum
+    [(7, timeCell 9 30 0), (8, dateCell 2024 3 5)] =
     some (.unknown .malformed) := by
-  native_decide
-
-/- The same list with the DATE_TIME cell **absent** folds normally, which places the refusal on that
-   cell's payload rather than on the operand or the list. -/
-example : clockFoldOf ["Clock", "StampAsClock"] .maximum [(7, timeCell 9 30 0)] =
-    ((hms 9 30 0).map fun time => .value time false) := by
-  native_decide
-
-/- Each family declines the other's list at the component gate, naming what it wanted and what it
-   found — the two directions, so neither reader is accidentally permissive. -/
-example : (do
-    let checked ← admitted? ["Clock", "StampAsClock"]
-    match TemporalExtremumStream.evalDate checked .maximum
-        (probeModel.checkContext (raw [])) .validation with
-    | .ok _ => none
-    | .error error => some error) =
-    some (.componentsMismatch TemporalComponents.fullDate TemporalComponents.time) := by
-  native_decide
-
-example : (do
-    let checked ← admitted? ["A", "B"]
-    match TemporalExtremumStream.evalTime checked .maximum
-        (probeModel.checkContext (raw [])) .validation with
-    | .ok _ => none
-    | .error error => some error) =
-    some (.componentsMismatch TemporalComponents.time TemporalComponents.fullDate) := by
   native_decide
 
 /-! ## What this slice declines, and why each is a boundary rather than a verdict -/
