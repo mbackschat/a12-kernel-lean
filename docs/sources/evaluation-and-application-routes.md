@@ -1,5 +1,18 @@
 # Evaluation and application source checkpoints
 
+<a id="src-constant-computation-admits-a-repeatable-target"></a>
+#### A constant computation admits a **repeatable** target at every declaring-group choice, measured 2026-09-06
+
+- `revision`: `dmtool` 0.13.0 at a12-dmkits `1f2d4512bd92a28eb82091264de8c701004c1076`, launcher self-reported `clean`, the sibling checkout clean and unchanged before and after, Kernel `30.8.1` built and runtime. Five `computation add --dry-run` children in one `batch`, the read-only static preflight.
+- `retained-bytes`: `Probe4_DM.json` SHA-256 `ddd70e6610bfb3ee7c8d1ae82da90aa89636606c8c0ade5e9f4dd3c321413118`, carrying a Boolean field inside the repeatable group; ops `db8110742dd2db1ce18d56ce2f3c94f4ab90d2b1a1785aeed61b329b6437f3c2`; results `6e68d3f297a0f2db3f0227e9ed39575b77303ee796df2fb9ca23a94d1efbed6a`, with the five specs beside them.
+- `question`: `BooleanConstantComputation` refuses a repeatable computed target and projects no class, described as an unmeasured target-placement failure. The [`LF152`](../LEAN-FINDINGS.md) sweep reached it.
+- `claim`: **the Kernel admits it**, and the declaring group does not matter — the target inside a repeatable group is admitted with no `group` given, with `group` set to that repeatable group, and with `group` set to the root alike. A constant reads nothing, so no iteration is derived and the placement restriction that governs operand-reading computations has nothing to bind.
+- `claim`: **a star inside a precondition is what refuses**, and it refuses with `MVK_NO_WILDCARDS_ALLOWED` — the wildcard gate, not a placement class. That row is what keeps the four admissions from reading as "this carrier has no gate at all": the same repeatable target flips to refused when the alternative's guard reaches a starred operand.
+- `local-scope`: this project keeps refusing the shape, now for a stated reason rather than an unmeasured one. Its `executeResult` produces one `(target.id, value)` pair, while a repeatable target writes one cell per instantiated row, so admitting it without a per-row result would return a right value at a **wrong extent** — the silent direction. Refusing is the direction that produces a signal.
+- `do-not-read-across`: four sibling carriers — Boolean, String, Custom and temporal first-filled — carry the identical `targetFixed : target.repeatableScope = []` restriction. **None is measured**, and none follows from this row: each reads a starred source where the constant reads nothing, which is precisely the property that makes this one unrestricted. Reading them off this checkpoint is the crossing [`LF116`](../LEAN-FINDINGS.md) names.
+- `limit`: static preflight only, one model, `en_US`, one unconditional alternative and one starred precondition. Nothing here runs a computation, so what the Kernel writes into which rows is untouched — and that is exactly the question the local representation would need answered before admitting the shape.
+- `sync`: none. No `spec/` clause stated the restriction; it was a local representation boundary described as an unmeasured Kernel gate, and that description is what changed.
+
 <a id="src-pattern-comparison-left-kind-gate-is-total"></a>
 #### The pattern comparison's left-kind gate is total: DATE_RANGE draws the same class as the other seven kinds, measured 2026-09-06
 

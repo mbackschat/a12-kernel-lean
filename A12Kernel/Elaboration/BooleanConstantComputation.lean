@@ -68,13 +68,25 @@ def checkBooleanConstantOperation (targetKind : FieldKind) (value : Bool) :
 
 inductive BooleanConstantComputationElabError where
   | target (cause : ResolveError)
+  /-- A repeatable computed target. **The Kernel admits this** — a constant reads nothing, so no
+      iteration is derived and the target's placement is unrestricted at every declaring-group
+      choice; only a star inside a precondition draws a refusal, and that one is
+      `MVK_NO_WILDCARDS_ALLOWED` from the wildcard gate rather than a placement class
+      ([checkpoint](../../docs/SOURCES.md#src-constant-computation-admits-a-repeatable-target)).
+
+      This capsule refuses it anyway, deliberately and as a representation boundary: `executeResult`
+      produces one `(target.id, value)` pair, and a repeatable target writes one cell per
+      instantiated row, so admitting the shape without a per-row result would return a right value
+      at a wrong extent. Refusing is the direction that produces a signal; folding one cell silently
+      would not. Closing it is a result-domain change, tracked in
+      [`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md). -/
   | targetRepeatable (path : List String)
   | operation (path : List String) (cause : BooleanConstantOperationElabError)
   deriving Repr, DecidableEq
 
 namespace BooleanConstantComputationElabError
 
-/-- Preserve the operation's measured diagnostic without assigning Kernel identities to unmeasured target-placement failures. -/
+/-- Preserve the operation's measured diagnostic. `targetRepeatable` claims no Kernel class because the Kernel draws none — it **admits** the shape, and this refusal is now a stated representation boundary rather than an unmeasured guess. -/
 def diagnostic? : BooleanConstantComputationElabError → Option KernelStaticDiagnostic
   | .operation _ cause => cause.diagnostic?
   | .target _ | .targetRepeatable _ => none

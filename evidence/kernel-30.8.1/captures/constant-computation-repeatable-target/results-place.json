@@ -1,0 +1,116 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 5 ops; 1 of 5 exited nonzero (0 failed, 1 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 5,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-control-root-boolean-target",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "comp-p1.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe4/FlagComp",
+        "changed" : {
+          "computation" : "/Probe4/FlagComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-repeatable-target-no-group",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "comp-p2.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe4/Rows/RowFlagComp",
+        "changed" : {
+          "computation" : "/Probe4/Rows/RowFlagComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-repeatable-target-group-is-rows",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "comp-p3.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe4/Rows/RowFlagComp",
+        "changed" : {
+          "computation" : "/Probe4/Rows/RowFlagComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "4-repeatable-target-group-is-root",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "comp-p4.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Probe4/RowFlagComp",
+        "changed" : {
+          "computation" : "/Probe4/RowFlagComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "5-repeatable-target-with-star-precondition",
+      "verb" : "computation",
+      "args" : [ "add", "--dry-run", "comp-p5.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARDS_ALLOWED",
+          "summary" : "Rule with path '/Probe4/Rows/RowFlagComp': At 'FieldFilled': It is not allowed to use an asterisk. [MVK_NO_WILDCARDS_ALLOWED]",
+          "where" : {
+            "rule" : "/Probe4/Rows/RowFlagComp"
+          }
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

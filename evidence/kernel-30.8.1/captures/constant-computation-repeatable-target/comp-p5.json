@@ -1,0 +1,1 @@
+{"computedField": "/Probe4/Rows/RowFlag", "alternatives": [{"operation": "True", "precondition": "FieldFilled(/Probe4/Rows*/RowVal)"}], "messages": [{"locale": "en_US", "text": "x"}]}

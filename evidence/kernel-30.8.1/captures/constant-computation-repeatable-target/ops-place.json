@@ -1,0 +1,47 @@
+[
+ {
+  "id": "1-control-root-boolean-target",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-p1.json"
+  ]
+ },
+ {
+  "id": "2-repeatable-target-no-group",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-p2.json"
+  ]
+ },
+ {
+  "id": "3-repeatable-target-group-is-rows",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-p3.json"
+  ]
+ },
+ {
+  "id": "4-repeatable-target-group-is-root",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-p4.json"
+  ]
+ },
+ {
+  "id": "5-repeatable-target-with-star-precondition",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-p5.json"
+  ]
+ }
+]
