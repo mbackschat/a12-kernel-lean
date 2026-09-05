@@ -1,0 +1,117 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 4 ops; 4 of 4 exited nonzero (0 failed, 4 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 4,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-group-expansion-DATE-first",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/DateFirstBox) > 0", "--code", "H1" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATE_AND_NONDATE",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'NumberOfDifferentValues': if the first parameter is a date than all parameters have to be dates. [MVK_DATE_AND_NONDATE]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — the FIRST operand fixes the expected class and the reported code names THAT class, not the offender's — a temporal leader beside a non-temporal operand is MVK_DATE_AND_NONDATE, while the same two operands in the other order are MVK_NOT_SORTABLE. Make the list family-homogeneous rather than reordering it; the FIRST operand fixes the expected class and the reported code names THAT class, not the offender's — a temporal leader beside a non-temporal operand is MVK_DATE_AND_NONDATE, while the same two operands in the other order are MVK_NOT_SORTABLE. Make the operand list family-homogeneous rather than reordering it"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-group-expansion-NUMBER-first",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/NumFirstBox) > 0", "--code", "H2" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NUMBER_AND_NON_NUMBER",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'NumberOfDifferentValues': If the first parameter is a number (including amounts) then all parameters have to be of type number (including amounts). Corrupt: '/Probe4/NumFirstBox'. [MVK_NUMBER_AND_NON_NUMBER]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-control-scalar-DATE-first",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(FiledOn, Amount) > 0", "--code", "H3" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_DATE_AND_NONDATE",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'NumberOfDifferentValues': if the first parameter is a date than all parameters have to be dates. [MVK_DATE_AND_NONDATE]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — the FIRST operand fixes the expected class and the reported code names THAT class, not the offender's — a temporal leader beside a non-temporal operand is MVK_DATE_AND_NONDATE, while the same two operands in the other order are MVK_NOT_SORTABLE. Make the list family-homogeneous rather than reordering it; the FIRST operand fixes the expected class and the reported code names THAT class, not the offender's — a temporal leader beside a non-temporal operand is MVK_DATE_AND_NONDATE, while the same two operands in the other order are MVK_NOT_SORTABLE. Make the operand list family-homogeneous rather than reordering it"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "4-control-scalar-NUMBER-first",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "FieldFilled(SkuText) And NumberOfDifferentValues(Amount, FiledOn) > 0", "--code", "H4" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NUMBER_AND_NON_NUMBER",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'NumberOfDifferentValues': If the first parameter is a number (including amounts) then all parameters have to be of type number (including amounts). Corrupt: 'FiledOn'. [MVK_NUMBER_AND_NON_NUMBER]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

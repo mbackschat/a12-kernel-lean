@@ -54,12 +54,22 @@ private def model : FlatModel := {
       policy := { kind := .string } },
     { id := 5, groupPath := ["Probe"], name := "Flag",
       policy := { kind := .boolean } },
+    { id := 19, groupPath := ["Probe"], name := "Amount",
+      policy := { kind := .number { scale := 0, signed := false } } },
     groupField 10 "MixBox" "IsoA" "yyyy-MM-dd",
     groupField 11 "MixBox" "DotB" "dd.MM.yyyy",
     groupField 12 "SetBox" "Full" "yyyy-MM-dd",
     groupField 13 "SetBox" "YearMonth" "yyyy-MM" yearMonth,
     { id := 14, groupPath := ["Probe", "TextBox"], name := "Note",
-      policy := { kind := .string } }]
+      policy := { kind := .string } },
+    -- Two mixed expansions differing only in **declaration order**, which is what the class turns
+    -- on. Nothing else about the pair varies.
+    groupField 15 "DateFirstBox" "ADate" "yyyy-MM-dd",
+    { id := 16, groupPath := ["Probe", "DateFirstBox"], name := "BNum",
+      policy := { kind := .number { scale := 0, signed := false } } },
+    { id := 17, groupPath := ["Probe", "NumFirstBox"], name := "ANum",
+      policy := { kind := .number { scale := 0, signed := false } } },
+    groupField 18 "NumFirstBox" "BDate" "yyyy-MM-dd"]
 }
 
 private def bare (field : String) : SurfaceFieldPath :=
@@ -178,16 +188,36 @@ example :
    positionally. The duplicated certificate covers the component gate only; this arm is delegated,
    so the two operators cannot disagree about *whether* such a group is refused.
 
-   They do disagree about the projected **class**, and that is not settled here: this list is
-   date-first, and a group whose expansion leads with a Number draws `MVK_NUMBER_AND_NON_NUMBER`
-   instead, exactly as the scalar first-operand rule does. Which family the expansion's first
-   declaration fixes for a group operand is recorded as open rather than projected from this row. -/
+   `TextBox`'s expansion leads with the String, so this operator claims **no class** — the list is
+   another overload's, exactly as a scalar list led by a non-temporal operand is. The rows below
+   separate that from a merely mixed expansion. -/
 example :
     (elaborateTemporalDistinctCountSource model ["Probe"]
       (groupOperand "TextBox")).toOption.isNone = true ∧
       (elaborateTemporalValuesNotUniqueSource model ["Probe"]
         (groupOperand "TextBox")).toOption.isNone = true ∧
-      distinctGroup? "TextBox" = some .dateAndNonDate := by
+      distinctGroup? "TextBox" = none := by
+  native_decide
+
+/-! ### Declaration order decides the class, in a group's expansion as in a scalar list
+
+The same two kinds in the other order draw a different code, and the scalar controls agree cell for
+cell ([checkpoint](../../docs/SOURCES.md#src-temporal-group-operand-follows-its-own-operator)). So
+the first-operand rule reaches a group's expansion rather than stopping at the authored slots, and a
+projection keyed on the *offending* kind alone would be right in one order and wrong in the other —
+which is exactly what this operator shipped before the pair was measured. -/
+example :
+    distinctGroup? "DateFirstBox" = some .dateAndNonDate ∧
+      distinct? "FiledOn" "Amount" = some .dateAndNonDate := by
+  native_decide
+
+/- A leading **Number** makes the list the other overload's, so this one refuses claiming no class
+   rather than reporting the date code. The Kernel's own answer there is
+   `MVK_NUMBER_AND_NON_NUMBER`, which that overload owns. -/
+example :
+    distinctGroup? "NumFirstBox" = none ∧
+      (elaborateTemporalDistinctCountSource model ["Probe"]
+        (groupOperand "NumFirstBox")).toOption.isNone = true := by
   native_decide
 
 

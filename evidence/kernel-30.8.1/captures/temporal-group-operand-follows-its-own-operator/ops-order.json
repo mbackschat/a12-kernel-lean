@@ -1,0 +1,54 @@
+[
+ {
+  "id": "1-group-expansion-DATE-first",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/DateFirstBox) > 0",
+   "--code",
+   "H1"
+  ]
+ },
+ {
+  "id": "2-group-expansion-NUMBER-first",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(/Probe4/NumFirstBox) > 0",
+   "--code",
+   "H2"
+  ]
+ },
+ {
+  "id": "3-control-scalar-DATE-first",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(FiledOn, Amount) > 0",
+   "--code",
+   "H3"
+  ]
+ },
+ {
+  "id": "4-control-scalar-NUMBER-first",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe4/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And NumberOfDifferentValues(Amount, FiledOn) > 0",
+   "--code",
+   "H4"
+  ]
+ }
+]

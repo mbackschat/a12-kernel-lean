@@ -131,6 +131,15 @@ inductive TemporalDistinctCountElabError where
   /-- **This operator's own gate.** An operand whose component set differs from the list's, carrying
       both declared formats because the Kernel's message names them rather than the sets. -/
   | mixedComponentSets (path : List String) (found expected : String)
+  /-- A group whose expansion's **first** declaration is not temporal, so the authored list is not
+      this overload's at all. **No class is claimed**: the Kernel reports the leading family's own
+      code — `MVK_NUMBER_AND_NON_NUMBER` for a Number-first expansion — which the Number overload
+      owns, exactly as it does for a scalar list whose first operand is a Number
+      ([checkpoint](../../docs/SOURCES.md#src-temporal-group-operand-follows-its-own-operator)).
+      The positional rule reaches a group's expansion in declaration order, so which family leads
+      decides the code and the offending kind alone does not. -/
+  | groupExpansionFirstNotTemporal (path : List String)
+      (actual : SurfaceScalarKind)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -205,17 +214,25 @@ private def certifyDistinctCountGroup (model : FlatModel)
               expansionAllTemporal := hAll
               oneComponentSet := hComponents })
   else
-    -- A non-temporal declaration anywhere in the expansion. The offending declaration is found and
-    -- re-certified so the refusal names **its** kind and path rather than a fabricated one; the
-    -- shared certifier reports the same way, and disagreeing here would give one group two
-    -- different refusals depending on which operator read it.
-    match declarations.find? fun declaration =>
-        declaration.toTemporalUniquenessField?.isNone with
-    | some declaration =>
-        match certifyTemporalUniquenessField declaration with
-        | .error error => throw (.slot error)
-        | .ok _ => throw .incoherentCore
-    | none => throw .incoherentCore
+    -- A non-temporal declaration in the expansion, and **position decides the class** here exactly
+    -- as it does in a scalar list. A leading non-temporal declaration means the list belongs to
+    -- another overload, which draws its own code; a later one is this overload's date/non-date
+    -- refusal. The offending declaration is found and re-certified either way, so the refusal names
+    -- its own kind and path rather than the group path with a fabricated one.
+    match hFirst : declarations.head? with
+    | some leading =>
+        if leading.toTemporalUniquenessField?.isNone then
+          throw (.groupExpansionFirstNotTemporal leading.path
+            leading.policy.kind.surfaceKind)
+        else
+          match declarations.find? fun declaration =>
+              declaration.toTemporalUniquenessField?.isNone with
+          | some declaration =>
+              match certifyTemporalUniquenessField declaration with
+              | .error error => throw (.slot error)
+              | .ok _ => throw .incoherentCore
+          | none => throw .incoherentCore
+    | none => throw (.slot (.groupExpansionEmpty source.groupPath))
 
 /-- Certify one slot: the scalar forms through the shared certifier, a group through this
     operator's own. -/
@@ -274,6 +291,8 @@ def diagnostic? : TemporalDistinctCountElabError → Option KernelStaticDiagnost
   -- `MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED` here against the `CMP_`-less form there.
   | .slot (.inadmissibleKind _ _) => some .onlyStringEnumNumberCmpDateAllowed
   | .slot (.mixedCategories _ _) => some .dateAndNonDate
+  -- No class: the leading family's own overload reports, and this one claims nothing about it.
+  | .groupExpansionFirstNotTemporal _ _ => none
   | .slot (.shape error) => error.diagnostic?
   | .slot _ => none
   | .incoherentCore => none
