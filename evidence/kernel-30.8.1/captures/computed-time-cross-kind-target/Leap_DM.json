@@ -238,6 +238,30 @@
                 }
               }
             }
+          }, {
+            "type" : "Field",
+            "id" : "/Gate_DM/DateAsDT",
+            "name" : "DateAsDT",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Gate_DM/TimeAsDT",
+            "name" : "TimeAsDT",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
           } ]
         }
       } ]

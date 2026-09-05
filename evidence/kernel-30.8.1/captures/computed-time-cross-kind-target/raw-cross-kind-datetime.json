@@ -1,0 +1,124 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 5 ops; 2 of 5 exited nonzero (0 failed, 2 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 5,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "M1-dt-into-datetime-control",
+      "verb" : "computation",
+      "args" : [ "add", "comp-M1.json", "--dry-run", "--model", "Leap_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Gate_DM/DTComp",
+        "changed" : {
+          "computation" : "/Gate_DM/DTComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "M2-dt-into-date-dtformat",
+      "verb" : "computation",
+      "args" : [ "add", "comp-M2.json", "--dry-run", "--model", "Leap_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Gate_DM/DateAsDTComp",
+        "changed" : {
+          "computation" : "/Gate_DM/DateAsDTComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "M3-dt-into-time-dtformat",
+      "verb" : "computation",
+      "args" : [ "add", "comp-M3.json", "--dry-run", "--model", "Leap_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Gate_DM/TimeAsDTComp",
+        "changed" : {
+          "computation" : "/Gate_DM/TimeAsDTComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "M4-dt-into-date-dateformat",
+      "verb" : "computation",
+      "args" : [ "add", "comp-M4.json", "--dry-run", "--model", "Leap_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Gate_DM/DDateComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Gate_DM/DDateComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "M5-dt-into-time-clockformat",
+      "verb" : "computation",
+      "args" : [ "add", "comp-M5.json", "--dry-run", "--model", "Leap_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_TO_DATE",
+          "summary" : "Rule with path '/Gate_DM/TTimeComp': It is only allowed to compare dates with other fitting dates. [MVK_INVALID_COMPARE_TO_DATE]",
+          "where" : {
+            "rule" : "/Gate_DM/TTimeComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — Now is temporal — compare it to a date or date-time field, not a number; use a date-time field when testing equality; Today compares to a full-precision DATE or resolved date expression, not a number or partially-known date"
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

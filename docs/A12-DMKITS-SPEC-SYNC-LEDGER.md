@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-05-07"></a>
+### `SPEC-2026-09-05-07` — a computed temporal target is gated by its declared format alone; the declared kind does not participate
+
+- `status`: pending
+- `clause`: [`05-dates-and-time.md`](../spec/05-dates-and-time.md), the field-format kind-independence paragraph, which stated the rule for **declaration** and said nothing about the computed target.
+- `delta`: the rule reaches the computed target, and there the format is the whole gate. A computed `Time(…)` is admitted into a **DATE**-declared field formatted `HH:mm:ss`; a computed `Date(…)` into a **TIME**-declared field formatted `dd.MM.yyyy`; a computed `DateTime(…)` into DATE- and TIME-declared fields alike carrying the DateTime format. Each is refused wherever the declared format does not match the value, `MVK_INVALID_COMPARE_TO_DATE` every time. So none of the three computed temporal families carries a kind gate of its own.
+- `basis`: fourteen `computation add --dry-run` children across three `batch` runs plus four `field add` declarations, `dmtool` 0.13.0, Kernel `30.8.1`, every child `KERNEL_CONFIRMED`, `model check` valid with zero diagnostics, the launcher self-reporting build `226b2be175133dff45413b0a0f604ea219ced85b (dirty)`. The [checkpoint](sources/computation-placement-and-constant-probes.md#src-computed-temporal-target-reads-the-format-not-the-kind) owns the rows and retained hashes.
+- `separator`: two pairs per family, each holding one factor fixed. Same declared **kind**, different format flips the verdict; same **format**, different kind does not change it. Neither pair alone settles it, which is why all three families were run rather than one generalized to the others. The comparison is against the declared format **as a whole**: a `DATETIME` target formatted `yyyy-MM-dd'T'HH:mm:ss` contains the clock pattern and still refuses a computed Time.
+- `why-this-is-worth-an-entry`: it corrects nothing either estate has written, so it would ordinarily be a no-request confirmation. It is sent because **this project's own Lean independently grew the wrong gate** — two temporal target certificates require the declared kind to match. No existing conformance case contradicts the Kernel, and that is the instructive part: the only case exercising a kind mismatch gives its field a mismatched *format* too, so the Kernel refuses that row as well and the case passes for a reason the Kernel does not share. The narrowing survived because nothing ever exercised a matching format on a differing kind. An implementer reaching for the kind is evidently the natural mistake, and a green suite is evidently not enough to catch it.
+- `consumer-consequence`: a Compile or Execute consumer must key a computed temporal target's admission on the declared format string and must not consult the field's kind. One that consults the kind refuses models the Kernel admits, and does so silently, since every same-kind row still passes.
+- `local-consequence`: the narrowing is **stated and left in place**, not fixed in this change. Admission is measured; what an admitted cross-kind target *stores* is not, and widening admission would make the fragment render into a DATE-declared clock field with no observation behind that output. Tracked in [SG15](SEMANTICS-GAPS.md#sg15--bare-constant-target-families) as half-unblocked, with both certificates wanting one decision.
+- `acceptance`: a12-dmkits confirms that a computed temporal value's target admission reads the declared format and not the declared kind, on all three families; or reports the row where it diverges. An implementation gating on the kind passes every same-kind row and fails only the six cross-kind ones.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-05-06"></a>
 ### `SPEC-2026-09-05-06` — the message parameter's terminal bundle belongs to the owning declaration, so `RuleGroup` resolves on a computation
 

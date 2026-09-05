@@ -1,0 +1,15 @@
+{
+  "target" : "field",
+  "op" : "add",
+  "outcome" : "applied",
+  "ok" : true,
+  "verification" : "KERNEL_CONFIRMED",
+  "summary" : "added field /Gate_DM/TimeAsDT",
+  "changed" : {
+    "added" : "/Gate_DM/TimeAsDT",
+    "kind" : "TIME"
+  },
+  "diagnostics" : [ ],
+  "written" : true,
+  "output" : "Leap_DM.json"
+}

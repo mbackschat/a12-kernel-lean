@@ -1,0 +1,1 @@
+{ "group": "/Gate_DM", "name": "TimeAsDT", "kind": "TIME", "time": { "format": "yyyy-MM-dd'T'HH:mm:ss" } }

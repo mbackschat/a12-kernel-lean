@@ -1,0 +1,57 @@
+[
+ {
+  "id": "M1-dt-into-datetime-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-M1.json",
+   "--dry-run",
+   "--model",
+   "Leap_DM.json"
+  ]
+ },
+ {
+  "id": "M2-dt-into-date-dtformat",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-M2.json",
+   "--dry-run",
+   "--model",
+   "Leap_DM.json"
+  ]
+ },
+ {
+  "id": "M3-dt-into-time-dtformat",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-M3.json",
+   "--dry-run",
+   "--model",
+   "Leap_DM.json"
+  ]
+ },
+ {
+  "id": "M4-dt-into-date-dateformat",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-M4.json",
+   "--dry-run",
+   "--model",
+   "Leap_DM.json"
+  ]
+ },
+ {
+  "id": "M5-dt-into-time-clockformat",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-M5.json",
+   "--dry-run",
+   "--model",
+   "Leap_DM.json"
+  ]
+ }
+]
