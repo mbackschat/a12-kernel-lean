@@ -1,0 +1,70 @@
+[
+ {
+  "id": "B1-above-plus-inscope",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "B1",
+   "--condition",
+   "Sum(/Rep/Rows/Items*/Val Having [/Rep/Rows/Gate] > 0 And [/Rep/Rows/Items/Val] > 0) > 0 And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "B2-above-marked-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "B2",
+   "--condition",
+   "Sum(/Rep/Rows/Items*/Val Having [$/Rep/Rows/Gate] > 0) > 0 And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "B3-above-marked-plus-inscope",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "B3",
+   "--condition",
+   "Sum(/Rep/Rows/Items*/Val Having [$/Rep/Rows/Gate] > 0 And [/Rep/Rows/Items/Val] > 0) > 0 And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "B4-control-inscope-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "B4",
+   "--condition",
+   "Sum(/Rep/Rows/Items*/Val Having [/Rep/Rows/Items/Val] > 0) > 0 And FieldFilled(/Rep/Rows/Err)"
+  ]
+ }
+]

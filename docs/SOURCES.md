@@ -378,6 +378,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-filter-repetition-reference-reads-its-path"></a>
 - [A `CurrentRepetition` leaf answers both filter gates through its path's repeatable scope, so a nonrepeatable group under the star satisfies the scope gate alone](sources/having-filter-probes.md#src-filter-repetition-reference-reads-its-path)
 
+<a id="src-filter-reference-above-the-star"></a>
+- [A level above the star but still on the operand's path is scope-gated and rescuable, not iteration-prohibited](sources/having-filter-probes.md#src-filter-reference-above-the-star)
+
 <a id="src-presence-confirm-custom-carriers"></a>
 - [The presence leaf admits Confirm and Custom, and an unregistered Custom type faults only on a present value](sources/having-filter-probes.md#src-presence-confirm-custom-carriers)
 <a id="src-nested-self-exclusion"></a>

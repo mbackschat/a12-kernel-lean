@@ -1,0 +1,104 @@
+[
+ {
+  "id": "A1-above-level-unbound-host",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "A1",
+   "--condition",
+   "Sum(/Rep/Rows/Items*/Val Having [/Rep/Rows/Gate] > 0) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "A2-ancestor-also-starred",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "A2",
+   "--condition",
+   "Sum(/Rep/Rows*/Items*/Val Having [/Rep/Rows/Gate] > 0) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "A3-above-level-marked",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "A3",
+   "--condition",
+   "Sum(/Rep/Rows/Items*/Val Having [$/Rep/Rows/Gate] > 0) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "A4-control-own-level",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "A4",
+   "--condition",
+   "Sum(/Rep/Rows/Items*/Val Having [/Rep/Rows/Items/Val] > 0) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "A5-above-level-bound-host",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "A5",
+   "--condition",
+   "Sum(/Rep/Rows/Items*/Val Having [/Rep/Rows/Gate] > 0) > 0 And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "A6-control-plain-bound-host",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "A6",
+   "--condition",
+   "FieldFilled(/Rep/Rows/Err)"
+  ]
+ }
+]
