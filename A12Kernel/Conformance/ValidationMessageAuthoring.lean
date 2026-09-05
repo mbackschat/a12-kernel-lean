@@ -367,11 +367,15 @@ example :
         some (.semanticIndexUnsupported "Amount For \"k1\"") := by
   native_decide
 
-/- Keying **escapes the field-membership gate**. Measured at kernel 30.8.1, a keyed parameter naming a
-field the condition never mentions is admitted, while the *unkeyed* spelling of that same field is
-refused `INVALID_FIELD` — so membership is a property of the unkeyed form, not of parameters in
-general. Here the same field therefore reaches two different refusals depending only on whether it
-carries a key, which is the distinction a fragment without repeatable groups can still hold. -/
+/- Keying **replaces the field-membership gate rather than removing a gate**. The unkeyed spelling of
+a field the condition never mentions is refused `INVALID_FIELD`; the keyed spelling escapes that gate
+and meets the index gate instead, whose admitted set is the condition's own keyed field together with
+the group's declared index field and nothing further. So membership is a property of the unkeyed form
+while the keyed form answers to a different, and also finite, set — an earlier reading of this
+paragraph said keying admits any field, which a group declaring only those two fields cannot refute
+([checkpoint](../../docs/SOURCES.md#src-keyed-parameter-admits-the-index-field-only)). The pair below
+holds regardless: the same field reaches two different refusals depending only on whether it carries
+a key, which is the distinction a fragment without repeatable groups can still hold. -/
 example :
     templateError? "$Other For \"k1\"$" =
         some (.semanticIndexUnsupported "Other For \"k1\"") ∧

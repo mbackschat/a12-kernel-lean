@@ -31,10 +31,17 @@ many entries as the enum has values, paired by position, so every value carries 
 A field reference may finally carry a **semantic-index key**, `For "k"` or `For SomeField`, after any
 value or category suffix — that order is the grammar's, not a preference. Its gate is on the
 **semantic index**, not on the field: the condition must use that same index the same way, and the
-keyed field itself need not be a condition operand at all. Measured, a keyed parameter naming a field
-the condition never mentions is admitted when the condition keys that group by that key, while the
-unkeyed spelling of the same field is refused — so condition membership belongs to the unkeyed form
-alone. The pairing is exact in the other direction too: a keyed condition operand does not license an
+keyed field itself need not be a condition operand at all. That freedom is **narrower than it first
+measured**, and the correction is worth carrying here because the wide reading is the natural one.
+A keyed parameter may name a field the condition never references, but only one such field — the
+group's **declared index field** — so the admitted set is exactly the field the condition keys
+together with that index field, and a *third* field of the same group, keyed identically, is
+refused. What must match is the keyed group and key plus the displayed field being one of those two,
+not the group's fields at large; a fixture whose group declares only those two cannot tell the two
+readings apart, which is how both this project and a12-dmkits published the wide one
+([checkpoint](../../docs/SOURCES.md#src-keyed-parameter-admits-the-index-field-only)). The unkeyed
+spelling of a keyed field stays refused, so condition membership belongs to the unkeyed form alone,
+and the pairing is exact in the other direction too: a keyed condition operand does not license an
 unkeyed parameter.
 
 A semantic index needs a repeatable group, and this fragment's model is nonrepeatable, so a keyed
@@ -133,7 +140,8 @@ inductive ValidationMessageTemplateError where
   /-- A **well-formed** keyed parameter, refused because this fragment's model is nonrepeatable and so
   declares no semantic index for the key to name. This is the fragment's own boundary, not the
   Kernel's pairing class: the Kernel gates a keyed parameter on whether the **condition uses that same
-  semantic index**, which is a question a flat condition spine cannot pose. -/
+  semantic index** *and* on the displayed field being either the condition's keyed field or the
+  group's index field, neither of which a flat condition spine can pose. -/
   | semanticIndexUnsupported (parameter : String)
   deriving Repr, DecidableEq
 
@@ -676,9 +684,9 @@ private def checkMessageParts (model : FlatModel)
       pure (.group (← checkMessageGroup condition parameter authored) ::
         (← checkMessageParts model profile condition rest))
   | .keyed parameter reference _suffix key :: rest => do
-      -- Measured, a keyed parameter is *not* subject to the condition-membership gate an unkeyed one
-      -- carries: a keyed read of a field the condition never names is admitted, provided the
-      -- condition uses the same semantic index. Both name-bearing positions are still resolved as
+      -- A keyed parameter is *not* subject to the condition-membership gate an unkeyed one carries,
+      -- but its own admitted set is only the condition's keyed field plus the group's declared index
+      -- field — not any field of the keyed group. Both name-bearing positions are still resolved as
       -- entities, because an unresolvable name is refused there rather than at the index gate — so
       -- these resolutions are kept for their refusals, and their results are unusable here. The
       -- decoded suffix is likewise unusable, since no part this fragment can build carries a key.
