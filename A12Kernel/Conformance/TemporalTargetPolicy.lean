@@ -51,6 +51,48 @@ example :
           "Europe/Berlin") := by
   native_decide
 
+/- **The opt-in pre-1900 check requires the declared format to carry a year.** The Kernel refuses a
+   year-free Date declaration carrying it outright — `MVK_ADDITIONAL_CHECK_INVALID`, whose own message
+   keys on the components rather than on the kind — so `MM-dd` and `HH:mm:ss` are illegal with the
+   guard set while `dd.MM.yyyy` is legal ([inbound](../../docs/SOURCES.md#inbound-2026-09-05c)).
+
+   This arm had admitted every one of them. It is an **over**-admission, the opposite direction from
+   the under-admissions the declared-kind sweep was finding, which is why that sweep could not have
+   surfaced it and why no case here flipped when the rule landed: none carried the combination. The
+   two controls hold one variable each — the guard off on the same year-free format, and the guard on
+   with a year present. -/
+example :
+    let yearless : TemporalComponents :=
+      { fullDate with year := false }
+    let policyOf (format : String) (kind : TemporalKind)
+        (components : TemporalComponents) (guard : Bool) :=
+      TemporalTargetPolicy.errorFor?
+        { format, partialMode := .full, youngerThan1900Check := guard }
+        kind components
+    policyOf "MM-dd" .date yearless true =
+        some .youngerThan1900RequiresYear ∧
+      policyOf "HH:mm:ss" .date TemporalComponents.time true =
+        some .youngerThan1900RequiresYear ∧
+      policyOf "MM-dd" .date yearless false = none ∧
+      policyOf "dd.MM.yyyy" .date fullDate true = none := by
+  native_decide
+
+/- The clock and stamp declarations refuse the guard for a different and stronger reason: their
+   Kernel declaration objects carry no such property at 30.8.1, so the shape is rejected by the
+   deserializer before any gate could find it inert. The arm reads as a kind test and is right, and
+   after the rule above it is redundant with a components check rather than load-bearing against
+   one — which is a reason to keep it, not to delete a true certificate. -/
+example :
+    TemporalTargetPolicy.errorFor?
+        { format := "HH:mm:ss", partialMode := .full,
+          youngerThan1900Check := true } .time TemporalComponents.time =
+        some .youngerThan1900RequiresDate ∧
+      TemporalTargetPolicy.errorFor?
+        { format := "yyyy-MM-dd'T'HH:mm:ss", partialMode := .full,
+          youngerThan1900Check := true } .dateTime TemporalComponents.now =
+        some .youngerThan1900RequiresDate := by
+  native_decide
+
 /- A non-temporal target reaches a distinct shape error without target policy. -/
 example :
     let target : FlatFieldDecl := {

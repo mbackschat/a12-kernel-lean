@@ -48,6 +48,7 @@ private def temporalTargetPolicyErrorTag : TemporalTargetPolicyError → String
   | .emptyFormat => "emptyFormat"
   | .partialModeRequiresFullDate => "partialModeRequiresFullDate"
   | .youngerThan1900RequiresDate => "youngerThan1900RequiresDate"
+  | .youngerThan1900RequiresYear => "youngerThan1900RequiresYear"
 
 private def dateRangeDeclarationPolicyErrorTag :
     DateRangeDeclarationPolicyError → String

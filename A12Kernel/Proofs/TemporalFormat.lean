@@ -133,8 +133,18 @@ theorem temporalTargetPolicy_valid_partial
       · simp [TemporalTargetPolicy.errorFor?, hFormat] at valid
       by_cases hComponents : components = TemporalComponents.fullDate
       · exact ⟨rfl, hComponents⟩
-      · simp [TemporalTargetPolicy.errorFor?, hFormat, notFull,
-          hComponents] at valid
+      · cases hCheck : policy.youngerThan1900Check with
+        | true =>
+            cases hYear : components.year with
+            | false =>
+                simp [TemporalTargetPolicy.errorFor?, hFormat, hCheck,
+                  hYear] at valid
+            | true =>
+                simp [TemporalTargetPolicy.errorFor?, hFormat, hCheck, hYear,
+                  notFull, hComponents] at valid
+        | false =>
+            simp [TemporalTargetPolicy.errorFor?, hFormat, hCheck, notFull,
+              hComponents] at valid
   | time =>
       by_cases hFormat : policy.format = "" <;>
         simp_all [TemporalTargetPolicy.errorFor?]

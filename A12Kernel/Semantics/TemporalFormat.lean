@@ -43,7 +43,15 @@ inductive TemporalPartialMode where
 inductive TemporalTargetPolicyError where
   | emptyFormat
   | partialModeRequiresFullDate
+  /-- The opt-in pre-1900 check on a declaration whose object carries no such property. The Kernel's
+  `TimeType` and `DateTimeType` have only a format and annotations at 30.8.1, so the shape is
+  rejected by the deserializer before any gate could find it inert — a schema fact rather than a
+  behavioural rule, which is why the arm reads as a kind test and is nonetheless right. -/
   | youngerThan1900RequiresDate
+  /-- The opt-in pre-1900 check on a Date declaration whose format carries **no year**. The Kernel
+  refuses the model with `MVK_ADDITIONAL_CHECK_INVALID`, and its own message keys on the components —
+  *date fields without a year* — rather than on the kind. -/
+  | youngerThan1900RequiresYear
   deriving Repr, DecidableEq
 
 /-- Complete declaration-owned policy needed by stored partial-Date consumers and before a resolved temporal value can be rendered and checked as a computed target. The model time zone remains a separate model-wide input. -/
@@ -134,7 +142,15 @@ def separator : DateRangeFormat → String
 
 end DateRangeFormat
 
-/-- Check only the cross-field invariants visible at the parser-independent flat boundary. A non-full partial mode belongs to a full Date declaration; the opt-in pre-1900 check belongs only to Date. -/
+/-- Check only the cross-field invariants visible at the parser-independent flat boundary.
+
+A non-full partial mode belongs to a full Date declaration. The opt-in pre-1900 check belongs to a
+Date declaration **whose format carries a year**: the Kernel refuses a year-free one outright with
+`MVK_ADDITIONAL_CHECK_INVALID`, and its message keys on the components rather than on the kind
+([inbound](../../docs/SOURCES.md#inbound-2026-09-05c)). This arm admitted every year-free Date
+declaration with the guard set, which is an **over**-admission — a legal-looking model the Kernel
+rejects — and the opposite direction from the under-admissions the kind/format sweep was finding, so
+that sweep could not have surfaced it. -/
 def TemporalTargetPolicy.errorFor?
     (policy : TemporalTargetPolicy)
     (kind : TemporalKind) (components : TemporalComponents) :
@@ -144,7 +160,9 @@ def TemporalTargetPolicy.errorFor?
   else
     match kind with
     | .date =>
-        if policy.partialMode == .full ||
+        if policy.youngerThan1900Check && !components.year then
+          some .youngerThan1900RequiresYear
+        else if policy.partialMode == .full ||
             components == TemporalComponents.fullDate then
           none
         else

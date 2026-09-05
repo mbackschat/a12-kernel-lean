@@ -198,6 +198,19 @@ a12-dmkits revision `31348a7db` on `main` (three commits from `d1c528273`, clean
 
 All three acceptances and both corrections are inbound from a committed reviewed revision and create no outbound request. The one thing that does leave this project is the *narrowing* of `-14`, which is a reduction of an already-queued entry rather than a new one.
 
+<a id="inbound-2026-09-05c"></a>
+### Reviewed 2026-09-05c handback — the reassigned row measured, and one over-admission found from a description of this project's code
+
+a12-dmkits revision `25191913b` on `main` (two commits from `31348a7db`, clean before and after) closes the row this project reassigned to the peer and settles a policy question it had flagged without asking for.
+
+**The reassigned row holds.** A **DATE**-declared `HH:mm:ss` field admits `HoursFromTime` — firing on `10:30:00`, silent on `11:30:00`, all three engines — and refuses `YearFromDate` with `MVK_WRONG_DATE_FORMAT_FOR_OP`, beside an ordinary-clock counterpart control. That is `KF211`'s sharpest row with **both axes flipped**, so the pair rather than either carrier is what shows the operand gate keying on the format. Their `KF250`, locked in `adapter.laws.ClockDeclaredDateGateDiffTest`. [`SPEC-2026-09-05-14`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-05-14) records the reassignment; this is its result.
+
+**The pre-1900 policy has a third answer, and it corrected this project's `.date` arm.** The question was framed here as a two-way choice — kind-keyed or format-keyed — and is neither. A **DATE** declared `HH:mm:ss` with the opt-in check set is refused at model admission with `MVK_ADDITIONAL_CHECK_INVALID`, and the Kernel's own message keys on the components: *date fields without a year*. So the rule is that the guard requires the declared format to carry a **year**, whatever the kind. `TemporalTargetPolicy.errorFor?` had admitted every year-free Date declaration carrying it — an **over**-admission of a model the Kernel rejects, and the opposite direction from the under-admissions the declared-kind sweep was finding, which is why no case flipped when the rule landed: none carried the combination.
+
+**And the `.time`/`.dateTime` refusals are right for a better reason than they stated.** The Kernel's `TimeType` and `DateTimeType` carry only a format and annotations at 30.8.1, so neither the opt-in check nor a date precision is a property those declaration objects have; the peer read that from source and closed the remaining link by attack, injecting the key into a `TimeType` in DM-JSON and observing the **deserializer** reject the model one layer before any gate. The shape never reaches something that could be inert, so the arms are schema facts rather than behavioural rules — which is also why they now stand redundant with the components check rather than load-bearing against it.
+
+Both results are inbound from a committed reviewed revision and create no outbound request. The peer notes one defect of their own that the same measurement exposed and deliberately left open as delegation under-reporting rather than a wrong answer, and it is theirs to hold.
+
 ## Provenance checkpoint index
 
 Search stable `src-` anchors in this hub, then follow the link to the bounded family shard. Exact revisions and source-level claim limits remain in those records.
