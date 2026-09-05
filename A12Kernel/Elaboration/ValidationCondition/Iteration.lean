@@ -275,7 +275,10 @@ def ResolvedGroupListOperands.iterationGuardAt
 private def ValidationConditionLeaf.iterationGuardAt
     (level : RepeatableLevel) :
     ValidationConditionLeaf model → IterationGuardStatus
-  | .flat _ | .numeric _ _ | .guardedRootCurrentRepetition _ _ _ =>
+  -- The explicit validity operand is nonrepeatable by its own well-formedness, so it references no
+  -- level and reads like a flat leaf here.
+  | .flat _ | .numeric _ _ | .guardedRootCurrentRepetition _ _ _
+  | .customFieldValidity _ =>
       .noReference
   | .guardedRepeatableCurrentRepetition guard _ _ =>
       if guard.repeatableScope.contains level then .guarded else .noReference
@@ -403,6 +406,9 @@ def supportsOrdinaryIteration
     | .iteratedDateRange _ => true
     | .orderedNumeric .sameGroupAddressed _ => true
     | .repetitionNotUnique _ => true
+    -- A nonrepeatable operand read is environment-insensitive, exactly as a flat leaf's is, so the
+    -- default `false` here would narrow the fragment without a reason.
+    | .customFieldValidity _ => true
     | _ => false
 
 /-- Discover a filtered source across the complete checked connective tree. Unlike verdict evaluation, this static traversal never short-circuits on a decisive branch. -/

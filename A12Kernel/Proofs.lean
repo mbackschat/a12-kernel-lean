@@ -269,6 +269,7 @@ import A12Kernel.Proofs.TokenFirstFilledValue
 import A12Kernel.Proofs.TokenValueCount
 import A12Kernel.Proofs.ValidationCondition
 import A12Kernel.Proofs.ValidationCondition.CurrentRepetition
+import A12Kernel.Proofs.ValidationCondition.CustomFieldValidity
 import A12Kernel.Proofs.ValidationCondition.GroupList
 import A12Kernel.Proofs.ValidationCondition.Reference
 import A12Kernel.Proofs.ValidationFillQuantifier

@@ -326,6 +326,8 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
   | .iteratedDateRange condition =>
       condition.operandDeclarations.mapM fun declaration =>
         concreteFieldPointer declaration environment
+  | .customFieldValidity leaf =>
+      (concreteFieldPointer leaf.operand.declaration environment).map ([·])
   | _ => .error .unclassifiedLeaf
 
 private def treePointers (environment : Env) :

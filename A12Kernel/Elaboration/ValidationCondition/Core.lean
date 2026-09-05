@@ -6,6 +6,7 @@ import A12Kernel.Elaboration.StarGroup
 import A12Kernel.Elaboration.ValidationContext
 import A12Kernel.Elaboration.CurrentRepetition
 import A12Kernel.Elaboration.IteratedDateRangeCondition
+import A12Kernel.Elaboration.CustomFieldValidity
 
 /-! # Shared resolved validation conditions
 
@@ -247,6 +248,9 @@ inductive ValidationConditionLeaf (model : FlatModel) where
       (source : CheckedCurrentRepetitionSource model)
       (comparison : RepeatableCurrentRepetitionComparison)
   | iteratedDateRange (condition : IteratedDateRangeCondition model)
+  /-- An explicit `Valid`/`Invalid` predicate over a registered custom type. The operand is a single
+  nonrepeatable field, so this leaf reads like a flat one and carries no iteration of its own. -/
+  | customFieldValidity (leaf : CheckedCustomFieldValidityLeaf model)
 
 /-- One checked connective tree whose leaves retain their family-specific resolved certificates and evaluation policies. -/
 abbrev ValidationCondition (model : FlatModel) :=
@@ -300,6 +304,11 @@ def guardedRootCurrentRepetition
     (comparison : RootCurrentRepetitionComparison) :
     ValidationCondition model :=
   .leaf (.guardedRootCurrentRepetition guard group comparison)
+
+/-- Embed one checked explicit validity predicate. The operand, the resolved type name, and the polarity travel together, so a tree can never pair an admitted operand with an unresolved name. -/
+def customFieldValidity (leaf : CheckedCustomFieldValidityLeaf model) :
+    ValidationCondition model :=
+  .leaf (.customFieldValidity leaf)
 
 /-- Embed the exact measured same-group repeatable condition. The filled guard, model-owned level, and closed comparison remain one leaf. -/
 def guardedRepeatableCurrentRepetition
@@ -404,6 +413,9 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => false
   | .iteratedDateRange _ => false
+  -- The value-specified gate answers UNKNOWN for an empty operand before any registry contact, so
+  -- neither polarity of the explicit predicate can fire on one.
+  | .customFieldValidity _ => false
 
 def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .flat condition, field => condition.referencesField field
@@ -424,6 +436,7 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .iteratedDateRange condition, field =>
       condition.operandDeclarations.any fun declaration =>
         declaration.id == field
+  | .customFieldValidity leaf, field => leaf.operand.source == field
 
 /-- Whether a leaf retains any `Having` filter in its checked source. Only the model-indexed ordered numeric carrier can currently own such a source; scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool
@@ -432,6 +445,7 @@ def hasHaving : ValidationConditionLeaf model → Bool
   | .repeatableFieldPresence _ _ | .repetitionNotUnique _
   | .guardedRootCurrentRepetition _ _ _
   | .guardedRepeatableCurrentRepetition _ _ _
+  | .customFieldValidity _
   | .iteratedDateRange _ => false
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
@@ -485,6 +499,11 @@ def wellFormedBool (rowGroup : GroupPath) :
         match model.lookupUniqueId guard.id with
         | .ok checkedGuard => checkedGuard == guard
         | .error _ => false
+  -- Model ownership of the operand is already a certificate the checked leaf carries, so the only
+  -- open condition is the fragment's: a nonrepeatable operand. No containment gate is asserted here
+  -- because none is measured — whether the Kernel requires the operand inside the rule's group is
+  -- untested for this predicate.
+  | .customFieldValidity leaf => leaf.operand.declaration.repeatableScope.isEmpty
 
 
 end ValidationConditionLeaf

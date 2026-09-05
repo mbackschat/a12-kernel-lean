@@ -44,6 +44,12 @@ def evalSelected (context : ValidationEvaluationContext)
         comparison.eval
   | .guardedRepeatableCurrentRepetition _ _ _ => .unknown
   | .iteratedDateRange _ => .unknown
+  -- A nonrelevant operand is UNKNOWN like every other leaf's, and a relevant one reads its checked
+  -- cell: the validator never sees a value the surrounding theory treats as unreadable.
+  | .customFieldValidity leaf =>
+      if isRelevant leaf.operand.source then
+        leaf.evalAt context.fields .validation
+      else .unknown
 
 /-- Whether a leaf has an exact partial addressed interpretation. `false` is structural unsupported information and must not be converted to semantic UNKNOWN. -/
 def supportsAddressedPartial : ValidationConditionLeaf model → Bool

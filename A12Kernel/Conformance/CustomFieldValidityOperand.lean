@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CustomFieldValidity
+import A12Kernel.Elaboration.ValidationCondition.Iteration
 
 /-! # A12Kernel.Conformance.CustomFieldValidityOperand — the value-validation operand slot
 
@@ -13,8 +14,9 @@ model it is a String declaration carrying `customType`, so an implementation gat
 `policy.kind` admits it silently. The plain-String control beside it is what makes that row about
 the custom declaration rather than about String.
 
-Static admission only. Nothing here invokes a validator or observes a verdict, and the group and
-starred operands the Kernel also refuses are not expressible in this signature.
+The later sections carry the family through to a condition tree: the leaf's read of its operand's
+checked cell, and UNKNOWN travelling out of it through a connective. The group and starred operands
+the Kernel also refuses stay unexpressible in the single-field signature.
 -/
 
 namespace A12Kernel.Conformance.CustomFieldValidityOperand
@@ -150,6 +152,32 @@ example : leafVerdict? .valid (.parsed (.num 7)) = some .unknown := by
   native_decide
 
 example : leafVerdict? .invalid (.parsed (.num 7)) = some .unknown := by
+  native_decide
+
+/-! ## Inside a condition tree
+
+The point of the leaf arm is that UNKNOWN keeps travelling. A conjunction of the two polarities is
+`notFired` on a readable value — they are complements — and stays UNKNOWN when the operand cannot be
+read, which is what an arm returning `notFired` for an unreadable cell would destroy. -/
+
+private def evalContext (cell : RawCell) : ValidationEvaluationContext where
+  fields := probeModel.checkContext (raw cell)
+  groups := GroupPresenceContext.unavailable
+
+private def bothPolarities? (cell : RawCell) : Option Verdict := do
+  let valid ←
+    (elaborateCustomFieldValidityLeaf probeModel world 1 "ProjectCode" .valid).toOption
+  let invalid ←
+    (elaborateCustomFieldValidityLeaf probeModel world 1 "ProjectCode" .invalid).toOption
+  let tree : ValidationCondition probeModel :=
+    .and (ValidationCondition.customFieldValidity valid)
+      (ValidationCondition.customFieldValidity invalid)
+  pure (ValidationCondition.evalSelected tree (evalContext cell) (fun _ => true))
+
+example : bothPolarities? (.parsed (.str "ok")) = some .notFired := by
+  native_decide
+
+example : bothPolarities? (.parsed (.num 7)) = some .unknown := by
   native_decide
 
 end A12Kernel.Conformance.CustomFieldValidityOperand
