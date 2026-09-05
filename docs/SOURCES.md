@@ -222,6 +222,17 @@ a12-dmkits revision `0aca9e624` on `main` closes the one question both estates h
 
 Inbound from a committed reviewed revision, so no outbound request. Nothing is now open between the two projects on this class.
 
+<a id="inbound-2026-09-05e"></a>
+### Reported 2026-09-05e — `NumberOfDifferentValues`' temporal admission gate, peer-reported and not yet re-derived here
+
+a12-dmkits reports, from `validate.laws.TemporalAggregateComponentSetLawsTest` at revision `13287df21` on `main`, that this operator's temporal admission is the extrema's **component-set** gate rather than `FieldValuesNotUnique`'s identical-declared-format gate. Three rows in one model: `NumberOfDifferentValues(yyyy-MM-dd, dd.MM.yyyy)` admitted, `NumberOfDifferentValues(yyyy-MM-dd, yyyy-MM)` refused `MVK_DATEFORMATS_NOT_COMPATIBLE`, and `FieldValuesNotUnique` refused on that same admitted first pair. A declared Base Year supplements YEAR into both sets before the comparison and does not lift the uniqueness refusal.
+
+**This is a peer report, not a pin, and it is recorded that way deliberately.** The peer characterised it as a read of their committed test source with a confirming run still in flight, and asked that it be re-derived on this project's own fixtures before any clause rests on it. No local `dmtool` row exists: a clean-sibling window opened at `13287df21` and closed within the minute when the peer began their identity measurement, so nothing was measured here and the sibling was not written to. [SG22](SEMANTICS-GAPS.md#sg22--numberofdifferentvalues-operand-domain-and-its-two-homogeneity-codes) owns the re-derivation obligation.
+
+Two consequences for this project's own records, both corrections of local error rather than inbound deltas. SG22's stated **recommendation** was format-equality, which would have over-rejected the admitted differently-spelled pair — the inverse of the over-admission class it was guarding against, and a case where [`LF116`](LEAN-FINDINGS.md)'s refusal to carry a gate across a carrier was the correct instinct. SG22's **premise** for the compared-identity question — that a mandatory single format makes the decoded and stored-text accounts agree on every constructible input — is refuted by the same rows, since the admitted pair supplies the separating witness. That premise was an unmeasured reachability claim and is withdrawn.
+
+The compared-identity question itself is a runtime claim requiring a kernel/interpreter differential, which is a12-dmkits' harness; it stays with them and is not routed through `dmtool` from here.
+
 ## Provenance checkpoint index
 
 Search stable `src-` anchors in this hub, then follow the link to the bounded family shard. Exact revisions and source-level claim limits remain in those records.
