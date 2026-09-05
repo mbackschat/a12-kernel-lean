@@ -1,0 +1,99 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 4 ops; 2 of 4 exited nonzero (0 failed, 2 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 4,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "M1-marked-validation-bound-host",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "M1", "--condition", "CurrentRepetition($/Rep/Rows) > 1 And FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_OUTER_ITERATION",
+          "summary" : "Rule with path '/Rep/Rows/CheckRule': The symbol '$' to specify rule iteration is only allowed inside filter conditions. [MVK_INVALID_OUTER_ITERATION]",
+          "where" : {
+            "rule" : "/Rep/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "M2-marked-inside-filter",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "M2", "--condition", "Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Rows) != CurrentRepetition($/Rep/Rows)) > 0 And FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "M3-unmarked-control",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "M3", "--condition", "CurrentRepetition(/Rep/Rows) > 1 And FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "M4-marked-nonrepeatable",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "M4", "--condition", "CurrentRepetition($/Rep/Meta) > 1 And FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_OUTER_ITERATION",
+          "summary" : "Rule with path '/Rep/Rows/CheckRule': The symbol '$' to specify rule iteration is only allowed inside filter conditions. [MVK_INVALID_OUTER_ITERATION]",
+          "where" : {
+            "rule" : "/Rep/Rows/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

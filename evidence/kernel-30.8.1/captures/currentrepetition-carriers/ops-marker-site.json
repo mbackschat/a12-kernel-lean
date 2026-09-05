@@ -1,0 +1,70 @@
+[
+ {
+  "id": "M1-marked-validation-bound-host",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "M1",
+   "--condition",
+   "CurrentRepetition($/Rep/Rows) > 1 And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "M2-marked-inside-filter",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "M2",
+   "--condition",
+   "Sum(/Rep/Rows*/Base Having CurrentRepetition(/Rep/Rows) != CurrentRepetition($/Rep/Rows)) > 0 And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "M3-unmarked-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "M3",
+   "--condition",
+   "CurrentRepetition(/Rep/Rows) > 1 And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "M4-marked-nonrepeatable",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "M4",
+   "--condition",
+   "CurrentRepetition($/Rep/Meta) > 1 And FieldFilled(/Rep/Rows/Err)"
+  ]
+ }
+]

@@ -1,0 +1,15 @@
+{
+ "computedField": "/Rep/Rows/Alt",
+ "group": "/Rep/Rows",
+ "alternatives": [
+  {
+   "operation": "CurrentRepetition($/Rep/Rows)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "X4"
+  }
+ ]
+}

@@ -1,0 +1,87 @@
+[
+ {
+  "id": "D1-descendant-from-binding-host",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Desc_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "D1",
+   "--condition",
+   "CurrentRepetition(/Rep/Rows/Fixed) > 0 And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "D2-descendant-from-root-host",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Desc_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "D2",
+   "--condition",
+   "CurrentRepetition(/Rep/Rows/Fixed) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "D3-control-plain-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Desc_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "D3",
+   "--condition",
+   "FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "D4-control-flat-nonrepeatable",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Desc_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "D4",
+   "--condition",
+   "CurrentRepetition(/Rep/Meta) > 0 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "D5-control-plain-row",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Desc_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "D5",
+   "--condition",
+   "FieldFilled(/Rep/Rows/Err)"
+  ]
+ }
+]

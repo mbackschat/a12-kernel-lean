@@ -1,0 +1,15 @@
+{
+ "computedField": "/Rep/Rows/Alt",
+ "group": "/Rep/Rows",
+ "alternatives": [
+  {
+   "operation": "[/Rep/Rows/Base] * 2"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "X7"
+  }
+ ]
+}

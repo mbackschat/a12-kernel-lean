@@ -1,0 +1,15 @@
+{
+ "computedField": "/Rep/Agg",
+ "group": "/Rep",
+ "alternatives": [
+  {
+   "operation": "Sum(CurrentRepetition(/Rep/Rows))"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "W4"
+  }
+ ]
+}

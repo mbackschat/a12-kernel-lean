@@ -1,0 +1,104 @@
+[
+ {
+  "id": "V1-bare-comparison",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "V1",
+   "--condition",
+   "CurrentRepetition(/Rep/Rows) > 1 And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "V2-arithmetic-wrapper",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "V2",
+   "--condition",
+   "CurrentRepetition(/Rep/Rows) + 1 > 2 And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "V3-right-hand-side",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "V3",
+   "--condition",
+   "[/Rep/Rows/Base] > CurrentRepetition(/Rep/Rows) And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "V4-both-sides-arithmetic",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "V4",
+   "--condition",
+   "CurrentRepetition(/Rep/Rows) * 2 > [/Rep/Rows/Base] And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "V5-inside-an-aggregate",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "V5",
+   "--condition",
+   "Sum(/Rep/Rows*/Base Having [/Rep/Rows/Gate] > CurrentRepetition(/Rep/Rows)) > 0 And FieldFilled(/Rep/Rows/Err)"
+  ]
+ },
+ {
+  "id": "V6-control-plain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep/Rows",
+   "--field",
+   "/Rep/Rows/Err",
+   "--code",
+   "V6",
+   "--condition",
+   "FieldFilled(/Rep/Rows/Err)"
+  ]
+ }
+]

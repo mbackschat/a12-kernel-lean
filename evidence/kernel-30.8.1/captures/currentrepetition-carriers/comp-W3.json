@@ -1,0 +1,15 @@
+{
+ "computedField": "/Rep/Rows/P",
+ "group": "/Rep/Rows",
+ "alternatives": [
+  {
+   "operation": "CurrentRepetition(/Rep/Rows) + [/Rep/Rows/Base]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "W3"
+  }
+ ]
+}

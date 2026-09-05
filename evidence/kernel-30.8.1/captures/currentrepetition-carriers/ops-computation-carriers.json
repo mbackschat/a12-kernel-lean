@@ -1,0 +1,68 @@
+[
+ {
+  "id": "W1-computation-bare",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-W1.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "W2-computation-arithmetic",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-W2.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "W3-computation-with-field",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-W3.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "W4-aggregate-over-it",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-W4.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "W5-root-target",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-W5.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "W6-control-field-source",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-W6.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ }
+]

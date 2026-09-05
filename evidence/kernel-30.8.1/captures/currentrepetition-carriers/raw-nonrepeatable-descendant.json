@@ -1,0 +1,132 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 5 ops; 1 of 5 exited nonzero (0 failed, 1 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 5,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "D1-descendant-from-binding-host",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Desc_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "D1", "--condition", "CurrentRepetition(/Rep/Rows/Fixed) > 0 And FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "D2-descendant-from-root-host",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Desc_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "D2", "--condition", "CurrentRepetition(/Rep/Rows/Fixed) > 0 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Rep/CheckRule': Missing specification of an asterisk for 'Rows' in '/Rep/Rows/Fixed'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Rep/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "D3-control-plain-root",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Desc_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "D3", "--condition", "FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ {
+          "severity" : "WARNING",
+          "source" : "LINT",
+          "code" : "RK_INVERTED_REQUIREDNESS",
+          "summary" : "the rule errors when '/Rep/RootNum' IS filled — an errorCondition fires on the invalid case, so a requiredness rule should fire on absence",
+          "where" : {
+            "rule" : "",
+            "operator" : "FieldFilled"
+          },
+          "fix" : "FieldNotFilled(/Rep/RootNum)",
+          "explain" : "an errorCondition is the error scenario (true ⇒ invalid); FieldFilled is true when the field HAS a value, so this flags present values, not missing ones — did you mean FieldNotFilled?"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "D4-control-flat-nonrepeatable",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Desc_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "D4", "--condition", "CurrentRepetition(/Rep/Meta) > 0 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "D5-control-plain-row",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Desc_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "D5", "--condition", "FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ {
+          "severity" : "WARNING",
+          "source" : "LINT",
+          "code" : "RK_INVERTED_REQUIREDNESS",
+          "summary" : "the rule errors when '/Rep/Rows/Err' IS filled — an errorCondition fires on the invalid case, so a requiredness rule should fire on absence",
+          "where" : {
+            "rule" : "",
+            "operator" : "FieldFilled"
+          },
+          "fix" : "FieldNotFilled(/Rep/Rows/Err)",
+          "explain" : "an errorCondition is the error scenario (true ⇒ invalid); FieldFilled is true when the field HAS a value, so this flags present values, not missing ones — did you mean FieldNotFilled?"
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

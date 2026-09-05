@@ -1,0 +1,15 @@
+{
+ "computedField": "/Rep/Agg",
+ "group": "/Rep",
+ "alternatives": [
+  {
+   "operation": "CurrentRepetition(/Rep/Meta)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "X8"
+  }
+ ]
+}

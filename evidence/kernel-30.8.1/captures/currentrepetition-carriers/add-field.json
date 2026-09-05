@@ -1,0 +1,15 @@
+{
+  "target" : "field",
+  "op" : "add",
+  "outcome" : "applied",
+  "ok" : true,
+  "verification" : "KERNEL_CONFIRMED",
+  "summary" : "added field /Rep/Rows/Fixed/FVal",
+  "changed" : {
+    "added" : "/Rep/Rows/Fixed/FVal",
+    "kind" : "NUMBER"
+  },
+  "diagnostics" : [ ],
+  "written" : true,
+  "output" : "Desc_DM.json"
+}

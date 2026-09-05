@@ -1,0 +1,15 @@
+{
+  "target" : "group",
+  "op" : "add",
+  "outcome" : "applied",
+  "ok" : true,
+  "verification" : "KERNEL_CONFIRMED",
+  "summary" : "added group /Rep/Rows/Fixed",
+  "changed" : {
+    "added" : "/Rep/Rows/Fixed",
+    "repeatable" : false
+  },
+  "diagnostics" : [ ],
+  "written" : true,
+  "output" : "Desc_DM.json"
+}

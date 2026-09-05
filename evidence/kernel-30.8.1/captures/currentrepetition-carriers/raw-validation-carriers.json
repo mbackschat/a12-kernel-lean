@@ -1,0 +1,150 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : true,
+  "summary" : "dispatched 6 ops; all children exited zero",
+  "data" : {
+    "ops" : 6,
+    "dispatched" : true,
+    "allExitedZero" : true,
+    "results" : [ {
+      "op" : 0,
+      "id" : "V1-bare-comparison",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "V1", "--condition", "CurrentRepetition(/Rep/Rows) > 1 And FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "V2-arithmetic-wrapper",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "V2", "--condition", "CurrentRepetition(/Rep/Rows) + 1 > 2 And FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "V3-right-hand-side",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "V3", "--condition", "[/Rep/Rows/Base] > CurrentRepetition(/Rep/Rows) And FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ {
+          "severity" : "WARNING",
+          "source" : "LINT",
+          "code" : "RK_UNGUARDED_NUMBER_COMPARISON",
+          "summary" : "'/Rep/Rows/Base' is a number compared with an ordering operator but its presence isn't guarded — an empty number reads as 0, so the rule also fires on an empty '/Rep/Rows/Base'",
+          "where" : {
+            "rule" : "",
+            "operator" : "GreaterThan"
+          },
+          "fix" : "decide by intent: if an empty/missing '/Rep/Rows/Base' should NOT trip the rule, guard it — FieldFilled(/Rep/Rows/Base) And <the comparison>; if a missing value IS a violation (empty-as-0 should fire), the unguarded form is intentional — keep it",
+          "explain" : "an unspecified number defaults to 0 in a comparison (KERNEL-SEMANTICS §2), and the value functions (Length, the date/time extractors, DifferenceIn*) read an empty operand as 0 too — unlike a bare string/date/enum comparison, which an empty operand suppresses — so this is only a trap when empty should be NEUTRAL; an empty-as-violation rule is legitimately unguarded"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "V4-both-sides-arithmetic",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "V4", "--condition", "CurrentRepetition(/Rep/Rows) * 2 > [/Rep/Rows/Base] And FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ {
+          "severity" : "WARNING",
+          "source" : "LINT",
+          "code" : "RK_UNGUARDED_NUMBER_COMPARISON",
+          "summary" : "'/Rep/Rows/Base' is a number compared with an ordering operator but its presence isn't guarded — an empty number reads as 0, so the rule also fires on an empty '/Rep/Rows/Base'",
+          "where" : {
+            "rule" : "",
+            "operator" : "GreaterThan"
+          },
+          "fix" : "decide by intent: if an empty/missing '/Rep/Rows/Base' should NOT trip the rule, guard it — FieldFilled(/Rep/Rows/Base) And <the comparison>; if a missing value IS a violation (empty-as-0 should fire), the unguarded form is intentional — keep it",
+          "explain" : "an unspecified number defaults to 0 in a comparison (KERNEL-SEMANTICS §2), and the value functions (Length, the date/time extractors, DifferenceIn*) read an empty operand as 0 too — unlike a bare string/date/enum comparison, which an empty operand suppresses — so this is only a trap when empty should be NEUTRAL; an empty-as-violation rule is legitimately unguarded"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "V5-inside-an-aggregate",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "V5", "--condition", "Sum(/Rep/Rows*/Base Having [/Rep/Rows/Gate] > CurrentRepetition(/Rep/Rows)) > 0 And FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "V6-control-plain",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep/Rows", "--field", "/Rep/Rows/Err", "--code", "V6", "--condition", "FieldFilled(/Rep/Rows/Err)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ {
+          "severity" : "WARNING",
+          "source" : "LINT",
+          "code" : "RK_INVERTED_REQUIREDNESS",
+          "summary" : "the rule errors when '/Rep/Rows/Err' IS filled — an errorCondition fires on the invalid case, so a requiredness rule should fire on absence",
+          "where" : {
+            "rule" : "",
+            "operator" : "FieldFilled"
+          },
+          "fix" : "FieldNotFilled(/Rep/Rows/Err)",
+          "explain" : "an errorCondition is the error scenario (true ⇒ invalid); FieldFilled is true when the field HAS a value, so this flags present values, not missing ones — did you mean FieldNotFilled?"
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

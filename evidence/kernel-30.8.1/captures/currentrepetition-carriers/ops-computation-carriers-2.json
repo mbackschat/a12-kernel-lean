@@ -1,0 +1,90 @@
+[
+ {
+  "id": "X1-comp-bare-host-group",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-X1.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "X2-comp-arithmetic-wrapper",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-X2.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "X3-comp-beside-field",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-X3.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "X4-comp-marked-host-group",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-X4.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "X5-comp-sibling-repeatable",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-X5.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "X6-comp-nonrepeatable-target",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-X6.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "X7-control-plain-field",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-X7.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "X8-nonrepeatable-root-host",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-X8.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ }
+]
