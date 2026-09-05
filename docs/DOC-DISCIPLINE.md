@@ -109,6 +109,7 @@ Detailed capability, gap, plan, and provenance records use keyed bullets instead
 - Record identifiers use the local prefixes `cap-`, `gap-`, and `src-`; they are anchors, not entries in a global registry.
 - Every bullet carries one semantic claim. Keys are short, lower-case, and backtick-delimited; a key may repeat for independent claims of the same class.
 - A claim line has a soft ceiling of 500 characters. Split by semantic claim, never by visual width.
+- Write inside that soft ceiling rather than discovering the hard one. The guard's rejection is cheap to fix but never free: each retry costs a rewrite, and a row split *after* the guard fires tends to break where the character count fell rather than where the claim did. A row that wants more than 500 characters is usually two claims that have not been separated yet, so separating them first is both the faster path and the better record.
 - One record must be understandable in a window of at most 80 physical lines including its anchor and heading.
 - One detailed capability or source record must stay below 24,000 bytes, and one SG block below 12,000 bytes. Split at a semantic sub-capability before crossing the bound.
 - One operational hub or shard must stay below 200,000 bytes. Create a family shard and retain a stable compatibility entry in the hub before crossing the bound.
