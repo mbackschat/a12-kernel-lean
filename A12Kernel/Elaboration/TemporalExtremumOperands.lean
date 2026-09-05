@@ -35,13 +35,16 @@ duplicate arms behave here exactly as they do for the sibling carriers, and a gr
 operand is expressible; the component gate then reads a group's **expansion**, which is the extent
 the Kernel's own gate reads.
 
-A `Having`-filtered star is an operand like any other here, because the filter selects rows and the
-gate reads fields; the measured rows confirm it against both a matching and a differing set.
+**Every operand form the surface can express is admitted here**, each measured rather than inferred
+from its neighbour. A `Having`-filtered star is an operand like any other, because the filter selects
+rows while the gate reads fields. A star above a **nonrepeatable** terminal contributes its expansion
+exactly as a starred repeatable group does. All three of this module's refusals of an operand *form*
+turned out to be over-refusals against the Kernel, which is why none is left
+([`LF152`](../../docs/LEAN-FINDINGS.md)).
 
-Out of scope here, deliberately: the fold itself and therefore the value domain, starred-group
-presence slots — which this capsule declines rather than admit unmeasured — and DATE_RANGE, whose
-allowlisted `(format, separator)` pair the Kernel treats the same way but which this flat model
-gives no component set to compare.
+Out of scope here, deliberately: the fold itself and therefore the value domain, and DATE_RANGE,
+whose allowlisted `(format, separator)` pair the Kernel treats the same way but which this flat
+model gives no component set to compare.
 -/
 
 namespace A12Kernel
@@ -57,19 +60,6 @@ inductive TemporalExtremumOperandElabError where
   | laterNotTemporal (path : List String) (actual : SurfaceScalarKind)
   /-- A group slot whose subtree declares no field, so no component set exists to agree on. -/
   | groupExpansionEmpty (path : List String)
-  /-- A starred-group **presence** slot. This capsule declines it rather than admit it unchecked,
-      and the decline **claims no Kernel class**: whether the Kernel admits the form at this carrier
-      is unmeasured. Stated that way on purpose — the neighbouring DateRange-endpoint carrier
-      refuses a starred operand outright with `MVK_NO_WILDCARDS_ALLOWED`
-      ([`spec/05`](../../spec/05-dates-and-time.md#8-date-ranges-and-overlap)), so the carrier
-      boundary is known to be real and reading this one off the extremum's plain-star admission
-      would be the crossing declined elsewhere in this family
-      ([`LF116`](../../docs/LEAN-FINDINGS.md)).
-
-      The filtered star shared this arm until its own measurement arrived and admitted it, which is
-      the reason to keep the two declines separable rather than merged under one "unsupported"
-      heading: they were never one question. -/
-  | unsupportedOperandForm (path : List String)
   /-- The shared entity-list checker's own refusal: arity, the wildcard gate, and both duplicate arms. It is delegated rather than restated, because those gates do not vary by carrier. -/
   | shape (error : FieldEntityShapeElabError)
   deriving Repr, DecidableEq
@@ -227,7 +217,6 @@ def diagnostic? : TemporalExtremumOperandElabError → Option KernelStaticDiagno
   -- is a component mismatch and carries its own class.
   | .laterNotTemporal _ _ => some .dateAndNonDate
   | .groupExpansionEmpty _ => none
-  | .unsupportedOperandForm _ => none
   | .shape error => error.diagnostic?
 
 end TemporalExtremumOperandElabError
