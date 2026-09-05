@@ -1,0 +1,57 @@
+[
+ {
+  "id": "J1-condition-keyed-field",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-J1.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "J2-index-field",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-J2.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "J3-third-field",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-J3.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "J4-fourth-field",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-J4.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "J5-control-no-parameter",
+  "verb": "rule",
+  "args": [
+   "add",
+   "rule-J5.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ }
+]

@@ -1,0 +1,122 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 5 ops; 2 of 5 exited nonzero (0 failed, 2 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 5,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "J1-condition-keyed-field",
+      "verb" : "rule",
+      "args" : [ "add", "rule-J1.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add rule /Rep/J1",
+        "changed" : {
+          "rule" : "/Rep/J1"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "J2-index-field",
+      "verb" : "rule",
+      "args" : [ "add", "rule-J2.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add rule /Rep/J2",
+        "changed" : {
+          "rule" : "/Rep/J2"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "J3-third-field",
+      "verb" : "rule",
+      "args" : [ "add", "rule-J3.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INDEX_FOR_ERROR_TEXT_INVALID",
+          "summary" : "Rule with path '/Rep/J3': The rule '/Rep/J3' specifies an incorrect error text for the language English. A semantic index '/Rep/Rows/Gate For \"k1\"' can be used in an error text only if it is used in the rule condition in the same way. [MVK_INDEX_FOR_ERROR_TEXT_INVALID]",
+          "where" : {
+            "rule" : "/Rep/J3"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "J4-fourth-field",
+      "verb" : "rule",
+      "args" : [ "add", "rule-J4.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "the rule is rejected by the kernel",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INDEX_FOR_ERROR_TEXT_INVALID",
+          "summary" : "Rule with path '/Rep/J4': The rule '/Rep/J4' specifies an incorrect error text for the language English. A semantic index '/Rep/Rows/Err For \"k1\"' can be used in an error text only if it is used in the rule condition in the same way. [MVK_INDEX_FOR_ERROR_TEXT_INVALID]",
+          "where" : {
+            "rule" : "/Rep/J4"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "J5-control-no-parameter",
+      "verb" : "rule",
+      "args" : [ "add", "rule-J5.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add rule /Rep/J5",
+        "changed" : {
+          "rule" : "/Rep/J5"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

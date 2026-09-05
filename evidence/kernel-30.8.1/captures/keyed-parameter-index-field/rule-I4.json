@@ -1,0 +1,12 @@
+{
+ "field": "/Rep/RootNum",
+ "group": "/Rep",
+ "code": "I4",
+ "condition": "FieldFilled(/Rep/RootNum) And FieldNotFilled(/Rep/Rows/Base For \"k1\")",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "[x=$/Rep/Rows/Err For \"k1\"$]"
+  }
+ ]
+}

@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-05-09"></a>
+### `SPEC-2026-09-05-09` — the semantic-index key literal must fit the index field's declared kind, and that gate is the condition's
+
+- `status`: pending
+- `clause`: [`11-messages-and-custom.md`](../spec/11-messages-and-custom.md), the semantic-index paragraph, which described the key's spellings and the parameter gate without any condition on the key's *value*.
+- `delta`: the key literal must be a valid value for the declared index field's kind, and the check belongs to the **condition** rather than to the message parameter. With a **Number** index field designated and the key spelled `"k1"`, the rule is refused `MVK_INDEX_VALUE_INVALID` — including with **no message parameter at all**. Designating a String index field instead admits the same condition. So `MVK_INDEX_VALUE_INVALID` and `MVK_INDEX_FOR_ERROR_TEXT_INVALID` are two gates at two layers, and only the second is about the parameter.
+- `basis`: ten `rule add --dry-run` children across two `batch` runs plus one `field add` and two `group modify --index-field`, `dmtool` 0.13.0, Kernel `30.8.1`, every child `KERNEL_CONFIRMED`, `model check` valid with zero diagnostics, the launcher self-reporting build `226b2be175133dff45413b0a0f604ea219ced85b (dirty)`. The [checkpoint](sources/message-and-pointer-probes.md#src-keyed-parameter-admits-the-index-field-only) owns the rows and retained hashes.
+- `separator`: the **parameterless control** is the row that settles it. It is refused alongside the four parameter rows under the Number index field and admitted alongside them under the String one, so a refusal that survives deleting the parameter cannot be the parameter's. Without that control the whole matrix reads as a parameter verdict, which is how it first read here.
+- `consumer-consequence`: a consumer validating a keyed reference must check the key literal against the index field's declared kind at the condition, and must not report the parameter class for it. Reporting `MVK_INDEX_FOR_ERROR_TEXT_INVALID` there sends an author to rewrite a message that is already correct.
+- `relation-to-your-KF198-amendment`: separate gate, same fixture family. Your amended admitted set — the condition's keyed field or the group's index field — is **independently reproduced here** on a four-field group, with two refused fields rather than one, and this project's own `spec/11` carried the wide form and is corrected in the same change. That half is inbound and raises no request; this entry is only the index-value gate, which neither estate had stated.
+- `local-consequence`: none behavioral beyond the clause; the fragment models the parameter grammar's spellings and does not evaluate index values.
+- `acceptance`: a12-dmkits confirms that a key literal invalid for the index field's kind refuses the condition with `MVK_INDEX_VALUE_INVALID` independently of any message parameter; or reports the row where it diverges.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-05-08"></a>
 ### `SPEC-2026-09-05-08` — `$#RuleGroup$` alone is refused when its owning declaration sits directly in the root group
 

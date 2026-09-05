@@ -1,0 +1,15 @@
+{
+  "target" : "field",
+  "op" : "add",
+  "outcome" : "applied",
+  "ok" : true,
+  "verification" : "KERNEL_CONFIRMED",
+  "summary" : "added field /Rep/Rows/Sk",
+  "changed" : {
+    "added" : "/Rep/Rows/Sk",
+    "kind" : "STRING"
+  },
+  "diagnostics" : [ ],
+  "written" : true,
+  "output" : "Scope_DM.json"
+}

@@ -1,0 +1,15 @@
+{
+  "target" : "group",
+  "op" : "modify",
+  "outcome" : "applied",
+  "ok" : true,
+  "verification" : "KERNEL_CONFIRMED",
+  "summary" : "set /Rep/Rows: index field Alt",
+  "changed" : {
+    "group" : "/Rep/Rows",
+    "indexField" : "Alt"
+  },
+  "diagnostics" : [ ],
+  "written" : true,
+  "output" : "Scope_DM.json"
+}

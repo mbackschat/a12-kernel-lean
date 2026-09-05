@@ -1,0 +1,140 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 5 ops; 5 of 5 exited nonzero (0 failed, 5 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 5,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "I1-condition-keyed-field",
+      "verb" : "rule",
+      "args" : [ "add", "rule-I1.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "condition rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INDEX_VALUE_INVALID",
+          "summary" : "Rule with path '/Rep/I1': The specified value 'k1' for the index field '/Rep/Rows/Alt' is invalid. [MVK_INDEX_VALUE_INVALID]",
+          "where" : {
+            "rule" : "/Rep/I1"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "I2-index-field",
+      "verb" : "rule",
+      "args" : [ "add", "rule-I2.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "condition rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INDEX_VALUE_INVALID",
+          "summary" : "Rule with path '/Rep/I2': The specified value 'k1' for the index field '/Rep/Rows/Alt' is invalid. [MVK_INDEX_VALUE_INVALID]",
+          "where" : {
+            "rule" : "/Rep/I2"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "I3-third-field",
+      "verb" : "rule",
+      "args" : [ "add", "rule-I3.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "condition rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INDEX_VALUE_INVALID",
+          "summary" : "Rule with path '/Rep/I3': The specified value 'k1' for the index field '/Rep/Rows/Alt' is invalid. [MVK_INDEX_VALUE_INVALID]",
+          "where" : {
+            "rule" : "/Rep/I3"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "I4-fourth-field",
+      "verb" : "rule",
+      "args" : [ "add", "rule-I4.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "condition rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INDEX_VALUE_INVALID",
+          "summary" : "Rule with path '/Rep/I4': The specified value 'k1' for the index field '/Rep/Rows/Alt' is invalid. [MVK_INDEX_VALUE_INVALID]",
+          "where" : {
+            "rule" : "/Rep/I4"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "I5-control-no-parameter",
+      "verb" : "rule",
+      "args" : [ "add", "rule-I5.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "condition rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INDEX_VALUE_INVALID",
+          "summary" : "Rule with path '/Rep/I5': The specified value 'k1' for the index field '/Rep/Rows/Alt' is invalid. [MVK_INDEX_VALUE_INVALID]",
+          "where" : {
+            "rule" : "/Rep/I5"
+          }
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}
