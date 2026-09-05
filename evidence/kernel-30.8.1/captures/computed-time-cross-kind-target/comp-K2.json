@@ -1,0 +1,15 @@
+{
+ "computedField": "/Gate_DM/TTime",
+ "group": "/Gate_DM",
+ "alternatives": [
+  {
+   "operation": "Time(\"5\", \"2\", \"9\")"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "K2"
+  }
+ ]
+}

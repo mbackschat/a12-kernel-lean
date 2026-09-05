@@ -1,0 +1,246 @@
+{
+  "header" : {
+    "id" : "Gate_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Gate_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Gate_DM",
+        "name" : "Gate_DM",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Gate_DM/DDate",
+            "name" : "DDate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "dd.MM.yyyy"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Gate_DM/YDate",
+            "name" : "YDate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Gate_DM/TDate",
+            "name" : "TDate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Gate_DM/DT",
+            "name" : "DT",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Gate_DM/Src",
+            "name" : "Src",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Gate_DM/YearOnly",
+            "name" : "YearOnly",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Gate_DM/MonthOnly",
+            "name" : "MonthOnly",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Gate_DM/MonthOnlyComp",
+            "name" : "MonthOnlyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MonthOnly",
+              "computationAlternatives" : [ {
+                "operation" : "\"05.03.\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "C0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Gate_DM/L1",
+            "name" : "L1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Src",
+              "errorCode" : "L1",
+              "errorCondition" : "DifferenceInDays(\"28.02.\", \"01.03.\") > 1 And FieldFilled(Src)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "L1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Gate_DM/L2",
+            "name" : "L2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Src",
+              "errorCode" : "L2",
+              "errorCondition" : "DifferenceInDays(\"28.02.\", \"01.03.\") < 2 And FieldFilled(Src)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "L2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Gate_DM/L3",
+            "name" : "L3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Src",
+              "errorCode" : "L3",
+              "errorCondition" : "DifferenceInDays(\"01.01.\", \"01.03.\") == 59 And FieldFilled(Src)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "L3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Gate_DM/L4",
+            "name" : "L4",
+            "Rule" : {
+              "errorEntityRelPath" : "../Src",
+              "errorCode" : "L4",
+              "errorCondition" : "DifferenceInDays(\"01.01.\", \"01.03.\") == 60 And FieldFilled(Src)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "L4"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Gate_DM/L5",
+            "name" : "L5",
+            "Rule" : {
+              "errorEntityRelPath" : "../Src",
+              "errorCode" : "L5",
+              "errorCondition" : "DifferenceInDays(\"01.01.\", YDate) == 59 And FieldFilled(Src)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "L5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Gate_DM/L6",
+            "name" : "L6",
+            "Rule" : {
+              "errorEntityRelPath" : "../Src",
+              "errorCode" : "L6",
+              "errorCondition" : "DifferenceInDays(\"01.01.\", YDate) == 60 And FieldFilled(Src)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "L6"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Gate_DM/TTime",
+            "name" : "TTime",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Gate_DM/TDateFmt",
+            "name" : "TDateFmt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "dd.MM.yyyy"
+                }
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

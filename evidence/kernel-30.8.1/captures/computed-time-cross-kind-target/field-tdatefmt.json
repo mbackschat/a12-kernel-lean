@@ -1,0 +1,1 @@
+{ "group": "/Gate_DM", "name": "TDateFmt", "kind": "TIME", "time": { "format": "dd.MM.yyyy" } }

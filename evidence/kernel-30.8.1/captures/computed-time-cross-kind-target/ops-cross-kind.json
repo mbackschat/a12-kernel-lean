@@ -1,0 +1,57 @@
+[
+ {
+  "id": "K1-time-into-date-clockformat",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-K1.json",
+   "--dry-run",
+   "--model",
+   "Leap_DM.json"
+  ]
+ },
+ {
+  "id": "K2-time-into-time-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-K2.json",
+   "--dry-run",
+   "--model",
+   "Leap_DM.json"
+  ]
+ },
+ {
+  "id": "K3-time-into-date-dateformat",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-K3.json",
+   "--dry-run",
+   "--model",
+   "Leap_DM.json"
+  ]
+ },
+ {
+  "id": "K4-time-into-number-control",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-K4.json",
+   "--dry-run",
+   "--model",
+   "Leap_DM.json"
+  ]
+ },
+ {
+  "id": "K5-time-into-datetime",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-K5.json",
+   "--dry-run",
+   "--model",
+   "Leap_DM.json"
+  ]
+ }
+]

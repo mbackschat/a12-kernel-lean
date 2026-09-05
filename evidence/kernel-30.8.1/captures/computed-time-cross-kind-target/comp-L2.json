@@ -1,0 +1,15 @@
+{
+ "computedField": "/Gate_DM/DDate",
+ "group": "/Gate_DM",
+ "alternatives": [
+  {
+   "operation": "Date(\"5\", \"3\", \"2024\")"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "L2"
+  }
+ ]
+}
