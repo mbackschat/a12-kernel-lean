@@ -402,6 +402,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-name-position-index-terminal"></a>
 - [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
 
+<a id="src-power-derived-scale-and-operand-shapes"></a>
+- [`^` restricts neither operand's shape; a non-literal exponent derives unknown scale, and that is what a computed target refuses](sources/computation-placement-and-constant-probes.md#src-power-derived-scale-and-operand-shapes)
+
 <a id="src-computed-temporal-target-reads-the-format-not-the-kind"></a>
 - [A computed temporal target is gated by its declared format string and not by its declared kind, on all three of the Time, Date, and DateTime families](sources/computation-placement-and-constant-probes.md#src-computed-temporal-target-reads-the-format-not-the-kind)
 

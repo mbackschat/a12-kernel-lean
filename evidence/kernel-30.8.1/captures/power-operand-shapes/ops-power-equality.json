@@ -1,0 +1,70 @@
+[
+ {
+  "id": "S1-equality-field-exponent",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "S1",
+   "--condition",
+   "[/Rep/RootNum] == [/Rep/RootNum] ^ [/Rep/RootNum] And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "S2-equality-literal-exponent",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "S2",
+   "--condition",
+   "[/Rep/RootNum] == [/Rep/RootNum] ^ 2 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "S3-ordering-field-exponent",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "S3",
+   "--condition",
+   "[/Rep/RootNum] > [/Rep/RootNum] ^ [/Rep/RootNum] And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "S4-equality-plain-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "S4",
+   "--condition",
+   "[/Rep/RootNum] == [/Rep/RootNum] And FieldFilled(/Rep/RootNum)"
+  ]
+ }
+]

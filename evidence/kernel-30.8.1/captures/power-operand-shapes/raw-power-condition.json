@@ -1,0 +1,111 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : true,
+  "summary" : "dispatched 5 ops; all children exited zero",
+  "data" : {
+    "ops" : 5,
+    "dispatched" : true,
+    "allExitedZero" : true,
+    "results" : [ {
+      "op" : 0,
+      "id" : "R1-condition-field-exponent",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "R1", "--condition", "[/Rep/RootNum] > [/Rep/RootNum] ^ [/Rep/RootNum] And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "R2-condition-literal-exponent",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "R2", "--condition", "[/Rep/RootNum] > [/Rep/RootNum] ^ 2 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "R3-condition-grouped-exponent",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "R3", "--condition", "[/Rep/RootNum] > [/Rep/RootNum] ^ { [/Rep/RootNum] + 1 } And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "R4-condition-aggregate-exp",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "R4", "--condition", "[/Rep/RootNum] > [/Rep/RootNum] ^ Sum(/Rep/Rows*/Base) And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "R5-control-plain",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "R5", "--condition", "FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ {
+          "severity" : "WARNING",
+          "source" : "LINT",
+          "code" : "RK_INVERTED_REQUIREDNESS",
+          "summary" : "the rule errors when '/Rep/RootNum' IS filled — an errorCondition fires on the invalid case, so a requiredness rule should fire on absence",
+          "where" : {
+            "rule" : "",
+            "operator" : "FieldFilled"
+          },
+          "fix" : "FieldNotFilled(/Rep/RootNum)",
+          "explain" : "an errorCondition is the error scenario (true ⇒ invalid); FieldFilled is true when the field HAS a value, so this flags present values, not missing ones — did you mean FieldNotFilled?"
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

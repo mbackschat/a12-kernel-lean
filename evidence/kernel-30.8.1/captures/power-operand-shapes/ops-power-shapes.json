@@ -1,0 +1,79 @@
+[
+ {
+  "id": "Q1-field-pow-literal",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Q1.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "Q2-field-pow-field",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Q2.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "Q3-grouped-base",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Q3.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "Q4-grouped-exponent",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Q4.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "Q5-aggregate-base",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Q5.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "Q6-aggregate-exponent",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Q6.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "Q7-control-plain",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-Q7.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ }
+]

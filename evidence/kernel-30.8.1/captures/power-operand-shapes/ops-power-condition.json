@@ -1,0 +1,87 @@
+[
+ {
+  "id": "R1-condition-field-exponent",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "R1",
+   "--condition",
+   "[/Rep/RootNum] > [/Rep/RootNum] ^ [/Rep/RootNum] And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "R2-condition-literal-exponent",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "R2",
+   "--condition",
+   "[/Rep/RootNum] > [/Rep/RootNum] ^ 2 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "R3-condition-grouped-exponent",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "R3",
+   "--condition",
+   "[/Rep/RootNum] > [/Rep/RootNum] ^ { [/Rep/RootNum] + 1 } And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "R4-condition-aggregate-exp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "R4",
+   "--condition",
+   "[/Rep/RootNum] > [/Rep/RootNum] ^ Sum(/Rep/Rows*/Base) And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "R5-control-plain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "R5",
+   "--condition",
+   "FieldFilled(/Rep/RootNum)"
+  ]
+ }
+]

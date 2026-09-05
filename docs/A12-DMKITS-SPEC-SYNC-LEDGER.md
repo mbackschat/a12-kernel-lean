@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-05-10"></a>
+### `SPEC-2026-09-05-10` — `^` derives an unknown scale unless its exponent is a literal, and restricts neither operand's shape
+
+- `status`: pending
+- `clause`: [`04-numbers-and-decimals.md`](../spec/04-numbers-and-decimals.md), the derived-scale list, which gave `+`/`−`, `×`, and `÷` and omitted `^` entirely.
+- `delta`: `^` derives the **base's** scale when its exponent is an authored literal and an **unknown** scale otherwise. Separately, the operator restricts neither operand's shape: a grouped arithmetic expression and an aggregate are legal as base and as exponent alike.
+- `basis`: sixteen children across three `batch` runs — seven `computation add --dry-run` and nine `rule check` — `dmtool` 0.13.0, Kernel `30.8.1`, every child `KERNEL_CONFIRMED`, the launcher self-reporting build `226b2be175133dff45413b0a0f604ea219ced85b (dirty)`. The [checkpoint](sources/computation-placement-and-constant-probes.md#src-power-derived-scale-and-operand-shapes) owns the rows and retained hashes.
+- `separator`: **the computation arm alone gives the wrong answer, and that is the point of the entry.** Writing a scale-0 target, `[F] ^ [F]` is refused while `[F] ^ 2` is admitted, which reads as "the exponent must be a literal". On the validation arm every exponent shape is admitted under an **ordering** comparison, and the 2×2 that settles it holds the expression fixed while varying comparison and exponent: under `==` a literal exponent is admitted and a field exponent refused `MVK_INVALID_COMPARE_DEC_PLACES`; under `>` the field exponent is admitted. So the code follows the comparison and the derived scale, and the computation refuses only because its generated comparison is an equality against a known scale.
+- `consumer-consequence`: a Compile or Execute consumer must derive the power's scale as unknown for a non-literal exponent. Deriving it as the base's scale, or as base-plus-exponent by analogy with `×`, admits computed targets the Kernel refuses — and does so silently, because every literal-exponent row still passes.
+- `not-the-fractional-exponent-gate`: distinct from the exponent-scale gate your clause and ours already record, which rejects a non-*integral* literal exponent before evaluation. Every row here carries an integral literal or a non-literal expression.
+- `local-consequence`: none behavioral; this project's numeric fragment does not yet admit a power whose exponent is a non-literal expression, so the rule is stated ahead of a consumer rather than correcting one.
+- `acceptance`: a12-dmkits confirms that a power with a non-literal exponent derives unknown scale — refused under `==` against a known scale, admitted under an ordering comparison, and refused into a computed target of known scale; or reports the row where it diverges. Note your operator catalog carries no `Power` entry among its 110, so there is no line to widen here.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-05-09"></a>
 ### `SPEC-2026-09-05-09` — the semantic-index key literal must fit the index field's declared kind, and that gate is the condition's
 
