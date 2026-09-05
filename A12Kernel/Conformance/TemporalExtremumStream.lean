@@ -574,6 +574,50 @@ example : groupFoldValue? ["Probe", "Box"]
     ((ymd 2024 7 1).map fun date => .value date true) := by
   native_decide
 
+/- A **starred group** takes the same two questions at its own depth, which is its star plan's
+   `firstStar` rather than its path's scope. That is `boundLevelCount`'s own account rather than a
+   reading of the star machinery for the extent — the walk still enumerates from the model's
+   repeatability — and the Boolean value-count carrier already resolves its starred groups through
+   exactly this path, which is what makes the depth settled rather than guessed here. Two of three
+   declared rows, so the tail is open and the same pair of answers separates as it does for a fixed
+   group. -/
+private def starredGroupOperand : SurfaceFieldEntityOperand :=
+  .starredGroup
+    { base := .absolute
+      groups := [{ name := "Probe" }, { name := "Box" },
+                 { name := "Deep", starred := true }] }
+
+private def starredGroupFold? (rows : List RowAddr)
+    (cells : List ClassifiedCellInput) :
+    Option (SimpleComparisonOperand FullDate) := do
+  let checked ←
+    (TemporalExtremumOperands.elaborate probeModel ["Probe"]
+      { first := starredGroupOperand, rest := [] }).toOption
+  let document ← document? rows cells
+  (TemporalExtremumStream.evalAddressedDate checked .maximum document []
+    .validation).toOption
+
+example : starredGroupFold?
+    [{ group := 40, path := [1] }, { group := 40, path := [2] }]
+    [{ address := { field := 16, path := [1] }, stored := "s",
+       raw := dateCell 2024 3 5 },
+     { address := { field := 16, path := [2] }, stored := "s",
+       raw := dateCell 2024 7 1 }] =
+    ((ymd 2024 7 1).map fun date => .value date false) := by
+  native_decide
+
+example : starredGroupFold?
+    [{ group := 40, path := [1] }, { group := 40, path := [2] },
+     { group := 40, path := [3] }]
+    [{ address := { field := 16, path := [1] }, stored := "s",
+       raw := dateCell 2024 3 5 },
+     { address := { field := 16, path := [2] }, stored := "s",
+       raw := dateCell 2024 7 1 },
+     { address := { field := 16, path := [3] }, stored := "s",
+       raw := dateCell 2024 1 1 }] =
+    ((ymd 2024 7 1).map fun date => .value date true) := by
+  native_decide
+
 /-! ## What this slice declines, and why each is a boundary rather than a verdict -/
 
 private def refusal? (names : List String) :

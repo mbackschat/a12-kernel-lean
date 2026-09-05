@@ -183,11 +183,22 @@ private def operandExtent (document : CheckedDocument model) (outer : Env) :
         let tail ← document.resolveCheckedGroupUninstantiatedTail outer
           boundCount declarations
         pure (core, tail)).mapError .addressing
-  -- A **starred group** is admitted as an operand list, and its row extent under the shared group
-  -- resolver would be its star plan's `firstStar` rather than its path's scope. That correspondence
-  -- is unmeasured here, so the form is declined rather than resolved on a guess.
+  -- A **starred group** takes the same two questions at its own depth. The depth is the star plan's
+  -- `firstStar` rather than the path's scope, which is `boundLevelCount`'s own account and not a
+  -- reading of the star machinery for the *extent*: the walk still enumerates from the model's
+  -- repeatability, and `spec/07`'s warning is about the extent. The Boolean value-count carrier
+  -- already resolves its starred groups through exactly this path, which is what makes the depth a
+  -- settled correspondence rather than this module's guess.
   | .starredGroup source =>
-      throw (.declined (.operandNeedsAddressing source.group.path))
+      let declarations := model.groupSubtreeFields source.group.path
+      let boundCount :=
+        (CheckedEntityGroupSource.starred source).boundLevelCount
+      (do
+        let core ← document.resolveCheckedGroupEntityOperandCore outer
+          boundCount declarations
+        let tail ← document.resolveCheckedGroupUninstantiatedTail outer
+          boundCount declarations
+        pure (core, tail)).mapError .addressing
   -- The two filtered forms never arrive: admission refuses both with `unsupportedOperandForm`,
   -- because no route here elaborates a `Having`. These arms exist for totality and are reported
   -- rather than skipped, so a future admission widening surfaces as a decline instead of silently
