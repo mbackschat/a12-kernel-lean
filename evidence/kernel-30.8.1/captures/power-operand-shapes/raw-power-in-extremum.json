@@ -1,0 +1,118 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 5 ops; 1 of 5 exited nonzero (0 failed, 1 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 5,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "U1-power-in-extremum",
+      "verb" : "computation",
+      "args" : [ "add", "comp-U1.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/AggComp",
+        "changed" : {
+          "computation" : "/Rep/AggComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "U2-grouped-power-in-extremum",
+      "verb" : "computation",
+      "args" : [ "add", "comp-U2.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/AggComp",
+        "changed" : {
+          "computation" : "/Rep/AggComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "U3-field-exp-power-in-extremum",
+      "verb" : "computation",
+      "args" : [ "add", "comp-U3.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "computation rejected by the kernel (1 finding(s))",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_COMPARE_DEC_PLACES",
+          "summary" : "Rule with path '/Rep/AggComp': The maximum number of fractional digits of the left-hand side (0) and of the right-hand side (?) are different. [MVK_INVALID_COMPARE_DEC_PLACES]",
+          "where" : {
+            "rule" : "/Rep/AggComp"
+          },
+          "fix" : "The kernel could not establish compatible DERIVED decimal scales here. Numeric == / != carries a known SIGNED scale or unknown plus an independent multiplicative-constant capability: when known scales differ, only a capable SMALLER-scale side may be padded; an unknown scale rejects. ORDERING (< <= > >=) is exempt. TWO contexts trigger this code: (1) a COMPUTED FIELD whose declared scale is incompatible with its expression (e.g. a field re-scaled to 2 places while the Sum-computed field stays scale 0) — re-scale the computed field or explicitly round the expression, doing both edits in ONE `apply` so the terminal gate sees a consistent model; expect a SECOND rejection to surface if the operation also reads its own computed field, because this scale comparison is decided ahead of that refusal; (2) numeric == / != with incompatible derived scales — round one side to a known compatible scale, or accept it with allowDifferingDecimals:true on the rule spec (the kernel's one suppressible warning — it prepends @SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES)).",
+          "explain" : "MVK_INVALID_COMPARE_DEC_PLACES (\"the fractional digits of lhs and rhs are different\") fires when numeric == / != cannot reconcile the operands' derived signed-scale/capability summaries, OR when a computed field is incompatible with its expression. It is not specific to any one operator (Sum, Equal, …); the scale-coupling is the constraint, so the corrective is context-dependent."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "U4-field-exp-suppressed",
+      "verb" : "computation",
+      "args" : [ "add", "comp-U4.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/AggComp",
+        "changed" : {
+          "computation" : "/Rep/AggComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "U5-control-extremum",
+      "verb" : "computation",
+      "args" : [ "add", "comp-U5.json", "--dry-run", "--model", "Scope_DM.json" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "would add computation /Rep/AggComp",
+        "changed" : {
+          "computation" : "/Rep/AggComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

@@ -1,0 +1,15 @@
+{
+ "computedField": "/Rep/Agg",
+ "group": "/Rep",
+ "alternatives": [
+  {
+   "operation": "Min({ [/Rep/RootNum] + 1 } ^ 2, [/Rep/RootNum])"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "U2"
+  }
+ ]
+}

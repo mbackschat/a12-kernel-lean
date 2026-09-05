@@ -1,0 +1,57 @@
+[
+ {
+  "id": "U1-power-in-extremum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-U1.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "U2-grouped-power-in-extremum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-U2.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "U3-field-exp-power-in-extremum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-U3.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "U4-field-exp-suppressed",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-U4.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "U5-control-extremum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-U5.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ }
+]
