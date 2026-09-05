@@ -87,7 +87,19 @@ private def probeModel : FlatModel :=
       { id := 12, groupPath := ["Probe", "Full"], name := "FullRowDate",
         policy := { kind := .temporal .date TemporalComponents.fullDate },
         temporalTargetPolicy := some { format := "yyyy-MM-dd" },
-        repeatableScope := [30] }]
+        repeatableScope := [30] },
+      -- A per-row numeric guard, so a filter can exclude the row holding the extremum and the
+      -- filtered fold differs from the unfiltered one in its **value** rather than only in a
+      -- structural marker. A self-presence filter could not do that: an absent date is skipped by
+      -- the fold anyway, so excluding it changes nothing a case could read.
+      { id := 17, groupPath := ["Probe", "Full"], name := "FullGuard",
+        policy := { kind := .number { scale := 0, signed := false } },
+        repeatableScope := [30] },
+      -- The filter's outer side. A filter needs one unmarked reference at a reopened level to be a
+      -- filter at all, which the inner guard supplies; this is the captured half, so the fixture
+      -- exercises a correlation rather than a row-local test.
+      { id := 18, groupPath := ["Probe"], name := "Keep",
+        policy := { kind := .number { scale := 0, signed := false } } }]
     repeatableGroups := [
       { level := 20, path := ["Probe", "Rows"], repeatability := some 3 },
       { level := 30, path := ["Probe", "Full"], repeatability := some 2 },
@@ -496,25 +508,31 @@ example : (do
 
 /- The **filtered** star is admitted — the Kernel admits it
    ([checkpoint](../../docs/SOURCES.md#src-filtered-star-temporal-carriers-and-binding-depth)) — and
-   declined by the addressed reader, which is the arm that now actually receives it. The decline is
-   deliberate and must stay until the fold carries the filter: this capsule's shared shape holds no
-   elaborated `Having`, and folding `source` alone would return the **unfiltered** rows. That is a
-   wrong answer where the decline is a missing one.
+   folded over its **selected** rows.
 
-   Both halves are asserted together because neither alone is the property. Admission alone would
-   not say the reader is safe, and the decline alone would read as a refusal of the shape — which is
-   what this row asserted before the measurement, in the wrong direction. -/
-private def selfFilter : SurfaceCorrelatedHaving :=
-  .presence .filled
-    { origin := .inner
+   The filter here excludes the row holding the maximum, so the filtered fold and the unfiltered
+   fold over the identical document disagree in their **value**. That disagreement is the property:
+   a reader that dropped the filter would return the unfiltered answer and pass every other case in
+   this module, because no other case carries a filter at all. -/
+private def guardFilter : SurfaceCorrelatedHaving :=
+  .compareNumbers .equal
+    { origin := .inner,
       field := { base := .absolute, groups := ["Probe", "Full"],
-                 field := "FullRowDate" } }
+                 field := "FullGuard" } }
+    { origin := .outer,
+      field := { base := .absolute, groups := ["Probe"], field := "Keep" } }
 
 private def filteredStarOperand : SurfaceFieldEntityOperand :=
   .starHaving
     { base := .absolute
       groups := [{ name := "Probe" }, { name := "Full", starred := true }]
-      field := "FullRowDate" } selfFilter
+      field := "FullRowDate" } guardFilter
+
+private def plainStarOperand : SurfaceFieldEntityOperand :=
+  .star
+    { base := .absolute
+      groups := [{ name := "Probe" }, { name := "Full", starred := true }]
+      field := "FullRowDate" }
 
 private def filteredChecked? : Option (CheckedTemporalExtremumOperands probeModel) :=
   (TemporalExtremumOperands.elaborate probeModel ["Probe"]
@@ -522,29 +540,38 @@ private def filteredChecked? : Option (CheckedTemporalExtremumOperands probeMode
 
 example : filteredChecked?.isSome = true := by native_decide
 
-/- And it carries the same component set the unfiltered star does, so admission is reading the
-   declaration through the filter rather than admitting the form unexamined. -/
+/- It carries the same component set the unfiltered star does, so admission reads the declaration
+   through the filter rather than admitting the form unexamined. -/
 example :
     filteredChecked?.map (·.components) =
       (TemporalExtremumOperands.elaborate probeModel ["Probe"]
-        { first := .star
-            { base := .absolute
-              groups := [{ name := "Probe" }, { name := "Full", starred := true }]
-              field := "FullRowDate" }
-          rest := [] }).toOption.map (·.components) := by
+        { first := plainStarOperand, rest := [] }).toOption.map (·.components) := by
   native_decide
 
-/- The addressed reader declines it, naming the operand rather than folding. Without this row the
-   fold could start returning unfiltered rows and every other case in this module would still
-   pass. -/
-example : (do
-    let checked ← filteredChecked?
-    let document ← document? [] []
-    match TemporalExtremumStream.evalAddressedDate checked .maximum document []
-        .validation with
-    | .ok _ => none
-    | .error error => some error) =
-    some (.declined (.operandNeedsAddressing ["Probe", "Full", "FullRowDate"])) := by
+/-- Two rows filling `Full`'s capacity. Row 2 holds the later date **and** the guard value the
+    filter rejects, so the filter and the extremum disagree about which row matters — which is what
+    makes the pair below separating rather than merely consistent. -/
+private def guardedRows : List RowAddr :=
+  [{ group := 30, path := [1] }, { group := 30, path := [2] }]
+
+private def guardedCells : List ClassifiedCellInput :=
+  [ rowCell 12 1 2024 3 5, rowCell 12 2 2024 7 1,
+    { address := { field := 17, path := [1] }, stored := "1",
+      raw := .parsed (.num 1) },
+    { address := { field := 17, path := [2] }, stored := "2",
+      raw := .parsed (.num 2) },
+    { address := { field := 18, path := [] }, stored := "1",
+      raw := .parsed (.num 1) } ]
+
+/- Unfiltered: the later row wins. -/
+example : addressedFoldOf [plainStarOperand] .maximum guardedRows guardedCells =
+    ((ymd 2024 7 1).map fun date => .value date true) := by
+  native_decide
+
+/- Filtered: the later row is excluded and the **earlier** date is the maximum. Same operator, same
+   document, same rows — only the filter differs, and the value changes. -/
+example : addressedFoldOf [filteredStarOperand] .maximum guardedRows guardedCells =
+    ((ymd 2024 3 5).map fun date => .value date false) := by
   native_decide
 
 /-! ### A fixed group, and the tail bit that decides which ones it may fold

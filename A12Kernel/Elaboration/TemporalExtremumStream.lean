@@ -158,7 +158,8 @@ inductive TemporalExtremumStreamFault where
 
     The bit is returned beside the core rather than inside it because the two come from different
     queries for a group operand, and the core's constructor is the owner's to hold. -/
-private def operandExtent (document : CheckedDocument model) (outer : Env) :
+private def operandExtent (document : CheckedDocument model) (outer : Env)
+    (filter : Option CorrelatedHaving) :
     ResolvedFieldEntityOperand model →
       Except TemporalExtremumStreamFault
         (ResolvedCheckedEntityOperandCore × Bool)
@@ -201,15 +202,19 @@ private def operandExtent (document : CheckedDocument model) (outer : Env) :
         let tail ← document.resolveCheckedGroupUninstantiatedTail outer
           boundCount declarations
         pure (core, tail)).mapError .addressing
-  -- A filtered star **does** arrive: admission admits it, because the Kernel does. This reader
-  -- still declines it, and the decline is the point — folding `source` here would silently drop the
-  -- filter and return the unfiltered row set, which is a wrong answer rather than a missing one.
-  -- Evaluating it needs the filter elaborated at admission, the way every carrier that folds one
-  -- keeps its own checked operand (`BooleanValueCount`, `NumberEntityList`); this capsule's shared
-  -- shape has no slot for it. Tracked as the remaining half of the gate's admission
-  -- ([`SEMANTICS-GAPS.md`](../../docs/SEMANTICS-GAPS.md)).
+  -- A filtered star folds its **selected** rows, through the same core resolver the plain star uses
+  -- — the filter is that resolver's own parameter, so nothing here interprets it. The operand is
+  -- declined only when admission could not certify the filter, which is not a refusal of the shape:
+  -- the Kernel admits it, and folding the unfiltered rows would answer a different question with no
+  -- signal that it had.
   | .starHaving source _ =>
-      throw (.declined (.operandNeedsAddressing source.declaration.path))
+      match filter with
+      | some condition =>
+          (source.resolveCheckedValidationEntityOperandCore document outer
+            (some condition)).mapError .addressing
+            |>.map fun core => (core, core.hasUninstantiatedTail)
+      | none =>
+          throw (.declined (.operandNeedsAddressing source.declaration.path))
   | .starredGroupPresence source =>
       throw (.declined (.operandNeedsAddressing source.groupPath))
 
@@ -227,9 +232,13 @@ def readAddressedSideWith (expected : TemporalComponents)
   if admitted.components ≠ expected then
     throw (.declined (.componentsMismatch expected admitted.components))
   else
+    -- Zipped rather than indexed, and safe to zip because `filtersAligned` fixes both lengths: a
+    -- filter belongs to exactly one operand, and applying one to its neighbour would silently
+    -- select the wrong rows.
     let extents ←
-      (admitted.shape.first :: admitted.shape.rest).mapM
-        (operandExtent document outer)
+      ((admitted.shape.first :: admitted.shape.rest).zip
+        admitted.filters).mapM fun (operand, filter) =>
+          operandExtent document outer filter operand
     pure {
       operands := extents.flatMap fun (core, _) =>
         core.inCapacityAddressedCells.map fun addressed =>

@@ -82,6 +82,25 @@ inductive TemporalExtremumOperandElabError where
 structure CheckedTemporalExtremumOperands (model : FlatModel) where
   shape : CheckedFieldEntityShape model
   components : TemporalComponents
+  /-- The filter of each operand of `shape`, in the same order, present only at a filtered star this
+      capsule could certify against that star's exact candidate and captured environments.
+
+      Absence carries two meanings, told apart by the operand's own form rather than by this list.
+      At any unfiltered form it means what it says: no filter. At a **filtered star** it means
+      admitted but not foldable — the Kernel admits the operand
+      ([checkpoint](../../docs/SOURCES.md#src-filtered-star-temporal-carriers-and-binding-depth)),
+      so refusing it here would re-introduce the over-refusal this gate was just corrected for, while
+      folding an uncertified filter could select the wrong rows. The reader declines that operand
+      instead, which is the one honest answer available.
+
+      Certifying at admission rather than at read time is not a preference: an authored filter's
+      legality is a static property, and the shared entity-list checker passes the filter through
+      unelaborated, so nothing else in this capsule's path ever looks at it. -/
+  filters : List (Option CorrelatedHaving)
+  /-- One entry per operand. This is what keeps the two lists from drifting into a silent
+      misalignment, where a filter would be applied to the wrong operand — the failure that makes an
+      index-aligned side table worth a proof rather than a comment. -/
+  filtersAligned : filters.length = shape.rest.length + 1
 
 namespace TemporalExtremumOperands
 
@@ -117,6 +136,22 @@ private def operandDeclarations (model : FlatModel) :
       | [] => throw (.groupExpansionEmpty source.group.path)
       | fields => pure fields
   | .starredGroupPresence source => throw (.unsupportedOperandForm source.groupPath)
+
+/-- The authored filter of one operand, certified against that star's exact environments, or `none`.
+
+    A certification failure is deliberately **not** a refusal. The Kernel admits the operand, so
+    turning a filter this capsule cannot yet lower into a static refusal would over-reject a legal
+    model — and the filter language is only partially covered here
+    ([SG17](../../docs/SEMANTICS-GAPS.md#sg17--having-filter-leaf-and-connective-completion)), so
+    that gap is expected rather than hypothetical. The cost lands on the fold, which declines the
+    operand it cannot filter correctly. -/
+private def certifiedFilter? (model : FlatModel) (declaringGroup : GroupPath) :
+    ResolvedFieldEntityOperand model → Option CorrelatedHaving
+  | .starHaving source having =>
+      (elaborateStarHavingCore model declaringGroup source having).toOption.map
+        (·.condition)
+  | .field .. | .star _ | .group _ | .starredGroup _
+  | .starredGroupPresence _ => none
 
 /-- The lifted component set of one declaration, or the refusal its **position** earns. The two
     positions draw different Kernel codes and the caller alone knows which it is holding, so the
@@ -160,12 +195,15 @@ def elaborate (model : FlatModel) (declaringGroup : GroupPath)
       (fun accumulated operand => do
         pure (accumulated ++ (← operandDeclarations model operand)))
       ([] : List FlatFieldDecl)
+  let filters :=
+    (shape.first :: shape.rest).map (certifiedFilter? model declaringGroup)
   match declarations with
   | [] => throw (.groupExpansionEmpty [])
   | first :: rest =>
       let expected ← liftedComponentsOf model true first
       certifyAgainst model expected rest
-      pure { shape, components := expected }
+      pure { shape, components := expected, filters
+             filtersAligned := by simp [filters] }
 
 end TemporalExtremumOperands
 
