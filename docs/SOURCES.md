@@ -185,6 +185,19 @@ Revision `033fe3ef6` follows from that exchange and settles one question this pr
 
 That document run happened locally on 2026-09-03 and **refuted the discriminator's own premise** rather than settling the leaf: a non-true `Having` conjunct drops its own row and leaves the aggregate available, so the filter position collapses false and unknown exactly as firing and message typing already did. The [non-true-row checkpoint](sources/having-filter-probes.md#src-having-filter-nontrue-row) owns that measurement, the empty-versus-malformed separator it produced, and the local prior art that made the premise refutable without a run.
 
+<a id="inbound-2026-09-05b"></a>
+### Reviewed 2026-09-05b handback — three entries accepted, one peer premise retracted, and one overlap found by reading
+
+a12-dmkits revision `31348a7db` on `main` (three commits from `d1c528273`, clean before and after; the range and its subjects were resolved here with `git log` before any disposition was written) accepts [`SPEC-2026-09-05-11`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-05-11), [`-12`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-05-12) and [`-13`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-05-13), each **re-measured on the peer's own independently authored carriers** rather than carried on this project's report. Each entry holds its own disposition; three results reach beyond them.
+
+**One clause widens.** The extrema's positional family rule was measured here on the field-list forms only, and the peer enumerated **all four** operators — `MinValue`, `MaxValue`, `Min`, `Max` — with the same two codes in the same two orders and a family-homogeneous control in both forms (`adapter.laws.ExtremaOperandFamilyRefusalLawsTest`). The value-expression pair is a different operator from the field-list pair, so this is coverage this project did not have. [`spec/07`](../spec/07-repetition-and-iteration.md) now states all four.
+
+**One overlap this project should have found first.** The handback cites the peer's `KF211` for the temporal *classifier*, and reading that entry shows it also carries the **operand** gate — the `YearFromDate`/`HoursFromTime` pair on one date-declared TIME field, and `DifferenceInDays` beside them, kernel-oracled on both codegen strategies and dated 2026-08-28. So most of [`SPEC-2026-09-05-14`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-05-14)'s delta was already held upstream, and that entry is narrowed to the three rows `KF211` does not carry. Searching this project's own record for the mechanism would not have found it; searching the peer's would. `KF211`'s exhaustive **12-format × 3-kind** vocabulary grid is the measurement this project's [SG21](SEMANTICS-GAPS.md#sg21--the-declared-kindformat-split-across-temporal-carriers) classifier row was waiting for.
+
+**One peer premise retracted.** [`SPEC-2026-09-01-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-01-02)'s disposition recorded a residual as theirs, and recorded their stated reason for filing rather than fixing it: that their public `compute()` exposes no operand-error channel. The peer now reports that premise was false — the channel was published and already populated — and the residual is closed. Their `KF231` is marked corrected with its measured rows unchanged. That entry's disposition is updated; nothing in this project's clause depended on it.
+
+All three acceptances and both corrections are inbound from a committed reviewed revision and create no outbound request. The one thing that does leave this project is the *narrowing* of `-14`, which is a reduction of an already-queued entry rather than a new one.
+
 ## Provenance checkpoint index
 
 Search stable `src-` anchors in this hub, then follow the link to the bounded family shard. Exact revisions and source-level claim limits remain in those records.
