@@ -120,4 +120,14 @@ def before (left right : FullDate) : Bool :=
 
 end FullDate
 
+namespace DateValue
+
+/-- Project one universal Date endpoint into the established real, floor-admitted full-Date domain. Exact instant and calendar provenance remain available on the source value.
+
+    It sits here rather than beside its first caller because the temporal extrema need the identical projection, and the two consumers' modules share only this one. -/
+def toFullDate? (value : DateValue) : Option FullDate :=
+  FullDate.ofYmd? value.parts.year value.parts.month value.parts.day
+
+end DateValue
+
 end A12Kernel

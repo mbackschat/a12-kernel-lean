@@ -91,6 +91,7 @@ import A12Kernel.Conformance.CustomFieldType
 import A12Kernel.Conformance.CustomFieldValidity
 import A12Kernel.Conformance.CustomFieldValidityOperand
 import A12Kernel.Conformance.TemporalExtremumOperands
+import A12Kernel.Conformance.TemporalExtremumStream
 import A12Kernel.Conformance.CustomFirstFilledComputation
 import A12Kernel.Conformance.DateAggregate
 import A12Kernel.Conformance.DateComparison

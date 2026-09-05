@@ -130,6 +130,7 @@ import A12Kernel.Elaboration.RawString
 import A12Kernel.Elaboration.CustomField
 import A12Kernel.Elaboration.CustomFieldValidity
 import A12Kernel.Elaboration.TemporalExtremumOperands
+import A12Kernel.Elaboration.TemporalExtremumStream
 import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.CheckedDocument
 import A12Kernel.Elaboration.OverRepetitionFindings

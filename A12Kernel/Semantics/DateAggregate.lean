@@ -59,6 +59,26 @@ def evalTemporalExtremumAggregate (select : α → α → α)
 /-- One already-expanded stored/full-Date aggregate side. -/
 abbrev ResolvedDateAggregateSide := ResolvedTemporalAggregateSide FullDate
 
+namespace CellObservation
+
+/-- Classify one phase-observed cell as a complete-Date extremum operand.
+
+    This is the missing step between a checked cell and the fold: the fold has always been parametric in its element type, and nothing projected a document's cells into the Date one. It follows `asDirectNumericComparisonOperand`'s shape, with the Date family's own empty rule — an unspecified operand does **not** compete and does not contribute a synthetic value, where an empty Number would contribute zero.
+
+    A payload that is not a Date, and a Date whose stored parts name no representable calendar date, both fail closed as malformed rather than being skipped. Skipping them would let a broken cell read as an absent one, and the fold's own missing-provenance flag would then report a complete stream. -/
+def asDateExtremumOperand :
+    CellObservation → SimpleComparisonOperand FullDate
+  | .empty => .notEvaluated
+  | .value (.temporal (.date dateValue)) =>
+      match dateValue.toFullDate? with
+      | some date => .value date true
+      | none => .unknown .malformed
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .unknown cause
+
+end CellObservation
+
 /-- Date-specialized scan retained as the stable API for existing Date laws and consumers. -/
 def scanDateExtremumOperands (op : TemporalExtremumOp) :=
   scanTemporalExtremumOperands op.select

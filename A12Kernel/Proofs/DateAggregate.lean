@@ -121,4 +121,44 @@ theorem dateExtremum_tail_comparison_firing (op : TemporalExtremumOp)
     dateComparison_eval_missing_firing comparison selected expected false true
       (by decide) holds
 
+/-! ## The cell projection
+
+`asDateExtremumOperand` is the step that lets a document reach the fold, and its whole risk is
+collapsing one input class into another: a cell the theory cannot read must never arrive as an
+absent one, because absence is skipped while unavailability aborts. -/
+
+/-- **Only an absent cell is skipped.** Stated as an equivalence rather than as a list of arms, so a
+later payload case cannot quietly join the skipped class. -/
+theorem asDateExtremumOperand_notEvaluated_iff_empty
+    (observation : CellObservation) :
+    observation.asDateExtremumOperand = .notEvaluated ↔ observation = .empty := by
+  constructor
+  · intro projected
+    cases observation with
+    | empty => rfl
+    | value payload =>
+        cases payload with
+        | temporal value =>
+            cases value with
+            | date dateValue =>
+                simp only [CellObservation.asDateExtremumOperand] at projected
+                split at projected <;> cases projected
+            | _ => cases projected
+        | _ => cases projected
+    | unknown _ => cases projected
+    | poison _ => cases projected
+  · intro isEmpty
+    subst isEmpty
+    rfl
+
+/-- A formal cause reaches the fold **verbatim** in either phase, rather than being renamed to the
+malformed cause the payload arms use. The fold aborts on the first such operand, so this is the cause
+a consumer sees for the whole aggregate. -/
+theorem asDateExtremumOperand_preserves_cause (cause : FormalCause) :
+    (CellObservation.unknown (α := Value) cause).asDateExtremumOperand =
+        .unknown cause ∧
+      (CellObservation.poison (α := Value) cause).asDateExtremumOperand =
+        .unknown cause := by
+  exact ⟨rfl, rfl⟩
+
 end A12Kernel
