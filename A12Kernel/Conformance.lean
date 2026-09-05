@@ -197,6 +197,7 @@ import A12Kernel.Conformance.NumericArithmetic
 import A12Kernel.Conformance.NumericComputation
 import A12Kernel.Conformance.NumericDependency
 import A12Kernel.Conformance.NumericExpression
+import A12Kernel.Conformance.NumericCompositionAdmission
 import A12Kernel.Conformance.NumericFillability
 import A12Kernel.Conformance.NumericInput
 import A12Kernel.Conformance.NumericRounding
