@@ -1,0 +1,152 @@
+{
+  "header" : {
+    "id" : "Fold_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Fold_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/Cap",
+            "name" : "Cap",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/YmA",
+            "name" : "YmA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/YmB",
+            "name" : "YmB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/YmT",
+            "name" : "YmT",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MdA",
+            "name" : "MdA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MdB",
+            "name" : "MdB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MdT",
+            "name" : "MdT",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MaxEq",
+            "name" : "MaxEq",
+            "Rule" : {
+              "errorEntityRelPath" : "../Cap",
+              "errorCode" : "MAX_EQ",
+              "errorCondition" : "FieldFilled(Cap) And MaxValue(MdA, MdB) == [MdT]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "max equals target"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/DirectEq",
+            "name" : "DirectEq",
+            "Rule" : {
+              "errorEntityRelPath" : "../Cap",
+              "errorCode" : "DIRECT_EQ",
+              "errorCondition" : "FieldFilled(Cap) And [MdA] == [MdT]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "direct equals target"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

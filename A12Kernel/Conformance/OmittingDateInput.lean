@@ -38,11 +38,12 @@ private def intervalOf (first last : FullDate) : Outcome :=
   .interval first.civil.parts.year first.civil.parts.month first.civil.parts.day
     last.civil.parts.year last.civil.parts.month last.civil.parts.day
 
-private def classify? (format text : String) : Outcome :=
+private def classifyUnder? (baseYear : Option Int) (format text : String) :
+    Outcome :=
   match certifyOmittingDateInputField (declaration format) with
   | .error _ => .unowned
   | .ok checked =>
-      match checked.classifyStored text with
+      match checked.classifyStoredForModel baseYear text with
       | .presentEmpty => .presentEmpty
       | .rejected cause => .rejected cause
       | .admitted (.yearless value) => .yearless value.month value.day
@@ -54,6 +55,10 @@ private def classify? (format text : String) : Outcome :=
               intervalOf (date.resolve .firstDay) (date.resolve .lastDay)
           | .full date => intervalOf date date
           | .omittedYear => .unowned
+
+/-- The established no-Base-Year reading, which every row below this line keeps. -/
+private def classify? (format text : String) : Outcome :=
+  classifyUnder? none format text
 
 /- The three canonical spellings are admitted and denote their exact intervals: a year spans January 1
 to December 31, and a year-month spans the first to the leap-aware last day of that month. -/
@@ -104,11 +109,11 @@ example :
       classify? "ddMM" "1506" = .yearless 6 15 := by
   native_decide
 
-/- **The day bound is the month's greatest possible day, and February reaches 29.** No year is available
-to decide leapness, so the boundary is measured on both sides for a short month and for February: April
-31 is refused where April 30 is admitted, January 31 is admitted, and February 29 is admitted where
-February 30 is refused. This is the row a naive implementation gets wrong by resolving against a specific
-year. -/
+/- **With no Base Year the day bound is the month's greatest possible day, and February reaches 29.**
+No year is available to decide leapness, so the boundary is measured on both sides for a short month and
+for February: April 31 is refused where April 30 is admitted, January 31 is admitted, and February 29 is
+admitted where February 30 is refused. The Base-Year rows further down are the other half of this rule;
+what a naive implementation gets wrong is resolving against a *fixed* year, which neither half does. -/
 example :
     classify? "MM-dd" "04-31" = .rejected .dateFormat ∧
       classify? "MM-dd" "04-30" = .yearless 4 30 ∧
@@ -151,7 +156,7 @@ example :
     (match certifyOmittingDateInputField (declaration "MM-dd") with
       | .error _ => none
       | .ok checked =>
-          match checked.classifyStored "02-29" with
+          match checked.classifyStoredForModel none "02-29" with
           | .admitted (.yearless _) => some true
           | .admitted (.yearBearing _) => some false
           | _ => none) = some true := by
@@ -163,10 +168,57 @@ example :
     (match certifyOmittingDateInputField (declaration "yyyy") with
       | .error _ => none
       | .ok checked =>
-          match checked.classifyStored "2020" with
+          match checked.classifyStoredForModel none "2020" with
           | .admitted (.yearBearing (.omittedMonth date)) =>
               some (date.resolve .firstDay).civil.parts.month
           | _ => none) = some 1 := by
+  native_decide
+
+/-! ## A declared Base Year tightens the day bound
+
+The bound above holds because no year is available. Declare one and a year *is* available, so February
+follows that year's leap rule: `02-29` is admitted under a leap Base Year and refused under a common
+one, on bytes that differ in nothing but the declared year
+([checkpoint](../../docs/SOURCES.md#src-yearless-day-bound-reads-the-base-year)). February is the only
+month whose two answers differ, which is why one witness settles the rule rather than one month of it.
+
+This is a **refinement in the direction the no-Base-Year clause's own reason points**, not an exception
+to it: the earlier reading was measured on a model that declared no Base Year and then stated
+unconditionally, so the configuration that separates the two accounts was never varied. -/
+
+/- The discriminating pair: one value, two Base Years, opposite verdicts. -/
+example :
+    classifyUnder? (some 2024) "MM-dd" "02-29" = .yearless 2 29 ∧
+      classifyUnder? (some 2023) "MM-dd" "02-29" = .rejected .dateFormat := by
+  native_decide
+
+/- The controls that keep it about February's leapness rather than about declaring a Base Year at all:
+   February 28 crosses under both years, and a month whose length no year varies is unaffected. -/
+example :
+    classifyUnder? (some 2023) "MM-dd" "02-28" = .yearless 2 28 ∧
+      classifyUnder? (some 2024) "MM-dd" "02-28" = .yearless 2 28 ∧
+      classifyUnder? (some 2023) "MM-dd" "04-30" = .yearless 4 30 ∧
+      classifyUnder? (some 2024) "MM-dd" "04-30" = .yearless 4 30 ∧
+      classifyUnder? (some 2023) "MM-dd" "04-31" = .rejected .dateFormat ∧
+      classifyUnder? (some 2024) "MM-dd" "04-31" = .rejected .dateFormat := by
+  native_decide
+
+/- The other three yearless spellings take the same tightening, so it belongs to the day bound rather
+   than to one format's parser. `MM` supplies day one, which no leap rule can reach — that row is the
+   control showing the bound is applied to the *authored* day. -/
+example :
+    classifyUnder? (some 2023) "MMdd" "0229" = .rejected .dateFormat ∧
+      classifyUnder? (some 2024) "MMdd" "0229" = .yearless 2 29 ∧
+      classifyUnder? (some 2023) "ddMM" "2902" = .rejected .dateFormat ∧
+      classifyUnder? (some 2024) "ddMM" "2902" = .yearless 2 29 ∧
+      classifyUnder? (some 2023) "MM" "02" = .yearless 2 1 := by
+  native_decide
+
+/- A **century** non-leap year, so the rule is the Gregorian one and not "divisible by four": 1900 is
+   not a leap year and 2000 is. Without this pair the implementation could be testing `year % 4`. -/
+example :
+    classifyUnder? (some 1900) "MM-dd" "02-29" = .rejected .dateFormat ∧
+      classifyUnder? (some 2000) "MM-dd" "02-29" = .yearless 2 29 := by
   native_decide
 
 /-! ## Comparison admission
@@ -244,7 +296,7 @@ private def roundTrips (format : OmittingDateFormat) (month day : Nat) : Bool :=
   match CivilDate.ofParts? { year := 2024, month, day } with
   | none => false
   | some date =>
-      OmittingDateFormat.parseYearlessComponents? format
+      OmittingDateFormat.parseYearlessComponents? format none
           (OmittingDateFormat.renderCivilText format date) ==
         some { month, day := if format == .month then 1 else day }
 

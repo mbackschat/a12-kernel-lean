@@ -35,6 +35,22 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-05-12"></a>
+### `SPEC-2026-09-05-12` — a yearless stored day is bounded by its month's length in the **declared Base Year**, not by the month's greatest possible day
+
+- `status`: pending
+- `clause`: [`05-dates-and-time.md`](../spec/05-dates-and-time.md) §3, which stated the greatest-possible-day bound unconditionally and contrasted it only with the source literal's common-year check.
+- `delta`: the bound has two halves. With no Base Year declared it is the month's greatest possible day, February at 29, as recorded. **With a Base Year declared it is that month's length in that year**, so `02-29` is a formally invalid cell — `datumFormatFalsch` — under Base Year 2023 and an admitted value under Base Year 2024. February is the only month whose two answers differ.
+- `basis`: three `:adapter:kernelProbe` requests over three models differing in nothing but the declared Base Year, four document rows each, `validateFull`, both codegen strategies agreeing on every row; a12-dmkits `d1c528273`, `dmtool` 0.13.0, Kernel `30.8.1`, every artifact `producer.source.state: CLEAN`. The [checkpoint](sources/computation-placement-and-constant-probes.md#src-yearless-day-bound-reads-the-base-year) owns the rows and the nine retained hashes.
+- `separator`: the **leap and undeclared configurations agree**, and that is what makes this the declared year's leapness rather than a general tightening under any Base Year. Beside it, `02-28` and an ordinary March date cross under all three configurations, and a Gregorian century pair — 1900 refused, 2000 admitted — separates the rule from a `year % 4` test.
+- `how-it-was-found`: not by looking for it. This project designed a `MM-dd` extremum separator that needed `02-29` to be storable under a non-leap Base Year, on the strength of the unconditional clause. The separator's own precondition failed, which is the finding.
+- `consumer-consequence`: a Compile or Execute consumer applying the unconditional bound admits a cell the Kernel marks formally invalid, and every downstream verdict over that cell then differs — a wrong value rather than a wrong diagnostic. An Analyze consumer reading the clause cannot tell that the model's Base Year is an input to a *cell-level* check at all.
+- `also-worth-having`: the bound's placement **at the cell** closes a separate question. No legal document can present an operator with a yearless value its own Base Year cannot complete, so for the temporal extrema the component-tuple and completed-date orderings agree on every admitted input; the account is unobservable rather than unmeasured. Stated for the shape measured — that no other separating shape exists is an inference from where the bound sits.
+- `local-consequence`: **it refuted a rule shipped here.** The component-omitting classifier applied the year-free bound unconditionally; it now takes the model's Base Year, and its conformance rows carry the discriminating pair, the February-28 and short-month controls, all four yearless spellings, and the century pair.
+- `acceptance`: a12-dmkits confirms that a `MM-dd` cell holding `02-29` is formally invalid under a non-leap declared Base Year and admitted under a leap one and under none; or reports the row where it diverges.
+- `forwarded`: sent over the peer-session channel with the three-configuration separator named, and with the disclosure that the finding came from a failed precondition rather than from a targeted probe.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-05-11"></a>
 ### `SPEC-2026-09-05-11` — the extrema pick their operand family from the **first** operand, and the two families draw different codes
 

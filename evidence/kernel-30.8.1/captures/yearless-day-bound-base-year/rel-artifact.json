@@ -1,0 +1,224 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "d1c52827347b9b93922e5df44f3a187807d04c3a",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Fold_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "leap-first",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/MdA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "referenced" : [
+                "Form/MdA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/MdT",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "referenced" : [
+                "Form/MdT"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/MdA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "referenced" : [
+                "Form/MdA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/MdT",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "referenced" : [
+                "Form/MdT"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "leap-second",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/MdB",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "referenced" : [
+                "Form/MdB"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/MdT",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "referenced" : [
+                "Form/MdT"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/MdB",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "referenced" : [
+                "Form/MdB"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/MdT",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Only dates in the format MM-DD are allowed. '02-29-2023' is not a valid day, since 2023 is not a leap year.",
+              "referenced" : [
+                "Form/MdT"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "ordinary-max",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DIRECT_EQ",
+              "field" : "Form/Cap",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "direct equals target",
+              "referenced" : [
+                "Form/Cap",
+                "Form/MdA",
+                "Form/MdT"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MAX_EQ",
+              "field" : "Form/Cap",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "max equals target",
+              "referenced" : [
+                "Form/Cap",
+                "Form/MdA",
+                "Form/MdB",
+                "Form/MdT"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DIRECT_EQ",
+              "field" : "Form/Cap",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "direct equals target",
+              "referenced" : [
+                "Form/Cap",
+                "Form/MdA",
+                "Form/MdT"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MAX_EQ",
+              "field" : "Form/Cap",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "max equals target",
+              "referenced" : [
+                "Form/Cap",
+                "Form/MdA",
+                "Form/MdB",
+                "Form/MdT"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "ordinary-nomax",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    }
+  ]
+}

@@ -26,11 +26,12 @@ external evidence pending.
 **The separator is exact in both directions.** `yyyy-MM` refuses `202006` and `yyyyMM` refuses
 `2020-06`, so the two spellings are separate formats rather than one lenient parser.
 
-**A yearless day is validated against its month's greatest possible day, with February at 29**, locked at
-the named April, January, and February boundaries: `04-31` is refused where `04-30` is admitted,
-`01-31` is admitted, and `02-29` is admitted where `02-30` is refused. No year is available to decide
-leapness, so this is the
-`yearlessLastDay` rule the overlap owner already states rather than a second account of it. -/
+**A yearless day's bound depends on whether the model declares a Base Year.** Without one no year is
+available to decide leapness, so the bound is the month's greatest possible day with February at 29 —
+the `yearlessLastDay` rule the overlap owner already states rather than a second account of it — locked
+at the named April, January, and February boundaries. **With one, the bound is that month's length in
+that year**, so `02-29` is admitted under a leap Base Year and refused under a common one, measured on
+bytes differing in nothing else. February is the only month whose two answers differ. -/
 
 namespace A12Kernel
 
@@ -62,17 +63,30 @@ def parseYearComponents? (format : OmittingDateFormat) (text : String) :
       else none
   | .month | .monthDay | .monthDayConcatenated | .dayMonthConcatenated => none
 
+/-- The day bound a yearless value is checked against.
+
+    **A declared Base Year tightens it.** Without one no year is available to decide leapness, so the
+    bound is the month's greatest possible day and February reaches 29; with one, the bound is that
+    month's length *in that year*, so a February 29 is admitted under a leap Base Year and refused
+    under a common one ([checkpoint](../../docs/SOURCES.md#src-yearless-day-bound-reads-the-base-year)).
+    February is the only month whose two answers differ, which is why one witness settles the whole
+    rule rather than one month of it. -/
+def yearlessDayBound (baseYear : Option Int) (month : Nat) : Nat :=
+  match baseYear with
+  | none => YearlessInterval.yearlessLastDay month
+  | some anchorYear => (DateParts.daysInMonth? anchorYear month).getD 0
+
 /-- Split stored text into the yearless month and day a yearless format carries, with `MM` supplying day
 one so both formats produce the same shape.
 
-The day bound is the month's **greatest possible** day, February included at 29, because no year is
-available to decide leapness. `MM` is bounded too even though it authors no day: its implied day one is
-still checked against a real month, which is what refuses month `00` and month `13`. -/
-def parseYearlessComponents? (format : OmittingDateFormat) (text : String) :
-    Option MonthDayValue :=
+The day bound is `yearlessDayBound`, so it reads the model's Base Year when one is declared. `MM` is
+bounded too even though it authors no day: its implied day one is still checked against a real month,
+which is what refuses month `00` and month `13`. -/
+def parseYearlessComponents? (format : OmittingDateFormat) (baseYear : Option Int)
+    (text : String) : Option MonthDayValue :=
   let admit (month day : Nat) : Option MonthDayValue :=
     if 1 ≤ month && month ≤ 12 && 1 ≤ day &&
-        day ≤ YearlessInterval.yearlessLastDay month then
+        day ≤ yearlessDayBound baseYear month then
       some { month, day }
     else none
   match format with
@@ -162,11 +176,13 @@ inductive OmittingDateInputCell where
   | admitted (value : OmittingDateStoredValue)
   deriving Repr, DecidableEq
 
-/-- Classify stored text under a certified component-omitting declaration. Every failure is the one
-measured cause; an unreal completion is a spelling question here exactly as it is for a complete date. -/
-def CheckedOmittingDateInputField.classifyStored
-    (checked : CheckedOmittingDateInputField) (text : String) :
-    OmittingDateInputCell :=
+/-- Classify stored text under a certified component-omitting declaration and the model's Base Year.
+Every failure is the one measured cause; an unreal completion is a spelling question here exactly as it
+is for a complete date. The Base Year is a parameter rather than a field of the certificate because it
+belongs to the model and not to the declaration, and only the yearless day bound reads it. -/
+def CheckedOmittingDateInputField.classifyStoredForModel
+    (checked : CheckedOmittingDateInputField) (baseYear : Option Int)
+    (text : String) : OmittingDateInputCell :=
   if text.isEmpty then
     .presentEmpty
   else if checked.format.carriesYear then
@@ -181,7 +197,7 @@ def CheckedOmittingDateInputField.classifyStored
         | none => .rejected .dateFormat
         | some value => .admitted (.yearBearing (.omittedDay value))
   else
-    match checked.format.parseYearlessComponents? text with
+    match checked.format.parseYearlessComponents? baseYear text with
     | none => .rejected .dateFormat
     | some value => .admitted (.yearless value)
 

@@ -1,0 +1,65 @@
+{
+ "model": "Fold_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "leap-first",
+   "documentInline": {
+    "Form": {
+     "Cap": 1,
+     "MdA": "02-29",
+     "MdB": "02-28",
+     "MdT": "02-29",
+     "YmA": "2024-05",
+     "YmB": "2024-05",
+     "YmT": "2024-05"
+    }
+   }
+  },
+  {
+   "name": "leap-second",
+   "documentInline": {
+    "Form": {
+     "Cap": 1,
+     "MdA": "02-28",
+     "MdB": "02-29",
+     "MdT": "02-29",
+     "YmA": "2024-05",
+     "YmB": "2024-05",
+     "YmT": "2024-05"
+    }
+   }
+  },
+  {
+   "name": "ordinary-max",
+   "documentInline": {
+    "Form": {
+     "Cap": 1,
+     "MdA": "03-01",
+     "MdB": "02-28",
+     "MdT": "03-01",
+     "YmA": "2024-05",
+     "YmB": "2024-05",
+     "YmT": "2024-05"
+    }
+   }
+  },
+  {
+   "name": "ordinary-nomax",
+   "documentInline": {
+    "Form": {
+     "Cap": 1,
+     "MdA": "03-01",
+     "MdB": "02-28",
+     "MdT": "02-28",
+     "YmA": "2024-05",
+     "YmB": "2024-05",
+     "YmT": "2024-05"
+    }
+   }
+  }
+ ]
+}
