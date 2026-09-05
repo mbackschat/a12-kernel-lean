@@ -405,6 +405,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-distinct-count-operand-domain"></a>
 - [`NumberOfDifferentValues` admits Custom as string-like, splits homogeneity into two codes, and counts expanded operands for arity](sources/evaluation-and-application-routes.md#src-distinct-count-operand-domain)
 
+<a id="src-extensible-enumeration-has-no-dm-json-carrier"></a>
+- [Extensible Enumeration is a String type's runtime quality with no DM-JSON carrier](sources/evaluation-and-application-routes.md#src-extensible-enumeration-has-no-dm-json-carrier)
 <a id="src-validtype-operand-gates"></a>
 - [The custom-type validity operand gates, with their exact codes and the two confusable wildcard refusals](sources/evaluation-and-application-routes.md#src-validtype-operand-gates)
 

@@ -14,6 +14,17 @@
 - `limit`: static admission only; nothing here evaluates a count. One model, `en_US`, validation carrier. Date/time operands are named by the diagnostic but not exercised, and the runtime meaning of a Custom value's distinctness is untouched.
 - `sync`: none. The kind domain and homogeneity codes are additions to this project's own account and contradict nothing a12-dmkits ships.
 
+<a id="src-extensible-enumeration-has-no-dm-json-carrier"></a>
+#### Extensible Enumeration is a String type's runtime quality with no DM-JSON carrier, so it is not a separable operand arm, inbound 2026-09-05
+
+- `route`: **a12-dmkits source-read, not a probe.** Held with the peer's own stated limit rather than promoted to a measurement: they report no witness of a client `IStringType` carrying the flag, and by their own argument a DM-JSON model could not express one ([`LF134`](../LEAN-FINDINGS.md)).
+- `question`: [SG7](../SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion) carried extensible Enumeration as a third operand arm of `Valid(Field, "Type")` that no local row had exercised, which read as a hole in the denominator ([gates](#src-validtype-operand-gates)).
+- `claim`: **there is no third arm.** "Extensible enumeration" is not a field type but an `IStringType` whose `isExtensibleEnum()` answers true; `FieldUtils.isExtensibleEnum` is `type instanceof IStringType && isExtensibleEnum()`, and `isLikeString` is the union of string, enum, and extensible enum. **No DM-JSON property sets the flag**, and the open values are served at runtime by a `DynamicEnumerationService`. A DM-JSON field carrying the quality is therefore a plain `StringType` with the flag false, and the predicate admits it through the identical `isLikeString` branch. No input separates the two arms, so the String row already covers this one.
+- `trap`: `MM_Common`'s `ExtensibleEnumerationType` is **not** that route. It is a model/editor metamodel configuration in the tooling layer beside form-model notions rather than a runtime DM field type, and the peer's own first draft conflated it with the SPI quality — which is what their finding was written to close.
+- `not-an-instrument-gap`: the genuinely un-buildable enumeration is the **dynamic / table-backed** one, whose values come from an external table and are not DM-JSON-serializable at all. No new authoring verb would change that, so it is a property of the format rather than a missing `dmtool` capability, and it closed a separate SG8 row that had been waiting for a table-name producer to become reachable.
+- `local-consequence`: [`Elaboration/CustomFieldValidity.lean`](../../A12Kernel/Elaboration/CustomFieldValidity.lean) admits extensible Enumeration with ordinary Enumeration and does not separate them, because `FlatModel` carries no extensible variant to separate them with — agreement by construction rather than a modelled decision.
+- `sync`: none. Inbound from an already-committed peer reading, recorded as provenance; no clause of this project's changes and no ledger entry follows.
+
 <a id="src-validtype-operand-gates"></a>
 #### The custom-type validity operand gates, with their exact codes and the two confusable wildcard refusals, measured locally 2026-09-05
 
