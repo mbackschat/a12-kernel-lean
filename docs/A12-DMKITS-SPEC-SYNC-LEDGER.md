@@ -35,6 +35,20 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-09-06-01"></a>
+### `SPEC-2026-09-06-01` — `AtLeastOneDateRangeOverlaps` rejects every non-scalar form in its scalar slot with one class
+
+- `status`: pending
+- `clause`: [`05-dates-and-time.md` the DateRange overlap operators](../spec/05-dates-and-time.md)
+- `delta`: the clause described the scalar slot as retaining "one direct, stored, non-wildcard scalar" and said nothing about what the Kernel does with a non-scalar there. Measured: a plain star, a `Having`-filtered star, a fixed group, a homogeneous starred group, and a star above a nonrepeatable terminal are each refused `MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON` in that position. A kind gate reports ahead of it — a group whose expansion mixes kinds draws `MVK_VARYING_TYPES_NOT_ALLOWED` instead.
+- `mechanism`: the refusal belongs to the **slot**, not to the operand form. Each of the five rows is paired with the identical operand admitted in the `In` list, so nothing here is explained by the operator rejecting a shape. That pairing is load-bearing rather than decorative: a12-dmkits' own `KF187` records this operator **admitting** a group in the `In` slot, so a scalar-slot refusal read alone would contradict a measured row.
+- `evidence`: ten `rule check` children in one `batch` at a12-dmkits `1f2d4512bd92a28eb82091264de8c701004c1076`, every envelope `KERNEL_CONFIRMED` ([checkpoint](sources/evaluation-and-application-routes.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)).
+- `limit`: static admission only, one model, `en_US`. `DateRangesOverlap`, the plural sibling, is **not** covered: `KF187` records it refusing groups outright with `MVK_NO_GROUPS_ALLOWED`, so the two operators differ at this gate and this entry must not be read across.
+- `surfaces`: any peer clause, checker, or authoring tool that admits a starred, filtered, or group operand in the scalar position, or that reports a different class for one — including one that reports the kind class where the slot class is due, since a mixed-kind group reaches the earlier gate and a homogeneous one does not.
+- `local-scope`: [`AtLeastOneDateRangeOverlap.lean`](../A12Kernel/Elaboration/AtLeastOneDateRangeOverlap.lean) refused all three forms already; what changed is the projected class, which was `none` for the filtered star and the group while the plain star's was measured. That asymmetry is the [`LF152`](LEAN-FINDINGS.md) shape — a class inherited by analogy from a measured sibling — and this entry is the sweep closing it.
+- `acceptance`: a12-dmkits confirms the five scalar-slot classes and the paired `In`-slot admissions on its own fixture, or supplies the contrary measurement. Extending `KF187`'s per-carrier table with the scalar-slot column it currently leaves `—` would settle it directly.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-09-05-14"></a>
 ### `SPEC-2026-09-05-14` — a temporal **operand's** admitted family is its declared format's too, and a Base Year completes the year the format omits
 

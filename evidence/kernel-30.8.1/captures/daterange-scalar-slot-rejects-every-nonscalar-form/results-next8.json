@@ -1,0 +1,234 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 10 ops; 6 of 10 exited nonzero (0 failed, 6 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 10,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-control-ordinary-scalar-In-star",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe3/SkuText", "--condition", "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Span In /Probe3/Rows*/RowSpan)", "--code", "Y1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-control-SCALAR-slot-plain-star",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe3/SkuText", "--condition", "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(/Probe3/Rows*/RowSpan In Span)", "--code", "Y2" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON",
+          "summary" : "Rule with path '/Probe3/CheckRule': At 'AtLeastOneDateRangeOverlaps': Invalid parameter before 'IN'. No groups, no asterisk and only exactly one field is allowed. [MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe3/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-SCALAR-slot-FILTERED-star",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe3/SkuText", "--condition", "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(/Probe3/Rows*/RowSpan Having [RowVal] > 0 In Span)", "--code", "Y3" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON",
+          "summary" : "Rule with path '/Probe3/CheckRule': At 'AtLeastOneDateRangeOverlaps': Invalid parameter before 'IN'. No groups, no asterisk and only exactly one field is allowed. [MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe3/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "4-SCALAR-slot-fixed-GROUP",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe3/SkuText", "--condition", "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(/Probe3/SpanBox In Span)", "--code", "Y4" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON",
+          "summary" : "Rule with path '/Probe3/CheckRule': At 'AtLeastOneDateRangeOverlaps': Invalid parameter before 'IN'. No groups, no asterisk and only exactly one field is allowed. [MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe3/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "5-SCALAR-slot-starred-GROUP",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe3/SkuText", "--condition", "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(/Probe3/Rows* In Span)", "--code", "Y5" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_VARYING_TYPES_NOT_ALLOWED",
+          "summary" : "Rule with path '/Probe3/CheckRule': At 'AtLeastOneDateRangeOverlaps': All fields must be the same type. [MVK_VARYING_TYPES_NOT_ALLOWED]",
+          "where" : {
+            "rule" : "/Probe3/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — list only same-type fields — here a string and a number field are mixed; list operands of ONE comparability category — all String (Custom counts as String here), all Enumeration, all Number (any scales), or all temporal at ONE identical declared format. To count distinct values across a String/Enumeration mix instead, use NumberOfDifferentValues, whose comparability rule is the looser one"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "6-control-group-in-the-In-slot",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe3/SkuText", "--condition", "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Span In /Probe3/SpanBox)", "--code", "Y6" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "7-SCALAR-slot-HOMOGENEOUS-starred-group",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe3/SkuText", "--condition", "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(/Probe3/SpanRows* In Span)", "--code", "Y7" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON",
+          "summary" : "Rule with path '/Probe3/CheckRule': At 'AtLeastOneDateRangeOverlaps': Invalid parameter before 'IN'. No groups, no asterisk and only exactly one field is allowed. [MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe3/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "8-control-homogeneous-starred-group-In-slot",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe3/SkuText", "--condition", "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Span In /Probe3/SpanRows*)", "--code", "Y8" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 8,
+      "id" : "9-SCALAR-slot-PRESENCE-form",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe3/SkuText", "--condition", "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(/Probe3/SpanRows*/Inner In Span)", "--code", "Y9" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON",
+          "summary" : "Rule with path '/Probe3/CheckRule': At 'AtLeastOneDateRangeOverlaps': Invalid parameter before 'IN'. No groups, no asterisk and only exactly one field is allowed. [MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON]",
+          "where" : {
+            "rule" : "/Probe3/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 9,
+      "id" : "10-control-PRESENCE-form-In-slot",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe3/SkuText", "--condition", "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Span In /Probe3/SpanRows*/Inner)", "--code", "YA" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

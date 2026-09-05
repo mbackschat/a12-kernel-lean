@@ -1,0 +1,132 @@
+[
+ {
+  "id": "1-control-ordinary-scalar-In-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe3/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Span In /Probe3/Rows*/RowSpan)",
+   "--code",
+   "Y1"
+  ]
+ },
+ {
+  "id": "2-control-SCALAR-slot-plain-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe3/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(/Probe3/Rows*/RowSpan In Span)",
+   "--code",
+   "Y2"
+  ]
+ },
+ {
+  "id": "3-SCALAR-slot-FILTERED-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe3/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(/Probe3/Rows*/RowSpan Having [RowVal] > 0 In Span)",
+   "--code",
+   "Y3"
+  ]
+ },
+ {
+  "id": "4-SCALAR-slot-fixed-GROUP",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe3/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(/Probe3/SpanBox In Span)",
+   "--code",
+   "Y4"
+  ]
+ },
+ {
+  "id": "5-SCALAR-slot-starred-GROUP",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe3/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(/Probe3/Rows* In Span)",
+   "--code",
+   "Y5"
+  ]
+ },
+ {
+  "id": "6-control-group-in-the-In-slot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe3/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Span In /Probe3/SpanBox)",
+   "--code",
+   "Y6"
+  ]
+ },
+ {
+  "id": "7-SCALAR-slot-HOMOGENEOUS-starred-group",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe3/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(/Probe3/SpanRows* In Span)",
+   "--code",
+   "Y7"
+  ]
+ },
+ {
+  "id": "8-control-homogeneous-starred-group-In-slot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe3/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Span In /Probe3/SpanRows*)",
+   "--code",
+   "Y8"
+  ]
+ },
+ {
+  "id": "9-SCALAR-slot-PRESENCE-form",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe3/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(/Probe3/SpanRows*/Inner In Span)",
+   "--code",
+   "Y9"
+  ]
+ },
+ {
+  "id": "10-control-PRESENCE-form-In-slot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/Probe3/SkuText",
+   "--condition",
+   "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Span In /Probe3/SpanRows*/Inner)",
+   "--code",
+   "YA"
+  ]
+ }
+]

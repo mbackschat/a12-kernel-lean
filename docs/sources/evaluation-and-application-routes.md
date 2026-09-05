@@ -1,5 +1,17 @@
 # Evaluation and application source checkpoints
 
+<a id="src-daterange-scalar-slot-rejects-every-nonscalar-form"></a>
+#### `AtLeastOneDateRangeOverlaps` rejects every non-scalar form in its **scalar** slot with one class, and admits all five in its `In` slot, measured 2026-09-06
+
+- `revision`: `dmtool` 0.13.0 at a12-dmkits `1f2d4512bd92a28eb82091264de8c701004c1076`, launcher self-reported `clean`, the sibling checkout clean and unchanged before and after, Kernel `30.8.1` built and runtime. Ten `rule check` children in one `batch`, every envelope `KERNEL_CONFIRMED`.
+- `retained-bytes`: a third fixture, `Probe3_DM.json` SHA-256 `cd326fca203adfebdd7b1d7bfebb6ef5b9586ea4cc7ea953e6378b1325b4205c`, adding DateRange declarations in a repeatable group, a homogeneous fixed group, a homogeneous repeatable group, and a nonrepeatable group beneath the latter. Ops `ca6def40c324940d5f6a255748046daece15b488dc40703474e604d31601d177`; results `41593574a3535dbc4f5a03763248c1ad4e9194ac54a4f44d80eea89f457552fe`. The fixture grew twice during the batch and the **whole batch was re-run against the final bytes** each time, so the receipt matches every recorded verdict.
+- `question`: this estate refused a filtered star and a group operand in the scalar slot while projecting **no class** for either, with the plain star's class measured beside them. That is the [`LF152`](../LEAN-FINDINGS.md) shape — a refusal inherited by analogy from a measured sibling — and the sweep it prescribes found it at this carrier.
+- `redundancy-check`: a12-dmkits' `KF187` holds a per-carrier group-operand table and it records `AtLeastOneDateRangeOverlaps` for the **`In` slot only**, with the scalar slot left `—` on both repetition shapes; their corpus carries no occurrence of this diagnostic code. The gap was real and the check narrowed it to the scalar slot before the window was spent.
+- `claim`: **the scalar slot rejects every non-scalar form with `MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON`** — plain star, `Having`-filtered star, fixed group, homogeneous starred group, and the presence terminal. Each is paired with the *same form admitted in the `In` slot*, which is what makes the result a property of the **slot** rather than of the form; without the pairing every refusal would be equally well explained by the operator rejecting the shape outright, and the peer's table already measured the opposite on the other side.
+- `claim`: **a kind gate reports before the slot gate.** A starred group whose expansion mixes kinds draws `MVK_VARYING_TYPES_NOT_ALLOWED` in the scalar slot instead, which is why the starred-group row uses a homogeneous group — a mixed one measures the earlier gate a second time and says nothing about this one. That confound cost a row before its control exposed it.
+- `limit`: static admission only, one model, `en_US`. `DateRangesOverlap`, the plural sibling, is untouched here; `KF187` records it refusing groups outright with a different code, so the two operators are not interchangeable at this gate.
+- `sync`: none behavioral. The classes correct this project's own under-projection; `spec/05`'s existing sentence on the scalar slot is narrowed to name the class rather than leave it unmapped.
+
 <a id="src-later-position-class-is-total-and-presence-is-admitted"></a>
 #### Every later-position kind draws `MVK_DATE_AND_NONDATE` at the temporal extrema, and a starred group over a nonrepeatable terminal is admitted with its expansion gated, measured 2026-09-06
 

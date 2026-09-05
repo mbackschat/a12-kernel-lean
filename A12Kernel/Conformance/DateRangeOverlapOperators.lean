@@ -210,7 +210,13 @@ example :
           some (["Form", "Periods"], true, [9, 10]) := by
   native_decide
 
-/- The measured scalar/list reversal gets its exact class; an unmeasured scalar group remains unmapped. -/
+/- **The scalar slot rejects every non-scalar form with one class.** Plain star, filtered star, fixed
+   group, starred group and the presence terminal all draw
+   `MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON`, each against the same form admitted in the
+   `In` slot ([checkpoint](../../docs/SOURCES.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)).
+   The paired slots are what make this a property of the **slot** rather than of the form: without
+   them a refusal here would be equally well explained by the operator refusing the shape outright,
+   which is what the peer's own table measured admitted on the other side. -/
 example :
     (pluralAdmissionError? (.star (star "Window")) (direct "Start")).bind
         AtLeastOneDateRangeOverlapsElabError.diagnostic? =
@@ -218,10 +224,13 @@ example :
       (pluralAdmissionError?
         (.group (.path { base := .absolute, groups := ["Form", "Fixed"] }))
         (direct "Start")).bind
-          AtLeastOneDateRangeOverlapsElabError.diagnostic? = none := by
+          AtLeastOneDateRangeOverlapsElabError.diagnostic? =
+            some .invalidParameterForDateRangeComparison := by
   native_decide
 
-/- The scalar wildcard gate precedes list overlap checks; the unmeasured filtered spelling stays unmapped. -/
+/- The scalar wildcard gate precedes list overlap checks, and the filtered spelling draws the same
+   class as the plain one — the filter changes the rows selected, never whether the slot holds a
+   scalar. -/
 example :
     (pluralAdmissionError? (.star (periodsStar "Window"))
       starredPeriodsGroup).bind
@@ -229,7 +238,18 @@ example :
           some .invalidParameterForDateRangeComparison ∧
       (pluralAdmissionError? (.starHaving (star "Window") selfFilter)
         (direct "Start")).bind
-          AtLeastOneDateRangeOverlapsElabError.diagnostic? = none := by
+          AtLeastOneDateRangeOverlapsElabError.diagnostic? =
+            some .invalidParameterForDateRangeComparison := by
+  native_decide
+
+/- A **starred** group in the scalar slot draws it too, so the class is not the fixed group's alone.
+   The measured row that does *not* land here is a starred group whose expansion mixes kinds: it
+   draws `MVK_VARYING_TYPES_NOT_ALLOWED` instead, because a kind gate reports before this one. That
+   is why the row above uses a homogeneous group — a mixed one measures the earlier gate twice. -/
+example :
+    (pluralAdmissionError? starredPeriodsGroup (direct "Start")).bind
+        AtLeastOneDateRangeOverlapsElabError.diagnostic? =
+          some .invalidParameterForDateRangeComparison := by
   native_decide
 
 /- The exact measured Number/Number pair maps to `MVK_NO_DATE_RANGE`; either isolated kind mismatch stays unmapped. -/

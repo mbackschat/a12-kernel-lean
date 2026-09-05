@@ -474,6 +474,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-name-position-index-terminal"></a>
 - [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
 
+<a id="src-daterange-scalar-slot-rejects-every-nonscalar-form"></a>
+- [`AtLeastOneDateRangeOverlaps` rejects every non-scalar form in its scalar slot with one class, and admits all five in its `In` slot](sources/evaluation-and-application-routes.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)
 <a id="src-later-position-class-is-total-and-presence-is-admitted"></a>
 - [Every later-position kind draws `MVK_DATE_AND_NONDATE` at the temporal extrema, and a starred group over a nonrepeatable terminal is admitted with its expansion gated](sources/evaluation-and-application-routes.md#src-later-position-class-is-total-and-presence-is-admitted)
 <a id="src-later-position-kinds-and-group-expansion-class"></a>

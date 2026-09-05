@@ -47,12 +47,17 @@ namespace AtLeastOneDateRangeOverlapsElabError
 def diagnostic? : AtLeastOneDateRangeOverlapsElabError →
     Option KernelStaticDiagnostic
   | .shape error => error.diagnostic?
-  | .scalarStarred _ => some .invalidParameterForDateRangeComparison
+  -- The scalar slot rejects **every** non-scalar form with this one class: plain star, filtered
+  -- star, fixed group, starred group and the presence terminal, each measured against the same form
+  -- admitted in the `In` slot
+  -- ([checkpoint](../../docs/SOURCES.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)).
+  -- The paired slots are what make it a property of the slot rather than of the form.
+  | .scalarStarred _ | .scalarFilteredStarred _ | .scalarGroup _ =>
+      some .invalidParameterForDateRangeComparison
   | .measuredNumberPairNotDateRange _ _ => some .noDateRange
   | .dateWithAndWithoutYear => some .dateWithAndWithoutYear
   | .yearInterpretationNotSupported _ _ => some .invalidDateRangeFormat
-  | .scalarFilteredStarred _ | .scalarGroup _ |
-      .sourceNotDateRange _ _ _ | .unsupportedPolicy _ _ _ _ |
+  | .sourceNotDateRange _ _ _ | .unsupportedPolicy _ _ _ _ |
       .unsupportedReadForm _ _ _ | .groupExpansionEmpty _ |
       .groupExpansionNotDateRange _ | .having _ | .incoherentCore => none
 
