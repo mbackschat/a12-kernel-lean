@@ -47,6 +47,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `consumer-consequence`: a Compile or Execute consumer must key a computed temporal target's admission on the declared format string and must not consult the field's kind. One that consults the kind refuses models the Kernel admits, and does so silently, since every same-kind row still passes.
 - `local-consequence`: the narrowing is **stated and left in place**, not fixed in this change. Admission is measured; what an admitted cross-kind target *stores* is not, and widening admission would make the fragment render into a DATE-declared clock field with no observation behind that output. Tracked in [SG15](SEMANTICS-GAPS.md#sg15--bare-constant-target-families) as half-unblocked, with both certificates wanting one decision.
 - `acceptance`: a12-dmkits confirms that a computed temporal value's target admission reads the declared format and not the declared kind, on all three families; or reports the row where it diverges. An implementation gating on the kind passes every same-kind row and fails only the six cross-kind ones.
+- `forwarded`: sent over the peer-session channel as the id plus its checkpoint anchor, leading with the reason it exists — that this project's own Lean grew the kind gate independently, which makes it a demonstrated implementer mistake rather than a hypothetical one.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-09-05-06"></a>
