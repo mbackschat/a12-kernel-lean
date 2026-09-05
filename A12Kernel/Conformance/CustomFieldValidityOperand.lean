@@ -124,10 +124,14 @@ private def validator : RegisteredCustomFieldValidator := fun value context =>
   if context == explicitCustomFieldValidationContext && value == "ok" then none
   else some rejection
 
+/-- `IBAN` is registered only because the fixture *declares* it at field 6: preparing the model's
+    String context resolves every declared custom type, so an unregistered one would fail
+    preparation and take the checked document with it. No row below reads it, and the operand slot
+    refuses that field statically either way. -/
 private def world : World where
   now := { epochMillis := 0 }
   customFieldValidator? := fun name =>
-    if name == "ProjectCode" then some validator else none
+    if name == "ProjectCode" || name == "IBAN" then some validator else none
 
 /-- Field 1 is the plain evaluated String; every other id reads empty. -/
 private def raw (value : RawCell) : RawFlatContext where
@@ -191,6 +195,77 @@ example : bothPolarities? (.parsed (.str "ok")) = some .notFired := by
 example : bothPolarities? (.parsed (.num 7)) = some .unknown := by
   native_decide
 
+/-! ## The addressed partial route
+
+Partial validation reads through a call-local view that may report a cell as **not covered**, which
+is a third answer beside filled and unreadable. The family claims support for that route, so the
+rows here have to show the uncovered cell reaching UNKNOWN rather than the validator — an arm that
+forwarded an uncovered cell as absent would produce the same UNKNOWN here and the wrong answer for
+`Invalid`, so the covered rows beside it are what make this section about coverage. -/
+
+private def placedCell (cell : RawCell) : ClassifiedCellInput where
+  address := { field := 1, path := [] }
+  stored := "ok"
+  raw := cell
+
+private def probeData (cell : RawCell) : DocumentData where
+  instantiatedRows := []
+  cells := [placedCell cell]
+
+private def checkedProbeDocument? (cell : RawCell) :
+    Option (CheckedDocument probeModel) := do
+  let prepared ←
+    (prepareFlatStringContext world builtinStringPatternCompiler
+      probeModel).toOption
+  (checkDocument prepared "en_US" (probeData cell)).toOption
+
+/-- Evaluate the leaf on the partial route. `covered` selects the call-local view: covering reads
+    the checked document's own cell, and not covering reports the cell as silently unavailable
+    without an addressing failure. -/
+private def partialVerdict? (operation : CustomFieldValidityOp) (cell : RawCell)
+    (covered : Bool) : Option Verdict := do
+  let document ← checkedProbeDocument? cell
+  let leaf ←
+    (elaborateCustomFieldValidityLeaf probeModel world 1 "ProjectCode"
+      operation).toOption
+  let context : AddressedValidationEvaluationContext probeModel := {
+    scalar := {
+      fields := document.flatContext
+      groups := GroupPresenceContext.unavailable }
+    outer := []
+    input := .partialView document fun environment field =>
+      if covered then
+        (document.validationAddressedCell environment field).map fun addressed =>
+          some addressed.cell
+      else
+        pure none }
+  let result ←
+    ValidationConditionLeaf.evalAddressedPartial? context .full (fun _ => true)
+      (fun _ _ => .error (.checkedDocumentRequired []))
+      none (.customFieldValidity leaf)
+  result.toOption
+
+/- A covered cell answers exactly as the scalar route does, both polarities. -/
+example : partialVerdict? .valid (.parsed (.str "ok")) true = some (.fired .value) := by
+  native_decide
+
+example : partialVerdict? .invalid (.parsed (.str "ok")) true = some .notFired := by
+  native_decide
+
+/- The same document, uncovered: UNKNOWN under **both** polarities. A single polarity could not say
+   this — `notFired` is the right answer for `Invalid` on a readable value, so only the pair
+   separates "not covered" from "covered and valid". -/
+example : partialVerdict? .valid (.parsed (.str "ok")) false = some .unknown := by
+  native_decide
+
+example : partialVerdict? .invalid (.parsed (.str "ok")) false = some .unknown := by
+  native_decide
+
+/- Coverage does not rescue a formally invalid cell: the checked observation still gates the
+   validator, so this row agrees with its scalar twin. -/
+example : partialVerdict? .valid (.parsed (.num 7)) true = some .unknown := by
+  native_decide
+
 /-! ## Assembly separates admission from well-formedness
 
 The operand slot asks what the declaration *is*; the rule asks where it *sits*. A repeatable String
@@ -209,5 +284,13 @@ example : (assemble? 1).isSome = true := by native_decide
 example : admitted 9 = true := by native_decide
 
 example : (assemble? 9).isSome = false := by native_decide
+
+/- The rule-level partial gate reads the leaf's own support flag, so an assembled condition
+   carrying this family is admitted to the addressed partial route rather than rejected as
+   structurally unsupported before any cell is read. -/
+example : ((assemble? 1).map fun checked =>
+    checked.core.allLeaves ValidationConditionLeaf.supportsAddressedPartial) =
+    some true := by
+  native_decide
 
 end A12Kernel.Conformance.CustomFieldValidityOperand

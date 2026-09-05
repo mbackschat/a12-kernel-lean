@@ -61,6 +61,7 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .groupList operator [.starredGroupPresence _] =>
       operator.toStarredGroupFillQuantifier?.isSome
   | .repetitionNotUnique _ => true
+  | .customFieldValidity _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => false
   | _ => false
@@ -117,6 +118,19 @@ def evalAddressedPartial?
           match cell? with
           | some cell => operator.eval (observeCell .validation cell)
           | none => .unknown
+      else
+        pure .unknown)
+  -- An **uncovered** cell is UNKNOWN and never reaches the validator, which is the same answer an
+  -- unreadable covered cell gets and for the same reason: the predicate only ever speaks about a
+  -- value this theory could read. The covered branch shares the family's own `evalCell`, so it
+  -- cannot drift from the scalar route.
+  | .customFieldValidity leaf =>
+      some (if isRelevant leaf.operand.source then
+        context.readPartialCell context.outer leaf.operand.source
+          |>.map fun cell? =>
+            match cell? with
+            | some cell => leaf.evalCell .validation cell
+            | none => .unknown
       else
         pure .unknown)
   | .orderedNumeric _ comparison =>
