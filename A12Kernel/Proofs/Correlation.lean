@@ -446,6 +446,35 @@ theorem correlatedHaving_selectResolving_headError
   rw [CorrelatedHaving.selectEnvironmentsResolving, failed]
   rfl
 
+/-- **The resolving route has its own congruence, and it is the exact soundness condition for a
+rewrite on that arm.** A rewrite is sound here precisely when it preserves `evalTruthInResolving` at
+every frame — not merely `evalTruthIn`, which is what the pure-route laws preserve.
+
+That gap is the whole arm split, stated positively rather than as a list of counterexamples. The
+resolving evaluator can raise, and `correlatedHaving_selectResolving_headError` above shows the raise
+is positional: it is the *first* reached failure that surfaces. So a rewrite that permutes leaves
+preserves the pure route and can still change which cause a consumer sees, which is why root
+commutativity is a law on one arm and a measured non-law on the other.
+
+The useful reading for a canonicalizer is the contrapositive of that: every pure-route law it already
+has — commutativity, associativity, distribution — transfers to this arm on the fragment where no
+leaf raises, and nowhere else. Distribution is the sharpest case again, since duplicating a subtree
+duplicates any raise inside it. -/
+theorem correlatedHaving_selectResolving_congr
+    (first second : CorrelatedHaving)
+    (context : ResolvingCorrelationContext Error) (outerEnv : Env)
+    (candidates : List Env)
+    (agree : ∀ frame : CorrelationFrame,
+      first.evalTruthInResolving context frame
+        = second.evalTruthInResolving context frame) :
+    first.selectEnvironmentsResolving context outerEnv candidates
+      = second.selectEnvironmentsResolving context outerEnv candidates := by
+  induction candidates with
+  | nil => rfl
+  | cons candidate remaining ih =>
+      simp only [CorrelatedHaving.selectEnvironmentsResolving,
+        agree { innerEnv := candidate, outerEnv := outerEnv }, ih]
+
 /-- Every checked filtered-star value-list side records the filter encounter independently of what the filter retains. -/
 @[simp] theorem checkedStarFieldPath_havingValueListSide_hasHaving
     (checked : CheckedStarFieldPath model) (resolved : ResolvedStarTopology)
