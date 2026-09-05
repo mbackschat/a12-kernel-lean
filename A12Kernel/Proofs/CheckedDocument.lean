@@ -427,6 +427,25 @@ theorem checkedDocument_overRepetitionFindings_rowCode_outermost
     simp [CheckedDocument.extendsRow, shorter, prefixEq]
   simp [this] at notBeneath
 
+/-- **Vacuity, in the direction a consumer skips on.** The finding set is empty exactly when no
+outermost violation exists, because each named row contributes its own row code before any node
+written beneath it — so no arrangement of written nodes can produce an empty set from a nonempty
+row list, and none can produce a finding from an empty one.
+
+That makes the emptiness test evidence about the *document's shape* rather than about what its rows
+contain, which is what lets a consumer take the fast path on the test alone. The complementary half
+— that every context-coded finding names a node strictly beneath a named row — cannot be stated
+here while `writtenBeneath` stays private to its own module, and is not worth exposing a
+construction internal for until a second consumer needs it. -/
+theorem checkedDocument_overRepetitionFindings_empty_iff
+    (checked : CheckedDocument model) :
+    checked.overRepetitionFindings = [] ↔
+      checked.outermostOverLimitRows = [] := by
+  unfold CheckedDocument.overRepetitionFindings
+  cases h : checked.outermostOverLimitRows with
+  | nil => simp
+  | cons row rest => simp
+
 /-- **The computation channel only ever removes.** Whatever operand paths a computation carries, the
 findings it reports are a sublist of the ones the document draws under full validation — so the
 narrower channel can drop a finding but never invent one, and can never name a node or code the
