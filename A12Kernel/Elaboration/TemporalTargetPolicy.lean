@@ -87,7 +87,9 @@ inductive TimeTargetElabError where
 
 /-- One checked complete Time target. The runtime's 1970 transport date and model zone do not enter clock rendering.
 
-    **`targetIsTime` is narrower than the Kernel's own admission and is retained deliberately.** Measured across all three temporal families, a computed target is gated by its declared **format string** rather than by its declared kind, so a DateTime declared with the degenerate time-only format is admitted where this structure refuses it ([checkpoint](../../docs/SOURCES.md#src-computed-temporal-target-reads-the-format-not-the-kind)). Widening the field is blocked on the other half of that question — what such a cross-kind target *stores* is unmeasured, and the storage decides what a computation writing into it means. No caller consults `targetIsTime`, so the narrowing costs nothing but the models it excludes. -/
+    **`targetIsTime` is narrower than the Kernel's own admission and is retained deliberately.** Measured across all three temporal families, a computed target is gated by its declared **format string** rather than by its declared kind, so a DateTime or DATE declared with the degenerate time-only format is admitted where this structure refuses it ([checkpoint](../../docs/SOURCES.md#src-computed-temporal-target-reads-the-format-not-the-kind)).
+
+    What blocks the widening is **not** the storage, which is measured: a DATE-declared field at `HH:mm:ss` stores `12:30:00`, and `evaluate` renders through the declared format and would produce exactly that. It is the **carrier count**. Seven families share this certificate and only the repeatable-constant one has the cross-kind row, so dropping the field would widen six carriers on one carrier's evidence. Widen it by making this the general certificate and giving each unmeasured family its own explicit exclusion — not by deleting the field. No caller consults `targetIsTime` today, so the narrowing costs only the models it excludes. -/
 structure CheckedTimeTarget (model : FlatModel) where
   checked : CheckedTemporalTargetPolicy model
   format : TimeTargetFormat
