@@ -1,0 +1,79 @@
+[
+ {
+  "id": "N1-wrapper-depth-1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-N1.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "N2-wrapper-depth-2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-N2.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "N3-wrapper-depth-3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-N3.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "N4-aggregate-in-wrapper",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-N4.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "N5-aggregate-in-extremum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-N5.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "N6-wrapper-in-aggregate",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-N6.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "N7-control-plain",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-N7.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ }
+]

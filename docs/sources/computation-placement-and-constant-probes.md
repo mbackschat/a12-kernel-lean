@@ -1,5 +1,16 @@
 # Computation placement and constant source checkpoints
 
+<a id="src-aggregate-operand-list-takes-paths-only"></a>
+#### Composition is one-way: an aggregate nests inside a wrapper, but no expression nests inside an aggregate's operand list, measured locally 2026-09-05
+
+- `revision`: launcher self-reported build a12-dmkits `226b2be175133dff45413b0a0f604ea219ced85b (dirty)`; `dmtool` 0.13.0, Kernel `30.8.1`. Seven `computation add --dry-run` children in one `batch`, every one `KERNEL_CONFIRMED`. Retained `raw-nesting.json` SHA-256 `a0240381e5ca47fe6e5cabe39e6309ac35b3d7f88e7c21a9f18b7750c3e77f0e`, model `Scope_DM.json` SHA-256 `d99c474a41dc914231338e09e1f4492257597933826bfc0f6964c585bf0dec90`.
+- `question`: [SG5](../SEMANTICS-GAPS.md#sg5--numeric-authoring-and-target-completion) carried deeper nested calls and aggregate-valued operands as open rows outside the power carrier.
+- `claim`: **composition runs one way.** `Abs` nests to **depth three** admitted; an aggregate is admitted **inside** a wrapper, `Abs(Sum(G*/Base))`, and as one operand of an extremum, `Min(Sum(G*/Base), [F])`. The reverse is refused: a wrapper inside an aggregate's operand list, `Sum(Abs([G/Base]))`, is `MVK_UNEXPECTED_TOKEN` naming the wrapper.
+- `generalizes-an-earlier-one-off`: that refusal is the **same code on the same shape** as the [carrier checkpoint](group-and-iteration-probes.md#src-currentrepetition-operand-carriers)'s `Sum(CurrentRepetition(G))`, which was recorded there as a fact about that one operand. Two independent operand kinds — a repetition function and an arithmetic wrapper — refused identically is what turns it into a rule about the **position**: an aggregate's operand list takes field paths, not expressions of any kind.
+- `controls`: a plain `[F] * 2` and a depth-one `Abs([F])` into the same target are admitted through the identical route, so the refusal is not the target's or the route's.
+- `limit`: static admission only, one model, `en_US`. Depth three is what was measured and no bound was searched for, so nothing here says whether a deeper nest is admitted or where it would stop; only `Abs`, `Min`, and `Sum` are exercised as the composing operators.
+- `sync`: none. It closes two of this project's own open rows and generalizes one of its own earlier records; neither estate's clause said an aggregate operand accepted expressions, so nothing is corrected. [`spec/04`](../../spec/04-numbers-and-decimals.md) carries the one-way rule and [`spec/07`](../../spec/07-repetition-and-iteration.md) drops its operand-specific phrasing in favour of it.
+
 <a id="src-power-derived-scale-and-operand-shapes"></a>
 #### `^` restricts neither operand's shape; a non-literal exponent derives **unknown** scale, and that is what a computed target refuses, measured locally 2026-09-05
 

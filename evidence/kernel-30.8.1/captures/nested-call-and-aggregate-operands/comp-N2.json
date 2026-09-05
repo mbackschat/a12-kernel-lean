@@ -1,0 +1,15 @@
+{
+ "computedField": "/Rep/Agg",
+ "group": "/Rep",
+ "alternatives": [
+  {
+   "operation": "Abs(Abs([/Rep/RootNum]))"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "N2"
+  }
+ ]
+}
