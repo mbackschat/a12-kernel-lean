@@ -1,0 +1,128 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : true,
+  "summary" : "dispatched 6 ops; all children exited zero",
+  "data" : {
+    "ops" : 6,
+    "dispatched" : true,
+    "allExitedZero" : true,
+    "results" : [ {
+      "op" : 0,
+      "id" : "X1-custom-star-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "X1", "--condition", "NumberOfDifferentValues(/Rep/Rows*/Cust) > 1 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "X2-string-star-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "X2", "--condition", "NumberOfDifferentValues(/Rep/Rows*/Cust, /Rep/Txt) > 1 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "X3-group-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "X3", "--condition", "NumberOfDifferentValues(/Rep/Meta) > 1 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "X4-number-star-control",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "X4", "--condition", "NumberOfDifferentValues(/Rep/Rows*/Base) > 1 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "X5-enum-star-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "X5", "--condition", "NumberOfDifferentValues(/Rep/Rows*/Cust, /Rep/Choice) > 1 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "X6-control-plain",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "X6", "--condition", "FieldFilled(/Rep/RootNum)" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ {
+          "severity" : "WARNING",
+          "source" : "LINT",
+          "code" : "RK_INVERTED_REQUIREDNESS",
+          "summary" : "the rule errors when '/Rep/RootNum' IS filled — an errorCondition fires on the invalid case, so a requiredness rule should fire on absence",
+          "where" : {
+            "rule" : "",
+            "operator" : "FieldFilled"
+          },
+          "fix" : "FieldNotFilled(/Rep/RootNum)",
+          "explain" : "an errorCondition is the error scenario (true ⇒ invalid); FieldFilled is true when the field HAS a value, so this flags present values, not missing ones — did you mean FieldNotFilled?"
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

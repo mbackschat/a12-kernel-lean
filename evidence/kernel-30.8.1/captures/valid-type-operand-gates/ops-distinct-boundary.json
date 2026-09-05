@@ -1,0 +1,104 @@
+[
+ {
+  "id": "Y1-mixed-number-and-string",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "Y1",
+   "--condition",
+   "NumberOfDifferentValues(/Rep/Rows*/Base, /Rep/Txt) > 1 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "Y2-boolean-operand",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "Y2",
+   "--condition",
+   "NumberOfDifferentValues(/Rep/Rows*/Flag) > 1 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "Y3-confirm-operand",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "Y3",
+   "--condition",
+   "NumberOfDifferentValues(/Rep/Rows*/Conf) > 1 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "Y4-mixed-custom-and-number",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "Y4",
+   "--condition",
+   "NumberOfDifferentValues(/Rep/Rows*/Cust, /Rep/RootNum) > 1 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "Y5-unstarred-repeatable",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "Y5",
+   "--condition",
+   "NumberOfDifferentValues(/Rep/Rows/Cust) > 1 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "Y6-control-string-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "Y6",
+   "--condition",
+   "NumberOfDifferentValues(/Rep/Txt) > 1 And FieldFilled(/Rep/RootNum)"
+  ]
+ }
+]

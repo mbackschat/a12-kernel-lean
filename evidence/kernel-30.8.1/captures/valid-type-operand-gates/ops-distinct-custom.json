@@ -1,0 +1,104 @@
+[
+ {
+  "id": "X1-custom-star-operand",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "X1",
+   "--condition",
+   "NumberOfDifferentValues(/Rep/Rows*/Cust) > 1 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "X2-string-star-operand",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "X2",
+   "--condition",
+   "NumberOfDifferentValues(/Rep/Rows*/Cust, /Rep/Txt) > 1 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "X3-group-operand",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "X3",
+   "--condition",
+   "NumberOfDifferentValues(/Rep/Meta) > 1 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "X4-number-star-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "X4",
+   "--condition",
+   "NumberOfDifferentValues(/Rep/Rows*/Base) > 1 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "X5-enum-star-operand",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "X5",
+   "--condition",
+   "NumberOfDifferentValues(/Rep/Rows*/Cust, /Rep/Choice) > 1 And FieldFilled(/Rep/RootNum)"
+  ]
+ },
+ {
+  "id": "X6-control-plain",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--model",
+   "Scope_DM.json",
+   "--group",
+   "/Rep",
+   "--field",
+   "/Rep/RootNum",
+   "--code",
+   "X6",
+   "--condition",
+   "FieldFilled(/Rep/RootNum)"
+  ]
+ }
+]

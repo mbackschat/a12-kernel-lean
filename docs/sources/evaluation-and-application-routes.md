@@ -1,5 +1,19 @@
 # Evaluation and application source checkpoints
 
+<a id="src-distinct-count-operand-domain"></a>
+#### `NumberOfDifferentValues` admits Custom as string-like, splits homogeneity into two codes, and counts **expanded** operands for arity, measured locally 2026-09-05
+
+- `revision`: launcher self-reported build a12-dmkits `226b2be175133dff45413b0a0f604ea219ced85b (dirty)`; `dmtool` 0.13.0, Kernel `30.8.1`. Twelve `rule check` children across two `batch` runs, every one `KERNEL_CONFIRMED`.
+- `retained`: `raw-distinct-custom.json` SHA-256 `f6584e232630d16169c5f6cb9a21692c4161d9caa69f8a028ad87a1da4e1d8e1`, `raw-distinct-boundary.json` SHA-256 `a0fab81ef51f9222ae2817bb351e8788d30053510decabf96416c966e228046c`, model `Scope_DM.json` SHA-256 `fe91a3c806cbdf0ec5a4547c836383f475e6b8a4db3e53f02296c082db6d96ee`.
+- `question`: [SG7](../SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion) carried wildcard and group Custom operands for this operator as open. The first batch admitted every row, which by itself establishes nothing about a boundary ([`LF139`](../LEAN-FINDINGS.md)), so a second batch went looking for refusals.
+- `kind-domain`: the admitted operand kinds are **string, enumeration, number, and date/time** — a Boolean or Confirm operand is refused `MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED`, whose text lists that set.
+- `custom-is-string-like-here`: a starred **Custom** operand is admitted alone, and beside a String and beside an Enumeration. Mixing it with a **Number** is refused `MVK_STRING_ENUM_AND_NON_STRING_ENUM` — *"if the first parameter is a string or enumeration then all parameters have to be of type string or enumeration"* — so the Kernel classes a Custom field with the string family for this operator. **That is the opposite of `Valid(Field, "Type")`, which refuses a Custom operand outright** ([gates](#src-validtype-operand-gates)); one field kind, two operators, two answers, which is why neither can be read off the other.
+- `homogeneity-is-two-rules`: the list must be homogeneous, and the Kernel reports it from whichever family the **first** operand belongs to. Number first then String draws `MVK_NUMBER_AND_NON_NUMBER`; string-family first then Number draws `MVK_STRING_ENUM_AND_NON_STRING_ENUM`. Same illegal pair, two codes, selected by operand order.
+- `arity-confirms-an-existing-clause`: a single **starred** field is admitted alone while a single **fixed** field is refused `MVK_PARAMSIZE_INVALIDN` — *"There must be more than one field or at least one group defined."* [`spec/07`](../../spec/07-repetition-and-iteration.md) already states this and gives the better account of it: a group or flattened operand *denotes a field scope rather than a singleton direct list*, which is why one of them satisfies the arity rule and one fixed field does not. The pair confirms that clause and supplies its diagnostic; it also explains the lone **group** operand the first batch had recorded without knowing the reason.
+- `binding-gate-again`: an unstarred repeatable operand draws the ordinary `MVK_NO_WILDCARD`, distinct from every gate above and from the `MVK_NO_WILDCARDS_ALLOWED` the sibling operator draws for a star — the same confusable pair, now at a third operand position.
+- `limit`: static admission only; nothing here evaluates a count. One model, `en_US`, validation carrier. Date/time operands are named by the diagnostic but not exercised, and the runtime meaning of a Custom value's distinctness is untouched.
+- `sync`: none. The kind domain and homogeneity codes are additions to this project's own account and contradict nothing a12-dmkits ships.
+
 <a id="src-validtype-operand-gates"></a>
 #### The custom-type validity operand gates, with their exact codes and the two confusable wildcard refusals, measured locally 2026-09-05
 

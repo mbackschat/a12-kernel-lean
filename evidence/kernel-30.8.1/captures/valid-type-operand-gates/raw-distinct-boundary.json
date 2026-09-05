@@ -1,0 +1,170 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 6 ops; 6 of 6 exited nonzero (0 failed, 6 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 6,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "Y1-mixed-number-and-string",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "Y1", "--condition", "NumberOfDifferentValues(/Rep/Rows*/Base, /Rep/Txt) > 1 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NUMBER_AND_NON_NUMBER",
+          "summary" : "Rule with path '/Rep/CheckRule': At 'NumberOfDifferentValues': If the first parameter is a number (including amounts) then all parameters have to be of type number (including amounts). Corrupt: '/Rep/Txt'. [MVK_NUMBER_AND_NON_NUMBER]",
+          "where" : {
+            "rule" : "/Rep/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "Y2-boolean-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "Y2", "--condition", "NumberOfDifferentValues(/Rep/Rows*/Flag) > 1 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED",
+          "summary" : "Rule with path '/Rep/CheckRule': At 'NumberOfDifferentValues': It is only allowed to use either string fields, enumerations, numbers (including amounts) or date/time fields with the same components. Incompatible: '/Rep/Rows/Flag'. [MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED]",
+          "where" : {
+            "rule" : "/Rep/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "Y3-confirm-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "Y3", "--condition", "NumberOfDifferentValues(/Rep/Rows*/Conf) > 1 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED",
+          "summary" : "Rule with path '/Rep/CheckRule': At 'NumberOfDifferentValues': It is only allowed to use either string fields, enumerations, numbers (including amounts) or date/time fields with the same components. Incompatible: '/Rep/Rows/Conf'. [MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED]",
+          "where" : {
+            "rule" : "/Rep/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "Y4-mixed-custom-and-number",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "Y4", "--condition", "NumberOfDifferentValues(/Rep/Rows*/Cust, /Rep/RootNum) > 1 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_STRING_ENUM_AND_NON_STRING_ENUM",
+          "summary" : "Rule with path '/Rep/CheckRule': At 'NumberOfDifferentValues': If the first parameter is a string or enumeration then all parameters have to be of type string or enumeration. Corrupt: '/Rep/RootNum'. [MVK_STRING_ENUM_AND_NON_STRING_ENUM]",
+          "where" : {
+            "rule" : "/Rep/CheckRule"
+          },
+          "fix" : "use one admitted homogeneous class: STRING and ENUM may mix, all NUMBER operands may mix, or use date-like fields sharing one temporal COMPONENT SET",
+          "explain" : "Counts the distinct values among the listed fields (the count/number of different values), typically over a repetition list."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "Y5-unstarred-repeatable",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "Y5", "--condition", "NumberOfDifferentValues(/Rep/Rows/Cust) > 1 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_WILDCARD",
+          "summary" : "Rule with path '/Rep/CheckRule': Missing specification of an asterisk for 'Rows' in '/Rep/Rows/Cust'. [MVK_NO_WILDCARD]",
+          "where" : {
+            "rule" : "/Rep/CheckRule"
+          },
+          "fix" : "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+          "explain" : "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "Y6-control-string-only",
+      "verb" : "rule",
+      "args" : [ "check", "--model", "Scope_DM.json", "--group", "/Rep", "--field", "/Rep/RootNum", "--code", "Y6", "--condition", "NumberOfDifferentValues(/Rep/Txt) > 1 And FieldFilled(/Rep/RootNum)" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_PARAMSIZE_INVALIDN",
+          "summary" : "Rule with path '/Rep/CheckRule': At 'NumberOfDifferentValues': There must be more than one field or at least one group defined. [MVK_PARAMSIZE_INVALIDN]",
+          "where" : {
+            "rule" : "/Rep/CheckRule"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — FieldValuesNotUnique needs more than one operand: list a second field, or use one flattened repetition list (Items*/Sku), which expands to a row stream and satisfies the arity on its own; list at least two fields (or one group) — for a single field use FieldFilled/FieldNotFilled"
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

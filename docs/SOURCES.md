@@ -402,6 +402,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-name-position-index-terminal"></a>
 - [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
 
+<a id="src-distinct-count-operand-domain"></a>
+- [`NumberOfDifferentValues` admits Custom as string-like, splits homogeneity into two codes, and counts expanded operands for arity](sources/evaluation-and-application-routes.md#src-distinct-count-operand-domain)
+
 <a id="src-validtype-operand-gates"></a>
 - [The custom-type validity operand gates, with their exact codes and the two confusable wildcard refusals](sources/evaluation-and-application-routes.md#src-validtype-operand-gates)
 
