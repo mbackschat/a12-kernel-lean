@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.CustomFieldValidity
 import A12Kernel.Elaboration.ValidationCondition.Iteration
+import A12Kernel.Elaboration.ValidationCondition.Assembly
 
 /-! # A12Kernel.Conformance.CustomFieldValidityOperand — the value-validation operand slot
 
@@ -46,9 +47,19 @@ private def probeModel : FlatModel :=
       { id := 7, groupPath := ["Probe"], name := "DueOn",
         policy := { kind := .temporal .date TemporalComponents.fullDate },
         temporalTargetPolicy := some { format := "dd.MM.yyyy" } },
+      -- A raw String must permit line breaks, or the model itself is illegal.
       { id := 8, groupPath := ["Probe"], name := "Blob",
-        policy := { kind := .string }, stringValueMode := .raw }]
-    repeatableGroups := [] }
+        policy := { kind := .string }, stringValueMode := .raw,
+        stringPolicy := { lineBreaksPermitted := true } },
+      { id := 9, groupPath := ["Probe", "Rows"], name := "RowText",
+        policy := { kind := .string }, repeatableScope := [20] }]
+    repeatableGroups := [{ level := 20, path := ["Probe", "Rows"] }] }
+
+/- The fixture is a legal model, locked rather than assumed. The operand slot does not validate, so
+   an illegal fixture stays invisible until a validating consumer arrives and then makes *its* every
+   row pass for the wrong reason — which is exactly how the missing line-break permission on the raw
+   String below was found. -/
+example : probeModel.validate.isOk = true := by native_decide
 
 private def admission? (source : FieldId) : Option KernelStaticDiagnostic :=
   match elaborateCustomFieldValidityOperand probeModel source with
@@ -179,5 +190,24 @@ example : bothPolarities? (.parsed (.str "ok")) = some .notFired := by
 
 example : bothPolarities? (.parsed (.num 7)) = some .unknown := by
   native_decide
+
+/-! ## Assembly separates admission from well-formedness
+
+The operand slot asks what the declaration *is*; the rule asks where it *sits*. A repeatable String
+is admitted by the first and refused by the second, which is why the fixture carries one — a model
+whose every String is nonrepeatable cannot tell the two gates apart. -/
+
+private def assemble? (source : FieldId) :
+    Option (CheckedValidationCondition probeModel) :=
+  (CheckedValidationCondition.fromCustomFieldValidity probeModel ["Probe"]
+    world source "ProjectCode" .valid).toOption
+
+example : (assemble? 1).isSome = true := by native_decide
+
+/- Admitted as an operand, refused as a rule condition: this fragment reads one nonrepeatable cell
+   and has no row to read a repeatable one at. -/
+example : admitted 9 = true := by native_decide
+
+example : (assemble? 9).isSome = false := by native_decide
 
 end A12Kernel.Conformance.CustomFieldValidityOperand

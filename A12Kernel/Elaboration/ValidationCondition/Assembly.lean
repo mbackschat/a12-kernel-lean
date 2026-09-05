@@ -85,6 +85,22 @@ def fromFlat (condition : CheckedFlatCondition model) :
   checkCore model condition.rowGroup (ValidationCondition.flat condition.core)
     condition.modelWellFormed
 
+/-- Assemble one explicit `Valid`/`Invalid` predicate at a rule group.
+
+    The model check runs first, as it does for every member, and `checkCore` then applies the leaf's own well-formedness — which for this family is the nonrepeatable operand. Both refusals of the leaf itself are mapped to the assembly's generic incoherent-core class rather than to a Kernel diagnostic, because no row places a class on either at this position. -/
+def fromCustomFieldValidity (model : FlatModel) (rowGroup : GroupPath)
+    (world : World) (source : FieldId) (name : String)
+    (operation : CustomFieldValidityOp) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  match hModel : model.validate with
+  | .error error => .error (.invalidModel error)
+  | .ok () =>
+      match elaborateCustomFieldValidityLeaf model world source name operation with
+      | .error _ => .error .incoherentCore
+      | .ok leaf =>
+          checkCore model rowGroup (ValidationCondition.customFieldValidity leaf)
+            (by rw [hModel]; rfl)
+
 /-- Lift one checked numeric comparison at its certified rule-instance group. -/
 def fromNumeric (comparison : CheckedNumericComparison model) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
