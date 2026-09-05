@@ -489,6 +489,8 @@ run_cmd do
 #print axioms A12Kernel.correlatedHaving_conjunct_repairs_only_the_reopened_level_gate
 #print axioms A12Kernel.correlatedHaving_selectEnvironments_congr
 #print axioms A12Kernel.correlatedHaving_selectEnvironments_nested_swap
+#print axioms A12Kernel.correlatedHaving_selectEnvironments_assoc
+#print axioms A12Kernel.correlatedHaving_selectEnvironments_distrib
 #print axioms A12Kernel.correlatedHaving_mem_selectEnvironments_iff
 #print axioms A12Kernel.correlatedHaving_selectResolving_headError
 #print axioms A12Kernel.env_uniqueRowAt_zero

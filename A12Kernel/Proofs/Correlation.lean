@@ -101,8 +101,9 @@ theorem correlatedHaving_and_keepsEnvironment (left right : CorrelatedHaving)
     The addressed route `selectEnvironmentsResolving` is *not* invariant: its leaves may raise a
     caller-owned structural read failure, and swapping two failing operands swaps which failure
     surfaces, as `correlatedHaving_selectResolving_headError` below already describes. **(2)** It
-    swaps one node's operands and says nothing about a nested rewrite such as
-    `.and (.or a b) c → .and (.or b a) c`; no congruence result over the tree is proved here.
+    swaps one node's operands only. A nested rewrite such as `.and (.or a b) c → .and (.or b a) c`
+    follows instead from `correlatedHaving_selectEnvironments_nested_swap` below, through the
+    `evalTruthIn` bridge this statement does not use.
     **(3)** It is the **validation** arm. The computation arm reads left to right and aborts on the
     first reached poison, so the same swap is not result-preserving there — Kernel-measured, and
     witnessed in [`Conformance/Correlation.lean`](../Conformance/Correlation.lean)
@@ -235,6 +236,67 @@ theorem correlatedHaving_selectEnvironments_nested_swap
     cases b.evalK (CorrelatedHavingLeaf.evalTruthIn context frame) <;>
       cases c.evalK (CorrelatedHavingLeaf.evalTruthIn context frame) <;>
         simp [K.or, K.and]
+
+/-! #### Associativity and distribution, for a canonicalizer
+
+`correlatedHaving_selectEnvironments_congr` above already reduces a rewrite's soundness to agreement
+of `evalTruthIn`, and `correlatedHaving_selectEnvironments_nested_swap` already applies it at depth.
+What a canonicalizer still lacked is the two shape rewrites it needs to reach a normal form. Both are
+stated through that same bridge and inherit its three limits exactly — the pure selector, the
+validation arm, and no claim about the addressed resolving route. -/
+
+/-- **Associativity at either connective**, which is what lets a canonicalizer flatten a nested chain
+    of one connective into a list and re-associate it freely. Proved on the strong-Kleene operators
+    rather than on Bool, so an UNKNOWN operand is covered by the same statement. -/
+theorem correlatedHaving_selectEnvironments_assoc
+    (first second third : CorrelatedHaving) (context : CorrelationContext)
+    (outerEnv : Env) (candidates : List Env) :
+    CorrelatedHaving.selectEnvironments (.and (.and first second) third)
+          context outerEnv candidates
+        = CorrelatedHaving.selectEnvironments (.and first (.and second third))
+          context outerEnv candidates ∧
+      CorrelatedHaving.selectEnvironments (.or (.or first second) third)
+          context outerEnv candidates
+        = CorrelatedHaving.selectEnvironments (.or first (.or second third))
+          context outerEnv candidates := by
+  constructor <;>
+    refine correlatedHaving_selectEnvironments_congr _ _ _ _ _ ?_ <;>
+      intro frame <;>
+        simp only [CorrelatedHaving.evalTruthIn, ConditionTree.evalK] <;>
+          cases first.evalK (CorrelatedHavingLeaf.evalTruthIn context frame) <;>
+            cases second.evalK (CorrelatedHavingLeaf.evalTruthIn context frame) <;>
+              cases third.evalK (CorrelatedHavingLeaf.evalTruthIn context frame) <;>
+                simp [K.or, K.and]
+
+/-- **Distribution in both directions**, the last rewrite needed for a normal form and the one whose
+    soundness is least obvious, because it **duplicates a subtree**: the shared operand appears once
+    on the left and twice on the right.
+
+    That duplication is invisible to selection because `evalTruthIn` is a pure function of the frame,
+    and it is exactly what the **computation** arm does not tolerate — that arm reads left to right
+    and aborts on the first reached poison, so evaluating a shared poisoned operand twice is not the
+    same as evaluating it once. This is therefore the sharpest case of the arm split already recorded
+    at `correlatedHaving_selectEnvironments_or_comm`'s limit (3): sound here, and not to be carried
+    across by a consumer that treats the two arms as one language. -/
+theorem correlatedHaving_selectEnvironments_distrib
+    (shared first second : CorrelatedHaving) (context : CorrelationContext)
+    (outerEnv : Env) (candidates : List Env) :
+    CorrelatedHaving.selectEnvironments (.and shared (.or first second))
+          context outerEnv candidates
+        = CorrelatedHaving.selectEnvironments
+          (.or (.and shared first) (.and shared second)) context outerEnv candidates ∧
+      CorrelatedHaving.selectEnvironments (.or shared (.and first second))
+          context outerEnv candidates
+        = CorrelatedHaving.selectEnvironments
+          (.and (.or shared first) (.or shared second)) context outerEnv candidates := by
+  constructor <;>
+    refine correlatedHaving_selectEnvironments_congr _ _ _ _ _ ?_ <;>
+      intro frame <;>
+        simp only [CorrelatedHaving.evalTruthIn, ConditionTree.evalK] <;>
+          cases shared.evalK (CorrelatedHavingLeaf.evalTruthIn context frame) <;>
+            cases first.evalK (CorrelatedHavingLeaf.evalTruthIn context frame) <;>
+              cases second.evalK (CorrelatedHavingLeaf.evalTruthIn context frame) <;>
+                simp [K.or, K.and]
 
 private theorem anyFilledTruth_congr (field : FlatNumberField)
     (left right : SingleGroupValidationContext) (rows : List RowIndex)
