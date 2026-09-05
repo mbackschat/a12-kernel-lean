@@ -50,7 +50,6 @@ structure CheckedFullDateInputField where
   format : FullDateInputFormat
   fieldOwned : declaration.toTemporalField? = some field
   policyOwned : declaration.toTemporalTargetPolicy? = some policy
-  kindOwned : field.kind = .date
   componentsOwned : field.components = TemporalComponents.fullDate
   precisionOwned : policy.partialMode = .full
   formatOwned : FullDateInputFormat.ofSource? policy.format = some format
@@ -61,31 +60,27 @@ def certifyFullDateInputField (declaration : FlatFieldDecl) :
   match hField : declaration.toTemporalField? with
   | none => .error (.notFullDate declaration.path declaration.policy.kind)
   | some field =>
-      if hKind : field.kind = .date then
-        if hComponents : field.components = TemporalComponents.fullDate then
-          match hPolicy : declaration.toTemporalTargetPolicy? with
-          | none => .error (.policyUnavailable declaration.path)
-          | some policy =>
-              if hPrecision : policy.partialMode = .full then
-                match hFormat : FullDateInputFormat.ofSource? policy.format with
-                | none => .error (.unsupportedPolicy declaration.path
-                    policy.format policy.partialMode)
-                | some format => .ok {
-                    declaration
-                    field
-                    policy
-                    format
-                    fieldOwned := hField
-                    policyOwned := hPolicy
-                    kindOwned := hKind
-                    componentsOwned := hComponents
-                    precisionOwned := hPrecision
-                    formatOwned := hFormat }
-              else
-                .error (.unsupportedPolicy declaration.path
+      if hComponents : field.components = TemporalComponents.fullDate then
+        match hPolicy : declaration.toTemporalTargetPolicy? with
+        | none => .error (.policyUnavailable declaration.path)
+        | some policy =>
+            if hPrecision : policy.partialMode = .full then
+              match hFormat : FullDateInputFormat.ofSource? policy.format with
+              | none => .error (.unsupportedPolicy declaration.path
                   policy.format policy.partialMode)
-        else
-          .error (.notFullDate declaration.path declaration.policy.kind)
+              | some format => .ok {
+                  declaration
+                  field
+                  policy
+                  format
+                  fieldOwned := hField
+                  policyOwned := hPolicy
+                  componentsOwned := hComponents
+                  precisionOwned := hPrecision
+                  formatOwned := hFormat }
+            else
+              .error (.unsupportedPolicy declaration.path
+                policy.format policy.partialMode)
       else
         .error (.notFullDate declaration.path declaration.policy.kind)
 

@@ -42,11 +42,15 @@ what keeps an empty cell from acquiring a cause on the way in. -/
       { rawPresent := true, parsed := none, findings := [] } := rfl
 
 /-- A certified declaration retains the kernel's stored clock format, so a consumer never has to
-re-derive which spelling this cell was decoded from. -/
+re-derive which spelling this cell was decoded from.
+
+The declared **kind** was a second conjunct here and is gone. It was provable and wrong: the Kernel
+admits a DATE field declared `HH:mm:ss` and classifies its stored text through this very profile, so
+the conjunct held only because certification refused that legal declaration
+([inbound](../../docs/SOURCES.md#inbound-2026-09-05b), [`LF133`](../../docs/LEAN-FINDINGS.md)). -/
 theorem checkedTimeInputField_format_declared
     (checked : CheckedTimeInputField) :
-    TimeTargetFormat.ofSource? checked.policy.format = some checked.format ∧
-      checked.field.kind = .time :=
-  ⟨checked.formatOwned, checked.kindOwned⟩
+    TimeTargetFormat.ofSource? checked.policy.format = some checked.format :=
+  checked.formatOwned
 
 end A12Kernel

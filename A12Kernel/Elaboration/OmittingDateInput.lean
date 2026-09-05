@@ -132,7 +132,6 @@ structure CheckedOmittingDateInputField where
   format : OmittingDateFormat
   fieldOwned : declaration.toTemporalField? = some field
   policyOwned : declaration.toTemporalTargetPolicy? = some policy
-  kindOwned : field.kind = .date
   formatOwned : OmittingDateFormat.ofSource? policy.format = some format
 
 /-- Certify one component-omitting Date declaration without imposing an addressing shape. -/
@@ -141,24 +140,20 @@ def certifyOmittingDateInputField (declaration : FlatFieldDecl) :
   match hField : declaration.toTemporalField? with
   | none => .error (.notDate declaration.path declaration.policy.kind)
   | some field =>
-      if hKind : field.kind = .date then
-        match hPolicy : declaration.toTemporalTargetPolicy? with
-        | none => .error (.policyUnavailable declaration.path)
-        | some policy =>
-            match hFormat : OmittingDateFormat.ofSource? policy.format with
-            | none =>
-                .error (.unsupportedFormat declaration.path policy.format)
-            | some format => .ok {
-                declaration
-                field
-                policy
-                format
-                fieldOwned := hField
-                policyOwned := hPolicy
-                kindOwned := hKind
-                formatOwned := hFormat }
-      else
-        .error (.notDate declaration.path declaration.policy.kind)
+      match hPolicy : declaration.toTemporalTargetPolicy? with
+      | none => .error (.policyUnavailable declaration.path)
+      | some policy =>
+          match hFormat : OmittingDateFormat.ofSource? policy.format with
+          | none =>
+              .error (.unsupportedFormat declaration.path policy.format)
+          | some format => .ok {
+              declaration
+              field
+              policy
+              format
+              fieldOwned := hField
+              policyOwned := hPolicy
+              formatOwned := hFormat }
 
 /-- The value a component-omitting Date declaration stores. The two arms are not interchangeable: a
 year-bearing value denotes an interval of concrete dates and resolves to endpoints, while a yearless one

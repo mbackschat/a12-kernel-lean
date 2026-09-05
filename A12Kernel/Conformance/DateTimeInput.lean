@@ -90,16 +90,28 @@ example :
     classify? "" = some .presentEmpty := by
   native_decide
 
-/- Certification is refused for a declaration this classifier does not own. Both refusals are
-**reachable**: the format gate is kind-independent, so a DateTime field may legally declare the clock
-format, and the day-first DateTime spelling is not a declarable format at all. -/
+/- Certification is decided by the declared **format** and refuses only what that format does not
+name. Both refusals are **reachable**: the format gate is kind-independent, so a DateTime field may
+legally declare the clock format, and the day-first DateTime spelling is not a declarable format at
+all. -/
 example :
     (certifyDateTimeInputField (declaration (format := "HH:mm:ss"))).toOption =
         none ∧
       (certifyDateTimeInputField
         (declaration (format := "dd.MM.yyyy'T'HH:mm:ss"))).toOption = none ∧
-      (certifyDateTimeInputField (declaration (kind := .date))).toOption = none ∧
       (certifyDateTimeInputField (declaration)).toOption.isSome = true := by
+  native_decide
+
+/- **The declared kind is not read.** This row read `none` for both cross-kind declarations until the
+kind conjunct was removed, and that refusal left such a cell classified by no classifier at all — its
+text unclassifiable rather than classified wrongly. The Kernel classifies it exactly as it classifies
+a DATE_TIME field's, over the complete twelve-format vocabulary on all three date-bearing kinds
+([inbound](../../docs/SOURCES.md#inbound-2026-09-05b)). -/
+example :
+    (certifyDateTimeInputField (declaration (kind := .date))).toOption.isSome =
+        true ∧
+      (certifyDateTimeInputField (declaration (kind := .time))).toOption.isSome =
+        true := by
   native_decide
 
 /- **Internal, not measured.** The same wall label resolves to different instants under two model zones,

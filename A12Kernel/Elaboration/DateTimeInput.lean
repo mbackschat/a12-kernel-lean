@@ -45,7 +45,6 @@ structure CheckedDateTimeInputField where
   format : DateTimeTargetFormat
   fieldOwned : declaration.toTemporalField? = some field
   policyOwned : declaration.toTemporalTargetPolicy? = some policy
-  kindOwned : field.kind = .dateTime
   formatOwned : DateTimeTargetFormat.ofSource? policy.format = some format
 
 /-- Certify one bounded DateTime input declaration without imposing an addressing shape. -/
@@ -54,24 +53,20 @@ def certifyDateTimeInputField (declaration : FlatFieldDecl) :
   match hField : declaration.toTemporalField? with
   | none => .error (.notDateTime declaration.path declaration.policy.kind)
   | some field =>
-      if hKind : field.kind = .dateTime then
-        match hPolicy : declaration.toTemporalTargetPolicy? with
-        | none => .error (.policyUnavailable declaration.path)
-        | some policy =>
-            match hFormat : DateTimeTargetFormat.ofSource? policy.format with
-            | none =>
-                .error (.unsupportedFormat declaration.path policy.format)
-            | some format => .ok {
-                declaration
-                field
-                policy
-                format
-                fieldOwned := hField
-                policyOwned := hPolicy
-                kindOwned := hKind
-                formatOwned := hFormat }
-      else
-        .error (.notDateTime declaration.path declaration.policy.kind)
+      match hPolicy : declaration.toTemporalTargetPolicy? with
+      | none => .error (.policyUnavailable declaration.path)
+      | some policy =>
+          match hFormat : DateTimeTargetFormat.ofSource? policy.format with
+          | none =>
+              .error (.unsupportedFormat declaration.path policy.format)
+          | some format => .ok {
+              declaration
+              field
+              policy
+              format
+              fieldOwned := hField
+              policyOwned := hPolicy
+              formatOwned := hFormat }
 
 /-- The date half of the one DateTime storage format. Its spelling is the dashed full-Date format, so
 the component parser and calendar-reality test are that classifier's rather than a second copy. -/

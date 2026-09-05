@@ -71,14 +71,42 @@ example :
         (fun checked => (checked.checkStored .empty).rawPresent)) = some false := by
   native_decide
 
-/- Certification is refused for a declaration this classifier does not own, and both refusals are
-**reachable** rather than defensive: the model gate checks a temporal format against a kind-independent
-vocabulary, so a Time field may legally declare a date format and a Date field may legally declare the
-clock format. Neither is silently read as a clock here. -/
+/- Certification is decided by the declared **format** and refuses only what that format does not
+name. The refusal is reachable rather than defensive: the model gate checks a temporal format against
+a kind-independent vocabulary, so a Time field may legally declare a date format, and such a
+declaration belongs to the date classifier rather than to this one. -/
 example :
     (certifyTimeInputField (declaration (format := "yyyy-MM-dd"))).toOption = none ∧
-      (certifyTimeInputField (declaration (kind := .date))).toOption = none ∧
       (certifyTimeInputField (declaration)).toOption.isSome = true := by
+  native_decide
+
+/- **The declared kind is not read**, and every kind that may carry the clock format is certified by
+it. This row read `none` for the two cross-kind declarations until the kind conjunct was removed, and
+that refusal was the divergence: the Kernel classifies such a cell's text exactly as it classifies a
+TIME field's, over the complete twelve-format vocabulary on all three date-bearing kinds
+([inbound](../../docs/SOURCES.md#inbound-2026-09-05b)). A conjunct here left the cell classified by
+**no** classifier at all, so its text could not be classified rather than being classified wrongly. -/
+example :
+    (certifyTimeInputField (declaration (kind := .date))).toOption.isSome = true ∧
+      (certifyTimeInputField (declaration (kind := .dateTime))).toOption.isSome =
+        true := by
+  native_decide
+
+/- And they classify **identically**, which is the claim rather than mere admission: one ordinary
+value, one out-of-range component, and empty, read back through all three kinds. Admission alone
+would leave a classifier free to decode a DATE-declared clock differently. -/
+example :
+    let byKind (kind : TemporalKind) (text : String) : Option Outcome := do
+      let checked ← (certifyTimeInputField (declaration (kind := kind))).toOption
+      let cell := checked.checkStored (.parsed text)
+      pure <|
+        match cell.parsed, cell.findings with
+        | some clock, _ => .clock clock.hour clock.minute clock.second
+        | none, cause :: _ => .rejected cause
+        | none, [] => if cell.rawPresent then .presentEmpty else .absent
+    ["14:30:00", "25:00:00", ""].all fun text =>
+      byKind .date text == byKind .time text &&
+        byKind .dateTime text == byKind .time text := by
   native_decide
 
 /- The phase read is where one formal invalidity becomes two consumer-visible states, which is the

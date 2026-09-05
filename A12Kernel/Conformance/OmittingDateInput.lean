@@ -56,9 +56,46 @@ private def classifyUnder? (baseYear : Option Int) (format text : String) :
           | .full date => intervalOf date date
           | .omittedYear => .unowned
 
+/-- The same classification under an explicit declared **kind**, so the cross-kind rows below vary the
+one thing they are about. -/
+private def classifyAsKind (kind : TemporalKind) (format text : String) :
+    Outcome :=
+  match certifyOmittingDateInputField
+      { declaration format with
+          policy := { kind := .temporal kind TemporalComponents.fullDate } } with
+  | .error _ => .unowned
+  | .ok checked =>
+      match checked.classifyStoredForModel none text with
+      | .presentEmpty => .presentEmpty
+      | .rejected cause => .rejected cause
+      | .admitted (.yearless value) => .yearless value.month value.day
+      | .admitted (.yearBearing value) =>
+          match value with
+          | .omittedMonth date =>
+              intervalOf (date.resolve .firstDay) (date.resolve .lastDay)
+          | .omittedDay date =>
+              intervalOf (date.resolve .firstDay) (date.resolve .lastDay)
+          | .full date => intervalOf date date
+          | .omittedYear => .unowned
+
 /-- The established no-Base-Year reading, which every row below this line keeps. -/
 private def classify? (format text : String) : Outcome :=
   classifyUnder? none format text
+
+/- **The declared kind is not read, and the three kinds classify identically.** A component-omitting
+format is in the same kind-independent vocabulary as a complete one, so a TIME or DATE_TIME field may
+legally declare `yyyy-MM` or `MM-dd`, and the Kernel classifies its stored text exactly as it
+classifies a DATE field's ([inbound](../../docs/SOURCES.md#inbound-2026-09-05b)). A kind conjunct here
+refused certification, which left such a cell classified by **no** classifier at all. The values are
+one admitted per family and one refusal, so admission alone does not carry the row. -/
+example :
+    let byKind (kind : TemporalKind) :=
+      [("yyyy-MM", "2020-06"), ("MM-dd", "02-29"), ("MM-dd", "04-31"),
+       ("yyyy-MM", "202006")].map fun pair =>
+        classifyAsKind kind pair.1 pair.2
+    byKind .time = byKind .date ∧ byKind .dateTime = byKind .date ∧
+      classifyAsKind .time "yyyy-MM" "2020-06" ≠ .unowned := by
+  native_decide
 
 /- The three canonical spellings are admitted and denote their exact intervals: a year spans January 1
 to December 31, and a year-month spans the first to the leap-aware last day of that month. -/

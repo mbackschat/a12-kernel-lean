@@ -111,6 +111,40 @@ example :
 example : classifyResult? (dateField "yyyy-MM-dd") "Europe/Paris" "2024-01-01" =
     some (.inl (.unsupportedZone "Europe/Paris")) := by native_decide
 
+/- **The declared kind is not read, and the three kinds classify identically.** A TIME or DATE_TIME
+field may legally declare `yyyy-MM-dd`, and the Kernel then classifies its stored text exactly as it
+classifies a DATE field's, over the complete twelve-format vocabulary on all three date-bearing kinds
+([inbound](../../docs/SOURCES.md#inbound-2026-09-05b)). A kind conjunct here refused certification
+outright, so such a cell was classified by **no** classifier at all and its text could not be
+classified rather than being classified wrongly. Admission alone would not settle it: the four values
+are the ones that separate this classifier's causes — an unreal component, the calendar floor, an
+unreal year, and one ordinary date. -/
+example :
+    let byKind (kind : TemporalKind) :=
+      ["2024-02-31", "1583-10-15", "0000-06-15", "2024-06-15"].map fun text =>
+        classifyResult?
+          { dateField "yyyy-MM-dd" with
+              policy := { kind := .temporal kind TemporalComponents.fullDate } }
+          "UTC" text
+    byKind .time = byKind .date ∧ byKind .dateTime = byKind .date ∧
+      (certifyFullDateInputField
+        { dateField "yyyy-MM-dd" with
+            policy :=
+              { kind := .temporal .time TemporalComponents.fullDate } }).toOption.isSome =
+        true := by
+  native_decide
+
+/- An unreal **component** is settled before position in time: year zero reports the format cause
+while year one reports the date cause, on the same declaration. The ordering is what a floor check
+placed first would get wrong, and it is orthogonal to the kind/format split above — the rows are
+here so the widening cannot be read as having established it. -/
+example :
+    classifyResult? (dateField "yyyy-MM-dd") "UTC" "0000-06-15" =
+        some (.inr (.rejected .dateFormat)) ∧
+      classifyResult? (dateField "yyyy-MM-dd") "UTC" "0001-06-15" =
+        some (.inr (.rejected .dateInvalid)) := by
+  native_decide
+
 /- The compact spelling is a stored-input capability only. Target rendering stays on its separately
 measured vocabulary rather than inheriting a declaration admission that did not observe computation. -/
 example : FullDateTargetFormat.ofSource? "yyyyMMdd" = none := by native_decide
