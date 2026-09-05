@@ -1,0 +1,57 @@
+[
+ {
+  "id": "T1-field-exponent-suppressed",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-T1.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "T2-field-exponent-unsuppressed",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-T2.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "T3-aggregate-exponent-suppressed",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-T3.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "T4-division-suppressed",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-T4.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ },
+ {
+  "id": "T5-control-literal-exponent",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-T5.json",
+   "--dry-run",
+   "--model",
+   "Scope_DM.json"
+  ]
+ }
+]

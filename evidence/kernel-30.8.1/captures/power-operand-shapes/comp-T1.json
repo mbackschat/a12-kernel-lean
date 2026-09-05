@@ -1,0 +1,18 @@
+{
+ "computedField": "/Rep/Agg",
+ "group": "/Rep",
+ "alternatives": [
+  {
+   "operation": "[/Rep/RootNum] ^ [/Rep/RootNum]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "T1"
+  }
+ ],
+ "errorCodesToSuppress": [
+  "MVK_INVALID_COMPARE_DEC_PLACES"
+ ]
+}
