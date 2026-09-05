@@ -551,10 +551,11 @@ example :
    Projecting `MVK_STRING_ENUM_AND_NON_STRING_ENUM` from here would be that overload's class read off
    this one. -/
 
-/- **The kind domain precedes homogeneity.** Boolean and Confirm are outside the operator's admitted
-   kinds entirely — string, enumeration, number, and date/time — so they draw the domain code from
-   either position rather than the positional homogeneity code. The two later-operand rows are what
-   separate the rules: a String later draws the Number code, a Boolean later does not.
+/- **The kind domain is a first-operand class, and these rows are what keep it from becoming a
+   property of the kind.** A Boolean leading draws the domain code; the same Boolean *after* a Number
+   draws the ordinary Number homogeneity code, because once an admissible operand leads it is merely
+   a non-member ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). Reading
+   the domain code off the kind alone is a defect this file has already carried once.
 
    The first-position row needs **two** flags rather than one, and that is the arity gate rather than
    a quirk of this fixture: a single fixed field is refused `MVK_PARAMSIZE_INVALIDN` before any kind
@@ -566,10 +567,10 @@ example :
       some .onlyStringEnumNumberCmpDateAllowed ∧
     aggregateDiagnostic? .distinctCount
         [field ["Probe", "A"] "AVal", field ["Probe", "Flags"] "Agreed"] =
-      some .onlyStringEnumNumberCmpDateAllowed ∧
+      some .numberAndNonNumber ∧
     aggregateDiagnostic? .distinctCount
         [field ["Probe", "A"] "AVal", field ["Probe", "Flags"] "Signed"] =
-      some .onlyStringEnumNumberCmpDateAllowed := by
+      some .numberAndNonNumber := by
   native_decide
 
 /- The sibling carriers are unmoved, which is what keeps the rows above from being a change to the

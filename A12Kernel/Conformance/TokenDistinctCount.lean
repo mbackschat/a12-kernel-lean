@@ -343,10 +343,12 @@ example :
       some .stringEnumAndNonStringEnum := by
   native_decide
 
-/- **The kind domain is checked before homogeneity, so Boolean and Confirm draw the domain code from
-   either position.** The contrast with the rows above is the whole point: a Number *later* draws the
-   homogeneity code, a Boolean later does not, because it was never a candidate member of any family
-   this operator admits. -/
+/- **The kind domain is a first-operand class, not a property of the kind.** A Boolean leading draws
+   the domain code; the same Boolean in a later position draws the leading family's homogeneity code
+   instead, because once an admissible operand leads, a Boolean is merely a non-member of its family
+   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). The three rows are
+   the same two declarations in two orders plus a Confirm control, which is what makes the claim
+   positional rather than a statement about Boolean. -/
 example :
     (checkedErrorOf (source (.field (directPath "Agreed"))
       [.field (directPath "Code")])).bind
@@ -355,20 +357,20 @@ example :
     (checkedErrorOf (source (.field (directPath "Code"))
       [.field (directPath "Agreed")])).bind
         TokenDistinctCountElabError.diagnostic? =
-      some .onlyStringEnumNumberCmpDateAllowed ∧
+      some .stringEnumAndNonStringEnum ∧
     (checkedErrorOf (source (.field (directPath "Code"))
       [.field (directPath "Signed")])).bind
         TokenDistinctCountElabError.diagnostic? =
-      some .onlyStringEnumNumberCmpDateAllowed := by
+      some .stringEnumAndNonStringEnum := by
   native_decide
 
-/- The domain code wins over homogeneity when both are available, which fixes their order rather than
-   leaving it to whichever check happens to run first. -/
+/- Two different offenders after an admissible first still report the **leading** family's class, so
+   nothing about which offender came first leaks into the code. -/
 example :
     (checkedErrorOf (source (.field (directPath "Code"))
       [.field (directPath "Amount"), .field (directPath "Agreed")])).bind
         TokenDistinctCountElabError.diagnostic? =
-      some .onlyStringEnumNumberCmpDateAllowed := by
+      some .stringEnumAndNonStringEnum := by
   native_decide
 
 /- The result scale is exactly integral 0. -/

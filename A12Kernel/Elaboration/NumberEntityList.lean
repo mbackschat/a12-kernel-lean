@@ -276,11 +276,12 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
       | .minimum | .maximum =>
           if extremaRefuseKind actual then some .notSortable else none
       -- A first operand that is not Number-valued means this list was never the Number family's, so
-      -- the Kernel routes it to another overload rather than refusing — except for the two kinds it
-      -- refuses under *every* overload. The distinct count's kind domain is string, enumeration,
-      -- number, and date/time, so a Boolean or Confirm first operand is refused outright
-      -- ([checkpoint](../../docs/SOURCES.md#src-distinct-count-operand-domain)). `Sum`'s own domain
-      -- is unmeasured, so it still projects nothing here.
+      -- the Kernel routes it to another overload rather than refusing — except for the two kinds no
+      -- overload leads with. The distinct count's kind domain is string, enumeration, number, and
+      -- date/time, so a Boolean or Confirm **first** operand is refused outright whatever follows
+      -- it, while the same kind in a later position takes the leading family's homogeneity code
+      -- instead ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)).
+      -- `Sum`'s own domain is unmeasured, so it still projects nothing here.
       | .distinctCount =>
           match actual with
           | .boolean | .confirm => some .onlyStringEnumNumberCmpDateAllowed
@@ -297,12 +298,12 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
       -- class is available here and not at `groupExpansionNotNumber`, which carries the expansion's
       -- kinds but not the whole list's first operand.
       --
-      -- Boolean and Confirm keep the kind-domain code even in later position: they are outside the
-      -- operator's domain entirely, so the homogeneity rule never reaches them.
-      | .distinctCount =>
-          match actual with
-          | .boolean | .confirm => some .onlyStringEnumNumberCmpDateAllowed
-          | _ => some .numberAndNonNumber
+      -- The kind that arrived does **not** matter here, and that is measured rather than assumed:
+      -- `(Number, Boolean)` draws this same code, because once an admissible operand leads, a
+      -- Boolean is merely "non-number" and the domain gate no longer applies
+      -- ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). The domain
+      -- code is a **first-operand** class only.
+      | .distinctCount => some .numberAndNonNumber
       -- `Sum` is not keyed by position in anything measured, and this arm exists for the extrema;
       -- giving it a class here would be carried, not observed.
       | .sum => none

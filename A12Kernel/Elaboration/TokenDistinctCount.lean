@@ -62,26 +62,29 @@ private def directSlotDeclaration? :
 /-- Project this operator's positional classes from the authored order, before token certification
     collapses every kind failure into one unpositioned mismatch.
 
-    The domain test runs over **every** slot and the homogeneity test only over later ones, which is
-    the order the Kernel applies them in: a Boolean draws the domain code wherever it sits, while a
-    Number draws a homogeneity code that depends on what preceded it. A first operand that is
-    neither token-family nor outside the domain — a Number — means the list was never this
-    overload's, so nothing is classed and the Number consumer owns it. -/
+    Both tests read the **first** operand, and that is the measured shape rather than a convenience.
+    The domain gate is a first-operand class: a Boolean leading draws it whatever follows, while
+    `(Number, Boolean)` draws the ordinary Number homogeneity code, because once an admissible
+    operand leads a Boolean is merely a non-member of its family
+    ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). So a later slot is
+    only ever tested for membership in the leading family, never re-tested against the domain.
+
+    A first operand that is neither token-family nor outside the domain — a Number — means the list
+    was never this overload's, so nothing is classed and the Number consumer owns it. -/
 private def distinctPositionalError? (operands : List (ResolvedFieldEntityOperand model)) :
     Option TokenDistinctCountElabError :=
   let kinds := operands.filterMap fun operand =>
     (directSlotDeclaration? operand).map fun declaration =>
       (declaration.path, declaration.policy.kind.surfaceKind)
-  match kinds.find? (fun entry => isOutsideDistinctDomain entry.2) with
-  | some (path, actual) => some (.kindOutsideDomain path actual)
-  | none =>
-      match kinds with
-      | (_, firstKind) :: later =>
-          if isTokenFamilyKind firstKind then
-            (later.find? (fun entry => !isTokenFamilyKind entry.2)).map
-              fun (path, actual) => .laterNonToken path actual
-          else none
-      | [] => none
+  match kinds with
+  | (firstPath, firstKind) :: later =>
+      if isOutsideDistinctDomain firstKind then
+        some (.kindOutsideDomain firstPath firstKind)
+      else if isTokenFamilyKind firstKind then
+        (later.find? (fun entry => !isTokenFamilyKind entry.2)).map
+          fun (path, actual) => .laterNonToken path actual
+      else none
+  | [] => none
 
 /-- Resolve the shared shape, class this operator's positional refusals from the authored order, and
     otherwise certify through the common token list unchanged. -/
