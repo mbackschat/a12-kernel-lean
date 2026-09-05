@@ -1,5 +1,17 @@
 # Evaluation and application source checkpoints
 
+<a id="src-custom-validity-operand-refuses-every-kind-with-one-class"></a>
+#### The custom-validity operand gate names its **admitted** set: every refused kind draws `MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM`, measured 2026-09-06
+
+- `revision`: `dmtool` 0.13.0 at a12-dmkits `1f2d4512bd92a28eb82091264de8c701004c1076`, launcher self-reported `clean`, the sibling checkout clean and unchanged before and after, Kernel `30.8.1` built and runtime. Eight `rule check` children in one `batch`, every envelope `KERNEL_CONFIRMED`.
+- `retained-bytes`: `Probe4_DM.json` SHA-256 `6f85d83977facea4511f04cb5e04d3149d5f129e294ad5c6150a07f1ec0bbd2e`; ops `e47b9fe13a22eea19c301a70333e892d6ea35bd316d2d4f7762da8a8eecea167`; results `f81c39c1ca2cd91256e59663b498f3bdf76730db0450228123534b4c3774f581`.
+- `question`: `CustomFieldValidity` carried an arm named `unmeasuredKind`, held deliberately separate from `inadmissibleKind` because only the latter had an established class. Four kinds sat behind it — DATE, TIME, DATE_TIME and DATE_RANGE. Another [`LF152`](../LEAN-FINDINGS.md) instance found by sweeping arms that project nothing.
+- `claim`: **all four draw `MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM`**, the same class the already-measured Number and Boolean operands draw. The gate names its admitted set and does not partition the refused kinds, so the separate arm had no remaining content and folds.
+- `the-control-that-makes-it-a-gate`: an **Enumeration** operand is not refused here at all — it passes the kind gate and is stopped by a later one, reporting `MVK_ERROR_FIELD_NOT_REFERENCED` because the probe rule's error field is unreferenced in that row. Without it, seven refusals would be equally well explained by the operator refusing everything, and the admitted set the message names would be untested.
+- `contrast-worth-keeping`: the Boolean constant's computed-target gate partitions the same kinds into [four classes](#src-boolean-constant-target-kind-partitions-into-four-classes). Two kind gates, measured a few minutes apart, with opposite shapes — which is exactly why neither was read off the other, and why "the kinds behave alike here" is a per-gate measurement rather than a family rule.
+- `limit`: static admission only, one model, `en_US`, one custom type name throughout. The raw-String operand this project also refuses is untouched and remains a representation boundary rather than an observed Kernel gate.
+- `sync`: none. The class corrects this project's own under-projection; no `spec/` clause named it.
+
 <a id="src-temporal-declaration-without-a-format"></a>
 #### A temporal field may declare **no** format, and the Kernel resolves the default from its declared kind, measured 2026-09-06
 

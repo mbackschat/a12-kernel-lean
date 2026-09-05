@@ -474,6 +474,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-name-position-index-terminal"></a>
 - [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
 
+<a id="src-custom-validity-operand-refuses-every-kind-with-one-class"></a>
+- [The custom-validity operand gate names its admitted set: every refused kind draws one class, where the Boolean constant's target gate partitions four ways](sources/evaluation-and-application-routes.md#src-custom-validity-operand-refuses-every-kind-with-one-class)
 <a id="src-temporal-declaration-without-a-format"></a>
 - [A temporal field may declare no format, and the Kernel resolves the default from its declared kind](sources/evaluation-and-application-routes.md#src-temporal-declaration-without-a-format)
 <a id="src-boolean-constant-target-kind-partitions-into-four-classes"></a>

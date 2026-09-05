@@ -1,0 +1,10 @@
+[
+ {"id":"1-control-plain-string-operand","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","Valid(SkuText, \"PostalCode\")","--code","V1"]},
+ {"id":"2-number-operand-measured-class","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","Valid(Amount, \"PostalCode\")","--code","V2"]},
+ {"id":"3-date-operand","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","Valid(FiledOn, \"PostalCode\")","--code","V3"]},
+ {"id":"4-time-operand","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","Valid(Clock, \"PostalCode\")","--code","V4"]},
+ {"id":"5-datetime-operand","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","Valid(Stamp, \"PostalCode\")","--code","V5"]},
+ {"id":"6-daterange-operand","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","Valid(Span, \"PostalCode\")","--code","V6"]},
+ {"id":"7-boolean-operand-measured-class","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","Valid(Flag, \"PostalCode\")","--code","V7"]},
+ {"id":"8-enumeration-operand","verb":"rule","args":["check","--field","/Probe4/SkuText","--condition","Valid(Choice, \"PostalCode\")","--code","V8"]}
+]

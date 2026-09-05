@@ -1,0 +1,209 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "dispatched 8 ops; 7 of 8 exited nonzero (0 failed, 7 reported a negative verdict or comparison) — earlier writes were not rolled back",
+  "data" : {
+    "ops" : 8,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "1-control-plain-string-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "Valid(SkuText, \"PostalCode\")", "--code", "V1" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate is kernel-valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "2-number-operand-measured-class",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "Valid(Amount, \"PostalCode\")", "--code", "V2" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "3-date-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "Valid(FiledOn, \"PostalCode\")", "--code", "V3" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "4-time-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "Valid(Clock, \"PostalCode\")", "--code", "V4" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "5-datetime-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "Valid(Stamp, \"PostalCode\")", "--code", "V5" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "6-daterange-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "Valid(Span, \"PostalCode\")", "--code", "V6" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "7-boolean-operand-measured-class",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "Valid(Flag, \"PostalCode\")", "--code", "V7" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM",
+          "summary" : "Rule with path '/Probe4/CheckRule': At 'Valid': it is only allowed to use string, enumerations and extensible enumerations. [MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          }
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "8-enumeration-operand",
+      "verb" : "rule",
+      "args" : [ "check", "--field", "/Probe4/SkuText", "--condition", "Valid(Choice, \"PostalCode\")", "--code", "V8" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "rule",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "candidate has 1 finding(s)",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_ERROR_FIELD_NOT_REFERENCED",
+          "summary" : "Rule with path '/Probe4/CheckRule': The error field '/Probe4/SkuText' is not referenced in the condition. [MVK_ERROR_FIELD_NOT_REFERENCED]",
+          "where" : {
+            "rule" : "/Probe4/CheckRule"
+          },
+          "fix" : "Name the rule's error field somewhere in the condition. Most often this is a model-level aggregate rule whose condition only references the aggregated per-row path — reference the error field by comparing the aggregate AGAINST it (`[FeeCap] < Sum(Lines*/Amount)` references FeeCap) or by guarding with `FieldFilled(<the error field>) And …`.",
+          "explain" : "Every rule's error field must appear among the fields its condition references — the kernel attaches the fired error to that field and rejects a condition that never names it. An aggregate's starred path does not reference the (non-repeatable) error field, so model-level aggregate rules hit this unless the error field is referenced explicitly."
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

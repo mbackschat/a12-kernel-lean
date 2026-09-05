@@ -27,14 +27,12 @@ namespace A12Kernel
 
 /-- Static refusal of the value-validation operand slot.
 
-    `unmeasuredKind` is deliberately separate from `inadmissibleKind` rather than folded into it: both are refusals, but only the second has a Kernel class established for it, and merging them would let an unmeasured kind report a code this project never observed. -/
+    A separate `unmeasuredKind` arm stood here while only some refused kinds had an established class. Every refused kind is now measured onto the **same** class, so the split had no remaining content and folding it removes a distinction the Kernel does not draw. -/
 inductive CustomFieldValidityOperandElabError where
   /-- A declared kind the Kernel is measured to refuse at this slot: Number, Boolean, Confirm. -/
   | inadmissibleKind (source : FieldId) (actual : SurfaceScalarKind)
   /-- A String declaration carrying a registered custom type. Refused, and measured. -/
   | customDeclaredOperand (source : FieldId)
-  /-- A declared kind outside the admitted set whose refusal class was never observed here: the temporal kinds and DateRange. Refused on the strength of the Kernel's own admitted-set text, with no class claimed. -/
-  | unmeasuredKind (source : FieldId) (actual : SurfaceScalarKind)
   /-- A raw String, which exposes no evaluation value and so could not reach a validator. A representation limit of this theory, not an observed Kernel gate; see the module note on the spec's *value-validation* qualifier. -/
   | rawStringOperand (source : FieldId)
   | resolve (error : ResolveError)
@@ -68,18 +66,18 @@ def elaborateCustomFieldValidityOperand (model : FlatModel) (source : FieldId) :
             throw (.rawStringOperand source)
           else
             pure { source, declaration, admitted := hDecl }
-      | .number | .boolean | .confirm =>
+      -- Every kind outside the admitted set draws one class, the temporal families and DATE_RANGE
+      -- included, so this gate names the admitted set rather than partitioning the refused ones
+      -- ([checkpoint](../../docs/SOURCES.md#src-custom-validity-operand-refuses-every-kind-with-one-class)).
+      | .number | .boolean | .confirm | .temporal _ | .dateRange =>
           throw (.inadmissibleKind source declaration.policy.kind.surfaceKind)
-      | .temporal _ | .dateRange =>
-          throw (.unmeasuredKind source declaration.policy.kind.surfaceKind)
 
 namespace CustomFieldValidityOperandElabError
 
-/-- Project only the classes measured at this slot. The unmeasured kinds and this theory's own raw-String limit claim none, which is this vocabulary's honest state for an unestablished mapping. -/
+/-- Every kind refusal at this slot draws one class. Only this theory's own raw-String limit claims none, because it is a representation boundary rather than an observed Kernel gate. -/
 def diagnostic? : CustomFieldValidityOperandElabError → Option KernelStaticDiagnostic
   | .inadmissibleKind _ _ => some .noStringOrEnumOrExtEnum
   | .customDeclaredOperand _ => some .noStringOrEnumOrExtEnum
-  | .unmeasuredKind _ _ => none
   | .rawStringOperand _ => none
   | .resolve error => error.diagnostic?
 

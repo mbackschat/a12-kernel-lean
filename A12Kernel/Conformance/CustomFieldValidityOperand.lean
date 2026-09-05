@@ -89,15 +89,24 @@ example : admitted 6 = false := by native_decide
 
 example : admission? 6 = some .noStringOrEnumOrExtEnum := by native_decide
 
-/-! ## Refused with no class claimed
+/-! ## Every refused kind draws the one class
 
-A temporal operand lies outside the admitted set the Kernel's own text names, so it is refused —
-but no row observed *which* class it draws, and this vocabulary reports `none` for an unestablished
-mapping rather than the plausible neighbouring code. -/
+A temporal operand lies outside the admitted set the Kernel's own text names, and it draws exactly
+the class the Number and Boolean rows above do. All four kinds this module had left unmeasured —
+DATE, TIME, DATE_TIME and DATE_RANGE — landed on it together
+([checkpoint](../../docs/SOURCES.md#src-custom-validity-operand-refuses-every-kind-with-one-class)),
+so the gate names the admitted set rather than partitioning the refused ones. That is the opposite
+of the Boolean constant's target gate, which partitions four ways, and the reason neither was read
+off the other. -/
 
 example : admitted 7 = false := by native_decide
 
-example : admission? 7 = none := by native_decide
+example : admission? 7 = some .noStringOrEnumOrExtEnum := by native_decide
+
+/- The Enumeration control is what stops "everything is refused" from explaining the table: an
+   Enumeration operand passes this gate and is stopped by a *later* one, so the kind gate really does
+   admit the set its message names. -/
+example : admitted 2 = true := by native_decide
 
 /- A **raw** String is refused by this theory rather than by an observed Kernel gate: it exposes no
    evaluation value, so no observation could reach a validator. It is also the nearest
