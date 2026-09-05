@@ -60,6 +60,8 @@ inductive KernelStaticDiagnostic where
   | noStringOrEnumOrExtEnum
   /-- Two temporal operands of one extremum expose different date/time **component sets**, the message naming both declared formats. The gate reads the component set and not the format spelling, so two identical sets under different spellings cross it freely; a declared Base Year supplies a missing year to one side before the comparison. -/
   | dateFormatsNotCompatible
+  /-- An operand list whose **first** member is temporal carries a later member that is not. The Kernel's own text states the rule positionally — "if the first parameter is a date than all parameters have to be dates" — so this is the mirror of `notSortable` rather than a second spelling of it: the same two operands in the other order draw that code instead. Measured on the extrema and on the distinct count, which share the mechanism. -/
+  | dateAndNonDate
   /-- A group path names no group in the model, or a key path names no field. Retained because it separates an unknown operand from every overlap class. -/
   | invalidEntity
   /-- A root group appears under a group-list operator that forbids every root operand. -/
@@ -158,6 +160,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .noGroupsAllowed => "MVK_NO_GROUPS_ALLOWED"
   | .noStringOrEnumOrExtEnum => "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM"
   | .dateFormatsNotCompatible => "MVK_DATEFORMATS_NOT_COMPATIBLE"
+  | .dateAndNonDate => "MVK_DATE_AND_NONDATE"
   | .invalidEntity => "MVK_INVALID_ENTITY"
   | .rootGroupReferenced => "MVK_ROOT_GROUP_REFERENCED"
   | .rootGroupWithOtherParameters =>
@@ -206,6 +209,7 @@ def all : List KernelStaticDiagnostic :=
     .wildcardAtLowestLevelRequired, .repeatableLevelRequired,
     .invalidWildcard, .noWildcardsGAllowed, .noWildcardsAllowed,
     .noGroupsAllowed, .noStringOrEnumOrExtEnum, .dateFormatsNotCompatible,
+    .dateAndNonDate,
     .invalidEntity, .rootGroupReferenced, .rootGroupWithOtherParameters,
     .repeatableGroupMissing, .negativeConditionInIteration,
     .errorFieldNotReferenced,

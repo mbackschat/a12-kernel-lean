@@ -44,7 +44,13 @@ private def declarations : List FlatFieldDecl :=
     temporal 10 "MonthOnly" .date (dateParts false true false) "MM",
     temporal 11 "MonthDay" .date (dateParts false true true) "MM-dd",
     { id := 12, groupPath := ["Probe"], name := "Text",
-      policy := { kind := .string } }]
+      policy := { kind := .string } },
+    { id := 13, groupPath := ["Probe"], name := "Amount",
+      policy := { kind := .number { scale := 0, signed := false } } },
+    -- Boolean stands for the four kinds unmeasured at this gate; the point of the row is the
+    -- absent class, so any one of them serves and a second adds nothing.
+    { id := 14, groupPath := ["Probe"], name := "Flag",
+      policy := { kind := .boolean } }]
 
 /-- Two group slots whose expansions differ in exactly the thing under test. -/
 private def groupDeclarations : List FlatFieldDecl :=
@@ -198,14 +204,41 @@ example : groupAdmitted plainModel
 example : groupRefusal? plainModel [operandOf 1] = some .paramSizeInvalidN := by
   native_decide
 
-/-! ## Outside this family, with nothing claimed
+/-! ## The family gate, which is positional
 
-A String operand is refused here because this list is temporal, not because the Kernel was observed
-refusing it at this position — the extrema admit Number operands, which the Number entity list owns.
-The arm therefore projects no class. -/
+The first operand chooses the family, so the *same pair* draws different codes in the two orders.
+Temporal first with a non-temporal after it is the Kernel's own `MVK_DATE_AND_NONDATE`; non-temporal
+first means the list was never this family's, and the Number entity list draws `MVK_NOT_SORTABLE`
+there — so this module claims nothing in that order. Both orders of both pairs are locked, because
+one order alone leaves a kind-keyed account standing, which is what this module carried until the
+gate was measured. -/
 
+private def number : FieldId := 13
+
+example : refusal? plainModel [1, 12] = some .dateAndNonDate := by native_decide
+
+example : refusal? plainModel [1, number] = some .dateAndNonDate := by native_decide
+
+/- Reversed, and the class disappears rather than changing: a non-temporal first operand is the
+   Number list's business, and this list reporting a code there would be the false-class defect. -/
+example : refusal? plainModel [12, 1] = none := by native_decide
+
+example : refusal? plainModel [number, 1] = none := by native_decide
+
+/- Neither order is admitted; only the reported class differs. -/
 example : admitted plainModel [1, 12] = false := by native_decide
 
-example : refusal? plainModel [1, 12] = none := by native_decide
+example : admitted plainModel [12, 1] = false := by native_decide
+
+/- Position and not arity: the offending operand is third here and still draws the later-operand
+   class, so "later" means "not first" rather than "second". -/
+example : refusal? plainModel [1, 2, 12] = some .dateAndNonDate := by native_decide
+
+/- An unmeasured later kind is refused with **no** class. The four kinds outside this pair were not
+   observed at this position, and the Kernel's generalizing wording is its message text rather than
+   a row. -/
+example : refusal? plainModel [1, 14] = none := by native_decide
+
+example : admitted plainModel [1, 14] = false := by native_decide
 
 end A12Kernel.Conformance.TemporalExtremumOperands

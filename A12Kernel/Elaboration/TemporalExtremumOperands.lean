@@ -17,6 +17,14 @@ that genuinely differ are refused. The sibling `FieldValuesNotUnique` carrier is
 really is the declared format **string**, and reading its rule onto the extrema rejects legal
 models — the two are measured to differ, so neither is derived from the other.
 
+**The family itself is chosen by the first operand, and that makes position semantic.** If the first
+operand is temporal every later one must be too, and a Number or String there draws
+`MVK_DATE_AND_NONDATE`; if the first is not temporal the list is the Number family's and its own
+refusal, `MVK_NOT_SORTABLE`, is what the Kernel reports. So the *same two operands* in the other
+order draw a different code, and an arm that keyed on the offending kind alone would be right in one
+order and wrong in the other. The distinct count was already measured to select its class the same
+way, so this is one mechanism across the entity-list operators rather than a rule of the extrema.
+
 A declared **Base Year** supplies a missing year to a yearless operand before the comparison, which
 is why `TemporalComponents.withBaseYear` is applied to both sides rather than tested as a special
 case: a yearless `MM` then equals `yyyy-MM`, `MM-dd` equals a complete date, and both still differ
@@ -40,8 +48,10 @@ inductive TemporalExtremumOperandElabError where
   /-- Two operands' component sets differ after the Base Year is supplied to both. -/
   | incompatibleComponents (path : List String)
       (found expected : TemporalComponents)
-  /-- A non-temporal operand. **No class is claimed**: the extrema admit Number, whose operands the Number entity list owns, so this arm means "not this family" and not "the Kernel refuses it". A String operand is separately measured to draw `MVK_NOT_SORTABLE`, but that verdict belongs to the kind gate rather than to this list. -/
-  | notTemporal (path : List String) (actual : SurfaceScalarKind)
+  /-- The list's **first** operand is not temporal, so it is not this family's list at all. **No class is claimed**: the extrema admit Number, whose operands the Number entity list owns, and that list draws its own code. -/
+  | firstNotTemporal (path : List String) (actual : SurfaceScalarKind)
+  /-- A **later** operand is not temporal after a temporal first one. This is the Kernel's own refusal, `MVK_DATE_AND_NONDATE`, and its text states the positional rule outright. -/
+  | laterNotTemporal (path : List String) (actual : SurfaceScalarKind)
   /-- A group slot whose subtree declares no field, so no component set exists to agree on. -/
   | groupExpansionEmpty (path : List String)
   /-- A filtered star or a starred-group presence slot. Neither is refused by the Kernel; this capsule performs no filter elaboration, so it declines rather than admit one unchecked. -/
@@ -89,11 +99,19 @@ private def operandDeclarations (model : FlatModel) :
   | .starHaving source _ => throw (.unsupportedOperandForm source.declaration.path)
   | .starredGroupPresence source => throw (.unsupportedOperandForm source.groupPath)
 
-private def liftedComponentsOf (model : FlatModel) (declaration : FlatFieldDecl) :
+/-- The lifted component set of one declaration, or the refusal its **position** earns. The two
+    positions draw different Kernel codes and the caller alone knows which it is holding, so the
+    position is a parameter here rather than a second function. -/
+private def liftedComponentsOf (model : FlatModel) (isFirst : Bool)
+    (declaration : FlatFieldDecl) :
     Except TemporalExtremumOperandElabError TemporalComponents :=
   match componentsOf? declaration with
   | none =>
-      throw (.notTemporal declaration.path declaration.policy.kind.surfaceKind)
+      let kind := declaration.policy.kind.surfaceKind
+      if isFirst then
+        throw (.firstNotTemporal declaration.path kind)
+      else
+        throw (.laterNotTemporal declaration.path kind)
   | some components =>
       pure (components.withBaseYear model.baseYear.isSome)
 
@@ -101,7 +119,7 @@ private def certifyAgainst (model : FlatModel) (expected : TemporalComponents) :
     List FlatFieldDecl → Except TemporalExtremumOperandElabError Unit
   | [] => pure ()
   | declaration :: rest => do
-      let lifted ← liftedComponentsOf model declaration
+      let lifted ← liftedComponentsOf model false declaration
       if lifted == expected then
         certifyAgainst model expected rest
       else
@@ -126,7 +144,7 @@ def elaborate (model : FlatModel) (declaringGroup : GroupPath)
   match declarations with
   | [] => throw (.groupExpansionEmpty [])
   | first :: rest =>
-      let expected ← liftedComponentsOf model first
+      let expected ← liftedComponentsOf model true first
       certifyAgainst model expected rest
       pure { shape, components := expected }
 
@@ -134,10 +152,16 @@ end TemporalExtremumOperands
 
 namespace TemporalExtremumOperandElabError
 
-/-- Only the component-set refusal has an established class. The non-temporal arm is this family's own boundary rather than a Kernel gate, and an empty list is unauthorable rather than refused, so both project none. -/
+/-- Two refusals carry a Kernel class, and they are told apart by operand **position** rather than by kind. A first non-temporal operand means the authored list is the Number family's, whose own list draws `MVK_NOT_SORTABLE`, so this arm claims nothing. An empty expansion is unauthorable rather than refused. -/
 def diagnostic? : TemporalExtremumOperandElabError → Option KernelStaticDiagnostic
   | .incompatibleComponents _ _ _ => some .dateFormatsNotCompatible
-  | .notTemporal _ _ => none
+  | .firstNotTemporal _ _ => none
+  -- Measured for a Number and for a String in later position; the remaining four kinds are not,
+  -- and the Kernel's own generalizing text is its wording rather than an observation.
+  | .laterNotTemporal _ actual =>
+      match actual with
+      | .number | .string => some .dateAndNonDate
+      | .temporal _ | .enumeration | .boolean | .confirm | .dateRange => none
   | .groupExpansionEmpty _ => none
   | .unsupportedOperandForm _ => none
   | .shape error => error.diagnostic?

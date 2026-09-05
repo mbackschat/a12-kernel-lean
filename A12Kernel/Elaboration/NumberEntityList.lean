@@ -202,7 +202,10 @@ end CheckedNumberEntitySource
 
 inductive NumberEntityElabError where
   | shape (error : FieldEntityShapeElabError)
+  /-- The list's **first** field operand is not Number-valued. Certification binds the first operand before the rest, so reaching any later arm implies this one passed — which is what lets the later arm read the list's family off its own position instead of carrying it. -/
   | fieldKindMismatch (path : List String) (actual : SurfaceScalarKind)
+  /-- A **later** field operand is not Number-valued. Distinct from the arm above because the extrema's class is positional: here the first operand is already known Number-valued, so the Kernel reports `MVK_NOT_SORTABLE` for a temporal member too, where the same declaration in first position means the list was the temporal family's all along. -/
+  | laterFieldKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | star (error : StarNumberElabError)
   /-- A group slot whose expansion contains a declaration that is not Number-valued, carrying the non-Number kinds it found in expansion order. The Kernel's class here is each operator's own — `MVK_NO_NUMBER` under `Sum`, `MVK_NOT_SORTABLE` under the extrema — so this shared boundary names none. The kinds are retained because the extrema's class depends on *which* non-Number kind arrived and the path alone cannot say. -/
   | groupExpansionNotNumber (path : List String) (kinds : List SurfaceScalarKind)
@@ -215,16 +218,24 @@ inductive NumberEntityElabError where
 
 namespace NumberEntityElabError
 
-/-- Whether the extrema are measured to refuse an operand of this declared kind.
+/-- Whether the extrema are measured to refuse an operand of this declared kind **in first position**.
 
-    The extrema's admitted set is **wider than this family's representable set**: they take Number *or* Date, while every value here is a Number field. A Date operand therefore reaches an error value meaning "this family cannot hold it" and must **not** be reported as a Kernel refusal, because the Kernel admits that model. Reading the family's own limit as `MVK_NOT_SORTABLE` is the defect these arms are written against.
+    The extrema's admitted set is **wider than this family's representable set**: they take Number *or* a temporal kind, while every value here is a Number field. A temporal operand in first position therefore reaches an error value meaning "this family cannot hold it", and must **not** be reported as a Kernel refusal, because the Kernel admits that model and refuses it — if at all — through the temporal list's own gate. Reading the family's own limit as `MVK_NOT_SORTABLE` is the defect these arms are written against.
 
-    Only String is measured refused. Every other non-Number kind answers `false` for one of two different reasons — Date is measured *admitted*, and the rest are simply unmeasured — and both reasons produce no class, which is this vocabulary's honest state for an unestablished mapping. -/
+    A temporal operand in a **later** position is the opposite case and answers `true` through `extremaRefuseLaterKind`: the first operand certified as Number, so the Kernel's own positional rule puts the whole list in the numeric family and refuses the temporal member. Both directions are measured ([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)); the earlier reading that a Date is simply "admitted at this gate" was measured on the temporal list and does not survive the crossing.
+
+    In first position only String is measured refused; Enumeration, Boolean, Confirm, and DateRange are unmeasured and produce no class, which is this vocabulary's honest state for an unestablished mapping. -/
 private def extremaRefuseKind : SurfaceScalarKind → Bool
   | .string => true
   | .number => false
-  -- Date is measured admitted; the other four temporal kinds are unmeasured at this gate.
+  -- A first-position temporal operand is the temporal list's, not a Kernel refusal here.
   | .temporal _ => false
+  | .enumeration | .boolean | .confirm | .dateRange => false
+
+/-- Whether the extrema are measured to refuse an operand of this declared kind **after** a Number one. Temporal joins String here, which is the whole difference from first position. -/
+private def extremaRefuseLaterKind : SurfaceScalarKind → Bool
+  | .string | .temporal _ => true
+  | .number => false
   | .enumeration | .boolean | .confirm | .dateRange => false
 
 /-- The expansion-kind gate is **each operator's own question about the expansion's values**, which is why this projection is keyed by the operator where every gate the shared checker owns is not. One group whose subtree contains a String draws a different class under each of `Sum` and the extrema, and reading one carrier's class off a sibling is precisely the inference the Kernel refutes. The distinct count is stronger still: its class is not a property of the operator alone, so it is projected below rather than claimed.
@@ -264,6 +275,13 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
       match op with
       | .minimum | .maximum =>
           if extremaRefuseKind actual then some .notSortable else none
+      | .sum | .distinctCount => none
+  | .laterFieldKindMismatch _ actual =>
+      match op with
+      | .minimum | .maximum =>
+          if extremaRefuseLaterKind actual then some .notSortable else none
+      -- `Sum` and the distinct count are not keyed by position in anything measured, and this arm
+      -- exists for the extrema; giving either a class here would be carried, not observed.
       | .sum | .distinctCount => none
   | .star _ | .groupExpansionEmpty _ | .groupExpansionMixedSign _
   | .incoherentCore => none
@@ -330,12 +348,21 @@ private def certifyNumberEntityOperand (model : FlatModel)
   | .starredGroupPresence source =>
       certifyNumberEntityGroup model (.starredPresence source)
 
+/-- Re-key a field-kind refusal to its **later**-operand arm. Only the direct field arm moves: a
+    group operand's position carries no measured class change, so relabelling one would assert a
+    rule no row establishes. -/
+private def atLaterOperand :
+    NumberEntityElabError → NumberEntityElabError
+  | .fieldKindMismatch path actual => .laterFieldKindMismatch path actual
+  | error => error
+
 private def certifyNumberEntityOperands (model : FlatModel)
     (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →
       Except NumberEntityElabError (List (CheckedNumberEntityOperand model))
   | [] => pure []
   | operand :: remaining => do
-      pure ((← certifyNumberEntityOperand model declaringGroup operand) ::
+      pure ((← (certifyNumberEntityOperand model declaringGroup operand).mapError
+          atLaterOperand) ::
         (← certifyNumberEntityOperands model declaringGroup remaining))
 
 /-- Certify an already checked entity-list shape as Number-valued without resolving its authored

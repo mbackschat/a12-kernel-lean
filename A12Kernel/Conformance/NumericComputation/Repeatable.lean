@@ -305,7 +305,7 @@ example :
 /- Shared aggregate lowering preserves its diagnostic owner and computation's nested target-reference rejection. -/
 example :
     checkedErrorOf (surfaceAggregate .sum "Source" ["Wrong"]) =
-        some (.aggregate (.fieldKindMismatch ["Root", "Wrong"] .string)) ∧
+        some (.aggregate (.laterFieldKindMismatch ["Root", "Wrong"] .string)) ∧
       checkedErrorOf (surfaceAggregate .sum "Source" ["Target"]) =
         some (.targetSelfReference targetId) := by
   native_decide

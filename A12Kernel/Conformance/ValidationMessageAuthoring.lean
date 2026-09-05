@@ -427,13 +427,14 @@ private def headGroupError? (template : String) :
 together with its ancestors, so containment runs the opposite way from the computation declaring-group
 gate: the *named* group must contain the rule's group. The two keyword shorthands name the endpoints of
 that chain and are admitted here for the same reason, not as separate admissions — but **`RuleGroup`
-additionally carries a placement condition this fragment does not implement**, so that shared reason is
-not the whole rule. Measured on the computation carrier, a declaration sitting directly in the root
-group may not write `$#RuleGroup$` at all, while `$#RootGroup$` and the absolute spelling of that very
-group are both admitted from the same locus
-([checkpoint](../../docs/SOURCES.md#src-rulegroup-shorthand-root-gate)). Whether the validation-rule
-carrier shares that gate is a crossing nobody has measured; the root-locus rows below are this theory's
-account until it is. -/
+additionally carries a placement condition**, so that shared reason is not the whole rule: a rule
+sitting directly in the root group may not write `$#RuleGroup$` at all, while `$#RootGroup$` and the
+absolute spelling of that very group are both admitted from the same locus. The rows here are one
+level down, where all four spellings are admitted; the root-locus rows below are where the shorthand
+parts from the other two. Measured on the computation carrier first
+([checkpoint](../../docs/SOURCES.md#src-rulegroup-shorthand-root-gate)) and then on this one
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-rulegroup-root-gate-on-the-rule-carrier)),
+which is the crossing that closed it. -/
 example :
     headGroupOk? "In $#/Order/Head$" = some true ∧
       headGroupOk? "In $#/Order$" = some true ∧
@@ -491,17 +492,28 @@ example :
           (.invalidEntity (pathAt (.relative 0) [] "RootGroup"))) := by
   native_decide
 
-/- At the root the chain has one member, so all three spellings of that one group coincide **in this
-theory**, and the group below — admitted as the *rule's own* group above — is refused here. Admission
-therefore tracks the rule's position rather than the group's own depth. This is also the exact locus
-where the Kernel is measured to separate the shorthand from the other two on the computation carrier,
-so the first row is the one to revisit when that crossing is measured. -/
+/- At the root the chain has one member, so the three spellings would all denote that one group — and
+the Kernel refuses exactly one of them. A rule sitting directly in the root group may not write the
+`RuleGroup` shorthand, while `RootGroup` and the absolute spelling of that very group are admitted
+from the identical locus
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-rulegroup-root-gate-on-the-rule-carrier)).
+So the gate is on the word, not on the position: the group is nameable there twice over. The group
+below — admitted as the *rule's own* group one row above — is still refused here, so containment
+tracks the rule's position rather than the group's own depth. -/
 example :
-    pathTemplateOk? ["Order"] (bare "Other") "In $#RuleGroup$" = some true ∧
+    pathTemplateError? ["Order"] (bare "Other") "In $#RuleGroup$" =
+        some (.ruleGroupImmediatelyBelowRoot "#RuleGroup") ∧
       pathTemplateOk? ["Order"] (bare "Other") "In $#RootGroup$" = some true ∧
       pathTemplateOk? ["Order"] (bare "Other") "In $#/Order$" = some true ∧
       pathTemplateError? ["Order"] (bare "Other") "In $#/Order/Head$" =
         some (.invalidGroupParameter "#/Order/Head") := by
+  native_decide
+
+/- One level down the same shorthand is admitted, which is what makes the row above a placement gate
+   rather than the shorthand being unsupported. -/
+example :
+    pathTemplateOk? ["Order", "Head"] (bare "Amount") "In $#RuleGroup$" =
+      some true := by
   native_decide
 
 /- The group argument takes the name grammar's **single-quote escape** at any segment, and the quotes
@@ -582,9 +594,11 @@ example : render? "[root=$#/Order$]" = some { text := "[root=1]" } := by
 example : render? "[rtg=$#RootGroup$]" = some { text := "[rtg=1]" } := by
   native_decide
 
-/-- The rule's own group is this model's root, so both endpoints of the ancestor chain coincide and
-    render alike — which is the Kernel's answer for a nonrepeatable host, not a collapse. -/
-example : render? "[rg=$#RuleGroup$]" = some { text := "[rg=1]" } := by
+/-- The rule's own group is this model's root, so the shorthand never reaches rendering at all: the
+    placement gate refuses it during authoring, and this row records that the render route is
+    unreachable from this host rather than that it renders something. A rendered `RuleGroup` needs a
+    rule one level down, which this fixture's nonrepeatable spine does not carry. -/
+example : render? "[rg=$#RuleGroup$]" = none := by
   native_decide
 
 end A12Kernel.Conformance.ValidationMessageAuthoring

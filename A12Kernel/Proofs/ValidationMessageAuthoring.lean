@@ -84,18 +84,34 @@ theorem checkMessageGroup_absolute_admitted
           · cases admitted
         · cases admitted
 
-/-- Both keyword shorthands are admitted whenever the rule's group is a representable path, and each
-resolves to one endpoint of that group's own ancestor chain. They are therefore shorthands inside the
-one containment gate rather than admissions beside it. -/
+/-- The rule-group shorthand resolves to the rule's own group — **once its placement admits it**. The
+extra hypothesis is the whole difference between the two shorthands: `RootGroup` needs only a
+representable path, while `RuleGroup` additionally needs the rule to sit below the root, so the two are
+not one gate with two spellings. Without the hypothesis this statement was provable and wrong, which is
+what the placement gate corrected. -/
 theorem checkMessageGroup_ruleGroup_resolvesToRuleGroup
     {model : FlatModel} {condition : CheckedFlatCondition model}
     (parameter : String)
-    (valid : GroupPath.isValid condition.rowGroup = true) :
+    (valid : GroupPath.isValid condition.rowGroup = true)
+    (belowRoot : ¬ condition.rowGroup.length ≤ 1) :
     (checkMessageGroup condition parameter .ruleGroup).map
         (fun access => access.group) = .ok condition.rowGroup := by
-  rw [checkMessageGroup, admitMessageGroup]
-  simp only [valid, groupPath_isPrefixOf_self, dite_true]
+  rw [checkMessageGroup]
+  simp only [belowRoot, if_false, admitMessageGroup, valid,
+    groupPath_isPrefixOf_self, dite_true]
   rfl
+
+/-- The negative direction, and the one a consumer actually needs: at a root locus the shorthand is
+refused whatever else is well formed. The admission law above is satisfied by an implementation that
+dropped the gate entirely, so it cannot carry this on its own. -/
+theorem checkMessageGroup_ruleGroup_refusedAtRootLocus
+    {model : FlatModel} {condition : CheckedFlatCondition model}
+    (parameter : String)
+    (atRoot : condition.rowGroup.length ≤ 1) :
+    checkMessageGroup condition parameter .ruleGroup =
+      .error (.ruleGroupImmediatelyBelowRoot parameter) := by
+  rw [checkMessageGroup]
+  simp only [atRoot, if_true]
 
 theorem checkMessageGroup_rootGroup_resolvesToChainRoot
     {model : FlatModel} {condition : CheckedFlatCondition model}

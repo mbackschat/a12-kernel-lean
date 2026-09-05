@@ -1058,6 +1058,7 @@ run_cmd do
 #print axioms A12Kernel.checkedValidationMessage_inputs_doNotChangeVerdict
 #print axioms A12Kernel.checkMessageGroup_absolute_admitted
 #print axioms A12Kernel.checkMessageGroup_ruleGroup_resolvesToRuleGroup
+#print axioms A12Kernel.checkMessageGroup_ruleGroup_refusedAtRootLocus
 #print axioms A12Kernel.checkMessageGroup_rootGroup_resolvesToChainRoot
 #print axioms A12Kernel.checkedEnUsStringPatternMessage_fieldValue_isOpaque
 #print axioms A12Kernel.checkedEnUsStringPatternMessage_rendering_preservesPatternError

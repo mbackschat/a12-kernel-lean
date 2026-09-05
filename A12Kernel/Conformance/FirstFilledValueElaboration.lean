@@ -332,8 +332,10 @@ example :
         (.starHaving (star "Primary") (falseHaving "Primary")) [
           .starHaving (star "Primary") (falseHaving "Primary")]) =
         none ∧
+      -- A later operand, so it reports the later-position arm. This carrier keys no Kernel class
+      -- off the split; the extrema are the operator that does.
       errorOf (source (.field (bare "Fallback")) [.field (bare "Note")]) =
-        some (.fieldKindMismatch note.path .string) := by
+        some (.laterFieldKindMismatch note.path .string) := by
   native_decide
 
 end A12Kernel.Conformance.FirstFilledValueElaboration

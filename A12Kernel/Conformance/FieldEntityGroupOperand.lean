@@ -539,18 +539,22 @@ example :
       field ["Probe", "A", "Deep"] "DeepText"] = none := by
   native_decide
 
-/-! ### The extrema's sortable set is wider than this family's representable set
+/-! ### The extrema's sortable set is wider than this family's representable set, and **position**
+decides which side of it an operand is on
 
-`Sum` takes Number; the extrema take Number **or Date**, so a Date operand that this Number family
-cannot hold is a *representation* limit and not a Kernel refusal. Projecting the family's own
-"not Number" error as `MVK_NOT_SORTABLE` therefore names a refusal for a model the Kernel admits,
-which is the one error an importer or an Explain consumer cannot recover from — it reads as a
-verdict rather than as missing coverage. The rows below pin the Date operand at both loci that
-carry the error, and keep the String operand's measured refusal beside them so the fix cannot be
-"drop the class". -/
+`Sum` takes Number; the extrema take Number **or** a temporal kind, so a Date operand that this
+Number family cannot hold may be a *representation* limit rather than a Kernel refusal. Which one
+it is depends on where it sits: the Kernel's family gate reads the **first** operand and requires
+every later one to join it, so a Date leading the list means the list was the temporal family's,
+while a Date after a Number is refused `MVK_NOT_SORTABLE`
+([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)). Projecting the
+family's own "not Number" error as a Kernel refusal in the first case names a verdict for a model
+the Kernel admits — the one error an importer or an Explain consumer cannot recover from — and
+projecting nothing in the second silently drops a refusal the Kernel does make. The rows below pin
+both directions. -/
 
-/- A Date operand under the extrema draws no class: the Kernel admits it. This is the written-out
-   pair; the group form below is the second locus of the same mechanism. -/
+/- A Date **leading** the list draws no class: the Kernel admits it and the temporal list owns it.
+   This is the written-out pair; the group form below is the second locus of the same mechanism. -/
 example :
     aggregateDiagnostic? .maximum [field ["Probe", "Milestones"] "ReportedOn",
       field ["Probe", "Milestones"] "SettledOn"] = none := by
@@ -558,6 +562,35 @@ example :
 
 example :
     aggregateDiagnostic? .minimum [group ["Probe", "Milestones"]] = none := by
+  native_decide
+
+/- The **same Date declaration one position later**, behind a Number, is the Kernel's own
+   `MVK_NOT_SORTABLE`. This is the pair the previous account got wrong in both directions at once:
+   it read "a Date is admitted at this gate" off the all-Date list above and carried it here, where
+   the Kernel refuses. Nothing about the Date changed — only which operand leads. -/
+example :
+    aggregateDiagnostic? .maximum [field ["Probe", "A"] "AVal",
+      field ["Probe", "Milestones"] "ReportedOn"] = some .notSortable := by
+  native_decide
+
+example :
+    aggregateDiagnostic? .minimum [field ["Probe", "A"] "AVal",
+      field ["Probe", "Milestones"] "ReportedOn"] = some .notSortable := by
+  native_decide
+
+/- Reversed, and the class disappears again — the two rows differ in operand order alone, which is
+   what makes this a positional gate rather than a claim about the Date's kind. -/
+example :
+    aggregateDiagnostic? .maximum [field ["Probe", "Milestones"] "ReportedOn",
+      field ["Probe", "A"] "AVal"] = none := by
+  native_decide
+
+/- `Sum` is not keyed by position in anything measured, so the same later-Date list claims no class
+   under it. The split exists for the extrema and does not spread to a sibling by having been
+   added. -/
+example :
+    aggregateDiagnostic? .sum [field ["Probe", "A"] "AVal",
+      field ["Probe", "Milestones"] "ReportedOn"] = none := by
   native_decide
 
 /- `Sum` over that same all-Date group keeps its own refusal, so the row above is the extrema's

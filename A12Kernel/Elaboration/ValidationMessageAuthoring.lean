@@ -133,6 +133,12 @@ inductive ValidationMessageTemplateError where
   /-- A historic group terminal the Kernel still recognizes and refuses on the modern route. It stays
   distinct from `invalidGroupParameter` because the Kernel's own code is distinct. -/
   | retiredGroupTerminal (parameter terminal : String)
+  /-- The `RuleGroup` shorthand written from a rule whose own group **is** the root group, refused
+  `RULEGROUP_IMMEDIATELY_BELOW_ROOT`. The gate belongs to that one word: from the identical locus the
+  root shorthand and the absolute spelling of that very group are both admitted, so the group is
+  nameable and the position works — what is refused is the abbreviation whose meaning would there
+  coincide with `RootGroup`. -/
+  | ruleGroupImmediatelyBelowRoot (parameter : String)
   /-- A Base Year parameter was authored against a model that declares none. -/
   | noBaseYear
   /-- A semantic-index key is itself keyed. -/
@@ -550,7 +556,14 @@ def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition mode
   -- The root shorthand is the top of the *rule's own* ancestor chain rather than a model-wide root.
   -- A model with two roots separates the two readings, and the rule's own chain is what the Kernel
   -- admits: under the second root the shorthand is accepted while the first root is refused.
-  | .ruleGroup => admitMessageGroup condition parameter condition.rowGroup
+  -- The shorthand carries a placement condition the other two spellings do not: a rule sitting
+  -- directly in a root group may not use it. Measured on both carriers, and it is the gate the
+  -- containment test below cannot express, because a root group trivially contains itself.
+  | .ruleGroup =>
+      if condition.rowGroup.length ≤ 1 then
+        .error (.ruleGroupImmediatelyBelowRoot parameter)
+      else
+        admitMessageGroup condition parameter condition.rowGroup
   | .rootGroup => admitMessageGroup condition parameter (condition.rowGroup.take 1)
   | .absolute [] => .error (.invalidGroupParameter parameter)
   | .absolute (root :: rest) =>

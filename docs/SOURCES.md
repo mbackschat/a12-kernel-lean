@@ -339,6 +339,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 
 <a id="src-rulegroup-shorthand-root-gate"></a>
 - [`$#RuleGroup$` alone is refused when its owning declaration sits directly in the root group](sources/message-and-pointer-probes.md#src-rulegroup-shorthand-root-gate)
+<a id="src-rulegroup-root-gate-on-the-rule-carrier"></a>
+- [That same root-group refusal is the validation-rule carrier's too](sources/message-and-pointer-probes.md#src-rulegroup-root-gate-on-the-rule-carrier)
 
 <a id="src-2026-09-05-german-shorthand-render-reconciliation"></a>
 - [Reviewed a12-dmkits handback rendering the German shorthands, closing the retired-terminal row, and confirming the computation carrier on render](sources/message-and-pointer-probes.md#src-2026-09-05-german-shorthand-render-reconciliation)
@@ -535,6 +537,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)
 <a id="src-distinct-count-first-operand-class"></a>
 - [`NumberOfDifferentValues` classifies by its first operand](sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)
+<a id="src-extrema-operand-family-is-positional"></a>
+- [`MinValue`/`MaxValue` pick their operand family from the first operand, and the two families draw different codes](sources/group-list-and-capacity-probes.md#src-extrema-operand-family-is-positional)
 <a id="src-capacity-consumer-sweep"></a>
 - [The declared-capacity extent reaches the last four operand-stream consumers](sources/group-list-and-capacity-probes.md#src-capacity-consumer-sweep)
 <a id="src-over-limit-finding-text"></a>
